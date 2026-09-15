@@ -31,16 +31,17 @@
 #define FEATURE_KEYWORD_ANY_BIT                     0x00008000
 #define FEATURE_MODULE_TRUE_BIT                     0x00010000
 #define FEATURE_MULTIDIMENSIONAL_BIT                0x00020000
-#define FEATURE_POSTDEREF_QQ_BIT                    0x00040000
-#define FEATURE_REFALIASING_BIT                     0x00080000
-#define FEATURE_SAY_BIT                             0x00100000
-#define FEATURE_SIGNATURES_BIT                      0x00200000
-#define FEATURE_SMARTMATCH_BIT                      0x00400000
-#define FEATURE_STATE_BIT                           0x00800000
-#define FEATURE_SWITCH_BIT                          0x01000000
-#define FEATURE_TRY_BIT                             0x02000000
-#define FEATURE_UNIEVAL_BIT                         0x04000000
-#define FEATURE_UNICODE_BIT                         0x08000000
+#define FEATURE_NAMESPACES_BIT                      0x00040000
+#define FEATURE_POSTDEREF_QQ_BIT                    0x00080000
+#define FEATURE_REFALIASING_BIT                     0x00100000
+#define FEATURE_SAY_BIT                             0x00200000
+#define FEATURE_SIGNATURES_BIT                      0x00400000
+#define FEATURE_SMARTMATCH_BIT                      0x00800000
+#define FEATURE_STATE_BIT                           0x01000000
+#define FEATURE_SWITCH_BIT                          0x02000000
+#define FEATURE_TRY_BIT                             0x04000000
+#define FEATURE_UNIEVAL_BIT                         0x08000000
+#define FEATURE_UNICODE_BIT                         0x10000000
 
 #define FEATURE_APOS_AS_NAME_SEP_INDEX                0
 #define FEATURE_BAREWORD_FILEHANDLES_INDEX            0
@@ -60,6 +61,7 @@
 #define FEATURE_KEYWORD_ANY_INDEX                     0
 #define FEATURE_MODULE_TRUE_INDEX                     0
 #define FEATURE_MULTIDIMENSIONAL_INDEX                0
+#define FEATURE_NAMESPACES_INDEX                      0
 #define FEATURE_POSTDEREF_QQ_INDEX                    0
 #define FEATURE_REFALIASING_INDEX                     0
 #define FEATURE_SAY_INDEX                             0
@@ -194,6 +196,12 @@
     ( \
 	CURRENT_FEATURE_BUNDLE == FEATURE_BUNDLE_CUSTOM && \
 	 FEATURE_IS_ENABLED_MASK(FEATURE_GENERATOR_INDEX, FEATURE_GENERATOR_BIT) \
+    )
+
+#define FEATURE_NAMESPACES_IS_ENABLED \
+    ( \
+	CURRENT_FEATURE_BUNDLE == FEATURE_BUNDLE_CUSTOM && \
+	 FEATURE_IS_ENABLED_MASK(FEATURE_NAMESPACES_INDEX, FEATURE_NAMESPACES_BIT) \
     )
 
 #define FEATURE_SIGNATURES_IS_ENABLED \
@@ -520,6 +528,15 @@ S_magic_sethint_feature(pTHX_ SV *keysv, const char *keypv, STRLEN keylen,
             }
             return;
 
+        case 'n':
+            if (keylen == sizeof("feature_namespaces")-1
+                 && memcmp(subf+1, "amespaces", keylen - sizeof("feature_")) == 0) {
+                mask = FEATURE_NAMESPACES_BIT;
+                index = FEATURE_NAMESPACES_INDEX;
+                break;
+            }
+            return;
+
         case 'p':
             if (keylen == sizeof("feature_postderef_qq")-1
                  && memcmp(subf+1, "ostderef_qq", keylen - sizeof("feature_")) == 0) {
@@ -743,6 +760,13 @@ PL_feature_bits[] = {
         STRLENs("feature_multidimensional"),
         FEATURE_MULTIDIMENSIONAL_BIT,
         FEATURE_MULTIDIMENSIONAL_INDEX
+    },
+    {
+        /* feature namespaces */
+        "feature_namespaces",
+        STRLENs("feature_namespaces"),
+        FEATURE_NAMESPACES_BIT,
+        FEATURE_NAMESPACES_INDEX
     },
     {
         /* feature postderef_qq */

@@ -168,6 +168,34 @@ The imported distribution's API and tests remain documented in its own source
 and test files. Its core integration is covered by the dual-life and build
 checks.
 
+### Lexical namespaces
+
+The experimental `namespaces` feature adds lexical namespace state,
+`namespace` declarations, `__NAMESPACE__`, namespace aliases,
+namespace-qualified symbol resolution, and explicit `CORE:::` boundaries.
+The parser, keyword tables, diagnostics, deparser tests, generated headers,
+and documentation were updated. `CORE` receives special handling because it
+is the implementation namespace for Perl's builtins and operators.
+
+For example:
+
+```perl
+use feature 'namespaces';
+
+namespace MyApp;
+package Model;
+
+sub name { "model" }
+```
+
+Here `Model` means `MyApp::Model` while this code is compiled. The namespace
+prefix is lexical and does not replace Perl's ordinary current package. An
+explicit `:::` boundary resolves a name from the top level instead.
+
+The behavior is documented in `pod/perlnamespace.pod`, with related syntax,
+builtin, experimental-status, diagnostic, and release documentation updated.
+The namespace and bootstrap tests cover the implementation.
+
 ## Compatibility posture
 
 Most existing Perl behavior is intentionally preserved where practical, and

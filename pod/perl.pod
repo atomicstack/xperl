@@ -91,6 +91,7 @@ aux h2ph h2xs perlbug pl2pm pod2html pod2man splain xsubpp
 =head2 Reference Manual
 
     perlsyn             Perl syntax: declarations, statements, comments
+    perlnamespace       Perl lexical namespaces and package aliases
     perldata            Perl data structures
     perlop              Perl expressions: operators, precedence, string literals
     perlsub             Perl subroutines

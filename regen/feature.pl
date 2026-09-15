@@ -56,6 +56,7 @@ my %feature = (
         keyword_all
         smartmatch
         enhanced_xx
+        namespaces
     )
 );
 
@@ -1102,6 +1103,18 @@ the 5.36 feature bundle onwards.
 
 You can use the L<multidimensional> module on CPAN to disable
 multidimensional array emulation for older versions of Perl.
+
+=head2 The 'namespaces' feature
+
+B<WARNING>: This feature is experimental and the implementation may change
+or be removed in a future version of Perl.  Perl will warn when it is used
+unless the warning is disabled with:
+
+    no warnings "experimental::namespaces";
+
+This feature enables lexical C<namespace> declarations, the
+C<__NAMESPACE__> token, and package aliases written as C<use PACKAGE as
+ALIAS>.  See L<perlnamespace> for details.
 
 =head2 The 'postderef' and 'postderef_qq' features
 

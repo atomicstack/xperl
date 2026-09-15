@@ -868,6 +868,10 @@ apply_class_attribute_isa(pTHX_ HV *stash, SV *value)
     if(*end)
         croak("Unexpected characters while parsing class :isa attribute: %s", end);
 
+    SV *resolved = namespace_resolve(superclassname);
+    sv_setsv(superclassname, resolved);
+    SvREFCNT_dec_NN(resolved);
+
     if(aux->xhv_class_superclass)
         croak("Class already has a superclass, cannot add another");
 
@@ -900,7 +904,7 @@ apply_class_attribute_isa(pTHX_ HV *stash, SV *value)
         SAVESETSVFLAGS((SV *)isa, SVf_READONLY|SVf_PROTECT, SVf_READONLY|SVf_PROTECT);
         SvREADONLY_off((SV *)isa);
 
-        av_push(isa, newSVsv(value));
+        av_push(isa, newSVsv(superclassname));
 
         LEAVE;
     }
@@ -935,6 +939,10 @@ S_apply_one_role(pTHX_ struct xpvhv_aux *aux, SV *namesv)
     const char *end = split_package_ver(namesv, rolename, rolever);
     if(*end)
         croak("Unexpected characters while parsing :implements attribute: %s", end);
+
+    SV *resolved = namespace_resolve(rolename);
+    sv_setsv(rolename, resolved);
+    SvREFCNT_dec_NN(resolved);
 
     HV *rolestash = gv_stashsv(rolename, 0);
     if (!rolestash) {

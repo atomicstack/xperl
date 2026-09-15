@@ -114,9 +114,10 @@ Functions for filehandles, files, or directories:
      select, stat, symlink, sysopen, umask, unlink, utime
 
 Keywords related to the control flow of your Perl program:
-     __FILE__, __LINE__, __PACKAGE__, __SUB__, break, caller,
-     continue, die, do, dump, eval, evalbytes, exit, goto,
-     last, method, next, redo, return, sub, wantarray
+     __FILE__, __LINE__, __NAMESPACE__, __PACKAGE__, __SUB__,
+     break, caller, continue, die, do, dump, eval, evalbytes,
+     exit, goto, last, method, next, redo, return, sub,
+     wantarray
 
 Keywords related to scoping:
      caller, class, field, import, local, my, our, package,
