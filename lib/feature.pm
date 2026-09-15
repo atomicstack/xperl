@@ -23,6 +23,7 @@ our %feature = (
     signatures                      => 'feature_signatures',
     smartmatch                      => 'feature_smartmatch',
     current_sub                     => 'feature___SUB__',
+    dispatch_on                     => 'feature_dispatch_on',
     enhanced_xx                     => 'feature_enhanced_xx',
     keyword_all                     => 'feature_keyword_all',
     keyword_any                     => 'feature_keyword_any',
@@ -48,7 +49,7 @@ our %feature_bundle = (
     "5.37"    => [qw(apostrophe_as_package_separator bitwise current_sub evalbytes fc isa module_true postderef_qq say signatures smartmatch state unicode_eval unicode_strings)],
     "5.39"    => [qw(apostrophe_as_package_separator bitwise current_sub evalbytes fc isa module_true postderef_qq say signatures smartmatch state try unicode_eval unicode_strings)],
     "5.41"    => [qw(bitwise current_sub evalbytes fc isa module_true postderef_qq say signatures state try unicode_eval unicode_strings)],
-    "all"     => [qw(apostrophe_as_package_separator bareword_filehandles bitwise class current_sub declared_refs defer enhanced_xx evalbytes extra_paired_delimiters fc generator indirect isa keyword_all keyword_any module_true multidimensional namespaces postderef_qq refaliasing say signatures smartmatch state switch try unicode_eval unicode_strings)],
+    "all"     => [qw(apostrophe_as_package_separator bareword_filehandles bitwise class current_sub declared_refs defer dispatch_on enhanced_xx evalbytes extra_paired_delimiters fc generator indirect isa keyword_all keyword_any module_true multidimensional namespaces postderef_qq refaliasing say signatures smartmatch state switch try unicode_eval unicode_strings)],
     "default" => [qw(apostrophe_as_package_separator bareword_filehandles indirect multidimensional smartmatch)],
 );
 

@@ -1,0 +1,782 @@
+=encoding utf8
+
+=head1 NAME
+
+perldispatchon - reference for experimental dispatch and data-shape matching
+
+=head1 DESCRIPTION
+
+C<dispatch> selects a block of code by matching a value against a sequence
+of data shapes. A data shape can require particular values, describe nested
+arrays, hashes, references, or objects, and bind selected parts to lexical
+variables. An optional guard adds a condition expressed in ordinary Perl.
+
+Together, these operations let a clause check a value's structure, extract
+what it needs, and decide whether to handle it:
+
+    use feature qw(dispatch_on say);
+
+    dispatch ($record) {
+        on ({ status => "ok", point => [ $x, $y ], ... }
+            if $x >= 0 && $y >= 0) {
+            say "point: $x, $y";
+        }
+        on ({ status => "error", message => $message, ... }) {
+            say "error: $message";
+        }
+        on (_) {
+            say "unhandled record";
+        }
+    }
+
+The first clause requires a hash reference with a C<status> of C<"ok"> and
+a C<point> containing an array reference of exactly two elements. The
+C<...> permits additional hash keys. The elements are bound to C<$x> and
+C<$y>; the guard then checks their values. The block runs only if both the
+shape and the guard succeed. Otherwise, C<dispatch> tries the next clause.
+C<_> matches any value, providing a final default.
+
+The value being examined is called the I<subject>. Each C<on> clause contains
+a I<pattern>, also called a I<data shape>, and a block to run on success.
+Clauses are tried in order, and only the first successful clause runs.
+Captures are lexical variables local to that clause and are available in
+both its guard and its block.
+
+A data shape is pattern syntax, not an ordinary Perl expression. For example,
+C<[ $x, $y ]> describes an array reference and introduces two captures; it
+does not construct an array from existing variables. Use C<^$name> to match
+against an existing lexical value instead of introducing a capture. Guards
+and clause blocks use ordinary Perl syntax and semantics.
+
+Scalar literal patterns retain Perl's numeric and string comparison modes,
+but reject uninitialized or non-numeric conversions that would normally
+warn. Thus the numeric pattern C<0> can match C<"0">, but matches neither
+C<"foo"> nor C<undef>. The pattern C<undef> matches only an undefined
+value. Predicates can express additional type and value checks; see
+L</Predicate calls>.
+
+This document specifies the syntax, matching rules, binding behavior, and
+edge cases of the experimental C<dispatch_on> feature. Its syntax and
+behavior may change. For a progressive introduction, see
+L<perldispatchontut>.
+
+=head1 SYNOPSIS
+
+    use feature qw(dispatch_on say);
+
+    dispatch ($value) {
+        on (undef)                 { say "undefined" }
+        on (42)                    { say "forty-two" }
+        on ([ $x, $y ])            { say "pair: $x, $y" }
+        on ({ name => $name, ... }) { say "name: $name" }
+        on (_)                     { say "other" }
+    }
+
+    my $wanted = "ok";
+    dispatch my $record (read_record()) {
+        on ({ status => ^$wanted, value => $value, ... }
+            if defined $value) {
+            use_record($record, $value);
+        }
+    }
+
+The examples below assume C<dispatch_on> and C<say> are enabled. Examples
+beginning with C<on> are clause fragments to place inside a C<dispatch>.
+
+=head1 DISPATCH AND ON CLAUSES
+
+A C<dispatch> examines one subject and tries its C<on> clauses from top
+to bottom. The first clause that matches runs. Clauses do not fall through.
+Parentheses around the subject and each clause's data shape are required. A
+C<on> clause must be inside a C<dispatch>, and its body must be a block
+rather than a bare expression following an arrow. In Perl syntax, each such
+clause begins with C<on>.
+
+The outer dispatch body contains only clauses beginning with C<on>. Each
+clause's attached block may contain statements, loops, and nested dispatches.
+
+    for my $value (1, 2, 3) {
+        dispatch ($value) {
+            on (1) { say "one" }
+            on (2) { say "two" }
+            on (_) { say "something else" }
+        }
+    }
+
+This prints:
+
+    one
+    two
+    something else
+
+The underscore is a wildcard.  It matches any value and does not create a
+binding, so it is useful as a final default clause.
+
+If no clause matches, C<dispatch> returns C<undef> in scalar context and an empty
+list in list context.  Otherwise, it returns the value of the last evaluated
+expression in the selected clause:
+
+    my $description = do {
+        dispatch (2) {
+            on (1) { "one" }
+            on (2) { "two" }
+            on (_) { "something else" }
+        }
+    };
+    say $description;       # two
+
+Use C<do { ... }> when using a dispatch result in an assignment.
+
+Within C<on (PATTERN if EXPR)>, C<PATTERN> is the data shape and
+C<EXPR> is the optional guard. The matcher checks the shape first, then
+evaluates the guard with the captures available. See L</Guards>.
+
+=head1 BINDINGS, PINS, AND GUARDS
+
+A scalar name in a data-shape description gives a matched value a name.
+This is called a binding. The variable is local to that clause, and you do
+not write a separate C<my> declaration for it:
+
+    dispatch ($person) {
+        on ({ name => $name, age => $age, ... } if $age < 18) {
+            say "$name is a minor";
+        }
+        on ({ name => $name, salary => $salary, ... }) {
+            say "$name earns $salary";
+        }
+    }
+
+Once the complete shape matches, its bindings are available to the guard.
+If the guard succeeds, the attached block runs with those bindings.  If the
+shape or guard fails, the block does not run and the next clause is tried.
+
+Bindings have the usual lexical lifetime.  A closure or reference can keep a
+bound variable alive after the clause ends, just as it can keep a variable
+declared with C<my> alive.  This also applies if a guard stores a closure
+elsewhere before returning false or throwing an exception.
+
+An unpinned name is a new binding even if an outer scope has a variable with
+the same spelling. Prefix a name with C<^> to compare against an existing
+scalar; without the caret it is a capture.
+
+    my $name = "outside";
+    dispatch ("Ada") {
+        on ($name) { say $name }   # Ada: a new local variable
+    }
+    say $name;                       # outside: unchanged
+
+=head2 Capture names
+
+Each capture name may be declared only once in a clause's data shape.
+Using C<[$x, $x]> or C<[$x, 'x' . $x]> is a compile-time error, even when
+the two values would be equal. This rule also applies across nested
+containers and to predicate captures and array-tail captures. Separate clauses
+may use the same names.
+
+To compare two captured values, give them different names and use a guard:
+
+    dispatch (["Ada", "Ada"]) {
+        on ([$first, $second] if $first eq $second) {
+            say "same name: $first";
+        }
+    }
+
+Pins are comparisons, not declarations, so a pinned name may occur more
+than once. The guard and the clause's block may also refer to a capture
+as many times as needed. Regex named captures follow the separate rules
+in L</REGULAR-EXPRESSION SHAPES>.
+
+=head2 Capturing a value while matching it
+
+An assignment pattern, C<$name = PATTERN>, captures the current value in a
+clause-local variable and then matches that same value against
+C<PATTERN>:
+
+    dispatch ([ "foo", [ "inner" ] ]) {
+        on ([ "foo", $x = [ "inner" ] ]) {
+            say $x->[0];                 # inner
+        }
+    }
+
+The assignment is pattern syntax; it does not assign to an existing variable.
+C<$x> is a new capture, subject to the same uniqueness rule as other capture
+names. The nested pattern must also match for the clause to succeed. A failed
+match does not publish a partial capture.
+
+=head2 Naming the subject
+
+
+The subject can be given a dispatch-local name with a lexical declaration:
+
+    dispatch my $record (read_record()) {
+        on ({ type => "ok", ... }) { use_record($record) }
+    }
+
+The subject expression is evaluated once. The named lexical is mutable and
+available throughout the dispatch; it does not assign to an outer variable with
+the same name. Without a name, the subject is temporarily available as C<$_>,
+and the previous C<$_> is restored when the dispatch exits. A named dispatch leaves
+C<$_> unchanged.
+
+=head2 Pinning existing values
+
+To compare a pattern value with the value of an existing scalar, prefix the
+name with C<^>:
+
+    my $wanted = "ok";
+    dispatch ($record) {
+        on ({ type => ^$wanted, ... }) { use_record($record) }
+    }
+
+The current lexical value is read when the pin is tested, so changes made by a
+guard are visible to later matching. Once a clause body runs, no later
+clause is tried in that dispatch. Pinned
+references compare by identity: they must refer to the same thing,
+not merely print the same way. Two undefined values compare equal, but an
+undefined value never equals a defined value, including the empty string.
+
+For other scalar pins, a numeric-only value uses numeric C<==> comparison. A
+value with a string representation uses string C<eq> comparison. If it has both
+numeric and string values, string comparison is used. This means a pin's
+default comparison can depend on its flags when the pin is tested.
+Use C<0 + ^$name> to force numeric comparison. An empty-string concatenation,
+C<"" . ^$name>, uses the ordinary concatenation rules to force string
+comparison, including stringification of overloaded references. A repeated pin
+repeats the comparison; it does not declare a capture.
+
+Only an existing scalar lexical may follow the caret. Outside a data-shape
+description, the caret keeps its ordinary meaning.
+
+A variable name without C<^> always introduces a capture, including when it
+has the same spelling as the dispatch subject.
+Use C<^> whenever the pattern should compare against an existing value. For
+example, the direct subject can be matched explicitly:
+
+    dispatch ($value) {
+        on ( ^$value ) { say "the subject matched itself" }
+    }
+
+The same rule applies inside a larger data shape. Without C<^>, the name is a
+capture:
+
+    dispatch ($value) {
+        on ([ $value ]) { say $value }
+    }
+
+Use C<[^$value]> to compare the nested value with the outer lexical instead.
+
+=head2 Guards
+
+A guard is an ordinary expression checked after the structural match:
+
+    dispatch ($value) {
+        on ([ $number ] if $number > 0) {
+            say "positive: $number";
+        }
+        on (_) { say "not a positive one-element array" }
+    }
+
+Guards are unrestricted expressions.  They may have side effects or throw an
+exception. A false guard discards that clause's tentative bindings and allows
+the next clause to be tried. An exception is propagated normally, with the
+tentative bindings discarded.
+
+For an open-array search, the guard tests the first structurally matching
+subsequence. If it is false, matching moves to the next clause; it does not
+search for another subsequence within the same clause. Concatenated string
+shapes likewise do not retry longer captures when a guard fails.
+
+=head2 Checking constraints before collecting captures
+
+A clause checks its requirements before collecting values that are only
+being captured. For example:
+
+    dispatch ([10, 20, 42]) {
+        on ([..., $previous, 42, ...]) { say $previous }
+    }
+
+The matcher looks for C<42> with a preceding element, then captures that
+element. This prints C<20>. It does not fetch a candidate's preceding element
+just to discard it when the C<42> requirement fails.
+
+At each array or hash level, literal requirements precede other nested
+requirements and tests. Requirements within the same group retain source
+order. Reading the enclosing structure comes first, because the matcher
+needs to know what it can inspect. Capture-only reads wait until structural
+matching succeeds, even when they are nested inside other structures.
+
+Some captures also impose requirements. For example,
+C<$x = Int()> checks a predicate and therefore needs to observe the value
+during matching.
+Regex and concatenation captures also retain results of their checks.
+Those observations are reused rather than repeating the checks when
+bindings are placed in the clause's lexical variables.
+
+This order applies to tied values, overloaded operations and pattern calls
+too. Do not assume that such callbacks run from left to right as written
+in the shape. A failed literal requirement can prevent a call from running.
+User code in the guard and C<on> clause block retains its normal behavior.
+
+Values retained during checking stay alive, but are not frozen: a callback
+that overwrites the same scalar can change its value before publication.
+Capture-only reads see the contents present when they run. Array searches
+keep their initial candidate range, so appending elements in a callback
+does not extend the search. Later reads see current contents; missing array
+slots behave as C<undef>, and missing hash keys remain absent. The matcher
+does not repeat earlier successful checks after a callback changes data.
+
+=head1 SCALAR DATA SHAPES
+
+=head2 Literal strings and numbers
+
+The pattern value determines the comparison mode. A numeric-only literal uses
+numeric C<==> semantics. A string literal uses string C<eq> semantics:
+
+    dispatch ($value) {
+        on (1)   { say "matched numerically" }
+        on ("1") { say "matched as a string" }
+    }
+
+Numeric comparison converts the subject as C<==> does, so C<1> matches the
+string C<"01">. String comparison converts the subject as C<eq> does, so
+C<"1"> matches the number C<1> but not the string C<"01">. When a pattern
+value has both numeric and string values, string comparison is used. Write
+C<0 + "1.1"> to force numeric comparison for a string literal.
+These are comparison modes, not exclusive type tests: a subject of C<1>
+matches both patterns, so the first clause runs. Use the numeric value
+predicates below when the value's kind matters.
+
+If numeric or string comparison would emit an uninitialized or non-numeric
+conversion warning, the comparison is a non-match instead. This rule is
+independent of whether warnings are enabled at the call site, and keeps
+C<undef> distinct from both C<0> and C<"">. No conversion warning is emitted
+by the matcher; warnings from user-defined overload code are not suppressed.
+
+These rules apply inside arrays, hashes, and object shapes as well.
+
+=head2 Undefined values
+
+C<undef> matches only an undefined value. It does not match a defined zero
+or an empty string:
+
+    dispatch ($value) {
+        on (undef) { say "no value" }
+        on (_)     { say "some value" }
+    }
+
+=head2 Boolean values
+
+Boolean matching has two forms with different meanings.  The lower-case
+C<true> and C<false> patterns ask whether the subject is a boolean value.  They
+do not ask whether the subject merely behaves as true or false.  Thus a string
+such as C<"yes"> does not match C<true>, even though it is true in a condition.
+The builtins C<true> and C<false> produce boolean values, as do comparisons
+such as C<< $age < 18 >>.
+
+    use builtin qw(true false);
+
+    dispatch ($value) {
+        on (true)  { say "the value is the boolean true" }
+        on (false) { say "the value is the boolean false" }
+        on (_)     { say "the value is not a boolean" }
+    }
+
+The predicates C<True()> and C<False()> ask the usual truth-value question.
+They match any value that would be true or false in an C<if> statement.
+Among ordinary scalar values, C<undef>, the empty string C<"">, the number
+C<0>, and the string C<"0"> are false. All other ordinary scalar values are
+true. Objects with boolean overloads use their overload behavior.
+
+    dispatch ($value) {
+        on (True())  { say "the value is truthy" }
+        on (False()) { say "the value is falsey" }
+    }
+
+For example:
+
+    Subject      True()  False()
+    true         yes     no
+    false        no      yes
+    "yes"        yes     no
+    "0"          no      yes
+    ""           no      yes
+    undef        no      yes
+
+This distinction is useful when a program must tell the difference between
+the boolean value C<false> and some other value that happens to be false.
+Use C<on (undef)> when undefined and defined-false values must be
+distinguished.
+
+=head2 Predicate calls
+
+A call in a dispatch-on pattern is a predicate when its subroutine has a
+signature whose first parameter is named C<$subject>. The current subject is
+passed as that first argument. Any arguments written in the pattern follow it:
+
+    use dispatch::Predicates;
+
+    sub Between ($subject, $low, $high) {
+        $subject >= $low && $subject <= $high
+    }
+
+    dispatch ($value) {
+        on (Between(1, 10)) { say "in range" }
+    }
+
+Predicate arguments must be constants or pinned values such as C<^$limit>.
+Calls, variables, and other expressions are rejected. The total number of
+arguments must satisfy the predicate's signature, including the implicit
+subject. A function in the current scope takes precedence over an imported
+predicate with the same name.
+An ordinary zero-argument call without the C<$subject> signature remains a
+computed scalar pattern.
+
+Captures use assignment syntax. The target receives the original subject when
+the predicate succeeds:
+
+    on ($number = Int()) { use_integer($number) }
+    on ($number = Between(1, 10)) { use_range_value($number) }
+
+The pattern C<$number> is shorthand for C<$number = _>, which is the same as
+C<$number = Any()>.
+
+=head2 Shared predicates
+
+The standard predicates can be installed with C<use dispatch::Predicates;>.
+The lowercase package name is reserved for this shared predicate library.
+
+=over
+
+=item C<Any()>
+
+Always succeeds.
+
+=item C<Int()> and C<Num()>
+
+C<Int()> accepts integer-valued native scalars and values whose string or
+overloaded numeric form converts to an integer without a warning. C<Num()>
+accepts numeric native scalars and values whose string or overloaded numeric
+form converts to a number without a warning. Ordinary references are rejected.
+
+=item C<Integer()> and C<Number()>
+
+C<Integer()> accepts native IV/UV integer values. C<Number()> accepts native
+IV/UV/NV values. These predicates do not accept strings.
+
+=item C<NonRefVal()>, C<BlessedVal()>, C<DefinedVal()>, C<RefVal()>,
+C<True()>, and C<False()>
+
+These test whether the subject is not a reference, is a blessed reference, is
+defined, is a reference, is true, or is false, respectively.
+
+=back
+
+Predicates return true or false in ordinary Perl boolean context. Their
+arguments are read from constants or pins each time the pattern is checked.
+The subject is never replaced by a coerced value; a successful capture always
+receives the original value. Prefixing a value pattern with C<0 +> or
+concatenating it with C<""> continues to select numeric or string comparison
+for that value pattern, and has no effect on captures.
+
+=head1 REFERENCE AND OBJECT SHAPES
+
+A backslash describes a scalar reference shape:
+
+    my $number = 42;
+    my $reference = \$number;
+
+    dispatch ($reference) {
+        on (\$value) { say "the value is $value" }
+    }
+
+C<\\$value> describes one additional scalar-reference layer.  A reference
+shape is structural; it does not evaluate the description as a reference
+constructor.
+
+C<$name = RefVal()> is different from C<\$name>. The former checks any reference
+and binds the outer reference itself. The latter checks a scalar reference
+and binds the value reached through it.  Array and hash shapes can be nested in
+the same way.
+
+=head2 Arrays
+
+An array shape matches an array reference.  Without an ellipsis, it must have
+exactly the listed number of elements:
+
+    on ([ $x, $y ]) { say "point: $x, $y" }
+
+With no elements listed, C<on ([])> matches only an empty array
+reference. It does not match an empty hash reference or C<undef>.
+
+For arrays, C<...> may appear at the beginning, at the end, or at both ends:
+
+    on ([ $first, ... ])
+    on ([ ..., $last ])
+    on ([ ..., "start", $middle, "end", ... ])
+
+The last form searches from the left and binds the first matching subsequence.
+For example:
+
+    dispatch ([ "skip", "start", 10, "end", "start", 20, "end" ]) {
+        on ([ ..., "start", $middle, "end", ... ]) {
+            say $middle;     # 10, from the first matching subsequence
+        }
+    }
+
+The elements between the ellipses must be consecutive.  The ellipses allow
+elements before and after that group; they do not allow gaps within it.
+
+An array slot that has never been assigned is treated as C<undef>. Matching
+does not fill these holes in the original array. A tail binding includes
+the undefined values, preserving their positions in the captured tail.
+
+=head2 Hashes
+
+C<on ({})> matches an empty hash reference. Even a single key whose
+value is C<undef> makes that hash nonempty. Empty array and hash shapes
+also work inside larger shapes, such as C<[[], {}]>, and with a class
+name, such as C<Point {}> for a C<Point> object with no fields.
+
+A hash shape lists keys that must be present.  Without an ellipsis, the hash
+must have exactly those keys.  A trailing C<...> permits extra keys:
+
+    dispatch ({ status => "ok", value => 42, source => "cache" }) {
+        on ({ status => "ok", value => $value }) {
+            say "exact record";
+        }
+        on ({ status => "ok", value => $value, ... }) {
+            say "record with extra keys: $value";
+        }
+    }
+
+This prints C<record with extra keys: 42>. The first clause fails because
+the subject also has a C<source> key. Removing that key makes the first C<on>
+clause succeed instead.
+
+A present key whose value is C<undef> is different from a missing key.
+For a tied hash, the shape checks C<EXISTS> before reading the value with
+C<FETCH>; a missing key does not match even if C<FETCH> would return undef.
+With a wildcard value, as in C<{ name => _, ... }>, only the key's presence
+is required. Its value is not fetched.
+
+Repeating a constant key in the same hash shape is a compile-time error.
+For example, C<{ x => 1, x => 1 }> is not a valid shape.  Separate nested
+hash shapes may each use the same key.
+
+A key supplied by a pinned variable or a zero-argument call is determined
+at runtime.  If two such keys turn out to be equal, both value requirements
+must hold for that one key.  This is not an error, but it does not permit
+extra keys: a shape that covers only C<x> cannot match C<{ x => 1, y => 2 }>
+without an ellipsis.
+
+A hash shape can capture all fields not named by the shape. A hash binding
+captures them as a hash; an array binding captures them as a flat list of
+key/value pairs, in hash iteration order. Either binding must be final and
+cannot be combined with an ellipsis:
+
+    on ({ status => "ok", %details }) {
+        say "extra fields: ", join ", ", sort keys %details;
+    }
+
+C<%details> receives a copy of the remaining key/value pairs. Changes to it
+do not alter the subject hash, although referenced values remain shared.
+C<@details> receives the remaining keys and values as alternating elements.
+
+Array and hash shapes may be nested:
+
+    on ({ point => [ $x, $y ], ... }) { say "point: $x, $y" }
+
+Every hash entry must have both a key and a value shape. An unpinned name
+cannot capture a key: use a literal key, a pinned scalar, or a supported
+zero-argument call to say which key to inspect.
+
+=head2 Array tail bindings
+
+An array shape can capture its remaining tail with an array or hash binding.
+An array binding may contain zero or more elements:
+
+    on ([ 1, 2, @rest ]) { say "the rest is @rest" }
+
+The binding must be the final pattern element. A tail binding, also called a
+slurp, cannot be combined with an ellipsis or another slurp.
+
+A hash binding interprets the remaining elements as key/value pairs, like a
+hash assignment:
+
+    on ([ "header", %details ]) { say $details{status} }
+
+If the remaining list has an odd number of elements, the usual warning for an
+odd number of elements in hash assignment is issued and the final key receives
+C<undef>.
+
+With an array binding, the tail contains copies of the element values, not
+aliases to the source slots. Assigning to C<$rest[0]> does not change the
+source element, and assigning to the source element does not change
+C<$rest[0]>. References still point to the same objects or aggregates; this is
+not a deep copy. For example, changing a field through a captured reference
+changes the same object that the source refers to.
+
+=head2 Class-qualified shapes
+
+A blessed reference can be matched by putting its class name before an array,
+hash, or reference shape:
+
+    my $point = bless { 'x' => 3, 'y' => 4 }, 'Point';
+
+    dispatch ($point) {
+        on (Point { 'x' => $x, 'y' => $y }) {
+            say "point: $x,$y";
+        }
+    }
+
+Hash shapes inspect quoted fields, array shapes inspect positional values,
+and scalar-reference shapes can bind their referents.  For an object created
+with C<class>, use the field names including their sigils:
+
+    use experimental 'class';
+
+    class Position {
+        field $x :param;
+        field $y :param;
+    }
+
+    dispatch (Position->new(x => 3, y => 4)) {
+        on (Position { '$x' => $x, '$y' => $y }) {
+            say "position: $x, $y";
+        }
+    }
+
+This prints C<position: 3, 4>.  The quoted C<'$x'> and C<'$y'> identify
+the fields, including their sigils.  The unquoted C<$x> and C<$y> are new
+clause-local variables that receive those fields' values. They are also
+available in a guard and do not overwrite outer variables with the same names.
+
+The class constraint uses Perl's C<isa> behavior. An object of a subclass
+matches, and an object's overridden C<isa> method participates in the check.
+After the class check succeeds, the shape inspects the object's structure
+directly. It does not call constructors or accessors. Missing fields do not
+match. Tied and magical nested values use normal read semantics, and overload
+is used when the selected shape requires string, numeric, or boolean
+conversion. Captured references retain their identity.
+
+The matcher uses the fetched value for both a nested type check and its
+binding; publishing that binding does not fetch the tied source again.
+If your guard or C<on> clause body reads the tied source itself, that is a
+separate ordinary read and may return a different value.
+
+=head1 REGULAR-EXPRESSION SHAPES
+
+A regular expression can be used as a data shape:
+
+    dispatch ($text) {
+        on (/^user: (\w+)$/) {
+            say "user is $1";
+        }
+        on (/^person: (?<person>\w+)$/) {
+            say "person is $person";
+        }
+    }
+
+Numbered captures and the usual named-capture variables remain available in
+the clause. A named capture also creates a clause-local scalar binding. If
+a named group does not participate in a successful match, its binding is
+C<undef>.
+
+A shape may contain several regular expressions, including inside arrays,
+hashes, and class-qualified shapes.  Each expression supplies its own named
+bindings:
+
+    dispatch (["Ada", "42"]) {
+        on ([ /^(?<name>\w+)$/, /^(?<id>\d+)$/ ]) {
+            say "$name has id $id";
+        }
+    }
+
+The ordinary capture variables, such as C<$1> and C<%+>, describe the most
+recent successful regex match; they are not combined across expressions.
+
+Named clause-local bindings are copies of the captured text. Use these lexical
+variables when you need to keep the text across further matching or recursive
+calls. The ordinary capture variables still follow the regex engine's rules;
+they are not independent copies belonging to each C<on> clause invocation.
+
+Give captures in separate regexes different names if you want to use all
+their values. If several regexes in one clause use the same capture name,
+the compiler issues a C<syntax> warning. Only the first regex in source order
+supplies the clause-local variable; later captures with that name are not
+visible through it, even if constraint scheduling executes a later regex first.
+This also applies when the first regex's named group did not participate:
+the variable stays C<undef>, even if a later regex captures a value.
+
+Repeated names I<within a single regex> work as usual, without this warning.
+For example, C</(?E<lt>numE<gt>one)|(?E<lt>numE<gt>two)/> binds C<$num> to
+C<"two"> when matching C<"two">.  The regex engine chooses the first
+participating capture with that name, just as it does for C<$+{num}>.
+
+The clause can use the captures from its successful match. When the dispatch
+ends, the previous values of C<$1>, C<$2>, C<%+>, C<%->, and the other regex
+match variables are restored.
+
+Static regular expressions are compiled once and reused when a shape tests
+multiple candidates, such as during an open-array search.  Dynamic expressions,
+including interpolated expressions such as C</thing-$re-thing/>, are rejected
+in a data-shape position.  Regex code blocks such as C<(?{ ... })> and
+C<(??{ ... })> are also rejected.  Use a guard for these forms:
+
+    on (_ if $subject =~ /thing-$re-thing/) { ... }
+
+A regular expression cannot currently be used as a fragment of a larger
+concatenated string shape.  Unicode and byte behavior remains the
+responsibility of the regular-expression engine.
+
+=head1 CONCATENATED STRING SHAPES
+
+A string shape can combine literal text with unpinned scalar names.  Each
+name receives the part of the subject between the surrounding literal or
+pinned fragments:
+
+    dispatch ($text) {
+        on ("x_" . $middle . "_z") {
+            say "middle is $middle";
+        }
+    }
+
+This matches C<x_middle_z> and binds C<$middle> to C<middle>.  Multiple
+captures are allowed when literal or pinned text separates them:
+
+    on ("a" . $first . "b" . $second . "c") {
+        say "first=$first second=$second";
+    }
+
+Matching proceeds from left to right.  Each capture uses the shortest value
+that reaches the next literal or pinned fragment.  Prefix-only and suffix-only
+forms such as C<"x" . $suffix> and C<$prefix . "z"> are supported.  Empty
+captures are allowed.
+
+Double-quoted strings are supported as constant fragments when they contain
+no interpolated variables. Perl processes their escapes normally, including
+case-modifying and quoting escapes such as C<\\L>, C<\\E>, and C<\\Q>. A string
+that interpolates a scalar or array variable, in any form, is rejected. Write
+the interpolation as a separate concatenation operand and use an unpinned
+scalar there when it should capture text.
+
+Each unpinned capture name may occur only once in the whole clause's data
+shape, including its concatenations. Two captures need a non-empty literal
+string between them. Adjacent captures, or captures separated only by empty
+literal fragments, are rejected because they have no boundary to determine how
+the text should be divided. Adjacent literal fragments are combined first, so
+C<$x . "a" . "" . "b" . $y> has the non-empty boundary C<"ab">.
+
+Concatenation is the only structural expression currently supported.  Calls
+with arguments, arithmetic, and other unsupported expressions are rejected
+in a data-shape position.  Literal strings and values with usable overloaded stringification
+follow normal string and Unicode/byte behavior. Concatenation does not apply
+to numeric values. The dispatch subject is an ordinary Perl expression, so
+use Perl functions and operators to convert it before matching when needed.
+
+=head1 SEE ALSO
+
+L<perldispatchontut>, L<perlsyn/Experimental Data-Shape Matching>, L<perlfunc>,
+L<perldelta>
+
+=cut

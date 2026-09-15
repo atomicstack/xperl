@@ -235,6 +235,126 @@ struct unop_aux {
     UNOP_AUX_item *op_aux;
 };
 
+/* Structural data compiled for an OP_DISPATCH_ON.
+ *
+ * The OP_DISPATCH_ON auxiliary object owns `pattern`, the detached expression
+ * tree which is retained for matching and owns the compiled node graph.  The
+ * nodes' `op` and `object_class` members are
+ * borrowed pointers into that tree; they must not be freed independently.
+ * The whole auxiliary object is attached to the refcounted optree, so CV
+ * clones share it and its destructor runs only when the last optree reference
+ * is released. */
+struct dispatch_pattern_node {
+    const OP *op;
+    struct dispatch_pattern_node **child;
+    U32 nchild;
+    PADOFFSET binding_padix;
+    bool binding_local;
+    U8 comparison_mode;
+    U8 constraint_rank; /* prerequisites/literals before tests and captures */
+    const SV *object_class;
+    struct dispatch_pattern_node *object_shape;
+    AV *regex_names; /* this regex's named captures and lexical targets */
+    AV *regex_padixes;
+};
+
+enum {
+    DISPATCH_PATTERN_COMPARE_DEFAULT,
+    DISPATCH_PATTERN_COMPARE_NUMERIC
+};
+
+struct dispatch_on_aux;
+
+struct dispatch_pattern_aux {
+    U32 magic;
+    U8 kind;
+    OP *pattern; /* retained pattern tree; it is not executed by ON */
+    struct dispatch_pattern_node *root;
+    /* Borrowed reference.  dispatch_on_aux keeps its own count for the
+     * dispatch op and each pattern clause which points at it. */
+    struct dispatch_on_aux *dispatch;
+    U32 dispatch_clause;
+    size_t binding_capacity; /* upper bound for one tentative match */
+    size_t dispatch_capture_capacity; /* reservation across the enclosing dispatch */
+    bool always_matches; /* wildcard or identity pattern */
+};
+
+#define DISPATCH_PATTERN_AUX_MAGIC ((U32)0x43504154) /* "CPAT" */
+enum {
+    DISPATCH_PATTERN_INVALID,
+    DISPATCH_PATTERN_SIMPLE_UNDEF,
+    DISPATCH_PATTERN_SIMPLE_BOOL,
+    DISPATCH_PATTERN_SIMPLE_NUM,
+    DISPATCH_PATTERN_SIMPLE_STR,
+    DISPATCH_PATTERN_COMPLEX
+};
+
+/* OP_DISPATCHCOERCE private values used by data-shape criteria. */
+enum {
+    DISPATCH_PATTERN_CRITERION_MASK = 0x7f,
+    DISPATCH_PATTERN_CRITERION_STRICT = 0x80,
+    DISPATCH_PATTERN_CRITERION_REFVAL = 4,
+    DISPATCH_PATTERN_CRITERION_SCALARVAL = 5,
+    DISPATCH_PATTERN_CRITERION_OBJECTVAL = 6,
+    DISPATCH_PATTERN_CRITERION_INTSTR = 7,
+    DISPATCH_PATTERN_CRITERION_FLOATSTR = 8,
+    DISPATCH_PATTERN_CRITERION_NUM = 9,
+    DISPATCH_PATTERN_CRITERION_NUMSTR = 10,
+    DISPATCH_PATTERN_CRITERION_NUMEQ = 11,
+    DISPATCH_PATTERN_CRITERION_PIN = 12,
+    DISPATCH_PATTERN_CRITERION_OBJECT = 13,
+    DISPATCH_PATTERN_CRITERION_DEFINEDVAL = 14,
+    DISPATCH_PATTERN_CRITERION_INT = 15,
+    DISPATCH_PATTERN_CRITERION_FLOAT = 16,
+    DISPATCH_PATTERN_CRITERION_TRUE = 17,
+    DISPATCH_PATTERN_CRITERION_FALSE = 18
+};
+
+
+#define DISPATCH_ON_AUX_MAGIC ((U32)0x43444953) /* "CDIS" */
+#define DISPATCH_ON_NO_CLAUSE ((U32)-1)
+enum {
+    DISPATCH_ON_NONE,
+    DISPATCH_ON_ARRAY_LINEAR,
+    DISPATCH_ON_ARRAY_BINARY
+};
+
+/* The numeric arrays are parallel: each value selects the clause at the same
+ * index.  The AVs own their SV elements.  The PV hash maps string keys to the
+ * first source-order clause. */
+struct dispatch_on_aux {
+    U32 magic;
+    U32 refcnt;
+    U8 strategy;
+    U32 undef_clause;
+    U32 bool_clause[2];
+    U32 default_clause;
+    U32 clause_count;
+    /* These OP pointers are borrowed from the enclosing refcounted optree.
+     * The AVs below own their SV elements. */
+    OP **clause_targets;
+    OP *miss_target;
+    bool default_noop;
+    bool iv_has_bounds;
+    bool iv_min_is_uv;
+    bool iv_max_is_uv;
+    IV iv_min_iv;
+    IV iv_max_iv;
+    UV iv_min_uv;
+    UV iv_max_uv;
+    bool nv_has_bounds;
+    NV nv_min;
+    NV nv_max;
+    AV *iv_values;
+    AV *iv_clauses;
+    AV *nv_values;
+    AV *nv_clauses;
+    HV *pv_table;
+    bool pv_has_bounds;
+    STRLEN pv_minlen;
+    STRLEN pv_maxlen;
+};
+
 struct binop {
     BASEOP
     OP *	op_first;
@@ -251,6 +371,7 @@ struct logop {
      * To find the structural subtree root (what could be called
      * ->op_otherroot), use OpSIBLING of ->op_first  */
     OP *	op_other;
+    OP *	op_redoop; /* dispatch redo entry point, when present */
 };
 
 struct listop {

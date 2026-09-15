@@ -86,6 +86,25 @@ my %feature_kw = (
     __NAMESPACE__       => 'namespaces',
     yield               => 'generator',
     gen                 => 'generator',
+    dispatch                => 'dispatch_on',
+    on               => 'dispatch_on',
+    DefinedVal          => 'dispatch_on',
+    RefVal              => 'dispatch_on',
+    ScalarVal           => 'dispatch_on',
+    ObjectVal           => 'dispatch_on',
+    Int                 => 'dispatch_on',
+    Float               => 'dispatch_on',
+    IntStr              => 'dispatch_on',
+    FloatStr            => 'dispatch_on',
+    Num                 => 'dispatch_on',
+    NumStr              => 'dispatch_on',
+    Strict              => 'dispatch_on',
+    NumEq               => 'dispatch_on',
+    TRUE                => 'dispatch_on',
+    FALSE               => 'dispatch_on',
+    namespace           => 'namespaces',
+    as                  => 'namespaces',
+    __NAMESPACE__       => 'namespaces',
 );
 
 my %pos = map { ($_ => 1) } @{$by_strength{'+'}};
@@ -159,7 +178,21 @@ __END__
 +CHECK
 +DESTROY
 +END
+-FloatStr
+-Float
+-FALSE
+-DefinedVal
+-IntStr
+-Int
+-Num
+-NumEq
+-NumStr
+-ObjectVal
 +INIT
+-RefVal
+-ScalarVal
+-TRUE
+-Strict
 +UNITCHECK
 -abs
 -as
@@ -192,6 +225,7 @@ __END__
 -crypt
 -dbmclose
 -dbmopen
++dispatch
 +default
 +defer
 +defined
@@ -306,6 +340,7 @@ __END__
 -opendir
 -or
 -ord
++on
 +our
 -pack
 +package

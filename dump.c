@@ -1746,6 +1746,7 @@ S_do_op_dump_bar(pTHX_ I32 level, UV bar, PerlIO *file, const OP *o,
     case OP_ARGDEFELEM:
     case OP_ENTERGIVEN:
     case OP_ENTERWHEN:
+    case OP_ENTERDISPATCHON:
     case OP_ENTERTRY:
     case OP_ONCE:
     case OP_PARAMTEST:

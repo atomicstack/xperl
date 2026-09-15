@@ -348,8 +348,15 @@ method_redir_super	redirect super method with known name	ck_null	d.
 
 entergiven	given()			ck_null		d|
 leavegiven	leave given block	ck_null		1
+enterdispatch	dispatch()			ck_null		d|
+leavedispatch	leave dispatch block	ck_null		1
+enterdispatchon	dispatch-on clause()		ck_null		d|
+leavedispatchon	leave dispatch-on clause	ck_null		1
 enterwhen	when()			ck_null		d|
 leavewhen	leave when block	ck_null		1
+dispatch_on	dispatch pattern match	ck_null		+
+dispatchcoerce	dispatch pattern marker	ck_null		1
+dispatch	dispatch constant selection	ck_null	t+
 break		break			ck_null		0
 continue	continue		ck_null		0
 

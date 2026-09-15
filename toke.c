@@ -1017,6 +1017,7 @@ Perl_parser_free(pTHX_  const yy_parser *parser)
     SvREFCNT_dec(parser->rsfp_filters);
     SvREFCNT_dec(parser->lex_stuff);
     SvREFCNT_dec(parser->lex_sub_repl);
+    SvREFCNT_dec(parser->dispatch_pattern_vars);
 
     Safefree(parser->lex_brackstack);
     Safefree(parser->lex_casestack);
@@ -2839,6 +2840,7 @@ S_sublex_done(pTHX)
     }
     else {
         const line_t l = CopLINE(PL_curcop);
+        PL_parser->in_dispatch_pattern_dquote = FALSE;
         LEAVE;
         if (PL_parser->sub_error_count != PL_error_count) {
             if (PL_parser->sub_no_recover) {
@@ -3790,18 +3792,37 @@ S_scan_const(pTHX_ char *start)
              */
         else if (*s == '@' && s[1]) {
             if (isDIGIT_A(s[1]) || isIDFIRST_lazy_if_safe(s+1, send, UTF)) {
+                if (PL_parser->in_dispatch_pattern_dquote)
+                    Perl_croak(aTHX_
+                        "interpolated variables are not allowed in "
+                        "double-quoted dispatch patterns");
                 break;
             }
-            if (memCHRs(":'{$", s[1]))
+            if (memCHRs(":'{$", s[1])) {
+                if (PL_parser->in_dispatch_pattern_dquote)
+                    Perl_croak(aTHX_
+                        "interpolated variables are not allowed in "
+                        "double-quoted dispatch patterns");
                 break;
-            if (!PL_lex_inpat && (s[1] == '+' || s[1] == '-'))
+            }
+            if (!PL_lex_inpat && (s[1] == '+' || s[1] == '-')) {
+                if (PL_parser->in_dispatch_pattern_dquote)
+                    Perl_croak(aTHX_
+                        "interpolated variables are not allowed in "
+                        "double-quoted dispatch patterns");
                 break; /* in regexp, neither @+ nor @- are interpolated */
+            }
         }
             /* check for embedded scalars.  only stop if we're sure it's a
              * variable.  */
         else if (*s == '$') {
-            if (!PL_lex_inpat)	/* not a regexp, so $ must be var */
+            if (!PL_lex_inpat) {
+                if (PL_parser->in_dispatch_pattern_dquote)
+                    Perl_croak(aTHX_
+                        "interpolated variables are not allowed in "
+                        "double-quoted dispatch patterns");
                 break;
+            }
             if (s + 1 < send && !memCHRs("()| \r\n\t", s[1])) {
                 if (s[1] == '\\') {
                     ck_warner(packWARN(WARN_AMBIGUOUS),
@@ -6729,6 +6750,15 @@ static int
 yyl_caret(pTHX_ char *s)
 {
     char *d = s;
+
+    /* A leading caret pins an existing lexical in a dispatch pattern.
+     * Outside that grammar, it retains its ordinary XOR meaning. */
+    if (PL_parser->in_dispatch_pattern && PL_expect == XTERM) {
+        s++;
+        PL_expect = XTERM;
+        TOKEN(DISPATCH_PIN);
+    }
+
     const bool bof = cBOOL(FEATURE_BITWISE_IS_ENABLED);
     if (s[1] == '^') {
         s += 2;
@@ -7592,6 +7622,8 @@ yyl_dblquote(pTHX_ char *s)
     }
     if (pl_yylval.ival == OP_CONST)
         COPLINE_SET_FROM_MULTI_END;
+    PL_parser->in_dispatch_pattern_dquote =
+        PL_parser->in_dispatch_pattern && pl_yylval.ival != OP_CONST;
     TERM(sublex_start());
 }
 
@@ -7610,7 +7642,8 @@ yyl_backslash(pTHX_ char *s)
     if (PL_lex_inwhat == OP_SUBST && PL_lex_repl == PL_linestr && isDIGIT(*s))
         ck_warner(packWARN(WARN_SYNTAX),"Can't use \\%c to mean $%c in expression",
                   *s, *s);
-    S_warn_expect_operator(aTHX_ "Backslash", s, FALSE);
+    if (!PL_parser->in_dispatch_pattern)
+        S_warn_expect_operator(aTHX_ "Backslash", s, FALSE);
     OPERATOR(REFGEN);
 }
 
@@ -8348,6 +8381,12 @@ yyl_just_a_word(pTHX_ char *s, STRLEN len, I32 orig_keyword, struct code c)
        called.  intuit_method returns 0 or > 255.  */
     int key = 1;
 
+    /* The contents of on(...) are pattern syntax.  In particular, the
+     * wildcard is not an ordinary Perl bareword and must remain available
+     * when strict subs is enabled by a version declaration. */
+    if (PL_parser->in_dispatch_pattern && len == 1 && PL_tokenbuf[0] == '_')
+        return yyl_fatcomma(aTHX_ s, len);
+
     if (PL_expect == XOPERATOR) {
         if (PL_bufptr == PL_linestart) {
             CopLINE_dec(PL_curcop);
@@ -8719,6 +8758,22 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
     case KEY_catch:
         PREBLOCK(KW_CATCH);
 
+    case KEY_dispatch:
+        pl_yylval.ival = CopLINE(PL_curcop);
+        OPERATOR(KW_DISPATCH);
+
+    case KEY_DefinedVal:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
+    case KEY_FALSE:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
+    case KEY_Float:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
+    case KEY_Int:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
     case KEY_chop:
         UNI(OP_CHOP);
 
@@ -9058,6 +9113,30 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
     case KEY_int:
         UNI(OP_INT);
 
+    case KEY_IntStr:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
+    case KEY_FloatStr:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
+    case KEY_Num:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
+    case KEY_NumEq:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
+    case KEY_NumStr:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
+    case KEY_Strict:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
+    case KEY_RefVal:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
+    case KEY_ScalarVal:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
     case KEY_ioctl:
         LOP(OP_IOCTL,XTERM);
 
@@ -9122,6 +9201,11 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
 
     case KEY_map:
         LOP(OP_MAPSTART, XREF);
+
+    case KEY_on:
+        PL_expect = XTERM;
+        PL_bufptr = s;
+        return REPORT(KW_ON);
 
     case KEY_mkdir:
         LOP(OP_MKDIR,XTERM);
@@ -9457,6 +9541,12 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         s = force_word(s, BAREWORD, CHECK_KEYWORD | ALLOW_PACKAGE
                        | RESOLVE_NAMESPACE_QUALIFIED);
         LOP(OP_SORT,XREF);
+
+    case KEY_TRUE:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
+
+    case KEY_ObjectVal:
+        return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
 
     case KEY_split:
         LOP(OP_SPLIT,XTERM);
@@ -9851,7 +9941,8 @@ yyl_keylookup(pTHX_ char *s, GV *gv)
 
     /* Check for built-in keyword */
     key = keyword(PL_tokenbuf, len, 0);
-    if ((!key || key == -KEY_as) && FEATURE_NAMESPACES_IS_ENABLED
+    if ((!key || key == -KEY_as)
+        && (FEATURE_NAMESPACES_IS_ENABLED || PL_parser->in_dispatch_header)
         && memEQs(PL_tokenbuf, len, "as"))
         key = KEY_as;
 
@@ -9984,8 +10075,7 @@ yyl_try(pTHX_ char *s)
             }
             if (PL_minus_E)
                 sv_catpvs(PL_linestr,
-                          "use feature ':" STRINGIFY(PERL_REVISION) "." STRINGIFY(PERL_VERSION) "'; "
-                          "use builtin ':" STRINGIFY(PERL_REVISION) "." STRINGIFY(PERL_VERSION) "';");
+                          "use feature ':all'; use builtin ':all';");
             if (PL_minus_n || PL_minus_p) {
                 sv_catpvs(PL_linestr, "LINE: while (<>) {"/*}*/);
                 if (PL_minus_l)
@@ -10252,6 +10342,10 @@ yyl_try(pTHX_ char *s)
             PL_expect = XSTATE;
             /* formbrack==2 means dot seen where arguments expected */
             return yyl_rightcurly(aTHX_ s, 2);
+        }
+        if (PL_parser->in_dispatch_pattern && s[1] == '.' && s[2] == '.') {
+            s += 3;
+            TOKEN(DISPATCH_ELLIPSIS);
         }
         if (PL_expect == XSTATE && s[1] == '.' && s[2] == '.') {
             s += 3;
@@ -10762,6 +10856,50 @@ S_pending_ident(pTHX)
     DEBUG_T({ PerlIO_printf(Perl_debug_log,
           "### Pending identifier '%s'\n", PL_tokenbuf); });
     assert(tokenbuf_len >= 2);
+
+    /* A scalar, array, or hash name in a dispatch pattern is a pattern binding,
+     * not an access to an ordinary Perl lexical. The surrounding dispatch-on
+     * clause supplies the lexical scope. Keep a parser-local name map to
+     * reject a second declaration anywhere in the shape, including across nested
+     * containers and different capture forms. Do this before optimization
+     * can fold away an occurrence. Pins are references, not declarations,
+     * and bypass this check; guards and bodies are outside in_dispatch_pattern.
+     * Regex named captures are handled separately by pattern preparation.
+     * Use padadd_NO_DUP_CHECK to keep a clause-local binding quiet when it shadows
+     * a lexical in the surrounding scope. */
+    if (PL_parser->in_dispatch_pattern
+        && !has_colon
+        && (PL_tokenbuf[0] == '$' || PL_tokenbuf[0] == '@'
+            || PL_tokenbuf[0] == '%'))
+    {
+        const PADOFFSET existing = pad_findmy_pvn(PL_tokenbuf,
+                                                  tokenbuf_len, 0);
+
+        if (PL_parser->in_dispatch_pattern_pin) {
+            if (PL_tokenbuf[0] != '$' || existing == NOT_IN_PAD)
+                Perl_croak(aTHX_
+                    "pinned pattern value must be an existing scalar lexical");
+            pl_yylval.opval = newOP(OP_PADANY, 0);
+            pl_yylval.opval->op_targ = existing;
+            return PRIVATEREF;
+        }
+
+        SV **const found = hv_fetch(PL_parser->dispatch_pattern_vars,
+                                    PL_tokenbuf, tokenbuf_len, FALSE);
+        PADOFFSET off;
+
+        if (found)
+            Perl_croak(aTHX_ "duplicate capture %" UTF8f " in a dispatch-on clause",
+                UTF8fARG(UTF, tokenbuf_len, PL_tokenbuf));
+        off = pad_add_name_pvn(PL_tokenbuf, tokenbuf_len,
+                               padadd_NO_DUP_CHECK, NULL, NULL);
+        (void)hv_store(PL_parser->dispatch_pattern_vars,
+                       PL_tokenbuf, tokenbuf_len, newSVuv((UV)off), 0);
+
+        pl_yylval.opval = newOP(OP_PADANY, 0);
+        pl_yylval.opval->op_targ = off;
+        return PRIVATEREF;
+    }
 
     /* if we're in a my(), we can't allow dynamics here.
        $foo'bar has already been turned into $foo::bar, so

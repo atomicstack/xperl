@@ -1313,6 +1313,18 @@ AMdfprt |OP *	|die		|NULLOK const char *pat 		\
 Adpr	|OP *	|die_sv 	|NN SV *baseex
 : Used in util.c
 pr	|void	|die_unwind	|NN SV *msv
+p	|UNOP_AUX_item *|dispatch_on_compile				\
+				|NN OP *body
+p	|void	|dispatch_on_free					\
+				|NULLOK UNOP_AUX_item *aux
+p	|UNOP_AUX_item *|dispatch_pattern_compile			\
+				|NN const OP *pattern
+p	|void	|dispatch_pattern_free					\
+				|NULLOK UNOP_AUX_item *aux
+p	|void	|dispatch_pattern_prepare				\
+				|NN OP *pattern
+p	|void	|dispatch_pattern_preserve_concat			\
+				|NN OP *pattern
 : FIXME
 m	|bool	|do_aexec	|NULLOK SV *really			\
 				|NN SV **mark				\
@@ -2113,7 +2125,6 @@ ARTdip	|bool	|is_utf8_valid_partial_char_flags			\
 				|SPTR const U8 * const s0		\
 				|EPTRgt const U8 * const e		\
 				|const U32 flags
-
 : Used in perly.y
 p	|OP *	|jmaybe 	|NN OP *o
 : Used in pp.c
@@ -2576,6 +2587,8 @@ ARdp	|OP *	|newCVREF	|I32 flags				\
 ARdpx	|OP *	|newDEFEROP	|I32 flags				\
 				|NN OP *block
 ARdp	|OP *	|newDEFSVOP
+ARdp	|OP *	|newDISPATCHOP	|NN OP *cond				\
+				|NN OP *block
 Cdp	|void	|newFORM	|I32 floor				\
 				|NULLOK OP *o				\
 				|NULLOK OP *block
@@ -2630,6 +2643,8 @@ Adp	|CV *	|newMYSUB	|I32 floor				\
 				|NULLOK OP *attrs			\
 				|NULLOK OP *block
 ARdp	|OP *	|newNULLLIST
+ARdp	|OP *	|newONOP	|NN OP *cond				\
+				|NN OP *block
 ARdp	|OP *	|newOP		|I32 optype				\
 				|I32 flags
 ARdpx	|PADNAMELIST *|newPADNAMELIST					\
@@ -5436,7 +5451,7 @@ S	|void	|move_proto_attr|NN OP **proto				\
 				|NN OP **attrs				\
 				|NN const GV *name			\
 				|bool curstash
-S	|OP *	|newGIVWHENOP	|NULLOK OP *cond			\
+S	|OP *	|newBLOCKOP	|NULLOK OP *cond			\
 				|NN OP *block				\
 				|I32 enter_opcode			\
 				|I32 leave_opcode			\
@@ -6813,6 +6828,9 @@ CTp	|Malloc_t|mem_log_realloc					\
 #endif
 #if !defined(PERL_NO_INLINE_FUNCTIONS)
 Cipx	|void	|cx_popblock	|NN PERL_CONTEXT *cx
+Cipx	|void	|cx_popdispatch |NN PERL_CONTEXT *cx
+Cipx	|void	|cx_popdispatchon					\
+				|NN PERL_CONTEXT *cx
 Cipx	|void	|cx_popeval	|NN PERL_CONTEXT *cx
 Cipx	|void	|cx_popformat	|NN PERL_CONTEXT *cx
 Cipx	|void	|cx_popgiven	|NN PERL_CONTEXT *cx
@@ -6827,6 +6845,10 @@ Cipx	|PERL_CONTEXT *|cx_pushblock					\
 				|U8 gimme				\
 				|NN SV **sp				\
 				|I32 saveix
+Cipx	|void	|cx_pushdispatch|NN PERL_CONTEXT *cx			\
+				|NULLOK SV *orig_defsv
+Cipx	|void	|cx_pushdispatchon					\
+				|NN PERL_CONTEXT *cx
 Cipx	|void	|cx_pusheval	|NN PERL_CONTEXT *cx			\
 				|NULLOK OP *retop			\
 				|NULLOK SV *namesv

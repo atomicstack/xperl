@@ -875,6 +875,133 @@ C<defer>.
         }
     }
 
+=head2 Experimental Data-Shape Matching
+
+For a step-by-step introduction, see L<perldispatchontut>. The full reference
+is L<perldispatchon>.
+
+The experimental C<dispatch_on> feature provides a data-shape matching
+alternative to the older C<given>/C<when> construct.  It is enabled with
+
+    use feature 'dispatch_on';
+
+A C<dispatch> evaluates its subject once and tries its dispatch-on clauses in
+source order. The first matching clause runs; there is no fall-through. The
+wildcard data shape C<_> matches any value and is useful as a final clause:
+
+    dispatch ($value) {
+        on ([$first, $second]) { use_pair($first, $second) }
+        on (_)                 { use_other($value) }
+    }
+
+The subject is an ordinary Perl expression. Apply any conversion you need in
+that expression, using Perl's usual functions and operators. Numeric and
+string literals in the data shape retain their distinct comparison modes.
+
+Predicates distinguish native numbers from numeric strings and provide other
+subject tests. Import the standard predicate functions from
+C<dispatch::Predicates>, or define a function whose first signature parameter
+is named C<$subject>:
+
+    use dispatch::Predicates;
+
+    sub Between ($subject, $low, $high) {
+        $subject >= $low && $subject <= $high
+    }
+
+    dispatch ($value) {
+        on ($integer = Int())       { ... }
+        on ($native = Integer())    { ... }
+        on (Between(1, 10))         { ... }
+    }
+
+A predicate call passes the current subject as its first argument; explicit
+arguments must be constants or pinned values and must satisfy the signature's
+arity. A capture is written as
+C<$name = PATTERN>; it binds the original subject after the pattern succeeds.
+A bare C<$name> is shorthand for C<$name = _>, and C<_> is shorthand for
+C<Any()>.
+
+C<Int()> and C<Num()> accept strings that convert without a warning.
+C<Integer()> and C<Number()> accept native integer and numeric values,
+respectively, but do not accept strings. C<NonRefVal()> and C<BlessedVal()>
+test for non-reference and blessed-reference values. See L<perldispatchon>
+for the full shared predicate list and conversion rules.
+
+A zero-argument function or method call without a C<$subject> signature may
+still supply a scalar data-shape value. Such calls are made in scalar context
+when the dispatch-on clause is tried. Calls with arguments are predicates
+only when their subroutine has the C<$subject> signature.
+
+A backslash can describe a scalar reference shape.  For example,
+C<on(\$value)> matches a reference to a scalar and binds the referred-to
+value; C<on(\\$value)> describes one additional reference layer.  This is
+different from C<$value = RefVal()>, which binds the outer reference itself.
+
+String data shapes may contain literal fragments and multiple unpinned scalar
+captures.  For example:
+
+    dispatch ($text) {
+        on ("x" . $middle . "z") { say $middle }
+    }
+
+This matches a string beginning with C<x> and ending with C<z>, binding the
+text between them to C<$middle>.  Prefix-only and suffix-only forms such as
+C<"x" . $suffix> and C<$prefix . "z"> are also supported, including empty
+captures.  Multiple captures are supported when literal or pinned fragments
+separate them.  The concatenation is data-shape syntax; it is not evaluated as
+an ordinary concatenation before matching. A name prefixed by C<^> contributes
+the value of its existing lexical instead of capturing. General expression
+operands are not currently supported.
+
+A regular expression can also be used as a data shape.  Its ordinary capture
+variables remain available, and a named capture such as C<(?<name>...)> also
+creates a scalar lexical local to the dispatch-on clause. A named capture that
+does not participate in the successful match is bound to C<undef>.
+
+Array and hash-reference data shapes may contain nested data shapes.  A
+trailing C<...> makes an array or hash data shape open; without it, the data
+shape is exact.  Data-shape bindings are tentative and are visible only after
+the complete data shape and its optional guard succeed.  A guard is written inside the
+C<on> parentheses:
+
+Blessed references can use a class-qualified shape.  For example,
+C<on(Point { '$x' => $x, '$y' => $y })> checks a blessed hash object and
+binds its named fields, while C<on(Pair [ $first, $second ])> checks a
+blessed array object.  C<on(Box \$value)> checks a blessed scalar reference
+and binds its referent.  These checks inspect the reference structure directly;
+they do not call constructors, accessors, overload methods, or arbitrary user
+methods.  A hash object shape is exact unless it ends with C<...>.
+
+    dispatch ($value) {
+        on ([$number] if $number > 0) { use_positive($number) }
+    }
+
+An existing scalar is pinned directly at the point where it appears in a data
+shape by prefixing it with C<^>:
+
+    my $wanted_key = "key";
+    dispatch ($record) {
+        on ({ ^$wanted_key => $value, ... }) { use_record($value) }
+    }
+
+In a data shape following C<on>, C<^$name> compares with the current value of
+the existing lexical instead of introducing a binding in the dispatch-on clause.
+This is a pattern-only meaning of the caret; ordinary Perl expressions,
+including guards, retain the normal caret operators.
+
+A dispatch subject can be given a dispatch-local name with a lexical declaration:
+
+    dispatch my $record (read_record()) {
+        on ({ type => "ok", ... }) { use_record($record) }
+    }
+
+Without a name, C<dispatch (EXPR)> localizes C<$_> to the subject for the duration
+of the dispatch and restores its previous value on exit. A named subject does not
+change C<$_>. In either form the expression is evaluated once. C<redo> retries
+the clauses from the beginning using the current subject value; it does not
+reevaluate the expression. C<next> and C<last> leave the dispatch.
+
 =head2 Switch Statements
 
 X<switch> X<case> X<given> X<when> X<default>
@@ -901,7 +1028,7 @@ Starting from Perl 5.16, one can prefix the switch
 keywords with C<CORE::> to access the feature without a C<use feature>
 statement.  The keywords C<given> and
 C<when> are analogous to C<switch> and
-C<case> in other languages -- though C<continue> is not -- so the code
+C<dispatch> in other languages -- though C<continue> is not -- so the code
 in the previous section could be rewritten as
 
     use v5.10.1;
@@ -1355,7 +1482,7 @@ this, an array ref will work, because this will instigate smartmatching:
 This is somewhat equivalent to the C-style switch statement's fallthrough
 functionality (not to be confused with I<Perl's> fallthrough
 functionality--see below), wherein the same block is used for several
-C<case> statements.
+C<dispatch> statements.
 
 Another useful shortcut is that, if you use a literal array or hash as the
 argument to C<given>, it is turned into a reference.  So C<given(@foo)> is

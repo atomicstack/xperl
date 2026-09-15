@@ -169,7 +169,7 @@ The project-specific policy is currently concentrated in:
 - `XPERL-MISSION.md`, which defines the experimental, batteries-included,
   AI-focused, independently stewarded project and its compatibility posture;
 - `BLEAD-DELTA.md`, which summarizes current divergence from `origin/blead`;
-- `AGENTS.md` and `.agent/skills/`, which define AI-agent workspace guidance;
+- `AGENTS.md` and `.agents/skills/`, which define AI-agent workspace guidance;
 - `planning/`, which contains design and policy working material.
 
 ## Policy questions exposed by the inventory

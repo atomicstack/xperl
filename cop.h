@@ -1024,6 +1024,30 @@ struct block_loop {
 struct block_givwhen {
         OP *leave_op;
         SV *defsv_save; /* the original $_ */
+        bool is_case;
+        bool on_active;
+        U32 dispatch_clause;
+        AV *on_bindings; /* old pad values for tentative bindings */
+};
+
+/* Dispatch context. Unlike block_givwhen, this context has no
+ * fall-through or topicalizer semantics. */
+struct block_dispatch {
+        OP *leave_op;
+        SV *defsv_save;
+        bool on_active;
+        U32 dispatch_clause;
+        AV *on_bindings;
+        AV *committed_bindings;
+        SV *subject;       /* borrowed: localized $_ or the named subject */
+        bool localizes_defsv;
+        OP *redo_op;
+};
+
+/* Dispatch-on clause context. This is deliberately separate from the
+ * given/when clause context. */
+struct block_dispatch_on {
+        OP *leave_op;
 };
 
 /* defer/finally context */
@@ -1033,6 +1057,12 @@ struct block_defer {
 
 
 /* context common to subroutines, evals and loops */
+enum dispatch_binding_kind {
+    DISPATCH_BINDING_SCALAR,
+    DISPATCH_BINDING_ARRAY,
+    DISPATCH_BINDING_HASH
+};
+
 struct block {
     U8		blku_type;	/* what kind of context this is */
     U8		blku_gimme;	/* is this block running in list context? */
@@ -1053,6 +1083,8 @@ struct block {
         struct block_loop	blku_loop;
         struct block_givwhen	blku_givwhen;
         struct block_defer	blku_defer;
+        struct block_dispatch	blku_dispatch;
+        struct block_dispatch_on	blku_dispatch_on;
     } blk_u;
 };
 #define blk_oldsp	cx_u.cx_blk.blku_oldsp
@@ -1070,6 +1102,8 @@ struct block {
 #define blk_loop	cx_u.cx_blk.blk_u.blku_loop
 #define blk_givwhen	cx_u.cx_blk.blk_u.blku_givwhen
 #define blk_defer	cx_u.cx_blk.blk_u.blku_defer
+#define blk_dispatch	cx_u.cx_blk.blk_u.blku_dispatch
+#define blk_dispatch_on	cx_u.cx_blk.blk_u.blku_dispatch_on
 
 #define CX_DEBUG(cx, action)						\
     DEBUG_l(								\
@@ -1185,6 +1219,8 @@ struct context {
 #define CXt_EVAL       11 /* eval'', eval{}, try{} */
 #define CXt_SUBST      12
 #define CXt_DEFER      13
+#define CXt_DISPATCH       14
+#define CXt_DISPATCH_ON  15
 /* SUBST doesn't feature in all switch statements.  */
 
 /* private flags for CXt_SUB and CXt_FORMAT */

@@ -56,7 +56,7 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 2: /* 20 tokens of length 2 */
+    case 2: /* 21 tokens of length 2 */
       switch (name[0])
       {
         case 'a':
@@ -164,12 +164,21 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           }
 
         case 'o':
-          if (name[1] == 'r')
-          {                                       /* or               */
-            return -KEY_or;
-          }
+          switch (name[1])
+          {
+            case 'n':
+              {                                   /* on               */
+                return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? KEY_on : 0);
+              }
 
-          goto unknown;
+            case 'r':
+              {                                   /* or               */
+                return -KEY_or;
+              }
+
+            default:
+              goto unknown;
+          }
 
         case 'q':
           switch (name[1])
@@ -218,7 +227,7 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 3: /* 35 tokens of length 3 */
+    case 3: /* 37 tokens of length 3 */
       switch (name[0])
       {
         case 'E':
@@ -226,6 +235,24 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
               name[2] == 'D')
           {                                       /* END              */
             return KEY_END;
+          }
+
+          goto unknown;
+
+        case 'I':
+          if (name[1] == 'n' &&
+              name[2] == 't')
+          {                                       /* Int              */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_Int : 0);
+          }
+
+          goto unknown;
+
+        case 'N':
+          if (name[1] == 'u' &&
+              name[2] == 'm')
+          {                                       /* Num              */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_Num : 0);
           }
 
           goto unknown;
@@ -579,7 +606,7 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 4: /* 41 tokens of length 4 */
+    case 4: /* 42 tokens of length 4 */
       switch (name[0])
       {
         case 'I':
@@ -588,6 +615,16 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
               name[3] == 'T')
           {                                       /* INIT             */
             return KEY_INIT;
+          }
+
+          goto unknown;
+
+        case 'T':
+          if (name[1] == 'R' &&
+              name[2] == 'U' &&
+              name[3] == 'E')
+          {                                       /* TRUE             */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_TRUE : 0);
           }
 
           goto unknown;
@@ -1050,7 +1087,7 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 5: /* 44 tokens of length 5 */
+    case 5: /* 47 tokens of length 5 */
       switch (name[0])
       {
         case 'B':
@@ -1071,6 +1108,44 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
               name[4] == 'K')
           {                                       /* CHECK            */
             return KEY_CHECK;
+          }
+
+          goto unknown;
+
+        case 'F':
+          switch (name[1])
+          {
+            case 'A':
+              if (name[2] == 'L' &&
+                  name[3] == 'S' &&
+                  name[4] == 'E')
+              {                                   /* FALSE            */
+                return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_FALSE : 0);
+              }
+
+              goto unknown;
+
+            case 'l':
+              if (name[2] == 'o' &&
+                  name[3] == 'a' &&
+                  name[4] == 't')
+              {                                   /* Float            */
+                return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_Float : 0);
+              }
+
+              goto unknown;
+
+            default:
+              goto unknown;
+          }
+
+        case 'N':
+          if (name[1] == 'u' &&
+              name[2] == 'm' &&
+              name[3] == 'E' &&
+              name[4] == 'q')
+          {                                       /* NumEq            */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_NumEq : 0);
           }
 
           goto unknown;
@@ -1602,7 +1677,7 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 6: /* 35 tokens of length 6 */
+    case 6: /* 39 tokens of length 6 */
       switch (name[0])
       {
         case 'A':
@@ -1613,6 +1688,54 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
               name[5] == 'T')
           {                                       /* ADJUST           */
             return (all_keywords || FEATURE_CLASS_IS_ENABLED ? KEY_ADJUST : 0);
+          }
+
+          goto unknown;
+
+        case 'I':
+          if (name[1] == 'n' &&
+              name[2] == 't' &&
+              name[3] == 'S' &&
+              name[4] == 't' &&
+              name[5] == 'r')
+          {                                       /* IntStr           */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_IntStr : 0);
+          }
+
+          goto unknown;
+
+        case 'N':
+          if (name[1] == 'u' &&
+              name[2] == 'm' &&
+              name[3] == 'S' &&
+              name[4] == 't' &&
+              name[5] == 'r')
+          {                                       /* NumStr           */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_NumStr : 0);
+          }
+
+          goto unknown;
+
+        case 'R':
+          if (name[1] == 'e' &&
+              name[2] == 'f' &&
+              name[3] == 'V' &&
+              name[4] == 'a' &&
+              name[5] == 'l')
+          {                                       /* RefVal           */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_RefVal : 0);
+          }
+
+          goto unknown;
+
+        case 'S':
+          if (name[1] == 't' &&
+              name[2] == 'r' &&
+              name[3] == 'i' &&
+              name[4] == 'c' &&
+              name[5] == 't')
+          {                                       /* Strict           */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_Strict : 0);
           }
 
           goto unknown;
@@ -2549,7 +2672,7 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 8: /* 26 tokens of length 8 */
+    case 8: /* 28 tokens of length 8 */
       switch (name[0])
       {
         case 'A':
@@ -2562,6 +2685,20 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
               name[7] == 'D')
           {                                       /* AUTOLOAD         */
             return KEY_AUTOLOAD;
+          }
+
+          goto unknown;
+
+        case 'F':
+          if (name[1] == 'l' &&
+              name[2] == 'o' &&
+              name[3] == 'a' &&
+              name[4] == 't' &&
+              name[5] == 'S' &&
+              name[6] == 't' &&
+              name[7] == 'r')
+          {                                       /* FloatStr         */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_FloatStr : 0);
           }
 
           goto unknown;
@@ -2648,18 +2785,37 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           }
 
         case 'd':
-          if (name[1] == 'b' &&
-              name[2] == 'm' &&
-              name[3] == 'c' &&
-              name[4] == 'l' &&
-              name[5] == 'o' &&
-              name[6] == 's' &&
-              name[7] == 'e')
-          {                                       /* dbmclose         */
-            return -KEY_dbmclose;
-          }
+          switch (name[1])
+          {
+            case 'b':
+              if (name[2] == 'm' &&
+                  name[3] == 'c' &&
+                  name[4] == 'l' &&
+                  name[5] == 'o' &&
+                  name[6] == 's' &&
+                  name[7] == 'e')
+              {                                   /* dbmclose         */
+                return -KEY_dbmclose;
+              }
 
-          goto unknown;
+              goto unknown;
+
+            case 'i':
+              if (name[2] == 's' &&
+                  name[3] == 'p' &&
+                  name[4] == 'a' &&
+                  name[5] == 't' &&
+                  name[6] == 'c' &&
+                  name[7] == 'h')
+              {                                   /* dispatch         */
+                return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? KEY_dispatch : 0);
+              }
+
+              goto unknown;
+
+            default:
+              goto unknown;
+          }
 
         case 'e':
           if (name[1] == 'n' &&
@@ -2962,9 +3118,39 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 9: /* 12 tokens of length 9 */
+    case 9: /* 14 tokens of length 9 */
       switch (name[0])
       {
+        case 'O':
+          if (name[1] == 'b' &&
+              name[2] == 'j' &&
+              name[3] == 'e' &&
+              name[4] == 'c' &&
+              name[5] == 't' &&
+              name[6] == 'V' &&
+              name[7] == 'a' &&
+              name[8] == 'l')
+          {                                       /* ObjectVal        */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_ObjectVal : 0);
+          }
+
+          goto unknown;
+
+        case 'S':
+          if (name[1] == 'c' &&
+              name[2] == 'a' &&
+              name[3] == 'l' &&
+              name[4] == 'a' &&
+              name[5] == 'r' &&
+              name[6] == 'V' &&
+              name[7] == 'a' &&
+              name[8] == 'l')
+          {                                       /* ScalarVal        */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_ScalarVal : 0);
+          }
+
+          goto unknown;
+
         case 'U':
           if (name[1] == 'N' &&
               name[2] == 'I' &&
@@ -3154,9 +3340,25 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 10: /* 10 tokens of length 10 */
+    case 10: /* 11 tokens of length 10 */
       switch (name[0])
       {
+        case 'D':
+          if (name[1] == 'e' &&
+              name[2] == 'f' &&
+              name[3] == 'i' &&
+              name[4] == 'n' &&
+              name[5] == 'e' &&
+              name[6] == 'd' &&
+              name[7] == 'V' &&
+              name[8] == 'a' &&
+              name[9] == 'l')
+          {                                       /* DefinedVal       */
+            return (all_keywords || FEATURE_DISPATCH_ON_IS_ENABLED ? -KEY_DefinedVal : 0);
+          }
+
+          goto unknown;
+
         case 'e':
           if (name[1] == 'n' &&
               name[2] == 'd')
@@ -3712,5 +3914,5 @@ unknown:
 }
 
 /* Generated from:
- * e362dc664d121179a4fba162f6fa305bfaefb85d4538ab8dc0f0e14e33a49b54 regen/keywords.pl
+ * 06ef174ebf2b8acab79ddf9cc6e9ef7de3503ae4e3af75fa8ce6f52ee93db4db regen/keywords.pl
  * ex: set ro ft=c: */

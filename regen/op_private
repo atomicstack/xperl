@@ -500,7 +500,6 @@ addbits($_, 6  => qw(OPpSTATEMENT STMT)) for qw(cond_expr and or);
 # single op (or maybe by a few closely related ops).
 
 
-
 # note that for refassign, this bit can mean either OPpPAD_STATE or
 # OPpOUR_INTRO depending on the type of the LH child, .e.g.
 #   \our   $foo = ...
@@ -896,6 +895,7 @@ addbits('concat',
     # so that the first concat's PADTMP (which holds the result of $a.$b)
     # can be reused. Set a flag in this case to help deparse and warn
     # distinguish the cases.
+    7 => qw(OPpCONCAT_PATTERN PATTERN),
     6 => qw(OPpCONCAT_NESTED NESTED),
 );
 
@@ -999,6 +999,14 @@ addbits('caller',
     5 => qw(OPpCALLER_BITS  BITS),
     6 => qw(OPpCALLER_HINTH HINTH),
 );
+
+# Case-pattern criteria and array-slurp minima use the complete private byte.
+# The meaning is selected by the DISPATCHCOERCE node's child shape.
+addbits('dispatchcoerce',
+    '1..7' => {
+        mask_def => 'OPpDISPATCHCOERCE_MASK',
+        label    => '-',
+    });
 
 1;
 
