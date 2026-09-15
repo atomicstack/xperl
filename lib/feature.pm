@@ -19,6 +19,7 @@ our %feature = (
     indirect                        => 'feature_indirect',
     evalbytes                       => 'feature_evalbytes',
     generator                       => 'feature_generator',
+    namespaces                      => 'feature_namespaces',
     signatures                      => 'feature_signatures',
     smartmatch                      => 'feature_smartmatch',
     current_sub                     => 'feature___SUB__',
@@ -47,7 +48,7 @@ our %feature_bundle = (
     "5.37"    => [qw(apostrophe_as_package_separator bitwise current_sub evalbytes fc isa module_true postderef_qq say signatures smartmatch state unicode_eval unicode_strings)],
     "5.39"    => [qw(apostrophe_as_package_separator bitwise current_sub evalbytes fc isa module_true postderef_qq say signatures smartmatch state try unicode_eval unicode_strings)],
     "5.41"    => [qw(bitwise current_sub evalbytes fc isa module_true postderef_qq say signatures state try unicode_eval unicode_strings)],
-    "all"     => [qw(apostrophe_as_package_separator bareword_filehandles bitwise class current_sub declared_refs defer enhanced_xx evalbytes extra_paired_delimiters fc generator indirect isa keyword_all keyword_any module_true multidimensional postderef_qq refaliasing say signatures smartmatch state switch try unicode_eval unicode_strings)],
+    "all"     => [qw(apostrophe_as_package_separator bareword_filehandles bitwise class current_sub declared_refs defer enhanced_xx evalbytes extra_paired_delimiters fc generator indirect isa keyword_all keyword_any module_true multidimensional namespaces postderef_qq refaliasing say signatures smartmatch state switch try unicode_eval unicode_strings)],
     "default" => [qw(apostrophe_as_package_separator bareword_filehandles indirect multidimensional smartmatch)],
 );
 
@@ -571,6 +572,18 @@ the 5.36 feature bundle onwards.
 
 You can use the L<multidimensional> module on CPAN to disable
 multidimensional array emulation for older versions of Perl.
+
+=head2 The 'namespaces' feature
+
+B<WARNING>: This feature is experimental and the implementation may change
+or be removed in a future version of Perl.  Perl will warn when it is used
+unless the warning is disabled with:
+
+    no warnings "experimental::namespaces";
+
+This feature enables lexical C<namespace> declarations, the
+C<__NAMESPACE__> token, and package aliases written as C<use PACKAGE as
+ALIAS>.  See L<perlnamespace> for details.
 
 =head2 The 'postderef' and 'postderef_qq' features
 

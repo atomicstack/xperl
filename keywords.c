@@ -56,9 +56,17 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 2: /* 19 tokens of length 2 */
+    case 2: /* 20 tokens of length 2 */
       switch (name[0])
       {
+        case 'a':
+          if (name[1] == 's')
+          {                                       /* as               */
+            return (all_keywords || FEATURE_NAMESPACES_IS_ENABLED ? -KEY_as : 0);
+          }
+
+          goto unknown;
+
         case 'd':
           if (name[1] == 'o')
           {                                       /* do               */
@@ -2954,7 +2962,7 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 9: /* 11 tokens of length 9 */
+    case 9: /* 12 tokens of length 9 */
       switch (name[0])
       {
         case 'U':
@@ -3048,6 +3056,21 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
               name[8] == 'e')
           {                                       /* localtime        */
             return -KEY_localtime;
+          }
+
+          goto unknown;
+
+        case 'n':
+          if (name[1] == 'a' &&
+              name[2] == 'm' &&
+              name[3] == 'e' &&
+              name[4] == 's' &&
+              name[5] == 'p' &&
+              name[6] == 'a' &&
+              name[7] == 'c' &&
+              name[8] == 'e')
+          {                                       /* namespace        */
+            return (all_keywords || FEATURE_NAMESPACES_IS_ENABLED ? -KEY_namespace : 0);
           }
 
           goto unknown;
@@ -3525,91 +3548,116 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
 
       goto unknown;
 
-    case 13: /* 4 tokens of length 13 */
-      if (name[0] == 'g' &&
-          name[1] == 'e' &&
-          name[2] == 't')
+    case 13: /* 5 tokens of length 13 */
+      switch (name[0])
       {
-        switch (name[3])
-        {
-          case 'h':
-            if (name[4] == 'o' &&
-                name[5] == 's' &&
-                name[6] == 't' &&
-                name[7] == 'b' &&
-                name[8] == 'y')
+        case '_':
+          if (name[1] == '_' &&
+              name[2] == 'N' &&
+              name[3] == 'A' &&
+              name[4] == 'M' &&
+              name[5] == 'E' &&
+              name[6] == 'S' &&
+              name[7] == 'P' &&
+              name[8] == 'A' &&
+              name[9] == 'C' &&
+              name[10] == 'E' &&
+              name[11] == '_' &&
+              name[12] == '_')
+          {                                       /* __NAMESPACE__    */
+            return (all_keywords || FEATURE_NAMESPACES_IS_ENABLED ? -KEY___NAMESPACE__ : 0);
+          }
+
+          goto unknown;
+
+        case 'g':
+          if (name[1] == 'e' &&
+              name[2] == 't')
+          {
+            switch (name[3])
             {
-              switch (name[9])
-              {
-                case 'a':
-                  if (name[10] == 'd' &&
-                      name[11] == 'd' &&
-                      name[12] == 'r')
-                  {                               /* gethostbyaddr    */
-                    return -KEY_gethostbyaddr;
+              case 'h':
+                if (name[4] == 'o' &&
+                    name[5] == 's' &&
+                    name[6] == 't' &&
+                    name[7] == 'b' &&
+                    name[8] == 'y')
+                {
+                  switch (name[9])
+                  {
+                    case 'a':
+                      if (name[10] == 'd' &&
+                          name[11] == 'd' &&
+                          name[12] == 'r')
+                      {                           /* gethostbyaddr    */
+                        return -KEY_gethostbyaddr;
+                      }
+
+                      goto unknown;
+
+                    case 'n':
+                      if (name[10] == 'a' &&
+                          name[11] == 'm' &&
+                          name[12] == 'e')
+                      {                           /* gethostbyname    */
+                        return -KEY_gethostbyname;
+                      }
+
+                      goto unknown;
+
+                    default:
+                      goto unknown;
                   }
+                }
 
-                  goto unknown;
+                goto unknown;
 
-                case 'n':
-                  if (name[10] == 'a' &&
-                      name[11] == 'm' &&
-                      name[12] == 'e')
-                  {                               /* gethostbyname    */
-                    return -KEY_gethostbyname;
+              case 's':
+                if (name[4] == 'e' &&
+                    name[5] == 'r' &&
+                    name[6] == 'v' &&
+                    name[7] == 'b' &&
+                    name[8] == 'y')
+                {
+                  switch (name[9])
+                  {
+                    case 'n':
+                      if (name[10] == 'a' &&
+                          name[11] == 'm' &&
+                          name[12] == 'e')
+                      {                           /* getservbyname    */
+                        return -KEY_getservbyname;
+                      }
+
+                      goto unknown;
+
+                    case 'p':
+                      if (name[10] == 'o' &&
+                          name[11] == 'r' &&
+                          name[12] == 't')
+                      {                           /* getservbyport    */
+                        return -KEY_getservbyport;
+                      }
+
+                      goto unknown;
+
+                    default:
+                      goto unknown;
                   }
+                }
 
-                  goto unknown;
+                goto unknown;
 
-                default:
-                  goto unknown;
-              }
+              default:
+                goto unknown;
             }
+          }
 
-            goto unknown;
+          goto unknown;
 
-          case 's':
-            if (name[4] == 'e' &&
-                name[5] == 'r' &&
-                name[6] == 'v' &&
-                name[7] == 'b' &&
-                name[8] == 'y')
-            {
-              switch (name[9])
-              {
-                case 'n':
-                  if (name[10] == 'a' &&
-                      name[11] == 'm' &&
-                      name[12] == 'e')
-                  {                               /* getservbyname    */
-                    return -KEY_getservbyname;
-                  }
-
-                  goto unknown;
-
-                case 'p':
-                  if (name[10] == 'o' &&
-                      name[11] == 'r' &&
-                      name[12] == 't')
-                  {                               /* getservbyport    */
-                    return -KEY_getservbyport;
-                  }
-
-                  goto unknown;
-
-                default:
-                  goto unknown;
-              }
-            }
-
-            goto unknown;
-
-          default:
-            goto unknown;
-        }
+        default:
+          goto unknown;
       }
-
-      goto unknown;
 
     case 14: /* 1 tokens of length 14 */
       if (name[0] == 'g' &&
@@ -3664,5 +3712,5 @@ unknown:
 }
 
 /* Generated from:
- * 40eec5b8244d36f8a2ee3fbaabf11d4f696acdf2d5923b48fd09d2120e4f8bab regen/keywords.pl
+ * e362dc664d121179a4fba162f6fa305bfaefb85d4538ab8dc0f0e14e33a49b54 regen/keywords.pl
  * ex: set ro ft=c: */

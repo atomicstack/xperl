@@ -1085,6 +1085,11 @@ our %Modules = (
         ],
     },
 
+    'Tensor::XS' => {
+        'MAINTAINER' => 'YVES',
+        'FILES'      => q[dist/Tensor-XS],
+    },
+
     'Term::ANSIColor' => {
         'DISTRIBUTION' => 'RRA/Term-ANSIColor-5.01.tar.gz',
         'FILES'        => q[cpan/Term-ANSIColor],

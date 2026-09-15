@@ -8758,6 +8758,187 @@ Perl_package (pTHX_ OP *name, OP *version)
         S_set_package_version (aTHX_ version);
 }
 
+/* Namespace state is compile-time lexical state.  Keep it in the hints
+ * hash so that the existing block/eval hint save and restore machinery
+ * handles it for us. */
+#define NAMESPACE_HINT_CURRENT "namespaces.current"
+#define NAMESPACE_HINT_ALIAS   "namespaces.alias."
+
+static void
+S_namespace_localize_hints(pTHX)
+{
+    if (!(PL_hints & HINT_LOCALIZE_HH))
+        PL_hints |= HINT_LOCALIZE_HH;
+    PL_hints |= HINT_BLOCK_SCOPE;
+}
+
+static SV *
+S_namespace_hint(pTHX_ const char *key, STRLEN keylen)
+{
+    SV *value = cophh_fetch_pvn(CopHINTHASH_get(&PL_compiling),
+                                key, keylen, 0, 0);
+    if (value && value != &PL_sv_placeholder && SvOK(value)) {
+        STRLEN len;
+        const char *pv = SvPV_const(value, len);
+        return newSVpvn(pv, len);
+    }
+    return NULL;
+}
+
+/*
+=for apidoc namespace_current
+
+Returns a new string containing the currently active lexical namespace.
+If no lexical namespace is active, the returned string is empty.  This is
+an experimental interface used by the C implementation of the C<namespaces>
+feature.
+
+=cut
+*/
+
+SV *
+Perl_namespace_current(pTHX)
+{
+    PERL_ARGS_ASSERT_NAMESPACE_CURRENT;
+
+    if (!FEATURE_NAMESPACES_IS_ENABLED)
+        return newSVpvs("");
+
+    SV *value = S_namespace_hint(aTHX_ STR_WITH_LEN(NAMESPACE_HINT_CURRENT));
+    return value ? value : newSVpvs("");
+}
+
+/*
+=for apidoc namespace_resolve
+
+Returns a new string containing the package name obtained by resolving C<$name>
+against the active lexical namespace and any lexical package aliases.  Names
+with an explicit C<:::> boundary, and the special C<CORE::> and C<SUPER::>
+namespaces, are preserved according to the lexical namespace rules.
+
+=cut
+*/
+
+SV *
+Perl_namespace_resolve(pTHX_ SV *name)
+{
+    PERL_ARGS_ASSERT_NAMESPACE_RESOLVE;
+
+    if (!FEATURE_NAMESPACES_IS_ENABLED)
+        return newSVpvn(SvPV_nolen(name), SvCUR(name));
+
+    STRLEN len;
+    const char *pv = SvPV_const(name, len);
+    const char *boundary = strstr(pv, ":::");
+
+    if (boundary) {
+        if (strstr(boundary + 3, ":::"))
+            croak("Malformed namespace separator in package name");
+        if (boundary > pv && boundary[-1] == ':')
+            croak("Malformed namespace separator in package name");
+        if (!boundary[3] || boundary[3] == ':')
+            croak("Malformed namespace separator in package name");
+
+        SV *result = newSVpvn(pv, boundary - pv);
+        if (boundary > pv)
+            sv_catpvs(result, "::");
+        sv_catpv(result, boundary + 3);
+        return result;
+    }
+
+    if (memBEGINs(pv, len, "CORE::") || memBEGINs(pv, len, "SUPER::"))
+        return newSVpvn(pv, len);
+
+    const char separator[] = "::";
+    const char *sep = ninstr(pv, pv + len, separator, separator + 2);
+    STRLEN firstlen = sep ? (STRLEN)(sep - pv) : len;
+    SV *key = newSVpvn(NAMESPACE_HINT_ALIAS, sizeof(NAMESPACE_HINT_ALIAS)-1);
+    sv_catpvn(key, pv, firstlen);
+    SV *alias = S_namespace_hint(aTHX_ SvPV_nolen(key), SvPVX(key) ? SvCUR(key) : 0);
+    SvREFCNT_dec_NN(key);
+
+    if (alias) {
+        STRLEN alias_value_len;
+        const char *alias_value = SvPV_const(alias, alias_value_len);
+        SV *result = newSVpvn(alias_value, alias_value_len);
+        sv_catpvn(result, sep ? sep : "", sep ? len - firstlen : 0);
+        SvREFCNT_dec_NN(alias);
+        return result;
+    }
+
+    SV *current = Perl_namespace_current(aTHX);
+    if (SvCUR(current)) {
+        sv_catpvs(current, "::");
+        sv_catpvn(current, pv, len);
+        return current;
+    }
+    SvREFCNT_dec_NN(current);
+    return newSVpvn(pv, len);
+}
+
+/*
+=for apidoc namespace_set
+
+Sets the current lexical namespace to C<$name>.  The namespace is stored in
+the current compile-time hints and is restored with the surrounding lexical
+scope.
+
+=cut
+*/
+
+void
+Perl_namespace_set(pTHX_ SV *name)
+{
+    PERL_ARGS_ASSERT_NAMESPACE_SET;
+
+    SV *resolved = Perl_namespace_resolve(aTHX_ name);
+    S_namespace_localize_hints(aTHX);
+    CopHINTHASH_set(&PL_compiling,
+        cophh_store_pvs(CopHINTHASH_get(&PL_compiling),
+                        NAMESPACE_HINT_CURRENT, resolved, 0));
+    SvREFCNT_dec_NN(resolved);
+}
+
+/*
+=for apidoc namespace_alias
+
+Adds the lexical package alias C<$alias> for package name C<$name>.  The alias
+is visible from the current lexical scope and nested scopes, and is restored
+when that scope ends.  Attempting to redefine an alias in the same scope is
+an error.
+
+=cut
+*/
+
+void
+Perl_namespace_alias(pTHX_ SV *name, SV *alias)
+{
+    PERL_ARGS_ASSERT_NAMESPACE_ALIAS;
+
+    STRLEN aliaslen;
+    const char *aliaspv = SvPV_const(alias, aliaslen);
+    if (!aliaslen || memchr(aliaspv, ':', aliaslen))
+        croak("Alias name must be a non-empty package component");
+
+    STRLEN namelen;
+    const char *namepv = SvPV_const(name, namelen);
+    SV *resolved = newSVpvn(namepv, namelen);
+    SV *key = newSVpvn(NAMESPACE_HINT_ALIAS, sizeof(NAMESPACE_HINT_ALIAS)-1);
+    sv_catpvn(key, aliaspv, aliaslen);
+    STRLEN keylen;
+    const char *keypv = SvPV_const(key, keylen);
+    if (cophh_exists_pvn(CopHINTHASH_get(&PL_compiling),
+                         keypv, keylen, 0, 0))
+        croak("Duplicate package alias '%s'", aliaspv);
+
+    S_namespace_localize_hints(aTHX);
+    CopHINTHASH_set(&PL_compiling,
+        cophh_store_pvn(CopHINTHASH_get(&PL_compiling),
+                        keypv, keylen, 0, resolved, 0));
+    SvREFCNT_dec_NN(key);
+    SvREFCNT_dec_NN(resolved);
+}
+
 /* Extract the first two components of a "version" object as two 8bit integers
  * and return them packed into a single U16 in the format of PL_prevailing_version.
  * This function only ever has to cope with version objects already known

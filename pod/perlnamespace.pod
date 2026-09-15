@@ -1,0 +1,226 @@
+=head1 NAME
+
+perlnamespace - lexical namespaces and package aliases
+
+=head1 DESCRIPTION
+
+This document explains the experimental C<namespaces> feature.  It gives
+you a convenient way to write package names relative to a namespace, and a
+convenient way to give a package a short, local name.
+
+If you are new to Perl, think of a namespace as a labelled drawer.  Packages
+put subroutines and variables in drawers so that two pieces of code can both
+have a C<new> subroutine without fighting over the same name.  A package name
+such as C<My::App::Model> is the full label: C<My>, C<App>, and C<Model> are
+its components.
+
+The C<namespaces> feature adds a lexical (local to the surrounding block or
+file) prefix for those labels.  It does not change the current package.
+Enable it with:
+
+    use feature 'namespaces';
+
+The feature is experimental.  You may also need to disable its experimental
+warning, for example:
+
+    no warnings 'experimental::namespaces';
+
+=head2 Declaring a namespace
+
+Use C<namespace> to set the current lexical namespace:
+
+    use feature 'namespaces';
+
+    namespace My::Application;
+
+From this point onward, a package name that does not start at an explicit
+namespace boundary is read relative to C<My::Application>.  For example:
+
+    package Model;             # My::Application::Model
+    sub name { 'model' }
+
+    package View::Page;         # My::Application::View::Page
+    sub name { 'page' }
+
+The namespace declaration and the package declaration do different jobs.
+C<namespace> supplies a prefix for resolving names.  C<package> changes the
+current package, which is where declarations such as C<sub name> are made.
+Consequently, in the example above C<__PACKAGE__> is
+C<My::Application::Model> after the first package declaration, while
+C<__NAMESPACE__> is C<My::Application>.
+
+Namespaces are lexical.  A declaration applies inside its surrounding scope
+and nested scopes, and is restored when that scope ends.  A later relative
+declaration adds another component:
+
+    namespace My::Application;
+    namespace Model;            # My::Application::Model
+    namespace User;             # My::Application::Model::User
+
+This is useful when a group of related names shares a long prefix.
+
+The namespace declaration also has a block-scoped form:
+
+    namespace My::Application {
+        package Model;          # My::Application::Model
+    }
+The namespace applies while the block is compiled and is restored when the
+block ends.  This makes it possible to group package declarations under a
+shared prefix without changing the namespace of the surrounding code.
+
+=head2 Names with and without a namespace identifier
+
+The first component of a package name normally has no special marker.  With
+an active namespace, Perl therefore adds the current namespace to it:
+
+    namespace My::Application;
+
+    use Tools;                  # means My::Application::Tools
+    Tools::Parser->new;         # means My::Application::Tools::Parser
+    Parser->new;                # means My::Application::Parser
+
+Here, C<Tools> and C<Parser> are being used without an explicit namespace
+identifier.  Their names are relative, just as a filename such as
+F<images/logo.png> can be relative to the directory you are currently in.
+
+For C<use> and C<require>, a package name beginning with a lowercase ASCII
+letter is not made relative to the lexical namespace.  This keeps pragmata
+and similar modules global, so they can be enabled naturally after a
+namespace declaration:
+
+    namespace My::Application;
+    use feature 'class';
+    use strict;
+    use warnings;
+    use Model;                  # My::Application::Model
+
+The lowercase rule applies only to C<use> and C<require>.  Names in other
+Perl syntax, including C<package>, C<class>, and method calls, continue to
+be resolved relative to the lexical namespace unless they have an explicit
+namespace boundary.
+
+Namespace resolution does not change the normal relationship between a
+package name and a module filename.  It first resolves the package name, then
+C<use> and C<require> apply the ordinary filename mapping to that result.  For
+example, under C<My::Application>, C<use Model> loads
+F<My/Application/Model.pm>, just as C<use My::Application::Model> would
+without an active namespace.
+
+To say that a name is relative to the top level instead, put C<:::> between
+the part before and after the boundary:
+
+    namespace My::Application;
+
+    namespace :::Shared;        # Shared
+    Shared::Logger->new;        # Shared::Logger
+    CORE:::abs(-3);             # CORE::abs(-3)
+
+The C<:::> form is called an explicit namespace boundary.  It prevents the
+current lexical namespace from being added.  It is converted to the ordinary
+C<::> package separator, so C<:::> syntax is not stored in package names,
+stash names, or filenames.  A name can also put the boundary in the middle:
+
+    My:::Shared::Logger          # My::Shared::Logger
+
+The special prefixes C<CORE::> and C<SUPER::> retain their usual meaning.
+Runtime strings are not changed.  For example, the string
+C<"Tools::Parser"> remains exactly that string; namespace resolution applies
+to names in Perl syntax, not to text inside a scalar.
+
+If there is no active namespace, names work as they normally do.  Thus:
+
+    use feature 'namespaces';
+    Tools::Parser->new;         # Tools::Parser
+
+Without the C<namespaces> feature, the C<namespace> syntax and
+C<__NAMESPACE__> token are not enabled, and ordinary package names are not
+given a lexical prefix.
+
+=head2 The C<__NAMESPACE__> token
+
+C<__NAMESPACE__> is a compile-time constant containing the current lexical
+namespace.  It can be different from C<__PACKAGE__>:
+
+    use feature 'namespaces';
+
+    namespace My::Application;
+    package Model;
+
+    print __NAMESPACE__;         # My::Application
+    print __PACKAGE__;           # My::Application::Model
+
+If no lexical namespace has been declared, C<__NAMESPACE__> is the empty
+string.
+
+=head2 Package aliases with C<as>
+
+Sometimes a package has a long name that you use often.  The C<as> form of
+C<use> gives that package a short, lexical alias:
+
+    use feature 'namespaces';
+    use Some::Very::Long::Library as Library;
+
+Now C<Library::Parser> means
+C<Some::Very::Long::Library::Parser> in this scope and in nested scopes.
+The normal work done by C<use> still happens: the module is loaded and its
+imports are processed in the usual way.  The alias is an additional name;
+it does not rename the package.
+
+An alias is used when the name starts with the alias, whether or not the
+name has more components:
+
+    use Some::Very::Long::Library as Library;
+
+    Library::Parser->new;        # Some::Very::Long::Library::Parser
+    Library::Config->load;       # Some::Very::Long::Library::Config
+
+Without an alias, the same name is ordinary relative-name resolution.  For
+example, if the current namespace is C<My::Application>, then:
+
+    namespace My::Application;
+    Library::Parser->new;        # My::Application::Library::Parser
+
+An explicit C<:::> boundary takes precedence over an alias:
+
+    use Some::Library as Library;
+    Library::Parser->new;        # Some::Library::Parser
+    :::Library::Parser->new      # Library::Parser
+
+Aliases are local to the lexical scope.  They do not alter runtime strings,
+and the same alias cannot be defined twice in one lexical scope.  The
+version and import-list forms of C<use> remain available; C<as> is simply an
+optional addition to the normal C<use PACKAGE> syntax.
+
+=head2 Summary
+
+=over 4
+
+=item *
+
+C<namespace NAME> sets a local prefix for package names.
+
+=item *
+
+A package name without an explicit boundary is relative to that prefix.
+
+=item *
+
+C<:::> says C<start at the top level here> and prevents prefixing.
+
+=item *
+
+C<use PACKAGE as ALIAS> gives a package a local short name; it does not
+rename the package or change strings.
+
+=item *
+
+C<__NAMESPACE__> reports the lexical prefix, while C<__PACKAGE__> reports the
+current package.
+
+=back
+
+=head1 SEE ALSO
+
+L<perlsyn>, L<perlfunc>
+
+=cut

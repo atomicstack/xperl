@@ -2472,6 +2472,12 @@ AMTdp	|int	|my_vsnprintf	|NN char *buffer			\
 				|const Size_t len			\
 				|NN const char *format			\
 				|va_list ap
+dp	|void	|namespace_alias|NN SV *name				\
+				|NN SV *alias
+dp	|SV *	|namespace_current
+dp	|SV *	|namespace_resolve					\
+				|NN SV *name
+dp	|void	|namespace_set	|NN SV *name
 Adp	|OP *	|newANONATTRSUB |I32 floor				\
 				|NULLOK OP *proto			\
 				|NULLOK OP *attrs			\

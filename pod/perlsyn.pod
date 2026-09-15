@@ -31,6 +31,9 @@ see L<perltrap> for information about how they differ.
 =head2 Declarations
 X<declaration> X<undef> X<undefined> X<uninitialized>
 
+The experimental C<namespaces> feature adds lexical namespace declarations
+and package aliases.  See L<perlnamespace> for their syntax and semantics.
+
 The only things you need to declare in Perl are report formats and
 subroutines (and sometimes not even subroutines).  A scalar variable holds
 the undefined value (C<undef>) until it has been assigned a defined
