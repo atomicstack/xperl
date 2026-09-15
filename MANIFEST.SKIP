@@ -5,6 +5,7 @@
 ^\.git\b
 ^\.github/
 ^\.agents/
+^planning/
 ^AGENTS\.md$
 ^CLAUDE\.md$
 ^\.done_test_prep$
