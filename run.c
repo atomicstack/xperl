@@ -738,6 +738,7 @@ static int S_generator_boundary(pTHX_ OP *nextop, void *data);
 void
 Perl_generator_mark_return(pTHX)
 {
+    PERL_ARGS_ASSERT_GENERATOR_MARK_RETURN;
     GENERATOR_RUN * const run =
         (GENERATOR_RUN *)PL_runops_boundary_data;
     PERL_GENERATOR * const generator = run ? run->generator : NULL;

@@ -819,6 +819,36 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
             style->maxrecursed = TRUE;
 	}
 
+        /* Class objects have no ordinary Perl reference representation.  Use
+         * the core shallow field API so Dumper can round-trip them without
+         * invoking constructors or methods. */
+#ifdef class_object_to_hash
+        if (realtype == SVt_PVOBJ) {
+            SV *hashref = class_object_to_hash(val);
+            STRLEN plen = strlen(realpack);
+            STRLEN pticks = num_q(realpack, plen);
+            sv_catpvs(retval, "builtin::class_object_from_hash(");
+            DD_dump(aTHX_ hashref, "", 0, retval, seenhv, postav,
+                    level + 1, apad, style);
+            sv_catpvs(retval, ", '");
+            if (pticks) {
+                char *npack;
+                char *npack_buffer = NULL;
+                New(0, npack_buffer, plen + pticks + 1, char);
+                npack = npack_buffer;
+                plen += esc_q(npack, realpack, plen);
+                npack[plen] = '\0';
+                sv_catpvn(retval, npack, plen);
+                Safefree(npack_buffer);
+            }
+            else
+                sv_catpvn(retval, realpack, plen);
+            sv_catpvs(retval, "' )");
+            SvREFCNT_dec(hashref);
+            return 1;
+        }
+#endif
+
 	if (realpack && !no_bless) {				/* we have a blessed ref */
 	    STRLEN blesslen;
             const char * const blessstr = SvPV(style->bless, blesslen);

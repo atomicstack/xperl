@@ -28,6 +28,7 @@ builtin - Perl pragma to import built-in utility functions
         is_tainted
         export_lexically
         load_module
+        class_object_to_hash class_object_from_hash
     );
 
     use builtin ':5.40';  # most of the above
@@ -505,6 +506,21 @@ C<load_module> can't be used to require a particular version of Perl, nor can
 it be given a bareword module name as an argument.
 
 Available starting with Perl 5.40.
+
+=head2 class_object_to_hash
+
+    class_object_to_hash($object)
+
+Returns a hash reference containing the fields of a class object.  The field
+values are shared with the object; they are not recursively copied.
+
+=head2 class_object_from_hash
+
+    class_object_from_hash($hashref, $classname)
+
+Creates a class object from the field hash returned by
+C<class_object_to_hash>.  This bypasses the class constructor and installs
+the field values directly, sharing the values with the supplied hash.
 
 =head1 SEE ALSO
 

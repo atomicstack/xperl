@@ -93,6 +93,16 @@ default restart method reports that restarting is unsupported.
 The iterator API is documented in `pod/perliterator.pod` and `lib/iterator.pm`
 and is covered by `t/op/iterator.t`.
 
+### Class objects and Data::Dumper
+
+Class objects now understand shallow class-object/hash conversion APIs for
+serializer support. `Data::Dumper` uses the new representation in both its XS
+and pure-Perl paths, with compatibility guards for building the distribution
+on older Perl versions. The class-object support is documented and tested.
+
+The relevant APIs and integration are described in `pod/perlclass.pod` and
+the class-object and Data::Dumper tests cover the conversion behavior.
+
 ## Compatibility posture
 
 Most existing Perl behavior is intentionally preserved where practical, and

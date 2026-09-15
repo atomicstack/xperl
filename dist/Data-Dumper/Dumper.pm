@@ -19,6 +19,7 @@ require Exporter;
 
 use constant IS_PRE_516_PERL => "$]" < 5.016;
 use constant SUPPORTS_CORE_BOOLS => defined &builtin::is_bool;
+use constant SUPPORTS_CORE_CLASS_OBJECTS => defined &builtin::class_object_to_hash;
 
 use Carp ();
 
@@ -30,7 +31,7 @@ our ( $Indent, $Trailingcomma, $Purity, $Pad, $Varname, $Useqq, $Terse, $Freezer
 our ( @ISA, @EXPORT, @EXPORT_OK, $VERSION );
 
 BEGIN {
-    $VERSION = '2.192'; # Don't forget to set version and release
+    $VERSION = '2.193_50'; # Don't forget to set version and release
                         # date in POD below!
 
     @ISA = qw(Exporter);
@@ -343,6 +344,19 @@ sub _dump {
     if ($s->{maxrecurse} > 0
         and $s->{level} >= $s->{maxrecurse}) {
         die "Recursion limit of $s->{maxrecurse} exceeded";
+    }
+
+    # Class objects have no ordinary Perl reference representation.  Use the
+    # builtin shallow field conversion so they can be dumped and restored
+    # without invoking constructors or methods.
+    if (SUPPORTS_CORE_CLASS_OBJECTS && $realtype eq 'OBJECT') {
+      $s->{level}++;
+      my $hash = builtin::class_object_to_hash($val);
+      $out = 'builtin::class_object_from_hash(' .
+             $s->_dump($hash, "\${$name}") . ', ' .
+             _quote($realpack) . ')';
+      $s->{level}--;
+      return $out;
     }
 
     # we have a blessed ref
@@ -885,6 +899,12 @@ structures correctly.
 The return value can be C<eval>ed to get back an identical copy of the
 original reference structure.  (Please do consider the security implications
 of eval'ing code from untrusted sources!)
+
+Objects created by the experimental C<class> feature are dumped using the
+experimental C<builtin::class_object_to_hash> and
+C<builtin::class_object_from_hash> functions.  Their fields are represented
+shallowly, so references in fields retain their identity when the dumped form
+is evaluated.
 
 Any references that are the same as one of those passed in will be named
 C<$VAR>I<n> (where I<n> is a numeric suffix), and other duplicate references

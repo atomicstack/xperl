@@ -160,7 +160,6 @@ __END__
 -alarm
 -all
 -and
--as
 -any
 -atan2
 -bind
@@ -288,7 +287,6 @@ __END__
 -msgrcv
 -msgsnd
 +my
--namespace
 -ne
 -neu
 +next

@@ -258,6 +258,137 @@ XS(injected_constructor)
     XSRETURN(1);
 }
 
+static void S_class_object_fields_to_hash(pTHX_ HV *, HV *, SV *);
+static void S_class_object_fields_from_hash(pTHX_ HV *, HV *, SV *);
+
+/* The class object representation is deliberately shallow.  Object fields
+ * contain the values themselves (AVs and HVs are stored without an RV), so
+ * the conversion routines below only adjust reference counts while changing
+ * the outer representation.  This is useful to serializers which perform
+ * their own graph handling. */
+static void
+S_class_object_fields_to_hash(pTHX_ HV *hash, HV *stash, SV *instance)
+{
+    struct xpvhv_aux *aux = HvAUX(stash);
+
+    if (aux->xhv_class_superclass)
+        S_class_object_fields_to_hash(aTHX_ hash, aux->xhv_class_superclass, instance);
+
+    PADNAMELIST *fields = aux->xhv_class_fields;
+    for (SSize_t i = 0; fields && i <= PadnamelistMAX(fields); i++) {
+        PADNAME *pn = PadnamelistARRAY(fields)[i];
+        if (!pn || !PadnameIsFIELD(pn))
+            continue;
+
+        struct padname_fieldinfo *fi = PadnameFIELDINFO(pn);
+        SV *value = ObjectFIELDS(instance)[fi->fieldix];
+        if (!value)
+            value = &PL_sv_undef;
+
+        SV *out;
+        if (PadnamePV(pn)[0] == '@' || PadnamePV(pn)[0] == '%')
+            out = newRV_inc(value);
+        else
+            out = SvREFCNT_inc(value);
+
+        (void)hv_store_ent(hash, PadnameSV(pn), out, 0);
+    }
+
+}
+
+/*
+=for apidoc_section $SV
+=for apidoc class_object_to_hash
+
+Returns a shallow hash representation of a class object.  Field values are
+shared with the object.
+
+=cut
+*/
+SV *
+Perl_class_object_to_hash(pTHX_ SV *object)
+{
+    PERL_ARGS_ASSERT_CLASS_OBJECT_TO_HASH;
+
+    if (!SvROK(object) || SvTYPE(SvRV(object)) != SVt_PVOBJ)
+        croak("class_object_to_hash expects a class object");
+
+    SV *instance = SvRV(object);
+    HV *stash = SvSTASH(instance);
+    HV *hash = newHV();
+
+    S_class_object_fields_to_hash(aTHX_ hash, stash, instance);
+    return newRV_noinc((SV *)hash);
+}
+
+static void
+S_class_object_fields_from_hash(pTHX_ HV *hash, HV *stash, SV *instance)
+{
+    struct xpvhv_aux *aux = HvAUX(stash);
+
+    if (aux->xhv_class_superclass)
+        S_class_object_fields_from_hash(aTHX_ hash, aux->xhv_class_superclass, instance);
+
+    PADNAMELIST *fields = aux->xhv_class_fields;
+    for (SSize_t i = 0; fields && i <= PadnamelistMAX(fields); i++) {
+        PADNAME *pn = PadnamelistARRAY(fields)[i];
+        if (!pn || !PadnameIsFIELD(pn))
+            continue;
+
+        struct padname_fieldinfo *fi = PadnameFIELDINFO(pn);
+        HE *he = hv_fetch_ent(hash, PadnameSV(pn), 0, 0);
+        SV *value = he ? HeVAL(he) : &PL_sv_undef;
+
+        if (PadnamePV(pn)[0] == '@' || PadnamePV(pn)[0] == '%') {
+            if (!SvROK(value))
+                croak("value for field %" SVf " must be a reference",
+                      SVfARG(PadnameSV(pn)));
+            SV *referent = SvRV(value);
+            const svtype wanted = PadnamePV(pn)[0] == '@' ? SVt_PVAV : SVt_PVHV;
+            if (SvTYPE(referent) != wanted)
+                croak("value for field %" SVf " has the wrong reference type",
+                      SVfARG(PadnameSV(pn)));
+            value = referent;
+        }
+
+        ObjectFIELDS(instance)[fi->fieldix] = SvREFCNT_inc(value);
+    }
+
+}
+
+/*
+=for apidoc class_object_from_hash
+
+Creates a class object from the shallow hash representation, sharing its field
+values and bypassing the constructor.
+
+=cut
+*/
+SV *
+Perl_class_object_from_hash(pTHX_ SV *hashref, SV *classname)
+{
+    PERL_ARGS_ASSERT_CLASS_OBJECT_FROM_HASH;
+
+    if (!SvROK(hashref) || SvTYPE(SvRV(hashref)) != SVt_PVHV)
+        croak("class_object_from_hash expects a hash reference");
+
+    HV *stash = gv_stashsv(classname, 0);
+    if (!stash || !HvSTASH_IS_CLASS(stash))
+        croak("class_object_from_hash expects the name of a class");
+
+    struct xpvhv_aux *aux = HvAUX(stash);
+    if (!aux->xhv_class_initfields_cv)
+        croak("Cannot create an object of incomplete class %" HvNAMEf_QUOTEDPREFIX,
+              HvNAMEfARG(stash));
+
+    SV *instance = newSVobject(aux->xhv_class_next_fieldix);
+    SvOBJECT_on(instance);
+    SvSTASH_set(instance, HvREFCNT_inc_simple(stash));
+
+    S_class_object_fields_from_hash(aTHX_ (HV *)SvRV(hashref), stash, instance);
+    return newRV_noinc(instance);
+}
+
 /* OP_METHSTART is an UNOP_AUX whose AUX list contains
  *   [0].uv = count of fieldbinding pairs
  *   [1].uv = maximum fieldidx found in the binding list

@@ -1,5 +1,11 @@
 Revision history for Perl core module Data::Dumper
 
+2.193_50 2026-08-28
+    - Support dumping and restoring objects created by the experimental class
+      feature using the core shallow class-object hash conversion API.
+    - Preserve compatibility when built standalone on older Perls without the
+      class-object type or API.
+
 2.183 2021-07-05 NWCLARK
     - No changes from previous dev release.
 
@@ -437,4 +443,3 @@ Revision history for Perl core module Data::Dumper
 
 1.21 1995-11-19 GSAR
     - Last stable version I can remember.
-
