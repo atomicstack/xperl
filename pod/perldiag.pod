@@ -3823,6 +3823,11 @@ gen body.
 (F) The yield operation was invoked when no gen body
 was currently running.
 
+=item generator_yield outside a generator_create
+
+(F) The C<generator_yield> statement was used outside a C<generator_create>
+body.
+
 =item Junk on end of regexp in regex m/%s/
 
 (P) The regular expression parser is confused.

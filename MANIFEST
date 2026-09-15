@@ -6165,6 +6165,7 @@ t/class/gh22169.t			Test defining a class that previously failed to define
 t/class/gh23511.t			Test defining a reader after a strict 'vars' violation
 t/class/inherit.t			See if class inheritance works
 t/class/method.t			See if class method declarations work
+t/class/object_hash.t			Test class object hash conversion
 t/class/phasers.t			See if class phaser blocks work
 t/class/threads.t			See if classes work across multiple threads
 t/class/utf8.t				See if class syntax works with non-ASCII UTF-8

@@ -551,6 +551,27 @@ XS(XS_builtin_load_module)
     XSRETURN(1);
 }
 
+XS(XS_builtin_class_object_to_hash);
+XS(XS_builtin_class_object_from_hash);
+
+XS(XS_builtin_class_object_to_hash)
+{
+    dXSARGS;
+    if (items != 1)
+        croak_xs_usage(cv, "object");
+    ST(0) = class_object_to_hash(ST(0));
+    XSRETURN(1);
+}
+
+XS(XS_builtin_class_object_from_hash)
+{
+    dXSARGS;
+    if (items != 2)
+        croak_xs_usage(cv, "hashref, classname");
+    ST(0) = class_object_from_hash(ST(0), ST(1));
+    XSRETURN(1);
+}
+
 /* These pp_ funcs all need to use dXSTARG */
 
 PP(pp_refaddr)
@@ -651,6 +672,8 @@ static const struct BuiltinFuncDescriptor builtins[] = {
     { "created_as_number", NO_BUNDLE, true, &XS_builtin_created_as_number, &ck_builtin_func1, 0 },
 
     { "load_module", NO_BUNDLE, true, &XS_builtin_load_module, &ck_builtin_func1, 0 },
+    { "class_object_to_hash", NO_BUNDLE, true, &XS_builtin_class_object_to_hash, NULL, 0 },
+    { "class_object_from_hash", NO_BUNDLE, true, &XS_builtin_class_object_from_hash, NULL, 0 },
     /* list functions */
     { "indexed",          SHORTVER(5,39), false, &Perl_XS_builtin_indexed,     &ck_builtin_funcN, 0 },
     { "export_lexically",      NO_BUNDLE, true,  &XS_builtin_export_lexically, NULL,              0 },

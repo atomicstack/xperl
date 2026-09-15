@@ -90,6 +90,14 @@ C<builtin::class_object_to_hash> API and emits code using
 C<builtin::class_object_from_hash> to recreate the object without invoking
 its constructor.  Field values are shared rather than recursively copied.
 
+=head2 Data::Dumper supports class objects
+
+C<Data::Dumper> can now dump objects created by the experimental C<class>
+feature.  It represents their fields with the experimental
+C<builtin::class_object_to_hash> API and emits code using
+C<builtin::class_object_from_hash> to recreate the object without invoking
+its constructor.  Field values are shared rather than recursively copied.
+
 =head1 Security
 
 XXX Any security-related notices go here. In particular, any security
