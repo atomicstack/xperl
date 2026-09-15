@@ -1131,6 +1131,7 @@ Perl_op_clear(pTHX_ OP *o)
     case OP_ENTEREVAL:	/* Was holding hints. */
     case OP_ARGDEFELEM:	/* Was holding signature index. */
     case OP_ITER:       /* Was holding multivariable itervar count */
+    case OP_DISPATCHCOERCE: /* Pattern marker or slurp minimum. */
         o->op_targ = 0;
         break;
     default:
@@ -1417,6 +1418,14 @@ Perl_op_clear(pTHX_ OP *o)
             /* Every item in aux is a UV, so nothing in it to free */
             PerlMemShared_free(aux);
         }
+        break;
+
+    case OP_DISPATCH_ON:
+        Perl_dispatch_pattern_free(aTHX_ cUNOP_AUXo->op_aux);
+        break;
+
+    case OP_DISPATCH:
+        Perl_dispatch_on_free(aTHX_ cUNOP_AUXo->op_aux);
         break;
     }
 
@@ -1798,6 +1807,7 @@ Perl_alloc_LOGOP(pTHX_ I32 type, OP *first, OP* other)
     OpTYPE_set(logop, type);
     logop->op_first = first;
     logop->op_other = other;
+    logop->op_redoop = NULL;
     if (first)
         logop->op_flags = OPf_KIDS;
     while (kid && OpHAS_SIBLING(kid))
@@ -2131,7 +2141,8 @@ Perl_scalar(pTHX_ OP *o)
                     next_kid = kid;
                     goto do_next;
                 }
-                else if (kid->op_type == OP_LEAVEWHEN)
+                else if (kid->op_type == OP_LEAVEWHEN
+                         || kid->op_type == OP_LEAVEDISPATCHON)
                     scalar(kid);
                 else
                     scalarvoid(kid);
@@ -2221,7 +2232,9 @@ Perl_scalarvoid(pTHX_ OP *arg)
         want = o->op_flags & OPf_WANT;
         if ((want && want != OPf_WANT_SCALAR)
             || (PL_parser && PL_parser->error_count)
-            || o->op_type == OP_RETURN || o->op_type == OP_REQUIRE || o->op_type == OP_LEAVEWHEN)
+            || o->op_type == OP_RETURN || o->op_type == OP_REQUIRE
+            || o->op_type == OP_LEAVEWHEN
+            || o->op_type == OP_LEAVEDISPATCHON)
         {
             goto get_next_op;
         }
@@ -2502,6 +2515,7 @@ Perl_scalarvoid(pTHX_ OP *arg)
         case OP_COND_EXPR:
         case OP_ENTERGIVEN:
         case OP_ENTERWHEN:
+        case OP_ENTERDISPATCHON:
             next_kid = OpSIBLING(cUNOPo->op_first);
         break;
 
@@ -2523,6 +2537,7 @@ Perl_scalarvoid(pTHX_ OP *arg)
         case OP_LINESEQ:
         case OP_LEAVEGIVEN:
         case OP_LEAVEWHEN:
+        case OP_LEAVEDISPATCHON:
         case OP_ONCE:
         kids:
             next_kid = cLISTOPo->op_first;
@@ -2716,7 +2731,8 @@ Perl_list(pTHX_ OP *o)
                     next_kid = kid;
                     goto do_next;
                 }
-                else if (kid->op_type == OP_LEAVEWHEN)
+                else if (kid->op_type == OP_LEAVEWHEN
+                         || kid->op_type == OP_LEAVEDISPATCHON)
                     list(kid);
                 else
                     scalarvoid(kid);
@@ -9535,14 +9551,14 @@ Perl_newARGDEFELEMOP(pTHX_ I32 flags, OP *expr, I32 argindex)
  *     <2> aassign[t4] sKS
  *       <1> ex-list lK
  *         <0> pushmark s
- *         </> match()[$x:1,4] lK
+ *         </> on()[$x:1,4] lK
  *           <|> regcomp(other->8) sK
  *             <0> padsv[$pat:2,4] s
  *       <1> ex-list lK
  *         <0> pushmark s
  *         <0> stub lPRM*
  * into just:
- *     </> match()[$x:1,4] lK
+ *     </> on()[$x:1,4] lK
  *       <|> regcomp(other->8) sK
  *         <0> padsv[$pat:2,4] s
  */
@@ -9892,6 +9908,12 @@ Perl_newSTATEOP(pTHX_ I32 flags, char *label, OP *o)
                 SvIV_set(*svp, PTR2IV(cop));
             }
         }
+    }
+
+    if (o && o->op_type == OP_LEAVEDISPATCH && (o->op_flags & OPf_KIDS)) {
+        OP * const enterop = cUNOPx(o)->op_first;
+        if (enterop && enterop->op_type == OP_ENTERDISPATCH)
+            cLOGOPx(enterop)->op_redoop = (OP *)cop;
     }
 
     if (flags & OPf_SPECIAL)
@@ -10279,7 +10301,7 @@ Perl_newCONDOP(pTHX_ I32 flags, OP *first, OP *trueop, OP *falseop)
     }
 
     if ((cstop = search_const(first))) {
-        /* Left or right arm of the conditional?  */
+        /* Left or right clause of the conditional?  */
         const bool left = SvTRUE(cSVOPx(cstop)->op_sv);
         OP *live = left ? trueop : falseop;
         OP *const dead = left ? falseop : trueop;
@@ -11166,22 +11188,21 @@ S_ref_array_or_hash(pTHX_ OP *cond)
         return cond;
 }
 
-/* These construct the optree fragments representing given()
-   and when() blocks.
+/* Construct generic enter/body/leave optree wiring for block-like
+   constructs.  The opcode-specific runtime semantics belong to the
+   callers; this helper only links the tree.
 
-   entergiven and enterwhen are LOGOPs; the op_other pointer
+   The op_other pointer
    points up to the associated leave op. We need this so we
-   can put it in the context and make break/continue work.
-   (Also, of course, pp_enterwhen will jump straight to
-   op_other if the match fails.)
+   can put it in the context.
  */
 
 static OP *
-S_newGIVWHENOP(pTHX_ OP *cond, OP *block,
+S_newBLOCKOP(pTHX_ OP *cond, OP *block,
                    I32 enter_opcode, I32 leave_opcode,
                    PADOFFSET entertarg)
 {
-    PERL_ARGS_ASSERT_NEWGIVWHENOP;
+    PERL_ARGS_ASSERT_NEWBLOCKOP;
 
     LOGOP *enterop;
     OP *o;
@@ -11191,6 +11212,7 @@ S_newGIVWHENOP(pTHX_ OP *cond, OP *block,
     enterop = alloc_LOGOP(enter_opcode, block, NULL);
     enterop->op_targ = 0;
     enterop->op_private = 0;
+    enterop->op_redoop = NULL;
 
     o = newUNOP(leave_opcode, 0, (OP *) enterop);
 
@@ -11212,6 +11234,42 @@ S_newGIVWHENOP(pTHX_ OP *cond, OP *block,
     CHECKOP(enter_opcode, enterop); /* Currently does nothing, since
                                        entergiven and enterwhen both
                                        use ck_null() */
+
+    enterop->op_next = LINKLIST(block);
+    block->op_next = enterop->op_other = o;
+
+    return o;
+}
+
+/* Construct a dispatch-on clause without routing its construction through the
+ * legacy given/when block builder.  Keep this mechanically similar to the
+ * generic builder above, but deliberately independent: dispatch owns its
+ * optree shape and can evolve without changing switch semantics. */
+static OP *
+S_new_on_block_op(pTHX_ OP *cond, OP *block)
+{
+    LOGOP *enterop;
+    OP *o;
+
+    enterop = alloc_LOGOP(OP_ENTERDISPATCHON, block, NULL);
+    enterop->op_targ = 0;
+    enterop->op_private = 0;
+    enterop->op_redoop = NULL;
+
+    o = newUNOP(OP_LEAVEDISPATCHON, 0, (OP *) enterop);
+
+    if (cond) {
+        op_sibling_splice((OP *)enterop, NULL, 0, scalar(cond));
+        o->op_next = LINKLIST(cond);
+        cond->op_next = (OP *)enterop;
+    }
+    else {
+        enterop->op_flags |= OPf_SPECIAL;
+        o->op_flags |= OPf_SPECIAL;
+        o->op_next = (OP *)enterop;
+    }
+
+    CHECKOP(OP_ENTERDISPATCHON, enterop);
 
     enterop->op_next = LINKLIST(block);
     block->op_next = enterop->op_other = o;
@@ -11273,6 +11331,8 @@ S_looks_like_bool(pTHX_ const OP *o)
 
         case OP_SMARTMATCH:
 
+        case OP_DISPATCH_ON:
+
         case OP_FTRREAD:  case OP_FTRWRITE: case OP_FTREXEC:
         case OP_FTEREAD:  case OP_FTEWRITE: case OP_FTEEXEC:
         case OP_FTIS:     case OP_FTEOWNED: case OP_FTROWNED:
@@ -11330,11 +11390,50 @@ Perl_newGIVENOP(pTHX_ OP *cond, OP *block, PADOFFSET defsv_off)
     PERL_UNUSED_ARG(defsv_off);
 
     assert(!defsv_off);
-    return newGIVWHENOP(
+    return S_newBLOCKOP(aTHX_
         ref_array_or_hash(cond),
         block,
         OP_ENTERGIVEN, OP_LEAVEGIVEN,
         0);
+}
+
+/*
+=for apidoc newDISPATCHOP
+
+Constructs and returns an op tree expressing an experimental C<dispatch>
+statement.  C<cond> supplies the subject expression and C<block> supplies
+the dispatch body; both are consumed by this function and become part of the
+constructed op tree.  The resulting tree uses the dedicated case execution
+context and has no given/when fall-through semantics.
+
+=cut
+*/
+
+OP *
+Perl_newDISPATCHOP(pTHX_ OP *cond, OP *block)
+{
+    PERL_ARGS_ASSERT_NEWDISPATCHOP;
+
+    return S_newBLOCKOP(aTHX_ cond, block, OP_ENTERDISPATCH, OP_LEAVEDISPATCH, 0);
+}
+
+/*
+=for apidoc newONOP
+
+Constructs and returns an op tree expressing a dispatch-on clause. C<cond>
+supplies the already-compiled data-shape test and C<block> supplies the clause
+body; both are consumed by this function.  The resulting tree has dedicated
+dispatch-on clause operations and does not apply given/when semantics.
+
+=cut
+*/
+
+OP *
+Perl_newONOP(pTHX_ OP *cond, OP *block)
+{
+    PERL_ARGS_ASSERT_NEWONOP;
+
+    return S_new_on_block_op(aTHX_ cond, block);
 }
 
 /*
@@ -11366,7 +11465,7 @@ Perl_newWHENOP(pTHX_ OP *cond, OP *block)
                 scalar(ref_array_or_hash(cond)));
     }
 
-    return newGIVWHENOP(cond_op, block, OP_ENTERWHEN, OP_LEAVEWHEN, 0);
+    return S_newBLOCKOP(aTHX_ cond_op, block, OP_ENTERWHEN, OP_LEAVEWHEN, 0);
 }
 
 /*
@@ -17219,6 +17318,7 @@ Perl_core_prototype(pTHX_ SV *sv, const char *name, const int code,
     case KEY_values:  retsetpvs("\\[%@]", OP_VALUES);
     case KEY_each:    retsetpvs("\\[%@]", OP_EACH);
     case KEY_pos:     retsetpvs(";\\[$*]", OP_POS);
+    case KEY___SUB__: retsetpvs("", OP_RUNCV);
     case KEY___FILE__: case KEY___LINE__: case KEY___PACKAGE__:
         /* special case:
            0 means "no actual op, but can be emulated using caller()"

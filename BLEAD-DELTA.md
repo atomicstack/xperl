@@ -196,8 +196,63 @@ The behavior is documented in `pod/perlnamespace.pod`, with related syntax,
 builtin, experimental-status, diagnostic, and release documentation updated.
 The namespace and bootstrap tests cover the implementation.
 
+### `-E` enables the XPerl experimental surface
+
+The `-E` command-line switch now enables `feature ':all'` and imports
+`builtin ':all'`. This makes the branch's experimental keywords and builtin
+functions available directly in one-liners and command-line programs, while
+preserving the ordinary `-e` behavior. Experimental functions retain their
+normal warnings. The behavior is documented in `pod/perlrun.pod` and covered
+by the command-line regression tests.
+
+### Dispatch/on data-shape matching
+
+The experimental `dispatch_on` feature adds a conditional construct for values
+whose shape matters. A `dispatch` evaluates one subject and considers ordered
+`on` clauses from top to bottom. The first matching clause runs, and the outer
+dispatch body may contain only dispatch-on clauses. A wildcard `on (_)` is the
+usual default. Without a successful clause, `dispatch` returns `undef` in
+scalar context and an empty list in list context.
+
+The pattern inside `on (...)` is a data-shape language rather than an ordinary
+Perl expression. It supports scalar literals, arrays, hashes, nested shapes,
+class-qualified objects, regular-expression criteria, typed numeric criteria,
+reference/value criteria, tails, and open shapes. Scalar names introduce
+clause-local bindings, while `^` pins existing values. An optional
+`if` introduces an unrestricted Perl guard that runs after the shape matches.
+
+Bindings are discarded when a shape or guard fails, but closures may retain
+them after the clause ends. Duplicate capture names, unsupported or ambiguous
+syntax, invalid regex constructs, impossible slurp combinations, and repeated
+constant keys are rejected explicitly rather than silently reinterpreted.
+Pins preserve reference identity and undefined-value distinctions; captured
+references preserve identity and tail captures do not alias source slots.
+
+Object shapes inspect blessed references structurally without invoking
+constructors or arbitrary methods. Native class objects are supported, while
+inheritance and role matching remain reserved for future pattern forms. Simple
+constant-only dispatches may use specialized linear, binary-search, or hash
+dispatch, but source order and first-match semantics remain unchanged. This
+feature is independent of the older `given`/`when` mechanism.
+
+The reference and tutorial are in `pod/perldispatchon.pod` and
+`pod/perldispatchontut.pod`; `pod/perlsyn.pod`, `pod/perldiag.pod`,
+`pod/perlexperiment.pod`, and `pod/perldelta.pod` cover syntax, diagnostics,
+experimental status, and release notes. Compiler and runtime behavior is
+covered by the dispatch-matching tests and the associated planning notes.
+
+## Generated and platform integration
+
+The feature work changes keywords, features, opcodes, embedding declarations,
+interpreter variables, parser grammar, warnings, and bundled distributions.
+The branch therefore includes regenerated parser and header artifacts,
+generated keyword and opcode files, generated POD indexes, and corresponding
+build and platform integration. These generated changes are consequences of
+the source changes above and must be regenerated when their inputs change.
+
 ## Compatibility posture
 
-Most existing Perl behavior is intentionally preserved where practical, and
-the branch contains compatibility fixes for feature-disabled code, `CORE`
-handling, threaded builds, and bundled distributions. 
+Existing Perl behavior is preserved where practical. The fork's experimental
+features and development policies may continue to evolve as the branch
+develops. Compatibility handling includes feature-disabled code paths,
+`CORE` behavior, threaded builds, and bundled distributions.

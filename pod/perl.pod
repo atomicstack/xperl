@@ -61,6 +61,8 @@ aux h2ph h2xs perlbug pl2pm pod2html pod2man splain xsubpp
     perldsc             Perl data structures intro
     perllol             Perl data structures: arrays of arrays
 
+    perldispatchontut     Dispatch and data-shape matching tutorial
+
     perlrequick         Perl regular expressions quick start
     perlretut           Perl regular expressions tutorial
 
@@ -91,6 +93,7 @@ aux h2ph h2xs perlbug pl2pm pod2html pod2man splain xsubpp
 =head2 Reference Manual
 
     perlsyn             Perl syntax: declarations, statements, comments
+    perldispatchon       Dispatch and data-shape matching reference
     perlnamespace       Perl lexical namespaces and package aliases
     perldata            Perl data structures
     perlop              Perl expressions: operators, precedence, string literals

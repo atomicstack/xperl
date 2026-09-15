@@ -754,6 +754,7 @@ static bool S_parse_version(const char *vstr, const char *vend, UV *vmajor, UV *
 }
 
 #define import_sym(sym)  S_import_sym(aTHX_ sym)
+static bool S_cv_is_builtin(pTHX_ CV *cv);
 static void S_import_sym(pTHX_ SV *sym)
 {
     SV *ampname = sv_2mortal(newSVpvf("&%" SVf, SVfARG(sym)));
@@ -762,6 +763,16 @@ static void S_import_sym(pTHX_ SV *sym)
     CV *cv = get_cv(SvPV_nolen(fqname), SvUTF8(fqname) ? SVf_UTF8 : 0);
     if(!cv)
         croak(builtin_not_recognised, sym);
+
+    /* A version declaration can import a builtin bundle before -E's
+     * implicit builtin ':all'.  Re-importing the same lexical function is
+     * harmless and must not produce a duplicate-declaration warning. */
+    {
+        PADOFFSET off = pad_findmy_sv(ampname, 0);
+        if (off != NOT_IN_PAD
+            && S_cv_is_builtin(aTHX_ (CV *)PL_curpad[off]))
+            return;
+    }
 
     export_lexical(ampname, (SV *)cv);
 }
@@ -818,6 +829,13 @@ XS(XS_builtin_import)
             croak(builtin_not_recognised, sym);
 
         if(sympv[0] == ':') {
+            if (strEQ(sympv, ":all")) {
+                for (int j = 0; builtins[j].name; j++)
+                    import_sym(newSVpvn_flags(builtins[j].name,
+                                               strlen(builtins[j].name),
+                                               SVs_TEMP));
+                continue;
+            }
             UV vmajor, vminor;
             if(!S_parse_version(sympv + 1, sympv + symlen, &vmajor, &vminor))
                 croak("Invalid version bundle %" SVf_QUOTEDPREFIX, sym);

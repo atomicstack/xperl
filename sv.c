@@ -3333,7 +3333,7 @@ Perl_sv_2pv_flags(pTHX_ SV *const sv, STRLEN *const lp, const U32 flags)
            but don't set SVf_POK. Hence if a value is SVf_IOK|SVf_POK then it
            originated as "42", whereas if it's SVf_IOK then it originated as 42.
            (ignore SVp_IOK and SVp_POK)
-           The SvPV macros are now updated to recognise this specific case
+           The SvPV macros are now updated to recognise this specific dispatch
            (and that there isn't overloading or magic that could alter the
            cached value) and so return the cached value immediately without
            re-entering this function, getting back here to this block of code,
@@ -16696,10 +16696,21 @@ Perl_cx_dup(pTHX_ PERL_CONTEXT *cxs, I32 ix, I32 max, CLONE_PARAMS* param)
             case CXt_GIVEN:
                 ncx->blk_givwhen.defsv_save =
                                 sv_dup_inc(ncx->blk_givwhen.defsv_save, param);
+                ncx->blk_givwhen.on_bindings =
+                    av_dup_inc(ncx->blk_givwhen.on_bindings, param);
+                break;
+            case CXt_DISPATCH:
+                ncx->blk_dispatch.defsv_save =
+                                sv_dup_inc(ncx->blk_dispatch.defsv_save, param);
+                ncx->blk_dispatch.on_bindings =
+                    av_dup_inc(ncx->blk_dispatch.on_bindings, param);
+                ncx->blk_dispatch.committed_bindings =
+                    av_dup_inc(ncx->blk_dispatch.committed_bindings, param);
                 break;
             case CXt_BLOCK:
             case CXt_NULL:
             case CXt_WHEN:
+            case CXt_DISPATCH_ON:
             case CXt_DEFER:
                 break;
             }

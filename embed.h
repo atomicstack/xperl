@@ -28,12 +28,17 @@
 #   undef __attribute__unused_unless_debugging__
 #   undef ALIGNED_TYPE_NAME
 #   undef AMGf_no_GETMAGIC
+#   undef blk_dispatch
+#   undef blk_dispatch_on
 #   undef CC_MAGICAL_
 #   undef CC_UNDERSCORE_
 #   undef compose_origins
 #   undef CvGENERATOR
 #   undef CvGENERATOR_off
 #   undef CvGENERATOR_on
+#   undef DISPATCH_ON_AUX_MAGIC
+#   undef DISPATCH_ON_NO_CLAUSE
+#   undef DISPATCH_PATTERN_AUX_MAGIC
 #   undef do_aexec
 #   undef EMULATE_THREAD_SAFE_LOCALES
 #   undef F_atan2_amg
@@ -54,12 +59,28 @@
 #   undef isIDCONT_lazy_if_safe
 #   undef KEY___NAMESPACE__
 #   undef KEY_as
+#   undef KEY_DefinedVal
+#   undef KEY_dispatch
 #   undef KEY_equ
+#   undef KEY_FALSE
+#   undef KEY_Float
+#   undef KEY_FloatStr
 #   undef KEY_gen
 #   undef KEY_implements
+#   undef KEY_Int
+#   undef KEY_IntStr
 #   undef KEY_namespace
 #   undef KEY_neu
+#   undef KEY_Num
+#   undef KEY_NumEq
+#   undef KEY_NumStr
+#   undef KEY_ObjectVal
+#   undef KEY_on
+#   undef KEY_RefVal
 #   undef KEY_role
+#   undef KEY_ScalarVal
+#   undef KEY_Strict
+#   undef KEY_TRUE
 #   undef KEY_yield
 #   undef MGv2f_SCALARVALUE_AUTOPROPAGATE
 #   undef MGv2f_WITH_KEYHEK
@@ -458,6 +479,7 @@
 # define newCVREF(a,b)                          Perl_newCVREF(aTHX_ a,b)
 # define newDEFEROP(a,b)                        Perl_newDEFEROP(aTHX_ a,b)
 # define newDEFSVOP()                           Perl_newDEFSVOP(aTHX)
+# define newDISPATCHOP(a,b)                     Perl_newDISPATCHOP(aTHX_ a,b)
 # define newFORM(a,b,c)                         Perl_newFORM(aTHX_ a,b,c)
 # define newFOROP(a,b,c,d,e)                    Perl_newFOROP(aTHX_ a,b,c,d,e)
 # define newGIVENOP(a,b,c)                      Perl_newGIVENOP(aTHX_ a,b,c)
@@ -475,6 +497,7 @@
 # define newMETHOP_named(a,b,c)                 Perl_newMETHOP_named(aTHX_ a,b,c)
 # define newMYSUB(a,b,c,d,e)                    Perl_newMYSUB(aTHX_ a,b,c,d,e)
 # define newNULLLIST()                          Perl_newNULLLIST(aTHX)
+# define newONOP(a,b)                           Perl_newONOP(aTHX_ a,b)
 # define newOP(a,b)                             Perl_newOP(aTHX_ a,b)
 # define newPADNAMELIST(a)                      Perl_newPADNAMELIST(aTHX_ a)
 # define newPADNAMEouter(a)                     Perl_newPADNAMEouter(aTHX_ a)
@@ -1079,6 +1102,12 @@
 #   define defelem_target(a,b)                  Perl_defelem_target(aTHX_ a,b)
 #   define delete_eval_scope()                  Perl_delete_eval_scope(aTHX)
 #   define die_unwind(a)                        Perl_die_unwind(aTHX_ a)
+#   define dispatch_on_compile(a)               Perl_dispatch_on_compile(aTHX_ a)
+#   define dispatch_on_free(a)                  Perl_dispatch_on_free(aTHX_ a)
+#   define dispatch_pattern_compile(a)          Perl_dispatch_pattern_compile(aTHX_ a)
+#   define dispatch_pattern_free(a)             Perl_dispatch_pattern_free(aTHX_ a)
+#   define dispatch_pattern_prepare(a)          Perl_dispatch_pattern_prepare(aTHX_ a)
+#   define dispatch_pattern_preserve_concat(a)  Perl_dispatch_pattern_preserve_concat(aTHX_ a)
 #   define do_aexec5(a,b,c,d,e)                 Perl_do_aexec5(aTHX_ a,b,c,d,e)
 #   define do_dump_pad(a,b,c,d)                 Perl_do_dump_pad(aTHX_ a,b,c,d)
 #   define do_eof(a)                            Perl_do_eof(aTHX_ a)
@@ -1616,7 +1645,7 @@
 #     define looks_like_bool(a)                 S_looks_like_bool(aTHX_ a)
 #     define modkids(a,b)                       S_modkids(aTHX_ a,b)
 #     define move_proto_attr(a,b,c,d)           S_move_proto_attr(aTHX_ a,b,c,d)
-#     define newGIVWHENOP(a,b,c,d,e)            S_newGIVWHENOP(aTHX_ a,b,c,d,e)
+#     define newBLOCKOP(a,b,c,d,e)              S_newBLOCKOP(aTHX_ a,b,c,d,e)
 #     define newMETHOP_internal(a,b,c,d)        S_newMETHOP_internal(aTHX_ a,b,c,d)
 #     define new_logop(a,b,c,d)                 S_new_logop(aTHX_ a,b,c,d)
 #     define new_slab(a,b)                      S_new_slab(aTHX_ a,b)
@@ -2348,6 +2377,8 @@
 # endif
 # if !defined(PERL_NO_INLINE_FUNCTIONS)
 #   define cx_popblock(a)                       Perl_cx_popblock(aTHX_ a)
+#   define cx_popdispatch(a)                    Perl_cx_popdispatch(aTHX_ a)
+#   define cx_popdispatchon(a)                  Perl_cx_popdispatchon(aTHX_ a)
 #   define cx_popeval(a)                        Perl_cx_popeval(aTHX_ a)
 #   define cx_popformat(a)                      Perl_cx_popformat(aTHX_ a)
 #   define cx_popgiven(a)                       Perl_cx_popgiven(aTHX_ a)
@@ -2357,6 +2388,8 @@
 #   define cx_popsub_common(a)                  Perl_cx_popsub_common(aTHX_ a)
 #   define cx_popwhen(a)                        Perl_cx_popwhen(aTHX_ a)
 #   define cx_pushblock(a,b,c,d)                Perl_cx_pushblock(aTHX_ a,b,c,d)
+#   define cx_pushdispatch(a,b)                 Perl_cx_pushdispatch(aTHX_ a,b)
+#   define cx_pushdispatchon(a)                 Perl_cx_pushdispatchon(aTHX_ a)
 #   define cx_pusheval(a,b,c)                   Perl_cx_pusheval(aTHX_ a,b,c)
 #   define cx_pushformat(a,b,c,d)               Perl_cx_pushformat(aTHX_ a,b,c,d)
 #   define cx_pushgiven(a,b)                    Perl_cx_pushgiven(aTHX_ a,b)

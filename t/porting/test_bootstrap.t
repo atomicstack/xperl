@@ -20,9 +20,36 @@ my %exceptions = (
     filter_exception => "require './test.pl'",
     hints => "require './test.pl'",
     parser => 'use DieDieDie',
- parser_run => "require './test.pl'",
- proto => 'use strict',
+    parser_run => "require './test.pl'",
+    proto => 'use strict',
     namespaces => qr/^\s*(?:use|require)\s+.*;\s*$/m,
+    dispatch_on => qr/^\s*use (?:v5\.45\.3|strict|warnings[^;]*|overload[^;]*|Scalar::Util[^;]*|dispatch::Predicates|experimental 'class'|feature (?:'dispatch_on'|qw\(dispatch_on (?:namespaces|signatures)\))|builtin qw\(true false\));/m,
+    dispatch_on_examples => qr/^\s*(?:require '\.\/test\.pl'|use (?:feature 'dispatch_on'|dispatch::Predicates|builtin qw\(true false\)));/m,
+    dispatch_on_hardening => qr/^\s*(?:require (?:'\.\/test\.pl'|Scalar::Util)|use (?:feature 'dispatch_on'|dispatch::Predicates|overload[^;]*));/m,
+    dispatch_on_hardening_tail => qr{
+        ^\s*(?:
+            require\s+(?:'\./test\.pl'|Scalar::Util)
+            | use\s+(?:
+                strict | utf8 | experimental\s+'class' | dispatch::Predicates | overload[^;]*
+                | Scalar::Util[^;]*
+                | warnings\s+FATAL\s*=>\s*'syntax'
+                | feature\s+(?:'dispatch_on'|qw\(dispatch_on\s+say(?:\s+class)?\))
+                | builtin\s+qw\(true\s+false\)
+            )
+        );
+    }mx,
+    dispatch_on_numeric => qr/^\s*(?:require '\.\/test\.pl'|use (?:strict|warnings|dispatch::Predicates|feature '(?:dispatch_on|signatures)'));/m,
+    dispatch_on_threads => qr/^\s*(?:require '\.\/test\.pl'|use feature 'dispatch_on');/m,
+    dispatch_on_review => qr{
+        ^\s*(?:
+            require\s+'\./test\.pl'
+            | use\s+(?:
+                generator | bytes | utf8 | feature\s+'class' | dispatch::Predicates | overload[^;]*
+                | Scalar::Util[^;]*
+                | builtin\s+qw\((?:weaken|true\s+false)\)
+            )
+        );
+    }mx,
  );
 
 while (my $file = <$fh>) {

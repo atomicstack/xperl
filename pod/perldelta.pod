@@ -27,6 +27,181 @@ here, but most should go in the L</Performance Enhancements> section.
 
 [ List each enhancement as a =head2 entry ]
 
+=head2 Experimental data-shape matching
+
+The documentation is now split into L<perldispatchontut>, a progressive
+tutorial, and L<perldispatchon>, the detailed language reference.
+
+Declaring the same capture name twice within one dispatch-on clause is now a
+compile-time error, including across nested shapes and different capture forms.
+Repeated pins remain valid, and regex named-capture rules are unchanged. Use distinct
+capture names and a guard to require equal values.
+
+Empty array and hash shapes, C<on ([])> and C<on ({})>, now match
+empty containers. They also work in nested and class-qualified shapes.
+
+Duplicate named captures in separate shape regexes now consistently bind
+from the first regex in source order, even when constraint scheduling changes
+execution order. Hash wildcard values check key presence without fetching
+the value, matching the capture-free behavior of array wildcards.
+
+Structural requirements now precede capture-only reads, including in nested
+shapes. Literal constraints are checked before other requirements at each
+aggregate level. This changes the observable order of tied and overloaded
+operations and pattern calls; see L<perldispatchon>.
+
+Tentative captures and traversal values are retained across callbacks.
+An exception-safe owner releases captured values on normal temporary cleanup
+or unwinding. Retention preserves scalar lifetime, not a frozen value.
+
+Mixed signed/unsigned dispatch bounds no longer reject valid unsigned
+matches. Tied hash shapes check key existence before fetching a value, so
+a missing key cannot satisfy an C<undef> value shape.
+
+Array tail captures copy element values instead of aliasing source slots.
+Pinned comparisons distinguish C<undef> from
+the empty string, while two undefined values still compare equal.
+
+Dispatch/on now consistently preserves string-versus-number distinctions
+after numeric caching, handles sparse array slots as C<undef>, and compares
+equivalent byte and UTF-8 string representations correctly. Pinned
+references use identity. Malformed hash shapes are diagnosed during
+compilation. Subject and native field-view ownership fixes prevent leaks,
+and scalar-reference shapes reject non-scalar referents without attempting
+invalid copies.
+
+Capture names repeated across separate regexes in one dispatch-on clause now
+produce a C<syntax> warning: only the first regex supplies the lexical
+binding.  Duplicate names within a single regex retain their usual behavior.
+
+The experimental C<dispatch_on> feature uses the C<dispatch> and C<on>
+keywords. These replace the earlier experimental C<case> and C<match> spellings
+to avoid conflicts with syntax planned for Perl core. The feature adds ordered
+C<on> clauses. Data shapes can match scalar values, nested array and hash
+references, regular expressions, wildcards, and pinned lexical values. The
+dispatch subject is an ordinary Perl expression. Shared predicates are
+provided by C<dispatch::Predicates>; user-defined predicates are ordinary
+subs whose first signature parameter is named C<$subject>.
+Predicate arguments are constants or pinned values, and captures use
+C<$name = PATTERN>. The standard numeric predicates are C<Int>, C<Integer>,
+C<Num>, and C<Number>. See L<perldispatchon> and
+L<perlsyn/Experimental Data-Shape Matching> for the current experimental
+design and limitations. A subject can be named with C<dispatch my $name (EXPR)>;
+an unnamed dispatch temporarily localizes C<$_>. C<redo> retries matching against
+the current subject without reevaluating C<EXPR>, while C<next> and C<last>
+leave the dispatch. The former C<with> clause and subject C<as> syntax are not
+supported. Existing lexical values are pinned directly with C<^$name>.
+Pattern variables have one consistent rule: a bare name introduces a capture,
+even if it matches the spelling of the dispatch subject. Prefix the name with
+C<^> to compare against an existing lexical value.
+
+Data shapes may also use zero-argument function and method calls as scalar
+values. Calls are made in scalar context when a dispatch-on clause is tried.
+Calls with arguments are predicates when the called sub has a leading
+C<$subject> signature parameter. Repeating a constant data shape
+produces a C<syntax> warning because the later clause can never match; the first clause
+remains selected.  The warning includes the repeated constant and its source
+location.
+
+Captures local to a dispatch-on clause retain ordinary lexical lifetime when
+kept alive by closures or references, including when a guard rejects that
+clause. Nested regex shapes bind each regex's named captures independently.
+Array shapes
+and capture sets no longer have a fixed 64-element limit.  Slurp minima are
+checked against C<2**32 - 1> before decimal accumulation can overflow.
+
+Duplicate constant keys in hash shapes are compile-time errors.  Runtime
+key collisions do not raise duplicate-key errors; exact hash matching
+checks coverage of distinct keys rather than counting syntactic pairs.
+
+Static regular expressions used by open array or hash shapes are compiled once
+and reused for each candidate.  Regex code blocks, C<(?{ ... })> and
+C<(??{ ... })>, are currently rejected while a dispatch pattern is compiled so
+that their side effects cannot be silently discarded.  Unicode and byte-string
+behavior remains under the control of the regular-expression engine.  Dynamic
+regular expressions, such as C</thing-$re-thing/>, are also rejected in a
+data-shape pattern; use an ordinary Perl guard after C<if> when the regular
+expression must be built or interpolated at run time.
+
+Array data shapes may capture a final tail with C<@name>, or require a minimum
+tail length with C<@name:N>. Shared predicates include C<RefVal>,
+C<NonRefVal>, and C<BlessedVal>; write captures as assignments such as
+C<$reference = RefVal()>. A bare target name remains a capture even if a
+same-named lexical exists outside the dispatch.
+
+Concatenated string shapes accept double-quoted constant fragments, including
+Perl's normal escape semantics. Variable interpolation in those strings is
+rejected; write captures as separate concatenation operands instead.
+
+Literal and pinned scalar values now select numeric or string comparison from
+their Perl type and flags. Numeric-only values use numeric C<==> semantics;
+string-bearing and ambiguous dual-valued scalars use string C<eq> semantics.
+The exact form C<0 + PATTERN> forces numeric comparison, while stringifying a
+pin can use the existing concatenation form C<"" . ^$name>. Literal runs in a
+concatenation pattern are combined, and captures must have a non-empty literal
+boundary between them. Numeric conversion during matching does not emit
+conversion warnings: a comparison that would produce an uninitialized or
+non-numeric conversion warning is a non-match, even when warnings are disabled.
+Warnings from overloaded comparison code remain visible.
+
+Data-shape patterns can now capture a value and constrain it with a nested
+pattern using C<$name = PATTERN>. The name is a capture local to the
+dispatch-on clause, not an assignment to an existing variable. The nested
+pattern must match for the clause to succeed.
+
+Blessed references may use a class-qualified data shape.  Hash object shapes
+check quoted field names, array object shapes check positional values, and a
+reference object shape can bind a scalar referent.  Class checks use Perl's
+C<isa> behavior, so subclasses match and an overridden C<isa> method
+participates in the check.  After the class check succeeds, patterns inspect
+the object structure directly without calling constructors or accessors.
+Native Perl class objects backed by the class field-map representation are
+supported. Missing fields do not match; tied or magical nested values use
+ordinary read semantics, and overload is used only when the selected pattern
+requires conversion.
+
+Class-qualified shapes introduce captures in the dispatch-on clause's lexical
+scope, including its guard.  Captures do not overwrite outer variables with
+the same names.  A defect that could select a class field's pad entry and
+crash when a capture shared its name has been fixed.
+
+Freeing an array-tail pattern no longer treats its minimum element count as
+a lexical pad index, which could crash during eval cleanup.
+
+An existing scalar can also be pinned directly in a data shape with the
+pattern-only C<^$name> form. Its current value is read when the pin is tested,
+and ordinary caret operators retain their normal meaning outside C<on>
+data shapes.
+
+String shapes may contain multiple unbound scalars inside literal
+concatenation, for example:
+
+    dispatch ($text) {
+        on ("a" . $first . "b" . $second . "c") {
+            say "first=$first second=$second";
+        }
+    }
+
+Captures are resolved from left to right using the shortest value bounded by
+the next literal or pinned fragment.  Empty captures are allowed.  Adjacent
+unpinned captures, repeated capture names, and fragments separated only by an
+empty literal are errors. A name written with the pattern-only C<^> prefix is
+a pinned existing lexical and must match its current value rather than capture
+new text. Concatenation supports only
+literal, capture, and pinned fragments; arithmetic, calls, and other
+unsupported expressions throw an exception.
+
+More generally, unsupported or ambiguous data-shape syntax is rejected
+explicitly.  It is never silently ignored, treated as a non-match, or
+reinterpreted as ordinary Perl code.  See L<perldispatchon> and L<perldiag>
+for the current rules and diagnostics.
+
+=head2 Lexical namespaces
+
+The experimental C<namespaces> feature provides lexical namespace prefixes,
+the C<namespace> declaration and block form, C<__NAMESPACE__>, and lexical
+package aliases using C<use ... as ...>.  See L<perlnamespace>.
+
 =head2 Localizable random number generators
 
 The new C<${^RNG}> variable can be localized to select a user-supplied random

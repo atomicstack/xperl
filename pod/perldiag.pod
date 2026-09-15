@@ -1091,6 +1091,178 @@ but then $foo no longer contains a glob.
 (F) You called C<continue>, but you're not inside a C<when>
 or C<default> block.
 
+=item dispatch-on clause outside a dispatch
+
+(F) A dispatch-on clause was executed without an enclosing C<dispatch> block.
+
+=item dispatch-on clauses are only allowed directly in a dispatch
+
+(F) A dispatch-on clause appeared outside the direct contents of a C<dispatch>
+block.
+
+=item dispatch named subject is not a scalar assignment
+
+(P) The compiler did not provide the expected scalar assignment for a named
+C<dispatch> subject. This indicates an internal compiler error.
+
+=item dispatch subject must be a scalar lexical
+
+(P) The compiler provided a non-lexical target for a named C<dispatch> subject.
+This indicates an internal compiler error.
+
+=item dispatch pattern calls must have no arguments
+
+(F) A function or method call used as a computed dispatch pattern value had
+arguments. A call with arguments must be a predicate, with a first signature
+parameter named C<$subject>.
+
+=item dispatch predicate arguments must be constants or pinned values
+
+(F) A predicate call in a dispatch pattern used an explicit argument that was
+not a constant, C<undef>, or a pinned scalar. Use C<^$name> to pass an
+existing lexical value.
+
+=item dispatch predicate has the wrong number of arguments
+
+(F) A predicate call in a dispatch pattern did not supply the number of
+arguments accepted by the subroutine signature, counting the implicit subject
+as its first argument.
+
+=item unsupported argument in dispatch predicate
+
+(P) The compiler could not parse the explicit arguments in a dispatch
+predicate call. This indicates an internal compiler error.
+
+=item invalid argument in dispatch predicate
+
+(P) The compiled dispatch predicate contains an unsupported argument node.
+This indicates an internal compiler error.
+
+=item dispatch pattern call is not a predicate
+
+(P) A call compiled as a dispatch predicate no longer refers to a subroutine
+whose first signature parameter is C<$subject>. This indicates an internal
+compiler error.
+
+=item NumEq() requires a literal argument in a dispatch-on pattern
+
+(F) The C<NumEq()> pattern criterion requires a literal argument.
+
+=item regex code blocks are not supported in dispatch patterns
+
+(F) A dispatch pattern regular expression contained a C<(?{ ... })> or
+C<(??{ ... })> code block.  These constructs are not currently supported in a
+dispatch pattern because their side effects cannot be safely defined when one
+compiled expression is applied to multiple candidates.
+
+=item dynamic regexes are only allowed as a guard condition
+
+(F) A dispatch data-shape regular expression contained runtime interpolation.
+Dynamic regular expression construction is not supported in a dispatch pattern.
+Put the regular expression in the ordinary Perl guard after C<if> instead.
+
+=item duplicate dispatch pattern constant %s will never match; duplicate at %s, first at %s
+
+(S syntax) A constant data-shape was repeated in a C<dispatch> block.  The first
+clause remains the one that can match; the later clause can never be selected.
+The diagnostic includes the repeated constant and its source location.
+
+=item dispatch pattern call has no callable target
+
+(F) A dispatch pattern call did not resolve to a callable function or method.
+
+=item unsupported dispatch pattern call
+
+(F) A dispatch pattern call used a form that is not supported. Use a
+zero-argument function call as a computed value, or define a predicate with a
+first signature parameter named C<$subject>.
+
+=item unsupported dispatch pattern method call
+
+(F) A dispatch pattern method call used a form that is not supported. Only
+statically named, zero-argument class-method calls are currently accepted.
+
+=item unsupported dispatch pattern expression
+
+(F) A dispatch pattern contained a Perl operator that is not part of the
+supported data-shape language.  Use a guard after C<if> for ordinary Perl
+computation.
+
+=item unsupported dispatch pattern concatenation expression
+
+(F) A concatenation data shape contained an operator or call that is not part
+of the supported concatenation language.  Use a guard after C<if> for ordinary
+Perl computation.
+
+=item unsupported dispatch pattern concatenation component
+
+(F) A component of a concatenation data shape could not be converted into a
+fixed string or a supported capture.  Use a supported literal, pinned value,
+or capture, or put ordinary Perl computation in a guard after C<if>.
+
+=item adjacent captures are not allowed in a dispatch pattern concatenation
+
+(F) Two unpinned captures were adjacent, or were separated only by an empty
+fragment.  The matcher needs a literal or pinned value to establish the
+boundary between captures.
+
+=item dispatch pattern captures must be separated by non-empty constant text
+
+(F) Two captures in a concatenation pattern do not have non-empty constant
+text between them. Add a literal separator or combine the captures.
+
+=item repeated capture names are not allowed in a dispatch pattern concatenation
+
+(F) The same unpinned capture target appeared more than once in one
+concatenation data shape.  Use distinct capture names or pin the repeated
+value explicitly.
+
+=item pattern assignment requires a scalar capture target
+
+(F) A pattern assignment target must be a scalar capture name. It cannot be a
+pin or a non-scalar capture.
+
+=item invalid object field pattern
+
+(F) An object data shape did not contain a valid field list.
+
+=item object ellipsis must follow field pairs
+
+(F) An object field data shape placed its ellipsis before a complete set of
+key/value pairs.
+
+=item object fields cannot follow an ellipsis
+
+(F) An object field data shape placed a field after its open-ended ellipsis.
+
+=item object field names must be constants
+
+(F) An object field data shape used a non-constant expression as a field name.
+
+=item object field pattern requires key/value pairs
+
+(F) An object field data shape ended after a field name without its value.
+
+=item object hash slurp must be the final pattern element and cannot use an ellipsis
+
+(F) A hash-tail capture in an object pattern must follow all field pairs and
+cannot be combined with an ellipsis.
+
+=item object hash slurp must be the final pattern element
+
+(F) A hash-tail capture in an object pattern must be the final element.
+
+=item invalid object pattern
+
+(F) A class-qualified object data shape did not contain a class and a valid
+shape.
+
+=item object pattern capture is not a clause lexical
+
+(F) An object data shape attempted to bind a field to a lexical that is not
+available to its dispatch-on clause.
+
+
 =item can't convert empty path
 
 (F) On Cygwin, you called a path conversion function with an empty path.
@@ -1675,6 +1847,89 @@ is not allowed.
 
 (F) The return statement was executed in mainline code, that is, where
 there was no subroutine call to return out of.  See L<perlsub>.
+
+=item pinned pattern value must be an existing scalar lexical
+
+(F) A caret-prefixed pattern value must name an existing scalar lexical.  The
+C<^> pinning modifier is available only inside a C<on> data shape.
+
+=item array pattern has invalid ellipsis placement
+
+(F) An array pattern contained too many ellipses for the supported pattern
+form.
+
+=item array pattern may contain only one slurp
+
+(F) An array pattern contained more than one slurpy target.
+
+=item array pattern ellipsis must be at an edge
+
+(F) An array pattern used an ellipsis anywhere other than at its beginning or
+end.
+
+=item array slurp must be the final pattern element and cannot use an ellipsis
+
+(F) An array slurpy target must be the final element of its pattern and cannot
+be combined with an ellipsis.
+
+=item array slurp minimum exceeds 2**32 - 1
+
+(F) The minimum length requested for an array slurpy target exceeds the
+supported maximum of C<2**32 - 1>.
+
+=item hash pattern may contain only one slurp
+
+(F) A hash data shape contained more than one hash-tail capture.
+
+=item hash slurp must be the final pattern element and cannot use an ellipsis
+
+(F) A hash-tail capture must be the final element of its pattern and cannot
+be combined with an ellipsis.
+
+=item duplicate capture %s in a dispatch-on clause
+
+(F) A capture name was declared more than once in a clause's data shape.
+Give the captures different names and compare them in a guard if needed.
+Repeated pinned values are allowed because they do not declare captures.
+Regex named captures follow their separate naming rules. See
+L<perldispatchon>.
+
+=item duplicate key "%s" in a dispatch hash pattern
+
+(F) A hash data shape specified the same constant key more than once.
+Each constant key must occur only once in that hash shape.  Keys in
+different nested hashes are checked independently.
+
+=item hash pattern may contain only one ellipsis
+
+(F) A hash pattern contained more than one ellipsis.
+
+=item hash pattern requires key/value pairs
+
+(F) A hash data shape has a key without a value, or uses an ellipsis where
+a value is required. Write complete key/value pairs before any trailing
+ellipsis. See L<perldispatchon/Hashes>.
+
+=item hash pattern keys must be constants, pins, or zero-argument calls
+
+(F) A hash data shape uses an unsupported key expression. An unpinned
+capture cannot supply a key: pin an existing scalar with C<^>,
+or supply a constant or zero-argument call. See L<perldispatchon/Hashes>.
+
+=item hash pattern ellipsis must be last
+
+(F) A hash pattern used an ellipsis anywhere other than at its end.
+
+=item missing compiled dispatch pattern
+
+(P) The dispatch matcher was executed without the compiled pattern representation
+created by the compiler.  This indicates an internal error.
+
+=item only dispatch-on clauses are allowed directly in a dispatch
+
+(F) A C<dispatch> body contained a statement that was not a dispatch-on
+clause, which begins with C<on>. Ordinary Perl statements can appear inside a
+dispatch-on clause, but not directly in the dispatch body.
 
 =item Can't return %s to lvalue scalar context
 
@@ -3330,6 +3585,11 @@ for instance C</(?{ s!!! })/>, which resulted in re-executing
 the same pattern, which is an infinite loop which is broken by
 throwing an exception.
 
+=item interpolated variables are not allowed in double-quoted dispatch patterns
+
+(F) A double-quoted string used as a dispatch pattern contained a variable
+interpolation. Use a separate concatenation operand for each capture or pin.
+
 =item Initialization of state variables in list currently forbidden
 
 (F) C<state> only permits initializing a single variable, specified
@@ -4615,6 +4875,15 @@ format) are considered the same; if a program uses $c only once
 but also uses any of the others it will not trigger this warning.
 Symbols beginning with an underscore and symbols using special
 identifiers (q.v. L<perldata>) are exempt from this warning.
+
+=item Named capture '%s' occurs in multiple regexes in a dispatch-on clause; only the first regex maps to its lexical variable; later captures are not visible through that variable
+
+(S syntax) Separate regular expressions in one dispatch pattern use
+the same named capture.  Only the first regex supplies the clause-local
+variable, even if its capture is C<undef>.  Use distinct names to make the
+other captures available as lexical variables.  This warning does not apply
+to repeated capture names within a single regex, which follow the usual
+C<%+> lookup rules.  See L<perldispatchon>.
 
 =item Named parameters in signatures are experimental
 
@@ -6921,7 +7190,7 @@ is not known.  The condition must be one of the following:
  (1) (2) ...        true if 1st, 2nd, etc., capture matched
  (<NAME>) ('NAME')  true if named capture matched
  (?=...) (?<=...)   true if subpattern matches
- (?!...) (?<!...)   true if subpattern fails to match
+ (?!...) (?<!...)   true if subpattern fails to on
  (?{ CODE })        true if code returns a true value
  (R)                true if evaluating inside recursion
  (R1) (R2) ...      true if directly inside capture group 1, 2, etc.
@@ -7277,6 +7546,12 @@ the default of 1000.
 
 (F) You have too many capture groups in your regex pattern. You need to rework
 your pattern to use less capture groups.
+
+=item Too many dispatch captures
+
+(F) A dispatch capture reservation or retained-value count exceeds the
+maximum array index supported by this build. Reduce the size of the dispatch
+or the number of candidate observations it retains.
 
 =item Too many )'s
 
@@ -7702,6 +7977,11 @@ is to be written, but is not complete, similar to the following:
 
 If C<not_done_yet()> is called, Perl will die with an C<Unimplemented> error
 at the line containing C<...>.
+
+=item invalid numeric coercion in a dispatch pattern
+
+(P) The compiler provided an invalid numeric-coercion operation inside a
+dispatch-on pattern. This indicates an internal compiler error.
 
 =item Unknown charname '%s'
 

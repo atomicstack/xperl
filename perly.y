@@ -69,6 +69,10 @@
 %token <ival> KW_IF KW_ELSE KW_ELSIF KW_UNLESS
 %token <ival> KW_FOR KW_UNTIL KW_WHILE KW_CONTINUE
 %token <ival> KW_GIVEN KW_WHEN KW_DEFAULT
+%token <ival> KW_DISPATCH KW_ON
+%token <ival> KW_RefVal KW_ScalarVal KW_ObjectVal KW_DefinedVal
+%token <ival> KW_Int KW_Float KW_IntStr KW_FloatStr KW_Num KW_NumStr KW_Strict KW_NumEq
+%token <ival> KW_TRUE KW_FALSE
 %token <ival> KW_TRY KW_CATCH KW_FINALLY KW_DEFER KW_GEN KW_YIELD
 %token <ival> KW_REQUIRE KW_DO
 
@@ -85,7 +89,7 @@
 %token <opval> FUNC0OP FUNC0SUB UNIOPSUB LSTOPSUB
 %token <opval> PLUGEXPR PLUGSTMT
 %token <opval> LABEL PROTOTYPE
-%token <ival> LOOPEX DOTDOT YADAYADA
+%token <ival> LOOPEX DOTDOT YADAYADA DISPATCH_ELLIPSIS DISPATCH_PIN
 %token <ival> FUNC0 FUNC1 FUNC UNIOP LSTOP BLKLSTOP
 %token <ival> POWOP MULOP ADDOP
 %token <ival> DOLSHARP HASHBRACK NOAMP
@@ -96,6 +100,11 @@
 %type <ival> grammar remember mremember
 
 %type <opval> bare_statement_block
+%type <opval> bare_statement_dispatch bare_statement_on dispatch_subject_binding
+%type <opval> dispatch_on_block dispatch_on_stmtseq dispatch_on_guard
+%type <opval> dispatch_pattern_pin_target
+%type <opval> dispatch_pattern_object dispatch_pattern_expr
+%type <ival> dispatch_pattern_start dispatch_pattern_end
 %type <opval> bare_statement_class_declaration
 %type <opval> bare_statement_class_definition
 %type <opval> bare_statement_role_declaration
@@ -282,6 +291,209 @@ bare_statement_block
 			$$ = new_block_statement ($block, $cont);
 		}
 	;
+
+bare_statement_dispatch
+	: KW_DISPATCH
+		{ parser->in_dispatch_header = TRUE; }
+		remember
+		dispatch_subject_binding[subject_binding]
+		PERLY_PAREN_OPEN
+		mexpr
+		PERLY_PAREN_CLOSE
+		{ parser->in_dispatch_header = FALSE; }
+		dispatch_on_block
+		{
+			OP *subject = $mexpr;
+			OP *dispatch_op = NULL;
+			OP *body = $dispatch_on_block;
+			UNOP_AUX_item *dispatch = dispatch_on_compile(body);
+			if (dispatch) {
+				dispatch_op = newUNOP_AUX(OP_DISPATCH, 0, NULL,
+					dispatch);
+				body = op_prepend_elem(OP_LINESEQ, dispatch_op, body);
+			}
+			if ($subject_binding) {
+				subject = newASSIGNOP(0, $subject_binding, 0,
+					subject);
+			}
+			OP *scoped_body = op_scope(body);
+			OP *dispatchop = newDISPATCHOP(subject, scoped_body);
+			if (dispatch && (scoped_body->op_type == OP_LINESEQ
+			                 || scoped_body->op_type == OP_SCOPE)) {
+				OP *scope_kid;
+				for (scope_kid = cLISTOPx(scoped_body)->op_first;
+				     scope_kid; scope_kid = OpSIBLING(scope_kid))
+					if (scope_kid->op_type == OP_LEAVE) {
+						((struct dispatch_on_aux *)dispatch)->miss_target = scope_kid;
+						break;
+					}
+			}
+			if (dispatch && !((struct dispatch_on_aux *)dispatch)->miss_target) {
+				OP *scope_op = scoped_body;
+				U32 scope_steps = 0;
+				while (scope_op && scope_steps++ < 4096) {
+					if (scope_op->op_type == OP_LEAVE
+					    && scope_op->op_next == dispatchop) {
+						((struct dispatch_on_aux *)dispatch)->miss_target = scope_op;
+						break;
+					}
+					scope_op = scope_op->op_next;
+				}
+			}
+			/* A non-zero target marks a named subject. */
+			cUNOPx(dispatchop)->op_first->op_targ = $subject_binding ? 1 : 0;
+			$$ = block_end($remember,
+				dispatchop);
+			parser->copline = (line_t)$KW_DISPATCH;
+		}
+;
+
+dispatch_subject_binding
+	: %empty
+		{ $$ = NULL; }
+	| KW_MY { parser->in_my = KEY_my; }
+		scalar
+		{ $$ = my($scalar); intro_my(); }
+	;
+
+bare_statement_on
+	: KW_ON
+		PERLY_PAREN_OPEN
+		dispatch_pattern_start
+		remember
+		dispatch_pattern_expr
+		{ dispatch_pattern_prepare($dispatch_pattern_expr); }
+		dispatch_pattern_end
+		dispatch_on_guard
+		PERLY_PAREN_CLOSE
+		mblock
+		{
+			if (!parser->in_dispatch_on_stmtseq) {
+				yyerror("dispatch-on clauses are only allowed directly in a dispatch");
+				YYERROR;
+			}
+			OP *pattern = $dispatch_pattern_expr;
+			dispatch_pattern_preserve_concat(pattern);
+			UNOP_AUX_item *pattern_aux = dispatch_pattern_compile(pattern);
+			/* The pattern is a data-shape description.  Keep its optree in
+			 * the auxiliary representation, but execute only an undef
+			 * placeholder so no part of the pattern is evaluated as Perl. */
+			OP *on_op = newUNOP_AUX(OP_DISPATCH_ON, 0, newOP(OP_UNDEF, 0),
+				pattern_aux);
+			OP *condition = on_op;
+			if ($dispatch_on_guard)
+				condition = newLOGOP(OP_AND, 0, on_op,
+					scalar($dispatch_on_guard));
+			if (pattern->op_type == OP_CONST
+				&& (pattern->op_private & OPpCONST_BARE)
+				&& SvPV_nolen_const(cSVOPx_sv(pattern))[0] == '_'
+				&& SvPV_nolen_const(cSVOPx_sv(pattern))[1] == '\0')
+				on_op->op_targ = 2;
+			else if (pattern->op_type == OP_CONST
+				&& SvIOK(cSVOPx_sv(pattern)))
+				pattern->op_flags |= OPf_SPECIAL;
+			$$ = block_end($remember,
+				newONOP(condition,
+					op_scope($mblock)));
+		}
+;
+
+dispatch_pattern_expr
+	: dispatch_pattern_object
+	| mexpr
+		{ $$ = $mexpr; }
+;
+
+dispatch_pattern_object
+	: BAREWORD PERLY_BRACKET_OPEN optexpr PERLY_BRACKET_CLOSE
+		{
+			OP *shape = newANONLIST($optexpr);
+			OP *args = op_append_elem(OP_LIST, $BAREWORD, shape);
+			$$ = newUNOP(OP_DISPATCHCOERCE, 0, args);
+			$$->op_private = DISPATCH_PATTERN_CRITERION_OBJECT;
+		}
+	| BAREWORD REFGEN term
+		{
+			OP *shape = newUNOP(OP_REFGEN, 0, $term);
+			OP *args = op_append_elem(OP_LIST, $BAREWORD, shape);
+			$$ = newUNOP(OP_DISPATCHCOERCE, 0, args);
+			$$->op_private = DISPATCH_PATTERN_CRITERION_OBJECT;
+		}
+;
+
+dispatch_pattern_start
+	: %empty
+		{ SvREFCNT_dec(parser->dispatch_pattern_vars);
+		  parser->in_dispatch_pattern = TRUE;
+		  parser->dispatch_pattern_vars = newHV();
+		  $$ = 0; }
+	;
+
+dispatch_pattern_end
+	: %empty
+		{ parser->in_dispatch_pattern = FALSE;
+		  intro_my();
+		  $$ = 0; }
+	;
+
+dispatch_pattern_pin_target
+	: scalar
+		{ $$ = $scalar; }
+		;
+
+dispatch_on_guard
+	: %empty
+		{ $$ = NULL; }
+	| KW_IF condition
+		{ $$ = $condition; }
+;
+
+dispatch_on_block
+	: PERLY_BRACE_OPEN mremember
+		{
+			$<ival>$ = parser->in_dispatch_on_stmtseq;
+			parser->in_dispatch_on_stmtseq = TRUE;
+		}
+		dispatch_on_stmtseq
+		{
+			parser->in_dispatch_on_stmtseq = $<ival>3;
+		}
+		PERLY_BRACE_CLOSE
+		{
+			bool invalid = FALSE;
+			OP *kid;
+			if (parser->copline > (line_t)$PERLY_BRACE_OPEN)
+				parser->copline = (line_t)$PERLY_BRACE_OPEN;
+			$$ = block_end($mremember, $dispatch_on_stmtseq);
+			if ($$ && $$->op_type == OP_LINESEQ) {
+				for (kid = cLISTOPx($$)->op_first; kid;
+					kid = OpSIBLING(kid)) {
+					if (!OP_TYPE_IS_COP_NN(kid)
+						&& kid->op_type != OP_LEAVEDISPATCHON) {
+						invalid = TRUE;
+						break;
+					}
+				}
+			}
+			if (invalid) {
+				yyerror("only dispatch-on clauses are allowed directly in a dispatch");
+				YYERROR;
+			}
+		}
+;
+
+dispatch_on_stmtseq
+	: %empty
+		{ $$ = NULL; }
+	| dispatch_on_stmtseq[list] fullstmt[clause]
+		{
+			$$ = op_append_list(OP_LINESEQ, $list, $clause);
+			PL_pad_reset_pending = TRUE;
+			if ($list)
+				PL_hints |= HINT_BLOCK_SCOPE;
+		}
+;
+
 
 bare_statement_class_declaration
 	:	KW_CLASS
@@ -1001,6 +1213,8 @@ labfullstmt:	LABEL barestmt
 barestmt
 	:	PLUGSTMT
 	|	bare_statement_block
+	|	bare_statement_dispatch
+	|	bare_statement_on
 	|	bare_statement_class_declaration
 	|	bare_statement_class_definition
 	|	bare_statement_role_declaration
@@ -1854,6 +2068,23 @@ term[product]	:	termbinop
 			}
 	|	THING	%prec PERLY_PAREN_OPEN
 			{ $$ = $THING; }
+	|       DISPATCH_ELLIPSIS
+			{ $$ = newSVOP(OP_CONST, OPpCONST_BARE | OPf_SPECIAL,
+				newSVpvs("...")); }
+	|       DISPATCH_PIN
+		{
+			parser->in_dispatch_pattern_pin = TRUE;
+		}
+		dispatch_pattern_pin_target
+		{
+			parser->in_dispatch_pattern_pin = FALSE;
+			if (!$dispatch_pattern_pin_target
+			    || $dispatch_pattern_pin_target->op_type != OP_PADSV)
+				Perl_croak(aTHX_
+				    "pinned pattern value must be an existing scalar lexical");
+			$$ = newUNOP(OP_DISPATCHCOERCE, 0, $dispatch_pattern_pin_target);
+			$$->op_private = DISPATCH_PATTERN_CRITERION_PIN;
+		}
 	|	/* &foo; */
 		amper                       [function]
 			{
@@ -2127,13 +2358,23 @@ scalar	:	PERLY_DOLLAR indirob
 
 ary	:	PERLY_SNAIL indirob
 			{ $$ = newAVREF($indirob);
-			  if ($$) $$->op_private |= $PERLY_SNAIL;
+			  if ($$) {
+			      $$->op_private |= $PERLY_SNAIL;
+			      if (parser->in_dispatch_pattern) {
+				  OP *slurp = newUNOP(OP_DISPATCHCOERCE, 0, $$);
+				  $$ = slurp;
+			      }
+			  }
 			}
 	;
 
 hsh	:	PERLY_PERCENT_SIGN indirob
 			{ $$ = newHVREF($indirob);
-			  if ($$) $$->op_private |= $PERLY_PERCENT_SIGN;
+			  if ($$) {
+			      $$->op_private |= $PERLY_PERCENT_SIGN;
+			      if (parser->in_dispatch_pattern)
+			          $$ = newUNOP(OP_DISPATCHCOERCE, 0, $$);
+			  }
 			}
 	;
 

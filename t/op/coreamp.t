@@ -1190,6 +1190,10 @@ like $@, qr'^Undefined format "STDOUT" called',
     );
   my %nottest_words = map { $_ => 1 } qw(
     ADJUST AUTOLOAD BEGIN CHECK CORE DESTROY END INIT UNITCHECK
+ ObjectVal RefVal ScalarVal
+ IntStr FloatStr Num NumStr Strict NumEq
+ DefinedVal Int Float TRUE FALSE
+    dispatch on
     __DATA__ __END__
     __NAMESPACE__ as namespace
     all and any catch class cmp default defer do implements dump else elsif

@@ -416,6 +416,10 @@ our %Modules = (
         ],
     },
 
+    'dispatch::Predicates' => {
+        'FILES'        => q[lib/dispatch/Predicates.pm],
+    },
+
     'Dumpvalue' => {
         'DISTRIBUTION' => 'FLORA/Dumpvalue-1.17.tar.gz',
         'FILES'        => q[dist/Dumpvalue],

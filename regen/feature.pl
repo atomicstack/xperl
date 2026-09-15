@@ -50,6 +50,7 @@ my %feature = (
         try
         defer
         generator
+        dispatch_on
         module_true
         class
         keyword_any

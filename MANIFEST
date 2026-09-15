@@ -5988,6 +5988,7 @@ lib/diagnostics.pm			Print verbose diagnostics
 lib/diagnostics.t			See if diagnostics.pm works
 lib/DirHandle.pm			like FileHandle only for directories
 lib/DirHandle.t				See if DirHandle works
+lib/dispatch/Predicates.pm		Shared predicates for dispatch-on patterns
 lib/dumpvar.pl				A variable dumper
 lib/dumpvar.t				A variable dumper tester
 lib/English.pm				Readable aliases for short variables
@@ -6411,6 +6412,8 @@ pod/perldebug.pod			Perl debugging
 pod/perldelta.pod			Perl changes since previous version
 pod/perldeprecation.pod			Perl deprecations
 pod/perldiag.pod			Perl diagnostic messages
+pod/perldispatchon.pod			Dispatch and data-shape matching reference
+pod/perldispatchontut.pod		Dispatch and data-shape matching tutorial
 pod/perldocstyle.pod			Perl style guide for core docs
 pod/perldsc.pod				Perl data structures intro
 pod/perldtrace.pod			Perl's support for DTrace
@@ -6651,6 +6654,13 @@ t/comp/bproto.t				See if builtins conform to their prototypes
 t/comp/cmdopt.t				See if command optimization works
 t/comp/colon.t				See if colons are parsed correctly
 t/comp/decl.t				See if declarations work
+t/comp/dispatch_on.t			See if dispatch/on syntax works
+t/comp/dispatch_on_examples.t		Demonstrate dispatch/on data-shape matching
+t/comp/dispatch_on_hardening.t		Exercise dispatch/on context and cleanup paths
+t/comp/dispatch_on_hardening_tail.t	Exercise dispatch/on cleanup tail paths
+t/comp/dispatch_on_numeric.t		Exercise dispatch/on numeric scalar semantics
+t/comp/dispatch_on_review.t		Cross-feature dispatch/on regression coverage
+t/comp/dispatch_on_threads.t		Exercise dispatch/on in threaded clones
 t/comp/filter_exception.t		See if $@ survives source filters
 t/comp/final_line_num.t			See if line numbers are correct at EOF
 t/comp/fold.t				See if constant folding works
