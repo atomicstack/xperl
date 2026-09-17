@@ -35,6 +35,7 @@ my %dist_dir_exe;
 $dist_dir_exe{lc "podselect.PL"} = "../cpan/Pod-Parser/podselect";
 $dist_dir_exe{lc "podchecker.PL"} = "../cpan/Pod-Checker/podchecker";
 $dist_dir_exe{lc "pod2usage.PL"} = "../cpan/Pod-Usage/pod2usage";
+$dist_dir_exe{'cpanel_json_xs'} = '../cpan/Cpanel-JSON-XS/bin/cpanel_json_xs';
 
 foreach (qw (pod2man pod2text)) {
     $dist_dir_exe{lc "$_.PL"} = "../cpan/podlators/scripts/$_";
@@ -73,4 +74,3 @@ for my $f ( sort @programs ) {
     ok( -f $utils_file, "Verify -f '$utils_file'" );
   }
 }
-

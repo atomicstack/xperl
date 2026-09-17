@@ -157,6 +157,17 @@ numerical-computing ABI. Design and status details are recorded in
 `dist/Tensor-XS/Changes`, `dist/Tensor-XS/XS_DESIGN.md`, and the related
 distribution notes and result documents.
 
+### Cpanel::JSON::XS
+
+`Cpanel::JSON::XS` is added as a bundled core distribution, including its XS
+implementation, Perl support files, command-line utility, test suite, JSON
+specification fixtures, extended tests, metadata, and core maintainer/build
+integration.
+
+The imported distribution's API and tests remain documented in its own source
+and test files. Its core integration is covered by the dual-life and build
+checks.
+
 ## Compatibility posture
 
 Most existing Perl behavior is intentionally preserved where practical, and
