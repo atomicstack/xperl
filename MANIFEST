@@ -7,6 +7,7 @@ AUTHORS					Contact info for contributors
 autodoc.pl				Creates pod/perlintern.pod and pod/perlapi.pod
 av.c					Array value code
 av.h					Array value header
+BLEAD-DELTA.md				Differences between AI Perl and mainline Perl
 builtin.c				Functions in the builtin:: namespace
 caretx.c				C file to create $^X
 cflags.SH				A script that emits C compilation flags per file
@@ -215,6 +216,7 @@ vutil.h					Version object headers
 vxs.inc					Version object XS methods
 warnings.h				The warning numbers
 write_buildcustomize.pl			Generate lib/buildcustomize.pl
+XPERL-MISSION.md			Mission and contribution principles for AI Perl
 XSUB.h					Include file for extension subroutines
 zaphod32_hash.h				Zaphod32 hash code (32 bit fast hash function)
 amigaos4/amigaio.c			AmigaOS4 port

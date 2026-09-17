@@ -2,6 +2,28 @@ Perl is Copyright (C) 1993 - 2026 by Larry Wall and others.
 
 All rights reserved.
 
+# ABOUT XPERL
+
+This is a fork of the Perl project. See
+[XPERL-MISSION.md](https://github.com/demerphq/perl5/blob/xperl/main/XPERL-MISSION.md)
+for details.
+
+For a brief summary of how this fork differs from mainline Perl, see
+[BLEAD-DELTA.md](https://github.com/demerphq/perl5/blob/xperl/main/BLEAD-DELTA.md).
+The principal differences include:
+
+  * experimental generators with cooperative resumable execution;
+  * lexical namespaces and namespace-qualified symbol resolution;
+  * experimental classes, roles, and the `implements` keyword;
+  * class-object support in Data::Dumper;
+  * bundled Cpanel::JSON::XS and Tensor-XS distributions.
+
+The exact details of what we will include can and will change at any time.
+
+We aim to be highly backwards compatible with perl code, and mostly backwards
+compatible with XS code, but we will deviate from both when it benefits the
+language.
+
 # ABOUT PERL
 
 Perl is a general-purpose programming language originally developed for
