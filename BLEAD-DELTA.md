@@ -136,6 +136,27 @@ The class and role behavior, conflict handling, field composition, required
 methods, implementation membership, parser support, diagnostics, and threaded
 metadata are documented in `pod/perlclass.pod` and covered by the role tests.
 
+## Bundled distribution changes
+
+### Tensor-XS and p5-matrix-utils
+
+The p5-matrix-utils code is imported and developed as the bundled experimental
+`Tensor-XS` distribution. It includes Perl `Tensor`, `Matrix`, `Vector`, and
+related classes backed by XS storage, together with extensive tests and
+examples.
+
+The native tensor work includes descriptor-driven numeric data types,
+integer and floating-point storage, coordinate-based indexing, row-major
+strides, precomputed element counts, flat and nested data loading, native
+tensor blob headers with alignment and trailing sentinels, bulk operations,
+native access bridges, and core build integration. The public Perl classes
+retain their interfaces while values use contiguous typed native buffers.
+
+The distribution remains an experimental area rather than a finalized
+numerical-computing ABI. Design and status details are recorded in
+`dist/Tensor-XS/Changes`, `dist/Tensor-XS/XS_DESIGN.md`, and the related
+distribution notes and result documents.
+
 ## Compatibility posture
 
 Most existing Perl behavior is intentionally preserved where practical, and

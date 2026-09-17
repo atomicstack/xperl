@@ -109,7 +109,9 @@
 /List/
 /Locale/
 /MIME/
+/MNIST.pm
 /Math/
+/Matrix.pm
 /Memoize.pm
 /Memoize/
 /Module/
@@ -156,6 +158,7 @@
 /RNG/
 /SDBM_File.pm
 /Safe.pm
+/Scalar.pm
 /Scalar/
 /Search/
 /SelfLoader.pm
@@ -164,6 +167,8 @@
 /Sub/
 /Sys/
 /TAP/
+/Tensor.pm
+/Tensor/
 /Term/
 /Test.pm
 /Test/
@@ -183,6 +188,7 @@
 /Unicode/Collate/
 /Unicode/Normalize.pm
 /VMS/
+/Vector.pm
 /Win32.pm
 /Win32API/
 /Win32CORE.pm
