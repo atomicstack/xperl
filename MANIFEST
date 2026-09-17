@@ -5549,6 +5549,7 @@ lib/integer.pm				For "use integer"
 lib/integer.t				For "use integer" testing
 lib/Internals.pod			Document the Internals namespace (implemented by universal.c)
 lib/Internals.t				For Internals::* testing
+lib/iterator.pm				callable iterator protocol
 lib/less.pm				For "use less"
 lib/less.t				See if less support works
 lib/locale.pm				For "use locale"
@@ -5961,6 +5962,7 @@ pod/perlinterp.pod			Overview of the Perl interpreter source and how it works
 pod/perlintro.pod			Perl introduction for beginners
 pod/perliol.pod				C API for Perl's implementation of IO in Layers
 pod/perlipc.pod				Perl interprocess communication
+pod/perliterator.pod			Callable iterators and their lifecycle
 pod/perllexwarn.pod			Perl warnings and their control
 pod/perllocale.pod			Perl locale support
 pod/perllol.pod				Perl data structures: arrays of arrays
@@ -6531,6 +6533,7 @@ t/op/index_thr.t			See if index works in another thread
 t/op/infnan.t				See if inf/nan work
 t/op/int.t				See if int works
 t/op/isa.t				See if isa works
+t/op/iterator.t				See if callable iterators work
 t/op/join.t				See if join works
 t/op/kill0.t				See if kill works
 t/op/kill0_child			Process tree script that is kill()ed

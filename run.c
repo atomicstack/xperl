@@ -38,7 +38,78 @@ static XS(XS_generator_exhausted);
 static XS(XS_generator_completed);
 static XS(XS_generator_failed);
 static XS(XS_generator_running);
+static XS(XS_iterator_new);
+static XS(XS_iterator_state);
+static XS(XS_iterator_set_state);
+static XS(XS_iterator_exhausted);
+static XS(XS_iterator_completed);
+static XS(XS_iterator_failed);
+static XS(XS_iterator_running);
 static int S_runops_with_boundary(pTHX);
+
+static int
+S_iterator_magic_free(pTHX_ SV *sv, MAGIC *mg)
+{
+    PERL_ITERATOR * const iterator = (PERL_ITERATOR *)mg->mg_ptr;
+    PERL_UNUSED_ARG(sv);
+    if (iterator) {
+        Safefree(iterator);
+        mg->mg_ptr = NULL;
+    }
+    return 0;
+}
+
+static MGVTBL S_iterator_magic = {
+    0, 0, 0, 0, S_iterator_magic_free,
+    0, 0, 0
+};
+
+static PERL_ITERATOR *
+S_iterator_from_sv(pTHX_ SV *sv)
+{
+    MAGIC *mg;
+
+    if (sv && SvROK(sv))
+        sv = SvRV(sv);
+    if (!sv || SvTYPE(sv) != SVt_PVCV)
+        return NULL;
+    mg = mg_findext(sv, PERL_MAGIC_ext, &S_iterator_magic);
+    return mg ? (PERL_ITERATOR *)mg->mg_ptr : NULL;
+}
+
+static bool
+S_iterator_is_generator(pTHX_ SV *sv)
+{
+    if (sv && SvROK(sv))
+        sv = SvRV(sv);
+    return sv && SvTYPE(sv) == SVt_PVCV && CvISXSUB((CV *)sv)
+        && (PERL_GENERATOR *)CvXSUBANY((CV *)sv).any_ptr
+        && ((PERL_GENERATOR *)CvXSUBANY((CV *)sv).any_ptr)->magic
+                                                        == PERL_GENERATOR_MAGIC;
+}
+
+static PERL_ITERATOR_STATE
+S_iterator_state(pTHX_ SV *sv)
+{
+    PERL_ITERATOR * const iterator = S_iterator_from_sv(aTHX_ sv);
+    if (iterator && iterator->magic == PERL_ITERATOR_MAGIC)
+        return iterator->state;
+    if (S_iterator_is_generator(aTHX_ sv)) {
+        PERL_GENERATOR *generator;
+        if (sv && SvROK(sv))
+            sv = SvRV(sv);
+        generator = (PERL_GENERATOR *)CvXSUBANY((CV *)sv).any_ptr;
+        switch (generator->state) {
+        case PERL_GENERATOR_EXHAUSTED:
+            return PERL_ITERATOR_COMPLETED;
+        case PERL_GENERATOR_FAILED:
+            return PERL_ITERATOR_FAILED;
+        default:
+            return PERL_ITERATOR_RUNNING;
+        }
+    }
+    return PERL_ITERATOR_INVALID;
+}
 
 
 void
@@ -263,6 +334,126 @@ Perl_generator_wrap(pTHX_ CV *body)
     return reference;
 }
 
+static XS(XS_iterator_new)
+{
+    dXSARGS;
+    SV *iterator_sv;
+    CV *iterator_cv;
+
+    if (items == 2 && !SvROK(ST(0)))
+        iterator_sv = ST(1);
+    else if (items == 1)
+        iterator_sv = ST(0);
+    else
+        croak_xs_usage(cv, "coderef");
+
+    if (!SvROK(iterator_sv) || SvTYPE(SvRV(iterator_sv)) != SVt_PVCV)
+        croak("iterator->new expects a code reference");
+
+    iterator_cv = MUTABLE_CV(SvRV(iterator_sv));
+    if (!S_iterator_from_sv(aTHX_ iterator_sv)) {
+        PERL_ITERATOR *iterator;
+        Newxz(iterator, 1, PERL_ITERATOR);
+        iterator->magic = PERL_ITERATOR_MAGIC;
+        iterator->state = PERL_ITERATOR_RUNNING;
+        sv_magicext(MUTABLE_SV(iterator_cv), NULL, PERL_MAGIC_ext,
+                    &S_iterator_magic, (char *)iterator, 0);
+    }
+    sv_bless(iterator_sv, gv_stashpvs("iterator", GV_ADD));
+    ST(0) = iterator_sv;
+    XSRETURN(1);
+}
+
+static XS(XS_iterator_state)
+{
+    dXSARGS;
+    PERL_ITERATOR_STATE state;
+
+    if (items != 1)
+        croak_xs_usage(cv, "iterator");
+    state = S_iterator_state(aTHX_ ST(0));
+    if (state == PERL_ITERATOR_INVALID)
+        XSRETURN_UNDEF;
+    ST(0) = newSVuv((UV)state);
+    XSRETURN(1);
+}
+
+static XS(XS_iterator_set_state)
+{
+    dXSARGS;
+    SV *iterator_sv;
+    PERL_ITERATOR *iterator;
+    const UV state = items == 2 ? SvUV(ST(1)) : 0;
+
+    if (items != 2)
+        croak_xs_usage(cv, "iterator, state");
+    iterator_sv = ST(0);
+    iterator = S_iterator_from_sv(aTHX_ iterator_sv);
+    if (!iterator || iterator->magic != PERL_ITERATOR_MAGIC) {
+        if (S_iterator_is_generator(aTHX_ iterator_sv))
+            croak("cannot set the state of a generator");
+        XSRETURN_UNDEF;
+    }
+    if (state == PERL_ITERATOR_INVALID || state > PERL_ITERATOR_FAILED)
+        croak("invalid iterator state");
+    iterator->state = (PERL_ITERATOR_STATE)state;
+    ST(0) = iterator_sv;
+    XSRETURN(1);
+}
+
+static XS(XS_iterator_exhausted)
+{
+    dXSARGS;
+    const PERL_ITERATOR_STATE state = items == 1
+        ? S_iterator_state(aTHX_ ST(0)) : PERL_ITERATOR_INVALID;
+    if (items != 1)
+        croak_xs_usage(cv, "iterator");
+    if (state == PERL_ITERATOR_INVALID)
+        XSRETURN_UNDEF;
+    ST(0) = boolSV(state == PERL_ITERATOR_COMPLETED
+                || state == PERL_ITERATOR_FAILED);
+    XSRETURN(1);
+}
+
+static XS(XS_iterator_completed)
+{
+    dXSARGS;
+    const PERL_ITERATOR_STATE state = items == 1
+        ? S_iterator_state(aTHX_ ST(0)) : PERL_ITERATOR_INVALID;
+    if (items != 1)
+        croak_xs_usage(cv, "iterator");
+    if (state == PERL_ITERATOR_INVALID)
+        XSRETURN_UNDEF;
+    ST(0) = boolSV(state == PERL_ITERATOR_COMPLETED);
+    XSRETURN(1);
+}
+
+static XS(XS_iterator_failed)
+{
+    dXSARGS;
+    const PERL_ITERATOR_STATE state = items == 1
+        ? S_iterator_state(aTHX_ ST(0)) : PERL_ITERATOR_INVALID;
+    if (items != 1)
+        croak_xs_usage(cv, "iterator");
+    if (state == PERL_ITERATOR_INVALID)
+        XSRETURN_UNDEF;
+    ST(0) = boolSV(state == PERL_ITERATOR_FAILED);
+    XSRETURN(1);
+}
+
+static XS(XS_iterator_running)
+{
+    dXSARGS;
+    const PERL_ITERATOR_STATE state = items == 1
+        ? S_iterator_state(aTHX_ ST(0)) : PERL_ITERATOR_INVALID;
+    if (items != 1)
+        croak_xs_usage(cv, "iterator");
+    if (state == PERL_ITERATOR_INVALID)
+        XSRETURN_UNDEF;
+    ST(0) = boolSV(state == PERL_ITERATOR_RUNNING);
+    XSRETURN(1);
+}
+
 static XS(XS_generator_exhausted)
 {
     dXSARGS;
@@ -322,6 +513,20 @@ void
 Perl_boot_core_generator(pTHX)
 {
     PERL_ARGS_ASSERT_BOOT_CORE_GENERATOR;
+    newXS_flags("iterator::new", &XS_iterator_new,
+                __FILE__, "$", 0);
+    newXS_flags("iterator::state", &XS_iterator_state,
+                __FILE__, "$", 0);
+    newXS_flags("iterator::set_state", &XS_iterator_set_state,
+                __FILE__, "$$", 0);
+    newXS_flags("iterator::exhausted", &XS_iterator_exhausted,
+                __FILE__, "$", 0);
+    newXS_flags("iterator::completed", &XS_iterator_completed,
+                __FILE__, "$", 0);
+    newXS_flags("iterator::failed", &XS_iterator_failed,
+                __FILE__, "$", 0);
+    newXS_flags("iterator::running", &XS_iterator_running,
+                __FILE__, "$", 0);
     newXS_flags("generator::exhausted", &XS_generator_exhausted,
                 __FILE__, "$", 0);
     newXS_flags("generator::completed", &XS_generator_completed,

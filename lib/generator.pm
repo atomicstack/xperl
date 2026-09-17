@@ -2,7 +2,10 @@ package generator;
 
 use v5.40;
 
+our @ISA = ('iterator');
+
 sub import {
+    require iterator;
     require feature;
     feature->import('generator', 'signatures');
 }
