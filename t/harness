@@ -127,6 +127,7 @@ if ($ENV{HARNESS_OPTIONS}) {
 $jobs ||= 1;
 
 sub _compute_tests_and_ordering($) {
+    my $new_test_weight = 1_000_000;
     my %total_time;
     my sub sort_by_execution_order {
         # Directories, ordered by total time descending then name ascending
@@ -220,7 +221,7 @@ sub _compute_tests_and_ordering($) {
             if ($must_be_executed_serially{$file}) {
                 # This is a file to execute serially.  Its time contributes
                 # directly to the total time for this directory.
-                $total_time{$file_dir} += $times{$file} || 0;
+                $total_time{$file_dir} += $times{$file} // $new_test_weight;
 
                 # Save the sequence number with the file for now; below we
                 # will come back to it.
@@ -231,14 +232,14 @@ sub _compute_tests_and_ordering($) {
                 # sequential ones are done.  Save its time in the hash to
                 # later calculate its time contribution.
                 push $split_partial_serials{$file_dir}{par}->@*, $file;
-                $total_time{$file} = $times{$file} || 0;
+                $total_time{$file} = $times{$file} // $new_test_weight;
             }
         }
         else {
             # Treat every file in each non-serial directory as its own
             # "directory", so that it can be executed in parallel
             $dir{$file} = { seq => $file };
-            $total_time{$file} = $times{$file} || 0;
+            $total_time{$file} = $times{$file} // $new_test_weight;
         }
     }
 
@@ -277,7 +278,7 @@ sub _compute_tests_and_ordering($) {
         # total.  It is an imperfect estimate, but not unreasonable.
         my $par_time = 0;
         for (my $i = 0; $i < @par_list; $i += $jobs) {
-            $par_time += $times{$par_list[$i]} || 0;
+            $par_time += $times{$par_list[$i]} // $new_test_weight;
         }
         $total_time{$partial_serial_dir} += $par_time;
 
