@@ -103,6 +103,39 @@ on older Perl versions. The class-object support is documented and tested.
 The relevant APIs and integration are described in `pod/perlclass.pod` and
 the class-object and Data::Dumper tests cover the conversion behavior.
 
+### Classes and roles
+
+The class system now supports reusable `role` declarations and algebraic role
+composition. Roles can provide fields, methods, field initializers, required
+methods, and `ADJUST` blocks. A class or another role consumes one or more
+roles with the experimental `:implements` attribute.
+
+Roles compose transitively, and a shared role reached through a diamond is
+included once. Unresolved method conflicts between unrelated roles and
+conflicting fields are reported at composition time. The `implements` method
+and infix operator provide nominal membership tests, including roles composed
+by a superclass; this is distinct from `isa`, while `DOES` reports composed
+roles as well as ordinary inheritance relationships.
+
+A minimal example is:
+
+```perl
+use feature 'class';
+
+role Named {
+    method name() { "a named object" }
+}
+
+class Person :implements(Named) {
+    field $name :param;
+    method name() { $name }
+}
+```
+
+The class and role behavior, conflict handling, field composition, required
+methods, implementation membership, parser support, diagnostics, and threaded
+metadata are documented in `pod/perlclass.pod` and covered by the role tests.
+
 ## Compatibility posture
 
 Most existing Perl behavior is intentionally preserved where practical, and

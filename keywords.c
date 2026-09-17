@@ -571,7 +571,7 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 4: /* 40 tokens of length 4 */
+    case 4: /* 41 tokens of length 4 */
       switch (name[0])
       {
         case 'I':
@@ -889,6 +889,15 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
                 default:
                   goto unknown;
               }
+
+            case 'o':
+              if (name[2] == 'l' &&
+                  name[3] == 'e')
+              {                                   /* role             */
+                return (all_keywords || FEATURE_CLASS_IS_ENABLED ? -KEY_role : 0);
+              }
+
+              goto unknown;
 
             default:
               goto unknown;
@@ -3122,7 +3131,7 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 10: /* 9 tokens of length 10 */
+    case 10: /* 10 tokens of length 10 */
       switch (name[0])
       {
         case 'e':
@@ -3217,6 +3226,22 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
               default:
                 goto unknown;
             }
+          }
+
+          goto unknown;
+
+        case 'i':
+          if (name[1] == 'm' &&
+              name[2] == 'p' &&
+              name[3] == 'l' &&
+              name[4] == 'e' &&
+              name[5] == 'm' &&
+              name[6] == 'e' &&
+              name[7] == 'n' &&
+              name[8] == 't' &&
+              name[9] == 's')
+          {                                       /* implements       */
+            return (all_keywords || FEATURE_CLASS_IS_ENABLED ? -KEY_implements : 0);
           }
 
           goto unknown;
@@ -3639,5 +3664,5 @@ unknown:
 }
 
 /* Generated from:
- * c7ceb1c299707bd2f3465e3b2f2a78adff06eb46473dd0870e96765da3c59830 regen/keywords.pl
+ * 40eec5b8244d36f8a2ee3fbaabf11d4f696acdf2d5923b48fd09d2120e4f8bab regen/keywords.pl
  * ex: set ro ft=c: */

@@ -141,6 +141,7 @@ PERL_CALLCONV PP(pp_i_postinc) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_i_predec) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_i_preinc) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_i_subtract) __attribute__visibility__("hidden");
+PERL_CALLCONV PP(pp_implements) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_index) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_initfield) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_int) __attribute__visibility__("hidden");

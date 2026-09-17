@@ -1,6 +1,6 @@
 package UNIVERSAL;
 
-our $VERSION = '1.18';
+our $VERSION = '1.19';
 
 # UNIVERSAL.pm should not contain any methods/subs, they
 # are all defined in universal.c
@@ -118,6 +118,16 @@ implicitly performs any roles its parent performs.  Thus you can use C<DOES> in
 place of C<isa> safely, as it will return true in all places where C<isa> will
 return true (provided that any overridden C<DOES> I<and> C<isa> methods behave
 appropriately).
+
+=item C<< $obj->implements( ROLE ) >>
+
+=item C<< CLASS->implements( ROLE ) >>
+
+For classes and roles declared with the experimental class feature,
+C<implements> reports whether the role was nominally composed into the
+invocant, directly or through another composed role.  The method may also be
+provided by an ordinary package to participate in the C<DOES> capability
+protocol.
 
 =item C<< $obj->can( METHOD ) >>
 

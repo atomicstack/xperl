@@ -610,6 +610,16 @@ Perl_build_method_invocation_arguments(pTHX_ OP *target, OP *arguments)
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;       \
     } STMT_END
 
+PERL_CALLCONV bool
+Perl_builtin_package_implements(pTHX_ SV *package_or_object, SV *role)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2);
+#define PERL_ARGS_ASSERT_BUILTIN_PACKAGE_IMPLEMENTS \
+    STMT_START { Perl_assert_aTHX; assert(package_or_object); assert(role);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                        \
+    } STMT_END
+
 PERL_CALLCONV const char *
 Perl_byte_dump_string_(pTHX_ const U8 * const start, const STRLEN len, const bool format)
         Perl_attribute_nonnull_aTHX;
@@ -8875,6 +8885,17 @@ Perl_sv_grow_fresh(pTHX_ SV * const sv, STRLEN newlen)
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
+PERL_CALLCONV bool
+Perl_sv_implements_role_sv(pTHX_ SV *sv, SV *namesv)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2)
+        __attribute__warn_unused_result__;
+#define PERL_ARGS_ASSERT_SV_IMPLEMENTS_ROLE_SV  \
+    STMT_START { Perl_assert_aTHX; assert(sv); assert(namesv);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;           \
+    } STMT_END
+
 PERL_CALLCONV void
 Perl_sv_inc(pTHX_ SV * const sv)
         Perl_attribute_nonnull_aTHX;
@@ -12011,6 +12032,17 @@ Perl_ck_helemexistsor(pTHX_ OP *o)
     } STMT_END
 
 PERL_CALLCONV OP *
+Perl_ck_implements(pTHX_ OP *o)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__warn_unused_result__
+        __attribute__visibility__("hidden");
+# define PERL_ARGS_ASSERT_CK_IMPLEMENTS         \
+     STMT_START { Perl_assert_aTHX; assert(o);          \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV OP *
 Perl_ck_index(pTHX_ OP *o)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1)
@@ -12480,6 +12512,26 @@ Perl_croak_kw_unless_class(pTHX_ const char *kw)
         Perl_attribute_nonnull(pTHX_1);
 # define PERL_ARGS_ASSERT_CROAK_KW_UNLESS_CLASS \
      STMT_START { Perl_assert_aTHX; assert(kw);         \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_role_seal_stash(pTHX_ HV *stash)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+# define PERL_ARGS_ASSERT_ROLE_SEAL_STASH       \
+     STMT_START { Perl_assert_aTHX; assert(stash);      \
+                  assert(SvTYPE(stash) == SVt_PVHV);    \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_role_setup_stash(pTHX_ HV *stash)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+# define PERL_ARGS_ASSERT_ROLE_SETUP_STASH      \
+     STMT_START { Perl_assert_aTHX; assert(stash);      \
+                  assert(SvTYPE(stash) == SVt_PVHV);    \
                   PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 

@@ -4543,7 +4543,6 @@ Perl_cmpchain_start(pTHX_ I32 type, OP *left, OP *right)
         (void)S_is_control_transfer(aTHX_ left);
     if (!right)
         right = newOP(OP_NULL, 0);
-
 {
     /* Check for ref/reftype $x eq/ne 'BUILTIN_TYPE' */
     OP *splice = NULL;
@@ -4577,7 +4576,6 @@ Perl_cmpchain_start(pTHX_ I32 type, OP *left, OP *right)
         }
     }
 }
-
     scalar(left);
     scalar(right);
 
@@ -16709,6 +16707,23 @@ Perl_ck_isa(pTHX_ OP *o)
             "Possible precedence problem between ! and %s", OP_DESC(o)
         );
     }
+
+    return o;
+}
+
+OP *
+Perl_ck_implements(pTHX_ OP *o)
+{
+    PERL_ARGS_ASSERT_CK_IMPLEMENTS;
+
+    OP *const roleop = cBINOPo->op_last;
+    if(roleop->op_type == OP_CONST && roleop->op_private & OPpCONST_BARE)
+        roleop->op_private &= ~(OPpCONST_BARE|OPpCONST_STRICT);
+
+    OP *const objop = cBINOPo->op_first;
+    if (objop->op_type == OP_NOT && !(objop->op_flags & OPf_PARENS))
+        ck_warner(packWARN(WARN_PRECEDENCE),
+            "Possible precedence problem between ! and %s", OP_DESC(o));
 
     return o;
 }

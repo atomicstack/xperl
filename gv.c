@@ -630,7 +630,7 @@ S_maybe_add_coresub(pTHX_ HV * const stash, GV *gv,
     case KEY_yield:
     case KEY_for     : case KEY_foreach: case KEY_format: case KEY_ge     :
     case KEY_given   : case KEY_goto   : case KEY_grep  : case KEY_gt     :
-    case KEY_if      : case KEY_isa    :
+    case KEY_if      : case KEY_implements: case KEY_isa    :
     case KEY_last   :
     case KEY_le      : case KEY_local  : case KEY_lt    : case KEY_m      :
     case KEY_map     : case KEY_method : case KEY_my    :
@@ -639,6 +639,7 @@ S_maybe_add_coresub(pTHX_ HV * const stash, GV *gv,
     case KEY_package: case KEY_print: case KEY_printf:
     case KEY_q    : case KEY_qq   : case KEY_qr     : case KEY_qw    :
     case KEY_qx   : case KEY_redo : case KEY_require: case KEY_return:
+    case KEY_role:
     case KEY_s    : case KEY_say  : case KEY_sort   :
     case KEY_state: case KEY_sub  :
     case KEY_tr   : case KEY_try  :

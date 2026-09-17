@@ -29,6 +29,7 @@
 #include "EXTERN.h"
 #define PERL_IN_UNIVERSAL_C
 #include "perl.h"
+#include "class.h"
 
 #if defined(USE_PERLIO)
 #include "perliol.h" /* For the PERLIO_F_XXX */
@@ -327,6 +328,50 @@ Perl_sv_does_sv(pTHX_ SV *sv, SV *namesv, U32 flags)
         return TRUE;
     }
 
+    /* A class remains a DOES match for its ordinary inheritance
+     * relationships, including UNIVERSAL, even when it supplies the
+     * class-system implements() hook for role composition. */
+    if (sv_derived_from_sv(sv, namesv, 0)) {
+        HV *target_stash = gv_stashsv(namesv, 0);
+        if (!target_stash || !HvSTASH_IS_ROLE(target_stash)) {
+            LEAVE;
+            return TRUE;
+        }
+    }
+
+    /* A class-system class or any other package may provide the new nominal
+     * implements() hook.  Let it define the relationship, while retaining
+     * the historical DOES() fallback for invocants without that hook. */
+    {
+        HV *objstash = NULL;
+        if (SvROK(sv) && SvOBJECT(SvRV(sv)))
+            objstash = SvSTASH(SvRV(sv));
+        else
+            objstash = gv_stashsv(sv, 0);
+
+        if (objstash) {
+            SV *implname = newSVpvs("implements");
+            sv_2mortal(implname);
+            GV *implgv = gv_fetchmethod_sv_flags(objstash, implname, 0);
+
+            if (implgv && isGV(implgv) && GvCV(implgv)) {
+                PUSHMARK(SP);
+                EXTEND(SP, 2);
+                PUSHs(sv);
+                PUSHs(namesv);
+                PUTBACK;
+                call_sv((SV *)GvCV(implgv), G_SCALAR);
+                SPAGAIN;
+
+                does_it = SvTRUE_NN(POPs);
+                PUTBACK;
+                FREETMPS;
+                LEAVE;
+                return does_it;
+            }
+        }
+    }
+
     PUSHMARK(SP);
     EXTEND(SP, 2);
     PUSHs(sv);
@@ -370,6 +415,55 @@ Perl_sv_does_pvn(pTHX_ SV *sv, const char *const name, const STRLEN len, U32 fla
     PERL_ARGS_ASSERT_SV_DOES_PVN;
 
     return sv_does_sv(sv, newSVpvn_flags(name, len, flags | SVs_TEMP), flags);
+}
+
+/*
+=for apidoc sv_implements_role_sv
+
+Nominal role composition check.  Returns TRUE if C<sv> (an object instance
+or class name) declared C<:implements(namesv)>, directly or transitively
+through another composed role.
+
+=cut
+*/
+
+bool
+Perl_sv_implements_role_sv(pTHX_ SV *sv, SV *namesv)
+{
+    PERL_ARGS_ASSERT_SV_IMPLEMENTS_ROLE_SV;
+
+    HV *objstash = NULL;
+
+    SvGETMAGIC(sv);
+
+    if (!SvOK(sv) || !(SvROK(sv) || (SvPOK(sv) && SvCUR(sv))))
+        return FALSE;
+
+    if (SvROK(sv) && SvOBJECT(SvRV(sv)))
+        objstash = SvSTASH(SvRV(sv));
+    else
+        objstash = gv_stashsv(sv, 0);
+
+    if (!objstash || !HvSTASH_IS_CLASS_OR_ROLE(objstash))
+        return FALSE;
+
+    HV *target_stash = gv_stashsv(namesv, 0);
+    if (!target_stash || !HvSTASH_IS_ROLE(target_stash))
+        return FALSE;
+
+    HV *walk = objstash;
+    while (walk && HvSTASH_IS_CLASS_OR_ROLE(walk)) {
+        struct xpvhv_aux *waux = HvAUX(walk);
+        if (waux->xhv_class_roles) {
+            for (SSize_t i = 0; i <= AvFILL(waux->xhv_class_roles); i++) {
+                if ((HV *)AvARRAY(waux->xhv_class_roles)[i] == target_stash)
+                    return TRUE;
+            }
+        }
+        walk = waux->xhv_class_superclass;
+    }
+
+    return FALSE;
 }
 
 /*

@@ -30,6 +30,7 @@
 #   undef AMGf_no_GETMAGIC
 #   undef CC_MAGICAL_
 #   undef CC_UNDERSCORE_
+#   undef compose_origins
 #   undef CvGENERATOR
 #   undef CvGENERATOR_off
 #   undef CvGENERATOR_on
@@ -44,17 +45,34 @@
 #   undef F_sqrt_amg
 #   undef GET_aTHX_if_NULL
 #   undef HASATTRIBUTE_UNINITIALIZED
+#   undef HvAUXf_IS_CLASS_SEALED
+#   undef HvAUXf_IS_ROLE
+#   undef HvSTASH_IS_CLASS_OR_ROLE
+#   undef HvSTASH_IS_CLASS_SEALED
+#   undef HvSTASH_IS_ROLE
 #   undef isFOO_or_UNDERSCORE_
 #   undef isIDCONT_lazy_if_safe
 #   undef KEY_equ
 #   undef KEY_gen
+#   undef KEY_implements
 #   undef KEY_neu
+#   undef KEY_role
 #   undef KEY_yield
 #   undef MGv2f_SCALARVALUE_AUTOPROPAGATE
 #   undef MGv2f_WITH_KEYHEK
 #   undef NETDB_R_OBSOLETE
 #   undef new_XPV
 #   undef new_XPVIV
+#   undef origin_is_conflicted
+#   undef origin_is_required
+#   undef origin_map_init
+#   undef ORIGIN_SET_EMPTY
+#   undef ORIGIN_SET_MAX_BITS
+#   undef proto_role_add_field
+#   undef proto_role_add_method
+#   undef proto_role_dup
+#   undef proto_role_free
+#   undef proto_role_new
 #   undef SHY_NATIVE
 #   undef sv_2num
 #   undef sv_has_valuemagic
@@ -152,6 +170,7 @@
 # define block_end(a,b)                         Perl_block_end(aTHX_ a,b)
 # define block_gimme()                          Perl_block_gimme(aTHX)
 # define block_start(a)                         Perl_block_start(aTHX_ a)
+# define builtin_package_implements(a,b)        Perl_builtin_package_implements(aTHX_ a,b)
 # define bytes_cmp_utf8(a,b,c,d)                Perl_bytes_cmp_utf8(aTHX_ a,b,c,d)
 # define bytes_from_utf8(a,b,c)                 Perl_bytes_from_utf8(aTHX_ a,b,c)
 # define bytes_to_utf8(a,b)                     Perl_bytes_to_utf8(aTHX_ a,b)
@@ -745,6 +764,7 @@
 # define sv_gets(a,b,c)                         Perl_sv_gets(aTHX_ a,b,c)
 # define sv_grow(a,b)                           Perl_sv_grow(aTHX_ a,b)
 # define sv_grow_fresh(a,b)                     Perl_sv_grow_fresh(aTHX_ a,b)
+# define sv_implements_role_sv(a,b)             Perl_sv_implements_role_sv(aTHX_ a,b)
 # define sv_inc(a)                              Perl_sv_inc(aTHX_ a)
 # define sv_inc_nomg(a)                         Perl_sv_inc_nomg(aTHX_ a)
 # define sv_insert_flags(a,b,c,d,e,f)           Perl_sv_insert_flags(aTHX_ a,b,c,d,e,f)
@@ -1356,6 +1376,7 @@
 #     define ck_glob(a)                         Perl_ck_glob(aTHX_ a)
 #     define ck_grep(a)                         Perl_ck_grep(aTHX_ a)
 #     define ck_helemexistsor(a)                Perl_ck_helemexistsor(aTHX_ a)
+#     define ck_implements(a)                   Perl_ck_implements(aTHX_ a)
 #     define ck_index(a)                        Perl_ck_index(aTHX_ a)
 #     define ck_isa(a)                          Perl_ck_isa(aTHX_ a)
 #     define ck_join(a)                         Perl_ck_join(aTHX_ a)
@@ -2283,6 +2304,8 @@
 #   define class_setup_stash(a)                 Perl_class_setup_stash(aTHX_ a)
 #   define class_wrap_method_body(a)            Perl_class_wrap_method_body(aTHX_ a)
 #   define croak_kw_unless_class(a)             Perl_croak_kw_unless_class(aTHX_ a)
+#   define role_seal_stash(a)                   Perl_role_seal_stash(aTHX_ a)
+#   define role_setup_stash(a)                  Perl_role_setup_stash(aTHX_ a)
 # endif /* defined(PERL_IN_CLASS_C) || defined(PERL_IN_OP_C)    ||
            defined(PERL_IN_PAD_C)   || defined(PERL_IN_PERLY_C) ||
            defined(PERL_IN_TOKE_C) */

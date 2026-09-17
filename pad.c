@@ -578,7 +578,7 @@ S_pad_alloc_name(pTHX_ PADNAME *name, U32 flags, HV *typestash,
         PadnameFLAGS(name) |= PADNAMEf_STATE;
     }
     if (flags & padadd_FIELD) {
-        assert(HvSTASH_IS_CLASS(PL_curstash));
+        assert(HvSTASH_IS_CLASS_OR_ROLE(PL_curstash));
         class_add_field(PL_curstash, name);
     }
 
@@ -2129,8 +2129,10 @@ S_cv_clone_pad(pTHX_ CV *proto, CV *cv, CV *outside, HV *cloned,
           else if (cv_is_method && PadnameIsFIELD(namesv)) {
               /* fields within methods shouldn't be captured because the inner
                * method's pp_methstart will set it up again.
-               */
-              NOOP;
+               * We still need a valid SV placeholder here because
+               * save_padsv() (called from pp_methstart) uses
+               * SvREFCNT_inc_simple_NN which requires non-NULL. */
+              sv = newSV_type(SVt_NULL);
           }
           else {
             if (PadnameOUTER(namesv)) {   /* lexical from outside? */

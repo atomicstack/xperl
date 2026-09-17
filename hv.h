@@ -114,6 +114,7 @@ union xhvnameu_ {
 
 /* A struct defined by pad.h and used within class.c */
 struct suspended_compcv;
+struct proto_role;
 
 struct xpvhv_aux {
     union xhvnameu_ xhv_name_u;	/* name, if a symbol table */
@@ -136,32 +137,42 @@ struct xpvhv_aux {
 #endif
     U32         xhv_aux_flags;      /* assorted extra flags */
 
-    /* The following fields are only valid if we have the flag HvAUXf_IS_CLASS */
-    U32         xhv_class_flags;
+    /* These fields are valid for class and role stashes. */
     HV          *xhv_class_superclass;         /* STASH of the :isa() base class */
     CV          *xhv_class_initfields_cv;      /* CV for running initfields */
     AV          *xhv_class_adjust_blocks;      /* CVs containing the ADJUST blocks */
     PADNAMELIST *xhv_class_fields;             /* PADNAMEs with PadnameIsFIELD() */
     PADOFFSET    xhv_class_next_fieldix;
     HV          *xhv_class_param_map;          /* Maps param names to field index stored in UV */
-    AV          *xhv_class_subclasses_pending_seal;
-                                               /* STASHes of subclasses that are awaiting seal after this */
+    AV          *xhv_class_pending_method_cvs; /* method CVs needing field binding at seal time */
 
     struct suspended_compcv
                 *xhv_class_suspended_initfields_compcv;
+
+    AV          *xhv_class_pending_roles;      /* roles awaiting composition */
+    AV          *xhv_class_roles;              /* direct and transitive roles */
+    struct proto_role *xhv_class_proto_role;   /* declared composition slots */
 };
 
 #define HvAUXf_SCAN_STASH   0x1   /* stash is being scanned by gv_check */
 #define HvAUXf_NO_DEREF     0x2   /* @{}, %{} etc (and nomethod) not present */
 #define HvAUXf_IS_CLASS     0x4   /* the package is a 'class' */
+#define HvAUXf_IS_ROLE      0x8   /* the package is a 'role' */
+#define HvAUXf_IS_CLASS_SEALED 0x10
 
 #define HvSTASH_IS_CLASS(hv) \
     (HvHasAUX(hv) && HvAUX(hv)->xhv_aux_flags & HvAUXf_IS_CLASS)
+#define HvSTASH_IS_CLASS_SEALED(hv) \
+    (HvHasAUX(hv) && HvAUX(hv)->xhv_aux_flags & HvAUXf_IS_CLASS_SEALED)
 
-#define HvCLASSf_SEALED     0x1   /* class seal operation has been invoked */
+#define HvSTASH_IS_ROLE(hv) \
+    (HvHasAUX(hv) && HvAUX(hv)->xhv_aux_flags & HvAUXf_IS_ROLE)
+
+#define HvSTASH_IS_CLASS_OR_ROLE(hv) \
+    (HvHasAUX(hv) && HvAUX(hv)->xhv_aux_flags & (HvAUXf_IS_CLASS | HvAUXf_IS_ROLE))
 
 #define HvCLASS_IS_SEALED(hv) \
-    (HvSTASH_IS_CLASS(hv) && HvAUX(hv)->xhv_class_flags & HvCLASSf_SEALED)
+    HvSTASH_IS_CLASS_SEALED(hv)
 
 /* hash structure: */
 /* This structure must match the beginning of struct xpvmg in sv.h. */

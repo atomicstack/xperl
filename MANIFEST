@@ -14,6 +14,7 @@ cflags.SH				A script that emits C compilation flags per file
 Changes					Describe how to peruse changes between releases
 charclass_invlists.inc			Generated compiled-in inversion lists
 class.c					Internals of the `use feature 'class'` object system
+class.h					Type definitions for the proto-role algebra (roles v3)
 CODE_OF_CONDUCT.md			Information on where to find the Standards of Conduct
 config_h.SH				Produces config.h
 configpm				Produces lib/Config.pm
@@ -6820,6 +6821,16 @@ t/re/uniprops09.t			Test unicode \p{} regex constructs
 t/re/uniprops10.t			Test unicode \p{} regex constructs
 t/re/user_prop_race_thr.t		Test races in user-defined \p{} under threads
 t/README				Instructions for regression tests
+t/role/role.t				Basic role machinery tests
+t/role/role_compose.t			Role method and field composition tests
+t/role/role_conflict_resolution.t	Role method conflict detection and resolution
+t/role/role_field_composition.t		Role field inheritance tests
+t/role/role_field_conflicts.t		Role field conflict detection tests
+t/role/role_fields.t			Role field behaviour tests
+t/role/role_implements.t		:implements attribute validation tests
+t/role/role_implements_method.t		->implements, infix implements, ->DOES tests
+t/role/role_implements_semantics.t	Nominal role-check semantics
+t/role/role_requires.t			Required method stub tests
 t/run/cloexec.t				Test close-on-exec.
 t/run/dtrace.pl				For dtrace.t
 t/run/dtrace.t				Test for DTrace probes
