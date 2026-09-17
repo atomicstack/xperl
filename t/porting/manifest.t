@@ -27,7 +27,8 @@
 use Config;
 use ExtUtils::Manifest 'maniskip';
 BEGIN {
-    @INC = '..' if -f '../TestInit.pm';
+    push @INC, '.' if -f './TestInit.pm';
+    push @INC, '..' if -f '../TestInit.pm';
 }
 use TestInit qw(T); # T is chdir to the top level
 
