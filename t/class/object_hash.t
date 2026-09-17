@@ -53,4 +53,43 @@ is($restored->scalar, 'value', 'XS Dumper restores class fields');
     is($pure_restored->scalar, 'value', 'pure Perl Dumper restores class fields');
 }
 
+role ObjectHashBaseRole {
+    field $shared :reader :param;
+}
+
+role ObjectHashLeftRole :implements(ObjectHashBaseRole) {
+    field $left :reader :param;
+}
+
+role ObjectHashRightRole :implements(ObjectHashBaseRole) {
+    field $right :reader :param;
+}
+
+class ObjectHashRoleConsumer
+        :implements(ObjectHashLeftRole)
+        :implements(ObjectHashRightRole) {
+    field $own :reader :param;
+}
+
+my $role_object = ObjectHashRoleConsumer->new(
+    shared => 'shared',
+    left   => 'left',
+    right  => 'right',
+    own    => 'own',
+);
+my $role_fields = builtin::class_object_to_hash($role_object);
+ok(eq_hash($role_fields, {
+    '$shared' => 'shared',
+    '$left'   => 'left',
+    '$right'  => 'right',
+    '$own'    => 'own',
+}), 'to_hash represents each field in a role diamond once');
+
+my $role_copy = builtin::class_object_from_hash(
+    $role_fields, 'ObjectHashRoleConsumer');
+is($role_copy->shared, 'shared', 'from_hash restores the shared role field');
+is($role_copy->left, 'left', 'from_hash restores the left role field');
+is($role_copy->right, 'right', 'from_hash restores the right role field');
+is($role_copy->own, 'own', 'from_hash restores the class field');
+
 done_testing();

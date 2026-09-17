@@ -43,7 +43,6 @@ sub opdump (;$) {
 sub _init_optags {
     my(%all, %seen);
     @all{opset_to_ops(full_opset)} = (); # keys only
-
     local($_);
     local($/) = "\n=cut"; # skip to optags definition section
     <DATA>;
@@ -476,6 +475,7 @@ A handy tag name for a I<reasonable> default set of ops.  (The current ops
 allowed are unstable while development continues. It will change.)
 
     :base_core :base_mem :base_loop :base_orig :base_thread
+    implements
 
 This list used to contain :base_io prior to Opcode 1.07.
 

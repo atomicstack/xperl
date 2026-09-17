@@ -28,6 +28,7 @@ builtin - Perl pragma to import built-in utility functions
         is_tainted
         export_lexically
         load_module
+        package_implements
         class_object_to_hash class_object_from_hash
     );
 
@@ -506,6 +507,15 @@ C<load_module> can't be used to require a particular version of Perl, nor can
 it be given a bareword module name as an argument.
 
 Available starting with Perl 5.40.
+
+=head2 package_implements
+
+    package_implements($package_or_object, $role)
+
+This experimental builtin performs the core role-composition check without
+dispatching the object's C<implements> or C<DOES> methods.  It is the
+authoritative implementation used by the default C<implements> method of
+classes and roles declared with the class feature.
 
 =head2 class_object_to_hash
 

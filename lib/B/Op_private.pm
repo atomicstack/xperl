@@ -458,6 +458,7 @@ $bits{i_postinc}{0} = $bf[0];
 $bits{i_predec}{0} = $bf[0];
 $bits{i_preinc}{0} = $bf[0];
 @{$bits{i_subtract}}{1,0} = ($bf[1], $bf[1]);
+@{$bits{implements}}{1,0} = ($bf[1], $bf[1]);
 @{$bits{index}}{3,2,1,0} = ($bf[5], $bf[5], $bf[5], $bf[5]);
 @{$bits{initfield}}{2,1,0} = ('OPpINITFIELD_HV', 'OPpINITFIELD_AV', $bf[0]);
 $bits{int}{0} = $bf[0];

@@ -41,11 +41,14 @@ CLASS
     ok($saw_end, "saw the end of the incomplete class definition");
 }
 
-class MyTest :isa(Base2) {
+{
+    no warnings 'redefine';
+    class MyTest :isa(Base2) {
     field $y = "Second";
     method f() { $y }
     ADJUST {
         ::pass("saw adjust in replacement class definition");
+    }
     }
 }
 
@@ -57,4 +60,3 @@ is($z->f(), "Second", "f() value");
 ok(!$z->can("w"), 'accessor for $w removed');
 
 done_testing();
-

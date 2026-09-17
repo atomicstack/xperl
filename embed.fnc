@@ -1060,6 +1060,9 @@ dp	|OP *	|build_method_invocation_arguments			\
 Rdp	|OP *	|build_range	|I32 flags				\
 				|NN OP *lhs				\
 				|NN OP *rhs
+Adp	|bool	|builtin_package_implements				\
+				|NN SV *package_or_object		\
+				|NN SV *role
 EXp	|const char *|byte_dump_string_ 				\
 				|NULLOK const U8 * const start		\
 				|const STRLEN len			\
@@ -3647,6 +3650,9 @@ Cdp	|char * |sv_grow	|NN SV * const sv			\
 				|STRLEN newlen
 Cdp	|char * |sv_grow_fresh	|NN SV * const sv			\
 				|STRLEN newlen
+ARdp	|bool	|sv_implements_role_sv					\
+				|NN SV *sv				\
+				|NN SV *namesv
 Adp	|void	|sv_inc 	|NULLOK SV * const sv
 Adp	|void	|sv_inc_nomg	|NULLOK SV * const sv
 Admp	|void	|sv_insert	|NN SV * const bigstr			\
@@ -4771,6 +4777,9 @@ Cp	|OP *	|class_wrap_method_body 				\
 				|NULLOK OP *o
 Cp	|void	|croak_kw_unless_class					\
 				|NN const char *kw
+Cp	|void	|role_seal_stash|NN HV *stash
+Cp	|void	|role_setup_stash					\
+				|NN HV *stash
 #endif /* defined(PERL_IN_CLASS_C) || defined(PERL_IN_OP_C)    ||
           defined(PERL_IN_PAD_C)   || defined(PERL_IN_PERLY_C) ||
           defined(PERL_IN_TOKE_C) */

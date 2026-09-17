@@ -551,9 +551,38 @@ XS(XS_builtin_load_module)
     XSRETURN(1);
 }
 
+XS(XS_builtin_package_implements);
 XS(XS_builtin_class_object_to_hash);
 XS(XS_builtin_class_object_from_hash);
 
+/*
+=for apidoc_section $SV
+=for apidoc builtin_package_implements
+
+Returns TRUE if a package or object implements the specified role without
+dispatching an overridable method.
+
+=cut
+*/
+bool
+Perl_builtin_package_implements(pTHX_ SV *package_or_object, SV *role)
+{
+    PERL_ARGS_ASSERT_BUILTIN_PACKAGE_IMPLEMENTS;
+    return sv_implements_role_sv(package_or_object, role);
+}
+
+XS(XS_builtin_package_implements)
+{
+    dXSARGS;
+
+    if (items != 2)
+        croak_xs_usage(cv, "package-or-object, role");
+
+    if (builtin_package_implements(ST(0), ST(1)))
+        XSRETURN_YES;
+
+    XSRETURN_NO;
+}
 XS(XS_builtin_class_object_to_hash)
 {
     dXSARGS;
@@ -672,6 +701,8 @@ static const struct BuiltinFuncDescriptor builtins[] = {
     { "created_as_number", NO_BUNDLE, true, &XS_builtin_created_as_number, &ck_builtin_func1, 0 },
 
     { "load_module", NO_BUNDLE, true, &XS_builtin_load_module, &ck_builtin_func1, 0 },
+
+    { "package_implements", NO_BUNDLE, true, &XS_builtin_package_implements, NULL, 0 },
     { "class_object_to_hash", NO_BUNDLE, true, &XS_builtin_class_object_to_hash, NULL, 0 },
     { "class_object_from_hash", NO_BUNDLE, true, &XS_builtin_class_object_from_hash, NULL, 0 },
     /* list functions */
