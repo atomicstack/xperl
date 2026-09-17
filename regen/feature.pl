@@ -49,6 +49,7 @@ my %feature = (
         bareword_filehandles
         try
         defer
+        generator
         module_true
         class
         keyword_any
@@ -623,7 +624,7 @@ read_only_bottom_close_and_rename($h);
 
 __END__
 package feature;
-our $VERSION = '2.03';
+our $VERSION = '2.05';
 
 FEATURES
 

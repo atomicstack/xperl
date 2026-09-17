@@ -450,6 +450,7 @@ typedef enum opcode {
 	OP_MULTIPARAM	 = 433,
 	OP_PARAMTEST	 = 434,
 	OP_PARAMSTORE	 = 435,
+	OP_YIELD	 = 436,
 	OP_max		
 } opcode;
 
@@ -460,7 +461,7 @@ An enum of all the legal Perl opcodes, defined in F<opnames.h>
 =cut
 */
 
-#define MAXO 436
+#define MAXO 437
 #define OP_FREED MAXO
 
 /* the OP_IS_* macros are optimized to a simple range check because

@@ -336,6 +336,7 @@ PERL_CALLCONV PP(pp_wantarray) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_warn) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_weaken) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_xor) __attribute__visibility__("hidden");
+PERL_CALLCONV PP(pp_yield) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(unimplemented_op) __attribute__visibility__("hidden");
 
 /* ex: set ro ft=c: */

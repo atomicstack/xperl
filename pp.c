@@ -441,9 +441,18 @@ PP(pp_anoncode)
     if (CvCLONE(cv))
         cv = MUTABLE_CV(sv_2mortal(MUTABLE_SV(cv_clone(cv))));
 
-    SV* sv = MUTABLE_SV(cv);
+    SV *sv;
+    bool generator = FALSE;
 
-    if (LIKELY(PL_op->op_flags & OPf_REF)) {
+    if (CvGENERATOR(cv)) {
+        sv = generator_wrap(cv);
+        generator = TRUE;
+    }
+    else {
+        sv = MUTABLE_SV(cv);
+    }
+
+    if (LIKELY(PL_op->op_flags & OPf_REF) && !generator) {
         sv = refto(sv);
     }
 

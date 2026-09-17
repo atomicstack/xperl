@@ -10,6 +10,7 @@ for details.
 
 For a brief summary of how this fork differs from mainline Perl, see
 [BLEAD-DELTA.md](https://github.com/demerphq/perl5/blob/xperl/main/BLEAD-DELTA.md).
+
 The principal differences include:
 
   * experimental generators with cooperative resumable execution;

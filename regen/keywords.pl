@@ -79,6 +79,8 @@ my %feature_kw = (
     __CLASS__ => 'class',
     any       => 'keyword_any',
     all       => 'keyword_all',
+    yield               => 'generator',
+    gen                 => 'generator',
 );
 
 my %pos = map { ($_ => 1) } @{$by_strength{'+'}};
@@ -158,6 +160,7 @@ __END__
 -alarm
 -all
 -and
+-as
 -any
 -atan2
 -bind
@@ -258,6 +261,8 @@ __END__
 -int
 -ioctl
 -isa
++gen
++yield
 -join
 -keys
 -kill
@@ -283,6 +288,7 @@ __END__
 -msgrcv
 -msgsnd
 +my
+-namespace
 -ne
 -neu
 +next

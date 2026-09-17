@@ -18,6 +18,18 @@ their inception, versions, etc. There's a lot of speculation here.
 
 =over 8
 
+=item Generators
+
+Introduced in Perl 5.45.3.
+
+Using this feature requires C<use feature 'generator'>.  The
+C<gen> and C<yield> keywords provide cooperative,
+one-shot resumable execution.  The C<generator> pragma enables the generator
+and signatures features and provides the related generator package methods
+and functions.
+
+See L<perlgenerator> and L<perlfunc/gen BLOCK>.
+
 =item Pluggable keywords
 
 Introduced in Perl 5.11.2

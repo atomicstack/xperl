@@ -117,6 +117,26 @@
         setup   => 'sub f { }',
         code    => 'f()',
     },
+    'call::sub::qualified_empty' => {
+        desc    => 'fully-qualified function call with no args or body',
+        setup   => 'sub f { }',
+        code    => 'call::sub::qualified_empty::f()',
+    },
+    'call::sub::coderef_empty' => {
+        desc    => 'coderef call with no args or body',
+        setup   => 'my $f = sub { }',
+        code    => '$f->()',
+    },
+    'call::sub::args3_unused' => {
+        desc    => 'function call with 3 constant args and an empty body',
+        setup   => 'sub f { }',
+        code    => 'f(1,2,3)',
+    },
+    'call::sub::args3_temps_unused' => {
+        desc    => 'function call with 3 temporary args and an empty body',
+        setup   => 'my ($a, $b, $c) = (1, 2, 3); sub f { }',
+        code    => 'f($a+1,$b+1,$c+1)',
+    },
     'call::sub::amp_empty' => {
         desc    => '&foo function call with no args or body',
         setup   => 'sub f { }; @_ = ();',
@@ -125,6 +145,16 @@
     'call::sub::args3' => {
         desc    => 'function call with 3 local lexical vars',
         setup   => 'sub f { my ($a, $b, $c) = @_; 1 }',
+        code    => 'f(1,2,3)',
+    },
+    'call::sub::signature_empty' => {
+        desc    => 'function call with an empty signature and body',
+        setup   => q{use feature 'signatures'; no warnings 'experimental::signatures'; sub f () { }},
+        code    => 'f()',
+    },
+    'call::sub::signature_args3' => {
+        desc    => 'function call with 3 signature parameters',
+        setup   => q{use feature 'signatures'; no warnings 'experimental::signatures'; sub f ($a, $b, $c) { 1 }},
         code    => 'f(1,2,3)',
     },
     'call::sub::args2_ret1' => {
@@ -162,6 +192,28 @@
         desc    => 'sub called in scalar context',
         setup   => 'my $x; my @a = 1..4; sub f { @a }',
         code    => '$x = f()',
+    },
+
+    'call::method::direct_empty' => {
+        desc    => 'direct empty function call with an invocant arg',
+        setup   => 'my $o = bless [], __PACKAGE__; sub f { }',
+        code    => 'f($o)',
+    },
+    'call::method::object_empty' => {
+        desc    => 'empty method call on an object',
+        setup   => 'my $o = bless [], __PACKAGE__; sub f { }',
+        code    => '$o->f()',
+    },
+    'call::method::class_empty' => {
+        desc    => 'empty method call on a class name',
+        setup   => 'sub f { }',
+        code    => 'call::method::class_empty->f()',
+    },
+
+    'call::generator::yield' => {
+        desc    => 'resume a generator which immediately yields',
+        setup   => q{use feature 'generator'; my $g = gen { while (1) { yield 1 } }},
+        code    => '$g->()',
     },
 
     'call::goto::empty' => {

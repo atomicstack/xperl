@@ -464,6 +464,7 @@ C<finally>,
 C<for>,
 C<foreach>,
 C<ge>,
+C<gen>,
 C<given>,
 C<gt>,
 C<if>,
@@ -481,7 +482,8 @@ C<until>,
 C<when>,
 C<while>,
 C<x>,
-C<xor>
+C<xor>,
+C<yield>
 
 =back
 
@@ -1264,7 +1266,7 @@ If VARIABLE is omitted, it chomps L<C<$_>|perlvar/$_>.  Example:
     }
 
 If VARIABLE is a hash, it chomps the hash's values, but not its keys,
-resetting the L<C<each>|/each HASH> iterator in the process.
+resetting the L<C<each>|/each HASH> generator in the process.
 
 You can actually chomp anything that's an lvalue, including an assignment:
 
@@ -1295,7 +1297,7 @@ chopped.  It is much more efficient than C<s/.$//s> because it neither
 scans nor copies the string.  If VARIABLE is omitted, chops
 L<C<$_>|perlvar/$_>.
 If VARIABLE is a hash, it chops the hash's values, but not its keys,
-resetting the L<C<each>|/each HASH> iterator in the process.
+resetting the L<C<each>|/each HASH> generator in the process.
 
 You can actually chop anything that's an lvalue, including an assignment.
 
@@ -2125,10 +2127,10 @@ C<dump>.
 Portability issues: L<perlport/dump>.
 
 =item each HASH
-X<each> X<hash, iterator>
+X<each> X<hash, generator>
 
 =item each ARRAY
-X<array, iterator>
+X<array, generator>
 
 =for Pod::Functions retrieve the next key/value pair from a hash or index/value from an array
 
@@ -2171,13 +2173,13 @@ After C<each> has returned all entries from the hash or
 array, the next call to C<each> returns the empty list in
 list context and L<C<undef>|/undef EXPR> in scalar context; the next
 call following I<that> one restarts iteration.  Each hash or array has
-its own internal iterator, accessed by C<each>,
-L<C<keys>|/keys HASH>, and L<C<values>|/values HASH>.  The iterator is
+its own internal generator, accessed by C<each>,
+L<C<keys>|/keys HASH>, and L<C<values>|/values HASH>.  The generator is
 implicitly reset when C<each> has reached the end as just
 described; it can be explicitly reset by calling L<C<keys>|/keys HASH>
 or L<C<values>|/values HASH> on the hash or array, or by referencing
 the hash (but not array) in list context.  If you add or delete
-a hash's elements while iterating over it, the effect on the iterator is
+a hash's elements while iterating over it, the effect on the generator is
 unspecified; for example, entries may be skipped or duplicated--so don't
 do that.  Exception: It is always safe to delete the item most recently
 returned by C<each>, so the following code works properly:
@@ -2190,18 +2192,18 @@ returned by C<each>, so the following code works properly:
 Tied hashes may have a different ordering behaviour to perl's hash
 implementation.
 
-The iterator used by C<each> is attached to the hash or array, and is
+The generator used by C<each> is attached to the hash or array, and is
 shared between all iteration operations applied to the same hash or array.
 Thus all uses of C<each> on a particular hash or array advance the same
-iterator location.  All uses of C<each> are also subject to having the
-iterator reset by any use of C<keys> or C<values> on the same hash or
+generator location.  All uses of C<each> are also subject to having the
+generator reset by any use of C<keys> or C<values> on the same hash or
 array, or by the hash (but not array) being referenced in list context.
 This makes C<each>-based loops quite fragile: it is easy to arrive at
-such a loop with the iterator already part way through the object, or to
-accidentally clobber the iterator state during execution of the loop body.
-It's easy enough to explicitly reset the iterator before starting a loop,
-but there is no way to insulate the iterator state used by a loop from
-the iterator state used by anything else that might execute during the
+such a loop with the generator already part way through the object, or to
+accidentally clobber the generator state during execution of the loop body.
+It's easy enough to explicitly reset the generator before starting a loop,
+but there is no way to insulate the generator state used by a loop from
+the generator state used by anything else that might execute during the
 loop body.
 
 This extends to using C<each> on the result of an anonymous hash or
@@ -2213,7 +2215,7 @@ time so each will always start iterating from scratch, eg:
       print "$key=$value\n";
   }
 
-To avoid these problems resulting from the hash-embedded iterator, use a
+To avoid these problems resulting from the hash-embedded generator, use a
 L<C<foreach>|perlsyn/"Foreach Loops"> loop rather than C<while>-C<each>.
 As of Perl 5.36, you can iterate over both keys and values directly with
 a multiple-value C<foreach> loop.
@@ -3588,6 +3590,129 @@ Here's an example to test whether Nagle's algorithm is enabled on a socket:
 
 Portability issues: L<perlport/getsockopt>.
 
+=item gen BLOCK
+X<gen>
+
+=for Pod::Functions create a one-shot generator
+
+The experimental C<generator> feature creates a callable generator from a
+block.  Each call resumes the block until its next C<yield>, returning
+the yielded list in list context or its first value in scalar context.  The
+generator body runs in the context of the call that resumes it, and its lexical
+and localized state is retained across yields.
+
+The generator keywords can be enabled with C<use feature 'generator'>.  The
+complete object interface is documented in L<perlgenerator>.  The combined
+C<generator> pragma enables both C<generator> and C<signatures>, so a generator
+can use either ordinary C<@_> arguments or a signature:
+
+The body can use C<wantarray> to observe that context.  A list, scalar, or
+void call gives the resumed body list, scalar, or void context respectively;
+the context may change between calls.
+
+    use generator;
+
+    my $numbers = gen {
+        yield 1;
+        yield 2;
+    };
+
+    my @first  = $numbers->(); # (1)
+    my @second = $numbers->(); # (2)
+    my @done   = $numbers->(); # ()
+
+Generators can be interleaved explicitly, with each generator retaining its
+own continuation:
+
+    my $numbers = gen {
+        for my $i (0 .. 9) {
+            yield $i;
+        }
+    };
+    my $letters = gen {
+        for my $letter ("A" .. "J") {
+            yield $letter;
+        }
+    };
+
+    for (1 .. 10) {
+        print $numbers->(), $letters->(), " ";
+    }
+    # prints: 0A 1B 2C 3D 4E 5F 6G 7H 8I 9J
+
+C<undef> is a valid yielded value, and is still one value rather than an empty
+list.  When the body finishes without yielding again, that call returns an
+empty list and the generator becomes exhausted.  Later calls also return an
+empty list; normal exhaustion is permanent and harmless.  An empty yield is
+distinct from exhaustion and can be used to suspend without producing values.
+
+A generator accepts arguments on its first call as ordinary subroutine
+arguments.  Arguments passed to a later call are returned by the suspended
+C<yield>, with the first argument returned in scalar context and all
+arguments returned in list context.  It is a one-shot continuation: it cannot
+be resumed while it is already running, after exhaustion, or after an uncaught
+exception.  An exception caught by an C<eval> inside the generator does not
+exhaust it; an uncaught exception is propagated by the call that resumes the
+generator and permanently puts it into the failed state.
+
+With the combined pragma, a generator can use a signature for its initial
+arguments:
+
+    use generator;
+
+    my $g = gen ($name) {
+        my $reply = yield "Hello, $name";
+        return "You said: $reply";
+    };
+
+    my $greeting = $g->("Ada");          # "Hello, Ada"
+    my $answer   = $g->("Good morning"); # "You said: Good morning"
+
+An ordinary C<@_> body is also supported.  Initial call arguments populate
+C<@_>; arguments supplied when resuming are returned by C<yield> instead:
+
+    my $g = gen {
+        my ($factor) = @_;
+        my $reply = yield 10 * $factor;
+        return $reply * $factor;
+    };
+
+    my $value = $g->(3); # 30
+    my $total = $g->(4); # 12
+
+This feature is experimental and may change or be removed in a future Perl
+release.
+
+=item yield LIST
+X<yield>
+
+=for Pod::Functions suspend a generator and produce values
+
+The experimental C<generator> feature provides C<yield> as a keyword
+that suspends the enclosing C<gen> block until the generator is
+called again.  LIST is evaluated in list context, so a yield can produce zero,
+one, or many values.  An empty yield is a real suspension and is distinct from
+exhaustion.  In scalar context the first yielded value is returned; in list
+context all yielded values are returned.  C<undef> is a valid yielded value.
+
+    my $g = gen {
+        my $response = yield "ready";
+        return $response;
+    };
+
+    my $state = $g->();          # "ready"
+    my $result = $g->("done");  # "done"
+
+Arguments passed to a later generator call are returned by the suspended
+C<yield>.  In list context all arguments are returned; in scalar
+context the first argument is returned, and in void context they are
+discarded.  C<yield> is only valid lexically inside a
+C<gen> block.  It cannot be used in an ordinary subroutine or in
+callback code such as C<sort>, C<map>, C<grep>, or a regular-expression code
+block.
+
+This keyword is experimental and requires C<use feature 'generator'>.
+
 =item glob EXPR
 X<glob> X<wildcard> X<filename, expansion> X<expand>
 
@@ -3970,10 +4095,10 @@ may behave differently to Perl's hashes with respect to changes in order on
 insertion and deletion of items.
 
 As a side effect, calling C<keys> resets the internal
-iterator of the HASH or ARRAY (see L<C<each>|/each HASH>) before
+generator of the HASH or ARRAY (see L<C<each>|/each HASH>) before
 yielding the keys.  In
 particular, calling C<keys> in void context resets the
-iterator with no other overhead.
+generator with no other overhead.
 
 Here is yet another way to print your environment:
 
@@ -7317,7 +7442,7 @@ segfaults or assert failures, as of 5.37.7 the logic has been made much
 more robust and the hook now has control over the loop iteration if it
 wishes to do so.
 
-There is a now a facility to control the iterator for the C<@INC> array
+There is a now a facility to control the generator for the C<@INC> array
 traversal that is performed during require. The C<$INC> variable will be
 initialized with the index of the currently executing hook. Once the
 hook returns the next slot in C<@INC> that will be checked will be the
@@ -7327,7 +7452,7 @@ the following code
     push @INC, sub {
         splice @INC, $INC, 1; # remove this hook from @INC
         unshift @INC, sub { warn "A" };
-        undef $INC; # reset the $INC iterator so we
+        undef $INC; # reset the $INC generator so we
                     # execute the newly installed sub
                     # immediately.
     };
@@ -7340,7 +7465,7 @@ search, and then immediately execute that hook.
 
 Prior to 5.37.7, there was no way to cause perl to use the newly
 installed hook immediately, or to inspect any changed items in C<@INC> to
-the left of the iterator, and so the warning would only be generated on
+the left of the generator, and so the warning would only be generated on
 the second call to require. In more recent perl the presence of the last
 statement which undefines C<$INC> will cause perl to restart the
 traversal of the C<@INC> array at the beginning and execute the newly
@@ -10592,12 +10717,12 @@ may behave differently to Perl's hashes with respect to changes in order on
 insertion and deletion of items.
 
 As a side effect, calling C<values> resets the HASH or
-ARRAY's internal iterator (see L<C<each>|/each HASH>) before yielding the
+ARRAY's internal generator (see L<C<each>|/each HASH>) before yielding the
 values.  In particular,
-calling C<values> in void context resets the iterator
+calling C<values> in void context resets the generator
 with no other overhead.
 
-Apart from resetting the iterator,
+Apart from resetting the generator,
 C<values @array> in list context is the same as plain C<@array>.
 (We recommend that you use void context C<keys @array> for this, but
 reasoned that taking C<values @array> out would require more

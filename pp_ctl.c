@@ -3086,6 +3086,7 @@ static const char *S_defer_blockname(PERL_CONTEXT *cx)
 PP(pp_return)
 {
     dMARK;
+    generator_mark_return();
     PERL_CONTEXT *cx;
     I32 cxix = dopopto_cursub();
 
@@ -6819,6 +6820,16 @@ PP(pp_pushdefer)
         SAVEDESTRUCTOR_X(invoke_defer_block, PL_op);
 
     return NORMAL;
+}
+
+PP(pp_yield)
+{
+    dSP;
+    dMARK;
+    generator_yield_values(MARK + 1, SP - MARK);
+    rpp_popfree_to_NN(MARK);
+    generator_yield_suspend();
+    return PL_op->op_next;
 }
 
 static MAGIC *

@@ -999,7 +999,8 @@ S_ithread_create(
            somewhere under our control first, before duplicating.  */
         if (num_params) {
 #if PERL_VERSION_GE(5,9,0)
-            Copy(parent_perl->Istack_base + params_start, array, num_params, SV *);
+            Copy(parent_perl->Istack_base + params_start,
+                 array, num_params, SV *);
 #else
             Copy(parent_perl->Tstack_base + params_start, array, num_params, SV *);
 #endif

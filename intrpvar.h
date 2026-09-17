@@ -15,7 +15,10 @@
 
  * Don't forget to re-run regen/embed.pl to propagate changes! */
 
-/* New variables must be added to the very end for binary compatibility. */
+/* New variables must be added to the very end for binary compatibility.
+ * PERLVARCTX marks active variables which are also members of the
+ * execution-context snapshot; it otherwise has the same storage model as
+ * PERLVAR. */
 
 /* DON'T FORGET to add your variable also to perl_clone()! (in sv.c) */
 
@@ -26,33 +29,52 @@
  *
  * When building without MULTIPLICITY, these variables will be truly global.
  *
- * Important ones in the first cache line (if alignment is done right) */
+ * Hot execution state used by ordinary Perl calls.  Keep the call-frame
+ * working set close together at the front of the record. */
 
-PERLVAR(I, stack_sp,	SV **)		/* top of the stack */
-PERLVAR(I, op,		OP *)		/* currently executing op */
-PERLVAR(I, curpad,	SV **)		/* active pad (lexicals+tmps) */
+PERLVARCTX(I, stack_sp,	SV **)		/* top of the stack */
+PERLVARCTX(I, op,		OP *)		/* currently executing op */
+PERLVARCTX(I, curpad,	SV **)		/* active pad (lexicals+tmps) */
+PERLVARCTX(I, stack_base,	SV **)
+PERLVARCTX(I, curstackinfo, PERL_SI *)	/* current stack + context */
+PERLVARCTX(I, comppad,	PAD *)		/* storage for lexically scoped temporaries */
+PERLVARCTX(I, defgv,	GV *)           /* the *_ glob */
+PERLVARCTX(I, curcop,	COP *)
 
-PERLVAR(I, stack_base,	SV **)
-PERLVAR(I, stack_max,	SV **)
-
-PERLVAR(I, savestack,	ANY *)		/* items that need to be restored when
-                                           LEAVEing scopes we've ENTERed */
-PERLVAR(I, savestack_ix, I32)
-PERLVAR(I, savestack_max, I32)
-
-PERLVAR(I, scopestack,	I32 *)		/* scopes we've ENTERed */
-PERLVAR(I, scopestack_ix, I32)
-PERLVAR(I, scopestack_max, I32)
-
-PERLVAR(I, tmps_stack,	SV **)		/* mortals we've made */
-PERLVARI(I, tmps_ix,	SSize_t,	-1)
-PERLVARI(I, tmps_floor,	SSize_t,	-1)
-PERLVAR(I, tmps_max,	SSize_t)        /* first unalloced slot in tmps stack */
-
-PERLVAR(I, markstack,	Stack_off_t *)	/* stack_sp locations we're
+PERLVARCTX(I, markstack,	Stack_off_t *)	/* stack_sp locations we're
                                            remembering */
-PERLVAR(I, markstack_ptr, Stack_off_t *)
-PERLVAR(I, markstack_max, Stack_off_t *)
+PERLVARCTX(I, markstack_ptr, Stack_off_t *)
+PERLVARCTX(I, curpm,	PMOP *)		/* what to do \ interps in REs from */
+PERLVARCTXI(I, tmps_floor,	SSize_t,	-1)
+PERLVARCTXI(I, tmps_ix,	SSize_t,	-1)
+PERLVARCTX(I, stack_max,	SV **)
+PERLVARCTX(I, savestack_ix, I32)
+PERLVARCTX(I, scopestack_ix, I32)
+PERLVARCTX(I, delaymagic,	U16)		/* ($<,$>) = ... */
+PERLVARCTX(I, tainting,	bool)		/* ? doing taint checks */
+PERLVARCTXI(I, tainted,	bool, FALSE)	/* using variables controlled by $< */
+PERLVARCTX(I, dowarn,	U8)
+PERLVARCTX(I, localizing, U8)		/* processing a local() list:
+                                           0 = no, 1 = localizing,
+                                           2 = delocalizing */
+PERLVARCTX(I, in_eval,	U8)		/* trap "fatal" errors? */
+
+/* Capacity pointers and less common execution state. */
+PERLVARCTX(I, savestack_max, I32)
+PERLVARCTX(I, scopestack_max, I32)
+PERLVARCTX(I, savestack,	ANY *)		/* items to restore when LEAVEing */
+PERLVARCTX(I, scopestack,	I32 *)		/* scopes we've ENTERed */
+PERLVARCTX(I, tmps_stack,	SV **)		/* mortals we've made */
+PERLVARCTX(I, tmps_max,	SSize_t)	/* first unallocated tmps slot */
+PERLVARCTX(I, markstack_max, Stack_off_t *)
+PERLVARCTX(I, curstack,	AV *)		/* THE STACK */
+PERLVARCTX(I, curpm_under, PMOP *)	/* \ interpolation in nested REs */
+PERLVARCTX(I, curstash,	HV *)		/* current package symbol table */
+/* Prog counter for the currently executing OP_MULTIDEREF.  Used to signal
+ * to S_find_uninit_var() where we are. */
+PERLVARCTX(I, multideref_pc, UNOP_AUX_item *)
+PERLVARCTX(I, restartop,	OP *)		/* propagating an error from croak? */
+PERLVARCTXI(I, curcopdb,	COP *,	NULL)
 
 PERLVARI(I, sub_generation, U32, 1)	/* incr to invalidate method cache */
 
@@ -66,16 +88,7 @@ PERLVARI(I, hash_rand_bits_enabled, U8, 1) /* used to randomize hash stuff
 PERLVARI(I, hash_rand_bits, UV, 0)      /* used to randomize hash stuff */
 #endif
 PERLVAR(I, strtab,	HV *)		/* shared string table */
-/* prog counter for the currently executing OP_MULTIDEREF Used to signal
- * to S_find_uninit_var() where we are */
-PERLVAR(I, multideref_pc, UNOP_AUX_item *)
-
 /* Fields used by magic variables such as $@, $/ and so on */
-PERLVAR(I, curpm,	PMOP *)		/* what to do \ interps in REs from */
-PERLVAR(I, curpm_under,        PMOP *)                /* what to do \ interps in REs from */
-
-PERLVAR(I, tainting,	bool)		/* ? doing taint checks */
-PERLVARI(I, tainted,	bool, FALSE)	/* using variables controlled by $< */
 
 PERLVAR(I, valuemagic_annotations, SV *) /* temporary holder of value magics during current op */
 
@@ -92,8 +105,6 @@ PERLVAR(I, valuemagic_annotations, SV *) /* temporary holder of value magics dur
  * / POP. This removes the need to do ENTER/SAVEI16(PL_delaymagic)/LEAVE
  * in hot code like pp_push.
  */
-PERLVAR(I, delaymagic,	U16)		/* ($<,$>) = ... */
-
 /*
 =for apidoc_section $warning
 =for apidoc Amn|U8|PL_dowarn
@@ -108,8 +119,6 @@ thread's copy.
 
 =cut
 */
-
-PERLVAR(I, dowarn,	U8)
 
 #if defined (PERL_UTF8_CACHE_ASSERT) || defined (DEBUGGING)
 #  define PERL___I -1
@@ -132,11 +141,6 @@ thread's copy.
 =cut
 */
 
-PERLVAR(I, localizing,  U8)             /* are we processing a local() list?
-                                           0 = no, 1 = localizing, 2 = delocalizing */
-PERLVAR(I, in_eval,	U8)		/* trap "fatal" errors? */
-PERLVAR(I, defgv,	GV *)           /* the *_ glob */
-
 /*
 =for apidoc_section $GV
 =for apidoc Amn|HV*|PL_curstash
@@ -152,7 +156,6 @@ thread's copy.
 
 /* Stashes */
 PERLVAR(I, defstash,	HV *)		/* main symbol table */
-PERLVAR(I, curstash,	HV *)		/* symbol table for current package */
 
 /*
 =for apidoc_section $COP
@@ -168,9 +171,6 @@ thread's copy.
 =cut
 */
 
-PERLVAR(I, curcop,	COP *)
-PERLVAR(I, curstack,	AV *)		/* THE STACK */
-PERLVAR(I, curstackinfo, PERL_SI *)	/* current stack + context */
 PERLVAR(I, mainstack,	AV *)		/* the stack when nothing funny is
                                            happening */
 
@@ -189,8 +189,6 @@ PERLVARI(I, reg_curpm, PMOP*, NULL)
 
 PERLVARI(I, regmatch_slab, regmatch_slab *,	NULL)
 PERLVAR(I, regmatch_state, regmatch_state *)
-
-PERLVAR(I, comppad,	PAD *)		/* storage for lexically scoped temporaries */
 
 /*
 =for apidoc_section $SV
@@ -323,7 +321,6 @@ PERLVAR(I, bodytarget,	SV *)
 PERLVAR(I, toptarget,	SV *)
 
 
-PERLVAR(I, restartop,	OP *)		/* propagating an error from croak? */
 PERLVAR(I, restartjmpenv, JMPENV *)	/* target frame for longjmp in die */
 
 PERLVAR(I, top_env,	JMPENV *)	/* ptr to current sigjmp environment */
@@ -620,8 +617,6 @@ PERLVAR(I, eval_root,	OP *)
 PERLVAR(I, eval_start,	OP *)
 
 /* runtime control stuff */
-PERLVARI(I, curcopdb,	COP *,	NULL)
-
 PERLVAR(I, filemode,	int)		/* so nextargv() can preserve mode */
 PERLVAR(I, lastfd,	int)		/* what to preserve mode on */
 PERLVAR(I, oldname,	char *)		/* what to preserve mode on */
@@ -1137,6 +1132,17 @@ PERLVARI(I, re_superlinear_cache_delay, IV, 0)
 PERLVARI(I, rng_provider, SV *, NULL)
 PERLVARI(I, rng_U01, Perl_rng_U01_func, NULL)
 PERLVARI(I, rng_U01_state, void *, NULL)
+
+/* Internal boundary hook used by generator suspension and the experimental
+ * process scheduler.  A non-zero return asks the boundary-aware runops loop
+ * to yield after the just-completed opcode; NULL means that no hook is
+ * installed.  The ordinary runops loop deliberately does not inspect these
+ * variables. */
+PERLVARI(I, runops_boundary_hook, runops_boundary_proc_t, NULL)
+PERLVARI(I, runops_boundary_data, void *, NULL)
+/* The active execution context is swappable for resumable execution. */
+PERLVAR(I, execution_context, PERL_EXECUTION_CONTEXT)
+
 /* If you are adding a U8 or U16, check to see if there are 'Space' comments
  * above on where there are gaps which currently will be structure padding.  */
 

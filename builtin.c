@@ -651,7 +651,6 @@ static const struct BuiltinFuncDescriptor builtins[] = {
     { "created_as_number", NO_BUNDLE, true, &XS_builtin_created_as_number, &ck_builtin_func1, 0 },
 
     { "load_module", NO_BUNDLE, true, &XS_builtin_load_module, &ck_builtin_func1, 0 },
-
     /* list functions */
     { "indexed",          SHORTVER(5,39), false, &Perl_XS_builtin_indexed,     &ck_builtin_funcN, 0 },
     { "export_lexically",      NO_BUNDLE, true,  &XS_builtin_export_lexically, NULL,              0 },
