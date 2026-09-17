@@ -233,3 +233,6 @@ GTAGS
 
 # Ignore any project local ccache dir.
 .ccache
+
+# Ignore log files in the planning directory
+planning/*.log
