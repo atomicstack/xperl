@@ -30,6 +30,9 @@
 #   undef AMGf_no_GETMAGIC
 #   undef CC_MAGICAL_
 #   undef CC_UNDERSCORE_
+#   undef CvGENERATOR
+#   undef CvGENERATOR_off
+#   undef CvGENERATOR_on
 #   undef do_aexec
 #   undef EMULATE_THREAD_SAFE_LOCALES
 #   undef F_atan2_amg
@@ -43,8 +46,12 @@
 #   undef HASATTRIBUTE_UNINITIALIZED
 #   undef isFOO_or_UNDERSCORE_
 #   undef isIDCONT_lazy_if_safe
+#   undef KEY_as
 #   undef KEY_equ
+#   undef KEY_gen
+#   undef KEY_namespace
 #   undef KEY_neu
+#   undef KEY_yield
 #   undef MGv2f_SCALARVALUE_AUTOPROPAGATE
 #   undef MGv2f_WITH_KEYHEK
 #   undef NETDB_R_OBSOLETE
@@ -243,6 +250,19 @@
 # define forbid_outofblock_ops(a,b)             Perl_forbid_outofblock_ops(aTHX_ a,b)
 # define force_out_malformed_utf8_message_(a,b,c,d) Perl_force_out_malformed_utf8_message_(aTHX_ a,b,c,d)
 # define free_tmps()                            Perl_free_tmps(aTHX)
+# define generator_capture(a,b)                 Perl_generator_capture(aTHX_ a,b)
+# define generator_free(a)                      Perl_generator_free(aTHX_ a)
+# define generator_is_completed(a)              Perl_generator_is_completed(aTHX_ a)
+# define generator_is_exhausted(a)              Perl_generator_is_exhausted(aTHX_ a)
+# define generator_is_failed(a)                 Perl_generator_is_failed(aTHX_ a)
+# define generator_is_running(a)                Perl_generator_is_running(aTHX_ a)
+# define generator_is_valid(a)                  Perl_generator_is_valid(aTHX_ a)
+# define generator_mark_return()                Perl_generator_mark_return(aTHX)
+# define generator_new(a)                       Perl_generator_new(aTHX_ a)
+# define generator_resume(a,b)                  Perl_generator_resume(aTHX_ a,b)
+# define generator_wrap(a)                      Perl_generator_wrap(aTHX_ a)
+# define generator_yield_suspend()              Perl_generator_yield_suspend(aTHX)
+# define generator_yield_values(a,b)            Perl_generator_yield_values(aTHX_ a,b)
 # define get_av(a,b)                            Perl_get_av(aTHX_ a,b)
 # define get_cv(a,b)                            Perl_get_cv(aTHX_ a,b)
 # define get_cvn_flags(a,b,c)                   Perl_get_cvn_flags(aTHX_ a,b,c)
@@ -535,6 +555,10 @@
 # define pregfree2(a)                           Perl_pregfree2(aTHX_ a)
 # define prepare_export_lexical()               Perl_prepare_export_lexical(aTHX)
 # define prescan_version(a,b,c,d,e,f,g)         Perl_prescan_version(aTHX_ a,b,c,d,e,f,g)
+# define process_scheduler_run(a)               Perl_process_scheduler_run(aTHX_ a)
+# define process_state_capture(a)               Perl_process_state_capture(aTHX_ a)
+# define process_state_restore(a)               Perl_process_state_restore(aTHX_ a)
+# define process_state_save(a)                  Perl_process_state_save(aTHX_ a)
 # define ptr_table_fetch(a,b)                   Perl_ptr_table_fetch(aTHX_ a,b)
 # define ptr_table_free(a)                      Perl_ptr_table_free(aTHX_ a)
 # define ptr_table_new()                        Perl_ptr_table_new(aTHX)
@@ -1001,6 +1025,7 @@
 #   define boot_core_PerlIO()                   Perl_boot_core_PerlIO(aTHX)
 #   define boot_core_UNIVERSAL()                Perl_boot_core_UNIVERSAL(aTHX)
 #   define boot_core_builtin()                  Perl_boot_core_builtin(aTHX)
+#   define boot_core_generator()                Perl_boot_core_generator(aTHX)
 #   define boot_core_mro()                      Perl_boot_core_mro(aTHX)
 #   define build_function_invocation(a,b,c)     Perl_build_function_invocation(aTHX_ a,b,c)
 #   define build_infix_plugin(a,b,c)            Perl_build_infix_plugin(aTHX_ a,b,c)

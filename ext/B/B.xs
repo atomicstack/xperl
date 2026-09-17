@@ -512,6 +512,18 @@ static XSPROTO(intrpvar_sv_common)
     XSRETURN(1);
 }
 
+/* Context variables are not members of struct interpreter.  They are
+ * reached through the active execution context instead. */
+static XSPROTO(intrpvar_sv_context); /* prototype to pass -Wmissing-prototypes */
+static XSPROTO(intrpvar_sv_context)
+{
+    dXSARGS;
+    if (items != 0)
+       croak_xs_usage(cv,  "");
+    ST(0) = make_sv_object(aTHX_ (SV *)PL_curstash);
+    XSRETURN(1);
+}
+
 
 
 #define SVp                 0x0
@@ -636,8 +648,7 @@ BOOT:
     ASSIGN_COMMON_ALIAS(I, incgv);
     cv = newXS("B::defstash", intrpvar_sv_common, file);
     ASSIGN_COMMON_ALIAS(I, defstash);
-    cv = newXS("B::curstash", intrpvar_sv_common, file);
-    ASSIGN_COMMON_ALIAS(I, curstash);
+    newXS("B::curstash", intrpvar_sv_context, file);
 #ifdef USE_ITHREADS
     cv = newXS("B::regex_padav", intrpvar_sv_common, file);
     ASSIGN_COMMON_ALIAS(I, regex_padav);

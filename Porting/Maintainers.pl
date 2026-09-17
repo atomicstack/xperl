@@ -129,6 +129,12 @@ our @IGNORABLE = qw(
 
 our %Modules = (
 
+    'XPerl generators' => {
+        'FILES'      => q[lib/generator.pm],
+        'MAINTAINER' => 'XPerl',
+        'UPSTREAM'   => 'xperl/main',
+    },
+
     'Archive::Tar' => {
         'DISTRIBUTION' => 'BINGOS/Archive-Tar-3.14.tar.gz',
         'SYNCINFO'     => 'jkeenan on Fri Oct  2 09:13:09 2026',
@@ -1551,7 +1557,10 @@ for ( keys %Modules ) {
     }
 }
 
-our %Maintainers;
+our %Maintainers = (
+    'XPerl'   => 'Yves Orton',
+    YVES      => 'Yves Orton <YVES@cpan.org>',
+);
 # legacy MAINTAINER field
 for ( keys %Modules ) {
     # Keep any existing MAINTAINER flag so that "overrides" can be applied

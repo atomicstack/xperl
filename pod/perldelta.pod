@@ -56,6 +56,21 @@ C<rand_bytes> interface remains the portable provider protocol.
 Only C<undef> or a C<RNG::Provider> object can be assigned to C<${^RNG}>.
 Other scalar values are rejected at assignment.
 
+=head2 Experimental generators
+
+The experimental C<generator> feature creates a callable one-shot generator
+from a block.  Each call resumes the block until its next C<yield>,
+returning the yielded list in list context or its first value in scalar
+context.  Separate generators can be resumed in an explicitly interleaved,
+cooperative-concurrency pattern.  Generator calls can also send arguments
+back to the suspended C<yield>.  See L<perlfunc/gen
+BLOCK> and L<perlgenerator> for details.
+
+The C<running>, C<completed>, C<failed>, and
+C<exhausted> predicates are methods on generator objects and functions in the
+C<generator::> package.  The C<generator> pragma enables the feature and makes
+the package interface available.
+
 =head1 Security
 
 XXX Any security-related notices go here. In particular, any security

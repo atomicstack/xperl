@@ -974,6 +974,12 @@ static int my_keyword_plugin(pTHX_
 
 #include "APItest_runtime_support.inc"
 
+static OP *
+S_process_scheduler_test_pp(pTHX)
+{
+    return PL_op->op_next;
+}
+
 
 #include "const-c.inc"
 

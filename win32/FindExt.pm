@@ -108,6 +108,7 @@ sub scan_ext
     while (defined (my $item = readdir $dh)) {
         next if $item =~ /^\.\.?$/;
         next if $item eq "DynaLoader";
+        # This is a standalone XS prototype kept under dist/, not a core
         next unless -d "$ext_dir/$item";
         my $this_ext = $item;
         my $leaf = $item;

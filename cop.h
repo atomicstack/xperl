@@ -1343,6 +1343,97 @@ Use this typedef to declare variables that are to hold C<struct stackinfo>.
 */
 typedef struct stackinfo PERL_SI;
 
+/* The fields marked PERLVARCTX in intrpvar.h form the swappable execution
+ * record.  Keep this generated from the same declarations as the
+ * independent active interpreter/global variables. */
+typedef struct perl_execution_context {
+#define PERLVAR(prefix,var,type)
+#define PERLVARA(prefix,var,n,type)
+#define PERLVARI(prefix,var,type,init)
+#define PERLVARIC(prefix,var,type,init)
+#define PERLVARCTX(prefix,var,type) type prefix##var;
+#define PERLVARCTXI(prefix,var,type,init) type prefix##var;
+#include "intrpvar.h"
+#undef PERLVAR
+#undef PERLVARA
+#undef PERLVARI
+#undef PERLVARIC
+#undef PERLVARCTX
+#undef PERLVARCTXI
+} PERL_EXECUTION_CONTEXT;
+
+/*
+ * The execution state which belongs to one resumable run of the interpreter.
+ *
+ * This is intentionally an internal, shallow-copyable description.  The
+ * stacks and the objects reachable from it remain owned by the interpreter;
+ * a process state only owns the references to its portions of those stacks.
+ * In particular, this must not contain a JMPENV: exception environments are
+ * C stack objects and are established afresh by each run/resume operation.
+ *
+ * Keep this list in step with the process-local interpreter variables in
+ * intrpvar.h.  It is the narrow boundary used by generators and by any
+ * opcode-boundary scheduler.
+ */
+typedef struct perl_process_state {
+    PERL_EXECUTION_CONTEXT context;
+} PERL_PROCESS_STATE;
+
+/* Result requested by a runops boundary hook.  Zero means continue; a
+ * non-zero result is returned by the boundary-aware runops loop. */
+#define PERL_RUNOPS_BOUNDARY_YIELD 1
+
+typedef struct perl_process_scheduler {
+    PERL_PROCESS_STATE *states;
+    U8                 *done;
+    U8                  count;
+    U8                  quantum;
+    U8                  current;
+    I32                 boundaries;
+    I32                 total_boundaries;
+    I32                 max_boundaries;
+    int                 failure;
+} PERL_PROCESS_SCHEDULER;
+
+typedef enum {
+    PERL_GENERATOR_INVALID = 0,
+    PERL_GENERATOR_NEW,
+    PERL_GENERATOR_RUNNING,
+    PERL_GENERATOR_YIELDED,
+    PERL_GENERATOR_EXHAUSTED,
+    PERL_GENERATOR_FAILED
+} PERL_GENERATOR_STATE;
+
+#define PERL_CVf_GENERATOR 0x800000 /* CV is the body of a generator */
+#define CvGENERATOR(cv)         (CvFLAGS(cv) & PERL_CVf_GENERATOR)
+#define CvGENERATOR_on(cv)      (CvFLAGS(cv) |= PERL_CVf_GENERATOR)
+#define CvGENERATOR_off(cv)     (CvFLAGS(cv) &= ~PERL_CVf_GENERATOR)
+
+typedef struct perl_generator {
+    U32                     magic;
+    CV *                    body;
+    SV *                    defsv;
+    AV *                    defav;
+    LOGOP                   invoke;
+    PERL_PROCESS_STATE       process;
+    AV *                    initial_args;
+    AV *                    resume_args;
+    AV *                    result;
+    AV *                    values;
+    SV *                    value;
+    SV *                    error;
+    PERL_GENERATOR_STATE    state;
+    bool                    captured;
+    bool                    yield_pending;
+    bool                    stack_pushed;
+    bool                    stack_detached;
+    bool                    eval_active;
+    bool                    explicit_return;
+    U8                      yield_context;
+} PERL_GENERATOR;
+
+#define PERL_GENERATOR_MAGIC 0x47594C44U
+
 #define cxstack		(PL_curstackinfo->si_cxstack)
 #define cxstack_ix	(PL_curstackinfo->si_cxix)
 #define cxstack_max	(PL_curstackinfo->si_cxmax)

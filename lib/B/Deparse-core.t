@@ -367,6 +367,7 @@ my %not_tested = map { $_ => 1} qw(
     END
     INIT
     UNITCHECK
+    __NAMESPACE__
     catch
     class
     default
@@ -374,6 +375,8 @@ my %not_tested = map { $_ => 1} qw(
     else
     elsif
     field
+    gen
+    implements
     finally
     for
     foreach
@@ -382,6 +385,8 @@ my %not_tested = map { $_ => 1} qw(
     if
     m
     method
+    as
+    namespace
     no
     package
     q
@@ -396,6 +401,9 @@ my %not_tested = map { $_ => 1} qw(
     unless
     until
     use
+    gen
+    yield
+    role
     when
     while
     y

@@ -1009,6 +1009,7 @@ Adopx	|void	|blockhook_register					\
 : Used in perly.y
 ARdp	|int	|block_start	|int full
 p	|void	|boot_core_builtin
+p	|void	|boot_core_generator
 : Only used in perl.c
 p	|void	|boot_core_mro
 : Used in perl.c
@@ -1522,6 +1523,31 @@ Adfpt	|char * |form		|NN const char *pat			\
 : Only used in perl.c
 p	|void	|free_tied_hv_pool
 Cp	|void	|free_tmps
+Chp	|void	|generator_capture					\
+				|NN PERL_GENERATOR *generator		\
+				|NULLOK SV *value
+Chp	|void	|generator_free |NN PERL_GENERATOR *generator
+Chp	|bool	|generator_is_completed 				\
+				|NN SV *generator_sv
+Chp	|bool	|generator_is_exhausted 				\
+				|NN SV *generator_sv
+Chp	|bool	|generator_is_failed					\
+				|NN SV *generator_sv
+Chp	|bool	|generator_is_running					\
+				|NN SV *generator_sv
+Chp	|bool	|generator_is_valid					\
+				|NN SV *generator_sv
+Chp	|void	|generator_mark_return
+Chp	|PERL_GENERATOR *|generator_new 				\
+				|NN CV *body
+Chp	|int	|generator_resume					\
+				|NN PERL_GENERATOR *generator		\
+				|NN AV *args
+Chp	|SV *	|generator_wrap |NN CV *body
+Chp	|void	|generator_yield_suspend
+Chp	|void	|generator_yield_values 				\
+				|NN SV **values 			\
+				|SSize_t count
 ERXp	|SV *	|get_and_check_backslash_N_name 			\
 				|SPTR const char *s			\
 				|EPTRge const char *e			\
@@ -2931,6 +2957,14 @@ Adp	|const char *|prescan_version					\
 				|NULLOK int *ssaw_decimal		\
 				|NULLOK int *swidth			\
 				|NULLOK bool *salpha
+Chp	|int	|process_scheduler_run					\
+				|NN PERL_PROCESS_SCHEDULER *scheduler
+Chp	|void	|process_state_capture					\
+				|NN PERL_PROCESS_STATE *state
+Chp	|void	|process_state_restore					\
+				|NN const PERL_PROCESS_STATE *state
+Chp	|void	|process_state_save					\
+				|NN PERL_PROCESS_STATE *state
 ARdp	|void * |ptr_table_fetch|NN PTR_TBL_t * const tbl		\
 				|NULLOK const void * const sv
 Adp	|void	|ptr_table_free |NULLOK PTR_TBL_t * const tbl

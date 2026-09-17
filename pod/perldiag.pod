@@ -75,6 +75,11 @@ removed in a future Perl version:
     use feature "refaliasing";
     \$x = \$y;
 
+=item Alias name must be a non-empty package component
+
+(F) A package alias must contain a non-empty package component and may not
+contain a package separator.
+
 =item all is experimental
 
 (S experimental::keyword_all) This warning is emitted if you use the
@@ -804,6 +809,11 @@ be directly assigned to.
 an C<@ISA> array, and the array is not empty.  This is not permitted, as it
 would lead to a class with inconsistent inheritance.
 
+=item Cannot create role %s as it already has a non-empty @ISA
+
+(F) An attempt was made to create a role out of a package that already has a
+non-empty C<@ISA> array.  Roles do not use C<@ISA> for composition.
+
 =item Cannot create an object of incomplete class "%s"
 
 (F) An attempt was made to create an object of a class where the start
@@ -815,6 +825,31 @@ object at compile time before the class is complete:
 
   eval "class Foo {"; Foo->new; # error
   class Bar { BEGIN { Bar->new } }; # error
+
+=item class_object_from_hash expects a hash reference
+
+(F) The C<class_object_from_hash> API was called with a value that was not a
+hash reference.
+
+=item class_object_from_hash expects the name of a class
+
+(F) The C<class_object_from_hash> API was called with a name that does not
+identify a class.
+
+=item class_object_to_hash expects a class object
+
+(F) The C<class_object_to_hash> API was called with a value that was not a
+class object.
+
+=item value for field %s must be a reference
+
+(F) A class array or hash field was restored from a value that was not a
+reference.
+
+=item value for field %s has the wrong reference type
+
+(F) A class array or hash field was restored from a reference of the wrong
+type.
 
 =item Cannot find encoding "%s"
 
@@ -852,6 +887,10 @@ is a fatal error.
 (F) You attempted to use one of the keywords that only makes sense inside
 a C<class> definition, at a location that is not inside such a class.
 
+=item Cannot '%s' outside of a 'class' or 'role'
+
+(F) You attempted to use a keyword that is only valid inside a class or role.
+
 =item Cannot pack %f with '%c'
 
 (F) You tried converting an infinity or not-a-number to an integer,
@@ -866,6 +905,24 @@ which makes no sense.  Maybe you meant '%s', or just stringifying it?
 
 (F) You tried to begin a C<class> definition for a class that already exists.
 A class may only have one definition block.
+
+=item Cannot resume a failed generator
+
+(F) You attempted to resume a generator after an uncaught exception had
+already caused it to fail.  A failed generator cannot be resumed.
+
+=item Cannot resume an exhausted generator
+
+(F) You attempted to resume a generator after it had completed.  An exhausted
+generator cannot be resumed.
+
+=item Cannot define role "%s" as it is already a class
+
+(F) A role cannot be defined with the name of an existing class.
+
+=item Cannot reopen existing role "%s"
+
+(F) A role may only have one definition block.
 
 =item Cannot set tied @DB::args
 
@@ -2437,6 +2494,11 @@ already been freed.
 (W unpack) You have applied the same modifier more than once after a
 type in a pack template.  See L<perlfunc/pack>.
 
+=item Duplicate package alias '%s'
+
+(F) A package alias with this name has already been declared in the current
+lexical scope.
+
 =item Duplicated subroutine parameter name
 
 (F) You have attempted to use a subroutine parameter name a second time.
@@ -2771,6 +2833,11 @@ permitted, as only methods will have access to the fields of an instance.
 method of another class nested inside the one that actually defined it.
 This is not permitted, as only methods defined by a given class are
 permitted to access fields of that class.
+
+=item Field %s conflicts between "%s" and "%s"
+
+(F) Two composed roles provide the same field.  Field conflicts cannot be
+resolved by the consuming class.
 
 =item Field too wide in 'u' format in pack
 
@@ -3561,6 +3628,17 @@ optional third component, which is ignored.  Each component must be a number
 of 1 to 3 digits. No other characters are permitted.  The value that was
 specified does not conform to these rules.
 
+=item Generator has no suspended continuation
+
+(F) You attempted to resume a generator that has no suspended continuation.
+This can happen when generator execution is resumed outside its normal calling
+context.
+
+=item Generator has already been invoked
+
+(F) You attempted to invoke a new generator more than once before its first
+resume.  A generator's initial arguments are accepted only by its first call.
+
 =item Invalid version format (%s)
 
 (F) A version number did not meet the "lax" criteria for versions.
@@ -3705,6 +3783,30 @@ make sense, and can be confusing because it can make perl look like
 it is hanging when it is really just trying to read from STDIN.  You
 should either pass a filename to edit, or remove C<-i> from the command
 line.  See L<perlrun|perlrun/-i[extension]> for more details.
+
+=item invalid generator
+
+(F) You attempted to call a value that is not a valid generator.
+
+=item generator continuation is not available
+
+(F) You attempted to capture or resume a generator when its continuation was
+not available.
+
+=item generator::running expects generator arguments
+
+(F) C<generator::running> was called with a value that is not a generator.
+Pass only generator values to it.
+
+=item yield outside a gen
+
+(F) The yield operation was invoked without a currently running
+gen body.
+
+=item yield outside a running gen
+
+(F) The yield operation was invoked when no gen body
+was currently running.
 
 =item Junk on end of regexp in regex m/%s/
 
@@ -3992,6 +4094,16 @@ a builtin library search path, prefix2 is substituted.  The error may
 appear if components are not found, or are too long.  See
 "PERLLIB_PREFIX" in L<perlos2>.
 
+=item Malformed namespace separator in package name
+
+(F) A lexical namespace separator was used in an invalid form.  The C<:::>
+syntax may occur only once in a package name and must separate valid package
+components.
+
+=item Namespace name is too long
+
+(F) A namespace name exceeded the maximum length permitted by Perl.
+
 =item Malformed prototype for %s: %s
 
 (F) You tried to use a function with a malformed prototype.  The
@@ -4128,6 +4240,15 @@ interpreter, especially if the word that is being warned about is
 (F) You can't pack a string by supplying a checksum, because the
 checksumming process loses information, and you can't go the other way.
 See L<perlfunc/unpack>.
+
+=item Method '%s' conflicts between "%s" and "%s"
+
+(F) Two composed roles provide the same method and the consumer did not
+provide an explicit method to resolve the conflict.
+
+=item Method %s is required by role %s but not provided by "%s"
+
+(F) A consuming class does not provide a method required by a role.
 
 =item Method for operation %s not found in package %s during blessing
 
@@ -4764,10 +4885,20 @@ find the name of the file to which to write data destined for stdout.
 declarations, because that doesn't make much sense under existing rules.
 Such syntax is reserved for future extensions.
 
+=item package aliases are only allowed with use
+
+(F) A package alias was requested in a context other than a C<use>
+declaration.  Aliases are lexical and can only be introduced by C<use>.
+
 =item No Perl script found in input
 
 (F) You called C<perl -x>, but no line was found in the file beginning
 with #! and containing the word "perl".
+
+=item namespace is experimental
+
+(S experimental::namespaces) The C<namespace> declaration is experimental and
+its behaviour may change in future releases of Perl.
 
 =item No setregid available
 
@@ -5848,6 +5979,11 @@ of "||".
 
 See L</500 Server error>.
 
+=item panic: role "%s" has no proto-role
+
+(P) Perl found a role without the internal metadata needed to compose it.
+This should not normally happen.
+
 =item printf() on closed filehandle %s
 
 (W closed) The filehandle you're writing to got itself closed sometime
@@ -6197,6 +6333,14 @@ for the character.
 
 (W syntax) You wrote your assignment operator backwards.  The = must
 always come last, to avoid ambiguity with subsequent unary operators.
+
+=item role is experimental
+
+(S experimental::class) The C<role> keyword is experimental.
+
+=item Roles cannot use :isa
+
+(F) A role cannot use the C<:isa> attribute.
 
 =item Scalars leaked: %d
 
@@ -6870,6 +7014,11 @@ will deny it.
 undef-aware equality operator.  This operator is currently experimental
 and its behaviour may change in future releases of Perl.
 
+=item __NAMESPACE__ is experimental
+
+(S experimental::namespaces) The C<__NAMESPACE__> token is experimental and
+its behaviour may change in future releases of Perl.
+
 =item The experimental declared_refs feature is not enabled
 
 (F) To declare references to variables, as in C<my \%x>, you must first enable
@@ -7077,6 +7226,10 @@ of arguments given and the number expected.
 
 Similar to the previous message but for subroutines that accept a variable
 number of arguments.
+
+=item Too many roles in a single composition (max %d)
+
+(F) A class or role composed more roles than the implementation limit allows.
 
 =item Too many nested open parens in regex; marked by <-- HERE in m/%s/
 
@@ -7425,6 +7578,14 @@ enough to figure out what you really meant.
 (F) You tried to specify something other than a single class name with an
 optional trailing version number as the value for a C<class> C<:isa>
 attribute.  This confused the parser.
+
+=item Unexpected characters while parsing :implements attribute: %s
+
+(F) A C<:implements> attribute must contain a comma-separated list of role names.
+
+=item :implements attribute requires a role but "%s" is not one
+
+(F) A C<:implements> attribute named something that is not a declared role.
 
 =item Unexpected exit %u
 
@@ -8531,6 +8692,10 @@ or until all closure references to it are destroyed.
 (A) You've accidentally run your script through B<csh> instead
 of Perl.  Check the #! line, or manually feed your script into
 Perl yourself.
+
+=item Variable name is too long
+
+(F) A variable name exceeded the maximum length permitted by Perl.
 
 =item Variable "%s" will not stay shared
 

@@ -17418,6 +17418,8 @@ perl_clone_using(PerlInterpreter *proto_perl, UV flags,
     PL_sighandler3p	= proto_perl->Isighandler3p;
 
     PL_runops		= proto_perl->Irunops;
+    PL_runops_boundary_hook = NULL;
+    PL_runops_boundary_data = NULL;
 
     PL_subline		= proto_perl->Isubline;
 

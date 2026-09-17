@@ -69,7 +69,7 @@
 %token <ival> KW_IF KW_ELSE KW_ELSIF KW_UNLESS
 %token <ival> KW_FOR KW_UNTIL KW_WHILE KW_CONTINUE
 %token <ival> KW_GIVEN KW_WHEN KW_DEFAULT
-%token <ival> KW_TRY KW_CATCH KW_FINALLY KW_DEFER
+%token <ival> KW_TRY KW_CATCH KW_FINALLY KW_DEFER KW_GEN KW_YIELD
 %token <ival> KW_REQUIRE KW_DO
 
 /* The 'use' and 'no' keywords both emit this */
@@ -119,11 +119,12 @@
 %type <opval> bare_statement_when
 %type <opval> bare_statement_while
 %type <opval> bare_statement_yadayada
+%type <opval> yield_args yield_tail termyield
 %type <opval> subscript_index
 %type <opval> subscript_keys
 %type <opval> subscriptable_reference
 
-%type <ival>  startsub startanonsub startanonmethod startformsub
+%type <ival>  startsub startanonsub startgen startanonmethod startformsub
 
 %type <ival> mintro
 
@@ -154,6 +155,7 @@
 %nonassoc LOOPEX
 
 %nonassoc <pval> PLUGIN_LOW_OP
+%precedence PERLY_SEMICOLON
 %left <ival> OROP <pval> PLUGIN_LOGICAL_OR_LOW_OP
 %left <ival> ANDOP <pval> PLUGIN_LOGICAL_AND_LOW_OP
 %right <ival> NOTOP
@@ -1071,6 +1073,10 @@ startanonsub:	%empty	/* start an anonymous subroutine scope */
 			    SAVEFREESV(PL_compcv); }
 	;
 
+startgen:	KW_GEN startanonsub
+			{ CvGENERATOR_on(PL_compcv); $$ = $startanonsub; }
+	;
+
 startanonmethod:	%empty	/* start an anonymous method scope */
 			{ $$ = start_subparse(FALSE, CVf_ANON|CVf_IsMETHOD);
 			    SAVEFREESV(PL_compcv); }
@@ -1632,6 +1638,10 @@ anonymous
 			{ $$ = newANONLIST($optexpr); }
 	|	HASHBRACK optexpr PERLY_SEMICOLON PERLY_BRACE_CLOSE	%prec PERLY_PAREN_OPEN /* { foo => "Bar" } */
 			{ $$ = newANONHASH($optexpr); }
+	|	startgen subattrlist sigsubbody %prec PERLY_PAREN_OPEN
+			{ SvREFCNT_inc_simple_void(PL_compcv);
+			  $$ = newANONATTRSUB($startgen, NULL,
+			                      $subattrlist, $sigsubbody); }
 	|	KW_SUB_anon     startanonsub proto subattrlist subbody    %prec PERLY_PAREN_OPEN
 			{ SvREFCNT_inc_simple_void(PL_compcv);
 			  $$ = newANONATTRSUB($startanonsub, $proto, $subattrlist, $subbody); }
@@ -1658,10 +1668,40 @@ termdo	:       KW_DO term	%prec UNIOP                     /* do $filename */
 			{ $$ = newUNOP(OP_NULL, OPf_SPECIAL, op_scope($block));}
         ;
 
+yield_tail
+	:       %empty	%prec PREC_LOW
+			{ $$ = NULL; }
+	|       PERLY_COMMA term yield_tail
+			{ $$ = $3
+			        ? op_append_elem(OP_LIST, list($term), $3)
+			        : list($term); }
+	;
+
+yield_args
+	:       term yield_tail
+			{ $$ = $yield_tail
+			        ? op_append_elem(OP_LIST, list($term), $yield_tail)
+			        : $term; }
+	;
+
+termyield
+	:       KW_YIELD yield_args	%prec UNIOP
+			{ if (!CvGENERATOR(PL_compcv)) {
+			      yyerror("yield outside a gen");
+			      YYERROR;
+			  }
+			  $$ = newLISTOP(OP_YIELD, 0,
+                                      newOP(OP_PUSHMARK, 0),
+				      (($yield_args->op_flags & OPf_PARENS)
+                                          ? list(op_force_list($yield_args))
+					      : list($yield_args))); }
+	;
+
 term[product]	:	termbinop
 	|	termunop
 	|	anonymous
 	|	termdo
+	|	termyield
 	|	term[condition] PERLY_QUESTION_MARK term[then] PERLY_COLON term[else]
 			{ $$ = newCONDOP(0, $condition, $then, $else); }
 	|	REFGEN term[operand]                          /* \$x, \@y, \%z */

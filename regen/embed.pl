@@ -4383,7 +4383,7 @@ sub readvars {
     foreach my $line_data (@{$hp->lines}) {
         #next unless $line_data->is_content;
         my $line= $line_data->line;
-        if ($line=~m/^\s*PERLVARA?I?C?\(\s*$pre\s*,\s*(\w+)/){
+        if ($line=~m/^\s*PERLVAR(?:CTX)?A?I?C?\(\s*$pre\s*,\s*(\w+)/){
             $seen{$1}++
                 and
                 die_at_end "duplicate symbol $1 while processing $file line "
