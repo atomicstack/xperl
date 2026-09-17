@@ -4617,6 +4617,59 @@ dist/Storable/t/tied_store.t		See if Storable works
 dist/Storable/t/utf8.t			See if Storable works
 dist/Storable/t/utf8hash.t		See if Storable works
 dist/Storable/t/weak.t			Can Storable store weakrefs
+dist/Tensor-XS/Changes					Changelog for Tensor-XS
+dist/Tensor-XS/examples/benchmark.pl			Example or supporting material for Tensor-XS
+dist/Tensor-XS/examples/idx_format_info.md		Example or supporting material for Tensor-XS
+dist/Tensor-XS/examples/matrix_bench.pl			Example or supporting material for Tensor-XS
+dist/Tensor-XS/examples/mnist_network.pl		Example or supporting material for Tensor-XS
+dist/Tensor-XS/examples/mnist_training.pl		Example or supporting material for Tensor-XS
+dist/Tensor-XS/examples/README.md			Example or supporting material for Tensor-XS
+dist/Tensor-XS/examples/xor_training.pl			Example or supporting material for Tensor-XS
+dist/Tensor-XS/lib/Matrix.pm				Matrix class
+dist/Tensor-XS/lib/MNIST.pm				MNIST IDX file format utilities
+dist/Tensor-XS/lib/Scalar.pm				Scalar tensor class
+dist/Tensor-XS/lib/Tensor.pm				Tensor class
+dist/Tensor-XS/lib/Tensor/XS.pm				Native Tensor storage Perl loader
+dist/Tensor-XS/lib/Vector.pm				Vector tensor class
+dist/Tensor-XS/Makefile.PL				Makefile for the Tensor::XS prototype
+dist/Tensor-XS/NEURAL_NETWORK_FEATURES.md		Design and development notes for Tensor-XS
+dist/Tensor-XS/NOTES.md					Design and development notes for Tensor-XS
+dist/Tensor-XS/OPTIMIZATION_OPPORTUNITIES.md		Design and development notes for Tensor-XS
+dist/Tensor-XS/OPTIMIZATION_SUCCESS.md			Design and development notes for Tensor-XS
+dist/Tensor-XS/OPTIMIZATION_V2_RESULTS.md		Design and development notes for Tensor-XS
+dist/Tensor-XS/t/000-tensor/010-access.t		Test for Tensor-XS
+dist/Tensor-XS/t/000-tensor/020-constructors.t		Test for Tensor-XS
+dist/Tensor-XS/t/000-tensor/030-math.t			Test for Tensor-XS
+dist/Tensor-XS/t/000-tensor/040-comparisons.t		Test for Tensor-XS
+dist/Tensor-XS/t/000-tensor/050-logical-math.t		Test for Tensor-XS
+dist/Tensor-XS/t/000-tensor/060-numerical.t		Test for Tensor-XS
+dist/Tensor-XS/t/000-tensor/070-reductions.t		Test for Tensor-XS
+dist/Tensor-XS/t/010-core/001-scalar.t			Test for Tensor-XS
+dist/Tensor-XS/t/010-core/010-reduce_data_array.t	Test for Tensor-XS
+dist/Tensor-XS/t/010-core/020-ops.t			Test for Tensor-XS
+dist/Tensor-XS/t/010-core/120-ops.t			Test for Tensor-XS
+dist/Tensor-XS/t/100-vector/110-access.t		Test for Tensor-XS
+dist/Tensor-XS/t/100-vector/120-scalar.t		Test for Tensor-XS
+dist/Tensor-XS/t/100-vector/130-matrix.t		Test for Tensor-XS
+dist/Tensor-XS/t/100-vector/150-math.t			Test for Tensor-XS
+dist/Tensor-XS/t/100-vector/160-concat.t		Test for Tensor-XS
+dist/Tensor-XS/t/100-vector/170-reductions.t		Test for Tensor-XS
+dist/Tensor-XS/t/100-vector/180-comparisons.t		Test for Tensor-XS
+dist/Tensor-XS/t/100-vector/190-logical-math.t		Test for Tensor-XS
+dist/Tensor-XS/t/200-matrix/210-access.t		Test for Tensor-XS
+dist/Tensor-XS/t/200-matrix/220-constructors.t		Test for Tensor-XS
+dist/Tensor-XS/t/200-matrix/230-operations.t		Test for Tensor-XS
+dist/Tensor-XS/t/200-matrix/250-math.t			Test for Tensor-XS
+dist/Tensor-XS/t/200-matrix/260-concat-stack.t		Test for Tensor-XS
+dist/Tensor-XS/t/200-matrix/270-accessors.t		Test for Tensor-XS
+dist/Tensor-XS/t/200-matrix/280-reductions.t		Test for Tensor-XS
+dist/Tensor-XS/t/200-matrix/290-comparisons.t		Test for Tensor-XS
+dist/Tensor-XS/t/200-matrix/300-logical-math.t		Test for Tensor-XS
+dist/Tensor-XS/t/matrix-utils.t				Basic matrix utility smoke tests
+dist/Tensor-XS/t/xs-native.t				Native Tensor storage XS tests
+dist/Tensor-XS/TRAINING_SUCCESS.md			Design and development notes for Tensor-XS
+dist/Tensor-XS/XS.xs					Native Tensor storage XS implementation
+dist/Tensor-XS/XS_DESIGN.md				Design plan for the XS tensor implementation
 dist/Term-Complete/lib/Term/Complete.pm	A command completion subroutine
 dist/Term-Complete/t/Complete.t		See if Term::Complete works
 dist/Term-ReadLine/lib/Term/ReadLine.pm	Stub readline library

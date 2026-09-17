@@ -1,0 +1,19 @@
+Revision history for Tensor-XS
+
+0.02  2026-09-01
+
+The elementwise arithmetic, comparisons, logical operations, reductions,
+in-place updates, transposition, and vector/matrix multiplication kernels now
+run in XS over the native tensor buffer.  Results are wrapped without first
+materializing a Perl data array.  The existing callback-based map and zip APIs
+remain available for callers that explicitly supply Perl callbacks.
+
+This is an experimental in-core distribution containing the initial
+pure-Perl Tensor, Vector, Matrix, Scalar, and MNIST classes.  The native
+implementation and XS migration plan are recorded in XS_DESIGN.md.
+
+The Tensor storage layer now uses a contiguous native XS representation,
+including typed integer and floating-point storage, while the public Perl
+classes retain their existing interfaces.  The complete nested test suite is
+included in the distribution test target and no longer requires
+Test::Exception.
