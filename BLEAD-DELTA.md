@@ -77,6 +77,22 @@ related feature, syntax, diagnostic, and release documentation was updated.
 The runtime and callable-object behavior is covered by the generator and XS
 API runtime tests.
 
+The experimental `iterator` package generalizes the callable lifecycle
+protocol to ordinary blessed code references. It distinguishes an ordinary
+empty return value from completion and exposes running, completed, failed,
+and derived exhausted states; generator continuation states remain private to
+the generator runtime.
+
+An uncaught exception escaping an iterator body is rethrown without silently
+changing its state. The iterator contract requires code presenting itself as
+an iterator to report completion accurately, so `exhausted` remains reliable
+when an empty list is a valid ordinary result. The protocol also defines
+`restartable` and `restart`; iterators are non-restartable by default and the
+default restart method reports that restarting is unsupported.
+
+The iterator API is documented in `pod/perliterator.pod` and `lib/iterator.pm`
+and is covered by `t/op/iterator.t`.
+
 ## Compatibility posture
 
 Most existing Perl behavior is intentionally preserved where practical, and

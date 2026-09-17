@@ -3788,6 +3788,21 @@ line.  See L<perlrun|perlrun/-i[extension]> for more details.
 
 (F) You attempted to call a value that is not a valid generator.
 
+=item iterator->new expects a code reference
+
+(F) C<iterator-E<gt>new> was called with something other than a code
+reference.
+
+=item cannot set the state of a generator
+
+(F) You attempted to change the lifecycle state of a generator.  Generator
+state is managed by the generator implementation.
+
+=item invalid iterator state
+
+(F) You attempted to set an iterator to a state that is not defined by the
+iterator protocol.
+
 =item generator continuation is not available
 
 (F) You attempted to capture or resume a generator when its continuation was

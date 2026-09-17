@@ -723,19 +723,19 @@ is($c, "bareword");
   is("@sorted2", '0 10 7 4 1 11 8 5 12 2 9 6 3');
 }
 {
-  package iterator;
+  package overload_iterator;
   use overload '<>' => \&iter;
   sub new { my ($p, $v) = @_; bless \$v, $p }
   sub iter { my ($x) = @_; return undef if $$x < 0; return $$x--; }
 }
 
 {
-  my $iter = iterator->new(5);
+  my $iter = overload_iterator->new(5);
   my $acc = '';
   my $out;
   $acc .= " $out" while $out = <${iter}>;
   is($acc, ' 5 4 3 2 1 0');
-  $iter = iterator->new(5);
+  $iter = overload_iterator->new(5);
   is(scalar <${iter}>, '5');
   $acc = '';
   $acc .= " $out" while $out = <$iter>;

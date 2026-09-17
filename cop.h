@@ -1395,6 +1395,23 @@ typedef struct perl_process_scheduler {
     int                 failure;
 } PERL_PROCESS_SCHEDULER;
 
+/* Lifecycle state attached to an ordinary callable iterator.  Zero is
+ * deliberately invalid so that an uninitialised or non-iterator CV cannot
+ * masquerade as a live iterator. */
+typedef enum {
+    PERL_ITERATOR_INVALID = 0,
+    PERL_ITERATOR_RUNNING,
+    PERL_ITERATOR_COMPLETED,
+    PERL_ITERATOR_FAILED
+} PERL_ITERATOR_STATE;
+
+typedef struct perl_iterator {
+    U32                  magic;
+    PERL_ITERATOR_STATE  state;
+} PERL_ITERATOR;
+
+#define PERL_ITERATOR_MAGIC 0x49545231U
+
 typedef enum {
     PERL_GENERATOR_INVALID = 0,
     PERL_GENERATOR_NEW,

@@ -71,6 +71,25 @@ C<exhausted> predicates are methods on generator objects and functions in the
 C<generator::> package.  The C<generator> pragma enables the feature and makes
 the package interface available.
 
+=head2 Callable iterators
+
+The experimental C<iterator> package can bless an ordinary code reference as
+a callable iterator.  Its lifecycle can be inspected with the C<running>,
+C<completed>, C<failed>, and C<exhausted> predicates and changed with
+C<set_state>.  An iterator remains callable as the same code reference, and
+an uncaught exception escaping its body is rethrown without automatically
+changing its state; the implementation or caller may explicitly mark it
+failed.  Generators inherit this protocol while continuing to manage their
+continuation state internally.  See L<perlgenerator/CALLABLE ITERATORS>.
+
+=head2 Data::Dumper supports class objects
+
+C<Data::Dumper> can now dump objects created by the experimental C<class>
+feature.  It represents their fields with the experimental
+C<builtin::class_object_to_hash> API and emits code using
+C<builtin::class_object_from_hash> to recreate the object without invoking
+its constructor.  Field values are shared rather than recursively copied.
+
 =head1 Security
 
 XXX Any security-related notices go here. In particular, any security

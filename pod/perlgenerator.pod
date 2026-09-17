@@ -56,6 +56,12 @@ The generator remembers where it stopped.  This saved point is sometimes
 called a continuation; here it simply means “the rest of the generator that
 has not run yet”.
 
+Generators also inherit the C<next_val> convenience method from the
+C<iterator> package.  It is a method spelling of calling the generator and
+preserves the arguments and context of the call:
+
+    my $value = $counter->next_val;
+
 =head1 GENERATOR KEYWORDS
 
 =head2 gen BLOCK
@@ -207,6 +213,49 @@ generator.  This lets the caller send an answer back into the paused block:
 Arguments passed to a later call are returned by C<yield>.  In list
 context all of them are returned.  In scalar context the first argument is
 returned.  In void context they are discarded.
+
+=head1 CALLABLE ITERATORS
+
+Generators are one kind of callable iterator.  The more general C<iterator>
+package can attach lifecycle state to an ordinary code reference while
+preserving normal call syntax:
+
+    my $it = iterator->new(sub {
+        state $i = 0;
+        __SUB__->set_state(iterator::COMPLETED)
+            if $i == $#items;
+        return $items[$i++];
+    });
+
+The code reference itself is the iterator.  C<__SUB__> therefore refers
+to the same callable that the caller invokes.  The constructor marks it
+C<RUNNING>; the body marks it C<COMPLETED> before returning its final value.
+An empty list or C<undef> is an ordinary return value and is not, by itself,
+evidence that the iterator is exhausted.
+
+This lifecycle reporting is the point of the iterator protocol.  Anything
+that presents itself as an iterator is expected to mark itself completed when
+it has no more results, so callers can use C<exhausted> without guessing what
+an ordinary return value means.
+
+The lifecycle predicates are available as methods and as functions in the
+C<iterator::> package.  An iterator is exhausted when it is completed or
+failed:
+
+    $it->running;
+    $it->completed;
+    $it->failed;
+    $it->exhausted;
+
+If an exception escapes an ordinary iterator body, the runtime rethrows the
+original exception but does not automatically mark the iterator failed.  The
+iterator implementation or its caller can use C<iterator::set_state> to make
+that decision.  An exception caught by an C<eval> inside the body does not
+change the iterator's state.  Generator continuation state is managed by the
+generator runtime and cannot be changed through this setter.
+
+Generators inherit this lifecycle protocol, but their C<NEW>, C<YIELDED>, and
+continuation state remain internal to the generator implementation.
 
 =head2 Generator predicates
 
