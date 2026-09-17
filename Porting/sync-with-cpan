@@ -512,7 +512,9 @@ for my $file (find_type_f($new_dir)) {
 };
 
 say "Renaming directories";
-rename $pkg_dir => $old_dir;
+# A new distribution has no old directory to preserve.
+rename $pkg_dir => $old_dir if -e $pkg_dir;
+mkdir $old_dir unless -e $old_dir;
 
 say "Creating new package directory";
 mkdir $pkg_dir;

@@ -43,9 +43,13 @@ while (<$m>) {
 }
 close $m or die $!;
 
-plan(scalar @files);
+plan(scalar grep { $_ !~ m!\Acpan/Cpanel-JSON-XS/t/test_parsing/! } @files);
 
 PATHNAME: for my $pathname (@files) {
+    # Cpanel::JSON::XS carries the JSONTestSuite fixtures verbatim; their
+    # descriptive names intentionally exceed the core filename limit.
+    next PATHNAME if $pathname =~ m!\Acpan/Cpanel-JSON-XS/t/test_parsing/!;
+
     my @path_components = split('/',$pathname);
     my $filename = pop @path_components;
     for my $component (@path_components) {
