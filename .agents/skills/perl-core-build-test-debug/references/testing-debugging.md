@@ -105,7 +105,7 @@ make manisort
 - `make regen`: runs `regen.pl` and many, but not all, regenerators.
 - `make regen_headers` / `make regen-headers`: header-focused regeneration; the underscore spelling is kept for compatibility, and both appear in `Makefile.SH`.
 - `make regen_perly` / `make regen-perly`: parser regeneration for `perly` artifacts from `perly.y` via `regen_perly.pl`.
-- `make manisort`: preferred manifest sorting target; do not call `Porting/manisort` directly as the first choice.
+- `make manisort`: required after changing `MANIFEST`; use this make target rather than calling `Porting/manisort` directly.
 
 After adding files to `MANIFEST`, run `make manisort` before running the
 manifest and porting checks.  A manifest-order failure and a
