@@ -113,6 +113,9 @@ The following bundles currently exist:
     :5.40      true false weaken unweaken is_weak blessed refaddr reftype
                ceil floor is_tainted trim indexed
 
+The special C<:all> bundle imports every builtin function, including
+experimental functions which are not included in a numbered bundle.
+
 =head2 Function Optimisations
 
 There are a number of optimisations that apply to functions in the L<builtin>
