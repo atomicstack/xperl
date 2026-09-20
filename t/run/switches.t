@@ -723,6 +723,10 @@ $r = runperl(
 );
 is( $r, "ARRAY\n", "-E enables 'reftype' builtin" );
 
+$r = runperl( switches => [ '-E',
+    'print gen { yield 42 }->()' ] );
+is( $r, "42", "-E enables experimental generator syntax and builtins" );
+
 $r = runperl(
     switches    => [ '-nE', q("} END { say q/affe/") ],
     stdin       => 'zomtek',

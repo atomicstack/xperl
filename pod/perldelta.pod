@@ -257,6 +257,13 @@ changing its state; the implementation or caller may explicitly mark it
 failed.  Generators inherit this protocol while continuing to manage their
 continuation state internally.  See L<perlgenerator/CALLABLE ITERATORS>.
 
+=head2 Complete experimental APIs with C<-E>
+
+The C<-E> command-line switch now enables the complete experimental feature
+set and imports the complete builtin set, including the generator syntax and
+its supporting builtins.  This is an XPerl extension to the traditional
+version-bundle behaviour of C<-E>.
+
 =head2 Data::Dumper supports class objects
 
 C<Data::Dumper> can now dump objects created by the experimental C<class>
