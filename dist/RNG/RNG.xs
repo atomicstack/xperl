@@ -175,17 +175,39 @@ rng_seed_method(pTHX_ SV *seed, const char *method)
     dSP;
     I32 count;
     SV *result;
+    SV *call_seed;
+#ifdef PERL_RC_STACK
+    const bool is_rc = rpp_stack_is_rc();
+#endif
 
     ENTER;
     SAVETMPS;
+    call_seed = sv_2mortal(SvREFCNT_inc_simple_NN(seed));
     PUSHMARK(SP);
-    XPUSHs(sv_2mortal(SvREFCNT_inc_simple_NN(seed)));
+    /* call_method() can run with either stack mode.  Keep the argument's
+     * stack reference balanced when the active stack is reference-counted. */
+#ifdef PERL_RC_STACK
+    rpp_extend(1);
+    SPAGAIN;
+#else
+    EXTEND(SP, 1);
+#endif
+    *++SP = call_seed;
+#ifdef PERL_RC_STACK
+    if (is_rc)
+        SvREFCNT_inc_simple_void_NN(call_seed);
+#endif
     PUTBACK;
     count = call_method(method, G_SCALAR);
     SPAGAIN;
     if (count != 1)
         croak("RNG::SeedBase method did not return exactly one value");
-    result = newSVsv(POPs);
+    result = newSVsv(TOPs);
+#ifdef PERL_RC_STACK
+    if (is_rc)
+        SvREFCNT_dec_NN(TOPs);
+#endif
+    SP--;
     PUTBACK;
     FREETMPS;
     LEAVE;
@@ -242,6 +264,12 @@ rng_drand48_decimal_seed(const char *bytes, STRLEN length, U64 *value)
     U64 result = 0;
     bool saw_digit = FALSE;
 
+    /* The zero initializer's historical return value must replay as zero. */
+    if (length == 10 && memEQ(bytes, "0 but true", 10)) {
+        *value = 0;
+        return TRUE;
+    }
+
     /* This duplicates the old srand numeric conversion for decimal seeds:
      * ignore an optional sign and fractional component.  We cannot use
      * grok_number(), because it produces a UV.  RNG::Drand48 must recognize
@@ -281,6 +309,9 @@ static SV *
 rng_drand48_numeric_seed(U64 value)
 {
     char decimal[TYPE_CHARS(U64)];
+
+    if (!value)
+        return newSVpvs("0 but true");
 
     /* A 32-bit UV cannot hold the full 48-bit state.  Return a decimal
      * string in that case so srand() can replay the state exactly. */
@@ -1804,7 +1835,7 @@ CODE:
     value = (U32)rng_drand48_seed(aTHX_ seed, TRUE);
     seedDrand01(value);
     PL_srand_called = TRUE;
-    RETVAL = newSVuv(value);
+    RETVAL = rng_drand48_numeric_seed(value);
 OUTPUT:
     RETVAL
 
