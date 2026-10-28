@@ -2192,7 +2192,10 @@ Perl_diag_append_exception_internal(pTHX_ SV **exception_slot, SV *ex)
         return;
     }
 
-    PERL_APPEND_ERROR_USER_TEXT(exception_slot, ex);
+    if (SvROK(ex))
+        PERL_APPEND_ERROR_USER_REFERENCE(exception_slot, ex);
+    else
+        PERL_APPEND_ERROR_USER_TEXT(exception_slot, ex);
 }
 
 void
