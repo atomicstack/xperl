@@ -139,7 +139,6 @@ SKIP: {
 }
 
 { # https://rt.perl.org/Ticket/Display.html?id=128524
-    my $want;
     my $runtime = "runtime";
     my $requires = "requires";
     utf8::upgrade(my $uruntime = $runtime);
@@ -147,9 +146,16 @@ SKIP: {
     for my $run ($runtime, $uruntime) {
         for my $req ($requires, $urequires) {
             my $data = { $run => { $req => { foo => "bar" } } };
+            my $run_key = utf8::is_utf8($run) ? qq{"$run"} : qq{'$run'};
+            my $req_key = utf8::is_utf8($req) ? qq{"$req"} : qq{'$req'};
+            my $want = "\$VAR1 = {\n"
+                     . "          $run_key => {\n"
+                     . "                         $req_key => {\n"
+                     . "                                         'foo' => 'bar'\n"
+                     . "                                       }\n"
+                     . "                       }\n"
+                     . "        };\n";
             local $Data::Dumper::Useperl = 1;
-            # we want them all the same
-            defined $want or $want = Dumper($data);
             is(Dumper( $data ), $want, "utf-8 indents");
           SKIP:
             {

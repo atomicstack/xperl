@@ -9,6 +9,7 @@ use warnings;
 use Data::Dumper;
 use Config;
 use Test::More;
+use charnames ();
 
 # Since Perl 5.8.1 because otherwise hash ordering is really random.
 $Data::Dumper::Sortkeys = 1;
@@ -59,19 +60,20 @@ sub convert_to_native {
     # The input should always be one of the following constructs
     while ($input =~ m/ ( \\ [0-7]+ )
                       | ( \\ x \{ [[:xdigit:]]+ } )
+                      | ( \\ N \{ ([^}]+) } )
                       | ( \\ . )
                       | ( . ) /gx)
     {
         #print STDERR __LINE__, ": ", $&, "\n";
         my $index;
         my $replacement;
-        if (defined $4) {       # Literal
-            $index = ord $4;
-            $replacement = $4;
+        if (defined $6) {       # Literal
+            $index = ord $6;
+            $replacement = $6;
         }
-        elsif (defined $3) {    # backslash escape
-            $index = ord eval "\"$3\"";
-            $replacement = $3;
+        elsif (defined $5) {    # backslash escape
+            $index = ord eval "\"$5\"";
+            $replacement = $5;
         }
         elsif (defined $2) {    # Hex
             $index = utf8::unicode_to_native(ord eval "\"$2\"");
@@ -82,6 +84,16 @@ sub convert_to_native {
                          ? "\\%o"
                          : "\\x{%x}";
             $replacement = sprintf($format, $index);
+        }
+        elsif (defined $3) {    # Unicode name
+            my $name = $4;
+            my $codepoint = $name =~ /\AU\+([[:xdigit:]]+)\z/i
+                ? hex $1
+                : charnames::vianame($name);
+            die "Unknown Unicode name '$name' in convert_to_native()\n"
+                unless defined $codepoint;
+            $index = utf8::unicode_to_native($codepoint);
+            $replacement = $3;
         }
         elsif (defined $1) {    # Octal
             $index = utf8::unicode_to_native(ord eval "\"$1\"");
@@ -916,11 +928,11 @@ EOT
 #############
 ## XS code was adding an extra \0
   my $want = <<'EOT';
-#$a = "\x{9c10}";
+#$a = "\N{CJK UNIFIED IDEOGRAPH-9C10}";
 EOT
 
   TEST_BOTH(q(Data::Dumper->Dumpxs([$a], ['a'])),
-            "\\x{9c10}",
+            "\\N{CJK UNIFIED IDEOGRAPH-9C10}",
             $want);
 }
 
@@ -1377,14 +1389,14 @@ EOT64
     # B6 is chosen because it is UTF-8 variant on ASCII and all 3 EBCDIC
     # platforms that Perl currently purports to work on.  It also is the only
     # such code point that has the same meaning on all 4, the paragraph sign.
-    my $want = <<"EOT"; # Careful. This is '' string written inside "" here doc
-#\$VAR1 = '\$b\"\@\\\\\xB6';
+    my $want = <<'EOT';
+#$VAR1 = "\$b\"\@\\\N{PILCROW SIGN}";
 EOT
 
     $a = "\$b\"\@\\\xB6\x{100}";
     chop $a;
     my $want_xs = <<'EOT'; # While this is "" string written inside "" here doc
-#$VAR1 = "\$b\"\@\\\x{b6}";
+#$VAR1 = "\$b\"\@\\\N{PILCROW SIGN}";
 EOT
     TEST_BOTH(q(Data::Dumper->Dumpxs([$a])),
               "XS utf8 flag with \" and \$",
@@ -1393,7 +1405,7 @@ EOT
   # XS used to produce "$b\"' which is 4 chars, not 3. [ie wrongly qq(\$b\\\")]
 #############
   $want = <<'EOT';
-#$VAR1 = '$b"';
+#$VAR1 = "\$b\"";
 EOT
 
   $a = "\$b\"\x{100}";
@@ -1407,7 +1419,7 @@ EOT
   # Andreas found this one, which in turn discovered the previous two.
 #############
   $want = <<'EOT';
-#$VAR1 = 'D\'oh!';
+#$VAR1 = "D'oh!";
 EOT
 
   $a = "D'oh!\x{100}";
@@ -1426,9 +1438,9 @@ EOT
 #$ping = \*::ping;
 #*::ping = \5;
 #*::ping = {
-#  "\x{decaf}\x{decaf}\x{decaf}\x{decaf}" => do{my $o}
+#  "\N{U+DECAF}\N{U+DECAF}\N{U+DECAF}\N{U+DECAF}" => do{my $o}
 #};
-#*::ping{HASH}->{"\x{decaf}\x{decaf}\x{decaf}\x{decaf}"} = *::ping{SCALAR};
+#*::ping{HASH}->{"\N{U+DECAF}\N{U+DECAF}\N{U+DECAF}\N{U+DECAF}"} = *::ping{SCALAR};
 #%pong = %{*::ping{HASH}};
 EOT
   local $Data::Dumper::Purity = 1;
@@ -1491,6 +1503,7 @@ EOT
 #############
 {
   my $want = '\0\1\2\3\4\5\6\a\b\t\n\13\f\r\16\17\20\21\22\23\24\25\26\27\30\31\32\e\34\35\36\37 !\"#\$%&\'()*+,-./0123456789:;<=>?\@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\177\200\201\202\203\204\205\206\207\210\211\212\213\214\215\216\217\220\221\222\223\224\225\226\227\230\231\232\233\234\235\236\237\240\241\242\243\244\245\246\247\250\251\252\253\254\255\256\257\260\261\262\263\264\265\266\267\270\271\272\273\274\275\276\277\300\301\302\303\304\305\306\307\310\311\312\313\314\315\316\317\320\321\322\323\324\325\326\327\330\331\332\333\334\335\336\337\340\341\342\343\344\345\346\347\350\351\352\353\354\355\356\357\360\361\362\363\364\365\366\367\370\371\372\373\374\375\376\377';
+  $want =~ s/\\([23][0-7]{2})/sprintf('\\x{%x}', oct $1)/ge;
   $want = convert_to_native($want);
   $want = <<"EOT";
 #\$VAR1 = [
@@ -1508,6 +1521,12 @@ EOT
 #############
 {
   my $want = '\0\1\2\3\4\5\6\a\b\t\n\13\f\r\16\17\20\21\22\23\24\25\26\27\30\31\32\e\34\35\36\37 !\"#\$%&\'()*+,-./0123456789:;<=>?\@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\177\x{80}\x{81}\x{82}\x{83}\x{84}\x{85}\x{86}\x{87}\x{88}\x{89}\x{8a}\x{8b}\x{8c}\x{8d}\x{8e}\x{8f}\x{90}\x{91}\x{92}\x{93}\x{94}\x{95}\x{96}\x{97}\x{98}\x{99}\x{9a}\x{9b}\x{9c}\x{9d}\x{9e}\x{9f}\x{a0}\x{a1}\x{a2}\x{a3}\x{a4}\x{a5}\x{a6}\x{a7}\x{a8}\x{a9}\x{aa}\x{ab}\x{ac}\x{ad}\x{ae}\x{af}\x{b0}\x{b1}\x{b2}\x{b3}\x{b4}\x{b5}\x{b6}\x{b7}\x{b8}\x{b9}\x{ba}\x{bb}\x{bc}\x{bd}\x{be}\x{bf}\x{c0}\x{c1}\x{c2}\x{c3}\x{c4}\x{c5}\x{c6}\x{c7}\x{c8}\x{c9}\x{ca}\x{cb}\x{cc}\x{cd}\x{ce}\x{cf}\x{d0}\x{d1}\x{d2}\x{d3}\x{d4}\x{d5}\x{d6}\x{d7}\x{d8}\x{d9}\x{da}\x{db}\x{dc}\x{dd}\x{de}\x{df}\x{e0}\x{e1}\x{e2}\x{e3}\x{e4}\x{e5}\x{e6}\x{e7}\x{e8}\x{e9}\x{ea}\x{eb}\x{ec}\x{ed}\x{ee}\x{ef}\x{f0}\x{f1}\x{f2}\x{f3}\x{f4}\x{f5}\x{f6}\x{f7}\x{f8}\x{f9}\x{fa}\x{fb}\x{fc}\x{fd}\x{fe}\x{ff}\x{20ac}';
+  $want =~ s/\\x\{([[:xdigit:]]+)\}/
+      my $codepoint = hex $1;
+      my $name = charnames::viacode($codepoint);
+      $name = sprintf('U+%X', $codepoint) unless defined $name;
+      "\\N{$name}";
+  /gex;
   $want = convert_to_native($want);
   $want = <<"EOT";
 #\$VAR1 = [
@@ -1638,7 +1657,7 @@ EOW
             $want);
 
   $want = <<'EOW';
-#$VAR1 = "\x{100}\0000";
+#$VAR1 = "\N{LATIN CAPITAL LETTER A WITH MACRON}\0000";
 EOW
   local $Data::Dumper::Useqq = 1;
   TEST_BOTH(q(Data::Dumper->Dumpxs(["\x{100}\x000"])),
@@ -1646,7 +1665,7 @@ EOW
             $want);
 
   $want = <<'EOW';
-#$VAR1 = "\0\x{660}";
+#$VAR1 = "\0\N{ARABIC-INDIC DIGIT ZERO}";
 EOW
   TEST_BOTH(q(Data::Dumper->Dumpxs(["\\x00\\x{0660}"])),
             "\\ octal followed by unicode digit",
@@ -1676,11 +1695,11 @@ EOW
   }
   my $want = <<"EOW";
 #\$VAR1 = [
-#  "\\x{41f}",
+#  "\\N{CYRILLIC CAPITAL LETTER PE}",
 #  qr/\x{8b80}/,
 #  qr/\x{41f}/,
 #  qr/\x{b6}/,
-#  '\xb6'
+#  "\\N{PILCROW SIGN}"
 #];
 EOW
   if ("$]" < 5.010001) {
@@ -1691,7 +1710,7 @@ EOW
       $want =~ s{/(,?)$}{/u$1}mg;
   }
   my $want_xs = $want;
-  $want_xs =~ s/'\xb6'/"\\x{b6}"/;
+  $want_xs =~ s/'\xb6'/"\\N{PILCROW SIGN}"/;
   $want_xs =~ s<([[:^ascii:]])> <sprintf '\\x{%x}', ord $1>ge;
   TEST_BOTH(qq(Data::Dumper->Dumpxs([ [qq/\x{41f}/, qr/\x{8b80}/, qr/\x{41f}/, qr/\x{b6}/, "\xb6"] ])),
             "string with Unicode + regexp with Unicode",
@@ -1731,11 +1750,11 @@ EOW
   my $bs = "\\\\";
   my $want = <<"EOW";
 #\$VAR1 = [
-#  "\\x{2e18}",
+#  "\\N{INVERTED INTERROBANG}",
 #  qr/ \x{203d}\\/ /,
 #  qr/ \\\x{203d}\\/ /,
 #  qr/ \\\x{203d}$bs:\\/ /,
-#  '\xB6'
+#  "\\N{PILCROW SIGN}"
 #];
 EOW
   if ("$]" < 5.010001) {
@@ -1746,7 +1765,7 @@ EOW
       $want =~ s{/(,?)$}{/u$1}mg;
   }
   my $want_xs = $want;
-  $want_xs =~ s/'\x{B6}'/"\\x{b6}"/;
+  $want_xs =~ s/'\x{B6}'/"\\N{PILCROW SIGN}"/;
   $want_xs =~ s/\x{203D}/\\x{203d}/g;
   TEST_BOTH(qq(Data::Dumper->Dumpxs([ [ '\x{2e18}', qr! \x{203d}/ !, qr! \\\x{203d}/ !, qr! \\\x{203d}$bs:/ !, "\xb6"] ])),
             "github #18614, github #18764, perl #58608 corner cases",
@@ -1758,7 +1777,7 @@ EOW
   my $dollar = '${\q($)}';
   my $want = <<"EOW";
 #\$VAR1 = [
-#  "\\x{2e18}",
+#  "\\N{INVERTED INTERROBANG}",
 #  qr/^\$/,
 #  qr/^\$/,
 #  qr/${dollar}foo/,
@@ -1769,7 +1788,7 @@ EOW
 #  qr/\\\\$dollar \x{203d} /u,
 #  qr/ \$| \x{203d} /u,
 #  qr/ (\$) \x{203d} /u,
-#  '\xB6'
+#  "\\N{PILCROW SIGN}"
 #];
 EOW
   if ("$]" < 5.014) {
@@ -1780,12 +1799,12 @@ EOW
       $want =~ s!/,!)/,!g;
   }
   my $want_xs = $want;
-  $want_xs =~ s/'\x{B6}'/"\\x{b6}"/;
+  $want_xs =~ s/'\x{B6}'/"\\N{PILCROW SIGN}"/;
   $want_xs =~ s/\x{B6}/\\x{b6}/;
   $want_xs =~ s/\x{203D}/\\x{203d}/g;
   my $have = <<"EOT";
 Data::Dumper->Dumpxs([ [
-  "\\x{2e18}",
+  "\\N{INVERTED INTERROBANG}",
   qr/^\$/,
   qr'^\$',
   qr'\$foo',
@@ -1856,18 +1875,18 @@ EOT
 #  \*{"::\1bar"},
 #  *{"s::\1bar"},
 #  \*{"s::\1bar"},
-#  *{"::L\351on"},
-#  \*{"::L\351on"},
-#  *{"s::L\351on"},
-#  \*{"s::L\351on"},
-#  *{"::m\x{100}cron"},
-#  \*{"::m\x{100}cron"},
-#  *{"s::m\x{100}cron"},
-#  \*{"s::m\x{100}cron"},
-#  *{"::snow\x{2603}"},
-#  \*{"::snow\x{2603}"},
-#  *{"s::snow\x{2603}"},
-#  \*{"s::snow\x{2603}"}
+#  *{"::L\x{e9}on"},
+#  \*{"::L\x{e9}on"},
+#  *{"s::L\x{e9}on"},
+#  \*{"s::L\x{e9}on"},
+#  *{"::m\N{LATIN CAPITAL LETTER A WITH MACRON}cron"},
+#  \*{"::m\N{LATIN CAPITAL LETTER A WITH MACRON}cron"},
+#  *{"s::m\N{LATIN CAPITAL LETTER A WITH MACRON}cron"},
+#  \*{"s::m\N{LATIN CAPITAL LETTER A WITH MACRON}cron"},
+#  *{"::snow\N{SNOWMAN}"},
+#  \*{"::snow\N{SNOWMAN}"},
+#  *{"s::snow\N{SNOWMAN}"},
+#  \*{"s::snow\N{SNOWMAN}"}
 #];
 EOT
   local $Data::Dumper::Useqq = 1;
@@ -1885,7 +1904,7 @@ EOT
 #$v = {
 #  a => \*::ppp,
 #  b => \*{'::a/b'},
-#  c => \*{"::a\x{2603}b"}
+#  c => \*{"::a\N{SNOWMAN}b"}
 #};
 #*::ppp = {
 #  a => 1
@@ -1893,7 +1912,7 @@ EOT
 #*{'::a/b'} = {
 #  b => 3
 #};
-#*{"::a\x{2603}b"} = {
+#*{"::a\N{SNOWMAN}b"} = {
 #  c => 5
 #};
 EOT
@@ -1934,6 +1953,89 @@ EOT
   TEST_BOTH(q(Data::Dumper->Dumpxs([{}, []], [4.5/1.5, fish->new()])),
             'names that are not simple strings: Dumpxs()',
             $want);
+}
+
+#############
+{
+  local $Data::Dumper::Pad = '';
+  my $text = "cafe" . chr(0xE9) . ' e' . chr(0x301) . ' ' . chr(0x2603)
+           . chr(0x200D) . chr(0x2028) . ' "$@' . '\\' . "\n";
+  my $plain = Data::Dumper->new([$text])->Dump;
+  unlike($plain, qr/\x{2603}/, 'default output keeps Unicode escaped');
+
+  my $pp = Data::Dumper->new([$text])->Useperl(1)->Useutf8(1);
+  my $pp_dump = $pp->Dump;
+  like($pp_dump, qr/\\N\{ZERO WIDTH JOINER\}/, 'default-ignorable remains escaped');
+  like($pp_dump, qr/\\N\{LINE SEPARATOR\}/, 'Unicode separator remains escaped');
+  ok(index($pp_dump, chr(0xE9)) >= 0, 'printable Unicode is emitted literally');
+  ok(index($pp_dump, chr(0x301)) >= 0, 'combining marks are emitted literally');
+  my $roundtrip = eval "no strict 'vars'; use utf8; $pp_dump";
+  is($@, '', 'literal Unicode dump evaluates');
+  is($roundtrip, $text, 'literal Unicode value round trips');
+  ok(utf8::is_utf8($roundtrip), 'literal Unicode round trip stays character data');
+
+  my $unicode_key = chr(0xE9);
+  utf8::upgrade($unicode_key);
+  my $key_dump = Data::Dumper->new([{ $unicode_key => 'value' }])
+    ->Useperl(1)->Useutf8(1)->Dump;
+  ok(index($key_dump, chr(0xE9)) >= 0, 'printable Unicode hash keys are literal');
+  my $key_roundtrip = eval "no strict 'vars'; use utf8; $key_dump";
+  is($key_roundtrip->{chr(0xE9)}, 'value', 'Unicode hash key round trips');
+
+  my $byte_string = chr(0xE9);
+  utf8::downgrade($byte_string);
+  is(Data::Dumper->new([$byte_string])->Dump,
+     Data::Dumper->new([$byte_string])->Useutf8(1)->Dump,
+     'Useutf8 leaves byte strings unchanged');
+
+  my $arabic_with_joiner = (chr(0x627) x 18) . chr(0x200D);
+  utf8::upgrade($arabic_with_joiner);
+  my $arabic_dump = Data::Dumper->new([$arabic_with_joiner])
+    ->Useperl(1)->Useutf8(1)->Dump;
+  ok(index($arabic_dump, chr(0x627) x 18) >= 0,
+     'printable Unicode stays literal when an invisible character is escaped');
+  like($arabic_dump, qr/\\N\{ZERO WIDTH JOINER\}/,
+       'an invisible character beside literal Unicode remains escaped');
+
+  my $latin1 = chr(0xE9);
+  utf8::upgrade($latin1);
+  my $latin1_pp = Data::Dumper->new([$latin1])->Useperl(1)->Useutf8(1)->Dump;
+  my $latin1_xs = Data::Dumper->new([$latin1])->Useutf8(1)->Dumpxs
+    if defined &Data::Dumper::Dumpxs;
+  ok(utf8::is_utf8($latin1_pp), 'isolated Latin-1 output is UTF-8 flagged');
+
+  SKIP: {
+    skip 'XS extension not loaded', 9 unless defined &Data::Dumper::Dumpxs;
+    my $xs_dump = Data::Dumper->new([$text])->Useutf8(1)->Dumpxs;
+    my $xs_roundtrip = eval "no strict 'vars'; use utf8; $xs_dump";
+    is($xs_roundtrip, $text, 'XS literal Unicode value round trips');
+    my @xs_lines = Data::Dumper->new([$text])->Useutf8(1)->Dumpxs;
+    my $xs_list_dump = join('', @xs_lines);
+    my $xs_list_roundtrip = eval "no strict 'vars'; use utf8; $xs_list_dump";
+    is($xs_list_roundtrip, $text, 'list context preserves XS dump semantics');
+    is($latin1_xs, $latin1_pp, 'isolated Latin-1 XS and Perl output match');
+    ok(utf8::is_utf8($latin1_xs), 'isolated Latin-1 XS output is UTF-8 flagged');
+    my @latin1_lines = Data::Dumper->new([$latin1])->Useutf8(1)->Dumpxs;
+    is(join('', @latin1_lines), $latin1_xs,
+       'isolated Latin-1 XS list context matches scalar context');
+    ok(utf8::is_utf8(join('', @latin1_lines)),
+       'isolated Latin-1 XS list context is UTF-8 flagged');
+    my $latin1_roundtrip = eval "no strict 'vars'; use utf8; $latin1_xs";
+    is($latin1_roundtrip, $latin1, 'isolated Latin-1 XS value round trips');
+    is(utf8::is_utf8($latin1_roundtrip), utf8::is_utf8($latin1),
+       'isolated Latin-1 XS round trip preserves its flag');
+  }
+
+  {
+    local $Data::Dumper::Useutf8 = 1;
+    ok(index(Data::Dumper->Dump([$text]), chr(0x2603)) >= 0,
+       'global option enables printable Unicode');
+    SKIP: {
+      skip 'XS extension not loaded', 1 unless defined &Data::Dumper::Dumpxs;
+      ok(index(Data::Dumper->Dumpxs([$text]), chr(0x2603)) >= 0,
+         'global option enables printable Unicode in XS');
+    }
+  }
 }
 
 done_testing();
