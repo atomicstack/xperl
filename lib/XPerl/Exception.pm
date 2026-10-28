@@ -27,6 +27,9 @@ Serialization settings apply to ordinary
 exception delivery. C<PERL_BADLANG> and the initialization API's warning
 control retain their existing behavior.
 
+See L<perlexcept> for the complete Perl-facing guide and L<perlexcephack>
+for the core implementation.
+
 The constructor and mutation methods are currently private to the core
 diagnostics work.
 

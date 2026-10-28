@@ -1,0 +1,22 @@
+digraph rendering {
+  graph [rankdir=TB, bgcolor="#fafcfe", pad="0.2", nodesep="0.45", ranksep="0.5"];
+  node [shape=box, style="rounded,filled", fontname="sans-serif", fontsize=12, color="#42647b", fillcolor="#eaf2f8", margin="0.16,0.12"];
+  edge [fontname="sans-serif", fontsize=10, color="#42647b"];
+  explicit [label="Explicit render language?", shape=diamond, fillcolor="#ddf1e9"];
+  capture [label="Captured lexical engine?", shape=diamond, fillcolor="#ddf1e9"];
+  request [label="Lookup requested language"];
+  lexical [label="Use retained static engine"];
+  default [label="Lookup default language\nimplicit: DIAG_RENDER / auto\nrender() without setting: English"];
+  selected [label="Selected engine attempt\ncanonical semantic values + fresh scratch"];
+  english [label="Registered English attempt\nrestart complete message"];
+  permanent [label="Permanent English attempt\nrestart complete message"];
+  present [label="Successful message\napply presentation and optional envelope"];
+  explicit -> request [label="yes"];
+  explicit -> capture [label="no"];
+  capture -> lexical [label="yes"];
+  capture -> default [label="no"];
+  {request lexical default} -> selected;
+  selected -> english [label="miss"];
+  english -> permanent [label="miss; skip duplicate engines"];
+  {selected english permanent} -> present [label="success"];
+}

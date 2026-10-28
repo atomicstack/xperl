@@ -1,0 +1,30 @@
+:root { color-scheme: light; --ink: #182c41; --muted: #536579; --line: #cbd5df; --link: #07599b; }
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); background: #f5f7fa; font: 17px/1.65 system-ui, sans-serif; }
+nav { display: flex; flex-wrap: wrap; gap: 1.5rem; padding: 1rem max(1.5rem, calc((100vw - 1100px)/2)); background: #18364e; }
+nav a { color: #fff; text-decoration: none; }
+main { max-width: 1160px; margin: 0 auto; padding: 2rem 3rem 5rem; background: white; }
+a { color: var(--link); text-underline-offset: .15em; }
+h1, h2, h3 { line-height: 1.25; scroll-margin-top: 1rem; }
+h1 { font-size: 2.2rem; margin-top: 2rem; }
+h2 { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+h3 { margin-top: 2rem; }
+p, ul, ol, dl { max-width: 84ch; }
+pre { overflow-x: auto; background: #eff4f8; border-left: 3px solid #3d7d9b; padding: 1rem 1.3rem; line-height: 1.5; font-size: .88em; }
+code { font-size: .92em; }
+li { margin: .3em 0; }
+dt { font-weight: 650; margin-top: 1rem; }
+dd { margin-left: 1.5rem; }
+.source { color: var(--muted); font-size: .85rem; }
+.toc { border: 1px solid var(--line); border-radius: 8px; padding: .8rem 1rem; }
+.toc summary { cursor: pointer; font-weight: 650; }
+.toc > ul { font-size: .9rem; }
+.diagram { margin: 2rem 0; border: 1px solid var(--line); border-radius: 8px; padding: 1rem; overflow-x: auto; background: #fafcfe; }
+.diagram svg { display: block; max-width: 100%; height: auto; min-width: 580px; margin: auto; }
+figcaption { margin-top: .8rem; color: var(--muted); font-size: .88rem; }
+.manuals { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+.manuals article { padding: 0 1.5rem 1rem; background: #eff4f8; border-radius: 8px; }
+.manuals h2 { margin-top: 0; border: 0; }
+:target { background-color: #fff5d1; }
+@media (max-width: 700px) { main { padding: 1.2rem; } body { font-size: 16px; } }
+@media print { body, main { background: white; } nav, .source { display: none; } main { padding: 0; max-width: none; } pre { white-space: pre-wrap; } .diagram { break-inside: avoid; } .diagram svg { min-width: 0; } }

@@ -1,0 +1,478 @@
+=head1 NAME
+
+perlexcept - Structured exceptions and diagnostics in Perl programs
+
+=head1 DESCRIPTION
+
+This manual describes the structured exception system in this development
+version of XPerl. It covers catching errors, inspecting diagnostics, hooks,
+rendering, and diagnostic language packs. These interfaces are under
+development. They are not interfaces provided by an ordinary Perl release.
+
+L<perlexcephack> describes the implementation, catalog, generated code, and
+extension contracts. L<perldiag> remains the reference for individual core
+diagnostic messages. The module manuals provide details of individual
+operations: L<XPerl::Exception>, L<XPerl::Diagnostic>, L<XPerl::DiagGroup>,
+L<XPerl::DiagPack>, and L<diagpack>.
+
+=head1 EXCEPTIONS AND DIAGNOSTICS
+
+An exception collects diagnostics in encounter order. A diagnostic describes
+one condition: its symbolic code, number, kind, severity, parameters, and
+source location. An exception can contain warnings, errors, or both. The
+presence of an exception object does not by itself mean execution must stop.
+
+A diagnostic can contain further diagnostics. For example, a primary error
+can contain explanatory notes. Both exception and diagnostic objects use
+C<contents> for their immediate diagnostic entries. Containment describes
+how records belong together. It does not imply a unique parent, an
+inheritance relationship, or a stack frame.
+
+=for html <!-- diagram:containment -->
+
+C<XPerl::Exception> and C<XPerl::Diagnostic> both inherit common collector
+operations from C<XPerl::DiagGroup>. Neither inherits from the other.
+Diagnostic subclasses classify conditions. An error can contain a warning
+without changing either object's class. A diagnostic may occur in more than
+one collection, preserving its identity at each occurrence.
+
+An exception's C<kind> and C<severity> accessors derive their answers from
+its contents. A fatal or internal error takes precedence over warnings.
+Within a precedence class the first applicable diagnostic in depth-first
+order wins. An empty exception or one containing only notes has neither
+kind nor severity. Use
+C<has_errors> to ask about fatal handling: error accounting and an already
+required unwind can matter even after visible contents have been edited.
+
+=head2 Warnings and fatal warnings
+
+Ordinary warning delivery can use the same accumulator as error delivery.
+Parser and other core operations can collect several diagnostics before
+delivering them. A warning-only collection normally returns to the caller.
+A collection requiring fatal handling unwinds after delivery.
+
+Warning categories still control enablement and fatalization through
+L<warnings>. A diagnostic's class does not replace those controls. Runtime
+category selection can determine its warning subclass, including a common
+ancestor when multiple categories apply.
+
+A fatalized warning is represented by a
+C<XPerl::Diagnostic::Error::FatalizedWarning> wrapper. The wrapper has code
+C<ERROR_FATALIZED_WARNING_WRAPPER>, number 2719, and fatal severity. Its
+contents retain the original warning object with its original severity.
+The wrapper and its warning are delivered as one fatal group.
+
+=head1 CATCHING AN EXCEPTION
+
+=head2 eval and the two error values
+
+An C<eval> catches fatal exceptions in the usual way. Capture its error
+values before running other code that may itself use C<eval>:
+
+    my ($value, $exception);
+    {
+        local $@;
+        eval { die "Cannot continue\n" };
+        ($value, $exception) = ($@, ${^ERROR_OBJ});
+    }
+
+C<$@> is the compatibility value. C<${^ERROR_OBJ}> exposes the canonical
+C<XPerl::Exception> associated with the caught failure. For an ordinary
+textual error the compatibility value is the structured exception. For a
+reference thrown by user code, C<$@> can be that original reference while
+C<${^ERROR_OBJ}> retains the structured diagnostic describing it.
+
+Do not infer success by searching the rendered message, and do not retain
+only its stringification when later code needs structured information.
+Where a general C<eval> wrapper must also handle false-valued user objects,
+use an explicit success result:
+
+    my $ok = eval {
+        perform_operation();
+        1;
+    };
+    my ($value, $exception) = ($@, ${^ERROR_OBJ});
+    handle_failure($value, $exception) unless $ok;
+
+C<${^ERROR_OBJ}> is not a collector for every warning emitted by a program.
+Use the exception hook to observe warning episodes.
+
+=head2 try and catch
+
+With the C<try> feature enabled, C<catch> accepts one or two lexical
+variables. The first receives the compatibility value. The optional second
+receives the canonical structured exception:
+
+    use feature 'try';
+
+    try {
+        die { reason => 'unavailable' };
+    }
+    catch ($value, $exception) {
+        # $value is the original hash reference.
+        # $exception is the XPerl::Exception containing its diagnostic.
+        inspect_failure($exception);
+    }
+
+The variables are declared by the C<catch> syntax. See L<perlsyn/Try Catch
+Exception Handling> for the complete control-flow rules.
+
+=head2 Throwing and propagation
+
+C<die "text"> creates an C<ERROR_USER_TEXT> diagnostic. C<warn "text">
+creates a C<WARNING_USER_TEXT> diagnostic. The supplied text remains a
+parameter; language packs cannot translate arbitrary application text.
+Core catalogued conditions instead retain their semantic parameters and
+render from a catalog template.
+
+Propagate an existing exception or user reference directly:
+
+    die $value;
+
+Stringifying it first loses identity and structured information. Core
+propagation paths can add context diagnostics, such as the location of a
+failed C<require>. Those locations are distinct from the locations of the
+errors in the required file. The current system does not provide a complete
+exception stack trace.
+
+=head1 INSPECTING CONTENTS
+
+Read immediate entries using C<contents>:
+
+    for my $diagnostic (@{ $exception->contents }) {
+        my $code     = $diagnostic->code;
+        my $severity = $diagnostic->severity;
+        my $location = $diagnostic->location;
+        my $params   = $diagnostic->params;
+        consume_record($code, $severity, $location, $params);
+    }
+
+C<code> is the symbolic diagnostic identifier; C<number> is its numeric
+identifier. Prefer these to matching translated text. C<kind> describes the
+condition's classification, and C<severity> describes its diagnostic
+severity. C<params> contains named, typed values, including values retained
+only to select wording. C<location> normally contains C<file> and C<line>.
+Some native panic diagnostics also carry a separate C<panic> context.
+
+C<contents> returns a new array containing references to the actual
+immediate diagnostics. Editing that array does not edit the collector.
+Editing a referenced diagnostic affects every place sharing that object.
+C<contents_count> counts immediate entries, not all descendants.
+
+C<params> copies the parameter array and its parameter hashes.
+C<location> copies the outer location hash. These are not recursive deep
+copies: reference-valued metadata can remain shared. Missing optional
+information must be handled as missing, rather than inferred from a rendered
+message.
+
+To inspect nested contents, visit each diagnostic's C<contents> in turn.
+A traversal must decide whether it wants each occurrence or each object
+identity: sharing permits the same diagnostic to occur under several roots.
+
+=head2 Catalog metadata
+
+The experimental C<get_diagnostic_data> builtin looks up the definition of
+a diagnostic by code or number:
+
+    use builtin 'get_diagnostic_data';
+    my $definition = get_diagnostic_data('WARNING_USER_TEXT');
+
+It returns a fresh metadata hash, or C<undef> for an unknown identifier.
+The metadata describes parameters, selectors, class policy, and available
+template cases. It describes a catalog condition rather than a particular
+occurrence: source locations and captured runtime values belong to the
+diagnostic object. Editing the returned metadata does not alter the catalog.
+The query does not load language packs. See L<builtin/get_diagnostic_data>.
+
+=head2 Mutation interfaces
+
+Construction and mutation are currently private, developing interfaces.
+They are documented here to explain the objects visible to hooks, not as a
+promise that arbitrary edits to their blessed hashes are supported.
+
+C<append($diagnostic)> preserves identity and order. It rejects containment
+cycles. Note diagnostics and their subclasses are leaves and reject
+contents. C<contains($group)> tests identity, includes the receiver itself,
+and searches descendants.
+
+C<derive($contents)> on a diagnostic creates a distinct diagnostic of the
+same class with replacement contents and shallowly retained own metadata.
+It leaves the source diagnostic unchanged. It does not recursively copy
+metadata or remove other aliases to sensitive values.
+
+An empty diagnostic has no private C<contents> key until contents are added.
+Calling its accessors does not allocate that storage. Structured output
+still represents its contents as an empty array. Programs should use the
+accessors rather than depend on presence or absence of private keys.
+
+There are no C<children> or C<messages> compatibility accessors. Both
+collector types use C<contents>.
+
+=head1 DELIVERY AND HOOKS
+
+Delivery has three stages: the canonical exception hook, legacy hook
+delivery of logical groups, and the final disposition. Accumulation before
+delivery preserves the encounter order of warnings and errors.
+
+=for html <!-- diagram:delivery -->
+
+=head2 The canonical exception hook
+
+C<$SIG{__EXCEPT__}> receives the canonical C<XPerl::Exception> once per
+delivery episode, before the legacy hooks. It can inspect warning-only
+episodes as well as fatal ones:
+
+    local $SIG{__EXCEPT__} = sub {
+        my ($exception) = @_;
+        record_exception_json($exception->as_json);
+    };
+
+The hook sees the diagnostic data before legacy delivery groups are formed.
+It can edit diagnostic content for subsequent rendering and legacy hooks. It can promote a warning episode to fatal
+handling. It cannot cancel a fatal unwind already required by the episode
+merely by removing or downgrading visible diagnostics.
+
+A warning raised inside this hook is captured without re-entering either
+C<__EXCEPT__> or C<__WARN__>. A C<die> stops the handler and supplies a
+replacement for legacy die delivery. Explicit file output remains immediate.
+
+=head2 Logical delivery groups
+
+Legacy hooks receive one argument per logical group. A primary diagnostic
+and its owned notes or hints normally form one group. Independent warnings
+and errors remain separate groups in encounter order. Pure compilation
+error batches can be delivered together. Some existing producers retain
+linked location or hint records; these remain associated during rendering.
+
+Containment, delivery grouping, and inheritance answer different questions.
+C<contents_count> is not a count of hook invocations.
+
+During a legacy hook, C<${^CUR_ERROR_OBJ}> exposes the canonical aggregate
+being delivered. It is dynamically scoped to that delivery. Use it rather
+than assuming the hook's rendered argument contains all structured data.
+It can differ from C<${^ERROR_OBJ}>, which describes a caught failure.
+
+=head2 The warning hook
+
+C<$SIG{__WARN__}> retains its one-argument interface. It receives the
+rendered warning group, or an original user reference where applicable.
+Returning from the handler suppresses that group's automatic warning output.
+
+Warnings or errors emitted by the handler are captured for later delivery.
+A dying warning handler stops at a protected boundary. Remaining groups can
+still be handled before the application performs its final unwind.
+
+=head2 The die hook
+
+C<$SIG{__DIE__}> receives the rendered fatal group, or the original
+user-thrown reference. Returning does not suppress fatal output or cancel
+unwinding. A C<die> inside it replaces the current group without invoking
+that same die hook recursively for the replacement. Later independent fatal
+groups can invoke the hook separately.
+
+For a nonfinal textual fatal group, the hook argument includes a localized
+unwind-deferred hint. User reference arguments retain their identity and do
+not acquire that text suffix.
+
+A warning inside C<__DIE__> goes directly to C<__WARN__>, without a new
+canonical exception-hook episode. If that warning handler dies, its failure
+replaces the active fatal without recursive die-hook delivery.
+
+=head2 Output and final unwind
+
+Automatic output for a group finishes before the next group's legacy hook
+runs. This ordering also applies to JSON and Dumper delivery. Caught errors
+have no automatic fatal output. After groups finish, fatal delivery unwinds
+the application once. An explicit C<print STDERR> inside a hook happens
+immediately and is not captured by this mechanism.
+
+Protected hook boundaries are implementation details, not extra visible
+C<eval> frames. See L<perlvar/%SIG> for hook context restrictions and
+L<perlexcephack/Protected hook boundaries> for their implementation.
+
+=head1 RENDERING
+
+Diagnostics retain semantic data rather than cached translated sentences.
+Rendering chooses templates and formats the retained values when output is
+needed. A caught exception can therefore be rendered in several languages.
+
+=head2 Implicit stringification
+
+C<${^DIAG_RENDER}> controls implicit exception stringification. Startup
+initializes it from C<PERL_DIAG_RENDER>, defaulting to C<auto:legacy>.
+Assignments affect rendering of existing caught exceptions as well as new
+ones, and C<local> restores the previous setting:
+
+    local ${^DIAG_RENDER} = 'en:annotated';
+    print STDERR $exception;
+
+The first component is a language or C<auto>. The second is C<legacy> for
+traditional diagnostic text or C<annotated> for metadata-oriented text.
+A bare language selects legacy text. C<auto> uses the language prefix from
+the first nonempty C<LC_ALL>, C<LC_MESSAGES>, or C<LANG>. C<C>, C<POSIX>,
+absent settings, and unavailable translations fall back to English.
+Unrecognized rendering settings select English legacy output.
+
+Language selection does not select an output encoding or change IO layers.
+
+=head2 Explicit rendering
+
+C<$exception-E<gt>render($setting)> accepts the same setting syntax.
+Unlike implicit stringification, C<render()> without an argument uses legacy
+text with an English default. Both honor a captured lexical engine when no
+explicit language overrides it.
+
+C<render_as_legacy($language)> and
+C<render_as_annotated($language)> request a text presentation directly.
+C<render_as_modern> remains an alias for the annotated renderer. An explicit
+language overrides lexical choices throughout the rendered tree.
+
+Exception boolean conversion is always true, independently of its rendered
+text or whether its visible contents are empty. Boolean truth is not a test
+for fatal severity; use C<has_errors> for that question.
+
+Standalone diagnostics also support legacy rendering. Their own source
+locations and subordinate diagnostics are included; they do not require an
+enclosing exception to produce a complete message.
+
+=head2 Structured delivery envelopes
+
+An optional third component selects C<JSON> or C<Dumper>:
+
+    local ${^DIAG_RENDER} = 'en:legacy:JSON';
+
+Delivery emits one physical line per logical message group. Each record has
+C<schema>, the human-readable C<message>, a primary disposition C<type>, and
+an ordered C<contents> array. The schema is C<xperl.diagnostic-group.v2>.
+Embedded newlines are escaped. Fatalized warnings have C<FATAL_ERROR> as
+their group type.
+
+Bare C<JSON> and C<JSONL> mean C<en:legacy:JSON>. Bare C<Dumper> and
+C<DumperL> mean C<en:legacy:Dumper>. Dumper output uses unblessed Perl hash
+literals. These writers are built into the core and do not require a JSON
+module or Data::Dumper. A legacy hook can rewrite its argument, so hooked
+output is only valid serialized data if the hook preserves that property.
+
+=head2 Inspection documents
+
+C<$exception-E<gt>as_json> returns a whole-exception inspection document
+with schema C<xperl.exception.v2>. It contains immediate diagnostic roots,
+derived kind and severity, and origin. Private delivery bookkeeping is
+omitted.
+It is distinct from the per-group delivery envelopes.
+
+C<$diagnostic-E<gt>render_as_json> and its alias C<as_json> return a
+C<xperl.diagnostic.v2> record. C<render_as_dumper> returns the corresponding
+Perl literal. Standalone diagnostic records contain structured data rather
+than a translated human message. Each diagnostic record has an ordered
+C<contents> array, empty for leaves.
+
+Writers select fields explicitly. They do not dump every private hash key.
+Missing values are JSON C<null> or Dumper C<undef>. Opaque reference-valued
+parameters are not recursively serialized. Shared diagnostics appear at
+each occurrence. Invalid ancestor back edges introduced through private
+hash edits serialize as C<null> or C<undef> rather than recursing forever.
+
+Use Data::Dumper explicitly when private storage is the object of an
+investigation. Its output is not the structured serialization contract.
+
+=head1 LANGUAGE PACKS
+
+=head2 Availability and selection
+
+Requiring a language pack registers a rendering capability:
+
+    require XPerl::DiagPack::DE;
+
+Registration alone does not select German. Select it through
+C<${^DIAG_RENDER}>, an explicit rendering argument, or the lexical pragma.
+C<use XPerl::DiagPack qw(all)> loads installed two-letter language packs.
+Loading fails at the first failure; packs already registered remain so.
+
+English is permanently available in the core, including miniperl.
+The optional C<XPerl::DiagPack::EN> pack can also register an English engine.
+Startup can load the language selected by the environment or
+C<PERL_DIAG_RENDER> before user compilation. Taint mode disables that startup
+loading. A startup loading failure reports an English warning and retains
+English fallback. Later rendering never loads modules implicitly.
+
+Locale construction occurs earlier still, before hooks and rendering
+configuration are ready. Its startup warnings use permanent English and
+direct plain-text output.
+
+=head2 Lexical selection
+
+The provisional L<diagpack> pragma loads and captures a language engine:
+
+    {
+        use diagpack 'de';
+        # Diagnostics originating in this scope retain this engine.
+    }
+
+An implicit render uses the captured engine even after the lexical scope
+has ended or the registered engine for that language has been replaced.
+Presentation style and serialization still follow the current rendering
+setting. An explicit language request overrides captures. Independent
+diagnostics in one exception can have different captured engines.
+
+=for html <!-- diagram:rendering -->
+
+If the selected engine cannot render a catalog message, rendering retries
+with registered English and then permanent English, skipping duplicate
+engines. Each attempt starts from the retained semantic parameters. Fallback
+is for one complete catalog message; it does not combine partially rendered
+translated fragments with English fragments. Separate diagnostics can fall
+back independently.
+
+=head2 Plural categories
+
+The experimental builtins C<cardinal_plural_form> and
+C<ordinal_plural_form> query integer plural categories:
+
+    use builtin qw(cardinal_plural_form ordinal_plural_form);
+    my $quantity = cardinal_plural_form('en', 1);  # one
+    my $position = ordinal_plural_form('en', 2);   # two
+
+Cardinal rules describe quantities, such as one error or several errors.
+Ordinal rules describe positions, such as first or second. The results are
+category identifiers, not translated numbers or suffixes. General ordinal
+wording can also depend on gender, case, and what is being counted.
+
+These queries cover all languages in the retained CLDR integer data without
+loading diagnostic packs. They accept code-based locale names and language
+tags, including regional plural overrides. Known languages without an
+explicit ordinal rule return C<other>; unknown languages return C<undef>.
+They do not support fractional counts. This broad locale support does not
+extend the two-letter language-pack loader's interface.
+
+Diagnostic template rendering currently uses the selected pack's own plural
+callbacks and configured rules. The builtin query table is an independent
+CLDR-derived facility. See L<builtin/cardinal_plural_form> and
+L<perlexcephack/INTEGER PLURAL DATA>.
+
+=head1 CURRENT LIMITS
+
+The private C<error_count> is producer and parser accounting, not a live
+count of error diagnostics after arbitrary mutation. There is no matching
+public warning counter. C<has_errors> also considers retained fatal state.
+
+The private C<thrown> field is used by explicit reference and exception
+throwing paths. It is not a general event count or a reliable test that
+every possible fatal delivery has occurred.
+
+C<origin> is reserved propagation metadata with an accessor and a private
+recording method. Ordinary core delivery does not currently populate it
+automatically. Use diagnostic locations for reported source positions.
+C<origin> does not supply a full stack trace.
+
+General filtering, splitting, deep-copying, and secure redaction interfaces
+are not provided by the current collector API. Sharing means editing one
+view need not remove all other references to a value.
+
+=head1 SEE ALSO
+
+L<perlexcephack>, L<perldiag>, L<perlvar>, L<perlsyn>, L<warnings>,
+L<builtin>, L<XPerl::Exception>, L<XPerl::Diagnostic>,
+L<XPerl::DiagGroup>, L<XPerl::DiagPack>, L<diagpack>.
+
+=cut

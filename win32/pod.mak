@@ -133,6 +133,8 @@ POD = perl.pod	\
 	perldtrace.pod	\
 	perlebcdic.pod	\
 	perlembed.pod	\
+	perlexcephack.pod	\
+	perlexcept.pod	\
 	perlexperiment.pod	\
 	perlfilter.pod	\
 	perlfork.pod	\
@@ -333,6 +335,8 @@ MAN = perl.man	\
 	perldtrace.man	\
 	perlebcdic.man	\
 	perlembed.man	\
+	perlexcephack.man	\
+	perlexcept.man	\
 	perlexperiment.man	\
 	perlfilter.man	\
 	perlfork.man	\
@@ -533,6 +537,8 @@ HTML = perl.html	\
 	perldtrace.html	\
 	perlebcdic.html	\
 	perlembed.html	\
+	perlexcephack.html	\
+	perlexcept.html	\
 	perlexperiment.html	\
 	perlfilter.html	\
 	perlfork.html	\
@@ -733,6 +739,8 @@ TEX = perl.tex	\
 	perldtrace.tex	\
 	perlebcdic.tex	\
 	perlembed.tex	\
+	perlexcephack.tex	\
+	perlexcept.tex	\
 	perlexperiment.tex	\
 	perlfilter.tex	\
 	perlfork.tex	\

@@ -1,0 +1,24 @@
+digraph containment {
+  graph [rankdir=TB, bgcolor="#fafcfe", pad="0.2", nodesep="0.45", ranksep="0.6", fontname="sans-serif"];
+  node [shape=box, style="rounded,filled", fontname="sans-serif", fontsize=12, color="#42647b", fillcolor="#eaf2f8", margin="0.16,0.12"];
+  edge [fontname="sans-serif", fontsize=10, color="#42647b"];
+  subgraph cluster_classes {
+    label="Class inheritance"; color="#cbd5df";
+    base [label="XPerl::DiagGroup\ncommon collector operations"];
+    ec [label="XPerl::Exception"];
+    dc [label="XPerl::Diagnostic"];
+    ec -> base [label="inherits", arrowhead=empty];
+    dc -> base [label="inherits", arrowhead=empty];
+  }
+  subgraph cluster_objects {
+    label="Example object references (contents)"; color="#cbd5df";
+    ex [label="Exception\nordered roots", fillcolor="#ddf1e9"];
+    err [label="Error diagnostic"];
+    warning [label="Warning diagnostic"];
+    note [label="Note diagnostic\nleaf", fillcolor="#fff0d9"];
+    ex -> err [label="contents[0]"];
+    ex -> warning [label="contents[1]"];
+    err -> note [label="contents[0]"];
+    warning -> note [label="contents[0]\nshared identity"];
+  }
+}
