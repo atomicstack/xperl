@@ -6149,6 +6149,14 @@ lib/unicore/BidiMirroring.txt			Unicode character database
 lib/unicore/Blocks.txt				Unicode character database
 lib/unicore/CaseFolding.txt			Unicode character database
 lib/unicore/CJKRadicals.txt			Unicode character database
+lib/unicore/cldr/LICENSE			CLDR supplemental data license
+lib/unicore/cldr/ordinals.json			CLDR ordinal plural rules
+lib/unicore/cldr/package.json			CLDR package metadata
+lib/unicore/cldr/plural.pl			Generated CLDR plural definitions
+lib/unicore/cldr/pluralParents.json		Plural-relevant regional parents
+lib/unicore/cldr/plurals.json			CLDR cardinal plural rules
+lib/unicore/cldr/README.perl			CLDR supplemental data notes
+lib/unicore/cldr/version			CLDR release version
 lib/unicore/CompositionExclusions.txt		Unicode character database
 lib/unicore/DAge.txt				Unicode character database
 lib/unicore/DCoreProperties.txt			Unicode character database
@@ -6572,6 +6580,7 @@ Porting/test-dist-modules.pl			Test dist/ modules on currently active perl (used
 Porting/timecheck.c				Test program for the 2038 fix
 Porting/timecheck2.c				Test program for the 2038 fix
 Porting/todo.pod				Perl things to do
+Porting/update_cldr.pl				Import CLDR supplemental JSON data
 Porting/updateAUTHORS.pl			Tool to automatically update AUTHORS and .mailmap from git log data
 Porting/updateAUTHORS.pm			Brains of updateAUTHORS.pl
 Porting/valgrindpp.pl				Summarize valgrind reports
@@ -7182,6 +7191,7 @@ t/porting/bincompat.t			Check that {non_,}bincompat_options are ordered
 t/porting/check_config_defines.t	Check for rogue #defines in config.h
 t/porting/checkcase.t			Check whether we are case-insensitive-fs-friendly
 t/porting/checkcfgvar.t			Check that all config.sh-like files are good
+t/porting/cldr_import.t			Test CLDR supplemental data import
 t/porting/cmp_version.t			Test whether all changed module files have their VERSION bumped
 t/porting/copyright.t			Check that copyright years match
 t/porting/corelist.t			Check that Module-CoreList has perl versions for the current perl

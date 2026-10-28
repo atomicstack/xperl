@@ -1,0 +1,23 @@
+{
+   "pluralParents" : {
+      "cardinal" : {
+         "pt-AO" : "pt-PT",
+         "pt-CH" : "pt-PT",
+         "pt-CV" : "pt-PT",
+         "pt-FR" : "pt-PT",
+         "pt-GQ" : "pt-PT",
+         "pt-GW" : "pt-PT",
+         "pt-LU" : "pt-PT",
+         "pt-MO" : "pt-PT",
+         "pt-MZ" : "pt-PT",
+         "pt-ST" : "pt-PT",
+         "pt-TL" : "pt-PT"
+      },
+      "ordinal" : {}
+   },
+   "source" : {
+      "path" : "supplemental/parentLocales.json",
+      "sha256" : "e6d0da73b9e49dec3d9b94ed0bc16e7704b2efb769b7094c9c238cd654afb191"
+   },
+   "version" : "49"
+}
