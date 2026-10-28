@@ -85,6 +85,7 @@ no_index:
     - ext/VMS-Filespec/t
     - ext/VMS-Stdio/t
     - ext/Win32CORE/t
+    - ext/XPerl-DiagPack-DE/t
     - ext/XS-APItest/t
     - ext/XS-Typemap/t
     - lib/perl5db

@@ -5645,10 +5645,39 @@ ext/Win32CORE/Makefile.PL		Win32CORE extension
 ext/Win32CORE/t/win32core.t		Win32CORE extension
 ext/Win32CORE/Win32CORE.c		Win32CORE extension
 ext/Win32CORE/Win32CORE.pm		Win32CORE extension (stubs for Win32 CORE subs)
+ext/XPerl-DiagPack-DE/DE.pm		German diagnostic language pack
+ext/XPerl-DiagPack-DE/DE.xs		German diagnostic language-pack XS interface
+ext/XPerl-DiagPack-DE/DE_data.inc	German diagnostic language-pack catalog
+ext/XPerl-DiagPack-DE/Makefile.PL	MakeMaker driver for XPerl::DiagPack::DE
+ext/XPerl-DiagPack-DE/t/render.t	Direct German diagnostic pack rendering tests
 ext/XPerl-DiagPack-EN/EN.pm		English diagnostic language pack
 ext/XPerl-DiagPack-EN/EN.xs		English diagnostic language-pack XS interface
 ext/XPerl-DiagPack-EN/EN_data.inc	English diagnostic language-pack catalog
 ext/XPerl-DiagPack-EN/Makefile.PL	MakeMaker driver for XPerl::DiagPack::EN
+ext/XPerl-DiagPack-ES/ES.pm		Spanish diagnostic language pack
+ext/XPerl-DiagPack-ES/ES.xs		Spanish diagnostic language-pack XS interface
+ext/XPerl-DiagPack-ES/ES_data.inc	Spanish diagnostic language-pack catalog
+ext/XPerl-DiagPack-ES/Makefile.PL	MakeMaker driver for XPerl::DiagPack::ES
+ext/XPerl-DiagPack-FR/FR.pm		French diagnostic language pack
+ext/XPerl-DiagPack-FR/FR.xs		French diagnostic language-pack XS interface
+ext/XPerl-DiagPack-FR/FR_data.inc	French diagnostic language-pack catalog
+ext/XPerl-DiagPack-FR/Makefile.PL	MakeMaker driver for XPerl::DiagPack::FR
+ext/XPerl-DiagPack-IS/IS.pm		Icelandic diagnostic language pack
+ext/XPerl-DiagPack-IS/IS.xs		Icelandic diagnostic language-pack XS interface
+ext/XPerl-DiagPack-IS/IS_data.inc	Icelandic diagnostic language-pack catalog
+ext/XPerl-DiagPack-IS/Makefile.PL	MakeMaker driver for XPerl::DiagPack::IS
+ext/XPerl-DiagPack-IT/IT.pm		Italian diagnostic language pack
+ext/XPerl-DiagPack-IT/IT.xs		Italian diagnostic language-pack XS interface
+ext/XPerl-DiagPack-IT/IT_data.inc	Italian diagnostic language-pack catalog
+ext/XPerl-DiagPack-IT/Makefile.PL	MakeMaker driver for XPerl::DiagPack::IT
+ext/XPerl-DiagPack-NL/Makefile.PL	MakeMaker driver for XPerl::DiagPack::NL
+ext/XPerl-DiagPack-NL/NL.pm		Dutch diagnostic language pack
+ext/XPerl-DiagPack-NL/NL.xs		Dutch diagnostic language-pack XS interface
+ext/XPerl-DiagPack-NL/NL_data.inc	Dutch diagnostic language-pack catalog
+ext/XPerl-DiagPack-PT/Makefile.PL	MakeMaker driver for XPerl::DiagPack::PT
+ext/XPerl-DiagPack-PT/PT.pm		Portuguese diagnostic language pack
+ext/XPerl-DiagPack-PT/PT.xs		Portuguese diagnostic language-pack XS interface
+ext/XPerl-DiagPack-PT/PT_data.inc	Portuguese diagnostic language-pack catalog
 ext/XS-APItest/APItest.pm			XS::APItest extension
 ext/XS-APItest/APItest.xs			XS::APItest extension
 ext/XS-APItest/APItest_autoload.xs		XS::APItest AUTOLOAD-related XS split
@@ -6620,6 +6649,7 @@ regen/diag_lib.pm			Diagnostic migration parser helpers
 regen/diag_pack.pm			Generates ordinary diagnostic language-pack XS distributions
 regen/diag_plural.pm			Compile retained CLDR rules for integer plural queries
 regen/diag_pod.pm			Diagnostic documentation import and rendering
+regen/diag_translation_provenance.json	Translation source fingerprints
 regen/diag_words.pm			Operation vocabulary validation and translation context
 regen/ebcdic.pl				Generates ebcdic_tables.h
 regen/embed.pl				Produces {embed,embedvar,proto}.h
