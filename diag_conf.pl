@@ -102690,7 +102690,7 @@ $CONF = {
         "headings" => [
           "%s: loadable library and perl binaries are mismatched (got %s handshake key %p, needed %p)\n\n"
         ],
-        "text" => "(P) A dynamic loading library C<.so> or C<.dll> was being loaded into the\nprocess that was built against a different build of perl than the\nsaid library was compiled against.  Reinstalling the XS module will\nlikely fix this error.  This error is a less commonly seen subset of\nL<\"Perl API version %s of %s does not match %s\"|perldiag/\"Perl API version %s of %s does not match %s\">\nerror.\n\n"
+        "text" => "(P) A dynamic loading library C<.so> or C<.dll> was being loaded into the\nprocess that was built against a different build of perl than the\nsaid library was compiled against.\n\nReinstalling the XS module will likely fix this error.  But it may be\nthat the XS module's Makefile wrongly discards the default compilation\nflags.  In this case, notify the module's maintainer.  You can tell if\nthis is the case by inspecting its Makefile looking for lines of the\nform\n\n CCFLAGS => foo\n\nThe module's Makefile is broken if \"foo\" doesn't look like\nS<C<CCFLAGS => \"\$Config::Config{ccflags} ...>>\n\nThis error is a less commonly seen subset of\nL<\"Perl API version %s of %s does not match %s\"|perldiag/\"Perl API version %s of %s does not match %s\">\nerror.\n\n"
       },
       {
         "code" => "PERLDIAG_0577",
@@ -105886,6 +105886,20 @@ $CONF = {
           "UNIVERSAL does not export anything\n\n"
         ],
         "text" => "(F) You asked UNIVERSAL to export something, but UNIVERSAL is the\nbase class for all classes and contains no exportable symbols.\n\n"
+      },
+      {
+        "code" => "PERLDIAG_1214",
+        "headings" => [
+          "Unaligned \"next\" pointer in the free chain 0x% at 0x%\n\n"
+        ],
+        "text" => "(W malloc) In a perl built with C<-Dusemymalloc>, there was a problem when\nremoving an item from a linked list.\n\n"
+      },
+      {
+        "code" => "PERLDIAG_1215",
+        "headings" => [
+          "Unaligned pointer in the free chain 0x%\n\n"
+        ],
+        "text" => "(W malloc) In a perl built with C<-Dusemymalloc>, there was a problem when\nremoving an item from a linked list.\n\n"
       },
       {
         "code" => "PERLDIAG_1034",
