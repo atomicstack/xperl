@@ -4037,6 +4037,10 @@ Perl_call_rand_bytes(pTHX_ STRLEN length)
 {
     PERL_ARGS_ASSERT_CALL_RAND_BYTES;
 
+    /* An SV needs a trailing NUL in addition to the requested bytes. */
+    if (length == STRLEN_MAX)
+        PERL_THROW_ERROR_RNG_BYTES_COUNT_TOO_LARGE();
+
     if (!length)
         return newSVpvs("");
 
