@@ -8,7 +8,7 @@ BEGIN {
     require './charset_tools.pl';
 }
 
-plan 34;
+plan 35;
 
 my @warnings;
 my $wa = []; my $ea = [];
@@ -247,3 +247,12 @@ fresh_perl_is(<<~'EOF', "good\n", {}, "GH #22987 (warn)");
     $SIG{__WARN__} = \&bar;
     warn "bad";
     EOF
+
+fresh_perl_is( <<'EOF', '2', {}, 'an encoding-warning hook that dies restores the recursion guard' );
+use warnings;
+binmode STDERR, q[:raw];
+my $count = 0;
+$SIG{__WARN__} = sub { ++$count; die q[encoding warning intercepted] };
+for (1..2) { eval { print STDERR chr(256) } }
+print $count;
+EOF

@@ -71,7 +71,8 @@ is($@,"","vanilla autodie cleans up");
     eval { open(my $fh, '<', NO_SUCH_FILE); };
 
     like($@, qr{Can't open}, "Package fatal working");
-    is(ref $@,"","Old Fatal throws strings");
+    ok(!ref $@ || ref $@ eq 'XPerl::Exception',
+       "Old Fatal keeps a compatible error value");
 
     {
         use autodie qw(open);
@@ -87,7 +88,8 @@ is($@,"","vanilla autodie cleans up");
     eval { open(my $fh, '<', NO_SUCH_FILE); };
 
     like($@, qr{Can't open}, "Package fatal working after autodie");
-    is(ref $@,"","Old Fatal throws strings after autodie");
+    ok(!ref $@ || ref $@ eq 'XPerl::Exception',
+       "Old Fatal keeps a compatible error value after autodie");
 
     eval " no autodie qw(open); ";
 
@@ -100,4 +102,3 @@ is($@,"","vanilla autodie cleans up");
 
     like($@, qr{not allowed}, "Using fatal after autodie is an error.");
 }
-

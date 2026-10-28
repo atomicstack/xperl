@@ -563,12 +563,10 @@ Perl_regprop(pTHX_ const regexp *prog, SV *sv, const regnode *o, const regmatch_
 
     if (op > REGNODE_MAX) {          /* regnode.type is unsigned */
         if (pRExC_state) {  /* This gives more info, if we have it */
-            FAIL3("panic: corrupted regexp opcode %d > %d",
-                  (int)op, (int)REGNODE_MAX);
+            FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_DEBUG_OPCODE_OUT_OF_RANGE((int)op, (int)REGNODE_MAX, UTF, len, RExC_precomp, ellipses));
         }
         else {
-            croak("panic: corrupted regexp opcode %d > %d",
-                             (int)op, (int)REGNODE_MAX);
+            PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_DEBUG_OPCODE_OUT_OF_RANGE((int)op, (int)REGNODE_MAX);
         }
     }
     sv_catpv(sv, REGNODE_NAME(op)); /* Take off const! */

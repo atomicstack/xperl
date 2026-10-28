@@ -9,7 +9,8 @@ use Fatal qw(:io :void opendir);
 
 eval { open FOO, "<".NO_SUCH_FILE };	# Two arg open
 like($@, qr/^Can't open/, q{Package Fatal::open});
-is(ref $@, "", "Regular fatal throws a string");
+ok(!ref $@ || ref $@ eq 'XPerl::Exception',
+   "Regular fatal keeps a compatible error value");
 
 my $foo = 'FOO';
 for ('$foo', "'$foo'", "*$foo", "\\*$foo") {

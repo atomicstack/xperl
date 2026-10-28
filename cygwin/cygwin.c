@@ -41,8 +41,7 @@ do_spawnvp (const char *path, const char * const *argv)
     childpid = spawnvp(_P_NOWAIT,path,argv);
     if (childpid < 0) {
         status = -1;
-        ck_warner(packWARN(WARN_EXEC), "Can't spawn \"%s\": %s",
-                  path, Strerror(errno));
+        PERL_WARN_WARNING_IO_EXEC_SPAWN_FAILED(path, Strerror(errno));
     } else {
         do {
             result = wait4pid(childpid, &status, 0);
@@ -216,7 +215,7 @@ XS(Cygwin_cwd)
        There is Cwd->cwd() usage in the wild, and previous versions didn't die.
      */
     if(items > 1)
-        croak("Usage: Cwd::cwd()");
+        PERL_THROW_CWD_CWD_USAGE();
     if((cwd = getcwd(NULL, -1))) {
         ST(0) = sv_2mortal(newSVpv(cwd, 0));
         free(cwd);
@@ -233,7 +232,7 @@ XS(XS_Cygwin_pid_to_winpid)
     pid_t pid, RETVAL;
 
     if (items != 1)
-        croak("Usage: Cygwin::pid_to_winpid(pid)");
+        PERL_THROW_CYGWIN_PID_TO_WINPID_USAGE();
 
     pid = (pid_t)SvIV(ST(0));
 
@@ -251,7 +250,7 @@ XS(XS_Cygwin_winpid_to_pid)
     pid_t pid, RETVAL;
 
     if (items != 1)
-        croak("Usage: Cygwin::winpid_to_pid(pid)");
+        PERL_THROW_CYGWIN_WINPID_TO_PID_USAGE();
 
     pid = (pid_t)SvIV(ST(0));
 
@@ -292,7 +291,7 @@ S_convert_path_common(pTHX_ const direction_t direction)
         const char *name = (direction == to_posix)
                      ? "win::win_to_posix_path"
                      : "posix_to_win_path";
-        croak("Usage: Cygwin::%s(pathname, [absolute])", name);
+        PERL_THROW_ERROR_IO_FILESYSTEM_PATH_CONVERSION_INVALID_ARGUMENT_COUNT(name);
     }
 
     src_path = SvPVx(ST(0), len);
@@ -300,7 +299,7 @@ S_convert_path_common(pTHX_ const direction_t direction)
         absolute_flag = SvTRUE(ST(1));
 
     if (!len)
-        croak("can't convert empty path");
+        PERL_THROW_ERROR_IO_FILESYSTEM_PATH_CONVERSION_EMPTY_INPUT();
     isutf8 = SvUTF8(ST(0));
 
 #if HAVE_CYGWIN_VERSION(0, 181)
@@ -410,7 +409,7 @@ XS(XS_Cygwin_mount_table)
     struct mntent *mnt;
 
     if (items != 0)
-        croak("Usage: Cygwin::mount_table");
+        PERL_THROW_USAGE_CYGWIN_MOUNT_TABLE();
     /* => array of [mnt_dir mnt_fsname mnt_type mnt_opts] */
 
     setmntent (0, 0);
@@ -434,7 +433,7 @@ XS(XS_Cygwin_mount_flags)
     flags[0] = '\0';
 
     if (items != 1)
-        croak("Usage: Cygwin::mount_flags( mnt_dir | '/cygdrive' )");
+        PERL_THROW_CYGWIN_MOUNT_FLAGS_USAGE();
 
     pathname = SvPV_nolen(ST(0));
 
@@ -512,7 +511,7 @@ XS(XS_Cygwin_is_binmount)
     char *pathname;
 
     if (items != 1)
-        croak("Usage: Cygwin::is_binmount(pathname)");
+        PERL_THROW_CYGWIN_IS_BINMOUNT_USAGE();
 
     pathname = SvPV_nolen(ST(0));
 

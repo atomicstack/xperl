@@ -242,7 +242,7 @@ Constant(q) unknown at - line 3, within pattern
 BEGIN { ++$_ for @INC{"charnames.pm","_charnames.pm"} }
 "\N{a}"
 EXPECT
-Constant(\N{a}) unknown at - line 2, within string
+Constant(charnames) unknown at - line 2, within string
 ########
 # NAME Integer constant overloading returning undef
 use overload;
@@ -553,8 +553,8 @@ syntax error at - line 3, near ")("
 # NAME [perl #134310] don't confuse S_no_op() with PL_bufptr after s
 0 0x@
 EXPECT
-Number found where operator expected (Missing operator before "0x"?) at - line 1, near "0 0x"
 No digits found for hexadecimal literal at - line 1, near "0 0x@"
+Number found where operator expected (Missing operator before "0x"?) at - line 1, near "0 0x"
 syntax error at - line 1, near "0 0x"
 ########
 # NAME Forbid illegal \x{} code points
@@ -598,8 +598,8 @@ OPTIONS nonfatal
 no feature 'apostrophe_as_package_separator';
 sub 'Hello'_he_said (_);
 EXPECT
-Bareword found where operator expected (Missing operator before "_he_said"?) at - line 2, near "'Hello'_he_said"
 Illegal declaration of anonymous subroutine at - line 2, near "sub 'Hello'"
+Bareword found where operator expected (Missing operator before "_he_said"?) at - line 2, near "'Hello'_he_said"
 ########
 # NAME tick in names: initial character of format name (reverted)
     format 'one =
@@ -634,7 +634,7 @@ Execution of (eval 1) aborted due to compilation errors.
 # NAME GH #16930 - parsing after \N{} errors can trigger segfaults
 qr/(?{})\N{}/;while(my($0)=0){}
 EXPECT
-Unknown charname '' at - line 1, near "{})"
+Unknown charname '' at - line 1, within pattern
 ########
 # NAME GH #16945 - don't pass a negative string length to Perl_sv_catpvf
 eval q!format=

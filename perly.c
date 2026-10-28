@@ -524,8 +524,7 @@ Perl_yyparse (pTHX_ int gramtype)
       yyerrlab:
         /* If not already recovering from an error, report this error.  */
         if (!parser->yyerrstatus) {
-            yyerror("syntax error");
-            yyquit();
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_ABORT();
         }
 
 

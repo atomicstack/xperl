@@ -97,7 +97,7 @@ typedef struct _ithread {
 #endif
     IV stack_size;
     SV *err;                    /* Error from abnormally terminated thread */
-    char *err_class;            /* Error object's classname if applicable */
+    char *err_class;            /* Class to restore after cloning, if reblessed */
 #ifndef WIN32
     sigset_t initial_sigmask;   /* Thread wakes up with signals blocked */
 #endif
@@ -716,12 +716,20 @@ S_ithread_run(void * arg)
         if (SvTRUE(ERRSV)) {
             died = PERL_ITHR_DIED;
             thread->err = newSVsv(ERRSV);
-            /* If ERRSV is an object, remember the classname and then
-             * rebless into 'main' so it will survive 'cloning'
+            /* The error object is cloned into the joining interpreter
+             * later.  Rebless into 'main' if its class may not exist in
+             * that interpreter, and save the classname so it can be
+             * restored there.  The XPerl classes are bootstrapped in every
+             * interpreter, so they can keep their original stash while
+             * being cloned.
              */
             if (sv_isobject(thread->err)) {
-                thread->err_class = HvNAME(SvSTASH(SvRV(thread->err)));
-                sv_bless(thread->err, gv_stashpv("main", 0));
+                char *err_class = HvNAME(SvSTASH(SvRV(thread->err)));
+                if (strNE(err_class, "XPerl::Exception")
+                    && strNE(err_class, "XPerl::Diagnostic")) {
+                    thread->err_class = err_class;
+                    sv_bless(thread->err, gv_stashpv("main", 0));
+                }
             }
 
             if (ckWARN_d(WARN_THREADS)) {

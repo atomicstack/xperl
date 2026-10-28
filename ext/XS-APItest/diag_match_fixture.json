@@ -1,0 +1,26 @@
+{
+  "diagnostic_number": 990001,
+  "wide_value_count": 65535,
+  "wide_prefix": "wide_",
+  "layouts": [
+    { "name": "wide_first", "selectors": ["wide", "n1", "n2"] },
+    { "name": "wide_middle", "selectors": ["n1", "wide", "n2"] },
+    { "name": "wide_last", "selectors": ["n1", "n2", "wide"] },
+    { "name": "six_narrow_plus_wide", "selectors": ["n1", "n2", "n3", "wide", "n4", "n5", "n6"] },
+    { "name": "seven_narrow", "selectors": ["n1", "n2", "n3", "n4", "n5", "n6", "n7"] }
+  ],
+  "cases": [
+    { "name": "wide_256_n1", "wide": 256, "n1": 1, "n2": 0 },
+    { "name": "wide_256_n2", "wide": 256, "n1": 2, "n2": 0 },
+    { "name": "wide_257_n1", "wide": 257, "n1": 1, "n2": 0 },
+    { "name": "wide_511_n1", "wide": 511, "n1": 1, "n2": 0 },
+    { "name": "wide_512_n1", "wide": 512, "n1": 1, "n2": 0 },
+    { "name": "wide_65535_n1", "wide": 65535, "n1": 1, "n2": 0 },
+    { "name": "wide_256_any_narrow", "wide": 256, "n1": 0, "n2": 0 },
+    { "name": "any_wide_n1", "wide": 0, "n1": 1, "n2": 0 },
+    { "name": "wildcard", "wide": 0, "n1": 0, "n2": 0 },
+    { "name": "n1_only", "wide": 0, "n1": 1, "n2": 0 },
+    { "name": "n6_only", "wide": 0, "n1": 0, "n2": 0, "n6": 1 },
+    { "name": "n7_only", "wide": 0, "n1": 0, "n2": 0, "n7": 1 }
+  ]
+}

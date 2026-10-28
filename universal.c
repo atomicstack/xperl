@@ -294,6 +294,24 @@ XXX extracted in sv_does_sv is more complicated than the hand waving above
 */
 
 #include "XSUB.h"
+#include "diagpack.h"
+#include "xperl_exception.inc"
+
+SV *
+Perl_xperl_exception_render_legacy(pTHX_ SV *exception)
+{
+    HV *fields;
+
+    PERL_ARGS_ASSERT_XPERL_EXCEPTION_RENDER_LEGACY;
+
+    if (!SvROK(exception)
+        || !sv_derived_from(exception, "XPerl::Exception"))
+        return NULL;
+
+    fields = MUTABLE_HV(SvRV(exception));
+    return Perl_xperl_render_exception_legacy(aTHX_ exception, fields, "en",
+                                               FALSE);
+}
 
 bool
 Perl_sv_does_sv(pTHX_ SV *sv, SV *namesv, U32 flags)
@@ -495,21 +513,17 @@ Perl_croak_xs_usage(const CV *const cv, const char *const params)
 
         if (HvNAME_get(stash))
             /* diag_listed_as: SKIPME */
-            Perl_croak_nocontext("Usage: %" HEKf "::%" HEKf "(%s)",
-                                HEKfARG(HvNAME_HEK(stash)),
-                                HEKfARG(GvNAME_HEK(gv)),
-                                params);
+            PERL_THROW_ERROR_CALL_BINDING_INVALID_QUALIFIED_XSUB_CALL(HvNAME_HEK(stash), GvNAME_HEK(gv), params);
         else
             /* diag_listed_as: SKIPME */
-            Perl_croak_nocontext("Usage: %" HEKf "(%s)",
-                                HEKfARG(GvNAME_HEK(gv)), params);
+            PERL_THROW_ERROR_CALL_BINDING_INVALID_XSUB_CALL(GvNAME_HEK(gv), params);
     } else {
         dTHX;
         if ((gv = CvGV(cv))) goto got_gv;
 
         /* Pants. I don't think that it should be possible to get here. */
         /* diag_listed_as: SKIPME */
-        Perl_croak_nocontext("Usage: CODE(0x%" UVxf ")(%s)", PTR2UV(cv), params);
+        PERL_THROW_ERROR_CALL_BINDING_INVALID_ANONYMOUS_XSUB_CALL(PTR2UV(cv), params);
     }
 }
 
@@ -542,19 +556,17 @@ XS(XS_UNIVERSAL_import_unimport)
     if (items > 1) {
         char *class_pv= SvPV_nolen(ST(0));
         if (strEQ(class_pv,"UNIVERSAL"))
-            croak("UNIVERSAL does not export anything");
+            PERL_THROW_ERROR_LOAD_IMPORT_UNIVERSAL_EXPORT_UNSUPPORTED();
         /* _charnames is special - ignore it for now as the code that
          * depends on it has its own "no import" logic that produces better
          * warnings than this does. */
         if (strNE(class_pv,"_charnames"))
-            ck_warner_d(packWARN(WARN_MISSING_IMPORT),
-                        "Attempt to call missing %s method with arguments "
-                        "(%" SVf_QUOTEDPREFIX "%s) via package "
-                        "%" SVf_QUOTEDPREFIX " (Perhaps you forgot to load the package?)",
-                        ix ? "unimport" : "import",
-                        SVfARG(ST(1)),
-                        (items > 2 ? " ..." : ""),
-                        SVfARG(ST(0)));
+            PERL_WARN_WARNING_MISSING_IMPORT_IMPORT_OR_UNIMPORT_MISSING_WITH_ARGUMENTS(
+                ix ? "unimport" : "import",
+                items > 2 ? perl_diag_selector_domain_2043_0_truncated_2 : perl_diag_selector_domain_2043_0_complete_1,
+                ST(1),
+                ST(0)
+            );
     }
     XSRETURN_EMPTY;
 }
@@ -618,7 +630,7 @@ XS(XS_UNIVERSAL_DOES)
     PERL_UNUSED_ARG(cv);
 
     if (items != 2)
-        croak("Usage: invocant->DOES(kind)");
+        PERL_THROW_USAGE_INVOCANT_DOES_KIND();
     else {
         SV * const sv = ST(0);
         if (sv_does_sv( sv, ST(1), 0 ))
@@ -700,7 +712,7 @@ XS(XS_utf8_repeat_decode)
 
     SV *sv = ST(0);
     bool force = items == 2 && SvTRUE(ST(1));
-    (void)repeat_decode_utf8(sv, force);
+    (void)Perl_repeat_decode_utf8(aTHX_ sv, force);
     SV *result = SvGMAGICAL(sv) ? sv_2mortal(newSVsv_flags(sv, 0)) : sv;
     SvSETMAGIC(sv);
     ST(0) = result;
@@ -932,9 +944,7 @@ XS(XS_PerlIO_get_layers)
                        goto fail;
                   default:
                   fail:
-                       croak(
-                                  "get_layers: unknown argument '%s'",
-                                  key);
+                       PERL_THROW_ERROR_IO_LAYER_UNKNOWN_QUERY_OPTION(key);
                   }
              }
 
@@ -1130,7 +1140,7 @@ XS(XS_re_regnames)
         
         if (!entry)
             /* diag_listed_as: SKIPME */
-            croak("NULL array element in re::regnames()");
+            PERL_THROW_ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_NAME_ARRAY_ELEMENT_MISSING();
 
         mPUSHs(SvREFCNT_inc_simple_NN(*entry));
     }
@@ -1527,6 +1537,8 @@ Perl_boot_core_UNIVERSAL(pTHX)
         CV *cv = newXS_flags(xsub->name, xsub->xsub, file, xsub->proto, 0);
         XSANY.any_i32 = xsub->ix;
     } while (++xsub < end);
+
+    Perl_xperl_boot_core(aTHX);
 
 #ifndef EBCDIC
     { /* On ASCII platforms these functions just return their argument, so can

@@ -59,7 +59,7 @@ XS(haiku_debug_printf)
     SV *sv;
 
     if (items < 1)
-	Perl_croak(aTHX_ "usage: Haiku::debug_printf($format,...)");
+	PERL_THROW_ERROR_SYSTEM_PLATFORM_HAIKU_DEBUG_PRINT_MESSAGE_REQUIRED();
 
     sv = newSV(0);
 
@@ -81,7 +81,7 @@ XS(haiku_ktrace_printf)
     SV *sv;
 
     if (items < 1)
-	Perl_croak(aTHX_ "usage: Haiku::debug_printf($format,...)");
+	PERL_THROW_ERROR_SYSTEM_PLATFORM_HAIKU_DEBUG_PRINT_MESSAGE_REQUIRED();
 
     sv = newSV(0);
 
@@ -103,7 +103,7 @@ XS(haiku_debugger)
     SV *sv;
 
     if (items < 1)
-	Perl_croak(aTHX_ "usage: Haiku::debugger($format,...)");
+	PERL_THROW_ERROR_SYSTEM_PLATFORM_HAIKU_DEBUG_DEBUGGER_MESSAGE_REQUIRED();
 
     sv = newSV(0);
 

@@ -3382,6 +3382,16 @@ my @bin_props;
 my @perl_prop_synonyms;
 my %enums;
 my @deprecated_messages = "";   # Element [0] is a placeholder
+my @deprecated_reasons = "";
+
+# Keep reason identities independent of generated table offsets. New Unicode
+# explanations use the external-text fallback until their catalog case exists.
+my %deprecated_reason_names = (
+    "Surrogates should never appear in well-formed text, and therefore shouldn't be the basis for line breaking"
+        => "surrogate_line_break",
+    "Supplanted by Line_Break property values; see www.unicode.org/reports/tr14"
+        => "line_break_values",
+);
 my %deprecated_tags;
 
 my $float_e_format = qr/ ^ -? \d \. \d+ e [-+] \d+ $ /x;
@@ -3502,6 +3512,9 @@ foreach my $property (sort
         if (exists $Unicode::UCD::why_deprecated{$tag}) {
             $deprecated_tags{$enums{$tag}} = scalar @deprecated_messages;
             push @deprecated_messages, $Unicode::UCD::why_deprecated{$tag};
+            push @deprecated_reasons,
+                $deprecated_reason_names{$Unicode::UCD::why_deprecated{$tag}}
+                    // "other";
         }
 
         # Our sort above should have made sure that we see the
@@ -3994,9 +4007,21 @@ foreach my $prop (@props) {
 
 print "Finished computing unicode properties\n" if DEBUG;
 
-print $out_fh "\nconst char * const deprecated_property_msgs[] = {\n\t";
-print $out_fh join ",\n\t", map { "\"$_\"" } @deprecated_messages;
-print $out_fh "\n};\n";
+# Keep the legacy text accessor and the structured reason accessor in sync.
+# Escape bytes so a future external explanation is safe in a C literal.
+for my $table ([deprecated_property_msgs => \@deprecated_messages],
+               [deprecated_property_reasons => \@deprecated_reasons]) {
+    my ($name, $values) = @$table;
+    my @quoted = map {
+        my $text = $_;
+        utf8::encode($text);
+        $text =~ s/([\x00-\x1f\x22\x5c\x7f-\xff])/sprintf "\\%03o", ord($1)/ge;
+        "\"$text\"";
+    } @$values;
+    print $out_fh "\nconst char * const $name\[\] = {\n\t";
+    print $out_fh join ",\n\t", @quoted;
+    print $out_fh "\n};\n";
+}
 
 switch_pound_if ('binary_invlist_enum', 'PERL_IN_REGCOMP_C');
 

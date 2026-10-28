@@ -132,7 +132,7 @@ typedef struct jmpenv JMPENV;
         case 1: cur_env.je_ret = 1; break;				\
         case 2: cur_env.je_ret = 2; break;				\
         case 3: cur_env.je_ret = 3; break;				\
-        default: Perl_croak(aTHX_ "panic: unexpected setjmp() result\n"); \
+        default: PERL_PANIC_ERROR_INTERNAL_STACK_JUMP_SETJMP_RESULT_INVALID(); \
         }								\
         JE_OLD_STACK_HWM_restore(cur_env);                              \
         PL_top_env = &cur_env;						\
@@ -173,7 +173,7 @@ typedef struct jmpenv JMPENV;
         }    							\
         if ((v) == 2)						\
             PerlProc_exit(STATUS_EXIT);		                \
-        PerlIO_printf(PerlIO_stderr(), "panic: top_env, v=%d\n", (int)(v)); \
+        PerlIO_printf(PerlIO_stderr(), PERL_DIAG_FORMAT_ERROR_INTERNAL_STACK_JUMP_ROOT_TARGET_MISSING, (int)(v)); \
         PerlProc_exit(1);					\
     } STMT_END
 
@@ -1230,7 +1230,18 @@ struct context {
 #define CXp_SUB_RE	0x40    /* code called within regex, i.e. (?{}) */
 #define CXp_SUB_RE_FAKE	0x80    /* fake sub CX for (?{}) in current scope */
 
+/*
+=for apidoc Cmn||PERL_CXP_DIAGHOOK
+
+Marks an eval context used to catch diagnostic hook failures. This boundary
+is omitted from C<caller> output and from the eval state exposed through C<$^S>.
+It still participates in exception unwinding.
+
+=cut
+*/
+
 /* private flags for CXt_EVAL */
+#define PERL_CXP_DIAGHOOK    0x10    /* protected diagnostic hook boundary */
 #define CXp_REAL	0x20	/* truly eval'', not a lookalike */
 #define CXp_EVALBLOCK	0x40	/* eval{}, not eval'' or similar */
 #define CXp_TRY         0x80    /* try {} block */
@@ -1310,11 +1321,23 @@ A synonym for C<L</G_LIST>>, which you should use instead.
 #define G_METHOD_NAMED 0x1000	/* calling named method, eg without :: or ' */
 #define G_RETHROW      0x2000	/* eval_sv(): re-throw any error */
 #define G_USEHINTS     0x4000   /* eval_sv(): use current hints/features */
+/*
+=for apidoc Cmn||PERL_G_DIAGHOOK
+
+Internal C<call_sv> flag used with C<G_EVAL> for protected diagnostic hooks.
+The boundary preserves caught state on entry and successful return, including
+explicit assignments to C<$@>. The return value indicates whether the hook
+failed rather than the number of stack results. User evals inside the hook
+retain their normal behavior.
+
+=cut
+*/
+#define PERL_G_DIAGHOOK     0x8000   /* internal hook eval: preserve visible state */
 
 /* flag bits for PL_in_eval */
 #define EVAL_NULL	0	/* not in an eval */
 #define EVAL_INEVAL	1	/* some enclosing scope is an eval */
-#define EVAL_WARNONLY	2	/* used by yywarn() when calling yyerror() */
+#define PERL_EVAL_WARNONLY	2	/* reserved legacy flag; no core consumer */
 #define EVAL_KEEPERR	4	/* set by Perl_call_sv if G_KEEPERR */
 #define EVAL_INREQUIRE	8	/* The code is being required. */
 #define EVAL_RE_REPARSING 0x10	/* eval_sv() called with G_RE_REPARSING */
@@ -1341,6 +1364,7 @@ A synonym for C<L</G_LIST>>, which you should use instead.
 #define PERLSI_REGCOMP         11
 #define PERLSI_SMARTMATCH      12
 #define PERLSI_CONSTRUCTOR     13
+#define PERL_SI_EXCEPTHOOK      14
 
 struct stackinfo {
     AV *		si_stack;	/* stack for current runlevel */

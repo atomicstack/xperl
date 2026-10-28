@@ -325,7 +325,6 @@ PERLVAR(I, restartjmpenv, JMPENV *)	/* target frame for longjmp in die */
 
 PERLVAR(I, top_env,	JMPENV *)	/* ptr to current sigjmp environment */
 PERLVAR(I, start_env,	JMPENV)		/* empty startup sigjmp environment */
-PERLVARI(I, errors,	SV *,	NULL)	/* outstanding queued errors */
 
 /* statics "owned" by various functions */
 PERLVAR(I, hv_fetch_ent_mh, HE*)	/* owned by hv_fetch_ent() */
@@ -387,6 +386,8 @@ thread's copy.
 
 PERLVAR(I, exit_flags,	U8)		/* was exit() unexpected, etc. */
 
+PERLVARI(I, pending_exception, SV *, NULL)	/* unthrown diagnostics for the active compilation */
+
 PERLVAR(I, utf8locale,	bool)		/* utf8 locale detected */
 
 #if defined(USE_THREADS)
@@ -395,7 +396,7 @@ PERLVARI(I, locale_mutex_readers, int, 0)
 #endif
 
 #ifdef USE_LOCALE_CTYPE
-PERLVAR(I, warn_locale, SV *)
+PERLVAR(I, warn_locale, SV *)	/* pending locale warning exception */
 PERLVARI(I, in_utf8_CTYPE_locale, bool, false)
 PERLVARI(I, in_utf8_turkic_locale, bool, false)
 #endif
@@ -507,6 +508,7 @@ PERLVAR(I, localpatches, const char * const *)
 PERLVARI(I, splitstr,	char *, NULL)
 
 PERLVAR(I, minus_c,	bool)
+PERLVAR(I, parse_failed,	bool)	/* the main program parser aborted */
 PERLVAR(I, minus_n,	bool)
 PERLVAR(I, minus_p,	bool)
 PERLVAR(I, minus_l,	bool)
@@ -545,6 +547,8 @@ PERLVAR(I, replgv,	GV *)		/*  *^R         */
 
 /* shortcuts to misc objects */
 PERLVAR(I, errgv,	GV *)		/*  *@          */
+PERLVAR(I, errorobjgv,	GV *)	/* ${^ERROR_OBJ} */
+PERLVAR(I, curerrorobjgv, GV *)	/* ${^CUR_ERROR_OBJ} */
 
 /* shortcuts to debugging objects */
 PERLVAR(I, DBgv,	GV *)		/*  *DB::DB     */
@@ -1110,6 +1114,8 @@ PERLVAR(I, prevailing_version, U16)
 
 PERLVARI(I, in_diehook, bool, FALSE)
 PERLVARI(I, in_warnhook, bool, FALSE)
+PERLVARI(I, in_wide_character_warning, bool, FALSE)
+PERLVARI(I, perl_diag_hook_capture, void *, NULL)
 
 /* Perl_load_mathoms is defined in mathoms.c, so this forces the loading of the
  * functions in that file when NO_MATHOMS isn't defined.  Otherwise, it is just
@@ -1142,6 +1148,8 @@ PERLVARI(I, runops_boundary_hook, runops_boundary_proc_t, NULL)
 PERLVARI(I, runops_boundary_data, void *, NULL)
 /* The active execution context is swappable for resumable execution. */
 PERLVAR(I, execution_context, PERL_EXECUTION_CONTEXT)
+PERLVAR(I, excepthook, SV *)
+PERLVARI(I, in_excepthook, bool, FALSE)
 
 /* If you are adding a U8 or U16, check to see if there are 'Space' comments
  * above on where there are gaps which currently will be structure padding.  */

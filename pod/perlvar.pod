@@ -756,13 +756,19 @@ The default delivery policy of signals changed in Perl v5.8.0 from
 immediate (also known as "unsafe") to deferred, also known as "safe
 signals".  See L<perlipc> for more information.
 
-Certain internal hooks can be also set using the C<%SIG> hash.  The
-routine indicated by C<$SIG{__WARN__}> is called when a warning
-message is about to be printed.  The warning message is passed as the
-first argument.  The presence of a C<__WARN__> hook causes the
-ordinary printing of warnings to C<STDERR> to be suppressed.  You can
-use this to save warnings in a variable, or turn warnings into fatal
-errors, like this:
+Certain internal hooks can also be set using the C<%SIG> hash.  The routine
+indicated by C<$SIG{__EXCEPT__}> is called after an
+C<XPerl::Exception> has been constructed and before the warning or die
+hooks run.  It receives that exception as its only argument.  Its return
+value is ignored, but changes it makes to the diagnostics affect later
+hooks and the final disposition.
+
+The routine indicated by C<$SIG{__WARN__}> is called when a warning message is
+about to be printed.  It receives one argument: the warning message in its
+legacy form.  When an exception contains multiple warnings, the hook is called
+once for each warning in order.  The presence of a C<__WARN__> hook causes the
+ordinary printing of warnings to C<STDERR> to be suppressed.  You can use this
+to save warnings in a variable, or turn warnings into fatal errors, like this:
 
     local $SIG{__WARN__} = sub { die $_[0] };
     eval $proggie;
@@ -774,12 +780,19 @@ empty subroutine:
     local $SIG{__WARN__} = sub {};
 
 The routine indicated by C<$SIG{__DIE__}> is called when a fatal
-exception is about to be thrown.  The error message is passed as the
-first argument.  When a C<__DIE__> hook routine returns, the exception
-processing continues as it would have in the absence of the hook, unless
-the hook routine itself throws an exception.  The C<__DIE__> handler is
-explicitly disabled during the call, so that you can die from a
-C<__DIE__> handler.  Similarly for C<__WARN__>.
+exception is about to be thrown.  It receives one argument: the compatibility
+rendered value for the current diagnostic group.  For an exception originally thrown as a reference,
+that value is the same reference.  The canonical structured exception is
+available as C<${^CUR_ERROR_OBJ}> while either legacy hook is running.  When a
+C<__DIE__> hook routine returns, the exception is still thrown.  If the hook
+throws a new exception, that exception replaces the one being handled and the
+same C<__DIE__> hook is not called recursively for that replacement.
+Later independent error groups can call it again before one final unwind.
+
+Warnings raised by a C<__DIE__> hook are sent directly to C<__WARN__>.  If that
+warning hook returns, the fatal exception continues through its normal output
+and unwind path.  If the warning hook throws, its exception replaces the
+active fatal exception.
 
 The C<$SIG{__DIE__}> hook is called even inside an C<eval()>. It was
 never intended to happen this way, but an implementation glitch made
@@ -791,12 +804,12 @@ pending exception is actually a useful feature, and not a bug.
 The C<$SIG{__DIE__}> hook doesn't support C<'IGNORE'>; it has the same
 effect as C<'DEFAULT'>.
 
-C<__DIE__>/C<__WARN__> handlers are very special in one respect: they
-may be called to report (probable) errors found by the parser.  In such
-a case the parser may be in inconsistent state, so any attempt to
-evaluate Perl code from such a handler will probably result in a
-segfault.  This means that warnings or errors that result from parsing
-Perl should be used with extreme caution, like this:
+C<__EXCEPT__>/C<__DIE__>/C<__WARN__> handlers are very special in one
+respect: they may be called to report diagnostics found by the parser.
+In such a case the parser may be in an inconsistent state, so any attempt
+to evaluate Perl code from such a handler may result in a segfault.  This
+means that handlers for warnings or errors from parsing Perl should be
+used with extreme caution, like this:
 
     require Carp if defined $^S;
     Carp::confess("Something wrong") if defined &Carp::confess;
@@ -2281,17 +2294,62 @@ Mnemonic: similar to B<sh> and B<ksh>.
 X<$@> X<$EVAL_ERROR>
 
 The Perl error from the last C<eval> operator, i.e. the last exception that
-was caught.  For C<eval BLOCK>, this is either a runtime error message or the
-string or reference C<die> was called with.  The C<eval STRING> form also
-catches syntax errors and other compile time exceptions.
+was caught.  For C<eval BLOCK>, this is normally an C<XPerl::Exception> whose
+string overload supplies the error text.  If code throws a reference, C<$@>
+exposes that original reference.  The C<eval STRING> form also catches syntax
+errors and other compile time exceptions.
 
 If no error occurs, C<eval> sets C<$@> to the empty string.
+
+The canonical structured exception is available in C<${^ERROR_OBJ}>.  For a
+reference exception, this is the C<XPerl::Exception> that contains the
+reference, while C<$@> remains the original reference.
 
 Warning messages are not collected in this variable.  You can, however,
 set up a routine to process warnings by setting C<$SIG{__WARN__}> as
 described in L</%SIG>.
 
 Mnemonic: Where was the error "at"?
+
+=item ${^ERROR_OBJ}
+X<${^ERROR_OBJ}>
+
+The canonical C<XPerl::Exception> from the most recently caught exception.
+It contains the ordered diagnostics for the exception.  When the exception
+was thrown as a reference, C<$@> exposes that original reference while
+C<${^ERROR_OBJ}> retains the structured exception.
+
+=item ${^DIAG_RENDER}
+X<${^DIAG_RENDER}>
+
+Controls how structured exceptions are stringified. Initialized at startup
+from C<PERL_DIAG_RENDER>, with C<auto:legacy> as the default. It can be assigned
+and localized with C<local>; the current value is read at render time.
+L<diagpack> can capture a lexical language for an individual diagnostic;
+that choice takes precedence over this variable's language component.
+The variable still controls its presentation style and envelope.
+
+Text modes use C<language:legacy> or C<language:annotated>. A bare language
+code selects legacy output, so C<de> means C<de:legacy>. C<auto> selects the
+language from C<LC_ALL>, C<LC_MESSAGES>, then C<LANG>, using the first nonempty
+value. Startup loads the selected pack before user compilation, except in
+taint mode. Rendering subsequently uses registered packs and never loads
+modules. Missing translations fall back to permanent built-in English.
+An optional third component,
+C<JSON> or C<Dumper>, wraps each rendered message group with its diagnostic
+metadata on one physical line. C<en:legacy:JSON> selects English legacy text
+in JSON records. Bare C<JSON>/C<JSONL> and C<Dumper>/C<DumperL> use English
+legacy text. See
+L<XPerl::Exception> for grouping, fallback, and explicit rendering methods.
+
+=item ${^CUR_ERROR_OBJ}
+X<${^CUR_ERROR_OBJ}>
+
+The canonical C<XPerl::Exception> currently being delivered to a
+C<$SIG{__WARN__}> or C<$SIG{__DIE__}> handler.  It is dynamically localized
+for the duration of the handler and restored afterward.  This can differ from
+C<${^ERROR_OBJ}> when a warning is delivered while a fatal exception is being
+handled by C<__DIE__>.
 
 =back
 

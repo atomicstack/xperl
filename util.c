@@ -38,6 +38,33 @@
 #include <math.h>
 #include <stdlib.h>
 
+static void Perl_diag_flush_exception(pTHX_ SV *exception, U32 category,
+                                   bool force_error);
+static void Perl_diag_deliver_warning_hooks(pTHX_ SV *exception);
+static bool Perl_diag_exception_has_error_severity(pTHX_ SV *exception);
+static void Perl_diag_preserve_error_severity(pTHX_ SV *exception);
+static bool Perl_diag_is_warning(pTHX_ SV *diagnostic);
+static void Perl_diag_mark_warning_delivered(pTHX_ SV *diagnostic);
+static SV *Perl_diag_render_group_view(pTHX_ SV *view);
+static bool Perl_diag_process_delivery(pTHX_ SV *exception, U32 category, bool force_error);
+
+#define PERL_DIAG_HOOK_EXCEPT 0
+#define PERL_DIAG_HOOK_WARN   1
+#define PERL_DIAG_HOOK_DIE    2
+
+typedef struct {
+    AV *emissions;
+    SV *failure;
+} perl_diag_hook_result;
+
+typedef struct {
+    SV *exception;
+    AV *emissions;
+    PERL_SI *stackinfo;
+    I32 eval_index;
+    U8 kind;
+} perl_diag_hook_capture;
+
 /* getentropy() is declared here on systems which provide it. */
 #ifdef I_SYS_RANDOM
 # include <sys/random.h>
@@ -98,8 +125,7 @@ S_maybe_protect_rw(pTHX_ struct perl_memory_debug_header *header)
 {
     if (header->readonly
      && mprotect(header, header->size, PROT_READ|PROT_WRITE))
-        warn("mprotect for COW string %p %lu failed with %d",
-                         header, header->size, errno);
+        PERL_WARN_WARNING_INTERNAL_MEMORY_COW_READWRITE_PROTECTION_FAILED(header, header->size, errno);
 }
 
 static void
@@ -107,8 +133,7 @@ S_maybe_protect_ro(pTHX_ struct perl_memory_debug_header *header)
 {
     if (header->readonly
      && mprotect(header, header->size, PROT_READ))
-        warn("mprotect RW for COW string %p %lu failed with %d",
-                         header, header->size, errno);
+        PERL_WARN_WARNING_INTERNAL_MEMORY_COW_READONLY_PROTECTION_FAILED(header, header->size, errno);
 }
 # define maybe_protect_rw(foo) S_maybe_protect_rw(aTHX_ foo)
 # define maybe_protect_ro(foo) S_maybe_protect_ro(aTHX_ foo)
@@ -169,7 +194,7 @@ Perl_safesysmalloc(MEM_SIZE size)
 #endif
 #ifdef DEBUGGING
     if ((SSize_t)size < 0)
-        Perl_croak_nocontext("panic: malloc, size=%" UVuf, (UV) size);
+        PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_MALLOC_REQUEST_OUT_OF_RANGE((UV) size);
 #endif
     if (!size) size = 1;	/* malloc(0) is NASTY on our system */
     SAVE_ERRNO;
@@ -278,8 +303,7 @@ Perl_safesysrealloc(Malloc_t where,MEM_SIZE size)
 
 # ifdef PERL_TRACK_MEMPOOL
             if (header->interpreter != aTHX) {
-                croak("panic: realloc %p from wrong pool, %p!=%p",
-                                     where, header->interpreter, aTHX);
+                PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_REALLOC_OWNER_MISMATCH(where, header->interpreter, aTHX);
             }
             assert(header->next->prev == header);
             assert(header->prev->next == header);
@@ -298,8 +322,7 @@ Perl_safesysrealloc(Malloc_t where,MEM_SIZE size)
 #endif
 #ifdef DEBUGGING
         if ((SSize_t)size < 0)
-            croak("panic: realloc %p , size=%" UVuf,
-                                 where, (UV)size);
+            PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_REALLOC_REQUEST_OUT_OF_RANGE(where, (UV)size);
 #endif
 #ifdef PERL_DEBUG_READONLY_COW
         if ((ptr = mmap(0, size, PROT_READ|PROT_WRITE,
@@ -401,20 +424,15 @@ Perl_safesysfree(Malloc_t where)
 # endif
 # ifdef PERL_TRACK_MEMPOOL
             if (header->interpreter != aTHX) {
-                croak("panic: free %p from wrong pool, %p!=%p",
-                                     where, header->interpreter, aTHX);
+                PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_OWNER_MISMATCH(where, header->interpreter, aTHX);
             }
             if (!header->prev) {
-                croak("panic: duplicate free");
+                PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_DUPLICATE();
             }
             if (!(header->next))
-                croak("panic: bad free of %p, header->next==NULL",
-                                     where);
+                PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_NEXT_LINK_MISSING(where);
             if (header->next->prev != header || header->prev->next != header) {
-                croak("panic: bad free of %p, ->next->prev=%p, "
-                                     "header=%p, ->prev->next=%p",
-                                     where, header->next->prev, header,
-                                     header->prev->next);
+                PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_LINKS_INCONSISTENT(where, header->next->prev, header, header->prev->next);
             }
             /* Unlink us from the chain.  */
             maybe_protect_rw(header->next);
@@ -434,7 +452,7 @@ Perl_safesysfree(Malloc_t where)
             if (munmap(where_intrn, size)) {
                 perror("munmap failed");
                 abort();
-            }	
+            }
 # endif
         }
 #else
@@ -482,8 +500,8 @@ Perl_safesyscalloc(MEM_SIZE count, MEM_SIZE size)
 #endif
 #ifdef DEBUGGING
     if ((SSize_t)size < 0 || (SSize_t)count < 0)
-        croak("panic: calloc, size=%" UVuf ", count=%" UVuf,
-                             (UV)size, (UV)count);
+        PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_CALLOC_REQUEST_OUT_OF_RANGE(
+                             (UV)size,  (UV)count);
 #endif
 #ifdef PERL_DEBUG_READONLY_COW
     if ((ptr = mmap(0, total_size ? total_size : 1, PROT_READ|PROT_WRITE,
@@ -1742,13 +1760,133 @@ Perl_vmess(pTHX_ const char *pat, va_list *args)
     return mess_sv(sv, 1);
 }
 
-void
-Perl_write_to_stderr(pTHX_ SV* msv)
+static bool
+Perl_diag_is_raw_utf8_terminal(pTHX_ PerlIO *stream)
 {
-    PERL_ARGS_ASSERT_WRITE_TO_STDERR;
+    const int saved_errno = errno;
+    const int fd = PerlIO_fileno(stream);
+    bool is_raw_terminal = FALSE;
 
+    if (fd < 0 || !PerlLIO_isatty(fd))
+        goto done;
+
+#ifdef WIN32
+    if (GetConsoleOutputCP() != 65001)
+        goto done;
+#else
+    if (!PL_in_utf8_CTYPE_locale)
+        goto done;
+#endif
+
+#ifdef USE_PERLIO
+    {
+        PerlIOl *layer = PerlIOBase(stream);
+        bool have_unix = FALSE;
+        bool have_perlio = FALSE;
+
+        for (; layer; layer = layer->next) {
+            const char *name = layer->tab ? layer->tab->name : NULL;
+
+            if (!name)
+                goto done;
+            if (strEQ(name, "unix"))
+                have_unix = TRUE;
+            else if (strEQ(name, "perlio"))
+                have_perlio = TRUE;
+            else
+                goto done;
+        }
+
+        if (!have_unix || !have_perlio)
+            goto done;
+    }
+#endif
+
+    is_raw_terminal = TRUE;
+
+  done:
+    errno = saved_errno;
+    return is_raw_terminal;
+}
+
+static SV *
+Perl_diag_exception_for_stderr(pTHX_ SV *exception)
+{
+    HV *fields;
+    SV **messages_slot;
+    AV *messages;
+    SSize_t i;
+    bool has_delivered_warning = FALSE;
+    SV *render_exception;
+    HV *render_fields;
+
+    if (!SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return NULL;
+
+    fields = MUTABLE_HV(SvRV(exception));
+    messages_slot = hv_fetchs(fields, "contents", FALSE);
+    if (!messages_slot || !SvROK(*messages_slot)
+        || SvTYPE(SvRV(*messages_slot)) != SVt_PVAV)
+        return NULL;
+
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    for (i = 0; i <= av_top_index(messages); i++) {
+        SV **diagnostic = av_fetch(messages, i, FALSE);
+        SV **delivered_slot;
+
+        if (!diagnostic || !SvROK(*diagnostic)
+            || SvTYPE(SvRV(*diagnostic)) != SVt_PVHV)
+            continue;
+        delivered_slot = hv_fetchs(MUTABLE_HV(SvRV(*diagnostic)),
+                                   "_warning_delivered", FALSE);
+        if (delivered_slot && SvTRUE(*delivered_slot)) {
+            has_delivered_warning = TRUE;
+            break;
+        }
+    }
+
+    if (!has_delivered_warning)
+        return NULL;
+
+    render_exception = newRV_noinc(MUTABLE_SV(newHVhv(fields)));
+    sv_bless(render_exception, SvSTASH(SvRV(exception)));
+    render_fields = MUTABLE_HV(SvRV(render_exception));
+    (void)hv_stores(render_fields, "suppress_delivered_warnings",
+                    newSViv(1));
+
+    return render_exception;
+}
+
+static void
+Perl_write_to_stderr_internal(pTHX_ SV *msv, bool warning_output)
+{
     IO *io;
     MAGIC *mg;
+    SV *rendered = NULL;
+    bool rendered_owned = FALSE;
+    SV *render_exception = NULL;
+    SV *render_source = msv;
+
+    if (SvROK(msv) && SvTYPE(SvRV(msv)) == SVt_PVHV) {
+        SV **complete = hv_fetchs(MUTABLE_HV(SvRV(msv)), "_delivery_output_complete", FALSE);
+        if (complete && SvTRUE(*complete))
+            return;
+    }
+    if (SvROK(msv) && SvAMAGIC(msv)
+        && sv_derived_from(msv, "XPerl::Exception")) {
+        render_exception = Perl_diag_exception_for_stderr(aTHX_ msv);
+        if (render_exception)
+            render_source = render_exception;
+        rendered = AMG_CALLunary_flags(render_source, string_amg,
+                                       AMGf_force_overload);
+    }
+    if (!rendered && SvROK(render_source)
+        && sv_derived_from(render_source, "XPerl::Exception")) {
+        rendered = Perl_xperl_exception_render_legacy(aTHX_ render_source);
+        rendered_owned = rendered != NULL;
+    }
+    if (rendered)
+        msv = rendered;
 
     if (PL_stderrgv && SvREFCNT(PL_stderrgv)
         && (io = GvIO(PL_stderrgv))
@@ -1757,10 +1895,36 @@ Perl_write_to_stderr(pTHX_ SV* msv)
                             G_SCALAR | G_DISCARD | G_WRITING_TO_STDERR, 1, msv);
     else {
         PerlIO * const serr = Perl_error_log;
+        SV *encoded = NULL;
 
-        do_print(msv, serr);
+        /* Keep the message UTF-8 internally.  For a raw UTF-8 terminal,
+         * clear the flag on a copy so do_print() writes the UTF-8 octets. */
+        if (!PerlIO_isutf8(serr) && DO_UTF8(msv)
+            && Perl_diag_is_raw_utf8_terminal(aTHX_ serr)) {
+            encoded = newSVsv(msv);
+            SvUTF8_off(encoded);
+            msv = encoded;
+        }
+
+        if (warning_output)
+            Perl_do_warn(aTHX_ msv, serr);
+        else
+            do_print(msv, serr);
         (void)PerlIO_flush(serr);
+        if (encoded)
+            SvREFCNT_dec_NN(encoded);
     }
+    if (rendered_owned)
+        SvREFCNT_dec_NN(rendered);
+    if (render_exception)
+        SvREFCNT_dec_NN(render_exception);
+}
+
+void
+Perl_write_to_stderr(pTHX_ SV *msv)
+{
+    PERL_ARGS_ASSERT_WRITE_TO_STDERR;
+    Perl_write_to_stderr_internal(aTHX_ msv, FALSE);
 }
 
 /*
@@ -1769,63 +1933,144 @@ Perl_write_to_stderr(pTHX_ SV* msv)
 
 /* Common code used in dieing and warning */
 
-static SV *
-S_with_queued_errors(pTHX_ SV *ex)
+/* A nested eval owns its failures. Capture only events whose nearest eval
+ * boundary is the protected call of the hook itself. */
+static perl_diag_hook_capture *
+Perl_diag_active_hook_capture(pTHX)
 {
-    PERL_ARGS_ASSERT_WITH_QUEUED_ERRORS;
-    if (PL_errors && SvCUR(PL_errors) && !SvROK(ex)) {
-        sv_catsv(PL_errors, ex);
-        ex = sv_mortalcopy(PL_errors);
-        SvCUR_set(PL_errors, 0);
+    perl_diag_hook_capture *capture = (perl_diag_hook_capture *)PL_perl_diag_hook_capture;
+    PERL_SI *stackinfo;
+    I32 index;
+
+    if (!capture)
+        return NULL;
+    for (stackinfo = PL_curstackinfo; stackinfo; stackinfo = stackinfo->si_prev) {
+        for (index = stackinfo->si_cxix; index >= 0; index--) {
+            if (CxTYPE(&stackinfo->si_cxstack[index]) == CXt_EVAL)
+                return stackinfo == capture->stackinfo && index == capture->eval_index
+                    ? capture : NULL;
+        }
     }
-    return ex;
+    return NULL;
+}
+
+/* The argument slot is read-only, while its exception object stays mutable.
+ * Protect caught state so an internal hook boundary does not replace $@. */
+static void
+Perl_diag_call_hook(pTHX_ CV *cv, SV *value, SV *exception, U8 kind,
+                 perl_diag_hook_result *result)
+{
+    dSP;
+    bool *in_hook = kind == PERL_DIAG_HOOK_EXCEPT ? &PL_in_excepthook
+        : kind == PERL_DIAG_HOOK_WARN ? &PL_in_warnhook : &PL_in_diehook;
+    perl_diag_hook_capture capture;
+    SV *arg;
+    SV *context;
+
+    ENTER;
+    context = newSVsv(exception);
+    SAVEFREESV(context);
+    save_re_context();
+    SAVEBOOL(*in_hook);
+    *in_hook = TRUE;
+    arg = newSVsv(value);
+    SvREADONLY_on(arg);
+    SAVEFREESV(arg);
+
+    PUSHSTACKi(kind == PERL_DIAG_HOOK_EXCEPT ? PERL_SI_EXCEPTHOOK
+        : kind == PERL_DIAG_HOOK_WARN ? PERLSI_WARNHOOK : PERLSI_DIEHOOK);
+    PUSHMARK(SP);
+    XPUSHs(arg);
+    PUTBACK;
+    save_scalar(PL_curerrorobjgv);
+    sv_setsv(GvSVn(PL_curerrorobjgv), context);
+    Perl_diag_preserve_error_severity(aTHX_ context);
+
+    if (result) {
+        result->emissions = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+        result->failure = NULL;
+        capture.exception = context;
+        capture.emissions = result->emissions;
+        capture.stackinfo = PL_curstackinfo;
+        capture.eval_index = cxstack_ix + 1;
+        capture.kind = kind;
+        SAVEVPTR(PL_perl_diag_hook_capture);
+        PL_perl_diag_hook_capture = &capture;
+        if (call_sv(MUTABLE_SV(cv), G_DISCARD | G_EVAL | PERL_G_DIAGHOOK)) {
+            SV *failure = SvROK(PERL_ERROR_OBJ) ? PERL_ERROR_OBJ : ERRSV;
+            result->failure = sv_mortalcopy(failure);
+        }
+    }
+    else {
+        call_sv(MUTABLE_SV(cv), G_DISCARD);
+    }
+
+    Perl_diag_preserve_error_severity(aTHX_ context);
+    POPSTACK;
+    LEAVE;
+}
+
+static bool
+Perl_diag_invoke_excepthook(pTHX_ SV *exception, perl_diag_hook_result *result)
+{
+    SV *const hook = PL_excepthook;
+    HV *stash;
+    GV *gv;
+    CV *cv;
+
+    if (!hook || PL_in_excepthook)
+        return FALSE;
+    ENTER;
+    SAVEBOOL(PL_in_excepthook);
+    PL_in_excepthook = TRUE;
+    cv = sv_2cv(hook, &stash, &gv, 0);
+    LEAVE;
+    if (!cv || (!CvROOT(cv) && !CvXSUB(cv)))
+        return FALSE;
+    Perl_diag_call_hook(aTHX_ cv, exception, exception, PERL_DIAG_HOOK_EXCEPT, result);
+    return TRUE;
+}
+
+static bool
+Perl_invoke_exception_hook_internal(pTHX_ SV *ex, bool warn, SV *compat_value,
+                        perl_diag_hook_result *result)
+{
+    PERL_ARGS_ASSERT_INVOKE_EXCEPTION_HOOK;
+    SV *const hook = warn ? PL_warnhook : PL_diehook;
+    bool *in_hook = warn ? &PL_in_warnhook : &PL_in_diehook;
+    HV *stash;
+    GV *gv;
+    CV *cv;
+    SV *canonical = ex;
+
+    if (!hook || hook == PERL_WARNHOOK_FATAL || *in_hook)
+        return FALSE;
+    if (!SvROK(canonical) || !sv_derived_from(canonical, "XPerl::Exception")) {
+        canonical = NULL;
+        if (warn)
+            PERL_APPEND_WARNING_USER_TEXT(&canonical, ex);
+        else
+            PERL_APPEND_ERROR_USER_TEXT(&canonical, ex);
+    }
+    ENTER;
+    SAVEBOOL(*in_hook);
+    *in_hook = TRUE;
+    cv = sv_2cv(hook, &stash, &gv, 0);
+    LEAVE;
+    if (!cv || (!CvROOT(cv) && !CvXSUB(cv)))
+        return FALSE;
+    Perl_diag_call_hook(aTHX_ cv, compat_value ? compat_value : ex,
+        warn && PL_in_diehook ? GvSVn(PL_curerrorobjgv) : canonical,
+        warn ? PERL_DIAG_HOOK_WARN : PERL_DIAG_HOOK_DIE, result);
+    return TRUE;
 }
 
 bool
 Perl_invoke_exception_hook(pTHX_ SV *ex, bool warn)
 {
-    PERL_ARGS_ASSERT_INVOKE_EXCEPTION_HOOK;
-
-    HV *stash;
-    GV *gv;
-    CV *cv;
-    SV *const oldhook = warn ? PL_warnhook : PL_diehook;
-    bool *const in_hook = warn ? &PL_in_diehook : &PL_in_warnhook;
-
-    if (!oldhook || oldhook == PERL_WARNHOOK_FATAL || *in_hook)
-        return FALSE;
-
-    ENTER;
-    /* sv_2cv might call Perl_croak() or Perl_warner() */
-    SAVEBOOL(*in_hook);
-    *in_hook = TRUE;
-    cv = sv_2cv(oldhook, &stash, &gv, 0);
-    LEAVE;
-    if (cv && (CvROOT(cv) || CvXSUB(cv))) {
-        dSP;
-        SV *exarg;
-
-        ENTER;
-        save_re_context();
-
-        /* call_sv(cv) might call Perl_croak() or Perl_warner() */
-        SAVEBOOL(*in_hook);
-        *in_hook = TRUE;
-
-        exarg = newSVsv(ex);
-        SvREADONLY_on(exarg);
-        SAVEFREESV(exarg);
-
-        PUSHSTACKi(warn ? PERLSI_WARNHOOK : PERLSI_DIEHOOK);
-        PUSHMARK(SP);
-        XPUSHs(exarg);
-        PUTBACK;
-        call_sv(MUTABLE_SV(cv), G_DISCARD);
-        POPSTACK;
-        LEAVE;
-        return TRUE;
-    }
-    return FALSE;
+    if (!warn && SvROK(ex) && sv_derived_from(ex, "XPerl::Exception"))
+        return Perl_diag_process_delivery(aTHX_ ex, 0, TRUE);
+    return Perl_invoke_exception_hook_internal(aTHX_ ex, warn, NULL, NULL);
 }
 
 /* silence __declspec(noreturn) warnings */
@@ -1834,7 +2079,33 @@ OP *
 Perl_die_sv(pTHX_ SV *baseex)
 {
     PERL_ARGS_ASSERT_DIE_SV;
-    croak_sv(baseex);
+
+    if (SvROK(baseex) && !sv_derived_from(baseex, "XPerl::Exception")) {
+        SV *exception = NULL;
+        HV *fields;
+
+        PERL_APPEND_ERROR_USER_REFERENCE(&exception, baseex);
+        fields = MUTABLE_HV(SvRV(exception));
+        {
+            SV **thrown = hv_fetchs(fields, "thrown", 0);
+            if (thrown)
+                sv_setiv(*thrown, 1);
+            else
+                (void)hv_stores(fields, "thrown", newSViv(1));
+        }
+        Perl_diag_flush_exception(aTHX_ exception, 0, TRUE);
+    }
+
+    if (SvROK(baseex) && sv_derived_from(baseex, "XPerl::Exception")) {
+        HV *fields = MUTABLE_HV(SvRV(baseex));
+        SV **thrown = hv_fetchs(fields, "thrown", 0);
+        if (thrown)
+            sv_setiv(*thrown, 1);
+        else
+            (void)hv_stores(fields, "thrown", newSViv(1));
+    }
+
+    PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(baseex);
     /* NOTREACHED */
     NORETURN_FUNCTION_END;
 }
@@ -1877,14 +2148,331 @@ Perl_die(pTHX_ const char* pat, ...)
 }
 MSVC_DIAG_RESTORE
 
+static void
+Perl_diag_append_exception_internal(pTHX_ SV **exception_slot, SV *ex)
+{
+    SV *pending = *exception_slot;
+
+    if (sv_derived_from(ex, "XPerl::Exception")) {
+        if (!pending) {
+            *exception_slot = ex;
+            if (exception_slot == &PL_pending_exception)
+                (void)SvREFCNT_inc_simple_NN(ex);
+            return;
+        }
+
+        if (pending != ex) {
+            SV **pending_messages_slot = hv_fetchs(
+                MUTABLE_HV(SvRV(pending)), "contents", 0);
+            SV **source_messages_slot = hv_fetchs(
+                MUTABLE_HV(SvRV(ex)), "contents", 0);
+            AV *pending_messages;
+            AV *source_messages;
+            SSize_t i;
+
+            assert(pending_messages_slot && source_messages_slot
+                   && SvROK(*pending_messages_slot)
+                   && SvROK(*source_messages_slot));
+            pending_messages = MUTABLE_AV(SvRV(*pending_messages_slot));
+            source_messages = MUTABLE_AV(SvRV(*source_messages_slot));
+            for (i = 0; i <= av_top_index(source_messages); i++) {
+                SV **message = av_fetch(source_messages, i, 0);
+                if (message)
+                    av_push(pending_messages,
+                            SvREFCNT_inc_simple_NN(*message));
+            }
+            {
+                UV count = Perl_diag_error_count(aTHX_ ex);
+                while (count--)
+                    Perl_diag_increment_error_count(aTHX_ pending);
+            }
+        }
+        /* If the exception is already the accumulator, its diagnostic count
+         * is already up to date. */
+        return;
+    }
+
+    PERL_APPEND_ERROR_USER_TEXT(exception_slot, ex);
+}
+
+void
+Perl_diag_append_exception(pTHX_ SV **exception_slot, SV *exception)
+{
+    PERL_ARGS_ASSERT_DIAG_APPEND_EXCEPTION;
+    Perl_diag_append_exception_internal(aTHX_ exception_slot, exception);
+}
+
+static SV *
+Perl_diag_take_exception(pTHX_ SV **exception_slot)
+{
+    SV *exception = *exception_slot;
+    *exception_slot = NULL;
+    if (exception) {
+        if (exception_slot == &PL_pending_exception) {
+            SV * const mortal_exception =
+                sv_2mortal(SvREFCNT_inc_simple_NN(exception));
+            SvREFCNT_dec_NN(exception);
+            exception = mortal_exception;
+        }
+        else if (!SvTEMP(exception))
+            sv_2mortal(exception);
+    }
+    return exception;
+}
+
+static SV *
+Perl_diag_catalogued_exception(pTHX_ SV *message, UV diag_index,
+                       AV *params, U32 category)
+{
+    SV *exception = NULL;
+    Perl_diag_append(aTHX_ &exception, message, diag_index, params, category);
+    return exception;
+}
+
+static void
+Perl_diag_append_pending_compile_exception(pTHX_ SV *ex)
+{
+    Perl_diag_append_exception_internal(aTHX_ &PL_pending_exception, ex);
+}
+
+static void
+Perl_diag_append_catalogued_exception(pTHX_ SV *message, UV diag_index,
+                              AV *params)
+{
+    SV *exception = NULL;
+    Perl_diag_append(aTHX_ &exception, message, diag_index, params, 0);
+    Perl_diag_append_exception_internal(aTHX_ &PL_pending_exception, exception);
+}
+
+void
+Perl_diag_throw_pending(pTHX)
+{
+    PERL_ARGS_ASSERT_DIAG_THROW_PENDING;
+    Perl_diag_throw_exception_slot(aTHX_ &PL_pending_exception);
+    NORETURN_FUNCTION_END;
+}
+
+void
+Perl_diag_throw_exception_slot(pTHX_ SV **exception_slot)
+{
+    SV *exception;
+
+    PERL_ARGS_ASSERT_DIAG_THROW_EXCEPTION_SLOT;
+    exception = Perl_diag_take_exception(aTHX_ exception_slot);
+
+    assert(exception);
+    Perl_diag_flush_exception(aTHX_ exception, 0, TRUE);
+    NORETURN_FUNCTION_END;
+}
+
+SV *
+Perl_diag_take_pending(pTHX)
+{
+    PERL_ARGS_ASSERT_DIAG_TAKE_PENDING;
+    return Perl_diag_take_exception(aTHX_ &PL_pending_exception);
+}
+
+void
+Perl_diag_flush_pending_exception(pTHX)
+{
+    PERL_ARGS_ASSERT_DIAG_FLUSH_PENDING_EXCEPTION;
+    Perl_diag_flush_exception_slot(aTHX_ &PL_pending_exception);
+}
+
+void
+Perl_diag_flush_exception_slot(pTHX_ SV **exception_slot)
+{
+    SV *exception;
+
+    PERL_ARGS_ASSERT_DIAG_FLUSH_EXCEPTION_SLOT;
+
+    exception = *exception_slot;
+    if (!exception)
+        return;
+
+    exception = Perl_diag_take_exception(aTHX_ exception_slot);
+    Perl_diag_flush_exception(aTHX_ exception, 0, FALSE);
+}
+
+static void
+Perl_diag_vcroak(pTHX_ UV diag_index, AV *params, const char *pat,
+              va_list *args)
+{
+    Perl_diag_append_catalogued_exception(aTHX_
+        pat ? vmess(pat, args) : mess_sv(ERRSV, 0),
+        diag_index, params);
+    PERL_DIAG_THROW_DIAGNOSTICS();
+}
+
+static void
+Perl_diag_croak_sv_internal(pTHX_ UV diag_index, AV *params, SV *message)
+{
+    Perl_diag_append_catalogued_exception(aTHX_ message, diag_index, params);
+    PERL_DIAG_THROW_DIAGNOSTICS();
+}
+
+/*
+=for apidoc diag_croak_sv
+
+Throws the supplied structured diagnostic as an exception. If C<message> is
+NULL, formats the diagnostic's selected template without arguments.
+
+=cut
+*/
+void
+Perl_diag_croak_sv(pTHX_ UV diag_index, AV *params, SV *message)
+{
+    PERL_ARGS_ASSERT_DIAG_CROAK_SV;
+    Perl_diag_croak_sv_internal(aTHX_ diag_index, params, message);
+    NORETURN_FUNCTION_END;
+}
+
+/*
+=for apidoc diag_croak_nocontext_sv
+
+Context-free version of C<Perl_diag_croak_sv(aTHX)>.
+
+=cut
+*/
+void
+Perl_diag_croak_nocontext_sv(UV diag_index, AV *params, SV *message)
+{
+    PERL_ARGS_ASSERT_DIAG_CROAK_NOCONTEXT_SV;
+    dTHX;
+    Perl_diag_croak_sv_internal(aTHX_ diag_index, params, message);
+    NORETURN_FUNCTION_END;
+}
+
+/*
+=for apidoc diag_croak_caller_sv
+
+Throws the supplied structured diagnostic, reporting the caller's location.
+
+=cut
+*/
+void
+Perl_diag_croak_caller_sv(UV diag_index, AV *params, SV *message)
+{
+    PERL_ARGS_ASSERT_DIAG_CROAK_CALLER_SV;
+    dTHX;
+    {
+        const PERL_CONTEXT *cx = caller_cx(0, NULL);
+        assert(cx);
+        PL_curcop = cx->blk_oldcop;
+    }
+    Perl_diag_croak_sv_internal(aTHX_ diag_index, params, message);
+    NORETURN_FUNCTION_END;
+}
+
+void
+Perl_diag_croak(pTHX_ UV diag_index, AV *params, const char *pat, ...)
+{
+    PERL_ARGS_ASSERT_DIAG_CROAK;
+    va_list args;
+    va_start(args, pat);
+    Perl_diag_vcroak(aTHX_ diag_index, params, pat, &args);
+    va_end(args);
+    NORETURN_FUNCTION_END;
+}
+
+OP *
+Perl_diag_die(pTHX_ UV diag_index, AV *params, const char *pat, ...)
+{
+    PERL_ARGS_ASSERT_DIAG_DIE;
+    va_list args;
+    va_start(args, pat);
+    Perl_diag_vcroak(aTHX_ diag_index, params, pat, &args);
+    va_end(args);
+    NORETURN_FUNCTION_END;
+}
+
+/*
+=for apidoc diag_die_sv
+
+Constructs and returns an exception operation from the supplied structured
+diagnostic.
+
+=cut
+*/
+OP *
+Perl_diag_die_sv(pTHX_ UV diag_index, AV *params, SV *message)
+{
+    PERL_ARGS_ASSERT_DIAG_DIE_SV;
+    Perl_diag_croak_sv_internal(aTHX_ diag_index, params, message);
+    NORETURN_FUNCTION_END;
+}
+
+void
+Perl_diag_croak_nocontext(UV diag_index, AV *params, const char *pat, ...)
+{
+    PERL_ARGS_ASSERT_DIAG_CROAK_NOCONTEXT;
+    dTHX;
+    va_list args;
+    va_start(args, pat);
+    Perl_diag_vcroak(aTHX_ diag_index, params, pat, &args);
+    va_end(args);
+    NORETURN_FUNCTION_END;
+}
+
+OP *
+Perl_diag_die_nocontext(UV diag_index, AV *params, const char *pat, ...)
+{
+    PERL_ARGS_ASSERT_DIAG_DIE_NOCONTEXT;
+    dTHX;
+    va_list args;
+    va_start(args, pat);
+    Perl_diag_vcroak(aTHX_ diag_index, params, pat, &args);
+    va_end(args);
+    NORETURN_FUNCTION_END;
+}
+
+/*
+=for apidoc diag_die_nocontext_sv
+
+Context-free version of C<Perl_diag_die_sv(aTHX)>.
+
+=cut
+*/
+OP *
+Perl_diag_die_nocontext_sv(UV diag_index, AV *params, SV *message)
+{
+    PERL_ARGS_ASSERT_DIAG_DIE_NOCONTEXT_SV;
+    dTHX;
+    Perl_diag_croak_sv_internal(aTHX_ diag_index, params, message);
+    NORETURN_FUNCTION_END;
+}
+
+void
+Perl_diag_croak_caller(UV diag_index, AV *params, const char *pat, ...)
+{
+    PERL_ARGS_ASSERT_DIAG_CROAK_CALLER;
+    dTHX;
+    const PERL_CONTEXT *cx = caller_cx(0, NULL);
+    va_list args;
+
+    assert(cx);
+    PL_curcop = cx->blk_oldcop;
+
+    va_start(args, pat);
+    Perl_diag_vcroak(aTHX_ diag_index, params, pat, &args);
+    va_end(args);
+    NORETURN_FUNCTION_END;
+}
+
 void
 Perl_croak_sv(pTHX_ SV *baseex)
 {
     PERL_ARGS_ASSERT_CROAK_SV;
 
-    SV *ex = with_queued_errors(mess_sv(baseex, 0));
-    invoke_exception_hook(ex, FALSE);
-    die_unwind(ex);
+    /* A dying __DIE__ handler replaces the exception it was handling. */
+    if (PL_in_diehook) {
+        (void)Perl_diag_take_pending(aTHX);
+        die_unwind(mess_sv(baseex, 0));
+        NORETURN_FUNCTION_END;
+    }
+
+    Perl_diag_append_pending_compile_exception(aTHX_ mess_sv(baseex, 0));
+    PERL_DIAG_THROW_DIAGNOSTICS();
 }
 
 void
@@ -1893,9 +2481,16 @@ Perl_vcroak(pTHX_ const char* pat, va_list *args)
     PERL_ARGS_ASSERT_VCROAK;
     GET_aTHX_if_NULL;
 
-    SV *ex = with_queued_errors(pat ? vmess(pat, args) : mess_sv(ERRSV, 0));
-    invoke_exception_hook(ex, FALSE);
-    die_unwind(ex);
+    if (!pat) {
+        SV *errsv = ERRSV;
+        SvGETMAGIC(errsv);
+        if (SvROK(errsv))
+            PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY_DIE_SV(errsv);
+    }
+
+    Perl_diag_append_pending_compile_exception(aTHX_
+        pat ? vmess(pat, args) : mess_sv(ERRSV, 0));
+    PERL_DIAG_THROW_DIAGNOSTICS();
 }
 
 /*
@@ -1979,8 +2574,7 @@ Perl_croak(pTHX_ const char *pat, ...)
 
 This encapsulates a common reason for dying, generating terser object code than
 using the generic C<Perl_croak>.  It is exactly equivalent to
-C<croak("%s", PL_no_modify)> (which expands to something like
-"Modification of a read-only value attempted").
+C<PERL_THROW_ERROR_MUTATION_READ_ONLY_VALUE_MODIFICATION()>.
 
 Less code used on exception code paths reduces CPU cache pressure.
 
@@ -1992,7 +2586,7 @@ Perl_croak_no_modify(void)
 {
     PERL_ARGS_ASSERT_CROAK_NO_MODIFY;
 
-    Perl_croak_nocontext( "%s", PL_no_modify);
+    PERL_THROW_ERROR_MUTATION_READ_ONLY_VALUE_MODIFICATION();
 }
 
 /* does not return, used in util.c perlio.c and win32.c
@@ -2037,7 +2631,7 @@ Perl_croak_popstack(void)
     PERL_ARGS_ASSERT_CROAK_POPSTACK;
 
     dTHX;
-    PerlIO_printf(Perl_error_log, "panic: POPSTACK\n");
+    PerlIO_printf(Perl_error_log, PERL_DIAG_FORMAT_ERROR_INTERNAL_STACK_PREVIOUS_FRAME_MISSING);
     my_exit(1);
 }
 
@@ -2046,15 +2640,31 @@ Perl_warn_sv(pTHX_ SV *baseex)
 {
     PERL_ARGS_ASSERT_WARN_SV;
 
-    SV *ex = mess_sv(baseex, 0);
-    if (!invoke_exception_hook(ex, TRUE))
-        write_to_stderr(ex);
+    SV *message = mess_sv(baseex, 0);
+    SV *exception = NULL;
+
+    PERL_APPEND_WARNING_USER_TEXT(&exception, message);
+    if (SvROK(baseex) && exception) {
+        SV **messages_slot = hv_fetchs(MUTABLE_HV(SvRV(exception)),
+                                       "contents", FALSE);
+        if (messages_slot && SvROK(*messages_slot)
+            && SvTYPE(SvRV(*messages_slot)) == SVt_PVAV) {
+            AV *messages = MUTABLE_AV(SvRV(*messages_slot));
+            SV **diagnostic = av_fetch(messages, av_top_index(messages),
+                                       FALSE);
+            if (diagnostic && SvROK(*diagnostic)
+                && SvTYPE(SvRV(*diagnostic)) == SVt_PVHV)
+                (void)hv_stores(MUTABLE_HV(SvRV(*diagnostic)),
+                                "compat_value", newSVsv(baseex));
+        }
+    }
+    Perl_diag_flush_exception(aTHX_ exception, 0, FALSE);
 }
 
-void
-Perl_vwarn(pTHX_ const char* pat, va_list *args)
+static void
+Perl_diag_vwarn(pTHX_ UV diag_index, AV *params, U32 category,
+             const char *pat, va_list *args)
 {
-    PERL_ARGS_ASSERT_VWARN;
     GET_aTHX_if_NULL;
 
     bool must_leave = PL_valuemagic_annotations;
@@ -2070,12 +2680,106 @@ Perl_vwarn(pTHX_ const char* pat, va_list *args)
         PL_valuemagic_annotations = NULL;
     }
 
-    SV *ex = vmess(pat, args);
-    if (!invoke_exception_hook(ex, TRUE))
-        write_to_stderr(ex);
+    SV *message = vmess(pat, args);
+    SV *exception;
+    if (diag_index && PL_curstackinfo->si_type != PERLSI_DESTROY)
+        exception = Perl_diag_catalogued_exception(aTHX_ message, diag_index,
+                                           params, category);
+    else {
+        exception = NULL;
+        PERL_APPEND_WARNING_USER_TEXT(&exception, message);
+    }
+    Perl_diag_flush_exception(aTHX_ exception, category, FALSE);
 
     if (must_leave)
         LEAVE;
+}
+
+static void
+Perl_diag_warn_sv_internal(pTHX_ UV diag_index, AV *params, U32 category,
+                           SV *message)
+{
+    GET_aTHX_if_NULL;
+
+    bool must_leave = PL_valuemagic_annotations != NULL;
+    if (must_leave) {
+        ENTER;
+        SAVESPTR(PL_valuemagic_annotations);
+        PL_valuemagic_annotations = NULL;
+    }
+
+    SV *exception;
+    if (diag_index && PL_curstackinfo->si_type != PERLSI_DESTROY)
+        exception = Perl_diag_catalogued_exception(aTHX_ message, diag_index,
+                                           params, category);
+    else {
+        exception = NULL;
+        if (diag_index && !message)
+            message = Perl_diag_format_template(aTHX_ diag_index,
+                                               params);
+        PERL_APPEND_WARNING_USER_TEXT(&exception, message);
+    }
+    Perl_diag_flush_exception(aTHX_ exception, category, FALSE);
+
+    if (must_leave)
+        LEAVE;
+}
+
+void
+Perl_vwarn(pTHX_ const char* pat, va_list *args)
+{
+    PERL_ARGS_ASSERT_VWARN;
+    Perl_diag_vwarn(aTHX_ 0, NULL, 0, pat, args);
+}
+
+void
+Perl_diag_warn(pTHX_ UV diag_index, AV *params, const char *pat, ...)
+{
+    PERL_ARGS_ASSERT_DIAG_WARN;
+    va_list args;
+    va_start(args, pat);
+    Perl_diag_vwarn(aTHX_ diag_index, params, 0, pat, &args);
+    va_end(args);
+}
+
+/*
+=for apidoc diag_warn_sv
+
+Delivers the supplied structured diagnostic as a warning.
+
+=cut
+*/
+void
+Perl_diag_warn_sv(pTHX_ UV diag_index, AV *params, SV *message)
+{
+    PERL_ARGS_ASSERT_DIAG_WARN_SV;
+    Perl_diag_warn_sv_internal(aTHX_ diag_index, params, 0, message);
+}
+
+void
+Perl_diag_warn_nocontext(UV diag_index, AV *params, const char *pat, ...)
+{
+    PERL_ARGS_ASSERT_DIAG_WARN_NOCONTEXT;
+    dTHXa(NULL);
+    va_list args;
+    va_start(args, pat);
+    Perl_diag_vwarn(aTHX_ diag_index, params, 0, pat, &args);
+    va_end(args);
+}
+
+/*
+=for apidoc diag_warn_nocontext_sv
+
+Context-free version of C<Perl_diag_warn_sv(aTHX)>.
+
+=cut
+*/
+void
+Perl_diag_warn_nocontext_sv(UV diag_index, AV *params, SV *message)
+{
+    PERL_ARGS_ASSERT_DIAG_WARN_NOCONTEXT_SV;
+    dTHXa(NULL);
+    Perl_diag_warn_sv_internal(aTHX_ diag_index, params, 0, message);
 }
 
 /*
@@ -2264,6 +2968,1606 @@ Perl_vwarner(pTHX_ U32  err, const char* pat, va_list* args)
     }
 }
 
+static void
+Perl_diag_vfatal_warner(pTHX_ UV diag_index, AV *params, U32 category,
+                      const char *pat, va_list *args)
+{
+    SV *msv = vmess(pat, args);
+
+    if (PL_parser && PERL_DIAG_ERROR_COUNT) {
+        Perl_defer_error_diag_params(aTHX_ msv, diag_index, params, category);
+    }
+    else {
+        SV *ex = Perl_diag_catalogued_exception(aTHX_ msv, diag_index,
+                                         params, category);
+        Perl_diag_flush_exception(aTHX_ ex, category, TRUE);
+        NORETURN_FUNCTION_END;
+    }
+}
+
+static void
+Perl_diag_fatal_warner_sv_internal(pTHX_ UV diag_index, AV *params, U32 category,
+                                   SV *message)
+{
+    if (PL_parser && PERL_DIAG_ERROR_COUNT) {
+        if (!message && diag_index)
+            message = Perl_diag_format_template(aTHX_ diag_index,
+                                               params);
+        Perl_defer_error_diag_params(aTHX_ message, diag_index, params, category);
+    }
+    else {
+        SV *ex = Perl_diag_catalogued_exception(aTHX_ message, diag_index,
+                                         params, category);
+        Perl_diag_flush_exception(aTHX_ ex, category, TRUE);
+        NORETURN_FUNCTION_END;
+    }
+}
+
+static void
+Perl_diag_vwarner(pTHX_ UV diag_index, AV *params, U32 category,
+               const char *pat, va_list *args)
+{
+    if ((PL_warnhook == PERL_WARNHOOK_FATAL || ckDEAD(category))
+        && !(PL_in_eval & EVAL_KEEPERR))
+    {
+        Perl_diag_vfatal_warner(aTHX_ diag_index, params, category, pat, args);
+    }
+    else {
+        Perl_diag_vwarn(aTHX_ diag_index, params, category, pat, args);
+    }
+}
+
+static void
+Perl_diag_warner_sv_internal(pTHX_ UV diag_index, AV *params, U32 category,
+                             SV *message)
+{
+    if ((PL_warnhook == PERL_WARNHOOK_FATAL || ckDEAD(category))
+        && !(PL_in_eval & EVAL_KEEPERR))
+    {
+        Perl_diag_fatal_warner_sv_internal(aTHX_ diag_index, params, category, message);
+    }
+    else {
+        Perl_diag_warn_sv_internal(aTHX_ diag_index, params, category, message);
+    }
+}
+
+static void
+Perl_diag_mark_last_warning(pTHX_ SV *exception)
+{
+    SV **messages_slot;
+    SV **count_slot;
+    SV **diagnostic_slot;
+    AV *messages;
+    HV *diagnostic;
+    SV **severity_slot;
+
+    messages_slot = hv_fetchs(MUTABLE_HV(SvRV(exception)), "contents", 0);
+    count_slot = hv_fetchs(MUTABLE_HV(SvRV(exception)), "error_count", 0);
+    assert(messages_slot && SvROK(*messages_slot) && count_slot);
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    diagnostic_slot = av_fetch(messages, av_top_index(messages), 0);
+    assert(diagnostic_slot && SvROK(*diagnostic_slot));
+    diagnostic = MUTABLE_HV(SvRV(*diagnostic_slot));
+    severity_slot = hv_fetchs(diagnostic, "severity", 0);
+    assert(severity_slot);
+
+    if (SvUV(*count_slot) > 0)
+        sv_setuv(*count_slot, SvUV(*count_slot) - 1);
+    sv_setpvs(*severity_slot, "WARNING");
+}
+
+/*
+=for apidoc diag_taint_warner_d_sv
+
+Delivers a diagnostic selected for taint warning reporting. Some taint
+diagnostics are fatal when used for a failed taint check, but become warnings
+when the caller selects the warning path.
+
+=cut
+*/
+void
+Perl_diag_taint_warner_d_sv(pTHX_ UV diag_index, AV *params, U32 category,
+                             SV *message)
+{
+    SV *exception;
+
+    PERL_ARGS_ASSERT_DIAG_TAINT_WARNER_D_SV;
+    GET_aTHX_if_NULL;
+    if (!Perl_ckwarn_d(aTHX_ category))
+        return;
+
+    if ((PL_warnhook == PERL_WARNHOOK_FATAL || ckDEAD(category))
+        && !(PL_in_eval & EVAL_KEEPERR)) {
+        Perl_diag_fatal_warner_sv_internal(aTHX_ diag_index, params, category, message);
+        NORETURN_FUNCTION_END;
+    }
+
+    exception = Perl_diag_catalogued_exception(aTHX_ message, diag_index, params,
+                                       category);
+    Perl_diag_mark_last_warning(aTHX_ exception);
+    Perl_diag_flush_exception(aTHX_ exception, category, FALSE);
+}
+
+/* Add the regex source slices used by the legacy location marker to the
+ * diagnostic, so renderers can reconstruct that context from structured data. */
+static void
+Perl_diag_add_regex_pattern_context(pTHX_ SV *exception, bool utf8,
+                                 STRLEN before_length, const char *before,
+                                 STRLEN after_length, const char *after)
+{
+    SV **messages_slot;
+    SV **diagnostic_slot;
+    AV *messages;
+    HV *diagnostic;
+    HV *context;
+
+    messages_slot = hv_fetchs(MUTABLE_HV(SvRV(exception)), "contents", 0);
+    assert(messages_slot && SvROK(*messages_slot));
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    diagnostic_slot = av_fetch(messages, av_top_index(messages), 0);
+    assert(diagnostic_slot && SvROK(*diagnostic_slot));
+    diagnostic = MUTABLE_HV(SvRV(*diagnostic_slot));
+
+    context = newHV();
+    if (UNLIKELY(!hv_stores(context, "before",
+                            newSVpvn_utf8(before, before_length, utf8))))
+        Perl_croak_no_mem();
+    if (UNLIKELY(!hv_stores(context, "after",
+                            newSVpvn_utf8(after, after_length, utf8))))
+        Perl_croak_no_mem();
+    if (UNLIKELY(!hv_stores(diagnostic, "pattern_context",
+                            newRV_noinc(MUTABLE_SV(context)))))
+        Perl_croak_no_mem();
+}
+
+/*
+=for apidoc diag_attach_regex_pattern_context
+
+Attach the source text surrounding the most recently appended diagnostic in
+C<exception>.  The lengths are byte lengths.  C<utf8> indicates whether the
+source slices are UTF-8 encoded.
+
+=cut
+*/
+void
+Perl_diag_attach_regex_pattern_context(pTHX_ SV *exception, bool utf8,
+                                       STRLEN before_length,
+                                       const char *before,
+                                       STRLEN after_length,
+                                       const char *after)
+{
+    SV **messages_slot;
+    AV *messages;
+
+    PERL_ARGS_ASSERT_DIAG_ATTACH_REGEX_PATTERN_CONTEXT;
+
+    if (!SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return;
+
+    messages_slot = hv_fetchs(MUTABLE_HV(SvRV(exception)), "contents", 0);
+    if (!messages_slot || !SvROK(*messages_slot)
+        || SvTYPE(SvRV(*messages_slot)) != SVt_PVAV)
+        return;
+
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    if (av_top_index(messages) < 0)
+        return;
+
+    Perl_diag_add_regex_pattern_context(aTHX_ exception, utf8, before_length,
+                                     before, after_length, after);
+}
+
+static void
+Perl_diag_warner_regex_sv_internal(pTHX_ UV diag_index, AV *params, U32 category,
+                                  SV *message, bool utf8,
+                                  STRLEN before_length, const char *before,
+                                  STRLEN after_length, const char *after,
+                                  bool check_enabled, bool default_enabled)
+{
+    SV *exception;
+    GET_aTHX_if_NULL;
+    if (check_enabled
+        && !(default_enabled ? Perl_ckwarn_d(aTHX_ category)
+                             : Perl_ckwarn(aTHX_ category)))
+        return;
+
+    exception = Perl_diag_catalogued_exception(aTHX_ message, diag_index, params,
+                                       category);
+    Perl_diag_add_regex_pattern_context(aTHX_ exception, utf8, before_length,
+                                     before, after_length, after);
+    Perl_diag_flush_exception(aTHX_ exception, category, FALSE);
+}
+
+/*
+=for apidoc diag_ck_warner_regex_sv
+
+Delivers a structured regex warning with the source slices before and after
+its location recorded on the diagnostic.  The warning is delivered only when
+its category is enabled.
+
+=cut
+*/
+void
+Perl_diag_ck_warner_regex_sv(pTHX_ UV diag_index, AV *params, U32 category,
+                             SV *message, bool utf8,
+                             STRLEN before_length, const char *before,
+                             STRLEN after_length, const char *after)
+{
+    PERL_ARGS_ASSERT_DIAG_CK_WARNER_REGEX_SV;
+    Perl_diag_warner_regex_sv_internal(aTHX_ diag_index, params, category,
+        message, utf8, before_length, before, after_length, after, TRUE, FALSE);
+}
+
+/*
+=for apidoc diag_ck_warner_d_regex_sv
+
+Checks whether the warning category is enabled by C<Perl_ckwarn_d()> and, if
+so, delivers the diagnostic with its regex location context.
+
+=cut
+*/
+void
+Perl_diag_ck_warner_d_regex_sv(pTHX_ UV diag_index, AV *params,
+                               U32 category, SV *message,
+                               bool utf8, STRLEN before_length,
+                               const char *before, STRLEN after_length,
+                               const char *after)
+{
+    PERL_ARGS_ASSERT_DIAG_CK_WARNER_D_REGEX_SV;
+    Perl_diag_warner_regex_sv_internal(aTHX_ diag_index, params, category,
+        message, utf8, before_length, before, after_length, after, TRUE, TRUE);
+}
+
+/*
+=for apidoc diag_warner_regex_sv
+
+Delivers a structured regex warning with the source slices before and after
+its location recorded on the diagnostic.
+
+=cut
+*/
+void
+Perl_diag_warner_regex_sv(pTHX_ UV diag_index, AV *params, U32 category,
+                          SV *message, bool utf8,
+                          STRLEN before_length, const char *before,
+                          STRLEN after_length, const char *after)
+{
+    PERL_ARGS_ASSERT_DIAG_WARNER_REGEX_SV;
+    Perl_diag_warner_regex_sv_internal(aTHX_ diag_index, params, category,
+        message, utf8, before_length, before, after_length, after, FALSE, FALSE);
+}
+
+void
+Perl_diag_warner(pTHX_ UV diag_index, AV *params, U32 category,
+                  const char *pat, ...)
+{
+    PERL_ARGS_ASSERT_DIAG_WARNER;
+    va_list args;
+    va_start(args, pat);
+    Perl_diag_vwarner(aTHX_ diag_index, params, category, pat, &args);
+    va_end(args);
+}
+
+/*
+=for apidoc diag_warner_sv
+
+Delivers the supplied structured diagnostic as a warning in the given
+warning category.
+
+=cut
+*/
+void
+Perl_diag_warner_sv(pTHX_ UV diag_index, AV *params, U32 category,
+                    SV *message)
+{
+    PERL_ARGS_ASSERT_DIAG_WARNER_SV;
+    Perl_diag_warner_sv_internal(aTHX_ diag_index, params, category, message);
+}
+
+void
+Perl_diag_ck_warner(pTHX_ UV diag_index, AV *params, U32 category,
+                     const char *pat, ...)
+{
+    PERL_ARGS_ASSERT_DIAG_CK_WARNER;
+    GET_aTHX_if_NULL;
+    if (Perl_ckwarn(aTHX_ category)) {
+        va_list args;
+        va_start(args, pat);
+        Perl_diag_vwarner(aTHX_ diag_index, params, category, pat, &args);
+        va_end(args);
+    }
+}
+
+/*
+=for apidoc diag_ck_warner_sv
+
+Checks whether the warning category is enabled by C<Perl_ckwarn()> and, if
+so, delivers the supplied structured diagnostic as a warning.
+
+=cut
+*/
+void
+Perl_diag_ck_warner_sv(pTHX_ UV diag_index, AV *params, U32 category,
+                       SV *message)
+{
+    PERL_ARGS_ASSERT_DIAG_CK_WARNER_SV;
+    GET_aTHX_if_NULL;
+    if (Perl_ckwarn(aTHX_ category))
+        Perl_diag_warner_sv_internal(aTHX_ diag_index, params, category, message);
+}
+
+static bool Perl_diag_tree_has_flag(pTHX_ SV *root, bool error_severity);
+
+static bool
+Perl_diag_exception_has_fatal_warning(pTHX_ SV *exception)
+{
+    SV **messages_slot;
+    AV *messages;
+    SSize_t i;
+
+    if (!SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return FALSE;
+
+    messages_slot = hv_fetchs(MUTABLE_HV(SvRV(exception)), "contents", 0);
+    if (!messages_slot || !SvROK(*messages_slot)
+        || SvTYPE(SvRV(*messages_slot)) != SVt_PVAV)
+        return FALSE;
+
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    for (i = 0; i <= av_top_index(messages); i++) {
+        SV **message = av_fetch(messages, i, 0);
+        if (!message || !SvROK(*message)
+            || SvTYPE(SvRV(*message)) != SVt_PVHV)
+            continue;
+        if (Perl_diag_tree_has_flag(aTHX_ *message, FALSE))
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
+static bool
+Perl_diag_is_warning(pTHX_ SV *diagnostic)
+{
+    SV **severity;
+    HV *fields;
+    const char *name;
+
+    if (!SvROK(diagnostic) || SvTYPE(SvRV(diagnostic)) != SVt_PVHV)
+        return FALSE;
+
+    fields = MUTABLE_HV(SvRV(diagnostic));
+    severity = hv_fetchs(fields, "severity", 0);
+    if (!severity || !SvPOK(*severity))
+        return FALSE;
+
+    name = SvPV_nolen_const(*severity);
+    return strEQ(name, "WARNING") || strEQ(name, "DEPRECATION")
+        || strEQ(name, "SEVERE_WARNING");
+}
+
+static bool
+Perl_diag_is_error_severity(pTHX_ SV *severity)
+{
+    const char *name;
+
+    if (!SvOK(severity) || SvROK(severity))
+        return FALSE;
+
+    name = SvPV_nolen_const(severity);
+    return strEQ(name, "FATAL_ERROR") || strEQ(name, "INTERNAL_ERROR");
+}
+
+static SV *
+Perl_diag_field(pTHX_ HV *fields, const char *key)
+{
+    SV **slot = hv_fetch(fields, key, (I32)strlen(key), FALSE);
+    return slot ? *slot : &PL_sv_undef;
+}
+
+typedef enum {
+    PERL_DIAG_TREE_PRESERVE_SEVERITY,
+    PERL_DIAG_TREE_MARK_DELIVERED,
+    PERL_DIAG_TREE_MARK_FATAL
+} perl_diag_tree_mutation;
+
+static void
+Perl_diag_tree_mutate(pTHX_ SV *root, perl_diag_tree_mutation mutation)
+{
+    AV *pending = newAV();
+    AV *visited = newAV();
+    SV *node;
+    av_push(pending, newSVsv(root));
+
+    while (av_top_index(pending) >= 0) {
+        HV *fields;
+        SV *children;
+        AV *array;
+        SSize_t i;
+
+        node = av_pop(pending);
+        if (!node || !SvROK(node) || SvTYPE(SvRV(node)) != SVt_PVHV) {
+            if (node)
+                SvREFCNT_dec_NN(node);
+            continue;
+        }
+        for (i = 0; i <= av_top_index(visited); i++) {
+            SV **seen = av_fetch(visited, i, FALSE);
+            if (seen && SvROK(*seen) && SvRV(*seen) == SvRV(node))
+                break;
+        }
+        if (i <= av_top_index(visited)) {
+            SvREFCNT_dec_NN(node);
+            continue;
+        }
+        av_push(visited, newSVsv(node));
+        fields = MUTABLE_HV(SvRV(node));
+
+        if (mutation == PERL_DIAG_TREE_MARK_FATAL && Perl_diag_is_warning(aTHX_ node))
+            (void)hv_stores(fields, "_delivery_fatal", newSViv(1));
+        else if (mutation == PERL_DIAG_TREE_MARK_DELIVERED && Perl_diag_is_warning(aTHX_ node))
+            Perl_diag_mark_warning_delivered(aTHX_ node);
+        else if (mutation == PERL_DIAG_TREE_PRESERVE_SEVERITY) {
+            SV **severity_slot = hv_fetchs(fields, "severity", FALSE);
+            SV **floor_slot = hv_fetchs(fields, "_severity_floor", FALSE);
+            if (severity_slot) {
+                if (floor_slot && Perl_diag_is_error_severity(aTHX_ *floor_slot)) {
+                    if (Perl_diag_is_warning(aTHX_ node))
+                        sv_setsv(*severity_slot, *floor_slot);
+                }
+                else if (Perl_diag_is_error_severity(aTHX_ *severity_slot)) {
+                    floor_slot = hv_fetchs(fields, "_severity_floor", TRUE);
+                    if (floor_slot)
+                        sv_setsv(*floor_slot, *severity_slot);
+                }
+            }
+        }
+
+        children = Perl_diag_field(aTHX_ fields, "contents");
+        if (SvROK(children) && SvTYPE(SvRV(children)) == SVt_PVAV) {
+            array = MUTABLE_AV(SvRV(children));
+            for (i = 0; i <= av_top_index(array); i++) {
+                SV **child = av_fetch(array, i, FALSE);
+                if (child && SvROK(*child))
+                    av_push(pending, newSVsv(*child));
+            }
+        }
+        SvREFCNT_dec_NN(node);
+    }
+
+    SvREFCNT_dec_NN((SV *)pending);
+    SvREFCNT_dec_NN((SV *)visited);
+}
+
+static bool
+Perl_diag_tree_has_flag(pTHX_ SV *root, bool error_severity)
+{
+    AV *pending = newAV();
+    AV *visited = newAV();
+    SV *node;
+    bool found = FALSE;
+
+    av_push(pending, newSVsv(root));
+    while (av_top_index(pending) >= 0) {
+        HV *fields;
+        SV *children;
+        AV *array;
+        SSize_t i;
+
+        node = av_pop(pending);
+        if (!node || !SvROK(node) || SvTYPE(SvRV(node)) != SVt_PVHV) {
+            if (node)
+                SvREFCNT_dec_NN(node);
+            continue;
+        }
+        for (i = 0; i <= av_top_index(visited); i++) {
+            SV **seen = av_fetch(visited, i, FALSE);
+            if (seen && SvROK(*seen) && SvRV(*seen) == SvRV(node))
+                break;
+        }
+        if (i <= av_top_index(visited)) {
+            SvREFCNT_dec_NN(node);
+            continue;
+        }
+        av_push(visited, newSVsv(node));
+        fields = MUTABLE_HV(SvRV(node));
+        if (error_severity) {
+            if (Perl_diag_is_error_severity(aTHX_
+                    Perl_diag_field(aTHX_ fields, "severity"))
+                || SvTRUE(Perl_diag_field(aTHX_ fields, "_fatal_warning"))
+                || SvTRUE(Perl_diag_field(aTHX_ fields, "_delivery_fatal")))
+                found = TRUE;
+        }
+        else if (SvTRUE(Perl_diag_field(aTHX_ fields, "_fatal_warning"))
+            || SvTRUE(Perl_diag_field(aTHX_ fields, "_delivery_fatal")))
+            found = TRUE;
+        if (found) {
+            SvREFCNT_dec_NN(node);
+            break;
+        }
+        children = Perl_diag_field(aTHX_ fields, "contents");
+        if (SvROK(children) && SvTYPE(SvRV(children)) == SVt_PVAV) {
+            array = MUTABLE_AV(SvRV(children));
+            for (i = 0; i <= av_top_index(array); i++) {
+                SV **child = av_fetch(array, i, FALSE);
+                if (child && SvROK(*child))
+                    av_push(pending, newSVsv(*child));
+            }
+        }
+        SvREFCNT_dec_NN(node);
+    }
+
+    SvREFCNT_dec_NN((SV *)pending);
+    SvREFCNT_dec_NN((SV *)visited);
+    return found;
+}
+
+static void
+Perl_diag_preserve_error_severity(pTHX_ SV *exception)
+{
+    SV **messages_slot;
+    AV *messages;
+    SSize_t i;
+
+    if (!SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return;
+
+    messages_slot = hv_fetchs(MUTABLE_HV(SvRV(exception)), "contents", 0);
+    if (!messages_slot || !SvROK(*messages_slot)
+        || SvTYPE(SvRV(*messages_slot)) != SVt_PVAV)
+        return;
+
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    for (i = 0; i <= av_top_index(messages); i++) {
+        SV **diagnostic = av_fetch(messages, i, FALSE);
+        if (diagnostic && SvROK(*diagnostic))
+            Perl_diag_tree_mutate(aTHX_ *diagnostic,
+                PERL_DIAG_TREE_PRESERVE_SEVERITY);
+    }
+}
+
+static bool
+Perl_diag_exception_has_error_severity(pTHX_ SV *exception)
+{
+    SV **messages_slot;
+    AV *messages;
+    SSize_t i;
+
+    if (!SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return FALSE;
+
+    messages_slot = hv_fetchs(MUTABLE_HV(SvRV(exception)), "contents", 0);
+    if (!messages_slot || !SvROK(*messages_slot)
+        || SvTYPE(SvRV(*messages_slot)) != SVt_PVAV)
+        return FALSE;
+
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    for (i = 0; i <= av_top_index(messages); i++) {
+        SV **diagnostic = av_fetch(messages, i, 0);
+        if (diagnostic && Perl_diag_tree_has_flag(aTHX_ *diagnostic, TRUE))
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
+static bool
+Perl_diag_warning_has_hint_after(pTHX_ AV *messages, SSize_t index)
+{
+    SV **previous_slot;
+    SV **hint_slot;
+    HV *previous_hv;
+    HV *hint_hv;
+    SV **field_slot;
+
+    if (index >= av_top_index(messages))
+        return FALSE;
+
+    previous_slot = av_fetch(messages, index, FALSE);
+    hint_slot = av_fetch(messages, index + 1, FALSE);
+    if (!previous_slot || !hint_slot || !SvROK(*previous_slot)
+        || !SvROK(*hint_slot)
+        || SvTYPE(SvRV(*previous_slot)) != SVt_PVHV
+        || SvTYPE(SvRV(*hint_slot)) != SVt_PVHV)
+        return FALSE;
+
+    previous_hv = MUTABLE_HV(SvRV(*previous_slot));
+    hint_hv = MUTABLE_HV(SvRV(*hint_slot));
+    field_slot = hv_fetchs(previous_hv, "has_following_hint", FALSE);
+    if (!field_slot || !SvTRUE(*field_slot))
+        return FALSE;
+    field_slot = hv_fetchs(hint_hv, "is_hint", FALSE);
+    return field_slot && SvTRUE(*field_slot);
+}
+
+static void
+Perl_diag_mark_warning_delivered(pTHX_ SV *diagnostic)
+{
+    SV **slot;
+
+    if (!SvROK(diagnostic) || SvTYPE(SvRV(diagnostic)) != SVt_PVHV)
+        return;
+    slot = hv_fetchs(MUTABLE_HV(SvRV(diagnostic)),
+                     "_warning_delivered", TRUE);
+    if (slot)
+        sv_setiv(*slot, 1);
+}
+
+static bool
+Perl_diag_exception_is_error(pTHX_ SV *exception, U32 category,
+                          bool force_error)
+{
+    if (force_error || Perl_diag_error_count(aTHX_ exception)
+        || Perl_diag_exception_has_error_severity(aTHX_ exception))
+        return TRUE;
+
+    return !(PL_in_eval & EVAL_KEEPERR)
+        && (PL_warnhook == PERL_WARNHOOK_FATAL || ckDEAD(category)
+            || Perl_diag_exception_has_fatal_warning(aTHX_ exception));
+}
+
+typedef struct {
+    SV *exception;
+    AV *records;
+    AV *output;
+    AV *source;
+    AV *actions;
+    SSize_t action_index;
+    UV next_id;
+    bool die_called;
+    bool must_unwind;
+    bool fatal_warning_episode;
+    bool die_group_seen;
+    bool more_after_source;
+    SV *unwind_record;
+} perl_diag_delivery;
+
+static AV *
+Perl_diag_messages(pTHX_ SV *exception)
+{
+    SV **slot;
+    if (!SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return NULL;
+    slot = hv_fetchs(MUTABLE_HV(SvRV(exception)), "contents", FALSE);
+    return slot && SvROK(*slot) && SvTYPE(SvRV(*slot)) == SVt_PVAV
+        ? MUTABLE_AV(SvRV(*slot)) : NULL;
+}
+
+static void
+Perl_diag_copy_messages(pTHX_ AV *target, AV *source)
+{
+    SSize_t i;
+    if (!source)
+        return;
+    for (i = 0; i <= av_top_index(source); i++) {
+        SV **slot = av_fetch(source, i, FALSE);
+        if (slot && SvROK(*slot) && SvTYPE(SvRV(*slot)) == SVt_PVHV)
+            av_push(target, newSVsv(*slot));
+    }
+}
+
+static bool
+Perl_diag_message_present(pTHX_ AV *messages, SV *diagnostic)
+{
+    SSize_t i;
+    for (i = 0; messages && i <= av_top_index(messages); i++) {
+        SV **slot = av_fetch(messages, i, FALSE);
+        if (slot && SvROK(*slot) && SvRV(*slot) == SvRV(diagnostic))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+static void
+Perl_diag_collect_new_messages(pTHX_ perl_diag_delivery *delivery)
+{
+    AV *messages = Perl_diag_messages(aTHX_ delivery->exception);
+    SSize_t i;
+    for (i = 0; messages && i <= av_top_index(messages); i++) {
+        SV **slot = av_fetch(messages, i, FALSE);
+        if (slot && SvROK(*slot) && SvTYPE(SvRV(*slot)) == SVt_PVHV
+            && !Perl_diag_message_present(aTHX_ delivery->source, *slot)
+            && !Perl_diag_message_present(aTHX_ delivery->output, *slot))
+            av_push(delivery->source, newSVsv(*slot));
+    }
+}
+
+/* Views share diagnostics, not independent exception state. */
+static SV *
+Perl_diag_delivery_view(pTHX_ SV *exception, AV *messages)
+{
+    SV *view = sv_2mortal(newRV_noinc(MUTABLE_SV(newHVhv(MUTABLE_HV(SvRV(exception))))));
+    HV *fields = MUTABLE_HV(SvRV(view));
+    sv_bless(view, SvSTASH(SvRV(exception)));
+    (void)hv_stores(fields, "contents", newRV_inc(MUTABLE_SV(messages)));
+    (void)hv_delete(fields, "_delivery", sizeof("_delivery") - 1, G_DISCARD);
+    (void)hv_delete(fields, "_delivery_output_complete",
+                    sizeof("_delivery_output_complete") - 1, G_DISCARD);
+    (void)hv_delete(fields, "suppress_delivered_warnings",
+                    sizeof("suppress_delivered_warnings") - 1, G_DISCARD);
+    return view;
+}
+
+static HV *
+Perl_diag_delivery_record(pTHX_ perl_diag_delivery *delivery, SV *view,
+                       const char *kind, UV parent)
+{
+    HV *record = newHV();
+    SV *reference = newRV_noinc(MUTABLE_SV(record));
+    (void)hv_stores(record, "id", newSVuv(++delivery->next_id));
+    (void)hv_stores(record, "kind", newSVpv(kind, 0));
+    (void)hv_stores(record, "status", newSVpvs("pending"));
+    (void)hv_stores(record, "original", newRV_inc(MUTABLE_SV(Perl_diag_messages(aTHX_ view))));
+    if (parent)
+        (void)hv_stores(record, "parent", newSVuv(parent));
+    if (delivery->unwind_record)
+        (void)av_pop(delivery->records);
+    av_push(delivery->records, reference);
+    if (delivery->unwind_record)
+        av_push(delivery->records, delivery->unwind_record);
+    return record;
+}
+
+static void
+Perl_diag_request_unwind(pTHX_ perl_diag_delivery *delivery)
+{
+    if (delivery->must_unwind)
+        return;
+    delivery->must_unwind = TRUE;
+    HV *record = newHV();
+    (void)hv_stores(record, "kind", newSVpvs("unwind"));
+    (void)hv_stores(record, "die_hook_called", newSViv(delivery->die_called));
+    delivery->unwind_record = newRV_noinc(MUTABLE_SV(record));
+    av_push(delivery->records, delivery->unwind_record);
+}
+
+static void
+Perl_diag_publish_current(pTHX_ perl_diag_delivery *delivery, AV *current)
+{
+    AV *messages = newAV();
+    Perl_diag_copy_messages(aTHX_ messages, delivery->output);
+    Perl_diag_copy_messages(aTHX_ messages, current);
+    if (delivery->actions) {
+        SSize_t i;
+        AV *canonical = Perl_diag_messages(aTHX_ delivery->exception);
+        for (i = delivery->action_index + 1;
+             i <= av_top_index(delivery->actions); i++) {
+            SV **action_slot = av_fetch(delivery->actions, i, FALSE);
+            SV **group_slot;
+            SV **group_messages_slot;
+            AV *group_messages;
+            SSize_t j;
+            if (!action_slot || !SvROK(*action_slot)
+                || SvTYPE(SvRV(*action_slot)) != SVt_PVHV)
+                continue;
+            group_slot = hv_fetchs(MUTABLE_HV(SvRV(*action_slot)), "group", FALSE);
+            if (!group_slot || !SvROK(*group_slot))
+                continue;
+            group_messages_slot = hv_fetchs(MUTABLE_HV(SvRV(*group_slot)),
+                                             "contents", FALSE);
+            if (!group_messages_slot || !SvROK(*group_messages_slot)
+                || SvTYPE(SvRV(*group_messages_slot)) != SVt_PVAV)
+                continue;
+            group_messages = MUTABLE_AV(SvRV(*group_messages_slot));
+            for (j = 0; j <= av_top_index(group_messages); j++) {
+                SV **slot = av_fetch(group_messages, j, FALSE);
+                if (slot && Perl_diag_message_present(aTHX_ canonical, *slot))
+                    av_push(messages, newSVsv(*slot));
+            }
+        }
+    }
+    (void)hv_stores(MUTABLE_HV(SvRV(delivery->exception)), "contents",
+                    newRV_noinc(MUTABLE_SV(messages)));
+}
+
+static SV *
+Perl_diag_warning_compat(pTHX_ SV *view)
+{
+    AV *messages = Perl_diag_messages(aTHX_ view);
+    SV **first = messages ? av_fetch(messages, 0, FALSE) : NULL;
+    if (first && SvROK(*first) && SvTYPE(SvRV(*first)) == SVt_PVHV) {
+        HV *fields = MUTABLE_HV(SvRV(*first));
+        SV **compat = hv_fetchs(fields, "compat_value", FALSE);
+        if (compat && SvROK(*compat))
+            return *compat;
+        SV **code = hv_fetchs(fields, "code", FALSE);
+        SV **params = hv_fetchs(fields, "params", FALSE);
+        if (code && SvPOK(*code) && strEQ(SvPV_nolen(*code), "WARNING_USER_TEXT")
+            && params && SvROK(*params) && SvTYPE(SvRV(*params)) == SVt_PVAV) {
+            SV **param = av_fetch(MUTABLE_AV(SvRV(*params)), 0, FALSE);
+            if (param && SvROK(*param) && SvTYPE(SvRV(*param)) == SVt_PVHV) {
+                SV **value = hv_fetchs(MUTABLE_HV(SvRV(*param)), "value", FALSE);
+                if (value && SvROK(*value))
+                    return *value;
+            }
+        }
+    }
+    SV *rendered = AMG_CALLunary_flags(Perl_diag_render_group_view(aTHX_ view),
+        string_amg, AMGf_force_overload);
+    return rendered ? sv_mortalcopy(rendered) : sv_2mortal(newSVpvs(""));
+}
+
+/* A warning inside DIE uses WARN directly. Its die must terminate the
+ * enclosing DIE hook, so this call shares that hook's protected boundary. */
+static void
+Perl_diag_deliver_warning_hooks(pTHX_ SV *exception)
+{
+    AV *messages = Perl_diag_messages(aTHX_ exception);
+    SSize_t i;
+
+    for (i = 0; messages && i <= av_top_index(messages); i++) {
+        SV **slot = av_fetch(messages, i, FALSE);
+        if (!slot || !Perl_diag_is_warning(aTHX_ *slot))
+            continue;
+
+        AV *unit = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+        av_push(unit, newSVsv(*slot));
+        if (Perl_diag_warning_has_hint_after(aTHX_ messages, i)) {
+            SV **hint = av_fetch(messages, ++i, FALSE);
+            if (hint)
+                av_push(unit, newSVsv(*hint));
+        }
+        SV *view = Perl_diag_delivery_view(aTHX_ exception, unit);
+        if (Perl_invoke_exception_hook_internal(aTHX_ exception, TRUE,
+                                    Perl_diag_warning_compat(aTHX_ view), NULL)) {
+            SSize_t j;
+            for (j = 0; j <= av_top_index(unit); j++) {
+                SV **item = av_fetch(unit, j, FALSE);
+                if (item)
+                    Perl_diag_tree_mutate(aTHX_ *item,
+                        PERL_DIAG_TREE_MARK_DELIVERED);
+            }
+        }
+    }
+}
+
+static SV *
+Perl_diag_die_compat(pTHX_ SV *exception)
+{
+    AV *messages = Perl_diag_messages(aTHX_ exception);
+    SSize_t i;
+    for (i = messages ? av_top_index(messages) : -1; i >= 0; i--) {
+        SV **slot = av_fetch(messages, i, FALSE);
+        if (!slot || !SvROK(*slot) || SvTYPE(SvRV(*slot)) != SVt_PVHV)
+            continue;
+        HV *fields = MUTABLE_HV(SvRV(*slot));
+        SV **code = hv_fetchs(fields, "code", FALSE);
+        SV **params = hv_fetchs(fields, "params", FALSE);
+        if (!code || !SvPOK(*code) || !strEQ(SvPV_nolen(*code), "ERROR_USER_REFERENCE")
+            || !params || !SvROK(*params) || SvTYPE(SvRV(*params)) != SVt_PVAV)
+            continue;
+        SV **param = av_fetch(MUTABLE_AV(SvRV(*params)), 0, FALSE);
+        if (param && SvROK(*param) && SvTYPE(SvRV(*param)) == SVt_PVHV) {
+            SV **value = hv_fetchs(MUTABLE_HV(SvRV(*param)), "value", FALSE);
+            if (value && SvROK(*value))
+                return *value;
+        }
+    }
+    return exception;
+}
+
+/* Keep a compilation error batch together when no independent warning
+ * requires its own position in the delivery sequence. */
+static bool
+Perl_diag_compile_error_batch(pTHX_ AV *messages)
+{
+    bool compile = FALSE;
+    SSize_t i;
+    for (i = 0; i <= av_top_index(messages); i++) {
+        SV **slot = av_fetch(messages, i, FALSE);
+        if (!slot || !SvROK(*slot) || SvTYPE(SvRV(*slot)) != SVt_PVHV)
+            continue;
+        HV *fields = MUTABLE_HV(SvRV(*slot));
+        SV **kind = hv_fetchs(fields, "kind", FALSE);
+        if (kind && SvPOK(*kind) && strEQ(SvPV_nolen(*kind), "CORE_COMPILE"))
+            compile = TRUE;
+        SV **light = hv_fetchs(fields, "light", FALSE);
+        SV **hint = hv_fetchs(fields, "is_hint", FALSE);
+        if (Perl_diag_is_warning(aTHX_ *slot) && !(light && SvTRUE(*light))
+            && !(hint && SvTRUE(*hint)))
+            return FALSE;
+    }
+    return compile;
+}
+
+static void
+Perl_diag_rebase_group(pTHX_ SV *view, SSize_t first)
+{
+    AV *messages = Perl_diag_messages(aTHX_ view);
+    SSize_t i;
+    for (i = 0; i <= av_top_index(messages); i++) {
+        SV **slot = av_fetch(messages, i, FALSE);
+        if (!slot || !SvROK(*slot) || SvTYPE(SvRV(*slot)) != SVt_PVHV)
+            continue;
+        HV *fields = MUTABLE_HV(SvRV(*slot));
+        SV **tail = hv_fetchs(fields, "context_follows_index", FALSE);
+        if (!tail || !SvOK(*tail) || SvIV(*tail) < first)
+            continue;
+        SV *copy = newRV_noinc(MUTABLE_SV(newHVhv(fields)));
+        sv_bless(copy, SvSTASH(SvRV(*slot)));
+        (void)hv_stores(MUTABLE_HV(SvRV(copy)), "context_follows_index",
+                        newSViv(SvIV(*tail) - first));
+        av_store(messages, i, copy);
+    }
+}
+
+/* Rebase links only in the temporary rendering view. Canonical diagnostics
+ * retain exception-wide indexes for later explicit rendering. */
+static SV *
+Perl_diag_render_group_view(pTHX_ SV *view)
+{
+    SV **first = hv_fetchs(MUTABLE_HV(SvRV(view)), "_delivery_group_first", FALSE);
+    if (!first || !SvOK(*first) || !SvIV(*first))
+        return view;
+    SSize_t index = SvIV(*first);
+    AV *messages = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    Perl_diag_copy_messages(aTHX_ messages, Perl_diag_messages(aTHX_ view));
+    SV *copy = Perl_diag_delivery_view(aTHX_ view, messages);
+    (void)hv_stores(MUTABLE_HV(SvRV(copy)), "_delivery_group_first", newSViv(0));
+    Perl_diag_rebase_group(aTHX_ copy, index);
+    return copy;
+}
+
+/* A light run ends at its linked tail. Hints and propagation records belong
+ * to the preceding primary, rather than starting another hook invocation. */
+static SSize_t
+Perl_diag_group_end(pTHX_ AV *messages, SSize_t first)
+{
+    SSize_t last = first;
+    SV **slot = av_fetch(messages, first, FALSE);
+    if (slot && SvROK(*slot) && SvTYPE(SvRV(*slot)) == SVt_PVHV) {
+        HV *fields = MUTABLE_HV(SvRV(*slot));
+        SV **light = hv_fetchs(fields, "light", FALSE);
+        SV **tail = hv_fetchs(fields, "context_follows_index", FALSE);
+        if (light && SvTRUE(*light) && tail && SvOK(*tail)
+            && SvIV(*tail) >= first && SvIV(*tail) <= av_top_index(messages))
+            last = SvIV(*tail);
+    }
+    while (last < av_top_index(messages)) {
+        if (Perl_diag_warning_has_hint_after(aTHX_ messages, last)) {
+            last++;
+            continue;
+        }
+        SV **next = av_fetch(messages, last + 1, FALSE);
+        SV **number = next && SvROK(*next) && SvTYPE(SvRV(*next)) == SVt_PVHV
+            ? hv_fetchs(MUTABLE_HV(SvRV(*next)), "number", FALSE) : NULL;
+        if (number && SvOK(*number) && (SvUV(*number) == 2446 /* ERROR_PROPAGATION_RETHROW_CONTEXT */
+            || SvUV(*number) == 2447 /* ERROR_PHASE_BEGIN_FAILED */
+            || SvUV(*number) == 2450 /* ERROR_PHASE_CALL_QUEUE_ABORTED */
+            || SvUV(*number) == 2451 /* ERROR_PROPAGATION_EVAL_CONTEXT */))
+            last++;
+        else
+            break;
+    }
+    return last;
+}
+
+/* Decompose one finite source batch into owning hook actions. */
+static void
+Perl_diag_delivery_append_actions(pTHX_ perl_diag_delivery *delivery,
+                                  SSize_t start, bool compile_batch)
+{
+    SSize_t i = start;
+    AV *source = delivery->source;
+    AV *canonical = Perl_diag_messages(aTHX_ delivery->exception);
+
+    while (i <= av_top_index(source)) {
+        SV **slot = av_fetch(source, i, FALSE);
+        AV *unit;
+        SSize_t first = i;
+        SSize_t last;
+        bool warning;
+        SV **fatal;
+        SV *view;
+        HV *action;
+
+        if (!slot || !Perl_diag_message_present(aTHX_ canonical, *slot)) {
+            i++;
+            continue;
+        }
+        unit = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+        av_push(unit, newSVsv(*slot));
+        warning = Perl_diag_is_warning(aTHX_ *slot)
+            && !delivery->fatal_warning_episode;
+        fatal = hv_fetchs(MUTABLE_HV(SvRV(*slot)), "_fatal_warning", FALSE);
+        if (fatal && SvTRUE(*fatal))
+            warning = FALSE;
+        last = compile_batch ? av_top_index(source)
+            : Perl_diag_group_end(aTHX_ source, i);
+        while (i < last) {
+            SV **next = av_fetch(source, ++i, FALSE);
+            if (next)
+                av_push(unit, newSVsv(*next));
+        }
+        view = Perl_diag_delivery_view(aTHX_ delivery->exception, unit);
+        (void)hv_stores(MUTABLE_HV(SvRV(view)), "_delivery_group_first",
+                        newSViv(first));
+        if (Perl_diag_exception_has_error_severity(aTHX_ view))
+            warning = FALSE;
+
+        action = newHV();
+        (void)hv_stores(action, "root", newSVsv(*slot));
+        (void)hv_stores(action, "group", newSVsv(view));
+        (void)hv_stores(action, "warning", newSViv(warning));
+        av_push(delivery->actions, newRV_noinc(MUTABLE_SV(action)));
+        i++;
+    }
+}
+
+static bool
+Perl_diag_delivery_has_more(pTHX_ perl_diag_delivery *delivery)
+{
+    SSize_t i;
+    AV *canonical = Perl_diag_messages(aTHX_ delivery->exception);
+    for (i = delivery->action_index + 1;
+         delivery->actions && i <= av_top_index(delivery->actions); i++) {
+        SV **slot = av_fetch(delivery->actions, i, FALSE);
+        SV **root;
+        if (!slot || !SvROK(*slot) || SvTYPE(SvRV(*slot)) != SVt_PVHV)
+            continue;
+        root = hv_fetchs(MUTABLE_HV(SvRV(*slot)), "root", FALSE);
+        if (root && Perl_diag_message_present(aTHX_ canonical, *root))
+            return TRUE;
+    }
+    return delivery->more_after_source;
+}
+
+static SV *
+Perl_diag_error_hook_value(pTHX_ perl_diag_delivery *delivery, SV *view)
+{
+    SV *value = Perl_diag_die_compat(aTHX_ view);
+    if (value != view)
+        return value;
+    view = Perl_diag_render_group_view(aTHX_ view);
+    if (Perl_diag_delivery_has_more(aTHX_ delivery)) {
+        AV *messages = newAV();
+        Perl_diag_copy_messages(aTHX_ messages, Perl_diag_messages(aTHX_ view));
+        SV **last = av_fetch(messages, av_top_index(messages), FALSE);
+        SV *owner_engine = NULL;
+        if (last) {
+            if (SvROK(*last) && SvTYPE(SvRV(*last)) == SVt_PVHV) {
+                SV **engine_slot = hv_fetchs(MUTABLE_HV(SvRV(*last)),
+                                             "_diagpack_engine", FALSE);
+                if (engine_slot && SvOK(*engine_slot))
+                    owner_engine = newSVsv(*engine_slot);
+            }
+            SV *copy = newRV_noinc(MUTABLE_SV(newHVhv(MUTABLE_HV(SvRV(*last)))));
+            sv_bless(copy, SvSTASH(SvRV(*last)));
+            (void)hv_stores(MUTABLE_HV(SvRV(copy)), "has_following_hint", newSViv(1));
+            av_store(messages, av_top_index(messages), copy);
+        }
+        SV *hint_exception = NULL;
+        PERL_APPEND_NOTE_HINT_STACK_UNWIND_DEFERRED(&hint_exception);
+        /* This synthetic delivery hint belongs to the primary diagnostic,
+         * even when the die hook runs after its lexical scope has ended. */
+        if (hint_exception) {
+            AV *hint_messages = Perl_diag_messages(aTHX_ hint_exception);
+            SV **hint = hint_messages ? av_fetch(hint_messages, 0, FALSE) : NULL;
+            if (hint && SvROK(*hint) && SvTYPE(SvRV(*hint)) == SVt_PVHV) {
+                HV *fields = MUTABLE_HV(SvRV(*hint));
+                if (owner_engine)
+                    (void)hv_stores(fields, "_diagpack_engine",
+                                    newSVsv(owner_engine));
+                else
+                    (void)hv_deletes(fields, "_diagpack_engine", G_DISCARD);
+            }
+        }
+        SvREFCNT_dec(owner_engine);
+        Perl_diag_copy_messages(aTHX_ messages, Perl_diag_messages(aTHX_ hint_exception));
+        view = Perl_diag_delivery_view(aTHX_ view, messages);
+        SvREFCNT_dec_NN(messages);
+    }
+    SV *rendered = AMG_CALLunary_flags(view, string_amg, AMGf_force_overload);
+    return rendered ? sv_mortalcopy(rendered) : sv_2mortal(newSVpvs(""));
+}
+
+/* Each delivery group finishes its STDERR disposition before the next hook.
+ * Caught errors have no automatic fatal output. Structured formats serialize
+ * the same group; as_json() remains the whole-object inspection view. */
+static void
+Perl_diag_emit_group(pTHX_ SV *view, bool warning)
+{
+    if (!warning && PL_in_eval)
+        return;
+
+    Perl_write_to_stderr_internal(aTHX_ Perl_diag_render_group_view(aTHX_ view), warning);
+    if (warning) {
+        AV *messages = Perl_diag_messages(aTHX_ view);
+        SSize_t i;
+        for (i = 0; messages && i <= av_top_index(messages); i++) {
+            SV **slot = av_fetch(messages, i, FALSE);
+            if (slot)
+                Perl_diag_tree_mutate(aTHX_ *slot,
+                    PERL_DIAG_TREE_MARK_DELIVERED);
+        }
+    }
+}
+
+static void Perl_diag_deliver_unit(pTHX_ perl_diag_delivery *delivery, SV *view,
+                                bool warning, bool skip_warn, UV parent);
+
+static void
+Perl_diag_deliver_emissions(pTHX_ perl_diag_delivery *delivery, AV *emissions,
+                         bool skip_warn, UV parent)
+{
+    SSize_t i;
+    for (i = 0; emissions && i <= av_top_index(emissions); i++) {
+        SV **slot = av_fetch(emissions, i, FALSE);
+        if (slot)
+            Perl_diag_deliver_unit(aTHX_ delivery, *slot,
+                !Perl_diag_exception_has_error_severity(aTHX_ *slot), skip_warn, parent);
+    }
+}
+
+/* A hook's die stops that hook, not the surrounding delivery loop. */
+static void
+Perl_diag_deliver_unit(pTHX_ perl_diag_delivery *delivery, SV *view,
+                    bool warning, bool skip_warn, UV parent)
+{
+    AV *messages = Perl_diag_messages(aTHX_ view);
+    HV *record = Perl_diag_delivery_record(aTHX_ delivery, view,
+                                        warning ? "warning" : "error", parent);
+    UV id = delivery->next_id;
+    perl_diag_hook_result result = { NULL, NULL };
+    if (!parent)
+        delivery->die_group_seen = FALSE;
+    bool invoked = FALSE;
+    bool already_delivered = FALSE;
+
+    if (warning) {
+        SV **first = av_fetch(messages, 0, FALSE);
+        if (first && SvROK(*first)) {
+            SV **marked = hv_fetchs(MUTABLE_HV(SvRV(*first)), "_warning_delivered", FALSE);
+            already_delivered = marked && SvTRUE(*marked);
+        }
+        if (!skip_warn && !already_delivered)
+            invoked = Perl_invoke_exception_hook_internal(aTHX_ delivery->exception, TRUE,
+                Perl_diag_warning_compat(aTHX_ view), &result);
+    }
+    else {
+        SSize_t i;
+        for (i = 0; i <= av_top_index(messages); i++) {
+            SV **slot = av_fetch(messages, i, FALSE);
+            if (slot)
+                Perl_diag_tree_mutate(aTHX_ *slot,
+                    PERL_DIAG_TREE_MARK_FATAL);
+        }
+        Perl_diag_request_unwind(aTHX_ delivery);
+        Perl_diag_publish_current(aTHX_ delivery, messages);
+        if (!delivery->die_group_seen) {
+            delivery->die_group_seen = TRUE;
+            delivery->die_called = TRUE;
+            (void)hv_stores(MUTABLE_HV(SvRV(delivery->unwind_record)),
+                            "die_hook_called", newSViv(1));
+            if (PL_diehook && SvTRUE(PL_diehook) && !PL_in_diehook)
+                invoked = Perl_invoke_exception_hook_internal(aTHX_ delivery->exception, FALSE,
+                    Perl_diag_error_hook_value(aTHX_ delivery, view), &result);
+        }
+    }
+    if (invoked)
+        (void)hv_stores(record, "hook", newSVpv(warning ? "__WARN__" : "__DIE__", 0));
+
+    bool rethrow = result.failure && SvROK(result.failure)
+        && SvRV(result.failure) == SvRV(delivery->exception);
+    bool replaced = result.failure && !rethrow;
+    bool suppressed = warning && (invoked || already_delivered);
+    if (rethrow) {
+        AV *current = Perl_diag_messages(aTHX_ delivery->exception);
+        SSize_t i;
+        for (i = 0; current && i <= av_top_index(current); i++) {
+            SV **slot = av_fetch(current, i, FALSE);
+            if (slot && !Perl_diag_message_present(aTHX_ delivery->source, *slot)
+                && !Perl_diag_message_present(aTHX_ delivery->output, *slot)
+                && !Perl_diag_message_present(aTHX_ messages, *slot))
+                av_push(messages, newSVsv(*slot));
+        }
+    }
+    (void)hv_stores(record, "status", newSVpv(replaced ? "replaced"
+        : suppressed ? "suppressed" : "ready", 0));
+    if (suppressed && !result.failure && (!result.emissions || av_top_index(result.emissions) < 0)) {
+        SSize_t i;
+        for (i = 0; i <= av_top_index(messages); i++) {
+            SV **slot = av_fetch(messages, i, FALSE);
+            if (slot)
+                Perl_diag_tree_mutate(aTHX_ *slot,
+                    PERL_DIAG_TREE_MARK_DELIVERED);
+        }
+        if (!already_delivered || !parent)
+            Perl_diag_copy_messages(aTHX_ delivery->output, messages);
+    }
+    Perl_diag_deliver_emissions(aTHX_ delivery, result.emissions, warning, id);
+    if (replaced) {
+        Perl_diag_deliver_unit(aTHX_ delivery, result.failure, FALSE, TRUE, id);
+    }
+    else if (!suppressed) {
+        Perl_diag_copy_messages(aTHX_ delivery->output, messages);
+        Perl_diag_emit_group(aTHX_ view, warning);
+    }
+}
+
+static void
+Perl_diag_wrap_frame_push(pTHX_ AV *pending, AV *parent, SSize_t index,
+                          bool suppress_self, bool exit_frame)
+{
+    AV *frame = newAV();
+    av_push(frame, parent
+        ? newRV_inc(MUTABLE_SV(parent)) : newSV(0));
+    av_push(frame, newSViv(index));
+    av_push(frame, newSViv(suppress_self));
+    av_push(frame, newSViv(exit_frame));
+    av_push(pending, newRV_noinc(MUTABLE_SV(frame)));
+}
+
+static void
+Perl_diag_wrap_fatalized_warning_node(pTHX_ AV *root_parent,
+                                     SSize_t root_index, bool fatal_all,
+                                     const char *all_reason,
+                                     bool suppress_root)
+{
+    AV *pending = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    AV *active = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+
+    Perl_diag_wrap_frame_push(aTHX_ pending, root_parent, root_index,
+                              suppress_root, FALSE);
+    while (av_top_index(pending) >= 0) {
+        SV *frame_ref = av_pop(pending);
+        AV *frame;
+        SV **parent_slot;
+        SV **index_slot;
+        SV **suppress_slot;
+        SV **exit_slot;
+        AV *parent;
+        SSize_t index;
+        SV **diagnostic_slot;
+        SV *diagnostic;
+        HV *fields;
+        SV **code;
+        bool already_wrapper;
+        SSize_t i;
+
+        if (!frame_ref || !SvROK(frame_ref)
+            || SvTYPE(SvRV(frame_ref)) != SVt_PVAV) {
+            if (frame_ref)
+                SvREFCNT_dec_NN(frame_ref);
+            continue;
+        }
+        frame = MUTABLE_AV(SvRV(frame_ref));
+        parent_slot = av_fetch(frame, 0, FALSE);
+        index_slot = av_fetch(frame, 1, FALSE);
+        suppress_slot = av_fetch(frame, 2, FALSE);
+        exit_slot = av_fetch(frame, 3, FALSE);
+        if (exit_slot && SvTRUE(*exit_slot)) {
+            SV *active_node = av_pop(active);
+            if (active_node)
+                SvREFCNT_dec_NN(active_node);
+            SvREFCNT_dec_NN(frame_ref);
+            continue;
+        }
+        if (!parent_slot || !SvROK(*parent_slot)
+            || SvTYPE(SvRV(*parent_slot)) != SVt_PVAV
+            || !index_slot || !SvOK(*index_slot)) {
+            SvREFCNT_dec_NN(frame_ref);
+            continue;
+        }
+        parent = MUTABLE_AV(SvRV(*parent_slot));
+        index = SvIV(*index_slot);
+        diagnostic_slot = av_fetch(parent, index, FALSE);
+        if (!diagnostic_slot || !SvROK(*diagnostic_slot)
+            || SvTYPE(SvRV(*diagnostic_slot)) != SVt_PVHV) {
+            SvREFCNT_dec_NN(frame_ref);
+            continue;
+        }
+        diagnostic = *diagnostic_slot;
+
+        /* Raw hash edits can bypass append's cycle check. Track only the
+         * active DFS path so cycles stop while shared branches are visited. */
+        for (i = 0; i <= av_top_index(active); i++) {
+            SV **ancestor = av_fetch(active, i, FALSE);
+            if (ancestor && SvROK(*ancestor)
+                && SvRV(*ancestor) == SvRV(diagnostic))
+                break;
+        }
+        if (i <= av_top_index(active)) {
+            SvREFCNT_dec_NN(frame_ref);
+            continue;
+        }
+        av_push(active, newSVsv(diagnostic));
+        Perl_diag_wrap_frame_push(aTHX_ pending, NULL, 0, FALSE, TRUE);
+
+        fields = MUTABLE_HV(SvRV(diagnostic));
+        code = hv_fetchs(fields, "code", FALSE);
+        already_wrapper = code && SvPOK(*code)
+            && strEQ(SvPV_nolen_const(*code), "ERROR_FATALIZED_WARNING_WRAPPER");
+
+        /* Preserve the warning owned by an existing wrapper while visiting
+         * details beneath it. Notes remain supplementary diagnostics. */
+        if (!already_wrapper
+            && !(suppress_slot && SvTRUE(*suppress_slot))
+            && !sv_derived_from(diagnostic, "XPerl::Diagnostic::Note")
+            && Perl_diag_is_warning(aTHX_ diagnostic))
+        {
+            SV **fatal = hv_fetchs(fields, "_fatal_warning", FALSE);
+            if (fatal_all || (fatal && SvTRUE(*fatal))) {
+                const char *reason = fatal_all ? all_reason
+                    : "fatal warning category";
+                SV *wrapper = Perl_diag_fatalized_warning(aTHX_
+                    diagnostic, reason);
+                sv_setsv(*diagnostic_slot, wrapper);
+                SvREFCNT_dec_NN(wrapper);
+                diagnostic = *diagnostic_slot;
+                {
+                    SV *active_node = av_pop(active);
+                    if (active_node)
+                        SvREFCNT_dec_NN(active_node);
+                    av_push(active, newSVsv(diagnostic));
+                }
+                fields = MUTABLE_HV(SvRV(diagnostic));
+                already_wrapper = TRUE;
+            }
+        }
+
+        {
+            SV **children_slot = hv_fetchs(fields, "contents", FALSE);
+            AV *children = children_slot && SvROK(*children_slot)
+                && SvTYPE(SvRV(*children_slot)) == SVt_PVAV
+                ? MUTABLE_AV(SvRV(*children_slot)) : NULL;
+            SSize_t last = children ? av_top_index(children) : -1;
+            for (i = last; i >= 0; i--) {
+                Perl_diag_wrap_frame_push(aTHX_ pending, children, i,
+                    already_wrapper && i == 0, FALSE);
+            }
+        }
+        SvREFCNT_dec_NN(frame_ref);
+    }
+
+}
+
+static void
+Perl_diag_wrap_fatalized_warnings(pTHX_ SV *exception)
+{
+    AV *messages = Perl_diag_messages(aTHX_ exception);
+    SSize_t i;
+    const bool fatal_all = PL_warnhook == PERL_WARNHOOK_FATAL;
+
+    if (PL_in_eval & EVAL_KEEPERR)
+        return;
+
+    for (i = 0; messages && i <= av_top_index(messages); i++) {
+        SV **slot = av_fetch(messages, i, FALSE);
+        if (!slot || !SvROK(*slot))
+            continue;
+        {
+            const char *reason = fatal_all
+            ? (PL_warnhook == PERL_WARNHOOK_FATAL
+                ? "fatal warning hook" : "fatal warning category")
+            : "fatal warning category";
+            Perl_diag_wrap_fatalized_warning_node(aTHX_ messages, i,
+                                                   fatal_all, reason, FALSE);
+        }
+    }
+}
+
+static bool
+Perl_diag_process_delivery(pTHX_ SV *exception, U32 category, bool force_error)
+{
+    perl_diag_delivery delivery;
+    perl_diag_hook_result except_result = { NULL, NULL };
+    Zero(&delivery, 1, perl_diag_delivery);
+    delivery.exception = exception;
+    (void)hv_delete(MUTABLE_HV(SvRV(exception)), "_delivery_output_complete",
+                    sizeof("_delivery_output_complete") - 1, G_DISCARD);
+    delivery.records = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    delivery.output = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    delivery.actions = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    Perl_diag_wrap_fatalized_warnings(aTHX_ exception);
+    if (Perl_diag_exception_is_error(aTHX_ exception, category, force_error))
+        Perl_diag_request_unwind(aTHX_ &delivery);
+    (void)Perl_diag_invoke_excepthook(aTHX_ exception, &except_result);
+    (void)hv_stores(MUTABLE_HV(SvRV(exception)), "_delivery",
+                    newRV_inc(MUTABLE_SV(delivery.records)));
+    Perl_diag_wrap_fatalized_warnings(aTHX_ exception);
+    if (Perl_diag_exception_is_error(aTHX_ exception, category, force_error))
+        Perl_diag_request_unwind(aTHX_ &delivery);
+
+    delivery.source = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    Perl_diag_copy_messages(aTHX_ delivery.source, Perl_diag_messages(aTHX_ exception));
+    delivery.more_after_source = except_result.emissions && av_top_index(except_result.emissions) >= 0;
+    if (except_result.failure) {
+        SV *view = Perl_diag_delivery_view(aTHX_ exception, delivery.source);
+        HV *record = Perl_diag_delivery_record(aTHX_ &delivery, view, "exception", 0);
+        (void)hv_stores(record, "status", newSVpvs("replaced"));
+        (void)hv_stores(record, "hook", newSVpvs("__EXCEPT__"));
+        UV parent = delivery.next_id;
+        av_clear(delivery.source);
+        Perl_diag_deliver_emissions(aTHX_ &delivery, except_result.emissions, TRUE, parent);
+        Perl_diag_deliver_unit(aTHX_ &delivery, except_result.failure, FALSE, TRUE, parent);
+    }
+    else {
+        bool compile_batch = delivery.must_unwind && Perl_diag_compile_error_batch(aTHX_ delivery.source);
+        delivery.fatal_warning_episode = delivery.must_unwind
+            && !Perl_diag_exception_has_error_severity(aTHX_ exception);
+        Perl_diag_delivery_append_actions(aTHX_ &delivery, 0, compile_batch);
+        for (delivery.action_index = 0;
+             delivery.action_index <= av_top_index(delivery.actions);
+             delivery.action_index++) {
+            SV **action_slot = av_fetch(delivery.actions,
+                                        delivery.action_index, FALSE);
+            HV *action;
+            SV **root;
+            SV **view_slot;
+            SV **warning_slot;
+            SSize_t source_top;
+            if (!action_slot || !SvROK(*action_slot)
+                || SvTYPE(SvRV(*action_slot)) != SVt_PVHV)
+                continue;
+            action = MUTABLE_HV(SvRV(*action_slot));
+            root = hv_fetchs(action, "root", FALSE);
+            view_slot = hv_fetchs(action, "group", FALSE);
+            warning_slot = hv_fetchs(action, "warning", FALSE);
+            if (!root || !Perl_diag_message_present(aTHX_
+                    Perl_diag_messages(aTHX_ exception), *root)
+                || !view_slot || !SvROK(*view_slot)
+                || !warning_slot)
+                continue;
+            Perl_diag_deliver_unit(aTHX_ &delivery, *view_slot,
+                SvTRUE(*warning_slot), FALSE, 0);
+            source_top = av_top_index(delivery.source);
+            Perl_diag_collect_new_messages(aTHX_ &delivery);
+            if (av_top_index(delivery.source) > source_top)
+                Perl_diag_delivery_append_actions(aTHX_ &delivery,
+                    source_top + 1, compile_batch);
+        }
+        delivery.more_after_source = FALSE;
+        Perl_diag_deliver_emissions(aTHX_ &delivery, except_result.emissions, TRUE, 0);
+    }
+    if (delivery.must_unwind && !delivery.die_called) {
+        AV *unit = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+        Perl_diag_copy_messages(aTHX_ unit, delivery.output);
+        av_clear(delivery.output);
+        Perl_diag_deliver_unit(aTHX_ &delivery,
+            Perl_diag_delivery_view(aTHX_ exception, unit), FALSE, TRUE, 0);
+    }
+    (void)hv_stores(MUTABLE_HV(SvRV(exception)), "contents",
+                    newRV_inc(MUTABLE_SV(delivery.output)));
+    if (delivery.must_unwind && !Perl_diag_error_count(aTHX_ exception))
+        Perl_diag_increment_error_count(aTHX_ exception);
+
+    (void)hv_stores(MUTABLE_HV(SvRV(exception)), "_delivery_output_complete", newSViv(1));
+    return delivery.must_unwind;
+}
+
+static void
+Perl_diag_flush_exception(pTHX_ SV *exception, U32 category, bool force_error)
+{
+    perl_diag_hook_capture *capture = Perl_diag_active_hook_capture(aTHX);
+    if (capture) {
+        if (Perl_diag_exception_is_error(aTHX_ exception, category, force_error)) {
+            die_unwind(exception);
+            NORETURN_FUNCTION_END;
+        }
+        av_push(capture->emissions, newSVsv(exception));
+        if (capture->kind == PERL_DIAG_HOOK_DIE && !PL_in_warnhook)
+            Perl_diag_deliver_warning_hooks(aTHX_ exception);
+        return;
+    }
+    if (force_error && !Perl_diag_error_count(aTHX_ exception))
+        Perl_diag_increment_error_count(aTHX_ exception);
+    if (Perl_diag_process_delivery(aTHX_ exception, category, force_error)) {
+        die_unwind(exception);
+        NORETURN_FUNCTION_END;
+    }
+}
+
+static void
+Perl_diag_warner_exception_internal(pTHX_ SV *exception, U32 category)
+{
+    bool const is_error = Perl_diag_exception_is_error(aTHX_ exception,
+                                                     category, FALSE);
+
+    /* Constant folding can run ops while a parser remains allocated.
+     * Only active parsing owns the compile-error accumulator. */
+    if (PL_parser && !IN_PERL_RUNTIME) {
+        if (is_error && !Perl_diag_error_count(aTHX_ exception))
+            Perl_diag_increment_error_count(aTHX_ exception);
+        Perl_diag_append_exception_internal(aTHX_ &PL_pending_exception, exception);
+        return;
+    }
+
+    Perl_diag_flush_exception(aTHX_ exception, category, FALSE);
+}
+
+/*
+=for apidoc diag_warner_exception
+
+Delivers an accumulated structured exception as a warning in the given
+warning category. If the warning is fatal, the complete exception is thrown.
+
+=cut
+*/
+void
+Perl_diag_warner_exception(pTHX_ SV *exception, U32 category)
+{
+    PERL_ARGS_ASSERT_DIAG_WARNER_EXCEPTION;
+    Perl_diag_warner_exception_internal(aTHX_ exception, category);
+}
+
+/*
+=for apidoc diag_ck_warner_exception
+
+Checks whether the warning category is enabled and, if so, delivers the
+accumulated structured exception as a warning.
+
+=cut
+*/
+void
+Perl_diag_ck_warner_exception(pTHX_ SV *exception, U32 category)
+{
+    PERL_ARGS_ASSERT_DIAG_CK_WARNER_EXCEPTION;
+    GET_aTHX_if_NULL;
+    if (Perl_diag_error_count(aTHX_ exception) || Perl_ckwarn(aTHX_ category))
+        Perl_diag_warner_exception_internal(aTHX_ exception, category);
+}
+
+void
+Perl_diag_ck_warner_d(pTHX_ UV diag_index, AV *params, U32 category,
+                       const char *pat, ...)
+{
+    PERL_ARGS_ASSERT_DIAG_CK_WARNER_D;
+    GET_aTHX_if_NULL;
+    if (Perl_ckwarn_d(aTHX_ category)) {
+        va_list args;
+        va_start(args, pat);
+        Perl_diag_vwarner(aTHX_ diag_index, params, category, pat, &args);
+        va_end(args);
+    }
+}
+
+/*
+=for apidoc diag_ck_warner_d_sv
+
+Checks whether the warning category is enabled by C<Perl_ckwarn_d()> and, if
+so, delivers the supplied structured diagnostic as a warning.
+
+=cut
+*/
+void
+Perl_diag_ck_warner_d_sv(pTHX_ UV diag_index, AV *params, U32 category,
+                         SV *message)
+{
+    PERL_ARGS_ASSERT_DIAG_CK_WARNER_D_SV;
+    GET_aTHX_if_NULL;
+    if (Perl_ckwarn_d(aTHX_ category))
+        Perl_diag_warner_sv_internal(aTHX_ diag_index, params, category, message);
+}
+
+void
+Perl_diag_fatal_warner(pTHX_ UV diag_index, AV *params, U32 category,
+                        const char *pat, ...)
+{
+    PERL_ARGS_ASSERT_DIAG_FATAL_WARNER;
+    va_list args;
+    va_start(args, pat);
+    Perl_diag_vfatal_warner(aTHX_ diag_index, params, category, pat, &args);
+    va_end(args);
+}
+
+/*
+=for apidoc diag_fatal_warner_sv
+
+Delivers the supplied structured diagnostic as a fatal warning in the given
+warning category.
+
+=cut
+*/
+void
+Perl_diag_fatal_warner_sv(pTHX_ UV diag_index, AV *params, U32 category,
+                          SV *message)
+{
+    PERL_ARGS_ASSERT_DIAG_FATAL_WARNER_SV;
+    Perl_diag_fatal_warner_sv_internal(aTHX_ diag_index, params, category, message);
+    NORETURN_FUNCTION_END;
+}
+
 void
 Perl_fatal_warner(pTHX_ U32 err, const char *pat, ...)
 {
@@ -2283,12 +4587,12 @@ Perl_vfatal_warner(pTHX_ U32 err UNUSED, const char *pat, va_list *args)
 
     SV * const msv = vmess(pat, args);
 
-    if (PL_parser && PL_parser->error_count) {
+    if (PL_parser && PERL_DIAG_ERROR_COUNT) {
         defer_error(msv);
     }
     else {
-        invoke_exception_hook(msv, FALSE);
-        die_unwind(msv);
+        Perl_diag_append_pending_compile_exception(aTHX_ msv);
+        PERL_DIAG_THROW_DIAGNOSTICS();
     }
 }
 
@@ -2562,7 +4866,7 @@ Perl_my_popen_list(pTHX_ const char *mode, int n, SV **args)
             }
             return NULL;
         }
-        ck_warner(packWARN(WARN_PIPE), "Can't fork, trying again in 5 seconds");
+        PERL_WARN_WARNING_IO_PIPE_FORK_FAILED_RETRYING();
         sleep(5);
     }
     if (pid == 0) {
@@ -2639,7 +4943,7 @@ Perl_my_popen_list(pTHX_ const char *mode, int n, SV **args)
             int pid2, status;
             PerlLIO_close(p[This]);
             if (read_total != sizeof(int))
-                croak("panic: kid popen errno read, n=%u", read_total);
+                PERL_PANIC_ERROR_INTERNAL_SYSTEM_PROCESS_CHILD_ERRNO_PIPE_PARTIAL_READ(read_total);
             do {
                 pid2 = wait4pid(pid, &status, 0);
             } while (pid2 == -1 && errno == EINTR);
@@ -2656,7 +4960,7 @@ Perl_my_popen_list(pTHX_ const char *mode, int n, SV **args)
 #  elif defined(WIN32)
     return win32_popenlist(mode, n, args);
 #  else
-    croak("List form of piped open not implemented");
+    PERL_THROW_LIST_FORM_OF_PIPED_OPEN_NOT_IMPLEMENTED();
     return (PerlIO *) NULL;
 #  endif
 #endif
@@ -2713,10 +5017,10 @@ Perl_my_popen(pTHX_ const char *cmd, const char *mode)
                 PerlLIO_close(pp[1]);
             }
             if (!doexec)
-                croak("Can't fork: %s", Strerror(errno));
+                PERL_THROW_ERROR_SYSTEM_PROCESS_PIPE_FORK_FAILED(Strerror(errno));
             return NULL;
         }
-        ck_warner(packWARN(WARN_PIPE), "Can't fork, trying again in 5 seconds");
+        PERL_WARN_WARNING_IO_PIPE_FORK_FAILED_RETRYING();
         sleep(5);
     }
     if (pid == 0) {
@@ -2803,7 +5107,7 @@ Perl_my_popen(pTHX_ const char *cmd, const char *mode)
             int pid2, status;
             PerlLIO_close(p[This]);
             if (n != sizeof(int))
-                croak("panic: kid popen errno read, n=%u", n);
+                PERL_PANIC_ERROR_INTERNAL_SYSTEM_PROCESS_CHILD_ERRNO_PIPE_PARTIAL_READ(n);
             do {
                 pid2 = wait4pid(pid, &status, 0);
             } while (pid2 == -1 && errno == EINTR);
@@ -2926,7 +5230,7 @@ Perl_my_fork(void)
     return amigaos_fork();
 #else
     /* this "canna happen" since nothing should be calling here if !HAS_FORK */
-    Perl_croak_nocontext("fork() not available");
+    PERL_THROW_ERROR_SYSTEM_PROCESS_FORK_UNAVAILABLE();
     return 0;
 #endif /* HAS_FORK */
 }
@@ -3290,7 +5594,7 @@ Perl_wait4pid(pTHX_ Pid_t pid, int *statusp, int flags)
 #endif
     {
         if (flags)
-            croak("Can't do waitpid with flags");
+            PERL_THROW_ERROR_SYSTEM_PROCESS_WAIT_FLAGS_UNSUPPORTED();
         else {
             while ((result = PerlProc_wait(statusp)) != pid && pid > 0 && result >= 0)
                 pidgone(result,*statusp);
@@ -3659,11 +5963,11 @@ Perl_find_script(pTHX_ const char *scriptname, bool dosearch,
         if (!xfound) {
             if (flags & 1) {			/* do or die? */
                 /* diag_listed_as: Can't execute %s */
-                croak("Can't %s %s%s%s",
-                      (xfailed ? "execute" : "find"),
-                      (xfailed ? xfailed : scriptname),
-                      (xfailed ? "" : " on PATH"),
-                      (xfailed || seen_dot) ? "" : ", '.' not in PATH");
+                PERL_THROW_ERROR_SYSTEM_PROCESS_EXECUTABLE_LOOKUP_FAILED(
+                    xfailed ? perl_diag_selector_domain_1557_0_execute_1 : perl_diag_selector_domain_1557_0_find_2,
+                    xfailed ? perl_diag_selector_domain_1557_1_unavailable_1
+                            : seen_dot ? perl_diag_selector_domain_1557_1_ordinary_3 : perl_diag_selector_domain_1557_1_dot_not_in_path_2,
+                    xfailed ? xfailed : scriptname);
             }
             scriptname = NULL;
         }
@@ -3702,7 +6006,8 @@ Perl_set_context(void *t)
     {
         const int error = pthread_setspecific(PL_thr_key, t);
         if (error)
-            croak_nocontext("panic: pthread_setspecific, error=%d", error);
+            PERL_PANIC_PTHREAD_SETSPECIFIC_ERROR_AT_LOCATION(
+                error, __FILE__, __LINE__);
     }
 #  endif
 
@@ -3855,15 +6160,12 @@ Perl_report_wrongway_fh(pTHX_ const GV *gv, const char have)
            = gv && (isGV_with_GP(gv))
                 ? GvENAME_HEK((gv))
                 : NULL;
-        const char * const direction = have == '>' ? "out" : "in";
+        const char * const direction = have == '>' ? "output" : "input";
 
         if (name && HEK_LEN(name))
-            warner(packWARN(WARN_IO),
-                        "Filehandle %" HEKf " opened only for %sput",
-                        HEKfARG(name), direction);
+            PERL_WARN_WARNING_IO_FILEHANDLE_WRONG_DIRECTION_WITH_NAME(name, PERL_DIAG_SELECTOR_FROM_WARNING_IO_FILEHANDLE_WRONG_DIRECTION_WITH_NAME_DIRECTION(direction));
         else
-            warner(packWARN(WARN_IO),
-                        "Filehandle opened only for %sput", direction);
+            PERL_WARN_WARNING_IO_FILEHANDLE_WRONG_DIRECTION_WITHOUT_NAME(PERL_DIAG_SELECTOR_FROM_WARNING_IO_FILEHANDLE_WRONG_DIRECTION_WITHOUT_NAME_DIRECTION(direction));
     }
 }
 
@@ -3890,29 +6192,27 @@ Perl_report_evil_fh(pTHX_ const GV *gv)
         SV * const name
             = gv && isGV_with_GP(gv) && GvENAMELEN(gv) ?
                                      newSVhek_mortal(GvENAME_HEK(gv)) : NULL;
-        const char * const pars =
-            (const char *)(OP_IS_FILETEST(op) ? "" : "()");
+        const char * const operation_form =
+            (const char *)(OP_IS_FILETEST(op) ? "operator" : "call");
         const char * const func =
             (const char *)
             (op == OP_READLINE || op == OP_RCATLINE
                                  ? "readline"  :	/* "<HANDLE>" not nice */
              op == OP_LEAVEWRITE ? "write" :		/* "write exit" not nice */
-             PL_op_desc[op]);
+             PERL_DIAG_PL_OP_DESC_EVIL_FILEHANDLE_OPERATION(op));
         const char * const type =
             (const char *)
             (OP_IS_SOCKET(op) || (io && IoTYPE(io) == IoTYPE_SOCKET)
              ? "socket" : "filehandle");
         const bool have_name = name && SvCUR(name);
-        warner(packWARN(warn_type),
-                   "%s%s on %s %s%s%" SVf, func, pars, vile, type,
-                    have_name ? " " : "",
-                    SVfARG(have_name ? name : &PL_sv_no));
+        PERL_WARN_WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE(PERL_DIAG_SELECTOR_FROM_WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE_HANDLE_STATE(vile), PERL_DIAG_SELECTOR_FROM_WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE_HANDLE_TYPE(type),
+            have_name ? perl_diag_selector_domain_2250_0_named_1 : perl_diag_selector_domain_2250_0_unnamed_2, PERL_DIAG_SELECTOR_FROM_WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE_OPERATION_FORM(operation_form), func,
+            have_name ? name : &PL_sv_no, packWARN(warn_type));
         if (io && IoDIRP(io) && !(IoFLAGS(io) & IOf_FAKE_DIRP))
-                warner(packWARN(warn_type),
-                        "\t(Are you trying to call %s%s on dirhandle%s%" SVf "?)\n",
-                        func, pars, have_name ? " " : "",
-                        SVfARG(have_name ? name : &PL_sv_no)
-                            );
+                PERL_WARN_WARNING_IO_DIRHANDLE_USED_AS_FILEHANDLE_SUGGESTION(
+                    have_name ? perl_diag_selector_domain_2250_0_named_1 : perl_diag_selector_domain_2250_0_unnamed_2, func,
+                    PERL_DIAG_SELECTOR_FROM_WARNING_IO_DIRHANDLE_USED_AS_FILEHANDLE_SUGGESTION_OPERATION_FORM(operation_form),
+                    have_name ? name : &PL_sv_no, packWARN(warn_type));
     }
 }
 
@@ -4311,8 +6611,7 @@ Perl_getcwd_sv(pTHX_ SV *sv)
     cino = statbuf.st_ino;
 
     if (cdev != orig_cdev || cino != orig_cino) {
-        croak("Unstable directory path, "
-                   "current directory changed unexpectedly");
+        PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_CHANGED_DURING_GETCWD();
     }
 
     return TRUE;
@@ -4659,11 +6958,11 @@ Perl_parse_unicode_opts(pTHX_ const char **popt)
                     if (isSPACE(*p))
                         goto the_end_of_the_opts_parser;
                     else
-                        croak("Unknown Unicode option letter '%c'", *p);
+                        PERL_THROW_ERROR_RUN_OPTION_UNICODE_UNKNOWN_LETTER(*p);
                 }
             }
             else {
-                croak("Invalid number '%s' for -C option.\n", p);
+                PERL_THROW_ERROR_RUN_OPTION_UNICODE_INVALID_MASK(p);
             }
         }
         else {
@@ -4693,8 +6992,7 @@ Perl_parse_unicode_opts(pTHX_ const char **popt)
                       if (*p != '\n' && *p != '\r') {
                         if(isSPACE(*p)) goto the_end_of_the_opts_parser;
                         else
-                          croak(
-                                     "Unknown Unicode option letter '%c'", *p);
+                          PERL_THROW_ERROR_RUN_OPTION_UNICODE_UNKNOWN_LETTER(*p);
                       }
                  }
             }
@@ -4706,7 +7004,7 @@ Perl_parse_unicode_opts(pTHX_ const char **popt)
   the_end_of_the_opts_parser:
 
   if (opt & ~PERL_UNICODE_ALL_FLAGS)
-       croak("Unknown Unicode option value %" UVuf,
+       PERL_THROW_ERROR_RUN_OPTION_UNICODE_UNKNOWN_FLAG_BITS(
                   (UV) (opt & ~PERL_UNICODE_ALL_FLAGS));
 
   *popt = p;
@@ -4876,7 +7174,7 @@ Perl_get_entropy_portable(pTHX_ U8 *buffer, STRLEN length, const char *failure)
 #endif
 
     if (failure)
-        croak("%s", failure);
+        PERL_THROW_ERROR_USER_OPAQUE_RENDERED_MESSAGE(failure);
 
     S_fill_fallback_entropy(aTHX_ buffer, length);
 }
@@ -4937,7 +7235,7 @@ Perl_get_hash_seed(pTHX_ unsigned char * const seed_buffer)
             env_pv++;
 
         if (*env_pv && !isXDIGIT(*env_pv)) {
-            warn("perl: warning: Non hex character in '$ENV{PERL_HASH_SEED}', seed only partially set\n");
+            PERL_WARN_WARNING_RUN_ENVIRONMENT_HASH_SEED_NON_HEX_CHARACTER();
         }
         /* should we check for unparsed crap? */
         /* should we warn about unused hex? */
@@ -4964,7 +7262,7 @@ Perl_get_hash_seed(pTHX_ unsigned char * const seed_buffer)
         } else if (strEQ(env_pv,"2") || strEQ(env_pv,"DETERMINISTIC")) {
             PL_hash_rand_bits_enabled= 2;
         } else {
-            warn("perl: warning: strange setting in '$ENV{PERL_PERTURB_KEYS}': '%s'\n", env_pv);
+            PERL_WARN_WARNING_RUN_ENVIRONMENT_HASH_PERTURBATION_INVALID(env_pv);
         }
     }
 #  endif
@@ -5406,7 +7704,7 @@ Perl_my_snprintf(char *buffer, const Size_t len, const char *format, ...)
                 retval = quadmath_snprintf(buffer, len, format, va_arg(ap, NV));
             );
             if (retval == -1) {
-                croak("panic: quadmath_snprintf failed, format \"%s\"", format);
+                PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_FORMATTING_FAILED(format);
             }
             quadmath_valid = TRUE;
         }
@@ -5432,7 +7730,7 @@ Perl_my_snprintf(char *buffer, const Size_t len, const char *format, ...)
          * If quadmath_format_needed() returns false, we are reasonably
          * certain that we can call vnsprintf() or vsprintf() safely. */
         if (!quadmath_valid && quadmath_format_needed(format))
-          croak("panic: quadmath_snprintf failed, format \"%s\"", format);
+          PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_FORMATTING_FAILED(format);
 
     }
 #endif
@@ -5459,7 +7757,7 @@ Perl_my_snprintf(char *buffer, const Size_t len, const char *format, ...)
         (len > 0 && (Size_t)retval >= len)
 #endif
     )
-        croak("panic: my_snprintf buffer overflow");
+        PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_SNPRINTF_FAILED();
     return retval;
 }
 
@@ -5486,7 +7784,7 @@ Perl_my_vsnprintf(char *buffer, const Size_t len, const char *format, va_list ap
     PERL_UNUSED_ARG(format);
     /* the cast is to avoid gcc -Wsizeof-array-argument complaining */
     PERL_UNUSED_ARG((void*)ap);
-    Perl_croak_nocontext("panic: my_vsnprintf not available with quadmath");
+    PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_VSNPRINTF_UNAVAILABLE();
     return 0;
 #else
     int retval;
@@ -5530,7 +7828,7 @@ Perl_my_vsnprintf(char *buffer, const Size_t len, const char *format, va_list ap
         (len > 0 && (Size_t)retval >= len)
 #  endif
     )
-        Perl_croak_nocontext("panic: my_vsnprintf buffer overflow");
+        PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_VSNPRINTF_FAILED();
 
     return retval;
 #endif
@@ -5794,13 +8092,10 @@ Perl_xs_handshake(const U32 key, void * v_my_perl, const char * file, ...)
                 || memNE(api_p, "v" PERL_API_VERSION_STRING,
                          sizeof("v" PERL_API_VERSION_STRING)-1)) {
                 if(in_abi_mismatch)
-                    noperl_die("Perl API version %s of %s does not match %s",
-                               api_p, file, "v" PERL_API_VERSION_STRING);
+                    PERL_THROW_ERROR_LOAD_ABI_MODULE_PERL_API_VERSION_MISMATCH_BEFORE_INIT(api_p, file, "v" PERL_API_VERSION_STRING);
                 else {/* use %s for SV * for string literal reuse with above */
                     SV * package_sv = PL_stack_base[ax + 0];
-                    Perl_croak_nocontext("Perl API version %s of %s does not match %s",
-                                          api_p, SvPV_nolen_const(package_sv),
-                                          "v" PERL_API_VERSION_STRING);
+                    PERL_THROW_ERROR_LOAD_ABI_MODULE_PERL_API_VERSION_MISMATCH(api_p, SvPV_nolen_const(package_sv), "v" PERL_API_VERSION_STRING);
                 }
             } /* memcmp() */
         } /* if user wants API Ver Check (xsubpp default is on ) */
@@ -5819,9 +8114,7 @@ A quick process exit using only libc APIs, no perl APIs, is the only fool proof,
 cross platform way to prevent a SEGV.
 */
         if(in_abi_mismatch)
-            noperl_die("%s: loadable library and perl binaries are mismatched"
-                       " (got %s handshake key %p, needed %p)\n",
-                       file, stage, got, need);
+            PERL_THROW_ERROR_LOAD_ABI_MODULE_HANDSHAKE_MISMATCH(file, stage, got, need);
     }
     {
         U32 xsverlen = HS_GETXSVERLEN(key);
@@ -5862,24 +8155,16 @@ S_xs_version_bootcheck(pTHX_ SSize_t items, SSize_t ax, const char *xs_p,
             ? sv : sv_2mortal(new_version(sv));
         xssv = upg_version(xssv, 0);
         if ( vcmp(pmsv,xssv) ) {
-            SV *string = vstringify(xssv);
-            SV *xpt = newSVpvf("%" SVf " object version %" SVf
-                               " does not match ",
-                               SVfARG(module), SVfARG(string));
-
-            SvREFCNT_dec(string);
-            string = vstringify(pmsv);
+            SV *object_version = sv_2mortal(vstringify(xssv));
+            SV *perl_version = sv_2mortal(vstringify(pmsv));
 
             if (vn) {
-                sv_catpvf(xpt, "$%" SVf "::%s %" SVf, SVfARG(module), vn,
-                               SVfARG(string));
+                PERL_THROW_ERROR_LOAD_XS_VERSION_PACKAGE_MISMATCH(module, object_version,
+                                                       vn, perl_version);
             } else {
-                sv_catpvf(xpt, "bootstrap parameter %" SVf, SVfARG(string));
+                PERL_THROW_ERROR_LOAD_XS_VERSION_BOOTSTRAP_MISMATCH(
+                    module, object_version, perl_version);
             }
-            SvREFCNT_dec(string);
-
-            sv_2mortal(xpt);
-            croak_sv(xpt);
         }
     }
 }
@@ -5906,8 +8191,7 @@ Perl_api_version_assert(size_t interp_size, void *v_my_perl,
     if (interp_size != sizeof(PerlInterpreter)) {
         /* detects various types of configuration mismatches */
         /* diag_listed_as: Mismatch between expected and libperl %s */
-        croak("Mismatch between expected and libperl interpreter structure"
-              " size %zd vs %zd", interp_size, sizeof(PerlInterpreter));
+        PERL_THROW_ERROR_LOAD_ABI_INTERPRETER_SIZE_MISMATCH(interp_size, sizeof(PerlInterpreter));
     }
     if (
 #ifdef MULTIPLICITY
@@ -5918,12 +8202,11 @@ Perl_api_version_assert(size_t interp_size, void *v_my_perl,
         ) {
         /* detect threads vs non-threads mismatch */
         /* diag_listed_as: Mismatch between expected and libperl %s */
-        croak("Mismatch between expected and libperl interpreter pointer");
+        PERL_THROW_ERROR_LOAD_ABI_INTERPRETER_POINTER_MISMATCH();
     }
     if (strNE(api_version, PERL_API_VERSION_STRING)) {
         /* diag_listed_as: Mismatch between expected and libperl %s */
-        croak("Mismatch between expected and libperl API versions %s vs %s",
-              api_version, PERL_API_VERSION_STRING);
+        PERL_THROW_ERROR_LOAD_ABI_PERL_API_VERSION_MISMATCH(api_version, PERL_API_VERSION_STRING);
     }
 }
 
@@ -6020,7 +8303,7 @@ Perl_my_dirfd(DIR * dir)
 #elif defined(HAS_DIR_DD_FD)
     return dir->dd_fd;
 #else
-    Perl_croak_nocontext(PL_no_func, "dirfd");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE("dirfd");
     NOT_REACHED; /* NOTREACHED */
     return 0;
 #endif

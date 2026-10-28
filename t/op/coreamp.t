@@ -253,22 +253,18 @@ sub test_proto {
     like $@, qr/^Not enough arguments for $o at /,
       "&$o with too few args";
     eval " &CORE::$o(2) ";
-    like $@, qr/^Type of arg 1 to &CORE::$o must be hash or array (?x:
-                )reference at /,
+    like $@, qr/^Type of arg 1 to &CORE::$o must be hash or array reference at /,
       "&$o with non-ref arg";
     eval " &CORE::$o(*STDOUT{IO}) ";
-    like $@, qr/^Type of arg 1 to &CORE::$o must be hash or array (?x:
-                )reference at /,
+    like $@, qr/^Type of arg 1 to &CORE::$o must be hash or array reference at /,
       "&$o with ioref arg";
     my $class = ref *DATA{IO};
     eval " &CORE::$o(bless(*DATA{IO}, 'hov')) ";
-    like $@, qr/^Type of arg 1 to &CORE::$o must be hash or array (?x:
-                )reference at /,
+    like $@, qr/^Type of arg 1 to &CORE::$o must be hash or array reference at /,
       "&$o with ioref arg with hash overload (which does not count)";
     bless *DATA{IO}, $class;
     eval " &CORE::$o(\\&scriggle) ";
-    like $@, qr/^Type of arg 1 to &CORE::$o must be hash or array (?x:
-                )reference at /,
+    like $@, qr/^Type of arg 1 to &CORE::$o must be hash or array reference at /,
       "&$o with coderef arg";
     eval " &CORE::$o(\\\$_) ";
     like $@, qr/^Type of arg 1 to &CORE::$o must be hash or array (?x:

@@ -532,7 +532,7 @@ BEGIN {
 use vars qw($VERSION $header);
 
 # bump to X.XX in blead, only use X.XX_XX in maint
-$VERSION = '1.82';
+$VERSION = '1.83';
 
 $header = "perl5db.pl version $VERSION";
 
@@ -8653,6 +8653,16 @@ be able to get a stack trace, and output the warning message vi C<DB::dbwarn()>.
 
 =cut
 
+sub _legacy_diagnostic_text {
+    my ($message) = @_;
+
+    return $message
+      unless ref($message) eq 'XPerl::Exception'
+          && $message->can('render');
+
+    return $message->render('legacy');
+}
+
 sub dbwarn {
 
     # No entry/exit trace.
@@ -8672,8 +8682,11 @@ sub dbwarn {
       if defined $^S;    # If error/warning during compilation,
                          # require may be broken.
 
+    my @message = @_;
+    $message[0] = _legacy_diagnostic_text($message[0]) if @message;
+
     # Use the core warn() unless Carp loaded OK.
-    CORE::warn( @_,
+    CORE::warn( @message,
         "\nCannot print stack trace, load with -MCarp option to see stack" ),
       return
       unless defined &Carp::longmess;
@@ -8685,7 +8698,7 @@ sub dbwarn {
 
     # We can call Carp::longmess without its being "debugged" (which we
     # don't want - we just want to use it!). Capture this for later.
-    my $mess = Carp::longmess(@_);
+    my $mess = Carp::longmess(@message);
 
     # Restore $single and $trace to their original values.
     ( $single, $trace ) = ( $mysingle, $mytrace );
@@ -8716,7 +8729,9 @@ sub dbdie {
     local $SIG{__WARN__} = '';
     if ( $dieLevel > 2 ) {
         local $SIG{__WARN__} = \&dbwarn;
-        _db_warn(@_);    # Yell no matter what
+        my @message = @_;
+        $message[0] = _legacy_diagnostic_text($message[0]) if @message;
+        _db_warn(@message);    # Yell no matter what
         return;
     }
     if ( $dieLevel < 2 ) {
@@ -8727,7 +8742,10 @@ sub dbdie {
     # hadn't finished. We don't do it anymore, figuring eval is pretty stable.
     eval { require Carp };
 
-    die( @_,
+    my @message = @_;
+    $message[0] = _legacy_diagnostic_text($message[0]) if @message;
+
+    die( @message,
         "\nCannot print stack trace, load with -MCarp option to see stack" )
       unless defined &Carp::longmess;
 
@@ -8738,11 +8756,11 @@ sub dbdie {
     my ( $mysingle, $mytrace ) = ( $single, $trace );
     $single = 0;
     $trace  = 0;
-    my $mess = "@_";
+    my $mess = "@message";
     {
 
         package Carp;    # Do not include us in the list
-        eval { $mess = Carp::longmess(@_); };
+        eval { $mess = Carp::longmess(@message); };
     }
     ( $single, $trace ) = ( $mysingle, $mytrace );
     die $mess;
@@ -10429,5 +10447,3 @@ sub at_exit {
 package DB;    # Do not trace this 1; below!
 
 1;
-
-

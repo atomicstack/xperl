@@ -369,7 +369,7 @@ Perl_posix_LC_foo(pTHX_ const int c, const U8 classnum) {
 
       default:
         PERL_LCx_UNLOCK(PERL_LC_INDEX_TO_BIT(LC_CTYPE_INDEX_));
-        locale_panic_(Perl_form(aTHX_ "Unknown charclass %d", classnum));
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_CHAR_CLASS_UNKNOWN(&locale_exception, classnum));
     }
 
     PERL_LCx_UNLOCK(PERL_LC_INDEX_TO_BIT(LC_CTYPE_INDEX_));
@@ -3007,9 +3007,7 @@ Perl_utf8_hop_forward_overshoot(const U8 * s, SSize_t off,
 
     if (off != 0) {
         if (UNLIKELY(s >= end && ! remaining)) {
-            Perl_croak_nocontext("panic: Start of forward hop (0x%p) is %td"
-                                 " bytes beyond legal end position (0x%p)",
-                                 s, 1 + s - end, end);
+            PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_FORWARD_HOP_START_OUT_OF_BOUNDS(s, (UV)(1 + s - end), end);
         }
 
         if (UNLIKELY(UTF8_IS_CONTINUATION(*s))) {
@@ -3349,13 +3347,14 @@ Perl_is_utf8_fixed_width_buf_loclen_flags(const U8 * const s,
 }
 
 PERL_STATIC_INLINE bool
-Perl_utf8_to_uv_msgs(const U8 * const s0,
-                     const U8 * const e,
-                     UV * cp_p,
-                     Size_t *advance_p,
-                     U32 flags,
-                     U32 * errors,
-                     AV ** msgs)
+Perl_utf8_to_uv_msgs_or_append_exception(const U8 * const s0,
+                                         const U8 * const e,
+                                         UV * cp_p,
+                                         Size_t *advance_p,
+                                         U32 flags,
+                                         U32 * errors,
+                                         AV ** msgs,
+                                         SV ** exception_slot)
 {
     PERL_ARGS_ASSERT_UTF8_TO_UV_MSGS;
 
@@ -3437,9 +3436,36 @@ Perl_utf8_to_uv_msgs(const U8 * const s0,
 
     /* Here is potentially problematic.  Use the full mechanism */
     bool success = utf8_to_uv_msgs_helper_(s0, e, cp_p, advance_p,
-                                           flags, errors, msgs);
+                                           flags, errors, msgs,
+                                           exception_slot);
     ASSUME(advance_p == NULL || inRANGE(*advance_p, 1, UTF8_MAXBYTES));
     return success;
+}
+
+PERL_STATIC_INLINE bool
+Perl_utf8_to_uv_msgs(const U8 * const s0,
+                     const U8 * const e,
+                     UV * cp_p,
+                     Size_t *advance_p,
+                     U32 flags,
+                     U32 * errors,
+                     AV ** msgs)
+{
+    return Perl_utf8_to_uv_msgs_or_append_exception(s0, e, cp_p, advance_p,
+                                                    flags, errors, msgs, NULL);
+}
+
+PERL_STATIC_INLINE bool
+Perl_utf8_to_uv_append_exception(const U8 * const s0,
+                                 const U8 * const e,
+                                 UV * cp_p,
+                                 Size_t *advance_p,
+                                 U32 flags,
+                                 SV ** exception_slot)
+{
+    return Perl_utf8_to_uv_msgs_or_append_exception(s0, e, cp_p, advance_p,
+                                                    flags, NULL, NULL,
+                                                    exception_slot);
 }
 
 PERL_STATIC_INLINE UV
@@ -3563,9 +3589,7 @@ Perl_is_safe_syscall(pTHX_ const char *pv, STRLEN len, const char *what, const c
         char *null_at;
         if (UNLIKELY((null_at = (char *)memchr(pv, 0, len-1)) != NULL)) {
                 SETERRNO(ENOENT, LIB_INVARG);
-                Perl_ck_warner(aTHX_ packWARN(WARN_SYSCALLS),
-                                   "Invalid \\0 character in %s for %s: %s\\0%s",
-                                   what, op_name, pv, null_at+1);
+                PERL_WARN_WARNING_IO_SYSCALLS_ARGUMENT_EMBEDDED_NUL(what, op_name, pv, null_at+1);
                 return FALSE;
         }
     }
@@ -5327,7 +5351,7 @@ Perl_get_context(void)
     pthread_addr_t t;
     int error = pthread_getspecific(PL_thr_key, &t);
     if (error)
-        Perl_croak_nocontext("panic: pthread_getspecific, error=%d", error);
+        PERL_PANIC_ERROR_INTERNAL_THREADS_CONTEXT_LOOKUP_FAILED(error);
     return (void*)t;
 #    elif defined(I_MACH_CTHREADS)
     return (void*)cthread_data(cthread_self());

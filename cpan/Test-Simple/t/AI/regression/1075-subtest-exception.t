@@ -20,7 +20,11 @@ $events = intercept(sub {
     } or $err = $@;
 });
 
-is($err, "boom\n", "the exception still propagates to the caller");
+like(
+    $err,
+    qr/\Aboom\n\t\.\.\.propagated at .*Test\/Builder\.pm line \d+\.\n\z/,
+    "the exception still propagates to the caller",
+);
 
 my ($subtest) = grep { $_->isa('Test2::Event::Subtest') } @$events;
 ok($subtest, "got a subtest event");
@@ -48,7 +52,11 @@ $events = intercept(sub {
     } or $err = $@;
 });
 
-is($err, "early boom\n", "the early exception propagates too");
+like(
+    $err,
+    qr/\Aearly boom\n\t\.\.\.propagated at .*Test\/Builder\.pm line \d+\.\n\z/,
+    "the early exception propagates too",
+);
 
 my ($fail) = grep { $_->facet_data->{assert} && !$_->facet_data->{assert}{pass} } @$events;
 ok($fail, "the subtest is reported as a failure");

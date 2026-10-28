@@ -991,8 +991,12 @@ sub run_tests {
         {
             () = eval q ["\N{TOO  MANY SPACES}"];
             like ($@, qr/charnames alias definitions may not contain a sequence of multiple spaces/, "Multiple spaces in a row in a charnames alias is fatal");
+            is( $@->contents->[0]->code, 'ERROR_UNICODE_CHARACTER_NAME_REPEATED_SPACE',
+                'multiple spaces in a charname use a structured diagnostic' );
             eval q [use utf8; () = "\N{TOO  MANY SPACES}"];
             like ($@, qr/charnames alias definitions may not contain a sequence of multiple spaces/,  "... same under utf8");
+            is( $@->contents->[0]->code, 'ERROR_UNICODE_CHARACTER_NAME_REPEATED_SPACE',
+                'UTF-8 multiple spaces use a structured diagnostic' );
         }
 
         undef $w;

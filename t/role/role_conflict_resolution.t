@@ -110,7 +110,7 @@ no warnings 'experimental::class';
             method a { "resolved" }
         }
     };
-    like($@, qr/Role composition errors/, "batch error header present");
+    like($@, qr/Role composition could not be completed/, "batch error header present");
     like($@, qr/'b' conflicts/, "conflict for b reported");
     like($@, qr/'c' conflicts/, "conflict for c reported");
     unlike($@, qr/'a' conflicts/, "resolved conflict a not reported");

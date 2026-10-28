@@ -2193,10 +2193,11 @@ print !$@ && $array_hash_tail_ok && $array_hash_tail == 20
     ? "ok 149 - array patterns can capture remaining pairs in a hash\n"
     : "not ok 149 - array patterns can capture remaining pairs in a hash\n";
 
-my ($odd_hash_tail_warning, $odd_hash_tail_value);
+my ($odd_hash_tail_warning, $odd_hash_tail_value, $odd_hash_tail_exception);
 my $odd_hash_tail_ok = eval q{
     use warnings 'misc';
     local $SIG{__WARN__} = sub { $odd_hash_tail_warning .= $_[0] };
+    local $SIG{__EXCEPT__} = sub { $odd_hash_tail_exception = $_[0] };
     use feature 'dispatch_on';
     use dispatch::Predicates;
     dispatch ([ 'head', 'lonely' ]) {
@@ -2206,14 +2207,18 @@ my $odd_hash_tail_ok = eval q{
 };
 print !$@ && $odd_hash_tail_ok
         && $odd_hash_tail_warning =~ /Odd number of elements in hash assignment/
+        && $odd_hash_tail_exception
+        && $odd_hash_tail_exception->contents->[0]->code
+            eq 'WARNING_MISC_HASH_ASSIGNMENT_ODD_ELEMENT_COUNT'
         && !defined $odd_hash_tail_value
     ? "ok 150 - odd array tails warn like hash assignment\n"
     : "not ok 150 - odd array tails warn like hash assignment\n";
 
-my $reference_hash_tail_warning;
+my ($reference_hash_tail_warning, $reference_hash_tail_exception);
 my $reference_hash_tail_ok = eval q{
     use warnings 'misc';
     local $SIG{__WARN__} = sub { $reference_hash_tail_warning .= $_[0] };
+    local $SIG{__EXCEPT__} = sub { $reference_hash_tail_exception = $_[0] };
     use feature 'dispatch_on';
     use dispatch::Predicates;
     dispatch ([ 'head', [] ]) {
@@ -2223,6 +2228,9 @@ my $reference_hash_tail_ok = eval q{
 };
 print !$@ && $reference_hash_tail_ok
         && $reference_hash_tail_warning =~ /Reference found where even-sized list expected/
+        && $reference_hash_tail_exception
+        && $reference_hash_tail_exception->contents->[0]->code
+            eq 'WARNING_MISC_HASH_ASSIGNMENT_AGGREGATE_REFERENCE_IN_ODD_LIST'
     ? "ok 151 - odd reference tails use hash-assignment warning\n"
     : "not ok 151 - odd reference tails use hash-assignment warning\n";
 

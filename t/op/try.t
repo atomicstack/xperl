@@ -10,6 +10,7 @@ BEGIN {
 use strict;
 use warnings;
 use feature 'try';
+require overload;
 
 {
     my $x;
@@ -36,6 +37,75 @@ use feature 'try';
     }
     is($x, "trycatch", 'die in try runs catch block');
     is($caught, "Oopsie\n", 'catch block saw exception value');
+}
+
+{
+    my ( $caught_value, $caught_exception );
+    try { die "structured failure\n" }
+    catch ( $value, $exception ) {
+        $caught_value= $value;
+        $caught_exception= $exception;
+    }
+    is( ref($caught_value), 'XPerl::Exception',
+        'two-value catch exposes the structured scalar exception' );
+    is( ref($caught_exception), 'XPerl::Exception',
+        'two-value catch exposes the canonical exception' );
+    is( overload::StrVal($caught_value), overload::StrVal($caught_exception),
+        'the scalar compatibility value is the canonical exception' );
+}
+
+{
+    my $thrown= bless {}, 'TryCatch::Error';
+    my ( $caught_value, $caught_exception );
+    try { die $thrown }
+    catch ( $value, $exception ) {
+        $caught_value= $value;
+        $caught_exception= $exception;
+    }
+    ok( $caught_value == $thrown,
+        'two-value catch preserves a thrown reference identity' );
+    is( ref($caught_value), 'TryCatch::Error',
+        'two-value catch preserves a thrown reference class' );
+    is( ref($caught_exception), 'XPerl::Exception',
+        'two-value catch exposes the structured reference exception' );
+}
+
+{
+    eval { die "saved before nested catches\n" };
+    my $saved_error= $@;
+    my $saved_exception= ${^ERROR_OBJ};
+    my $outer_reference= bless {}, 'TryCatch::OuterError';
+    my $inner_reference= [];
+
+    try { die $outer_reference }
+    catch ( $outer_value, $outer_exception ) {
+        ok( $outer_value == $outer_reference,
+            'outer catch keeps the reference compatibility value' );
+        is( $outer_exception->contents->[0]->code,
+            'ERROR_USER_REFERENCE',
+            'outer catch exposes its canonical structured exception' );
+        ok( !defined ${^ERROR_OBJ},
+            'catch localizes the canonical error object' );
+
+        try { die $inner_reference }
+        catch ( $inner_value, $inner_exception ) {
+            ok( $inner_value == $inner_reference,
+                'nested catch keeps its reference compatibility value' );
+            is( ref($inner_exception), 'XPerl::Exception',
+                'nested catch exposes its canonical structured exception' );
+        }
+
+        is( $@, '', 'nested catch restores the enclosing catch value' );
+        ok( !defined ${^ERROR_OBJ},
+            'nested catch restores the enclosing canonical error state' );
+    }
+
+    is( overload::StrVal($@), overload::StrVal($saved_error),
+        'nested catches restore the error value from before the outer catch' );
+    ok( overload::StrVal(${^ERROR_OBJ})
+        eq overload::StrVal($saved_exception),
+        'nested catches restore the canonical object from before the outer catch'
+    );
 }
 
 # return inside try {} makes containing function return

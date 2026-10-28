@@ -17,73 +17,96 @@
 #define PERL_IN_DQUOTE_C
 #include "perl.h"
 
-/* XXX Add documentation after final interface and behavior is decided */
-
-bool
-Perl_grok_bslash_c(pTHX_ const char   source,
-                         U8 *         result,
-                         const char** message,
-                         U32 *        packed_warn)
+static UV
+Perl_grok_bslash_c_diag_internal(pTHX_ const char source,
+                           U8 *result,
+                           SV **exception_slot,
+                           const bool allow_warning)
 {
-    PERL_ARGS_ASSERT_GROK_BSLASH_C;
-
-    /* This returns TRUE if the \c? sequence is valid; FALSE otherwise.  If it
-     * is valid, the sequence evaluates to a single character, which will be
-     * stored into *result.
-     *
-     * source   is the character immediately after a '\c' sequence.
-     * result   points to a char variable into which this function will store
-     *          what the sequence evaluates to, if valid; unchanged otherwise.
-     * message  A pointer to any warning or error message will be stored into
-     *          this pointer; NULL if none.
-     * packed_warn if NULL on input asks that this routine display any warning
-     *          messages.  Otherwise, if the function found a warning, the
-     *          packed warning categories will be stored into *packed_warn (and
-     *          the corresponding message text into *message); 0 if none.
-     */
-
-    *message = NULL;
-    if (packed_warn) *packed_warn = 0;
+    PERL_ARGS_ASSERT_GROK_BSLASH_C_DIAG;
 
     if (! isPRINT_A(source)) {
-        *message = "Character following \"\\c\" must be printable ASCII";
-        return FALSE;
+        if (exception_slot) {
+            PERL_APPEND_ERROR_SYNTAX_ESCAPE_CONTROL_NONPRINTABLE_CHARACTER(exception_slot);
+        }
+        return perl_diag_error_syntax_escape_control_nonprintable_character_idx;
     }
 
     if (source == '{') {
         const char control = toCTRL('{');
         if (isPRINT_A(control)) {
-            /* diag_listed_as: Use "%s" instead of "%s" */
-            *message = form(PERL_DIAG_DIE_SYNTAX("Use \"%c\" instead of \"\\c{\""), control);
+            if (exception_slot) {
+                PERL_APPEND_ERROR_SYNTAX_ESCAPE_CONTROL_OPEN_BRACE_PRINTABLE_RESULT(exception_slot,
+                                                        control);
+            }
+            return perl_diag_error_syntax_escape_control_open_brace_printable_result_idx;
         }
-        else {
-            *message = "Sequence \"\\c{\" invalid";
+        if (exception_slot) {
+            PERL_APPEND_ERROR_SYNTAX_ESCAPE_CONTROL_OPEN_BRACE_INVALID(exception_slot);
         }
-        return FALSE;
+        return perl_diag_error_syntax_escape_control_open_brace_invalid_idx;
     }
 
     *result = toCTRL(source);
-    if (isPRINT_A(*result) && ckWARN(WARN_SYNTAX)) {
+    if (allow_warning && isPRINT_A(*result) && ckWARN(WARN_SYNTAX)) {
         U8 clearer[3];
         U8 i = 0;
-        char format[] = PERL_DIAG_WARN_SYNTAX("\"\\c%c\" is more clearly written simply as \"%s\"");
-
         if (! isWORDCHAR(*result)) {
             clearer[i++] = '\\';
         }
         clearer[i++] = *result;
         clearer[i++] = '\0';
 
-        if (packed_warn) {
-            *message = form(format, source, clearer);
-            *packed_warn = packWARN(WARN_SYNTAX);
-        }
-        else {
-            warner(packWARN(WARN_SYNTAX), format, source, clearer);
+        if (exception_slot) {
+            PERL_APPEND_WARNING_SYNTAX_CONTROL_ESCAPE_PRINTABLE_RESULT(exception_slot, source,
+                                               (const char *)clearer);
         }
     }
 
-    return TRUE;
+    return 0;
+}
+
+UV
+Perl_grok_bslash_c_diag(pTHX_ const char source,
+                              U8 *result,
+                              SV **exception_slot,
+                              const bool allow_warning)
+{
+    PERL_ARGS_ASSERT_GROK_BSLASH_C_DIAG;
+    return Perl_grok_bslash_c_diag_internal(aTHX_ source, result, exception_slot,
+                                allow_warning);
+}
+
+/* Deprecated in Perl 5.45.4. */
+bool
+Perl_grok_bslash_c(pTHX_ const char source,
+                         U8 *result,
+                         const char **message,
+                         U32 *packed_warn)
+{
+    PERL_ARGS_ASSERT_GROK_BSLASH_C;
+    PERL_UNUSED_VAR(source);
+    PERL_UNUSED_VAR(result);
+    PERL_UNUSED_VAR(message);
+    PERL_UNUSED_VAR(packed_warn);
+    PERL_THROW_ERROR_SYNTAX_ESCAPE_LEGACY_API_UNCALLABLE("Perl_grok_bslash_c");
+}
+
+/* Deprecated in Perl 5.45.4. */
+bool
+Perl_grok_bslash_c_with_reason(pTHX_ const char source,
+                               U8 *result,
+                               const char **message,
+                               U32 *packed_warn,
+                               const char **reason)
+{
+    PERL_ARGS_ASSERT_GROK_BSLASH_C_WITH_REASON;
+    PERL_UNUSED_VAR(source);
+    PERL_UNUSED_VAR(result);
+    PERL_UNUSED_VAR(message);
+    PERL_UNUSED_VAR(packed_warn);
+    PERL_UNUSED_VAR(reason);
+    PERL_THROW_ERROR_SYNTAX_ESCAPE_LEGACY_API_UNCALLABLE("Perl_grok_bslash_c_with_reason");
 }
 
 const char *
@@ -239,47 +262,106 @@ Perl_form_cp_too_large_msg(pTHX_
     return SvPVX_const(message_sv);
 }
 
-bool
-Perl_grok_bslash_o(pTHX_ char **s, const char * const send, UV *uv,
-                      const char** message,
-                      U32 *      packed_warn,
-                      const bool strict,
-                      const bool allow_UV_MAX,
-                      const bool UTF)
+void
+Perl_diag_append_alien_digit_warning(pTHX_ SV **exception_slot,
+                                     UV diag_index,
+                                     const U8 radix,
+                                     const STRLEN valids_len,
+                                     const char * const first_bad,
+                                     const char * const send,
+                                     const bool UTF,
+                                     const bool braced)
 {
-    PERL_ARGS_ASSERT_GROK_BSLASH_O;
+    SV *display_char;
+    SV *character;
+    SV *resolved;
+    const char *escape;
 
-/*  Documentation to be supplied when interface nailed down finally
- *  This returns FALSE if there is an error the caller should probably die
- *  from; otherwise TRUE.
- *	s   is the address of a pointer to a string.  **s is 'o', and the
- *	    previous character was a backslash.  At exit, *s will be advanced
- *	    to the byte just after those absorbed by this function.  Hence the
- *	    caller can continue parsing from there.  In the case of an error
- *	    when this function returns FALSE, continuing to parse is not an
- *	    option, this routine has generally positioned *s to point just to
- *	    the right of the first bad spot, so that a message that has a "<--"
- *	    to mark the spot will be correctly positioned.
- *	send - 1  gives a limit in *s that this function is not permitted to
- *	    look beyond.  That is, the function may look at bytes only in the
- *	    range *s..send-1
- *	uv  points to a UV that will hold the output value, valid only if the
- *	    return from the function is TRUE; may be changed from the input
- *	    value even when FALSE is returned.
- *      message  A pointer to any warning or error message will be stored into
- *          this pointer; NULL if none.
- *      packed_warn if NULL on input asks that this routine display any warning
- *          messages.  Otherwise, if the function found a warning, the packed
- *          warning categories will be stored into *packed_warn (and the
- *          corresponding message text into *message); 0 if none.
- *	strict is true if this should fail instead of warn if there are
- *	    non-octal digits within the braces
- *      allow_UV_MAX is true if this shouldn't fail if the input code point is
- *          UV_MAX, which is normally illegal, reserved for internal use.
- *	UTF is true iff the string *s is encoded in UTF-8.
- */
-    char * e;
-    char * rbrace;
+    PERL_ARGS_ASSERT_DIAG_APPEND_ALIEN_DIGIT_WARNING;
+    if (!exception_slot)
+        return;
+
+    assert(radix == 8 || radix == 16);
+
+    display_char = newSV(2 * UTF8_MAXBYTES + 4);
+    character = newSVpvs("");
+    resolved = newSVpvs("");
+
+    if (    UVCHR_IS_INVARIANT(*first_bad)
+        || (UTF && isUTF8_CHAR((U8 *)first_bad, (U8 *)send)))
+    {
+        pv_uni_display(display_char, (U8 *)first_bad, UTF8SKIP(first_bad),
+                       (STRLEN)-1, UNI_DISPLAY_QQ);
+    }
+    else {
+        sv_setpvf(display_char, "\\x{%02x}", *first_bad);
+    }
+
+    if (isPRINT(*first_bad))
+        sv_catpvs(character, "'");
+    sv_catsv(character, display_char);
+    if (isPRINT(*first_bad))
+        sv_catpvs(character, "'");
+
+    if (radix == 8)
+        escape = braced ? "\\o" : "\\0";
+    else
+        escape = "\\x";
+
+    sv_catpv(resolved, escape);
+    if (braced)
+        sv_catpvs(resolved, "{");
+    if (radix == 8 && braced && valids_len < 3)
+        sv_catpvs(resolved, "0");
+    if (valids_len == 0)
+        sv_catpvs(resolved, "00");
+    else if (valids_len == 1)
+        sv_catpvs(resolved, "0");
+    sv_catpvn(resolved, first_bad - valids_len, valids_len);
+    if (braced)
+        sv_catpvs(resolved, "}");
+    else
+        sv_catsv(resolved, display_char);
+
+    if (diag_index == perl_diag_warning_syntax_digit_escape_terminated_early_idx) {
+        PERL_APPEND_WARNING_SYNTAX_DIGIT_ESCAPE_TERMINATED_EARLY(exception_slot,
+                                        radix == 8 ? perl_diag_selector_domain_2094_0_octal_2 : perl_diag_selector_domain_2094_0_hex_1,
+                                        SvUTF8(character), SvCUR(character),
+                                        SvPVX_const(character), escape,
+                                        SvUTF8(resolved), SvCUR(resolved),
+                                        SvPVX_const(resolved));
+    }
+    else if (diag_index == perl_diag_warning_regexp_escape_digit_outside_radix_idx) {
+        PERL_APPEND_WARNING_REGEXP_ESCAPE_DIGIT_OUTSIDE_RADIX(exception_slot,
+                                              PERL_DIAG_SELECTOR_FROM_WARNING_REGEXP_ESCAPE_DIGIT_OUTSIDE_RADIX_RADIX(radix == 8 ? "octal" : "hex"),
+                                              SvUTF8(character), SvCUR(character),
+                                              SvPVX_const(character), escape,
+                                              SvUTF8(resolved), SvCUR(resolved),
+                                              SvPVX_const(resolved));
+    }
+    else {
+        assert(0 && "unsupported alien digit diagnostic");
+    }
+
+    SvREFCNT_dec_NN(display_char);
+    SvREFCNT_dec_NN(character);
+    SvREFCNT_dec_NN(resolved);
+}
+
+#define PERL_GROK_BSLASH_ERROR(slot, append, code) \
+    STMT_START { \
+        if (slot) append(slot); \
+        return code; \
+    } STMT_END
+
+static UV
+Perl_grok_bslash_o_internal(pTHX_ char **s, const char * const send, UV *uv,
+                SV **exception_slot, const bool strict,
+                const bool allow_UV_MAX, const bool UTF,
+                const bool allow_warning)
+{
+    char *e;
+    char *rbrace;
     STRLEN numbers_len;
     STRLEN trailing_blanks_len = 0;
     I32 flags = PERL_SCAN_ALLOW_UNDERSCORES
@@ -289,61 +371,52 @@ Perl_grok_bslash_o(pTHX_ char **s, const char * const send, UV *uv,
               | PERL_SCAN_SILENT_OVERFLOW;
 
     assert(*(*s - 1) == '\\');
-    assert(* *s       == 'o');
-
-    *message = NULL;
-    if (packed_warn) *packed_warn = 0;
+    assert(**s == 'o');
 
     (*s)++;
 
-    if (send <= *s || **s != '{') {
-        *message = "Missing braces on \\o{}";
-        return FALSE;
-    }
+    if (send <= *s || **s != '{')
+        PERL_GROK_BSLASH_ERROR(exception_slot,
+                          PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_BRACES_REQUIRED,
+                          perl_diag_error_syntax_escape_octal_braces_required_idx);
 
-    rbrace = (char *) memchr(*s, '}', send - *s);
+    rbrace = (char *)memchr(*s, '}', send - *s);
     if (!rbrace) {
-        (*s)++;  /* Move past the '{' */
-
-        /* Position beyond the legal digits and blanks */
-        while (*s < send && isBLANK(**s)) {
-            (*s)++;
-        }
-
-        while (*s < send && isOCTAL(**s)) {
-            (*s)++;
-        }
-
-        *message = "Missing right brace on \\o{}";
-        return FALSE;
-    }
-
-    /* Point to expected first digit (could be first byte of utf8 sequence if
-     * not a digit) */
-    (*s)++;
-    while (isBLANK(**s)) {
         (*s)++;
+        while (*s < send && isBLANK(**s))
+            (*s)++;
+        while (*s < send && isOCTAL(**s))
+            (*s)++;
+
+        PERL_GROK_BSLASH_ERROR(exception_slot,
+                          PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_CLOSE_BRACE_MISSING,
+                          perl_diag_error_syntax_escape_octal_close_brace_missing_idx);
     }
+
+    (*s)++;
+    while (isBLANK(**s))
+        (*s)++;
 
     e = rbrace;
-    while (*s < e && isBLANK(*(e - 1))) {
+    while (*s < e && isBLANK(*(e - 1)))
         e--;
-    }
 
     numbers_len = e - *s;
     if (numbers_len == 0) {
-        (*s)++;    /* Move past the '}' */
-        *message = "Empty \\o{}";
-        return FALSE;
+        (*s)++;
+        PERL_GROK_BSLASH_ERROR(exception_slot, PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_DIGITS_MISSING,
+                          perl_diag_error_syntax_escape_octal_digits_missing_idx);
     }
 
     *uv = grok_oct(*s, &numbers_len, &flags, NULL);
-    if (UNLIKELY(   (flags & PERL_SCAN_GREATER_THAN_UV_MAX)
-                 || (! allow_UV_MAX && *uv == UV_MAX)))
+    if (UNLIKELY((flags & PERL_SCAN_GREATER_THAN_UV_MAX)
+                 || (!allow_UV_MAX && *uv == UV_MAX)))
     {
-        *message = form_cp_too_large_msg(8, *s, numbers_len, 0);
+        if (exception_slot)
+            PERL_APPEND_ERROR_UNICODE_CODE_POINT_OCTAL_ESCAPE_OVERFLOW(
+                exception_slot, numbers_len, *s, MAX_LEGAL_CP);
         *s = rbrace + 1;
-        return FALSE;
+        return perl_diag_error_unicode_code_point_octal_escape_overflow_idx;
     }
 
     while (isBLANK(**s)) {
@@ -351,81 +424,36 @@ Perl_grok_bslash_o(pTHX_ char **s, const char * const send, UV *uv,
         (*s)++;
     }
 
-    /* Note that if has non-octal, will ignore everything starting with that up
-     * to the '}' */
-    if (numbers_len + trailing_blanks_len != (STRLEN) (e - *s)) {
+    if (numbers_len + trailing_blanks_len != (STRLEN)(e - *s)) {
         *s += numbers_len;
         if (strict) {
-            *s += (UTF) ? UTF8_SAFE_SKIP(*s, send) : 1;
-            *message = "Non-octal character";
-            return FALSE;
+            *s += UTF ? UTF8_SAFE_SKIP(*s, send) : 1;
+            PERL_GROK_BSLASH_ERROR(exception_slot,
+                              PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_DIGIT_INVALID,
+                              perl_diag_error_syntax_escape_octal_digit_invalid_idx);
         }
 
-        if (ckWARN(WARN_DIGIT)) {
-            const char * failure = form_alien_digit_msg(8, numbers_len, *s, send,
-                                                                      UTF, TRUE);
-            if (packed_warn) {
-                *message = failure;
-                *packed_warn = packWARN(WARN_DIGIT);
-            }
-            else {
-                warner(packWARN(WARN_DIGIT), "%s", failure);
+        if (allow_warning && ckWARN(WARN_DIGIT)) {
+            if (exception_slot) {
+                Perl_diag_append_alien_digit_warning(aTHX_
+                    exception_slot, perl_diag_warning_syntax_digit_escape_terminated_early_idx,
+                    8, numbers_len, *s, send, UTF, TRUE);
             }
         }
     }
 
-    /* Return past the '}' */
     *s = rbrace + 1;
-
-    return TRUE;
+    return 0;
 }
 
-bool
-Perl_grok_bslash_x(pTHX_ char ** s, const char * const send, UV *uv,
-                      const char** message,
-                      U32 *      packed_warn,
-                      const bool strict,
-                      const bool allow_UV_MAX,
-                      const bool UTF)
+static UV
+Perl_grok_bslash_x_internal(pTHX_ char **s, const char * const send, UV *uv,
+                SV **exception_slot, const bool strict,
+                const bool allow_UV_MAX, const bool UTF,
+                const bool allow_warning)
 {
-    PERL_ARGS_ASSERT_GROK_BSLASH_X;
-
-/*  Documentation to be supplied when interface nailed down finally
- *  This returns FALSE if there is an error the caller should probably die
- *  from; otherwise TRUE.
- *  It guarantees that the returned codepoint, *uv, when expressed as
- *  utf8 bytes, would fit within the skipped "\x{...}" bytes.
- *
- *  On input:
- *	s   is the address of a pointer to a string.  **s is 'x', and the
- *	    previous character was a backslash.  At exit, *s will be advanced
- *	    to the byte just after those absorbed by this function.  Hence the
- *	    caller can continue parsing from there.  In the case of an error,
- *	    this routine has generally positioned *s to point just to the right
- *	    of the first bad spot, so that a message that has a "<--" to mark
- *	    the spot will be correctly positioned.
- *	send - 1  gives a limit in *s that this function is not permitted to
- *	    look beyond.  That is, the function may look at bytes only in the
- *	    range *s..send-1
- *	uv  points to a UV that will hold the output value, valid only if the
- *	    return from the function is TRUE; may be changed from the input
- *	    value even when FALSE is returned.
- *      message  A pointer to any warning or error message will be stored into
- *          this pointer; NULL if none.
- *      packed_warn if NULL on input asks that this routine display any warning
- *          messages.  Otherwise, if the function found a warning, the packed
- *          warning categories will be stored into *packed_warn (and the
- *          corresponding message text into *message); 0 if none.
- *	strict is true if anything out of the ordinary should cause this to
- *	    fail instead of warn or be silent.  For example, it requires
- *	    exactly 2 digits following the \x (when there are no braces).
- *	    3 digits could be a mistake, so is forbidden in this mode.
- *      allow_UV_MAX is true if this shouldn't fail if the input code point is
- *          UV_MAX, which is normally illegal, reserved for internal use.
- *	UTF is true iff the string *s is encoded in UTF-8.
- */
-    char* e;
-    char * rbrace;
+    char *e;
+    char *rbrace;
     STRLEN numbers_len;
     STRLEN trailing_blanks_len = 0;
     I32 flags = PERL_SCAN_DISALLOW_PREFIX
@@ -435,106 +463,95 @@ Perl_grok_bslash_x(pTHX_ char ** s, const char * const send, UV *uv,
               | PERL_SCAN_SILENT_OVERFLOW;
 
     assert(*(*s - 1) == '\\');
-    assert(* *s      == 'x');
-
-    *message = NULL;
-    if (packed_warn) *packed_warn = 0;
+    assert(**s == 'x');
 
     (*s)++;
 
     if (send <= *s) {
-        if (strict) {
-            *message = "Empty \\x";
-            return FALSE;
-        }
+        if (strict)
+            PERL_GROK_BSLASH_ERROR(exception_slot, PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_DIGITS_MISSING,
+                              perl_diag_error_syntax_escape_hex_digits_missing_idx);
 
-        /* Sadly, to preserve backcompat, an empty \x at the end of string is
-         * interpreted as a NUL */
         *uv = 0;
-        return TRUE;
+        return 0;
     }
 
     if (**s != '{') {
-        numbers_len = (strict) ? 3 : 2;
-
+        numbers_len = strict ? 3 : 2;
         *uv = grok_hex(*s, &numbers_len, &flags, NULL);
         *s += numbers_len;
 
-        if (numbers_len != 2 && (strict || (flags & PERL_SCAN_NOTIFY_ILLDIGIT))) {
-            if (numbers_len == 3) { /* numbers_len 3 only happens with strict */
-                *message = "Use \\x{...} for more than two hex characters";
-                return FALSE;
+        if (numbers_len != 2
+            && (strict || (flags & PERL_SCAN_NOTIFY_ILLDIGIT)))
+        {
+            if (numbers_len == 3) {
+                PERL_GROK_BSLASH_ERROR(
+                    exception_slot,
+                    PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_UNBRACED_DIGITS_EXCESS,
+                    perl_diag_error_syntax_escape_hex_unbraced_digits_excess_idx);
             }
             else if (strict) {
-                    *s += (UTF) ? UTF8_SAFE_SKIP(*s, send) : 1;
-                    *message = "Non-hex character";
-                    return FALSE;
+                *s += UTF ? UTF8_SAFE_SKIP(*s, send) : 1;
+                PERL_GROK_BSLASH_ERROR(exception_slot,
+                                  PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_UNBRACED_DIGIT_INVALID,
+                                  perl_diag_error_syntax_escape_hex_unbraced_digit_invalid_idx);
             }
-            else if (ckWARN(WARN_DIGIT)) {
-                const char * failure = form_alien_digit_msg(16, numbers_len, *s,
-                                                              send, UTF, FALSE);
-
-                if (! packed_warn) {
-                    warner(packWARN(WARN_DIGIT), "%s", failure);
-                }
-                else {
-                    *message = failure;
-                    *packed_warn = packWARN(WARN_DIGIT);
+            else if (allow_warning && ckWARN(WARN_DIGIT)) {
+                if (exception_slot) {
+                    Perl_diag_append_alien_digit_warning(aTHX_
+                        exception_slot, perl_diag_warning_syntax_digit_escape_terminated_early_idx,
+                        16, numbers_len, *s, send, UTF, FALSE);
                 }
             }
         }
-        return TRUE;
+        return 0;
     }
 
-    rbrace = (char *) memchr(*s, '}', send - *s);
+    rbrace = (char *)memchr(*s, '}', send - *s);
     if (!rbrace) {
-        (*s)++;  /* Move past the '{' */
-
-        /* Position beyond legal blanks and digits */
-        while (*s < send && isBLANK(**s)) {
-            (*s)++;
-        }
-
-        while (*s < send && isXDIGIT(**s)) {
-            (*s)++;
-        }
-
-        *message = "Missing right brace on \\x{}";
-        return FALSE;
-    }
-
-    (*s)++;    /* Point to expected first digit (could be first byte of utf8
-                  sequence if not a digit) */
-    while (isBLANK(**s)) {
         (*s)++;
+        while (*s < send && isBLANK(**s))
+            (*s)++;
+        while (*s < send && isXDIGIT(**s))
+            (*s)++;
+
+        PERL_GROK_BSLASH_ERROR(exception_slot,
+                          PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_CLOSE_BRACE_MISSING,
+                          perl_diag_error_syntax_escape_hex_close_brace_missing_idx);
     }
+
+    (*s)++;
+    while (isBLANK(**s))
+        (*s)++;
 
     e = rbrace;
-    while (*s < e && isBLANK(*(e - 1))) {
+    while (*s < e && isBLANK(*(e - 1)))
         e--;
-    }
 
     numbers_len = e - *s;
     if (numbers_len == 0) {
         if (strict) {
-            (*s)++;    /* Move past the } */
-            *message = "Empty \\x{}";
-            return FALSE;
+            (*s)++;
+            PERL_GROK_BSLASH_ERROR(
+                exception_slot, PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_BRACED_DIGITS_MISSING,
+                perl_diag_error_syntax_escape_hex_braced_digits_missing_idx);
         }
+
         *s = rbrace + 1;
         *uv = 0;
-        return TRUE;
+        return 0;
     }
 
     flags |= PERL_SCAN_ALLOW_UNDERSCORES;
-
     *uv = grok_hex(*s, &numbers_len, &flags, NULL);
-    if (UNLIKELY(   (flags & PERL_SCAN_GREATER_THAN_UV_MAX)
-                 || (! allow_UV_MAX && *uv == UV_MAX)))
+    if (UNLIKELY((flags & PERL_SCAN_GREATER_THAN_UV_MAX)
+                 || (!allow_UV_MAX && *uv == UV_MAX)))
     {
-        *message = form_cp_too_large_msg(16, *s, numbers_len, 0);
+        if (exception_slot)
+            PERL_APPEND_ERROR_UNICODE_CODE_POINT_HEX_ESCAPE_OVERFLOW(exception_slot, numbers_len,
+                                            *s, MAX_LEGAL_CP);
         *s = e + 1;
-        return FALSE;
+        return perl_diag_error_unicode_code_point_hex_escape_overflow_idx;
     }
 
     while (isBLANK(**s)) {
@@ -542,31 +559,86 @@ Perl_grok_bslash_x(pTHX_ char ** s, const char * const send, UV *uv,
         (*s)++;
     }
 
-    if (numbers_len + trailing_blanks_len != (STRLEN) (e - *s)) {
+    if (numbers_len + trailing_blanks_len != (STRLEN)(e - *s)) {
         *s += numbers_len;
         if (strict) {
-            *s += (UTF) ? UTF8_SAFE_SKIP(*s, send) : 1;
-            *message = "Non-hex character";
-            return FALSE;
+            *s += UTF ? UTF8_SAFE_SKIP(*s, send) : 1;
+            PERL_GROK_BSLASH_ERROR(
+                exception_slot, PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_BRACED_DIGIT_INVALID,
+                perl_diag_error_syntax_escape_hex_braced_digit_invalid_idx);
         }
 
-        if (ckWARN(WARN_DIGIT)) {
-            const char * failure = form_alien_digit_msg(16, numbers_len, *s,
-                                                                send, UTF, TRUE);
-            if (! packed_warn) {
-                warner(packWARN(WARN_DIGIT), "%s", failure);
-            }
-            else {
-                *message = failure;
-                *packed_warn = packWARN(WARN_DIGIT);
+        if (allow_warning && ckWARN(WARN_DIGIT)) {
+            if (exception_slot) {
+                Perl_diag_append_alien_digit_warning(aTHX_
+                    exception_slot, perl_diag_warning_syntax_digit_escape_terminated_early_idx,
+                    16, numbers_len, *s, send, UTF, TRUE);
             }
         }
     }
 
-    /* Return past the '}' */
     *s = rbrace + 1;
+    return 0;
+}
 
-    return TRUE;
+UV
+Perl_grok_bslash_o_diag(pTHX_ char **s, const char * const send, UV *uv,
+                        SV **exception_slot, const bool strict,
+                        const bool allow_UV_MAX, const bool UTF,
+                        const bool allow_warning)
+{
+    PERL_ARGS_ASSERT_GROK_BSLASH_O_DIAG;
+    return Perl_grok_bslash_o_internal(aTHX_ s, send, uv, exception_slot, strict,
+                           allow_UV_MAX, UTF, allow_warning);
+}
+
+UV
+Perl_grok_bslash_x_diag(pTHX_ char **s, const char * const send, UV *uv,
+                        SV **exception_slot, const bool strict,
+                        const bool allow_UV_MAX, const bool UTF,
+                        const bool allow_warning)
+{
+    PERL_ARGS_ASSERT_GROK_BSLASH_X_DIAG;
+    return Perl_grok_bslash_x_internal(aTHX_ s, send, uv, exception_slot, strict,
+                           allow_UV_MAX, UTF, allow_warning);
+}
+
+/* Deprecated in Perl 5.45.4. */
+bool
+Perl_grok_bslash_o(pTHX_ char **s, const char * const send, UV *uv,
+                   const char **message, U32 *packed_warn,
+                   const bool strict, const bool allow_UV_MAX,
+                   const bool UTF)
+{
+    PERL_ARGS_ASSERT_GROK_BSLASH_O;
+    PERL_UNUSED_VAR(s);
+    PERL_UNUSED_VAR(send);
+    PERL_UNUSED_VAR(uv);
+    PERL_UNUSED_VAR(message);
+    PERL_UNUSED_VAR(packed_warn);
+    PERL_UNUSED_VAR(strict);
+    PERL_UNUSED_VAR(allow_UV_MAX);
+    PERL_UNUSED_VAR(UTF);
+    PERL_THROW_ERROR_SYNTAX_ESCAPE_LEGACY_API_UNCALLABLE("Perl_grok_bslash_o");
+}
+
+/* Deprecated in Perl 5.45.4. */
+bool
+Perl_grok_bslash_x(pTHX_ char **s, const char * const send, UV *uv,
+                   const char **message, U32 *packed_warn,
+                   const bool strict, const bool allow_UV_MAX,
+                   const bool UTF)
+{
+    PERL_ARGS_ASSERT_GROK_BSLASH_X;
+    PERL_UNUSED_VAR(s);
+    PERL_UNUSED_VAR(send);
+    PERL_UNUSED_VAR(uv);
+    PERL_UNUSED_VAR(message);
+    PERL_UNUSED_VAR(packed_warn);
+    PERL_UNUSED_VAR(strict);
+    PERL_UNUSED_VAR(allow_UV_MAX);
+    PERL_UNUSED_VAR(UTF);
+    PERL_THROW_ERROR_SYNTAX_ESCAPE_LEGACY_API_UNCALLABLE("Perl_grok_bslash_x");
 }
 
 /*

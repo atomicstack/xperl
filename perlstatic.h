@@ -23,7 +23,7 @@ Perl_croak_memory_wrap(void)
 {
     PERL_ARGS_ASSERT_CROAK_MEMORY_WRAP;
 
-    Perl_croak_nocontext("%s",PL_memory_wrap);
+    PERL_THROW_ERROR_USER_OPAQUE_RENDERED_MESSAGE_NO_CONTEXT(PL_memory_wrap);
 }
 
 GCC_DIAG_RESTORE_DECL;

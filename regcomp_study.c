@@ -2649,17 +2649,13 @@ Perl_study_chunk(pTHX_
                                                    count */
                 {
                     WARN_HELPER_(RExC_precomp_end, packWARN(WARN_REGEXP),
-                        ck_warner(packWARN(WARN_REGEXP),
-                            "Quantifier unexpected on zero-length expression "
-                            "in regex m/%" UTF8f "/",
-                             UTF8fARG(UTF, RExC_precomp_end - RExC_precomp,
-                                  RExC_precomp)));
+                        PERL_WARN_WARNING_REGEXP_QUANTIFIER_ZERO_WIDTH_EXPRESSION(UTF, RExC_precomp_end - RExC_precomp, RExC_precomp));
                 }
 
                 if ( ( minnext > 0 && mincount >= SSize_t_MAX / minnext )
                     || min >= SSize_t_MAX - minnext * mincount )
                 {
-                    FAIL("Regexp out of space");
+                    FAIL_(PERL_THROW_ERROR_REGEXP_LIMIT_SIZE_OR_ALLOCATION_EXCEEDED(UTF, len, RExC_precomp, ellipses));
                 }
 
                 min += minnext * mincount;
@@ -2880,7 +2876,7 @@ Perl_study_chunk(pTHX_
                         if (l > 0 &&
                             (mincount >= SSize_t_MAX / (SSize_t)l
                              || old > SSize_t_MAX - mincount * (SSize_t)l)) {
-                            FAIL("Regexp out of space");
+                            FAIL_(PERL_THROW_ERROR_REGEXP_LIMIT_SIZE_OR_ALLOCATION_EXCEEDED(UTF, len, RExC_precomp, ellipses));
                         }
 
                         /* Get the added string: */
@@ -2971,8 +2967,7 @@ Perl_study_chunk(pTHX_
                 continue;
 
             default:
-                croak("panic: unexpected varying REx opcode %d",
-                                                                    OP(scan));
+                PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_STUDY_VARYING_OPCODE_UNHANDLED(OP(scan));
             case REF:
             case CLUMP:
                 if (flags & SCF_DO_SUBSTR) {
@@ -3051,8 +3046,7 @@ Perl_study_chunk(pTHX_
 
                 default:
 #ifdef DEBUGGING
-                   croak("panic: unexpected simple REx opcode %d",
-                                                                     OP(scan));
+                   PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_STUDY_SIMPLE_OPCODE_UNHANDLED(OP(scan));
 #endif
                 case SANY:
                     if (flags & SCF_DO_STCLASS_OR) /* Allow everything */
@@ -3324,8 +3318,7 @@ Perl_study_chunk(pTHX_
                         || minnext > (I32)U8_MAX
                         || minnext + deltanext > (I32)U8_MAX)
                     {
-                        FAIL2("Lookbehind longer than %" UVuf " not implemented",
-                              (UV)U8_MAX);
+                        FAIL_(PERL_THROW_ERROR_REGEXP_LIMIT_LOOKBEHIND_LENGTH_EXCEEDED((UV)U8_MAX, UTF, len, RExC_precomp, ellipses));
                     }
 
                     /* The 'next_off' field has been repurposed to count the
@@ -3343,10 +3336,7 @@ Perl_study_chunk(pTHX_
                         ) {
                             /* this is positive variable length lookbehind with
                              * capture buffers inside of it */
-                            ckWARNexperimental_with_arg(RExC_parse,
-                                WARN_EXPERIMENTAL__VLB,
-                                "Variable length %s lookbehind with capturing is experimental",
-                                is_positive ? "positive" : "negative");
+                            PERL_WARN_WARNING_EXPERIMENTAL_VLB_CAPTURING_LOOKBEHIND_USED(is_positive ? "positive" : "negative", RExC_parse);
                         }
                     }
                     LOOKBEHIND_MAX_CHARS_SET(scan, (U8)minnext + deltanext);
@@ -3446,8 +3436,7 @@ Perl_study_chunk(pTHX_
                         || *minnextp > (I32)U8_MAX
                         || *minnextp + deltanext > (I32)U8_MAX)
                     {
-                        FAIL2("Lookbehind longer than %" UVuf " not implemented",
-                              (UV)U8_MAX);
+                        FAIL_(PERL_THROW_ERROR_REGEXP_LIMIT_LOOKBEHIND_LENGTH_EXCEEDED((UV)U8_MAX, UTF, len, RExC_precomp, ellipses));
                     }
 
                     if (deltanext) {
@@ -3728,8 +3717,7 @@ Perl_study_chunk(pTHX_
 #endif /* TRIE_STUDY_OPT */
 
         else if (OP(scan) == REGEX_SET) {
-            croak("panic: %s regnode should be resolved"
-                             " before optimization", REGNODE_NAME(REGEX_SET));
+            PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_STUDY_EXTENDED_CLASS_UNRESOLVED(REGNODE_NAME(REGEX_SET));
         }
 
         /* Record fixed substrings and lengths before absorbing this node.

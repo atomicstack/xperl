@@ -3444,7 +3444,7 @@ Perl_runops_debug(pTHX)
 #endif
 
     if (!PL_op) {
-        ck_warner_d(packWARN(WARN_DEBUGGING), "NULL OP IN RUN");
+        PERL_WARN_WARNING_SEVERE_DEBUGGING_RUNLOOP_ENTRY_OP_NULL();
         return 0;
     }
     DEBUG_l(deb("Entering new RUNOPS level\n"));
@@ -3454,11 +3454,7 @@ Perl_runops_debug(pTHX)
 #endif
 #ifdef PERL_USE_HWM
         if (PL_curstackinfo->si_stack_hwm < PL_stack_sp - PL_stack_base)
-            croak(
-                "panic: previous op failed to extend arg stack: "
-                "base=%p, sp=%p, hwm=%p\n",
-                    PL_stack_base, PL_stack_sp,
-                    PL_stack_base + PL_curstackinfo->si_stack_hwm);
+            PERL_PANIC_ERROR_INTERNAL_STACK_ARGUMENT_OP_CAPACITY_NOT_EXTENDED(PL_stack_base, PL_stack_sp, PL_stack_base + PL_curstackinfo->si_stack_hwm);
         PL_curstackinfo->si_stack_hwm = PL_stack_sp - PL_stack_base;
 #endif
         if (PL_debug) {
@@ -4022,8 +4018,7 @@ Perl_op_class(pTHX_ const OP *o)
     case OA_UNOP_AUX:
         return OPclass_UNOP_AUX;
     }
-    warn("Can't determine class of operator %s, assuming BASEOP\n",
-         OP_NAME(o));
+    PERL_WARN_WARNING_INTERNAL_OPCODE_OP_STRUCTURE_CLASS_UNRECOGNIZED(OP_NAME(o));
     return OPclass_BASEOP;
 }
 

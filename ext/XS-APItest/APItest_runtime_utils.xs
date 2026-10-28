@@ -197,6 +197,20 @@ test_sv_catpvf(SV *fmtsv)
         sv_catpvf(sv, fmt, 5, 6, 7, 8);
 
 void
+test_sv_catpvf_no_active_op(SV *fmtsv)
+    PREINIT:
+        OP *saved_op;
+        SV *sv;
+        char *fmt;
+    CODE:
+        saved_op = PL_op;
+        PL_op = NULL;
+        fmt = SvPV_nolen(fmtsv);
+        sv = sv_2mortal(newSVpvn("", 0));
+        sv_vcatpvfn_flags(sv, fmt, strlen(fmt), NULL, NULL, 0, NULL, 0);
+        PL_op = saved_op;
+
+void
 load_module(flags, name, ...)
     U32 flags
     SV *name

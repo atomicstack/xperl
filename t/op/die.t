@@ -6,7 +6,7 @@ BEGIN {
     set_up_inc('../lib');
 }
 
-plan tests => 26;
+plan tests => 27;
 
 use utf8;   # Tell EBCDIC translator to make this UTF-8,
 
@@ -100,6 +100,10 @@ like($@, qr/\.{3}propagated at/, '... and appends a phrase');
     eval { $@ = 100; die };
     like($@."", qr/100\t\.{3}propagated at/,
          'check non-PVs in $@ are propagated');
+
+    eval { $@ = 100; die $@ };
+    like($@."", qr/^100 at .* line \d+\.\n?$/,
+         'explicit die $@ treats the value as an ordinary error');
 }
 {
     my @error;
@@ -119,8 +123,8 @@ like($@, qr/\.{3}propagated at/, '... and appends a phrase');
         "__DIE__ handler and \$@ should be the same");
 }
 
-TODO: {
-    local $TODO = 'RT #4821: die qr{x} does not check termination';
+{
     my $out = runperl(prog => 'die qr{x}', stderr => 1);
-    like($out, qr/at -e line 1./, 'RT #4821: output from die qr{x}');
+    unlike($out, qr/ at -e line 1\./,
+           'a reference exception is rendered without adding a location');
 }

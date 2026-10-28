@@ -107,7 +107,6 @@ typedef struct yy_parser {
     bool        in_dispatch_header; /* parsing a dispatch subject */
     HV          *dispatch_pattern_vars; /* implicit lexicals in the current pattern */
     U8		lex_state;	/* next token is determined */
-    U8		error_count;	/* how many compile errors so far, max 10 */
     HV		*in_my_stash;	/* declared class of this "my" declaration */
     PerlIO	*rsfp;		/* current source file pointer */
     AV		*rsfp_filters;	/* holds chain of active source filters */
@@ -168,8 +167,16 @@ enum {
     LEX_FAKEEOF_MAX
 };
 
-#define PARSE_IDENT_ERROR_POSITION  "position"
-#define PARSE_IDENT_ERROR_TEXT      "text"
+#define PERL_PARSE_IDENT_ERROR_POSITION  "position"
+#define PERL_PARSE_IDENT_ERROR_TEXT      "text"
+#define PERL_PARSE_IDENT_ERROR_KIND      "kind"
+#define PERL_PARSE_IDENT_ERROR_CODEPOINT "codepoint"
+#define PERL_PARSE_IDENT_ERROR_BEFORE    "identifier_before"
+#define PERL_PARSE_IDENT_ERROR_AFTER     "identifier_after"
+
+#define PERL_PARSE_IDENT_ERROR_INVALID_CHARACTER "invalid_character"
+#define PERL_PARSE_IDENT_ERROR_TOO_LONG          "too_long"
+#define PERL_PARSE_IDENT_ERROR_LEADING_ZERO      "leading_zero"
 
 
 /*

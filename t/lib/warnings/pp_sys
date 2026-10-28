@@ -119,7 +119,7 @@ no warnings 'untie' ;
 $c = tie $d, 'main'; 
 untie $d ;
 EXPECT
-untie attempted while 1 inner references still exist at - line 5.
+untie attempted while 1 inner reference still exists at - line 5.
 ########
 # pp_sys.c [pp_leavewrite]
 use warnings 'io' ;

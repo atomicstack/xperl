@@ -701,6 +701,16 @@ value that was thrown by the code in the C<try> block. It is not necessary
 to use the C<my> keyword to declare this variable; this is implied (similar
 as it is for subroutine signatures).
 
+The declaration may contain a second variable:
+
+    catch ($value, $exception) {
+        warn $exception->severity;
+    }
+
+The first variable receives the same compatibility value as C<$@>. The
+second always receives the canonical C<XPerl::Exception>, including when the
+code in the C<try> block threw a reference.
+
 Both the C<try> and the C<catch> blocks are permitted to contain control-flow
 expressions, such as C<return>, C<goto>, or C<next>/C<last>/C<redo>. In all
 cases they behave as expected without warnings. In particular, a C<return>

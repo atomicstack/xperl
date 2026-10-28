@@ -226,6 +226,7 @@ vxs.inc					Version object XS methods
 warnings.h				The warning numbers
 write_buildcustomize.pl			Generate lib/buildcustomize.pl
 XPERL-MISSION.md			Mission and contribution principles for AI Perl
+xperl_exception.inc			Built-in structured exception and diagnostic methods
 XSUB.h					Include file for extension subroutines
 zaphod32_hash.h				Zaphod32 hash code (32 bit fast hash function)
 amigaos4/amigaio.c			AmigaOS4 port
@@ -5653,6 +5654,7 @@ ext/XS-APItest/APItest_bool_internals.xs	XS::APItest BoolInternals-related XS sp
 ext/XS-APItest/APItest_BS			autogenerate APItest.bs
 ext/XS-APItest/APItest_call_dispatch.xs		XS::APItest call dispatch XS split
 ext/XS-APItest/APItest_cv_refcounted_anysv.xs	XS::APItest CvREFCOUNTED_ANYSV-related XS split
+ext/XS-APItest/APItest_diag_match.xs		XS::APItest diagnostic matcher tests
 ext/XS-APItest/APItest_global_locale.xs		XS::APItest global_locale-related XS split
 ext/XS-APItest/APItest_hash.xs			XS::APItest hash-related XS split
 ext/XS-APItest/APItest_hv_macro.xs		XS::APItest HvMacro-related XS split
@@ -5674,6 +5676,7 @@ ext/XS-APItest/APItest_runtime_utils.xs		XS::APItest runtime utility XS split
 ext/XS-APItest/APItest_rwmacro.xs		XS::APItest RWMacro-related XS split
 ext/XS-APItest/APItest_savestack.xs		XS::APItest savestack-related XS split
 ext/XS-APItest/APItest_sv_compare_custom.xs	XS::APItest SV compare and custom XS split
+ext/XS-APItest/APItest_sv_copy.xs		XS::APItest scalar copy failure tests
 ext/XS-APItest/APItest_temp_lv.xs		XS::APItest temp lvalue XS split
 ext/XS-APItest/APItest_unicode_case.xs		XS::APItest Unicode case XS split
 ext/XS-APItest/APItest_unicode_charclass.xs	XS::APItest Unicode charclass XS split
@@ -5684,7 +5687,10 @@ ext/XS-APItest/APItest_xop_blockhooks.xs	XS::APItest XOP and blockhook XS split
 ext/XS-APItest/APItest_xsub_handshake.xs	XS::APItest XSUB handshake XS split
 ext/XS-APItest/core.c				Test API functions when PERL_CORE is defined
 ext/XS-APItest/core_or_not.inc			Code common to core.c and notcore.c
+ext/XS-APItest/diag_match_fixture.inc		Generated diagnostic selector descriptors
+ext/XS-APItest/diag_match_fixture.json		Diagnostic matcher fixture source data
 ext/XS-APItest/exception.c			XS::APItest extension
+ext/XS-APItest/gen_diag_match_fixture.pl	Generate diagnostic matcher fixture descriptors
 ext/XS-APItest/Makefile.PL			XS::APItest extension
 ext/XS-APItest/notcore.c			Test API functions when PERL_CORE is not defined
 ext/XS-APItest/numeric.xs			XS::APItest wrappers for numeric.c
@@ -5715,6 +5721,7 @@ ext/XS-APItest/t/customop.t			XS::APItest: tests for custom ops
 ext/XS-APItest/t/cv_name.t			test cv_name
 ext/XS-APItest/t/cv_refcounted_anysv.t		test CvREFCOUNTED_ANYSV
 ext/XS-APItest/t/delimcpy.t			test delimcpy
+ext/XS-APItest/t/diag-template-match.t		Test compiled diagnostic selector matching
 ext/XS-APItest/t/eval-filter.t			Simple source filter/eval test
 ext/XS-APItest/t/exception.t			XS::APItest extension
 ext/XS-APItest/t/extend.t			test EXTEND() macro
@@ -6236,6 +6243,9 @@ lib/vmsish.t				Tests for vmsish.pm
 lib/warnings.pm				For "use warnings"
 lib/warnings.t				See if warning controls work
 lib/warnings/register.pm		For "use warnings::register"
+lib/XPerl/DiagGroup.pm			Common diagnostic collector operations
+lib/XPerl/Diagnostic.pm			Structured diagnostic object
+lib/XPerl/Exception.pm			Structured exception object
 os2/Changes				Changelog for OS/2 port
 os2/diff.configure			Patches to Configure
 os2/dl_os2.c				Addon for dl_open
@@ -6709,6 +6719,7 @@ t/comp/term.t				See if more terms work
 t/comp/uproto.t				See if the _ prototype works
 t/comp/use.t				See if pragmata work
 t/comp/utf.t				See if UTFs work
+t/comp/xperl_exception.t		Built-in exception bootstrap test
 t/harness				Finer diagnostics from test suite
 t/io/argv.t				See if ARGV stuff works
 t/io/binmode.t				See if binmode() works
@@ -7061,6 +7072,7 @@ t/op/localref.t				See if local ${deref} works
 t/op/lock.t				Tests for lock args & retval (no threads)
 t/op/loopctl.t				See if next/last/redo work
 t/op/lop.t				See if logical operators work
+t/op/lvalue_catalog.t			Descriptive lvalue target catalog examples
 t/op/lvref.t				See if aliasing via references works
 t/op/magic.t				See if magic variables work
 t/op/magic-27839.t			Test for #27839, skipped for minitest
@@ -7176,6 +7188,9 @@ t/op/wantarray.t			See if wantarray works
 t/op/warn.t				See if warn works
 t/op/while.t				See if while loops work
 t/op/write.t				See if write works (formats work)
+t/op/xperl_exception.t			Test structured exception objects
+t/op/xperl_nested_serialization.t	Deep and cyclic diagnostic serialization
+t/op/xperl_nested_validation.t		Catalogued nested diagnostic validation
 t/op/yadayada.t				See if ... works
 t/opbasic/arith.t			See if arithmetic works
 t/opbasic/cmp.t				See if the various string and numeric compare work

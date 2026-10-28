@@ -33,7 +33,7 @@ eval 'sub e3 ($) : plugh(0,0 xyzzy ;';
 like $@, qr/^Unterminated attribute parameter in attribute list at \(eval \d+\) line 1\.$/;
 
 eval 'sub e4 ($) : plugh + XYZZY ;';
-like $@, qr/Invalid separator character '[+]' in attribute list at/;
+like $@, qr/Invalid attribute list separator: \+ at/;
 
 eval_ok 'my main $x : = 0;';
 eval_ok 'my $x : = 0;';
@@ -70,7 +70,7 @@ like $@, qr/^Unterminated attribute parameter in attribute list at \(eval \d+\) 
 eval 'my $x : 5x5;';
 like $@, qr/error/;
 eval 'my $x : Y2::north;';
-like $@, qr/Invalid separator character ':' in attribute list at/;
+like $@, qr/Invalid attribute list separator: : at/;
 
 sub A::MODIFY_SCALAR_ATTRIBUTES { return }
 eval 'my A $x : plugh;';
@@ -490,7 +490,7 @@ TODO: {
     my $out = runperl(prog => <<'EOP', stderr => 1);
     $ref = \($1 ? my $var : my $othervar);
 EOP
-    unlike($out, qr/Invalid separator character/, 'RT #3605: Errors near attribute colon need a better error message');
+    unlike($out, qr/Invalid attribute list separator/, 'RT #3605: Errors near attribute colon need a better error message');
     is($out, '', 'RT #3605: $a ? my $var : my $othervar is perfectly valid syntax');
 }
 

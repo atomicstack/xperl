@@ -115,7 +115,7 @@ S_rv2gv(pTHX_ SV *sv, const bool vivify_sv, const bool strict,
             sv = MUTABLE_SV(gv);
         }
         else if (!isGV_with_GP(sv)) {
-            die("Not a GLOB reference");
+            PERL_THROW_ERROR_TYPE_REFERENCE_GLOB_OR_IO_REQUIRED();
         }
     }
     else {
@@ -143,7 +143,7 @@ S_rv2gv(pTHX_ SV *sv, const bool vivify_sv, const bool strict,
                     goto wasref;
                 }
                 if (PL_op->op_flags & OPf_REF || strict) {
-                    die(PL_no_usym, "a symbol");
+                    PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_NO_CONTEXT(perl_diag_selector_domain_1755_0_symbol_6);
                 }
                 if (ckWARN(WARN_UNINITIALIZED))
                     report_uninit(sv);
@@ -158,12 +158,9 @@ S_rv2gv(pTHX_ SV *sv, const bool vivify_sv, const bool strict,
             }
             else {
                 if (strict) {
-                    die(
-                             PL_no_symref_sv,
-                             sv,
-                             (SvPOKp(sv) && SvCUR(sv)>32 ? "..." : ""),
-                             "a symbol"
-                             );
+                    PERL_THROW_ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN(sv, perl_diag_selector_domain_2425_0_symbol_4,
+                        (SvPOKp(sv) && SvCUR(sv) > 32)
+                            ? perl_diag_selector_domain_2043_0_truncated_2 : perl_diag_selector_domain_2043_0_complete_1);
                 }
                 if ((PL_op->op_private & (OPpLVAL_INTRO|OPpDONT_INIT_GV))
                     == OPpDONT_INIT_GV) {
@@ -215,7 +212,7 @@ PP(pp_rv2gv)
 
 GV *
 Perl_softref2xv(pTHX_ SV *const sv, const char *const what,
-                const svtype type)
+                const char *const reference_kind, const svtype type)
 {
     PERL_ARGS_ASSERT_SOFTREF2XV;
 
@@ -223,16 +220,16 @@ Perl_softref2xv(pTHX_ SV *const sv, const char *const what,
 
     if (PL_op->op_private & HINT_STRICT_REFS) {
         if (SvOK(sv))
-            die(PL_no_symref_sv, sv,
-                     (SvPOKp(sv) && SvCUR(sv)>32 ? "..." : ""), what);
+            PERL_THROW_ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN(sv, PERL_DIAG_SELECTOR_FROM_ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN_REFERENCE_KIND(reference_kind),
+                (SvPOKp(sv) && SvCUR(sv) > 32) ? perl_diag_selector_domain_2043_0_truncated_2 : perl_diag_selector_domain_2043_0_complete_1);
         else
-            die(PL_no_usym, what);
+            PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_NO_CONTEXT(PERL_DIAG_SELECTOR_FROM_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_KIND(what));
     }
     if (!SvOK(sv)) {
         if (
           PL_op->op_flags & OPf_REF
         )
-            die(PL_no_usym, what);
+            PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_NO_CONTEXT(PERL_DIAG_SELECTOR_FROM_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_KIND(what));
         if (ckWARN(WARN_UNINITIALIZED))
             report_uninit(sv);
         if (type != SVt_PV && GIMME_V == G_LIST) {
@@ -270,13 +267,13 @@ PP(pp_rv2sv)
 
         sv = SvRV(sv);
         if (SvTYPE(sv) >= SVt_PVAV)
-            DIE(aTHX_ "Not a SCALAR reference");
+            PERL_THROW_ERROR_TYPE_REFERENCE_SCALAR_REQUIRED();
     }
     else {
         gv = MUTABLE_GV(sv);
 
         if (!isGV_with_GP(gv)) {
-            gv = Perl_softref2xv(aTHX_ sv, "a SCALAR", SVt_PV);
+            gv = Perl_softref2xv(aTHX_ sv, "scalar", "scalar", SVt_PV);
             if (!gv)
                 return NORMAL;
         }
@@ -289,7 +286,7 @@ PP(pp_rv2sv)
             else if (gv)
                 sv = save_scalar(gv);
             else
-                croak("%s", PL_no_localize_ref);
+                PERL_THROW_ERROR_MUTATION_LOCALIZATION_THROUGH_REFERENCE_FORBIDDEN();
         }
         else if (PL_op->op_private & OPpDEREF)
             sv = vivify_ref(sv, PL_op->op_private & OPpDEREF);
@@ -416,8 +413,7 @@ PP(pp_prototype)
         if (memBEGINs(s, SvCUR(fn), "CORE::")) {
             const int code = keyword(s + 6, SvCUR(fn) - 6, 1);
             if (!code)
-                DIE(aTHX_ "Can't find an opnumber for \"%" UTF8f "\"",
-                   UTF8fARG(SvFLAGS(fn) & SVf_UTF8, SvCUR(fn)-6, s+6));
+                PERL_THROW_ERROR_CALL_LOOKUP_UNKNOWN_CORE_KEYWORD(SvFLAGS(fn) & SVf_UTF8, SvCUR(fn)-6, s+6);
             {
                 SV * const sv = core_prototype(NULL, s + 6, code, NULL);
                 if (sv) ret = sv;
@@ -694,7 +690,7 @@ PP(pp_bless)
       curstash:
         stash = CopSTASH(PL_curcop);
         if (SvTYPE(stash) != SVt_PVHV)
-            croak("Attempt to bless into a freed package");
+            PERL_THROW_ERROR_OBJECT_BLESS_CURRENT_PACKAGE_FREED();
     }
     else {
         SV * const ssv = *sp--;
@@ -708,7 +704,7 @@ PP(pp_bless)
         if (SvROK(ssv)) {
           if (!SvAMAGIC(ssv)) {
            frog:
-            croak("Attempt to bless into a reference");
+            PERL_THROW_ERROR_OBJECT_BLESS_INVALID_CLASS_NAME_REFERENCE();
           }
           /* SvAMAGIC is on here, but it only means potentially overloaded,
              so after stringification: */
@@ -718,8 +714,7 @@ PP(pp_bless)
         }
         else ptr = SvPV_nomg_const(ssv,len);
         if (len == 0)
-            ck_warner(packWARN(WARN_MISC),
-                      "Explicit blessing to '' (assuming package main)");
+            PERL_WARN_WARNING_MISC_OBJECT_BLESS_EMPTY_CLASS_NAME_DEFAULTED();
         stash = gv_stashpvn(ptr, len, GV_ADD|SvUTF8(ssv));
     }
 
@@ -1073,16 +1068,13 @@ PP(pp_undef)
         break;
     case SVt_PVCV:
         if (cv_const_sv((const CV *)sv))
-            ck_warner(packWARN(WARN_MISC),
-                      "Constant subroutine %" SVf " undefined",
-                       SVfARG(CvANON((const CV *)sv)
+            PERL_WARN_WARNING_MISC_CONSTANT_SUBROUTINE_UNDEFINED(CvANON((const CV *)sv)
                          ? newSVpvs_flags("(anonymous)", SVs_TEMP)
                          : newSVhek_mortal(
                             CvHasNAME_HEK(sv)
                              ? CvNAME_HEK((CV *)sv)
                              : GvENAME_HEK(CvGV((const CV *)sv))
-                           )
-                       ));
+                           ));
         /* FALLTHROUGH */
     case SVt_PVFM:
             /* let user-undef'd sub keep its identity */
@@ -1589,7 +1581,7 @@ PP(pp_divide)
                DIE() would be invoked before left was even inspected, so
                no inspection would give no warning.  */
             if (right == 0)
-                DIE(aTHX_ "Illegal division by zero");
+                PERL_THROW_ERROR_NUMERIC_DOMAIN_DIVISION_BY_ZERO();
 
             if (left_non_neg) {
                 left = SvUVX(svl);
@@ -1652,7 +1644,7 @@ PP(pp_divide)
 #else
         if (right == 0.0)
 #endif
-            DIE(aTHX_ "Illegal division by zero");
+            PERL_THROW_ERROR_NUMERIC_DOMAIN_DIVISION_BY_ZERO();
         TARGn(left / right, 1);
         goto ret;               /* redundant, but silence -Wunused-label */
     }
@@ -1761,7 +1753,7 @@ PP(pp_modulo)
             NV dans;
 
             if (!dright)
-                DIE(aTHX_ "Illegal modulus zero");
+                PERL_THROW_ERROR_NUMERIC_DOMAIN_MODULUS_BY_ZERO();
 
             dans = Perl_fmod(dleft, dright);
             if ((left_neg != right_neg) && dans)
@@ -1774,7 +1766,7 @@ PP(pp_modulo)
             UV ans;
 
             if (!right)
-                DIE(aTHX_ "Illegal modulus zero");
+            PERL_THROW_ERROR_NUMERIC_DOMAIN_MODULUS_BY_ZERO();
 
             ans = left % right;
             if ((left_neg != right_neg) && ans)
@@ -1864,12 +1856,10 @@ PP_wrapped(pp_repeat,
         count = SvIV_nomg(sv);
 
     if (infnan) {
-        ck_warner(packWARN(WARN_NUMERIC),
-                  "Non-finite repeat count does nothing");
+        PERL_WARN_WARNING_NUMERIC_REPEAT_COUNT_NONFINITE();
     } else if (count < 0) {
         count = 0;
-        ck_warner(packWARN(WARN_NUMERIC),
-                  "Negative repeat count does nothing");
+        PERL_WARN_WARNING_NUMERIC_REPEAT_COUNT_NEGATIVE();
     }
 
     if (gimme == G_LIST && PL_op->op_private & OPpREPEAT_DOLIST) {
@@ -1882,7 +1872,7 @@ PP_wrapped(pp_repeat,
 
             if ( items > SSize_t_MAX / (SSize_t)sizeof(SV *) / count )
                 /* diag_listed_as: Out of memory during %s extend */
-                croak("Out of memory during list extend");
+                PERL_THROW_ERROR_MEMORY_SIZE_LIST_EXTEND_OVERFLOW();
             max = items * count;
             MEXTEND(MARK, max);
 
@@ -1921,7 +1911,7 @@ PP_wrapped(pp_repeat,
                 if (   len > (MEM_SIZE_MAX-1) / (UV)count /* max would overflow */
                 )
                     /* diag_listed_as: Out of memory during %s extend */
-                    croak("Out of memory during string extend");
+                    PERL_THROW_ERROR_MEMORY_SIZE_STRING_EXTEND_OVERFLOW();
                 max = (UV)count * len + 1;
                 SvGROW(TARG, max);
 
@@ -2891,12 +2881,20 @@ S_scomplement(pTHX_ SV *targ, SV *sv)
         SSize_t anum;
         STRLEN len;
 
+#ifdef DEBUGGING
+        assert(PL_op->op_type == OP_COMPLEMENT
+            || PL_op->op_type == OP_NCOMPLEMENT
+            || PL_op->op_type == OP_SCOMPLEMENT);
+#endif
+
         sv_copypv_nomg(TARG, sv);
         tmps = (U8*)SvPV_nomg(TARG, len);
 
         if (SvUTF8(TARG)) {
             if (len && ! utf8_to_bytes_overwrite(&tmps, &len)) {
-                croak(FATAL_ABOVE_FF_MSG, PL_op_desc[PL_op->op_type]);
+                PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_BITWISE_STRING_NOT_BYTES(
+                    PERL_DIAG_PL_OP_DESC_ERROR_UNICODE_WIDE_CHARACTER_BITWISE_STRING_NOT_BYTES(PL_op->op_type),
+                    PERL_DIAG_SELECTOR_FROM_ERROR_UNICODE_WIDE_CHARACTER_BITWISE_STRING_NOT_BYTES_OPERATION_NAME(PL_op_name[PL_op->op_type]));
             }
             SvCUR_set(TARG, len);
             SvUTF8_off(TARG);
@@ -3018,7 +3016,7 @@ PP(pp_i_divide)
       IV num = SvIV_nomg(left);
       IV value = SvIV_nomg(right);
       if (value == 0)
-          DIE(aTHX_ "Illegal division by zero");
+          PERL_THROW_ERROR_NUMERIC_DOMAIN_DIVISION_BY_ZERO();
 
       /* avoid FPE_INTOVF on some platforms when num is IV_MIN */
       if (value == -1)
@@ -3046,7 +3044,7 @@ PP(pp_i_modulo)
 
      {
           if (!right)
-               DIE(aTHX_ "Illegal modulus zero");
+               PERL_THROW_ERROR_NUMERIC_DOMAIN_MODULUS_BY_ZERO();
           /* avoid FPE_INTOVF on some platforms when left is IV_MIN */
           if (right == -1)
               TARGi(0, 1);
@@ -3532,14 +3530,12 @@ PP(pp_sin)
 #endif
               (op_type == OP_LOG ? (value <= 0.0) : (value < 0.0)))
           {
-              char * mesg;
               LC_NUMERIC_LOCK(0);
               SET_NUMERIC_STANDARD();
-              mesg = form("Can't take %s of %" NVgf, neg_report, value);
+              PERL_APPEND_ERROR_NUMERIC_DOMAIN_LOG_SQRT_ARGUMENT_INVALID(
+                  &PL_pending_exception, PERL_DIAG_SELECTOR_FROM_ERROR_NUMERIC_DOMAIN_LOG_SQRT_ARGUMENT_INVALID_OPERATION(neg_report), value);
               LC_NUMERIC_UNLOCK;
-
-              /* diag_listed_as: Can't take log of %g */
-              DIE(aTHX_ "%s", mesg);
+              Perl_diag_flush_pending_exception(aTHX);
           }
       }
       switch (op_type) {
@@ -3646,8 +3642,7 @@ S_rng_srand_argument(pTHX_ SV *argument, bool has_argument)
             }
             if (SvROK(argument)
                 && !amagic_applies(argument, string_amg, AMGf_unary)) {
-                ck_warner(packWARN(WARN_MISC),
-                          "srand() argument is a reference without string overloading");
+                PERL_WARN_WARNING_MISC_RNG_SEED_REFERENCE_WITHOUT_STRING_OVERLOAD();
                 return newSVpvf("%" UVuf, PTR2UV(SvRV(argument)));
             }
 
@@ -3690,12 +3685,12 @@ S_rng_drand48_seed(pTHX_ SV *seed)
         SvGETMAGIC(raw);
         if (!SvPOK(raw)) {
             SvREFCNT_dec_NN(raw);
-            croak("RNG::SeedBase::bytes() did not return seed octets");
+            PERL_THROW_ERROR_RNG_SEED_BYTE_STRING_REQUIRED();
         }
         raw_bytes = (const U8 *)SvPVbyte(raw, length);
         if (length != 4) {
             SvREFCNT_dec_NN(raw);
-            croak("RNG::Seed for built-in Drand48 must contain exactly 4 octets");
+            PERL_THROW_ERROR_RNG_SEED_DRAND48_SIZE_INVALID();
         }
         value = U8TO32_LE(raw_bytes);
         SvREFCNT_dec_NN(raw);
@@ -3704,8 +3699,7 @@ S_rng_drand48_seed(pTHX_ SV *seed)
     bytes = SvPVutf8_nomg(seed, length);
     if (S_rng_decimal_seed(bytes, length, &decimal, &overflow)) {
         if (overflow)
-            ck_warner_d(packWARN(WARN_OVERFLOW),
-                        "Integer overflow in srand(): only using the low 32 bits");
+            PERL_WARN_WARNING_OVERFLOW_RNG_SEED_INTEGER_TRUNCATED();
         return (U32)decimal;
     }
 
@@ -3750,7 +3744,7 @@ S_rng_refresh(pTHX_ SV *provider)
     held_provider = sv_2mortal(newSVsv(provider));
     if (!sv_isobject(held_provider)
         || !sv_derived_from(held_provider, "RNG::Provider"))
-        croak("${^RNG} must be an RNG::Provider object or undef");
+        PERL_THROW_ERROR_RNG_PROVIDER_OBJECT_REQUIRED();
     PL_rng_provider = SvREFCNT_inc_simple_NN(held_provider);
     U01 = S_rng_fast_U01(aTHX_ held_provider);
     if (U01) {
@@ -3790,7 +3784,6 @@ S_rng_call_sv(pTHX_ SV *provider, SV *callable, const char *method,
               SV *arg, bool has_arg)
 {
     dSP;
-    I32 count;
     SV *ret;
     SV *call_provider;
 #ifdef PERL_RC_STACK
@@ -3821,11 +3814,12 @@ S_rng_call_sv(pTHX_ SV *provider, SV *callable, const char *method,
 #endif
     }
     PUTBACK;
-    count = callable ? call_sv(callable, G_SCALAR)
-                     : call_method(method, G_SCALAR);
+    const SSize_t count = callable ? call_sv(callable, G_SCALAR)
+                                  : call_method(method, G_SCALAR);
     SPAGAIN;
-    if (count != 1)
-        croak("RNG provider did not return exactly one value");
+    /* Scalar calls leave one value; an empty return becomes undef. */
+    assert(count == 1);
+    PERL_UNUSED_VAR(count);
 
     ret = newSVsv(TOPs);
 #ifdef PERL_RC_STACK
@@ -3857,7 +3851,7 @@ S_rng_reject_redacted_seed(pTHX_ SV *seed)
     is_redacted = S_rng_call(aTHX_ seed, "is_redacted", NULL, FALSE);
     if (SvTRUE(is_redacted)) {
         SvREFCNT_dec_NN(is_redacted);
-        croak("Cannot use a redacted RNG seed");
+        PERL_THROW_ERROR_RNG_SEED_REDACTED_FORBIDDEN();
     }
     SvREFCNT_dec_NN(is_redacted);
 }
@@ -3902,7 +3896,7 @@ S_rng_fast_address(pTHX_ SV *provider, const char *method)
     }
     if (!SvIOK(address) || SvNOK(address) || SvPOK(address)
         || (SvIOK_notUV(address) && SvIV(address) < 0))
-        croak("RNG fast provider address must be an integer");
+        PERL_THROW_ERROR_RNG_PROVIDER_INTEGER_ADDRESS_REQUIRED();
 
     value = SvUV(address);
     SvREFCNT_dec_NN(address);
@@ -3933,10 +3927,10 @@ S_rng_bytes(pTHX_ SV *provider, STRLEN length)
 
     SvGETMAGIC(result);
     if (!SvPOK(result))
-        croak("RNG provider rand_bytes() did not return a byte string");
+        PERL_THROW_ERROR_RNG_PROVIDER_BYTE_STRING_REQUIRED();
     bytes = (const U8 *)SvPVbyte_nomg(result, len);
     if (len != length)
-        croak("RNG provider rand_bytes() did not return the requested byte count");
+        PERL_THROW_ERROR_RNG_PROVIDER_BYTE_COUNT_MISMATCH();
     PERL_UNUSED_VAR(bytes);
     return result;
 }
@@ -4520,8 +4514,7 @@ PP_wrapped(pp_substr,
         repl = SvPV_const(repl_sv, repl_len);
         SvGETMAGIC(sv);
         if (SvROK(sv))
-            ck_warner(packWARN(WARN_SUBSTR),
-                      "Attempt to use reference as lvalue in substr");
+            PERL_WARN_WARNING_SUBSTR_LVALUE_TARGET_REFERENCE();
         tmps = SvPV_force_nomg(sv, curlen);
         if (DO_UTF8(repl_sv) && repl_len) {
             if (!DO_UTF8(sv)) {
@@ -4595,8 +4588,8 @@ PP_wrapped(pp_substr,
 
   bound_fail:
     if (repl)
-        croak("substr outside of string");
-    ck_warner(packWARN(WARN_SUBSTR), "substr outside of string");
+        PERL_THROW_ERROR_STRING_SUBSTR_REPLACEMENT_OUT_OF_RANGE();
+    PERL_WARN_WARNING_SUBSTR_RANGE_OUTSIDE_STRING();
     RETPUSHUNDEF;
 }
 
@@ -4622,8 +4615,7 @@ PP(pp_substr_left)
     if (do_chop) {
         SvGETMAGIC(sv);
         if (SvROK(sv))
-            ck_warner(packWARN(WARN_SUBSTR),
-                      "Attempt to use reference as lvalue in substr");
+            PERL_WARN_WARNING_SUBSTR_LVALUE_TARGET_REFERENCE();
         tmps = SvPV_force_nomg(sv, curlen);
     } else
         tmps = SvPV_const(sv, curlen);
@@ -4943,7 +4935,7 @@ PP(pp_chr)
     if (UNLIKELY(SvAMAGIC(top)))
         top = sv_2num(top);
     if (UNLIKELY(isinfnansv(top)))
-        croak("Cannot chr %" NVgf, SvNV(top));
+        PERL_THROW_ERROR_UNICODE_CODE_POINT_CHR_NONFINITE(SvNV(top));
     else {
         if (!IN_BYTES /* under bytes, chr(-1) eq chr(0xff), etc. */
             && ((SvIOKp(top) && !SvIsUV(top) && SvIV_nomg(top) < 0)
@@ -4956,8 +4948,7 @@ PP(pp_chr)
                     SV *top2 = sv_mortalcopy_flags(top, SV_DO_COW_SVSETSV);
                     top = top2;
                 }
-                warner(packWARN(WARN_UTF8),
-                       "Invalid negative number (%" SVf ") in chr", SVfARG(top));
+                PERL_WARN_WARNING_UTF8_CHR_NEGATIVE_VALUE(top);
             }
             value = UNICODE_REPLACEMENT;
         } else {
@@ -5034,8 +5025,7 @@ PP(pp_crypt)
     rpp_replace_2_1_NN(targ);
     return NORMAL;
 #else
-    DIE(aTHX_
-      "The crypt() function is unimplemented due to excessive paranoia.");
+    PERL_THROW_ERROR_SYSTEM_CRYPT_UNAVAILABLE();
 #endif
 }
 
@@ -6280,7 +6270,7 @@ PP(pp_aslice)
             svp = av_fetch(av, elem, lval);
             if (lval) {
                 if (!svp || !*svp)
-                    DIE(aTHX_ PL_no_aelem, elem);
+                    PERL_THROW_ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE_DIE((int)(elem));
                 if (localizing) {
                     if (preeminent)
                         save_aelem(av, elem, svp);
@@ -6313,7 +6303,7 @@ PP(pp_kvaslice)
        if (flags) {
            if (!(flags & OPpENTERSUB_INARGS))
                /* diag_listed_as: Can't modify %s in %s */
-               croak("Can't modify index/value array slice in list assignment");
+               PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_ARRAY_INDEX_VALUE_SLICE_NOT_MODIFIABLE();
            lval = flags;
        }
     }
@@ -6341,7 +6331,7 @@ PP(pp_kvaslice)
         svp = av_fetch(av, SvIV(*MARK), lval);
         if (lval) {
             if (!svp || !*svp || *svp == &PL_sv_undef) {
-                DIE(aTHX_ PL_no_aelem, SvIV(*MARK));
+                PERL_THROW_ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE_DIE((int)(SvIV(*MARK)));
             }
             /* replace key SV with a copy */
             SV *oldsv = *MARK;
@@ -6408,8 +6398,7 @@ PP_wrapped(pp_akeys, 1, 0)
         const I32 flags = is_lvalue_sub();
         if (flags && !(flags & OPpENTERSUB_INARGS))
             /* diag_listed_as: Can't modify %s in %s */
-            croak(
-                      "Can't modify keys on array in list assignment");
+            PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_ARRAY_KEYS_NOT_MODIFIABLE();
       }
       {
         IV n = av_top_index(array);
@@ -6502,7 +6491,7 @@ S_do_delete_local(pTHX)
                         SvREFCNT_inc_simple_void(sv); /* De-mortalize */
                 }
                 if (preeminent) {
-                    if (!sv) DIE(aTHX_ PL_no_helem_sv, SVfARG(keysv));
+                    if (!sv) PERL_THROW_ERROR_MUTATION_ELEMENT_HASH_VALUE_NOT_CREATABLE_DIE(keysv);
                     save_helem_flags(hv, keysv, &sv, SAVEf_KEEPOLDELEM);
                     if (tied) {
                         *MARK = sv_mortalcopy(sv);
@@ -6552,10 +6541,10 @@ S_do_delete_local(pTHX)
                 }
             }
             else
-                DIE(aTHX_ "panic: avhv_delete no longer supported");
+                PERL_PANIC_ERROR_INTERNAL_HASH_ARRAY_HASH_DELETE_FORM_UNSUPPORTED();
     }
     else
-            DIE(aTHX_ "Not a HASH reference");
+            PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED();
     if (sliced) {
         if (gimme == G_VOID)
             SP = ORIGMARK;
@@ -6620,7 +6609,7 @@ PP_wrapped(pp_delete,
             }
         }
         else
-            DIE(aTHX_ "Not a HASH reference");
+            PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED();
         if (discard)
             SP = ORIGMARK;
         else if (gimme == G_SCALAR) {
@@ -6642,10 +6631,10 @@ PP_wrapped(pp_delete,
             if (PL_op->op_flags & OPf_SPECIAL)
                 sv = av_delete(MUTABLE_AV(hv), SvIV(keysv), discard);
             else
-                DIE(aTHX_ "panic: avhv_delete no longer supported");
+                PERL_PANIC_ERROR_INTERNAL_HASH_ARRAY_HASH_DELETE_FORM_UNSUPPORTED();
         }
         else
-            DIE(aTHX_ "Not a HASH reference");
+            PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED();
         if (!sv)
             sv = &PL_sv_undef;
         if (!discard)
@@ -6683,7 +6672,7 @@ PP_wrapped(pp_exists, ((PL_op->op_private & OPpEXISTS_SUB) ? 1 : 2), 0)
         }
     }
     else {
-        DIE(aTHX_ "Not a HASH reference");
+        PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED();
     }
     RETPUSHNO;
 }
@@ -6794,7 +6783,7 @@ PP(pp_hslice)
 
         if (lval) {
             if (!svp || !*svp || *svp == &PL_sv_undef) {
-                DIE(aTHX_ PL_no_helem_sv, SVfARG(keysv));
+                PERL_THROW_ERROR_MUTATION_ELEMENT_HASH_VALUE_NOT_CREATABLE_DIE(keysv);
             }
             if (localizing) {
                 if (HvNAME_get(hv) && isGV_or_RVCV(*svp))
@@ -6830,8 +6819,7 @@ PP(pp_kvhslice)
        if (flags) {
            if (!(flags & OPpENTERSUB_INARGS))
                /* diag_listed_as: Can't modify %s in %s */
-               croak("Can't modify key/value hash slice in %s assignment",
-                                 GIMME_V == G_LIST ? "list" : "scalar");
+               PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_HASH_KEY_VALUE_SLICE_NOT_MODIFIABLE(GIMME_V == G_LIST ? "list" : "scalar");
            lval = flags;
        }
     }
@@ -6863,7 +6851,7 @@ PP(pp_kvhslice)
 
         if (lval) {
             if (!svp || !*svp || *svp == &PL_sv_undef) {
-                DIE(aTHX_ PL_no_helem_sv, SVfARG(keysv));
+                PERL_THROW_ERROR_MUTATION_ELEMENT_HASH_VALUE_NOT_CREATABLE_DIE(keysv);
             }
             /* replace key SV with a copy */
             SV *oldsv = *MARK;
@@ -7051,7 +7039,7 @@ PP(pp_anonhash)
         }
         else
         {
-            ck_warner(packWARN(WARN_MISC), "Odd number of elements in anonymous hash");
+            PERL_WARN_WARNING_MISC_ANONYMOUS_HASH_ODD_ELEMENT_COUNT();
             val = newSV_type(SVt_NULL);
         }
         (void)hv_store_ent(hv,key,val,0);
@@ -7098,7 +7086,7 @@ PP_wrapped(pp_splice, 0, 1)
         if (offset < 0)
             offset += AvFILLp(ary) + 1;
         if (offset < 0)
-            DIE(aTHX_ PL_no_aelem, i);
+            PERL_THROW_ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE_DIE((int)(i));
         if (++MARK < SP) {
             length = SvIVx(*MARK++);
             if (length < 0) {
@@ -7116,7 +7104,7 @@ PP_wrapped(pp_splice, 0, 1)
     }
     if (offset > AvFILLp(ary) + 1) {
         if (num_args > 2)
-            ck_warner(packWARN(WARN_MISC), "splice() offset past end of array" );
+            PERL_WARN_WARNING_MISC_SPLICE_OFFSET_PAST_ARRAY_END();
         offset = AvFILLp(ary) + 1;
     }
     after = AvFILLp(ary) + 1 - (offset + length);
@@ -8134,7 +8122,7 @@ PP_wrapped(pp_split,
         iters = (SP - PL_stack_base) - base;
     }
     if (iters > maxiters)
-        DIE(aTHX_ "Split loop");
+        PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_SPLIT_ITERATION_LIMIT_EXCEEDED();
 
     /* keep field after final delim? */
     if (s < strend || (iters && origlimit)) {
@@ -8272,8 +8260,8 @@ PP(unimplemented_op)
     const char *const name = op_type >= OP_max
         ? "[out of range]" : PL_op_name[op_type];
     if(OP_IS_SOCKET(op_type))
-        DIE(aTHX_ PL_no_sock_func, name);
-    DIE(aTHX_ "panic: unimplemented op %s (#%d) called", name,	op_type);
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(name);
+    PERL_PANIC_ERROR_INTERNAL_OPCODE_EXECUTION_IMPLEMENTATION_MISSING(name, op_type);
 }
 
 static void
@@ -8299,7 +8287,6 @@ PP_wrapped(pp_coreargs, 0, 0)
     I32 minargs = 0, maxargs = 0, numargs = at_ ? AvFILLp(at_)+1 : 0;
     I32 oa = opnum ? PL_opargs[opnum] >> OASHIFT : 0;
     bool seen_question = 0;
-    const char *err = NULL;
     const bool pushmark = PL_op->op_private & OPpCOREARGS_PUSHMARK;
 
     /* Count how many args there are first, to get some idea how far to
@@ -8312,14 +8299,13 @@ PP_wrapped(pp_coreargs, 0, 0)
         oa >>= 4;
     }
 
-    if(numargs < minargs) err = "Not enough";
-    else if(numargs > maxargs) err = "Too many";
-    if (err)
+    if (numargs < minargs || numargs > maxargs)
         /* diag_listed_as: Too many arguments for %s */
-        croak(
-          "%s arguments for %s", err,
-           opnum ? PL_op_desc[opnum] : SvPV_nolen_const(cSVOP_sv)
-        );
+        PERL_THROW_ERROR_CALL_BINDING_ARITY_INVALID_ARGUMENT_COUNT(
+            numargs < minargs ? perl_diag_selector_domain_1500_0_too_few_1
+                              : perl_diag_selector_domain_1500_0_too_many_2,
+            opnum ? PERL_DIAG_PL_OP_DESC_COREARGS_ERROR_CALL_BINDING_ARITY_INVALID_ARGUMENT_COUNT(opnum)
+                  : SvPV_nolen_const(cSVOP_sv));
 
     /* Reset the stack pointer.  Without this, we end up returning our own
        arguments in list context, in addition to the values we are supposed
@@ -8371,11 +8357,7 @@ PP_wrapped(pp_coreargs, 0, 0)
             }
             if (!svp || !*svp || !SvROK(*svp)
              || SvTYPE(SvRV(*svp)) != SVt_PVAV)
-                DIE(aTHX_
-                /* diag_listed_as: Type of arg %d to &CORE::%s must be %s*/
-                 "Type of arg %d to &CORE::%s must be array reference",
-                  whicharg, PL_op_desc[opnum]
-                );
+                PERL_THROW_ERROR_CALL_BINDING_TYPE_ARRAY_REFERENCE_REQUIRED(whicharg, PERL_DIAG_PL_OP_DESC_COREARGS_ARRAY_REFERENCE(opnum));
             PUSHs(SvRV(*svp));
             break;
         case OA_HVREF:
@@ -8383,13 +8365,12 @@ PP_wrapped(pp_coreargs, 0, 0)
              || (  SvTYPE(SvRV(*svp)) != SVt_PVHV
                 && (  opnum == OP_DBMCLOSE || opnum == OP_DBMOPEN
                    || SvTYPE(SvRV(*svp)) != SVt_PVAV  )))
-                DIE(aTHX_
-                /* diag_listed_as: Type of arg %d to &CORE::%s must be %s*/
-                 "Type of arg %d to &CORE::%s must be hash%s reference",
-                  whicharg, PL_op_desc[opnum],
-                  opnum == OP_DBMCLOSE || opnum == OP_DBMOPEN
-                     ? ""
-                     : " or array"
+                PERL_THROW_ERROR_CALL_BINDING_TYPE_HASH_REFERENCE_REQUIRED(
+                    whicharg,
+                    PERL_DIAG_PL_OP_DESC_COREARGS_HASH_REFERENCE(opnum),
+                    (opnum == OP_DBMCLOSE || opnum == OP_DBMOPEN)
+                        ? perl_diag_selector_domain_2001_0_hash_only_1
+                        : perl_diag_selector_domain_2001_0_hash_or_array_2
                 );
             PUSHs(SvRV(*svp));
             break;
@@ -8424,14 +8405,14 @@ PP_wrapped(pp_coreargs, 0, 0)
                    :                    SVt_PVHV
                 )
                )
-                DIE(aTHX_
-                 "Type of arg %d to &CORE::%s must be %s",
-                  whicharg, PL_op_name[opnum],
-                  wantscalar
-                    ? "scalar reference"
-                    : opnum == OP_LOCK || opnum == OP_UNDEF
-                       ? "reference to one of [$@%&*]"
-                       : "reference to one of [$@%*]"
+                PERL_THROW_ERROR_CALL_BINDING_TYPE_REFERENCE_TYPE_UNSUPPORTED(
+                    whicharg,
+                    PL_op_name[opnum],
+                    wantscalar
+                        ? perl_diag_selector_domain_2002_0_scalar_reference_3
+                        : opnum == OP_LOCK || opnum == OP_UNDEF
+                            ? perl_diag_selector_domain_2002_0_reference_with_code_1
+                            : perl_diag_selector_domain_2002_0_reference_without_code_2
                 );
             PUSHs(SvRV(*svp));
             if (opnum == OP_UNDEF && SvRV(*svp) == (SV *)PL_defgv) {
@@ -8442,7 +8423,7 @@ PP_wrapped(pp_coreargs, 0, 0)
           }
           break;
         default:
-            DIE(aTHX_ "panic: unknown OA_*: %x", (unsigned)(oa&7));
+            PERL_PANIC_ERROR_INTERNAL_CALL_BINDING_CORE_ARGUMENT_CLASS_UNKNOWN((unsigned)(oa&7));
         }
         oa = oa >> 4;
     }
@@ -8496,7 +8477,7 @@ S_localise_aelem_lval(pTHX_ AV * const av, SV * const keysv,
     if (can_preserve ? av_exists(av, ix) : TRUE) {
         SV ** const svp = av_fetch(av, ix, 1);
         if (!svp || !*svp)
-            croak(PL_no_aelem, ix);
+            PERL_THROW_ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE((int)ix);
         save_aelem(av, ix, svp);
     }
     else
@@ -8511,7 +8492,7 @@ S_localise_helem_lval(pTHX_ HV * const hv, SV * const keysv,
         HE * const he = hv_fetch_ent(hv, keysv, 1, 0);
         SV ** const svp = he ? &HeVAL(he) : NULL;
         if (!svp || !*svp)
-            croak(PL_no_helem_sv, SVfARG(keysv));
+            PERL_THROW_ERROR_MUTATION_ELEMENT_HASH_VALUE_NOT_CREATABLE(keysv);
         save_helem_flags(hv, keysv, svp, 0);
     }
     else
@@ -8559,27 +8540,27 @@ PP(pp_refassign)
 
     const char *bad = NULL;
     const U8 type = PL_op->op_private & OPpLVREF_TYPE;
-    if (!SvROK(sv)) DIE(aTHX_ "Assigned value is not a reference");
+    if (!SvROK(sv)) PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_VALUE_NOT_REFERENCE_DIE();
     switch (type) {
     case OPpLVREF_SV:
         if (SvTYPE(SvRV(sv)) > SVt_PVLV)
-            bad = " SCALAR";
+            bad = "SCALAR";
         break;
     case OPpLVREF_AV:
         if (SvTYPE(SvRV(sv)) != SVt_PVAV)
-            bad = "n ARRAY";
+            bad = "ARRAY";
         break;
     case OPpLVREF_HV:
         if (SvTYPE(SvRV(sv)) != SVt_PVHV)
-            bad = " HASH";
+            bad = "HASH";
         break;
     case OPpLVREF_CV:
         if (SvTYPE(SvRV(sv)) != SVt_PVCV)
-            bad = " CODE";
+            bad = "CODE";
     }
     if (bad)
         /* diag_listed_as: Assigned value is not %s reference */
-        DIE(aTHX_ "Assigned value is not a%s reference", bad);
+        PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_REFERENT_TYPE_MISMATCH_DIE(PERL_DIAG_SELECTOR_FROM_ERROR_MUTATION_REFERENCE_ALIASING_REFERENT_TYPE_MISMATCH_REFERENCE_TYPE(bad));
 
     switch (left ? SvTYPE(left) : 0) {
     case 0:
@@ -8969,17 +8950,78 @@ S_check_argc(pTHX_ UV argc, UV params, UV opt_params, char slurpy)
         /* diag_listed_as: Too few arguments for subroutine '%s' (got %d; expected at least %d) */
         /* diag_listed_as: Too many arguments for subroutine '%s' (got %d; expected %d) */
         /* diag_listed_as: Too many arguments for subroutine '%s' (got %d; expected at most %d)*/
-        Perl_croak_caller("Too %s arguments for subroutine '%" SVf "' (got %" UVuf "; expected %s%" UVuf ")",
-                          too_few ? "few" : "many",
-                          S_find_runcv_name(),
-                          argc,
-                          too_few ? (slurpy || opt_params ? "at least " : "") : (opt_params ? "at most " : ""),
-                          too_few ? (params - opt_params) : params);
+        PERL_THROW_ERROR_CALL_BINDING_ARITY_SUBROUTINE_COUNT_MISMATCH(
+            too_few ? perl_diag_selector_domain_1500_0_too_few_1 : perl_diag_selector_domain_1500_0_too_many_2,
+            S_find_runcv_name(), argc,
+            too_few ? (slurpy || opt_params ? perl_diag_selector_domain_2431_1_minimum_2 : perl_diag_selector_domain_2431_1_exact_1)
+                    : (opt_params ? perl_diag_selector_domain_2431_1_maximum_3 : perl_diag_selector_domain_2431_1_exact_1),
+            too_few ? (params - opt_params) : params);
 
     if (UNLIKELY(slurpy == '%' && argc > params && (argc - params) % 2))
         /* diag_listed_as: Odd name/value argument for subroutine '%s' */
-        Perl_croak_caller("Odd name/value argument for subroutine '%" SVf "'",
-                          S_find_runcv_name());
+        PERL_THROW_ERROR_CALL_BINDING_ARITY_ODD_SLURPY_HASH_ARGUMENT_COUNT(S_find_runcv_name());
+}
+
+static void
+S_nest_named_parameter_tail(pTHX_ SV **exception)
+{
+    SV *object;
+    SV **messages_slot;
+    AV *messages;
+    SV **parent_slot;
+    SV **child_slot;
+    AV *children;
+    SSize_t last;
+
+    if (!exception || !(object = *exception) || !SvROK(object)
+        || SvTYPE(SvRV(object)) != SVt_PVHV)
+        return;
+    messages_slot = hv_fetchs(MUTABLE_HV(SvRV(object)), "contents", FALSE);
+    if (!messages_slot || !SvROK(*messages_slot)
+        || SvTYPE(SvRV(*messages_slot)) != SVt_PVAV)
+        return;
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    last = av_top_index(messages);
+    if (last < 1)
+        return;
+    parent_slot = av_fetch(messages, 0, FALSE);
+    child_slot = av_fetch(messages, last, FALSE);
+    if (!parent_slot || !child_slot || !SvROK(*parent_slot)
+        || SvTYPE(SvRV(*parent_slot)) != SVt_PVHV)
+        return;
+    {
+        SV **children_slot = hv_fetchs(MUTABLE_HV(SvRV(*parent_slot)),
+                                       "contents", TRUE);
+        if (children_slot && !SvOK(*children_slot))
+            sv_setrv_noinc(*children_slot, MUTABLE_SV(newAV()));
+        if (!children_slot || !SvROK(*children_slot)
+            || SvTYPE(SvRV(*children_slot)) != SVt_PVAV)
+            return;
+        children = MUTABLE_AV(SvRV(*children_slot));
+    }
+    av_push(children, newSVsv(*child_slot));
+    SvREFCNT_dec_NN(av_pop(messages));
+}
+
+static void
+Perl_diag_append_named_parameter_error(pTHX_ SV **exception, SV *parameter,
+                               SV *function, bool missing)
+{
+    const PERL_CONTEXT *caller = caller_cx(0, NULL);
+    COP *old_cop = PL_curcop;
+
+    if (caller && CxTYPE(caller) == CXt_SUB) {
+        const COP *call_cop = closest_cop(caller->blk_oldcop,
+            OpSIBLING(caller->blk_oldcop), caller->blk_sub.retop, TRUE);
+        PL_curcop = (COP *)(call_cop ? call_cop : caller->blk_oldcop);
+    }
+    if (missing)
+        PERL_APPEND_ERROR_CALL_BINDING_NAMED_PARAMETER_REQUIRED_NAME_MISSING(exception, parameter,
+                                                     function);
+    else
+        PERL_APPEND_ERROR_CALL_BINDING_NAMED_PARAMETER_UNKNOWN_NAME(exception, parameter, function);
+    S_nest_named_parameter_tail(aTHX_ exception);
+    PL_curcop = old_cop;
 }
 
 PP(pp_argcheck)
@@ -8994,27 +9036,6 @@ PP(pp_argcheck)
     S_check_argc(aTHX_ argc, aux->params, aux->opt_params, aux->slurpy);
 
     return NORMAL;
-}
-
-/* Helper function for collecting up hash key names for a human-readable
- * error message string
- */
-#define accumulate_error_names(n_errorsp, error_namesp, namepv, namelen)  S_accumulate_error_names(aTHX_ n_errorsp, error_namesp, namepv, namelen)
-static void
-S_accumulate_error_names(pTHX_ size_t *n_errorsp, SV **error_namesp, const char *namepv, STRLEN namelen)
-{
-    size_t n_errors = ++(*n_errorsp);
-
-    SV *error_names = (*error_namesp);
-    if(!error_names)
-        error_names = (*error_namesp) = newSVpvs_flags("", SVs_TEMP);
-
-    if(n_errors <= 5) {
-        /* Only bother collecting up the first 5 */
-        if(n_errors > 1)
-            sv_catpvs(error_names, ", ");
-        sv_catpvf(error_names, "'%" UTF8f "'", UTF8fARG(true, namelen, namepv));
-    }
 }
 
 PP(pp_multiparam)
@@ -9111,7 +9132,8 @@ PP(pp_multiparam)
         }
 
         size_t n_errors = 0;
-        SV *error_names = NULL;
+        SV *exception = NULL;
+        SV *subname = S_find_runcv_name();
 
         while(argc) {
             SV **svp;
@@ -9190,16 +9212,23 @@ PP(pp_multiparam)
                 hv_store_ent(hv, name, newSVsv(val), 0);
             }
             else {
-                accumulate_error_names(&n_errors, &error_names, namepv, namelen);
+                n_errors++;
+                if (n_errors <= 5)
+                    Perl_diag_append_named_parameter_error(aTHX_ &exception,
+                        newSVpvn_flags(namepv, namelen, SVs_TEMP|SVf_UTF8),
+                        subname, FALSE);
             }
         }
 
         if(n_errors) {
-            if(n_errors > 5)
-                sv_catpvs(error_names, ", ...");
-            /* diag_listed_as: Unrecognized named parameter '%s' to subroutine '%s' */
-            croak_caller("Unrecognized named parameter%s %" SVf " to subroutine '%" SVf "'",
-                n_errors > 1 ? "s" : "", SVfARG(error_names), SVfARG(S_find_runcv_name()));
+            if (n_errors > 5)
+                PERL_APPEND_NOTE_OMISSION_NAMED_PARAMETER_DIAGNOSTICS(
+                    &exception, (UV)(n_errors - 5));
+            if (n_errors > 5)
+                Perl_diag_reclassify_last(aTHX_ &exception,
+                    "XPerl::Diagnostic::Note::Omission");
+            S_nest_named_parameter_tail(aTHX_ &exception);
+            PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(exception);
         }
 
         for(size_t namedix = 0; namedix < n_named; namedix++) {
@@ -9207,15 +9236,23 @@ PP(pp_multiparam)
             if(!named->is_required || !SvPADSTALE(PAD_SVl(named->padix)))
                 continue;
 
-            accumulate_error_names(&n_errors, &error_names, named->namepv, named->namelen);
+            n_errors++;
+            if (n_errors <= 5)
+                Perl_diag_append_named_parameter_error(aTHX_ &exception,
+                    newSVpvn_flags(named->namepv, named->namelen,
+                                   SVs_TEMP|SVf_UTF8),
+                    subname, TRUE);
         }
 
         if(n_errors) {
-            if(n_errors > 5)
-                sv_catpvs(error_names, ", ...");
-            /* diag_listed_as: Missing required named parameter '%s' to subroutine '%s' */
-            croak_caller("Missing required named parameter%s %" SVf " to subroutine '%" SVf "'",
-                n_errors > 1 ? "s" : "", SVfARG(error_names), SVfARG(S_find_runcv_name()));
+            if (n_errors > 5)
+                PERL_APPEND_NOTE_OMISSION_NAMED_PARAMETER_DIAGNOSTICS(
+                    &exception, (UV)(n_errors - 5));
+            if (n_errors > 5)
+                Perl_diag_reclassify_last(aTHX_ &exception,
+                    "XPerl::Diagnostic::Note::Omission");
+            S_nest_named_parameter_tail(aTHX_ &exception);
+            PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(exception);
         }
     }
 

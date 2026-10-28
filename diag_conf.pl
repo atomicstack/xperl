@@ -3214,7 +3214,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_DEPRECATED_COMPONENT_FATALIZATION_SCHEDULED",
           "macro" => "PERL_DEPRECATE_WARNING_DEPRECATED_COMPONENT_FATALIZATION_SCHEDULED",
-          "source_files" => [],
+          "source_files" => [
+            "handy.h"
+          ],
           "tags" => [
             "subject:diagnostic_exception_api"
           ],
@@ -3270,7 +3272,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_DEPRECATED_COMPONENT_REMOVAL_SCHEDULED",
           "macro" => "PERL_DEPRECATE_WARNING_DEPRECATED_COMPONENT_REMOVAL_SCHEDULED",
-          "source_files" => [],
+          "source_files" => [
+            "handy.h"
+          ],
           "tags" => [
             "subject:diagnostic_exception_api"
           ],
@@ -3326,7 +3330,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_DEPRECATED_COMPONENT_USED",
           "macro" => "PERL_DEPRECATE_WARNING_DEPRECATED_COMPONENT_USED",
-          "source_files" => [],
+          "source_files" => [
+            "handy.h"
+          ],
           "tags" => [
             "subject:diagnostic_exception_api"
           ],
@@ -3377,7 +3383,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_DEPRECATED_DELIMITER_WILL_BE_PAIRED_UNPAIRED_DELIMITER_USED",
           "macro" => "PERL_DEPRECATE_WARNING_DEPRECATED_DELIMITER_WILL_BE_PAIRED_UNPAIRED_DELIMITER_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:quoted_source_escapes"
           ],
@@ -3438,7 +3446,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_DEPRECATED_DOT_IN_INC_RELATIVE_DO_FILE_NOT_IN_INC",
           "macro" => "PERL_DEPRECATE_WARNING_DEPRECATED_DOT_IN_INC_RELATIVE_DO_FILE_NOT_IN_INC",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:module_version_loading"
@@ -3490,7 +3500,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_DEPRECATED_REGEXP_CHAR_CLASS_LITERAL_VERTICAL_SPACE",
           "macro" => "PERL_DEPRECATE_WARNING_DEPRECATED_REGEXP_CHAR_CLASS_LITERAL_VERTICAL_SPACE",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "subject:regexp"
           ],
@@ -3538,7 +3550,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_DEPRECATED_REGEXP_CHAR_CLASS_UNESCAPED_HASH",
           "macro" => "PERL_DEPRECATE_WARNING_DEPRECATED_REGEXP_CHAR_CLASS_UNESCAPED_HASH",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "subject:regexp"
           ],
@@ -3586,7 +3600,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_DEPRECATED_UNICODE_PROPERTY_NAME_PROPERTY_NAME_USED",
           "macro" => "PERL_DEPRECATE_WARNING_DEPRECATED_UNICODE_PROPERTY_NAME_PROPERTY_NAME_USED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -3728,7 +3744,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_CALL_BINDING_ARITY_TOO_FEW_ARGUMENTS",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_CALL_BINDING_ARITY_TOO_FEW_ARGUMENTS",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:call_callback_contracts"
@@ -3812,7 +3830,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_CALL_BINDING_ARITY_TOO_MANY_ARGUMENTS",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_CALL_BINDING_ARITY_TOO_MANY_ARGUMENTS",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:call_callback_contracts"
@@ -3896,7 +3916,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_CALL_BINDING_TYPE_EXPRESSION_TYPE_MISMATCH",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_CALL_BINDING_TYPE_EXPRESSION_TYPE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -4221,7 +4243,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_CALL_BINDING_TYPE_SCALAR_CONTAINER_ACCESS_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_CALL_BINDING_TYPE_SCALAR_CONTAINER_ACCESS_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -4274,7 +4298,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_COMPILATION_FAILED",
           "macro" => "PERL_APPEND_ERROR_COMPILATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:operation_failed",
             "role:compilation_summary",
@@ -4320,7 +4347,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_COMPILATION_UNCLASSIFIED_ERROR",
           "macro" => "PERL_APPEND_ERROR_COMPILATION_UNCLASSIFIED_ERROR",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "role:opaque_payload",
             "subject:parser_declarations"
@@ -4372,7 +4401,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_COMPILATION_UNCLASSIFIED_PARSER_CONTEXT",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_COMPILATION_UNCLASSIFIED_PARSER_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "role:context_hint",
             "role:opaque_payload",
@@ -4585,7 +4616,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_COMPILATION_UNCLASSIFIED_PARSER_ERROR",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_COMPILATION_UNCLASSIFIED_PARSER_ERROR",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "toke.c"
+          ],
           "tags" => [
             "role:opaque_payload",
             "subject:parser_declarations"
@@ -4632,7 +4666,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_ATOM_DELIMITER_UNEXPECTED",
           "macro" => "PERL_THROW_ERROR_INTERNAL_REGEXP_COMPILER_ATOM_DELIMITER_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -4712,7 +4748,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_LITERAL_LENGTH_OVERFLOW",
           "macro" => "PERL_THROW_ERROR_INTERNAL_REGEXP_COMPILER_LITERAL_LENGTH_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -4792,7 +4830,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_IO_HANDLE_BAREWORD_NAME_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_IO_HANDLE_BAREWORD_NAME_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:io_handles_filesystem",
@@ -4840,7 +4880,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_ITERATOR_GENERATOR_YIELD_OUTSIDE_GENERATOR",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_ITERATOR_GENERATOR_YIELD_OUTSIDE_GENERATOR",
-          "source_files" => [],
+          "source_files" => [
+            "perly.y"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:generators",
@@ -4882,7 +4924,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_MUTATION_ASSIGNMENT_MIXED_SCALAR_AND_LIST_TARGETS",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_MUTATION_ASSIGNMENT_MIXED_SCALAR_AND_LIST_TARGETS",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access",
@@ -4923,7 +4967,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_MUTATION_LVALUE_CALL_NON_LVALUE_SUBROUTINE_IN_CONTEXT",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_MUTATION_LVALUE_CALL_NON_LVALUE_SUBROUTINE_IN_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -5013,7 +5059,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_MUTATION_LVALUE_TARGET_NOT_MODIFIABLE",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_MUTATION_LVALUE_TARGET_NOT_MODIFIABLE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access"
@@ -5126,7 +5174,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_MUTATION_REFERENCE_ALIASING_LOCALIZED_PARENTHESIZED_ARRAY",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_MUTATION_REFERENCE_ALIASING_LOCALIZED_PARENTHESIZED_ARRAY",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access",
@@ -5168,7 +5218,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_MUTATION_REFERENCE_ALIASING_PARENTHESIZED_HASH",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_MUTATION_REFERENCE_ALIASING_PARENTHESIZED_HASH",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access",
@@ -5210,7 +5262,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_MUTATION_REFERENCE_ALIASING_SCALAR_TARGET_NOT_SUPPORTED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_MUTATION_REFERENCE_ALIASING_SCALAR_TARGET_NOT_SUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access",
@@ -5289,7 +5343,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_MUTATION_REFERENCE_ALIASING_TARGET_NOT_SUPPORTED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_MUTATION_REFERENCE_ALIASING_TARGET_NOT_SUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access",
@@ -5408,7 +5464,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_OVERLOAD_CONSTANT_CONVERSION_FAILED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_OVERLOAD_CONSTANT_CONVERSION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:call_callback_contracts",
@@ -5559,7 +5617,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_PROPAGATION_EVAL_CONTEXT",
           "macro" => "PERL_APPEND_ERROR_PROPAGATION_EVAL_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:diagnostic_exception_api"
@@ -5604,7 +5665,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_PROPAGATION_EVAL_ERROR_TEXT",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_PROPAGATION_EVAL_ERROR_TEXT",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:operation_failed",
             "role:opaque_payload",
@@ -5642,7 +5706,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_ESCAPE_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_ESCAPE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -5727,7 +5793,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_EXTENDED_BINARY_OPERATOR_UNEXPECTED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_BINARY_OPERATOR_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp",
@@ -5813,7 +5881,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_EXTENDED_CHARACTER_UNEXPECTED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_CHARACTER_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp",
@@ -5894,7 +5964,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_EXTENDED_CLOSE_BRACKET_UNEXPECTED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_CLOSE_BRACKET_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp",
@@ -5975,7 +6047,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_EXTENDED_CLOSE_PAREN_UNMATCHED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_CLOSE_PAREN_UNMATCHED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp",
@@ -6056,7 +6130,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_EXTENDED_EXPRESSION_INCOMPLETE",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_EXPRESSION_INCOMPLETE",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp",
@@ -6137,7 +6213,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_EXTENDED_INTERPOLATED_SET_REQUIRED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_INTERPOLATED_SET_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:regexp",
@@ -6218,7 +6296,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_EXTENDED_OPEN_PAREN_UNEXPECTED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_OPEN_PAREN_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp",
@@ -6299,7 +6379,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_EXTENDED_OPERATOR_MISSING",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_OPERATOR_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp",
@@ -6380,7 +6462,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_EXTENDED_STRING_PROPERTY_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_STRING_PROPERTY_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:regexp",
@@ -6461,7 +6545,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_EXTENDED_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp",
@@ -6542,7 +6628,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_INVERTED_STRING_PROPERTY_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_INVERTED_STRING_PROPERTY_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -6622,7 +6710,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_LITERAL_VERTICAL_SPACE_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_LITERAL_VERTICAL_SPACE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -6702,7 +6792,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_N_ESCAPE_NAME_REQUIRED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_N_ESCAPE_NAME_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -6782,7 +6874,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_N_ESCAPE_NOT_SINGLE_CHARACTER",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_N_ESCAPE_NOT_SINGLE_CHARACTER",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -6862,7 +6956,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_OCTAL_DIGIT_COUNT_INVALID",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_OCTAL_DIGIT_COUNT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -6942,7 +7038,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_POSIX_NAME_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_POSIX_NAME_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -7102,7 +7200,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_POSIX_SYNTAX_RESERVED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_POSIX_SYNTAX_RESERVED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:regexp"
@@ -7187,7 +7287,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_RANGE_ENDPOINT_NOT_CHARACTER",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_RANGE_ENDPOINT_NOT_CHARACTER",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:regexp"
@@ -7287,7 +7389,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_RANGE_REVERSED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_RANGE_REVERSED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -7387,7 +7491,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CHAR_CLASS_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CHAR_CLASS_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -7467,7 +7573,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CONDITIONAL_BRANCH_COUNT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CONDITIONAL_BRANCH_COUNT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -7547,7 +7655,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CONDITIONAL_DEFINE_ALTERNATION_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_CONDITIONAL_DEFINE_ALTERNATION_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -7627,7 +7737,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CONDITIONAL_NAME_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CONDITIONAL_NAME_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -7712,7 +7824,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CONDITIONAL_TEST_SYNTAX_INVALID",
           "macro" => "PERL_THROW_ERROR_REGEXP_CONDITIONAL_TEST_SYNTAX_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -7792,7 +7906,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CONDITIONAL_TEST_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_REGEXP_CONDITIONAL_TEST_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -7872,7 +7988,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_CONDITIONAL_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_CONDITIONAL_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -7952,7 +8070,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_BOUNDARY_TYPE_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_BOUNDARY_TYPE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -8052,7 +8172,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_BRACED_CONTENT_MISSING",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_BRACED_CONTENT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -8137,7 +8259,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_CHARACTER_NAME_BRACES_NOT_ADJACENT",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_BRACES_NOT_ADJACENT",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -8217,7 +8341,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_CHARACTER_NAME_EMPTY_SEQUENCE_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_EMPTY_SEQUENCE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -8297,7 +8423,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_CHARACTER_NAME_HEX_SEQUENCE_INVALID",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_HEX_SEQUENCE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -8377,7 +8505,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_CHARACTER_NAME_SOURCE_BRACE_MISMATCH",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_SOURCE_BRACE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -8417,7 +8547,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_CHARACTER_NAME_SOURCE_HEX_SEQUENCE_INVALID",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_SOURCE_HEX_SEQUENCE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -8457,7 +8589,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_CLOSE_BRACE_MISSING",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_CLOSE_BRACE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -8542,7 +8676,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_CONTROL_CHARACTER_INVALID",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_CONTROL_CHARACTER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -8705,7 +8841,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_C_ESCAPE_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_C_ESCAPE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:regexp"
@@ -8785,7 +8923,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_GLOBAL_POSITION_IN_WILDCARD_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_GLOBAL_POSITION_IN_WILDCARD_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -8870,7 +9010,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_LITERAL_OPEN_BRACE_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_LITERAL_OPEN_BRACE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -8950,7 +9092,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_PROPERTY_NAME_MISSING",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_PROPERTY_NAME_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -9035,7 +9179,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_PROPERTY_SHORT_NAME_INVALID",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_PROPERTY_SHORT_NAME_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -9120,7 +9266,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_ESCAPE_PROPERTY_WILDCARD_NESTING_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_PROPERTY_WILDCARD_NESTING_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -9210,7 +9358,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_BACKREFERENCE_BRACED_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_BRACED_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -9290,7 +9440,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_BACKREFERENCE_DELIMITER_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_DELIMITER_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -9385,7 +9537,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_BACKREFERENCE_GROUP_ZERO_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_GROUP_ZERO_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -9465,7 +9619,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_BACKREFERENCE_RELATIVE_TARGET_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_RELATIVE_TARGET_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -9545,7 +9701,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_BACKREFERENCE_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -9625,7 +9783,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_CLOSE_PAREN_UNMATCHED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_CLOSE_PAREN_UNMATCHED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -9705,7 +9865,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_CONSTRUCT_INCOMPLETE",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_CONSTRUCT_INCOMPLETE",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -9785,7 +9947,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_LOOKAROUND_MATCH_START_RESET_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_LOOKAROUND_MATCH_START_RESET_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -9865,7 +10029,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_LOOKAROUND_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_LOOKAROUND_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -9950,7 +10116,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_NAME_DELIMITER_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_NAME_DELIMITER_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -10035,7 +10203,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_NAME_IDENTIFIER_INVALID",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_NAME_IDENTIFIER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -10220,7 +10390,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_NAME_INITIAL_CHARACTER_INVALID",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_NAME_INITIAL_CHARACTER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -10300,7 +10472,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_NAME_P_PREFIX_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_NAME_P_PREFIX_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -10440,7 +10614,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_NAME_TARGET_MISSING",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_NAME_TARGET_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -10520,7 +10696,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_OPEN_PAREN_UNMATCHED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_OPEN_PAREN_UNMATCHED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -10600,7 +10778,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_QUESTION_OPENER_NOT_ADJACENT",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_QUESTION_OPENER_NOT_ADJACENT",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -10680,7 +10860,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_REFERENCE_NUMBER_INVALID",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_NUMBER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -10760,7 +10942,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_REFERENCE_TARGET_MISSING",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_TARGET_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -10840,7 +11024,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_SEQUENCE_UNIMPLEMENTED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_SEQUENCE_UNIMPLEMENTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:regexp"
@@ -10925,7 +11111,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_SEQUENCE_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_SEQUENCE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -11025,7 +11213,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_SUBROUTINE_CLOSE_PAREN_MISSING",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_CLOSE_PAREN_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -11105,7 +11295,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_SUBROUTINE_NAMED_CALL_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_NAMED_CALL_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -11185,7 +11377,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_GROUP_SUBROUTINE_RELATIVE_CALL_NUMBER_MISSING",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_RELATIVE_CALL_NUMBER_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -11265,7 +11459,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_LIMIT_COMPILE_NESTING_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_REGEXP_LIMIT_COMPILE_NESTING_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -11345,7 +11541,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_LIMIT_QUANTIFIER_COUNT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_REGEXP_LIMIT_QUANTIFIER_COUNT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -11430,7 +11628,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_MESSAGE_AT_LOCATION",
           "macro" => "PERL_THROW_ERROR_REGEXP_MESSAGE_AT_LOCATION",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:opaque_payload",
             "subject:regexp"
@@ -11515,7 +11715,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_MODIFIER_INLINE_ASCII_LIMIT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_ASCII_LIMIT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -11600,7 +11802,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_MODIFIER_INLINE_CHARSET_CONFLICT",
           "macro" => "PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_CHARSET_CONFLICT",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:regexp"
@@ -11690,7 +11894,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_MODIFIER_INLINE_NEGATION_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_NEGATION_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -11775,7 +11981,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_MODIFIER_INLINE_REPEATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_REPEATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:regexp"
@@ -11860,7 +12068,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_MODIFIER_INLINE_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -11940,7 +12150,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_MODIFIER_LITERAL_ASCII_LIMIT_EXCEEDED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_ASCII_LIMIT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -11980,7 +12192,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_MODIFIER_LITERAL_CHARSET_CONFLICT",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_CHARSET_CONFLICT",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:regexp"
@@ -12031,7 +12245,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_MODIFIER_LITERAL_REPEATED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_REPEATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:regexp"
@@ -12077,7 +12293,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_MODIFIER_LITERAL_UNKNOWN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -12139,7 +12357,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_MODIFIER_PROPERTY_WILDCARD_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_MODIFIER_PROPERTY_WILDCARD_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -12235,7 +12455,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_QUANTIFIER_INTEGER_INVALID",
           "macro" => "PERL_THROW_ERROR_REGEXP_QUANTIFIER_INTEGER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -12315,7 +12537,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_QUANTIFIER_NESTED",
           "macro" => "PERL_THROW_ERROR_REGEXP_QUANTIFIER_NESTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:regexp"
@@ -12395,7 +12619,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_QUANTIFIER_TARGET_MISSING",
           "macro" => "PERL_THROW_ERROR_REGEXP_QUANTIFIER_TARGET_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -12475,7 +12701,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_QUANTIFIER_UNBOUNDED_EMPTY_WILDCARD_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_REGEXP_QUANTIFIER_UNBOUNDED_EMPTY_WILDCARD_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -12555,7 +12783,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_VERB_ARGUMENT_MISSING",
           "macro" => "PERL_THROW_ERROR_REGEXP_VERB_ARGUMENT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -12650,7 +12880,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_VERB_COLON_MISSING",
           "macro" => "PERL_THROW_ERROR_REGEXP_VERB_COLON_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -12750,7 +12982,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_VERB_CONSTRUCT_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_VERB_CONSTRUCT_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -13001,7 +13235,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_VERB_NAME_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_REGEXP_VERB_NAME_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -13161,7 +13397,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_REGEXP_VERB_OPENER_NOT_ADJACENT",
           "macro" => "PERL_THROW_ERROR_REGEXP_VERB_OPENER_NOT_ADJACENT",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -13301,7 +13539,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_STRICT_SUBS_BAREWORD_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_STRICT_SUBS_BAREWORD_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -13349,7 +13589,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_STRICT_VARS_GLOBAL_SYMBOL_REQUIRES_EXPLICIT_PACKAGE_NAME",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_STRICT_VARS_GLOBAL_SYMBOL_REQUIRES_EXPLICIT_PACKAGE_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c",
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations"
@@ -13415,7 +13658,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_CALL_COMMA_MISSING",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_CALL_COMMA_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations"
@@ -13494,7 +13739,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_CALL_RETURN_COMMA_MISSING",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_CALL_RETURN_COMMA_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations"
@@ -13534,7 +13781,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_CONTAINER_MULTIDIMENSIONAL_HASH_LOOKUP_DISABLED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_CONTAINER_MULTIDIMENSIONAL_HASH_LOOKUP_DISABLED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:string_sequence_container"
@@ -13574,7 +13823,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_ATTRIBUTE_LIST_SUFFIX_INVALID",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_ATTRIBUTE_LIST_SUFFIX_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -13680,7 +13931,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_CATCH_DECLARATOR_REPEATED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_CATCH_DECLARATOR_REPEATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:parser_declarations"
@@ -13726,7 +13979,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_CATCH_VARIABLE_MISSING",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_CATCH_VARIABLE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "perly.y"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations"
@@ -13766,7 +14021,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_DECLARATOR_REPEATED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_DECLARATOR_REPEATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:parser_declarations"
@@ -13817,7 +14074,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_LEXICAL_NAME_QUALIFIED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_LEXICAL_NAME_QUALIFIED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:names_symbols",
@@ -14078,7 +14337,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_NAMESPACE_ALIAS_REQUIRES_USE",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_NAMESPACE_ALIAS_REQUIRES_USE",
-          "source_files" => [],
+          "source_files" => [
+            "perly.y"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:names_symbols",
@@ -14119,7 +14380,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_OUR_NAME_QUALIFIED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_OUR_NAME_QUALIFIED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:names_symbols",
@@ -14232,7 +14495,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_SPECIAL_CONTROL_NAME_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SPECIAL_CONTROL_NAME_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:names_symbols",
@@ -14431,7 +14696,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_SPECIAL_NAME_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SPECIAL_NAME_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:names_symbols",
@@ -14606,7 +14873,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_SUBROUTINE_ANONYMOUS_BODY_MISSING",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SUBROUTINE_ANONYMOUS_BODY_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "perly.y"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations"
@@ -14646,7 +14915,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_NAMED_DEFINITION_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_NAMED_DEFINITION_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -14686,7 +14957,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_TARGET_NOT_DECLARABLE",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_TARGET_NOT_DECLARABLE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -14769,7 +15042,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_USE_NO_IN_EXPRESSION",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_USE_NO_IN_EXPRESSION",
-          "source_files" => [],
+          "source_files" => [
+            "ext/XS-APItest/APItest_diag_match.xs",
+            "toke.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -14815,7 +15091,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_VARIABLE_STATE_LIST_INITIALIZATION_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_VARIABLE_STATE_LIST_INITIALIZATION_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -14855,7 +15133,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DECLARATION_VARIABLE_TYPE_PACKAGE_NOT_FOUND",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_VARIABLE_TYPE_PACKAGE_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field",
@@ -14923,7 +15203,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DELIMITER_NOT_GRAPHEME",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_NOT_GRAPHEME",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:quoted_source_escapes",
@@ -14964,7 +15246,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DELIMITER_RIGHT_CURLY_UNMATCHED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_RIGHT_CURLY_UNMATCHED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:parser_declarations"
@@ -15004,7 +15288,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DELIMITER_RIGHT_SQUARE_UNMATCHED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_RIGHT_SQUARE_UNMATCHED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:parser_declarations"
@@ -15044,7 +15330,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DELIMITER_UNCLOSED_STRUCTURE",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_UNCLOSED_STRUCTURE",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:parser_declarations"
@@ -15144,7 +15432,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DISPATCH_NON_ON_STATEMENT",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DISPATCH_NON_ON_STATEMENT",
-          "source_files" => [],
+          "source_files" => [
+            "perly.y"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching"
@@ -15184,7 +15474,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_DISPATCH_ON_OUTSIDE_DISPATCH",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DISPATCH_ON_OUTSIDE_DISPATCH",
-          "source_files" => [],
+          "source_files" => [
+            "perly.y"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching"
@@ -15224,7 +15516,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_CHARACTER_NAME_BRACES_REQUIRED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_ESCAPE_CHARACTER_NAME_BRACES_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:quoted_source_escapes"
@@ -15264,7 +15558,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_CHARACTER_NAME_CLOSE_BRACE_MISSING",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_ESCAPE_CHARACTER_NAME_CLOSE_BRACE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:quoted_source_escapes"
@@ -15304,7 +15600,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_CONTROL_CHARACTER_MISSING",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_ESCAPE_CONTROL_CHARACTER_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:quoted_source_escapes"
@@ -15344,7 +15642,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_CONTROL_NONPRINTABLE_CHARACTER",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_CONTROL_NONPRINTABLE_CHARACTER",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:quoted_source_escapes",
@@ -15390,7 +15690,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_CONTROL_OPEN_BRACE_INVALID",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_CONTROL_OPEN_BRACE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c",
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:quoted_source_escapes",
@@ -15436,7 +15739,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_CONTROL_OPEN_BRACE_PRINTABLE_RESULT",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_CONTROL_OPEN_BRACE_PRINTABLE_RESULT",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c",
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:quoted_source_escapes",
@@ -15488,7 +15794,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_HEX_BRACED_DIGITS_MISSING",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_BRACED_DIGITS_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:quoted_source_escapes",
@@ -15534,7 +15842,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_HEX_BRACED_DIGIT_INVALID",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_BRACED_DIGIT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:quoted_source_escapes",
@@ -15580,7 +15890,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_HEX_CLOSE_BRACE_MISSING",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_CLOSE_BRACE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:quoted_source_escapes",
@@ -15626,7 +15938,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_HEX_DIGITS_MISSING",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_DIGITS_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:quoted_source_escapes",
@@ -15672,7 +15986,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_HEX_UNBRACED_DIGITS_EXCESS",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_UNBRACED_DIGITS_EXCESS",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:quoted_source_escapes",
@@ -15718,7 +16034,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_HEX_UNBRACED_DIGIT_INVALID",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_UNBRACED_DIGIT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:quoted_source_escapes",
@@ -15764,7 +16082,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_OCTAL_BRACES_REQUIRED",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_BRACES_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:quoted_source_escapes",
@@ -15810,7 +16130,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_OCTAL_CLOSE_BRACE_MISSING",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_CLOSE_BRACE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:quoted_source_escapes",
@@ -15856,7 +16178,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_OCTAL_DIGITS_MISSING",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_DIGITS_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:quoted_source_escapes",
@@ -15902,7 +16226,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_ESCAPE_OCTAL_DIGIT_INVALID",
           "macro" => "PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_DIGIT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:quoted_source_escapes",
@@ -15948,7 +16274,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_IDENTIFIER_CHARACTER_INVALID",
           "macro" => "PERL_THROW_ERROR_SYNTAX_IDENTIFIER_CHARACTER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:names_symbols",
@@ -16034,7 +16362,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_IDENTIFIER_NUMERIC_NAME_LEADING_ZERO",
           "macro" => "PERL_THROW_ERROR_SYNTAX_IDENTIFIER_NUMERIC_NAME_LEADING_ZERO",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:names_symbols",
@@ -16074,7 +16404,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_IDENTIFIER_QUALIFIED_COMPONENT_MISSING",
           "macro" => "PERL_THROW_ERROR_SYNTAX_IDENTIFIER_QUALIFIED_COMPONENT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:names_symbols",
@@ -16140,7 +16472,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_IDENTIFIER_SCALAR_NAME_INCOMPLETE",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_IDENTIFIER_SCALAR_NAME_INCOMPLETE",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:names_symbols",
@@ -16181,7 +16515,12 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_INVALID",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "perly.c",
+            "perly.y",
+            "toke.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -16237,7 +16576,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations"
@@ -16283,7 +16624,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_NUMERIC_LITERAL_BINARY_DIGIT_INVALID",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_NUMERIC_LITERAL_BINARY_DIGIT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -16329,7 +16672,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_NUMERIC_LITERAL_OCTAL_DIGIT_INVALID",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_NUMERIC_LITERAL_OCTAL_DIGIT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -16375,7 +16720,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_NUMERIC_LITERAL_TOO_LONG",
           "macro" => "PERL_THROW_ERROR_SYNTAX_NUMERIC_LITERAL_TOO_LONG",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:numeric_arithmetic",
@@ -16415,7 +16762,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_PARSE_FAILED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_PARSE_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -16456,7 +16805,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_NEGATED_BINDING_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_NEGATED_BINDING_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations",
@@ -16497,7 +16848,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_NAMED_SEQUENCE_TOO_LONG",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_NAMED_SEQUENCE_TOO_LONG",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -16553,7 +16906,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_NEGATED_BINDING_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_NEGATED_BINDING_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -16593,7 +16948,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_REQUIRE_NAME_ANGLE_BRACKETS_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_REQUIRE_NAME_ANGLE_BRACKETS_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -16633,7 +16990,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_COMMENT_ADJACENT_TO_SIGIL",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_COMMENT_ADJACENT_TO_SIGIL",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations",
@@ -16674,7 +17033,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_MANDATORY_PARAMETER_AFTER_OPTIONAL",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_MANDATORY_PARAMETER_AFTER_OPTIONAL",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations",
@@ -16715,7 +17076,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_DUPLICATE",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_DUPLICATE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:parser_declarations",
@@ -16756,7 +17119,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_NAME_MISSING",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_NAME_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations",
@@ -16797,7 +17162,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_SIGIL_INVALID",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_SIGIL_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations",
@@ -16838,7 +17205,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_OPTIONAL_DEFAULT_MISSING",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_OPTIONAL_DEFAULT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations",
@@ -16879,7 +17248,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_PARAMETER_AFTER_SLURPY",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_PARAMETER_AFTER_SLURPY",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations",
@@ -16920,7 +17291,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_PARAMETER_SIGIL_INVALID",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_PARAMETER_SIGIL_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations",
@@ -16961,7 +17334,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_PARAMETER_SUFFIX_INVALID",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_PARAMETER_SUFFIX_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations",
@@ -17002,7 +17377,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_POSITIONAL_PARAMETER_AFTER_NAMED",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_POSITIONAL_PARAMETER_AFTER_NAMED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations",
@@ -17043,7 +17420,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_PROTOTYPE_SYNTAX_AFTER_SIGIL",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_PROTOTYPE_SYNTAX_AFTER_SIGIL",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations",
@@ -17084,7 +17463,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_SLURPY_DEFAULT_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_SLURPY_DEFAULT_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "perly.y"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations",
@@ -17125,7 +17506,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SIGNATURE_SLURPY_PARAMETER_DUPLICATE",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_SLURPY_PARAMETER_DUPLICATE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:parser_declarations",
@@ -17166,7 +17549,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SOURCE_NON_ASCII_CHARACTER_FORBIDDEN",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SOURCE_NON_ASCII_CHARACTER_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations",
@@ -17219,7 +17604,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_SOURCE_VERSION_CONTROL_CONFLICT_MARKER",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SOURCE_VERSION_CONTROL_CONFLICT_MARKER",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -17259,7 +17646,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_SYNTAX_VERSION_INVALID_DECLARATION",
           "macro" => "PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_VERSION_INVALID_DECLARATION",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading"
@@ -17580,7 +17969,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_UNICODE_CHARACTER_NAME_CHARACTER_INVALID",
           "macro" => "PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_CHARACTER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -17632,7 +18023,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_UNICODE_CHARACTER_NAME_FAILURE_AT_PATTERN",
           "macro" => "PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_FAILURE_AT_PATTERN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "role:composition_summary",
@@ -17720,7 +18114,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_UNICODE_CHARACTER_NAME_HANDLER_UNAVAILABLE",
           "macro" => "PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_HANDLER_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:unicode_encoding"
@@ -17765,7 +18161,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_UNICODE_CHARACTER_NAME_REPEATED_SPACE",
           "macro" => "PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_REPEATED_SPACE",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -17817,7 +18215,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_UNICODE_CHARACTER_NAME_UNKNOWN",
           "macro" => "PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:unicode_encoding"
@@ -17869,7 +18269,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_UNICODE_CODE_POINT_HEX_ESCAPE_OVERFLOW",
           "macro" => "PERL_APPEND_ERROR_UNICODE_CODE_POINT_HEX_ESCAPE_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c",
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:quoted_source_escapes",
@@ -17936,7 +18339,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_UNICODE_CODE_POINT_OCTAL_ESCAPE_OVERFLOW",
           "macro" => "PERL_APPEND_ERROR_UNICODE_CODE_POINT_OCTAL_ESCAPE_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:quoted_source_escapes",
@@ -18003,7 +18408,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_UNICODE_CODE_POINT_REGEXP_LIMIT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_UNICODE_CODE_POINT_REGEXP_LIMIT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp",
@@ -18104,7 +18511,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_UNICODE_PROPERTY_CONTEXT_INVALID_DEFINITION_AT_PATTERN",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_INVALID_DEFINITION_AT_PATTERN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "role:composition_summary",
@@ -18192,7 +18602,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "ERROR_UNICODE_UTF8_CHARNAME_RESULT_MALFORMED",
           "macro" => "PERL_APPEND_ERROR_UNICODE_UTF8_CHARNAME_RESULT_MALFORMED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -18252,7 +18664,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_ARITY_INVALID_ARGUMENT_COUNT",
           "macro" => "PERL_THROW_ERROR_CALL_BINDING_ARITY_INVALID_ARGUMENT_COUNT",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:call_callback_contracts"
@@ -18354,7 +18768,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_ARITY_ODD_SLURPY_HASH_ARGUMENT_COUNT",
           "macro" => "PERL_THROW_ERROR_CALL_BINDING_ARITY_ODD_SLURPY_HASH_ARGUMENT_COUNT",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:call_callback_contracts"
@@ -18400,7 +18816,11 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_ARITY_SIGNATURE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_CALL_BINDING_ARITY_SIGNATURE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "cygwin/cygwin.c",
+            "os390/os390.c",
+            "universal.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:call_callback_contracts"
@@ -19098,7 +19518,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_ARITY_SUBROUTINE_COUNT_MISMATCH",
           "macro" => "PERL_THROW_ERROR_CALL_BINDING_ARITY_SUBROUTINE_COUNT_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:call_callback_contracts"
@@ -19335,7 +19757,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_INVALID_ANONYMOUS_XSUB_CALL",
           "macro" => "PERL_THROW_ERROR_CALL_BINDING_INVALID_ANONYMOUS_XSUB_CALL",
-          "source_files" => [],
+          "source_files" => [
+            "universal.c"
+          ],
           "tags" => [
             "subject:call_callback_contracts"
           ],
@@ -19384,7 +19808,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_INVALID_QUALIFIED_XSUB_CALL",
           "macro" => "PERL_THROW_ERROR_CALL_BINDING_INVALID_QUALIFIED_XSUB_CALL",
-          "source_files" => [],
+          "source_files" => [
+            "universal.c"
+          ],
           "tags" => [
             "subject:call_callback_contracts"
           ],
@@ -19440,7 +19866,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_INVALID_XSUB_CALL",
           "macro" => "PERL_THROW_ERROR_CALL_BINDING_INVALID_XSUB_CALL",
-          "source_files" => [],
+          "source_files" => [
+            "universal.c"
+          ],
           "tags" => [
             "subject:call_callback_contracts"
           ],
@@ -19490,7 +19918,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_NAMED_PARAMETER_REQUIRED_NAME_MISSING",
           "macro" => "PERL_APPEND_ERROR_CALL_BINDING_NAMED_PARAMETER_REQUIRED_NAME_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:signature_prototype"
@@ -19548,7 +19979,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_NAMED_PARAMETER_SUMMARY",
           "macro" => "PERL_FORMAT_ERROR_CALL_BINDING_NAMED_PARAMETER_SUMMARY",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:summary_omission",
@@ -19769,7 +20202,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_NAMED_PARAMETER_UNKNOWN_NAME",
           "macro" => "PERL_APPEND_ERROR_CALL_BINDING_NAMED_PARAMETER_UNKNOWN_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:signature_prototype"
@@ -19827,7 +20263,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_TYPE_ARRAY_REFERENCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_CALL_BINDING_TYPE_ARRAY_REFERENCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -19878,7 +20316,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_TYPE_HASH_REFERENCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_CALL_BINDING_TYPE_HASH_REFERENCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -19989,7 +20429,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_BINDING_TYPE_REFERENCE_TYPE_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_CALL_BINDING_TYPE_REFERENCE_TYPE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -20118,7 +20560,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_CLOSURE_PROTOTYPE_NOT_CALLABLE",
           "macro" => "PERL_THROW_ERROR_CALL_CLOSURE_PROTOTYPE_NOT_CALLABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:call_callback_contracts"
@@ -20157,7 +20601,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_CORE_KEYWORD_NOT_CALLABLE",
           "macro" => "PERL_THROW_ERROR_CALL_CORE_KEYWORD_NOT_CALLABLE",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:builtins_operators",
@@ -20203,7 +20649,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_LOOKUP_INHERITED_AUTOLOAD_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_CALL_LOOKUP_INHERITED_AUTOLOAD_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:call_callback_contracts"
@@ -20269,7 +20717,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_LOOKUP_UNDEFINED_NAMED_SORT_SUBROUTINE",
           "macro" => "PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_NAMED_SORT_SUBROUTINE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sort.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts"
@@ -20315,7 +20765,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_LOOKUP_UNDEFINED_NAMED_SUBROUTINE",
           "macro" => "PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_NAMED_SUBROUTINE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts"
@@ -20361,7 +20813,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_LOOKUP_UNDEFINED_SORT_SUBROUTINE",
           "macro" => "PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_SORT_SUBROUTINE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sort.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts"
@@ -20400,7 +20854,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_LOOKUP_UNDEFINED_SUBROUTINE",
           "macro" => "PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_SUBROUTINE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts"
@@ -20439,7 +20895,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_LOOKUP_UNDEFINED_SUBROUTINE_NEAR_LABEL",
           "macro" => "PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_SUBROUTINE_NEAR_LABEL",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts"
@@ -20490,7 +20948,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CALL_LOOKUP_UNKNOWN_CORE_KEYWORD",
           "macro" => "PERL_THROW_ERROR_CALL_LOOKUP_UNKNOWN_CORE_KEYWORD",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:builtins_operators",
@@ -20551,7 +21011,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_COMPILATION_EXECUTION_ABORTED",
           "macro" => "PERL_THROW_ERROR_COMPILATION_EXECUTION_ABORTED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:operation_failed",
             "role:compilation_summary",
@@ -20603,7 +21066,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_COMPILATION_FILE_HAS_ERRORS",
           "macro" => "PERL_THROW_ERROR_COMPILATION_FILE_HAS_ERRORS",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "role:compilation_summary",
@@ -20655,7 +21120,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_COMPILATION_TOO_MANY_ERRORS",
           "macro" => "PERL_THROW_ERROR_COMPILATION_TOO_MANY_ERRORS",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "condition:size_count_range",
@@ -20702,7 +21169,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_CONSTRUCT",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_CONSTRUCT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -20741,7 +21210,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_DEFER_BLOCK",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_DEFER_BLOCK",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -20780,7 +21251,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_EXPRESSION",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_EXPRESSION",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -20819,7 +21292,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_FOREACH_BODY",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_FOREACH_BODY",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -20858,7 +21333,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_GIVEN_BLOCK",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_GIVEN_BLOCK",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -20897,7 +21374,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_CANNOT_LEAVE_PSEUDO_BLOCK",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_LEAVE_PSEUDO_BLOCK",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -20936,7 +21415,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_LABEL_NOT_FOUND",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_LABEL_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:control_flow_scope"
@@ -20996,7 +21477,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_LABEL_REQUIRED",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_LABEL_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:control_flow_scope"
@@ -21036,7 +21519,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_CALLBACK_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_CALLBACK_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:call_callback_contracts",
@@ -21076,7 +21561,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_EVAL_BLOCK_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_EVAL_BLOCK_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:call_callback_contracts",
@@ -21116,7 +21603,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_EVAL_STRING_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_EVAL_STRING_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:call_callback_contracts",
@@ -21156,7 +21645,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_OUTSIDE_SUBROUTINE",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_OUTSIDE_SUBROUTINE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:call_callback_contracts",
@@ -21196,7 +21687,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_UNDEFINED_NAMED_TARGET",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_UNDEFINED_NAMED_TARGET",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts",
@@ -21243,7 +21736,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_UNDEFINED_TARGET",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_UNDEFINED_TARGET",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts",
@@ -21283,7 +21778,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_GOTO_TARGET_NESTING_LIMIT",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_GOTO_TARGET_NESTING_LIMIT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:control_flow_scope"
@@ -21322,7 +21819,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_LOOP_LABEL_NOT_FOUND",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_LOOP_LABEL_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:control_flow_scope"
@@ -21373,7 +21872,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_LOOP_OUTSIDE_LOOP_BLOCK",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_LOOP_OUTSIDE_LOOP_BLOCK",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -21418,7 +21919,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_RETURN_OUTSIDE_SUBROUTINE",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_RETURN_OUTSIDE_SUBROUTINE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:call_callback_contracts",
@@ -21458,7 +21961,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_SCOPE_CANNOT_LEAVE_PROTECTED_BLOCK",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_SCOPE_CANNOT_LEAVE_PROTECTED_BLOCK",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -21514,7 +22019,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_SCOPE_ESCAPE_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_SCOPE_ESCAPE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -21564,7 +22071,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_SWITCH_BREAK_IN_LOOP_TOPICALIZER",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_BREAK_IN_LOOP_TOPICALIZER",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -21603,7 +22112,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_SWITCH_BREAK_OUTSIDE_GIVEN",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_BREAK_OUTSIDE_GIVEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -21642,7 +22153,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_SWITCH_CONTINUE_OUTSIDE_WHEN",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_CONTINUE_OUTSIDE_WHEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -21681,7 +22194,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_SWITCH_DISPATCH_CLAUSE_OUTSIDE_DISPATCH",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_DISPATCH_CLAUSE_OUTSIDE_DISPATCH",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope",
@@ -21721,7 +22236,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_CONTROL_FLOW_SWITCH_OUTSIDE_TOPICALIZER",
           "macro" => "PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_OUTSIDE_TOPICALIZER",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:control_flow_scope"
@@ -21766,7 +22283,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DEBUGGER_STATEMENT_HOOK_UNDEFINED",
           "macro" => "PERL_THROW_ERROR_DEBUGGER_STATEMENT_HOOK_UNDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts",
@@ -21806,7 +22325,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DEBUGGER_SUBROUTINE_HOOK_UNDEFINED",
           "macro" => "PERL_THROW_ERROR_DEBUGGER_SUBROUTINE_HOOK_UNDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts",
@@ -21846,7 +22367,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DEBUGGER_TIED_ARGUMENT_ARRAY",
           "macro" => "PERL_THROW_ERROR_DEBUGGER_TIED_ARGUMENT_ARRAY",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:debugger",
@@ -21886,7 +22409,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CHILDREN_APPENDED_ITEM_NOT_DIAGNOSTIC",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_APPENDED_ITEM_NOT_DIAGNOSTIC",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -21925,7 +22450,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CHILDREN_APPEND_CYCLE",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_APPEND_CYCLE",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:diagnostic_exception_api"
@@ -21964,7 +22491,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CHILDREN_DERIVED_LIST_NOT_ARRAY",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_DERIVED_LIST_NOT_ARRAY",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22003,7 +22532,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CHILDREN_DERIVED_MEMBER_NOT_DIAGNOSTIC",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_DERIVED_MEMBER_NOT_DIAGNOSTIC",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22042,7 +22573,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CHILDREN_DERIVE_CYCLE",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_DERIVE_CYCLE",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:diagnostic_exception_api"
@@ -22081,7 +22614,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CHILDREN_EXCEPTION_ITEM_NOT_DIAGNOSTIC",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_EXCEPTION_ITEM_NOT_DIAGNOSTIC",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22120,7 +22655,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CHILDREN_LEAF_CONTAINER_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_LEAF_CONTAINER_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:diagnostic_exception_api"
@@ -22159,7 +22696,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CHILDREN_LIST_NOT_ARRAY",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_LIST_NOT_ARRAY",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22198,7 +22737,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CHILDREN_MEMBER_NOT_DIAGNOSTIC",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_MEMBER_NOT_DIAGNOSTIC",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22237,7 +22778,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CHILDREN_STORED_LIST_NOT_ARRAY",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_STORED_LIST_NOT_ARRAY",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22276,7 +22819,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CONSTRUCTION_CODE_MISSING",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_CODE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:diagnostic_exception_api"
@@ -22315,7 +22860,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CONSTRUCTION_CONTEXT_INDEX_INVALID",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_CONTEXT_INDEX_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:diagnostic_exception_api"
@@ -22354,7 +22901,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CONSTRUCTION_FIELDS_NOT_HASH",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_FIELDS_NOT_HASH",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22393,7 +22942,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CONSTRUCTION_LIGHT_FLAG_NOT_SCALAR",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_LIGHT_FLAG_NOT_SCALAR",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22432,7 +22983,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CONSTRUCTION_LOCATION_NOT_HASH",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_LOCATION_NOT_HASH",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22471,7 +23024,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CONSTRUCTION_PARAMETERS_NOT_ARRAY",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_PARAMETERS_NOT_ARRAY",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22510,7 +23066,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_CONSTRUCTION_WARNING_CATEGORIES_NOT_ARRAY",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_WARNING_CATEGORIES_NOT_ARRAY",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22549,7 +23107,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_RECEIVER_TYPE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_RECEIVER_TYPE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22594,7 +23155,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_RENDER_CONTEXT_NOT_HASH",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_CONTEXT_NOT_HASH",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22633,7 +23196,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_RENDER_FORMAT_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_FORMAT_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:diagnostic_exception_api"
@@ -22678,7 +23243,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:diagnostic_exception_api"
@@ -22702,7 +23270,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_RENDER_PARAMETER_INVALID",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_PARAMETER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:diagnostic_exception_api"
@@ -22726,7 +23296,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_THROW_EVENT_NOT_HASH",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_THROW_EVENT_NOT_HASH",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:diagnostic_exception_api"
@@ -22765,7 +23337,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_THROW_MESSAGE_INDEX_RESERVED",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_THROW_MESSAGE_INDEX_RESERVED",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:diagnostic_exception_api"
@@ -22804,7 +23378,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DIAGNOSTIC_API_THROW_RETHROW_DIAGNOSTIC_MISSING",
           "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_THROW_RETHROW_DIAGNOSTIC_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:diagnostic_exception_api"
@@ -22843,7 +23419,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DISPATCH_CALL_PREDICATE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_DISPATCH_CALL_PREDICATE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -22883,7 +23461,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DISPATCH_CALL_TARGET_MISSING",
           "macro" => "PERL_THROW_ERROR_DISPATCH_CALL_TARGET_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts",
@@ -22923,7 +23503,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_DISPATCH_CAPTURE_CAPACITY_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_DISPATCH_CAPTURE_CAPACITY_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:dispatch_pattern_matching"
@@ -22962,7 +23544,11 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_FATALIZED_WARNING_WRAPPER",
           "macro" => "PERL_APPEND_ERROR_FATALIZED_WARNING_WRAPPER",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "util.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "subject:diagnostic_exception_api"
           ],
@@ -23006,7 +23592,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_FORMAT_PRINTF_NONFINITE_CHARACTER_CONVERSION",
           "macro" => "PERL_THROW_ERROR_FORMAT_PRINTF_NONFINITE_CHARACTER_CONVERSION",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:printf_conversion"
@@ -23056,7 +23644,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_FORMAT_PRINTF_N_ARGUMENT_REQUIRED",
           "macro" => "PERL_THROW_ERROR_FORMAT_PRINTF_N_ARGUMENT_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:printf_conversion"
@@ -23147,7 +23737,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_FORMAT_PRINTF_OVERFLOW_FIELD_VALUE_TOO_LARGE",
           "macro" => "PERL_THROW_ERROR_FORMAT_PRINTF_OVERFLOW_FIELD_VALUE_TOO_LARGE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:printf_conversion"
@@ -23224,7 +23816,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_FORMAT_PRINTF_OVERFLOW_FLOAT_RESULT_TOO_LARGE",
           "macro" => "PERL_THROW_ERROR_FORMAT_PRINTF_OVERFLOW_FLOAT_RESULT_TOO_LARGE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:printf_conversion"
@@ -23263,7 +23857,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_FORMAT_PRINTF_VARARGS_POSITIONAL_ARGUMENT_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_FORMAT_PRINTF_VARARGS_POSITIONAL_ARGUMENT_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:printf_conversion"
@@ -23302,7 +23898,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_FORMAT_REPORT_BODY_UNDEFINED",
           "macro" => "PERL_THROW_ERROR_FORMAT_REPORT_BODY_UNDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:report_formats"
@@ -23348,7 +23946,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_FORMAT_REPORT_EMPTY_PICTURE",
           "macro" => "PERL_THROW_ERROR_FORMAT_REPORT_EMPTY_PICTURE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:report_formats"
@@ -23387,7 +23987,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_FORMAT_REPORT_HEADER_UNDEFINED",
           "macro" => "PERL_THROW_ERROR_FORMAT_REPORT_HEADER_UNDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:report_formats"
@@ -23433,7 +24035,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_FORMAT_REPORT_NONTERMINATING_REPEAT",
           "macro" => "PERL_THROW_ERROR_FORMAT_REPORT_NONTERMINATING_REPEAT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:nonterminating_repeat",
             "subject:report_formats"
@@ -23472,7 +24076,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_ASSERTION_FAILED",
           "macro" => "PERL_THROW_ERROR_INTERNAL_ASSERTION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:assertion_invariant"
@@ -23527,7 +24133,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_DISPATCH_COMPILED_SHAPE_MISSING",
           "macro" => "PERL_THROW_ERROR_INTERNAL_DISPATCH_COMPILED_SHAPE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:dispatch_pattern_matching"
@@ -23566,7 +24174,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_DISPATCH_SUBJECT_ASSIGNMENT_MISSING",
           "macro" => "PERL_THROW_ERROR_INTERNAL_DISPATCH_SUBJECT_ASSIGNMENT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:dispatch_pattern_matching"
@@ -23605,7 +24215,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_DISPATCH_SUBJECT_LEXICAL_MISSING",
           "macro" => "PERL_THROW_ERROR_INTERNAL_DISPATCH_SUBJECT_LEXICAL_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:dispatch_pattern_matching"
@@ -23644,7 +24256,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_FORMAT_PRINTF_HEXADECIMAL_FLOAT_BOUNDS_INVALID",
           "macro" => "PERL_THROW_ERROR_INTERNAL_FORMAT_PRINTF_HEXADECIMAL_FLOAT_BOUNDS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:printf_conversion"
@@ -23683,7 +24297,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_FORMAT_PRINTF_HEX_FLOAT_BUFFER_END_INVALID",
           "macro" => "PERL_THROW_ERROR_INTERNAL_FORMAT_PRINTF_HEX_FLOAT_BUFFER_END_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:printf_conversion"
@@ -23722,7 +24338,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_EXISTS_OR_ELEMENT_OP_REQUIRED",
           "macro" => "PERL_THROW_ERROR_INTERNAL_HASH_EXISTS_OR_ELEMENT_OP_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:builtins_operators",
@@ -23762,7 +24380,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:memory_allocation_lifetime",
@@ -23808,7 +24428,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_COUNT_NONPOSITIVE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_COUNT_NONPOSITIVE",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -23858,7 +24480,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_FD_NEGATIVE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_FD_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -23903,7 +24527,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_FD_OUT_OF_RANGE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_FD_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -23953,7 +24579,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_INCREMENT_FD_NEGATIVE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_INCREMENT_FD_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -23998,7 +24626,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_INCREMENT_RESULT_NONPOSITIVE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_INCREMENT_RESULT_NONPOSITIVE",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -24048,7 +24678,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_COUNT_NONPOSITIVE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_COUNT_NONPOSITIVE",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -24098,7 +24730,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_FD_NEGATIVE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_FD_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -24143,7 +24777,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_FD_OUT_OF_RANGE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_FD_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -24193,7 +24829,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_ITERATOR_FREED_VALUE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_ITERATOR_FREED_VALUE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:iteration",
@@ -24233,7 +24871,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_FREE_POINTER_MISALIGNED",
           "macro" => "PERL_THROW_ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_FREE_POINTER_MISALIGNED",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -24272,7 +24912,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PACK_COMPRESSED_INTEGER_BUFFER_EXHAUSTED",
           "macro" => "PERL_THROW_ERROR_INTERNAL_PACK_COMPRESSED_INTEGER_BUFFER_EXHAUSTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "condition:operation_failed",
@@ -24313,7 +24955,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_TRAILING_INPUT",
           "macro" => "PERL_THROW_ERROR_INTERNAL_REGEXP_COMPILER_TRAILING_INPUT",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:regexp"
@@ -24378,7 +25022,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_NAME_ARRAY_ELEMENT_MISSING",
           "macro" => "PERL_THROW_ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_NAME_ARRAY_ELEMENT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "universal.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -24417,7 +25063,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_DATA_NEXT_NODE_OPCODE_OUT_OF_RANGE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_REGEXP_DATA_NEXT_NODE_OPCODE_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "reginline.h"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -24467,7 +25115,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_OPCODE_UNHANDLED",
           "macro" => "PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_OPCODE_UNHANDLED",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -24506,7 +25156,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_PROGRAM_MAGIC_INVALID",
           "macro" => "PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_PROGRAM_MAGIC_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -24545,7 +25197,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_PROGRAM_NULL",
           "macro" => "PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_PROGRAM_NULL",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -24585,7 +25239,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_PROGRAM_TRAVERSAL_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_PROGRAM_TRAVERSAL_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -24624,7 +25280,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_SPLIT_ITERATION_LIMIT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_SPLIT_ITERATION_LIMIT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -24663,7 +25321,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_SUBSTITUTION_ITERATION_LIMIT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_SUBSTITUTION_ITERATION_LIMIT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -24702,7 +25363,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_COPY_SOURCE_NOT_SCALAR",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SCALAR_COPY_SOURCE_NOT_SCALAR",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime",
@@ -24748,7 +25411,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_COPY_SOURCE_NOT_SCALAR_IN_OPERATION",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SCALAR_COPY_SOURCE_NOT_SCALAR_IN_OPERATION",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime",
@@ -24831,7 +25496,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_COPY_TARGET_TYPE_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SCALAR_COPY_TARGET_TYPE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime",
@@ -24877,7 +25544,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_COPY_TARGET_TYPE_UNSUPPORTED_IN_OPERATION",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SCALAR_COPY_TARGET_TYPE_UNSUPPORTED_IN_OPERATION",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime",
@@ -24960,7 +25629,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_MAGIC_SHAPE_TYPE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SCALAR_MAGIC_SHAPE_TYPE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:memory_allocation_lifetime"
@@ -25010,7 +25681,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_MAGIC_SHAPE_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SCALAR_MAGIC_SHAPE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:memory_allocation_lifetime"
@@ -25055,7 +25728,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_MAGIC_TYPE_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SCALAR_MAGIC_TYPE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:memory_allocation_lifetime"
@@ -25100,7 +25775,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_MAGIC_VERSION_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SCALAR_MAGIC_VERSION_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:call_callback_contracts",
@@ -25146,7 +25823,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_TYPE_CLONE_SOURCE_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SCALAR_TYPE_CLONE_SOURCE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -25197,7 +25876,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_UPGRADE_BODY_TYPE_DOWNGRADE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SCALAR_UPGRADE_BODY_TYPE_DOWNGRADE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime",
@@ -25248,7 +25929,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_UPGRADE_BODY_TYPE_NOT_UPGRADABLE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SCALAR_UPGRADE_BODY_TYPE_NOT_UPGRADABLE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime",
@@ -25304,7 +25987,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:call_callback_contracts",
@@ -25350,7 +26035,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYNTAX_PARSER_FLAGS_INVALID",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SYNTAX_PARSER_FLAGS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:call_callback_contracts",
@@ -25396,7 +26083,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYNTAX_PLUGIN_INFIX_PARTIAL_IDENTIFIER_MATCH",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SYNTAX_PLUGIN_INFIX_PARTIAL_IDENTIFIER_MATCH",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:names_symbols",
@@ -25447,7 +26136,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYNTAX_PLUGIN_KEYWORD_RESULT_INVALID",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SYNTAX_PLUGIN_KEYWORD_RESULT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -25589,7 +26280,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_BUFFER_LENGTH_NEGATIVE",
           "macro" => "PERL_THROW_ERROR_IO_BUFFER_LENGTH_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -25628,7 +26321,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_BUFFER_OFFSET_OUT_OF_RANGE",
           "macro" => "PERL_THROW_ERROR_IO_BUFFER_OFFSET_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -25667,7 +26362,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_CONTROL_ARGUMENT_BUFFER_OVERRUN",
           "macro" => "PERL_THROW_ERROR_IO_CONTROL_ARGUMENT_BUFFER_OVERRUN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:unexpected_state_change",
             "subject:io_handles_filesystem"
@@ -25752,7 +26449,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_DBM_BACKEND_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_IO_DBM_BACKEND_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:dbm"
@@ -25791,7 +26490,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_DBM_FILTER_REENTRY",
           "macro" => "PERL_THROW_ERROR_IO_DBM_FILTER_REENTRY",
-          "source_files" => [],
+          "source_files" => [
+            "XSUB.h"
+          ],
           "tags" => [
             "condition:reentrant_operation",
             "subject:call_callback_contracts",
@@ -25837,7 +26538,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_FILESYSTEM_DIRECTORY_CHANGED_DURING_GETCWD",
           "macro" => "PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_CHANGED_DURING_GETCWD",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:unexpected_state_change",
             "subject:io_handles_filesystem"
@@ -25876,7 +26579,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_FILESYSTEM_DIRECTORY_CHDIR_FAILED",
           "macro" => "PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_CHDIR_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -25921,7 +26626,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_FILESYSTEM_DIRECTORY_OPERATION_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_OPERATION_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:io_handles_filesystem"
@@ -25966,7 +26673,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_FILESYSTEM_PATH_CONVERSION_EMPTY_INPUT",
           "macro" => "PERL_THROW_ERROR_IO_FILESYSTEM_PATH_CONVERSION_EMPTY_INPUT",
-          "source_files" => [],
+          "source_files" => [
+            "cygwin/cygwin.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:io_handles_filesystem",
@@ -26006,7 +26715,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_FILESYSTEM_PATH_CONVERSION_INVALID_ARGUMENT_COUNT",
           "macro" => "PERL_THROW_ERROR_IO_FILESYSTEM_PATH_CONVERSION_INVALID_ARGUMENT_COUNT",
-          "source_files" => [],
+          "source_files" => [
+            "cygwin/cygwin.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem",
@@ -26052,7 +26763,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_FILE_TEST_LSTAT_REQUIRES_LSTAT_CACHE",
           "macro" => "PERL_THROW_ERROR_IO_FILE_TEST_LSTAT_REQUIRES_LSTAT_CACHE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -26091,7 +26804,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_FILE_TEST_SYMLINK_REQUIRES_LSTAT_CACHE",
           "macro" => "PERL_THROW_ERROR_IO_FILE_TEST_SYMLINK_REQUIRES_LSTAT_CACHE",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -26130,7 +26845,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_FILE_TEST_TEXT_BINARY_UNSUPPORTED_ON_HANDLE",
           "macro" => "PERL_THROW_ERROR_IO_FILE_TEST_TEXT_BINARY_UNSUPPORTED_ON_HANDLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:io_handles_filesystem"
@@ -26169,7 +26886,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_HANDLE_DIRHANDLE_USED_AS_FILEHANDLE",
           "macro" => "PERL_THROW_ERROR_IO_HANDLE_DIRHANDLE_USED_AS_FILEHANDLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "subject:io_handles_filesystem"
           ],
@@ -26214,7 +26933,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_HANDLE_FILEHANDLE_USED_AS_DIRHANDLE",
           "macro" => "PERL_THROW_ERROR_IO_HANDLE_FILEHANDLE_USED_AS_DIRHANDLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "subject:io_handles_filesystem"
           ],
@@ -26259,7 +26980,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_HANDLE_FILENAME_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_IO_HANDLE_FILENAME_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:io_handles_filesystem"
@@ -26298,7 +27021,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_HANDLE_INVALID_NAMED_HANDLE",
           "macro" => "PERL_THROW_ERROR_IO_HANDLE_INVALID_NAMED_HANDLE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -26344,7 +27069,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_HANDLE_INVALID_VALUE",
           "macro" => "PERL_THROW_ERROR_IO_HANDLE_INVALID_VALUE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -26390,7 +27117,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_INPLACE_EDIT_CANNOT_CLOSE_WORK_FILE",
           "macro" => "PERL_THROW_ERROR_IO_INPLACE_EDIT_CANNOT_CLOSE_WORK_FILE",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -26440,7 +27169,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_INPLACE_EDIT_CANNOT_CREATE_BACKUP",
           "macro" => "PERL_THROW_ERROR_IO_INPLACE_EDIT_CANNOT_CREATE_BACKUP",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -26495,7 +27226,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_INPLACE_EDIT_CANNOT_REPLACE_ORIGINAL",
           "macro" => "PERL_THROW_ERROR_IO_INPLACE_EDIT_CANNOT_REPLACE_ORIGINAL",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -26555,7 +27288,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_INPLACE_EDIT_PATH_CONTEXT_INVALID",
           "macro" => "PERL_THROW_ERROR_IO_INPLACE_EDIT_PATH_CONTEXT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -26660,7 +27395,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_LAYER_ABI_FUNCTION_TABLE_SIZE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_IO_LAYER_ABI_FUNCTION_TABLE_SIZE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:incompatible_binary_layout",
             "condition:size_count_range",
@@ -26711,7 +27448,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_LAYER_ABI_INSTANCE_TOO_SMALL",
           "macro" => "PERL_THROW_ERROR_IO_LAYER_ABI_INSTANCE_TOO_SMALL",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:incompatible_binary_layout",
             "condition:size_count_range",
@@ -26762,7 +27501,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_LAYER_APPLICATION_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_IO_LAYER_APPLICATION_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:perlio_layers"
@@ -26807,7 +27548,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_LAYER_BYTE_OPERATION_ON_UTF8_HANDLE",
           "macro" => "PERL_THROW_ERROR_IO_LAYER_BYTE_OPERATION_ON_UTF8_HANDLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "subject:perlio_layers",
             "subject:unicode_encoding"
@@ -26852,7 +27595,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_LAYER_FIND_TOO_FEW_ARGUMENTS",
           "macro" => "PERL_THROW_ERROR_IO_LAYER_FIND_TOO_FEW_ARGUMENTS",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:perlio_layers"
@@ -26891,7 +27636,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_LAYER_MODULE_LOAD_REENTRY",
           "macro" => "PERL_THROW_ERROR_IO_LAYER_MODULE_LOAD_REENTRY",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:reentrant_operation",
             "subject:perlio_layers"
@@ -26930,7 +27678,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_LAYER_OPEN_SPECIFICATION_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_IO_LAYER_OPEN_SPECIFICATION_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:perlio_layers"
@@ -26985,7 +27735,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_LAYER_OPEN_TOO_MANY_ARGUMENTS",
           "macro" => "PERL_THROW_ERROR_IO_LAYER_OPEN_TOO_MANY_ARGUMENTS",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "subject:perlio_layers"
           ],
@@ -27029,7 +27781,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_LAYER_UNKNOWN_QUERY_OPTION",
           "macro" => "PERL_THROW_ERROR_IO_LAYER_UNKNOWN_QUERY_OPTION",
-          "source_files" => [],
+          "source_files" => [
+            "universal.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:perlio_layers"
@@ -27074,7 +27828,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_OPEN_DUPLICATION_TOO_MANY_ARGUMENTS",
           "macro" => "PERL_THROW_ERROR_IO_OPEN_DUPLICATION_TOO_MANY_ARGUMENTS",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -27119,7 +27875,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_OPEN_SCRIPT_INPUT_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_IO_OPEN_SCRIPT_INPUT_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -27169,7 +27927,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_OPEN_SCRIPT_NULL_INPUT_CREATION_FAILED",
           "macro" => "PERL_THROW_ERROR_IO_OPEN_SCRIPT_NULL_INPUT_CREATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -27208,7 +27968,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_OPEN_SCRIPT_NULL_INPUT_OPEN_FAILED",
           "macro" => "PERL_THROW_ERROR_IO_OPEN_SCRIPT_NULL_INPUT_OPEN_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -27258,7 +28020,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_OPEN_STDIN_TOO_MANY_ARGUMENTS",
           "macro" => "PERL_THROW_ERROR_IO_OPEN_STDIN_TOO_MANY_ARGUMENTS",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -27303,7 +28067,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_OPEN_STDOUT_TOO_MANY_ARGUMENTS",
           "macro" => "PERL_THROW_ERROR_IO_OPEN_STDOUT_TOO_MANY_ARGUMENTS",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -27348,7 +28114,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_OPEN_TOO_MANY_ARGUMENTS",
           "macro" => "PERL_THROW_ERROR_IO_OPEN_TOO_MANY_ARGUMENTS",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -27387,7 +28155,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_OPEN_UNKNOWN_MODE",
           "macro" => "PERL_THROW_ERROR_IO_OPEN_UNKNOWN_MODE",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -27442,7 +28212,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_RECORDSEPARATOR_LENGTH_NOT_POSITIVE",
           "macro" => "PERL_THROW_ERROR_IO_RECORDSEPARATOR_LENGTH_NOT_POSITIVE",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem",
@@ -27543,7 +28315,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_RECORDSEPARATOR_REFERENCE_TYPE_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_IO_RECORDSEPARATOR_REFERENCE_TYPE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:io_handles_filesystem",
@@ -27590,7 +28364,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_SOCKET_OPERATION_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c",
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:io_handles_filesystem",
@@ -27636,7 +28413,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_CONSTRUCTOR_CODE_REFERENCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_ITERATOR_CONSTRUCTOR_CODE_REFERENCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "run.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:iteration",
@@ -27676,7 +28455,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_DECLARED_REFERENCE_COUNT_LIMIT",
           "macro" => "PERL_THROW_ERROR_ITERATOR_DECLARED_REFERENCE_COUNT_LIMIT",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:iteration",
@@ -27716,7 +28497,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_DECLARED_REFERENCE_POSITION_LIMIT",
           "macro" => "PERL_THROW_ERROR_ITERATOR_DECLARED_REFERENCE_POSITION_LIMIT",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:iteration",
@@ -27756,7 +28539,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_GENERATOR_ALREADY_INVOKED",
           "macro" => "PERL_THROW_ERROR_ITERATOR_GENERATOR_ALREADY_INVOKED",
-          "source_files" => [],
+          "source_files" => [
+            "run.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:generators",
@@ -27796,7 +28581,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_GENERATOR_CANNOT_RESUME_FAILED",
           "macro" => "PERL_THROW_ERROR_ITERATOR_GENERATOR_CANNOT_RESUME_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "run.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:generators",
@@ -27836,7 +28623,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_GENERATOR_CONTINUATION_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_ITERATOR_GENERATOR_CONTINUATION_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "run.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:generators",
@@ -27876,7 +28665,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_GENERATOR_INVALID_WRAPPER",
           "macro" => "PERL_THROW_ERROR_ITERATOR_GENERATOR_INVALID_WRAPPER",
-          "source_files" => [],
+          "source_files" => [
+            "run.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:generators",
@@ -27916,7 +28707,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_GENERATOR_NO_SUSPENDED_CONTINUATION",
           "macro" => "PERL_THROW_ERROR_ITERATOR_GENERATOR_NO_SUSPENDED_CONTINUATION",
-          "source_files" => [],
+          "source_files" => [
+            "run.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:generators",
@@ -27956,7 +28749,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_GENERATOR_RUNNING_INVALID_ARGUMENT",
           "macro" => "PERL_THROW_ERROR_ITERATOR_GENERATOR_RUNNING_INVALID_ARGUMENT",
-          "source_files" => [],
+          "source_files" => [
+            "run.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -27997,7 +28792,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_GENERATOR_STATE_MUTATION_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_ITERATOR_GENERATOR_STATE_MUTATION_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "run.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:generators",
@@ -28037,7 +28834,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_GENERATOR_YIELD_WITHOUT_RUNNING_CONTEXT",
           "macro" => "PERL_THROW_ERROR_ITERATOR_GENERATOR_YIELD_WITHOUT_RUNNING_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "run.c"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:generators",
@@ -28077,7 +28876,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_INVALID_LOOP_VARIABLE",
           "macro" => "PERL_THROW_ERROR_ITERATOR_INVALID_LOOP_VARIABLE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:iteration",
@@ -28155,7 +28956,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_INVALID_STATE",
           "macro" => "PERL_THROW_ERROR_ITERATOR_INVALID_STATE",
-          "source_files" => [],
+          "source_files" => [
+            "run.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:iteration"
@@ -28194,7 +28997,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_ITERATOR_RANGE_ENDPOINT_OUTSIDE_INTEGER_RANGE",
           "macro" => "PERL_THROW_ERROR_ITERATOR_RANGE_ENDPOINT_OUTSIDE_INTEGER_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:iteration",
@@ -28234,7 +29039,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LEXICAL_EXPORT_ODD_ARGUMENT_COUNT",
           "macro" => "PERL_THROW_ERROR_LEXICAL_EXPORT_ODD_ARGUMENT_COUNT",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:lexical_export"
@@ -28273,7 +29080,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LEXICAL_EXPORT_OUTSIDE_COMPILATION",
           "macro" => "PERL_THROW_ERROR_LEXICAL_EXPORT_OUTSIDE_COMPILATION",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:lexical_export"
@@ -28312,7 +29121,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LEXICAL_EXPORT_REFERENCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_LEXICAL_EXPORT_REFERENCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:lexical_export",
@@ -28352,7 +29163,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LEXICAL_EXPORT_REFERENCE_TYPE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_LEXICAL_EXPORT_REFERENCE_TYPE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:lexical_export",
@@ -28491,7 +29304,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LEXICAL_IMPORT_INVALID_VERSION_BUNDLE",
           "macro" => "PERL_THROW_ERROR_LEXICAL_IMPORT_INVALID_VERSION_BUNDLE",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:builtins_operators",
@@ -28539,7 +29354,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LEXICAL_IMPORT_OUTSIDE_COMPILATION",
           "macro" => "PERL_THROW_ERROR_LEXICAL_IMPORT_OUTSIDE_COMPILATION",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:builtins_operators",
@@ -28579,7 +29396,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LEXICAL_IMPORT_UNKNOWN_BUILTIN",
           "macro" => "PERL_THROW_ERROR_LEXICAL_IMPORT_UNKNOWN_BUILTIN",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:builtins_operators",
@@ -28626,7 +29445,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LEXICAL_IMPORT_UNSUPPORTED_VERSION_BUNDLE",
           "macro" => "PERL_THROW_ERROR_LEXICAL_IMPORT_UNSUPPORTED_VERSION_BUNDLE",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:builtins_operators",
@@ -28678,7 +29499,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_ABI_INTERPRETER_POINTER_MISMATCH",
           "macro" => "PERL_THROW_ERROR_LOAD_ABI_INTERPRETER_POINTER_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:incompatible_binary_layout",
             "subject:module_version_loading"
@@ -28717,7 +29540,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_ABI_INTERPRETER_SIZE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_LOAD_ABI_INTERPRETER_SIZE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:incompatible_binary_layout",
             "subject:module_version_loading"
@@ -28767,7 +29592,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_ABI_MODULE_HANDSHAKE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_LOAD_ABI_MODULE_HANDSHAKE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:incompatible_binary_layout",
             "subject:module_version_loading"
@@ -28827,7 +29654,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_ABI_MODULE_PERL_API_VERSION_MISMATCH",
           "macro" => "PERL_THROW_ERROR_LOAD_ABI_MODULE_PERL_API_VERSION_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:incompatible_binary_layout",
             "subject:module_version_loading"
@@ -28888,7 +29717,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_ABI_PERL_API_VERSION_MISMATCH",
           "macro" => "PERL_THROW_ERROR_LOAD_ABI_PERL_API_VERSION_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:incompatible_binary_layout",
             "subject:module_version_loading"
@@ -28938,7 +29769,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_CONTEXT_H2PH_HINT",
           "macro" => "PERL_APPEND_ERROR_LOAD_CONTEXT_H2PH_HINT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:module_version_loading"
@@ -28983,7 +29816,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_CONTEXT_HEADER_SUFFIX_HINT",
           "macro" => "PERL_APPEND_ERROR_LOAD_CONTEXT_HEADER_SUFFIX_HINT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:module_version_loading"
@@ -29028,7 +29863,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_CONTEXT_INC_ENTRIES_CHECKED",
           "macro" => "PERL_APPEND_ERROR_LOAD_CONTEXT_INC_ENTRIES_CHECKED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:module_version_loading"
@@ -29080,7 +29917,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_CONTEXT_MODULE_INSTALL_HINT",
           "macro" => "PERL_APPEND_ERROR_LOAD_CONTEXT_MODULE_INSTALL_HINT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:module_version_loading"
@@ -29132,7 +29971,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_FILENAME_INVALID",
           "macro" => "PERL_THROW_ERROR_LOAD_FILENAME_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading"
@@ -29182,7 +30023,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_FILENAME_REQUIRED",
           "macro" => "PERL_THROW_ERROR_LOAD_FILENAME_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:module_version_loading"
@@ -29227,7 +30070,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_FILE_OPEN_FAILED",
           "macro" => "PERL_THROW_ERROR_LOAD_FILE_OPEN_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:module_version_loading"
@@ -29328,7 +30173,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_HOOK_FILENAME_REQUIRED",
           "macro" => "PERL_THROW_ERROR_LOAD_HOOK_FILENAME_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:module_version_loading"
@@ -29373,7 +30220,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_HOOK_INC_DIED",
           "macro" => "PERL_APPEND_ERROR_LOAD_HOOK_INC_DIED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:module_version_loading"
@@ -29484,7 +30333,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_HOOK_INC_METHODS_NOT_FOUND",
           "macro" => "PERL_THROW_ERROR_LOAD_HOOK_INC_METHODS_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:module_version_loading"
@@ -29590,7 +30441,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_HOOK_NAME_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_LOAD_HOOK_NAME_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading"
@@ -29635,7 +30488,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_HOOK_VALUE_NOT_CODE_OR_UNDEF",
           "macro" => "PERL_THROW_ERROR_LOAD_HOOK_VALUE_NOT_CODE_OR_UNDEF",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:module_version_loading"
@@ -29690,7 +30545,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_IMPORT_UNIVERSAL_EXPORT_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_LOAD_IMPORT_UNIVERSAL_EXPORT_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "universal.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:module_version_loading"
@@ -29729,7 +30586,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_NOT_FOUND_AT_PATH",
           "macro" => "PERL_THROW_ERROR_LOAD_NOT_FOUND_AT_PATH",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:module_version_loading"
@@ -29774,7 +30633,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_NOT_FOUND_IN_INC",
           "macro" => "PERL_APPEND_ERROR_LOAD_NOT_FOUND_IN_INC",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:module_version_loading"
@@ -29825,7 +30686,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_PERL_VERSION_AMBIGUOUS_REQUIREMENT",
           "macro" => "PERL_THROW_ERROR_LOAD_PERL_VERSION_AMBIGUOUS_REQUIREMENT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:module_version_loading"
@@ -29883,7 +30746,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_PERL_VERSION_TOO_NEW",
           "macro" => "PERL_THROW_ERROR_LOAD_PERL_VERSION_TOO_NEW",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:module_version_loading"
@@ -29935,7 +30800,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_PERL_VERSION_TOO_OLD",
           "macro" => "PERL_THROW_ERROR_LOAD_PERL_VERSION_TOO_OLD",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:module_version_loading"
@@ -29987,7 +30854,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_REQUIRE_COMPILATION_FAILED",
           "macro" => "PERL_THROW_ERROR_LOAD_REQUIRE_COMPILATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "role:compilation_summary",
@@ -30034,7 +30903,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_REQUIRE_NAME_BAREWORD_BACKSLASH_DOT_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_BACKSLASH_DOT_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading",
@@ -30074,7 +30945,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_REQUIRE_NAME_BAREWORD_FILENAME_DISALLOWED",
           "macro" => "PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_FILENAME_DISALLOWED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading",
@@ -30121,7 +30994,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_REQUIRE_NAME_BAREWORD_NUL_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_NUL_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading",
@@ -30161,7 +31036,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_REQUIRE_NAME_BAREWORD_SLASH_DOT_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_SLASH_DOT_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading",
@@ -30201,7 +31078,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_REQUIRE_NAME_EMPTY_BAREWORD",
           "macro" => "PERL_THROW_ERROR_LOAD_REQUIRE_NAME_EMPTY_BAREWORD",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:module_version_loading",
@@ -30241,7 +31120,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_REQUIRE_NAME_LEADING_PACKAGE_SEPARATOR_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_LOAD_REQUIRE_NAME_LEADING_PACKAGE_SEPARATOR_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading",
@@ -30287,7 +31168,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_REQUIRE_PREVIOUS_LOAD_FAILED",
           "macro" => "PERL_THROW_ERROR_LOAD_REQUIRE_PREVIOUS_LOAD_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading"
@@ -30332,7 +31215,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_REQUIRE_TRUE_VALUE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_LOAD_REQUIRE_TRUE_VALUE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading"
@@ -30378,7 +31263,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_SOURCE_FILTER_CHARACTER_STREAM_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_LOAD_SOURCE_FILTER_CHARACTER_STREAM_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:source_filters"
@@ -30417,7 +31304,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_SOURCE_FILTER_DELETE_ORDER_INVALID",
           "macro" => "PERL_THROW_ERROR_LOAD_SOURCE_FILTER_DELETE_ORDER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading",
@@ -30457,7 +31346,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_XS_VERSION_BOOTSTRAP_MISMATCH",
           "macro" => "PERL_THROW_ERROR_LOAD_XS_VERSION_BOOTSTRAP_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:module_version_loading"
@@ -30515,7 +31406,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_XS_VERSION_PACKAGE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_LOAD_XS_VERSION_PACKAGE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:module_version_loading"
@@ -30617,7 +31510,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MEMORY_SIZE_ALLOCATION_REQUEST_TOO_LARGE",
           "macro" => "PERL_THROW_ERROR_MEMORY_SIZE_ALLOCATION_REQUEST_TOO_LARGE",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:memory_allocation_lifetime"
@@ -30656,7 +31551,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MEMORY_SIZE_ARRAY_EXTEND_OVERFLOW",
           "macro" => "PERL_THROW_ERROR_MEMORY_SIZE_ARRAY_EXTEND_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "av.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:memory_allocation_lifetime",
@@ -30696,7 +31594,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MEMORY_SIZE_LIST_EXTEND_OVERFLOW",
           "macro" => "PERL_THROW_ERROR_MEMORY_SIZE_LIST_EXTEND_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c",
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:memory_allocation_lifetime"
@@ -30735,7 +31636,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MEMORY_SIZE_PACK_RESULT_OVERFLOW",
           "macro" => "PERL_THROW_ERROR_MEMORY_SIZE_PACK_RESULT_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:memory_allocation_lifetime",
@@ -30775,7 +31678,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MEMORY_SIZE_STACK_EXTEND_OVERFLOW",
           "macro" => "PERL_THROW_ERROR_MEMORY_SIZE_STACK_EXTEND_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "scope.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:memory_allocation_lifetime"
@@ -30814,7 +31719,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MEMORY_SIZE_STRING_EXTEND_OVERFLOW",
           "macro" => "PERL_THROW_ERROR_MEMORY_SIZE_STRING_EXTEND_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:memory_allocation_lifetime",
@@ -30854,7 +31761,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MEMORY_SIZE_VEC_OFFSET_OUT_OF_RANGE",
           "macro" => "PERL_THROW_ERROR_MEMORY_SIZE_VEC_OFFSET_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "doop.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:memory_allocation_lifetime",
@@ -30894,7 +31803,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_ASSIGNMENT_ARRAY_BASE_NONZERO",
           "macro" => "PERL_THROW_ERROR_MUTATION_ASSIGNMENT_ARRAY_BASE_NONZERO",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access",
@@ -30934,7 +31845,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_ASSIGNMENT_GLOB_REFERENT_TYPE_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_MUTATION_ASSIGNMENT_GLOB_REFERENT_TYPE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:mutation_access",
@@ -30980,7 +31893,11 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE",
           "macro" => "PERL_THROW_ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c",
+            "pp.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access",
@@ -31032,7 +31949,11 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_ELEMENT_HASH_VALUE_NOT_CREATABLE",
           "macro" => "PERL_THROW_ERROR_MUTATION_ELEMENT_HASH_VALUE_NOT_CREATABLE",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c",
+            "pp.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access",
@@ -31085,7 +32006,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_LOCALIZATION_LEXICAL_VARIABLE_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_MUTATION_LOCALIZATION_LEXICAL_VARIABLE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:control_flow_scope",
@@ -31133,7 +32056,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_LOCALIZATION_THROUGH_REFERENCE_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_MUTATION_LOCALIZATION_THROUGH_REFERENCE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:control_flow_scope",
@@ -31174,7 +32100,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_LVALUE_CALL_NON_LVALUE_SUBROUTINE",
           "macro" => "PERL_THROW_ERROR_MUTATION_LVALUE_CALL_NON_LVALUE_SUBROUTINE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -31221,7 +32149,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_LVALUE_RETURN_AGGREGATE_IN_SCALAR_CONTEXT",
           "macro" => "PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_AGGREGATE_IN_SCALAR_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -31322,7 +32252,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_LVALUE_RETURN_ARRAY_INDEX_VALUE_SLICE_NOT_MODIFIABLE",
           "macro" => "PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_ARRAY_INDEX_VALUE_SLICE_NOT_MODIFIABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -31363,7 +32295,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_LVALUE_RETURN_ARRAY_KEYS_NOT_MODIFIABLE",
           "macro" => "PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_ARRAY_KEYS_NOT_MODIFIABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -31404,7 +32338,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_LVALUE_RETURN_HASH_KEYS_NOT_MODIFIABLE",
           "macro" => "PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_HASH_KEYS_NOT_MODIFIABLE",
-          "source_files" => [],
+          "source_files" => [
+            "doop.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -31445,7 +32381,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_LVALUE_RETURN_HASH_KEY_VALUE_SLICE_NOT_MODIFIABLE",
           "macro" => "PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_HASH_KEY_VALUE_SLICE_NOT_MODIFIABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -31492,7 +32430,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_LVALUE_RETURN_LEXICAL_ARRAY_IN_SCALAR_CONTEXT",
           "macro" => "PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_LEXICAL_ARRAY_IN_SCALAR_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -31533,7 +32473,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_LVALUE_RETURN_LEXICAL_HASH_IN_SCALAR_CONTEXT",
           "macro" => "PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_LEXICAL_HASH_IN_SCALAR_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -31574,7 +32516,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_LVALUE_RETURN_VALUE_NOT_MODIFIABLE",
           "macro" => "PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_VALUE_NOT_MODIFIABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -31692,7 +32636,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_READ_ONLY_RESTRICTED_HASH_KEY_DELETION",
           "macro" => "PERL_THROW_ERROR_MUTATION_READ_ONLY_RESTRICTED_HASH_KEY_DELETION",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access",
@@ -31739,7 +32685,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_READ_ONLY_VALUE_MODIFICATION",
           "macro" => "PERL_THROW_ERROR_MUTATION_READ_ONLY_VALUE_MODIFICATION",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access"
@@ -31779,7 +32727,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_REFERENCE_ALIASING_FEATURE_DISABLED",
           "macro" => "PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_FEATURE_DISABLED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:mutation_access"
@@ -31818,7 +32768,11 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_REFERENCE_ALIASING_REFERENT_TYPE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_REFERENT_TYPE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c",
+            "pp.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:mutation_access",
@@ -31992,7 +32946,12 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_REFERENCE_ALIASING_VALUE_NOT_REFERENCE",
           "macro" => "PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_VALUE_NOT_REFERENCE",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c",
+            "pp.c",
+            "pp_ctl.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:mutation_access",
@@ -32038,7 +32997,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_SUBROUTINE_CANNOT_UNDEFINE_ACTIVE",
           "macro" => "PERL_THROW_ERROR_MUTATION_SUBROUTINE_CANNOT_UNDEFINE_ACTIVE",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts",
@@ -32078,7 +33039,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_TIE_AGGREGATE_SELF_REFERENCE_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_MUTATION_TIE_AGGREGATE_SELF_REFERENCE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:mutation_access"
@@ -32117,7 +33080,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_TIE_ARRAY_NOT_REIFIABLE",
           "macro" => "PERL_THROW_ERROR_MUTATION_TIE_ARRAY_NOT_REIFIABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access",
@@ -32158,7 +33123,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MUTATION_TIE_FETCHSIZE_RESULT_NEGATIVE",
           "macro" => "PERL_THROW_ERROR_MUTATION_TIE_FETCHSIZE_RESULT_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:tie_debugger"
@@ -32197,7 +33164,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_NUMERIC_CONVERSION_INTEGER_COERCION_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_NUMERIC_CONVERSION_INTEGER_COERCION_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:numeric_arithmetic"
@@ -32279,7 +33248,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_NUMERIC_CONVERSION_NUMBER_COERCION_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_NUMERIC_CONVERSION_NUMBER_COERCION_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:numeric_arithmetic"
@@ -32361,7 +33332,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_NUMERIC_DOMAIN_DIVISION_BY_ZERO",
           "macro" => "PERL_THROW_ERROR_NUMERIC_DOMAIN_DIVISION_BY_ZERO",
-          "source_files" => [],
+          "source_files" => [
+            "ext/XS-APItest/APItest_runtime_helpers.xs",
+            "pp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:numeric_arithmetic"
@@ -32400,7 +33374,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_NUMERIC_DOMAIN_LOG_SQRT_ARGUMENT_INVALID",
           "macro" => "PERL_APPEND_ERROR_NUMERIC_DOMAIN_LOG_SQRT_ARGUMENT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:numeric_arithmetic"
@@ -32509,7 +33485,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_NUMERIC_DOMAIN_MODULUS_BY_ZERO",
           "macro" => "PERL_THROW_ERROR_NUMERIC_DOMAIN_MODULUS_BY_ZERO",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:numeric_arithmetic"
@@ -32548,7 +33526,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_BLESS_CURRENT_PACKAGE_FREED",
           "macro" => "PERL_THROW_ERROR_OBJECT_BLESS_CURRENT_PACKAGE_FREED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:memory_allocation_lifetime",
@@ -32588,7 +33568,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_BLESS_INVALID_CLASS_NAME_REFERENCE",
           "macro" => "PERL_THROW_ERROR_OBJECT_BLESS_INVALID_CLASS_NAME_REFERENCE",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:object_role_field",
@@ -32628,7 +33610,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_BLESS_NATIVE_CLASS_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_OBJECT_BLESS_NATIVE_CLASS_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:object_role_field"
@@ -32667,7 +33651,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_BLESS_NATIVE_OBJECT_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_OBJECT_BLESS_NATIVE_OBJECT_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:object_role_field",
@@ -32707,7 +33693,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_BLESS_REFERENCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_BLESS_REFERENCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field",
@@ -32747,7 +33735,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_DIRECT_ROLE_LIMIT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_DIRECT_ROLE_LIMIT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:object_role_field"
@@ -32792,7 +33782,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_FAILED",
           "macro" => "PERL_APPEND_ERROR_OBJECT_COMPOSITION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:operation_failed",
             "role:composition_summary",
@@ -32851,7 +33844,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_FIELD_PROVIDER_CONFLICT",
           "macro" => "PERL_APPEND_ERROR_OBJECT_COMPOSITION_FIELD_PROVIDER_CONFLICT",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -32915,7 +33910,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_IMPLEMENTS_ATTRIBUTE_TRAILING_TEXT",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_IMPLEMENTS_ATTRIBUTE_TRAILING_TEXT",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:object_role_field"
@@ -33117,7 +34114,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_ATTRIBUTE_TRAILING_TEXT",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_ATTRIBUTE_TRAILING_TEXT",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:object_role_field"
@@ -33162,7 +34161,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_CHANGE_ANONYMOUS_STASH",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_CHANGE_ANONYMOUS_STASH",
-          "source_files" => [],
+          "source_files" => [
+            "mro_core.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -33201,7 +34202,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_ANONYMOUS_STASH",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_ANONYMOUS_STASH",
-          "source_files" => [],
+          "source_files" => [
+            "mro_core.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -33240,7 +34243,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_DEPTH_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_DEPTH_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "mro_core.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:object_role_field"
@@ -33286,7 +34291,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_ANONYMOUS_STASH",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_ANONYMOUS_STASH",
-          "source_files" => [],
+          "source_files" => [
+            "mro_core.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -33325,7 +34332,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_PACKAGE_NOT_FOUND",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_PACKAGE_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "mro_core.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -33371,7 +34380,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_MRO_NAME_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_MRO_NAME_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "mro_core.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:object_role_field"
@@ -33417,7 +34428,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_NATIVE_SUPERCLASS_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_NATIVE_SUPERCLASS_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field"
@@ -33509,7 +34522,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_ROLE_ISA_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_ROLE_ISA_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:object_role_field"
@@ -33548,7 +34563,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_SUPERCLASS_ALREADY_ASSIGNED",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_SUPERCLASS_ALREADY_ASSIGNED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -33587,7 +34604,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_METHOD_IMPLEMENTATION_REQUIRED",
           "macro" => "PERL_APPEND_ERROR_OBJECT_COMPOSITION_METHOD_IMPLEMENTATION_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -33645,7 +34664,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_METHOD_PROVIDER_CONFLICT",
           "macro" => "PERL_APPEND_ERROR_OBJECT_COMPOSITION_METHOD_PROVIDER_CONFLICT",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -33709,7 +34730,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_NATIVE_ROLE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_NATIVE_ROLE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field"
@@ -33756,7 +34779,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_CONSTRUCTOR_CLASS_INCOMPLETE",
           "macro" => "PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_CLASS_INCOMPLETE",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:object_role_field"
@@ -33802,7 +34827,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_CONSTRUCTOR_REQUIRED_PARAMETER_MISSING",
           "macro" => "PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_REQUIRED_PARAMETER_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -33855,7 +34882,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_CONSTRUCTOR_UNKNOWN_PARAMETERS",
           "macro" => "PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_UNKNOWN_PARAMETERS",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:object_role_field"
@@ -33913,7 +34942,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_CONVERSION_FIELD_REFERENCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_CONVERSION_FIELD_REFERENCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field",
@@ -33959,7 +34990,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_CONVERSION_FIELD_REFERENCE_TYPE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_OBJECT_CONVERSION_FIELD_REFERENCE_TYPE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field",
@@ -34005,7 +35038,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_CONVERSION_HASH_REFERENCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_CONVERSION_HASH_REFERENCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field",
@@ -34046,7 +35081,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_CONVERSION_NATIVE_CLASS_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_CONVERSION_NATIVE_CLASS_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field"
@@ -34085,7 +35122,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_CONVERSION_NATIVE_OBJECT_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_CONVERSION_NATIVE_OBJECT_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field",
@@ -34125,7 +35164,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DEFINITION_ATTRIBUTE_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_ATTRIBUTE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:object_role_field"
@@ -34171,7 +35212,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DEFINITION_ATTRIBUTE_VALUE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_ATTRIBUTE_VALUE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -34217,7 +35260,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DEFINITION_ATTRIBUTE_VALUE_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_ATTRIBUTE_VALUE_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:object_role_field"
@@ -34256,7 +35301,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DEFINITION_CLASS_EXISTING_ISA_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_EXISTING_ISA_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -34302,7 +35349,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DEFINITION_CLASS_NAME_CONTEXT_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_NAME_CONTEXT_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:object_role_field"
@@ -34341,7 +35390,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DEFINITION_CLASS_OR_ROLE_CONTEXT_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_OR_ROLE_CONTEXT_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:object_role_field"
@@ -34386,7 +35437,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DEFINITION_CLASS_REOPEN_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_REOPEN_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -34432,7 +35485,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DEFINITION_ROLE_EXISTING_ISA_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_ROLE_EXISTING_ISA_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -34478,7 +35533,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DEFINITION_ROLE_PACKAGE_ALREADY_CLASS",
           "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_ROLE_PACKAGE_ALREADY_CLASS",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -34524,7 +35581,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DEFINITION_ROLE_REOPEN_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_ROLE_REOPEN_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -34570,7 +35629,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DESTRUCTION_GLOBAL_RESURRECTION_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_OBJECT_DESTRUCTION_GLOBAL_RESURRECTION_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:memory_allocation_lifetime",
@@ -34618,7 +35679,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_FIELD_ACCESS_DECLARING_CLASS_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ACCESS_DECLARING_CLASS_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:object_role_field"
@@ -34676,7 +35739,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_FIELD_ACCESS_METHOD_CONTEXT_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ACCESS_METHOD_CONTEXT_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:object_role_field"
@@ -34722,7 +35787,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_GENERATED_METHOD_NAME_INVALID",
           "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_GENERATED_METHOD_NAME_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:object_role_field"
@@ -34768,7 +35835,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_ALREADY_ASSIGNED",
           "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_ALREADY_ASSIGNED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -34807,7 +35876,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_NAME_CONFLICT",
           "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_NAME_CONFLICT",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -34859,7 +35930,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_REQUIRES_SCALAR",
           "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_REQUIRES_SCALAR",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field"
@@ -34898,7 +35971,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:object_role_field"
@@ -34944,7 +36019,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_WRITER_REQUIRES_SCALAR",
           "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_WRITER_REQUIRES_SCALAR",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field"
@@ -34983,7 +36060,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_FIELD_LEGACY_NAME_NOT_DECLARED",
           "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_LEGACY_NAME_NOT_DECLARED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -35041,7 +36120,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_CALL_ANONYMOUS_NATIVE_INSTANCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_CALL_ANONYMOUS_NATIVE_INSTANCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field"
@@ -35081,7 +36162,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_CALL_INVOCANT_CLASS_INCOMPATIBLE",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_CALL_INVOCANT_CLASS_INCOMPATIBLE",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field"
@@ -35133,7 +36216,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_CALL_INVOCANT_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_CALL_INVOCANT_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:call_callback_contracts",
@@ -35181,7 +36266,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_CALL_NAMED_NATIVE_INSTANCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_CALL_NAMED_NATIVE_INSTANCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:object_role_field"
@@ -35228,7 +36315,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_CALL_UNBLESSED_INVOCANT",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_CALL_UNBLESSED_INVOCANT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -35276,7 +36365,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_CALL_UNINITIALIZED_INVOCANT",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_CALL_UNINITIALIZED_INVOCANT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:undefined_uninitialized",
             "subject:call_callback_contracts",
@@ -35323,7 +36414,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_LOOKUP_NAMED_STASH_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NAMED_STASH_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -35509,7 +36602,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_LOOKUP_NOT_FOUND",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c",
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -35581,7 +36677,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_LOOKUP_PACKAGE_NOT_FOUND",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_PACKAGE_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c",
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -35659,7 +36758,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OVERLOAD_METHOD_RESOLUTION_FAILED",
           "macro" => "PERL_THROW_ERROR_OVERLOAD_METHOD_RESOLUTION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts",
@@ -35777,7 +36878,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OVERLOAD_OPERATION_METHOD_NOT_FOUND",
           "macro" => "PERL_THROW_ERROR_OVERLOAD_OPERATION_METHOD_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts",
@@ -36209,7 +37312,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OVERLOAD_RETURN_VALUE_COPY_REFERENCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OVERLOAD_RETURN_VALUE_COPY_REFERENCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -36250,7 +37355,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OVERLOAD_RETURN_VALUE_DEREFERENCE_REFERENCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OVERLOAD_RETURN_VALUE_DEREFERENCE_REFERENCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -36291,7 +37398,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OVERLOAD_RETURN_VALUE_REGEXP_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OVERLOAD_RETURN_VALUE_REGEXP_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -36331,7 +37440,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_BOUNDS_PACK_POSITION_OUTSIDE_STRING",
           "macro" => "PERL_THROW_ERROR_PACK_BOUNDS_PACK_POSITION_OUTSIDE_STRING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack",
@@ -36377,7 +37488,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_BOUNDS_UNPACK_BACKUP_OUTSIDE_STRING",
           "macro" => "PERL_THROW_ERROR_PACK_BOUNDS_UNPACK_BACKUP_OUTSIDE_STRING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack",
@@ -36417,7 +37530,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_BOUNDS_UNPACK_POSITION_OUTSIDE_STRING",
           "macro" => "PERL_THROW_ERROR_PACK_BOUNDS_UNPACK_POSITION_OUTSIDE_STRING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack",
@@ -36457,7 +37572,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_BOUNDS_UNPACK_SKIP_OUTSIDE_STRING",
           "macro" => "PERL_THROW_ERROR_PACK_BOUNDS_UNPACK_SKIP_OUTSIDE_STRING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack",
@@ -36497,7 +37614,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_CHECKSUM_DIRECTIVE_IN_PACK",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_CHECKSUM_DIRECTIVE_IN_PACK",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:pack_unpack"
@@ -36536,7 +37655,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_CONFLICTING_BYTE_ORDER_MODIFIERS",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_CONFLICTING_BYTE_ORDER_MODIFIERS",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:pack_unpack"
@@ -36586,7 +37707,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_COUNT_AFTER_LENGTH_CODE",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_COUNT_AFTER_LENGTH_CODE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack"
@@ -36625,7 +37748,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_GROUP_NESTING_TOO_DEEP",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_GROUP_NESTING_TOO_DEEP",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack"
@@ -36670,7 +37795,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_GROUP_STARTS_WITH_COUNT",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_GROUP_STARTS_WITH_COUNT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack"
@@ -36715,7 +37842,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_INHERITED_BYTE_ORDER_CONFLICT",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_INHERITED_BYTE_ORDER_CONFLICT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:pack_unpack"
@@ -36765,7 +37894,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_INVALID_DIRECTIVE",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_INVALID_DIRECTIVE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:pack_unpack"
@@ -36815,7 +37946,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_INVALID_LENGTH_DIRECTIVE",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_INVALID_LENGTH_DIRECTIVE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "condition:size_count_range",
@@ -36866,7 +37999,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_INVALID_MODIFIER",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_INVALID_MODIFIER",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "condition:size_count_range",
@@ -36922,7 +38057,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_INVALID_PACK_DIRECTIVE",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_INVALID_PACK_DIRECTIVE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:pack_unpack"
@@ -36967,7 +38104,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_INVALID_UNPACK_DIRECTIVE",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_INVALID_UNPACK_DIRECTIVE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:pack_unpack"
@@ -37012,7 +38151,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_LENGTH_CODE_REQUIRES_NUMERIC_TYPE",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_LENGTH_CODE_REQUIRES_NUMERIC_TYPE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "subject:numeric_arithmetic",
             "subject:pack_unpack"
@@ -37051,7 +38192,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_MALFORMED_LENGTH_INTEGER",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_MALFORMED_LENGTH_INTEGER",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "condition:size_count_range",
@@ -37098,7 +38241,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_MISMATCHED_BRACKETS",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_MISMATCHED_BRACKETS",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "condition:unterminated_unbalanced",
@@ -37138,7 +38283,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_MISSING_GROUP_TERMINATOR",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_MISSING_GROUP_TERMINATOR",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:pack_unpack"
@@ -37183,7 +38330,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_MISSING_PACK_LENGTH_TARGET",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_MISSING_PACK_LENGTH_TARGET",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "condition:size_count_range",
@@ -37223,7 +38372,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_MISSING_UNPACK_LENGTH_TARGET",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_MISSING_UNPACK_LENGTH_TARGET",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "condition:size_count_range",
@@ -37263,7 +38414,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_POINTER_REQUIRES_EXPLICIT_SIZE",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_POINTER_REQUIRES_EXPLICIT_SIZE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack"
@@ -37302,7 +38455,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_POSITION_BEFORE_START",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_POSITION_BEFORE_START",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:string_sequence_container"
@@ -37347,7 +38502,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_REPEAT_COUNT_OVERFLOW",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_REPEAT_COUNT_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:numeric_arithmetic",
@@ -37387,7 +38544,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_SLASH_REPEAT_COUNT_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_SLASH_REPEAT_COUNT_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:pack_unpack"
@@ -37432,7 +38591,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_STAR_IN_LENGTH",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_STAR_IN_LENGTH",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack"
@@ -37477,7 +38638,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_FORMAT_STRUCTURE_SIZE_OVERFLOW",
           "macro" => "PERL_THROW_ERROR_PACK_FORMAT_STRUCTURE_SIZE_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack"
@@ -37516,7 +38679,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_INPUT_MISSING_LENGTH_VALUE",
           "macro" => "PERL_THROW_ERROR_PACK_INPUT_MISSING_LENGTH_VALUE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack",
@@ -37556,7 +38721,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_INPUT_NEGATIVE_COMPRESSED_INTEGER",
           "macro" => "PERL_THROW_ERROR_PACK_INPUT_NEGATIVE_COMPRESSED_INTEGER",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "condition:size_count_range",
@@ -37597,7 +38764,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_INPUT_NEGATIVE_LENGTH_COUNT",
           "macro" => "PERL_THROW_ERROR_PACK_INPUT_NEGATIVE_LENGTH_COUNT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack"
@@ -37636,7 +38805,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_INPUT_NONFINITE_COMPRESSED_INTEGER",
           "macro" => "PERL_THROW_ERROR_PACK_INPUT_NONFINITE_COMPRESSED_INTEGER",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:pack_unpack"
@@ -37681,7 +38852,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_INPUT_NONFINITE_VALUE",
           "macro" => "PERL_THROW_ERROR_PACK_INPUT_NONFINITE_VALUE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:pack_unpack"
@@ -37731,7 +38904,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_INPUT_NON_UNSIGNED_INTEGER",
           "macro" => "PERL_THROW_ERROR_PACK_INPUT_NON_UNSIGNED_INTEGER",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "subject:numeric_arithmetic",
             "subject:pack_unpack"
@@ -37770,7 +38945,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_INPUT_U0_REQUIRES_UTF8_INPUT",
           "macro" => "PERL_THROW_ERROR_PACK_INPUT_U0_REQUIRES_UTF8_INPUT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:pack_unpack"
@@ -37809,7 +38986,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PACK_INPUT_UNTERMINATED_COMPRESSED_INTEGER",
           "macro" => "PERL_THROW_ERROR_PACK_INPUT_UNTERMINATED_COMPRESSED_INTEGER",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:numeric_arithmetic",
@@ -37850,7 +39029,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PHASE_BEGIN_FAILED",
           "macro" => "PERL_APPEND_ERROR_PHASE_BEGIN_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:operation_failed",
             "role:context_hint",
@@ -37896,7 +39078,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PHASE_BEGIN_NESTING_LIMIT",
           "macro" => "PERL_THROW_ERROR_PHASE_BEGIN_NESTING_LIMIT",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:phase_blocks"
@@ -37941,7 +39125,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PHASE_BEGIN_UNSAFE_AFTER_COMPILATION_ERRORS",
           "macro" => "PERL_THROW_ERROR_PHASE_BEGIN_UNSAFE_AFTER_COMPILATION_ERRORS",
-          "source_files" => [],
+          "source_files" => [
+            "op.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:parser_declarations",
@@ -37981,7 +39168,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PHASE_CALL_QUEUE_ABORTED",
           "macro" => "PERL_APPEND_ERROR_PHASE_CALL_QUEUE_ABORTED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:operation_failed",
             "role:context_hint",
@@ -38033,7 +39223,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PHASE_UNITCHECK_FAILED",
           "macro" => "PERL_APPEND_ERROR_PHASE_UNITCHECK_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:phase_blocks"
@@ -38078,7 +39270,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PROPAGATION_EVAL_EXCEPTION",
           "macro" => "PERL_THROW_ERROR_PROPAGATION_EVAL_EXCEPTION",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "role:opaque_payload",
@@ -38126,7 +39320,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_PROPAGATION_RETHROW_CONTEXT",
           "macro" => "PERL_APPEND_ERROR_PROPAGATION_RETHROW_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:diagnostic_exception_api"
@@ -38182,7 +39379,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_ESCAPE_TRAILING_BACKSLASH",
           "macro" => "PERL_THROW_ERROR_REGEXP_ESCAPE_TRAILING_BACKSLASH",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -38247,7 +39446,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_EVAL_CODE_BLOCK_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_EVAL_CODE_BLOCK_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -38286,7 +39487,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_EVAL_RUNTIME_CODE_DISABLED",
           "macro" => "PERL_THROW_ERROR_REGEXP_EVAL_RUNTIME_CODE_DISABLED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp"
@@ -38351,7 +39554,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_GROUP_COMMENT_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_COMMENT_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -38416,7 +39621,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_GROUP_SUBROUTINE_WHOLE_PATTERN_CALL_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_WHOLE_PATTERN_CALL_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:regexp"
@@ -38481,7 +39688,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_LIMIT_CAPTURE_COUNT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_REGEXP_LIMIT_CAPTURE_COUNT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -38551,7 +39760,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_LIMIT_LOOKBEHIND_LENGTH_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_REGEXP_LIMIT_LOOKBEHIND_LENGTH_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_study.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -38621,7 +39832,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_LIMIT_SIZE_OR_ALLOCATION_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_REGEXP_LIMIT_SIZE_OR_ALLOCATION_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c",
+            "regcomp_study.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -38686,7 +39900,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_RECURSION_EMPTY_PATTERN_CYCLE",
           "macro" => "PERL_THROW_ERROR_REGEXP_RECURSION_EMPTY_PATTERN_CYCLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:recursion_no_progress",
             "subject:regexp"
@@ -38725,7 +39942,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_RECURSION_EVAL_PROGRESS_LIMIT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_REGEXP_RECURSION_EVAL_PROGRESS_LIMIT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:recursion_no_progress",
             "subject:regexp"
@@ -38764,7 +39983,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_RECURSION_GROUP_REENTERED_WITHOUT_PROGRESS",
           "macro" => "PERL_THROW_ERROR_REGEXP_RECURSION_GROUP_REENTERED_WITHOUT_PROGRESS",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:recursion_no_progress",
             "subject:regexp"
@@ -38803,7 +40024,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_RECURSION_SUBROUTINE_PROGRESS_LIMIT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_REGEXP_RECURSION_SUBROUTINE_PROGRESS_LIMIT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:recursion_no_progress",
             "subject:regexp"
@@ -38842,7 +40065,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_REGEXP_SUBSTITUTION_CONTEXT_CLONE_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_REGEXP_SUBSTITUTION_CONTEXT_CLONE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:regexp"
@@ -38881,7 +40106,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RNG_BYTES_COUNT_INVALID",
           "macro" => "PERL_THROW_ERROR_RNG_BYTES_COUNT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "condition:size_count_range",
@@ -38921,7 +40148,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RNG_BYTES_COUNT_TOO_LARGE",
           "macro" => "PERL_THROW_ERROR_RNG_BYTES_COUNT_TOO_LARGE",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:rng"
@@ -38960,7 +40189,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RNG_PROVIDER_BYTE_COUNT_MISMATCH",
           "macro" => "PERL_THROW_ERROR_RNG_PROVIDER_BYTE_COUNT_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:rng"
@@ -38999,7 +40230,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RNG_PROVIDER_BYTE_STRING_REQUIRED",
           "macro" => "PERL_THROW_ERROR_RNG_PROVIDER_BYTE_STRING_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:rng"
@@ -39038,7 +40271,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RNG_PROVIDER_INTEGER_ADDRESS_REQUIRED",
           "macro" => "PERL_THROW_ERROR_RNG_PROVIDER_INTEGER_ADDRESS_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:rng"
@@ -39077,7 +40312,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RNG_PROVIDER_OBJECT_REQUIRED",
           "macro" => "PERL_THROW_ERROR_RNG_PROVIDER_OBJECT_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:rng"
@@ -39116,7 +40353,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RNG_SEED_BYTE_STRING_REQUIRED",
           "macro" => "PERL_THROW_ERROR_RNG_SEED_BYTE_STRING_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:rng"
@@ -39155,7 +40394,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RNG_SEED_DRAND48_SIZE_INVALID",
           "macro" => "PERL_THROW_ERROR_RNG_SEED_DRAND48_SIZE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:rng"
@@ -39194,7 +40435,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RNG_SEED_REDACTED_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_RNG_SEED_REDACTED_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:rng"
@@ -39233,7 +40476,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_ENVIRONMENT_PERL5OPT_FORBIDDEN_SWITCH",
           "macro" => "PERL_THROW_ERROR_RUN_ENVIRONMENT_PERL5OPT_FORBIDDEN_SWITCH",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:startup_options_configuration"
@@ -39278,7 +40523,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_ENVIRONMENT_SIGNALS_POLICY_INVALID",
           "macro" => "PERL_THROW_ERROR_RUN_ENVIRONMENT_SIGNALS_POLICY_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:startup_options_configuration"
@@ -39323,7 +40570,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_INCLUDE_DIRECTORY_REQUIRED",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_INCLUDE_DIRECTORY_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:startup_options_configuration"
@@ -39362,7 +40611,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_MODULE_NAME_REQUIRED",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_MODULE_NAME_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:startup_options_configuration"
@@ -39407,7 +40658,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_MODULE_NAME_SINGLE_COLON",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_MODULE_NAME_SINGLE_COLON",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:startup_options_configuration"
@@ -39467,7 +40720,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_PROGRAM_TEXT_REQUIRED",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_PROGRAM_TEXT_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:startup_options_configuration"
@@ -39512,7 +40767,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_SHEBANG_SWITCH_NOT_EMULATABLE",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_SHEBANG_SWITCH_NOT_EMULATABLE",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:startup_options_configuration"
@@ -39557,7 +40814,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_SHEBANG_SWITCH_TOO_LATE",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_SHEBANG_SWITCH_TOO_LATE",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:startup_options_configuration"
@@ -39612,7 +40871,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_STARTUP_SWITCH_REQUIRED",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_STARTUP_SWITCH_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.h"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:startup_options_configuration"
@@ -39717,7 +40978,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_TAINT_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_TAINT_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:security_policy",
@@ -39757,7 +41020,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_UNICODE_INVALID_MASK",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_UNICODE_INVALID_MASK",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:startup_options_configuration",
@@ -39803,7 +41068,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_UNICODE_UNKNOWN_FLAG_BITS",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_UNICODE_UNKNOWN_FLAG_BITS",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:startup_options_configuration",
@@ -39849,7 +41116,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_UNICODE_UNKNOWN_LETTER",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_UNICODE_UNKNOWN_LETTER",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:startup_options_configuration",
@@ -39895,7 +41164,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_UNKNOWN_COMMAND_LINE_SWITCH",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_UNKNOWN_COMMAND_LINE_SWITCH",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:startup_options_configuration"
@@ -39940,7 +41211,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_UNKNOWN_SWITCH",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_UNKNOWN_SWITCH",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:startup_options_configuration"
@@ -39985,7 +41258,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_OPTION_VALUE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_RUN_OPTION_VALUE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:startup_options_configuration"
@@ -40030,7 +41305,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_RUN_SCRIPT_EXTRACTION_HEADER_NOT_FOUND",
           "macro" => "PERL_THROW_ERROR_RUN_SCRIPT_EXTRACTION_HEADER_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:startup_options_configuration"
@@ -40069,7 +41346,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SECURITY_OPERATION_MASK_TRAP",
           "macro" => "PERL_THROW_ERROR_SECURITY_OPERATION_MASK_TRAP",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy"
@@ -40147,7 +41426,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SECURITY_PRIVILEGE_FDSCRIPT_INPUT_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_SECURITY_PRIVILEGE_FDSCRIPT_INPUT_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy"
@@ -40252,7 +41533,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SECURITY_PRIVILEGE_FDSCRIPT_NAME_MISSING",
           "macro" => "PERL_THROW_ERROR_SECURITY_PRIVILEGE_FDSCRIPT_NAME_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:security_policy"
@@ -40291,7 +41574,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SECURITY_PRIVILEGE_FDSCRIPT_NAME_SYNTAX_INVALID",
           "macro" => "PERL_THROW_ERROR_SECURITY_PRIVILEGE_FDSCRIPT_NAME_SYNTAX_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:security_policy"
@@ -40336,7 +41621,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SECURITY_PRIVILEGE_KERNEL_SETID_SCRIPT_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_SECURITY_PRIVILEGE_KERNEL_SETID_SCRIPT_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy"
@@ -40375,7 +41662,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SECURITY_PRIVILEGE_SCRIPT_DESCRIPTOR_UNVERIFIABLE",
           "macro" => "PERL_THROW_ERROR_SECURITY_PRIVILEGE_SCRIPT_DESCRIPTOR_UNVERIFIABLE",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:security_policy"
@@ -40414,7 +41703,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SECURITY_PRIVILEGE_SETGID_INPUT_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_SECURITY_PRIVILEGE_SETGID_INPUT_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy"
@@ -40519,7 +41810,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SECURITY_PRIVILEGE_SETUID_INPUT_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_SECURITY_PRIVILEGE_SETUID_INPUT_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy"
@@ -40624,7 +41917,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SMARTMATCH_OBJECT_OVERLOAD_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SMARTMATCH_OBJECT_OVERLOAD_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:builtins_operators",
@@ -40664,7 +41959,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_STRICT_REFS_BAREWORD_REFERENCE_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_STRICT_REFS_BAREWORD_REFERENCE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -40788,7 +42085,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -41131,7 +42431,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_STRICT_REFS_SUBROUTINE_STRING_REFERENCE_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_STRICT_REFS_SUBROUTINE_STRING_REFERENCE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -41237,7 +42539,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_STRING_SUBSTR_REPLACEMENT_OUT_OF_RANGE",
           "macro" => "PERL_THROW_ERROR_STRING_SUBSTR_REPLACEMENT_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c",
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:string_sequence_container"
@@ -41276,7 +42581,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_STRING_VEC_ELEMENT_WIDTH_INVALID",
           "macro" => "PERL_THROW_ERROR_STRING_VEC_ELEMENT_WIDTH_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "doop.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:string_sequence_container"
@@ -41315,7 +42622,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_STRING_VEC_LVALUE_OFFSET_NEGATIVE",
           "macro" => "PERL_THROW_ERROR_STRING_VEC_LVALUE_OFFSET_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "doop.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:string_sequence_container"
@@ -41354,7 +42663,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYMBOL_TABLE_OBSOLETE_SPECIAL_VARIABLE",
           "macro" => "PERL_THROW_ERROR_SYMBOL_TABLE_OBSOLETE_SPECIAL_VARIABLE",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:special_variables"
@@ -41399,7 +42710,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYMBOL_TABLE_SLOT_SYMBOL_INVALID",
           "macro" => "PERL_THROW_ERROR_SYMBOL_TABLE_SLOT_SYMBOL_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:names_symbols"
@@ -41553,7 +42866,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_CALL_COMMA_AFTER_INDIRECT_NAME",
           "macro" => "PERL_THROW_ERROR_SYNTAX_CALL_COMMA_AFTER_INDIRECT_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -41653,7 +42968,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_CONTAINER_DEFINED_ARRAY_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_SYNTAX_CONTAINER_DEFINED_ARRAY_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:string_sequence_container"
@@ -41692,7 +43009,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_CONTAINER_DEFINED_HASH_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_SYNTAX_CONTAINER_DEFINED_HASH_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:string_sequence_container"
@@ -41731,7 +43050,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_CONTAINER_DELETE_ELEMENT_OR_SLICE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_CONTAINER_DELETE_ELEMENT_OR_SLICE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:string_sequence_container"
@@ -41770,7 +43091,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_CONTAINER_EXISTS_ELEMENT_OR_SUBROUTINE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_CONTAINER_EXISTS_ELEMENT_OR_SUBROUTINE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:string_sequence_container"
@@ -41809,7 +43132,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_CONTAINER_EXISTS_SUBROUTINE_NAME_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_CONTAINER_EXISTS_SUBROUTINE_NAME_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts"
@@ -41848,7 +43173,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_ATTRIBUTE_EMPTY_LIST_ASSIGNMENT_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_ATTRIBUTE_EMPTY_LIST_ASSIGNMENT_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -41887,7 +43214,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_ATTRIBUTE_PARAMETER_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_ATTRIBUTE_PARAMETER_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:parser_declarations",
@@ -41927,7 +43256,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_NAMESPACE_ALIAS_DUPLICATE",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_NAMESPACE_ALIAS_DUPLICATE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:names_symbols",
@@ -41973,7 +43304,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_NAMESPACE_ALIAS_NAME_INVALID",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_NAMESPACE_ALIAS_NAME_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:names_symbols",
@@ -42013,7 +43346,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_NAMESPACE_SEPARATOR_MALFORMED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_NAMESPACE_SEPARATOR_MALFORMED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:names_symbols",
@@ -42053,7 +43388,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_CAPTURE_MODIFIABLE",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_CAPTURE_MODIFIABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -42092,7 +43429,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_MAGICAL_LIST_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_MAGICAL_LIST_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:call_callback_contracts"
@@ -42131,7 +43470,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_SUBROUTINE_LEXICAL_NAME_MISSING",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_SUBROUTINE_LEXICAL_NAME_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations"
@@ -42176,7 +43517,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_SUBROUTINE_NAMED_SUFFIX_INVALID",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_SUBROUTINE_NAMED_SUFFIX_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -42222,7 +43565,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_USE_MODULE_NAME_NOT_CONSTANT",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_USE_MODULE_NAME_NOT_CONSTANT",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -42261,7 +43606,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_VARIABLE_LOOP_SIGIL_MISSING",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_VARIABLE_LOOP_SIGIL_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations"
@@ -42300,7 +43647,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_VARIABLE_MY_IN_FALSE_CONDITIONAL",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_VARIABLE_MY_IN_FALSE_CONDITIONAL",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:parser_declarations"
@@ -42339,7 +43688,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DECLARATION_VARIABLE_REFERENCE_FEATURE_DISABLED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DECLARATION_VARIABLE_REFERENCE_FEATURE_DISABLED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c",
+            "toke.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:parser_declarations"
@@ -42384,7 +43736,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DEREFERENCE_ARRAY_USED_AS_REFERENCE",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DEREFERENCE_ARRAY_USED_AS_REFERENCE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:reference_type",
@@ -42424,7 +43778,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DEREFERENCE_HASH_USED_AS_REFERENCE",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DEREFERENCE_HASH_USED_AS_REFERENCE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:reference_type",
@@ -42464,7 +43820,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_CALL_FORM_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_FORM_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:call_callback_contracts",
@@ -42504,7 +43862,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_CALL_METHOD_FORM_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_METHOD_FORM_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:call_callback_contracts",
@@ -42544,7 +43904,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_INVALID",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:call_callback_contracts",
@@ -42584,7 +43946,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_LAYOUT_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_LAYOUT_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:call_callback_contracts",
@@ -42624,7 +43988,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_NOT_CONSTANT_OR_PIN",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_NOT_CONSTANT_OR_PIN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:call_callback_contracts",
@@ -42664,7 +44030,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARITY_MISMATCH",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARITY_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:call_callback_contracts",
@@ -42704,7 +44072,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_CALL_ZERO_ARGUMENT_CALL_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_ZERO_ARGUMENT_CALL_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:call_callback_contracts",
@@ -42744,7 +44114,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_CAPTURE_DUPLICATE_NAME",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_CAPTURE_DUPLICATE_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:dispatch_pattern_matching"
@@ -42804,7 +44176,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_ELLIPSIS_COUNT_INVALID",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_ELLIPSIS_COUNT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:dispatch_pattern_matching"
@@ -42843,7 +44217,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_ELLIPSIS_NOT_AT_EDGE",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_ELLIPSIS_NOT_AT_EDGE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching"
@@ -42882,7 +44258,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_MULTIPLE_SLURPS",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_MULTIPLE_SLURPS",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:dispatch_pattern_matching"
@@ -42921,7 +44299,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_SLURP_POSITION_CONFLICT",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_SLURP_POSITION_CONFLICT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:dispatch_pattern_matching"
@@ -42960,7 +44340,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_ASSIGNMENT_TARGET_NOT_SCALAR",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ASSIGNMENT_TARGET_NOT_SCALAR",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:dispatch_pattern_matching"
@@ -42999,7 +44381,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_ADJACENT_CAPTURES",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_ADJACENT_CAPTURES",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching"
@@ -43038,7 +44422,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_CAPTURE_SEPARATOR_MISSING",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_CAPTURE_SEPARATOR_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:dispatch_pattern_matching"
@@ -43077,7 +44463,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_COMPONENT_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_COMPONENT_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:dispatch_pattern_matching"
@@ -43116,7 +44504,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_DUPLICATE_CAPTURE",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_DUPLICATE_CAPTURE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:dispatch_pattern_matching"
@@ -43155,7 +44545,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_EXPRESSION_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_EXPRESSION_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:dispatch_pattern_matching"
@@ -43194,7 +44586,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_EXPRESSION_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_EXPRESSION_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:dispatch_pattern_matching"
@@ -43233,7 +44627,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_HASH_DUPLICATE_KEY",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_DUPLICATE_KEY",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:dispatch_pattern_matching"
@@ -43279,7 +44675,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_HASH_ELLIPSIS_NOT_LAST",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_ELLIPSIS_NOT_LAST",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching"
@@ -43318,7 +44716,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_HASH_KEY_FORM_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_KEY_FORM_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:dispatch_pattern_matching"
@@ -43357,7 +44757,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_HASH_KEY_VALUE_PAIR_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_KEY_VALUE_PAIR_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:dispatch_pattern_matching"
@@ -43396,7 +44798,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_ELLIPSES",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_ELLIPSES",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:dispatch_pattern_matching"
@@ -43435,7 +44839,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_SLURPS",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_SLURPS",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:dispatch_pattern_matching"
@@ -43474,7 +44880,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_HASH_SLURP_POSITION_CONFLICT",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_SLURP_POSITION_CONFLICT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:dispatch_pattern_matching"
@@ -43513,7 +44921,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_NUMEQ_LITERAL_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NUMEQ_LITERAL_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching",
@@ -43553,7 +44963,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_NUMERIC_COERCION_OPERAND_INVALID",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NUMERIC_COERCION_OPERAND_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching",
@@ -43593,7 +45005,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_CLASS_AND_SHAPE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_CLASS_AND_SHAPE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:dispatch_pattern_matching"
@@ -43632,7 +45046,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_ELLIPSIS_POSITION_INVALID",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_ELLIPSIS_POSITION_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching"
@@ -43671,7 +45087,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_AFTER_ELLIPSIS",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_AFTER_ELLIPSIS",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching"
@@ -43710,7 +45128,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_LIST_INVALID",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_LIST_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching"
@@ -43749,7 +45169,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_NAME_NOT_CONSTANT",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_NAME_NOT_CONSTANT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching"
@@ -43788,7 +45210,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_VALUE_MISSING",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_VALUE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:dispatch_pattern_matching"
@@ -43827,7 +45251,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_SLURP_CONFLICT",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_SLURP_CONFLICT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:dispatch_pattern_matching"
@@ -43866,7 +45292,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_SLURP_NOT_LAST",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_SLURP_NOT_LAST",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching"
@@ -43905,7 +45333,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_PIN_REQUIRES_EXISTING_SCALAR",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_PIN_REQUIRES_EXISTING_SCALAR",
-          "source_files" => [],
+          "source_files" => [
+            "perly.y",
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:dispatch_pattern_matching"
@@ -43944,7 +45375,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_REGEXP_CODE_BLOCK_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_REGEXP_CODE_BLOCK_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:dispatch_pattern_matching",
@@ -43984,7 +45417,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_REGEXP_DYNAMIC_PATTERN_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_REGEXP_DYNAMIC_PATTERN_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:dispatch_pattern_matching",
@@ -44024,7 +45459,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_STRING_INTERPOLATION_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_STRING_INTERPOLATION_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:dispatch_pattern_matching"
@@ -44063,7 +45500,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_ESCAPE_LEGACY_API_UNCALLABLE",
           "macro" => "PERL_THROW_ERROR_SYNTAX_ESCAPE_LEGACY_API_UNCALLABLE",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:quoted_source_escapes"
@@ -44108,7 +45547,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_IDENTIFIER_CORE_KEYWORD_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_SYNTAX_IDENTIFIER_CORE_KEYWORD_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:names_symbols",
@@ -44169,7 +45610,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_IDENTIFIER_LENGTH_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_IDENTIFIER_LENGTH_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:names_symbols",
@@ -44209,7 +45652,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_IDENTIFIER_NAMESPACE_LENGTH_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_IDENTIFIER_NAMESPACE_LENGTH_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:names_symbols",
@@ -44249,7 +45694,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_IDENTIFIER_RESOLVED_VARIABLE_LENGTH_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_IDENTIFIER_RESOLVED_VARIABLE_LENGTH_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:names_symbols",
@@ -44289,7 +45736,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_PROTOTYPE_MALFORMED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_PROTOTYPE_MALFORMED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations",
@@ -44342,7 +45791,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_PROTOTYPE_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_PROTOTYPE_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:parser_declarations",
@@ -44382,7 +45833,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_ANGLE_GLOB_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_ANGLE_GLOB_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:quoted_source_escapes"
@@ -44421,7 +45874,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_ANGLE_LENGTH_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_ANGLE_LENGTH_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:parser_declarations"
@@ -44460,7 +45915,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_ANGLE_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_ANGLE_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:parser_declarations"
@@ -44499,7 +45956,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_HEREDOC_DELIMITER_LENGTH_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_DELIMITER_LENGTH_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:quoted_source_escapes"
@@ -44538,7 +45997,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_HEREDOC_INDENTATION_MISMATCH",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_INDENTATION_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:quoted_source_escapes"
@@ -44583,7 +46044,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_HEREDOC_QUOTED_DELIMITER_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_QUOTED_DELIMITER_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:quoted_source_escapes"
@@ -44622,7 +46085,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_HEREDOC_UNQUOTED_DELIMITER_MISSING",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_UNQUOTED_DELIMITER_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:quoted_source_escapes"
@@ -44661,7 +46126,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_REGEXP_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_REGEXP_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:quoted_source_escapes",
@@ -44701,7 +46168,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_EVAL_TRAILING_INPUT",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_EVAL_TRAILING_INPUT",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -44740,7 +46209,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_PATTERN_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_PATTERN_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:quoted_source_escapes",
@@ -44780,7 +46251,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_REPLACEMENT_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_REPLACEMENT_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:quoted_source_escapes"
@@ -44819,7 +46292,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_TERMINATOR_MISSING",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TERMINATOR_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:quoted_source_escapes"
@@ -44889,7 +46365,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_CHAIN_AMBIGUOUS",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_CHAIN_AMBIGUOUS",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -44928,7 +46406,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_HEX_ESCAPE",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_HEX_ESCAPE",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:parser_declarations"
@@ -44980,7 +46460,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_NAMED_ESCAPE",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_NAMED_ESCAPE",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:parser_declarations"
@@ -45032,7 +46514,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_PRINTABLE",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_PRINTABLE",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:parser_declarations"
@@ -45082,7 +46566,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_REPLACEMENT_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_REPLACEMENT_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:parser_declarations"
@@ -45121,7 +46607,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_SEARCH_UNTERMINATED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_SEARCH_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:parser_declarations"
@@ -45160,7 +46648,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_SIGNATURE_ATTRIBUTES_FOLLOW_SIGNATURE",
           "macro" => "PERL_THROW_ERROR_SYNTAX_SIGNATURE_ATTRIBUTES_FOLLOW_SIGNATURE",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations",
@@ -45200,7 +46690,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_SIGNATURE_FEATURE_DISABLED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_SIGNATURE_FEATURE_DISABLED",
-          "source_files" => [],
+          "source_files" => [
+            "perly.y"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:parser_declarations"
@@ -45239,7 +46731,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_SOURCE_CHARACTER_UNRECOGNIZED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_SOURCE_CHARACTER_UNRECOGNIZED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -45309,7 +46803,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_VERSION_CONFLICTING_DECLARATION",
           "macro" => "PERL_THROW_ERROR_SYNTAX_VERSION_CONFLICTING_DECLARATION",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:module_version_loading"
@@ -45348,7 +46844,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_VERSION_CONSTANT_NUMBER_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYNTAX_VERSION_CONSTANT_NUMBER_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading"
@@ -45387,7 +46885,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_VERSION_DOWNGRADE_BELOW_5_11",
           "macro" => "PERL_THROW_ERROR_SYNTAX_VERSION_DOWNGRADE_BELOW_5_11",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:module_version_loading"
@@ -45426,7 +46926,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_VERSION_LEGACY_AFTER_MODERN",
           "macro" => "PERL_THROW_ERROR_SYNTAX_VERSION_LEGACY_AFTER_MODERN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:module_version_loading"
@@ -45465,7 +46967,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYNTAX_VERSION_MODERN_AFTER_LEGACY",
           "macro" => "PERL_THROW_ERROR_SYNTAX_VERSION_MODERN_AFTER_LEGACY",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:module_version_loading"
@@ -45504,7 +47008,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_CRYPT_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_SYSTEM_CRYPT_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:process_system_calls"
@@ -45543,7 +47049,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_IDENTITY_DISTINCT_GROUP_IDS_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_IDENTITY_DISTINCT_GROUP_IDS_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:process_system_calls",
@@ -45583,7 +47091,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_IDENTITY_DISTINCT_USER_IDS_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_IDENTITY_DISTINCT_USER_IDS_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:process_system_calls",
@@ -45623,7 +47133,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_IDENTITY_EFFECTIVE_GROUP_ENTER_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_GROUP_ENTER_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -45662,7 +47174,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_IDENTITY_EFFECTIVE_GROUP_RESTORE_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_GROUP_RESTORE_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -45701,7 +47215,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_IDENTITY_EFFECTIVE_USER_ENTER_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_USER_ENTER_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -45740,7 +47256,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_IDENTITY_EFFECTIVE_USER_RESTORE_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_USER_RESTORE_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -45779,7 +47297,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_IPC_CONTROL_BUFFER_LENGTH_INVALID",
           "macro" => "PERL_THROW_ERROR_SYSTEM_IPC_CONTROL_BUFFER_LENGTH_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:ipc"
@@ -45834,7 +47354,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_IPC_MESSAGE_TOO_SHORT",
           "macro" => "PERL_THROW_ERROR_SYSTEM_IPC_MESSAGE_TOO_SHORT",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:ipc"
@@ -45873,7 +47395,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_IPC_SYSTEM_V_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_SYSTEM_IPC_SYSTEM_V_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:ipc"
@@ -45912,7 +47436,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_HAIKU_DEBUG_DEBUGGER_MESSAGE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_HAIKU_DEBUG_DEBUGGER_MESSAGE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "haiku/Haiku/Haiku.xs"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -45951,7 +47477,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_HAIKU_DEBUG_PRINT_MESSAGE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_HAIKU_DEBUG_PRINT_MESSAGE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "haiku/Haiku/Haiku.xs"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -48087,7 +49615,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_ENVIRONMENT_LIST_ASSIGNMENT_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_VMS_ENVIRONMENT_LIST_ASSIGNMENT_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific",
@@ -48127,7 +49657,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_SERVICE_STATUS_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_VMS_SERVICE_STATUS_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "ext/XS-APItest/APItest_runtime_hooks.xs"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -48229,7 +49761,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PROCESS_DUMP_CORE_QUALIFICATION_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PROCESS_DUMP_CORE_QUALIFICATION_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:process_system_calls"
@@ -48268,7 +49802,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PROCESS_DUMP_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PROCESS_DUMP_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:process_system_calls"
@@ -48307,7 +49843,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PROCESS_EXECUTABLE_LOOKUP_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PROCESS_EXECUTABLE_LOOKUP_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -48519,7 +50057,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PROCESS_EXEC_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PROCESS_EXEC_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:process_system_calls"
@@ -48558,7 +50098,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PROCESS_FORK_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PROCESS_FORK_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:process_system_calls"
@@ -48597,7 +50139,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PROCESS_GETPGRP_UNSUPPORTED_PROCESS_ID",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PROCESS_GETPGRP_UNSUPPORTED_PROCESS_ID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:process_system_calls"
@@ -48636,7 +50180,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PROCESS_PIPE_FORK_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PROCESS_PIPE_FORK_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -48681,7 +50227,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PROCESS_PRCTL_NAME_SET_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PROCESS_PRCTL_NAME_SET_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -48726,7 +50274,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PROCESS_SETPGRP_UNSUPPORTED_IDS",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PROCESS_SETPGRP_UNSUPPORTED_IDS",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:process_system_calls"
@@ -48765,7 +50315,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PROCESS_SHEBANG_EXEC_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PROCESS_SHEBANG_EXEC_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -48810,7 +50362,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PROCESS_WAIT_FLAGS_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PROCESS_WAIT_FLAGS_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:process_system_calls"
@@ -48849,7 +50403,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_SIGNAL_KILL_PROCESS_ID_NOT_NUMERIC",
           "macro" => "PERL_THROW_ERROR_SYSTEM_SIGNAL_KILL_PROCESS_ID_NOT_NUMERIC",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:signals"
@@ -48888,7 +50444,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_SIGNAL_KILL_SIGNAL_NAME_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_SYSTEM_SIGNAL_KILL_SIGNAL_NAME_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:signals"
@@ -48934,7 +50492,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_SIGNAL_PENDING_LIMIT_REACHED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_SIGNAL_PENDING_LIMIT_REACHED",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:signals"
@@ -48979,7 +50539,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_SIGNAL_UNKNOWN_HOOK",
           "macro" => "PERL_THROW_ERROR_SYSTEM_SIGNAL_UNKNOWN_HOOK",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:signals"
@@ -49024,7 +50586,11 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c",
+            "pp_sys.c",
+            "util.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:process_system_calls"
@@ -49079,7 +50645,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_SYSCALL_NUMBER_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_SYSCALL_NUMBER_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:process_system_calls"
@@ -49118,7 +50686,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_SYSCALL_TOO_MANY_ARGUMENTS",
           "macro" => "PERL_THROW_ERROR_SYSTEM_SYSCALL_TOO_MANY_ARGUMENTS",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:process_system_calls"
@@ -49157,7 +50727,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TAINT_DEPENDENCY_INSECURE",
           "macro" => "PERL_CHECK_TAINT_ERROR_TAINT_DEPENDENCY_INSECURE",
-          "source_files" => [],
+          "source_files" => [
+            "taint.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy"
@@ -49298,7 +50870,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TAINT_ENVIRONMENT_DIRECTORY_INSECURE",
           "macro" => "PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_DIRECTORY_INSECURE",
-          "source_files" => [],
+          "source_files" => [
+            "taint.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:io_handles_filesystem",
@@ -49440,7 +51014,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TAINT_ENVIRONMENT_GLOB_ALIAS_FORBIDDEN",
           "macro" => "PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_GLOB_ALIAS_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "taint.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy"
@@ -49581,7 +51157,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TAINT_ENVIRONMENT_HASH_ALIAS_FORBIDDEN",
           "macro" => "PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_HASH_ALIAS_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "taint.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy"
@@ -49925,7 +51503,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TAINT_ENVIRONMENT_VARIABLE_INSECURE",
           "macro" => "PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_VARIABLE_INSECURE",
-          "source_files" => [],
+          "source_files" => [
+            "taint.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy",
@@ -50067,7 +51647,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TAINT_OPERATION_INSECURE",
           "macro" => "PERL_CHECK_TAINT_ERROR_TAINT_OPERATION_INSECURE",
-          "source_files" => [],
+          "source_files" => [
+            "taint.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy"
@@ -50208,7 +51790,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TAINT_REGEXP_EVAL_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_TAINT_REGEXP_EVAL_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:regexp",
@@ -50248,7 +51832,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TAINT_UNCLASSIFIED_FORMAT",
           "macro" => "PERL_CHECK_TAINT_ERROR_TAINT_UNCLASSIFIED_FORMAT",
-          "source_files" => [],
+          "source_files" => [
+            "taint.c"
+          ],
           "tags" => [
             "role:opaque_payload",
             "subject:security_policy"
@@ -50282,7 +51868,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TYPE_GLOB_CONSTANT_CONVERSION_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_TYPE_GLOB_CONSTANT_CONVERSION_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:reference_type"
@@ -50327,7 +51915,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TYPE_REFERENCE_CODE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_TYPE_REFERENCE_CODE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -50367,7 +51957,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TYPE_REFERENCE_GLOB_OR_IO_REQUIRED",
           "macro" => "PERL_THROW_ERROR_TYPE_REFERENCE_GLOB_OR_IO_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:io_handles_filesystem",
@@ -50407,7 +51999,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:reference_type"
@@ -50603,7 +52198,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TYPE_REFERENCE_WEAK_UNWEAKEN_NONREFERENCE",
           "macro" => "PERL_THROW_ERROR_TYPE_REFERENCE_WEAK_UNWEAKEN_NONREFERENCE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:reference_type"
@@ -50642,7 +52239,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TYPE_REFERENCE_WEAK_WEAKEN_NONREFERENCE",
           "macro" => "PERL_THROW_ERROR_TYPE_REFERENCE_WEAK_WEAKEN_NONREFERENCE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:reference_type"
@@ -50681,7 +52280,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TYPE_STRING_SCALAR_COERCION_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_TYPE_STRING_SCALAR_COERCION_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:reference_type",
@@ -50764,7 +52365,12 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c",
+            "pp_hot.c",
+            "pp_sys.c",
+            "sv.c"
+          ],
           "tags" => [
             "condition:undefined_uninitialized",
             "subject:reference_type"
@@ -50947,7 +52553,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_CODE_POINT_CHR_NONFINITE",
           "macro" => "PERL_THROW_ERROR_UNICODE_CODE_POINT_CHR_NONFINITE",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -50992,7 +52600,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_CODE_POINT_ENCODING_LIMIT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_UNICODE_CODE_POINT_ENCODING_LIMIT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:unicode_encoding"
@@ -51052,7 +52662,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_DECODING_CAT_API_INPUT_INVALID",
           "macro" => "PERL_THROW_ERROR_UNICODE_DECODING_CAT_API_INPUT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:unicode_encoding"
@@ -51091,7 +52703,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_ENCODING_VARIABLE_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_UNICODE_ENCODING_VARIABLE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:unicode_encoding"
@@ -51130,7 +52744,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_CONTEXT_EXPANSION",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_EXPANSION",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:unicode_encoding"
@@ -51182,7 +52799,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_CONTEXT_NAME",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:unicode_encoding"
@@ -51234,7 +52854,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_CONTEXT_RUNTIME_NAME",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_RUNTIME_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:unicode_encoding"
@@ -51286,7 +52909,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_DEFINITION_CALLBACK_FAILED",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_CALLBACK_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "role:opaque_payload",
@@ -51339,7 +52964,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_DEFINITION_CODEPOINT_OVERFLOW",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_CODEPOINT_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:unicode_encoding"
@@ -51391,7 +53018,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_DEFINITION_OTHER_THREAD_TIMEOUT",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_OTHER_THREAD_TIMEOUT",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:unicode_encoding"
@@ -51436,7 +53065,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_DEFINITION_PRIVATE_OVERRIDE_TAINTED",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_PRIVATE_OVERRIDE_TAINTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy",
@@ -51482,7 +53113,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_DEFINITION_RANGE_REVERSED",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_RANGE_REVERSED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:unicode_encoding"
@@ -51534,7 +53167,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_DEFINITION_TAINTED",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_TAINTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:security_policy",
@@ -51580,7 +53215,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_NAME_DEFINITION_NOT_FOUND",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_NAME_DEFINITION_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:unicode_encoding"
@@ -51625,7 +53262,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_NAME_QUALIFIED_NAME_INVALID",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_NAME_QUALIFIED_NAME_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -51670,7 +53309,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_NAME_USER_DEFINITION_UNKNOWN",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_NAME_USER_DEFINITION_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:unicode_encoding"
@@ -51715,7 +53356,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_RECURSION_DEFINITION_REENTERED",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_RECURSION_DEFINITION_REENTERED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:reentrant_operation",
             "subject:unicode_encoding"
@@ -51760,7 +53403,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_WILDCARD_NO_VALUES_MATCH",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_WILDCARD_NO_VALUES_MATCH",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:unicode_encoding"
@@ -51805,7 +53450,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_PROPERTY_WILDCARD_UNTERMINATED",
           "macro" => "PERL_APPEND_ERROR_UNICODE_PROPERTY_WILDCARD_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:unicode_encoding"
@@ -51850,7 +53497,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_UTF16_SCRIPT_ENCODING_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_UNICODE_UTF16_SCRIPT_ENCODING_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:parser_declarations",
@@ -51896,7 +53545,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_UTF16_SURROGATE_PAIR_INVALID",
           "macro" => "PERL_THROW_ERROR_UNICODE_UTF16_SURROGATE_PAIR_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -51935,7 +53586,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_UTF32_BIG_ENDIAN_SCRIPT_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_UNICODE_UTF32_BIG_ENDIAN_SCRIPT_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:parser_declarations",
@@ -51975,7 +53628,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_UTF32_LITTLE_ENDIAN_SCRIPT_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_UNICODE_UTF32_LITTLE_ENDIAN_SCRIPT_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:parser_declarations",
@@ -52015,7 +53670,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_UTF8_CHARACTER_MALFORMED",
           "macro" => "PERL_THROW_ERROR_UNICODE_UTF8_CHARACTER_MALFORMED",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c",
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -52060,7 +53718,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_UTF8_PACK_STRING_INVALID",
           "macro" => "PERL_THROW_ERROR_UNICODE_UTF8_PACK_STRING_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:pack_unpack",
@@ -52100,7 +53760,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_UTF8_UNPACK_CHARACTER_INVALID",
           "macro" => "PERL_THROW_ERROR_UNICODE_UTF8_UNPACK_CHARACTER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:pack_unpack",
@@ -52146,7 +53808,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_UTF8_UNPACK_STRING_INVALID",
           "macro" => "PERL_THROW_ERROR_UNICODE_UTF8_UNPACK_STRING_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:pack_unpack",
@@ -52186,7 +53850,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_WIDE_CHARACTER_BITWISE_STRING_NOT_BYTES",
           "macro" => "PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_BITWISE_STRING_NOT_BYTES",
-          "source_files" => [],
+          "source_files" => [
+            "doop.c",
+            "pp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:unicode_encoding"
@@ -52326,7 +53993,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_WIDE_CHARACTER_BYTE_CONVERSION_FAILED",
           "macro" => "PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_BYTE_CONVERSION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:unicode_encoding"
@@ -52365,7 +54034,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_WIDE_CHARACTER_BYTE_CONVERSION_FAILED_IN_OPERATION",
           "macro" => "PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_BYTE_CONVERSION_FAILED_IN_OPERATION",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c",
+            "sv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:unicode_encoding"
@@ -52442,7 +54114,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_WIDE_CHARACTER_LEXER_BYTE_INPUT_REQUIRED",
           "macro" => "PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_LEXER_BYTE_INPUT_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:parser_declarations",
@@ -52482,7 +54156,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_WIDE_CHARACTER_RECORD_SEPARATOR_NOT_BYTES",
           "macro" => "PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_RECORD_SEPARATOR_NOT_BYTES",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:io_handles_filesystem",
@@ -52522,7 +54198,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNICODE_WIDE_CHARACTER_VEC_STRING_NOT_BYTES",
           "macro" => "PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_VEC_STRING_NOT_BYTES",
-          "source_files" => [],
+          "source_files" => [
+            "doop.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:unicode_encoding"
@@ -52561,7 +54239,13 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_UNSUPPORTED_OPERATION_NOT_IMPLEMENTED",
           "macro" => "PERL_THROW_ERROR_UNSUPPORTED_OPERATION_NOT_IMPLEMENTED",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c",
+            "doio.c",
+            "mg.c",
+            "pp_sys.c",
+            "util.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:generic_operation"
@@ -52822,7 +54506,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_USER_OPAQUE_LITERAL_FORMAT",
           "macro" => "PERL_THROW_ERROR_USER_OPAQUE_LITERAL_FORMAT",
-          "source_files" => [],
+          "source_files" => [
+            "handy.h"
+          ],
           "tags" => [
             "role:opaque_payload",
             "subject:call_callback_contracts",
@@ -52850,7 +54536,12 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_USER_OPAQUE_RENDERED_MESSAGE",
           "macro" => "PERL_THROW_ERROR_USER_OPAQUE_RENDERED_MESSAGE",
-          "source_files" => [],
+          "source_files" => [
+            "handy.h",
+            "perlstatic.h",
+            "util.c",
+            "vutil.c"
+          ],
           "tags" => [
             "role:opaque_payload",
             "subject:diagnostic_exception_api"
@@ -52909,7 +54600,17 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_USER_OPAQUE_SV_DELIVERY",
           "macro" => "PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY",
-          "source_files" => [],
+          "source_files" => [
+            "class.c",
+            "locale.c",
+            "mg.c",
+            "perl.c",
+            "pp.c",
+            "pp_ctl.c",
+            "pp_sys.c",
+            "regcomp.c",
+            "util.c"
+          ],
           "tags" => [
             "role:opaque_payload",
             "subject:diagnostic_exception_api"
@@ -52946,7 +54647,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:string_sequence_container"
@@ -52985,7 +54688,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE",
           "macro" => "PERL_THROW_ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c",
+            "op.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:string_sequence_container"
@@ -53024,7 +54730,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_VALUE_RESTRICTED_HASH_KEY_ACCESS_DISALLOWED",
           "macro" => "PERL_THROW_ERROR_VALUE_RESTRICTED_HASH_KEY_ACCESS_DISALLOWED",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:string_sequence_container"
@@ -53070,7 +54778,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_VALUE_RESTRICTED_HASH_KEY_DELETION_DISALLOWED",
           "macro" => "PERL_THROW_ERROR_VALUE_RESTRICTED_HASH_KEY_DELETION_DISALLOWED",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:string_sequence_container"
@@ -53116,7 +54826,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_VALUE_VERSION_FORMAT_INVALID",
           "macro" => "PERL_THROW_ERROR_VALUE_VERSION_FORMAT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "vutil.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading"
@@ -53450,7 +55162,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_VALUE_VERSION_INPUT_NOT_NUMERIC",
           "macro" => "PERL_THROW_ERROR_VALUE_VERSION_INPUT_NOT_NUMERIC",
-          "source_files" => [],
+          "source_files" => [
+            "vutil.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:module_version_loading"
@@ -53489,7 +55203,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_VALUE_VERSION_OBJECT_INVALID",
           "macro" => "PERL_THROW_ERROR_VALUE_VERSION_OBJECT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "vutil.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:module_version_loading"
@@ -53528,7 +55244,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "INVALID_PACKAGE_CODE_SUFFIX",
           "macro" => "PERL_THROW_INVALID_PACKAGE_CODE_SUFFIX",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:startup_options_configuration"
@@ -53573,7 +55291,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_GLOBAL_DESTRUCTION",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_GLOBAL_DESTRUCTION",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -53614,7 +55334,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_INPUT_LOCATION",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_INPUT_LOCATION",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -53726,7 +55448,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_LOCATION",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_LOCATION",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -54298,7 +56023,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_UNAVAILABLE",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -54339,7 +56066,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_HINT_OPERATOR_EXPECTED",
           "macro" => "PERL_FORMAT_NOTE_HINT_OPERATOR_EXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -54446,7 +56175,11 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_OMISSION_NAMED_PARAMETER_DIAGNOSTICS",
           "macro" => "PERL_APPEND_NOTE_OMISSION_NAMED_PARAMETER_DIAGNOSTICS",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c",
+            "pp_ctl.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:summary_omission",
             "subject:diagnostic_exception_api",
@@ -54557,7 +56290,11 @@ $CONF = {
           "kind" => "USER_RUNTIME",
           "code" => "ERROR_USER_REFERENCE",
           "macro" => "PERL_APPEND_ERROR_USER_REFERENCE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "util.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:opaque_payload",
             "subject:diagnostic_exception_api"
@@ -54608,7 +56345,13 @@ $CONF = {
           "kind" => "USER_RUNTIME",
           "code" => "ERROR_USER_TEXT",
           "macro" => "PERL_APPEND_ERROR_USER_TEXT",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c",
+            "pp_ctl.c",
+            "pp_sys.c",
+            "util.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:opaque_payload",
             "subject:diagnostic_exception_api"
@@ -54664,7 +56407,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_ARRAY_EXTEND_INDEX_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_ARRAY_EXTEND_INDEX_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "av.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -54712,7 +56457,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_CALL_BINDING_CORE_ARGUMENT_CLASS_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_CALL_BINDING_CORE_ARGUMENT_CLASS_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -54760,7 +56507,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_CALL_BINDING_PROTOTYPE_PROTOTYPE_VALUE_REQUIRED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_CALL_BINDING_PROTOTYPE_PROTOTYPE_VALUE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "contract:panic_producer",
@@ -54808,7 +56557,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_CALL_CV_LOOKUP_FLAGS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_CALL_CV_LOOKUP_FLAGS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -54855,7 +56606,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_CONTROL_FLOW_GOTO_CONTEXT_TYPE_UNEXPECTED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_CONTROL_FLOW_GOTO_CONTEXT_TYPE_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -54907,7 +56660,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_CONTROL_FLOW_GOTO_UNWIND_INDEX_NEGATIVE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_CONTROL_FLOW_GOTO_UNWIND_INDEX_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -54954,7 +56709,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_CONTROL_FLOW_PHASE_RESTART_TARGET_MISSING",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_CONTROL_FLOW_PHASE_RESTART_TARGET_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:control_flow_scope"
@@ -55038,7 +56795,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_CONTROL_FLOW_RETURN_CONTEXT_TYPE_UNEXPECTED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_CONTROL_FLOW_RETURN_CONTEXT_TYPE_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -55085,7 +56844,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_CONTROL_FLOW_RUN_RESTART_TARGET_MISSING",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_CONTROL_FLOW_RUN_RESTART_TARGET_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:control_flow_scope"
@@ -55127,7 +56888,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_DEBUGGER_LINE_MAGIC_KEY_NOT_SCALAR",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_DEBUGGER_LINE_MAGIC_KEY_NOT_SCALAR",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -55180,7 +56943,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_EMBEDDING_HANDSHAKE_KEY_OVERFLOW",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_EMBEDDING_HANDSHAKE_KEY_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "util.h"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -55222,7 +56987,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_FORMAT_PRINTF_BUFFER_OVERFLOW",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_BUFFER_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "perl.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "condition:size_count_range",
@@ -55271,7 +57038,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_FORMAT_PRINTF_FREXP_EXPONENT_UNSET",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_FREXP_EXPONENT_UNSET",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -55318,7 +57087,11 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_FORMATTING_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_FORMATTING_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "sv.c",
+            "util.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -55365,7 +57138,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_INVALID_FORMAT",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_INVALID_FORMAT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "sv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -55412,7 +57188,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_VSNPRINTF_UNAVAILABLE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_VSNPRINTF_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "contract:panic_producer",
@@ -55453,7 +57231,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_FORMAT_PRINTF_SNPRINTF_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_SNPRINTF_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -55495,7 +57275,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_FORMAT_PRINTF_VSNPRINTF_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_VSNPRINTF_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -55537,7 +57319,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_ARRAY_HASH_DELETE_FORM_UNSUPPORTED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_HASH_ARRAY_HASH_DELETE_FORM_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "contract:panic_producer",
@@ -55579,7 +57363,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_PLACEHOLDER_COUNT_SET_CREATION_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_HASH_PLACEHOLDER_COUNT_SET_CREATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -55621,7 +57407,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_PLACEHOLDER_COUNT_SLOT_CREATION_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_HASH_PLACEHOLDER_COUNT_SLOT_CREATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -55663,7 +57451,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_CHAIN_FLAGS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_CHAIN_FLAGS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -55711,7 +57501,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_CREATE_SV_UTF8_FLAG_FORBIDDEN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_CREATE_SV_UTF8_FLAG_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -55759,7 +57551,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_FETCH_PV_FLAGS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_FETCH_PV_FLAGS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -55807,7 +57601,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_FETCH_SV_UTF8_FLAG_FORBIDDEN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_FETCH_SV_UTF8_FLAG_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -55855,7 +57651,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_VALUE_TAG_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_VALUE_TAG_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -55903,7 +57701,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_STORE_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_HASH_STORE_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -55945,7 +57745,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_FILESYSTEM_PERMISSION_EFFECTIVE_ACCESS_UNAVAILABLE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_IO_FILESYSTEM_PERMISSION_EFFECTIVE_ACCESS_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "contract:panic_producer",
@@ -55992,7 +57794,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_FILESYSTEM_PERMISSION_REAL_ACCESS_UNAVAILABLE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_IO_FILESYSTEM_PERMISSION_REAL_ACCESS_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "contract:panic_producer",
@@ -56039,7 +57843,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_LAYER_INDEX_INVALID_WITHOUT_DEFAULT",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_IO_LAYER_INDEX_INVALID_WITHOUT_DEFAULT",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -56080,7 +57886,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_IO_OPEN_RAW_VALUE_LIST_FORBIDDEN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_IO_OPEN_RAW_VALUE_LIST_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -56127,7 +57935,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_ITERATOR_BODY_OP_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_ITERATOR_BODY_OP_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -56175,7 +57985,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_ITERATOR_INVALID_CONTEXT_TYPE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_ITERATOR_INVALID_CONTEXT_TYPE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -56222,7 +58034,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_ITERATOR_SCALAR_VARIABLE_OP_REQUIRED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_ITERATOR_SCALAR_VARIABLE_OP_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -56275,7 +58089,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_ITERATOR_VARIABLE_LIST_PUSHMARK_REQUIRED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_ITERATOR_VARIABLE_LIST_PUSHMARK_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -56323,7 +58139,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_ITERATOR_VARIABLE_PAD_TARGET_DISCONTIGUOUS",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_ITERATOR_VARIABLE_PAD_TARGET_DISCONTIGUOUS",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -56381,7 +58199,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_ITERATOR_VARIABLE_REFERENCE_OP_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_ITERATOR_VARIABLE_REFERENCE_OP_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -56434,7 +58254,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_DATA_ALTERNATE_DIGITS_SEPARATOR_MISSING",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_ALTERNATE_DIGITS_SEPARATOR_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:locale"
@@ -56490,7 +58312,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_DATA_CHAR_CLASS_UNKNOWN",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_CHAR_CLASS_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "inline.h"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:locale"
@@ -56541,7 +58365,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_DATA_CONVENTION_ITEM_UNKNOWN",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_CONVENTION_ITEM_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:locale"
@@ -56592,7 +58418,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_DATA_CONVENTION_VALUE_MISSING",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_CONVENTION_VALUE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:locale"
@@ -56643,7 +58471,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_DATA_LANGINFO_ITEM_UNHANDLED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_LOCALE_DATA_LANGINFO_ITEM_UNHANDLED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -56690,7 +58520,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_DATA_LANGINFO_VALUE_EMPTY",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_LANGINFO_VALUE_EMPTY",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:locale"
@@ -56776,7 +58608,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_DATA_REPLACEMENT_CHARACTER_UNEXPECTED",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_REPLACEMENT_CHARACTER_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:locale",
@@ -56833,7 +58667,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_NAME_CATEGORY_UNKNOWN",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_CATEGORY_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "ext/XS-APItest/APItest_runtime_hooks.xs",
+            "locale.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:locale"
@@ -56884,7 +58721,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_NAME_COMPOSITE_BUFFER_CAPACITY_EXCEEDED",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_COMPOSITE_BUFFER_CAPACITY_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:locale"
@@ -56960,7 +58799,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_NAME_COMPOSITE_SPECIFICATION_INVALID",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_COMPOSITE_SPECIFICATION_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:locale"
@@ -57134,7 +58975,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_NAME_CURRENT_CATEGORY_NAME_MISSING",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_CURRENT_CATEGORY_NAME_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:locale"
@@ -57185,7 +59028,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_NAME_IGNORED_CATEGORY_OVERRIDE_MISMATCH",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_IGNORED_CATEGORY_OVERRIDE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:locale"
@@ -57246,7 +59091,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_NAME_PARSE_RESULT_UNEXPECTED",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_PARSE_RESULT_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:locale"
@@ -57291,7 +59138,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_OPAQUE_FAILURE",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_OPAQUE_FAILURE",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "role:opaque_payload",
@@ -57343,7 +59192,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_PANIC_CONTEXT",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_LOCALE_PANIC_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "delivery:format_only",
@@ -57597,7 +59448,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_SWITCH_CATEGORY_CHANGE_FAILED",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_CATEGORY_CHANGE_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:locale"
@@ -57774,7 +59627,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_SWITCH_C_OBJECT_CREATION_FAILED",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_C_OBJECT_CREATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:locale"
@@ -57860,7 +59715,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_SWITCH_GLOBAL_OBJECT_ACTIVATION_FAILED",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_GLOBAL_OBJECT_ACTIVATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:locale"
@@ -57905,7 +59762,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_SWITCH_INITIALIZATION_TRIAL_INVALID",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_INITIALIZATION_TRIAL_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:locale"
@@ -57950,7 +59809,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_SWITCH_NEW_OBJECT_ACTIVATION_FAILED",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_NEW_OBJECT_ACTIVATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:locale"
@@ -58001,7 +59862,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_SWITCH_NUMERIC_TOGGLE_DEPTH_UNDERFLOW",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_NUMERIC_TOGGLE_DEPTH_UNDERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:locale"
@@ -58046,7 +59909,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_SWITCH_OBJECT_ACTIVATION_FAILED",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_OBJECT_ACTIVATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:locale"
@@ -58102,7 +59967,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_SWITCH_OBJECT_DUPLICATION_FAILED",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_OBJECT_DUPLICATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:locale"
@@ -58147,7 +60014,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_SWITCH_SAVED_NAME_RESTORE_FAILED",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_SAVED_NAME_RESTORE_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:locale"
@@ -58198,7 +60067,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_SWITCH_THREAD_CONFIGURATION_FAILED",
           "macro" => "PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_THREAD_CONFIGURATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:locale"
@@ -58243,7 +60114,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_TIME_STRFTIME_UNAVAILABLE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_LOCALE_TIME_STRFTIME_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "contract:panic_producer",
@@ -58284,7 +60157,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_EMERGENCY_BUFFER_MISALIGNED",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_EMERGENCY_BUFFER_MISALIGNED",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "delivery:format_only",
@@ -58326,7 +60201,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_FREE_CHAIN_NEXT_POINTER_INVALID",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_FREE_CHAIN_NEXT_POINTER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "delivery:format_only",
@@ -58379,7 +60256,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_FREE_CHAIN_POINTER_INVALID",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_FREE_CHAIN_POINTER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "delivery:format_only",
@@ -58427,7 +60306,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_ALLOCATOR_ASSERTION_EARLY_FAILED",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ASSERTION_EARLY_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "delivery:format_only",
@@ -58491,7 +60372,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_ALLOCATOR_ASSERTION_FAILED",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ASSERTION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "delivery:format_only",
@@ -58554,7 +60437,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_PAGE_SIZE_NONPOSITIVE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_PAGE_SIZE_NONPOSITIVE",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -58601,7 +60486,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_PAGE_SIZE_QUERY_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_PAGE_SIZE_QUERY_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -58648,7 +60535,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_PAGE_SIZE_QUERY_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_PAGE_SIZE_QUERY_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "contract:panic_producer",
@@ -58690,7 +60579,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_POOL_FREE_DUPLICATE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_DUPLICATE",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -58731,7 +60622,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_POOL_FREE_LINKS_INCONSISTENT",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_LINKS_INCONSISTENT",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -58793,7 +60686,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_POOL_FREE_NEXT_LINK_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_NEXT_LINK_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "contract:panic_producer",
@@ -58840,7 +60735,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_POOL_FREE_OWNER_MISMATCH",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_OWNER_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -58897,7 +60794,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_POOL_REALLOC_OWNER_MISMATCH",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_REALLOC_OWNER_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -58954,7 +60853,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_SIZE_BUCKET_MALLOC_REQUEST_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_BUCKET_MALLOC_REQUEST_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -58995,7 +60896,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_SIZE_BUCKET_REALLOC_REQUEST_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_BUCKET_REALLOC_REQUEST_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -59036,7 +60939,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_SIZE_CALLOC_REQUEST_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_CALLOC_REQUEST_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -59088,7 +60993,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_SIZE_MALLOC_REQUEST_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_MALLOC_REQUEST_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -59135,7 +61042,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MEMORY_SIZE_REALLOC_REQUEST_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_REALLOC_REQUEST_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -59187,7 +61096,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MUTATION_ASSIGNMENT_SHARED_RHS_COPY_REQUIRED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MUTATION_ASSIGNMENT_SHARED_RHS_COPY_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59235,7 +61146,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MUTATION_LVALUE_CALL_ARGUMENT_TREE_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MUTATION_LVALUE_CALL_ARGUMENT_TREE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59287,7 +61200,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MUTATION_LVALUE_CALL_TARGET_TREE_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MUTATION_LVALUE_CALL_TARGET_TREE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59339,7 +61254,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MUTATION_TIE_BACKEND_ENTRY_POINT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MUTATION_TIE_BACKEND_ENTRY_POINT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "contract:panic_producer",
@@ -59396,7 +61313,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_MUTATION_TIE_BACKEND_PACKAGE_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_MUTATION_TIE_BACKEND_PACKAGE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "contract:panic_producer",
@@ -59453,7 +61372,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_NUMERIC_CONVERSION_BASE_UNSUPPORTED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_NUMERIC_CONVERSION_BASE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "numeric.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59500,7 +61421,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_ALGORITHM_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_ALGORITHM_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "mro_core.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59541,7 +61464,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_DATA_STORE_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_DATA_STORE_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "mro_core.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59603,7 +61528,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_REGISTER_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_REGISTER_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "mro_core.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59665,7 +61592,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_FIELD_LAYOUT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_FIELD_LAYOUT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59713,7 +61642,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_PROTOTYPE_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_PROTOTYPE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59761,7 +61692,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_BUILTIN_CONSTANT_ID_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_BUILTIN_CONSTANT_ID_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59808,7 +61741,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_BUILTIN_SCALAR_DISPATCH_OP_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_BUILTIN_SCALAR_DISPATCH_OP_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59856,7 +61791,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_BUILTIN_VOID_DISPATCH_OP_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_BUILTIN_VOID_DISPATCH_OP_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59904,7 +61841,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_CONSTANT_FOLD_LIST_JUMP_STATUS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_CONSTANT_FOLD_LIST_JUMP_STATUS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -59952,7 +61891,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_CONSTANT_FOLD_SCALAR_JUMP_STATUS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_CONSTANT_FOLD_SCALAR_JUMP_STATUS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -60000,7 +61941,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_CONTEXT_VALUE_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_CONTEXT_VALUE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -60048,7 +61991,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_CUSTOM_METADATA_FIELD_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_CUSTOM_METADATA_FIELD_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -60095,7 +62040,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_CUSTOM_REGISTRATION_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_CUSTOM_REGISTRATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -60142,7 +62089,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_EXECUTION_FREED_OP_CALLED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_EXECUTION_FREED_OP_CALLED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -60190,7 +62139,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_EXECUTION_IMPLEMENTATION_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_EXECUTION_IMPLEMENTATION_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "contract:panic_producer",
@@ -60242,7 +62193,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_LABEL_FLAGS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_LABEL_FLAGS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -60289,7 +62242,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_OPCODE_SIBLING_SPLICE_PARENT_REQUIRED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_OPCODE_SIBLING_SPLICE_PARENT_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -60330,7 +62285,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PACK_INPUT_LENGTH_MISMATCH",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PACK_INPUT_LENGTH_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "condition:size_count_range",
@@ -60393,7 +62350,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PACK_MARK_OUTSIDE_BUFFER",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PACK_MARK_OUTSIDE_BUFFER",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -60451,7 +62410,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PACK_UTF8_PREDICTED_INPUT_EXHAUSTED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PACK_UTF8_PREDICTED_INPUT_EXHAUSTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -60519,7 +62480,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_CLONE_PADLIST_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_CLONE_PADLIST_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "contract:panic_producer",
@@ -60562,7 +62525,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_NAME_ADD_FLAGS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_NAME_ADD_FLAGS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -60611,7 +62576,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_NAME_FIND_FLAGS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_NAME_FIND_FLAGS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -60660,7 +62627,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_NAME_LEXICAL_ALLOCATION_FLAGS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_NAME_LEXICAL_ALLOCATION_FLAGS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -60709,7 +62678,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_NAME_LEXICAL_FIND_FLAGS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_NAME_LEXICAL_FIND_FLAGS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -60758,7 +62729,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_OFFSET_CLEAR_SAVE_ENCODING_OVERFLOW",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_CLEAR_SAVE_ENCODING_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "scope.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -60817,7 +62790,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_OFFSET_FETCH_ZERO_FORBIDDEN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_FETCH_ZERO_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -60860,7 +62835,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_OFFSET_FREE_ZERO_FORBIDDEN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_FREE_ZERO_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -60903,7 +62880,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_OFFSET_SWIPE_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_SWIPE_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -60957,7 +62936,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_OFFSET_VALUE_SAVE_ENCODING_OVERFLOW",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_VALUE_SAVE_ENCODING_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "scope.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -61006,7 +62987,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_STATE_ACTIVE_ARRAY_REQUIRED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_STATE_ACTIVE_ARRAY_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "pad.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -61065,7 +63048,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_STATE_ALLOCATION_ARRAY_MISMATCH",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_STATE_ALLOCATION_ARRAY_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -61119,7 +63104,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_STATE_ARRAY_PAIR_INCONSISTENT",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_STATE_ARRAY_PAIR_INCONSISTENT",
-          "source_files" => [],
+          "source_files" => [
+            "pad.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -61178,7 +63165,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_STATE_FREE_ARRAY_MISMATCH",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_STATE_FREE_ARRAY_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -61232,7 +63221,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_STATE_RESET_ARRAY_MISMATCH",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_STATE_RESET_ARRAY_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -61286,7 +63277,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_PAD_STATE_SWIPE_ARRAY_MISMATCH",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_PAD_STATE_SWIPE_ARRAY_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -61340,7 +63333,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_ATOM_RESULT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ATOM_RESULT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -61412,7 +63407,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_BRANCH_RESULT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_BRANCH_RESULT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -61484,7 +63481,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_CHAR_CLASS_ATOM_RESULT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_CHAR_CLASS_ATOM_RESULT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -61556,7 +63555,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_CHAR_CLASS_EXTENDED_RESULT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_CHAR_CLASS_EXTENDED_RESULT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -61628,7 +63629,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_DEBUG_OPCODE_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_DEBUG_OPCODE_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_debug.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -61704,7 +63707,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_PATTERN_OFFSET_NEGATIVE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_PATTERN_OFFSET_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_internal.h"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -61776,7 +63781,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_WARNING_MAPPING_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_WARNING_MAPPING_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_internal.h"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -61832,7 +63839,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_ESCAPE_NAMED_SINGLE_VALUE_REQUIRES_UTF8",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ESCAPE_NAMED_SINGLE_VALUE_REQUIRES_UTF8",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -61898,7 +63907,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_ESCAPE_NAMED_SUBPATTERN_RESULT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ESCAPE_NAMED_SUBPATTERN_RESULT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -61970,7 +63981,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_EVAL_CODE_BLOCK_METADATA_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_EVAL_CODE_BLOCK_METADATA_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -62036,7 +64049,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_GROUP_RESULT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_GROUP_RESULT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -62108,7 +64123,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_LOCALE_FOLD_SOURCE_MAPPING_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_LOCALE_FOLD_SOURCE_MAPPING_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -62179,7 +64196,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_NAME_HASH_VALUE_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_NAME_HASH_VALUE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -62219,7 +64238,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_NAME_VALUE_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_NAME_VALUE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -62259,7 +64280,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_SCANNER_FLAGS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_SCANNER_FLAGS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -62305,7 +64328,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_SCANNER_RESULT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_SCANNER_RESULT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -62345,7 +64370,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_PIECE_RESULT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_PIECE_RESULT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -62417,7 +64444,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_PROPERTY_SET_OPERATION_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_PROPERTY_SET_OPERATION_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -62473,7 +64502,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_ROOT_RESULT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ROOT_RESULT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -62519,7 +64550,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_STUDY_EXTENDED_CLASS_UNRESOLVED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_STUDY_EXTENDED_CLASS_UNRESOLVED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_study.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -62565,7 +64598,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_STUDY_SIMPLE_OPCODE_UNHANDLED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_STUDY_SIMPLE_OPCODE_UNHANDLED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_study.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -62611,7 +64646,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_STUDY_VARYING_OPCODE_UNHANDLED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_STUDY_VARYING_OPCODE_UNHANDLED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_study.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -62657,7 +64694,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_COMPILER_TRIE_LITERAL_NODE_UNSUPPORTED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_TRIE_LITERAL_NODE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_trie.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -62708,7 +64747,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_DATA_CLONE_TYPE_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_CLONE_TYPE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -62754,7 +64795,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_DATA_DEBUG_OPCODE_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_DEBUG_OPCODE_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_debug.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -62805,7 +64848,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_DATA_FREE_TYPE_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_FREE_TYPE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -62851,7 +64896,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_ITERATION_FLAGS_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_ITERATION_FLAGS_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -62897,7 +64944,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_OPERATION_FLAGS_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_OPERATION_FLAGS_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -62943,7 +64992,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_SCALAR_FLAGS_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_SCALAR_FLAGS_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -62989,7 +65040,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_CAPTURE_MATCH_OFFSETS_OUT_OF_BOUNDS",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_CAPTURE_MATCH_OFFSETS_OUT_OF_BOUNDS",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -63060,7 +65113,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_CAPTURE_SAVE_ENTRY_COUNT_NEGATIVE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_CAPTURE_SAVE_ENTRY_COUNT_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -63116,7 +65171,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_CAPTURE_SAVE_OFFSET_OVERFLOW",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_CAPTURE_SAVE_OFFSET_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -63172,7 +65229,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_CHAR_CLASS_LOCALE_CLASS_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_CHAR_CLASS_LOCALE_CLASS_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -63218,7 +65277,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_CHECK_END_SHIFT_NEGATIVE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_CHECK_END_SHIFT_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -63269,7 +65330,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_MATCH_TARGET_POINTER_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_MATCH_TARGET_POINTER_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -63309,7 +65372,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_REPEAT_OPCODE_UNHANDLED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_REPEAT_OPCODE_UNHANDLED",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -63360,7 +65425,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_START_CLASS_OPCODE_UNHANDLED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_START_CLASS_OPCODE_UNHANDLED",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -63406,7 +65473,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_REGEXP_EXECUTION_SUBSTITUTION_STATE_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_SUBSTITUTION_STATE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -63457,7 +65526,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_BACKREF_REFERRER_TYPE_UNSUPPORTED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_BACKREF_REFERRER_TYPE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -63504,7 +65575,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_BACKREF_SINGLE_REFERRER_MISMATCH",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_BACKREF_SINGLE_REFERRER_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -63556,7 +65629,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_BACKREF_STORAGE_FREED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_BACKREF_STORAGE_FREED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -63597,7 +65672,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_BACKREF_STORAGE_POINTER_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_BACKREF_STORAGE_POINTER_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "contract:panic_producer",
@@ -63638,7 +65715,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_BACKREF_VALUE_MISSING_OUTSIDE_DESTRUCTION",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_BACKREF_VALUE_MISSING_OUTSIDE_DESTRUCTION",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "contract:panic_producer",
@@ -63695,7 +65774,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_COPY_DESTINATION_FREED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_COPY_DESTINATION_FREED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -63748,7 +65829,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_COPY_REPLACEMENT_REFCOUNT_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_COPY_REPLACEMENT_REFCOUNT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -63795,7 +65878,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_COPY_SOURCE_FREED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_COPY_SOURCE_FREED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -63842,7 +65927,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_COPY_SOURCE_FREED_WITH_DESTINATION",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_COPY_SOURCE_FREED_WITH_DESTINATION",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -63894,7 +65981,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_STRING_CHOP_POINTER_OUT_OF_BOUNDS",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_STRING_CHOP_POINTER_OUT_OF_BOUNDS",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -63951,7 +66040,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_STRING_FRESH_SET_LENGTH_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_STRING_FRESH_SET_LENGTH_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -63998,7 +66089,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_STRING_INSERT_BOUNDS_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_STRING_INSERT_BOUNDS_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -64050,7 +66143,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_STRING_SET_LENGTH_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_STRING_SET_LENGTH_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -64097,7 +66192,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_TYPE_ALLOCATION_TARGET_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_TYPE_ALLOCATION_TARGET_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c",
+            "sv_inline.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -64144,7 +66242,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_TYPE_UPGRADE_TARGET_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_TYPE_UPGRADE_TARGET_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -64191,7 +66291,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SCALAR_UNDEFINE_FREED_VALUE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SCALAR_UNDEFINE_FREED_VALUE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -64238,7 +66340,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_ARGUMENT_GROW_COUNT_NEGATIVE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_STACK_ARGUMENT_GROW_COUNT_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "scope.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -64286,7 +66390,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_ARGUMENT_OP_CAPACITY_NOT_EXTENDED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_STACK_ARGUMENT_OP_CAPACITY_NOT_EXTENDED",
-          "source_files" => [],
+          "source_files" => [
+            "dump.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -64344,7 +66450,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_ARGUMENT_XSUB_CAPACITY_NOT_EXTENDED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_STACK_ARGUMENT_XSUB_CAPACITY_NOT_EXTENDED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -64417,7 +66525,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_CALL_CONTEXT_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_STACK_CALL_CONTEXT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "contract:panic_producer",
@@ -64465,7 +66575,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_JUMP_PARSE_EXCEPTION_ESCAPED",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_STACK_JUMP_PARSE_EXCEPTION_ESCAPED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "delivery:format_only",
@@ -64509,7 +66621,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_JUMP_ROOT_TARGET_MISSING",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_STACK_JUMP_ROOT_TARGET_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "cop.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "delivery:format_only",
@@ -64559,7 +66673,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_JUMP_SETJMP_RESULT_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_STACK_JUMP_SETJMP_RESULT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "cop.h"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -64601,7 +66717,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_PREVIOUS_FRAME_MISSING",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_STACK_PREVIOUS_FRAME_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "delivery:format_only",
@@ -64645,7 +66763,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_SAVE_ALLOCATION_ENCODING_OVERFLOW",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_ALLOCATION_ENCODING_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "scope.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -64703,7 +66823,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_SAVE_CAPACITY_OVERFLOW",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_CAPACITY_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "scope.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -64745,7 +66867,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_SAVE_CLONE_ENTRY_TYPE_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_CLONE_ENTRY_TYPE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -64793,7 +66917,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_SAVE_ENTRY_TYPE_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_ENTRY_TYPE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "scope.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -64841,7 +66967,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_STACK_SAVE_UNWIND_BASE_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_UNWIND_BASE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "scope.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -64889,7 +67017,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYMBOL_TABLE_GLOB_DESTRUCTION_RECREATION_LIMIT",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYMBOL_TABLE_GLOB_DESTRUCTION_RECREATION_LIMIT",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:reentrant_operation",
             "contract:panic_producer",
@@ -64931,7 +67061,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYMBOL_TABLE_GLOB_NAME_LENGTH_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYMBOL_TABLE_GLOB_NAME_LENGTH_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -64979,7 +67111,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYMBOL_TABLE_PACKAGE_NAME_LENGTH_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYMBOL_TABLE_PACKAGE_NAME_LENGTH_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -65027,7 +67161,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYNTAX_NUMERIC_LITERAL_START_CHARACTER_UNEXPECTED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYNTAX_NUMERIC_LITERAL_START_CHARACTER_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -65074,7 +67210,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYNTAX_QUOTED_STRING_BUFFER_CAPACITY_EXCEEDED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_BUFFER_CAPACITY_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -65127,7 +67265,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CASEMOD_ESCAPE_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CASEMOD_ESCAPE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -65174,7 +67314,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CASEMOD_MARKER_EXPECTED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CASEMOD_MARKER_EXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -65232,7 +67374,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CONCAT_BRACKETS_OPEN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CONCAT_BRACKETS_OPEN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -65279,7 +67423,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYNTAX_QUOTED_STRING_SUBSCRIPT_HEURISTIC_STATE_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_SUBSCRIPT_HEURISTIC_STATE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -65336,7 +67482,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYNTAX_QUOTED_STRING_TRANSLITERATION_FINAL_MARKER_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_TRANSLITERATION_FINAL_MARKER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -66334,7 +68482,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PROCESS_CHILD_ERRNO_PIPE_PARTIAL_READ",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PROCESS_CHILD_ERRNO_PIPE_PARTIAL_READ",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c",
+            "util.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -66499,7 +68650,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_API_FAILED_AT_LOCATION",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_API_FAILED_AT_LOCATION",
-          "source_files" => [],
+          "source_files" => [
+            "thread.h",
+            "util.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -66770,7 +68924,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_CONDITION_ALLOCATION_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_CONDITION_ALLOCATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "thread.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -66993,7 +69149,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_CONTEXT_KEY_CREATION_FAILED",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_THREADS_CONTEXT_KEY_CREATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "thread.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:threads_locks"
@@ -67035,7 +69193,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_CONTEXT_LOOKUP_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_CONTEXT_LOOKUP_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "inline.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -67082,7 +69242,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_LOCK_EXCLUSIVE_RELEASE_WITHOUT_OWNERSHIP",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_EXCLUSIVE_RELEASE_WITHOUT_OWNERSHIP",
-          "source_files" => [],
+          "source_files" => [
+            "perl.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67169,7 +69331,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_LOCK_MUTEX_ALLOCATION_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_MUTEX_ALLOCATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "thread.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -67221,7 +69385,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_LOCK_NESTED_EXCLUSIVE_ACQUIRE_FORBIDDEN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_NESTED_EXCLUSIVE_ACQUIRE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "perl.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67313,7 +69479,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_LOCK_READ_ACQUIRE_COUNTER_STATE_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_ACQUIRE_COUNTER_STATE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "perl.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67400,7 +69568,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_LOCK_READ_COUNT_NEGATIVE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_COUNT_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "perl.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67487,7 +69657,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_LOCK_READ_RELEASE_COUNT_NONPOSITIVE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_RELEASE_COUNT_NONPOSITIVE",
-          "source_files" => [],
+          "source_files" => [
+            "perl.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67574,7 +69746,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_LOCK_READ_TO_EXCLUSIVE_UPGRADE_FORBIDDEN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_TO_EXCLUSIVE_UPGRADE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "perl.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67661,7 +69835,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_LOCK_WRITE_COUNT_NEGATIVE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_WRITE_COUNT_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "perl.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67748,7 +69924,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_CASE_MAPPING_LATIN1_OUTLIER_UNEXPECTED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_CASE_MAPPING_LATIN1_OUTLIER_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67800,7 +69978,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_CHARACTER_NAME_LOOSE_LOOKUP_FUNCTION_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_CHARACTER_NAME_LOOSE_LOOKUP_FUNCTION_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "contract:panic_producer",
@@ -67842,7 +70022,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_CHARACTER_NAME_WILDCARD_INFO_FUNCTION_MISSING",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_CHARACTER_NAME_WILDCARD_INFO_FUNCTION_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "contract:panic_producer",
@@ -67884,7 +70066,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_INVERSION_LIST_APPEND_ORDER_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_INVERSION_LIST_APPEND_ORDER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_invlist.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67941,7 +70125,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_INVERSION_LIST_GENERATED_VERSION_MISMATCH",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_INVERSION_LIST_GENERATED_VERSION_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_invlist.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67982,7 +70168,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_UTF16_CONVERSION_BYTE_LENGTH_ODD",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF16_CONVERSION_BYTE_LENGTH_ODD",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -68034,7 +70222,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_UTF16_FILTER_BLOCK_MODE_FORBIDDEN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF16_FILTER_BLOCK_MODE_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -68082,7 +70272,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_UTF16_FILTER_REENTERED_AFTER_ERROR",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF16_FILTER_REENTERED_AFTER_ERROR",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:reentrant_operation",
             "contract:panic_producer",
@@ -68130,7 +70322,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_UTF8_BYTE_OFFSET_OUT_OF_RANGE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_BYTE_OFFSET_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -68183,7 +70377,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_UTF8_CACHED_POSITION_MISMATCH",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_CACHED_POSITION_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -68247,7 +70443,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_UTF8_DECODER_PROBLEM_UNHANDLED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_DECODER_PROBLEM_UNHANDLED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -68294,7 +70492,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_UTF8_FORWARD_HOP_START_OUT_OF_BOUNDS",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_FORWARD_HOP_START_OUT_OF_BOUNDS",
-          "source_files" => [],
+          "source_files" => [
+            "inline.h"
+          ],
           "tags" => [
             "condition:size_count_range",
             "contract:panic_producer",
@@ -68407,7 +70607,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_UNICODE_UTF8_MALFORMED_REPORT_WITHOUT_DECODER_ERROR",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_MALFORMED_REPORT_WITHOUT_DECODER_ERROR",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -68448,7 +70650,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_VALUE_VERSION_RADIX_NOT_FOUND",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_VALUE_VERSION_RADIX_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "vutil.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -69193,7 +71397,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_PATH_INC_UNIX_CONVERSION_FAILED",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_PATH_INC_UNIX_CONVERSION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -69240,7 +71446,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_SIGNAL_HANDLER_MISSING",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_SIGNAL_HANDLER_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "ext/XS-APItest/APItest_runtime_hooks.xs",
+            "mg.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:signals"
@@ -69340,7 +71549,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_OS2_MODULE_LOAD_DETAIL",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_OS2_MODULE_LOAD_DETAIL",
-          "source_files" => [],
+          "source_files" => [
+            "ext/XS-APItest/APItest_runtime_hooks.xs"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -69783,7 +71994,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_CLOSED_REOPEN_PRIOR_CLOSE_FAILED",
           "macro" => "PERL_FORMAT_WARNING_IO_CLOSED_REOPEN_PRIOR_CLOSE_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "delivery:format_only",
@@ -69832,7 +72045,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_STDOUT_SHUTDOWN_FLUSH_FAILED",
           "macro" => "PERL_FORMAT_WARNING_IO_STDOUT_SHUTDOWN_FLUSH_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "delivery:format_only",
@@ -69990,7 +72205,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "NOTE_HINT_OPERATOR_EXPECTED_MISSING_OPERATOR",
           "macro" => "PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_MISSING_OPERATOR",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:parser_declarations"
@@ -70059,7 +72277,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "NOTE_HINT_OPERATOR_EXPECTED_MISSING_SEMICOLON",
           "macro" => "PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_MISSING_SEMICOLON",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:parser_declarations"
@@ -70107,7 +72327,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "NOTE_HINT_OPERATOR_EXPECTED_PREDECLARE",
           "macro" => "PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_PREDECLARE",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:parser_declarations"
@@ -70176,7 +72399,9 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "WARNING_SYNTAX_OPERATOR_EXPECTED",
           "macro" => "PERL_APPEND_WARNING_SYNTAX_OPERATOR_EXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:parser_declarations"
           ],
@@ -70392,7 +72617,10 @@ $CONF = {
           "kind" => "CORE_COMPILE",
           "code" => "WARNING_SYNTAX_RUNAWAY_MULTILINE_STRING_SUGGESTION",
           "macro" => "PERL_APPEND_WARNING_SYNTAX_RUNAWAY_MULTILINE_STRING_SUGGESTION",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:parser_declarations",
@@ -70460,7 +72688,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_LOCALE_ENVIRONMENT_ROW",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_LOCALE_ENVIRONMENT_ROW",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -70577,7 +72807,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_LOCALE_FALLBACK_ROW",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_LOCALE_FALLBACK_ROW",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -70702,7 +72934,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_HINT_STACK_UNWIND_DEFERRED",
           "macro" => "PERL_APPEND_NOTE_HINT_STACK_UNWIND_DEFERRED",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:control_flow_scope",
@@ -70748,7 +72982,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_CLEANUP_MAGIC_DESTRUCTOR_DURING_GLOBAL_DESTRUCTION",
           "macro" => "PERL_WARN_WARNING_CLEANUP_MAGIC_DESTRUCTOR_DURING_GLOBAL_DESTRUCTION",
-          "source_files" => [],
+          "source_files" => [
+            "scope.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:memory_allocation_lifetime"
@@ -70793,7 +73029,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_CLOSURE_LEXICAL_CAPTURE_UNAVAILABLE",
           "macro" => "PERL_WARN_WARNING_CLOSURE_LEXICAL_CAPTURE_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:parser_declarations"
@@ -70901,7 +73139,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_CLOSURE_LEXICAL_CAPTURE_WILL_NOT_STAY_SHARED",
           "macro" => "PERL_WARN_WARNING_CLOSURE_LEXICAL_CAPTURE_WILL_NOT_STAY_SHARED",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "subject:parser_declarations"
           ],
@@ -71022,7 +73262,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_COMPILATION_UNCLASSIFIED_DEFERRED_MESSAGE",
           "macro" => "PERL_WARN_WARNING_COMPILATION_UNCLASSIFIED_DEFERRED_MESSAGE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "role:opaque_payload",
             "subject:parser_declarations"
@@ -71068,7 +73310,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_DIAGNOSTIC_LANGUAGE_PACK_LOAD_FAILED",
           "macro" => "PERL_FORMAT_WARNING_DIAGNOSTIC_LANGUAGE_PACK_LOAD_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "delivery:format_only"
           ],
@@ -71103,7 +73347,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXITING_CONTROL_TRANSFER_CROSSES_CONTEXT",
           "macro" => "PERL_WARN_WARNING_EXITING_CONTROL_TRANSFER_CROSSES_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "subject:control_flow_scope"
           ],
@@ -71154,7 +73400,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_ARGS_ARRAY_WITH_SIGNATURES_EXPLICIT_USE",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_ARGS_ARRAY_WITH_SIGNATURES_EXPLICIT_USE",
-          "source_files" => [],
+          "source_files" => [
+            "peep.c"
+          ],
           "tags" => [
             "subject:call_callback_contracts",
             "subject:signature_prototype"
@@ -71233,7 +73481,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_ARGS_ARRAY_WITH_SIGNATURES_IMPLICIT_USE",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_ARGS_ARRAY_WITH_SIGNATURES_IMPLICIT_USE",
-          "source_files" => [],
+          "source_files" => [
+            "peep.c"
+          ],
           "tags" => [
             "subject:call_callback_contracts",
             "subject:signature_prototype"
@@ -71318,7 +73568,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_BUILTIN_FUNCTION_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_BUILTIN_FUNCTION_USED",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c"
+          ],
           "tags" => [
             "subject:builtins_operators"
           ],
@@ -71364,7 +73616,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_CLASS_ADJUST_BLOCK_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_CLASS_ADJUST_BLOCK_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:object_role_field"
           ],
@@ -71404,7 +73658,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_CLASS_CURRENT_CLASS_CONSTANT_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_CLASS_CURRENT_CLASS_CONSTANT_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:object_role_field"
           ],
@@ -71444,7 +73700,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_CLASS_DECLARATION_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_CLASS_DECLARATION_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:object_role_field"
           ],
@@ -71484,7 +73742,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_CLASS_FIELD_DECLARATION_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_CLASS_FIELD_DECLARATION_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:object_role_field"
           ],
@@ -71524,7 +73784,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_CLASS_METHOD_DECLARATION_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_CLASS_METHOD_DECLARATION_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:call_callback_contracts",
             "subject:object_role_field"
@@ -71565,7 +73827,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_CLASS_ROLE_DECLARATION_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_CLASS_ROLE_DECLARATION_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:object_role_field"
           ],
@@ -71605,7 +73869,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_DECLARED_REFS_REFERENCE_DECLARATION_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_DECLARED_REFS_REFERENCE_DECLARATION_USED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c",
+            "toke.c"
+          ],
           "tags" => [
             "subject:parser_declarations",
             "subject:reference_type"
@@ -71646,7 +73913,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_DEFER_BLOCK_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_DEFER_BLOCK_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:control_flow_scope"
           ],
@@ -71686,7 +73955,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_ENHANCED_XX_DOUBLE_EXTENDED_MODIFIER_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_ENHANCED_XX_DOUBLE_EXTENDED_MODIFIER_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:regexp"
           ],
@@ -71726,7 +73997,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_NUMERIC_EQUALITY_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_NUMERIC_EQUALITY_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:numeric_arithmetic"
           ],
@@ -71766,7 +74039,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_NUMERIC_INEQUALITY_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_NUMERIC_INEQUALITY_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:numeric_arithmetic"
           ],
@@ -71806,7 +74081,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_STRING_EQUALITY_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_STRING_EQUALITY_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:string_sequence_container"
           ],
@@ -71846,7 +74123,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_STRING_INEQUALITY_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_STRING_INEQUALITY_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:string_sequence_container"
           ],
@@ -71886,7 +74165,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_EXTRA_PAIRED_DELIMITERS_NON_ASCII_DELIMITER_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_EXTRA_PAIRED_DELIMITERS_NON_ASCII_DELIMITER_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:quoted_source_escapes"
           ],
@@ -71947,7 +74228,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_KEYWORD_ALL_BLOCK_OPERATOR_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_KEYWORD_ALL_BLOCK_OPERATOR_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:builtins_operators",
             "subject:iteration"
@@ -71988,7 +74271,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_KEYWORD_ANY_BLOCK_OPERATOR_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_KEYWORD_ANY_BLOCK_OPERATOR_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:builtins_operators",
             "subject:iteration"
@@ -72029,7 +74314,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_NAMESPACES_CURRENT_NAMESPACE_CONSTANT_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_NAMESPACES_CURRENT_NAMESPACE_CONSTANT_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:names_symbols"
           ],
@@ -72069,7 +74356,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_NAMESPACES_NAMESPACE_DECLARATION_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_NAMESPACES_NAMESPACE_DECLARATION_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:names_symbols"
           ],
@@ -72109,7 +74398,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_PRIVATE_USE_PROPERTY_OVERRIDE_APPLIED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_PRIVATE_USE_PROPERTY_OVERRIDE_APPLIED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -72149,7 +74440,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_REFALIASING_REFERENCE_ALIASING_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_REFALIASING_REFERENCE_ALIASING_USED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:reference_type"
           ],
@@ -72189,7 +74482,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_SIGNATURE_NAMED_PARAMETERS_PARAMETER_DECLARED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_SIGNATURE_NAMED_PARAMETERS_PARAMETER_DECLARED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:signature_prototype"
           ],
@@ -72229,7 +74524,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_TRY_FINALLY_BLOCK_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_TRY_FINALLY_BLOCK_USED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:control_flow_scope"
           ],
@@ -72269,7 +74566,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_UNIPROP_WILDCARDS_PROPERTY_WILDCARD_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_UNIPROP_WILDCARDS_PROPERTY_WILDCARD_USED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -72309,7 +74608,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_EXPERIMENTAL_VLB_CAPTURING_LOOKBEHIND_USED",
           "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_VLB_CAPTURING_LOOKBEHIND_USED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_study.c"
+          ],
           "tags" => [
             "subject:regexp"
           ],
@@ -72364,7 +74665,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_GLOB_CHILD_EXIT_FAILED",
           "macro" => "PERL_WARN_WARNING_GLOB_CHILD_EXIT_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem",
@@ -72472,7 +74775,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_GLOB_CHILD_START_FAILED",
           "macro" => "PERL_WARN_WARNING_GLOB_CHILD_START_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem",
@@ -72520,7 +74825,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IMPRECISION_DECREMENT_PRECISION_LOSS",
           "macro" => "PERL_WARN_WARNING_IMPRECISION_DECREMENT_PRECISION_LOSS",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "subject:numeric_arithmetic"
           ],
@@ -72566,7 +74873,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IMPRECISION_INCREMENT_PRECISION_LOSS",
           "macro" => "PERL_WARN_WARNING_IMPRECISION_INCREMENT_PRECISION_LOSS",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "subject:numeric_arithmetic"
           ],
@@ -72612,7 +74921,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_CONTROL_FLOW_EXIT_REQUEST_REPORTED",
           "macro" => "PERL_WARN_WARNING_INTERNAL_CONTROL_FLOW_EXIT_REQUEST_REPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "subject:control_flow_scope"
           ],
@@ -72656,7 +74967,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_CONTROL_FLOW_FAILURE_EXIT_REQUEST_REPORTED",
           "macro" => "PERL_WARN_WARNING_INTERNAL_CONTROL_FLOW_FAILURE_EXIT_REQUEST_REPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "subject:control_flow_scope"
           ],
@@ -72700,7 +75013,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_MEMORY_COW_READONLY_PROTECTION_FAILED",
           "macro" => "PERL_WARN_WARNING_INTERNAL_MEMORY_COW_READONLY_PROTECTION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c",
+            "util.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:memory_allocation_lifetime"
@@ -72755,7 +75071,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_MEMORY_COW_READWRITE_PROTECTION_FAILED",
           "macro" => "PERL_WARN_WARNING_INTERNAL_MEMORY_COW_READWRITE_PROTECTION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c",
+            "util.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:memory_allocation_lifetime"
@@ -72810,7 +75129,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_MEMORY_CV_OP_SLAB_UNRELEASED",
           "macro" => "PERL_WARN_WARNING_INTERNAL_MEMORY_CV_OP_SLAB_UNRELEASED",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -72855,7 +75176,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_MEMORY_OP_SLAB_READONLY_PROTECTION_FAILED",
           "macro" => "PERL_WARN_WARNING_INTERNAL_MEMORY_OP_SLAB_READONLY_PROTECTION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:memory_allocation_lifetime"
@@ -72910,7 +75233,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_MEMORY_OP_SLAB_READWRITE_PROTECTION_FAILED",
           "macro" => "PERL_WARN_WARNING_INTERNAL_MEMORY_OP_SLAB_READWRITE_PROTECTION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:memory_allocation_lifetime"
@@ -73016,7 +75341,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_OPCODE_OP_STRUCTURE_CLASS_UNRECOGNIZED",
           "macro" => "PERL_WARN_WARNING_INTERNAL_OPCODE_OP_STRUCTURE_CLASS_UNRECOGNIZED",
-          "source_files" => [],
+          "source_files" => [
+            "dump.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:builtins_operators"
@@ -73141,7 +75468,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_SYSTEM_PROCESS_LEAK_DUMP_CHILD_REPORTED_FAILURE",
           "macro" => "PERL_WARN_WARNING_INTERNAL_SYSTEM_PROCESS_LEAK_DUMP_CHILD_REPORTED_FAILURE",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:memory_allocation_lifetime",
@@ -73267,7 +75596,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_DIRECTORY_OPERATION_ON_FILEHANDLE",
           "macro" => "PERL_WARN_WARNING_IO_DIRECTORY_OPERATION_ON_FILEHANDLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:io_handles_filesystem"
@@ -73320,7 +75651,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_DIRECTORY_OPERATION_ON_INVALID_HANDLE",
           "macro" => "PERL_WARN_WARNING_IO_DIRECTORY_OPERATION_ON_INVALID_HANDLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -73373,7 +75706,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_DIRHANDLE_USED_AS_FILEHANDLE_SUGGESTION",
           "macro" => "PERL_WARN_WARNING_IO_DIRHANDLE_USED_AS_FILEHANDLE_SUGGESTION",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:io_handles_filesystem"
@@ -73597,7 +75932,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_EXEC_FAILED",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_EXEC_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -74155,7 +76492,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_SPAWN_FAILED",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_SPAWN_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "cygwin/cygwin.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -74207,7 +76546,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_STATEMENT_AFTER_EXEC_UNLIKELY_REACHED",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_STATEMENT_AFTER_EXEC_UNLIKELY_REACHED",
-          "source_files" => [],
+          "source_files" => [
+            "peep.c"
+          ],
           "tags" => [
             "subject:control_flow_scope",
             "subject:process_system_calls"
@@ -74248,7 +76589,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_SYSTEM_INSTEAD_OF_EXEC_SUGGESTION",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_SYSTEM_INSTEAD_OF_EXEC_SUGGESTION",
-          "source_files" => [],
+          "source_files" => [
+            "peep.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:process_system_calls"
@@ -74452,7 +76795,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_FILEHANDLE_CLOSE_FAILED_WITHOUT_NAME",
           "macro" => "PERL_WARN_WARNING_IO_FILEHANDLE_CLOSE_FAILED_WITHOUT_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -74500,7 +76845,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_FILEHANDLE_CLOSE_FAILED_WITH_NAME",
           "macro" => "PERL_WARN_WARNING_IO_FILEHANDLE_CLOSE_FAILED_WITH_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -74554,7 +76901,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_FILEHANDLE_WRONG_DIRECTION_WITHOUT_NAME",
           "macro" => "PERL_WARN_WARNING_IO_FILEHANDLE_WRONG_DIRECTION_WITHOUT_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -74656,7 +77005,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_FILEHANDLE_WRONG_DIRECTION_WITH_NAME",
           "macro" => "PERL_WARN_WARNING_IO_FILEHANDLE_WRONG_DIRECTION_WITH_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -74764,7 +77115,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_LAYER_ARGUMENT_LIST_UNTERMINATED",
           "macro" => "PERL_WARN_WARNING_IO_LAYER_ARGUMENT_LIST_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:unterminated_unbalanced",
             "subject:perlio_layers"
@@ -74821,7 +77174,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_LAYER_NAME_UNKNOWN",
           "macro" => "PERL_WARN_WARNING_IO_LAYER_NAME_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:perlio_layers"
@@ -74878,7 +77233,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_LAYER_SCALAR_READONLY_FOR_WRITE",
           "macro" => "PERL_WARN_WARNING_IO_LAYER_SCALAR_READONLY_FOR_WRITE",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:perlio_layers",
@@ -74921,7 +77278,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_LAYER_SCALAR_SEEK_BEFORE_START",
           "macro" => "PERL_WARN_WARNING_IO_LAYER_SCALAR_SEEK_BEFORE_START",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:perlio_layers",
@@ -74963,7 +77322,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_LAYER_SEPARATOR_INVALID",
           "macro" => "PERL_WARN_WARNING_IO_LAYER_SEPARATOR_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:perlio_layers"
@@ -75025,7 +77386,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_LSTAT_ON_FILEHANDLE",
           "macro" => "PERL_WARN_WARNING_IO_LSTAT_ON_FILEHANDLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:io_handles_filesystem"
@@ -75133,7 +77496,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_NEWLINE_FAILED_OPERATION_ON_NEWLINE_FILENAME",
           "macro" => "PERL_WARN_WARNING_IO_NEWLINE_FAILED_OPERATION_ON_NEWLINE_FILENAME",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c",
+            "pp_sys.c"
+          ],
           "tags" => [
             "subject:io_handles_filesystem"
           ],
@@ -75179,7 +77545,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_OPEN_REFERENCE_UNSUPPORTED",
           "macro" => "PERL_WARN_WARNING_IO_OPEN_REFERENCE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:io_handles_filesystem",
@@ -75221,7 +77589,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE",
           "macro" => "PERL_WARN_WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -76041,7 +78411,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_PIPE_BIDIRECTIONAL_OPEN_UNSUPPORTED",
           "macro" => "PERL_WARN_WARNING_IO_PIPE_BIDIRECTIONAL_OPEN_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:io_handles_filesystem"
@@ -76082,7 +78454,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_PIPE_FORK_FAILED_RETRYING",
           "macro" => "PERL_WARN_WARNING_IO_PIPE_FORK_FAILED_RETRYING",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem",
@@ -76124,7 +78498,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_PIPE_OPEN_COMMAND_MISSING",
           "macro" => "PERL_WARN_WARNING_IO_PIPE_OPEN_COMMAND_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:io_handles_filesystem"
@@ -76271,7 +78647,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_REPORT_PAGE_OVERFLOW",
           "macro" => "PERL_WARN_WARNING_IO_REPORT_PAGE_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:report_formats"
@@ -76312,7 +78690,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_SOCKET_ADDRESS_TRUNCATED",
           "macro" => "PERL_WARN_WARNING_IO_SOCKET_ADDRESS_TRUNCATED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem"
@@ -76359,7 +78739,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_STANDARD_OUTPUT_HANDLE_REOPENED_FOR_INPUT",
           "macro" => "PERL_WARN_WARNING_IO_STANDARD_OUTPUT_HANDLE_REOPENED_FOR_INPUT",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -76412,7 +78794,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_STDIN_REOPENED_FOR_OUTPUT",
           "macro" => "PERL_WARN_WARNING_IO_STDIN_REOPENED_FOR_OUTPUT",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -76460,7 +78844,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_SYMLINK_TEST_ON_ANONYMOUS_FILEHANDLE",
           "macro" => "PERL_WARN_WARNING_IO_SYMLINK_TEST_ON_ANONYMOUS_FILEHANDLE",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:io_handles_filesystem"
@@ -76501,7 +78887,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_SYMLINK_TEST_ON_NAMED_FILEHANDLE",
           "macro" => "PERL_WARN_WARNING_IO_SYMLINK_TEST_ON_NAMED_FILEHANDLE",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:io_handles_filesystem"
@@ -76555,7 +78943,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_SYSCALLS_ARGUMENT_EMBEDDED_NUL",
           "macro" => "PERL_WARN_WARNING_IO_SYSCALLS_ARGUMENT_EMBEDDED_NUL",
-          "source_files" => [],
+          "source_files" => [
+            "inline.h"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem",
@@ -76618,7 +79008,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_UNOPENED_CHDIR_HANDLE_UNOPENED",
           "macro" => "PERL_WARN_WARNING_IO_UNOPENED_CHDIR_HANDLE_UNOPENED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem"
@@ -76711,7 +79103,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_CAPITAL_SHARP_S_FOLD_SUBSTITUTED",
           "macro" => "PERL_WARN_WARNING_LOCALE_CAPITAL_SHARP_S_FOLD_SUBSTITUTED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:locale",
             "subject:unicode_encoding"
@@ -76752,7 +79146,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_CASE_MAPPING_CROSSES_BYTE_BOUNDARY",
           "macro" => "PERL_WARN_WARNING_LOCALE_CASE_MAPPING_CROSSES_BYTE_BOUNDARY",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:locale",
             "subject:unicode_encoding"
@@ -76841,7 +79237,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_CATEGORY_UNRECOGNIZED",
           "macro" => "PERL_WARN_WARNING_LOCALE_CATEGORY_UNRECOGNIZED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:locale"
@@ -76953,7 +79351,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_CTYPE_CHARACTER_SEMANTICS_UNEXPECTED",
           "macro" => "PERL_APPEND_COMPOSED_LOCALE_WARNING",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "subject:locale"
           ],
@@ -77195,7 +79595,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_CTYPE_LOCALE_UNSUPPORTED",
           "macro" => "PERL_APPEND_WARNING_LOCALE_CTYPE_LOCALE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:locale"
@@ -77248,7 +79650,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_DESCENDER_S_LIGATURE_FOLD_SUBSTITUTED",
           "macro" => "PERL_WARN_WARNING_LOCALE_DESCENDER_S_LIGATURE_FOLD_SUBSTITUTED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:locale",
             "subject:unicode_encoding"
@@ -77289,7 +79693,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_DOTTED_I_FOLD_SUBSTITUTED",
           "macro" => "PERL_WARN_WARNING_LOCALE_DOTTED_I_FOLD_SUBSTITUTED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:locale",
             "subject:unicode_encoding"
@@ -77330,7 +79736,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_LONG_ST_LIGATURE_FOLD_SUBSTITUTED",
           "macro" => "PERL_WARN_WARNING_LOCALE_LONG_ST_LIGATURE_FOLD_SUBSTITUTED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:locale",
             "subject:unicode_encoding"
@@ -77371,7 +79779,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_REGEXP_BOUNDARY_ASSUMES_UTF8",
           "macro" => "PERL_WARN_WARNING_LOCALE_REGEXP_BOUNDARY_ASSUMES_UTF8",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "subject:locale",
             "subject:regexp"
@@ -77412,7 +79822,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_REGEXP_SET_ASSUMES_UTF8",
           "macro" => "PERL_WARN_WARNING_LOCALE_REGEXP_SET_ASSUMES_UTF8",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "subject:locale",
             "subject:regexp",
@@ -77454,7 +79866,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_STARTUP_ENVIRONMENT_SETTINGS_UNSUPPORTED",
           "macro" => "PERL_FORMAT_WARNING_LOCALE_STARTUP_ENVIRONMENT_SETTINGS_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "subject:locale"
@@ -77500,7 +79914,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_STARTUP_FALLBACKS_FAILED",
           "macro" => "PERL_FORMAT_WARNING_LOCALE_STARTUP_FALLBACKS_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "delivery:format_only",
@@ -77608,7 +80024,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_STARTUP_FALLBACK_SELECTED",
           "macro" => "PERL_FORMAT_WARNING_LOCALE_STARTUP_FALLBACK_SELECTED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "subject:locale"
@@ -77747,7 +80165,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_STARTUP_SETUP_FAILED",
           "macro" => "PERL_FORMAT_WARNING_LOCALE_STARTUP_SETUP_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "locale.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "delivery:format_only",
@@ -77788,7 +80208,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOCALE_WIDE_CHARACTER_UNDER_BYTE_CTYPE",
           "macro" => "PERL_WARN_WARNING_LOCALE_WIDE_CHARACTER_UNDER_BYTE_CTYPE",
-          "source_files" => [],
+          "source_files" => [
+            "perl.h"
+          ],
           "tags" => [
             "subject:locale",
             "subject:unicode_encoding"
@@ -77872,7 +80294,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_AGGREGATE_BINDING_SCALARIZED_ANONYMOUS",
           "macro" => "PERL_WARN_WARNING_MISC_AGGREGATE_BINDING_SCALARIZED_ANONYMOUS",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:regexp",
             "subject:string_sequence_container"
@@ -78000,7 +80424,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_AGGREGATE_BINDING_SCALARIZED_NAMED",
           "macro" => "PERL_WARN_WARNING_MISC_AGGREGATE_BINDING_SCALARIZED_NAMED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:regexp",
             "subject:string_sequence_container"
@@ -78128,7 +80554,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_ALARM_DURATION_NEGATIVE",
           "macro" => "PERL_WARN_WARNING_MISC_ALARM_DURATION_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:process_system_calls"
@@ -78169,7 +80597,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_ANONYMOUS_HASH_ODD_ELEMENT_COUNT",
           "macro" => "PERL_WARN_WARNING_MISC_ANONYMOUS_HASH_ODD_ELEMENT_COUNT",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:string_sequence_container"
@@ -78210,7 +80640,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_ARRAY_INDEX_REFERENCE_WITHOUT_OVERLOAD",
           "macro" => "PERL_WARN_WARNING_MISC_ARRAY_INDEX_REFERENCE_WITHOUT_OVERLOAD",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "subject:reference_type",
             "subject:string_sequence_container"
@@ -78264,7 +80696,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_ARRAY_LENGTH_TARGET_FREED",
           "macro" => "PERL_WARN_WARNING_MISC_ARRAY_LENGTH_TARGET_FREED",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "subject:memory_allocation_lifetime",
             "subject:string_sequence_container"
@@ -78305,7 +80739,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_ASSIGNMENT_TO_TEMPORARY",
           "macro" => "PERL_WARN_WARNING_MISC_ASSIGNMENT_TO_TEMPORARY",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:mutation_access"
@@ -78346,7 +80782,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_CONSTANT_SUBROUTINE_UNDEFINED",
           "macro" => "PERL_WARN_WARNING_MISC_CONSTANT_SUBROUTINE_UNDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "subject:call_callback_contracts",
             "subject:mutation_access"
@@ -78394,7 +80832,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_EXCEPTION_DURING_CLEANUP",
           "macro" => "PERL_WARN_WARNING_MISC_EXCEPTION_DURING_CLEANUP",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:diagnostic_exception_api"
@@ -78442,7 +80882,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_HASH_ASSIGNMENT_AGGREGATE_REFERENCE_IN_ODD_LIST",
           "macro" => "PERL_WARN_WARNING_MISC_HASH_ASSIGNMENT_AGGREGATE_REFERENCE_IN_ODD_LIST",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:reference_type",
@@ -78491,7 +80934,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_HASH_ASSIGNMENT_ODD_ELEMENT_COUNT",
           "macro" => "PERL_WARN_WARNING_MISC_HASH_ASSIGNMENT_ODD_ELEMENT_COUNT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c",
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:string_sequence_container"
@@ -78539,7 +80985,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_HASH_FIELD_INITIALIZER_ODD_ELEMENT_COUNT",
           "macro" => "PERL_WARN_WARNING_MISC_HASH_FIELD_INITIALIZER_ODD_ELEMENT_COUNT",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:object_role_field",
@@ -78581,7 +81029,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_IO_SELECT_BITMASK_NOT_STRING",
           "macro" => "PERL_WARN_WARNING_MISC_IO_SELECT_BITMASK_NOT_STRING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:io_handles_filesystem",
@@ -78623,7 +81073,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_OBJECT_BLESS_EMPTY_CLASS_NAME_DEFAULTED",
           "macro" => "PERL_WARN_WARNING_MISC_OBJECT_BLESS_EMPTY_CLASS_NAME_DEFAULTED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -78664,7 +81116,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_RNG_SEED_REFERENCE_WITHOUT_STRING_OVERLOAD",
           "macro" => "PERL_WARN_WARNING_MISC_RNG_SEED_REFERENCE_WITHOUT_STRING_OVERLOAD",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:rng"
@@ -78705,7 +81159,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_SLEEP_DURATION_NEGATIVE",
           "macro" => "PERL_WARN_WARNING_MISC_SLEEP_DURATION_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:process_system_calls"
@@ -78746,7 +81202,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_SPLICE_OFFSET_PAST_ARRAY_END",
           "macro" => "PERL_WARN_WARNING_MISC_SPLICE_OFFSET_PAST_ARRAY_END",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:string_sequence_container"
@@ -78787,7 +81245,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_STRING_CASEMOD_END_WITHOUT_START",
           "macro" => "PERL_WARN_WARNING_MISC_STRING_CASEMOD_END_WITHOUT_START",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:quoted_source_escapes"
@@ -78828,7 +81288,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_STRING_ESCAPE_UNRECOGNIZED",
           "macro" => "PERL_WARN_WARNING_MISC_STRING_ESCAPE_UNRECOGNIZED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:quoted_source_escapes"
@@ -78876,7 +81338,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_SUBROUTINE_LVALUE_ATTRIBUTE_TOO_LATE",
           "macro" => "PERL_WARN_WARNING_MISC_SUBROUTINE_LVALUE_ATTRIBUTE_TOO_LATE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:call_callback_contracts"
@@ -78917,7 +81381,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_SUBROUTINE_PROTOTYPE_ATTRIBUTE_REPLACED",
           "macro" => "PERL_WARN_WARNING_MISC_SUBROUTINE_PROTOTYPE_ATTRIBUTE_REPLACED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:signature_prototype"
@@ -78979,7 +81445,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_TRANSLITERATION_DELETE_MODIFIER_NO_EFFECT",
           "macro" => "PERL_WARN_WARNING_MISC_TRANSLITERATION_DELETE_MODIFIER_NO_EFFECT",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:quoted_source_escapes"
@@ -79020,7 +81488,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_TRANSLITERATION_REPLACEMENT_LONGER_THAN_SEARCH",
           "macro" => "PERL_WARN_WARNING_MISC_TRANSLITERATION_REPLACEMENT_LONGER_THAN_SEARCH",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:quoted_source_escapes"
@@ -79061,7 +81531,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_TRUTH_TEST_MAY_DISCARD_DEFINED_VALUE",
           "macro" => "PERL_WARN_WARNING_MISC_TRUTH_TEST_MAY_DISCARD_DEFINED_VALUE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:builtins_operators",
             "subject:control_flow_scope"
@@ -79157,7 +81629,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_TYPEGLOB_UNDEFINED_VALUE_ASSIGNED",
           "macro" => "PERL_WARN_WARNING_MISC_TYPEGLOB_UNDEFINED_VALUE_ASSIGNED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:undefined_uninitialized",
             "subject:names_symbols"
@@ -79198,7 +81672,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_TYPE_REFERENCE_ALREADY_WEAK",
           "macro" => "PERL_WARN_WARNING_MISC_TYPE_REFERENCE_ALREADY_WEAK",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:reference_type"
@@ -79239,7 +81715,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_TYPE_REFERENCE_NOT_WEAK",
           "macro" => "PERL_WARN_WARNING_MISC_TYPE_REFERENCE_NOT_WEAK",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:reference_type"
@@ -79280,7 +81758,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_VARIABLE_NOT_IMPORTED",
           "macro" => "PERL_WARN_WARNING_MISC_VARIABLE_NOT_IMPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "subject:names_symbols",
             "subject:parser_declarations"
@@ -79347,7 +81827,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_VARIABLE_NOT_IMPORTED_SUBROUTINE_HINT",
           "macro" => "PERL_WARN_WARNING_MISC_VARIABLE_NOT_IMPORTED_SUBROUTINE_HINT",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:names_symbols",
@@ -79410,7 +81892,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_VERSION_TRAILING_INVALID_DATA_IGNORED",
           "macro" => "PERL_WARN_WARNING_MISC_VERSION_TRAILING_INVALID_DATA_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "vutil.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:module_version_loading"
@@ -79562,7 +82046,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISSING_IMPORT_IMPORT_OR_UNIMPORT_MISSING_WITH_ARGUMENTS",
           "macro" => "PERL_WARN_WARNING_MISSING_IMPORT_IMPORT_OR_UNIMPORT_MISSING_WITH_ARGUMENTS",
-          "source_files" => [],
+          "source_files" => [
+            "universal.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:module_version_loading"
@@ -79681,7 +82167,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISSING_PRINTF_CONVERSION_ARGUMENT_MISSING",
           "macro" => "PERL_WARN_WARNING_MISSING_PRINTF_CONVERSION_ARGUMENT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:printf_conversion"
@@ -79760,7 +82248,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_NUMERIC_INCREMENT_VALUE_NONNUMERIC",
           "macro" => "PERL_WARN_WARNING_NUMERIC_INCREMENT_VALUE_NONNUMERIC",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "subject:numeric_arithmetic"
           ],
@@ -79806,7 +82296,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_NUMERIC_REPEAT_COUNT_NEGATIVE",
           "macro" => "PERL_WARN_WARNING_NUMERIC_REPEAT_COUNT_NEGATIVE",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:numeric_arithmetic"
@@ -79847,7 +82339,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_NUMERIC_REPEAT_COUNT_NONFINITE",
           "macro" => "PERL_WARN_WARNING_NUMERIC_REPEAT_COUNT_NONFINITE",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:numeric_arithmetic"
@@ -79888,7 +82382,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_NUMERIC_VALUE_NONNUMERIC_IN_OPERATION",
           "macro" => "PERL_WARN_WARNING_NUMERIC_VALUE_NONNUMERIC_IN_OPERATION",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "subject:numeric_arithmetic"
           ],
@@ -79971,7 +82467,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_NUMERIC_VALUE_NONNUMERIC_WITHOUT_OPERATION",
           "macro" => "PERL_WARN_WARNING_NUMERIC_VALUE_NONNUMERIC_WITHOUT_OPERATION",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "subject:numeric_arithmetic"
           ],
@@ -80017,7 +82515,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_NUMERIC_VERSION_DEVELOPMENT_NUMIFICATION_LOSSY",
           "macro" => "PERL_WARN_WARNING_NUMERIC_VERSION_DEVELOPMENT_NUMIFICATION_LOSSY",
-          "source_files" => [],
+          "source_files" => [
+            "vutil.c"
+          ],
           "tags" => [
             "subject:module_version_loading",
             "subject:numeric_arithmetic"
@@ -80058,7 +82558,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OBJECT_CONSTRUCTOR_ARGUMENT_PAIRS_ODD",
           "macro" => "PERL_WARN_WARNING_OBJECT_CONSTRUCTOR_ARGUMENT_PAIRS_ODD",
-          "source_files" => [],
+          "source_files" => [
+            "class.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:call_callback_contracts",
@@ -80105,7 +82607,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_ONCE_PACKAGE_NAME_USED_ONCE",
           "macro" => "PERL_WARN_WARNING_ONCE_PACKAGE_NAME_USED_ONCE",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "subject:parser_declarations"
           ],
@@ -80164,7 +82668,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_HEXADECIMAL_FLOAT_EXPONENT_OVERFLOW",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_HEXADECIMAL_FLOAT_EXPONENT_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:numeric_arithmetic"
@@ -80205,7 +82711,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_HEXADECIMAL_FLOAT_EXPONENT_UNDERFLOW",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_HEXADECIMAL_FLOAT_EXPONENT_UNDERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:numeric_arithmetic"
@@ -80246,7 +82754,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_HEXADECIMAL_FLOAT_MANTISSA_PRECISION_EXCEEDED",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_HEXADECIMAL_FLOAT_MANTISSA_PRECISION_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:numeric_arithmetic"
@@ -80287,7 +82797,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_INTEGER_LITERAL_RANGE_EXCEEDED",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_INTEGER_LITERAL_RANGE_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "numeric.c",
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:numeric_arithmetic"
@@ -80409,7 +82922,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_RNG_SEED_INTEGER_TRUNCATED",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_RNG_SEED_INTEGER_TRUNCATED",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:rng"
@@ -80450,7 +82965,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_TIME_CONVERSION_FAILED",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_TIME_CONVERSION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -80503,7 +83020,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_TIME_INPUT_BELOW_MINIMUM",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_TIME_INPUT_BELOW_MINIMUM",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:process_system_calls"
@@ -80556,7 +83075,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_TIME_INPUT_OUT_OF_RANGE",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_TIME_INPUT_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:process_system_calls"
@@ -80609,7 +83130,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_VERSION_COMPONENT",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_VERSION_COMPONENT",
-          "source_files" => [],
+          "source_files" => [
+            "vutil.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:module_version_loading",
@@ -80651,7 +83174,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_VERSION_COMPONENT_WITH_LIMIT",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_VERSION_COMPONENT_WITH_LIMIT",
-          "source_files" => [],
+          "source_files" => [
+            "vutil.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:module_version_loading",
@@ -80699,7 +83224,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_VSTRING_DECIMAL_COMPONENT",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_VSTRING_DECIMAL_COMPONENT",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:numeric_arithmetic",
@@ -80789,7 +83316,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_PACK_POINTER_TARGET_TEMPORARY",
           "macro" => "PERL_WARN_WARNING_PACK_POINTER_TARGET_TEMPORARY",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "subject:memory_allocation_lifetime",
             "subject:pack_unpack"
@@ -80830,7 +83359,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_PACK_SIGNED_BYTE_VALUE_WRAPPED",
           "macro" => "PERL_WARN_WARNING_PACK_SIGNED_BYTE_VALUE_WRAPPED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack"
@@ -80871,7 +83402,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_PACK_UNPACK_BYTE_FORMAT_CHARACTER_WRAPPED",
           "macro" => "PERL_WARN_WARNING_PACK_UNPACK_BYTE_FORMAT_CHARACTER_WRAPPED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "subject:pack_unpack",
             "subject:unicode_encoding"
@@ -80928,7 +83461,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_PACK_UNSIGNED_BYTE_VALUE_WRAPPED",
           "macro" => "PERL_WARN_WARNING_PACK_UNSIGNED_BYTE_VALUE_WRAPPED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack"
@@ -80969,7 +83504,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_PACK_UUENCODE_LINE_WIDTH_EXCESSIVE",
           "macro" => "PERL_WARN_WARNING_PACK_UUENCODE_LINE_WIDTH_EXCESSIVE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack"
@@ -81010,7 +83547,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_PACK_W_CHARACTER_WRAPPED",
           "macro" => "PERL_WARN_WARNING_PACK_W_CHARACTER_WRAPPED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack",
@@ -81052,7 +83591,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_PHASE_INIT_TREATED_AS_BEGIN",
           "macro" => "PERL_WARN_WARNING_PHASE_INIT_TREATED_AS_BEGIN",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:phase_blocks"
           ],
@@ -81096,7 +83637,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_PORTABLE_INTEGER_LITERAL_EXCEEDS_32_BITS",
           "macro" => "PERL_WARN_WARNING_PORTABLE_INTEGER_LITERAL_EXCEEDS_32_BITS",
-          "source_files" => [],
+          "source_files" => [
+            "numeric.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:numeric_arithmetic"
@@ -81143,7 +83686,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_PORTABLE_REGEXP_CODEPOINT_REQUIRES_PERL_EXTENSION",
           "macro" => "PERL_WARN_WARNING_PORTABLE_REGEXP_CODEPOINT_REQUIRES_PERL_EXTENSION",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "subject:regexp",
             "subject:unicode_encoding"
@@ -81198,7 +83743,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_PORTABLE_VEC_WIDTH_EXCEEDS_32_BITS",
           "macro" => "PERL_WARN_WARNING_PORTABLE_VEC_WIDTH_EXCEEDS_32_BITS",
-          "source_files" => [],
+          "source_files" => [
+            "doop.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:string_sequence_container"
@@ -81239,7 +83786,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_PROPAGATION_CAUGHT_EXCEPTION_REPORTED_AS_WARNING",
           "macro" => "PERL_APPEND_WARNING_PROPAGATION_CAUGHT_EXCEPTION_REPORTED_AS_WARNING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "subject:diagnostic_exception_api"
           ],
@@ -81300,7 +83849,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_RECURSION_ANONYMOUS_SUBROUTINE_DEPTH_EXCEEDED",
           "macro" => "PERL_WARN_WARNING_RECURSION_ANONYMOUS_SUBROUTINE_DEPTH_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:call_callback_contracts"
@@ -81341,7 +83892,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_RECURSION_NAMED_SUBROUTINE_DEPTH_EXCEEDED",
           "macro" => "PERL_WARN_WARNING_RECURSION_NAMED_SUBROUTINE_DEPTH_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:call_callback_contracts"
@@ -81389,7 +83942,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REDEFINE_CONSTANT_SUBROUTINE_REDEFINED",
           "macro" => "PERL_WARN_WARNING_REDEFINE_CONSTANT_SUBROUTINE_REDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:call_callback_contracts"
@@ -81437,7 +83992,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REDEFINE_DEFAULT_STDOUT_REPORT_FORMAT_REDEFINED",
           "macro" => "PERL_WARN_WARNING_REDEFINE_DEFAULT_STDOUT_REPORT_FORMAT_REDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:report_formats"
@@ -81478,7 +84035,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REDEFINE_METHOD_REDEFINED",
           "macro" => "PERL_WARN_WARNING_REDEFINE_METHOD_REDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -81526,7 +84085,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REDEFINE_REPORT_FORMAT_REDEFINED",
           "macro" => "PERL_WARN_WARNING_REDEFINE_REPORT_FORMAT_REDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:report_formats"
@@ -81574,7 +84135,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REDEFINE_SUBROUTINE_REDEFINED",
           "macro" => "PERL_WARN_WARNING_REDEFINE_SUBROUTINE_REDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:call_callback_contracts"
@@ -81622,7 +84185,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REDUNDANT_PRINTF_ARGUMENT_UNUSED",
           "macro" => "PERL_WARN_WARNING_REDUNDANT_PRINTF_ARGUMENT_UNUSED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "subject:printf_conversion"
           ],
@@ -81700,7 +84265,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CASE_FOLD_INVERSE_MAPPING_MISSING",
           "macro" => "PERL_WARN_WARNING_REGEXP_CASE_FOLD_INVERSE_MAPPING_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp",
@@ -81757,7 +84324,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_EMPTY_NAMED_ESCAPE_IGNORED",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_EMPTY_NAMED_ESCAPE_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:regexp",
@@ -81808,7 +84377,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_ESCAPE_NONPORTABLE_NOTATION",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_ESCAPE_NONPORTABLE_NOTATION",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -81879,7 +84450,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_ESCAPE_UNKNOWN_ALPHANUMERIC",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_ESCAPE_UNKNOWN_ALPHANUMERIC",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -81935,7 +84508,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_EXTENDED_STRING_PROPERTY_PART_IGNORED",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_EXTENDED_STRING_PROPERTY_PART_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:regexp",
@@ -81987,7 +84562,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_NAMED_ESCAPE_TRUNCATED",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_NAMED_ESCAPE_TRUNCATED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp",
@@ -82038,7 +84615,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_POSIX_OUTER_BRACKETS_MISSING",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_POSIX_OUTER_BRACKETS_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:regexp"
@@ -82179,7 +84758,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_POSIX_SYNTAX_SUSPICIOUS",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_POSIX_SYNTAX_SUSPICIOUS",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -82392,7 +84973,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_RANGE_ASCII_ENDPOINTS_MIXED",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_ASCII_ENDPOINTS_MIXED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -82442,7 +85025,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_RANGE_DECIMAL_GROUPS_MIXED",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_DECIMAL_GROUPS_MIXED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp",
@@ -82493,7 +85078,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_RANGE_END_NOT_CHARACTER",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_END_NOT_CHARACTER",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:regexp"
@@ -82564,7 +85151,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_RANGE_START_NOT_CHARACTER",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_START_NOT_CHARACTER",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:regexp"
@@ -82634,7 +85223,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_CHAR_CLASS_RANGE_UNICODE_NOTATION_MIXED",
           "macro" => "PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_UNICODE_NOTATION_MIXED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp",
@@ -82685,7 +85276,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_COMMENT_CLOSE_BRACKET_SUSPICIOUS",
           "macro" => "PERL_WARN_WARNING_REGEXP_COMMENT_CLOSE_BRACKET_SUSPICIOUS",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "role:context_hint",
@@ -82736,7 +85329,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_COMMENT_HASH_SPACING_SUSPICIOUS",
           "macro" => "PERL_WARN_WARNING_REGEXP_COMMENT_HASH_SPACING_SUSPICIOUS",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "role:context_hint",
@@ -82787,7 +85382,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_COMMENT_SECOND_HASH_SUSPICIOUS",
           "macro" => "PERL_WARN_WARNING_REGEXP_COMMENT_SECOND_HASH_SUSPICIOUS",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "role:context_hint",
@@ -82838,7 +85435,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_ESCAPE_DIGIT_OUTSIDE_RADIX",
           "macro" => "PERL_WARN_WARNING_REGEXP_ESCAPE_DIGIT_OUTSIDE_RADIX",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c",
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:quoted_source_escapes",
@@ -82970,7 +85570,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_ESCAPE_LITERAL_CLOSE_DELIMITER_UNESCAPED",
           "macro" => "PERL_WARN_WARNING_REGEXP_ESCAPE_LITERAL_CLOSE_DELIMITER_UNESCAPED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -83026,7 +85628,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_ESCAPE_LITERAL_OPEN_BRACE_AMBIGUOUS",
           "macro" => "PERL_WARN_WARNING_REGEXP_ESCAPE_LITERAL_OPEN_BRACE_AMBIGUOUS",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -83118,7 +85722,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_ESCAPE_UNKNOWN_ALPHANUMERIC",
           "macro" => "PERL_WARN_WARNING_REGEXP_ESCAPE_UNKNOWN_ALPHANUMERIC",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:regexp"
@@ -83174,7 +85780,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_MODIFIER_BOUNDARY_FORCES_UNICODE",
           "macro" => "PERL_WARN_WARNING_REGEXP_MODIFIER_BOUNDARY_FORCES_UNICODE",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:regexp",
@@ -83246,7 +85854,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_MODIFIER_EMPTY_GROUP",
           "macro" => "PERL_WARN_WARNING_REGEXP_MODIFIER_EMPTY_GROUP",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:regexp"
@@ -83296,7 +85906,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_MODIFIER_INLINE_CONTINUE_IGNORED",
           "macro" => "PERL_WARN_WARNING_REGEXP_MODIFIER_INLINE_CONTINUE_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:regexp"
@@ -83453,7 +86065,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_MODIFIER_INLINE_GLOBAL_OR_ONCE_IGNORED",
           "macro" => "PERL_WARN_WARNING_REGEXP_MODIFIER_INLINE_GLOBAL_OR_ONCE_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:regexp"
@@ -83615,7 +86229,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_MODIFIER_KEEP_COPY_DISABLE_IGNORED",
           "macro" => "PERL_WARN_WARNING_REGEXP_MODIFIER_KEEP_COPY_DISABLE_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:regexp"
@@ -83665,7 +86281,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_MODIFIER_MATCH_CONTINUE_WITHOUT_GLOBAL",
           "macro" => "PERL_WARN_WARNING_REGEXP_MODIFIER_MATCH_CONTINUE_WITHOUT_GLOBAL",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:regexp"
@@ -83707,7 +86325,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_MODIFIER_SPLIT_GLOBAL_IGNORED",
           "macro" => "PERL_WARN_WARNING_REGEXP_MODIFIER_SPLIT_GLOBAL_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:regexp"
@@ -83749,7 +86369,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_MODIFIER_SUBSTITUTION_CONTINUE_IGNORED",
           "macro" => "PERL_WARN_WARNING_REGEXP_MODIFIER_SUBSTITUTION_CONTINUE_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:regexp"
@@ -83791,7 +86413,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_QUANTIFIER_EXCESSIVE_ZERO_WIDTH_REPETITION",
           "macro" => "PERL_WARN_WARNING_REGEXP_QUANTIFIER_EXCESSIVE_ZERO_WIDTH_REPETITION",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:nonterminating_repeat",
             "subject:regexp"
@@ -83862,7 +86486,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_QUANTIFIER_FIXED_COUNT_GREEDINESS_IGNORED",
           "macro" => "PERL_WARN_WARNING_REGEXP_QUANTIFIER_FIXED_COUNT_GREEDINESS_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:regexp"
@@ -83918,7 +86544,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_QUANTIFIER_MAXIMUM_BELOW_MINIMUM",
           "macro" => "PERL_WARN_WARNING_REGEXP_QUANTIFIER_MAXIMUM_BELOW_MINIMUM",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:regexp"
@@ -83968,7 +86596,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_REGEXP_QUANTIFIER_ZERO_WIDTH_EXPRESSION",
           "macro" => "PERL_WARN_WARNING_REGEXP_QUANTIFIER_ZERO_WIDTH_EXPRESSION",
-          "source_files" => [],
+          "source_files" => [
+            "regcomp_study.c"
+          ],
           "tags" => [
             "condition:nonterminating_repeat",
             "subject:regexp"
@@ -84031,7 +86661,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_RUN_ENVIRONMENT_HASH_PERTURBATION_INVALID",
           "macro" => "PERL_WARN_WARNING_RUN_ENVIRONMENT_HASH_PERTURBATION_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:interpreter_configuration"
@@ -84076,7 +86708,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_RUN_ENVIRONMENT_HASH_SEED_NON_HEX_CHARACTER",
           "macro" => "PERL_WARN_WARNING_RUN_ENVIRONMENT_HASH_SEED_NON_HEX_CHARACTER",
-          "source_files" => [],
+          "source_files" => [
+            "util.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:interpreter_configuration"
@@ -84115,7 +86749,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SCALAR_USELESS_EXPRESSION",
           "macro" => "PERL_WARN_WARNING_SCALAR_USELESS_EXPRESSION",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c",
+            "op.c"
+          ],
           "tags" => [
             "subject:builtins_operators"
           ],
@@ -84161,7 +86798,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_DEBUGGING_DELETED_ARRAY_CLEAR",
           "macro" => "PERL_WARN_WARNING_SEVERE_DEBUGGING_DELETED_ARRAY_CLEAR",
-          "source_files" => [],
+          "source_files" => [
+            "av.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -84202,7 +86841,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_DEBUGGING_RUNLOOP_ENTRY_OP_NULL",
           "macro" => "PERL_WARN_WARNING_SEVERE_DEBUGGING_RUNLOOP_ENTRY_OP_NULL",
-          "source_files" => [],
+          "source_files" => [
+            "dump.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:builtins_operators"
@@ -84243,7 +86884,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_DEBUGGING_RUN_OPTION_BUILD_REQUIRED",
           "macro" => "PERL_WARN_WARNING_SEVERE_DEBUGGING_RUN_OPTION_BUILD_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:startup_options_configuration"
@@ -84284,7 +86927,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_DEBUGGING_RUN_OPTION_INVALID_FLAG",
           "macro" => "PERL_WARN_WARNING_SEVERE_DEBUGGING_RUN_OPTION_INVALID_FLAG",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:startup_options_configuration"
@@ -84331,7 +86976,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_DEBUGGING_TEMPORARY_SCALAR_FREE_PREMATURE",
           "macro" => "PERL_WARN_WARNING_SEVERE_DEBUGGING_TEMPORARY_SCALAR_FREE_PREMATURE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -84379,7 +87026,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_DEBUGGING_TIED_ARRAY_REIFICATION",
           "macro" => "PERL_WARN_WARNING_SEVERE_DEBUGGING_TIED_ARRAY_REIFICATION",
-          "source_files" => [],
+          "source_files" => [
+            "av.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:string_sequence_container",
@@ -84421,7 +87070,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INPLACE_ARGV_FORK_OPEN_IGNORED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INPLACE_ARGV_FORK_OPEN_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:io_handles_filesystem",
@@ -84469,7 +87120,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INPLACE_ARGV_INPUT_OPEN_FAILED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INPLACE_ARGV_INPUT_OPEN_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -84521,7 +87174,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INPLACE_EDIT_BACKUP_ALIASES_INPUT",
           "macro" => "PERL_WARN_WARNING_SEVERE_INPLACE_EDIT_BACKUP_ALIASES_INPUT",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:io_handles_filesystem"
@@ -84569,7 +87224,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INPLACE_EDIT_FILENAMES_MISSING",
           "macro" => "PERL_WARN_WARNING_SEVERE_INPLACE_EDIT_FILENAMES_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:io_handles_filesystem",
@@ -84611,7 +87268,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INPLACE_EDIT_INPUT_NOT_REGULAR",
           "macro" => "PERL_WARN_WARNING_SEVERE_INPLACE_EDIT_INPUT_NOT_REGULAR",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:io_handles_filesystem"
@@ -84664,7 +87323,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INPLACE_EDIT_TEMPORARY_OUTPUT_CREATE_FAILED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INPLACE_EDIT_TEMPORARY_OUTPUT_CREATE_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem"
@@ -84716,7 +87377,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_ARRAY_COERCION_OP_UNEXPECTED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_ARRAY_COERCION_OP_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:builtins_operators"
@@ -84757,7 +87420,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_DESTRUCTION_CONTEXT_STACK_UNBALANCED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_CONTEXT_STACK_UNBALANCED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:control_flow_scope"
@@ -84864,7 +87529,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_DESTRUCTION_SAVE_STACK_UNBALANCED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SAVE_STACK_UNBALANCED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:control_flow_scope"
@@ -84971,7 +87638,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_DESTRUCTION_SCALAR_ALLOCATION_COUNT_NONZERO",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SCALAR_ALLOCATION_COUNT_NONZERO",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -85018,7 +87687,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_DESTRUCTION_SCOPE_STACK_UNBALANCED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SCOPE_STACK_UNBALANCED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:control_flow_scope"
@@ -85125,7 +87796,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_DESTRUCTION_SHARED_STRING_RETAINED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SHARED_STRING_RETAINED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime",
@@ -85178,7 +87851,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_DESTRUCTION_TEMP_STACK_FLOOR_UNBALANCED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_TEMP_STACK_FLOOR_UNBALANCED",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -85225,7 +87900,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_FREED_SCALAR_COPY",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_FREED_SCALAR_COPY",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -85267,7 +87944,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_HASH_COERCION_OP_UNEXPECTED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_HASH_COERCION_OP_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:builtins_operators"
@@ -85308,7 +87987,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_HASH_ITERATION_AFTER_INSERTION",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_HASH_ITERATION_AFTER_INSERTION",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "subject:iteration",
             "subject:string_sequence_container"
@@ -85350,7 +88031,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_LEXICAL_DECLARATION_NEVER_INTRODUCED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_LEXICAL_DECLARATION_NEVER_INTRODUCED",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:parser_declarations"
@@ -85398,7 +88081,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_PRINTF_POINTER_EXTENSION_WIDTH_CONFLICT",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_PRINTF_POINTER_EXTENSION_WIDTH_CONFLICT",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "subject:printf_conversion"
           ],
@@ -85438,7 +88123,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_SCALAR_FREE_OUTSIDE_ARENAS",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_SCALAR_FREE_OUTSIDE_ARENAS",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -85486,7 +88173,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_SHARED_STRING_FREE_NOT_FOUND",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_SHARED_STRING_FREE_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "hv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime",
@@ -85595,7 +88284,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_SYMBOL_CREATED_DURING_LOOKUP",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_SYMBOL_CREATED_DURING_LOOKUP",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:names_symbols"
@@ -85657,7 +88348,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_UNREFERENCED_GLOB_POINTERS_FREE",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_UNREFERENCED_GLOB_POINTERS_FREE",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime",
@@ -85844,7 +88537,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_ZERO_REFCOUNT_SCALAR_FREE",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_ZERO_REFCOUNT_SCALAR_FREE",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -85892,7 +88587,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_MALLOC_DUPLICATE_FREE_IGNORED",
           "macro" => "PERL_WARN_WARNING_SEVERE_MALLOC_DUPLICATE_FREE_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "condition:corruption_invariant",
@@ -85934,7 +88631,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_MALLOC_FREED_BLOCK_REALLOC_IGNORED",
           "macro" => "PERL_WARN_WARNING_SEVERE_MALLOC_FREED_BLOCK_REALLOC_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -85975,7 +88674,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_MALLOC_INVALID_FREE_IGNORED",
           "macro" => "PERL_WARN_WARNING_SEVERE_MALLOC_INVALID_FREE_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -86016,7 +88717,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_MALLOC_INVALID_REALLOC_IGNORED",
           "macro" => "PERL_WARN_WARNING_SEVERE_MALLOC_INVALID_REALLOC_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "malloc.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime"
@@ -86057,7 +88760,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SHADOW_DECLARATION_MASKS_EARLIER_BINDING",
           "macro" => "PERL_WARN_WARNING_SHADOW_DECLARATION_MASKS_EARLIER_BINDING",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:parser_declarations"
@@ -86276,7 +88981,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SHADOW_OUR_REDECLARATION_LOCAL_SUGGESTION",
           "macro" => "PERL_WARN_WARNING_SHADOW_OUR_REDECLARATION_LOCAL_SUGGESTION",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:parser_declarations"
@@ -86317,7 +89024,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SHADOW_OUR_VARIABLE_REDECLARED",
           "macro" => "PERL_WARN_WARNING_SHADOW_OUR_VARIABLE_REDECLARED",
-          "source_files" => [],
+          "source_files" => [
+            "pad.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:parser_declarations"
@@ -86365,7 +89074,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SIGNAL_ANONYMOUS_HANDLER_UNDEFINED",
           "macro" => "PERL_WARN_WARNING_SIGNAL_ANONYMOUS_HANDLER_UNDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts",
@@ -86413,7 +89124,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SIGNAL_IGNORED_CHLD_RESET_TO_DEFAULT",
           "macro" => "PERL_WARN_WARNING_SIGNAL_IGNORED_CHLD_RESET_TO_DEFAULT",
-          "source_files" => [],
+          "source_files" => [
+            "perl.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:signals"
@@ -86454,7 +89167,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SIGNAL_NAMED_HANDLER_UNDEFINED",
           "macro" => "PERL_WARN_WARNING_SIGNAL_NAMED_HANDLER_UNDEFINED",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts",
@@ -86508,7 +89223,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SIGNAL_NAME_UNRECOGNIZED",
           "macro" => "PERL_WARN_WARNING_SIGNAL_NAME_UNRECOGNIZED",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:signals"
@@ -86555,7 +89272,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SUBSTR_LVALUE_TARGET_REFERENCE",
           "macro" => "PERL_WARN_WARNING_SUBSTR_LVALUE_TARGET_REFERENCE",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c",
+            "pp.c"
+          ],
           "tags" => [
             "subject:mutation_access",
             "subject:reference_type",
@@ -86597,7 +89317,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SUBSTR_RANGE_OUTSIDE_STRING",
           "macro" => "PERL_WARN_WARNING_SUBSTR_RANGE_OUTSIDE_STRING",
-          "source_files" => [],
+          "source_files" => [
+            "mg.c",
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:string_sequence_container"
@@ -86638,7 +89361,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_AMBIGUOUS_BRACED_NAME_DEREFERENCE_RESOLUTION",
           "macro" => "PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_BRACED_NAME_DEREFERENCE_RESOLUTION",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:parser_declarations",
             "subject:reference_type"
@@ -86702,7 +89427,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_AMBIGUOUS_BRACKETED_KEYWORD_DEREFERENCE_RESOLUTION",
           "macro" => "PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_BRACKETED_KEYWORD_DEREFERENCE_RESOLUTION",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:parser_declarations",
             "subject:reference_type"
@@ -86774,7 +89501,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_AMBIGUOUS_CORE_CALL_RESOLUTION",
           "macro" => "PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_CORE_CALL_RESOLUTION",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:names_symbols",
             "subject:parser_declarations"
@@ -86821,7 +89550,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_AMBIGUOUS_REGEXP_BACKSLASH_VARIABLE_INTERPOLATION",
           "macro" => "PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_REGEXP_BACKSLASH_VARIABLE_INTERPOLATION",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "subject:quoted_source_escapes",
             "subject:regexp"
@@ -86863,7 +89595,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_AMBIGUOUS_SEPARATOR_MISSING_BEFORE_SIGILED_NAME",
           "macro" => "PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_SEPARATOR_MISSING_BEFORE_SIGILED_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations"
@@ -86930,7 +89664,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_AMBIGUOUS_SIGIL_RESOLVED_AS_OPERATOR",
           "macro" => "PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_SIGIL_RESOLVED_AS_OPERATOR",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:parser_declarations"
           ],
@@ -86981,7 +89717,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_AMBIGUOUS_UNARY_CALL_WITHOUT_PARENTHESES",
           "macro" => "PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_UNARY_CALL_WITHOUT_PARENTHESES",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:call_callback_contracts",
             "subject:parser_declarations"
@@ -87043,7 +89781,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_AMBIGUOUS_UNDECLARED_AGGREGATE_INTERPOLATION",
           "macro" => "PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_UNDECLARED_AGGREGATE_INTERPOLATION",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:names_symbols",
             "subject:quoted_source_escapes"
@@ -87105,7 +89845,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_ARRAY_BASE_USED_IN_COMPARISON",
           "macro" => "PERL_WARN_WARNING_SYNTAX_ARRAY_BASE_USED_IN_COMPARISON",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:builtins_operators",
             "subject:special_variables"
@@ -87198,7 +89940,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_ARRAY_INSERTION_VALUES_MISSING",
           "macro" => "PERL_WARN_WARNING_SYNTAX_ARRAY_INSERTION_VALUES_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:string_sequence_container"
@@ -87245,7 +89989,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_ASSIGNMENT_OPERATOR_REVERSED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_ASSIGNMENT_OPERATOR_REVERSED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -87292,7 +90038,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_BAREWORD_BAREWORD_IN_CONDITIONAL",
           "macro" => "PERL_WARN_WARNING_SYNTAX_BAREWORD_BAREWORD_IN_CONDITIONAL",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:parser_declarations"
           ],
@@ -87332,7 +90080,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_BAREWORD_PACKAGE_BAREWORD_HAS_NO_STASH",
           "macro" => "PERL_WARN_WARNING_SYNTAX_BAREWORD_PACKAGE_BAREWORD_HAS_NO_STASH",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:names_symbols",
@@ -87395,7 +90145,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_BEGIN_ATTRIBUTES_IGNORED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_BEGIN_ATTRIBUTES_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:phase_blocks"
@@ -87436,7 +90188,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_BEGIN_PROTOTYPE_IGNORED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_BEGIN_PROTOTYPE_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:phase_blocks",
@@ -87478,7 +90232,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_CONDITIONAL_CONSTANT_ASSIGNMENT",
           "macro" => "PERL_WARN_WARNING_SYNTAX_CONDITIONAL_CONSTANT_ASSIGNMENT",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:control_flow_scope",
             "subject:mutation_access"
@@ -87519,7 +90275,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_CONTROL_ESCAPE_PRINTABLE_RESULT",
           "macro" => "PERL_APPEND_WARNING_SYNTAX_CONTROL_ESCAPE_PRINTABLE_RESULT",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c",
+            "xperl_exception.inc"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:quoted_source_escapes"
@@ -87577,7 +90336,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_CONTROL_TRANSFER_PRECEDENCE",
           "macro" => "PERL_WARN_WARNING_SYNTAX_CONTROL_TRANSFER_PRECEDENCE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:control_flow_scope"
           ],
@@ -87623,7 +90384,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_DIGIT_ESCAPE_TERMINATED_EARLY",
           "macro" => "PERL_WARN_WARNING_SYNTAX_DIGIT_ESCAPE_TERMINATED_EARLY",
-          "source_files" => [],
+          "source_files" => [
+            "dquote.c",
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:quoted_source_escapes"
@@ -87771,7 +90535,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_DIGIT_INVALID_RADIX_DIGIT_IGNORED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_DIGIT_INVALID_RADIX_DIGIT_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "numeric.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:numeric_arithmetic"
@@ -87892,7 +90658,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_DISPATCH_CONSTANT_UNREACHABLE",
           "macro" => "PERL_WARN_WARNING_SYNTAX_DISPATCH_CONSTANT_UNREACHABLE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:dispatch_pattern_matching"
@@ -87960,7 +90728,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_DISPATCH_REGEXP_CAPTURE_SHADOWED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_DISPATCH_REGEXP_CAPTURE_SHADOWED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:dispatch_pattern_matching",
@@ -88010,7 +90780,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_EACH_ANONYMOUS_ARRAY_ITERATOR_RESTARTS",
           "macro" => "PERL_WARN_WARNING_SYNTAX_EACH_ANONYMOUS_ARRAY_ITERATOR_RESTARTS",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:iteration",
             "subject:string_sequence_container"
@@ -88051,7 +90823,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_EACH_ANONYMOUS_HASH_ITERATOR_RESTARTS",
           "macro" => "PERL_WARN_WARNING_SYNTAX_EACH_ANONYMOUS_HASH_ITERATOR_RESTARTS",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:iteration",
             "subject:string_sequence_container"
@@ -88092,7 +90866,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_ELSEIF_SPELLING_UNRECOGNIZED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_ELSEIF_SPELLING_UNRECOGNIZED",
-          "source_files" => [],
+          "source_files" => [
+            "keywords.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations"
@@ -88133,7 +90909,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_FILE_TEST_ARRAY_COERCION_WITHOUT_ELEMENT_HINT",
           "macro" => "PERL_WARN_WARNING_SYNTAX_FILE_TEST_ARRAY_COERCION_WITHOUT_ELEMENT_HINT",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:io_handles_filesystem",
             "subject:string_sequence_container"
@@ -88175,7 +90953,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_FILE_TEST_ARRAY_COERCION_WITH_ELEMENT_HINT",
           "macro" => "PERL_WARN_WARNING_SYNTAX_FILE_TEST_ARRAY_COERCION_WITH_ELEMENT_HINT",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:io_handles_filesystem",
             "subject:string_sequence_container"
@@ -88224,7 +91004,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_HASH_ELEMENT_SCALAR_CONTEXT_WITH_CONSTANT_KEY",
           "macro" => "PERL_WARN_WARNING_SYNTAX_HASH_ELEMENT_SCALAR_CONTEXT_WITH_CONSTANT_KEY",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:string_sequence_container"
           ],
@@ -88309,7 +91091,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_HASH_ELEMENT_SCALAR_CONTEXT_WITH_KEY_PLACEHOLDER",
           "macro" => "PERL_WARN_WARNING_SYNTAX_HASH_ELEMENT_SCALAR_CONTEXT_WITH_KEY_PLACEHOLDER",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:string_sequence_container"
           ],
@@ -88392,7 +91176,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_ILLEGALPROTO_BRACKET_GROUP_UNTERMINATED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_BRACKET_GROUP_UNTERMINATED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "condition:unterminated_unbalanced",
@@ -88446,7 +91232,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_AFTER_GREEDY_SLOT",
           "macro" => "PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_AFTER_GREEDY_SLOT",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:signature_prototype"
@@ -88504,7 +91292,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_AFTER_UNDERSCORE_INVALID",
           "macro" => "PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_AFTER_UNDERSCORE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:signature_prototype"
@@ -88557,7 +91347,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_UNRECOGNIZED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_UNRECOGNIZED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:signature_prototype"
@@ -88610,7 +91402,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_INHERITANCE_PACKAGE_UNAVAILABLE_FOR_SPECIAL_LOOKUP",
           "macro" => "PERL_WARN_WARNING_SYNTAX_INHERITANCE_PACKAGE_UNAVAILABLE_FOR_SPECIAL_LOOKUP",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -88664,7 +91458,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_JOIN_SEPARATOR_PATTERN_INSTEAD_OF_STRING",
           "macro" => "PERL_WARN_WARNING_SYNTAX_JOIN_SEPARATOR_PATTERN_INSTEAD_OF_STRING",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:regexp",
@@ -88719,7 +91515,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_LENGTH_ARRAY_COERCION_WITHOUT_NAME",
           "macro" => "PERL_WARN_WARNING_SYNTAX_LENGTH_ARRAY_COERCION_WITHOUT_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:string_sequence_container"
           ],
@@ -88759,7 +91557,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_LENGTH_HASH_COERCION_WITHOUT_NAME",
           "macro" => "PERL_WARN_WARNING_SYNTAX_LENGTH_HASH_COERCION_WITHOUT_NAME",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:string_sequence_container"
           ],
@@ -88799,7 +91599,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_LENGTH_NAMED_AGGREGATE_COERCION",
           "macro" => "PERL_WARN_WARNING_SYNTAX_LENGTH_NAMED_AGGREGATE_COERCION",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:string_sequence_container"
           ],
@@ -88906,7 +91708,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_LOCALIZATION_NO_EFFECT",
           "macro" => "PERL_WARN_WARNING_SYNTAX_LOCALIZATION_NO_EFFECT",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:no_effect",
             "subject:mutation_access"
@@ -88985,7 +91789,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_METHOD_LOOKUP_ANCESTOR_PACKAGE_UNAVAILABLE",
           "macro" => "PERL_WARN_WARNING_SYNTAX_METHOD_LOOKUP_ANCESTOR_PACKAGE_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "gv.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:object_role_field"
@@ -89084,7 +91890,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_MULTIDIMENSIONAL_SUBSCRIPT_UNSUPPORTED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_MULTIDIMENSIONAL_SUBSCRIPT_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:parser_declarations",
@@ -89147,7 +91955,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_NEGATED_PATTERN_BINDING_OPERATOR_REVERSED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_NEGATED_PATTERN_BINDING_OPERATOR_REVERSED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:parser_declarations",
@@ -89189,7 +91999,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_NUMBER_UNDERSCORE_MISPLACED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_NUMBER_UNDERSCORE_MISPLACED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:numeric_arithmetic",
@@ -89231,7 +92043,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_PARENTHESIS_DECLARATION_LIST_PARENTHESES_MISSING",
           "macro" => "PERL_WARN_WARNING_SYNTAX_PARENTHESIS_DECLARATION_LIST_PARENTHESES_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations"
@@ -89278,7 +92092,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_PARENTHESIZED_FORM_INTERPRETED_AS_FUNCTION",
           "macro" => "PERL_WARN_WARNING_SYNTAX_PARENTHESIZED_FORM_INTERPRETED_AS_FUNCTION",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:parser_declarations"
           ],
@@ -89324,7 +92140,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_PRECEDENCE_COMPARISON_WITH_BITWISE_OPERATOR",
           "macro" => "PERL_WARN_WARNING_SYNTAX_PRECEDENCE_COMPARISON_WITH_BITWISE_OPERATOR",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:builtins_operators",
             "subject:parser_declarations"
@@ -89371,7 +92189,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_PRECEDENCE_UNPARENTHESIZED_NEGATION_WITH_OPERATOR",
           "macro" => "PERL_WARN_WARNING_SYNTAX_PRECEDENCE_UNPARENTHESIZED_NEGATION_WITH_OPERATOR",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:builtins_operators",
             "subject:parser_declarations"
@@ -89499,7 +92319,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_PRECEDENCE_UNPARENTHESIZED_OPEN_BAREWORD",
           "macro" => "PERL_WARN_WARNING_SYNTAX_PRECEDENCE_UNPARENTHESIZED_OPEN_BAREWORD",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:io_handles_filesystem",
             "subject:parser_declarations"
@@ -89581,7 +92403,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_PRINTF_CONVERSION_INVALID",
           "macro" => "PERL_WARN_WARNING_SYNTAX_PRINTF_CONVERSION_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:printf_conversion"
@@ -89695,7 +92519,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_PRINTF_VECTOR_DEVELOPMENT_VERSION_UNSUPPORTED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_PRINTF_VECTOR_DEVELOPMENT_VERSION_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:module_version_loading",
@@ -89737,7 +92563,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_PROTOTYPE_CALL_TOO_EARLY_TO_CHECK_PROTOTYPE",
           "macro" => "PERL_WARN_WARNING_SYNTAX_PROTOTYPE_CALL_TOO_EARLY_TO_CHECK_PROTOTYPE",
-          "source_files" => [],
+          "source_files" => [
+            "peep.c"
+          ],
           "tags" => [
             "subject:call_callback_contracts",
             "subject:signature_prototype"
@@ -89785,7 +92613,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_PROTOTYPE_DECLARATION_PROTOTYPE_MISMATCH",
           "macro" => "PERL_WARN_WARNING_SYNTAX_PROTOTYPE_DECLARATION_PROTOTYPE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -89846,7 +92676,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_PROTOTYPE_DECLARED_PROTOTYPE_OVERRIDDEN_BY_ATTRIBUTE",
           "macro" => "PERL_WARN_WARNING_SYNTAX_PROTOTYPE_DECLARED_PROTOTYPE_OVERRIDDEN_BY_ATTRIBUTE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:call_callback_contracts",
             "subject:signature_prototype"
@@ -89934,7 +92766,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_QW_COMMA_IN_WORD_LIST",
           "macro" => "PERL_WARN_WARNING_SYNTAX_QW_COMMA_IN_WORD_LIST",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:quoted_source_escapes"
           ],
@@ -89974,7 +92808,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_QW_COMMENT_MARKER_IN_WORD_LIST",
           "macro" => "PERL_WARN_WARNING_SYNTAX_QW_COMMENT_MARKER_IN_WORD_LIST",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:quoted_source_escapes"
           ],
@@ -90014,7 +92850,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_QW_WHITESPACE_ESCAPE_IN_WORD_LIST",
           "macro" => "PERL_WARN_WARNING_SYNTAX_QW_WHITESPACE_ESCAPE_IN_WORD_LIST",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:quoted_source_escapes"
           ],
@@ -90054,7 +92892,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_REPORT_FORMAT_VALUES_MISSING",
           "macro" => "PERL_WARN_WARNING_SYNTAX_REPORT_FORMAT_VALUES_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "pp_ctl.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:report_formats"
@@ -90095,7 +92935,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_RESERVED_LOWERCASE_BAREWORD_MAY_BECOME_RESERVED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_RESERVED_LOWERCASE_BAREWORD_MAY_BECOME_RESERVED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:parser_declarations"
           ],
@@ -90141,7 +92983,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_SEMICOLON_PREVIOUS_LINE_SEMICOLON_MAY_BE_MISSING",
           "macro" => "PERL_WARN_WARNING_SYNTAX_SEMICOLON_PREVIOUS_LINE_SEMICOLON_MAY_BE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:parser_declarations"
@@ -90183,7 +93027,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_SIGNAL_HANDLER_BAREWORD_NEEDS_QUOTES",
           "macro" => "PERL_WARN_WARNING_SYNTAX_SIGNAL_HANDLER_BAREWORD_NEEDS_QUOTES",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:parser_declarations",
             "subject:signals"
@@ -90245,7 +93091,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_SLICE_SCALAR_CONTEXT_WITH_CONSTANT_KEY",
           "macro" => "PERL_WARN_WARNING_SYNTAX_SLICE_SCALAR_CONTEXT_WITH_CONSTANT_KEY",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:string_sequence_container"
           ],
@@ -90330,7 +93178,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_SLICE_SCALAR_CONTEXT_WITH_KEY_PLACEHOLDER",
           "macro" => "PERL_WARN_WARNING_SYNTAX_SLICE_SCALAR_CONTEXT_WITH_KEY_PLACEHOLDER",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:string_sequence_container"
           ],
@@ -90413,7 +93263,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_SORT_COMPARISON_LEXICAL_A_OR_B",
           "macro" => "PERL_WARN_WARNING_SYNTAX_SORT_COMPARISON_LEXICAL_A_OR_B",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:parser_declarations",
             "subject:string_sequence_container"
@@ -90465,7 +93317,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_SUBSTITUTION_BACKREFERENCE_DOLLAR_PREFERRED",
           "macro" => "PERL_WARN_WARNING_SYNTAX_SUBSTITUTION_BACKREFERENCE_DOLLAR_PREFERRED",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:quoted_source_escapes",
@@ -90519,7 +93373,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYNTAX_SUBSTITUTION_EXPRESSION_BACKSLASH_DIGIT",
           "macro" => "PERL_WARN_WARNING_SYNTAX_SUBSTITUTION_EXPRESSION_BACKSLASH_DIGIT",
-          "source_files" => [],
+          "source_files" => [
+            "toke.c"
+          ],
           "tags" => [
             "subject:parser_declarations",
             "subject:regexp"
@@ -91031,7 +93887,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UNINITIALIZED_VALUE_WITHOUT_OPERATION",
           "macro" => "PERL_WARN_WARNING_UNINITIALIZED_VALUE_WITHOUT_OPERATION",
-          "source_files" => [],
+          "source_files" => [
+            "sv.c"
+          ],
           "tags" => [
             "condition:undefined_uninitialized",
             "subject:string_sequence_container"
@@ -91072,7 +93930,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UNINITIALIZED_VALUE_WITH_OPERATION",
           "macro" => "PERL_WARN_WARNING_UNINITIALIZED_VALUE_WITH_OPERATION",
-          "source_files" => [],
+          "source_files" => [
+            "ext/XS-APItest/APItest_runtime_helpers.xs",
+            "sv.c"
+          ],
           "tags" => [
             "condition:undefined_uninitialized",
             "subject:string_sequence_container"
@@ -91224,7 +94085,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UNPACK_CHARACTER_WRAPPED_TO_BYTE",
           "macro" => "PERL_WARN_WARNING_UNPACK_CHARACTER_WRAPPED_TO_BYTE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:pack_unpack",
@@ -91272,7 +94135,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UNPACK_FORMAT_COMMA_IGNORED",
           "macro" => "PERL_WARN_WARNING_UNPACK_FORMAT_COMMA_IGNORED",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:pack_unpack"
@@ -91319,7 +94184,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UNPACK_FORMAT_MODIFIER_DUPLICATE",
           "macro" => "PERL_WARN_WARNING_UNPACK_FORMAT_MODIFIER_DUPLICATE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_pack.c"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:pack_unpack"
@@ -91376,7 +94243,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UNTIE_INNER_REFERENCES_REMAIN",
           "macro" => "PERL_WARN_WARNING_UNTIE_INNER_REFERENCES_REMAIN",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "subject:reference_type",
             "subject:tie_debugger"
@@ -91466,7 +94335,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_USER_REFERENCE",
           "macro" => "PERL_WARN_WARNING_USER_REFERENCE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c"
+          ],
           "tags" => [
             "subject:diagnostic_exception_api",
             "subject:reference_type"
@@ -91512,7 +94383,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_CHR_NEGATIVE_VALUE",
           "macro" => "PERL_WARN_WARNING_UTF8_CHR_NEGATIVE_VALUE",
-          "source_files" => [],
+          "source_files" => [
+            "pp.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:numeric_arithmetic",
@@ -91561,7 +94434,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_CONTINUATION_WITHOUT_START",
           "macro" => "PERL_WARN_WARNING_UTF8_CONTINUATION_WITHOUT_START",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -91716,7 +94591,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_EMPTY_SEQUENCE",
           "macro" => "PERL_WARN_WARNING_UTF8_EMPTY_SEQUENCE",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -91861,7 +94738,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_NONCHAR_NONCHARACTER_DECODED",
           "macro" => "PERL_WARN_WARNING_UTF8_NONCHAR_NONCHARACTER_DECODED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -92011,7 +94890,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_NONCHAR_NONCHARACTER_ENCODED",
           "macro" => "PERL_WARN_WARNING_UTF8_NONCHAR_NONCHARACTER_ENCODED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -92060,7 +94941,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_NON_UNICODE_ABOVE_UNICODE_SEQUENCE_PREFIX",
           "macro" => "PERL_WARN_WARNING_UTF8_NON_UNICODE_ABOVE_UNICODE_SEQUENCE_PREFIX",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -92209,7 +95092,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_NON_UNICODE_CASE_MAPPING_RETURNS_SUPER_UNCHANGED",
           "macro" => "PERL_WARN_WARNING_UTF8_NON_UNICODE_CASE_MAPPING_RETURNS_SUPER_UNCHANGED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -92293,7 +95178,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX",
           "macro" => "PERL_WARN_WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -92442,7 +95329,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT",
           "macro" => "PERL_WARN_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -92591,7 +95480,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_SEQUENCE_PREFIX",
           "macro" => "PERL_WARN_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_SEQUENCE_PREFIX",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -92740,7 +95631,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_NON_UNICODE_PROPERTY_MATCH_ABOVE_UNICODE_MAX",
           "macro" => "PERL_WARN_WARNING_UTF8_NON_UNICODE_PROPERTY_MATCH_ABOVE_UNICODE_MAX",
-          "source_files" => [],
+          "source_files" => [
+            "regexec.c"
+          ],
           "tags" => [
             "subject:regexp",
             "subject:unicode_encoding"
@@ -92788,7 +95681,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_NON_UNICODE_SEQUENCE_VALUE_OVERFLOW",
           "macro" => "PERL_WARN_WARNING_UTF8_NON_UNICODE_SEQUENCE_VALUE_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:unicode_encoding"
@@ -92938,7 +95833,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_OVERLONG_PREFIX",
           "macro" => "PERL_WARN_WARNING_UTF8_OVERLONG_PREFIX",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -93093,7 +95990,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_OVERLONG_VALUE",
           "macro" => "PERL_WARN_WARNING_UTF8_OVERLONG_VALUE",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -93253,7 +96152,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_READLINE_MALFORMED_SEQUENCE",
           "macro" => "PERL_WARN_WARNING_UTF8_READLINE_MALFORMED_SEQUENCE",
-          "source_files" => [],
+          "source_files" => [
+            "pp_hot.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:io_handles_filesystem",
@@ -93301,7 +96202,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_SCALAR_HANDLE_STORAGE_NOT_BYTE_STRING",
           "macro" => "PERL_WARN_WARNING_UTF8_SCALAR_HANDLE_STORAGE_NOT_BYTE_STRING",
-          "source_files" => [],
+          "source_files" => [
+            "perlio.c"
+          ],
           "tags" => [
             "subject:perlio_layers",
             "subject:unicode_encoding"
@@ -93342,7 +96245,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_SEQUENCE_CONTINUATION_INVALID",
           "macro" => "PERL_WARN_WARNING_UTF8_SEQUENCE_CONTINUATION_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -93626,7 +96531,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_SEQUENCE_TOO_SHORT",
           "macro" => "PERL_WARN_WARNING_UTF8_SEQUENCE_TOO_SHORT",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -93865,7 +96772,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_SURROGATE_CASE_MAPPING_RETURNS_SURROGATE_UNCHANGED",
           "macro" => "PERL_WARN_WARNING_UTF8_SURROGATE_CASE_MAPPING_RETURNS_SURROGATE_UNCHANGED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -93949,7 +96858,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_SURROGATE_SURROGATE_DECODED",
           "macro" => "PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_DECODED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -94099,7 +97010,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_SURROGATE_SURROGATE_ENCODED",
           "macro" => "PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_ENCODED",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -94148,7 +97061,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_SURROGATE_SURROGATE_IN_OUTPUT",
           "macro" => "PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_IN_OUTPUT",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -94196,7 +97111,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_SURROGATE_SURROGATE_SEQUENCE_PREFIX",
           "macro" => "PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_SEQUENCE_PREFIX",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -94345,7 +97262,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_TRUNCATED_SEQUENCE_IN_OPERATION",
           "macro" => "PERL_WARN_WARNING_UTF8_TRUNCATED_SEQUENCE_IN_OPERATION",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -94425,7 +97344,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_TRUNCATED_SEQUENCE_WITHOUT_OPERATION",
           "macro" => "PERL_WARN_WARNING_UTF8_TRUNCATED_SEQUENCE_WITHOUT_OPERATION",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -94467,7 +97388,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_TWO_BYTE_SEQUENCE_CONTINUATION_INVALID",
           "macro" => "PERL_WARN_WARNING_UTF8_TWO_BYTE_SEQUENCE_CONTINUATION_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "utf8.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:unicode_encoding"
@@ -94627,7 +97550,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_UTF8_WIDE_CHARACTER_IN_BYTE_OPERATION",
           "macro" => "PERL_WARN_WARNING_UTF8_WIDE_CHARACTER_IN_BYTE_OPERATION",
-          "source_files" => [],
+          "source_files" => [
+            "doio.c",
+            "mg.c"
+          ],
           "tags" => [
             "subject:unicode_encoding"
           ],
@@ -94770,7 +97696,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_VOID_CHECK_BLOCK_REGISTERED_TOO_LATE",
           "macro" => "PERL_WARN_WARNING_VOID_CHECK_BLOCK_REGISTERED_TOO_LATE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:phase_blocks"
           ],
@@ -94810,7 +97738,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_VOID_INIT_BLOCK_REGISTERED_TOO_LATE",
           "macro" => "PERL_WARN_WARNING_VOID_INIT_BLOCK_REGISTERED_TOO_LATE",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:phase_blocks"
           ],
@@ -94850,7 +97780,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_VOID_USELESS_EXPRESSION_PV",
           "macro" => "PERL_WARN_WARNING_VOID_USELESS_EXPRESSION_PV",
-          "source_files" => [],
+          "source_files" => [
+            "builtin.c",
+            "op.c"
+          ],
           "tags" => [
             "subject:builtins_operators"
           ],
@@ -95107,7 +98040,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_VOID_USELESS_EXPRESSION_SV",
           "macro" => "PERL_WARN_WARNING_VOID_USELESS_EXPRESSION_SV",
-          "source_files" => [],
+          "source_files" => [
+            "op.c"
+          ],
           "tags" => [
             "subject:builtins_operators"
           ],
@@ -95359,7 +98294,10 @@ $CONF = {
           "kind" => "USER_RUNTIME",
           "code" => "WARNING_USER_TEXT",
           "macro" => "PERL_APPEND_WARNING_USER_TEXT",
-          "source_files" => [],
+          "source_files" => [
+            "pp_sys.c",
+            "util.c"
+          ],
           "tags" => [
             "subject:diagnostic_exception_api"
           ],

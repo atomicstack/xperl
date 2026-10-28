@@ -54,15 +54,17 @@ for my $meth (qw/upgrade_suggested upgrade_required known_broken/) {
 
         $_ =~ s{\b(version [\d.]+ at) \S.*?/Breakage\.pm (line \d+)\b}{$1 Breakage.pm $2}g for @report;
 
-        is_deeply(
-            [sort @report],
-            [
+        my @expected_report = (
                 sort
                 " * Module 'T2Test::UR1' is outdated and known to be broken, please update to 1.0 or higher.",
                 " * Module 'T2Test::KB1' is known to be broken in version 1.0 and below, newer versions have not been tested. You have: 0.9",
                 " * Module 'T2Test::KB2' is known to be broken in version 0.5 and below, newer versions have not been tested. You have: 0.9",
                 " * Module 'T2Test::UG1' is outdated, we recommend updating above 1.0. error was: 'T2Test::UG1 version 1.0 required--this is only version 0.9 at Breakage.pm line 74.'; INC is T2Test/UG1.pm",
-            ],
+        );
+        utf8::upgrade($_) for grep /T2Test::UG1/, @expected_report;
+        is_deeply(
+            [sort @report],
+            [sort @expected_report],
             "Got expected report items"
         );
     }

@@ -3186,15 +3186,6 @@ S	|void	|anonymise_cv_maybe	|NN GV *gv|NN CV *cv
 : Used in sv.c and hv.c
 Cpo	|void *	|more_bodies	|const svtype sv_type|const size_t body_size \
 				|const size_t arena_size
-EXpR	|SV*	|get_and_check_backslash_N_name|NN const char* s	\
-				|NN const char* e			\
-				|const bool is_utf8			\
-				|NN const char** error_msg
-EXpR	|HV*	|load_charnames	|NN SV * char_name			\
-				|NN const char * context		\
-				|const STRLEN context_len		\
-				|NN const char ** error_msg
-
 : For use ONLY in B::Hooks::Parser, by special dispensation
 EXpxR	|char*	|scan_str	|NN char *start|int keep_quoted \
 				|int keep_delims|int re_reparse \

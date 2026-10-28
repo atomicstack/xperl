@@ -1049,8 +1049,9 @@ S_get_category_index_helper(pTHX_ const int category, bool * succeeded,
         return LC_ALL_INDEX_;   /* Arbitrary */
     }
 
-    locale_panic_via_(form("Unknown locale category %d", category),
-                      __FILE__, caller_line);
+    PERL_LOCALE_PANIC_DIAG_VIA_(PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_CATEGORY_UNKNOWN(
+        &locale_exception,
+        category), __FILE__, caller_line);
     NOT_REACHED; /* NOTREACHED */
 }
 
@@ -1120,41 +1121,56 @@ Perl_locale_panic(const char * msg,
 
     force_locale_unlock();
 
+    SV *exception = NULL;
+    PERL_APPEND_ERROR_INTERNAL_LOCALE_OPAQUE_FAILURE(&exception, msg);
+    RESTORE_ERRNO;
+    Perl_locale_panic_sv(exception, __FILE__, immediate_caller_line,
+                          higher_caller_file, higher_caller_line);
+}
+
+/* Keep C panic context separate from the diagnostic's Perl source location. */
+void
+Perl_locale_panic_sv(SV *exception, const char *file, const line_t line,
+                     const char *higher_caller_file,
+                     const line_t higher_caller_line)
+{
+    PERL_ARGS_ASSERT_LOCALE_PANIC_SV;
+    dTHX;
+    dSAVE_ERRNO;
+    const int errnum = errno;
+#ifdef HAS_EXTENDED_OS_ERRNO
+    const int extended = get_extended_os_errno();
+#else
+    const int extended = errnum;
+#endif
+    force_locale_unlock();
+
 #ifdef USE_C_BACKTRACE
     dump_c_backtrace(Perl_debug_log, 20, 1);
 #endif
 
-    const char * called_by = "";
-    if (   strNE(__FILE__, higher_caller_file)
-        || immediate_caller_line != higher_caller_line)
-    {
-        called_by = form("\nCalled by %s: %" LINE_Tf "\n",
-                                    higher_caller_file, higher_caller_line);
+    HV *fields = MUTABLE_HV(SvRV(exception));
+    SV **messages = hv_fetchs(fields, "contents", 0);
+    AV *array = messages && SvROK(*messages)
+        ? MUTABLE_AV(SvRV(*messages)) : NULL;
+    SV **last = array ? av_fetch(array, av_top_index(array), 0) : NULL;
+    if (last && SvROK(*last)) {
+        HV *diagnostic = MUTABLE_HV(SvRV(*last));
+        SV **location = hv_fetchs(diagnostic, "location", 0);
+        if (location && SvROK(*location)) {
+            HV *panic = newHV();
+            (void)hv_stores(panic, "file", newSVpv(file, 0));
+            (void)hv_stores(panic, "line", newSVuv(line));
+            (void)hv_stores(panic, "errno", newSViv(errnum));
+            (void)hv_stores(panic, "extended_errno", newSViv(extended));
+            (void)hv_stores(panic, "caller_file", newSVpv(higher_caller_file, 0));
+            (void)hv_stores(panic, "caller_line", newSVuv(higher_caller_line));
+            (void)hv_stores(MUTABLE_HV(SvRV(*location)), "panic",
+                            newRV_noinc(MUTABLE_SV(panic)));
+        }
     }
-
     RESTORE_ERRNO;
-
-    const char * errno_text;
-
-#ifdef HAS_EXTENDED_OS_ERRNO
-
-    const int extended_errnum = get_extended_os_errno();
-    if (errno != extended_errnum) {
-        errno_text = form("; errno=%d, $^E=%d",
-                                     errno, extended_errnum);
-    }
-    else
-
-#endif
-
-    {
-        errno_text = form("; errno=%d", errno);
-    }
-
-    /* diag_listed_as: panic: %s */
-    croak("%s: %" LINE_Tf ": panic: %s%s%s\n",
-                     __FILE__, immediate_caller_line,
-                     msg, errno_text, called_by);
+    PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(exception);
 }
 
 /* Macros to report and croak on an unexpected failure to set the locale.  The
@@ -1190,9 +1206,11 @@ Perl_locale_panic(const char * msg,
                 const char * temp = savepvn(s, len);                        \
                 result = savepv(override_ignored_category(i, temp));        \
                 if (action == check_that_overridden && strNE(result, temp)) { \
-                    locale_panic_(form(                                     \
-                                "%s expected to be '%s', instead is '%s'",  \
-                                category_names[i], result, temp));          \
+                    PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_IGNORED_CATEGORY_OVERRIDE_MISMATCH( \
+                        &locale_exception,                                 \
+                        category_names[i],                                 \
+                        result,                                            \
+                        temp));          \
                 }                                                           \
                 Safefree(temp);                                             \
             }                                                               \
@@ -1501,40 +1519,44 @@ S_parse_LC_ALL_string(pTHX_ const char * string,
         }
     }
 
-    /* Some compilers don't realize all paths initialize this */
-    const char * msg = NULL;
-
-    const char * display_start = s;
-    const char * display_end = e;
+    const char *reason = "unknown";
+    const char *display_start = s;
+    const char *display_end = e;
 
     switch (error) {
         case incomplete:
-            msg = "doesn't list every locale category";
+            reason = "incomplete";
             display_start = string;
             break;
         case no_equals:
-            msg = "needs an '=' to split name=value";
+            reason = "no_equals";
             break;
         case unknown_category:
-            msg = "is an unknown category";
+            reason = "unknown_category";
             display_end = (category_end && category_end > display_start)
-                          ? category_end
-                          : e;
+                          ? category_end : e;
             break;
         case contains_LC_ALL_element:
-            msg = "has LC_ALL, which is illegal here";
+            reason = "contains_lc_all";
             break;
     }
 
-    msg = form("'%.*s' %s\n",
-                          (int) (display_end - display_start),
-                          display_start, msg);
-
-    DEBUG_L(PerlIO_printf(Perl_debug_log, "%s", msg));
-
     if (panic_on_error) {
-        locale_panic_via_(msg, __FILE__, caller_line);
+        PERL_LOCALE_PANIC_DIAG_VIA_(PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_COMPOSITE_SPECIFICATION_INVALID(
+            &locale_exception,
+            (int)(display_end - display_start),
+            display_start,
+            PERL_DIAG_SELECTOR_FROM_ERROR_INTERNAL_LOCALE_NAME_COMPOSITE_SPECIFICATION_INVALID_REASON(reason)), __FILE__, caller_line);
     }
+
+    DEBUG_L({
+        AV *values = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+        av_push(values, newSVpvn(display_start, display_end - display_start));
+        av_push(values, newSVpv(reason, 0));
+        SV *message = Perl_diag_render_format(aTHX_
+            perl_diag_error_internal_locale_name_composite_specification_invalid_idx, values, "en");
+        PerlIO_printf(Perl_debug_log, "%s", SvPV_nolen(message));
+    });
 
     return invalid;
 }
@@ -2122,7 +2144,7 @@ S_bool_setlocale_emulate_safe_r(pTHX_
          STMT_START {                                                       \
             if (i == LC_NUMERIC_INDEX_) {                                   \
                 if (PL_NUMERIC_toggle_depth <= 0) {                         \
-                    locale_panic_("toggling down failed");                  \
+                    PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_NUMERIC_TOGGLE_DEPTH_UNDERFLOW(&locale_exception));                  \
                 }                                                           \
                 PL_NUMERIC_toggle_depth--;                                  \
             }                                                               \
@@ -2923,7 +2945,8 @@ S_bool_setlocale_2008_i(pTHX_
         if (entry_obj_is_special || need_loop) {
             basis_obj = duplocale(basis_obj);
             if (! basis_obj) {
-                locale_panic_via_("duplocale failed", __FILE__, caller_line);
+                PERL_LOCALE_PANIC_DIAG_VIA_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_OBJECT_DUPLICATION_FAILED(
+                    &locale_exception), __FILE__, caller_line);
                 NOT_REACHED; /* NOTREACHED */
             }
 
@@ -3069,10 +3092,7 @@ S_bool_setlocale_2008_i(pTHX_
      * now switch into it */
     if (! uselocale(new_obj)) {
         freelocale(new_obj);
-        locale_panic_(form("(called from %" LINE_Tf "):"
-                                      " bool_setlocale_2008_i: switching"
-                                      " into new locale failed",
-                                      caller_line));
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_NEW_OBJECT_ACTIVATION_FAILED(&locale_exception, caller_line));
     }
 
     DEBUG_Lv(PerlIO_printf(Perl_debug_log,
@@ -3313,8 +3333,8 @@ S_update_PL_curlocales_i(pTHX_
           case invalid:
           case no_array:
           case only_element_0:
-            locale_panic_via_("Unexpected return from parse_LC_ALL_string",
-                              __FILE__, caller_line);
+            PERL_LOCALE_PANIC_DIAG_VIA_(PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_PARSE_RESULT_UNEXPECTED(
+                &locale_exception), __FILE__, caller_line);
 
           case full_array:
             /* parse_LC_ALL_string() has already filled PL_curlocales properly,
@@ -3643,15 +3663,13 @@ S_calculate_LC_ALL_string(pTHX_ const char ** category_locales_list,
             }
 
             /* If would have overflowed, panic */
-            locale_panic_via_(form(
-                                        "Internal length calculation wrong.\n"
-                                        "\"%s\" was not entirely added to"
-                                        " \"%.*s\"; needed=%zu, had=%zu",
-                                        entry, (int) total_len,
-                                        constructed,
-                                        needed_len, total_len),
-                                __FILE__,
-                                caller_line);
+            PERL_LOCALE_PANIC_DIAG_VIA_(PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_COMPOSITE_BUFFER_CAPACITY_EXCEEDED(
+                &locale_exception,
+                entry,
+                (int) total_len,
+                constructed,
+                needed_len,
+                total_len), __FILE__, caller_line);
         } /* End of loop through the categories */
 
         retval = constructed;
@@ -3901,38 +3919,31 @@ S_setlocale_failure_panic_via_i(pTHX_
         current = querylocale_i(cat_index);
     }
 
-    const char * proxy_text = "";
-    if (proxy_caller_line != 0 && proxy_caller_line != immediate_caller_line)
-    {
-        proxy_text = form("\nCalled via %s: %" LINE_Tf,
-                                      __FILE__, proxy_caller_line);
-    }
-    if (   strNE(__FILE__, higher_caller_file)
-        || (   immediate_caller_line != 0
-            && immediate_caller_line != higher_caller_line))
-    {
-        proxy_text = form("%s\nCalled via %s: %" LINE_Tf,
-                                      proxy_text, __FILE__,
-                                      immediate_caller_line);
-    }
+    const bool via_proxy = proxy_caller_line != 0
+        && proxy_caller_line != immediate_caller_line;
+    const bool via_immediate = strNE(__FILE__, higher_caller_file)
+        || (immediate_caller_line != 0
+            && immediate_caller_line != higher_caller_line);
+    const char *via = via_proxy ? (via_immediate ? "both" : "proxy")
+                                : (via_immediate ? "immediate" : "none");
 
-    /* 'false' in the get_displayable_string() calls makes it not think the
-     * locale is UTF-8, so just dumps bytes.  Actually figuring it out can be
-     * too complicated for a panic situation. */
-    const char * msg = form(
-                            "Can't change locale for %s (%d) from '%s' to '%s'"
-                            " %s",
-                            name, cat,
-                            get_displayable_string(current,
-                                                   current + strlen(current),
-                                                   false),
-                            get_displayable_string(failed,
-                                                   failed + strlen(failed),
-                                                   false),
-                            proxy_text);
+    /* Dump bytes here. Determining the encoding can itself require locale
+     * operations that are unsafe after a locale failure. */
+    const char *current_display = get_displayable_string(current,
+        current + strlen(current), false);
+    const char *failed_display = get_displayable_string(failed,
+        failed + strlen(failed), false);
     RESTORE_ERRNO;
-
-    Perl_locale_panic(msg, __LINE__, higher_caller_file, higher_caller_line);
+    PERL_LOCALE_PANIC_DIAG_VIA_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_CATEGORY_CHANGE_FAILED(
+        &locale_exception,
+        name,
+        cat,
+        current_display,
+        failed_display,
+        __FILE__,
+        proxy_caller_line,
+        immediate_caller_line,
+        PERL_DIAG_SELECTOR_FROM_ERROR_INTERNAL_LOCALE_SWITCH_CATEGORY_CHANGE_FAILED_VIA(via)), higher_caller_file, higher_caller_line);
     NOT_REACHED; /* NOTREACHED */
 }
 
@@ -4166,6 +4177,26 @@ Perl_set_numeric_underlying(pTHX_ const char * const file, const line_t line)
 #  ifdef USE_LOCALE_CTYPE
 
 static void
+Perl_locale_emit_warning_exception(pTHX_ bool check_enabled)
+{
+    SV *exception = PL_warn_locale;
+
+    if (!exception)
+        return;
+
+    PL_warn_locale = NULL;
+    sv_2mortal(SvREFCNT_inc_simple_NN(exception));
+    SvREFCNT_dec_NN(exception);
+
+    if (check_enabled)
+        Perl_diag_ck_warner_exception(aTHX_ exception,
+                                      packWARN(WARN_LOCALE));
+    else
+        Perl_diag_warner_exception(aTHX_ exception,
+                                   packWARN(WARN_LOCALE));
+}
+
+static void
 S_new_ctype(pTHX_ const char *newctype, bool force)
 {
     PERL_ARGS_ASSERT_NEW_CTYPE;
@@ -4375,16 +4406,12 @@ S_new_ctype(pTHX_ const char *newctype, bool force)
                               "Unsupported, MB_CUR_MAX=%d\n", mb_cur_max));
 
         if (! IN_LC(LC_CTYPE) || ckWARN_d(WARN_LOCALE)) {
-            char * msg = form(
-                                   "Locale '%s' is unsupported, and may hang"
-                                   " or crash the interpreter",
-                                     newctype);
-            if (IN_LC(LC_CTYPE)) {
-                warner(packWARN(WARN_LOCALE), "%s", msg);
-            }
-            else {
-                PL_warn_locale = newSV(0);
-                sv_setpvn(PL_warn_locale, msg, strlen(msg));
+            SV *exception = PL_warn_locale;
+            const bool first_warning = exception == NULL;
+
+            PERL_APPEND_WARNING_LOCALE_CTYPE_LOCALE_UNSUPPORTED(&exception, newctype);
+            if (first_warning) {
+                PL_warn_locale = SvREFCNT_inc_simple_NN(exception);
             }
         }
     }
@@ -4545,57 +4572,37 @@ S_new_ctype(pTHX_ const char *newctype, bool force)
         if (   (UNLIKELY(bad_count))
             && (LIKELY(ckWARN_d(WARN_LOCALE)) || UNLIKELY(DEBUG_L_TEST)))
         {
-            /* WARNING.  If you change the wording of these; be sure to update
-             * t/loc_tools.pl correspondingly */
-
-            if (PL_warn_locale) {
-                sv_catpvs(PL_warn_locale, "\n");
-            }
-            else {
-                PL_warn_locale = newSVpvs("");
-            }
-
-            if (PL_in_utf8_CTYPE_locale) {
-                sv_catpvf(PL_warn_locale,
-                     "Locale '%s' contains (at least) the following characters"
-                     " which have\nunexpected meanings: %s\nThe Perl program"
-                     " will use the expected meanings",
-                      newctype, bad_chars_list);
-            }
-            else {
-                sv_catpvf(PL_warn_locale,
-                                  "\nThe following characters (and maybe"
-                                  " others) may not have the same meaning as"
-                                  " the Perl program expects: %s\n",
-                                  bad_chars_list
-                            );
-            }
+            SV *exception = PL_warn_locale;
+            const bool first_warning = exception == NULL;
+            const char *locale_type = PL_in_utf8_CTYPE_locale
+                ? "utf8" : "single_byte";
+            const char *codeset_state = "absent";
+            const char *codeset = "";
 
 #    if defined(HAS_SOME_LANGINFO) || defined(WIN32)
-
-            sv_catpvf(PL_warn_locale, "; codeset=%s",
-                                 langinfo_c(CODESET, LC_CTYPE, newctype, NULL));
-
+            codeset_state = "present";
+            codeset = langinfo_c(CODESET, LC_CTYPE, newctype, NULL);
 #    endif
 
-            sv_catpvf(PL_warn_locale, "\n");
+            PERL_APPEND_COMPOSED_LOCALE_WARNING(
+                &exception, PERL_DIAG_SELECTOR_FROM_WARNING_LOCALE_CTYPE_CHARACTER_SEMANTICS_UNEXPECTED_LOCALE_TYPE(locale_type), newctype, bad_chars_list,
+                (UV)bad_count,
+                PERL_DIAG_SELECTOR_FROM_WARNING_LOCALE_CTYPE_CHARACTER_SEMANTICS_UNEXPECTED_CODESET_STATE(codeset_state), codeset);
+            if (first_warning) {
+                PL_warn_locale = SvREFCNT_inc_simple_NN(exception);
+            }
 
             /* If we are actually in the scope of the locale or are debugging,
              * output the message now.  If not in that scope, we save the
              * message to be output at the first operation using this locale,
              * if that actually happens.  Most programs don't use locales, so
              * they are immune to bad ones.  */
-            if (IN_LC(LC_CTYPE) || UNLIKELY(DEBUG_L_TEST)) {
-
-                /* The '0' below suppresses a bogus gcc compiler warning */
-                warner(packWARN(WARN_LOCALE), SvPVX(PL_warn_locale), 0);
-                if (IN_LC(LC_CTYPE)) {
-                    SvREFCNT_dec_NN(PL_warn_locale);
-                    PL_warn_locale = NULL;
-                }
-            }
         }
     }
+
+    if (PL_warn_locale
+        && (IN_LC(LC_CTYPE) || UNLIKELY(DEBUG_L_TEST)))
+        Perl_locale_emit_warning_exception(aTHX_ !UNLIKELY(DEBUG_L_TEST));
 }
 
 void
@@ -4605,17 +4612,11 @@ Perl_warn_problematic_locale()
 
     dTHX;
 
-    /* Core-only function that outputs the message in PL_warn_locale,
+    /* Core-only function that outputs the exception in PL_warn_locale,
      * and then NULLS it.  Should be called only through the macro
      * CHECK_AND_WARN_PROBLEMATIC_LOCALE_ */
 
-    if (PL_warn_locale) {
-        ck_warner(packWARN(WARN_LOCALE),
-                  SvPVX(PL_warn_locale),
-                  0 /* dummy to avoid compiler warning */ );
-        SvREFCNT_dec_NN(PL_warn_locale);
-        PL_warn_locale = NULL;
-    }
+    Perl_locale_emit_warning_exception(aTHX_ TRUE);
 }
 
 #  endif /* USE_LOCALE_CTYPE */
@@ -4644,7 +4645,7 @@ S_new_LC_ALL(pTHX_ const char *lc_all, bool force)
       case invalid:
       case no_array:
       case only_element_0:
-        locale_panic_("Unexpected return from parse_LC_ALL_string");
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_PARSE_RESULT_UNEXPECTED(&locale_exception));
 
       case full_array:
         break;
@@ -5014,19 +5015,17 @@ Perl_setlocale(const int category, const char * locale)
                                                                 __LINE__);
     if (! valid_category) {
         if (ckWARN(WARN_LOCALE)) {
-            const char * conditional_warn_text;
+            const char * locale_state;
             if (locale == NULL) {
-                conditional_warn_text = "";
+                locale_state = "unspecified";
                 locale = "";
             }
             else {
-                conditional_warn_text = "; can't set it to ";
+                locale_state = "specified";
             }
 
-            /* diag_listed_as: Unknown locale category %d; can't set it to %s */
-            warner(packWARN(WARN_LOCALE),
-                   "Unknown locale category %d%s%s",
-                   category, conditional_warn_text, locale);
+            /* diag_listed_as: Unknown locale category %d */
+            PERL_WARN_WARNING_LOCALE_CATEGORY_UNRECOGNIZED(PERL_DIAG_SELECTOR_FROM_WARNING_LOCALE_CATEGORY_UNRECOGNIZED_LOCALE_STATE(locale_state), category, locale);
         }
 
         SET_EINVAL;
@@ -5191,10 +5190,9 @@ S_toggle_locale_i(pTHX_ const locale_category_index cat_index,
                            caller_line));
 
     if (! locale_to_restore_to) {
-        locale_panic_via_(form(
-                                    "Could not find current %s locale",
-                                    category_names[cat_index]),
-                         __FILE__, caller_line);
+        PERL_LOCALE_PANIC_DIAG_VIA_(PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_CURRENT_CATEGORY_NAME_MISSING(
+            &locale_exception,
+            category_names[cat_index]), __FILE__, caller_line);
     }
 
     /* Begin a critical section on platforms that need it.  We do this even if
@@ -5605,9 +5603,10 @@ S_save_to_buffer(pTHX_ const char * string, char **buf, Size_t *buf_size)
     /* Catch glitches.  Usually this is because LC_CTYPE needs to be the same
      * locale as whatever is being worked on */
     if (UNLIKELY(instr(string, REPLACEMENT_CHARACTER_UTF8))) {
-        locale_panic_(form(
-                                "Unexpected REPLACEMENT_CHARACTER in '%s'\n%s",
-                                string, get_LC_ALL_display()));
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_REPLACEMENT_CHARACTER_UNEXPECTED(
+            &locale_exception,
+            string,
+            get_LC_ALL_display()));
     }
 
 #    endif
@@ -5969,8 +5968,7 @@ S_my_localeconv(pTHX_ const int item)
 
         switch (item) {
           default:
-            locale_panic_(form(
-                          "Unexpected item passed to my_localeconv: %d", item));
+            PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_CONVENTION_ITEM_UNKNOWN(&locale_exception, item));
             break;
 
 #    ifdef USE_LOCALE_NUMERIC
@@ -6433,7 +6431,7 @@ S_populate_hash_from_localeconv(pTHX_ HV * hv,
     int config_return = _configthreadlocale(_DISABLE_PER_THREAD_LOCALE);
     if (config_return != _DISABLE_PER_THREAD_LOCALE) {
         if (config_return == -1) {
-            locale_panic_("_configthreadlocale returned an error");
+            PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_THREAD_CONFIGURATION_FAILED(&locale_exception));
         }
 
         restore_per_thread = TRUE;
@@ -6452,7 +6450,7 @@ S_populate_hash_from_localeconv(pTHX_ HV * hv,
             /* And back to per-thread locales */                            \
             if (restore_per_thread) {                                       \
                 if (_configthreadlocale(_ENABLE_PER_THREAD_LOCALE) == -1) { \
-                    locale_panic_("_configthreadlocale returned an error"); \
+                    PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_THREAD_CONFIGURATION_FAILED(&locale_exception)); \
                 }                                                           \
             }                                                               \
                                                                             \
@@ -7122,22 +7120,16 @@ S_langinfo_sv_i(pTHX_
              * of this bug */
             case CODESET:
 #  endif
-                locale_panic_(form(
-                                        "nl_langinfo returned empty for %ld"
-                                        " in supposed locale \n'%s';"
-                                        " which really is\n'%s'\n"
-                                        " codeset is '%s';"
-                                        " radix='%s';"
-                                        " January='%s';"
-                                        " strtod(1,5)=%g, strtod(1.5)=%g\n",
-                                        (long) item,
-                                        locale, querylocale_c(LC_ALL),
-                                        nl_langinfo(CODESET),
-                                        nl_langinfo(RADIXCHAR),
-                                        nl_langinfo(MON_1),
-                                        strtod("1,5", NULL),
-                                        strtod("1.5", NULL)
-                                      ));
+                PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_LANGINFO_VALUE_EMPTY(
+                    &locale_exception,
+                    (long) item,
+                    locale,
+                    querylocale_c(LC_ALL),
+                    nl_langinfo(CODESET),
+                    nl_langinfo(RADIXCHAR),
+                    nl_langinfo(MON_1),
+                    strtod("1,5", NULL),
+                    strtod("1.5", NULL)));
         }
 
         /* Initialized only to silence some dumber compilers warning that
@@ -7198,12 +7190,10 @@ S_langinfo_sv_i(pTHX_
                  * represents even only the first 10 alternative digits, it
                  * will be much longer than that.  So to reach here, the
                  * separator must be some other byte. */
-                locale_panic_(form(
-                                        "Can't find separator in ALT_DIGITS"
-                                        " representation '%s' for locale '%s'",
-                                        byte_dump_string_((U8 *) retval,
-                                                          total_len, 0),
-                                        locale));
+                PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_ALTERNATE_DIGITS_SEPARATOR_MISSING(
+                    &locale_exception,
+                    byte_dump_string_((U8 *) retval, total_len, 0),
+                    locale));
             }
             else {
                 separator = '\0';
@@ -7518,8 +7508,9 @@ S_emulate_langinfo(pTHX_ const PERL_INTMAX_T item,
              * with exactly both fields. */
             SV* precedes = hv_deletes(result_hv, P_CS_PRECEDES_LITERAL, 0);
             if (! precedes) {
-                locale_panic_("my_localeconv() unexpectedly didn't return"
-                              " a value for " P_CS_PRECEDES_LITERAL);
+                PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_CONVENTION_VALUE_MISSING(
+                    &locale_exception,
+                    P_CS_PRECEDES_LITERAL));
             }
 
             /* The modification is to prefix the localeconv() return with a
@@ -7836,8 +7827,7 @@ S_emulate_langinfo(pTHX_ const PERL_INTMAX_T item,
              * invalid. */;
 #  if defined(I_LANGINFO)
 
-            croak("panic: Unexpected nl_langinfo() item %jd",
-                                 item);
+            PERL_PANIC_ERROR_INTERNAL_LOCALE_DATA_LANGINFO_ITEM_UNHANDLED(item);
 
 #  else
             assert(item < 0);   /* Make sure using perl_langinfo.h */
@@ -9060,7 +9050,7 @@ S_strftime_tm(pTHX_ const char *fmt,
     bool succeeded = false;
 
 #ifndef HAS_STRFTIME
-    croak("panic: no strftime");
+    PERL_PANIC_ERROR_INTERNAL_LOCALE_TIME_STRFTIME_UNAVAILABLE();
 #endif
 
     start_DEALING_WITH_MISMATCHED_CTYPE(locale);
@@ -9311,7 +9301,7 @@ S_give_perl_locale_control(pTHX_
      * POSIX 2008, as the conversion gets done automatically in the
      * void_setlocale_i() calls below. */
     if (_configthreadlocale(_ENABLE_PER_THREAD_LOCALE) == -1) {
-        locale_panic_("_configthreadlocale returned an error");
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_THREAD_CONFIGURATION_FAILED(&locale_exception));
     }
 
 #  endif
@@ -9340,59 +9330,96 @@ S_give_perl_locale_control(pTHX_
     new_LC_ALL(lc_all_string, true);
 }
 
+/* Locale construction precedes hook and special-variable initialization.
+ * Use catalog text here, retaining direct output and the startup controls. */
+static SV *
+Perl_locale_startup_value(pTHX_ const char *value)
+{
+    SV *result = newSVpv(value ? value : "", 0);
+    if (is_utf8_string((const U8 *)SvPVX(result), SvCUR(result)))
+        SvUTF8_on(result);
+    return sv_2mortal(result);
+}
+
+static SV *
+Perl_locale_startup_text(pTHX_ UV diag_index, Size_t count, ...)
+{
+    const char *setting = PerlEnv_getenv("PERL_DIAG_RENDER");
+    SV *name = sv_2mortal(newSVpv(setting && *setting ? setting : "auto", 0));
+    char *colon = strchr(SvPVX(name), ':');
+    if (colon) {
+        SvCUR_set(name, colon - SvPVX(name));
+        *colon = '\0';
+    }
+    const char *language = SvPVX(name);
+    if (strEQ(language, "auto"))
+        language = Perl_diag_auto_language(aTHX);
+    else if (strEQ(language, "legacy") || strEQ(language, "annotated")
+             || strEQ(language, "JSON") || strEQ(language, "JSONL")
+             || strEQ(language, "Dumper") || strEQ(language, "DumperL"))
+        language = "en";
+
+    AV *values = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    va_list args;
+    va_start(args, count);
+    for (Size_t i = 0; i < count; i++)
+        av_push(values, newSVsv(va_arg(args, SV *)));
+    va_end(args);
+    return Perl_diag_render_format(aTHX_ diag_index, values, language);
+}
+
+#define PERL_OUTPUT_LOCALE_STARTUP_TEXT(text) STMT_START { \
+    SV *startup_message = (text); \
+    PerlIO_write(Perl_error_log, SvPVX(startup_message), SvCUR(startup_message)); \
+} STMT_END
+
+#define PERL_LOCALE_STARTUP_VALUE(value) Perl_locale_startup_value(aTHX_ value)
+
 static void
-S_output_check_environment_warning(pTHX_ const char * const language,
+Perl_diag_output_check_environment_warning(pTHX_ const char * const language,
                                          const char * const lc_all,
                                          const char * const lang)
 {
-    PERL_ARGS_ASSERT_OUTPUT_CHECK_ENVIRONMENT_WARNING;
-
-    PerlIO_printf(Perl_error_log,
-                  "perl: warning: Please check that your locale settings:\n");
+    SV *settings = newSVpvs_flags("", SVs_TEMP);
 
 #  ifdef __GLIBC__
-
-    PerlIO_printf(Perl_error_log, "\tLANGUAGE = %c%s%c,\n",
-                                  language ? '"' : '(',
-                                  language ? language : "unset",
-                                  language ? '"' : ')');
+    sv_catsv(settings, Perl_locale_startup_text(aTHX_
+        perl_diag_note_context_locale_environment_row_idx, 4,
+        PERL_LOCALE_STARTUP_VALUE("LANGUAGE"), PERL_LOCALE_STARTUP_VALUE(language),
+        PERL_LOCALE_STARTUP_VALUE(","),
+        PERL_LOCALE_STARTUP_VALUE(language ? "present" : "absent")));
 #  else
     PERL_UNUSED_ARG(language);
 #  endif
 
-    PerlIO_printf(Perl_error_log, "\tLC_ALL = %c%s%c,\n",
-                                  lc_all ? '"' : '(',
-                                  lc_all ? lc_all : "unset",
-                                  lc_all ? '"' : ')');
-
+    sv_catsv(settings, Perl_locale_startup_text(aTHX_
+        perl_diag_note_context_locale_environment_row_idx, 4,
+        PERL_LOCALE_STARTUP_VALUE("LC_ALL"), PERL_LOCALE_STARTUP_VALUE(lc_all),
+        PERL_LOCALE_STARTUP_VALUE(","),
+        PERL_LOCALE_STARTUP_VALUE(lc_all ? "present" : "absent")));
     for_all_individual_category_indexes(i) {
-        const char * value = PerlEnv_getenv(category_names[i]);
-        PerlIO_printf(Perl_error_log,
-                      "\t%s = %c%s%c,\n",
-                      category_names[i],
-                      value ? '"' : '(',
-                      value ? value : "unset",
-                      value ? '"' : ')');
+        const char *value = PerlEnv_getenv(category_names[i]);
+        sv_catsv(settings, Perl_locale_startup_text(aTHX_
+            perl_diag_note_context_locale_environment_row_idx, 4,
+            PERL_LOCALE_STARTUP_VALUE(category_names[i]), PERL_LOCALE_STARTUP_VALUE(value),
+            PERL_LOCALE_STARTUP_VALUE(","),
+            PERL_LOCALE_STARTUP_VALUE(value ? "present" : "absent")));
     }
-
-    PerlIO_printf(Perl_error_log, "\tLANG = %c%s%c\n",
-                                  lang ? '"' : '(',
-                                  lang ? lang : "unset",
-                                  lang ? '"' : ')');
-    PerlIO_printf(Perl_error_log,
-                  "    are supported and installed on your system.\n");
+    sv_catsv(settings, Perl_locale_startup_text(aTHX_
+        perl_diag_note_context_locale_environment_row_idx, 4,
+        PERL_LOCALE_STARTUP_VALUE("LANG"), PERL_LOCALE_STARTUP_VALUE(lang),
+        PERL_LOCALE_STARTUP_VALUE(""),
+        PERL_LOCALE_STARTUP_VALUE(lang ? "present" : "absent")));
+    PERL_OUTPUT_LOCALE_STARTUP_TEXT(Perl_locale_startup_text(aTHX_
+        perl_diag_warning_locale_startup_environment_settings_unsupported_idx, 1, settings));
 }
 
 #endif
 
-/* A helper macro for the next function.  Needed because would be called in two
- * places.  Knows about the internal workings of the function */
-#define GET_DESCRIPTION(trial, name)                                    \
-    ((isNAME_C_OR_POSIX(name))                                          \
-     ? "the standard locale"                                            \
-     : ((trial == (system_default_trial)                                \
-                  ? "the system default locale"                         \
-                  : "a fallback locale")))
+/* Identify the fallback semantically. Each language supplies its wording. */
+#define PERL_LOCALE_STARTUP_KIND(trial, name)                              \
+    (isNAME_C_OR_POSIX(name) ? "standard"                             \
+        : (trial) == system_default_trial ? "system" : "fallback")
 
 /*
  * Initialize locale awareness.
@@ -9438,7 +9465,7 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
      *          }
      *
      *          had_failure = true;
-     *          warn();
+     *          PERL_DIAG_LEGACY_warn();
      *      }
      *
      *      if (had_failure) {
@@ -9623,7 +9650,7 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
         PL_C_locale_obj = newlocale(LC_ALL_MASK, "C", (locale_t) 0);
         if (! PL_C_locale_obj) {
             POSIX_INIT_UNLOCK;
-            locale_panic_("Cannot create POSIX 2008 C locale object");
+            PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_C_OBJECT_CREATION_FAILED(&locale_exception));
         }
         POSIX_INIT_UNLOCK;
 
@@ -9636,10 +9663,10 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
      * malloc'd in the interim.  We arbitrarily switch to the C locale,
      * overridden below  */
     if (! uselocale(PL_C_locale_obj)) {
-        locale_panic_(form(
-                                "Can't uselocale(0x%p), LC_ALL supposed to"
-                                " be 'C'",
-                                PL_C_locale_obj));
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_OBJECT_ACTIVATION_FAILED(
+            &locale_exception,
+            PL_C_locale_obj,
+            "C"));
     }
 
 #    ifdef MULTIPLICITY
@@ -9721,7 +9748,7 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
         /* Set up the parameters for this trial */
         switch (trial) {
           case dummy_trial:
-            locale_panic_("Unexpectedly got 'dummy_trial");
+            PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_INITIALIZATION_TRIAL_INVALID(&locale_exception));
             break;
 
           case environment_trial:
@@ -9800,9 +9827,9 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
         }
 
         if (trial == 0 && locwarn) {
-            PerlIO_printf(Perl_error_log,
-                                  "perl: warning: Setting locale failed.\n");
-            output_check_environment_warning(language, lc_all, lang);
+            PERL_OUTPUT_LOCALE_STARTUP_TEXT(Perl_locale_startup_text(aTHX_
+                perl_diag_warning_locale_startup_setup_failed_idx, 0));
+            Perl_diag_output_check_environment_warning(aTHX_ language, lc_all, lang);
         }
     }   /* end of looping through the trial locales */
 
@@ -9810,23 +9837,23 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
      * we may need to output a warning, and, if none worked, do more */
     if (UNLIKELY(trial != 0)) {
         if (locwarn) {
-            const char * description = "a fallback locale";
+            const char *kind = "fallback";
             const char * name = NULL;;
 
             /* If we didn't find a good fallback, list all we tried */
             if (! ok && already_checked > 0) {
-                PerlIO_printf(Perl_error_log, "perl: warning: Failed to fall"
-                                              " back to ");
-                if (already_checked > 1) {  /* more than one was tried */
-                    PerlIO_printf(Perl_error_log, "any of:\n");
-                }
-
+                SV *attempts = newSVpvs_flags("", SVs_TEMP);
+                const unsigned int failed_count = already_checked;
                 while (already_checked > 0) {
                     name = checked[--already_checked];
-                    description = GET_DESCRIPTION(trial, name);
-                    PerlIO_printf(Perl_error_log, "%s (\"%s\")\n",
-                                                  description, name);
+                    kind = PERL_LOCALE_STARTUP_KIND(trial, name);
+                    sv_catsv(attempts, Perl_locale_startup_text(aTHX_
+                        perl_diag_note_context_locale_fallback_row_idx, 2,
+                        PERL_LOCALE_STARTUP_VALUE(name), PERL_LOCALE_STARTUP_VALUE(kind)));
                 }
+                PERL_OUTPUT_LOCALE_STARTUP_TEXT(Perl_locale_startup_text(aTHX_
+                    perl_diag_warning_locale_startup_fallbacks_failed_idx, 2,
+                    attempts, sv_2mortal(newSVuv(failed_count))));
             }
 
             if (ok) {
@@ -9876,7 +9903,7 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
                         Safefree(individ_locales[j]);
                     }
                 }
-                description = GET_DESCRIPTION(trial, name);
+                kind = PERL_LOCALE_STARTUP_KIND(trial, name);
             }
             else {
 
@@ -9890,14 +9917,14 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
                 STDIZED_SETLOCALE_UNLOCK;
 
                 if (UNLIKELY(! name)) {
-                    name = "locale name not determinable";
+                    kind = "unknown";
                 }
 
             }
 
-            PerlIO_printf(Perl_error_log,
-                          "perl: warning: Falling back to %s (\"%s\").\n",
-                          description, name);
+            PERL_OUTPUT_LOCALE_STARTUP_TEXT(Perl_locale_startup_text(aTHX_
+                perl_diag_warning_locale_startup_fallback_selected_idx, 2,
+                PERL_LOCALE_STARTUP_VALUE(name), PERL_LOCALE_STARTUP_VALUE(kind)));
 
             /* Here, ok being true indicates that the first attempt failed, but
              * a fallback succeeded; false => nothing working.  Translate to
@@ -9946,7 +9973,9 @@ Perl_init_i18nl10n(pTHX_ int printwarn)
     return ok;
 }
 
-#undef GET_DESCRIPTION
+#undef PERL_LOCALE_STARTUP_KIND
+#undef PERL_LOCALE_STARTUP_VALUE
+#undef PERL_OUTPUT_LOCALE_STARTUP_TEXT
 #ifdef USE_LOCALE_COLLATE
 
 static bool
@@ -11267,7 +11296,7 @@ handle all cases of single- vs multi-thread, POSIX 2008-supported or not.
 #  define CHANGE_SYSTEM_LOCALE_TO_GLOBAL                                \
     STMT_START {                                                        \
         if (_configthreadlocale(_DISABLE_PER_THREAD_LOCALE) == -1) {    \
-            locale_panic_("_configthreadlocale returned an error");     \
+            PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_THREAD_CONFIGURATION_FAILED(&locale_exception));     \
         }                                                               \
     } STMT_END
 #elif defined(USE_POSIX_2008_LOCALE)
@@ -11275,7 +11304,7 @@ handle all cases of single- vs multi-thread, POSIX 2008-supported or not.
     STMT_START {                                                        \
         locale_t old_locale = uselocale(LC_GLOBAL_LOCALE);              \
         if (! old_locale) {                                             \
-            locale_panic_("Could not change to global locale");         \
+            PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_GLOBAL_OBJECT_ACTIVATION_FAILED(&locale_exception));         \
         }                                                               \
                                                                         \
         /* Free the per-thread memory */                                \
@@ -11312,7 +11341,7 @@ Perl_switch_to_global_locale(pTHX)
 
     int config_return = _configthreadlocale(0);
     if (config_return == -1) {
-        locale_panic_("_configthreadlocale returned an error");
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_THREAD_CONFIGURATION_FAILED(&locale_exception));
     }
     const bool perl_controls = (config_return == _ENABLE_PER_THREAD_LOCALE);
 
@@ -11426,7 +11455,7 @@ Perl_sync_locale(pTHX)
 
     int config_return = _configthreadlocale(_DISABLE_PER_THREAD_LOCALE);
     if (config_return == -1) {
-        locale_panic_("_configthreadlocale returned an error");
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_THREAD_CONFIGURATION_FAILED(&locale_exception));
     }
     was_in_global = (config_return == _DISABLE_PER_THREAD_LOCALE);
 
@@ -11502,10 +11531,10 @@ Perl_switch_locale_context(pTHX)
 #  ifdef USE_POSIX_2008_LOCALE
 
     if (! uselocale(PL_cur_locale_obj)) {
-        locale_panic_(form(
-                                "Can't uselocale(0x%p), LC_ALL supposed to"
-                                " be '%s'",
-                                PL_cur_locale_obj, get_LC_ALL_display()));
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_OBJECT_ACTIVATION_FAILED(
+            &locale_exception,
+            PL_cur_locale_obj,
+            get_LC_ALL_display()));
     }
 
 #  elif defined(WIN32)
@@ -11515,12 +11544,12 @@ Perl_switch_locale_context(pTHX)
     }
 
     if (_configthreadlocale(_ENABLE_PER_THREAD_LOCALE) == -1) {
-        locale_panic_("_configthreadlocale returned an error");
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_THREAD_CONFIGURATION_FAILED(&locale_exception));
     }
 
     const char * lc_all_copy = savepv(PL_cur_LC_ALL);
     if (! bool_setlocale_c(LC_ALL, lc_all_copy)) {
-        locale_panic_(Perl_form(aTHX_ "Can't setlocale(%s)", lc_all_copy));
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_SAVED_NAME_RESTORE_FAILED(&locale_exception, lc_all_copy));
     }
     Safefree(lc_all_copy);
 
@@ -11558,8 +11587,10 @@ Perl_thread_locale_init(pTHX)
 
         /* Not being able to change to the C locale is severe; don't keep
          * going.  */
-        locale_panic_(form(
-                                "Can't uselocale(0x%p), 'C'", PL_C_locale_obj));
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_OBJECT_ACTIVATION_FAILED(
+            &locale_exception,
+            PL_C_locale_obj,
+            "C"));
         NOT_REACHED; /* NOTREACHED */
     }
 
@@ -11570,7 +11601,7 @@ Perl_thread_locale_init(pTHX)
 
     /* On Windows, make sure new thread has per-thread locales enabled */
     if (_configthreadlocale(_ENABLE_PER_THREAD_LOCALE) == -1) {
-        locale_panic_("_configthreadlocale returned an error");
+        PERL_LOCALE_PANIC_DIAG_(PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_THREAD_CONFIGURATION_FAILED(&locale_exception));
     }
 
     PL_perl_controls_locale = true;

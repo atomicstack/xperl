@@ -759,6 +759,15 @@ Perl_cando(pTHX_ Mode_t mode, bool effective, const Stat_t *statbufp)
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
+PERL_CALLCONV const char *
+Perl_cardinal_plural_form(pTHX_ const char *language, UV n)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_CARDINAL_PLURAL_FORM   \
+    STMT_START { Perl_assert_aTHX; assert(language);   \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 PERL_CALLCONV I32
 Perl_cast_i32(NV f)
         __attribute__warn_unused_result__;
@@ -1041,8 +1050,7 @@ Perl_croak_memory_wrap(void)
 
 PERL_CALLCONV_NO_RET void
 Perl_croak_no_mem(void)
-        __attribute__noreturn__
-        __attribute__visibility__("hidden");
+        __attribute__noreturn__;
 #define PERL_ARGS_ASSERT_CROAK_NO_MEM
 
 PERL_CALLCONV_NO_RET void
@@ -1376,6 +1384,34 @@ Perl_defer_error(pTHX_ SV *err)
     } STMT_END
 
 PERL_CALLCONV void
+Perl_defer_error_diag(pTHX_ SV *err, UV diag_index)
+        Perl_attribute_nonnull_aTHX
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_DEFER_ERROR_DIAG       \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_defer_error_diag_params(pTHX_ SV *err, UV diag_index, AV *params, U32 category)
+        Perl_attribute_nonnull_aTHX
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_DEFER_ERROR_DIAG_PARAMS \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_defer_error_diag_params_context(pTHX_ SV *err, UV diag_index, AV *params, U32 category, const char *parser_context, SV *parser_context_value)
+        Perl_attribute_nonnull_aTHX
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_DEFER_ERROR_DIAG_PARAMS_CONTEXT \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV void
 Perl_delete_eval_scope(pTHX)
         Perl_attribute_nonnull_aTHX
         __attribute__visibility__("hidden");
@@ -1413,6 +1449,623 @@ PERL_CALLCONV void
 Perl_despatch_signals(pTHX)
         Perl_attribute_nonnull_aTHX;
 #define PERL_ARGS_ASSERT_DESPATCH_SIGNALS       \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_adopt_since(pTHX_ SV **exception_slot, SSize_t first_index)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_ADOPT_SINCE       \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_append(pTHX_ SV **exception_slot, SV *err, UV diag_index, AV *diagnostic_params, U32 category)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAG_APPEND            \
+    STMT_START { Perl_assert_aTHX; assert(exception_slot);                             \
+                 assert(!diagnostic_params || SvTYPE(diagnostic_params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                                  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_append_exception(pTHX_ SV **exception_slot, SV *exception)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2);
+#define PERL_ARGS_ASSERT_DIAG_APPEND_EXCEPTION  \
+    STMT_START { Perl_assert_aTHX; assert(exception_slot); assert(exception);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                          \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_attach_regex_pattern_context(pTHX_ SV *exception, bool utf8, STRLEN before_length, const char *before, STRLEN after_length, const char *after)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_4)
+        Perl_attribute_nonnull(pTHX_6);
+#define PERL_ARGS_ASSERT_DIAG_ATTACH_REGEX_PATTERN_CONTEXT \
+    STMT_START { Perl_assert_aTHX; assert(exception); assert(before);  \
+                 assert(after); PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;   \
+    } STMT_END
+
+PERL_CALLCONV const char *
+Perl_diag_auto_language(pTHX)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_AUTO_LANGUAGE     \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_boot_class_registry(pTHX)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_BOOT_CLASS_REGISTRY \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_ck_warner(pTHX_ UV diag_index, AV *params, U32 category, const char *pat, ...)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_4)
+        __attribute__format__(__printf__,pTHX_4,pTHX_5);
+#define PERL_ARGS_ASSERT_DIAG_CK_WARNER         \
+    STMT_START { Perl_assert_aTHX;                                            \
+                 assert(!params || SvTYPE(params) == SVt_PVAV); assert(pat);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                         \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_ck_warner_d(pTHX_ UV diag_index, AV *params, U32 category, const char *pat, ...)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_4)
+        __attribute__format__(__printf__,pTHX_4,pTHX_5);
+#define PERL_ARGS_ASSERT_DIAG_CK_WARNER_D       \
+    STMT_START { Perl_assert_aTHX;                                            \
+                 assert(!params || SvTYPE(params) == SVt_PVAV); assert(pat);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                         \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_ck_warner_d_regex_sv(pTHX_ UV diag_index, AV *params, U32 category, SV *message, bool utf8, STRLEN before_length, const char *before, STRLEN after_length, const char *after)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_7)
+        Perl_attribute_nonnull(pTHX_9);
+#define PERL_ARGS_ASSERT_DIAG_CK_WARNER_D_REGEX_SV \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 assert(before); assert(after);                  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_ck_warner_d_sv(pTHX_ UV diag_index, AV *params, U32 category, SV *message)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_CK_WARNER_D_SV    \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_ck_warner_exception(pTHX_ SV *exception, U32 category)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAG_CK_WARNER_EXCEPTION \
+    STMT_START { Perl_assert_aTHX; assert(exception);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_ck_warner_regex_sv(pTHX_ UV diag_index, AV *params, U32 category, SV *message, bool utf8, STRLEN before_length, const char *before, STRLEN after_length, const char *after)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_7)
+        Perl_attribute_nonnull(pTHX_9);
+#define PERL_ARGS_ASSERT_DIAG_CK_WARNER_REGEX_SV \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 assert(before); assert(after);                  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_ck_warner_sv(pTHX_ UV diag_index, AV *params, U32 category, SV *message)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_CK_WARNER_SV      \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV bool
+Perl_diag_class_is_leaf_only(pTHX_ SV *object)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAG_CLASS_IS_LEAF_ONLY \
+    STMT_START { Perl_assert_aTHX; assert(object);     \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV const char *
+Perl_diag_class_parent(pTHX_ const char *class_name)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAG_CLASS_PARENT      \
+    STMT_START { Perl_assert_aTHX; assert(class_name);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;   \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diag_compat_selector_key(pTHX_ UV diagnostic_number, AV *diagnostic_params)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_COMPAT_SELECTOR_KEY \
+    STMT_START { Perl_assert_aTHX;                                                     \
+                 assert(!diagnostic_params || SvTYPE(diagnostic_params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                                  \
+    } STMT_END
+
+PERL_CALLCONV_NO_RET void
+Perl_diag_croak(pTHX_ UV diag_index, AV *params, const char *pat, ...)
+        Perl_attribute_nonnull_aTHX
+        __attribute__noreturn__
+        __attribute__format__null_ok__(__printf__,pTHX_3,pTHX_4);
+#define PERL_ARGS_ASSERT_DIAG_CROAK             \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV_NO_RET void
+Perl_diag_croak_caller(UV diag_index, AV *params, const char *pat, ...)
+        __attribute__noreturn__
+        __attribute__format__null_ok__(__printf__,3,4);
+#define PERL_ARGS_ASSERT_DIAG_CROAK_CALLER      \
+    STMT_START { assert(!params || SvTYPE(params) == SVt_PVAV); } STMT_END
+
+#define PERL_ARGS_ASSERT_DIAG_CROAK_CALLER_SV   \
+    STMT_START { assert(!params || SvTYPE(params) == SVt_PVAV); } STMT_END
+
+PERL_CALLCONV_NO_RET void
+Perl_diag_croak_nocontext(UV diag_index, AV *params, const char *pat, ...)
+        __attribute__noreturn__
+        __attribute__format__null_ok__(__printf__,3,4);
+#define PERL_ARGS_ASSERT_DIAG_CROAK_NOCONTEXT   \
+    STMT_START { assert(!params || SvTYPE(params) == SVt_PVAV); } STMT_END
+
+#define PERL_ARGS_ASSERT_DIAG_CROAK_NOCONTEXT_SV \
+    STMT_START { assert(!params || SvTYPE(params) == SVt_PVAV); } STMT_END
+
+PERL_CALLCONV_NO_RET void
+Perl_diag_croak_sv(pTHX_ UV diag_index, AV *params, SV *message)
+        Perl_attribute_nonnull_aTHX
+        __attribute__noreturn__;
+#define PERL_ARGS_ASSERT_DIAG_CROAK_SV          \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diag_data_by_code(pTHX_ const char *code, STRLEN length)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAG_DATA_BY_CODE      \
+    STMT_START { Perl_assert_aTHX; assert(code);       \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diag_data_by_number(pTHX_ UV number)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_DATA_BY_NUMBER    \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV_NON_VOID_NO_RET(OP *) OP *
+Perl_diag_die(pTHX_ UV diag_index, AV *params, const char *pat, ...)
+        Perl_attribute_nonnull_aTHX
+        __attribute__noreturn__
+        __attribute__format__null_ok__(__printf__,pTHX_3,pTHX_4);
+#define PERL_ARGS_ASSERT_DIAG_DIE               \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV_NON_VOID_NO_RET(OP *) OP *
+Perl_diag_die_nocontext(UV diag_index, AV *params, const char *pat, ...)
+        __attribute__noreturn__
+        __attribute__format__null_ok__(__printf__,3,4);
+#define PERL_ARGS_ASSERT_DIAG_DIE_NOCONTEXT     \
+    STMT_START { assert(!params || SvTYPE(params) == SVt_PVAV); } STMT_END
+
+PERL_CALLCONV_NON_VOID_NO_RET(OP *) OP *
+Perl_diag_die_nocontext_sv(UV diag_index, AV *params, SV *message)
+        __attribute__noreturn__;
+#define PERL_ARGS_ASSERT_DIAG_DIE_NOCONTEXT_SV  \
+    STMT_START { assert(!params || SvTYPE(params) == SVt_PVAV); } STMT_END
+
+PERL_CALLCONV_NON_VOID_NO_RET(OP *) OP *
+Perl_diag_die_sv(pTHX_ UV diag_index, AV *params, SV *message)
+        Perl_attribute_nonnull_aTHX
+        __attribute__noreturn__;
+#define PERL_ARGS_ASSERT_DIAG_DIE_SV            \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV UV
+Perl_diag_error_count(pTHX_ SV *exception)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_ERROR_COUNT       \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV SSize_t
+Perl_diag_exception_message_count(pTHX_ SV **exception_slot)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_EXCEPTION_MESSAGE_COUNT \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_fatal_warner(pTHX_ UV diag_index, AV *params, U32 category, const char *pat, ...)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_4)
+        __attribute__format__(__printf__,pTHX_4,pTHX_5);
+#define PERL_ARGS_ASSERT_DIAG_FATAL_WARNER      \
+    STMT_START { Perl_assert_aTHX;                                            \
+                 assert(!params || SvTYPE(params) == SVt_PVAV); assert(pat);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                         \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_fatal_warner_sv(pTHX_ UV diag_index, AV *params, U32 category, SV *message)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_FATAL_WARNER_SV   \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diag_fatalized_warning(pTHX_ SV *warning, const char *reason)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2)
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_DIAG_FATALIZED_WARNING \
+    STMT_START { Perl_assert_aTHX; assert(warning); assert(reason);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_flush_exception_slot(pTHX_ SV **exception_slot)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAG_FLUSH_EXCEPTION_SLOT \
+    STMT_START { Perl_assert_aTHX; assert(exception_slot);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;       \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_flush_pending_exception(pTHX)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_FLUSH_PENDING_EXCEPTION \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diag_format_template(pTHX_ UV diag_index, AV *diagnostic_params)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_FORMAT_TEMPLATE   \
+    STMT_START { Perl_assert_aTHX;                                                     \
+                 assert(!diagnostic_params || SvTYPE(diagnostic_params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                                  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_increment_error_count(pTHX_ SV *exception)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_DIAG_INCREMENT_ERROR_COUNT \
+    STMT_START { Perl_assert_aTHX; assert(exception);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_mark_light_since(pTHX_ SV **exception_slot, SSize_t first_index)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_MARK_LIGHT_SINCE  \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_reclassify_last(pTHX_ SV **exception_slot, const char *class_name)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2)
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_DIAG_RECLASSIFY_LAST   \
+    STMT_START { Perl_assert_aTHX; assert(exception_slot);                 \
+                 assert(class_name); PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diag_render_diagnostic(pTHX_ UV diag_number, AV *diagnostic_params, const char *language)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_3);
+#define PERL_ARGS_ASSERT_DIAG_RENDER_DIAGNOSTIC \
+    STMT_START { Perl_assert_aTHX;                                                     \
+                 assert(!diagnostic_params || SvTYPE(diagnostic_params) == SVt_PVAV);  \
+                 assert(language); PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diag_render_diagnostic_engine(pTHX_ UV diag_number, AV *diagnostic_params, const perl_diagpack_engine *engine)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_3);
+#define PERL_ARGS_ASSERT_DIAG_RENDER_DIAGNOSTIC_ENGINE \
+    STMT_START { Perl_assert_aTHX;                                                     \
+                 assert(!diagnostic_params || SvTYPE(diagnostic_params) == SVt_PVAV);  \
+                 assert(engine); PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                  \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diag_render_format(pTHX_ UV diag_index, AV *values, const char *language)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_3);
+#define PERL_ARGS_ASSERT_DIAG_RENDER_FORMAT     \
+    STMT_START { Perl_assert_aTHX;                                       \
+                 assert(!values || SvTYPE(values) == SVt_PVAV);          \
+                 assert(language); PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diag_render_template(pTHX_ UV diag_number, U64 selector_key, AV *values, const char *language)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_4);
+#define PERL_ARGS_ASSERT_DIAG_RENDER_TEMPLATE   \
+    STMT_START { Perl_assert_aTHX;                                       \
+                 assert(!values || SvTYPE(values) == SVt_PVAV);          \
+                 assert(language); PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_rollback_exception(pTHX_ SV **exception_slot, SSize_t first_index)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_ROLLBACK_EXCEPTION \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV IV
+Perl_diag_selector_from_cstr(pTHX_ U16 domain_id, const char *value)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_SELECTOR_FROM_CSTR \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV IV
+Perl_diag_selector_from_pvn(pTHX_ U16 domain_id, const char *value, STRLEN length)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_2);
+#define PERL_ARGS_ASSERT_DIAG_SELECTOR_FROM_PVN \
+    STMT_START { Perl_assert_aTHX; assert(value);      \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV IV
+Perl_diag_selector_from_sv(pTHX_ U16 domain_id, SV *value)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_SELECTOR_FROM_SV  \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV const char *
+Perl_diag_selector_name(pTHX_ U16 domain_id, IV value_id)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_SELECTOR_NAME     \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diag_setup_param(pTHX_ AV *params, UV diag_index, I32 diagnostic_index, U16 selector_domain, IV selector_id)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_SETUP_PARAM       \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_taint_warner_d_sv(pTHX_ UV diag_index, AV *params, U32 category, SV *message)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_TAINT_WARNER_D_SV \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diag_take_pending(pTHX)
+        Perl_attribute_nonnull_aTHX
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_DIAG_TAKE_PENDING      \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV_NO_RET void
+Perl_diag_throw_exception_slot(pTHX_ SV **exception_slot)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__noreturn__;
+#define PERL_ARGS_ASSERT_DIAG_THROW_EXCEPTION_SLOT \
+    STMT_START { Perl_assert_aTHX; assert(exception_slot);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;       \
+    } STMT_END
+
+PERL_CALLCONV_NO_RET void
+Perl_diag_throw_pending(pTHX)
+        Perl_attribute_nonnull_aTHX
+        __attribute__noreturn__
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_DIAG_THROW_PENDING     \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_warn(pTHX_ UV diag_index, AV *params, const char *pat, ...)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_3)
+        __attribute__format__(__printf__,pTHX_3,pTHX_4);
+#define PERL_ARGS_ASSERT_DIAG_WARN              \
+    STMT_START { Perl_assert_aTHX;                                            \
+                 assert(!params || SvTYPE(params) == SVt_PVAV); assert(pat);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                         \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_warn_nocontext(UV diag_index, AV *params, const char *pat, ...)
+        Perl_attribute_nonnull(3)
+        __attribute__format__(__printf__,3,4);
+#define PERL_ARGS_ASSERT_DIAG_WARN_NOCONTEXT    \
+    STMT_START { assert(!params || SvTYPE(params) == SVt_PVAV); assert(pat);  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_warn_nocontext_sv(UV diag_index, AV *params, SV *message);
+#define PERL_ARGS_ASSERT_DIAG_WARN_NOCONTEXT_SV \
+    STMT_START { assert(!params || SvTYPE(params) == SVt_PVAV); } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_warn_sv(pTHX_ UV diag_index, AV *params, SV *message)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_WARN_SV           \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_warner(pTHX_ UV diag_index, AV *params, U32 category, const char *pat, ...)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_4)
+        __attribute__format__(__printf__,pTHX_4,pTHX_5);
+#define PERL_ARGS_ASSERT_DIAG_WARNER            \
+    STMT_START { Perl_assert_aTHX;                                            \
+                 assert(!params || SvTYPE(params) == SVt_PVAV); assert(pat);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                         \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_warner_exception(pTHX_ SV *exception, U32 category)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAG_WARNER_EXCEPTION  \
+    STMT_START { Perl_assert_aTHX; assert(exception);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_warner_regex_sv(pTHX_ UV diag_index, AV *params, U32 category, SV *message, bool utf8, STRLEN before_length, const char *before, STRLEN after_length, const char *after)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_7)
+        Perl_attribute_nonnull(pTHX_9);
+#define PERL_ARGS_ASSERT_DIAG_WARNER_REGEX_SV   \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 assert(before); assert(after);                  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diag_warner_sv(pTHX_ UV diag_index, AV *params, U32 category, SV *message)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAG_WARNER_SV         \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV const perl_diagpack_engine *
+Perl_diagpack_current_hint(pTHX)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAGPACK_CURRENT_HINT  \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV const perl_diagpack_engine *
+Perl_diagpack_find(pTHX_ const char *language)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAGPACK_FIND          \
+    STMT_START { Perl_assert_aTHX; assert(language);   \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diagpack_metadata(pTHX_ const perl_diagpack_engine *engine)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAGPACK_METADATA      \
+    STMT_START { Perl_assert_aTHX; assert(engine);     \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diagpack_register(pTHX_ const perl_diagpack_engine *engine)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAGPACK_REGISTER      \
+    STMT_START { Perl_assert_aTHX; assert(engine);     \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diagpack_render_catalog(pTHX_ const perl_diagpack_engine *engine, const perl_diagpack_input *input)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2);
+#define PERL_ARGS_ASSERT_DIAGPACK_RENDER_CATALOG \
+    STMT_START { Perl_assert_aTHX; assert(engine); assert(input);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;              \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diagpack_render_diagnostic(pTHX_ const perl_diagpack_engine *engine, SV *diagnostic)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2);
+#define PERL_ARGS_ASSERT_DIAGPACK_RENDER_DIAGNOSTIC \
+    STMT_START { Perl_assert_aTHX; assert(engine); assert(diagnostic);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                   \
+    } STMT_END
+
+PERL_CALLCONV SV *
+Perl_diagpack_render_format_engine(pTHX_ const perl_diagpack_engine *engine, UV diag_index, AV *values)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAGPACK_RENDER_FORMAT_ENGINE \
+    STMT_START { Perl_assert_aTHX; assert(engine);               \
+                 assert(!values || SvTYPE(values) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diagpack_set_lexical_hint(pTHX_ const char *language)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_DIAGPACK_SET_LEXICAL_HINT \
+    STMT_START { Perl_assert_aTHX; assert(language);   \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_diagpack_startup(pTHX)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_DIAGPACK_STARTUP       \
     STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
@@ -1775,6 +2428,16 @@ Perl_do_vop(pTHX_ I32 optype, SV *sv, SV *left, SV *right)
 #define PERL_ARGS_ASSERT_DO_VOP                 \
     STMT_START { Perl_assert_aTHX; assert(sv); assert(left); assert(right);  \
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                        \
+    } STMT_END
+
+PERL_CALLCONV bool
+Perl_do_warn(pTHX_ SV *sv, PerlIO *fp)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_2)
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_DO_WARN                \
+    STMT_START { Perl_assert_aTHX; assert(fp);         \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
 PERL_CALLCONV OP *
@@ -2277,15 +2940,14 @@ Perl_generator_yield_values(pTHX_ SV **values, SSize_t count)
     } STMT_END
 
 PERL_CALLCONV SV *
-Perl_get_and_check_backslash_N_name(pTHX_ const char *s, const char *e, const bool is_utf8, const char **error_msg)
+Perl_get_and_check_backslash_N_name(pTHX_ const char *s, const char *e, const bool is_utf8, SV **exception_slot)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1)
         Perl_attribute_nonnull(pTHX_2)
-        Perl_attribute_nonnull(pTHX_4)
         __attribute__warn_unused_result__;
 #define PERL_ARGS_ASSERT_GET_AND_CHECK_BACKSLASH_N_NAME \
-    STMT_START { Perl_assert_aTHX; assert(s); assert(e); assert(error_msg);  \
-                 assert(s <= e); PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;        \
+    STMT_START { Perl_assert_aTHX; assert(s); assert(e); assert(s <= e);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                     \
     } STMT_END
 
 PERL_CALLCONV AV *
@@ -2329,6 +2991,11 @@ PERL_CALLCONV const char *
 Perl_get_deprecated_property_msg(const Size_t warning_offset)
         __attribute__warn_unused_result__;
 #define PERL_ARGS_ASSERT_GET_DEPRECATED_PROPERTY_MSG
+
+PERL_CALLCONV const char *
+Perl_get_deprecated_property_reason(const Size_t warning_offset)
+        __attribute__warn_unused_result__;
+#define PERL_ARGS_ASSERT_GET_DEPRECATED_PROPERTY_REASON
 
 PERL_CALLCONV void
 Perl_get_entropy_portable(pTHX_ U8 *buffer, STRLEN length, const char *failure)
@@ -3913,15 +4580,11 @@ Perl_list(pTHX_ OP *o)
     } STMT_END
 
 PERL_CALLCONV HV *
-Perl_load_charnames(pTHX_ SV *char_name, const char *context, const STRLEN context_len, const char **error_msg)
+Perl_load_charnames(pTHX_ SV **exception_slot)
         Perl_attribute_nonnull_aTHX
-        Perl_attribute_nonnull(pTHX_1)
-        Perl_attribute_nonnull(pTHX_2)
-        Perl_attribute_nonnull(pTHX_4)
         __attribute__warn_unused_result__;
 #define PERL_ARGS_ASSERT_LOAD_CHARNAMES         \
-    STMT_START { Perl_assert_aTHX; assert(char_name); assert(context);    \
-                 assert(error_msg); PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
 PERL_CALLCONV void
@@ -3940,6 +4603,16 @@ Perl_locale_panic(const char *msg, const line_t immediate_caller_line, const cha
         __attribute__noreturn__;
 #define PERL_ARGS_ASSERT_LOCALE_PANIC           \
     STMT_START { assert(msg); assert(higher_caller_file); } STMT_END
+
+PERL_CALLCONV_NO_RET void
+Perl_locale_panic_sv(SV *exception, const char *file, const line_t line, const char *higher_caller_file, const line_t higher_caller_line)
+        Perl_attribute_nonnull(1)
+        Perl_attribute_nonnull(2)
+        Perl_attribute_nonnull(4)
+        __attribute__noreturn__;
+#define PERL_ARGS_ASSERT_LOCALE_PANIC_SV        \
+    STMT_START { assert(exception); assert(file); assert(higher_caller_file);  \
+    } STMT_END
 
 PERL_CALLCONV OP *
 Perl_localize(pTHX_ OP *o, I32 lex)
@@ -6335,6 +7008,15 @@ Perl_opdump_printf(pTHX_ struct Perl_OpDumpContext *ctx, const char *pat, ...)
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;         \
     } STMT_END
 
+PERL_CALLCONV const char *
+Perl_ordinal_plural_form(pTHX_ const char *language, UV n)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_ORDINAL_PLURAL_FORM    \
+    STMT_START { Perl_assert_aTHX; assert(language);   \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 PERL_CALLCONV void
 Perl_output_non_portable(pTHX_ const U8 shift)
         __attribute__visibility__("hidden");
@@ -6836,6 +7518,16 @@ Perl_prescan_version(pTHX_ const char *s, bool strict, const char **errstr, bool
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1);
 #define PERL_ARGS_ASSERT_PRESCAN_VERSION        \
+    STMT_START { Perl_assert_aTHX; assert(s);          \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV const char *
+Perl_prescan_version_reason(pTHX_ const char *s, bool strict, const char **reason, bool *sqv, int *ssaw_decimal, int *swidth, bool *salpha)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_PRESCAN_VERSION_REASON \
     STMT_START { Perl_assert_aTHX; assert(s);          \
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
@@ -10531,7 +11223,7 @@ Perl_utf8_to_uv_flags(const U8 * const s, const U8 * const e, UV *cp_p, Size_t *
     } STMT_END
 
 PERL_CALLCONV bool
-Perl_utf8_to_uv_msgs_helper_(const U8 * const s0, const U8 * const e, UV *cp_p, Size_t *advance_p, U32 flags, U32 *errors, AV **msgs)
+Perl_utf8_to_uv_msgs_helper_(const U8 * const s0, const U8 * const e, UV *cp_p, Size_t *advance_p, U32 flags, U32 *errors, AV **msgs, SV **exception_slot)
         Perl_attribute_nonnull(1)
         Perl_attribute_nonnull(2)
         Perl_attribute_nonnull(3);
@@ -10944,6 +11636,16 @@ Perl_write_to_stderr(pTHX_ SV *msv)
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
+PERL_CALLCONV SV *
+Perl_xperl_exception_render_legacy(pTHX_ SV *exception)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_XPERL_EXCEPTION_RENDER_LEGACY \
+    STMT_START { Perl_assert_aTHX; assert(exception);   \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;   \
+    } STMT_END
+
 PERL_CALLCONV void
 Perl_xs_boot_epilog(pTHX_ const SSize_t ax)
         Perl_attribute_nonnull_aTHX;
@@ -10966,6 +11668,42 @@ Perl_yyerror(pTHX_ const char * const s)
 #define PERL_ARGS_ASSERT_YYERROR                \
     STMT_START { Perl_assert_aTHX; assert(s);          \
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV int
+Perl_yyerror_diag(pTHX_ UV diag_index, const char *s, U32 flags)
+        Perl_attribute_nonnull_aTHX
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_YYERROR_DIAG           \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV int
+Perl_yyerror_diag_params(pTHX_ UV diag_index, const char *s, U32 flags, AV *params)
+        Perl_attribute_nonnull_aTHX
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_YYERROR_DIAG_PARAMS    \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
+    } STMT_END
+
+PERL_CALLCONV int
+Perl_yyerror_diag_pvn(pTHX_ UV diag_index, const char *s, STRLEN len, U32 flags)
+        Perl_attribute_nonnull_aTHX
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_YYERROR_DIAG_PVN       \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV int
+Perl_yyerror_diag_pvn_params(pTHX_ UV diag_index, const char *s, STRLEN len, U32 flags, AV *params)
+        Perl_attribute_nonnull_aTHX
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_YYERROR_DIAG_PVN_PARAMS \
+    STMT_START { Perl_assert_aTHX;                               \
+                 assert(!params || SvTYPE(params) == SVt_PVAV);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;            \
     } STMT_END
 
 PERL_CALLCONV int
@@ -11707,6 +12445,16 @@ S_regdump_intflags(pTHX_ const char *lead, const U32 flags)
         Perl_attribute_nonnull_aTHX;
 # endif /* defined(PERL_IN_REGCOMP_DEBUG_C) && defined(DEBUGGING) */
 #endif /* defined(PERL_CORE) || defined(PERL_EXT) */
+#if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)
+PERL_CALLCONV_NO_RET void
+Perl_diag_croak_caller_sv(UV diag_index, AV *params, SV *message)
+        __attribute__noreturn__
+        __attribute__visibility__("hidden");
+PERL_CALLCONV_NO_RET void
+Perl_diag_croak_nocontext_sv(UV diag_index, AV *params, SV *message)
+        __attribute__noreturn__
+        __attribute__visibility__("hidden");
+#endif
 #if defined(PERL_CORE) || defined(PERL_USE_VOLATILE_API)
 PERL_CALLCONV void
 Perl_finalize_optree(pTHX_ OP *o)
@@ -12879,6 +13627,17 @@ Perl_setup_canned_invlist_(pTHX_ const STRLEN size, const UV element0, UV **othe
           defined(PERL_IN_REGCOMP_ANY) || defined(PERL_IN_UTF8_C) */
 #if defined(PERL_IN_DQUOTE_C) || defined(PERL_IN_REGCOMP_C) || \
     defined(PERL_IN_TOKE_C)
+PERL_CALLCONV void
+Perl_diag_append_alien_digit_warning(pTHX_ SV **exception_slot, UV diag_index, const U8 radix, const STRLEN valids_len, const char * const first_bad, const char * const send, const bool UTF, const bool braced)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_5)
+        Perl_attribute_nonnull(pTHX_6);
+# define PERL_ARGS_ASSERT_DIAG_APPEND_ALIEN_DIGIT_WARNING \
+     STMT_START { Perl_assert_aTHX; assert(first_bad); assert(send);  \
+                  assert(first_bad < send);                           \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                \
+    } STMT_END
+
 PERL_CALLCONV const char *
 Perl_form_alien_digit_msg(pTHX_ const U8 which, const STRLEN valids_len, const char * const first_bad, const char * const send, const bool UTF, const bool braced)
         Perl_attribute_nonnull_aTHX
@@ -12896,10 +13655,34 @@ Perl_grok_bslash_c(pTHX_ const char source, U8 *result, const char **message, U3
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_2)
         Perl_attribute_nonnull(pTHX_3)
+        __attribute__deprecated__
         __attribute__warn_unused_result__;
 # define PERL_ARGS_ASSERT_GROK_BSLASH_C         \
      STMT_START { Perl_assert_aTHX; assert(result); assert(message);  \
                   PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                \
+    } STMT_END
+
+PERL_CALLCONV UV
+Perl_grok_bslash_c_diag(pTHX_ const char source, U8 *result, SV **exception_slot, const bool allow_warning)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_2)
+        __attribute__warn_unused_result__;
+# define PERL_ARGS_ASSERT_GROK_BSLASH_C_DIAG    \
+     STMT_START { Perl_assert_aTHX; assert(result);     \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV bool
+Perl_grok_bslash_c_with_reason(pTHX_ const char source, U8 *result, const char **message, U32 *packed_warn, const char **reason)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_2)
+        Perl_attribute_nonnull(pTHX_3)
+        Perl_attribute_nonnull(pTHX_5)
+        __attribute__deprecated__
+        __attribute__warn_unused_result__;
+# define PERL_ARGS_ASSERT_GROK_BSLASH_C_WITH_REASON \
+     STMT_START { Perl_assert_aTHX; assert(result); assert(message);    \
+                  assert(reason); PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
 PERL_CALLCONV bool
@@ -12909,10 +13692,24 @@ Perl_grok_bslash_o(pTHX_ char **s, const char * const send, UV *uv, const char *
         Perl_attribute_nonnull(pTHX_2)
         Perl_attribute_nonnull(pTHX_3)
         Perl_attribute_nonnull(pTHX_4)
+        __attribute__deprecated__
         __attribute__warn_unused_result__;
 # define PERL_ARGS_ASSERT_GROK_BSLASH_O         \
      STMT_START { Perl_assert_aTHX; assert(s); assert(*s); assert(send);  \
                   assert(uv); assert(message); assert(*s < send);         \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                    \
+    } STMT_END
+
+PERL_CALLCONV UV
+Perl_grok_bslash_o_diag(pTHX_ char **s, const char * const send, UV *uv, SV **exception_slot, const bool strict, const bool allow_UV_MAX, const bool utf8, const bool allow_warning)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2)
+        Perl_attribute_nonnull(pTHX_3)
+        __attribute__warn_unused_result__;
+# define PERL_ARGS_ASSERT_GROK_BSLASH_O_DIAG    \
+     STMT_START { Perl_assert_aTHX; assert(s); assert(*s); assert(send);  \
+                  assert(uv); assert(*s < send);                          \
                   PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                    \
     } STMT_END
 
@@ -12923,10 +13720,24 @@ Perl_grok_bslash_x(pTHX_ char **s, const char * const send, UV *uv, const char *
         Perl_attribute_nonnull(pTHX_2)
         Perl_attribute_nonnull(pTHX_3)
         Perl_attribute_nonnull(pTHX_4)
+        __attribute__deprecated__
         __attribute__warn_unused_result__;
 # define PERL_ARGS_ASSERT_GROK_BSLASH_X         \
      STMT_START { Perl_assert_aTHX; assert(s); assert(*s); assert(send);  \
                   assert(uv); assert(message); assert(*s < send);         \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                    \
+    } STMT_END
+
+PERL_CALLCONV UV
+Perl_grok_bslash_x_diag(pTHX_ char **s, const char * const send, UV *uv, SV **exception_slot, const bool strict, const bool allow_UV_MAX, const bool utf8, const bool allow_warning)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2)
+        Perl_attribute_nonnull(pTHX_3)
+        __attribute__warn_unused_result__;
+# define PERL_ARGS_ASSERT_GROK_BSLASH_X_DIAG    \
+     STMT_START { Perl_assert_aTHX; assert(s); assert(*s); assert(send);  \
+                  assert(uv); assert(*s < send);                          \
                   PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                    \
     } STMT_END
 
@@ -13219,14 +14030,13 @@ S_hv_magic_check(HV *hv, bool *needs_copy, bool *needs_store)
     } STMT_END
 
 PERL_STATIC_NO_RET void
-S_hv_notallowed(pTHX_ int flags, const char *key, I32 klen, const char *msg)
+S_hv_notallowed(pTHX_ int flags, const char *key, I32 klen, int error)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_2)
-        Perl_attribute_nonnull(pTHX_4)
         __attribute__noreturn__;
 # define PERL_ARGS_ASSERT_HV_NOTALLOWED         \
-     STMT_START { Perl_assert_aTHX; assert(key); assert(msg);  \
-                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;         \
+     STMT_START { Perl_assert_aTHX; assert(key);        \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
 static SV *
@@ -13446,13 +14256,6 @@ S_new_LC_ALL(pTHX_ const char *lc_all, bool force)
 #   define PERL_ARGS_ASSERT_NEW_LC_ALL          \
        STMT_START { Perl_assert_aTHX; assert(lc_all);     \
                     PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
-    } STMT_END
-
-static void
-S_output_check_environment_warning(pTHX_ const char * const language, const char * const lc_all, const char * const lang)
-        Perl_attribute_nonnull_aTHX;
-#   define PERL_ARGS_ASSERT_OUTPUT_CHECK_ENVIRONMENT_WARNING \
-       STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
 static parse_LC_ALL_string_return
@@ -13934,25 +14737,29 @@ S_assignment_type(pTHX_ const OP *o)
     } STMT_END
 
 static void
-S_bad_type_gv(pTHX_ I32 n, GV *gv, const OP *kid, const char *t)
+S_bad_type_gv(pTHX_ I32 n, GV *gv, const OP *kid, const char *expected_kind, const char *sigils)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_2)
         Perl_attribute_nonnull(pTHX_3)
-        Perl_attribute_nonnull(pTHX_4);
+        Perl_attribute_nonnull(pTHX_4)
+        Perl_attribute_nonnull(pTHX_5);
 # define PERL_ARGS_ASSERT_BAD_TYPE_GV           \
-     STMT_START { Perl_assert_aTHX; assert(gv); assert(kid); assert(t);  \
-                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                   \
+     STMT_START { Perl_assert_aTHX; assert(gv); assert(kid);  \
+                  assert(expected_kind); assert(sigils);      \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;        \
     } STMT_END
 
 static void
-S_bad_type_pv(pTHX_ I32 n, const char *t, const OP *o, const OP *kid)
+S_bad_type_pv(pTHX_ I32 n, const char *expected_kind, const char *sigils, const OP *o, const OP *kid)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_2)
         Perl_attribute_nonnull(pTHX_3)
-        Perl_attribute_nonnull(pTHX_4);
+        Perl_attribute_nonnull(pTHX_4)
+        Perl_attribute_nonnull(pTHX_5);
 # define PERL_ARGS_ASSERT_BAD_TYPE_PV           \
-     STMT_START { Perl_assert_aTHX; assert(t); assert(o); assert(kid);  \
-                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                  \
+     STMT_START { Perl_assert_aTHX; assert(expected_kind); assert(sigils);  \
+                  assert(o); assert(kid);                                   \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                      \
     } STMT_END
 
 static void
@@ -14713,13 +15520,15 @@ S_refto(pTHX_ SV *sv)
 #if defined(PERL_IN_PP_C) || defined(PERL_IN_PP_HOT_C)
 
 PERL_CALLCONV GV *
-Perl_softref2xv(pTHX_ SV * const sv, const char * const what, const svtype type)
+Perl_softref2xv(pTHX_ SV * const sv, const char * const what, const char * const reference_kind, const svtype type)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1)
         Perl_attribute_nonnull(pTHX_2)
+        Perl_attribute_nonnull(pTHX_3)
         __attribute__warn_unused_result__;
 # define PERL_ARGS_ASSERT_SOFTREF2XV            \
      STMT_START { Perl_assert_aTHX; assert(sv); assert(what);  \
+                  assert(reference_kind);                      \
                   PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;         \
     } STMT_END
 
@@ -15646,7 +16455,7 @@ Perl_invlist_clone(pTHX_ SV * const invlist, SV *newlist)
 
 # define PERL_ARGS_ASSERT_HANDLE_USER_DEFINED_PROPERTY \
      STMT_START { Perl_assert_aTHX; assert(name); assert(contents);  \
-                  assert(user_defined_ptr); assert(msg);             \
+                  assert(user_defined_ptr); assert(exception_slot);  \
                   PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;               \
     } STMT_END
 
@@ -15670,10 +16479,9 @@ Perl_invlist_clone(pTHX_ SV * const invlist, SV *newlist)
     } STMT_END
 
 # define PERL_ARGS_ASSERT_OUTPUT_POSIX_WARNINGS \
-     STMT_START { Perl_assert_aTHX; assert(pRExC_state);       \
-                  assert(posix_warnings);                      \
-                  assert(SvTYPE(posix_warnings) == SVt_PVAV);  \
-                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;         \
+     STMT_START { Perl_assert_aTHX; assert(pRExC_state);  \
+                  assert(posix_warnings);                 \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;    \
     } STMT_END
 
 # define PERL_ARGS_ASSERT_PARSE_LPAREN_QUESTION_FLAGS \
@@ -15683,18 +16491,8 @@ Perl_invlist_clone(pTHX_ SV * const invlist, SV *newlist)
 
 # define PERL_ARGS_ASSERT_PARSE_UNIPROP_STRING  \
      STMT_START { Perl_assert_aTHX; assert(name); assert(user_defined_ptr);  \
-                  assert(msg); PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;          \
-    } STMT_END
-
-PERL_STATIC_NO_RET void
-S_re_croak(pTHX_ bool utf8, const char *pat, ...)
-        Perl_attribute_nonnull_aTHX
-        Perl_attribute_nonnull(pTHX_2)
-        __attribute__noreturn__
-        __attribute__format__(__printf__,pTHX_2,pTHX_3);
-# define PERL_ARGS_ASSERT_RE_CROAK              \
-     STMT_START { Perl_assert_aTHX; assert(pat);        \
-                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+                  assert(exception_slot);                                    \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                       \
     } STMT_END
 
 # define PERL_ARGS_ASSERT_REG                   \
@@ -15871,7 +16669,7 @@ S_handle_names_wildcard(pTHX_ const char *wname, const STRLEN wname_len, SV **pr
         Perl_attribute_nonnull(pTHX_3)
         Perl_attribute_nonnull(pTHX_4);
 static int
-S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state, const char * const s, char **updated_parse_ptr, AV **posix_warnings, const bool check_only)
+S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state, const char * const s, char **updated_parse_ptr, SSize_t *posix_warnings, const bool check_only)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1)
         Perl_attribute_nonnull(pTHX_2);
@@ -15881,7 +16679,7 @@ S_handle_regex_sets(pTHX_ RExC_state_t *pRExC_state, SV **return_invlist, I32 *f
         Perl_attribute_nonnull(pTHX_1)
         Perl_attribute_nonnull(pTHX_3);
 static SV *
-S_handle_user_defined_property(pTHX_ const char *name, const STRLEN name_len, const bool is_utf8, const bool to_fold, const bool runtime, const bool deferrable, SV *contents, bool *user_defined_ptr, SV *msg, const STRLEN level)
+S_handle_user_defined_property(pTHX_ const char *name, const STRLEN name_len, const bool is_utf8, const bool to_fold, const bool runtime, const bool deferrable, SV *contents, bool *user_defined_ptr, SV **exception_slot, const STRLEN level)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1)
         Perl_attribute_nonnull(pTHX_7)
@@ -15909,7 +16707,7 @@ S_optimize_regclass(pTHX_ RExC_state_t *pRExC_state, SV *cp_list, SV *only_utf8_
         Perl_attribute_nonnull(pTHX_9)
         Perl_attribute_nonnull(pTHX_10);
 static void
-S_output_posix_warnings(pTHX_ RExC_state_t *pRExC_state, AV *posix_warnings)
+S_output_posix_warnings(pTHX_ RExC_state_t *pRExC_state, SSize_t *posix_warnings)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1)
         Perl_attribute_nonnull(pTHX_2);
@@ -15918,7 +16716,7 @@ S_parse_lparen_question_flags(pTHX_ RExC_state_t *pRExC_state)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1);
 static SV *
-S_parse_uniprop_string(pTHX_ const char * const name, Size_t name_len, const bool is_utf8, const bool to_fold, const bool runtime, const bool deferrable, AV **strings, bool *user_defined_ptr, SV *msg, const STRLEN level)
+S_parse_uniprop_string(pTHX_ const char * const name, Size_t name_len, const bool is_utf8, const bool to_fold, const bool runtime, const bool deferrable, AV **strings, bool *user_defined_ptr, SV **exception_slot, const STRLEN level)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1)
         Perl_attribute_nonnull(pTHX_8)
@@ -17003,12 +17801,13 @@ S_find_hash_subscript(pTHX_ const HV * const hv, const SV * const val)
     } STMT_END
 
 static SV *
-S_find_uninit_var(pTHX_ const OP * const obase, const SV * const uninit_sv, bool match, const char **desc_p)
+S_find_uninit_var(pTHX_ const OP * const obase, const SV * const uninit_sv, bool match, const char **desc_p, const char **operation_name_p)
         Perl_attribute_nonnull_aTHX
-        Perl_attribute_nonnull(pTHX_4);
+        Perl_attribute_nonnull(pTHX_4)
+        Perl_attribute_nonnull(pTHX_5);
 # define PERL_ARGS_ASSERT_FIND_UNINIT_VAR       \
-     STMT_START { Perl_assert_aTHX; assert(desc_p);     \
-                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+     STMT_START { Perl_assert_aTHX; assert(desc_p); assert(operation_name_p);  \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                         \
     } STMT_END
 
 static bool
@@ -17448,7 +18247,7 @@ S_missingterm(pTHX_ char *s, STRLEN len)
     } STMT_END
 
 static SV *
-S_new_constant(pTHX_ const char *s, STRLEN len, const char *key, STRLEN keylen, SV *sv, SV *pv, const char *type, STRLEN typelen, const char **error_msg)
+S_new_constant(pTHX_ const char *s, STRLEN len, const char *key, STRLEN keylen, SV *sv, SV *pv, const char *type, STRLEN typelen, bool *failed)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_3)
         Perl_attribute_nonnull(pTHX_5);
@@ -17630,12 +18429,12 @@ S_update_debugger_info(pTHX_ SV *orig_sv, const char * const buf, STRLEN len)
     } STMT_END
 
 static void
-S_warn_expect_operator(pTHX_ const char * const what, char *s, I32 pop_oldbufptr)
+S_warn_expect_operator(pTHX_ const char * const found_kind, char *s, I32 pop_oldbufptr)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1);
 # define PERL_ARGS_ASSERT_WARN_EXPECT_OPERATOR  \
-     STMT_START { Perl_assert_aTHX; assert(what);       \
-                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+     STMT_START { Perl_assert_aTHX; assert(found_kind);  \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;   \
     } STMT_END
 
 static void
@@ -17643,15 +18442,6 @@ S_yyerror_non_ascii_message(pTHX_ const U8 * const s)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1);
 # define PERL_ARGS_ASSERT_YYERROR_NON_ASCII_MESSAGE \
-     STMT_START { Perl_assert_aTHX; assert(s);          \
-                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
-    } STMT_END
-
-static int
-S_yywarn(pTHX_ const char * const s, U32 flags)
-        Perl_attribute_nonnull_aTHX
-        Perl_attribute_nonnull(pTHX_1);
-# define PERL_ARGS_ASSERT_YYWARN                \
      STMT_START { Perl_assert_aTHX; assert(s);          \
                   PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
@@ -17822,19 +18612,6 @@ S_unexpected_non_continuation_text(pTHX_ const U8 * const s, STRLEN print_len, c
                   PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;      \
     } STMT_END
 
-# if 0
-static void
-S_warn_on_first_deprecated_use(pTHX_ U32 category, const char * const name, const char * const alternative, const bool use_locale, const char * const file, const unsigned line)
-        Perl_attribute_nonnull_aTHX
-        Perl_attribute_nonnull(pTHX_2)
-        Perl_attribute_nonnull(pTHX_3)
-        Perl_attribute_nonnull(pTHX_5);
-#   define PERL_ARGS_ASSERT_WARN_ON_FIRST_DEPRECATED_USE \
-       STMT_START { Perl_assert_aTHX; assert(name); assert(alternative);  \
-                    assert(file); PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;    \
-    } STMT_END
-
-# endif /* 0 */
 # if !defined(PERL_NO_INLINE_FUNCTIONS)
 PERL_STATIC_INLINE int
 S_does_utf8_overflow(const U8 * const s, const U8 *e)
@@ -17873,15 +18650,6 @@ S_mess_alloc(pTHX)
         Perl_attribute_nonnull_aTHX;
 # define PERL_ARGS_ASSERT_MESS_ALLOC            \
      STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
-    } STMT_END
-
-static SV *
-S_with_queued_errors(pTHX_ SV *ex)
-        Perl_attribute_nonnull_aTHX
-        Perl_attribute_nonnull(pTHX_1);
-# define PERL_ARGS_ASSERT_WITH_QUEUED_ERRORS    \
-     STMT_START { Perl_assert_aTHX; assert(ex);         \
-                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
 static void

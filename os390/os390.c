@@ -22,7 +22,7 @@ zos_copytags_fd(pTHX_ CV *cv)
   int ret = 0;
 
   if (items != 2)
-    croak("Usage: ZOS::Filespec::copytags_fd(f1, f2])");
+    PERL_THROW_ZOS_FILESPEC_COPYTAGS_FD_USAGE();
 
   int from_fd = (int)SvIV(ST(0));
   int to_fd = (int)SvIV(ST(1));

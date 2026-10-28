@@ -1,9 +1,10 @@
 MODULE = XS::APItest            PACKAGE = XS::APItest::utf8
 
 int
-bytes_cmp_utf8(bytes, utf8)
+bytes_cmp_utf8(bytes, utf8, without_op = FALSE)
         SV *bytes
         SV *utf8
+        bool without_op
     PREINIT:
         const U8 *b;
         STRLEN blen;
@@ -12,7 +13,12 @@ bytes_cmp_utf8(bytes, utf8)
     CODE:
         b = (const U8 *)SvPVbyte(bytes, blen);
         u = (const U8 *)SvPVbyte(utf8, ulen);
+        ENTER;
+        SAVEVPTR(PL_op);
+        if (without_op)
+            PL_op = NULL;
         RETVAL = bytes_cmp_utf8(b, blen, u, ulen);
+        LEAVE;
     OUTPUT:
         RETVAL
 

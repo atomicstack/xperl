@@ -114,6 +114,7 @@
 #     undef OPpPARAM_IF_FALSE
 #     undef OPpPARAM_IF_UNDEF
 #     undef OPpSELF_IN_PAD
+#     undef PERL_ERROR_OBJ
 #     undef PREVENT_LVALUE
 #     undef TRIE_JUMP_TYPE_MAX
 #     undef UNUSED
@@ -128,6 +129,10 @@
 #     undef first_upper_bit_set_byte_number
 #     undef invlist_intersection_complement_2nd_
 #     undef invlist_union_complement_2nd_
+#     undef is_MULTI_CHAR_FOLD_utf8_safe_part4_
+#     undef is_MULTI_CHAR_FOLD_utf8_safe_part5_
+#     undef is_MULTI_CHAR_FOLD_utf8_safe_part6_
+#     undef is_MULTI_CHAR_FOLD_utf8_safe_part7_
 #     undef LATIN_SMALL_LIGATURE_LONG_S_WITH_DESCENDER_S
 #     undef LATIN_SMALL_LIGATURE_LONG_S_WITH_DESCENDER_S_UTF8
 #     undef PARSE_IDENT_ERROR_POSITION
@@ -635,7 +640,6 @@
 # define regexec_flags(a,b,c,d,e,f,g,h)         Perl_regexec_flags(aTHX_ a,b,c,d,e,f,g,h)
 # define regfree_internal(a)                    Perl_regfree_internal(aTHX_ a)
 # define reginitcolors()                        Perl_reginitcolors(aTHX)
-# define repeat_decode_utf8(a,b)                Perl_repeat_decode_utf8(aTHX_ a,b)
 # define repeatcpy                              Perl_repeatcpy
 # define require_pv(a)                          Perl_require_pv(aTHX_ a)
 # define rninstr                                Perl_rninstr
@@ -1525,7 +1529,6 @@
 #       define mortalized_pv_copy(a)            S_mortalized_pv_copy(aTHX_ a)
 #       define native_querylocale_i(a)          S_native_querylocale_i(aTHX_ a)
 #       define new_LC_ALL(a,b)                  S_new_LC_ALL(aTHX_ a,b)
-#       define output_check_environment_warning(a,b,c) S_output_check_environment_warning(aTHX_ a,b,c)
 #       define parse_LC_ALL_string(a,b,c,d,e,f) S_parse_LC_ALL_string(aTHX_ a,b,c,d,e,f)
 #       define save_to_buffer(a,b,c)            S_save_to_buffer(aTHX_ a,b,c)
 #       define set_save_buffer_min_size(a,b,c)  S_set_save_buffer_min_size(aTHX_ a,b,c)
@@ -1623,8 +1626,8 @@
 #   if defined(PERL_IN_OP_C)
 #     define apply_attrs_my(a,b,c,d)            S_apply_attrs_my(aTHX_ a,b,c,d)
 #     define assignment_type(a)                 S_assignment_type(aTHX_ a)
-#     define bad_type_gv(a,b,c,d)               S_bad_type_gv(aTHX_ a,b,c,d)
-#     define bad_type_pv(a,b,c,d)               S_bad_type_pv(aTHX_ a,b,c,d)
+#     define bad_type_gv(a,b,c,d,e)             S_bad_type_gv(aTHX_ a,b,c,d,e)
+#     define bad_type_pv(a,b,c,d,e)             S_bad_type_pv(aTHX_ a,b,c,d,e)
 #     define check_alt_hash_fields_hekify(a)    S_check_alt_hash_fields_hekify(aTHX_ a)
 #     define clear_special_blocks(a,b,c)        S_clear_special_blocks(aTHX_ a,b,c)
 #     define cop_free(a)                        S_cop_free(aTHX_ a)
@@ -1812,9 +1815,6 @@
 #       define dooneliner(a,b)                  S_dooneliner(aTHX_ a,b)
 #     endif
 #   endif
-#   if defined(PERL_IN_REGCOMP_C)
-#     define re_croak(a,...)                    S_re_croak(aTHX_ a,__VA_ARGS__)
-#   endif
 #   if defined(PERL_IN_REGCOMP_INVLIST_C) && !defined(PERL_EXT_RE_BUILD)
 #     define initialize_invlist_guts(a,b)       S_initialize_invlist_guts(aTHX_ a,b)
 #   endif
@@ -1831,7 +1831,7 @@
 #     define expect_number(a)                   S_expect_number(aTHX_ a)
 #     define find_array_subscript(a,b)          S_find_array_subscript(aTHX_ a,b)
 #     define find_hash_subscript(a,b)           S_find_hash_subscript(aTHX_ a,b)
-#     define find_uninit_var(a,b,c,d)           S_find_uninit_var(aTHX_ a,b,c,d)
+#     define find_uninit_var(a,b,c,d,e)         S_find_uninit_var(aTHX_ a,b,c,d,e)
 #     define glob_2number(a)                    S_glob_2number(aTHX_ a)
 #     define glob_assign_glob(a,b,c)            S_glob_assign_glob(aTHX_ a,b,c)
 #     define not_a_number(a)                    S_not_a_number(aTHX_ a)
@@ -1910,7 +1910,6 @@
 #     define update_debugger_info(a,b,c)        S_update_debugger_info(aTHX_ a,b,c)
 #     define warn_expect_operator(a,b,c)        S_warn_expect_operator(aTHX_ a,b,c)
 #     define yyerror_non_ascii_message(a)       S_yyerror_non_ascii_message(aTHX_ a)
-#     define yywarn(a,b)                        S_yywarn(aTHX_ a,b)
 #     if defined(DEBUGGING)
 #       define printbuf(a,b)                    S_printbuf(aTHX_ a,b)
 #       define tokereport(a,b)                  S_tokereport(aTHX_ a,b)
@@ -1937,21 +1936,17 @@
 #     define turkic_lc(a,b,c,d)                 S_turkic_lc(aTHX_ a,b,c,d)
 #     define turkic_uc(a,b,c,d)                 S_turkic_uc(aTHX_ a,b,c,d)
 #     define unexpected_non_continuation_text(a,b,c,d) S_unexpected_non_continuation_text(aTHX_ a,b,c,d)
-#     if 0
-#       define warn_on_first_deprecated_use(a,b,c,d,e,f) S_warn_on_first_deprecated_use(aTHX_ a,b,c,d,e,f)
-#     endif
 #   endif /* defined(PERL_IN_UTF8_C) */
 #   if defined(PERL_IN_UTIL_C)
 #     define ckwarn_common(a)                   S_ckwarn_common(aTHX_ a)
 #     define mess_alloc()                       S_mess_alloc(aTHX)
-#     define with_queued_errors(a)              S_with_queued_errors(aTHX_ a)
 #     if defined(PERL_MEM_LOG) && !defined(PERL_MEM_LOG_NOIMPL)
 #       define mem_log_common                   S_mem_log_common
 #     endif
 #     if defined(PERL_USES_PL_PIDSTATUS)
 #       define pidgone(a,b)                     S_pidgone(aTHX_ a,b)
 #     endif
-#   endif /* defined(PERL_IN_UTIL_C) */
+#   endif
 #   if defined(PERL_USE_3ARG_SIGHANDLER)
 #     define sighandler                         Perl_sighandler
 #   else
@@ -2054,7 +2049,6 @@
 #   define get_prop_definition(a)               Perl_get_prop_definition(aTHX_ a)
 #   define get_prop_values                      Perl_get_prop_values
 #   define inverse_folds_(a,b,c)                Perl_inverse_folds_(aTHX_ a,b,c)
-#   define load_charnames(a,b,c,d)              Perl_load_charnames(aTHX_ a,b,c,d)
 #   define mbtowc_(a,b,c)                       Perl_mbtowc_(aTHX_ a,b,c)
 #   define mg_find_mglob(a)                     Perl_mg_find_mglob(aTHX_ a)
 #   define multiconcat_stringify(a)             Perl_multiconcat_stringify(aTHX_ a)

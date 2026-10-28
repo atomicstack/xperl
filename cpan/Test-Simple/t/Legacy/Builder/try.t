@@ -39,4 +39,4 @@ my $tb = Test::Builder->new;
 ok !eval {
     $tb->_try(sub { die "Died\n" }, die_on_fail => 1);
 };
-is $@, "Died\n";
+like $@, qr/\ADied\n\t\.\.\.propagated at .*Test\/Builder\.pm line \d+\.\n\z/;

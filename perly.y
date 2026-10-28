@@ -146,6 +146,7 @@
 %type <opval> expr term subscripted scalar ary hsh arylen star amper sideff
 %type <opval> condition
 %type <opval> catch_paren
+%type <opval> catch_varlist
 %type <opval> empty
 %type <opval> sliceme kvslice gelem
 %type <opval> listexpr nexpr texpr iexpr mexpr mnexpr
@@ -369,8 +370,7 @@ bare_statement_on
 		mblock
 		{
 			if (!parser->in_dispatch_on_stmtseq) {
-				yyerror("dispatch-on clauses are only allowed directly in a dispatch");
-				YYERROR;
+				PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DISPATCH_ON_OUTSIDE_DISPATCH();
 			}
 			OP *pattern = $dispatch_pattern_expr;
 			dispatch_pattern_preserve_concat(pattern);
@@ -476,8 +476,7 @@ dispatch_on_block
 				}
 			}
 			if (invalid) {
-				yyerror("only dispatch-on clauses are allowed directly in a dispatch");
-				YYERROR;
+				PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DISPATCH_NON_ON_STATEMENT();
 			}
 		}
 ;
@@ -945,17 +944,16 @@ bare_statement_try_catch
 		mblock[try]
 		KW_CATCH
 		remember
-		catch_paren[scalar]
+		catch_paren[catchvars]
 		{
-			if(!$scalar) {
-				yyerror("catch block requires a (VAR)");
-				YYERROR;
+			if(!$catchvars) {
+				PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_CATCH_VARIABLE_MISSING();
 			}
 		}
 		mblock[catch]
 		finally
 		{
-			$$ = newTRYCATCHOP(0, $try, $scalar, block_end($remember, op_scope($catch)));
+			$$ = newTRYCATCHOP(0, $try, $catchvars, block_end($remember, op_scope($catch)));
 			if($finally)
 				$$ = op_wrap_finally($$, $finally);
 			parser->copline = (line_t)$KW_TRY;
@@ -1007,7 +1005,7 @@ bare_statement_utilize
 			SvREFCNT_inc_simple_void(PL_compcv);
 			if ($alias) {
 				if (!$KW_USE_or_NO)
-					yyerror("package aliases are only allowed with use");
+					PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_NAMESPACE_ALIAS_REQUIRES_USE();
 				else
 					namespace_alias(cSVOPx($module)->op_sv,
 					               cSVOPx($alias)->op_sv);
@@ -1150,10 +1148,18 @@ catch_paren:	empty
 			 * action block to throw a nicer error message */
 	|	PERLY_PAREN_OPEN
 			{ parser->in_my = KEY_catch; }
-		scalar
-			{ parser->in_my = 0; intro_my(); }
+		catch_varlist
 		PERLY_PAREN_CLOSE
-			{ $$ = $scalar; }
+			{ $$ = $catch_varlist; }
+	;
+
+catch_varlist:	scalar
+			{ parser->in_my = 0; intro_my(); $$ = $scalar; }
+	|	scalar[first]
+			{ parser->in_my = 0; intro_my(); parser->in_my = KEY_catch; }
+		PERLY_COMMA
+		scalar[second]
+			{ parser->in_my = 0; intro_my(); $$ = newLISTOP(OP_LIST, 0, $first, $second); }
 	;
 
 /* A sequence of statements in the program */
@@ -1448,12 +1454,12 @@ sigslurpelem: sigslurpsigil sigvar
                         }
         |     sigslurpsigil sigvar ASSIGNOP
                         {
-			    yyerror("A slurpy parameter may not have a default value");
+			    PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_SLURPY_DEFAULT_FORBIDDEN();
 			    $$ = NULL;
                         }
         |     sigslurpsigil sigvar ASSIGNOP term
                         {
-			    yyerror("A slurpy parameter may not have a default value");
+			    PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_SLURPY_DEFAULT_FORBIDDEN();
 			    $$ = NULL;
                         }
         ;
@@ -1536,8 +1542,7 @@ subsigguts:
                 optsiglist
 			{
 			    if (!FEATURE_SIGNATURES_IS_ENABLED && !CvIsMETHOD(PL_compcv))
-			        croak("Experimental "
-                                    "subroutine signatures not enabled");
+			        PERL_THROW_ERROR_SYNTAX_SIGNATURE_FEATURE_DISABLED();
 
                             /* We shouldn't get here otherwise */
                             $$ = subsignature_finish();
@@ -1865,9 +1870,9 @@ termrelop:	relopchain %prec PREC_LOW
 	|	term[lhs] NCRELOP term[rhs]
 			{ $$ = newBINOP($NCRELOP, 0, scalar($lhs), scalar($rhs)); }
 	|	termrelop NCRELOP
-			{ yyerror("syntax error"); YYERROR; }
+			{ PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_RECOVER(); }
 	|	termrelop CHRELOP
-			{ yyerror("syntax error"); YYERROR; }
+			{ PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_RECOVER(); }
 	|	term[lhs] PLUGIN_REL_OP[op] term[rhs]
 			{ $$ = build_infix_plugin($lhs, $rhs, $op); }
 	;
@@ -1883,9 +1888,9 @@ termeqop:	eqopchain %prec PREC_LOW
 	|	term[lhs] NCEQOP term[rhs]
 			{ $$ = newBINOP($NCEQOP, 0, scalar($lhs), scalar($rhs)); }
 	|	termeqop NCEQOP
-			{ yyerror("syntax error"); YYERROR; }
+			{ PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_RECOVER(); }
 	|	termeqop CHEQOP
-			{ yyerror("syntax error"); YYERROR; }
+			{ PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_RECOVER(); }
 	;
 
 eqopchain:	term[lhs] CHEQOP term[rhs]
@@ -1944,19 +1949,19 @@ anonymous
 			{ SvREFCNT_inc_simple_void(PL_compcv);
 			  $$ = newANONATTRSUB($startanonsub, $proto, $subattrlist, $subbody); }
 	|	KW_SUB_anon     startanonsub proto subattrlist            %prec PERLY_PAREN_OPEN
-			{ yyerror("Illegal declaration of anonymous subroutine"); YYERROR; }
+			{ PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SUBROUTINE_ANONYMOUS_BODY_MISSING(); }
 	|	KW_SUB_anon_sig startanonsub subattrlist sigsubbody %prec PERLY_PAREN_OPEN
 			{ SvREFCNT_inc_simple_void(PL_compcv);
 			  $$ = newANONATTRSUB($startanonsub, NULL, $subattrlist, $sigsubbody); }
 	|	KW_SUB_anon_sig startanonsub subattrlist             %prec PERLY_PAREN_OPEN
-			{ yyerror("Illegal declaration of anonymous subroutine"); YYERROR; }
+			{ PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SUBROUTINE_ANONYMOUS_BODY_MISSING(); }
 	|	KW_METHOD_anon startanonmethod subattrlist sigsubbody %prec PERLY_PAREN_OPEN
 			{
 			  SvREFCNT_inc_simple_void(PL_compcv);
 			  $$ = newANONATTRSUB($startanonmethod, NULL, $subattrlist, $sigsubbody);
 			}
 	|	KW_METHOD_anon startanonmethod subattrlist            %prec PERLY_PAREN_OPEN
-			{ yyerror("Illegal declaration of anonymous subroutine"); YYERROR; }
+			{ PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SUBROUTINE_ANONYMOUS_BODY_MISSING(); }
     ;
 
 /* Things called with "do" */
@@ -1985,8 +1990,7 @@ yield_args
 termyield
 	:       KW_YIELD yield_args	%prec UNIOP
 			{ if (!CvGENERATOR(PL_compcv)) {
-			      yyerror("yield outside a gen");
-			      YYERROR;
+			      PERL_ADD_COMPILE_ERR_ERROR_ITERATOR_GENERATOR_YIELD_OUTSIDE_GENERATOR();
 			  }
 			  $$ = newLISTOP(OP_YIELD, 0,
                                       newOP(OP_PUSHMARK, 0),
@@ -2080,8 +2084,7 @@ term[product]	:	termbinop
 			parser->in_dispatch_pattern_pin = FALSE;
 			if (!$dispatch_pattern_pin_target
 			    || $dispatch_pattern_pin_target->op_type != OP_PADSV)
-				Perl_croak(aTHX_
-				    "pinned pattern value must be an existing scalar lexical");
+				PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_PIN_REQUIRES_EXISTING_SCALAR();
 			$$ = newUNOP(OP_DISPATCHCOERCE, 0, $dispatch_pattern_pin_target);
 			$$->op_private = DISPATCH_PATTERN_CRITERION_PIN;
 		}

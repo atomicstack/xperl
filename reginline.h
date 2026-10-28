@@ -16,8 +16,7 @@ Perl_regnext(pTHX_ const regnode *p)
         return NULL;
 
     if (OP(p) > REGNODE_MAX) {                /* regnode.type is unsigned */
-        croak("Corrupted regexp opcode %d > %d",
-                                                (int)OP(p), (int)REGNODE_MAX);
+        PERL_THROW_ERROR_INTERNAL_REGEXP_DATA_NEXT_NODE_OPCODE_OUT_OF_RANGE((int)OP(p), (int)REGNODE_MAX);
     }
 
     offset = (REGNODE_OFF_BY_ARG(OP(p)) ? ARG1u(p) : NEXT_OFF(p));

@@ -196,7 +196,14 @@ foreach my $inx ("", "aabbcc\n", [qw(aa bb cc)]) {
 	$@ = $outx;
 	$warn = "";
 	call_sv(sub { die $inx if $inx }, G_VOID|G_EVAL);
-	ok ref($@) eq ref($inx) && $@ eq $inx;
+	if (!ref($inx) && $inx) {
+	    ok ref($@) eq 'XPerl::Exception'
+	        && $@->contents->[0]->code eq 'ERROR_USER_TEXT'
+	        && $@->render('legacy') eq $inx;
+	}
+	else {
+	    ok ref($@) eq ref($inx) && $@ eq $inx;
+	}
 	$warn =~ s/ at [^\n]*\n\z//;
 	is $warn, "";
 	$@ = $outx;

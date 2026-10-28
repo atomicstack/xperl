@@ -211,7 +211,7 @@ PerlIO_apply_layers(pTHX_ PerlIO *f, const char *mode, const char *names)
        ) {
         return 0;
     }
-    croak("Cannot apply \"%s\" in non-PerlIO perl", names);
+    PERL_THROW_ERROR_IO_LAYER_APPLICATION_UNAVAILABLE(names);
     /*
      * NOTREACHED
      */
@@ -268,7 +268,7 @@ PerlIO_openn(pTHX_ const char *layers, const char *mode, int fd,
 {
     if (narg) {
         if (narg > 1) {
-            croak("More than one argument to open");
+            PERL_THROW_ERROR_IO_OPEN_TOO_MANY_ARGUMENTS();
         }
         if (*args == &PL_sv_undef)
             return PerlIO_tmpfile();
@@ -302,7 +302,7 @@ XS(XS_PerlIO__Layer__find)
 {
     dXSARGS;
     if (items < 2)
-        croak("Usage class->find(name[,load])");
+        PERL_THROW_ERROR_IO_LAYER_FIND_TOO_FEW_ARGUMENTS();
     else {
         const char * const name = SvPV_nolen_const(ST(1));
         ST(0) = (strEQ(name, "crlf")
@@ -728,7 +728,7 @@ PerlIO_find_layer(pTHX_ const char *name, STRLEN len, int load)
     if (load && PL_subname && PL_def_layerlist
         && PL_def_layerlist->cur >= 2) {
         if (PL_in_load_module) {
-            croak("Recursive call to Perl_load_module in PerlIO_find_layer");
+            PERL_THROW_ERROR_IO_LAYER_MODULE_LOAD_REENTRY();
             return NULL;
         } else {
             SV * const pkgsv = newSVpvs("PerlIO");
@@ -781,7 +781,7 @@ XS(XS_PerlIO__Layer__find)
 {
     dXSARGS;
     if (items < 2)
-        croak("Usage class->find(name[,load])");
+        PERL_THROW_ERROR_IO_LAYER_FIND_TOO_FEW_ARGUMENTS();
     else {
         STRLEN len;
         const char * const name = SvPV_const(ST(1), len);
@@ -823,9 +823,7 @@ PerlIO_parse_layers(pTHX_ PerlIO_list_t *av, const char *names)
                      * seen as an invalid separator character.
                      */
                     const char q = ((*s == '\'') ? '"' : '\'');
-                    ck_warner(packWARN(WARN_LAYER),
-                              "Invalid separator character %c%c%c in PerlIO layer specification %s",
-                              q, *s, q, s);
+                    PERL_WARN_WARNING_IO_LAYER_SEPARATOR_INVALID(q, *s, q, s);
                     SETERRNO(EINVAL, LIB_INVARG);
                     return -1;
                 }
@@ -857,9 +855,7 @@ PerlIO_parse_layers(pTHX_ PerlIO_list_t *av, const char *names)
                             /* Fall through */
                         case '\0':
                             e--;
-                            ck_warner(packWARN(WARN_LAYER),
-                                      "Argument list not closed for PerlIO layer \"%.*s\"",
-                                      (int) (e - s), s);
+                            PERL_WARN_WARNING_IO_LAYER_ARGUMENT_LIST_UNTERMINATED((int) (e - s), s);
                             return -1;
                         default:
                             /*
@@ -881,8 +877,7 @@ PerlIO_parse_layers(pTHX_ PerlIO_list_t *av, const char *names)
                         SvREFCNT_dec(arg);
                     }
                     else {
-                        ck_warner(packWARN(WARN_LAYER), "Unknown PerlIO layer \"%.*s\"",
-                                  (int) llen, s);
+                        PERL_WARN_WARNING_IO_LAYER_NAME_UNKNOWN((int) llen, s);
                         return -1;
                     }
                 }
@@ -922,7 +917,7 @@ PerlIO_layer_fetch(pTHX_ PerlIO_list_t *av, IV n, PerlIO_funcs *def)
         return av->array[n].funcs;
     }
     if (!def)
-        croak("panic: PerlIO layer array corrupt");
+        PERL_PANIC_ERROR_INTERNAL_IO_LAYER_INDEX_INVALID_WITHOUT_DEFAULT();
     return def;
 }
 
@@ -947,9 +942,6 @@ PERLIO_FUNCS_DECL(PerlIO_remove) = {
     .Pushed = PerlIOPop_pushed,
     .Open = PerlIOBase_open,
 };
-
-static const char code_point_warning[] =
- "Strings with code points over 0xFF may not be mapped into in-memory file handles\n";
 
 typedef struct {
     struct _PerlIO base;	/* Base "class" info */
@@ -983,7 +975,7 @@ PerlIOScalar_pushed(pTHX_ PerlIO * f, const char *mode, SV * arg,
 	if (SvROK(arg)) {
 	    if (SvREADONLY(SvRV(arg)) && !SvIsCOW(SvRV(arg))
 	     && mode && *mode != 'r') {
-                ck_warner(packWARN(WARN_LAYER), "%s", PL_no_modify);
+                PERL_WARN_WARNING_IO_LAYER_SCALAR_READONLY_FOR_WRITE();
 		SETERRNO(EACCES, RMS_PRV);
 		return -1;
 	    }
@@ -1011,7 +1003,7 @@ PerlIOScalar_pushed(pTHX_ PerlIO * f, const char *mode, SV * arg,
 	if (SvPOK(s->var)) *SvPVX(s->var) = 0;
     }
     if (SvUTF8(s->var) && !sv_utf8_downgrade(s->var, TRUE)) {
-        ck_warner(packWARN(WARN_UTF8), code_point_warning);
+        PERL_WARN_WARNING_UTF8_SCALAR_HANDLE_STORAGE_NOT_BYTE_STRING();
 	SETERRNO(EINVAL, SS_IVCHAN);
 	SvREFCNT_dec(s->var);
 	s->var = NULL;
@@ -1076,7 +1068,7 @@ PerlIOScalar_seek(pTHX_ PerlIO * f, Off_t offset, int whence)
         return -1;
     }
     if (new_posn < 0) {
-        ck_warner(packWARN(WARN_LAYER), "Offset outside string");
+        PERL_WARN_WARNING_IO_LAYER_SCALAR_SEEK_BEFORE_START();
 	SETERRNO(EINVAL, SS_IVCHAN);
 	return -1;
     }
@@ -1115,7 +1107,7 @@ PerlIOScalar_read(pTHX_ PerlIO *f, void *vbuf, Size_t count)
 	        p = SvPV_nomg(sv, len);
 	    }
 	    else {
-                ck_warner(packWARN(WARN_UTF8), code_point_warning);
+                PERL_WARN_WARNING_UTF8_SCALAR_HANDLE_STORAGE_NOT_BYTE_STRING();
 	        SETERRNO(EINVAL, SS_IVCHAN);
 	        return -1;
 	    }
@@ -1173,7 +1165,7 @@ PerlIOScalar_write(pTHX_ PerlIO * f, const void *vbuf, Size_t count)
 	if (!SvROK(sv)) sv_force_normal(sv);
 	if (SvOK(sv)) SvPV_force_nomg_nolen(sv);
 	if (SvUTF8(sv) && !sv_utf8_downgrade(sv, TRUE)) {
-            ck_warner(packWARN(WARN_UTF8), code_point_warning);
+            PERL_WARN_WARNING_UTF8_SCALAR_HANDLE_STORAGE_NOT_BYTE_STRING();
 	    SETERRNO(EINVAL, SS_IVCHAN);
 	    return 0;
 	}
@@ -1453,16 +1445,14 @@ PerlIO_push(pTHX_ PerlIO *f, PERLIO_FUNCS_DECL(*tab), const char *mode, SV *arg)
 {
     VERIFY_HEAD(f);
     if (tab->fsize != sizeof(PerlIO_funcs)) {
-        croak(
-            "PerlIO layer function table size (%" UVuf ") does not match size expected by this perl (%" UVuf ")",
+        PERL_THROW_ERROR_IO_LAYER_ABI_FUNCTION_TABLE_SIZE_MISMATCH(
             (UV)tab->fsize,
             (UV)sizeof(PerlIO_funcs) );
     }
     if (tab->size) {
         PerlIOl *l;
         if (tab->size < sizeof(PerlIOl)) {
-            croak(
-                "PerlIO layer instance size (%" UVuf ") smaller than size expected by this perl (%" UVuf ")",
+            PERL_THROW_ERROR_IO_LAYER_ABI_INSTANCE_TOO_SMALL(
                 (UV)tab->size,
                 (UV)sizeof(PerlIOl) );
         }
@@ -1862,7 +1852,7 @@ PerlIO_openn(pTHX_ const char *layers, const char *mode, int fd,
              * Found that layer 'n' can do opens - call it
              */
             if (narg > 1 && !(tab->kind & PERLIO_K_MULTIARG)) {
-                croak("More than one argument to open(,':%s')",tab->name);
+                PERL_THROW_ERROR_IO_LAYER_OPEN_TOO_MANY_ARGUMENTS(tab->name);
             }
             DEBUG_i( PerlIO_debug("openn(%s,'%s','%s',%d,%x,%o,%p,%d,%p)\n",
                                   tab->name, layers ? layers : "(Null)", mode, fd,
@@ -2594,8 +2584,7 @@ PerlIOUnix_refcnt_inc(int fd)
         PL_perlio_fd_refcnt[fd]++;
         if (PL_perlio_fd_refcnt[fd] <= 0) {
             /* diag_listed_as: refcnt_inc: fd %d%s */
-            croak("refcnt_inc: fd %d: %d <= 0\n",
-                       fd, PL_perlio_fd_refcnt[fd]);
+            PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_INCREMENT_RESULT_NONPOSITIVE(fd, PL_perlio_fd_refcnt[fd]);
         }
         DEBUG_i( PerlIO_debug("refcnt_inc: fd %d refcnt=%d\n",
                               fd, PL_perlio_fd_refcnt[fd]) );
@@ -2603,7 +2592,7 @@ PerlIOUnix_refcnt_inc(int fd)
         MUTEX_UNLOCK(&PL_perlio_mutex);
     } else {
         /* diag_listed_as: refcnt_inc: fd %d%s */
-        croak("refcnt_inc: fd %d < 0\n", fd);
+        PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_INCREMENT_FD_NEGATIVE(fd);
     }
 }
 
@@ -2617,20 +2606,18 @@ PerlIOUnix_refcnt_dec(int fd)
         MUTEX_LOCK(&PL_perlio_mutex);
         if (fd >= PL_perlio_fd_refcnt_size) {
             /* diag_listed_as: refcnt_dec: fd %d%s */
-            croak("refcnt_dec: fd %d >= refcnt_size %d\n",
-                       fd, PL_perlio_fd_refcnt_size);
+            PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_FD_OUT_OF_RANGE(fd, PL_perlio_fd_refcnt_size);
         }
         if (PL_perlio_fd_refcnt[fd] <= 0) {
             /* diag_listed_as: refcnt_dec: fd %d%s */
-            croak("refcnt_dec: fd %d: %d <= 0\n",
-                       fd, PL_perlio_fd_refcnt[fd]);
+            PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_COUNT_NONPOSITIVE(fd, PL_perlio_fd_refcnt[fd]);
         }
         cnt = --PL_perlio_fd_refcnt[fd];
         DEBUG_i( PerlIO_debug("refcnt_dec: fd %d refcnt=%d\n", fd, cnt) );
         MUTEX_UNLOCK(&PL_perlio_mutex);
     } else {
         /* diag_listed_as: refcnt_dec: fd %d%s */
-        croak("refcnt_dec: fd %d < 0\n", fd);
+        PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_FD_NEGATIVE(fd);
     }
     return cnt;
 }
@@ -2644,19 +2631,17 @@ PerlIOUnix_refcnt(int fd)
         MUTEX_LOCK(&PL_perlio_mutex);
         if (fd >= PL_perlio_fd_refcnt_size) {
             /* diag_listed_as: refcnt: fd %d%s */
-            croak("refcnt: fd %d >= refcnt_size %d\n",
-                       fd, PL_perlio_fd_refcnt_size);
+            PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_FD_OUT_OF_RANGE(fd, PL_perlio_fd_refcnt_size);
         }
         if (PL_perlio_fd_refcnt[fd] <= 0) {
             /* diag_listed_as: refcnt: fd %d%s */
-            croak("refcnt: fd %d: %d <= 0\n",
-                       fd, PL_perlio_fd_refcnt[fd]);
+            PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_COUNT_NONPOSITIVE(fd, PL_perlio_fd_refcnt[fd]);
         }
         cnt = PL_perlio_fd_refcnt[fd];
         MUTEX_UNLOCK(&PL_perlio_mutex);
     } else {
         /* diag_listed_as: refcnt: fd %d%s */
-        croak("refcnt: fd %d < 0\n", fd);
+        PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_FD_NEGATIVE(fd);
     }
     return cnt;
 }
@@ -4960,27 +4945,6 @@ PerlIOCrlf_set_ptrcnt(pTHX_ PerlIO *f, STDCHAR * ptr, SSize_t cnt)
         }
         ptr -= cnt;
     }
-    else {
-        NOOP;
-#if 0
-        /*
-         * Test code - delete when it works ...
-         */
-        IV flags = PerlIOBase(f)->flags;
-        STDCHAR *chk = (c->nl) ? (c->nl+1) : b->end;
-        if (ptr+cnt == c->nl && c->nl+1 == b->end && *c->nl == NATIVE_0xd) {
-          /* Deferred CR at end of buffer case - we lied about count */
-          chk--;
-        }
-        chk -= cnt;
-
-        if (ptr != chk ) {
-            croak("ptr wrong %p != %p fl=%08" UVxf
-                       " nl=%p e=%p for %d", (void*)ptr, (void*)chk,
-                       flags, c->nl, b->end, cnt);
-        }
-#endif
-    }
     if (c->nl) {
         if (ptr > c->nl) {
             /*
@@ -5155,7 +5119,7 @@ PerlIO_getname(PerlIO *f, char *buf)
 #else
     PERL_UNUSED_ARG(f);
     PERL_UNUSED_ARG(buf);
-    croak("Don't know how to get file name");
+    PERL_THROW_ERROR_IO_HANDLE_FILENAME_UNAVAILABLE();
     return NULL;
 #endif
 }

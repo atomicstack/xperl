@@ -146,6 +146,13 @@ EXTERN_C const struct regexp_engine wild_reg_engine;
 #include "regcomp_internal.h"
 #include "feature.h"
 
+static void Perl_regex_add_pattern_context(pTHX_ SV **exception_slot,
+                                        SSize_t message_index, bool utf8,
+                                        STRLEN before_length,
+                                        const char *before,
+                                        STRLEN after_length,
+                                        const char *after);
+
 /* ---------------------------------------------------------
  * BEGIN edit_distance stuff.
  *
@@ -740,7 +747,7 @@ S_concat_pat(pTHX_ RExC_state_t * const pRExC_state,
                 if (SvROK(sv))
                     sv = SvRV(sv);
                 if (SvTYPE(sv) != SVt_REGEXP)
-                    croak("Overloaded qr did not return a REGEXP");
+                    PERL_THROW_ERROR_OVERLOAD_RETURN_VALUE_REGEXP_REQUIRED();
                 msv = sv;
             }
         }
@@ -1032,7 +1039,7 @@ S_compile_runtime_code(pTHX_ RExC_state_t * const pRExC_state,
             SV * const errsv = ERRSV;
             if (SvTRUE_NN(errsv))
                 /* use croak_sv ? */
-                croak("%" SVf, SVfARG(errsv));
+                PERL_THROW_ERROR_PROPAGATION_EVAL_EXCEPTION(errsv);
         }
         assert(SvROK(qr_ref));
         qr = SvRV(qr_ref);
@@ -1372,7 +1379,7 @@ Perl_release_RExC_state(pTHX_ void *vstate)
     PERL_ARGS_ASSERT_RELEASE_REXC_STATE;
 
     RExC_state_t *pRExC_state = (RExC_state_t *)vstate;
-    
+
     /* Any or all of these might be NULL.
 
        There's no point in setting them to NULL after the free, since
@@ -1489,6 +1496,7 @@ Perl_re_op_compile(pTHX_ SV ** const patternp, int pat_count,
      * too late, etc. Doing it in one place is saner and avoid oversight
      * or error. */
     Newxz(pRExC_state, 1, RExC_state_t);
+    PERL_REXC_EXCEPTION_SLOT = &PL_pending_exception;
 
     ENTER_with_name("re_op_compile");
     SAVE_FREE_REXC_STATE(pRExC_state);
@@ -1665,7 +1673,7 @@ Perl_re_op_compile(pTHX_ SV ** const patternp, int pat_count,
     RExC_rx_sv = Rx = (REGEXP*) newSV_type(SVt_REGEXP);
     RExC_rx = ReANY(Rx);
     if ( RExC_rx == NULL )
-        FAIL("Regexp out of space");
+        FAIL_(PERL_THROW_ERROR_REGEXP_LIMIT_SIZE_OR_ALLOCATION_EXCEEDED(UTF, len, RExC_precomp, ellipses));
 
     rx_flags = orig_rx_flags;
     if (rx_flags & RXf_SPLIT)
@@ -1686,7 +1694,7 @@ Perl_re_op_compile(pTHX_ SV ** const patternp, int pat_count,
     if (runtime_code) {
         assert(TAINTING_get || !TAINT_get);
         if (TAINT_get)
-            croak("Eval-group in insecure regular expression");
+            PERL_THROW_ERROR_TAINT_REGEXP_EVAL_FORBIDDEN();
 
         if (!S_compile_runtime_code(aTHX_ pRExC_state, exp, plen)) {
             /* whoops, we have a non-utf8 pattern, whilst run-time code
@@ -1752,7 +1760,7 @@ Perl_re_op_compile(pTHX_ SV ** const patternp, int pat_count,
 
     Newxc(RExC_rxi, sizeof(regexp_internal) + RExC_size, char, regexp_internal);
     if ( RExC_rxi == NULL )
-        FAIL("Regexp out of space");
+        FAIL_(PERL_THROW_ERROR_REGEXP_LIMIT_SIZE_OR_ALLOCATION_EXCEEDED(UTF, len, RExC_precomp, ellipses));
 
     Zero(RExC_rxi, sizeof(regexp_internal) + RExC_size, char);
     RXi_SET( RExC_rx, RExC_rxi );
@@ -1820,7 +1828,7 @@ Perl_re_op_compile(pTHX_ SV ** const patternp, int pat_count,
     }
     else if (! MUST_RESTART(flags)) {
         ReREFCNT_dec(Rx);
-        croak("panic: reg returned failure to re_op_compile, flags: %#" UVxf, (UV) flags);
+        PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ROOT_RESULT_MISSING((UV) flags);
     }
 
     /* Here, we either have success, or we have to redo the parse for some reason */
@@ -2497,6 +2505,8 @@ Perl_re_op_compile(pTHX_ SV ** const patternp, int pat_count,
     if (old_re && SvREADONLY(old_re))
         SvREADONLY_on(Rx);
 #endif
+    if (!PL_parser)
+        Perl_diag_flush_pending_exception(aTHX);
     LEAVE_with_name("re_op_compile");
     return Rx;
 }
@@ -2519,7 +2529,7 @@ Perl_reg_qr_package(pTHX_ REGEXP * const rx)
  * If flags is REG_RSN_RETURN_NAME returns an SV* containing the name
  * If flags is REG_RSN_RETURN_DATA returns the data SV* corresponding
  * to the parsed name as looked up in the RExC_paren_names hash.
- * If there is an error throws a vFAIL().. type exception.
+ * On error, throws a structured regex exception.
  */
 
 #define REG_RSN_RETURN_NULL    0
@@ -2540,21 +2550,51 @@ S_reg_scan_name(pTHX_ RExC_state_t *pRExC_state, U32 flags)
         NOOP;
     }
     else {
-        RExC_parse_set(parse_ident_msg(RExC_parse, RExC_end, cBOOL(UTF),
-                                       &error_message, 0));
-        if (RExC_parse == NULL) {
+        char *parsed_name = parse_ident_msg(RExC_parse, RExC_end,
+                                            cBOOL(UTF), &error_message, 0);
 
-            /* Here, parse_ident_msg found a serious error.  Use its returned
-             * message for the failure */
+        if (parsed_name == NULL) {
+            SV * const reason_kind = *hv_fetchs(error_message,
+                                                PERL_PARSE_IDENT_ERROR_KIND, 0);
+            const char *reason = SvPV_nolen(reason_kind);
+            UV codepoint = 0;
+            SV *identifier_before = NULL;
+            SV *identifier_after = NULL;
+
             RExC_parse_inc_by(SvUV(*hv_fetchs(error_message,
-                                   PARSE_IDENT_ERROR_POSITION, 0)));
-            vFAIL(SvPVX(*hv_fetchs(error_message, PARSE_IDENT_ERROR_TEXT, 0)));
+                                   PERL_PARSE_IDENT_ERROR_POSITION, 0)));
+
+            if (strEQ(reason, PERL_PARSE_IDENT_ERROR_INVALID_CHARACTER)) {
+                codepoint = SvUV(*hv_fetchs(error_message,
+                                           PERL_PARSE_IDENT_ERROR_CODEPOINT, 0));
+                identifier_before = *hv_fetchs(error_message,
+                                               PERL_PARSE_IDENT_ERROR_BEFORE, 0);
+                identifier_after = *hv_fetchs(error_message,
+                                              PERL_PARSE_IDENT_ERROR_AFTER, 0);
+            }
+
+            PERL_THROW_ERROR_REGEXP_GROUP_NAME_IDENTIFIER_INVALID(
+                PERL_DIAG_SELECTOR_FROM_ERROR_REGEXP_GROUP_NAME_IDENTIFIER_INVALID_REASON_KIND(reason), codepoint,
+                identifier_before ? cBOOL(SvUTF8(identifier_before)) : FALSE,
+                identifier_before ? SvCUR(identifier_before) : 0,
+                identifier_before ? SvPVX_const(identifier_before) : "",
+                identifier_after ? cBOOL(SvUTF8(identifier_after)) : FALSE,
+                identifier_after ? SvCUR(identifier_after) : 0,
+                identifier_after ? SvPVX_const(identifier_after) : "",
+                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
         }
-        else if (RExC_parse == name_start) {
-            /* Here, the parse didn't advance, so is an error */
-            RExC_parse_inc(); /* so the <- from the vFAIL is after the
-                                 offending character */
-            vFAIL("Group name must start with a non-digit word character");
+        else {
+            RExC_parse_set(parsed_name);
+            if (RExC_parse == name_start) {
+                /* Here, the parse didn't advance, so is an error */
+                RExC_parse_inc(); /* Place the marker after the offending character. */
+                PERL_THROW_ERROR_REGEXP_GROUP_NAME_INITIAL_CHARACTER_INVALID(
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
+            }
         }
     }
     sv_name = newSVpvn_flags(name_start, (int)(RExC_parse - name_start),
@@ -2565,7 +2605,7 @@ S_reg_scan_name(pTHX_ RExC_state_t *pRExC_state, U32 flags)
         HE *he_str = NULL;
         SV *sv_dat = NULL;
         if ( ! sv_name )      /* should not happen*/
-            croak("panic: no svname in reg_scan_name");
+            PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_NAME_VALUE_MISSING();
         if (RExC_paren_names)
             he_str = hv_fetch_ent( RExC_paren_names, sv_name, 0, 0 );
         if ( he_str )
@@ -2576,7 +2616,10 @@ S_reg_scan_name(pTHX_ RExC_state_t *pRExC_state, U32 flags)
                 * know, by completing the parse to get all the groups, and
                 * then reparsing */
             if (ALL_PARENS_COUNTED)  {
-                vFAIL("Reference to nonexistent named group");
+                PERL_THROW_ERROR_REGEXP_GROUP_NAME_TARGET_MISSING(
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
             else {
                 REQUIRE_PARENS_PASS;
@@ -2585,8 +2628,7 @@ S_reg_scan_name(pTHX_ RExC_state_t *pRExC_state, U32 flags)
         return sv_dat;
     }
 
-    croak("panic: bad flag %lx in reg_scan_name",
-                     (unsigned long) flags);
+    PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_SCANNER_FLAGS_INVALID((unsigned long) flags);
 }
 
 #define DEBUG_PARSE_MSG(funcname)     DEBUG_PARSE_r({           \
@@ -2683,11 +2725,11 @@ S_parse_lparen_question_flags(pTHX_ RExC_state_t *pRExC_state)
             if (flagsp == & negflags) {
                 if (*RExC_parse == 'm') {
                     RExC_parse_inc_by(1);
-                    /* diag_listed_as: Use of %s is not allowed in Unicode
-                       property wildcard subpatterns in regex; marked by <--
-                       HERE in m/%s/ */
-                    vFAIL("Use of modifier '-m' is not allowed in Unicode"
-                          " property wildcard subpatterns");
+                    PERL_THROW_ERROR_REGEXP_MODIFIER_PROPERTY_WILDCARD_FORBIDDEN(
+                        "-", 'm',
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
             }
             else {
@@ -2761,20 +2803,34 @@ S_parse_lparen_question_flags(pTHX_ RExC_state_t *pRExC_state)
               excess_modifier:
                 RExC_parse_inc_by(1);
                 if (has_charset_modifier == ASCII_RESTRICT_PAT_MOD) {
-                    vFAIL2("Regexp modifier \"%c\" may appear a maximum of twice", ASCII_RESTRICT_PAT_MOD);
+                    PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_ASCII_LIMIT_EXCEEDED(
+                        ASCII_RESTRICT_PAT_MOD,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
                 else if (has_charset_modifier == *(RExC_parse - 1)) {
-                    vFAIL2("Regexp modifier \"%c\" may not appear twice",
-                                        *(RExC_parse - 1));
+                    PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_REPEATED(
+                        *(RExC_parse - 1),
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
                 else {
-                    vFAIL3("Regexp modifiers \"%c\" and \"%c\" are mutually exclusive", has_charset_modifier, *(RExC_parse - 1));
+                    PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_CHARSET_CONFLICT(
+                        has_charset_modifier, *(RExC_parse - 1),
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
                 NOT_REACHED; /*NOTREACHED*/
               neg_modifier:
                 RExC_parse_inc_by(1);
-                vFAIL2("Regexp modifier \"%c\" may not appear after the \"-\"",
-                                    *(RExC_parse - 1));
+                PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_NEGATION_FORBIDDEN(
+                    *(RExC_parse - 1),
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 NOT_REACHED; /*NOTREACHED*/
             case GLOBAL_PAT_MOD: /* 'g' */
                 if (RExC_pm_flags & PMf_WILDCARD) {
@@ -2789,14 +2845,14 @@ S_parse_lparen_question_flags(pTHX_ RExC_state_t *pRExC_state)
                     if (! (wastedflags & wflagbit) ) {
                         wastedflags |= wflagbit;
                         /* diag_listed_as: Useless (?-%s) - don't use /%s modifier in regex; marked by <-- HERE in m/%s/ */
-                        vWARN5(
-                            RExC_parse + 1,
-                            "Useless (%s%c) - %suse /%c modifier",
+                        PERL_WARN_WARNING_REGEXP_MODIFIER_INLINE_GLOBAL_OR_ONCE_IGNORED(
+                            flagsp == &negflags ? perl_diag_selector_domain_2383_0_disabled_1 : perl_diag_selector_domain_2383_0_enabled_2,
                             flagsp == &negflags ? "?-" : "?",
                             *RExC_parse,
-                            flagsp == &negflags ? "don't " : "",
-                            *RExC_parse
-                        );
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse + 1), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse + 1),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse + 1),
+                            RExC_parse + 1);
                     }
                 }
                 break;
@@ -2809,12 +2865,13 @@ S_parse_lparen_question_flags(pTHX_ RExC_state_t *pRExC_state)
                     if (! (wastedflags & WASTED_C) ) {
                         wastedflags |= WASTED_GC;
                         /* diag_listed_as: Useless (?-%s) - don't use /%s modifier in regex; marked by <-- HERE in m/%s/ */
-                        vWARN3(
-                            RExC_parse + 1,
-                            "Useless (%sc) - %suse /gc modifier",
+                        PERL_WARN_WARNING_REGEXP_MODIFIER_INLINE_CONTINUE_IGNORED(
+                            flagsp == &negflags ? perl_diag_selector_domain_2383_0_disabled_1 : perl_diag_selector_domain_2383_0_enabled_2,
                             flagsp == &negflags ? "?-" : "?",
-                            flagsp == &negflags ? "don't " : ""
-                        );
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse + 1), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse + 1),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse + 1),
+                            RExC_parse + 1);
                     }
                 }
                 break;
@@ -2823,7 +2880,7 @@ S_parse_lparen_question_flags(pTHX_ RExC_state_t *pRExC_state)
                     goto modifier_illegal_in_wildcard;
                 }
                 if (flagsp == &negflags) {
-                    ckWARNreg(RExC_parse + 1,"Useless use of (?-p)");
+                    PERL_WARN_WARNING_REGEXP_MODIFIER_KEEP_COPY_DISABLE_IGNORED(RExC_parse + 1);
                 } else {
                     *flagsp |= RXf_PMf_KEEPCOPY;
                 }
@@ -2846,12 +2903,11 @@ S_parse_lparen_question_flags(pTHX_ RExC_state_t *pRExC_state)
                     && cs != REGEX_ASCII_MORE_RESTRICTED_CHARSET)
                 {
                     RExC_parse_inc_by(1);
-                    /* diag_listed_as: Use of %s is not allowed in Unicode
-                       property wildcard subpatterns in regex; marked by <--
-                       HERE in m/%s/ */
-                    vFAIL2("Use of modifier '%c' is not allowed in Unicode"
-                           " property wildcard subpatterns",
-                           has_charset_modifier);
+                    PERL_THROW_ERROR_REGEXP_MODIFIER_PROPERTY_WILDCARD_FORBIDDEN(
+                        "", has_charset_modifier,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
 
                 if ((posflags & (RXf_PMf_EXTENDED|RXf_PMf_EXTENDED_MORE)) == RXf_PMf_EXTENDED) {
@@ -2869,23 +2925,29 @@ S_parse_lparen_question_flags(pTHX_ RExC_state_t *pRExC_state)
             default:
               fail_modifiers:
                 RExC_parse_inc_if_char();
-                /* diag_listed_as: Sequence (?%s...) not recognized in regex; marked by <-- HERE in m/%s/ */
-                vFAIL2utf8f("Sequence (%" UTF8f "...) not recognized",
-                      UTF8fARG(UTF, RExC_parse-seqstart, seqstart));
+                PERL_THROW_ERROR_REGEXP_GROUP_SEQUENCE_UNKNOWN(
+                    UTF, RExC_parse - seqstart, seqstart,
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 NOT_REACHED; /*NOTREACHED*/
         }
 
         RExC_parse_inc();
     }
 
-    vFAIL("Sequence (?... not terminated");
+    PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_UNTERMINATED(
+        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
 
   modifier_illegal_in_wildcard:
     RExC_parse_inc_by(1);
-    /* diag_listed_as: Use of %s is not allowed in Unicode property wildcard
-       subpatterns in regex; marked by <-- HERE in m/%s/ */
-    vFAIL2("Use of modifier '%c' is not allowed in Unicode property wildcard"
-           " subpatterns", *(RExC_parse - 1));
+    PERL_THROW_ERROR_REGEXP_MODIFIER_PROPERTY_WILDCARD_FORBIDDEN(
+        "", *(RExC_parse - 1),
+        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
 }
 
 /*
@@ -2919,8 +2981,11 @@ S_handle_named_backref(pTHX_ RExC_state_t *pRExC_state,
         }
     }
     if (RExC_parse == name_start || *RExC_parse != ch) {
-        /* diag_listed_as: Sequence \%s... not terminated in regex; marked by <-- HERE in m/%s/ */
-        vFAIL2("Sequence %.3s... not terminated", backref_parse_start);
+        PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_DELIMITER_UNTERMINATED(
+            3, backref_parse_start,
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
     }
 
     if (sv_dat) {
@@ -2981,7 +3046,11 @@ S_reg_la_NOTHING(pTHX_ RExC_state_t *pRExC_state, U32 flags,
     skip_to_be_ignored_text(pRExC_state, &RExC_parse, false);
 
     if (RExC_parse >= RExC_end)
-        vFAIL2("Sequence (%s... not terminated", type);
+        PERL_THROW_ERROR_REGEXP_GROUP_LOOKAROUND_UNTERMINATED(
+            type,
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
 
     /* Always increment as NOTHING regops are zerolen */
     RExC_seen_zerolen++;
@@ -3029,7 +3098,11 @@ S_reg_la_OPFAIL(pTHX_ RExC_state_t *pRExC_state, U32 flags,
     skip_to_be_ignored_text(pRExC_state, &RExC_parse, false);
 
     if (RExC_parse >= RExC_end)
-        vFAIL2("Sequence (%s... not terminated", type);
+        PERL_THROW_ERROR_REGEXP_GROUP_LOOKAROUND_UNTERMINATED(
+            type,
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
 
     if (*RExC_parse == ')') {
         regnode_offset ret = reg1node(pRExC_state, OPFAIL, 0);
@@ -3343,7 +3416,10 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
     }
     if (depth > 4 * (UV) SvIV(max_open)) { /* We increase depth by 4 for each
                                               open paren */
-        vFAIL("Too many nested open parens");
+        PERL_THROW_ERROR_REGEXP_LIMIT_COMPILE_NESTING_EXCEEDED(
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
     }
 
     *flagp = 0;				/* Initialize. */
@@ -3367,7 +3443,10 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                                   && *(RExC_parse - 1) != '(';
 
         if (RExC_parse >= RExC_end) {
-            vFAIL("Unmatched (");
+            PERL_THROW_ERROR_REGEXP_GROUP_OPEN_PAREN_UNMATCHED(
+                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
         }
 
         if (paren == 'r') {     /* Atomic script run */
@@ -3394,12 +3473,11 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
 
                 /* For strict backwards compatibility, don't change the message
                  * now that we also have lowercase operands */
-                if (isUPPER(*RExC_parse)) {
-                    vFAIL("In '(*VERB...)', the '(' and '*' must be adjacent");
-                }
-                else {
-                    vFAIL("In '(*...)', the '(' and '*' must be adjacent");
-                }
+                PERL_THROW_ERROR_REGEXP_VERB_OPENER_NOT_ADJACENT(
+                    isUPPER(*RExC_parse) ? perl_diag_selector_domain_2526_0_named_verb_2 : perl_diag_selector_domain_2526_0_generic_construct_1,
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
             while (RExC_parse < RExC_end && *RExC_parse != ')' ) {
                 if ( *RExC_parse == ':' ) {
@@ -3428,21 +3506,21 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                 }
                 if ( RExC_parse >= RExC_end || *RExC_parse != ')' ) {
                   unterminated_verb_pattern:
-                    if (has_upper) {
-                        vFAIL("Unterminated verb pattern argument");
-                    }
-                    else {
-                        vFAIL("Unterminated '(*...' argument");
-                    }
+                    PERL_THROW_ERROR_REGEXP_VERB_CONSTRUCT_UNTERMINATED(
+                        has_upper ? perl_diag_selector_domain_2526_0_named_verb_2 : perl_diag_selector_domain_2526_0_generic_construct_1,
+                        perl_diag_selector_domain_2526_1_argument_1,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
             } else {
                 if ( RExC_parse >= RExC_end || *RExC_parse != ')' ) {
-                    if (has_upper) {
-                        vFAIL("Unterminated verb pattern");
-                    }
-                    else {
-                        vFAIL("Unterminated '(*...' construct");
-                    }
+                    PERL_THROW_ERROR_REGEXP_VERB_CONSTRUCT_UNTERMINATED(
+                        has_upper ? perl_diag_selector_domain_2526_0_named_verb_2 : perl_diag_selector_domain_2526_0_generic_construct_1,
+                        perl_diag_selector_domain_2526_1_construct_2,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
             }
 
@@ -3646,28 +3724,42 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                 goto parse_rest;
 
               no_colon:
-                vFAIL2utf8f( "'(*%" UTF8f "' requires a terminating ':'",
-                    UTF8fARG(UTF, verb_len, start_verb));
+                PERL_THROW_ERROR_REGEXP_VERB_COLON_MISSING(
+                    UTF, verb_len, start_verb,
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 NOT_REACHED; /*NOTREACHED*/
 
             } /* End of switch */
             if ( ! op ) {
                 RExC_parse_inc_safe();
                 if (has_upper || verb_len == 0) {
-                    vFAIL2utf8f( "Unknown verb pattern '%" UTF8f "'",
-                        UTF8fARG(UTF, verb_len, start_verb));
+                    PERL_THROW_ERROR_REGEXP_VERB_NAME_UNKNOWN(
+                        perl_diag_selector_domain_2526_0_named_verb_2,
+                        UTF, verb_len, start_verb,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
                 else {
-                    vFAIL2utf8f( "Unknown '(*...)' construct '%" UTF8f "'",
-                        UTF8fARG(UTF, verb_len, start_verb));
+                    PERL_THROW_ERROR_REGEXP_VERB_NAME_UNKNOWN(
+                        perl_diag_selector_domain_2526_0_generic_construct_1,
+                        UTF, verb_len, start_verb,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
             }
             if ( RExC_parse == start_arg ) {
                 start_arg = NULL;
             }
             if ( arg_required && !start_arg ) {
-                vFAIL3( "Verb pattern '%.*s' has a mandatory argument",
-                    (int) verb_len, start_verb);
+                PERL_THROW_ERROR_REGEXP_VERB_ARGUMENT_MISSING(
+                    (int) verb_len, start_verb,
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
             if (internal_argval == -1) {
                 ret = reg1node(pRExC_state, op, 0);
@@ -3695,13 +3787,13 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
             bool is_logical = 0, is_optimistic = 0;
             const char * const seqstart = RExC_parse;
             const char * endptr;
-            const char * const non_existent_group_msg
-                                            = "Reference to nonexistent group";
-            const char * const impossible_group = "Invalid reference to group";
 
             if (has_intervening_patws) {
                 RExC_parse_inc_by(1);
-                vFAIL("In '(?...)', the '(' and '?' must be adjacent");
+                PERL_THROW_ERROR_REGEXP_GROUP_QUESTION_OPENER_NOT_ADJACENT(
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
 
             RExC_parse_inc_by(1);   /* past the '?' */
@@ -3725,14 +3817,22 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                 if ( paren == '<') {    /* (?P<...>) named capture */
                     RExC_parse_inc_by(1);
                     if (RExC_parse >= RExC_end) {
-                        vFAIL("Sequence (?P<... not terminated");
+                        PERL_THROW_ERROR_REGEXP_GROUP_NAME_P_PREFIX_UNTERMINATED(
+                            perl_diag_selector_domain_2532_0_named_capture_1,
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     goto named_capture;
                 }
                 else if (paren == '>') {   /* (?P>name) named recursion */
                     RExC_parse_inc_by(1);
                     if (RExC_parse >= RExC_end) {
-                        vFAIL("Sequence (?P>... not terminated");
+                        PERL_THROW_ERROR_REGEXP_GROUP_NAME_P_PREFIX_UNTERMINATED(
+                            perl_diag_selector_domain_2532_0_named_recursion_2,
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     goto named_recursion;
                 }
@@ -3742,9 +3842,11 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                                                 segment_parse_start, ')');
                 }
                 RExC_parse_inc_if_char();
-                /* diag_listed_as: Sequence (?%s...) not recognized in regex; marked by <-- HERE in m/%s/ */
-                vFAIL3("Sequence (%.*s...) not recognized",
-                                (int) (RExC_parse - seqstart), seqstart);
+                PERL_THROW_ERROR_REGEXP_GROUP_SEQUENCE_UNKNOWN(
+                    UTF, RExC_parse - seqstart, seqstart,
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 NOT_REACHED; /*NOTREACHED*/
             case '<':           /* (?<...) */
                 /* If you want to support (?<*...), first reconcile with GH #17363 */
@@ -3777,15 +3879,17 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                         || RExC_parse >= RExC_end
                         || *RExC_parse != paren)
                     {
-                        vFAIL2("Sequence (?%c... not terminated",
-                            paren == '>' ? '<' : (char) paren);
+                        PERL_THROW_ERROR_REGEXP_GROUP_NAME_DELIMITER_UNTERMINATED(
+                            paren == '>' ? '<' : (char) paren,
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     {
                         HE *he_str;
                         SV *sv_dat = NULL;
                         if (!svname) /* shouldn't happen */
-                            croak(
-                                "panic: reg_scan_name returned NULL");
+                            PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_SCANNER_RESULT_MISSING();
                         if (!RExC_paren_names) {
                             RExC_paren_names = MUTABLE_HV(newSV_type_mortal(SVt_PVHV));
 #ifdef DEBUGGING
@@ -3797,8 +3901,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                             sv_dat = HeVAL(he_str);
                         if ( ! sv_dat ) {
                             /* croak baby croak */
-                            croak(
-                                "panic: paren_name hash element allocation failed");
+                            PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_NAME_HASH_VALUE_MISSING();
                         } else if ( SvPOK(sv_dat) ) {
                             /* (?|...) can mean we have dupes so scan to check
                                its already been stored. Maybe a flag indicating
@@ -3868,12 +3971,16 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                 break;
             case '$':           /* (?$...) */
             case '@':           /* (?@...) */
-                vFAIL2("Sequence (?%c...) not implemented", (int)paren);
+                PERL_THROW_ERROR_REGEXP_GROUP_SEQUENCE_UNIMPLEMENTED(
+                    (int)paren,
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 break;
             case '0' :           /* (?0) */
             case 'R' :           /* (?R) */
                 if (RExC_parse == RExC_end || *RExC_parse != ')')
-                    FAIL("Sequence (?R) not terminated");
+                    FAIL_(PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_WHOLE_PATTERN_CALL_UNTERMINATED(UTF, len, RExC_precomp, ellipses));
                 num = 0;
                 RExC_seen |= REG_RECURSE_SEEN;
 
@@ -3894,13 +4001,19 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                    num = sv_dat ? *((I32 *)SvPVX(sv_dat)) : 0;
                 }
                 if (RExC_parse >= RExC_end || *RExC_parse != ')')
-                    vFAIL("Sequence (?&... not terminated");
+                    PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_NAMED_CALL_UNTERMINATED(
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 goto gen_recurse_regop;
                 /* NOTREACHED */
             case '+':
                 if (! inRANGE(RExC_parse[0], '1', '9')) {
                     RExC_parse_inc_by(1);
-                    vFAIL("Illegal pattern");
+                    PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_RELATIVE_CALL_NUMBER_MISSING(
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
                 goto parse_recursion;
                 /* NOTREACHED*/
@@ -3934,7 +4047,10 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                         while (RExC_parse < RExC_end && isDIGIT(*RExC_parse))  {
                             RExC_parse_inc_by(1);
                         }
-                        vFAIL(impossible_group);
+                        PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_NUMBER_INVALID(
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     if (is_neg) {
                         /* -num is always representable on 1 and 2's complement
@@ -3942,15 +4058,22 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                         num = -num;
                     }
                 }
-                if (*RExC_parse!=')')
-                    vFAIL("Expecting close bracket");
+                if (*RExC_parse!=')') {
+                    PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_CLOSE_PAREN_MISSING(
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
+                }
 
                 if (paren == '-' || paren == '+') {
 
                     /* Don't overflow */
                     if (UNLIKELY(I32_MAX - RExC_npar < num)) {
                         RExC_parse_inc_by(1);
-                        vFAIL(impossible_group);
+                        PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_NUMBER_INVALID(
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
 
                     /*
@@ -3978,7 +4101,10 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
 
                     if (paren == '-' && num < 1) {
                         RExC_parse_inc_by(1);
-                        vFAIL(non_existent_group_msg);
+                        PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_TARGET_MISSING(
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                 }
                 else
@@ -3992,7 +4118,10 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                     }
                     else {
                         RExC_parse_inc_by(1);
-                        vFAIL(non_existent_group_msg);
+                        PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_TARGET_MISSING(
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                 }
                 else {
@@ -4009,7 +4138,10 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                     if (ALL_PARENS_COUNTED)  {
                         if (num >= RExC_total_parens) {
                             RExC_parse_inc_by(1);
-                            vFAIL(non_existent_group_msg);
+                            PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_TARGET_MISSING(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                         }
                     }
                     else {
@@ -4045,10 +4177,11 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                 is_logical = 1;
                 if (*RExC_parse != '{') {
                     RExC_parse_inc_if_char();
-                    /* diag_listed_as: Sequence (?%s...) not recognized in regex; marked by <-- HERE in m/%s/ */
-                    vFAIL2utf8f(
-                        "Sequence (%" UTF8f "...) not recognized",
-                        UTF8fARG(UTF, RExC_parse-seqstart, seqstart));
+                    PERL_THROW_ERROR_REGEXP_GROUP_SEQUENCE_UNKNOWN(
+                        UTF, RExC_parse - seqstart, seqstart,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     NOT_REACHED; /*NOTREACHED*/
                 }
                 *flagp |= POSTPONED;
@@ -4071,8 +4204,8 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                             - RExC_start)
                 ) {
                     if (RExC_pm_flags & PMf_USE_RE_EVAL)
-                        FAIL("panic: Sequence (?{...}): no code block found\n");
-                    FAIL("Eval-group not allowed at runtime, use re 'eval'");
+                        FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_EVAL_CODE_BLOCK_METADATA_MISSING(UTF, len, RExC_precomp, ellipses));
+                    FAIL_(PERL_THROW_ERROR_REGEXP_EVAL_RUNTIME_CODE_DISABLED(UTF, len, RExC_precomp, ellipses));
                 }
                 /* this is a pre-compiled code block (?{...}) */
                 cb = &pRExC_state->code_blocks->cb[pRExC_state->code_index];
@@ -4179,8 +4312,11 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                         || RExC_parse >= RExC_end
                         || *RExC_parse != ch)
                     {
-                        vFAIL2("Sequence (?(%c... not terminated",
-                            (ch == '>' ? '<' : ch));
+                        PERL_THROW_ERROR_REGEXP_CONDITIONAL_NAME_UNTERMINATED(
+                            ch == '>' ? '<' : ch,
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     RExC_parse_inc_by(1);
                     if (sv_dat) {
@@ -4244,14 +4380,20 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                         RExC_parse_set((char*)endptr);
                     }
                     else {
-                        vFAIL("panic: grok_atoUV returned false");
+                        PERL_THROW_ERROR_REGEXP_CONDITIONAL_TEST_SYNTAX_INVALID(
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     ret = reg1node(pRExC_state, GROUPP, parno);
 
                  insert_if_check_paren:
                     if (UCHARAT(RExC_parse) != ')') {
                         RExC_parse_inc_safe();
-                        vFAIL("Switch condition not recognized");
+                        PERL_THROW_ERROR_REGEXP_CONDITIONAL_TEST_SYNTAX_INVALID(
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     nextchar(pRExC_state);
                   insert_if:
@@ -4263,8 +4405,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                     br = regbranch(pRExC_state, &flags, 1, depth+1);
                     if (br == 0) {
                         RETURN_FAIL_ON_RESTART(flags,flagp);
-                        FAIL2("panic: regbranch returned failure, flags: %#" UVxf,
-                              (UV) flags);
+                        FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_BRANCH_RESULT_MISSING((UV) flags, UTF, len, RExC_precomp, ellipses));
                     } else
                     if (! REGTAIL(pRExC_state, br, reg1node(pRExC_state,
                                                              LONGJMP, 0)))
@@ -4277,15 +4418,17 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                         *flagp |= HASWIDTH;
                     if (c == '|') {
                         if (is_define)
-                            vFAIL("(?(DEFINE)....) does not allow branches");
+                            PERL_THROW_ERROR_REGEXP_CONDITIONAL_DEFINE_ALTERNATION_FORBIDDEN(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
 
                         /* Fake one for optimizer.  */
                         lastbr = reg1node(pRExC_state, IFTHEN, 0);
 
                         if (!regbranch(pRExC_state, &flags, 1, depth+1)) {
                             RETURN_FAIL_ON_RESTART(flags, flagp);
-                            FAIL2("panic: regbranch returned failure, flags: %#" UVxf,
-                                  (UV) flags);
+                            FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_BRANCH_RESULT_MISSING((UV) flags, UTF, len, RExC_precomp, ellipses));
                         }
                         if (! REGTAIL(pRExC_state, ret, lastbr)) {
                             REQUIRE_BRANCHJ(flagp, 0);
@@ -4299,9 +4442,15 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                         lastbr = 0;
                     if (c != ')') {
                         if (RExC_parse >= RExC_end)
-                            vFAIL("Switch (?(condition)... not terminated");
+                            PERL_THROW_ERROR_REGEXP_CONDITIONAL_UNTERMINATED(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                         else
-                            vFAIL("Switch (?(condition)... contains too many branches");
+                            PERL_THROW_ERROR_REGEXP_CONDITIONAL_BRANCH_COUNT_EXCEEDED(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     ender = reg_node(pRExC_state, TAIL);
                     if (! REGTAIL(pRExC_state, br, ender)) {
@@ -4331,18 +4480,24 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                     return ret;
                 }
                 RExC_parse_inc_safe();
-                vFAIL("Unknown switch condition (?(...))");
+                PERL_THROW_ERROR_REGEXP_CONDITIONAL_TEST_UNKNOWN(
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
             case '[':           /* (?[ ... ]) */
                 return handle_regex_sets(pRExC_state, NULL, flagp, depth+1);
             case 0: /* A NUL */
-                RExC_parse--; /* for vFAIL to print correctly */
-                vFAIL("Sequence (? incomplete");
+                RExC_parse--; /* Place the regex error marker correctly. */
+                PERL_THROW_ERROR_REGEXP_GROUP_CONSTRUCT_INCOMPLETE(
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 break;
 
             case ')':
                 if (RExC_strict) {  /* [perl #132851] */
-                    ckWARNreg(RExC_parse, "Empty (?) without any modifiers");
+                    PERL_WARN_WARNING_REGEXP_MODIFIER_EMPTY_GROUP(RExC_parse);
                 }
                 /* FALLTHROUGH */
             case '*': /* If you want to support (?*...), first reconcile with GH #17363 */
@@ -4368,7 +4523,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
             parno = RExC_npar;
             RExC_npar++;
             if (RExC_npar >= U16_MAX)
-                FAIL2("Too many capture groups (limit is %" UVuf ")", (UV)RExC_npar);
+                FAIL_(PERL_THROW_ERROR_REGEXP_LIMIT_CAPTURE_COUNT_EXCEEDED((UV)RExC_npar, UTF, len, RExC_precomp, ellipses));
 
             logical_parno = RExC_logical_npar;
             RExC_logical_npar++;
@@ -4463,7 +4618,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
 
     if (br == 0) {
         RETURN_FAIL_ON_RESTART(flags, flagp);
-        FAIL2("panic: regbranch returned failure, flags: %#" UVxf, (UV) flags);
+        FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_BRANCH_RESULT_MISSING((UV) flags, UTF, len, RExC_precomp, ellipses));
     }
     if (*RExC_parse == '|') {
         if (RExC_use_BRANCHJ) {
@@ -4512,7 +4667,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
 
         if (br == 0) {
             RETURN_FAIL_ON_RESTART(flags, flagp);
-            FAIL2("panic: regbranch returned failure, flags: %#" UVxf, (UV) flags);
+            FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_BRANCH_RESULT_MISSING((UV) flags, UTF, len, RExC_precomp, ellipses));
         }
         if (!  REGTAIL(pRExC_state, lastbr, br)) {  /* BRANCH -> BRANCH. */
             REQUIRE_BRANCHJ(flagp, 0);
@@ -4726,17 +4881,23 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
         }
         if (RExC_parse >= RExC_end || UCHARAT(RExC_parse) != ')') {
             RExC_parse_set(reg_parse_start);
-            vFAIL("Unmatched (");
+            PERL_THROW_ERROR_REGEXP_GROUP_OPEN_PAREN_UNMATCHED(
+                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
         }
         nextchar(pRExC_state);
     }
     else if (!paren && RExC_parse < RExC_end) {
         if (*RExC_parse == ')') {
             RExC_parse_inc_by(1);
-            vFAIL("Unmatched )");
+            PERL_THROW_ERROR_REGEXP_GROUP_CLOSE_PAREN_UNMATCHED(
+                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
         }
         else
-            FAIL("Junk on end of regexp");	/* "Can't happen". */
+            FAIL_(PERL_THROW_ERROR_INTERNAL_REGEXP_COMPILER_TRAILING_INPUT(UTF, len, RExC_precomp, ellipses));	/* "Can't happen". */
         NOT_REACHED; /* NOTREACHED */
     }
 
@@ -4799,7 +4960,7 @@ S_regbranch(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, I32 first, U32 depth)
             if (flags & TRYAGAIN)
                 continue;
             RETURN_FAIL_ON_RESTART(flags, flagp);
-            FAIL2("panic: regpiece returned failure, flags: %#" UVxf, (UV) flags);
+            FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_PIECE_RESULT_MISSING((UV) flags, UTF, len, RExC_precomp, ellipses));
         }
         else if (ret == 0)
             ret = latest;
@@ -4990,14 +5151,21 @@ S_get_quantifier_value(pTHX_ RExC_state_t *pRExC_state,
 
         /* Perhaps too generic a msg for what is only failure from having
          * leading zeros, but this is how it's always behaved. */
-        vFAIL("Invalid quantifier in {,}");
+        PERL_THROW_ERROR_REGEXP_QUANTIFIER_INTEGER_INVALID(
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
         NOT_REACHED; /*NOTREACHED*/
     }
 
     /* Here, found a quantifier, but was too large; either it overflowed or was
      * too big a legal number */
     RExC_parse_set((char * ) end);
-    vFAIL2("Quantifier in {,} bigger than %d", REG_INFTY - 1);
+    PERL_THROW_ERROR_REGEXP_LIMIT_QUANTIFIER_COUNT_EXCEEDED(
+        REG_INFTY - 1,
+        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
 
     NOT_REACHED; /*NOTREACHED*/
     return U32_MAX; /* Perhaps some compilers will be expecting a return */
@@ -5043,7 +5211,7 @@ S_regpiece(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
     ret = regatom(pRExC_state, &flags, depth+1);
     if (ret == 0) {
         RETURN_FAIL_ON_RESTART_OR_FLAGS(flags, flagp, TRYAGAIN);
-        FAIL2("panic: regatom returned failure, flags: %#" UVxf, (UV) flags);
+        FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ATOM_RESULT_MISSING((UV) flags, UTF, len, RExC_precomp, ellipses));
     }
     I32 npar_after = RExC_npar-1;
 
@@ -5099,15 +5267,13 @@ S_regpiece(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
             if (max < min) {    /* If can't match, warn and optimize to fail
                                    unconditionally */
                 reginsert(pRExC_state, OPFAIL, orig_emit, depth+1);
-                ckWARNreg(RExC_parse, "Quantifier {n,m} with n > m can't match");
+                PERL_WARN_WARNING_REGEXP_QUANTIFIER_MAXIMUM_BELOW_MINIMUM(RExC_parse);
                 NEXT_OFF_set(REGNODE_p(orig_emit),
                              REGNODE_ARG_LEN(OPFAIL) + NODE_STEP_REGNODE);
                 return ret;
             }
             else if (min == max && *RExC_parse == '?') {
-                ckWARN2reg(RExC_parse + 1,
-                           "Useless use of greediness modifier '%c'",
-                           *RExC_parse);
+                PERL_WARN_WARNING_REGEXP_QUANTIFIER_FIXED_COUNT_GREEDINESS_IGNORED(*RExC_parse, RExC_parse + 1);
             }
 
             break;
@@ -5127,12 +5293,9 @@ S_regpiece(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
      * Check and possibly adjust a zero width operand */
     if (! (flags & (HASWIDTH|POSTPONED))) {
         if (max > REG_INFTY/3) {
-            ckWARN2reg(RExC_parse,
-                       "%" UTF8f " matches null string many times",
-                       UTF8fARG(UTF, (RExC_parse >= origparse
+            PERL_WARN_WARNING_REGEXP_QUANTIFIER_EXCESSIVE_ZERO_WIDTH_REPETITION(UTF, (RExC_parse >= origparse
                                      ? RExC_parse - origparse
-                                     : 0),
-                       origparse));
+                                     : 0), origparse, RExC_parse);
         }
 
         /* There's no point in trying to match something 0 length more than
@@ -5248,7 +5411,10 @@ S_regpiece(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
     /* Forbid extra quantifiers */
     if (isQUANTIFIER(RExC_parse, RExC_end)) {
         RExC_parse_inc_by(1);
-        vFAIL("Nested quantifiers");
+        PERL_THROW_ERROR_REGEXP_QUANTIFIER_NESTED(
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
     }
 
     return(ret);
@@ -5261,11 +5427,10 @@ S_regpiece(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
      * to halt, and because the use of this construct isn't necessary in
      * matching Unicode property values */
     RExC_parse_inc_by(1);
-    /* diag_listed_as: Use of %s is not allowed in Unicode property wildcard
-       subpatterns in regex; marked by <-- HERE in m/%s/
-     */
-    vFAIL("Use of quantifier '*' is not allowed in Unicode property wildcard"
-          " subpatterns");
+    PERL_THROW_ERROR_REGEXP_QUANTIFIER_UNBOUNDED_EMPTY_WILDCARD_FORBIDDEN(
+        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
 
     /* Note, don't need to worry about the input being '{0,}', as a '}' isn't
      * legal at all in wildcards, so can't get this far */
@@ -5413,14 +5578,21 @@ S_grok_bslash_N(pTHX_ RExC_state_t *pRExC_state,
      * \n) and this is not allowed (for consistency with \x{...} and the
      * tokenizer handling of \N{NAME}). */
     if (*RExC_parse != '{') {
-        vFAIL("Missing braces on \\N{}");
+        PERL_THROW_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_BRACES_NOT_ADJACENT(
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
     }
 
     RExC_parse_inc_by(1);       /* Skip past the '{' */
 
     endbrace = (char *) memchr(RExC_parse, '}', RExC_end - RExC_parse);
     if (! endbrace) { /* no trailing brace */
-        vFAIL2("Missing right brace on \\%c{}", 'N');
+        PERL_THROW_ERROR_REGEXP_ESCAPE_CLOSE_BRACE_MISSING(
+            'N',
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
     }
 
     /* Here, we have decided it should be a named character or sequence.  These
@@ -5433,7 +5605,10 @@ S_grok_bslash_N(pTHX_ RExC_state_t *pRExC_state,
         RExC_parse_set(endbrace);
         if (strict) {
             RExC_parse_inc_by(1);   /* Position after the "}" */
-            vFAIL("Zero length \\N{}");
+            PERL_THROW_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_EMPTY_SEQUENCE_FORBIDDEN(
+                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
         }
 
         if (cp_count) {
@@ -5466,6 +5641,7 @@ S_grok_bslash_N(pTHX_ RExC_state_t *pRExC_state,
         const STRLEN name_len = e - RExC_parse;
         SV *  value_sv;     /* What does this name evaluate to */
         SV ** value_svp;
+        SSize_t diagnostic_start;
         const U8 * value;   /* string of name's value */
         STRLEN value_len;   /* and its length */
 
@@ -5487,13 +5663,21 @@ S_grok_bslash_N(pTHX_ RExC_state_t *pRExC_state,
             value_sv = *value_svp;
         }
         else { /* Otherwise we have to go out and get the name */
-            const char * error_msg = NULL;
-            value_sv = get_and_check_backslash_N_name(RExC_parse, e,
-                                                      UTF,
-                                                      &error_msg);
-            if (error_msg) {
+            diagnostic_start = Perl_diag_exception_message_count(aTHX_
+                PERL_REXC_EXCEPTION_SLOT);
+            value_sv = get_and_check_backslash_N_name(
+                RExC_parse, e, UTF, PERL_REXC_EXCEPTION_SLOT);
+            if (!value_sv) {
                 RExC_parse_set(endbrace);
-                vFAIL(error_msg);
+                PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_FAILURE_AT_PATTERN(
+                    PERL_REXC_EXCEPTION_SLOT,
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
+                Perl_diag_adopt_since(aTHX_ PERL_REXC_EXCEPTION_SLOT,
+                                      diagnostic_start);
+                Perl_diag_throw_exception_slot(
+                    aTHX_ PERL_REXC_EXCEPTION_SLOT);
             }
 
             /* If no error message, should have gotten a valid return */
@@ -5503,7 +5687,7 @@ S_grok_bslash_N(pTHX_ RExC_state_t *pRExC_state,
             if (! hv_store(RExC_unlexed_names, RExC_parse, name_len,
                            value_sv, 0))
             {
-                croak("panic: hv_store() unexpectedly failed");
+                PERL_PANIC_ERROR_INTERNAL_HASH_STORE_FAILED();
             }
         }
 
@@ -5595,13 +5779,20 @@ S_grok_bslash_N(pTHX_ RExC_state_t *pRExC_state,
             if (len == 0) {
                 RExC_parse_inc_by(1);
               bad_NU:
-                vFAIL("Invalid hexadecimal number in \\N{U+...}");
+                PERL_THROW_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_HEX_SEQUENCE_INVALID(
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
 
             RExC_parse_inc_by(len);
 
             if (cp > MAX_LEGAL_CP) {
-                vFAIL(form_cp_too_large_msg(16, start_digit, len, 0));
+                PERL_THROW_ERROR_UNICODE_CODE_POINT_REGEXP_LIMIT_EXCEEDED(
+                    len, start_digit, MAX_LEGAL_CP,
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
 
             if (RExC_parse >= e) { /* Got to the closing '}' */
@@ -5716,8 +5907,7 @@ S_grok_bslash_N(pTHX_ RExC_state_t *pRExC_state,
 
     if (! *node_p) {
         RETURN_FAIL_ON_RESTART(flags, flagp);
-        FAIL2("panic: reg returned failure to grok_bslash_N, flags: %#" UVxf,
-            (UV) flags);
+        FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ESCAPE_NAMED_SUBPATTERN_RESULT_MISSING((UV) flags, UTF, len, RExC_precomp, ellipses));
     }
     *flagp |= flags&(HASWIDTH|SIMPLE|POSTPONED);
 
@@ -5898,12 +6088,14 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                        NULL);
         if (ret == 0) {
             RETURN_FAIL_ON_RESTART_FLAGP(flagp);
-            FAIL2("panic: regclass returned failure to regatom, flags: %#" UVxf,
-                  (UV) *flagp);
+            FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_CHAR_CLASS_ATOM_RESULT_MISSING((UV) *flagp, UTF, len, RExC_precomp, ellipses));
         }
         if (*RExC_parse != ']') {
             RExC_parse_set(cc_parse_start);
-            vFAIL("Unmatched [");
+            PERL_THROW_ERROR_REGEXP_CHAR_CLASS_UNTERMINATED(
+                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
         }
         nextchar(pRExC_state);
         break;
@@ -5921,8 +6113,7 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                     goto tryagain;
                 }
                 RETURN_FAIL_ON_RESTART(flags, flagp);
-                FAIL2("panic: reg returned failure to regatom, flags: %#" UVxf,
-                                                                 (UV) flags);
+                FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_GROUP_RESULT_MISSING((UV) flags, UTF, len, RExC_precomp, ellipses));
         }
         *flagp |= flags&(HASWIDTH|SIMPLE|POSTPONED);
         break;
@@ -5932,14 +6123,20 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
             *flagp |= TRYAGAIN;
             return 0;
         }
-        vFAIL("Internal urp");
+        PERL_THROW_ERROR_INTERNAL_REGEXP_COMPILER_ATOM_DELIMITER_UNEXPECTED(
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                                 /* Supposed to be caught earlier. */
         break;
     case '?':
     case '+':
     case '*':
         RExC_parse_inc_by(1);
-        vFAIL("Quantifier follows nothing");
+        PERL_THROW_ERROR_REGEXP_QUANTIFIER_TARGET_MISSING(
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
         break;
     case '\\':
         /* Special Escapes
@@ -5974,11 +6171,11 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
         case 'G':
             if (RExC_pm_flags & PMf_WILDCARD) {
                 RExC_parse_inc_by(1);
-                /* diag_listed_as: Use of %s is not allowed in Unicode property
-                   wildcard subpatterns in regex; marked by <-- HERE in m/%s/
-                 */
-                vFAIL("Use of '\\G' is not allowed in Unicode property"
-                      " wildcard subpatterns");
+                PERL_THROW_ERROR_REGEXP_ESCAPE_GLOBAL_POSITION_IN_WILDCARD_FORBIDDEN(
+                    "\\G",
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
             ret = reg_node(pRExC_state, GPOS);
             RExC_seen |= REG_GPOS_SEEN;
@@ -5996,7 +6193,10 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
             }
             else {
                 ++RExC_parse; /* advance past the 'K' */
-                vFAIL("\\K not permitted in lookahead/lookbehind");
+                PERL_THROW_ERROR_REGEXP_GROUP_LOOKAROUND_MATCH_START_RESET_FORBIDDEN(
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
         case 'Z':
             if (RExC_pm_flags & PMf_WILDCARD) {
@@ -6019,7 +6219,10 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
             RExC_seen_zerolen++;		/* Do not optimize RE away */
             goto finish_meta_pat;
         case 'C':
-            vFAIL("\\C no longer supported");
+            PERL_THROW_ERROR_REGEXP_ESCAPE_C_ESCAPE_UNSUPPORTED(
+                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
         case 'X':
             ret = reg_node(pRExC_state, CLUMP);
             *flagp |= HASWIDTH;
@@ -6053,7 +6256,11 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                 RExC_parse_inc_by(2);
 
                 if (! endbrace) {
-                    vFAIL2("Missing right brace on \\%c{}", name);
+                    PERL_THROW_ERROR_REGEXP_ESCAPE_CLOSE_BRACE_MISSING(
+                        name,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
 
                 while (isBLANK(*RExC_parse)) {
@@ -6066,7 +6273,11 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
 
                 if (e == RExC_parse) {
                     RExC_parse_set(endbrace + 1);  /* After the '}' */
-                    vFAIL2("Empty \\%c{}", name);
+                    PERL_THROW_ERROR_REGEXP_ESCAPE_BRACED_CONTENT_MISSING(
+                        name,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
 
                 length = e - RExC_parse;
@@ -6101,9 +6312,11 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                     default:
                       bad_bound_type:
                         RExC_parse_set(e);
-                        vFAIL2utf8f(
-                            "'%" UTF8f "' is an unknown bound type",
-                            UTF8fARG(UTF, length, e - length));
+                        PERL_THROW_ERROR_REGEXP_ESCAPE_BOUNDARY_TYPE_UNKNOWN(
+                            UTF, length, e - length,
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                         NOT_REACHED; /*NOTREACHED*/
                 }
                 RExC_parse_set(endbrace);
@@ -6118,13 +6331,9 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
 
                     /* Don't have to worry about UTF-8, in this message because
                      * to get here the contents of the \b must be ASCII */
-                    ckWARN4reg(RExC_parse + 1,  /* Include the '}' in msg */
-                              "Using /u for '%.*s' instead of /%s",
-                              (unsigned) length,
-                              endbrace - length + 1,
-                              (charset == REGEX_ASCII_RESTRICTED_CHARSET)
+                    PERL_WARN_WARNING_REGEXP_MODIFIER_BOUNDARY_FORCES_UNICODE((unsigned) length, endbrace - length + 1, (charset == REGEX_ASCII_RESTRICTED_CHARSET)
                               ? ASCII_RESTRICT_PAT_MODS
-                              : ASCII_MORE_RESTRICT_PAT_MODS);
+                              : ASCII_MORE_RESTRICT_PAT_MODS, RExC_parse + 1);
                 }
             }
 
@@ -6180,8 +6389,7 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
             /* regclass() can only return RESTART_PARSE and NEED_UTF8 if
              * multi-char folds are allowed.  */
             if (!ret)
-                FAIL2("panic: regclass returned failure to regatom, flags: %#" UVxf,
-                      (UV) *flagp);
+                FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_CHAR_CLASS_ATOM_RESULT_MISSING((UV) *flagp, UTF, len, RExC_precomp, ellipses));
 
             RExC_parse--;   /* regclass() leaves this one too far ahead */
 
@@ -6194,7 +6402,10 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                 && UNLIKELY(! regcurly(RExC_parse + 1, RExC_end, NULL)))
             {
                 RExC_parse_inc_by(2);
-                vFAIL("Unescaped left brace in regex is illegal here");
+                PERL_THROW_ERROR_REGEXP_ESCAPE_LITERAL_OPEN_BRACE_FORBIDDEN(
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
             nextchar(pRExC_state);
             break;
@@ -6240,8 +6451,11 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                                       && ch != '{'))
             {
                 RExC_parse_inc_by(1);
-                /* diag_listed_as: Sequence \%s... not terminated in regex; marked by <-- HERE in m/%s/ */
-                vFAIL2("Sequence %.2s... not terminated", atom_parse_start);
+                PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_DELIMITER_UNTERMINATED(
+                    2, atom_parse_start,
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             } else {
                 RExC_parse_inc_by(2);
                 if (ch == '{') {
@@ -6295,7 +6509,10 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                             } while isDIGIT(*s);
 
                             RExC_parse_set(s);
-                            vFAIL("Unterminated \\g{...} pattern");
+                            PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_BRACED_UNTERMINATED(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                         }
 
                         s++;    /* Past the '{' */
@@ -6327,25 +6544,41 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                         assert(s <= endbrace);
                         if (s != endbrace) {
                             RExC_parse_set(s);
-                            vFAIL2("Sequence \\%s... not terminated", "g{");
+                            PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_DELIMITER_UNTERMINATED(
+                                3, "\\g{",
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                         }
                         ++s;
                     }
 
                     if (num == 0)
-                        vFAIL("Reference to invalid group 0");
+                        PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_GROUP_ZERO_FORBIDDEN(
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     else if (num == I32_MAX) {
                          if (isDIGIT(*RExC_parse))
-                            vFAIL("Reference to nonexistent group");
+                            PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_TARGET_MISSING(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                         else
-                            vFAIL("Unterminated \\g... pattern");
+                            PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_UNTERMINATED(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     assert(s != NULL);
 
                     if (isrel) {
                         num = RExC_npar - num;
                         if (num < 1)
-                            vFAIL("Reference to nonexistent or unclosed group");
+                            PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_RELATIVE_TARGET_UNAVAILABLE(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     else
                     if (num < RExC_logical_npar) {
@@ -6419,7 +6652,10 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                 assert(s != NULL);
                 RExC_parse_set(s);
                 if (num < 0)
-                    vFAIL("Reference to nonexistent group");
+                    PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_TARGET_MISSING(
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
 
                 if (num >= (I32)RExC_npar) {
                     /* It might be a forward reference; we can't fail until we
@@ -6427,7 +6663,10 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                      * then reparsing */
                     if (ALL_PARENS_COUNTED)  {
                         if (num >= RExC_total_parens)  {
-                            vFAIL("Reference to nonexistent group");
+                            PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_TARGET_MISSING(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                         }
                     }
                     else {
@@ -6459,7 +6698,7 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
             break;
         case '\0':
             if (RExC_parse >= RExC_end)
-                FAIL("Trailing \\");
+                FAIL_(PERL_THROW_ERROR_REGEXP_ESCAPE_TRAILING_BACKSLASH(UTF, len, RExC_precomp, ellipses));
             /* FALLTHROUGH */
         default:
             /* Do not generate "unrecognized" warnings here, we fall
@@ -6624,8 +6863,7 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                        || ! is_PATWS_safe((p), RExC_end, UTF));
 
                 switch ((U8)*p) {
-                  const char* message;
-                  U32 packed_warn;
+                  const char *reason;
                   U8 grok_c_char;
 
                 case '^':
@@ -6693,7 +6931,7 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                                             depth)
                         ) {
                             if (*flagp & NEED_UTF8)
-                                FAIL("panic: grok_bslash_N set NEED_UTF8");
+                                FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ESCAPE_NAMED_SINGLE_VALUE_REQUIRES_UTF8(UTF, len, RExC_precomp, ellipses));
                             RETURN_FAIL_ON_RESTART_FLAGP(flagp);
 
                             /* Here, it wasn't a single code point.  Go close
@@ -6744,43 +6982,60 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                         p++;
                         break;
                     case 'o':
-                        if (! grok_bslash_o(&p,
-                                            RExC_end,
-                                            &ender,
-                                            &message,
-                                            &packed_warn,
-                                            (bool) RExC_strict,
-                                            false, /* No illegal cp's */
-                                            UTF))
                         {
-                            RExC_parse_set(p); /* going to die anyway; point to
-                                               exact spot of failure */
-                            vFAIL(message);
-                        }
-
-                        if (message && TO_OUTPUT_WARNINGS(p)) {
-                            warn_non_literal_string(p, packed_warn, message);
+                            SSize_t messages_on_entry =
+                                Perl_diag_exception_message_count(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT);
+                            UV error = Perl_grok_bslash_o_diag(aTHX_ &p, RExC_end,
+                                &ender, PERL_REXC_EXCEPTION_SLOT,
+                                (bool) RExC_strict, false, UTF,
+                                TO_OUTPUT_WARNINGS(p));
+                            SSize_t message_count =
+                                Perl_diag_exception_message_count(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT);
+                            if (message_count > messages_on_entry) {
+                                Perl_regex_add_pattern_context(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT, message_count - 1,
+                                    UTF,
+                                    PERL_REPORT_LOCATION_BEFORE_LENGTH(p), sI,
+                                    PERL_REPORT_LOCATION_AFTER_LENGTH(p),
+                                    PERL_REPORT_LOCATION_AFTER_START(p));
+                                UPDATE_WARNINGS_LOC(p);
+                            }
+                            if (error) {
+                                RExC_parse_set(p);
+                                Perl_diag_throw_exception_slot(
+                                    aTHX_ PERL_REXC_EXCEPTION_SLOT);
+                            }
                         }
                         break;
                     case 'x':
-                        if (! grok_bslash_x(&p,
-                                            RExC_end,
-                                            &ender,
-                                            &message,
-                                            &packed_warn,
-                                            (bool) RExC_strict,
-                                            false, /* No illegal cp's */
-                                            UTF))
                         {
-                            RExC_parse_set(p);        /* going to die anyway; point
-                                                   to exact spot of failure */
-                            vFAIL(message);
+                            SSize_t messages_on_entry =
+                                Perl_diag_exception_message_count(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT);
+                            UV error = Perl_grok_bslash_x_diag(aTHX_ &p, RExC_end,
+                                &ender, PERL_REXC_EXCEPTION_SLOT,
+                                (bool) RExC_strict, false, UTF,
+                                TO_OUTPUT_WARNINGS(p));
+                            SSize_t message_count =
+                                Perl_diag_exception_message_count(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT);
+                            if (message_count > messages_on_entry) {
+                                Perl_regex_add_pattern_context(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT, message_count - 1,
+                                    UTF,
+                                    PERL_REPORT_LOCATION_BEFORE_LENGTH(p), sI,
+                                    PERL_REPORT_LOCATION_AFTER_LENGTH(p),
+                                    PERL_REPORT_LOCATION_AFTER_START(p));
+                                UPDATE_WARNINGS_LOC(p);
+                            }
+                            if (error) {
+                                RExC_parse_set(p);
+                                Perl_diag_throw_exception_slot(
+                                    aTHX_ PERL_REXC_EXCEPTION_SLOT);
+                            }
                         }
-
-                        if (message && TO_OUTPUT_WARNINGS(p)) {
-                            warn_non_literal_string(p, packed_warn, message);
-                        }
-
 #ifdef EBCDIC
                         if (ender < 0x100) {
                             if (RExC_recode_x_to_native) {
@@ -6791,24 +7046,62 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                         break;
                     case 'c':
                         p++;
-                        if (! grok_bslash_c(*p, &grok_c_char,
-                                            &message, &packed_warn))
                         {
-                            /* going to die anyway; point to exact spot of
-                             * failure */
-                            char *new_p= p + ((UTF)
-                                              ? UTF8_SAFE_SKIP(p, RExC_end)
-                                              : 1);
-                            RExC_parse_set(new_p);
-                            vFAIL(message);
-                        }
+                            SSize_t messages_on_entry =
+                                Perl_diag_exception_message_count(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT);
+                            SSize_t message_count;
+                            SV **exception_slot;
+                            UV error;
 
-                        ender = grok_c_char;
-                        p++;
-                        if (message && TO_OUTPUT_WARNINGS(p)) {
-                            warn_non_literal_string(p, packed_warn, message);
-                        }
+                            /* Regex errors get a contextual diagnostic
+                             * below. Keep the slot for successful parses so
+                             * the helper can append any clearer warning. */
+                            exception_slot =
+                                (*p == '{' || !isPRINT_A(*p))
+                                ? NULL : PERL_REXC_EXCEPTION_SLOT;
+                            error = Perl_grok_bslash_c_diag(aTHX_
+                                *p, &grok_c_char, exception_slot,
+                                TO_OUTPUT_WARNINGS(p + 1));
+                            if (error) {
+                                reason = error == perl_diag_error_syntax_escape_control_open_brace_printable_result_idx
+                                       ? "brace_control"
+                                       : error == perl_diag_error_syntax_escape_control_open_brace_invalid_idx
+                                       ? "brace_invalid" : "non_printable";
+                                /* The low-level parser only identifies the
+                                 * error here.  Report it once with its regex
+                                 * context. */
+                                char *new_p= p + ((UTF)
+                                                  ? UTF8_SAFE_SKIP(p, RExC_end)
+                                                  : 1);
+                                RExC_parse_set(new_p);
+                                PERL_THROW_ERROR_REGEXP_ESCAPE_CONTROL_CHARACTER_INVALID(
+                                    PERL_DIAG_SELECTOR_FROM_ERROR_REGEXP_ESCAPE_CONTROL_CHARACTER_INVALID_REASON(reason),
+                                    strEQ(reason, "brace_control")
+                                        ? (char)toCTRL('{') : 0,
+                                    UTF,
+                                    PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse),
+                                    sI,
+                                    UTF,
+                                    PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
+                            }
 
+                            ender = grok_c_char;
+                            p++;
+                            message_count = Perl_diag_exception_message_count(aTHX_
+                                PERL_REXC_EXCEPTION_SLOT);
+                            if (message_count > messages_on_entry) {
+                                Perl_regex_add_pattern_context(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT, message_count - 1,
+                                    UTF,
+                                    PERL_REPORT_LOCATION_BEFORE_LENGTH(p), sI,
+                                    PERL_REPORT_LOCATION_AFTER_LENGTH(p),
+                                    PERL_REPORT_LOCATION_AFTER_START(p));
+                                UPDATE_WARNINGS_LOC(p);
+                            }
+
+                        }
                         break;
                     case '8': case '9': /* must be a backreference */
                         --p;
@@ -6853,16 +7146,37 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                                 && isDIGIT(*p)  /* like \08, \178 */
                                 && ckWARN(WARN_REGEXP))
                             {
-                                reg_warn_non_literal_string(
-                                     p + 1,
-                                     form_alien_digit_msg(8, numlen, p,
-                                                        RExC_end, UTF, false));
+                                SSize_t messages_on_entry =
+                                    Perl_diag_exception_message_count(aTHX_
+                                        PERL_REXC_EXCEPTION_SLOT);
+                                const char *warning_location = p + 1;
+                                Perl_diag_append_alien_digit_warning(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT,
+                                    perl_diag_warning_regexp_escape_digit_outside_radix_idx,
+                                    8, numlen, p, RExC_end, UTF, false);
+                                if (Perl_diag_exception_message_count(aTHX_
+                                        PERL_REXC_EXCEPTION_SLOT)
+                                    > messages_on_entry) {
+                                    Perl_regex_add_pattern_context(aTHX_
+                                        PERL_REXC_EXCEPTION_SLOT,
+                                        Perl_diag_exception_message_count(aTHX_
+                                            PERL_REXC_EXCEPTION_SLOT) - 1,
+                                        UTF,
+                                        PERL_REPORT_LOCATION_BEFORE_LENGTH(
+                                            warning_location),
+                                        sI,
+                                        PERL_REPORT_LOCATION_AFTER_LENGTH(
+                                            warning_location),
+                                        PERL_REPORT_LOCATION_AFTER_START(
+                                            warning_location));
+                                    UPDATE_WARNINGS_LOC(warning_location);
+                                }
                             }
                         }
                         break;
                     case '\0':
                         if (p >= RExC_end)
-                            FAIL("Trailing \\");
+                            FAIL_(PERL_THROW_ERROR_REGEXP_ESCAPE_TRAILING_BACKSLASH(UTF, len, RExC_precomp, ellipses));
                         /* FALLTHROUGH */
                     default:
                         if (isALPHANUMERIC(*p)) {
@@ -6870,8 +7184,7 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                              * iteration, so don't output this warning in that
                              * case */
                             if (! isALPHA(*p) || *(p + 1) != '{') {
-                                ckWARN2reg(p + 1, "Unrecognized escape \\%.1s"
-                                                  " passed through", p);
+                                PERL_WARN_WARNING_REGEXP_ESCAPE_UNKNOWN_ALPHANUMERIC(p, p + 1);
                             }
                         }
                         goto normal_default;
@@ -6900,17 +7213,22 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                                 && *(p - 2) == '\\'))
                         {
                             RExC_parse_set(p + 1);
-                            vFAIL("Unescaped left brace in regex is "
-                                  "illegal here");
+                            PERL_THROW_ERROR_REGEXP_ESCAPE_LITERAL_OPEN_BRACE_FORBIDDEN(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                         }
-                        ckWARNreg(p + 1, "Unescaped left brace in regex is"
-                                         " passed through");
+                        PERL_WARN_WARNING_REGEXP_ESCAPE_LITERAL_OPEN_BRACE_AMBIGUOUS(
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(p + 1), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(p + 1),
+                                PERL_REPORT_LOCATION_AFTER_START(p + 1),
+                            p + 1);
                     }
                     goto normal_default;
                 case '}':
                 case ']':
                     if (p > RExC_parse && RExC_strict) {
-                        ckWARN2reg(p + 1, "Unescaped literal '%c'", *p);
+                        PERL_WARN_WARNING_REGEXP_ESCAPE_LITERAL_CLOSE_DELIMITER_UNESCAPED(*p, p + 1);
                     }
                     /*FALLTHROUGH*/
                 default:    /* A literal character */
@@ -6935,10 +7253,7 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                     if (   UNICODE_IS_PERL_EXTENDED(ender)
                         && TO_OUTPUT_WARNINGS(p))
                     {
-                        ckWARN2_non_literal_string(p,
-                                                   packWARN(WARN_PORTABLE),
-                                                   PL_extended_cp_format,
-                                                   ender);
+                        PERL_WARN_WARNING_PORTABLE_REGEXP_CODEPOINT_REQUIRES_PERL_EXTENSION(ender, p);
                     }
                 }
 
@@ -7676,8 +7991,7 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                         if (need_to_fold_loc) {
                             upper_fill = loc_correspondence[s - s_start];
                             if (upper_fill == 0) {
-                                FAIL2("panic: loc_correspondence[%td] is 0",
-                                      (s - s_start));
+                                FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_LOCALE_FOLD_SOURCE_MAPPING_MISSING((s - s_start), UTF, len, RExC_precomp, ellipses));
                             }
                             Safefree(locfold_buf);
                             Safefree(loc_correspondence);
@@ -7828,7 +8142,10 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
                 /* len is STRLEN which is unsigned, need to copy to signed */
                 IV iv = len;
                 if (iv < 0)
-                    vFAIL("Internal disaster");
+                    PERL_THROW_ERROR_INTERNAL_REGEXP_COMPILER_LITERAL_LENGTH_OVERFLOW(
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
 
         } /* End of label 'defchar:' */
@@ -7843,10 +8160,16 @@ S_regatom(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth)
     {
         if (RExC_strict) {
             RExC_parse_inc_by(1);
-            vFAIL("Unescaped left brace in regex is illegal here");
+            PERL_THROW_ERROR_REGEXP_ESCAPE_LITERAL_OPEN_BRACE_FORBIDDEN(
+                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
         }
-        ckWARNreg(RExC_parse + 1, "Unescaped left brace in regex is"
-                                  " passed through");
+        PERL_WARN_WARNING_REGEXP_ESCAPE_LITERAL_OPEN_BRACE_AMBIGUOUS(
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse + 1), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse + 1),
+                PERL_REPORT_LOCATION_AFTER_START(RExC_parse + 1),
+            RExC_parse + 1);
     }
 
     return(ret);
@@ -7926,29 +8249,36 @@ Perl_populate_anyof_bitmap_from_invlist(pTHX_ regnode *node, SV** invlist_ptr)
 #define POSIXCC(c) (POSIXCC_DONE(c) || POSIXCC_NOTYET(c))
 #define MAYBE_POSIXCC(c) (POSIXCC(c) || (c) == '^' || (c) == ';')
 
-#define WARNING_PREFIX              "Assuming NOT a POSIX class since "
-#define NO_BLANKS_POSIX_WARNING     "no blanks are allowed in one"
-#define SEMI_COLON_POSIX_WARNING    "a semi-colon was found instead of a colon"
-
 #define NOT_MEANT_TO_BE_A_POSIX_CLASS (OOB_NAMEDCLASS - 1)
 
-/* 'posix_warnings' and 'warn_text' are names of variables in the following
- * routine. q.v. */
-#define ADD_POSIX_WARNING(p, text)  STMT_START {                            \
+/* POSIX-class warnings are speculative until the parser has ruled out a
+ * false positive. Keep their starting diagnostic index so a later parse
+ * decision can discard the whole tentative group. */
+#define PERL_ADD_POSIX_WARNING(p, reason) STMT_START {                            \
         if (posix_warnings) {                                               \
-            if (! RExC_warn_text ) RExC_warn_text =                         \
-                                   MUTABLE_AV(newSV_type_mortal(SVt_PVAV)); \
-            av_push_simple(RExC_warn_text, newSVpvf(\
-                                             WARNING_PREFIX                 \
-                                             text                           \
-                                             REPORT_LOCATION,               \
-                                             REPORT_LOCATION_ARGS(p)));     \
+            SSize_t _before = Perl_diag_exception_message_count(aTHX_                  \
+                                                &PL_pending_exception);     \
+            PERL_APPEND_WARNING_REGEXP_CHAR_CLASS_POSIX_SYNTAX_SUSPICIOUS(&PL_pending_exception, PERL_DIAG_SELECTOR_FROM_WARNING_REGEXP_CHAR_CLASS_POSIX_SYNTAX_SUSPICIOUS_REASON(reason));\
+            if (Perl_diag_exception_message_count(aTHX_ &PL_pending_exception)          \
+                                                            > _before) {    \
+                if (*posix_warnings < 0) {                                  \
+                    *posix_warnings = _before;                              \
+                }                                                           \
+                Perl_diag_attach_regex_pattern_context(aTHX_                           \
+                    PL_pending_exception, UTF,                              \
+                    PERL_REPORT_LOCATION_BEFORE_LENGTH(p), sI,                   \
+                    PERL_REPORT_LOCATION_AFTER_LENGTH(p),                        \
+                    PERL_REPORT_LOCATION_AFTER_START(p));                        \
+            }                                                               \
         }                                                                   \
     } STMT_END
 #define CLEAR_POSIX_WARNINGS()                                              \
     STMT_START {                                                            \
-        if (posix_warnings && RExC_warn_text)                               \
-            av_clear(RExC_warn_text);                                       \
+        if (posix_warnings && *posix_warnings >= 0) {                       \
+            Perl_diag_rollback_exception(aTHX_ &PL_pending_exception,                  \
+                                   *posix_warnings);                         \
+            *posix_warnings = -1;                                           \
+        }                                                                   \
     } STMT_END
 
 #define CLEAR_POSIX_WARNINGS_AND_RETURN(ret)                                \
@@ -7966,8 +8296,7 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
                                   besides RExC_parse. */
     char ** updated_parse_ptr, /* Where to set the updated parse pointer, or
                                   NULL */
-    AV ** posix_warnings,      /* Where to place any generated warnings, or
-                                  NULL */
+    SSize_t *posix_warnings, /* Checkpoint for tentative warnings, or NULL */
     const bool check_only      /* Don't die if error */
 )
 {
@@ -7997,9 +8326,9 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
      *      raised.
      *
      * In b) there may be errors or warnings generated.  If 'check_only' is
-     * true, then any errors are discarded.  Warnings are returned to the
-     * caller via an AV* created into '*posix_warnings' if it is not NULL.  If
-     * instead it is NULL, warnings are suppressed.
+     * true, then any errors are discarded.  Warnings are appended to the
+     * pending exception if 'posix_warnings' is not NULL.  The caller can
+     * discard them later if this candidate proves to be a false positive.
      *
      * The reason for this function, and its complexity is that a bracketed
      * character class can contain just about anything.  But it's easy to
@@ -8093,7 +8422,7 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
     }
 
     if (*(p - 1) != '[') {
-        ADD_POSIX_WARNING(p, "it doesn't start with a '['");
+        PERL_ADD_POSIX_WARNING(p, "missing_opening_bracket");
         found_problem = true;
     }
     else {
@@ -8109,7 +8438,7 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
             p++;
         } while (p < e && isBLANK(*p));
 
-        ADD_POSIX_WARNING(p, NO_BLANKS_POSIX_WARNING);
+        PERL_ADD_POSIX_WARNING(p, "no_blanks");
     }
 
     /* For [. .] and [= =].  These are quite different internally from [: :],
@@ -8168,8 +8497,11 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
                 temp_ptr++;
                 if (! found_problem && ! check_only) {
                     RExC_parse_set((char *) temp_ptr);
-                    vFAIL3("POSIX syntax [%c %c] is reserved for future "
-                            "extensions", open_char, open_char);
+                    PERL_THROW_ERROR_REGEXP_CHAR_CLASS_POSIX_SYNTAX_RESERVED(
+                        open_char,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
 
                 /* Here, the syntax wasn't completely valid, or else the call
@@ -8193,7 +8525,7 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
      * first */
     if (*p == '^') {
         found_problem = true;
-        ADD_POSIX_WARNING(p + 1, "the '^' must come after the colon");
+        PERL_ADD_POSIX_WARNING(p + 1, "caret_before_colon");
         complement = 1;
         p++;
 
@@ -8204,7 +8536,7 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
                 p++;
             } while (p < e && isBLANK(*p));
 
-            ADD_POSIX_WARNING(p, NO_BLANKS_POSIX_WARNING);
+            PERL_ADD_POSIX_WARNING(p, "no_blanks");
         }
     }
 
@@ -8218,12 +8550,12 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
     else if (*p == ';') {
         found_problem = true;
         p++;
-        ADD_POSIX_WARNING(p, SEMI_COLON_POSIX_WARNING);
+        PERL_ADD_POSIX_WARNING(p, "semicolon_for_colon");
         has_opening_colon = true;
     }
     else {
         found_problem = true;
-        ADD_POSIX_WARNING(p, "there must be a starting ':'");
+        PERL_ADD_POSIX_WARNING(p, "missing_opening_colon");
 
         /* Consider an initial punctuation (not one of the recognized ones) to
          * be a left terminator */
@@ -8240,7 +8572,7 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
             p++;
         } while (p < e && isBLANK(*p));
 
-        ADD_POSIX_WARNING(p, NO_BLANKS_POSIX_WARNING);
+        PERL_ADD_POSIX_WARNING(p, "no_blanks");
     }
 
     if (*p == '^') {
@@ -8263,7 +8595,7 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
             p++;
         } while (p < e && isBLANK(*p));
 
-        ADD_POSIX_WARNING(p, NO_BLANKS_POSIX_WARNING);
+        PERL_ADD_POSIX_WARNING(p, "no_blanks");
     }
 
     if (*p == ']') {
@@ -8285,7 +8617,7 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
 
         if (*p == ';') {
             found_problem = true;
-            ADD_POSIX_WARNING(p, SEMI_COLON_POSIX_WARNING);
+            PERL_ADD_POSIX_WARNING(p, "semicolon_for_colon");
         }
         else if (*p != ':') {
 
@@ -8693,27 +9025,21 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
              * adding them to the list of warnings, because we can parse it
              * twice, and we only want one warning instance */
             if (has_upper) {
-                ADD_POSIX_WARNING(p, "the name must be all lowercase letters");
+                PERL_ADD_POSIX_WARNING(p, "name_not_lowercase");
             }
             if (has_blank) {
-                ADD_POSIX_WARNING(p, NO_BLANKS_POSIX_WARNING);
+                PERL_ADD_POSIX_WARNING(p, "no_blanks");
             }
             if (has_semi_colon) {
-                ADD_POSIX_WARNING(p, SEMI_COLON_POSIX_WARNING);
+                PERL_ADD_POSIX_WARNING(p, "semicolon_for_colon");
             }
             else if (! has_terminating_colon) {
-                ADD_POSIX_WARNING(p, "there is no terminating ':'");
+                PERL_ADD_POSIX_WARNING(p, "missing_terminating_colon");
             }
             if (! has_terminating_bracket) {
-                ADD_POSIX_WARNING(p, "there is no terminating ']'");
+                PERL_ADD_POSIX_WARNING(p, "missing_terminating_bracket");
             }
 
-            if (   posix_warnings
-                && RExC_warn_text
-                && av_count(RExC_warn_text) > 0)
-            {
-                *posix_warnings = RExC_warn_text;
-            }
         }
         else if (class_number != OOB_NAMEDCLASS) {
             /* If it is a known class, return the class.  The class number
@@ -8725,19 +9051,19 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
 
             /* Here, it is an unrecognized class.  This is an error (unless the
             * call is to check only, which we've already handled above) */
-            const char * const complement_string = (complement)
-                                                   ? "^"
-                                                   : "";
             RExC_parse_set((char *) p);
-            vFAIL3utf8f("POSIX class [:%s%" UTF8f ":] unknown",
-                        complement_string,
-                        UTF8fARG(UTF, RExC_parse - name_start - 2, name_start));
+            PERL_THROW_ERROR_REGEXP_CHAR_CLASS_POSIX_NAME_UNKNOWN(
+                complement ? perl_diag_selector_domain_2600_0_complemented_1 : perl_diag_selector_domain_2600_0_positive_2,
+                UTF, RExC_parse - name_start - 2, name_start,
+                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
         }
     }
 
     return OOB_NAMEDCLASS;
 }
-#undef ADD_POSIX_WARNING
+#undef PERL_ADD_POSIX_WARNING
 
 static unsigned  int
 S_regex_set_precedence(const U8 my_operator)
@@ -8962,7 +9288,10 @@ redo_curchar:
                                       + NODE_STEP_REGNODE
                                       + REGNODE_ARG_LEN(REGEX_SET))
                     {
-                        vFAIL("Expecting interpolated extended charclass");
+                        PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_INTERPOLATED_SET_REQUIRED(
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     resultant_invlist = REGEX_SET_INVLIST(REGNODE_p(node));
                     current = invlist_clone(resultant_invlist, NULL);
@@ -8988,7 +9317,10 @@ redo_curchar:
                                 || ! IS_OPERATOR(*stacked_ptr))))
                     {
                         RExC_parse_inc_by(1);
-                        vFAIL("Unexpected '(' with no preceding operator");
+                        PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_OPEN_PAREN_UNEXPECTED(
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                 }
 
@@ -9023,7 +9355,7 @@ redo_curchar:
             {
                 /* See if this is a [:posix:] class. */
                 bool is_posix_class = (OOB_NAMEDCLASS
-                            < handle_possible_posix(pRExC_state,
+                            < S_handle_possible_posix(aTHX_ pRExC_state,
                                                 RExC_parse + 1,
                                                 NULL,
                                                 NULL,
@@ -9076,7 +9408,10 @@ redo_curchar:
                         break;
                     }
                     RExC_parse_inc_by(1);
-                    vFAIL("Unexpected ')'");
+                    PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_CLOSE_PAREN_UNMATCHED(
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
 
                 /* If nothing after the fence, is missing an operand */
@@ -9161,8 +9496,11 @@ redo_curchar:
 
                   unexpected_binary:
                     RExC_parse_inc_by(1);
-                    vFAIL2("Unexpected binary operator '%c' with no "
-                           "preceding operand", curchar);
+                    PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_BINARY_OPERATOR_UNEXPECTED(
+                        curchar,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
                 stacked_operator = (char) SvUV(*stacked_ptr);
 
@@ -9263,7 +9601,10 @@ redo_curchar:
                 if (RExC_parse >= RExC_end) {
                     break;
                 }
-                vFAIL("Unexpected character");
+                PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_CHARACTER_UNEXPECTED(
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
 
           handle_operand:
 
@@ -9286,8 +9627,11 @@ redo_curchar:
                     curchar = (char) SvUV(*top_ptr);
                     if (curchar != '!') {
                         SvREFCNT_dec(current);
-                        vFAIL2("Unexpected binary operator '%c' with no "
-                                "preceding operand", curchar);
+                        PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_BINARY_OPERATOR_UNEXPECTED(
+                            curchar,
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
 
                     invlist_invert_(current);
@@ -9309,7 +9653,10 @@ redo_curchar:
                                  || IS_OPERAND(*stacked_ptr))))
                 {
                     SvREFCNT_dec(current);
-                    vFAIL("Operand with no preceding operator");
+                    PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_OPERATOR_MISSING(
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
             }
 
@@ -9322,7 +9669,10 @@ redo_curchar:
         RExC_parse_inc();
     } /* End of loop parsing through the construct */
 
-    vFAIL("Syntax error in (?[...])");
+    PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_UNTERMINATED(
+        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
 
   done:
 
@@ -9331,11 +9681,17 @@ redo_curchar:
             RExC_parse_inc_by(1);
         }
 
-        vFAIL("Unexpected ']' with no following ')' in (?[...");
+        PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_CLOSE_BRACKET_UNEXPECTED(
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
     }
 
     if (av_tindex_skip_len_mg(fence_stack) >= 0) {
-        vFAIL("Unmatched (");
+        PERL_THROW_ERROR_REGEXP_GROUP_OPEN_PAREN_UNMATCHED(
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
     }
 
     if (av_tindex_skip_len_mg(stack) < 0   /* Was empty */
@@ -9346,7 +9702,10 @@ redo_curchar:
     {
       bad_syntax:
         SvREFCNT_dec(final);
-        vFAIL("Incomplete expression within '(?[ ])'");
+        PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_EXPRESSION_INCOMPLETE(
+            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
     }
 
     /* Here, 'final' is the resultant inversion list from evaluating the
@@ -9453,8 +9812,7 @@ redo_curchar:
     return node;
 
   regclass_failed:
-    FAIL2("panic: regclass returned failure to handle_sets, " "flags: %#" UVxf,
-                                                                (UV) *flagp);
+    FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_CHAR_CLASS_EXTENDED_RESULT_MISSING((UV) *flagp, UTF, len, RExC_precomp, ellipses));
 }
 
 #ifdef ENABLE_REGEX_SETS_DEBUGGING
@@ -9585,9 +9943,7 @@ Perl_add_above_Latin1_folds(pTHX_ RExC_state_t *pRExC_state, const U8 cp, SV** i
 
                 /* Use deprecated warning to increase the chances of this being
                  * output */
-                ckWARN2reg_d(RExC_parse,
-                        "Perl folding rules are not up-to-date for 0x%02X;"
-                        " please use the perlbug utility to report;", cp);
+                PERL_WARN_WARNING_REGEXP_CASE_FOLD_INVERSE_MAPPING_MISSING(cp, RExC_parse);
             }
             else {
                 unsigned int i;
@@ -9610,33 +9966,26 @@ Perl_add_above_Latin1_folds(pTHX_ RExC_state_t *pRExC_state, const U8 cp, SV** i
 
 
 static void
-S_output_posix_warnings(pTHX_ RExC_state_t *pRExC_state, AV* posix_warnings)
+S_output_posix_warnings(pTHX_ RExC_state_t *pRExC_state,
+                        SSize_t *posix_warnings)
 {
     PERL_ARGS_ASSERT_OUTPUT_POSIX_WARNINGS;
 
-    /* Output the elements of the array given by '*posix_warnings' as REGEXP
-     * warnings. */
-
-    SV * msg;
-    const bool first_is_fatal = ckDEAD(packWARN(WARN_REGEXP));
+    if (*posix_warnings < 0)
+        return;
 
     if (! TO_OUTPUT_WARNINGS(RExC_parse)) {
         CLEAR_POSIX_WARNINGS();
         return;
     }
 
-    while ((msg = av_shift(posix_warnings)) != &PL_sv_undef) {
-        if (first_is_fatal) {           /* Avoid leaking this */
-            av_undef(posix_warnings);   /* This isn't necessary if the
-                                            array is mortal, but is a
-                                            fail-safe */
-            (void) sv_2mortal(msg);
-        }
-        warner(packWARN(WARN_REGEXP), "%s", SvPVX(msg));
-        SvREFCNT_dec_NN(msg);
-    }
-
     UPDATE_WARNINGS_LOC(RExC_parse);
+    *posix_warnings = -1;
+
+    /* Flush the whole pending exception at the same point where this parser
+     * previously emitted its warning list.  This preserves ordering with any
+     * other diagnostics already accumulated by the caller. */
+    Perl_diag_flush_pending_exception(aTHX);
 }
 
 PERL_STATIC_INLINE Size_t
@@ -9879,7 +10228,7 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
      * input.  Only after this position is reached do we check again */
     char *not_posix_region_end = RExC_parse - 1;
 
-    AV* posix_warnings = NULL;
+    SSize_t posix_warnings = -1;
     const bool do_posix_warnings = ckWARN(WARN_REGEXP);
     U8 op = ANYOF;    /* The returned node-type, initialized to the expected
                          type. */
@@ -9940,21 +10289,20 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
 
     /* Check that they didn't say [:posix:] instead of [[:posix:]] */
     if (! ret_invlist && MAYBE_POSIXCC(UCHARAT(RExC_parse))) {
-        int maybe_class = handle_possible_posix(pRExC_state,
+        int maybe_class = S_handle_possible_posix(aTHX_ pRExC_state,
                                                 RExC_parse,
                                                 &not_posix_region_end,
                                                 NULL,
                                                 true /* checking only */);
         if (maybe_class >= OOB_NAMEDCLASS && do_posix_warnings) {
-            ckWARN4reg(not_posix_region_end,
-                    "POSIX syntax [%c %c] belongs inside character classes%s",
-                    *RExC_parse, *RExC_parse,
-                    (maybe_class == OOB_NAMEDCLASS)
-                    ? ((POSIXCC_NOTYET(*RExC_parse))
-                        ? " (but this one isn't implemented)"
-                        : " (but this one isn't fully valid)")
-                    : ""
-                    );
+            PERL_WARN_WARNING_REGEXP_CHAR_CLASS_POSIX_OUTER_BRACKETS_MISSING(
+                *RExC_parse, *RExC_parse,
+                maybe_class == OOB_NAMEDCLASS
+                    ? (POSIXCC_NOTYET(*RExC_parse)
+                        ? perl_diag_selector_domain_2398_0_unimplemented_3
+                        : perl_diag_selector_domain_2398_0_invalid_1)
+                    : perl_diag_selector_domain_2398_0_recognized_2,
+                not_posix_region_end);
         }
     }
 
@@ -9970,8 +10318,7 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
 
     while (1) {
 
-        if (   posix_warnings
-            && av_tindex_skip_len_mg(posix_warnings) >= 0
+        if (   posix_warnings >= 0
             && RExC_parse > not_posix_region_end)
         {
             /* Warnings about posix class issues are considered tentative until
@@ -9979,7 +10326,7 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
              * change our mind, at which point we output them.  This is done
              * each time through the loop so that a later class won't zap them
              * before they have been dealt with. */
-            output_posix_warnings(pRExC_state, posix_warnings);
+            S_output_posix_warnings(aTHX_ pRExC_state, &posix_warnings);
         }
 
         skip_bracketed_white_space(pRExC_state, skip_white, orig_parse,
@@ -10016,7 +10363,7 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
 
         if (value == '[') {
             char * posix_class_end;
-            namedclass = handle_possible_posix(pRExC_state,
+            namedclass = S_handle_possible_posix(aTHX_ pRExC_state,
                                                RExC_parse,
                                                &posix_class_end,
                                                do_posix_warnings ? &posix_warnings : NULL,
@@ -10026,12 +10373,13 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                 /* If there was an earlier attempt to parse this particular
                  * posix class, and it failed, it was a false alarm, as this
                  * successful one proves */
-                if (   posix_warnings
-                    && av_tindex_skip_len_mg(posix_warnings) >= 0
+                if (   posix_warnings >= 0
                     && not_posix_region_end >= RExC_parse
                     && not_posix_region_end <= posix_class_end)
                 {
-                    av_undef(posix_warnings);
+                    Perl_diag_rollback_exception(aTHX_ &PL_pending_exception,
+                                            posix_warnings);
+                    posix_warnings = -1;
                 }
 
                 RExC_parse_set(posix_class_end);
@@ -10046,7 +10394,7 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
         else if (   RExC_parse - 1 > not_posix_region_end
                  && MAYBE_POSIXCC(value))
         {
-            (void) handle_possible_posix(
+            (void) S_handle_possible_posix(aTHX_
                         pRExC_state,
                         RExC_parse - 1,  /* -1 because parse has already been
                                             advanced */
@@ -10058,7 +10406,10 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
             /* Is a backslash; get the code point of the char after it */
 
             if (RExC_parse >= RExC_end) {
-                vFAIL("Unmatched [");
+                PERL_THROW_ERROR_REGEXP_CHAR_CLASS_UNTERMINATED(
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
 
             if (UTF && ! UTF8_IS_INVARIANT(UCHARAT(RExC_parse))) {
@@ -10082,8 +10433,7 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
              * is already in 'value'.  Otherwise, need to translate the escape
              * into what it signifies. */
             if (! skip_white || ! isBLANK_A(value)) switch ((I32)value) {
-                const char * message;
-                U32 packed_warn;
+                const char * reason;
                 U8 grok_c_char;
 
             case 'w':	namedclass = ANYOF_WORDCHAR;	break;
@@ -10111,16 +10461,18 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                     ) {
 
                         if (*flagp & NEED_UTF8)
-                            FAIL("panic: grok_bslash_N set NEED_UTF8");
+                            FAIL_(PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ESCAPE_NAMED_SINGLE_VALUE_REQUIRES_UTF8(UTF, len, RExC_precomp, ellipses));
 
                         RETURN_FAIL_ON_RESTART_FLAGP(flagp);
 
                         if (cp_count < 0) {
-                            vFAIL("\\N in a character class must be a named character: \\N{...}");
+                            PERL_THROW_ERROR_REGEXP_CHAR_CLASS_N_ESCAPE_NAME_REQUIRED(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                         }
                         else if (cp_count == 0) {
-                            ckWARNreg(RExC_parse,
-                              "Ignoring zero length \\N{} in character class");
+                            PERL_WARN_WARNING_REGEXP_CHAR_CLASS_EMPTY_NAMED_ESCAPE_IGNORED(RExC_parse);
                         }
                         else { /* cp_count > 1 */
                             assert(cp_count > 1);
@@ -10132,9 +10484,12 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                                 {
                                     if (strict) {
                                         RExC_parse--;
-                                        vFAIL("\\N{} here is restricted to one character");
+                                        PERL_THROW_ERROR_REGEXP_CHAR_CLASS_N_ESCAPE_NOT_SINGLE_CHARACTER(
+                                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                                     }
-                                    ckWARNreg(RExC_parse, "Using just the first character returned by \\N{} in character class");
+                                    PERL_WARN_WARNING_REGEXP_CHAR_CLASS_NAMED_ESCAPE_TRUNCATED(RExC_parse);
                                     break; /* <value> contains the first code
                                               point. Drop out of the switch to
                                               process it */
@@ -10169,24 +10524,32 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
 
                 if (RExC_pm_flags & PMf_WILDCARD) {
                     RExC_parse_inc_by(1);
-                    /* diag_listed_as: Use of %s is not allowed in Unicode
-                       property wildcard subpatterns in regex; marked by <--
-                       HERE in m/%s/ */
-                    vFAIL3("Use of '\\%c%c' is not allowed in Unicode property"
-                           " wildcard subpatterns", (char) value, *(RExC_parse - 1));
+                    PERL_THROW_ERROR_REGEXP_ESCAPE_PROPERTY_WILDCARD_NESTING_FORBIDDEN(
+                        (char)value, *(RExC_parse - 1),
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
 
                 /* \p means they want Unicode semantics */
                 REQUIRE_UNI_RULES(flagp, 0);
 
                 if (RExC_parse >= RExC_end)
-                    vFAIL2("Empty \\%c", (U8)value);
+                    PERL_THROW_ERROR_REGEXP_ESCAPE_PROPERTY_NAME_MISSING(
+                        (U8)value,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 if (*RExC_parse == '{') {
                     const U8 c = (U8)value;
                     e = (char *) memchr(RExC_parse, '}', RExC_end - RExC_parse);
                     if (!e) {
                         RExC_parse_inc_by(1);
-                        vFAIL2("Missing right brace on \\%c{}", c);
+                        PERL_THROW_ERROR_REGEXP_ESCAPE_CLOSE_BRACE_MISSING(
+                            c,
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
 
                     RExC_parse_inc_by(1);
@@ -10210,8 +10573,13 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                         }
                     }
 
-                    if (e == RExC_parse)
-                        vFAIL2("Empty \\%c{}", c);
+                    if (e == RExC_parse) {
+                        PERL_THROW_ERROR_REGEXP_ESCAPE_BRACED_CONTENT_MISSING(
+                            c,
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
+                    }
 
                     n = e - RExC_parse;
                     while (isSPACE(*(RExC_parse + n - 1)))
@@ -10220,9 +10588,11 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                 }   /* The \p isn't immediately followed by a '{' */
                 else if (! isALPHA(*RExC_parse)) {
                     RExC_parse_inc_safe();
-                    vFAIL2("Character following \\%c must be '{' or a "
-                           "single-character Unicode property name",
-                           (U8) value);
+                    PERL_THROW_ERROR_REGEXP_ESCAPE_PROPERTY_SHORT_NAME_INVALID(
+                        (U8)value,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
                 else {
                     e = RExC_parse;
@@ -10231,15 +10601,15 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                 {
                     char* name = RExC_parse;
 
-                    /* Any message returned about expanding the definition */
-                    SV* msg = newSVpvs_flags("", SVs_TEMP);
+                    SSize_t messages_on_entry =
+                        Perl_diag_exception_message_count(aTHX_ &PL_pending_exception);
 
                     /* If set true, the property is user-defined as opposed to
                      * official Unicode */
                     bool user_defined = false;
                     AV * strings = NULL;
 
-                    SV * prop_definition = parse_uniprop_string(
+                    SV * prop_definition = S_parse_uniprop_string(aTHX_
                                             name, n, UTF, FOLD,
                                             false, /* This is compile-time */
 
@@ -10250,19 +10620,25 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
 
                                             &strings,
                                             &user_defined,
-                                            msg,
+                                            &PL_pending_exception,
                                             0 /* Base level */
                                            );
-                    if (SvCUR(msg)) {   /* Assumes any error causes a msg */
+                    if (Perl_diag_exception_message_count(aTHX_ &PL_pending_exception)
+                        != messages_on_entry) {
                         assert(prop_definition == NULL);
                         RExC_parse_set(e + 1);
-                        if (SvUTF8(msg)) {  /* msg being UTF-8 makes the whole
-                                               thing so, or else the display is
-                                               mojibake */
-                            RExC_utf8 = true;
-                        }
-                        /* diag_listed_as: Can't find Unicode property definition "%s" in regex; marked by <-- HERE in m/%s/ */
-                        vFAIL2utf8f("%" SVf, SVfARG(msg));
+                        /* The property diagnostics are already in the
+                         * compilation exception.  Add the pattern location
+                         * last, then throw the complete exception. */
+                        PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_INVALID_DEFINITION_AT_PATTERN(
+                            &PL_pending_exception,
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse),
+                            sI, UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
+                        Perl_diag_adopt_since(aTHX_ &PL_pending_exception,
+                                              messages_on_entry);
+                        Perl_diag_throw_exception_slot(aTHX_
+                            &PL_pending_exception);
                     }
 
                     assert(prop_definition || strings);
@@ -10271,19 +10647,22 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                         if (ret_invlist) {
                             if (! prop_definition) {
                                 RExC_parse_set(e + 1);
-                                vFAIL("Unicode string properties are not implemented in (?[...])");
+                                PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_STRING_PROPERTY_UNSUPPORTED(
+                                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                             }
                             else {
-                                ckWARNreg(e + 1,
-                                    "Using just the single character results"
-                                    " returned by \\p{} in (?[...])");
+                                PERL_WARN_WARNING_REGEXP_CHAR_CLASS_EXTENDED_STRING_PROPERTY_PART_IGNORED(e + 1);
                             }
                         }
                         else if (! RExC_in_multi_char_class) {
                             if (invert ^ (value == 'P')) {
                                 RExC_parse_set(e + 1);
-                                vFAIL("Inverting a character class which contains"
-                                    " a multi-character sequence is illegal");
+                                PERL_THROW_ERROR_REGEXP_CHAR_CLASS_INVERTED_STRING_PROPERTY_FORBIDDEN(
+                                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                             }
 
                             /* For each multi-character string ... */
@@ -10402,66 +10781,109 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
             case 'a':	value = '\a';                   break;
             case 'o':
                 RExC_parse--;	/* function expects to be pointed at the 'o' */
-                if (! grok_bslash_o(&RExC_parse,
-                                            RExC_end,
-                                            &value,
-                                            &message,
-                                            &packed_warn,
-                                            strict,
-                                            cBOOL(range), /* MAX_UV allowed for range
-                                                      upper limit */
-                                            UTF))
                 {
-                    vFAIL(message);
+                    SSize_t messages_on_entry =
+                        Perl_diag_exception_message_count(aTHX_ PERL_REXC_EXCEPTION_SLOT);
+                    UV error = Perl_grok_bslash_o_diag(aTHX_ &RExC_parse, RExC_end,
+                        &value, PERL_REXC_EXCEPTION_SLOT, strict, cBOOL(range),
+                        UTF, TO_OUTPUT_WARNINGS(RExC_parse));
+                    SSize_t message_count =
+                        Perl_diag_exception_message_count(aTHX_ PERL_REXC_EXCEPTION_SLOT);
+                    if (message_count > messages_on_entry) {
+                        Perl_regex_add_pattern_context(aTHX_
+                            PERL_REXC_EXCEPTION_SLOT, message_count - 1, UTF,
+                            PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
+                        UPDATE_WARNINGS_LOC(RExC_parse);
+                    }
+                    if (error)
+                        Perl_diag_throw_exception_slot(
+                            aTHX_ PERL_REXC_EXCEPTION_SLOT);
                 }
-                else if (message && TO_OUTPUT_WARNINGS(RExC_parse)) {
-                    warn_non_literal_string(RExC_parse, packed_warn, message);
-                }
-
                 if (value < 256) {
                     non_portable_endpoint++;
                 }
                 break;
             case 'x':
                 RExC_parse--;	/* function expects to be pointed at the 'x' */
-                if (!  grok_bslash_x(&RExC_parse,
-                                            RExC_end,
-                                            &value,
-                                            &message,
-                                            &packed_warn,
-                                            strict,
-                                            cBOOL(range), /* MAX_UV allowed for range
-                                                      upper limit */
-                                            UTF))
                 {
-                    vFAIL(message);
+                    SSize_t messages_on_entry =
+                        Perl_diag_exception_message_count(aTHX_ PERL_REXC_EXCEPTION_SLOT);
+                    UV error = Perl_grok_bslash_x_diag(aTHX_ &RExC_parse, RExC_end,
+                        &value, PERL_REXC_EXCEPTION_SLOT, strict, cBOOL(range),
+                        UTF, TO_OUTPUT_WARNINGS(RExC_parse));
+                    SSize_t message_count =
+                        Perl_diag_exception_message_count(aTHX_ PERL_REXC_EXCEPTION_SLOT);
+                    if (message_count > messages_on_entry) {
+                        Perl_regex_add_pattern_context(aTHX_
+                            PERL_REXC_EXCEPTION_SLOT, message_count - 1, UTF,
+                            PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
+                        UPDATE_WARNINGS_LOC(RExC_parse);
+                    }
+                    if (error)
+                        Perl_diag_throw_exception_slot(
+                            aTHX_ PERL_REXC_EXCEPTION_SLOT);
                 }
-                else if (message && TO_OUTPUT_WARNINGS(RExC_parse)) {
-                    warn_non_literal_string(RExC_parse, packed_warn, message);
-                }
-
                 if (value < 256) {
                     non_portable_endpoint++;
                 }
                 break;
             case 'c':
-                if (! grok_bslash_c(*RExC_parse, &grok_c_char, &message,
-                                                                &packed_warn))
                 {
-                    /* going to die anyway; point to exact spot of
-                        * failure */
-                    RExC_parse_inc_safe();
-                    vFAIL(message);
-                }
+                    SSize_t messages_on_entry =
+                        Perl_diag_exception_message_count(aTHX_ PERL_REXC_EXCEPTION_SLOT);
+                    SSize_t message_count;
+                    SV **exception_slot;
+                    UV error;
 
-                value = grok_c_char;
-                RExC_parse_inc_by(1);
-                if (message && TO_OUTPUT_WARNINGS(RExC_parse)) {
-                    warn_non_literal_string(RExC_parse, packed_warn, message);
-                }
+                    /* Regex errors get a contextual diagnostic below. Keep
+                     * the slot for successful parses so the helper can
+                     * append any clearer warning. */
+                    exception_slot =
+                        (*RExC_parse == '{' || !isPRINT_A(*RExC_parse))
+                        ? NULL : PERL_REXC_EXCEPTION_SLOT;
+                    error = Perl_grok_bslash_c_diag(aTHX_
+                        *RExC_parse, &grok_c_char, exception_slot,
+                        TO_OUTPUT_WARNINGS(RExC_parse + 1));
+                    if (error) {
+                        reason = error == perl_diag_error_syntax_escape_control_open_brace_printable_result_idx
+                               ? "brace_control"
+                               : error == perl_diag_error_syntax_escape_control_open_brace_invalid_idx
+                               ? "brace_invalid" : "non_printable";
+                        /* The low-level parser only identifies the error
+                         * here.  Report it once with its regex context. */
+                        RExC_parse_inc_safe();
+                        PERL_THROW_ERROR_REGEXP_ESCAPE_CONTROL_CHARACTER_INVALID(
+                            PERL_DIAG_SELECTOR_FROM_ERROR_REGEXP_ESCAPE_CONTROL_CHARACTER_INVALID_REASON(reason),
+                            strEQ(reason, "brace_control")
+                                ? (char)toCTRL('{') : 0,
+                            UTF,
+                            PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse),
+                            sI,
+                            UTF,
+                            PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
+                    }
 
-                non_portable_endpoint++;
-                break;
+                    value = grok_c_char;
+                    RExC_parse_inc_by(1);
+                    message_count = Perl_diag_exception_message_count(aTHX_
+                        PERL_REXC_EXCEPTION_SLOT);
+                    if (message_count > messages_on_entry) {
+                        Perl_regex_add_pattern_context(aTHX_
+                            PERL_REXC_EXCEPTION_SLOT, message_count - 1, UTF,
+                            PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
+                        UPDATE_WARNINGS_LOC(RExC_parse);
+                    }
+
+                    non_portable_endpoint++;
+                    break;
+                }
             case '0': case '1': case '2': case '3': case '4':
             case '5': case '6': case '7':
                 {
@@ -10474,17 +10896,41 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                     if (numlen != 3) {
                         if (strict) {
                             RExC_parse_inc_safe();
-                            vFAIL("Need exactly 3 octal digits");
+                            PERL_THROW_ERROR_REGEXP_CHAR_CLASS_OCTAL_DIGIT_COUNT_INVALID(
+                                UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                         }
                         else if (  (flags & PERL_SCAN_NOTIFY_ILLDIGIT)
                                  && RExC_parse < RExC_end
                                  && isDIGIT(*RExC_parse)
                                  && ckWARN(WARN_REGEXP))
                         {
-                            reg_warn_non_literal_string(
-                                 RExC_parse + 1,
-                                 form_alien_digit_msg(8, numlen, RExC_parse,
-                                                        RExC_end, UTF, false));
+                            SSize_t messages_on_entry =
+                                Perl_diag_exception_message_count(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT);
+                            const char *warning_location = RExC_parse + 1;
+                            Perl_diag_append_alien_digit_warning(aTHX_
+                                PERL_REXC_EXCEPTION_SLOT,
+                                perl_diag_warning_regexp_escape_digit_outside_radix_idx,
+                                8, numlen, RExC_parse, RExC_end, UTF, false);
+                            if (Perl_diag_exception_message_count(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT)
+                                > messages_on_entry) {
+                                Perl_regex_add_pattern_context(aTHX_
+                                    PERL_REXC_EXCEPTION_SLOT,
+                                    Perl_diag_exception_message_count(aTHX_
+                                        PERL_REXC_EXCEPTION_SLOT) - 1,
+                                    UTF,
+                                    PERL_REPORT_LOCATION_BEFORE_LENGTH(
+                                        warning_location),
+                                    sI,
+                                    PERL_REPORT_LOCATION_AFTER_LENGTH(
+                                        warning_location),
+                                    PERL_REPORT_LOCATION_AFTER_START(
+                                        warning_location));
+                                UPDATE_WARNINGS_LOC(warning_location);
+                            }
                         }
                     }
                     if (value < 256) {
@@ -10496,13 +10942,14 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                 /* Allow \_ to not give an error */
                 if (isALPHANUMERIC_A(value)) {
                     if (strict) {
-                        vFAIL2("Unrecognized escape \\%c in character class",
-                               (int)value);
+                        PERL_THROW_ERROR_REGEXP_CHAR_CLASS_ESCAPE_UNKNOWN(
+                            (int)value,
+                            UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                            UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                            PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                     }
                     else {
-                        ckWARN2reg(RExC_parse,
-                            "Unrecognized escape \\%c in character class passed through",
-                            (int)value);
+                        PERL_WARN_WARNING_REGEXP_CHAR_CLASS_ESCAPE_UNKNOWN_ALPHANUMERIC((int)value, RExC_parse);
                     }
                 }
                 break;
@@ -10510,23 +10957,22 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
         } /* end of handling backslash escape sequences */
         else if (isVERTWS_uvchr(value)) {
             if (strict && ! skip_white) {
-                vFAIL("Literal vertical space in [] is illegal except"
-                      " under /x");
+                PERL_THROW_ERROR_REGEXP_CHAR_CLASS_LITERAL_VERTICAL_SPACE_FORBIDDEN(
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
             else if (   RExC_flags & RXf_PMf_EXTENDED_MORE
                      && ! FEATURE_ENHANCED_XX_IS_ENABLED)
             {
-                ckWARNdep(RExC_parse, WARN_DEPRECATED,
-                          "Use of literal vertical space in [] is"
-                          " deprecated under /xx");
+                PERL_DEPRECATE_WARNING_DEPRECATED_REGEXP_CHAR_CLASS_LITERAL_VERTICAL_SPACE(RExC_parse);
             }
         }
         else if (   value == '#'
                  && RExC_flags & RXf_PMf_EXTENDED_MORE
                  && ! FEATURE_ENHANCED_XX_IS_ENABLED)
         {
-            ckWARNdep(RExC_parse, WARN_DEPRECATED,
-                      "Use of unescaped '#' in [] is deprecated under /xx");
+            PERL_DEPRECATE_WARNING_DEPRECATED_REGEXP_CHAR_CLASS_UNESCAPED_HASH(RExC_parse);
         }
 
         /* Here, we have the current token in 'value' */
@@ -10542,14 +10988,14 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                                 ? RExC_parse - rangebegin
                                 : 0;
                 if (strict) {
-                    vFAIL2utf8f(
-                        "False [] range \"%" UTF8f "\"",
-                        UTF8fARG(UTF, w, rangebegin));
+                    PERL_THROW_ERROR_REGEXP_CHAR_CLASS_RANGE_ENDPOINT_NOT_CHARACTER(
+                        UTF, w, rangebegin,
+                        UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                        UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                        PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 }
                 else {
-                    ckWARN2reg(RExC_parse,
-                        "False [] range \"%" UTF8f "\"",
-                        UTF8fARG(UTF, w, rangebegin));
+                    PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_END_NOT_CHARACTER(UTF, w, rangebegin, RExC_parse);
                     cp_list = add_cp_to_invlist(cp_list, '-');
                     cp_foldable_list = add_cp_to_invlist(cp_foldable_list,
                                                             prevvalue);
@@ -10716,9 +11162,11 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
               backwards_range:
 #endif
                 w = RExC_parse - rangebegin;
-                vFAIL2utf8f(
-                    "Invalid [] range \"%" UTF8f "\"",
-                    UTF8fARG(UTF, w, rangebegin));
+                PERL_THROW_ERROR_REGEXP_CHAR_CLASS_RANGE_REVERSED(
+                    UTF, w, rangebegin,
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                 NOT_REACHED; /* NOTREACHED */
             }
         }
@@ -10746,13 +11194,14 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                                           ?  RExC_parse - rangebegin
                                           : 0;
                             if (strict) {
-                                vFAIL4("False [] range \"%*.*s\"",
-                                    w, w, rangebegin);
+                                PERL_THROW_ERROR_REGEXP_CHAR_CLASS_RANGE_ENDPOINT_NOT_CHARACTER(
+                                    UTF, w, rangebegin,
+                                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
                             }
                             else {
-                                vWARN4(RExC_parse,
-                                    "False [] range \"%*.*s\"",
-                                    w, w, rangebegin);
+                                PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_START_NOT_CHARACTER(w, w, rangebegin, RExC_parse);
                             }
                         }
                         cp_list = add_cp_to_invlist(cp_list, '-');
@@ -10777,17 +11226,23 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
             if (value > MAX_LEGAL_CP && (   value != UV_MAX
                                          || prevvalue > MAX_LEGAL_CP))
             {
-                vFAIL(form_cp_too_large_msg(16, NULL, 0, value));
+                char digits[2 * sizeof(UV) + 1];
+                int length = my_snprintf(digits, sizeof(digits), "%" UVXf,
+                                         value);
+
+                assert(length > 0 && (Size_t)length < sizeof(digits));
+                PERL_THROW_ERROR_UNICODE_CODE_POINT_REGEXP_LIMIT_EXCEEDED(
+                    (UV)length, digits, MAX_LEGAL_CP,
+                    UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
+                    UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
+                    PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
             }
             REQUIRE_UNI_RULES(flagp, 0);
             if (  ! silence_non_portable
                 &&  UNICODE_IS_PERL_EXTENDED(value)
                 &&  TO_OUTPUT_WARNINGS(RExC_parse))
             {
-                ckWARN2_non_literal_string(RExC_parse,
-                                           packWARN(WARN_PORTABLE),
-                                           PL_extended_cp_format,
-                                           value);
+                PERL_WARN_WARNING_PORTABLE_REGEXP_CODEPOINT_REQUIRES_PERL_EXTENSION(value, RExC_parse);
             }
         }
 
@@ -10861,7 +11316,7 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                  * likely to be so for any forseeable character set, so don't
                  * warn. */
                 if (unicode_range && non_portable_endpoint && prevvalue < 256) {
-                    vWARN(RExC_parse, "Both or neither range ends should be Unicode");
+                    PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_UNICODE_NOTATION_MIXED(RExC_parse);
                 }
                 else if (prevvalue != value) {
 
@@ -10878,9 +11333,7 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                                   || (isLOWER_A(prevvalue) && isLOWER_A(value))
                                   || (isUPPER_A(prevvalue) && isUPPER_A(value))
                     ))) {
-                        vWARN(RExC_parse, "Ranges of ASCII printables should"
-                                          " be some subset of \"0-9\","
-                                          " \"A-Z\", or \"a-z\"");
+                        PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_ASCII_ENDPOINTS_MIXED(RExC_parse);
                     }
                     else if (prevvalue >= FIRST_NON_ASCII_DECIMAL_DIGIT) {
                         SSize_t index_start;
@@ -10949,9 +11402,7 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                                 && ELEMENT_RANGE_MATCHES_INVLIST(index_final))
                             {
                               warn_bad_digit_range:
-                                vWARN(RExC_parse, "Ranges of digits should be"
-                                                  " from the same group of"
-                                                  " 10");
+                                PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_DECIMAL_GROUPS_MIXED(RExC_parse);
                             }
                         }
                     }
@@ -10967,20 +11418,10 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                     literal[d++] = (char) value;
                     literal[d++] = '\0';
 
-                    vWARN4(RExC_parse,
-                           "\"%.*s\" is more clearly written simply as \"%s\"",
-                           (int) (RExC_parse - rangebegin),
-                           rangebegin,
-                           literal
-                        );
+                    PERL_WARN_WARNING_REGEXP_CHAR_CLASS_ESCAPE_NONPORTABLE_NOTATION((int) (RExC_parse - rangebegin), rangebegin, literal, RExC_parse);
                 }
                 else if (isMNEMONIC_CNTRL(value)) {
-                    vWARN4(RExC_parse,
-                           "\"%.*s\" is more clearly written simply as \"%s\"",
-                           (int) (RExC_parse - rangebegin),
-                           rangebegin,
-                           cntrl_to_mnemonic((U8) value)
-                        );
+                    PERL_WARN_WARNING_REGEXP_CHAR_CLASS_ESCAPE_NONPORTABLE_NOTATION((int) (RExC_parse - rangebegin), rangebegin, cntrl_to_mnemonic((U8) value), RExC_parse);
                 }
             }
         }
@@ -11029,8 +11470,8 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
         range = 0; /* this range (if it was one) is done now */
     } /* End of loop through all the text within the brackets */
 
-    if (   posix_warnings && av_tindex_skip_len_mg(posix_warnings) >= 0) {
-        output_posix_warnings(pRExC_state, posix_warnings);
+    if (posix_warnings >= 0) {
+        S_output_posix_warnings(aTHX_ pRExC_state, &posix_warnings);
     }
 
     /* If anything in the class expands to more than one character, we have to
@@ -12829,9 +13270,9 @@ Perl_get_re_gclass_aux_data(pTHX_ const regexp *prog, const regnode* node, bool 
             if (doinit && (si || invlist)) {
                 if (si) {
                     bool user_defined;
-                    SV * msg = newSVpvs_flags("", SVs_TEMP);
+                    SV *exception = NULL;
 
-                    SV * prop_definition = handle_user_defined_property(
+                    SV * prop_definition = S_handle_user_defined_property(aTHX_
                             "", 0, false,   /* There is no \p{}, \P{} */
                             SvPVX_const(si)[1] - '0',   /* /i or not has been
                                                            stored here for just
@@ -12840,14 +13281,14 @@ Perl_get_re_gclass_aux_data(pTHX_ const regexp *prog, const regnode* node, bool 
                             false,          /* This call must find the defn */
                             si,             /* The property definition  */
                             &user_defined,
-                            msg,
+                            &exception,
                             0               /* base level call */
                            );
 
-                    if (SvCUR(msg)) {
+                    if (exception) {
                         assert(prop_definition == NULL);
 
-                        croak_sv(msg);
+                        PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(exception);
                     }
 
                     if (invlist) {
@@ -13054,9 +13495,7 @@ S_reg_skipcomment(pTHX_ RExC_state_t *pRExC_state,
         if (   (*p < p_end && **p != '\n' && ! isBLANK(**p))
             || (*p > p_start + 1 && ! isBLANK(*(*p - 2))))
         {
-            vWARN(*p, "Did you mean this to be a comment?\nIf so, to"
-                      " silence this message add blanks like so: \""
-                      " # \"\n");
+            PERL_WARN_WARNING_REGEXP_COMMENT_HASH_SPACING_SUSPICIOUS(*p);
             warned = true;
         }
     }
@@ -13120,15 +13559,11 @@ S_reg_skipcomment(pTHX_ RExC_state_t *pRExC_state,
         /* When a problematic second '#' is encountered, warn.  But a final
          * '#' on the line isn't considered problematic */
         if (**p == '#' && (*p < p_end - 1 || *p_end == '\0')) {
-            vWARN(*p + 1, "Did you mean to have a second '#' in your comment?"
-                          "\nIf so, escape with '\\' or quote with \" or \'"
-                          " to silence this message\n");
+            PERL_WARN_WARNING_REGEXP_COMMENT_SECOND_HASH_SUSPICIOUS(*p + 1);
             warned = true;
         }
         else if (check_for_R_bracket && **p == ']') {
-            vWARN(*p + 1, "Did you mean to have a ']' in your comment?"
-                          "\nIf so, escape with '\\' or quote with \" or \'"
-                          " to silence this message\n");
+            PERL_WARN_WARNING_REGEXP_COMMENT_CLOSE_BRACKET_SUSPICIOUS(*p + 1);
             warned = true;
         }
 
@@ -13167,7 +13602,7 @@ S_skip_to_be_ignored_text(pTHX_ RExC_state_t *pRExC_state,
         {
             while (*(*p) != ')') {
                 if ((*p) == RExC_end)
-                    FAIL("Sequence (?#... not terminated");
+                    FAIL_(PERL_THROW_ERROR_REGEXP_GROUP_COMMENT_UNTERMINATED(UTF, len, RExC_precomp, ellipses));
                 (*p)++;
             }
             (*p)++;
@@ -13247,7 +13682,7 @@ S_change_engine_size(pTHX_ RExC_state_t *pRExC_state, const ptrdiff_t size)
            char,
            regexp_internal);
     if ( RExC_rxi == NULL )
-        FAIL("Regexp out of space");
+        FAIL_(PERL_THROW_ERROR_REGEXP_LIMIT_SIZE_OR_ALLOCATION_EXCEEDED(UTF, len, RExC_precomp, ellipses));
     RXi_SET(RExC_rx, RExC_rxi);
 
     RExC_emit_start = RExC_rxi->program;
@@ -14020,8 +14455,7 @@ Perl_regfree_internal(pTHX_ REGEXP * const rx)
                 assert(n == 0);
                 break;
             default:
-                croak("panic: regfree data code '%c'",
-                                                    ri->data->what[n]);
+                PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_FREE_TYPE_UNKNOWN(ri->data->what[n]);
             }
         }
         Safefree(ri->data->what);
@@ -14280,8 +14714,7 @@ Perl_regdupe_internal(pTHX_ REGEXP * const rx, CLONE_PARAMS *param)
                 d->data[i]= ri->data->data[i];
                 break;
             default:
-                croak("panic: re_dup_guts unknown data code '%c'",
-                                                           ri->data->what[i]);
+                PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_CLONE_TYPE_UNKNOWN(ri->data->what[i]);
             }
         }
 
@@ -14310,33 +14743,6 @@ Perl_regdupe_internal(pTHX_ REGEXP * const rx, CLONE_PARAMS *param)
 }
 
 #endif    /* USE_ITHREADS */
-
-static void
-S_re_croak(pTHX_ bool utf8, const char* pat,...)
-{
-    PERL_ARGS_ASSERT_RE_CROAK;
-
-    va_list args;
-    STRLEN len = strlen(pat);
-    char buf[512];
-    SV *msv;
-    const char *message;
-
-    if (len > 510)
-        len = 510;
-    Copy(pat, buf, len , char);
-    buf[len] = '\n';
-    buf[len + 1] = '\0';
-    va_start(args, pat);
-    msv = vmess(buf, &args);
-    va_end(args);
-    message = SvPV_const(msv, len);
-    if (len > 512)
-        len = 512;
-    Copy(message, buf, len , char);
-    /* len-1 to avoid \n */
-    croak("%" UTF8f, UTF8fARG(utf8, len-1, buf));
-}
 
 /* XXX Here's a total kludge.  But we need to re-enter for swash routines. */
 
@@ -14524,6 +14930,15 @@ Perl_get_deprecated_property_msg(const Size_t warning_offset)
     return deprecated_property_msgs[warning_offset];
 }
 
+const char *
+Perl_get_deprecated_property_reason(const Size_t warning_offset)
+{
+    PERL_ARGS_ASSERT_GET_DEPRECATED_PROPERTY_REASON;
+    assert(warning_offset < C_ARRAY_LENGTH(deprecated_property_reasons));
+
+    return deprecated_property_reasons[warning_offset];
+}
+
 #  if 0
 
 This code was mainly added for backcompat to give a warning for non-portable
@@ -14656,7 +15071,43 @@ S_execute_wildcard(pTHX_ REGEXP * const prog, char* stringarg, char *strend,
     return result;
 }
 
-SV *
+static void
+Perl_regex_add_pattern_context(pTHX_ SV **exception_slot,
+                            SSize_t message_index, bool utf8,
+                            STRLEN before_length, const char *before,
+                            STRLEN after_length, const char *after)
+{
+    SV **messages_slot;
+    SV **diagnostic_slot;
+    AV *messages;
+    HV *diagnostic;
+    HV *context;
+
+    assert(exception_slot && *exception_slot);
+    messages_slot = hv_fetchs(MUTABLE_HV(SvRV(*exception_slot)),
+                              "contents", FALSE);
+    assert(messages_slot && SvROK(*messages_slot));
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    diagnostic_slot = av_fetch(messages, message_index, FALSE);
+    assert(diagnostic_slot && SvROK(*diagnostic_slot));
+    diagnostic = MUTABLE_HV(SvRV(*diagnostic_slot));
+
+    context = newHV();
+    if (UNLIKELY(!hv_stores(context, "before",
+                            newSVpvn_utf8(before, before_length, utf8))))
+        Perl_croak_no_mem();
+    if (UNLIKELY(!hv_stores(context, "after",
+                            newSVpvn_utf8(after, after_length, utf8))))
+        Perl_croak_no_mem();
+    if (UNLIKELY(!hv_stores(diagnostic, "pattern_context",
+                            newRV_noinc(MUTABLE_SV(context)))))
+        Perl_croak_no_mem();
+}
+
+static SV *S_get_fq_name(pTHX_ const char *name, Size_t name_len,
+                         bool is_utf8, bool has_colon_colon);
+
+static SV *
 S_handle_user_defined_property(pTHX_
 
     /* Parses the contents of a user-defined property definition; returning the
@@ -14665,12 +15116,11 @@ S_handle_user_defined_property(pTHX_
      *
      * If there are subroutines that are part of the expansion and which aren't
      * known at the time of the call to this function, this returns what
-     * parse_uniprop_string() returned for the first one encountered.
+     * S_parse_uniprop_string(aTHX_ ) returned for the first one encountered.
      *
-     * If an error was found, NULL is returned, and 'msg' gets a suitable
-     * message appended to it.  (Appending allows the back trace of how we got
-     * to the faulty definition to be displayed through nested calls of
-     * user-defined subs.)
+     * If an error was found, NULL is returned and diagnostics are appended to
+     * exception_slot.  This preserves the path through nested user-defined
+     * properties without combining their messages into one string.
      *
      * The caller IS responsible for freeing any returned SV.
      *
@@ -14688,8 +15138,7 @@ S_handle_user_defined_property(pTHX_
     bool *user_defined_ptr,     /* This will be set true as we wouldn't be
                                    getting called unless this is thought to be
                                    a user-defined property */
-    SV * msg,                   /* Any error or warning msg(s) are appended to
-                                   this */
+    SV ** exception_slot,       /* Diagnostics are appended to this */
     const STRLEN level)         /* Recursion level of this call */
 {
     PERL_ARGS_ASSERT_HANDLE_USER_DEFINED_PROPERTY;
@@ -14698,11 +15147,11 @@ S_handle_user_defined_property(pTHX_
     const char * string         = SvPV_const(contents, len);
     const char * const e        = string + len;
     const bool is_contents_utf8 = cBOOL(SvUTF8(contents));
-    const STRLEN msgs_length_on_entry = SvCUR(msg);
+    const SSize_t messages_on_entry =
+        Perl_diag_exception_message_count(aTHX_ exception_slot);
 
     const char * s0 = string;   /* Points to first byte in the current line
                                    being parsed in 'string' */
-    const char * const overflow_msg = "Code point too large in \"";
     SV* running_definition = NULL;
 
     *user_defined_ptr = true;
@@ -14756,11 +15205,13 @@ S_handle_user_defined_property(pTHX_
                 if (s == NULL) {
                     s = e;
                 }
-                if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-                sv_catpv(msg, overflow_msg);
-                sv_catpvf(msg, "%" UTF8f,
-                                     UTF8fARG(is_contents_utf8, s - s0, s0));
-                sv_catpvs(msg, "\"");
+                {
+                    SV *contents = sv_2mortal(newSVpvn(s0, s - s0));
+                    if (is_contents_utf8)
+                        SvUTF8_on(contents);
+                    PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_CODEPOINT_OVERFLOW(exception_slot,
+                                                          contents);
+                }
                 goto return_failure;
             }
 
@@ -14791,11 +15242,13 @@ S_handle_user_defined_property(pTHX_
                     if (s == NULL) {
                         s = e;
                     }
-                    if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-                    sv_catpv(msg, overflow_msg);
-                    sv_catpvf(msg, "%" UTF8f,
-                                      UTF8fARG(is_contents_utf8, s - s0, s0));
-                    sv_catpvs(msg, "\"");
+                    {
+                        SV *contents = sv_2mortal(newSVpvn(s0, s - s0));
+                        if (is_contents_utf8)
+                            SvUTF8_on(contents);
+                        PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_CODEPOINT_OVERFLOW(exception_slot,
+                                                              contents);
+                    }
                     goto return_failure;
                 }
 
@@ -14819,33 +15272,15 @@ S_handle_user_defined_property(pTHX_
             max = min;
         }
         else if (max < min) {
-            if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-            sv_catpvs(msg, "Illegal range in \"");
-            sv_catpvf(msg, "%" UTF8f,
-                                UTF8fARG(is_contents_utf8, s - s0, s0));
-            sv_catpvs(msg, "\"");
+            {
+                SV *contents = sv_2mortal(newSVpvn(s0, s - s0));
+                if (is_contents_utf8)
+                    SvUTF8_on(contents);
+                PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_RANGE_REVERSED(exception_slot,
+                                                           contents);
+            }
             goto return_failure;
         }
-
-#  if 0   /* See explanation at definition above of get_extended_utf8_msg() */
-
-        if (   UNICODE_IS_PERL_EXTENDED(min)
-            || UNICODE_IS_PERL_EXTENDED(max))
-        {
-            if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-
-            /* If both code points are non-portable, warn only on the lower
-             * one. */
-            sv_catpv(msg, get_extended_utf8_msg(
-                                            (UNICODE_IS_PERL_EXTENDED(min))
-                                            ? min : max));
-            sv_catpvs(msg, " in \"");
-            sv_catpvf(msg, "%" UTF8f,
-                                 UTF8fARG(is_contents_utf8, s - s0, s0));
-            sv_catpvs(msg, "\"");
-        }
-
-#  endif
 
         /* Here, this line contains a legal range */
         this_definition = sv_2mortal(new_invlist_(2));
@@ -14862,26 +15297,27 @@ S_handle_user_defined_property(pTHX_
         }
 
         /* Ignore trailing blanks in keeping with the requirements of
-         * parse_uniprop_string() */
+         * S_parse_uniprop_string(aTHX_ ) */
         s--;
         while (s > s0 && isBLANK_A(*s)) {
             s--;
         }
         s++;
 
-        this_definition = parse_uniprop_string(s0, s - s0,
+        this_definition = S_parse_uniprop_string(aTHX_ s0, s - s0,
                                                is_utf8, to_fold, runtime,
                                                deferrable,
                                                NULL,
-                                               user_defined_ptr, msg,
+                                               user_defined_ptr,
+                                               exception_slot,
                                                (name_len == 0)
                                                 ? level /* Don't increase level
                                                            if input is empty */
                                                 : level + 1
                                               );
         if (this_definition == NULL) {
-            goto return_failure;    /* 'msg' should have had the reason
-                                       appended to it by the above call */
+            goto return_failure;    /* Diagnostics were appended by the
+                                       recursive call */
         }
 
         if (! is_invlist(this_definition)) {    /* Unknown at this time */
@@ -14915,8 +15351,7 @@ S_handle_user_defined_property(pTHX_
                                         this_definition, &running_definition);
                 break;
             default:
-                croak("panic: %s: %d: Unexpected operation %d",
-                                 __FILE__, __LINE__, op);
+                PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_PROPERTY_SET_OPERATION_UNKNOWN(__FILE__, __LINE__, op);
                 break;
         }
 
@@ -14926,7 +15361,8 @@ S_handle_user_defined_property(pTHX_
 
     /* Here, we processed all the lines in 'contents' without error.  If we
      * didn't add any warnings, simply return success */
-    if (msgs_length_on_entry == SvCUR(msg)) {
+    if (messages_on_entry
+        == Perl_diag_exception_message_count(aTHX_ exception_slot)) {
 
         /* If the expansion was empty, the answer isn't nothing: its an empty
          * inversion list */
@@ -14946,8 +15382,11 @@ S_handle_user_defined_property(pTHX_
   return_msg:
 
     if (name_len > 0) {
-        sv_catpvs(msg, " in expansion of ");
-        sv_catpvf(msg, "%" UTF8f, UTF8fARG(is_utf8, name_len, name));
+        SV *property_name = S_get_fq_name(
+            aTHX_ name, name_len, is_utf8,
+            memchr(name, ':', name_len) != NULL);
+        PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_EXPANSION(exception_slot,
+                                                      property_name);
     }
 
     return running_definition;
@@ -15041,10 +15480,8 @@ S_parse_uniprop_string(pTHX_
      * level sub is returned.  It is an error to call this function at runtime
      * without every sub defined.
      *
-     * If an error was found, NULL is returned, and 'msg' gets a suitable
-     * message appended to it.  (Appending allows the back trace of how we got
-     * to the faulty definition to be displayed through nested calls of
-     * user-defined subs.)
+     * Errors are appended as individual diagnostics to exception_slot.  This
+     * allows nested calls to retain the expansion context of the failure.
      *
      * The caller should NOT try to free any returned inversion list.
      *
@@ -15063,12 +15500,13 @@ S_parse_uniprop_string(pTHX_
     bool *user_defined_ptr,     /* Upon return from this function it will be
                                    set to true if any component is a
                                    user-defined property */
-    SV * msg,                   /* Any error or warning msg(s) are appended to
-                                   this */
+    SV ** exception_slot,       /* Diagnostics are appended to this */
     const STRLEN level)         /* Recursion level of this call */
 {
     PERL_ARGS_ASSERT_PARSE_UNIPROP_STRING;
 
+    SSize_t diagnostics_on_entry =
+        Perl_diag_exception_message_count(aTHX_ exception_slot);
     char* lookup_name;          /* normalized name for lookup in our tables */
     unsigned lookup_len;        /* Its length */
     enum { Not_Strict = 0,      /* Some properties have stricter name */
@@ -15292,27 +15730,22 @@ S_parse_uniprop_string(pTHX_
                          * though it is too short */
                     || (SSize_t) (name_len - i - 1 - escaped) < 0)
                 {
-                    sv_catpvs(msg, "Unicode property wildcard not terminated");
+                    PERL_APPEND_ERROR_UNICODE_PROPERTY_WILDCARD_UNTERMINATED(
+                                                                exception_slot);
                     goto append_name_to_msg;
                 }
 
-                ck_warner_d(
-                    packWARN(WARN_EXPERIMENTAL__UNIPROP_WILDCARDS),
-                    "The Unicode property wildcards feature is experimental");
+                PERL_WARN_WARNING_EXPERIMENTAL_UNIPROP_WILDCARDS_PROPERTY_WILDCARD_USED();
 
                 if (special_property) {
-                    const char * error_msg;
                     const char * revised_name = name + i;
                     Size_t revised_name_len = name_len - (i + 1 + escaped);
 
                     /* Currently, the only 'special_property' is name, which we
                      * lookup in _charnames.pm */
 
-                    if (! load_charnames(newSVpvs("placeholder"),
-                                         revised_name, revised_name_len,
-                                         &error_msg))
+                    if (! Perl_load_charnames(aTHX_ exception_slot))
                     {
-                        sv_catpv(msg, error_msg);
                         goto append_name_to_msg;
                     }
 
@@ -15363,7 +15796,7 @@ S_parse_uniprop_string(pTHX_
                         Copy(lookup_name, this_string, j, char);
                         my_strlcat(this_string, entry, total_len + 1);
                         SAVEFREEPV(this_string);
-                        sub_invlist = parse_uniprop_string(this_string,
+                        sub_invlist = S_parse_uniprop_string(aTHX_ this_string,
                                                            total_len,
                                                            is_utf8,
                                                            to_fold,
@@ -15371,7 +15804,7 @@ S_parse_uniprop_string(pTHX_
                                                            deferrable,
                                                            NULL,
                                                            user_defined_ptr,
-                                                           msg,
+                                                           exception_slot,
                                                            level + 1);
                         invlist_union_(prop_definition, sub_invlist,
                                        &prop_definition);
@@ -15387,7 +15820,7 @@ S_parse_uniprop_string(pTHX_
                     return prop_definition;
                 }
 
-                sv_catpvs(msg, "No Unicode property value wildcard matches:");
+                PERL_APPEND_ERROR_UNICODE_PROPERTY_WILDCARD_NO_VALUES_MATCH(exception_slot);
                 goto append_name_to_msg;
             }
 
@@ -15431,7 +15864,6 @@ S_parse_uniprop_string(pTHX_
             dSP;
             HV * table;
             SV * character;
-            const char * error_msg;
             CV* lookup_loose;
             SV * character_name;
             STRLEN character_len;
@@ -15460,18 +15892,15 @@ S_parse_uniprop_string(pTHX_
             /* Finished parsing, save the name into an SV */
             character_name = newSVpvn(lookup_name + equals_pos, j - equals_pos);
 
-            /* Make sure _charnames is loaded.  (The parameters give context
-             * for any errors generated */
-            table = load_charnames(character_name, name, name_len, &error_msg);
+            /* Make sure _charnames is loaded before resolving the name. */
+            table = Perl_load_charnames(aTHX_ exception_slot);
             if (table == NULL) {
-                sv_catpv(msg, error_msg);
                 goto append_name_to_msg;
             }
 
             lookup_loose = get_cvs("_charnames::_loose_regcomp_lookup", 0);
             if (! lookup_loose) {
-                croak(
-                       "panic: Can't find '_charnames::_loose_regcomp_lookup");
+                PERL_PANIC_ERROR_INTERNAL_UNICODE_CHARACTER_NAME_LOOSE_LOOKUP_FUNCTION_MISSING();
             }
 
             PUSHSTACKi(PERLSI_REGCOMP);
@@ -15785,8 +16214,6 @@ S_parse_uniprop_string(pTHX_
             /* Drop down to look up in the official properties */
         }
         else {
-            const char * const insecure = "Insecure user-defined property";
-
             /* Here, there is a sub by the correct name.  Normally we call it
              * to get the property definition */
             dSP;
@@ -15796,6 +16223,8 @@ S_parse_uniprop_string(pTHX_
                              */
             SV * placeholder;
             SV ** saved_user_prop_ptr;      /* Hash entry for this property */
+            bool other_thread;
+            SV * cached_exception;
 
             /* How many times to retry when another thread is in the middle of
              * expanding the same definition we want */
@@ -15809,8 +16238,7 @@ S_parse_uniprop_string(pTHX_
             /* We refuse to call a potentially tainted subroutine; returning an
              * error instead */
             if (TAINT_get) {
-                if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-                sv_catpvn(msg, insecure, strlen(insecure));
+                PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_TAINTED(exception_slot);
                 goto append_name_to_msg;
             }
 
@@ -15853,14 +16281,15 @@ S_parse_uniprop_string(pTHX_
              *    access and unlocked only when the next stable state is
              *    achieved.
              *
-             * The hash stores either the definition of the property if it was
-             * valid, or, if invalid, the error message that was raised.  We
-             * use the type of SV to distinguish.
+             * The hash stores valid property definitions and temporary
+             * placeholders for definitions being expanded.  Failed
+             * definitions are not cached because their exceptions belong to
+             * the interpreter that raised them.
              *
              * There's also the need to guard against the definition expansion
              * from infinitely recursing.  This is handled by storing the aTHX
-             * of the expanding thread during the expansion.  Again the SV type
-             * is used to distinguish this from the other two cases.  If we
+             * of the expanding thread during the expansion.  The SV type
+             * distinguishes this from a valid property definition.  If we
              * come to here and the hash entry for this property is our aTHX,
              * it means we have recursed, and the code assumes that we would
              * infinitely recurse, so instead stops and raises an error.
@@ -15878,6 +16307,7 @@ S_parse_uniprop_string(pTHX_
 
             /* If we have an entry for this key, the subroutine has already
              * been called once with this /i status. */
+            SWITCH_TO_GLOBAL_CONTEXT;
             saved_user_prop_ptr = hv_fetch(PL_user_def_props,
                                                    SvPVX(key), SvCUR(key), 0);
             if (saved_user_prop_ptr) {
@@ -15889,21 +16319,23 @@ S_parse_uniprop_string(pTHX_
 
                     /* The SV in the hash won't be removed until global
                      * destruction, so it is stable and we can unlock */
+                    RESTORE_CONTEXT;
                     USER_PROP_MUTEX_UNLOCK;
 
                     /* The caller shouldn't try to free this SV */
                     return prop_definition;
                 }
 
-                /* Otherwise, if it is a string, it is the error message
-                 * that was returned when we first tried to evaluate this
-                 * property.  Fail, and append the message */
-                if (SvPOK(*saved_user_prop_ptr)) {
-                    if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-                    sv_catsv(msg, *saved_user_prop_ptr);
+                /* Otherwise, it is the exception object raised when we first
+                 * tried to evaluate this property. */
+                if (sv_derived_from(*saved_user_prop_ptr,
+                                    "XPerl::Exception")) {
+                    cached_exception = *saved_user_prop_ptr;
 
                     /* The SV in the hash won't be removed until global
                      * destruction, so it is stable and we can unlock */
+                    RESTORE_CONTEXT;
+                    Perl_diag_append_exception(aTHX_ exception_slot, cached_exception);
                     USER_PROP_MUTEX_UNLOCK;
 
                     return NULL;
@@ -15915,7 +16347,13 @@ S_parse_uniprop_string(pTHX_
                  * thread is in the middle of expanding the property's
                  * definition, or we are ourselves recursing.  We use the aTHX
                  * in it to distinguish */
-                if (SvIV(*saved_user_prop_ptr) != PTR2IV(CUR_CONTEXT)) {
+                other_thread = SvIV(*saved_user_prop_ptr)
+                                != PTR2IV(ORIGINAL_CONTEXT);
+            }
+            RESTORE_CONTEXT;
+
+            if (saved_user_prop_ptr) {
+                if (other_thread) {
 
                     /* Here, it's another thread doing the expanding.  We've
                      * looked as much as we are going to at the contents of the
@@ -15928,18 +16366,14 @@ S_parse_uniprop_string(pTHX_
                         goto re_fetch;
                     }
 
-                    if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-                    sv_catpvs(msg, "Timeout waiting for another thread to "
-                                   "define");
+                    PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_OTHER_THREAD_TIMEOUT(exception_slot);
                     goto append_name_to_msg;
                 }
 
                 /* Here, we are recursing; don't dig any deeper */
                 USER_PROP_MUTEX_UNLOCK;
 
-                if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-                sv_catpvs(msg,
-                          "Infinite recursion in user-defined property");
+                PERL_APPEND_ERROR_UNICODE_PROPERTY_RECURSION_DEFINITION_REENTERED(exception_slot);
                 goto append_name_to_msg;
             }
 
@@ -15954,7 +16388,10 @@ S_parse_uniprop_string(pTHX_
              * */
             SWITCH_TO_GLOBAL_CONTEXT;
             placeholder = newSVuv(PTR2IV(ORIGINAL_CONTEXT));
-            (void) hv_store_ent(PL_user_def_props, key, placeholder, 0);
+            (void) hv_store_ent(PL_user_def_props,
+                                newSVpvn_flags(SvPVX(key), SvCUR(key),
+                                    SvUTF8(key) ? SVf_UTF8 : 0),
+                                placeholder, 0);
             RESTORE_CONTEXT;
 
             /* Now that we have a placeholder, we can let other threads
@@ -15990,22 +16427,23 @@ S_parse_uniprop_string(pTHX_
 
             error = ERRSV;
             if (TAINT_get || SvTRUE(error)) {
-                if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
                 if (SvTRUE(error)) {
-                    sv_catpvs(msg, "Error \"");
-                    sv_catsv(msg, error);
-                    sv_catpvs(msg, "\"");
+                    if (SvROK(error)
+                        && sv_derived_from(error, "XPerl::Exception"))
+                        Perl_diag_append_exception(aTHX_ exception_slot, error);
+                    else
+                        PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_CALLBACK_FAILED(
+                            exception_slot, error);
                 }
-                if (TAINT_get) {
-                    if (SvTRUE(error)) sv_catpvs(msg, "; ");
-                    sv_catpvn(msg, insecure, strlen(insecure));
-                }
-
+                if (TAINT_get)
+                    PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_TAINTED(exception_slot);
                 if (name_len > 0) {
-                    sv_catpvs(msg, " in expansion of ");
-                    sv_catpvf(msg, "%" UTF8f, UTF8fARG(is_utf8,
-                                                                  name_len,
-                                                                  name));
+                    SV *property_name = S_get_fq_name(
+                        aTHX_ name, name_len, is_utf8,
+                        memchr(name, ':', name_len) != NULL);
+                    PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_EXPANSION(
+                                                    exception_slot,
+                                                    property_name);
                 }
 
                 (void) POPs;
@@ -16026,12 +16464,12 @@ S_parse_uniprop_string(pTHX_
                 else { /* Otherwise, call a function to check for valid syntax,
                           and handle it */
 
-                    prop_definition = handle_user_defined_property(
+                    prop_definition = S_handle_user_defined_property(aTHX_
                                                     name, name_len,
                                                     is_utf8, to_fold, runtime,
                                                     deferrable,
                                                     contents, user_defined_ptr,
-                                                    msg,
+                                                    exception_slot,
                                                     level);
                 }
             }
@@ -16046,16 +16484,17 @@ S_parse_uniprop_string(pTHX_
             S_delete_recursion_entry(aTHX_ SvPVX(key));
 
             if (    ! empty_return
-                && (! prop_definition || is_invlist(prop_definition)))
+                && prop_definition
+                && is_invlist(prop_definition))
             {
-                /* If we got success we use the inversion list defining the
-                 * property; otherwise use the error message */
+                /* Cache successful definitions globally.  Exceptions belong
+                 * to the current interpreter, so they cannot be shared through
+                 * this global hash. */
                 SWITCH_TO_GLOBAL_CONTEXT;
                 (void) hv_store_ent(PL_user_def_props,
-                                    key,
-                                    ((prop_definition)
-                                     ? newSVsv(prop_definition)
-                                     : newSVsv(msg)),
+                                    newSVpvn_flags(SvPVX(key), SvCUR(key),
+                                        SvUTF8(key) ? SVf_UTF8 : 0),
+                                    newSVsv(prop_definition),
                                     0);
                 RESTORE_CONTEXT;
             }
@@ -16064,7 +16503,11 @@ S_parse_uniprop_string(pTHX_
              * property.  Give up exclusive control */
             USER_PROP_MUTEX_UNLOCK;
 
+            if (*exception_slot)
+                SvREFCNT_inc_simple_NN(*exception_slot);
             FREETMPS;
+            if (*exception_slot)
+                sv_2mortal(*exception_slot);
             LEAVE;
             POPSTACK;
 
@@ -16296,15 +16739,21 @@ S_parse_uniprop_string(pTHX_
 
     /* Out-of band indices indicate a deprecated property.  The proper index is
      * modulo it with the table size.  And dividing by the table size yields
-     * an offset into a table constructed by regen/mk_invlists.pl to contain
-     * the corresponding warning message */
+     * an offset into the deprecation reason tables from regen/mk_invlists.pl.
+     * Known reasons use catalog wording; unfamiliar Unicode explanations
+     * remain external text so they are not lost. */
     if (table_index > MAX_UNI_KEYWORD_INDEX) {
         Size_t warning_offset = table_index / MAX_UNI_KEYWORD_INDEX;
         table_index %= MAX_UNI_KEYWORD_INDEX;
-        ck_warner_d(packWARN(WARN_DEPRECATED__UNICODE_PROPERTY_NAME),
-                "Use of '%.*s' in \\p{} or \\P{} is deprecated because: %s",
-                (int) name_len, name,
-                get_deprecated_property_msg(warning_offset));
+        const char *reason = Perl_get_deprecated_property_reason(warning_offset);
+        SV *detail = &PL_sv_no;
+        if (strEQ(reason, "other")) {
+            const char *external = get_deprecated_property_msg(warning_offset);
+            detail = sv_2mortal(newSVpvn_flags(external, strlen(external),
+                                              SVf_UTF8));
+        }
+        PERL_DEPRECATE_WARNING_DEPRECATED_UNICODE_PROPERTY_NAME_PROPERTY_NAME_USED((int) name_len, name,
+                                                   PERL_DIAG_SELECTOR_FROM_WARNING_DEPRECATED_UNICODE_PROPERTY_NAME_PROPERTY_NAME_USED_REASON(reason), detail);
     }
 
     /* In a few properties, a different property is used under /i.  These are
@@ -16360,7 +16809,7 @@ S_parse_uniprop_string(pTHX_
                  * property */
                 pos += SvCUR(pu_lookup);
                 pu_definition = newSVpvn(pos, strchr(pos, '\a') - pos);
-                pu_invlist = handle_user_defined_property(lookup_name,
+                pu_invlist = S_handle_user_defined_property(aTHX_ lookup_name,
                                                           lookup_len,
                                                           0, /* Not UTF-8 */
                                                           0, /* Not folded */
@@ -16368,11 +16817,13 @@ S_parse_uniprop_string(pTHX_
                                                           deferrable,
                                                           pu_definition,
                                                           &dummy,
-                                                          msg,
+                                                          exception_slot,
                                                           level);
+                if (!pu_invlist)
+                    return NULL;
                 if (TAINT_get) {
-                    if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-                    sv_catpvs(msg, "Insecure private-use override");
+                    PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_PRIVATE_OVERRIDE_TAINTED(
+                                                                exception_slot);
                     goto append_name_to_msg;
                 }
 
@@ -16385,8 +16836,7 @@ S_parse_uniprop_string(pTHX_
                                &expanded_prop_definition);
                 prop_definition = expanded_prop_definition;
                 cloned = true;
-                ck_warner_d(packWARN(WARN_EXPERIMENTAL__PRIVATE_USE),
-                            "The private_use feature is experimental");
+                PERL_WARN_WARNING_EXPERIMENTAL_PRIVATE_USE_PROPERTY_OVERRIDE_APPLIED();
             }
         }
     }
@@ -16400,29 +16850,32 @@ S_parse_uniprop_string(pTHX_
     return prop_definition;
 
   unknown_user_defined:
-    if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-    sv_catpvs(msg, "Unknown user-defined property name");
+    PERL_APPEND_ERROR_UNICODE_PROPERTY_NAME_USER_DEFINITION_UNKNOWN(exception_slot);
     goto append_name_to_msg;
 
   failed:
     if (non_pkg_begin != 0) {
-        if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-        sv_catpvs(msg, "Illegal user-defined property name");
+        PERL_APPEND_ERROR_UNICODE_PROPERTY_NAME_QUALIFIED_NAME_INVALID(exception_slot);
     }
     else {
-        if (SvCUR(msg) > 0) sv_catpvs(msg, "; ");
-        sv_catpvs(msg, "Can't find Unicode property definition");
+        PERL_APPEND_ERROR_UNICODE_PROPERTY_NAME_DEFINITION_NOT_FOUND(exception_slot);
     }
     /* FALLTHROUGH */
 
   append_name_to_msg:
     {
-        const char * prefix = (runtime && level == 0) ?  " \\p{" : " \"";
-        const char * suffix = (runtime && level == 0) ?  "}" : "\"";
-
-        sv_catpv(msg, prefix);
-        sv_catpvf(msg, "%" UTF8f, UTF8fARG(is_utf8, name_len, name));
-        sv_catpv(msg, suffix);
+        SV *property_name = sv_2mortal(newSVpvn(name, name_len));
+        if (is_utf8)
+            SvUTF8_on(property_name);
+        if (runtime && level == 0) {
+            PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_RUNTIME_NAME(exception_slot,
+                                                     property_name);
+            Perl_diag_adopt_since(aTHX_ exception_slot,
+                                  diagnostics_on_entry);
+        }
+        else
+            PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_NAME(exception_slot,
+                                                      property_name);
     }
 
     return NULL;
@@ -16503,7 +16956,7 @@ S_handle_names_wildcard(pTHX_ const char * wname, /* wildcard name to match */
      * for any errors generated */
     get_names_info = get_cv("_charnames::_get_names_info", 0);
     if (! get_names_info) {
-        croak("panic: Can't find '_charnames::_get_names_info");
+        PERL_PANIC_ERROR_INTERNAL_UNICODE_CHARACTER_NAME_WILDCARD_INFO_FUNCTION_MISSING();
     }
 
     /* Get the charnames data */

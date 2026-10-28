@@ -23,8 +23,7 @@
         int eC_;						\
         if ((eC_ = pthread_detach(&(t)->self))) {		\
             MUTEX_UNLOCK(&(t)->mutex);				\
-            Perl_croak_nocontext("panic: DETACH (%d) [%s:%d]",	\
-                                 eC_, __FILE__, __LINE__);	\
+            PERL_PANIC_THREAD_DETACH_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);	\
         }							\
     } STMT_END
 
@@ -107,8 +106,7 @@
         if (*m) {						\
             mutex_init(*m);					\
         } else {						\
-            Perl_croak_nocontext("panic: MUTEX_INIT [%s:%d]",	\
-                                 __FILE__, __LINE__);		\
+            PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_MUTEX_ALLOCATION_FAILED(__FILE__, __LINE__);		\
         }							\
     } STMT_END
 
@@ -127,8 +125,7 @@
             condition_init(*c);					\
         }							\
         else {							\
-            Perl_croak_nocontext("panic: COND_INIT [%s:%d]",	\
-                                 __FILE__, __LINE__);		\
+            PERL_PANIC_ERROR_INTERNAL_THREADS_CONDITION_ALLOCATION_FAILED(__FILE__, __LINE__);		\
         }							\
     } STMT_END
 
@@ -182,16 +179,14 @@
         int eC_;                                                   \
         Zero((m), 1, perl_mutex);                                   \
         if ((eC_ = pthread_mutex_init((m), pthread_mutexattr_default)))\
-            Perl_croak_nocontext("panic: MUTEX_INIT (%d) [%s:%d]",  \
-                                 eC_, __FILE__, __LINE__);         \
+            PERL_PANIC_MUTEX_INIT_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);         \
     } STMT_END
 #  else
 #    define MUTEX_INIT(m) \
     STMT_START {						\
         int eC_;						\
         if ((eC_ = pthread_mutex_init((m), pthread_mutexattr_default))) \
-            Perl_croak_nocontext("panic: MUTEX_INIT (%d) [%s:%d]", \
-                                 eC_, __FILE__, __LINE__);     \
+            PERL_PANIC_MUTEX_INIT_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);     \
     } STMT_END
 #  endif
 
@@ -208,8 +203,7 @@
         dSAVE_ERRNO;                                            \
         int eC_;						\
         if ((eC_ = perl_pthread_mutex_lock((m))))		\
-            Perl_croak_nocontext("panic: MUTEX_LOCK (%d) [%s:%d]",\
-                                 eC_, __FILE__, __LINE__);	\
+            PERL_PANIC_MUTEX_LOCK_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);	\
         RESTORE_ERRNO;                                          \
     } STMT_END
 
@@ -218,9 +212,7 @@
         dSAVE_ERRNO; /* Shouldn't be necessary as panics if fails */\
         int eC_;						\
         if ((eC_ = perl_pthread_mutex_unlock((m)))) {          \
-            Perl_croak_nocontext(                               \
-                            "panic: MUTEX_UNLOCK (%d) [%s:%d]", \
-                                 eC_, __FILE__, __LINE__);	\
+            PERL_PANIC_MUTEX_UNLOCK_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);	\
         }                                                       \
         RESTORE_ERRNO;                                          \
     } STMT_END
@@ -231,8 +223,7 @@
         if ((eC_ = pthread_mutex_destroy((m)))) {                          \
             dTHX;                                                           \
             if (PL_phase != PERL_PHASE_DESTRUCT) {                          \
-                Perl_croak_nocontext("panic: MUTEX_DESTROY (%d) [%s:%d]",   \
-                                    eC_, __FILE__, __LINE__);	            \
+                PERL_PANIC_MUTEX_DESTROY_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);	            \
             }                                                               \
         }                                                                   \
     } STMT_END
@@ -243,32 +234,28 @@
     STMT_START {						\
         int eC_;						\
         if ((eC_ = pthread_cond_init((c), pthread_condattr_default)))	\
-            Perl_croak_nocontext("panic: COND_INIT (%d) [%s:%d]",	\
-                                 eC_, __FILE__, __LINE__);	\
+            PERL_PANIC_COND_INIT_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);	\
     } STMT_END
 
 #  define COND_SIGNAL(c) \
     STMT_START {						\
         int eC_;						\
         if ((eC_ = pthread_cond_signal((c))))			\
-            Perl_croak_nocontext("panic: COND_SIGNAL (%d) [%s:%d]",	\
-                                 eC_, __FILE__, __LINE__);	\
+            PERL_PANIC_COND_SIGNAL_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);	\
     } STMT_END
 
 #  define COND_BROADCAST(c) \
     STMT_START {						\
         int eC_;						\
         if ((eC_ = pthread_cond_broadcast((c))))		\
-            Perl_croak_nocontext("panic: COND_BROADCAST (%d) [%s:%d]",	\
-                                 eC_, __FILE__, __LINE__);	\
+            PERL_PANIC_COND_BROADCAST_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);	\
     } STMT_END
 
 #  define COND_WAIT(c, m) \
     STMT_START {						\
         int eC_;						\
         if ((eC_ = pthread_cond_wait((c), (m))))		\
-            Perl_croak_nocontext("panic: COND_WAIT (%d) [%s:%d]",	\
-                                 eC_, __FILE__, __LINE__);	\
+            PERL_PANIC_COND_WAIT_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);	\
     } STMT_END
 
 #  define COND_DESTROY(c) \
@@ -277,8 +264,7 @@
         if ((eC_ = pthread_cond_destroy((c)))) {                           \
             dTHX;                                                           \
             if (PL_phase != PERL_PHASE_DESTRUCT) {                          \
-                Perl_croak_nocontext("panic: COND_DESTROY (%d) [%s:%d]",    \
-                                    eC_, __FILE__, __LINE__);	            \
+                PERL_PANIC_COND_DESTROY_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);	            \
             }                                                               \
         }                                                                   \
     } STMT_END
@@ -391,8 +377,7 @@
         int eC_;						\
         if ((eC_ = pthread_detach((t)->self))) {		\
             MUTEX_UNLOCK(&(t)->mutex);				\
-            Perl_croak_nocontext("panic: DETACH (%d) [%s:%d]",	\
-                                 eC_, __FILE__, __LINE__);	\
+            PERL_PANIC_THREAD_DETACH_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);	\
         }							\
     } STMT_END
 #endif /* DETACH */
@@ -402,8 +387,7 @@
     STMT_START {						\
         int eC_;						\
         if ((eC_ = pthread_join((t)->self, (void**)(avp))))	\
-            Perl_croak_nocontext("panic: pthread_join (%d) [%s:%d]",	\
-                                 eC_, __FILE__, __LINE__);	\
+            PERL_PANIC_PTHREAD_JOIN_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);	\
     } STMT_END
 #endif /* JOIN */
 
@@ -444,8 +428,7 @@ extern PERL_THREAD_LOCAL void *PL_current_context;
         int eC_;                                                           \
         if ((eC_ = pthread_setspecific(PL_thr_key,                         \
                                         PL_current_context = (void *)(t)))) \
-            Perl_croak_nocontext("panic: pthread_setspecific (%d) [%s:%d]", \
-                                 eC_, __FILE__, __LINE__);                 \
+            PERL_PANIC_PTHREAD_SETSPECIFIC_ERROR_AT_LOCATION(eC_, __FILE__, __LINE__);                 \
         PERL_SET_NON_tTHX_CONTEXT(t);                                       \
     } STMT_END
 
@@ -471,7 +454,7 @@ extern PERL_THREAD_LOCAL void *PL_current_context;
 #  define ALLOC_THREAD_KEY \
     STMT_START {						\
         if (pthread_key_create(&PL_thr_key, 0)) {		\
-            PERL_UNUSED_RESULT(write(2, STR_WITH_LEN("panic: pthread_key_create failed\n"))); \
+            PERL_UNUSED_RESULT(write(2, STR_WITH_LEN(PERL_DIAG_FORMAT_ERROR_INTERNAL_THREADS_CONTEXT_KEY_CREATION_FAILED))); \
             exit(1);						\
         }							\
     } STMT_END

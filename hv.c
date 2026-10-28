@@ -47,9 +47,6 @@ holds the key and hash value.
 #define DO_HSPLIT(xhv) ( ( ((xhv)->xhv_keys + ((xhv)->xhv_keys >> 1)) > (xhv)->xhv_max ) && \
                            ((xhv)->xhv_max < MAX_BUCKET_MAX) )
 
-static const char S_strtab_error[]
-    = "Cannot modify shared string table in hv_%s";
-
 #define DEBUG_HASH_RAND_BITS (DEBUG_h_TEST)
 
 /* Algorithm "xor" from p. 4 of Marsaglia, "Xorshift RNGs"
@@ -304,9 +301,15 @@ Perl_he_dup(pTHX_ const HE *e, bool shared, CLONE_PARAMS* param)
 }
 #endif	/* USE_ITHREADS */
 
+enum hv_notallowed_error {
+    HV_NOTALLOWED_ACCESS,
+    HV_NOTALLOWED_DELETE_READONLY,
+    HV_NOTALLOWED_DELETE
+};
+
 static void
 S_hv_notallowed(pTHX_ int flags, const char *key, I32 klen,
-                const char *msg)
+                int error)
 {
     PERL_ARGS_ASSERT_HV_NOTALLOWED;
 
@@ -325,7 +328,14 @@ S_hv_notallowed(pTHX_ int flags, const char *key, I32 klen,
     if (flags & HVhek_UTF8) {
         SvUTF8_on(sv);
     }
-    croak(msg, SVfARG(sv));
+    if (error == HV_NOTALLOWED_ACCESS)
+        PERL_THROW_ERROR_VALUE_RESTRICTED_HASH_KEY_ACCESS_DISALLOWED(sv);
+    else if (error == HV_NOTALLOWED_DELETE_READONLY)
+        PERL_THROW_ERROR_MUTATION_READ_ONLY_RESTRICTED_HASH_KEY_DELETION(sv);
+    else {
+        assert(error == HV_NOTALLOWED_DELETE);
+        PERL_THROW_ERROR_VALUE_RESTRICTED_HASH_KEY_DELETION_DISALLOWED(sv);
+    }
 }
 
 /* (klen == HEf_SVKEY) is special for MAGICAL hv entries, meaning key slot
@@ -894,8 +904,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
                        so putting this test here is cheap  */
                     if (flags & HVhek_FREEKEY)
                         Safefree(key);
-                    croak(S_strtab_error,
-                               action & HV_FETCH_LVALUE ? "fetch" : "store");
+                    PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN(action & HV_FETCH_LVALUE ? "fetch" : "store");
                 }
                 else {
                     /* Effectively this is save_hek_flags() for a new version
@@ -964,9 +973,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
 #endif
 
     if (!entry && SvREADONLY(hv) && !(action & HV_FETCH_ISEXISTS)) {
-        hv_notallowed(flags, key, klen,
-                        "Attempt to access disallowed key '%" SVf "' in"
-                        " a restricted hash");
+        S_hv_notallowed(aTHX_ flags, key, klen, HV_NOTALLOWED_ACCESS);
     }
     if (!(action & (HV_FETCH_LVALUE|HV_FETCH_ISSTORE))) {
         /* Not doing some form of store, so return failure.  */
@@ -1052,8 +1059,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
            this test here is cheap  */
         if (flags & HVhek_FREEKEY)
             Safefree(key);
-        croak(S_strtab_error,
-                   action & HV_FETCH_LVALUE ? "fetch" : "store");
+        PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN(action & HV_FETCH_LVALUE ? "fetch" : "store");
     }
     else {
         /* gotta do the real thing */
@@ -1089,15 +1095,8 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     }
 #ifdef PERL_HASH_RANDOMIZE_KEYS
     if (HvHasAUX(hv)) {
-        /* Currently this makes various tests warn in annoying ways.
-         * So Silenced for now. - Yves | bogus end of comment =>* /
-        if (HvAUX(hv)->xhv_riter != -1) {
-            ck_warner_d(packWARN(WARN_INTERNAL),
-                        "[TESTING] Inserting into a hash during each() traversal results in undefined behavior"
-                        pTHX__FORMAT
-                        pTHX__VALUE);
-        }
-        */
+        /* at one point we tried to warn here, but it produced a lot of noise and
+         * wasn't seen as helpful - Yves */
         MAYBE_UPDATE_HASH_RAND_BITS_KEY(key,klen);
         HvAUX(hv)->xhv_rand= (U32)PL_hash_rand_bits;
     }
@@ -1381,7 +1380,7 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
                         /* No longer an element */
                         sv_unmagic(sv, PERL_MAGIC_tiedelem);
                         return sv;
-                    }		
+                    }
                     return NULL;		/* element cannot be deleted */
                 }
 #ifdef ENV_IS_CASELESS
@@ -1481,7 +1480,7 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
         if (hv == PL_strtab) {
             if (k_flags & HVhek_FREEKEY)
                 Safefree(key);
-            croak(S_strtab_error, "delete");
+            PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN("delete");
         }
 
         sv = HeVAL(entry);
@@ -1493,9 +1492,7 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
             return NULL;
         }
         if (SvREADONLY(hv) && sv && SvREADONLY(sv)) {
-            hv_notallowed(k_flags, key, klen,
-                            "Attempt to delete readonly key '%" SVf "' from"
-                            " a restricted hash");
+            S_hv_notallowed(aTHX_ k_flags, key, klen, HV_NOTALLOWED_DELETE_READONLY);
         }
 
         /*
@@ -1649,9 +1646,7 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
 
   not_found:
     if (SvREADONLY(hv)) {
-        hv_notallowed(k_flags, key, klen,
-                        "Attempt to delete disallowed key '%" SVf "' from"
-                        " a restricted hash");
+        S_hv_notallowed(aTHX_ k_flags, key, klen, HV_NOTALLOWED_DELETE);
     }
 
     if (k_flags & HVhek_FREEKEY)
@@ -2119,9 +2114,7 @@ Perl_hv_clear(pTHX_ HV *hv)
                     if (HeVAL(entry)) {
                         if (SvREADONLY(HeVAL(entry))) {
                             SV* const keysv = hv_iterkeysv(entry);
-                            croak(
-                                "Attempt to delete readonly key '%" SVf "' from a restricted hash",
-                                (void*)keysv);
+                            PERL_THROW_ERROR_MUTATION_READ_ONLY_RESTRICTED_HASH_KEY_DELETION(keysv);
                         }
                         SvREFCNT_dec_NN(HeVAL(entry));
                     }
@@ -2670,7 +2663,7 @@ Perl_hv_rand_set(pTHX_ HV *hv, U32 new_xhv_rand)
     }
     iter->xhv_rand = new_xhv_rand;
 #else
-    croak("This Perl has not been built with support for randomized hash key traversal but something called Perl_hv_rand_set().");
+    PERL_THROW_ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE();
 #endif
 }
 
@@ -2739,7 +2732,7 @@ Perl_hv_name_set(pTHX_ HV *hv, const char *name, U32 len, U32 flags)
     HEK **spot;
 
     if (len > I32_MAX)
-        croak("panic: hv name too long (%" UVuf ")", (UV) len);
+        PERL_PANIC_ERROR_INTERNAL_SYMBOL_TABLE_PACKAGE_NAME_LENGTH_OUT_OF_RANGE((UV) len);
 
     if (HvHasAUX(hv)) {
         iter = HvAUX(hv);
@@ -2844,7 +2837,7 @@ Perl_hv_ename_add(pTHX_ HV *hv, const char *name, U32 len, U32 flags)
     U32 hash;
 
     if (len > I32_MAX)
-        croak("panic: hv name too long (%" UVuf ")", (UV) len);
+        PERL_PANIC_ERROR_INTERNAL_SYMBOL_TABLE_PACKAGE_NAME_LENGTH_OUT_OF_RANGE((UV) len);
 
     PERL_HASH(hash, name, len);
 
@@ -2906,7 +2899,7 @@ Perl_hv_ename_delete(pTHX_ HV *hv, const char *name, U32 len, U32 flags)
     struct xpvhv_aux *aux;
 
     if (len > I32_MAX)
-        croak("panic: hv name too long (%" UVuf ")", (UV) len);
+        PERL_PANIC_ERROR_INTERNAL_SYMBOL_TABLE_PACKAGE_NAME_LENGTH_OUT_OF_RANGE((UV) len);
 
     if (!HvHasAUX(hv)) return;
 
@@ -3155,10 +3148,7 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
 #ifdef PERL_HASH_RANDOMIZE_KEYS
     if (iter->xhv_last_rand != iter->xhv_rand) {
         if (iter->xhv_riter != -1) {
-            ck_warner_d(packWARN(WARN_INTERNAL),
-                        "Use of each() on hash after insertion without resetting hash iterator results in undefined behavior"
-                        pTHX__FORMAT
-                        pTHX__VALUE);
+            PERL_WARN_WARNING_SEVERE_INTERNAL_HASH_ITERATION_AFTER_INSERTION();
         }
         iter->xhv_last_rand = iter->xhv_rand;
     }
@@ -3430,11 +3420,10 @@ S_unshare_hek_or_pvn(pTHX_ const HEK *hek, const char *str, I32 len, U32 hash)
     }
 
     if (!entry)
-        ck_warner_d(packWARN(WARN_INTERNAL),
-                    "Attempt to free nonexistent shared string '%s'%s"
-                    pTHX__FORMAT,
-                    hek ? HEK_KEY(hek) : str,
-                    ((k_flags & HVhek_UTF8) ? " (utf8)" : "") pTHX__VALUE);
+        PERL_WARN_WARNING_SEVERE_INTERNAL_SHARED_STRING_FREE_NOT_FOUND(
+            hek ? HEK_KEY(hek) : str,
+            (k_flags & HVhek_UTF8) ? perl_diag_selector_domain_1623_0_present_2 : perl_diag_selector_domain_1623_0_absent_1
+        );
     if (k_flags & HVhek_FREEKEY)
         Safefree(str);
 }
@@ -3510,7 +3499,7 @@ S_share_hek_flags(pTHX_ const char *str, STRLEN len, U32 hash, int flags)
     assert(!(flags & HVhek_NOTSHARED));
 
     if (UNLIKELY(len > (STRLEN) I32_MAX)) {
-        croak("Sorry, hash keys must be smaller than 2**31 bytes");
+        PERL_THROW_ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE();
     }
 
     /* what follows is the moral equivalent of:
@@ -3599,7 +3588,7 @@ Perl_hv_placeholders_p(pTHX_ HV *hv)
         mg = sv_magicext(MUTABLE_SV(hv), 0, PERL_MAGIC_rhash, 0, 0, 0);
 
         if (!mg) {
-            die("panic: hv_placeholders_p");
+            PERL_PANIC_ERROR_INTERNAL_HASH_PLACEHOLDER_COUNT_SLOT_CREATION_FAILED();
         }
     }
     return &(mg->mg_len);
@@ -3642,7 +3631,7 @@ Perl_hv_placeholders_set(pTHX_ HV *hv, I32 ph)
         mg->mg_len = ph;
     } else if (ph) {
         if (!sv_magicext(MUTABLE_SV(hv), 0, PERL_MAGIC_rhash, 0, 0, ph))
-            die("panic: hv_placeholders_set");
+            PERL_PANIC_ERROR_INTERNAL_HASH_PLACEHOLDER_COUNT_SET_CREATION_FAILED();
     }
     /* else we don't need to add magic to record 0 placeholders.  */
 }
@@ -3682,7 +3671,7 @@ S_refcounted_he_value(pTHX_ const struct refcounted_he *he)
             SvUTF8_on(value);
         break;
     default:
-        croak("panic: refcounted_he_value bad flags %" UVxf,
+        PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_VALUE_TAG_UNKNOWN(
                    (UV)he->refcounted_he_data[0]);
     }
     return value;
@@ -3706,7 +3695,7 @@ Perl_refcounted_he_chain_2hv(pTHX_ const struct refcounted_he *chain, U32 flags)
     U32 placeholders, max;
 
     if (flags)
-        croak("panic: refcounted_he_chain_2hv bad flags %" UVxf,
+        PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_CHAIN_FLAGS_INVALID(
             (UV)flags);
 
     /* We could chase the chain once to get an idea of the number of keys,
@@ -3845,7 +3834,7 @@ Perl_refcounted_he_fetch_pvn(pTHX_ const struct refcounted_he *chain,
     void * free_me = NULL;
 
     if (flags & ~(REFCOUNTED_HE_KEY_UTF8|REFCOUNTED_HE_EXISTS))
-        croak("panic: refcounted_he_fetch_pvn bad flags %" UVxf,
+        PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_FETCH_PV_FLAGS_INVALID(
             (UV)flags);
     if (!chain)
         goto ret;
@@ -3903,7 +3892,7 @@ Perl_refcounted_he_fetch_sv(pTHX_ const struct refcounted_he *chain,
     const char *keypv;
     STRLEN keylen;
     if (flags & REFCOUNTED_HE_KEY_UTF8)
-        croak("panic: refcounted_he_fetch_sv bad flags %" UVxf,
+        PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_FETCH_SV_UTF8_FLAG_FORBIDDEN(
             (UV)flags);
     keypv = SvPV_const(key, keylen);
     if (SvUTF8(key))
@@ -4055,7 +4044,7 @@ Perl_refcounted_he_new_sv(pTHX_ struct refcounted_he *parent,
     const char *keypv;
     STRLEN keylen;
     if (flags & REFCOUNTED_HE_KEY_UTF8)
-        croak("panic: refcounted_he_new_sv bad flags %" UVxf,
+        PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_CREATE_SV_UTF8_FLAG_FORBIDDEN(
             (UV)flags);
     keypv = SvPV_const(key, keylen);
     if (SvUTF8(key))
@@ -4197,7 +4186,7 @@ Perl_cop_store_label(pTHX_ COP *const cop, const char *label, STRLEN len,
     SV *labelsv;
 
     if (flags & ~(SVf_UTF8))
-        croak("panic: cop_store_label illegal flag bits 0x%" UVxf,
+        PERL_PANIC_ERROR_INTERNAL_OPCODE_LABEL_FLAGS_INVALID(
                    (UV)flags);
     labelsv = newSVpvn_flags(label, len, SVs_TEMP);
     if (flags & SVf_UTF8)

@@ -256,7 +256,7 @@ sub test_bad_setting {
   } else {
     my $msg= $@ || "Zombie Error";
     print "ok ",$test_count++," # \$/ = []; should die\n";
-    if ($msg!~m!Setting \$\/ to an ARRAY reference is forbidden!) {
+    if ($msg!~m!Setting \$\/ to a reference of type ARRAY is forbidden!) {
       print "not ";
     }
     print "ok ",$test_count++," # \$/ = []; produced expected error message\n";
@@ -267,7 +267,7 @@ sub test_bad_setting {
   } else {
     my $msg= $@ || "Zombie Error";
     print "ok ",$test_count++," # \$/ = {}; should die\n";
-    if ($msg!~m!Setting \$\/ to a HASH reference is forbidden!) {print "not ";}
+    if ($msg!~m!Setting \$\/ to a reference of type HASH is forbidden!) {print "not ";}
     print "ok ",$test_count++," # \$/ = {}; produced expected error message\n";
   }
   if (eval {$/ = \\1; 1}) {
@@ -276,7 +276,7 @@ sub test_bad_setting {
   } else {
     my $msg= $@ || "Zombie Error";
     print "ok ",$test_count++," # \$/ = \\\\1; should die\n";
-    if ($msg!~m!Setting \$\/ to a REF reference is forbidden!) {print "not ";}
+    if ($msg!~m!Setting \$\/ to a reference of type REF is forbidden!) {print "not ";}
     print "ok ",$test_count++," # \$/ = \\\\1; produced expected error message\n";
   }
   if (eval {$/ = qr/foo/; 1}) {
@@ -285,7 +285,7 @@ sub test_bad_setting {
   } else {
     my $msg= $@ || "Zombie Error";
     print "ok ",$test_count++," # \$/ = qr/foo/; should die\n";
-    if ($msg!~m!Setting \$\/ to a REGEXP reference is forbidden!) {print "not ";}
+    if ($msg!~m!Setting \$\/ to a reference of type REGEXP is forbidden!) {print "not ";}
     print "ok ",$test_count++," # \$/ = qr/foo/; produced expected error message\n";
   }
   if (eval {$/ = \*STDOUT; 1}) {
@@ -294,7 +294,7 @@ sub test_bad_setting {
   } else {
     my $msg= $@ || "Zombie Error";
     print "ok ",$test_count++," # \$/ = \\*STDOUT; should die\n";
-    if ($msg!~m!Setting \$\/ to a GLOB reference is forbidden!) {print "not ";}
+    if ($msg!~m!Setting \$\/ to a reference of type GLOB is forbidden!) {print "not ";}
     print "ok ",$test_count++," # \$/ = \\*STDOUT; produced expected error message\n";
   }
 }

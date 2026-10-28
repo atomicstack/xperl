@@ -1081,6 +1081,9 @@ AOdp	|SSize_t|call_sv	|NN SV *sv				\
 Rp	|bool	|cando		|Mode_t mode				\
 				|bool effective 			\
 				|NN const Stat_t *statbufp
+Cdop	|const char *|cardinal_plural_form				\
+				|NN const char *language		\
+				|UV n
 CRTp	|I32	|cast_i32	|NV f
 CRTp	|IV	|cast_iv	|NV f
 CRTp	|U32	|cast_ulong	|NV f
@@ -1176,7 +1179,7 @@ AMdfprt |void	|croak		|NULLOK const char *pat 		\
 Tfpr	|void	|croak_caller	|NULLOK const char *pat 		\
 				|...
 CTrs	|void	|croak_memory_wrap
-Tpr	|void	|croak_no_mem
+TXpr	|void	|croak_no_mem
 Tpr	|void	|croak_no_mem_ext					\
 				|NN const char *context 		\
 				|STRLEN len
@@ -1263,6 +1266,21 @@ p	|void	|debug_hash_seed|bool via_debug_h
 Rp	|SV *	|defelem_target |NN SV *sv				\
 				|NULLOK MAGIC *mg
 Adp	|void	|defer_error	|NULLOK SV *err
+op	|void	|defer_error_diag					\
+				|NULLOK SV *err 			\
+				|UV diag_index
+op	|void	|defer_error_diag_params				\
+				|NULLOK SV *err 			\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category
+op	|void	|defer_error_diag_params_context			\
+				|NULLOK SV *err 			\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NULLOK const char *parser_context	\
+				|NULLOK SV *parser_context_value
 : Used in op.c, perl.c
 px	|void	|delete_eval_scope
 ATdp	|char * |delimcpy	|SPTR char *to				\
@@ -1279,6 +1297,261 @@ ETXdp	|char * |delimcpy_no_escape					\
 				|const int delim			\
 				|NN I32 *retlen
 Cp	|void	|despatch_signals
+QXop	|void	|diag_adopt_since					\
+				|NULLOK SV **exception_slot		\
+				|SSize_t first_index
+QXdop	|void	|diag_append	|NN SV **exception_slot 		\
+				|NULLOK SV *err 			\
+				|UV diag_index				\
+				|NULLOK AV *diagnostic_params		\
+				|U32 category
+QXop	|void	|diag_append_exception					\
+				|NN SV **exception_slot 		\
+				|NN SV *exception
+QXdop	|void	|diag_attach_regex_pattern_context			\
+				|NN SV *exception			\
+				|bool utf8				\
+				|STRLEN before_length			\
+				|NN const char *before			\
+				|STRLEN after_length			\
+				|NN const char *after
+Cop	|const char *|diag_auto_language
+QXop	|void	|diag_boot_class_registry
+Cfop	|void	|diag_ck_warner |UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NN const char *pat			\
+				|...
+Cfop	|void	|diag_ck_warner_d					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NN const char *pat			\
+				|...
+QXdop	|void	|diag_ck_warner_d_regex_sv				\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NULLOK SV *message			\
+				|bool utf8				\
+				|STRLEN before_length			\
+				|NN const char *before			\
+				|STRLEN after_length			\
+				|NN const char *after
+QXdop	|void	|diag_ck_warner_d_sv					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NULLOK SV *message
+QXdop	|void	|diag_ck_warner_exception				\
+				|NN SV *exception			\
+				|U32 category
+QXdop	|void	|diag_ck_warner_regex_sv				\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NULLOK SV *message			\
+				|bool utf8				\
+				|STRLEN before_length			\
+				|NN const char *before			\
+				|STRLEN after_length			\
+				|NN const char *after
+QXdop	|void	|diag_ck_warner_sv					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NULLOK SV *message
+QXop	|bool	|diag_class_is_leaf_only				\
+				|NN SV *object
+QXop	|const char *|diag_class_parent 				\
+				|NN const char *class_name
+QXop	|SV *	|diag_compat_selector_key				\
+				|UV diagnostic_number			\
+				|NULLOK AV *diagnostic_params
+Cfopr	|void	|diag_croak	|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK const char *pat 		\
+				|...
+CTfopr	|void	|diag_croak_caller					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK const char *pat 		\
+				|...
+QTdopr	|void	|diag_croak_caller_sv					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK SV *message
+CTfopr	|void	|diag_croak_nocontext					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK const char *pat 		\
+				|...
+QTdopr	|void	|diag_croak_nocontext_sv				\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK SV *message
+QXdopr	|void	|diag_croak_sv	|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK SV *message
+QXdop	|SV *	|diag_data_by_code					\
+				|NN const char *code			\
+				|STRLEN length
+QXdop	|SV *	|diag_data_by_number					\
+				|UV number
+Cfopr	|OP *	|diag_die	|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK const char *pat 		\
+				|...
+CTfopr	|OP *	|diag_die_nocontext					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK const char *pat 		\
+				|...
+CTdopr	|OP *	|diag_die_nocontext_sv					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK SV *message
+QXdopr	|OP *	|diag_die_sv	|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK SV *message
+Cop	|UV	|diag_error_count					\
+				|NULLOK SV *exception
+QXop	|SSize_t|diag_exception_message_count				\
+				|NULLOK SV **exception_slot
+op	|SV *	|diag_fatalized_warning 				\
+				|NN SV *warning 			\
+				|NN const char *reason
+Cfop	|void	|diag_fatal_warner					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NN const char *pat			\
+				|...
+QXdop	|void	|diag_fatal_warner_sv					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NULLOK SV *message
+EXop	|void	|diag_flush_exception_slot				\
+				|NN SV **exception_slot
+EXop	|void	|diag_flush_pending_exception
+QXdop	|SV *	|diag_format_template					\
+				|UV diag_index				\
+				|NULLOK AV *diagnostic_params
+op	|void	|diag_increment_error_count				\
+				|NN SV *exception
+QXop	|void	|diag_mark_light_since					\
+				|NULLOK SV **exception_slot		\
+				|SSize_t first_index
+QXop	|const perl_diagpack_engine *|diagpack_current_hint
+QXop	|const perl_diagpack_engine *|diagpack_find			\
+				|NN const char *language
+QXop	|SV *	|diagpack_metadata					\
+				|NN const perl_diagpack_engine *engine
+QXop	|void	|diagpack_register					\
+				|NN const perl_diagpack_engine *engine
+QXdop	|SV *	|diagpack_render_catalog				\
+				|NN const perl_diagpack_engine *engine	\
+				|NN const perl_diagpack_input *input
+QXop	|SV *	|diagpack_render_diagnostic				\
+				|NN const perl_diagpack_engine *engine	\
+				|NN SV *diagnostic
+QXop	|SV *	|diagpack_render_format_engine				\
+				|NN const perl_diagpack_engine *engine	\
+				|UV diag_index				\
+				|NULLOK AV *values
+QXop	|void	|diagpack_set_lexical_hint				\
+				|NN const char *language
+QXop	|void	|diagpack_startup
+op	|void	|diag_reclassify_last					\
+				|NN SV **exception_slot 		\
+				|NN const char *class_name
+QXdop	|SV *	|diag_render_diagnostic 				\
+				|UV diag_number 			\
+				|NULLOK AV *diagnostic_params		\
+				|NN const char *language
+QXop	|SV *	|diag_render_diagnostic_engine				\
+				|UV diag_number 			\
+				|NULLOK AV *diagnostic_params		\
+				|NN const perl_diagpack_engine *engine
+QXdop	|SV *	|diag_render_format					\
+				|UV diag_index				\
+				|NULLOK AV *values			\
+				|NN const char *language
+QXdop	|SV *	|diag_render_template					\
+				|UV diag_number 			\
+				|U64 selector_key			\
+				|NULLOK AV *values			\
+				|NN const char *language
+QXop	|void	|diag_rollback_exception				\
+				|NULLOK SV **exception_slot		\
+				|SSize_t first_index
+QXdop	|IV	|diag_selector_from_cstr				\
+				|U16 domain_id				\
+				|NULLOK const char *value
+QXdop	|IV	|diag_selector_from_pvn 				\
+				|U16 domain_id				\
+				|NN const char *value			\
+				|STRLEN length
+QXdop	|IV	|diag_selector_from_sv					\
+				|U16 domain_id				\
+				|NULLOK SV *value
+QXdop	|const char *|diag_selector_name				\
+				|U16 domain_id				\
+				|IV value_id
+Cop	|SV *	|diag_setup_param					\
+				|NULLOK AV *params			\
+				|UV diag_index				\
+				|I32 diagnostic_index			\
+				|U16 selector_domain			\
+				|IV selector_id
+QXdop	|void	|diag_taint_warner_d_sv 				\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NULLOK SV *message
+op	|SV *	|diag_take_pending
+EXopr	|void	|diag_throw_exception_slot				\
+				|NN SV **exception_slot
+opr	|void	|diag_throw_pending
+Cfop	|void	|diag_warn	|UV diag_index				\
+				|NULLOK AV *params			\
+				|NN const char *pat			\
+				|...
+Cfop	|void	|diag_warner	|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NN const char *pat			\
+				|...
+QXdop	|void	|diag_warner_exception					\
+				|NN SV *exception			\
+				|U32 category
+QXdop	|void	|diag_warner_regex_sv					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NULLOK SV *message			\
+				|bool utf8				\
+				|STRLEN before_length			\
+				|NN const char *before			\
+				|STRLEN after_length			\
+				|NN const char *after
+QXdop	|void	|diag_warner_sv |UV diag_index				\
+				|NULLOK AV *params			\
+				|U32 category				\
+				|NULLOK SV *message
+CTfop	|void	|diag_warn_nocontext					\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|NN const char *pat			\
+				|...
+CTdop	|void	|diag_warn_nocontext_sv 				\
+				|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK SV *message
+QXdop	|void	|diag_warn_sv	|UV diag_index				\
+				|NULLOK AV *params			\
+				|NULLOK SV *message
 AMdfprt |OP *	|die		|NULLOK const char *pat 		\
 				|...
 Adpr	|OP *	|die_sv 	|NN SV *baseex
@@ -1387,7 +1660,7 @@ Cp	|void	|do_pmop_dump	|I32 level				\
 : Used in pp_hot.c and pp_sys.c
 p	|bool	|do_print	|NULLOK SV *sv				\
 				|NN PerlIO *fp
-: Used in pp_sys.c
+: Used in util.c
 Rp	|OP *	|do_readline
 Cp	|OP *	|doref		|NN OP *o				\
 				|I32 type				\
@@ -1430,6 +1703,9 @@ p	|void	|do_vop 	|I32 optype				\
 				|NN SV *left				\
 				|NN SV *right
 CDRdp	|U8	|dowantarray
+: Used in pp_sys.c
+op	|bool	|do_warn	|NULLOK SV *sv				\
+				|NN PerlIO *fp
 TXop	|void	|drand48_init_r |NN perl_drand48_t *random_state	\
 				|U32 seed
 TXop	|double |drand48_r	|NN perl_drand48_t *random_state
@@ -1572,7 +1848,7 @@ ERXp	|SV *	|get_and_check_backslash_N_name 			\
 				|SPTR const char *s			\
 				|EPTRge const char *e			\
 				|const bool is_utf8			\
-				|NN const char **error_msg
+				|NULLOK SV **exception_slot
 AOdp	|AV *	|get_av 	|NN const char *name			\
 				|I32 flags
 AOdp	|CV *	|get_cv 	|NN const char *name			\
@@ -1585,6 +1861,8 @@ Adp	|int	|getcwd_sv	|NN SV *sv
 eop	|void	|get_db_sub	|NULLOK SV **svp			\
 				|NN CV *cv
 ERTXp	|const char *|get_deprecated_property_msg			\
+				|const Size_t warning_offset
+ERTXop	|const char *|get_deprecated_property_reason			\
 				|const Size_t warning_offset
 Cp	|void	|get_entropy_portable					\
 				|NN U8 *buffer				\
@@ -2143,10 +2421,7 @@ Adpx	|void	|lex_stuff_sv	|NN SV *sv				\
 				|U32 flags
 Adpx	|void	|lex_unstuff	|NN char *ptr
 p	|OP *	|list		|NULLOK OP *o
-ERXp	|HV *	|load_charnames |NN SV *char_name			\
-				|NN const char *context 		\
-				|const STRLEN context_len		\
-				|NN const char **error_msg
+ERXop	|HV *	|load_charnames |NULLOK SV **exception_slot
 MTbp	|void	|load_mathoms
 AFdp	|void	|load_module	|U32 flags				\
 				|NN SV *name				\
@@ -2155,6 +2430,11 @@ AFdp	|void	|load_module	|U32 flags				\
 CTopr	|void	|locale_panic	|NN const char *msg				\
 				|const line_t immediate_caller_line		\
 				|NN const char * const higher_caller_file	\
+				|const line_t higher_caller_line
+CTopr	|void	|locale_panic_sv|NN SV *exception			\
+				|NN const char *file			\
+				|const line_t line			\
+				|NN const char *higher_caller_file	\
 				|const line_t higher_caller_line
 : Used in perly.y
 p	|OP *	|localize	|NN OP *o				\
@@ -2801,6 +3081,9 @@ Adp	|OP *	|op_sibling_splice					\
 px	|OP *	|op_unscope	|NULLOK OP *o
 ARdpx	|OP *	|op_wrap_finally|NN OP *block				\
 				|NN OP *finally
+Cdop	|const char *|ordinal_plural_form				\
+				|NN const char *language		\
+				|UV n
 pt	|void	|output_non_portable					\
 				|const U8 shift
 : Used in perly.y
@@ -2982,6 +3265,14 @@ Adp	|const char *|prescan_version					\
 				|NN const char *s			\
 				|bool strict				\
 				|NULLOK const char **errstr		\
+				|NULLOK bool *sqv			\
+				|NULLOK int *ssaw_decimal		\
+				|NULLOK int *swidth			\
+				|NULLOK bool *salpha
+op	|const char *|prescan_version_reason				\
+				|NN const char *s			\
+				|bool strict				\
+				|NULLOK const char **reason		\
 				|NULLOK bool *sqv			\
 				|NULLOK int *ssaw_decimal		\
 				|NULLOK int *swidth			\
@@ -3179,7 +3470,7 @@ ATdp	|void	|repeatcpy	|NN char *to				\
 				|NN const char *from			\
 				|SSize_t len				\
 				|IV count
-Adp	|SV *	|repeat_decode_utf8					\
+Adop	|SV *	|repeat_decode_utf8					\
 				|NN SV *sv				\
 				|bool force
 : Used in doio.c, pp_hot.c, pp_sys.c
@@ -4282,7 +4573,8 @@ CTp	|bool	|utf8_to_uv_msgs_helper_				\
 				|NULLOK Size_t *advance_p		\
 				|U32 flags				\
 				|NULLOK U32 *errors			\
-				|NULLOK AV **msgs
+				|NULLOK AV **msgs			\
+				|NULLOK SV **exception_slot
 ATdip	|UV	|utf8_to_uv_or_die					\
 				|SPTR const U8 * const s		\
 				|EPTRge const U8 *e			\
@@ -4418,6 +4710,8 @@ Adp	|void	|wrap_op_checker|Optype opcode				\
 				|NN Perl_check_t *old_checker_p
 : Used in pp_ctl.c
 p	|void	|write_to_stderr|NN SV *msv
+op	|SV *	|xperl_exception_render_legacy				\
+				|NN SV *exception
 Xp	|void	|xs_boot_epilog |const SSize_t ax
 
 FTXop	|Stack_off_t|xs_handshake					\
@@ -4427,6 +4721,25 @@ FTXop	|Stack_off_t|xs_handshake					\
 				|...
 : Used in op.c
 p	|int	|yyerror	|NN const char * const s
+op	|int	|yyerror_diag	|UV diag_index				\
+				|NULLOK const char *s			\
+				|U32 flags
+op	|int	|yyerror_diag_params					\
+				|UV diag_index				\
+				|NULLOK const char *s			\
+				|U32 flags				\
+				|NULLOK AV *params
+op	|int	|yyerror_diag_pvn					\
+				|UV diag_index				\
+				|NULLOK const char *s			\
+				|STRLEN len				\
+				|U32 flags
+op	|int	|yyerror_diag_pvn_params				\
+				|UV diag_index				\
+				|NULLOK const char *s			\
+				|STRLEN len				\
+				|U32 flags				\
+				|NULLOK AV *params
 p	|int	|yyerror_pv	|NN const char * const s		\
 				|U32 flags
 p	|int	|yyerror_pvn	|NULLOK const char * const s		\
@@ -4885,6 +5198,15 @@ ERXp	|SV *	|setup_canned_invlist_					\
           defined(PERL_IN_REGCOMP_ANY) || defined(PERL_IN_UTF8_C) */
 #if defined(PERL_IN_DQUOTE_C) || defined(PERL_IN_REGCOMP_C) || \
     defined(PERL_IN_TOKE_C)
+QXop	|void	|diag_append_alien_digit_warning			\
+				|NULLOK SV **exception_slot		\
+				|UV diag_index				\
+				|const U8 radix 			\
+				|const STRLEN valids_len		\
+				|SPTR const char * const first_bad	\
+				|EPTRgt const char * const send 	\
+				|const bool UTF 			\
+				|const bool braced
 ERXp	|const char *|form_alien_digit_msg				\
 				|const U8 which 			\
 				|const STRLEN valids_len		\
@@ -4892,11 +5214,22 @@ ERXp	|const char *|form_alien_digit_msg				\
 				|EPTRgt const char * const send 	\
 				|const bool UTF 			\
 				|const bool braced
-ERXp	|bool	|grok_bslash_c	|const char source			\
+DERXp	|bool	|grok_bslash_c	|const char source			\
 				|NN U8 *result				\
 				|NN const char **message		\
 				|NULLOK U32 *packed_warn
-ERXp	|bool	|grok_bslash_o	|SPTR char **s				\
+ERXop	|UV	|grok_bslash_c_diag					\
+				|const char source			\
+				|NN U8 *result				\
+				|NULLOK SV **exception_slot		\
+				|const bool allow_warning
+DERXop	|bool	|grok_bslash_c_with_reason				\
+				|const char source			\
+				|NN U8 *result				\
+				|NN const char **message		\
+				|NULLOK U32 *packed_warn		\
+				|NN const char **reason
+DERXp	|bool	|grok_bslash_o	|SPTR char **s				\
 				|EPTRgt const char * const send 	\
 				|NN UV *uv				\
 				|NN const char **message		\
@@ -4904,7 +5237,16 @@ ERXp	|bool	|grok_bslash_o	|SPTR char **s				\
 				|const bool strict			\
 				|const bool allow_UV_MAX		\
 				|const bool utf8
-ERXp	|bool	|grok_bslash_x	|SPTR char **s				\
+ERXop	|UV	|grok_bslash_o_diag					\
+				|SPTR char **s				\
+				|EPTRgt const char * const send 	\
+				|NN UV *uv				\
+				|NULLOK SV **exception_slot		\
+				|const bool strict			\
+				|const bool allow_UV_MAX		\
+				|const bool utf8			\
+				|const bool allow_warning
+DERXp	|bool	|grok_bslash_x	|SPTR char **s				\
 				|EPTRgt const char * const send 	\
 				|NN UV *uv				\
 				|NN const char **message		\
@@ -4912,7 +5254,17 @@ ERXp	|bool	|grok_bslash_x	|SPTR char **s				\
 				|const bool strict			\
 				|const bool allow_UV_MAX		\
 				|const bool utf8
-#endif
+ERXop	|UV	|grok_bslash_x_diag					\
+				|SPTR char **s				\
+				|EPTRgt const char * const send 	\
+				|NN UV *uv				\
+				|NULLOK SV **exception_slot		\
+				|const bool strict			\
+				|const bool allow_UV_MAX		\
+				|const bool utf8			\
+				|const bool allow_warning
+#endif /* defined(PERL_IN_DQUOTE_C) || defined(PERL_IN_REGCOMP_C) ||
+          defined(PERL_IN_TOKE_C) */
 #if defined(PERL_IN_DQUOTE_C) || defined(PERL_IN_REGCOMP_C) || \
     defined(PERL_IN_TOKE_C)   || defined(PERL_IN_UTF8_C)
 ERXp	|const char *|form_cp_too_large_msg				\
@@ -5035,7 +5387,7 @@ ST	|void	|hv_magic_check |NN HV *hv				\
 Sr	|void	|hv_notallowed	|int flags				\
 				|NN const char *key			\
 				|I32 klen				\
-				|NN const char *msg
+				|int error
 S	|SV *	|refcounted_he_value					\
 				|NN const struct refcounted_he *he
 RSTa	|HEK *	|save_hek_flags |NN const char *str			\
@@ -5134,10 +5486,6 @@ S	|const char *|native_querylocale_i				\
 				|const locale_category_index cat_index
 S	|void	|new_LC_ALL	|NN const char *lc_all			\
 				|bool force
-S	|void	|output_check_environment_warning			\
-				|NULLOK const char * const language	\
-				|NULLOK const char * const lc_all	\
-				|NULLOK const char * const lang
 S	|parse_LC_ALL_string_return|parse_LC_ALL_string 		\
 				|NN const char *string			\
 				|NN const char **output 		\
@@ -5365,9 +5713,11 @@ RS	|I32	|assignment_type|NULLOK const OP *o
 S	|void	|bad_type_gv	|I32 n					\
 				|NN GV *gv				\
 				|NN const OP *kid			\
-				|NN const char *t
+				|NN const char *expected_kind		\
+				|NN const char *sigils
 S	|void	|bad_type_pv	|I32 n					\
-				|NN const char *t			\
+				|NN const char *expected_kind		\
+				|NN const char *sigils			\
 				|NN const OP *o 			\
 				|NN const OP *kid
 S	|void	|check_alt_hash_fields_hekify				\
@@ -5611,6 +5961,7 @@ RTi	|bool	|lossless_NV_to_IV					\
 : Used in pp_hot.c
 Reop	|GV *	|softref2xv	|NN SV * const sv			\
 				|NN const char * const what		\
+				|NN const char * const reference_kind	\
 				|const svtype type
 #endif
 #if defined(PERL_IN_PP_C)   || defined(PERL_IN_REGCOMP_ANY) || \
@@ -5922,7 +6273,7 @@ ES	|int	|handle_possible_posix					\
 				|NN RExC_state_t *pRExC_state		\
 				|NN const char * const s		\
 				|NULLOK char **updated_parse_ptr	\
-				|NULLOK AV **posix_warnings		\
+				|NULLOK SSize_t *posix_warnings 	\
 				|const bool check_only
 ES	|regnode_offset|handle_regex_sets				\
 				|NN RExC_state_t *pRExC_state		\
@@ -5938,7 +6289,7 @@ ES	|SV *	|handle_user_defined_property				\
 				|const bool deferrable			\
 				|NN SV *contents			\
 				|NN bool *user_defined_ptr		\
-				|NN SV *msg				\
+				|NN SV **exception_slot 		\
 				|const STRLEN level
 ES	|bool	|has_runtime_code					\
 				|RExC_state_t * const pRExC_state NN	\
@@ -5960,7 +6311,7 @@ ES	|U8	|optimize_regclass						\
 				|NN I32 *flagp
 ES	|void	|output_posix_warnings					\
 				|NN RExC_state_t *pRExC_state		\
-				|NN AV *posix_warnings
+				|NN SSize_t *posix_warnings
 ES	|void	|parse_lparen_question_flags				\
 				|NN RExC_state_t *pRExC_state
 ES	|SV *	|parse_uniprop_string					\
@@ -5972,11 +6323,8 @@ ES	|SV *	|parse_uniprop_string					\
 				|const bool deferrable			\
 				|NULLOK AV **strings			\
 				|NN bool *user_defined_ptr		\
-				|NN SV *msg				\
+				|NN SV **exception_slot 		\
 				|const STRLEN level
-Sfr	|void	|re_croak	|bool utf8				\
-				|NN const char *pat			\
-				|...
 ES	|regnode_offset|reg	|NN RExC_state_t *pRExC_state		\
 				|I32 paren				\
 				|NN I32 *flagp				\
@@ -6436,7 +6784,8 @@ S	|SV *	|find_hash_subscript					\
 Sdx	|SV *	|find_uninit_var|NULLOK const OP * const obase		\
 				|NULLOK const SV * const uninit_sv	\
 				|bool match				\
-				|NN const char **desc_p
+				|NN const char **desc_p 		\
+				|NN const char **operation_name_p
 S	|void	|glob_assign_glob					\
 				|NN SV * const dsv			\
 				|NN SV * const ssv			\
@@ -6588,7 +6937,7 @@ So	|SV *	|new_constant	|NULLOK const char *s			\
 				|NULLOK SV *pv				\
 				|NULLOK const char *type		\
 				|STRLEN typelen 			\
-				|NULLOK const char **error_msg
+				|NULLOK bool *failed
 S	|char * |parse_ident	|SPTR const char *s			\
 				|EPTRge const char * const s_end	\
 				|SPTR char **d				\
@@ -6628,13 +6977,11 @@ S	|void	|update_debugger_info					\
 				|NULLOK const char * const buf		\
 				|STRLEN len
 S	|void	|warn_expect_operator					\
-				|NN const char * const what		\
+				|NN const char * const found_kind	\
 				|NULLOK char *s 			\
 				|I32 pop_oldbufptr
 S	|void	|yyerror_non_ascii_message				\
 				|NN const U8 * const s
-S	|int	|yywarn 	|NN const char * const s		\
-				|U32 flags
 # if defined(DEBUGGING)
 Sf	|void	|printbuf	|NN const char * const fmt		\
 				|NN const char * const s
@@ -6721,21 +7068,10 @@ RS	|char * |unexpected_non_continuation_text			\
 				|STRLEN print_len			\
 				|const STRLEN non_cont_byte_pos 	\
 				|const STRLEN expect_len
-# if 0
-S	|void	|warn_on_first_deprecated_use				\
-				|U32 category				\
-				|NN const char * const name		\
-				|NN const char * const alternative	\
-				|const bool use_locale			\
-				|NN const char * const file		\
-				|const unsigned line
-# endif
 #endif /* defined(PERL_IN_UTF8_C) */
 #if defined(PERL_IN_UTIL_C)
 S	|bool	|ckwarn_common	|U32 w
 S	|SV *	|mess_alloc
-S	|SV *	|with_queued_errors					\
-				|NN SV *ex
 So	|void	|xs_version_bootcheck					\
 				|SSize_t items				\
 				|SSize_t ax				\

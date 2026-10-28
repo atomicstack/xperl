@@ -60,30 +60,52 @@ Perl_taint_proper(pTHX_ const char *f, const char *const s)
 #endif
 
     if (TAINT_get) {
-        const char *ug;
+        const char *taint_context;
+        const char *legacy_context;
 
         if (!f)
             f = PL_no_security;
-        if (PerlProc_getuid() != PerlProc_geteuid())
-            ug = " while running setuid";
-        else if (PerlProc_getgid() != PerlProc_getegid())
-            ug = " while running setgid";
-        else if (TAINT_WARN_get)
-            ug = " while running with -t switch";
-        else
-            ug = " while running with -T switch";
-
-        /* XXX because taint_proper adds extra format args, we can't
-         * get the caller to check properly; so we just silence the warning
-         * and hope the callers aren't naughty */
-        GCC_DIAG_IGNORE_STMT(-Wformat-nonliteral);
-        if (PL_unsafe || TAINT_WARN_get) {
-            ck_warner_d(packWARN(WARN_TAINT), f, s, ug);
+        if (PerlProc_getuid() != PerlProc_geteuid()) {
+            taint_context = "setuid";
+            legacy_context = " while running setuid";
+        }
+        else if (PerlProc_getgid() != PerlProc_getegid()) {
+            taint_context = "setgid";
+            legacy_context = " while running setgid";
+        }
+        else if (TAINT_WARN_get) {
+            taint_context = "taint_warning";
+            legacy_context = " while running with -t switch";
         }
         else {
-            croak(f, s, ug);
+            taint_context = "taint_mode";
+            legacy_context = " while running with -T switch";
         }
-        GCC_DIAG_RESTORE_STMT;
+
+        if (strEQ(f, PERL_FORMAT_ERROR_TAINT_DEPENDENCY_INSECURE))
+            PERL_CHECK_TAINT_ERROR_TAINT_DEPENDENCY_INSECURE(s, PERL_DIAG_SELECTOR_FROM_ERROR_TAINT_DEPENDENCY_INSECURE_TAINT_CONTEXT(taint_context));
+        else if (strEQ(f, PERL_FORMAT_ERROR_TAINT_ENVIRONMENT_HASH_ALIAS_FORBIDDEN)) {
+            const bool generic_target = strEQ(s, "another variable");
+            PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_HASH_ALIAS_FORBIDDEN(
+                generic_target ? "" : s,
+                PERL_DIAG_SELECTOR_FROM_ERROR_TAINT_ENVIRONMENT_HASH_ALIAS_FORBIDDEN_TAINT_CONTEXT(taint_context),
+                generic_target ? perl_diag_selector_domain_1804_1_generic_1
+                               : perl_diag_selector_domain_1804_1_named_2);
+        }
+        else if (strEQ(f, PERL_FORMAT_ERROR_TAINT_ENVIRONMENT_GLOB_ALIAS_FORBIDDEN))
+            PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_GLOB_ALIAS_FORBIDDEN(s, PERL_DIAG_SELECTOR_FROM_ERROR_TAINT_ENVIRONMENT_GLOB_ALIAS_FORBIDDEN_TAINT_CONTEXT(taint_context));
+        else if (strEQ(f, PERL_FORMAT_ERROR_TAINT_OPERATION_INSECURE))
+            PERL_CHECK_TAINT_ERROR_TAINT_OPERATION_INSECURE(s, PERL_DIAG_SELECTOR_FROM_ERROR_TAINT_OPERATION_INSECURE_TAINT_CONTEXT(taint_context));
+        else if (strEQ(f, PERL_FORMAT_ERROR_TAINT_ENVIRONMENT_DIRECTORY_INSECURE))
+            PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_DIRECTORY_INSECURE(s, PERL_DIAG_SELECTOR_FROM_ERROR_TAINT_ENVIRONMENT_DIRECTORY_INSECURE_TAINT_CONTEXT(taint_context));
+        else if (strEQ(f, PERL_FORMAT_ERROR_TAINT_ENVIRONMENT_VARIABLE_INSECURE))
+            PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_VARIABLE_INSECURE(s, PERL_DIAG_SELECTOR_FROM_ERROR_TAINT_ENVIRONMENT_VARIABLE_INSECURE_TAINT_CONTEXT(taint_context));
+        else {
+            /* External C callers can supply a custom two-value format. */
+            GCC_DIAG_IGNORE_STMT(-Wformat-nonliteral);
+            PERL_CHECK_TAINT_ERROR_TAINT_UNCLASSIFIED_FORMAT(f, s, legacy_context);
+            GCC_DIAG_RESTORE_STMT;
+        }
 
     }
 }
@@ -127,10 +149,10 @@ Perl_taint_env(pTHX)
         TAINT;
         if (strEQ(name,"ENV"))
             /* hash alias */
-            taint_proper("%%ENV is aliased to %s%s", "another variable");
+            taint_proper(PERL_FORMAT_ERROR_TAINT_ENVIRONMENT_HASH_ALIAS_FORBIDDEN, "another variable");
         else
             /* glob alias: report it in the error message */
-            taint_proper("%%ENV is aliased to %%%s%s", name);
+            taint_proper(PERL_FORMAT_ERROR_TAINT_ENVIRONMENT_GLOB_ALIAS_FORBIDDEN, name);
         /* this statement is reached under -t or -U */
         TAINT_set(was_tainted);
 #ifdef NO_TAINT_SUPPORT
@@ -153,11 +175,11 @@ Perl_taint_env(pTHX)
             break;
         if (SvTAINTED(*svp)) {
             TAINT;
-            taint_proper("Insecure %s%s", "$ENV{DCL$PATH}");
+            taint_proper(PERL_FORMAT_ERROR_TAINT_OPERATION_INSECURE, "$ENV{DCL$PATH}");
         }
         if ((mg = mg_find(*svp, PERL_MAGIC_envelem)) && MgTAINTEDDIR(mg)) {
             TAINT;
-            taint_proper("Insecure directory in %s%s", "$ENV{DCL$PATH}");
+            taint_proper(PERL_FORMAT_ERROR_TAINT_ENVIRONMENT_DIRECTORY_INSECURE, "$ENV{DCL$PATH}");
         }
         i++;
     }
@@ -169,11 +191,11 @@ Perl_taint_env(pTHX)
         MAGIC* mg;
         if (SvTAINTED(*svp)) {
             TAINT;
-            taint_proper("Insecure %s%s", "$ENV{PATH}");
+            taint_proper(PERL_FORMAT_ERROR_TAINT_OPERATION_INSECURE, "$ENV{PATH}");
         }
         if ((mg = mg_find(*svp, PERL_MAGIC_envelem)) && MgTAINTEDDIR(mg)) {
             TAINT;
-            taint_proper("Insecure directory in %s%s", "$ENV{PATH}");
+            taint_proper(PERL_FORMAT_ERROR_TAINT_ENVIRONMENT_DIRECTORY_INSECURE, "$ENV{PATH}");
         }
     }
 
@@ -196,7 +218,7 @@ Perl_taint_env(pTHX)
             t++;
         if (t < e) {
             TAINT;
-            taint_proper("Insecure $ENV{%s}%s", "TERM");
+            taint_proper(PERL_FORMAT_ERROR_TAINT_ENVIRONMENT_VARIABLE_INSECURE, "TERM");
         }
     }
 #endif /* !VMS */
@@ -205,7 +227,7 @@ Perl_taint_env(pTHX)
         SV * const * const svp = hv_fetch(GvHVn(PL_envgv), *e, strlen(*e), FALSE);
         if (svp && *svp != &PL_sv_undef && SvTAINTED(*svp)) {
             TAINT;
-            taint_proper("Insecure $ENV{%s}%s", *e);
+            taint_proper(PERL_FORMAT_ERROR_TAINT_ENVIRONMENT_VARIABLE_INSECURE, *e);
         }
     }
 }

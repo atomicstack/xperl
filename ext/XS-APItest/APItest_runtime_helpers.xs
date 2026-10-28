@@ -36,6 +36,7 @@ CODE:
 #ifdef PERL_RC_STACK
     assert(!AvREAL(PL_curstack));
 #endif
+
     pop_stackinfo();
 #ifdef PERL_RC_STACK
     assert(AvREAL(PL_curstack));
@@ -467,3 +468,94 @@ OUTPUT:
     RETVAL
 
 #endif
+
+SV *
+test_diag_adopt_rollback()
+PREINIT:
+    SV *exception = NULL;
+    AV *result;
+    SV **slot;
+    SV **parent_slot;
+    SV *parent;
+    SV *diagnostic;
+    HV *diagnostic_fields;
+    SV *shared_collector = NULL;
+    AV *shared_messages;
+    AV *shared_children;
+    SV **shared_error;
+    SV **shared_warning;
+    SV **children_slot;
+CODE:
+    result = newAV();
+    Perl_diag_append(aTHX_ &exception, NULL,
+                     perl_diag_error_numeric_domain_division_by_zero_idx, NULL, 0);
+    Perl_diag_append(aTHX_ &exception, NULL,
+                     perl_diag_error_numeric_domain_division_by_zero_idx, NULL, 0);
+    Perl_diag_append(aTHX_ &exception, NULL,
+                     perl_diag_error_numeric_domain_division_by_zero_idx, NULL, 0);
+    Perl_diag_append(aTHX_ &exception, NULL,
+                     perl_diag_warning_uninitialized_value_with_operation_idx, NULL,
+                     packWARN(WARN_UNINITIALIZED));
+
+    av_push(result, newSVuv(Perl_diag_error_count(aTHX_ exception)));
+    Perl_diag_adopt_since(aTHX_ &exception, 1);
+    av_push(result, newSVuv(Perl_diag_error_count(aTHX_ exception)));
+
+    slot = hv_fetchs(MUTABLE_HV(SvRV(exception)), "contents", FALSE);
+    parent_slot = slot && SvROK(*slot) && SvTYPE(SvRV(*slot)) == SVt_PVAV
+        ? av_fetch(MUTABLE_AV(SvRV(*slot)), 1, FALSE) : NULL;
+    parent = parent_slot ? *parent_slot : NULL;
+    slot = parent && SvROK(parent) && SvTYPE(SvRV(parent)) == SVt_PVHV
+        ? hv_fetchs(MUTABLE_HV(SvRV(parent)), "contents", FALSE) : NULL;
+    av_push(result, newSVuv(slot && SvROK(*slot)
+        && SvTYPE(SvRV(*slot)) == SVt_PVAV
+        ? av_top_index(MUTABLE_AV(SvRV(*slot))) + 1 : 0));
+
+    Perl_diag_rollback_exception(aTHX_ &exception, 1);
+    av_push(result, newSVuv(Perl_diag_error_count(aTHX_ exception)));
+    av_push(result, newSVuv(Perl_diag_exception_message_count(aTHX_ &exception)));
+
+    diagnostic_fields = newHV();
+    (void)hv_stores(diagnostic_fields, "severity", newSVpvs("FATAL_ERROR"));
+    diagnostic = sv_2mortal(newRV_noinc(MUTABLE_SV(diagnostic_fields)));
+    sv_bless(diagnostic, gv_stashpvs("XPerl::Diagnostic", GV_ADD));
+    Perl_diag_append(aTHX_ &diagnostic, NULL,
+                     perl_diag_error_numeric_domain_division_by_zero_idx, NULL, 0);
+    Perl_diag_rollback_exception(aTHX_ &diagnostic, 0);
+    slot = hv_fetchs(diagnostic_fields, "severity", FALSE);
+    av_push(result, newSViv(slot && strEQ(SvPV_nolen(*slot), "FATAL_ERROR")));
+    av_push(result, newSVuv(Perl_diag_error_count(aTHX_ diagnostic)));
+
+    Perl_diag_append(aTHX_ &shared_collector, NULL,
+                     perl_diag_error_numeric_domain_division_by_zero_idx, NULL, 0);
+    Perl_diag_append(aTHX_ &shared_collector, NULL,
+                     perl_diag_warning_uninitialized_value_with_operation_idx, NULL,
+                     packWARN(WARN_UNINITIALIZED));
+    slot = hv_fetchs(MUTABLE_HV(SvRV(shared_collector)), "contents", FALSE);
+    shared_messages = MUTABLE_AV(SvRV(*slot));
+    shared_error = av_fetch(shared_messages, 0, FALSE);
+    shared_warning = av_fetch(shared_messages, 1, FALSE);
+    children_slot = hv_fetchs(MUTABLE_HV(SvRV(*shared_warning)),
+                              "contents", TRUE);
+    if (children_slot && !SvOK(*children_slot))
+        sv_setrv_noinc(*children_slot, MUTABLE_SV(newAV()));
+    shared_children = MUTABLE_AV(SvRV(*children_slot));
+    av_push(shared_children, newSVsv(*shared_error));
+    Perl_diag_rollback_exception(aTHX_ &shared_collector, 1);
+    av_push(result, newSVuv(Perl_diag_error_count(aTHX_ shared_collector)));
+    RETVAL = newRV_noinc(MUTABLE_SV(result));
+OUTPUT:
+    RETVAL
+
+UV
+diag_word_operation_identity(name)
+    SV *name
+    PREINIT:
+        STRLEN length;
+        const char *text;
+    CODE:
+        SvGETMAGIC(name);
+        text = SvOK(name) ? SvPV_nomg(name, length) : NULL;
+        RETVAL = Perl_diag_word_operation_from_name(text, text ? length : 0);
+    OUTPUT:
+        RETVAL

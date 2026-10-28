@@ -195,7 +195,13 @@ __NEED_DUMMY_VAR__ yy_parser PL_parser;
 # define PL_tokenbuf       D_PPP_my_PL_parser_var(tokenbuf)
 # define PL_in_my          D_PPP_my_PL_parser_var(in_my)
 # define PL_in_my_stash    D_PPP_my_PL_parser_var(in_my_stash)
-# define PL_error_count    D_PPP_my_PL_parser_var(error_count)
+# ifndef PL_error_count
+#  ifdef PERL_DIAG_ERROR_COUNT
+#   define PL_error_count PERL_DIAG_ERROR_COUNT
+#  else
+#   define PL_error_count D_PPP_my_PL_parser_var(error_count)
+#  endif
+# endif
 
 
 #else
@@ -420,7 +426,13 @@ other_variables()
                 ppp_PARSERVAR(char *, PL_bufend);
                 ppp_PARSERVAR(ppp_lex_state_t, PL_lex_state);
                 ppp_PARSERVAR(SV *, PL_lex_stuff);
-                ppp_PARSERVAR(ppp_error_count_t, PL_error_count);
+                {
+                    /* Newer perls expose this as a derived value, not an lvalue. */
+                    const UV error_count = PL_error_count;
+                    (void)error_count;
+                    mXPUSHi(1);
+                    count++;
+                }
                 ppp_PARSERVAR(ppp_in_my_t, PL_in_my);
 #if { VERSION >= 5.5.0 }
                 ppp_PARSERVAR(HV*, PL_in_my_stash);

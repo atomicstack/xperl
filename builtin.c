@@ -40,8 +40,7 @@ struct BuiltinFuncDescriptor {
 static void S_warn_experimental_builtin(pTHX_ const char *name)
 {
     /* diag_listed_as: Built-in function '%s' is experimental */
-    ck_warner_d(packWARN(WARN_EXPERIMENTAL__BUILTIN),
-                "Built-in function 'builtin::%s' is experimental", name);
+    PERL_WARN_WARNING_EXPERIMENTAL_BUILTIN_FUNCTION_USED(name);
 }
 
 
@@ -75,7 +74,7 @@ XS(XS_builtin_inf)
     EXTEND(SP, 1);
     XSRETURN_NV(NV_INF);
 #else
-    Perl_croak_nocontext("builtin::inf not implemented");
+    PERL_THROW_BUILTIN_INF_NOT_IMPLEMENTED();
 #endif
 }
 
@@ -89,7 +88,7 @@ XS(XS_builtin_nan)
     EXTEND(SP, 1);
     XSRETURN_NV(NV_NAN);
 #else
-    Perl_croak_nocontext("builtin::nan not implemented");
+    PERL_THROW_BUILTIN_NAN_NOT_IMPLEMENTED();
 #endif
 }
 
@@ -105,23 +104,70 @@ XS(XS_builtin_rand_bytes)
         croak_xs_usage(cv, "count");
 
     if (!SvOK(ST(0)) || !looks_like_number(ST(0)))
-        croak("builtin::rand_bytes() count must be a non-negative integer");
+        PERL_THROW_ERROR_RNG_BYTES_COUNT_INVALID();
 
     count_nv = SvNV(ST(0));
     integer = Perl_floor(count_nv);
     if (Perl_isnan(count_nv) || Perl_isinf(count_nv)
         || count_nv < 0.0 || count_nv != integer || count_nv > (NV)UV_MAX)
-        croak("builtin::rand_bytes() count must be a non-negative integer");
+        PERL_THROW_ERROR_RNG_BYTES_COUNT_INVALID();
 
     count = SvUV(ST(0));
     if ((NV)count != integer || (STRLEN)count != count)
-        croak("builtin::rand_bytes() count is too large");
+        PERL_THROW_ERROR_RNG_BYTES_COUNT_TOO_LARGE();
 
     {
         SV *result = sv_2mortal(Perl_call_rand_bytes(aTHX_ (STRLEN)count));
         SPAGAIN;
         ST(0) = result;
     }
+    XSRETURN(1);
+}
+
+XS(Perl_builtin_get_diagnostic_data);
+XS(Perl_builtin_get_diagnostic_data)
+{
+    dXSARGS;
+    SV *identifier;
+    SV *result = NULL;
+
+    if (items != 1)
+        croak_xs_usage(cv, "number_or_code");
+
+    identifier = ST(0);
+    SvGETMAGIC(identifier);
+    if (SvOK(identifier) && !SvROK(identifier)) {
+        STRLEN length;
+        const char *value = SvPV_nomg(identifier, length);
+        bool decimal = length != 0;
+
+        for (STRLEN i = 0; i < length; i++)
+            if (!isDIGIT_A(value[i])) {
+                decimal = FALSE;
+                break;
+            }
+
+        if (decimal) {
+            UV number = 0;
+            bool valid = TRUE;
+
+            for (STRLEN i = 0; i < length; i++) {
+                const UV digit = (UV)(value[i] - '0');
+                if (number > (UV_MAX - digit) / 10) {
+                    valid = FALSE;
+                    break;
+                }
+                number = number * 10 + digit;
+            }
+            if (valid)
+                result = Perl_diag_data_by_number(aTHX_ number);
+        }
+        else
+            result = Perl_diag_data_by_code(aTHX_ value, length);
+    }
+
+    SPAGAIN;
+    ST(0) = result ? sv_2mortal(result) : &PL_sv_undef;
     XSRETURN(1);
 }
 
@@ -161,8 +207,7 @@ static OP *ck_builtin_const(pTHX_ OP *entersubop, GV *namegv, SV *ckobj)
         case BUILTIN_CONST_NAN:   return entersubop;
 #endif
         default:
-            DIE(aTHX_ "panic: unrecognised builtin_const value %" IVdf,
-                      builtin->ckval);
+            PERL_PANIC_ERROR_INTERNAL_OPCODE_BUILTIN_CONSTANT_ID_UNKNOWN(builtin->ckval);
             break;
     }
 
@@ -228,8 +273,7 @@ XS(XS_builtin_func1_scalar)
             break;
 
         default:
-            die("panic: unhandled opcode %" IVdf
-                           " for xs_builtin_func1_scalar()", (IV) ix);
+            PERL_PANIC_ERROR_INTERNAL_OPCODE_BUILTIN_SCALAR_DISPATCH_OP_UNKNOWN((IV) ix);
     }
 
     XSRETURN(1);
@@ -315,11 +359,10 @@ XS(XS_builtin_export_lexically)
     warn_experimental_builtin("export_lexically");
 
     if(!PL_compcv)
-        croak(
-                "export_lexically can only be called at compile time");
+        PERL_THROW_ERROR_LEXICAL_EXPORT_OUTSIDE_COMPILATION();
 
     if(items % 2)
-        croak("Odd number of elements in export_lexically");
+        PERL_THROW_ERROR_LEXICAL_EXPORT_ODD_ARGUMENT_COUNT();
 
     for(int i = 0; i < items; i += 2) {
         SV *name = ST(i);
@@ -327,7 +370,7 @@ XS(XS_builtin_export_lexically)
 
         if(!SvROK(ref))
             /* diag_listed_as: Expected %s reference in export_lexically */
-            croak("Expected a reference in export_lexically");
+            PERL_THROW_ERROR_LEXICAL_EXPORT_REFERENCE_REQUIRED();
 
         char sigil = SvPVX(name)[0];
         SV *rv = SvRV(ref);
@@ -342,7 +385,7 @@ XS(XS_builtin_export_lexically)
                 /* FALLTHROUGH */
             case '&':
                 if(SvTYPE(rv) != SVt_PVCV)
-                    bad = "a CODE";
+                    bad = "code";
                 break;
 
             case '$':
@@ -350,22 +393,24 @@ XS(XS_builtin_export_lexically)
                  * includes SVt_INVLIST but it isn't thought possible for pureperl
                  * code to ever manage to see one of those. */
                 if(SvTYPE(rv) > SVt_PVMG)
-                    bad = "a SCALAR";
+                    bad = "SCALAR";
                 break;
 
             case '@':
                 if(SvTYPE(rv) != SVt_PVAV)
-                    bad = "an ARRAY";
+                    bad = "ARRAY";
                 break;
 
             case '%':
                 if(SvTYPE(rv) != SVt_PVHV)
-                    bad = "a HASH";
+                    bad = "HASH";
                 break;
         }
 
         if(bad)
-            croak("Expected %s reference in export_lexically", bad);
+            PERL_THROW_ERROR_LEXICAL_EXPORT_REFERENCE_TYPE_MISMATCH(
+                PERL_DIAG_SELECTOR_FROM_ERROR_LEXICAL_EXPORT_REFERENCE_TYPE_MISMATCH_REFERENCE_TYPE(
+                    bad));
     }
 
     prepare_export_lexical();
@@ -399,8 +444,7 @@ XS(XS_builtin_func1_void)
             break;
 
         default:
-            die("panic: unhandled opcode %" IVdf
-                           " for xs_builtin_func1_void()", (IV) ix);
+            PERL_PANIC_ERROR_INTERNAL_OPCODE_BUILTIN_VOID_DISPATCH_OP_UNKNOWN((IV) ix);
     }
 
     XSRETURN(0);
@@ -506,13 +550,13 @@ Perl_XS_builtin_indexed(pTHX_ CV *cv)
 
     switch(GIMME_V) {
         case G_VOID:
-            ck_warner(packWARN(WARN_VOID),
-                      "Useless use of %s in void context", "builtin::indexed");
+            PERL_WARN_WARNING_VOID_USELESS_EXPRESSION_PV(
+                perl_diag_selector_domain_2072_0_literal_5,
+                perl_diag_word_operation_none, "builtin::indexed");
             XSRETURN(0);
 
         case G_SCALAR:
-            ck_warner(packWARN(WARN_SCALAR),
-                      "Useless use of %s in scalar context", "builtin::indexed");
+            PERL_WARN_WARNING_SCALAR_USELESS_EXPRESSION("builtin::indexed");
             ST(0) = sv_2mortal(newSViv(items * 2));
             XSRETURN(1);
 
@@ -671,8 +715,6 @@ static OP *ck_builtin_funcN(pTHX_ OP *entersubop, GV *namegv, SV *ckobj)
     return entersubop;
 }
 
-static const char builtin_not_recognised[] = "'%" SVf "' is not recognised as a builtin function";
-
 #define NO_BUNDLE SHORTVER(255,255)
 
 static const struct BuiltinFuncDescriptor builtins[] = {
@@ -682,6 +724,7 @@ static const struct BuiltinFuncDescriptor builtins[] = {
     { "inf",        NO_BUNDLE, true,  &XS_builtin_inf,    &ck_builtin_const, BUILTIN_CONST_INF   },
     { "nan",        NO_BUNDLE, true,  &XS_builtin_nan,    &ck_builtin_const, BUILTIN_CONST_NAN   },
     { "rand_bytes", NO_BUNDLE, true,  &XS_builtin_rand_bytes, &ck_builtin_func1, 0 },
+    { "get_diagnostic_data", NO_BUNDLE, true, &Perl_builtin_get_diagnostic_data, &ck_builtin_func1, 0 },
 
     /* unary functions */
     { "is_bool",         NO_BUNDLE, true,  &XS_builtin_func1_scalar, &ck_builtin_func1, OP_IS_BOOL    },
@@ -699,6 +742,7 @@ static const struct BuiltinFuncDescriptor builtins[] = {
 
     { "created_as_string", NO_BUNDLE, true, &XS_builtin_created_as_string, &ck_builtin_func1, 0 },
     { "created_as_number", NO_BUNDLE, true, &XS_builtin_created_as_number, &ck_builtin_func1, 0 },
+
 
     { "load_module", NO_BUNDLE, true, &XS_builtin_load_module, &ck_builtin_func1, 0 },
 
@@ -762,7 +806,7 @@ static void S_import_sym(pTHX_ SV *sym)
 
     CV *cv = get_cv(SvPV_nolen(fqname), SvUTF8(fqname) ? SVf_UTF8 : 0);
     if(!cv)
-        croak(builtin_not_recognised, sym);
+        PERL_THROW_ERROR_LEXICAL_IMPORT_UNKNOWN_BUILTIN(sym);
 
     /* A version declaration can import a builtin bundle before -E's
      * implicit builtin ':all'.  Re-importing the same lexical function is
@@ -816,8 +860,7 @@ XS(XS_builtin_import)
     dXSARGS;
 
     if(!PL_compcv)
-        croak(
-                "builtin::import can only be called at compile time");
+        PERL_THROW_ERROR_LEXICAL_IMPORT_OUTSIDE_COMPILATION();
 
     prepare_export_lexical();
 
@@ -826,7 +869,7 @@ XS(XS_builtin_import)
         STRLEN symlen;
         const char *sympv = SvPV(sym, symlen);
         if(strEQ(sympv, "import"))
-            croak(builtin_not_recognised, sym);
+            PERL_THROW_ERROR_LEXICAL_IMPORT_UNKNOWN_BUILTIN(sym);
 
         if(sympv[0] == ':') {
             if (strEQ(sympv, ":all")) {
@@ -838,15 +881,14 @@ XS(XS_builtin_import)
             }
             UV vmajor, vminor;
             if(!S_parse_version(sympv + 1, sympv + symlen, &vmajor, &vminor))
-                croak("Invalid version bundle %" SVf_QUOTEDPREFIX, sym);
+                PERL_THROW_ERROR_LEXICAL_IMPORT_INVALID_VERSION_BUNDLE(sym);
 
             U16 want_ver = SHORTVER(vmajor, vminor);
 
             if(want_ver < SHORTVER(5,39) ||
                     /* round up devel version to next major release; e.g. 5.39 => 5.40 */
                     want_ver > SHORTVER(PERL_REVISION, PERL_VERSION + (PERL_VERSION % 2)))
-                croak("Builtin version bundle \"%s\" is not supported by Perl " PERL_VERSION_STRING,
-                        sympv);
+                PERL_THROW_ERROR_LEXICAL_IMPORT_UNSUPPORTED_VERSION_BUNDLE(sympv, PERL_VERSION_STRING);
 
             import_builtin_bundle(want_ver);
 

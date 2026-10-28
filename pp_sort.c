@@ -795,12 +795,11 @@ PP(pp_sort)
                     else {
                         SV *tmpstr = sv_newmortal();
                         gv_efullname3(tmpstr, gv, NULL);
-                        DIE(aTHX_ "Undefined sort subroutine \"%" SVf "\" called",
-                            SVfARG(tmpstr));
+                        PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_NAMED_SORT_SUBROUTINE(tmpstr);
                     }
                 }
                 else {
-                    DIE(aTHX_ "Undefined subroutine in sort");
+                    PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_SORT_SUBROUTINE();
                 }
             }
 

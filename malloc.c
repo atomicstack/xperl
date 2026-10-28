@@ -945,7 +945,7 @@ perl_get_emergency_buffer(IV *size)
     pv = SvPV_nolen(sv);
     /* Check alignment: */
     if ((PTR2UV(pv) - sizeof(union overhead)) & (NEEDED_ALIGNMENT - 1)) {
-        PerlIO_puts(PerlIO_stderr(),"Bad alignment of $^M!\n");
+        PerlIO_puts(PerlIO_stderr(), PERL_DIAG_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_EMERGENCY_BUFFER_MISALIGNED);
         return NULL;		/* die die die */
     }
 
@@ -1023,7 +1023,7 @@ emergency_sbrk(MEM_SIZE size)
         if (PTR2UV(pv) & (NEEDED_ALIGNMENT - 1)) {
             dTHX;
 
-            PerlIO_puts(PerlIO_stderr(),"Bad alignment of $^M!\n");
+            PerlIO_puts(PerlIO_stderr(), PERL_DIAG_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_EMERGENCY_BUFFER_MISALIGNED);
             return (char *)-1;		/* die die die */
         }
 
@@ -1057,17 +1057,15 @@ botch(const char *diag, const char *s, const char *file, int line)
     if (!(PERL_MAYBE_ALIVE && PERL_GET_THX))
         goto do_write;
     else {
-        if (PerlIO_printf(PerlIO_stderr(),
-                          "assertion botched (%s?): %s %s:%d\n",
-                          diag, s, file, line) != 0) {
+        if (PerlIO_printf(PerlIO_stderr(), PERL_DIAG_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ASSERTION_FAILED, diag, s, file, line) != 0) {
          do_write:		/* Can be initializing interpreter */
-            MYMALLOC_WRITE2STDERR("assertion botched (");
+            MYMALLOC_WRITE2STDERR(PERL_DIAG_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ASSERTION_EARLY_FAILED_TEXT_0);
             MYMALLOC_WRITE2STDERR(diag);
-            MYMALLOC_WRITE2STDERR("?): ");
+            MYMALLOC_WRITE2STDERR(PERL_DIAG_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ASSERTION_EARLY_FAILED_TEXT_1);
             MYMALLOC_WRITE2STDERR(s);
-            MYMALLOC_WRITE2STDERR(" (");
+            MYMALLOC_WRITE2STDERR(PERL_DIAG_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ASSERTION_EARLY_FAILED_TEXT_2);
             MYMALLOC_WRITE2STDERR(file);
-            MYMALLOC_WRITE2STDERR(":");
+            MYMALLOC_WRITE2STDERR(PERL_DIAG_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ASSERTION_EARLY_FAILED_TEXT_3);
             {
               char linebuf[10];
               char *s = linebuf + sizeof(linebuf) - 1;
@@ -1078,7 +1076,7 @@ botch(const char *diag, const char *s, const char *file, int line)
               } while (n /= 10);
               MYMALLOC_WRITE2STDERR(s);
             }
-            MYMALLOC_WRITE2STDERR(")\n");
+            MYMALLOC_WRITE2STDERR(PERL_DIAG_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ASSERTION_EARLY_FAILED_TEXT_4);
         }
         PerlProc_abort();
     }
@@ -1246,7 +1244,7 @@ Perl_malloc(size_t nbytes)
         BARK_64K_LIMIT("Allocation",nbytes,nbytes);
 #ifdef DEBUGGING
         if ((long)nbytes < 0)
-            Perl_croak_nocontext("panic: malloc");
+            PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_BUCKET_MALLOC_REQUEST_OUT_OF_RANGE();
 #endif
 
         bucket = adjust_size_and_find_bucket(&nbytes);
@@ -1300,17 +1298,15 @@ Perl_malloc(size_t nbytes)
                                                 /* Can't get this low */
              || (p && PTR2UV(p) < (1<<LOG_OF_MIN_ARENA)) ) {
             dTHX;
-            PerlIO_printf(PerlIO_stderr(),
-                          "Unaligned pointer in the free chain 0x%" UVxf "\n",
-                          PTR2UV(p));
+            PerlIO_printf(PerlIO_stderr(), PERL_DIAG_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_FREE_CHAIN_POINTER_INVALID, PTR2UV(p));
         }
         if ( (PTR2UV(p->ov_next) & (MEM_ALIGNBYTES - 1))
              || (p->ov_next && PTR2UV(p->ov_next) < (1<<LOG_OF_MIN_ARENA)) ) {
             dTHX;
             PerlIO_printf(PerlIO_stderr(),
-                          "Unaligned \"next\" pointer in the free "
-                          "chain 0x%" UVxf " at 0x%" UVxf "\n",
-                          PTR2UV(p->ov_next), PTR2UV(p));
+                PERL_DIAG_FORMAT_ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_FREE_CHAIN_NEXT_POINTER_INVALID,
+                PTR2UV(p->ov_next),
+                PTR2UV(p));
         }
 #endif
         nextf[bucket] = p->ov_next;
@@ -1699,7 +1695,7 @@ morecore(int bucket)
 #endif
         if (bucket == sizeof(MEM_SIZE)*8*BUCKETS_PER_POW2) {
             MALLOC_UNLOCK;
-            Perl_croak_nocontext("Out of memory during ridiculously large request");
+            PERL_THROW_ERROR_MEMORY_SIZE_ALLOCATION_REQUEST_TOO_LARGE();
         }
         if (bucket > max_bucket)
             max_bucket = bucket;
@@ -1814,7 +1810,7 @@ Perl_mfree(Malloc_t where)
                 return;
 #ifdef DEBUGGING
         if (PTR2UV(cp) & (MEM_ALIGNBYTES - 1))
-            Perl_croak_nocontext("wrong alignment in free()");
+            PERL_THROW_ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_FREE_POINTER_MISALIGNED();
 #endif
         ovp = (union overhead *)((caddr_t)cp 
                                 - sizeof (union overhead) * CHUNK_SHIFT);
@@ -1841,11 +1837,11 @@ Perl_mfree(Malloc_t where)
                     if (!PERL_IS_ALIVE || !PL_curcop) {
 #ifdef RCHECK
                         if (ovp->ov_rmagic == RMAGIC - 1) {
-                            ck_warner_d(packWARN(WARN_MALLOC), "Duplicate free() ignored");
+                            PERL_WARN_WARNING_SEVERE_MALLOC_DUPLICATE_FREE_IGNORED();
                             return;
                         }
 #endif
-                        ck_warner_d(packWARN(WARN_MALLOC), "Bad free() ignored");
+                        PERL_WARN_WARNING_SEVERE_MALLOC_INVALID_FREE_IGNORED();
                     }
                 }
                 return;  /* sanity */
@@ -1914,7 +1910,7 @@ Perl_realloc(void *mp, size_t nbytes)
         MEM_SIZE size = nbytes;
 
         if ((long)nbytes < 0)
-            Perl_croak_nocontext("panic: realloc");
+            PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_BUCKET_REALLOC_REQUEST_OUT_OF_RANGE();
 #endif
 
         BARK_64K_LIMIT("Reallocation",nbytes,size);
@@ -1945,11 +1941,11 @@ Perl_realloc(void *mp, size_t nbytes)
                     if (!PERL_IS_ALIVE || !PL_curcop) {
 #ifdef RCHECK
                         if (ovp->ov_rmagic == RMAGIC - 1) {
-                            ck_warner_d(packWARN(WARN_MALLOC), "realloc() of freed memory ignored");
+                            PERL_WARN_WARNING_SEVERE_MALLOC_FREED_BLOCK_REALLOC_IGNORED();
                             return NULL;
                         }
 #endif
-                        ck_warner_d(packWARN(WARN_MALLOC), "Bad realloc() ignored");
+                        PERL_WARN_WARNING_SEVERE_MALLOC_INVALID_REALLOC_IGNORED();
                     }
                 }
                 return NULL;  /* sanity */

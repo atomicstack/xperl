@@ -120,6 +120,7 @@ BEGIN {
 
     use Config;
     $overflow = $Config{uvsize} < 8 ? "80000000" : "80000000000000000";
+    my $regex_location = '(?: in regex; marked by <-- HERE in m/.*? <-- HERE .*?/ at .*? line \d+\.)?';
 
     # We defined these at compile time, so that the subroutines that they
     # refer to aren't known, so that we can test properties not known until
@@ -159,19 +160,19 @@ BEGIN {
     @USER_ERROR_PROPERTIES = (
         'IsOverflow'    => qr/Code point too large in (?#
                              )"0\t$overflow$utf8_comment" in expansion of (?#
-                             )main::IsOverflow/,
+                             )main::IsOverflow$regex_location/,
         'InRecursedA'   => qr/Infinite recursion in user-defined property (?#
                              )"main::InRecursedA" in expansion of (?#
                              )main::InRecursedC in expansion of (?#
                              )main::InRecursedB in expansion of (?#
-                             )main::InRecursedA/,
+                             )main::InRecursedA$regex_location/,
         'IsRangeReversed' => qr/Illegal range in "200 100$utf8_comment" in (?#
-                               )expansion of main::IsRangeReversed/,
+                               )expansion of main::IsRangeReversed$regex_location/,
         'IsNonHex'        => qr/Can't find Unicode property definition (?#
-                               )"BEEF CAGED" in expansion of main::IsNonHex/,
+                               )"BEEF CAGED" in expansion of main::IsNonHex$regex_location/,
 
         # Could have \n, hence /s
-        'IsDeath'        => qr/Died.* in expansion of main::IsDeath/s,
+        'IsDeath'        => qr/Died.* in expansion of main::IsDeath$regex_location/s,
     );
 
     # Now create a list of properties whose definitions won't be known at
@@ -530,7 +531,7 @@ sub IsOverflow {
     return "0\t$overflow$utf8_comment";
 }
 
-fresh_perl_like(<<'EOP', qr/Can't find Unicode property definition "F000\\tF010" in expansion of InOneBadApple/, {}, "Just one component bad");
+fresh_perl_like(<<'EOP', qr/Can't find Unicode property definition "F000\\tF010" in expansion of main::InOneBadApple(?: in regex; marked by <-- HERE in m\/.*? <-- HERE .*?\/ at .*? line \d+\.)?/, {}, "Just one component bad");
 # Extra backslash converts tab to backslash-t
 sub InOneBadApple { return "0100\t0110\n10000\t10010\nF000\\tF010\n0400\t0410" }
 qr/\p{InOneBadApple}/;

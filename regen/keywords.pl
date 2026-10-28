@@ -144,7 +144,7 @@ sub perl_keyword
 
   if ($k eq 'elseif') {
     return <<END;
-ck_warner_d(packWARN(WARN_SYNTAX), "elseif should be elsif");
+PERL_WARN_WARNING_SYNTAX_ELSEIF_SPELLING_UNRECOGNIZED();
 END
   }
   elsif (my $feature = $feature_kw{$k}) {

@@ -158,6 +158,8 @@ my @death =
  '/(?<= (?&x))(?<x>x+)/' => 'Lookbehind longer than 255 not implemented in regex m/(?<= (?&x))(?<x>x+)/',
 
  '/(?@)/' => 'Sequence (?@...) not implemented {#} m/(?@{#})/',
+ '/(?+a)/' => 'Illegal pattern {#} m/(?+a{#})/',
+ '/(?1x)/' => 'Expecting close bracket {#} m/(?1{#}x)/',
 
  '/(?{ 1/' => 'Missing right curly or square bracket',
 
@@ -365,6 +367,7 @@ my @death =
  '/\p{gc=:[\pS]:}/' => 'Use of \'\\pS\' is not allowed in Unicode property wildcard subpatterns {#} m/[\\pS{#}]/',
  '/\p{gc=:[\PS]:}/' => 'Use of \'\\PS\' is not allowed in Unicode property wildcard subpatterns {#} m/[\\PS{#}]/',
  '/(?[\p{name=KATAKANA LETTER AINU P}])/' => 'Unicode string properties are not implemented in (?[...]) {#} m/(?[\p{name=KATAKANA LETTER AINU P}{#}])/',
+'/[^\p{name=KATAKANA LETTER AINU P}]/' => 'Inverting a character class which contains a multi-character sequence is illegal {#} m/[^\p{name=KATAKANA LETTER AINU P}{#}]/',
  '/(?[ (?^x:(?[ ])) ])/' => 'Incomplete expression within \'(?[ ])\' {#} m/(?[ (?^x:(?[ {#}])) ])/',
  '/(?[ (?x:(?[ ])) ])/'  => 'Incomplete expression within \'(?[ ])\' {#} m/(?[ (?x:(?[ {#}])) ])/', # GH #16779
 );

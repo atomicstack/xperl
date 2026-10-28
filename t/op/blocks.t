@@ -6,7 +6,7 @@ BEGIN {
     set_up_inc('../lib');
 }
 
-plan tests => 26;
+plan tests => 31;
 
 my @expect = qw(
 b1
@@ -186,6 +186,34 @@ SKIP: {
     );
 }
 
+for my $switches ( [], ['-c'] ) {
+    my $special_blocks_after_syntax_error = runperl(
+        switches => $switches,
+        prog     => 'UNITCHECK { print qq(UNITCHECK ran\\n) } '
+                  . 'CHECK { print qq(CHECK ran\\n) } my $x = ;',
+        stderr   => 1,
+    );
+    like(
+        $special_blocks_after_syntax_error,
+        qr/syntax error/,
+        'a syntax error is reported before special blocks are skipped'
+    );
+    unlike(
+        $special_blocks_after_syntax_error,
+        qr/(?:UNITCHECK|CHECK) ran/,
+        'UNITCHECK and CHECK do not run after a syntax error'
+    );
+}
+
+is(
+    runperl(
+        prog   => 'BEGIN { eval q{my $x = ;}; } '
+                . 'CHECK { print qq(CHECK ran\\n) }',
+        stderr => 1,
+    ),
+    "CHECK ran\n",
+    'a caught eval syntax error does not suppress CHECK'
+);
 
 SKIP: {
     fresh_perl_is(

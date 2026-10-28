@@ -27,6 +27,65 @@ here, but most should go in the L</Performance Enhancements> section.
 
 [ List each enhancement as a =head2 entry ]
 
+=head2 Experimental diagnostic catalog lookup
+
+The experimental C<builtin::get_diagnostic_data> function returns a fresh
+metadata hash reference for a diagnostic identified by catalog number or
+code. The result includes available translated template cases, selector
+criteria, and parameter layout information. Unknown identifiers return
+C<undef>. See L<builtin/get_diagnostic_data>.
+
+=head2 Experimental integer plural forms
+
+The experimental C<builtin::cardinal_plural_form($language, $n)> and
+C<builtin::ordinal_plural_form($language, $n)> functions return grammatical
+plural categories for unsigned integers. They support all languages
+represented by the retained CLDR 49 definitions, independently of
+installed or loaded diagnostic packs. Language tags and code-based POSIX
+locale names are accepted, including regional plural overrides. Known
+languages without an explicit ordinal rule use C<other>; unsupported
+languages return C<undef>.
+See L<builtin/cardinal_plural_form>.
+
+=head2 Additional diagnostic translations
+
+The experimental diagnostic catalog adds Persian (C<fa>), Russian (C<ru>),
+Ukrainian (C<uk>) and Welsh (C<cy>) translations, integer plural rules and
+shared operation vocabulary. Persian cardinal plural categories use C<one>
+for 0 and 1, and C<other> for all larger unsigned integers; its ordinal
+category is always C<other>.
+Translations are machine-generated drafts and have not had native linguistic
+review. For example, C<PERL_DIAG_RENDER=fa:legacy> selects Persian text.
+
+Missing translations in the existing German, Spanish, French, Icelandic,
+Italian, Dutch and Portuguese catalogs have also been filled in. Stale French
+UTF-8 sequence-length wording has been updated. Translation repair records
+source freshness separately from linguistic review.
+
+=head2 Experimental structured core exceptions
+
+Parser errors and catalogued C<croak> and C<DIE> failures now deliver
+C<XPerl::Exception> objects by default. Plain C<die "text"> and
+C<warn "text"> create C<ERROR_USER_TEXT> and C<WARNING_USER_TEXT> diagnostics
+with the supplied text as an argument. Catalogued warnings also deliver objects,
+including when they become fatal.
+The default stringification preserves the previous error text;
+C<PERL_DIAG_RENDER=Dumper> selects a C<Data::Dumper> view. Other error paths
+still use their existing values.
+The C<XPerl::Exception> and C<XPerl::Diagnostic> methods are built into the
+interpreter and work in miniperl without loading their Perl files. Dumper
+rendering falls back to legacy text when C<Data::Dumper> is unavailable.
+Both classes now provide C<as_json>. Exception C<render('json')> and
+C<PERL_DIAG_RENDER=json> use the same versioned JSON shape. The built-in
+encoder works in miniperl without a JSON module and leaves Dumper available
+for development.
+
+C<XPerl::Exception> and C<XPerl::Diagnostic> share the C<XPerl::DiagGroup>
+operations C<contents>, C<contents_count>, C<append>, C<contains>, and
+C<has_errors>. Both store their diagnostic entries under C<contents>.
+Diagnostic storage is allocated when entries are added. JSON and Dumper
+records use C<contents> for diagnostic lists at every level.
+
 =head2 Experimental data-shape matching
 
 The documentation is now split into L<perldispatchontut>, a progressive
@@ -411,6 +470,22 @@ variable.
 
 =item *
 
+Diagnostic translations are provided by seventeen optional
+C<XPerl::DiagPack::XX> XS modules. English remains compiled into Perl and
+miniperl. Requiring a pack registers its capability without selecting it;
+C<use XPerl::DiagPack qw(all)> loads installed packs. The provisional
+L<diagpack> pragma selects a language lexically, and diagnostics retain that
+choice for later rendering. Explicit rendering languages override captured
+choices. Startup loads the language selected by C<PERL_DIAG_RENDER>, except
+in taint mode; missing translations fall back to English.
+
+Each pack provides C<metadata> and C<render($diagnostic)>. Direct rendering
+returns the message body or C<undef> for a miss, with no fallback, locations,
+grouping, hooks or delivery. Core rendering owns those operations and retries
+English with fresh argument values when a pack misses.
+
+=item *
+
 XXX Remove this section if F<Porting/corelist-perldelta.pl> did not add any content here.
 
 =back
@@ -729,6 +804,16 @@ could loop indefinitely when searching at the end of a UTF-8 string.
 This could occur on a subsequent C</g> match after a successful match.
 
 [GH #24934]
+
+=item *
+
+Perl skips queued C<UNITCHECK> and C<CHECK> blocks when the main program
+fails to compile. An explicit C<exit> during compilation retains the existing
+behavior of running those blocks.
+
+=item *
+
+XXX
 
 =item *
 

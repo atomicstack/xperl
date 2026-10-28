@@ -1547,10 +1547,22 @@ while(<$kh>) {
     my $warnings = "";
     local $SIG{__WARN__} = sub { $warnings .= join "", @_ };
     eval q{
-        no warnings 'experimental::snail_in_signatures';
+        no warnings 'experimental::args_array_with_signatures';
         sub($x) { @_ = (1,2,3) }
     };
     is($warnings, "", 'No warnings emitted within scope of  no warnings "experimental"');
+}
+
+{
+    my $error = '';
+    eval q{
+        use warnings FATAL => 'experimental::args_array_with_signatures';
+        sub ($x) { shift }
+    };
+    $error = $@;
+    like($error,
+        qr/^Implicit use of \@_ in shift with signatured subroutine is experimental at \(eval /,
+        'fatalized implicit signature warning retains its diagnostic text');
 }
 
 SKIP: {

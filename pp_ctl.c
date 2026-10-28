@@ -34,6 +34,2456 @@
 #define PERL_IN_PP_CTL_C
 #include "perl.h"
 #include "feature.h"
+#include "diagpack.h"
+#include "diag_template_match.h"
+
+static const char perl_diagpack_registry_key[] = "XPerl::DiagPack::registry";
+
+/* Return only an installed lexical choice. An absent hint leaves the
+ * diagnostic subject to the mutable render default when it is displayed. */
+const perl_diagpack_engine *
+Perl_diagpack_current_hint(pTHX)
+{
+    PERL_ARGS_ASSERT_DIAGPACK_CURRENT_HINT;
+
+    SV *value;
+    if (IN_PERL_COMPILETIME) {
+        HV * const hints = PL_hintgv ? GvHV(PL_hintgv) : NULL;
+        SV **slot;
+        if (!hints || !(PL_hints & HINT_LOCALIZE_HH))
+            return NULL;
+        slot = hv_fetch(hints, PERL_DIAGPACK_HINT_KEY,
+                        sizeof(PERL_DIAGPACK_HINT_KEY) - 1, FALSE);
+        if (!slot)
+            return NULL;
+        value = *slot;
+    }
+    else {
+        if (!PL_curcop || !PL_curcop->cop_hints_hash)
+            return NULL;
+        value = cop_hints_fetch_pvs(PL_curcop, PERL_DIAGPACK_HINT_KEY, 0);
+        if (!value)
+            return NULL;
+    }
+    return SvIOK(value) && SvUV(value)
+        ? INT2PTR(const perl_diagpack_engine *, SvUV(value)) : NULL;
+}
+
+typedef struct {
+    const char *name;
+    const char *type;
+} perl_diag_param_metadata_t;
+
+typedef struct {
+    const char *name;
+    const char *type;
+} perl_diag_input_metadata_t;
+
+typedef struct {
+    U32 input_offset;
+    U8 input_count;
+} perl_diag_param_input_range_t;
+
+typedef struct {
+    const char *code;
+    UV number;
+    const char *kind;
+    const char *severity;
+    bool counts_as_error;
+    U32 param_offset;
+    U8 param_count;
+    U32 input_offset;
+    bool has_following_hint;
+    bool is_hint;
+    const char *class_name;
+    const char *allowed_class;
+    const char *category_policy;
+    const char *role;
+    const char *grouping_role;
+    const char *review_status;
+    bool leaf_only;
+    bool dynamic_category;
+} perl_diag_metadata_t;
+
+#include "perldiag_data.inc"
+#include "perldiag_plural.inc"
+
+const char *
+Perl_diag_class_parent(pTHX_ const char *class_name)
+{
+    Size_t i;
+    PERL_ARGS_ASSERT_DIAG_CLASS_PARENT;
+    for (i = 0; i < C_ARRAY_LENGTH(perl_diag_class_registry); i++) {
+        if (strEQ(class_name, perl_diag_class_registry[i].name))
+            return perl_diag_class_registry[i].parent;
+    }
+    return NULL;
+}
+
+bool
+Perl_diag_class_is_leaf_only(pTHX_ SV *object)
+{
+    Size_t i;
+    PERL_ARGS_ASSERT_DIAG_CLASS_IS_LEAF_ONLY;
+    for (i = 0; i < C_ARRAY_LENGTH(perl_diag_class_registry); i++) {
+        if (perl_diag_class_registry[i].leaf_only
+            && sv_derived_from(object, perl_diag_class_registry[i].name))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+/*
+=for apidoc diag_selector_from_pvn
+
+Convert a diagnostic selector's byte string to its domain-local integer.
+The return value is zero for C<*> and C<any>, positive for known values, and
+negative for an unknown value or domain.
+
+=cut
+*/
+IV
+Perl_diag_selector_from_pvn(pTHX_ U16 domain_id, const char *value, STRLEN length)
+{
+    const perl_diag_selector_domain_t *domain;
+
+    PERL_ARGS_ASSERT_DIAG_SELECTOR_FROM_PVN;
+    PERL_UNUSED_CONTEXT;
+    if (!value)
+        return -1;
+    if (!domain_id || domain_id >= C_ARRAY_LENGTH(perl_diag_selector_domains))
+        return -1;
+    domain = &perl_diag_selector_domains[domain_id];
+    return Perl_diag_selector_value_id(domain->values, domain->value_count,
+                                       value, length);
+}
+
+/*
+=for apidoc diag_selector_from_cstr
+
+Convert a NUL-terminated selector string to its domain-local integer.
+
+=cut
+*/
+IV
+Perl_diag_selector_from_cstr(pTHX_ U16 domain_id, const char *value)
+{
+    PERL_ARGS_ASSERT_DIAG_SELECTOR_FROM_CSTR;
+    if (!value)
+        return perl_diag_selector_invalid;
+    return Perl_diag_selector_from_pvn(aTHX_ domain_id, value, strlen(value));
+}
+
+/*
+=for apidoc diag_selector_from_sv
+
+Fetch magic once, then convert the scalar value with
+C<Perl_diag_selector_from_pvn>.
+
+=cut
+*/
+IV
+Perl_diag_selector_from_sv(pTHX_ U16 domain_id, SV *value)
+{
+    STRLEN length;
+    const char *text;
+
+    PERL_ARGS_ASSERT_DIAG_SELECTOR_FROM_SV;
+    if (!value)
+        return -1;
+    SvGETMAGIC(value);
+    if (!SvOK(value) || SvROK(value))
+        return -1;
+    text = SvPV_nomg(value, length);
+    return Perl_diag_selector_from_pvn(aTHX_ domain_id, text, length);
+}
+
+/* Structured records can hold enum IDs as native integers. Flat-format APIs
+ * keep diag_selector_from_sv's string conversion contract. */
+static IV
+Perl_diag_selector_id_from_value(pTHX_ U16 domain_id, SV *value)
+{
+    STRLEN length;
+    const char *text;
+
+    if (!value)
+        return -1;
+    SvGETMAGIC(value);
+    if (!SvOK(value) || SvROK(value))
+        return -1;
+    if (SvIOK(value)) {
+        if (SvIsUV(value)) {
+            UV id = SvUV(value);
+            return id <= (UV)IV_MAX ? (IV)id : -1;
+        }
+        return SvIV(value);
+    }
+    text = SvPV_nomg(value, length);
+    return Perl_diag_selector_from_pvn(aTHX_ domain_id, text, length);
+}
+
+/*
+=for apidoc diag_selector_name
+
+Return the configured spelling for a domain-local selector integer, or NULL
+for an invalid value.
+
+=cut
+*/
+const char *
+Perl_diag_selector_name(pTHX_ U16 domain_id, IV value_id)
+{
+    const perl_diag_selector_domain_t *domain;
+
+    PERL_ARGS_ASSERT_DIAG_SELECTOR_NAME;
+    PERL_UNUSED_CONTEXT;
+    if (!domain_id || domain_id >= C_ARRAY_LENGTH(perl_diag_selector_domains))
+        return NULL;
+    domain = &perl_diag_selector_domains[domain_id];
+    return Perl_diag_selector_value_name(domain->values, domain->value_count,
+                                         value_id);
+}
+
+static const char * const perl_diag_plural_names[] = {
+    NULL, "zero", "one", "two", "few", "many", "other"
+};
+
+static const perl_diagpack_engine *
+Perl_diagpack_find_builtin(const char *language)
+{
+    const perl_diagpack_engine * const *engine;
+    if (!language || !*language)
+        return NULL;
+    for (engine = perl_diagpack_builtin_engines; *engine; engine++)
+        if (strEQ(language, (*engine)->language))
+            return *engine;
+    return NULL;
+}
+
+static UV
+Perl_diagpack_schema_index(const perl_diagpack_catalog *catalog, UV number)
+{
+    for (UV index = 1; index < catalog->template_count; index++)
+        if (catalog->schemas[index]
+            && catalog->schemas[index]->diagnostic_number == number)
+            return index;
+    return 0;
+}
+
+static const perl_diag_template_t *
+Perl_diagpack_builtin_template(const perl_diagpack_engine *engine, UV number)
+{
+    UV index = engine ? Perl_diagpack_schema_index(engine->catalog, number) : 0;
+    return index ? &engine->catalog->templates[index] : NULL;
+}
+
+/* A registered descriptor overrides the matching permanent built-in. */
+static const perl_diagpack_engine *
+Perl_diagpack_find_effective(pTHX_ const char *language)
+{
+    const perl_diagpack_engine *engine = Perl_diagpack_find(aTHX_ language);
+    return engine ? engine : Perl_diagpack_find_builtin(language);
+}
+
+/* The generated table is collated by ASCII code point on every host. */
+static int
+Perl_diag_plural_compare(const char *left, const char *right)
+{
+    while (*left && *left == *right) {
+        left++;
+        right++;
+    }
+    return (int)NATIVE_TO_LATIN1((U8)*left)
+         - (int)NATIVE_TO_LATIN1((U8)*right);
+}
+
+static const perl_diag_plural_locale *
+Perl_diag_plural_find(const char *name)
+{
+    Size_t first = 0;
+    Size_t last = C_ARRAY_LENGTH(perl_diag_plural_locales);
+    while (first < last) {
+        const Size_t middle = first + (last - first) / 2;
+        const int comparison = Perl_diag_plural_compare(
+            name, perl_diag_plural_locales[middle].name);
+        if (!comparison)
+            return &perl_diag_plural_locales[middle];
+        if (comparison < 0)
+            last = middle;
+        else
+            first = middle + 1;
+    }
+    return NULL;
+}
+
+/* Keep a bounded prefix of long tags at complete subtag boundaries. Later
+ * subtags cannot change a match to an earlier, explicit CLDR rule row. */
+static const perl_diag_plural_locale *
+Perl_diag_plural_lookup(const char *language)
+{
+    char name[128];
+    Size_t length = 0;
+    Size_t complete = 0;
+    bool separator = TRUE;
+    bool overflow = FALSE;
+    const char *cursor = language;
+    const char *modifier;
+    const perl_diag_plural_locale *entry;
+
+    if (!language || !*language)
+        return NULL;
+    for (; *cursor && *cursor != '.' && *cursor != '@'; cursor++) {
+        const U8 character = (U8)*cursor;
+        if (character == '-' || character == '_') {
+            if (separator)
+                return NULL;
+            separator = TRUE;
+            if (!overflow)
+                complete = length;
+        }
+        else {
+            if (!isALPHANUMERIC_A(character))
+                return NULL;
+            separator = FALSE;
+        }
+        if (length < sizeof(name) - 1)
+            name[length++] = character == '_' ? '-' : toLOWER_A(character);
+        else
+            overflow = TRUE;
+    }
+    if (separator)
+        return NULL;
+    if (overflow)
+        length = complete;
+    if (!length)
+        return NULL;
+    name[length] = '\0';
+
+    if (strEQ(name, "c") || strEQ(name, "posix"))
+        return Perl_diag_plural_find("en");
+
+    modifier = strchr(cursor, '@');
+    if (modifier && length + 5 < sizeof(name)) {
+        const char *script = strEQ(modifier + 1, "latin") ? "latn"
+                           : strEQ(modifier + 1, "cyrillic") ? "cyrl" : NULL;
+        char *region = strchr(name, '-');
+        char *next = region ? strchr(region + 1, '-') : NULL;
+        Size_t part_length = region
+            ? (next ? (Size_t)(next - region - 1) : strlen(region + 1)) : 0;
+        if (script && (!region || part_length != 4
+                        || !isALPHA_A(region[1]) || !isALPHA_A(region[2])
+                        || !isALPHA_A(region[3]) || !isALPHA_A(region[4]))) {
+            Size_t language_length = region ? (Size_t)(region - name) : length;
+            Move(name + language_length, name + language_length + 5,
+                 length - language_length + 1, char);
+            name[language_length] = '-';
+            Copy(script, name + language_length + 1, 4, char);
+        }
+    }
+
+    while (1) {
+        char *tail;
+        entry = Perl_diag_plural_find(name);
+        if (entry)
+            return entry;
+        /* An explicit script must not hide a regional plural override. */
+        {
+            const char *script = strchr(name, '-');
+            const char *region = script ? strchr(script + 1, '-') : NULL;
+            if (region && region - script == 5
+                && isALPHA_A(script[1]) && isALPHA_A(script[2])
+                && isALPHA_A(script[3]) && isALPHA_A(script[4])) {
+                char regional[sizeof(name)];
+                Size_t prefix = (Size_t)(script - name);
+                Copy(name, regional, prefix, char);
+                Copy(region, regional + prefix, strlen(region) + 1, char);
+                entry = Perl_diag_plural_find(regional);
+                if (entry)
+                    return entry;
+            }
+        }
+        tail = strrchr(name, '-');
+        if (!tail)
+            return NULL;
+        *tail = '\0';
+    }
+}
+
+/*
+=for apidoc cardinal_plural_form
+
+Return the cardinal plural category for C<n> in C<language>, or NULL if the
+language has no retained CLDR definition. Accept a language tag or a
+code-based POSIX locale name. C<n> is an unsigned integer. All supported
+languages are available without loading diagnostic packs. No allocation or
+message selection occurs here.
+
+=cut
+*/
+const char *
+Perl_cardinal_plural_form(pTHX_ const char *language, UV n)
+{
+    PERL_ARGS_ASSERT_CARDINAL_PLURAL_FORM;
+    PERL_UNUSED_CONTEXT;
+    const perl_diag_plural_locale *entry = Perl_diag_plural_lookup(language);
+    if (!entry)
+        return NULL;
+    const U8 category = Perl_diag_plural_evaluate(entry->cardinal, n);
+    return category < C_ARRAY_LENGTH(perl_diag_plural_names)
+        ? perl_diag_plural_names[category] : NULL;
+}
+
+/*
+=for apidoc ordinal_plural_form
+
+Return the ordinal plural category for C<n> in C<language>, or NULL if the
+language has no retained CLDR definition. C<n> is an unsigned integer.
+Locale lookup is the same as C<cardinal_plural_form>. Known languages with
+no explicit ordinal rule use C<other>. Ordinal rules are independent of
+cardinal rules and do not select diagnostic templates.
+
+=cut
+*/
+const char *
+Perl_ordinal_plural_form(pTHX_ const char *language, UV n)
+{
+    PERL_ARGS_ASSERT_ORDINAL_PLURAL_FORM;
+    PERL_UNUSED_CONTEXT;
+    const perl_diag_plural_locale *entry = Perl_diag_plural_lookup(language);
+    if (!entry)
+        return NULL;
+    const U8 category = Perl_diag_plural_evaluate(entry->ordinal, n);
+    return category < C_ARRAY_LENGTH(perl_diag_plural_names)
+        ? perl_diag_plural_names[category] : NULL;
+}
+
+SV *
+Perl_diag_setup_param(pTHX_ AV *params, UV diag_index,
+                      I32 diagnostic_index, U16 selector_domain,
+                      IV selector_id)
+{
+    const perl_diag_metadata_t *meta;
+    const perl_diag_param_metadata_t *param_meta;
+    HV *param_hv;
+    U16 param_id;
+    SV *value;
+
+    PERL_ARGS_ASSERT_DIAG_SETUP_PARAM;
+    assert(diag_index && diag_index <= PERL_DIAG_METADATA_COUNT);
+
+    value = sv_2mortal(selector_domain
+        ? newSViv(selector_id) : newSV(0));
+
+    if (params && diagnostic_index >= 0) {
+        meta = &perl_diag_metadata[diag_index];
+        assert((U32)diagnostic_index < meta->param_count);
+        param_id = perl_diag_param_ids[meta->param_offset + diagnostic_index];
+        assert(param_id);
+        param_meta = &perl_diag_param_metadata[param_id];
+
+        param_hv = newHV();
+        (void)hv_stores(param_hv, "name", newSVpv(param_meta->name, 0));
+        (void)hv_stores(param_hv, "type", newSVpv(param_meta->type, 0));
+        (void)hv_stores(param_hv, "value", SvREFCNT_inc_simple_NN(value));
+        if (selector_domain)
+            (void)hv_stores(param_hv, "selector_domain",
+                            newSVuv(selector_domain));
+        if (UNLIKELY(!av_store(params, diagnostic_index,
+                               newRV_noinc(MUTABLE_SV(param_hv)))))
+            Perl_croak_no_mem();
+    }
+
+    return value;
+}
+
+static const char * const perl_warning_category_names[] = {
+    PERL_WARNING_CATEGORY_NAMES
+};
+
+static SV *
+Perl_diag_parameter_value(pTHX_ AV *diagnostic_params, U8 index, bool flat)
+{
+    if (!diagnostic_params)
+        return NULL;
+    {
+        SV **param_slot = av_fetch(diagnostic_params, index, FALSE);
+        SV **value_slot;
+        if (flat)
+            return param_slot ? *param_slot : NULL;
+        if (!param_slot || !SvROK(*param_slot)
+            || SvTYPE(SvRV(*param_slot)) != SVt_PVHV)
+            return NULL;
+        value_slot = hv_fetchs(MUTABLE_HV(SvRV(*param_slot)), "value", FALSE);
+        return value_slot ? *value_slot : NULL;
+    }
+}
+
+static SV *
+Perl_diag_template_selector_value(pTHX_ const perl_diag_selector_t *selector,
+                                AV *diagnostic_params, bool flat)
+{
+    return Perl_diag_parameter_value(aTHX_ diagnostic_params, selector->index,
+                                     flat);
+}
+
+/* Numeric producers use 1 + opcode. String-based producers can instead pass
+ * canonical names through an explicit conversion boundary. Original text
+ * remains the fallback for unknown identities, literal names and custom ops. */
+static UV
+Perl_diag_word_identity(pTHX_ SV *value, bool numeric)
+{
+    STRLEN length;
+    const char *text;
+    if (!value || !SvOK(value) || SvROK(value))
+        return 0;
+    if (numeric && SvIOK(value))
+        return SvUV(value);
+    text = SvPV_nomg(value, length);
+    if (numeric) {
+        UV identity;
+        const char *end = text + length;
+        return grok_atoUV(text, &identity, &end) && end == text + length
+            ? identity : 0;
+    }
+    return Perl_diag_word_operation_from_name(text, length);
+}
+
+/* Prepare a temporary view for one language attempt. Never overwrite stored
+ * parameters or reuse a partially translated view for the English retry.
+ * Most diagnostics have no words and allocate no additional array. */
+static bool
+Perl_diag_resolve_words(pTHX_ const perl_diag_word_group_t *definition,
+                        AV *params, bool flat, U64 *key, AV **arguments)
+{
+    bool copied = FALSE;
+    for (U8 index = 0; index < definition->word_count; index++) {
+        const perl_diag_word_binding_t *binding = &definition->words[index];
+        SV *identity_sv = Perl_diag_parameter_value(aTHX_ params,
+                                                    binding->source, flat);
+        const UV identity = Perl_diag_word_identity(aTHX_ identity_sv,
+                                                     binding->numeric);
+        if (binding->assert_unknown)
+            assert(identity && identity < binding->map_count
+                   && binding->map[identity] != perl_diag_word_value_outside_domain);
+        U16 value_id = identity < binding->map_count
+            ? binding->map[identity] : binding->map[0];
+        const perl_diag_word_value_t *word;
+        /* Unknown identities preserve their supplied text in release builds.
+         * Missing translations use zero and request the English retry. */
+        if (value_id == perl_diag_word_value_outside_domain)
+            value_id = binding->map[0];
+        *key &= ~binding->selector_mask;
+        if (value_id == 0)
+            return FALSE;
+        word = &binding->values[value_id];
+        *key |= word->selector_key;
+        if (!word->text)
+            continue;
+        if (!copied) {
+            AV *copy = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+            if (*arguments) {
+                const SSize_t last = av_top_index(*arguments);
+                for (SSize_t item = 0; item <= last; item++) {
+                    SV **slot = av_fetch(*arguments, item, FALSE);
+                    if (slot && !av_store(copy, item,
+                                          SvREFCNT_inc_simple_NN(*slot)))
+                        Perl_croak_no_mem();
+                }
+            }
+            *arguments = copy;
+            copied = TRUE;
+        }
+        SV *phrase = newSVpv(word->text, 0);
+        SvUTF8_on(phrase);
+        if (!av_store(*arguments, binding->target, phrase))
+            Perl_croak_no_mem();
+    }
+    return TRUE;
+}
+
+/* Resolve exact-number overrides before the language's grammatical rule.
+ * Counts remain in the object, so rendering in another language repeats this
+ * selection rather than reusing a category chosen while throwing. */
+static U64
+Perl_diag_plural_key(pTHX_ const perl_diag_template_t *definition, AV *values,
+                     bool flat, U16 language, U64 key,
+                     U8 *invalid_selector_mask)
+{
+    U8 column;
+    for (column = 0; column < definition->selector_count; column++) {
+        const perl_diag_selector_t *selector = &definition->selectors[column];
+        SV *value;
+        STRLEN length;
+        const char *pv;
+        const char *end;
+        UV n;
+        IV value_id;
+
+        if (!selector->plural_form)
+            continue;
+        const U8 shift = selector->shift;
+        const U8 width = selector->value_width;
+        const U64 mask = width == 16 ? UINT64_C(0xffff) : UINT64_C(0xff);
+        key &= ~(mask << shift);
+        value = Perl_diag_template_selector_value(aTHX_ selector, values, flat);
+        if (!value || !SvOK(value) || SvROK(value)) {
+            *invalid_selector_mask |= (U8)(1U << column);
+            continue;
+        }
+        if (SvIOK(value)) {
+            if (SvIsUV(value))
+                n = SvUV(value);
+            else if (SvIV(value) < 0) {
+                *invalid_selector_mask |= (U8)(1U << column);
+                continue;
+            }
+            else
+                n = (UV)SvIV(value);
+        }
+        else {
+            pv = SvPV_nomg(value, length);
+            end = pv + length;
+            if (!grok_atoUV(pv, &n, &end) || end != pv + length) {
+                *invalid_selector_mask |= (U8)(1U << column);
+                continue;
+            }
+        }
+        value_id = selector->plural_form(aTHX_ language, n);
+        if (value_id >= 0)
+            key |= (U64)value_id << shift;
+        else
+            *invalid_selector_mask |= (U8)(1U << column);
+    }
+    return key;
+}
+
+static const perl_diag_template_case_t *
+Perl_diag_template_case(pTHX_ UV diagnostic_number, UV template_index, U64 selector_key,
+                     const perl_diag_template_case_t *cases,
+                     const perl_diag_template_t *templates,
+                     perl_diag_template_case_t *single_case,
+                     AV *values, bool flat, U16 language)
+{
+    const perl_diag_template_t *diag_template = &templates[template_index];
+    U8 invalid_selector_mask = 0;
+    const perl_diag_template_case_t *first =
+        &cases[diag_template->first_case];
+    const perl_diag_template_case_t *match;
+
+    if (first->diagnostic_number != diagnostic_number) {
+        single_case->diagnostic_number = diagnostic_number;
+        single_case->selector_pattern = UINT64_C(0);
+        single_case->positional_template = NULL;
+        single_case->arg_count = 0;
+        single_case->argument_index_offset = 0;
+        return single_case;
+    }
+
+    selector_key = Perl_diag_plural_key(aTHX_ diag_template, values, flat,
+                                        language, selector_key,
+                                        &invalid_selector_mask);
+
+    match = Perl_diag_template_case_find(first, diagnostic_number,
+                                         diag_template->selectors,
+                                         diag_template->selector_count,
+                                         selector_key,
+                                         invalid_selector_mask);
+    return match;
+}
+
+static U64
+Perl_diag_selector_key(pTHX_ UV diag_index, AV *diagnostic_params, bool flat,
+                       bool canonical_values)
+{
+    const perl_diagpack_engine *english = Perl_diagpack_find_builtin("en");
+    const perl_diag_template_t *diag_template = Perl_diagpack_builtin_template(
+        english, perl_diag_metadata[diag_index].number);
+    U64 selector_key = 0;
+    UV selector_index;
+
+    for (selector_index = 0; diag_template
+         && selector_index < diag_template->selector_count;
+         selector_index++) {
+        /* Plural bytes stay zero in the saved key. Their numeric sources
+         * remain in params and are resolved when a language is requested. */
+        if (diag_template->selectors[selector_index].plural_form
+            || diag_template->selectors[selector_index].operation_word)
+            continue;
+        SV *value = Perl_diag_template_selector_value(aTHX_
+            &diag_template->selectors[selector_index], diagnostic_params, flat);
+        IV value_id;
+
+        if (!value)
+            continue;
+        value_id = flat && !canonical_values
+            ? Perl_diag_selector_from_sv(aTHX_
+                diag_template->selectors[selector_index].domain_id, value)
+            : Perl_diag_selector_id_from_value(aTHX_
+                diag_template->selectors[selector_index].domain_id, value);
+        if (value_id > diag_template->selectors[selector_index].value_count)
+            value_id = perl_diag_selector_invalid;
+        if (value_id >= 0)
+            selector_key |= (U64)value_id
+                << diag_template->selectors[selector_index].shift;
+        else {
+            if (diag_template->selectors[selector_index].assert_unknown)
+                assert(value_id >= 0);
+        }
+    }
+
+    return selector_key;
+}
+
+SV *
+Perl_diag_compat_selector_key(pTHX_ UV diagnostic_number,
+                              AV *diagnostic_params)
+{
+    UV diag_index;
+
+    PERL_ARGS_ASSERT_DIAG_COMPAT_SELECTOR_KEY;
+    for (diag_index = 1; diag_index <= PERL_DIAG_METADATA_COUNT; diag_index++) {
+        if (perl_diag_metadata[diag_index].number == diagnostic_number) {
+            const perl_diagpack_engine *english = Perl_diagpack_find_builtin("en");
+            const perl_diag_template_t *definition = Perl_diagpack_builtin_template(
+                english, diagnostic_number);
+            if (!definition || !definition->selector_count)
+                return newSV(0);
+            return newSVuv(Perl_diag_selector_key(aTHX_ diag_index,
+                diagnostic_params, FALSE, TRUE));
+        }
+    }
+    return newSV(0);
+}
+
+static bool
+Perl_diag_has_positional_template(UV diag_index)
+{
+    const perl_diagpack_engine *english = Perl_diagpack_find_builtin("en");
+    const perl_diagpack_catalog *catalog = english->catalog;
+    const perl_diag_template_t *diag_template = Perl_diagpack_builtin_template(
+        english, perl_diag_metadata[diag_index].number);
+    if (!diag_template)
+        return FALSE;
+    const perl_diag_template_case_t *first =
+        &catalog->cases[diag_template->first_case];
+
+    return first->diagnostic_number == perl_diag_metadata[diag_index].number
+        && first->positional_template != NULL;
+}
+
+static SV *
+Perl_diag_format_positional_template(pTHX_
+                                   const perl_diag_template_case_t *template_case,
+                                   AV *arguments,
+                                   const U8 *argument_indices)
+{
+    /* Templates use numbered substitutions so translations can reorder
+     * diagnostic parameters.  Perl's printf formatter does not support the
+     * POSIX %N$s syntax, so expand these substitutions directly. */
+    const char * const source = template_case->positional_template;
+    const STRLEN source_length = strlen(source);
+    STRLEN offset;
+    SV *message;
+    const SSize_t argument_last = arguments ? av_top_index(arguments) : -1;
+
+    assert(arguments == NULL || SvTYPE((SV *)arguments) == SVt_PVAV);
+    assert(argument_indices != NULL);
+    message = sv_2mortal(newSVpvs(""));
+    SvUTF8_on(message);
+
+    for (offset = 0; offset < source_length;) {
+        if (source[offset] == '%' && offset + 1 < source_length
+            && source[offset + 1] == '%')
+        {
+            sv_catpvs(message, "%");
+            offset += 2;
+        }
+        else if (source[offset] == '%' && isDIGIT_A(source[offset + 1])) {
+            STRLEN end = offset + 1;
+            UV index = 0;
+
+            while (end < source_length && isDIGIT_A(source[end])) {
+                index = index * 10 + (UV)(source[end] - '0');
+                end++;
+            }
+            assert(end + 1 < source_length && source[end] == '$'
+                   && source[end + 1] == 's');
+            assert(index > 0 && index <= (UV)template_case->arg_count);
+            const U8 source_index = argument_indices[
+                template_case->argument_index_offset + index - 1];
+            if (arguments && source_index <= argument_last) {
+                SV ** const value = av_fetch(arguments, (SSize_t)source_index,
+                                             FALSE);
+                if (value)
+                    sv_catsv(message, *value);
+            }
+            offset = end + 2;
+        }
+        else {
+            sv_catpvn(message, source + offset, 1);
+            offset++;
+        }
+    }
+
+    return message;
+}
+
+/* A language attempt owns both word preparation and template matching. The
+ * fallback caller starts another attempt from the original parameter view. */
+static SV *
+Perl_diag_render_attempt(pTHX_ UV diagnostic_number, U8 param_count,
+                         U64 selector_key, UV template_index,
+                         AV *arguments, AV *params, bool flat,
+                         const U8 *argument_indices,
+                         U32 argument_index_count,
+                         const perl_diag_template_case_t *cases,
+                         const perl_diag_template_t *templates,
+                         const perl_diag_word_group_t *word_groups,
+                         U16 language)
+{
+    perl_diag_template_case_t single_case;
+    const perl_diag_template_case_t *selected;
+    if (cases[templates[template_index].first_case].diagnostic_number
+        != diagnostic_number)
+        return NULL;
+    if (!Perl_diag_resolve_words(aTHX_
+                                 &word_groups[templates[template_index].word_group],
+                                 params, flat,
+                                 &selector_key, &arguments))
+        return NULL;
+    selected = Perl_diag_template_case(aTHX_ diagnostic_number, template_index, selector_key,
+        cases, templates, &single_case, params, flat, language);
+    if (!selected || !selected->positional_template)
+        return NULL;
+    if (!argument_indices
+        || selected->argument_index_offset > argument_index_count
+        || selected->arg_count > argument_index_count
+                                      - selected->argument_index_offset)
+        return NULL;
+    for (U8 index = 0; index < selected->arg_count; index++)
+        if (argument_indices[selected->argument_index_offset + index]
+            >= param_count)
+            return NULL;
+    return Perl_diag_format_positional_template(aTHX_ selected, arguments,
+                                                argument_indices);
+}
+
+static bool
+Perl_diagpack_selector_key(pTHX_ const perl_diag_template_t *definition,
+                           const perl_diagpack_input *input, U64 *key_out)
+{
+    U64 key = 0;
+    U8 index;
+
+    for (index = 0; index < definition->selector_count; index++) {
+        const perl_diag_selector_t *selector = &definition->selectors[index];
+        IV value_id;
+
+        if (selector->plural_form || selector->operation_word)
+            continue;
+        if (selector->index >= input->param_count
+            || !input->params[selector->index].value)
+            return FALSE;
+        SV *value = input->params[selector->index].value;
+        if (selector->native_id && SvIOK(value)) {
+            value_id = SvIsUV(value) ? (IV)SvUV(value) : SvIV(value);
+            if (value_id < 0 || (UV)value_id > selector->value_count)
+                value_id = perl_diag_selector_invalid;
+        }
+        else {
+            STRLEN length;
+            const char *text = SvPV_nomg(value, length);
+            value_id = Perl_diag_selector_value_id(selector->values,
+                selector->value_count, text, length);
+        }
+        if (value_id > selector->value_count)
+            value_id = perl_diag_selector_invalid;
+        if (value_id >= 0)
+            key |= (U64)value_id << selector->shift;
+        else if (selector->assert_unknown)
+            assert(value_id >= 0);
+    }
+
+    *key_out = key;
+    return TRUE;
+}
+
+/* Fetch each value once before language processing. Register the snapshot
+ * for cleanup before a later FETCH can throw after copying earlier values. */
+static AV *
+Perl_diag_snapshot_param_values(pTHX_ AV *records, Size_t maximum,
+                                Size_t *count_out)
+{
+    const SSize_t last = records ? av_top_index(records) : -1;
+    AV *values;
+    Size_t count = last < 0 ? 0 : (Size_t)last + 1;
+
+    if (count > maximum)
+        return NULL;
+    values = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    ENTER;
+    if (records)
+        SAVEFREESV(SvREFCNT_inc_simple_NN(MUTABLE_SV(records)));
+    for (Size_t index = 0; index < count; index++) {
+        SV *value = &PL_sv_undef;
+        SV **record_slot = av_fetch(records, (SSize_t)index, FALSE);
+        if (record_slot && SvROK(*record_slot)
+            && SvTYPE(SvRV(*record_slot)) == SVt_PVHV) {
+            SAVEFREESV(SvREFCNT_inc_simple_NN(*record_slot));
+            SV **value_slot = hv_fetchs(MUTABLE_HV(SvRV(*record_slot)),
+                                        "value", FALSE);
+            if (value_slot)
+                value = *value_slot;
+        }
+        if (value != &PL_sv_undef) {
+            SAVEFREESV(SvREFCNT_inc_simple_NN(value));
+            SvGETMAGIC(value);
+        }
+        if (UNLIKELY(!av_store(values, (SSize_t)index,
+                               newSVsv_nomg(value))))
+            Perl_croak_no_mem();
+    }
+    LEAVE;
+    *count_out = count;
+    return values;
+}
+
+/* Copy declaration-order values once before the language fallback loop. */
+static AV *
+Perl_diag_snapshot_values(pTHX_ AV *source_values, Size_t expected)
+{
+    const SSize_t last = source_values ? av_top_index(source_values) : -1;
+    const Size_t count = last < 0 ? 0 : (Size_t)last + 1;
+    AV *values;
+
+    if (count != expected)
+        return NULL;
+    values = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    ENTER;
+    if (source_values)
+        SAVEFREESV(SvREFCNT_inc_simple_NN(MUTABLE_SV(source_values)));
+    for (Size_t index = 0; index < count; index++) {
+        SV **slot = av_fetch(source_values, (SSize_t)index, FALSE);
+        SV *value = slot ? *slot : &PL_sv_undef;
+        if (value != &PL_sv_undef)
+            SAVEFREESV(SvREFCNT_inc_simple_NN(value));
+        SvGETMAGIC(value);
+        if (UNLIKELY(!av_store(values, (SSize_t)index,
+                               newSVsv_nomg(value))))
+            Perl_croak_no_mem();
+    }
+    LEAVE;
+    return values;
+}
+
+/* Build the legacy positional view from the semantic snapshot. This does not
+ * change the snapshot. The attempt routine prepares derived word selectors. */
+static AV *
+Perl_diag_prepare_display_arguments(pTHX_ UV diag_index, AV *values)
+{
+    const perl_diagpack_engine *english = Perl_diagpack_find_builtin("en");
+    const perl_diag_template_t *definition = Perl_diagpack_builtin_template(
+        english, perl_diag_metadata[diag_index].number);
+    AV *arguments = newAV();
+    SSize_t last = values ? av_top_index(values) : -1;
+    for (SSize_t index = 0; index <= last; index++) {
+        SV **slot = av_fetch(values, index, FALSE);
+        SV *value = slot ? *slot : NULL;
+        SV *display;
+
+        display = value ? newSVsv_nomg(value) : newSV(0);
+        if (value && SvIOK(value)) {
+            for (U8 selector_index = 0; definition
+                 &&
+                 selector_index < definition->selector_count;
+                 selector_index++) {
+                const perl_diag_selector_t *selector =
+                    &definition->selectors[selector_index];
+                if (selector->index == (U8)index
+                    && !selector->plural_form && !selector->operation_word) {
+                    IV selector_id = SvIsUV(value)
+                        ? (SvUV(value) <= (UV)IV_MAX ? (IV)SvUV(value) : -1)
+                        : SvIV(value);
+                    const char *name = selector_id >= 0
+                        ? Perl_diag_selector_name(aTHX_ selector->domain_id,
+                                                  selector_id)
+                        : NULL;
+                    sv_setpv(display, name ? name : "unknown");
+                    break;
+                }
+            }
+        }
+        if (UNLIKELY(!av_store(arguments, index, display)))
+            Perl_croak_no_mem();
+    }
+    return arguments;
+}
+
+/* Static pack data is validated at registration. This emergency error path
+ * reports a corrupt descriptor, rather than malformed user diagnostic data. */
+static void
+Perl_diagpack_invalid_catalog(pTHX_ const char *reason)
+{
+    Perl_croak(aTHX_ "invalid diagnostic language pack catalog: %s", reason);
+}
+
+/* A pack callback uses only the catalog supplied by its static descriptor.
+ * This is one language attempt; selection and fallback belong to its caller. */
+/*
+=for apidoc diagpack_render_catalog
+
+Render one catalog attempt using the static catalog attached to C<engine>.
+The input is borrowed and the result is a new owned scalar, or C<NULL> when
+the catalog has no complete rendering for this diagnostic.
+
+=cut
+*/
+SV *
+Perl_diagpack_render_catalog(pTHX_ const perl_diagpack_engine *engine,
+                             const perl_diagpack_input *input)
+{
+    const perl_diagpack_catalog *catalog;
+    AV *params;
+    UV template_index;
+    SV *attempt;
+
+    PERL_ARGS_ASSERT_DIAGPACK_RENDER_CATALOG;
+    if (!engine || engine->abi_version != PERL_DIAGPACK_ABI
+        || engine->struct_size < sizeof(*engine) || !engine->catalog)
+        Perl_diagpack_invalid_catalog(aTHX_ "invalid engine pointer");
+    catalog = engine->catalog;
+    if (!input || (input->param_count && !input->params) || !input->arguments
+        || !catalog->argument_indices)
+        PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID();
+    if (!catalog->language || !catalog->cases || !catalog->templates
+        || !catalog->schemas
+        || !catalog->word_groups)
+        Perl_diagpack_invalid_catalog(aTHX_ "missing catalog table");
+
+    if (!(template_index = Perl_diagpack_schema_index(
+                 catalog, input->diagnostic_number)))
+        return NULL;
+
+    {
+        const perl_diag_template_t *definition = &catalog->templates[template_index];
+        U64 key;
+        if (definition->first_case >= catalog->case_count
+            || definition->word_group >= catalog->word_group_count)
+            Perl_diagpack_invalid_catalog(aTHX_ "table index out of range");
+        params = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+        for (Size_t index = 0; index < input->param_count; index++) {
+            SV *value = input->params[index].value
+                ? newSVsv_nomg(input->params[index].value)
+                : newSV(0);
+            if (UNLIKELY(!av_store(params, (SSize_t)index, value)))
+                Perl_croak_no_mem();
+        }
+        const perl_diagpack_schema_t *schema = catalog->schemas[template_index];
+        if (!schema || input->param_count > schema->param_count
+            || !Perl_diagpack_selector_key(aTHX_ definition, input, &key))
+            return NULL;
+        attempt = Perl_diag_render_attempt(aTHX_ schema->diagnostic_number,
+            schema->param_count, key, template_index,
+            input->arguments, params, TRUE, catalog->argument_indices,
+            catalog->argument_index_count,
+            catalog->cases, catalog->templates, catalog->word_groups,
+            catalog->language_id);
+        if (!attempt)
+            return NULL;
+    }
+
+    return newSVsv(attempt);
+}
+
+static void
+Perl_diagpack_validate_engine(pTHX_ const perl_diagpack_engine *engine)
+{
+    const perl_diagpack_catalog *catalog;
+
+    if (!engine || engine->abi_version != PERL_DIAGPACK_ABI
+        || engine->struct_size < sizeof(*engine) || !engine->language
+        || !engine->catalog || !engine->render || !engine->cardinal
+        || !engine->ordinal)
+        Perl_diagpack_invalid_catalog(aTHX_ "invalid engine descriptor");
+    catalog = engine->catalog;
+    if (!*engine->language || !catalog->language
+        || !strEQ(engine->language, catalog->language)
+        || !catalog->cases || !catalog->case_count
+        || !catalog->argument_indices || !catalog->argument_index_count
+        || !catalog->templates || !catalog->template_count
+        || !catalog->schemas || !catalog->param_table
+        || !catalog->param_table_count
+        || !catalog->operation_names
+        || catalog->operation_count != (U32)OP_max + 1
+        || !catalog->word_groups || !catalog->word_group_count
+        || !catalog->language_id)
+        Perl_diagpack_invalid_catalog(aTHX_ "invalid catalog descriptor");
+
+    for (U32 index = 0; index < catalog->operation_count; index++) {
+        const char *expected = index < (U32)OP_max
+            ? PL_op_name[index] : "do_block";
+        if (!catalog->operation_names[index]
+            || !strEQ(catalog->operation_names[index], expected))
+            Perl_diagpack_invalid_catalog(aTHX_ "opcode identity mismatch");
+    }
+
+    for (UV index = 1; index < catalog->template_count; index++) {
+        const perl_diag_template_t *definition = &catalog->templates[index];
+        const perl_diagpack_schema_t *schema = catalog->schemas[index];
+        UV diag_index;
+        if (!schema || !schema->code
+            || definition->stored_param_count != schema->param_count
+            || definition->first_case >= catalog->case_count
+            || definition->word_group >= catalog->word_group_count)
+            Perl_diagpack_invalid_catalog(aTHX_ "table index out of range");
+        for (diag_index = 1; diag_index <= PERL_DIAG_METADATA_COUNT; diag_index++)
+            if (perl_diag_metadata[diag_index].number == schema->diagnostic_number)
+                break;
+        if (diag_index > PERL_DIAG_METADATA_COUNT
+            || !strEQ(schema->code, perl_diag_metadata[diag_index].code)
+            || schema->param_count != perl_diag_metadata[diag_index].param_count
+            || (schema->param_count && !schema->param_ids))
+            Perl_diagpack_invalid_catalog(aTHX_ "diagnostic schema mismatch");
+        for (U8 parameter = 0; parameter < schema->param_count; parameter++) {
+            U16 id = perl_diag_param_ids[perl_diag_metadata[diag_index].param_offset + parameter];
+            const U16 supplied_id = schema->param_ids[parameter];
+            if (!supplied_id || supplied_id >= catalog->param_table_count)
+                Perl_diagpack_invalid_catalog(aTHX_ "parameter schema index out of range");
+            const perl_diagpack_param_schema_t *supplied = &catalog->param_table[supplied_id];
+            const perl_diag_param_metadata_t *expected = &perl_diag_param_metadata[id];
+            if (!supplied->name || !supplied->type
+                || !strEQ(supplied->name, expected->name)
+                || !strEQ(supplied->type, expected->type))
+                Perl_diagpack_invalid_catalog(aTHX_ "parameter schema mismatch");
+        }
+        if (definition->selector_count > 7
+            || (definition->selector_count && !definition->selectors))
+            Perl_diagpack_invalid_catalog(aTHX_ "selector schema mismatch");
+        {
+            U8 wide_count = 0;
+            const perl_diagpack_engine *english = Perl_diagpack_find_builtin("en");
+            const perl_diag_template_t *core = Perl_diagpack_builtin_template(
+                english, schema->diagnostic_number);
+            for (U8 selector = 0; selector < definition->selector_count; selector++) {
+                const perl_diag_selector_t *supplied = &definition->selectors[selector];
+                const perl_diag_selector_t *source_role = NULL;
+                const char *source_type;
+                if (!supplied->name || supplied->index >= schema->param_count
+                    || (supplied->value_count && !supplied->values)
+                    || (supplied->value_width != 8 && supplied->value_width != 16)
+                    || supplied->shift + supplied->value_width > 64)
+                    Perl_diagpack_invalid_catalog(aTHX_ "selector source out of range");
+                if (supplied->value_width == 16)
+                    wide_count++;
+                source_type = catalog->param_table[
+                    schema->param_ids[supplied->index]].type;
+                if (!source_type)
+                    Perl_diagpack_invalid_catalog(aTHX_ "selector source type missing");
+                if (core) {
+                    for (U8 core_index = 0; core_index < core->selector_count; core_index++) {
+                        const perl_diag_selector_t *candidate = &core->selectors[core_index];
+                        if (candidate->index == supplied->index) {
+                            source_role = candidate;
+                            break;
+                        }
+                    }
+                }
+                if (supplied->plural_kind) {
+                    if ((!strEQ(supplied->plural_kind, "cardinal")
+                         && !strEQ(supplied->plural_kind, "ordinal"))
+                        || !supplied->plural_form || !strEQ(source_type, "uv")
+                        || !source_role || !source_role->plural_kind
+                        || !strEQ(source_role->plural_kind, supplied->plural_kind)
+                        || supplied->native_id || supplied->operation_word)
+                        Perl_diagpack_invalid_catalog(aTHX_ "plural selector source mismatch");
+                }
+                else if (supplied->operation_word) {
+                    bool known_operation_source = FALSE;
+                    if (core && core->word_group < C_ARRAY_LENGTH(perl_diag_word_groups_en)) {
+                        const perl_diag_word_group_t *group =
+                            &perl_diag_word_groups_en[core->word_group];
+                        for (U8 word = 0; word < group->word_count; word++)
+                            if (group->words[word].source == supplied->index)
+                                known_operation_source = TRUE;
+                    }
+                    if (!known_operation_source || supplied->native_id
+                        || supplied->plural_form)
+                        Perl_diagpack_invalid_catalog(aTHX_ "operation selector source mismatch");
+                }
+                else if (supplied->native_id) {
+                    if (!source_role || source_role->plural_kind
+                        || source_role->operation_word
+                        || !source_role->native_id
+                        || supplied->value_count != source_role->value_count)
+                        Perl_diagpack_invalid_catalog(aTHX_ "native selector source mismatch");
+                    for (U16 value = 0; value < supplied->value_count; value++)
+                        if (!supplied->values[value] || !source_role->values
+                            || !strEQ(supplied->values[value], source_role->values[value]))
+                            Perl_diagpack_invalid_catalog(aTHX_ "native selector meaning mismatch");
+                }
+                else if (!strEQ(source_type, "text") || source_role)
+                    Perl_diagpack_invalid_catalog(aTHX_ "text selector source mismatch");
+            }
+            if (wide_count > 1)
+                Perl_diagpack_invalid_catalog(aTHX_ "selector layout exceeds supported width");
+        }
+    }
+    for (U32 index = 1; index + 1 < catalog->case_count; index++) {
+        const perl_diag_template_case_t *template_case =
+            &catalog->cases[index];
+        if (!template_case->positional_template)
+            continue;
+        if (template_case->argument_index_offset > catalog->argument_index_count
+            || template_case->arg_count > catalog->argument_index_count
+                                                - template_case->argument_index_offset)
+            Perl_diagpack_invalid_catalog(aTHX_ "argument projection out of range");
+        UV diag_index;
+        for (diag_index = 1; diag_index <= PERL_DIAG_METADATA_COUNT; diag_index++)
+            if (perl_diag_metadata[diag_index].number
+                == template_case->diagnostic_number)
+                break;
+        UV schema_index = Perl_diagpack_schema_index(catalog,
+                                                      template_case->diagnostic_number);
+        if (diag_index > PERL_DIAG_METADATA_COUNT || !schema_index)
+            Perl_diagpack_invalid_catalog(aTHX_ "case diagnostic out of range");
+        for (U8 argument = 0; argument < template_case->arg_count; argument++)
+            if (catalog->argument_indices[
+                    template_case->argument_index_offset + argument]
+                >= catalog->schemas[schema_index]->param_count)
+                Perl_diagpack_invalid_catalog(aTHX_ "argument source out of range");
+    }
+}
+
+void
+Perl_diagpack_register(pTHX_ const perl_diagpack_engine *engine)
+{
+    HV *registry;
+    SV **registry_slot;
+    SV *value;
+
+    PERL_ARGS_ASSERT_DIAGPACK_REGISTER;
+    Perl_diagpack_validate_engine(aTHX_ engine);
+    if (!PL_modglobal)
+        Perl_diagpack_invalid_catalog(aTHX_ "interpreter registry unavailable");
+    registry_slot = hv_fetch(PL_modglobal, perl_diagpack_registry_key,
+                             sizeof(perl_diagpack_registry_key) - 1, FALSE);
+    if (!registry_slot) {
+        registry = newHV();
+        if (UNLIKELY(!hv_store(PL_modglobal, perl_diagpack_registry_key,
+                sizeof(perl_diagpack_registry_key) - 1,
+                newRV_noinc(MUTABLE_SV(registry)), 0)))
+            Perl_croak_no_mem();
+    }
+    else {
+        SV *registry_value = *registry_slot;
+        if (!SvROK(registry_value) || SvTYPE(SvRV(registry_value)) != SVt_PVHV)
+            Perl_diagpack_invalid_catalog(aTHX_ "corrupt interpreter registry");
+        registry = MUTABLE_HV(SvRV(registry_value));
+    }
+    value = newSVuv(PTR2UV(engine));
+    if (UNLIKELY(!hv_store(registry, engine->language,
+                           (I32)strlen(engine->language), value, 0)))
+        Perl_croak_no_mem();
+}
+
+const perl_diagpack_engine *
+Perl_diagpack_find(pTHX_ const char *language)
+{
+    SV **registry_slot;
+    SV **value;
+    HV *registry;
+
+    PERL_ARGS_ASSERT_DIAGPACK_FIND;
+    if (!PL_modglobal || !language || !*language)
+        return NULL;
+    registry_slot = hv_fetch(PL_modglobal, perl_diagpack_registry_key,
+                             sizeof(perl_diagpack_registry_key) - 1, FALSE);
+    if (!registry_slot || !SvROK(*registry_slot)
+        || SvTYPE(SvRV(*registry_slot)) != SVt_PVHV)
+        return NULL;
+    registry = MUTABLE_HV(SvRV(*registry_slot));
+    value = hv_fetch(registry, language, (I32)strlen(language), FALSE);
+    return value && SvOK(*value)
+        ? INT2PTR(const perl_diagpack_engine *, SvUV(*value)) : NULL;
+}
+
+/* Store the registered static descriptor in the lexically localized hints. */
+void
+Perl_diagpack_set_lexical_hint(pTHX_ const char *language)
+{
+    const perl_diagpack_engine *engine;
+    HV *hints;
+
+    PERL_ARGS_ASSERT_DIAGPACK_SET_LEXICAL_HINT;
+    engine = Perl_diagpack_find(aTHX_ language);
+    if (!engine && strEQ(language, "en"))
+        engine = Perl_diagpack_find_builtin("en");
+    if (!engine)
+        PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID();
+    if (!PL_hintgv)
+        PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID();
+    PL_hints |= HINT_LOCALIZE_HH | HINT_BLOCK_SCOPE;
+    hints = GvHV(PL_hintgv);
+    if (!hints)
+        PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID();
+    if (UNLIKELY(!hv_store(hints, PERL_DIAGPACK_HINT_KEY,
+                           sizeof(PERL_DIAGPACK_HINT_KEY) - 1,
+                           newSVuv(PTR2UV(engine)), 0)))
+        Perl_croak_no_mem();
+    {
+        SV *value = newSVuv(PTR2UV(engine));
+    /* The hint HV serves compiling code; publish the same value in the COP
+     * hints so runtime diagnostics see the lexical selection. */
+    CopHINTHASH_set(&PL_compiling,
+            cophh_store_pvn(CopHINTHASH_get(&PL_compiling),
+                PERL_DIAGPACK_HINT_KEY, sizeof(PERL_DIAGPACK_HINT_KEY) - 1,
+                0, value, 0));
+        SvREFCNT_dec_NN(value);
+    }
+}
+
+static SV *Perl_diagpack_startup_warning(pTHX_ const char *language, SV *error);
+
+/* Attempt a bootstrap require while preserving the interpreter's error state. */
+static bool
+Perl_diagpack_startup_require(pTHX_ const char *language)
+{
+    SV *source;
+    SV *saved_error;
+    SV *load_error;
+    SV *saved_pending;
+    SV *saved_error_object;
+    char first;
+    char second;
+    bool loaded;
+
+    if (!language || !isLOWER_A(language[0]) || !isLOWER_A(language[1])
+        || language[2])
+        return FALSE;
+    if (TAINTING_get && !strEQ(language, "en"))
+        return FALSE;
+    first = toUPPER_A(language[0]);
+    second = toUPPER_A(language[1]);
+    source = sv_2mortal(newSVpvf("require XPerl::DiagPack::%c%c; 1",
+                                 first, second));
+    saved_error = newSVsv(ERRSV);
+    saved_error_object = newSVsv(PERL_ERROR_OBJ);
+    saved_pending = PL_pending_exception;
+    PL_pending_exception = NULL;
+    ENTER;
+    SAVEGENERICSV(PL_diehook);
+    SAVEGENERICSV(PL_warnhook);
+    SAVEGENERICSV(PL_excepthook);
+    PL_diehook = NULL;
+    PL_warnhook = NULL;
+    PL_excepthook = NULL;
+    (void)Perl_eval_pv(aTHX_ SvPV_nolen(source), FALSE);
+    load_error = newSVsv(ERRSV);
+    loaded = !SvTRUE(load_error);
+    sv_setsv(ERRSV, saved_error);
+    sv_setsv(PERL_ERROR_OBJ, saved_error_object);
+    SvREFCNT_dec_NN(saved_error);
+    SvREFCNT_dec_NN(saved_error_object);
+    SvREFCNT_dec(PL_pending_exception);
+    PL_pending_exception = saved_pending;
+    LEAVE;
+    if (!loaded) {
+        SV *warning = Perl_diagpack_startup_warning(aTHX_ language,
+                                                    load_error);
+        assert(warning);
+        if (warning)
+            Perl_write_to_stderr(aTHX_ warning);
+    }
+    SvREFCNT_dec_NN(load_error);
+    return loaded;
+}
+
+/* Return a mortal English warning from the permanent core catalog. */
+static SV *
+Perl_diagpack_startup_warning(pTHX_ const char *language, SV *error)
+{
+    const UV diag_index =
+        perl_diag_warning_diagnostic_language_pack_load_failed_idx;
+    AV *params = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    SV *value;
+
+    value = Perl_diag_setup_param(aTHX_ params, diag_index, 0, 0, 0);
+    sv_setpv(value, language);
+    value = Perl_diag_setup_param(aTHX_ params, diag_index, 1, 0, 0);
+    sv_setsv(value, error);
+    return Perl_diag_format_template(aTHX_ diag_index, params);
+}
+
+/* Load the selected environment pack before the program's source is parsed. */
+void
+Perl_diagpack_startup(pTHX)
+{
+    SV *setting_sv = get_sv("\004IAG_RENDER", FALSE);
+    const char *setting;
+    const char *end;
+    Size_t language_length;
+    STRLEN length;
+    char language[3];
+
+    PERL_ARGS_ASSERT_DIAGPACK_STARTUP;
+    if (!setting_sv || !SvOK(setting_sv))
+        return;
+    setting = SvPV(setting_sv, length);
+    end = (const char *)memchr(setting, ':', length);
+    if (!end) {
+        if (strEQ(setting, "legacy") || strEQ(setting, "modern")
+            || strEQ(setting, "annotated") || strEQ(setting, "JSON")
+            || strEQ(setting, "json") || strEQ(setting, "JSONL")
+            || strEQ(setting, "jsonl") || strEQ(setting, "Dumper")
+            || strEQ(setting, "DumperL"))
+            return;
+        end = setting + length;
+    }
+    language_length = (Size_t)(end - setting);
+    if (language_length == 4 && memEQ(setting, "auto", 4)) {
+        const char *automatic = Perl_diag_auto_language(aTHX);
+        if (!automatic || strlen(automatic) != 2)
+            return;
+        language[0] = automatic[0];
+        language[1] = automatic[1];
+    }
+    else if (language_length == 2) {
+        language[0] = setting[0];
+        language[1] = setting[1];
+    }
+    else
+        return;
+    language[2] = '\0';
+    if (!strEQ(language, "en")
+        && !Perl_diagpack_find(aTHX_ language))
+        (void)Perl_diagpack_startup_require(aTHX_ language);
+}
+
+/* Call one engine with an isolated copy of the canonical values and a fresh
+ * display view. A miss may have modified either view, so retries start here. */
+static SV *
+Perl_diagpack_core_attempt(pTHX_ const perl_diagpack_engine *engine,
+                           UV diag_index, AV *canonical_values,
+                           bool explicit_selector_key, U64 selector_key)
+{
+    perl_diagpack_param params[256];
+    perl_diagpack_input input;
+    const SSize_t last = canonical_values ? av_top_index(canonical_values) : -1;
+    Size_t param_count = last < 0 ? 0 : (Size_t)last + 1;
+    AV *attempt_values;
+    AV *arguments;
+    SV *rendered;
+
+    if (!engine || param_count > perl_diag_metadata[diag_index].param_count)
+        return NULL;
+
+    ENTER;
+    SAVETMPS;
+    attempt_values = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    for (Size_t index = 0; index < param_count; index++) {
+        SV **slot = av_fetch(canonical_values, (SSize_t)index, FALSE);
+        SV *value = slot ? newSVsv_nomg(*slot) : newSV(0);
+        if (UNLIKELY(!av_store(attempt_values, (SSize_t)index, value)))
+            Perl_croak_no_mem();
+        params[index].value = value;
+    }
+
+    arguments = MUTABLE_AV(sv_2mortal(MUTABLE_SV(
+        Perl_diag_prepare_display_arguments(aTHX_ diag_index, attempt_values))));
+    if (explicit_selector_key) {
+        const perl_diagpack_engine *english = Perl_diagpack_find_builtin("en");
+        const perl_diag_template_t *definition = Perl_diagpack_builtin_template(
+            english, perl_diag_metadata[diag_index].number);
+        if (!definition)
+            return NULL;
+        for (U8 index = 0; index < definition->selector_count; index++) {
+            const perl_diag_selector_t *selector = &definition->selectors[index];
+            const U64 mask = selector->value_width == 16
+                ? UINT64_C(0xffff) : UINT64_C(0xff);
+            const IV value_id = (IV)((selector_key >> selector->shift) & mask);
+            SV **slot;
+
+            if (selector->plural_form || selector->operation_word
+                || selector->index >= param_count)
+                continue;
+            slot = av_fetch(attempt_values, selector->index, FALSE);
+            if (slot)
+                sv_setiv(*slot, value_id);
+        }
+        for (Size_t index = 0; index < param_count; index++) {
+            SV **slot = av_fetch(attempt_values, (SSize_t)index, FALSE);
+            params[index].value = slot ? *slot : &PL_sv_undef;
+        }
+    }
+
+    input.diagnostic_number = perl_diag_metadata[diag_index].number;
+    input.param_count = param_count;
+    input.params = params;
+    input.arguments = arguments;
+    rendered = engine->render(aTHX_ engine, &input);
+    FREETMPS;
+    LEAVE;
+    return rendered;
+}
+
+static SV *
+Perl_diagpack_format_template_english(pTHX_ UV diag_index,
+                                      AV *canonical_values)
+{
+    const perl_diagpack_engine *english = Perl_diagpack_find_builtin("en");
+    SV *rendered;
+
+    if (!english)
+        return NULL;
+    rendered = Perl_diagpack_core_attempt(aTHX_ english, diag_index,
+                                          canonical_values, FALSE, 0);
+    return rendered ? sv_2mortal(rendered) : NULL;
+}
+
+SV *
+Perl_diagpack_metadata(pTHX_ const perl_diagpack_engine *engine)
+{
+    HV *metadata;
+    PERL_ARGS_ASSERT_DIAGPACK_METADATA;
+    if (!engine || engine->abi_version != PERL_DIAGPACK_ABI
+        || engine->struct_size < sizeof(*engine) || !engine->catalog)
+        Perl_diagpack_invalid_catalog(aTHX_ "invalid engine pointer");
+    metadata = newHV();
+    (void)hv_stores(metadata, "language", newSVpv(engine->language, 0));
+    (void)hv_stores(metadata, "abi_version", newSVuv(engine->abi_version));
+    return newRV_noinc(MUTABLE_SV(metadata));
+}
+
+static SV *
+Perl_diagpack_field(pTHX_ HV *fields, const char *name)
+{
+    SV **value = hv_fetch(fields, name, (I32)strlen(name), FALSE);
+    PERL_UNUSED_CONTEXT;
+    return value ? *value : &PL_sv_undef;
+}
+
+static bool
+Perl_diagpack_field_matches(pTHX_ SV *value, const char *expected)
+{
+    SV *copy;
+    STRLEN length;
+    const char *text;
+    bool matches;
+    if (!SvOK(value) || SvROK(value))
+        return FALSE;
+    copy = newSVsv_nomg(value);
+    text = SvPV_nomg(copy, length);
+    matches = length == strlen(expected) && memEQ(text, expected, length);
+    SvREFCNT_dec_NN(copy);
+    PERL_UNUSED_CONTEXT;
+    return matches;
+}
+
+SV *
+Perl_diagpack_render_diagnostic(pTHX_ const perl_diagpack_engine *engine,
+                                SV *diagnostic)
+{
+    HV *fields;
+    AV *param_array;
+    AV *semantic_values;
+    AV *arguments;
+    perl_diagpack_param params[256];
+    perl_diagpack_input input;
+    SV *number;
+    SV *code;
+    SV *param_value;
+    SSize_t top;
+    Size_t param_count;
+    UV diag_index, template_index;
+    SV *rendered;
+
+    PERL_ARGS_ASSERT_DIAGPACK_RENDER_DIAGNOSTIC;
+    if (!engine || engine->abi_version != PERL_DIAGPACK_ABI
+        || engine->struct_size < sizeof(*engine) || !engine->catalog)
+        Perl_diagpack_invalid_catalog(aTHX_ "invalid engine pointer");
+    if (!SvROK(diagnostic) || !sv_derived_from(diagnostic, "XPerl::Diagnostic")
+        || SvTYPE(SvRV(diagnostic)) != SVt_PVHV)
+        PERL_THROW_ERROR_DIAGNOSTIC_API_RECEIVER_TYPE_MISMATCH("XPerl::Diagnostic");
+    fields = MUTABLE_HV(SvRV(diagnostic));
+    number = Perl_diagpack_field(aTHX_ fields, "number");
+    code = Perl_diagpack_field(aTHX_ fields, "code");
+    if (!SvOK(number) || SvROK(number) || !SvOK(code) || SvROK(code))
+        PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID();
+
+    {
+        SV *number_copy = newSVsv_nomg(number);
+        UV diagnostic_number = SvUV(number_copy);
+        SvREFCNT_dec_NN(number_copy);
+        for (diag_index = 1; diag_index <= PERL_DIAG_METADATA_COUNT; diag_index++)
+            if (perl_diag_metadata[diag_index].number == diagnostic_number)
+                break;
+    }
+    if (diag_index > PERL_DIAG_METADATA_COUNT
+        || !Perl_diagpack_field_matches(aTHX_ code,
+                                        perl_diag_metadata[diag_index].code))
+        PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID();
+
+    {
+        SV *params_sv = Perl_diagpack_field(aTHX_ fields, "params");
+        if (!SvROK(params_sv) || SvTYPE(SvRV(params_sv)) != SVt_PVAV)
+            PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_PARAMETERS_NOT_ARRAY();
+        param_array = MUTABLE_AV(SvRV(params_sv));
+    }
+    top = av_top_index(param_array);
+    param_count = top < 0 ? 0 : (Size_t)top + 1;
+    if (param_count > perl_diag_metadata[diag_index].param_count)
+        PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID();
+    template_index = Perl_diagpack_schema_index(engine->catalog,
+        perl_diag_metadata[diag_index].number);
+    if (!template_index)
+        return NULL;
+    if (param_count < engine->catalog->templates[template_index].stored_param_count)
+        return NULL;
+
+    ENTER;
+    SAVETMPS;
+    SAVEFREESV(SvREFCNT_inc_simple_NN(MUTABLE_SV(param_array)));
+    semantic_values = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    for (Size_t index = 0; index < param_count; index++) {
+        SV **record_slot = av_fetch(param_array, (SSize_t)index, FALSE);
+        HV *record;
+        SV **value_slot;
+        U16 expected_id = perl_diag_param_ids[
+            perl_diag_metadata[diag_index].param_offset + index];
+        const perl_diag_param_metadata_t *expected =
+            &perl_diag_param_metadata[expected_id];
+
+        if (!record_slot || !SvROK(*record_slot)
+            || SvTYPE(SvRV(*record_slot)) != SVt_PVHV)
+            PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_PARAMETER_INVALID();
+        SAVEFREESV(SvREFCNT_inc_simple_NN(*record_slot));
+        record = MUTABLE_HV(SvRV(*record_slot));
+        if (!Perl_diagpack_field_matches(aTHX_
+                Perl_diagpack_field(aTHX_ record, "name"), expected->name)
+            || !Perl_diagpack_field_matches(aTHX_
+                Perl_diagpack_field(aTHX_ record, "type"), expected->type))
+            PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_PARAMETER_INVALID();
+        value_slot = hv_fetchs(record, "value", FALSE);
+        if (!value_slot)
+            PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_PARAMETER_INVALID();
+        param_value = *value_slot;
+        SAVEFREESV(SvREFCNT_inc_simple_NN(param_value));
+        SvGETMAGIC(param_value);
+        param_value = newSVsv_nomg(param_value);
+        if (UNLIKELY(!av_store(semantic_values, (SSize_t)index,
+                               param_value)))
+            Perl_croak_no_mem();
+        params[index].value = param_value;
+    }
+
+    arguments = MUTABLE_AV(sv_2mortal(MUTABLE_SV(
+        Perl_diag_prepare_display_arguments(aTHX_ diag_index,
+                                             semantic_values))));
+
+    input.diagnostic_number = perl_diag_metadata[diag_index].number;
+    input.param_count = param_count;
+    input.params = params;
+    input.arguments = arguments;
+    rendered = engine->render(aTHX_ engine, &input);
+    FREETMPS;
+    LEAVE;
+    return rendered;
+}
+
+static SV *Perl_diagpack_render_core(pTHX_ UV diag_index,
+    AV *canonical_values, const char *language, bool explicit_selector_key,
+    U64 selector_key, const perl_diagpack_engine *selected_engine);
+
+/* The core dispatcher returns its successful rendering as a mortal SV. */
+SV *
+Perl_diagpack_render_format_engine(pTHX_ const perl_diagpack_engine *engine,
+                                   UV diag_index, AV *values)
+{
+    AV *semantic_values;
+    SV *rendered;
+
+    PERL_ARGS_ASSERT_DIAGPACK_RENDER_FORMAT_ENGINE;
+    assert(diag_index && diag_index <= PERL_DIAG_METADATA_COUNT);
+    semantic_values = Perl_diag_snapshot_values(aTHX_ values,
+        perl_diag_metadata[diag_index].param_count);
+    if (!semantic_values)
+        return NULL;
+    rendered = Perl_diagpack_render_core(aTHX_ diag_index, semantic_values,
+        NULL, FALSE, 0, engine);
+    return rendered;
+}
+
+/*
+=for apidoc diag_format_template
+
+Formats a diagnostic's selected template using the supplied positional
+arguments and returns the resulting string.
+
+=cut
+*/
+SV *
+Perl_diag_format_template(pTHX_ UV diag_index, AV *diagnostic_params)
+{
+    Size_t param_count;
+    AV *semantic_values;
+
+    PERL_ARGS_ASSERT_DIAG_FORMAT_TEMPLATE;
+    assert(diag_index && diag_index <= PERL_DIAG_METADATA_COUNT);
+
+    semantic_values = Perl_diag_snapshot_param_values(aTHX_
+        diagnostic_params, perl_diag_metadata[diag_index].param_count,
+        &param_count);
+    if (!semantic_values)
+        return NULL;
+    return Perl_diagpack_format_template_english(aTHX_ diag_index,
+                                                  semantic_values);
+}
+
+static SV *
+Perl_diagpack_render_core(pTHX_ UV diag_index, AV *canonical_values,
+                          const char *language, bool explicit_selector_key,
+                          U64 selector_key,
+                          const perl_diagpack_engine *selected_engine)
+{
+    const perl_diagpack_engine *attempts[3];
+    Size_t attempt_count = 0;
+    const perl_diagpack_engine *engine;
+    SV *message;
+
+    engine = selected_engine ? selected_engine
+        : Perl_diagpack_find_effective(aTHX_ language);
+    if (engine)
+        attempts[attempt_count++] = engine;
+    engine = Perl_diagpack_find(aTHX_ "en");
+    if (engine)
+        attempts[attempt_count++] = engine;
+    engine = Perl_diagpack_find_builtin("en");
+    if (engine)
+        attempts[attempt_count++] = engine;
+
+    for (Size_t index = 0; index < attempt_count; index++) {
+        bool repeated = FALSE;
+        for (Size_t previous = 0; previous < index; previous++)
+            if (attempts[previous] == attempts[index]) {
+                repeated = TRUE;
+                break;
+            }
+        if (repeated)
+            continue;
+        message = Perl_diagpack_core_attempt(aTHX_ attempts[index], diag_index,
+            canonical_values, explicit_selector_key, selector_key);
+        if (message)
+            return sv_2mortal(message);
+    }
+    return NULL;
+}
+
+/*
+=for apidoc diag_render_template
+
+Renders a diagnostic template by diagnostic number, selector key, and
+language. The caller supplies retained parameter values in declaration order.
+Plural selector octets are resolved from those counts for this language.
+
+=cut
+*/
+SV *
+Perl_diag_render_template(pTHX_ UV diag_number, U64 selector_key,
+                          AV *values, const char *language)
+{
+    UV diag_index;
+    AV *semantic_values;
+
+    PERL_ARGS_ASSERT_DIAG_RENDER_TEMPLATE;
+    for (diag_index = 1; diag_index <= PERL_DIAG_METADATA_COUNT; diag_index++)
+        if (perl_diag_metadata[diag_index].number == diag_number)
+            break;
+    if (diag_index > PERL_DIAG_METADATA_COUNT)
+        return NULL;
+
+    semantic_values = Perl_diag_snapshot_values(aTHX_ values,
+        perl_diag_metadata[diag_index].param_count);
+    if (!semantic_values)
+        return NULL;
+    return Perl_diagpack_render_core(aTHX_ diag_index, semantic_values,
+        language, TRUE, selector_key, NULL);
+}
+
+/*
+=for apidoc diag_render_diagnostic
+
+Render a structured diagnostic from its current parameter records. Selector
+keys and positional display arguments are prepared from the current values.
+
+=cut
+*/
+SV *
+Perl_diag_render_diagnostic(pTHX_ UV diag_number, AV *diagnostic_params,
+                            const char *language)
+{
+    UV diag_index;
+    Size_t param_count;
+    AV *semantic_params;
+
+    PERL_ARGS_ASSERT_DIAG_RENDER_DIAGNOSTIC;
+    for (diag_index = 1; diag_index <= PERL_DIAG_METADATA_COUNT; diag_index++)
+        if (perl_diag_metadata[diag_index].number == diag_number)
+            break;
+    if (diag_index > PERL_DIAG_METADATA_COUNT)
+        return NULL;
+
+    semantic_params = Perl_diag_snapshot_param_values(aTHX_ diagnostic_params,
+        perl_diag_metadata[diag_index].param_count, &param_count);
+    if (!semantic_params)
+        return NULL;
+    return Perl_diagpack_render_core(aTHX_ diag_index, semantic_params,
+                                     language, FALSE, 0, NULL);
+}
+
+/* The core dispatcher returns its successful rendering as a mortal SV. */
+SV *
+Perl_diag_render_diagnostic_engine(pTHX_ UV diag_number,
+                                   AV *diagnostic_params,
+                                   const perl_diagpack_engine *engine)
+{
+    UV diag_index;
+    Size_t param_count;
+    AV *semantic_params;
+
+    PERL_ARGS_ASSERT_DIAG_RENDER_DIAGNOSTIC_ENGINE;
+    for (diag_index = 1; diag_index <= PERL_DIAG_METADATA_COUNT; diag_index++)
+        if (perl_diag_metadata[diag_index].number == diag_number)
+            break;
+    if (diag_index > PERL_DIAG_METADATA_COUNT)
+        return NULL;
+    semantic_params = Perl_diag_snapshot_param_values(aTHX_ diagnostic_params,
+        perl_diag_metadata[diag_index].param_count, &param_count);
+    if (!semantic_params)
+        return NULL;
+    return Perl_diagpack_render_core(aTHX_ diag_index, semantic_params,
+        NULL, FALSE, 0, engine);
+}
+
+/* Convert compiled positional substitutions back to their named catalog form. */
+static SV *
+Perl_diag_named_template(pTHX_ const perl_diag_template_case_t *template_case,
+                         const perl_diag_metadata_t *meta,
+                         const U8 *argument_indices)
+{
+    const char *source = template_case->positional_template;
+    const STRLEN source_length = strlen(source);
+    STRLEN offset = 0;
+    SV *text = newSVpvs("");
+
+    while (offset < source_length) {
+        if (source[offset] == '%' && offset + 1 < source_length
+            && source[offset + 1] == '%')
+        {
+            sv_catpvs(text, "%%");
+            offset += 2;
+        }
+        else if (source[offset] == '%' && offset + 1 < source_length
+                 && isDIGIT_A(source[offset + 1]))
+        {
+            STRLEN end = offset + 1;
+            UV argument = 0;
+            U16 param_id;
+            const char *name;
+
+            while (end < source_length && isDIGIT_A(source[end])) {
+                argument = argument * 10 + (UV)(source[end] - '0');
+                end++;
+            }
+            assert(end + 1 < source_length && source[end] == '$'
+                   && source[end + 1] == 's');
+            assert(argument > 0 && argument <= template_case->arg_count);
+            param_id = perl_diag_param_ids[meta->param_offset
+                + argument_indices[template_case->argument_index_offset
+                                   + argument - 1]];
+            assert(param_id);
+            name = perl_diag_param_metadata[param_id].name;
+            sv_catpvs(text, "%{");
+            sv_catpv(text, name);
+            sv_catpvs(text, "}");
+            offset = end + 2;
+        }
+        else {
+            /* A percent not followed by a compiled positional argument is
+             * literal template text.  Escape it for the named template form.
+             */
+            if (source[offset] == '%')
+                sv_catpvs(text, "%%");
+            else
+                sv_catpvn(text, source + offset, 1);
+            offset++;
+        }
+    }
+
+    /* Compiled template text is stored as UTF-8 octets. */
+    SvUTF8_on(text);
+    return text;
+}
+
+static const char *
+Perl_diag_data_selector_value(const perl_diag_selector_t *selector, U16 value)
+{
+    if (!value)
+        return "*";
+    if (selector->plural_kind && value <= 6)
+        return perl_diag_plural_names[value];
+    if (value <= selector->value_count)
+        return selector->values[value - 1];
+    return NULL;
+}
+
+static int
+Perl_diag_data_numeric_value_compare(const void *left, const void *right)
+{
+    const SV *left_sv = *(const SV * const *)left;
+    const SV *right_sv = *(const SV * const *)right;
+    const STRLEN left_length = SvCUR(left_sv);
+    const STRLEN right_length = SvCUR(right_sv);
+    if (left_length != right_length)
+        return left_length < right_length ? -1 : 1;
+    return memcmp(SvPVX(left_sv), SvPVX(right_sv), left_length);
+}
+
+static void
+Perl_diag_data_store_text(pTHX_ HV *hash, const char *key, const char *value)
+{
+    (void)hv_store(hash, key, strlen(key), newSVpv(value ? value : "", 0), 0);
+}
+
+static bool
+Perl_diag_data_selector_role_equal(const perl_diag_selector_t *left,
+                                   const perl_diag_selector_t *right)
+{
+    /* Selector ordinals and domain IDs are pack-local. Match the semantic
+     * dimension by name, source, and role instead. */
+    return ((!left->plural_kind && !right->plural_kind)
+            || (left->plural_kind && right->plural_kind
+                && strEQ(left->plural_kind, right->plural_kind)))
+        && left->operation_word == right->operation_word
+        && left->native_id == right->native_id;
+}
+
+static int
+Perl_diag_data_engine_language_compare(const void *left, const void *right)
+{
+    const SV *left_value = *(const SV * const *)left;
+    const SV *right_value = *(const SV * const *)right;
+    const perl_diagpack_engine *left_engine =
+        INT2PTR(const perl_diagpack_engine *, SvUV(left_value));
+    const perl_diagpack_engine *right_engine =
+        INT2PTR(const perl_diagpack_engine *, SvUV(right_value));
+    return strcmp(left_engine->language, right_engine->language);
+}
+
+static const char *
+Perl_diag_data_selector_source(const perl_diagpack_catalog *catalog,
+                               UV schema_index,
+                               const perl_diag_selector_t *selector)
+{
+    const perl_diagpack_schema_t *schema = catalog->schemas[schema_index];
+    U16 parameter_id;
+    if (selector->index >= schema->param_count)
+        return NULL;
+    parameter_id = schema->param_ids[selector->index];
+    if (!parameter_id || parameter_id >= catalog->param_table_count)
+        return NULL;
+    return catalog->param_table[parameter_id].name;
+}
+
+static SV *
+Perl_diag_data_selector_key(pTHX_ const char *name, const char *source,
+                            const perl_diag_selector_t *selector)
+{
+    return newSVpvf("%s\x1f%s\x1f%s\x1f%d%d", name, source,
+        selector->plural_kind ? selector->plural_kind : "",
+        (int)selector->operation_word, (int)selector->native_id);
+}
+
+static bool
+Perl_diag_data_selector_seen(pTHX_ HV *seen, const char *name,
+                             const char *source,
+                             const perl_diag_selector_t *selector)
+{
+    SV *key = Perl_diag_data_selector_key(aTHX_ name, source, selector);
+    const bool found = hv_exists_ent(seen, key, 0);
+    if (!found)
+        (void)hv_store_ent(seen, key, newSViv(1), 0);
+    SvREFCNT_dec_NN(key);
+    return found;
+}
+
+static AV *
+Perl_diag_data_engine_snapshot(pTHX_ const perl_diagpack_engine *english)
+{
+    AV *engines = newAV();
+    AV *registered = newAV();
+    SV **registry_slot = PL_modglobal
+        ? hv_fetch(PL_modglobal, perl_diagpack_registry_key,
+                   sizeof(perl_diagpack_registry_key) - 1, FALSE) : NULL;
+    if (registry_slot && SvROK(*registry_slot)
+        && SvTYPE(SvRV(*registry_slot)) == SVt_PVHV) {
+        HV *registry = MUTABLE_HV(SvRV(*registry_slot));
+        HE *entry;
+        (void)hv_iterinit(registry);
+        while ((entry = hv_iternext(registry))) {
+            SV *value = HeVAL(entry);
+            if (SvOK(value))
+                av_push(registered, newSVsv(value));
+        }
+    }
+    if (av_top_index(registered) > 0)
+        qsort(AvARRAY(registered), (size_t)av_top_index(registered) + 1,
+              sizeof(SV *), Perl_diag_data_engine_language_compare);
+    /* Permanent English supplies core source inspection even when an
+     * optional EN descriptor replaces its registered rendering capability. */
+    if (english)
+        av_push(engines, newSVuv(PTR2UV(english)));
+    for (SSize_t i = 0; i <= av_top_index(registered); i++) {
+        SV **value = av_fetch(registered, i, FALSE);
+        if (value)
+            av_push(engines, newSVsv(*value));
+    }
+    SvREFCNT_dec(MUTABLE_SV(registered));
+    return engines;
+}
+
+static SV *
+Perl_diag_data_by_index(pTHX_ UV diag_index)
+{
+    const perl_diag_metadata_t *meta = &perl_diag_metadata[diag_index];
+    const perl_diagpack_engine *english_engine = Perl_diagpack_find_builtin("en");
+    UV english_index = Perl_diagpack_schema_index(english_engine->catalog, meta->number);
+    const perl_diag_template_t *english = english_index
+        ? &english_engine->catalog->templates[english_index] : NULL;
+    HV *result = newHV();
+    AV *parameters = newAV();
+    AV *selectors = newAV();
+    AV *selector_only_parameters = newAV();
+    HV *layout = newHV();
+    HV *fallback = newHV();
+    HV *translations = newHV();
+    HV *seen_selectors = newHV();
+    HV *seen_selector_sources = newHV();
+    HV *seen_languages = newHV();
+    AV *engines = Perl_diag_data_engine_snapshot(aTHX_ english_engine);
+    SSize_t engine_last = av_top_index(engines);
+    U8 selector_index;
+
+    (void)hv_stores(result, "number", newSVuv(meta->number));
+    Perl_diag_data_store_text(aTHX_ result, "code", meta->code);
+    Perl_diag_data_store_text(aTHX_ result, "severity", meta->severity);
+    Perl_diag_data_store_text(aTHX_ result, "kind", meta->kind);
+    Perl_diag_data_store_text(aTHX_ result, "class", meta->class_name);
+    Perl_diag_data_store_text(aTHX_ result, "allowed_class", meta->allowed_class);
+    Perl_diag_data_store_text(aTHX_ result, "category_policy", meta->category_policy);
+    Perl_diag_data_store_text(aTHX_ result, "role", meta->role);
+    Perl_diag_data_store_text(aTHX_ result, "grouping_role", meta->grouping_role);
+    Perl_diag_data_store_text(aTHX_ result, "review_status", meta->review_status);
+    (void)hv_stores(result, "leaf_only", newSViv(meta->leaf_only));
+    (void)hv_stores(result, "dynamic_category", newSViv(meta->dynamic_category));
+    (void)hv_stores(result, "counts_as_error", newSViv(meta->counts_as_error));
+    if (meta->has_following_hint)
+        (void)hv_stores(result, "has_following_hint", newSViv(1));
+    if (meta->is_hint)
+        (void)hv_stores(result, "is_hint", newSViv(1));
+
+    (void)hv_stores(layout, "captured_parameter_count",
+                    newSVuv(meta->param_count));
+    (void)hv_stores(layout, "stored_parameter_count", newSVuv(meta->param_count));
+    bool english_displayed[256] = { FALSE };
+    for (UV case_index = english ? english->first_case : 0;
+         english &&
+         case_index < C_ARRAY_LENGTH(perl_diag_template_cases_en)
+             && perl_diag_template_cases_en[case_index].diagnostic_number == meta->number;
+         case_index++) {
+        const perl_diag_template_case_t *template_case =
+            &perl_diag_template_cases_en[case_index];
+        for (U8 argument = 0; argument < template_case->arg_count; argument++)
+            english_displayed[perl_diag_template_argument_indices_en[
+                template_case->argument_index_offset + argument]] = TRUE;
+    }
+    for (U8 parameter_index = 0; parameter_index < meta->param_count;
+         parameter_index++) {
+        const U16 param_id = perl_diag_param_ids[meta->param_offset
+                                                 + parameter_index];
+        const perl_diag_param_metadata_t *param =
+            &perl_diag_param_metadata[param_id];
+        const perl_diag_param_input_range_t *input_range =
+            &perl_diag_param_input_ranges[meta->input_offset
+                                          + parameter_index];
+        HV *parameter = newHV();
+        AV *inputs = newAV();
+
+        Perl_diag_data_store_text(aTHX_ parameter, "name", param->name);
+        Perl_diag_data_store_text(aTHX_ parameter, "type", param->type);
+        for (U8 input_index = 0; input_index < input_range->input_count;
+             input_index++) {
+            const perl_diag_input_metadata_t *input =
+                &perl_diag_input_metadata[input_range->input_offset
+                                          + input_index];
+            HV *input_data = newHV();
+            Perl_diag_data_store_text(aTHX_ input_data, "name", input->name);
+            Perl_diag_data_store_text(aTHX_ input_data, "type", input->type);
+            av_push(inputs, newRV_noinc(MUTABLE_SV(input_data)));
+        }
+        (void)hv_stores(parameter, "inputs", newRV_noinc(MUTABLE_SV(inputs)));
+        av_push(parameters, newRV_noinc(MUTABLE_SV(parameter)));
+    }
+    (void)hv_stores(result, "parameters", newRV_noinc(MUTABLE_SV(parameters)));
+
+    /* Snapshot order starts with permanent English for stable schema and
+     * selector ordering; registered capabilities follow in language order. */
+    for (SSize_t engine_at = 0; engine_at <= engine_last; engine_at++) {
+        SV **engine_value = av_fetch(engines, engine_at, FALSE);
+        const perl_diagpack_engine *engine = engine_value
+            ? INT2PTR(const perl_diagpack_engine *, SvUV(*engine_value)) : NULL;
+        UV schema_index = engine
+            ? Perl_diagpack_schema_index(engine->catalog, meta->number) : 0;
+        const perl_diag_template_t *definition = schema_index
+            ? &engine->catalog->templates[schema_index] : NULL;
+        if (!definition)
+            continue;
+        for (selector_index = 0; selector_index < definition->selector_count;
+             selector_index++) {
+            const perl_diag_selector_t *selector = &definition->selectors[selector_index];
+            const char *selector_source = Perl_diag_data_selector_source(
+                engine->catalog, schema_index, selector);
+            if (!selector_source || selector->index >= meta->param_count
+                || Perl_diag_data_selector_seen(aTHX_ seen_selectors,
+                        selector->name, selector_source, selector))
+                continue;
+            const U16 param_id = perl_diag_param_ids[meta->param_offset
+                                                     + selector->index];
+            const perl_diag_param_metadata_t *source =
+                &perl_diag_param_metadata[param_id];
+            HV *selector_data = newHV();
+            AV *values = newAV();
+            AV *numeric_cases = newAV();
+            AV *categories = newAV();
+            HV *seen_values = newHV();
+            U8 max_value_width = selector->value_width;
+
+            Perl_diag_data_store_text(aTHX_ selector_data, "name", selector->name);
+            Perl_diag_data_store_text(aTHX_ selector_data, "source", source->name);
+            (void)hv_stores(selector_data, "wildcard", newSVpvs("*"));
+            if (selector->plural_kind) {
+                for (U8 category = 1; category <= 6; category++) {
+                    const char *value = perl_diag_plural_names[category];
+                    (void)hv_store(seen_values, value, strlen(value), newSViv(1), 0);
+                    av_push(values, newSVpv(value, 0));
+                }
+            }
+            for (SSize_t value_engine_at = 0;
+                 value_engine_at <= engine_last; value_engine_at++) {
+                SV **value_engine_value = av_fetch(engines, value_engine_at, FALSE);
+                const perl_diagpack_engine *value_engine = value_engine_value
+                    ? INT2PTR(const perl_diagpack_engine *, SvUV(*value_engine_value)) : NULL;
+                UV language_index = value_engine
+                    ? Perl_diagpack_schema_index(value_engine->catalog, meta->number) : 0;
+                const perl_diag_template_t *language_template = language_index
+                    ? &value_engine->catalog->templates[language_index] : NULL;
+                const perl_diag_selector_t *language_selector = NULL;
+                if (language_template) {
+                    for (U8 candidate_index = 0;
+                         candidate_index < language_template->selector_count;
+                         candidate_index++) {
+                        const perl_diag_selector_t *candidate =
+                            &language_template->selectors[candidate_index];
+                        const char *candidate_source = Perl_diag_data_selector_source(
+                            value_engine->catalog, language_index, candidate);
+                        if (candidate_source && strEQ(candidate_source, selector_source)
+                            && strEQ(candidate->name, selector->name)
+                            && Perl_diag_data_selector_role_equal(candidate, selector)) {
+                            language_selector = candidate;
+                            break;
+                        }
+                    }
+                }
+                if (!language_selector)
+                    continue;
+                if (language_selector->value_width > max_value_width)
+                    max_value_width = language_selector->value_width;
+                for (U16 value_index = 0;
+                     value_index < language_selector->value_count;
+                     value_index++) {
+                    const char *value = language_selector->values[value_index];
+                    if (selector->plural_kind && !isDIGIT_A(*value))
+                        continue;
+                    if (hv_exists(seen_values, value, strlen(value)))
+                        continue;
+                    (void)hv_store(seen_values, value, strlen(value), newSViv(1), 0);
+                    av_push(values, newSVpv(value, 0));
+                    if (selector->plural_kind)
+                        av_push(numeric_cases, newSVpv(value, 0));
+                }
+            }
+            if (selector->plural_kind) {
+                const SSize_t exact_count = av_top_index(values) - 5;
+                if (exact_count > 1)
+                    qsort(AvARRAY(values) + 6, (size_t)exact_count, sizeof(SV *),
+                          Perl_diag_data_numeric_value_compare);
+                if (av_top_index(numeric_cases) > 0)
+                    qsort(AvARRAY(numeric_cases) + 0,
+                          (size_t)av_top_index(numeric_cases) + 1, sizeof(SV *),
+                          Perl_diag_data_numeric_value_compare);
+            }
+            SvREFCNT_dec(MUTABLE_SV(seen_values));
+            (void)hv_stores(selector_data, "value_width",
+                            newSVuv(max_value_width));
+            (void)hv_stores(selector_data, "values", newRV_noinc(MUTABLE_SV(values)));
+            if (selector->plural_kind) {
+                Perl_diag_data_store_text(aTHX_ selector_data, "plural_kind",
+                                          selector->plural_kind);
+                for (U8 category = 1; category <= 6; category++)
+                    av_push(categories,
+                            newSVpv(perl_diag_plural_names[category], 0));
+                (void)hv_stores(selector_data, "categories",
+                                newRV_noinc(MUTABLE_SV(categories)));
+                (void)hv_stores(selector_data, "exact_numeric_values",
+                                newRV_noinc(MUTABLE_SV(numeric_cases)));
+            }
+            else {
+                SvREFCNT_dec(MUTABLE_SV(numeric_cases));
+                SvREFCNT_dec(MUTABLE_SV(categories));
+            }
+            av_push(selectors, newRV_noinc(MUTABLE_SV(selector_data)));
+            if (!english_displayed[selector->index]
+                && !hv_exists(seen_selector_sources, source->name,
+                              strlen(source->name))) {
+                (void)hv_store(seen_selector_sources, source->name,
+                               strlen(source->name), newSViv(1), 0);
+                av_push(selector_only_parameters, newSVpv(source->name, 0));
+            }
+        }
+    }
+    (void)hv_stores(result, "selectors", newRV_noinc(MUTABLE_SV(selectors)));
+    (void)hv_stores(layout, "selector_only_parameters",
+                    newRV_noinc(MUTABLE_SV(selector_only_parameters)));
+    (void)hv_stores(result, "parameter_layout", newRV_noinc(MUTABLE_SV(layout)));
+    (void)hv_stores(fallback, "language", newSVpvs("en"));
+    (void)hv_stores(fallback, "when_missing",
+                    newSVpvs("used when the requested language has no matching case"));
+    (void)hv_stores(result, "fallback", newRV_noinc(MUTABLE_SV(fallback)));
+
+    for (SSize_t engine_at = engine_last; engine_at >= 0; engine_at--) {
+        SV **engine_value = av_fetch(engines, engine_at, FALSE);
+        const perl_diagpack_engine *engine = engine_value
+            ? INT2PTR(const perl_diagpack_engine *, SvUV(*engine_value)) : NULL;
+        const perl_diagpack_catalog *catalog = engine->catalog;
+        if (hv_exists(seen_languages, catalog->language,
+                      strlen(catalog->language)))
+            continue;
+        UV language_index = Perl_diagpack_schema_index(catalog, meta->number);
+        /* A partial registered EN pack can miss this row. The renderer then
+         * retries permanent English, so inspection exposes that same row. */
+        if (!language_index && strEQ(catalog->language, "en")) {
+            catalog = english_engine->catalog;
+            language_index = Perl_diagpack_schema_index(catalog, meta->number);
+        }
+        if (!language_index)
+            continue;
+        const perl_diag_template_t *definition =
+            &catalog->templates[language_index];
+        const perl_diag_template_case_t *cases = catalog->cases;
+        AV *language_cases = newAV();
+        UV case_index = definition->first_case;
+
+        while (case_index < catalog->case_count
+               && cases[case_index].diagnostic_number == meta->number) {
+            const perl_diag_template_case_t *template_case =
+                &cases[case_index++];
+            HV *case_data;
+            AV *criteria;
+            AV *template_parameters;
+            AV *retained_only;
+
+            if (!template_case->positional_template)
+                continue;
+            case_data = newHV();
+            criteria = newAV();
+            template_parameters = newAV();
+            retained_only = newAV();
+            for (selector_index = 0;
+                 selector_index < definition->selector_count;
+                 selector_index++) {
+                const perl_diag_selector_t *selector =
+                    &definition->selectors[selector_index];
+                const U16 value = (U16)((template_case->selector_pattern
+                    >> selector->shift)
+                    & (selector->value_width == 16
+                        ? UINT64_C(0xffff) : UINT64_C(0xff)));
+                HV *criterion = newHV();
+                Perl_diag_data_store_text(aTHX_ criterion, "selector",
+                                          selector->name);
+                Perl_diag_data_store_text(aTHX_ criterion, "value",
+                    Perl_diag_data_selector_value(selector, value));
+                av_push(criteria, newRV_noinc(MUTABLE_SV(criterion)));
+            }
+            for (U8 parameter_index = 0;
+                 parameter_index < template_case->arg_count;
+                 parameter_index++) {
+                const U8 source_index = catalog->argument_indices[
+                    template_case->argument_index_offset + parameter_index];
+                const U16 param_id = perl_diag_param_ids[meta->param_offset
+                                                         + source_index];
+                av_push(template_parameters,
+                        newSVpv(perl_diag_param_metadata[param_id].name, 0));
+            }
+            bool displayed[256] = { FALSE };
+            for (U8 parameter_index = 0;
+                 parameter_index < template_case->arg_count;
+                 parameter_index++)
+                displayed[catalog->argument_indices[
+                    template_case->argument_index_offset + parameter_index]] = TRUE;
+            for (U8 parameter_index = 0;
+                 parameter_index < definition->stored_param_count;
+                 parameter_index++) {
+                if (displayed[parameter_index])
+                    continue;
+                const U16 param_id = perl_diag_param_ids[meta->param_offset
+                                                         + parameter_index];
+                av_push(retained_only,
+                        newSVpv(perl_diag_param_metadata[param_id].name, 0));
+            }
+            (void)hv_stores(case_data, "argument_count",
+                            newSVuv(template_case->arg_count));
+            (void)hv_stores(case_data, "selector_criteria",
+                            newRV_noinc(MUTABLE_SV(criteria)));
+            (void)hv_stores(case_data, "template_parameters",
+                            newRV_noinc(MUTABLE_SV(template_parameters)));
+            (void)hv_stores(case_data, "retained_only_parameters",
+                            newRV_noinc(MUTABLE_SV(retained_only)));
+            (void)hv_stores(case_data, "template",
+                Perl_diag_named_template(aTHX_ template_case, meta,
+                                         catalog->argument_indices));
+            av_push(language_cases, newRV_noinc(MUTABLE_SV(case_data)));
+        }
+
+        if (av_top_index(language_cases) >= 0) {
+            HV *language_data = newHV();
+            (void)hv_stores(language_data, "stored_parameter_count",
+                            newSVuv(definition->stored_param_count));
+            (void)hv_stores(language_data, "cases",
+                            newRV_noinc(MUTABLE_SV(language_cases)));
+            (void)hv_store(translations, catalog->language,
+                           strlen(catalog->language),
+                           newRV_noinc(MUTABLE_SV(language_data)), 0);
+            (void)hv_store(seen_languages, catalog->language,
+                           strlen(catalog->language), newSViv(1), 0);
+        }
+        else
+            SvREFCNT_dec(MUTABLE_SV(language_cases));
+    }
+    (void)hv_stores(result, "translations",
+                    newRV_noinc(MUTABLE_SV(translations)));
+
+    SvREFCNT_dec(MUTABLE_SV(seen_languages));
+    SvREFCNT_dec(MUTABLE_SV(seen_selector_sources));
+    SvREFCNT_dec(MUTABLE_SV(seen_selectors));
+    SvREFCNT_dec(MUTABLE_SV(engines));
+
+    return newRV_noinc(MUTABLE_SV(result));
+}
+
+/*
+=for apidoc diag_data_by_number
+
+Return a fresh metadata hash reference for the diagnostic catalog number, or
+NULL when the number is not present.
+
+=cut
+*/
+SV *
+Perl_diag_data_by_number(pTHX_ UV number)
+{
+    PERL_ARGS_ASSERT_DIAG_DATA_BY_NUMBER;
+    if (!number)
+        return NULL;
+    for (UV diag_index = 1; diag_index <= PERL_DIAG_METADATA_COUNT;
+         diag_index++) {
+        if (perl_diag_metadata[diag_index].number == number)
+            return Perl_diag_data_by_index(aTHX_ diag_index);
+    }
+    return NULL;
+}
+
+/*
+=for apidoc diag_data_by_code
+
+Return a fresh metadata hash reference for the diagnostic code bytes, or NULL
+when the code is not present.
+
+=cut
+*/
+SV *
+Perl_diag_data_by_code(pTHX_ const char *code, STRLEN length)
+{
+    PERL_ARGS_ASSERT_DIAG_DATA_BY_CODE;
+    if (!code || !length)
+        return NULL;
+    for (UV diag_index = 1; diag_index <= PERL_DIAG_METADATA_COUNT;
+         diag_index++) {
+        const char *known = perl_diag_metadata[diag_index].code;
+        if (strlen(known) == length && memEQ(known, code, length))
+            return Perl_diag_data_by_index(aTHX_ diag_index);
+    }
+    return NULL;
+}
+
+/*
+=for apidoc diag_render_format
+
+Render a catalog format without constructing or delivering a diagnostic.
+C<values> contains every retained parameter in declaration order. The
+returned SV is mortal.
+
+=cut
+*/
+/* Resolve automatic language selection independently of output encoding. */
+const char *
+Perl_diag_auto_language(pTHX)
+{
+    PERL_ARGS_ASSERT_DIAG_AUTO_LANGUAGE;
+    const char *locale = PerlEnv_getenv("LC_ALL");
+    if (!locale || !*locale)
+        locale = PerlEnv_getenv("LC_MESSAGES");
+    if (!locale || !*locale)
+        locale = PerlEnv_getenv("LANG");
+    if (!locale || !*locale || strEQ(locale, "C") || strEQ(locale, "POSIX"))
+        return "en";
+
+    SV *language = sv_2mortal(newSVpvs(""));
+    while (*locale && isALPHA_A(*locale)) {
+        char letter = toLOWER_A(*locale);
+        locale++;
+        sv_catpvn(language, &letter, 1);
+    }
+    if (!SvCUR(language) || strEQ(SvPVX(language), "c")
+        || strEQ(SvPVX(language), "posix"))
+        return "en";
+    return SvPVX(language);
+}
+
+SV *
+Perl_diag_render_format(pTHX_ UV diag_index, AV *values,
+                        const char *language)
+{
+    AV *semantic_values;
+
+    PERL_ARGS_ASSERT_DIAG_RENDER_FORMAT;
+    assert(diag_index && diag_index <= PERL_DIAG_METADATA_COUNT);
+
+    semantic_values = Perl_diag_snapshot_values(aTHX_ values,
+        perl_diag_metadata[diag_index].param_count);
+    if (!semantic_values)
+        return NULL;
+    return Perl_diagpack_render_core(aTHX_ diag_index, semantic_values,
+                                     language, FALSE, 0, NULL);
+}
 
 #define dopopto_cursub() \
     (PL_curstackinfo->si_cxsubix >= 0        \
@@ -175,7 +2625,7 @@ PP(pp_regcomp)
     if (!RX_PRELEN(new_re) && PL_curpm) {
         if (PL_curpm == PL_reg_curpm) {
             if (PL_curpm_under && PL_curpm_under == PL_reg_curpm) {
-                croak("Infinite recursion via empty pattern");
+                PERL_THROW_ERROR_REGEXP_RECURSION_EMPTY_PATTERN_CYCLE();
             }
         }
     }
@@ -237,7 +2687,7 @@ PP(pp_substcont)
         /* second+ time round. Result is on stack */
         const SSize_t saviters = cx->sb_iters;
         if (cx->sb_iters > cx->sb_maxiters)
-            DIE(aTHX_ "Substitution loop");
+            PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_SUBSTITUTION_ITERATION_LIMIT_EXCEEDED();
 
         SvGETMAGIC(*PL_stack_sp); /* possibly clear taint on $1 etc: #67962 */
 
@@ -636,7 +3086,7 @@ PP_wrapped(pp_formline, 0, 1)
                 sv = *++MARK;
             else {
                 sv = &PL_sv_no;
-                ck_warner(packWARN(WARN_SYNTAX), "Not enough format arguments");
+                PERL_WARN_WARNING_SYNTAX_REPORT_FORMAT_VALUES_MISSING();
             }
             if (SvTAINTED(sv))
                 SvTAINTED_on(PL_formtarget);
@@ -926,13 +3376,13 @@ PP_wrapped(pp_formline, 0, 1)
                 {
                     int len;
                     if (!quadmath_format_valid(fmt))
-                        croak("panic: quadmath invalid format \"%s\"", fmt);
+                        PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_INVALID_FORMAT(fmt);
                     WITH_LC_NUMERIC_SET_TO_NEEDED(
                         len = quadmath_snprintf(t, max, fmt, (int) fieldsize,
                                                (int) arg, value);
                     );
                     if (len == -1)
-                        croak("panic: quadmath_snprintf failed, format \"%s\"", fmt);
+                        PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_FORMATTING_FAILED(fmt);
                 }
 #else
                 /* we generate fmt ourselves so it is safe */
@@ -1475,7 +3925,7 @@ PP_wrapped(pp_flop, (GIMME_V == G_LIST) ? 2 : 1, 0)
                 (SvOK(right) && (SvIOK(right)
                                  ? SvIsUV(right) && SvUV(right) > IV_MAX
                                  : SvNV_nomg(right) > (NV) IV_MAX)))
-                DIE(aTHX_ "Range iterator outside integer range");
+                PERL_THROW_ERROR_ITERATOR_RANGE_ENDPOINT_OUTSIDE_INTEGER_RANGE();
             i = SvIV_nomg(left);
             j = SvIV_nomg(right);
             if (j >= i) {
@@ -1494,7 +3944,7 @@ PP_wrapped(pp_flop, (GIMME_V == G_LIST) ? 2 : 1, 0)
                         overflow = TRUE;
                 }
                 if (overflow)
-                    croak("Out of memory during list extend");
+                    PERL_THROW_ERROR_MEMORY_SIZE_LIST_EXTEND_OVERFLOW();
                 EXTEND_MORTAL(n);
                 EXTEND(SP, n);
             }
@@ -1594,8 +4044,7 @@ S_dopoptolabel(pTHX_ const char *label, STRLEN len, U32 flags)
         case CXt_FORMAT:
         case CXt_NULL:
             /* diag_listed_as: Exiting subroutine via %s */
-            ck_warner(packWARN(WARN_EXITING), "Exiting %s via %s",
-                      context_name[CxTYPE(cx)], OP_NAME(PL_op));
+            PERL_WARN_WARNING_EXITING_CONTROL_TRANSFER_CROSSES_CONTEXT(context_name[CxTYPE(cx)], OP_NAME(PL_op));
             if (CxTYPE(cx) == CXt_NULL) /* sort BLOCK */
                 return -1;
             break;
@@ -1668,7 +4117,7 @@ Perl_block_gimme(pTHX)
 
     gimme = (cxstack[cxix].blk_gimme & G_WANT);
     if (!gimme)
-        croak("panic: bad gimme: %d\n", gimme);
+        PERL_PANIC_ERROR_INTERNAL_STACK_CALL_CONTEXT_MISSING(gimme);
     return gimme;
 }
 
@@ -1733,7 +4182,7 @@ S_dopoptosub_at(pTHX_ const PERL_CONTEXT *cxstk, I32 startingblock)
             return i;
 
         case CXt_EVAL:
-            if (CxTRY(cx))
+            if (CxTRY(cx) || (cx->cx_type & PERL_CXP_DIAGHOOK))
                 continue;
             DEBUG_l( deb("(dopoptosub_at(): found sub at cx=%ld)\n", (long)i));
             return i;
@@ -1783,8 +4232,7 @@ S_dopoptoloop(pTHX_ I32 startingblock)
         case CXt_FORMAT:
         case CXt_NULL:
             /* diag_listed_as: Exiting subroutine via %s */
-            ck_warner(packWARN(WARN_EXITING), "Exiting %s via %s",
-                      context_name[CxTYPE(cx)], OP_NAME(PL_op));
+            PERL_WARN_WARNING_EXITING_CONTROL_TRANSFER_CROSSES_CONTEXT(context_name[CxTYPE(cx)], OP_NAME(PL_op));
             if ((CxTYPE(cx)) == CXt_NULL) /* sort BLOCK */
                 return -1;
             break;
@@ -1970,34 +4418,810 @@ Perl_rpp_obliterate_stack_to(pTHX_ I32 ix)
 }
 
 /*
+=for apidoc diag_append
+
+Appends a diagnostic object to an exception object, creating the exception
+object if needed.  The diagnostic catalog decides whether the diagnostic
+increments the exception's error count.  This function does not decide when
+the exception is thrown.
+
+=cut
+*/
+
+static HV *
+Perl_xperl_core_stash(pTHX_ const char *package, const char *key)
+{
+    SV **stash_slot = hv_fetch(PL_modglobal, key, strlen(key), 0);
+
+    if (stash_slot && SvROK(*stash_slot))
+        return MUTABLE_HV(SvRV(*stash_slot));
+
+    /* Command-line errors can be reported before boot_core_UNIVERSAL() has
+     * cached these stashes.  Resolve them from main even if the current
+     * compilation stash has been changed. */
+    {
+        HV *old_curstash = PL_curstash;
+        HV *stash;
+
+        PL_curstash = PL_defstash;
+        stash = gv_stashpvn(package, strlen(package), GV_ADD);
+        PL_curstash = old_curstash;
+        hv_store(PL_modglobal, key, strlen(key),
+                 newRV_inc(MUTABLE_SV(stash)), 0);
+        return stash;
+    }
+}
+
+static HV *
+Perl_xperl_core_class_stash(pTHX_ const char *class_name)
+{
+    HV *stash;
+    AV *isa;
+    char isa_name[260];
+    const char *parent;
+
+    if (!class_name || strEQ(class_name, "none"))
+        class_name = "XPerl::Diagnostic";
+    stash = gv_stashpvn(class_name, strlen(class_name), GV_ADD);
+    /* Option errors precede MRO initialization. Creating the stash is safe
+     * then, but assigning @ISA invokes MRO magic and needs PL_isarev.
+     * The ordinary bootstrap installs the full hierarchy once MRO exists. */
+    if (!PL_isarev)
+        return stash;
+    parent = Perl_diag_class_parent(aTHX_ class_name);
+    if (!parent)
+        return stash;
+    (void)Perl_xperl_core_class_stash(aTHX_ parent);
+    my_snprintf(isa_name, sizeof(isa_name), "%s::ISA", class_name);
+    isa = get_av(isa_name, GV_ADD);
+    if (av_top_index(isa) < 0)
+        av_push(isa, newSVpv(parent, 0));
+    return stash;
+}
+
+void
+Perl_diag_boot_class_registry(pTHX)
+{
+    Size_t i;
+    PERL_ARGS_ASSERT_DIAG_BOOT_CLASS_REGISTRY;
+    for (i = 0; i < C_ARRAY_LENGTH(perl_diag_class_registry); i++) {
+        /* Looking up each registered class installs its validated parent
+         * chain in @ISA; perldiag_data.inc owns the class hierarchy. */
+        (void)Perl_xperl_core_class_stash(aTHX_
+            perl_diag_class_registry[i].name);
+    }
+}
+
+SV *
+Perl_diag_fatalized_warning(pTHX_ SV *warning, const char *reason)
+{
+    PERL_ARGS_ASSERT_DIAG_FATALIZED_WARNING;
+    const perl_diag_metadata_t *meta =
+        &perl_diag_metadata[perl_diag_error_fatalized_warning_wrapper_idx];
+    HV *fields = newHV();
+    SV *wrapper = newRV_noinc(MUTABLE_SV(fields));
+    SV *children = newRV_noinc(MUTABLE_SV(newAV()));
+    SV **location;
+    (void)av_push(MUTABLE_AV(SvRV(children)), newSVsv(warning));
+    location = SvROK(warning) && SvTYPE(SvRV(warning)) == SVt_PVHV
+        ? hv_fetchs(MUTABLE_HV(SvRV(warning)), "location", FALSE) : NULL;
+    (void)hv_stores(fields, "contents", children);
+    (void)hv_stores(fields, "code", newSVpv(meta->code, 0));
+    (void)hv_stores(fields, "number", newSVuv(meta->number));
+    (void)hv_stores(fields, "kind", newSVpv(meta->kind, 0));
+    (void)hv_stores(fields, "severity", newSVpv(meta->severity, 0));
+    (void)hv_stores(fields, "params",
+                    newRV_noinc(MUTABLE_SV(newAV())));
+    (void)hv_stores(fields, "location",
+                    location && SvROK(*location)
+                    ? newSVsv(*location)
+                    : newRV_noinc(MUTABLE_SV(newHV())));
+    (void)hv_stores(fields, "promotion_reason", newSVpv(reason, 0));
+    (void)hv_stores(fields, "_fatal_warning", newSViv(1));
+    sv_bless(wrapper, Perl_xperl_core_class_stash(aTHX_ meta->class_name));
+    return wrapper;
+}
+
+static SV *
+Perl_diag_warning_class_for_id(pTHX_ U8 category)
+{
+    Size_t i;
+    for (i = 0; i < C_ARRAY_LENGTH(perl_diag_class_registry); i++) {
+        if (perl_diag_class_registry[i].warning_category_plus_one
+            == (U16)category + 1)
+            return newSVpv(perl_diag_class_registry[i].name, 0);
+    }
+    return newSVpvs("XPerl::Diagnostic::Warning");
+}
+
+static SV *
+Perl_diag_warning_lca_class(pTHX_ U32 category)
+{
+    U8 values[4];
+    SV *common = NULL;
+    STRLEN base_length = sizeof("XPerl::Diagnostic::Warning") - 1;
+    Size_t i;
+
+    values[0] = unpackWARN1(category);
+    values[1] = unpackWARN2(category);
+    values[2] = unpackWARN3(category);
+    values[3] = unpackWARN4(category);
+    for (i = 0; i < C_ARRAY_LENGTH(values); i++) {
+        SV *current;
+        STRLEN common_length;
+        STRLEN current_length;
+        const char *common_bytes;
+        const char *current_bytes;
+
+        if (!values[i])
+            continue;
+        current = Perl_diag_warning_class_for_id(aTHX_ values[i]);
+        if (!common) {
+            common = current;
+            continue;
+        }
+        common_bytes = SvPV(common, common_length);
+        current_bytes = SvPV(current, current_length);
+        {
+            STRLEN position = base_length;
+            STRLEN shared_length = base_length;
+            while (position < common_length && position < current_length) {
+                STRLEN left_end;
+                STRLEN right_end;
+                STRLEN left_length;
+                STRLEN right_length;
+                if (common_bytes[position] != ':' || position + 1 >= common_length
+                    || common_bytes[position + 1] != ':'
+                    || current_bytes[position] != ':'
+                    || position + 1 >= current_length
+                    || current_bytes[position + 1] != ':')
+                    break;
+                position += 2;
+                left_end = position;
+                right_end = position;
+                while (left_end < common_length
+                    && !(common_bytes[left_end] == ':'
+                         && left_end + 1 < common_length
+                         && common_bytes[left_end + 1] == ':'))
+                    left_end++;
+                while (right_end < current_length
+                    && !(current_bytes[right_end] == ':'
+                         && right_end + 1 < current_length
+                         && current_bytes[right_end + 1] == ':'))
+                    right_end++;
+                left_length = left_end - position;
+                right_length = right_end - position;
+                if (left_length != right_length
+                    || !memEQ(common_bytes + position,
+                              current_bytes + position, left_length))
+                    break;
+                shared_length = left_end;
+                position = left_end;
+            }
+            common_length = shared_length;
+        }
+        {
+            SV *replacement = newSVpvn(common_bytes, common_length);
+            SvREFCNT_dec_NN(common);
+            common = replacement;
+        }
+        SvREFCNT_dec_NN(current);
+    }
+    return common ? common : newSVpvs("XPerl::Diagnostic::Warning");
+}
+
+static AV *
+Perl_diag_collector_contents(pTHX_ SV *collector, bool create)
+{
+    HV *fields;
+    SV **slot;
+
+    if (!collector || !SvROK(collector) || SvTYPE(SvRV(collector)) != SVt_PVHV)
+        return NULL;
+    fields = MUTABLE_HV(SvRV(collector));
+    slot = hv_fetchs(fields, "contents", create);
+    if (!slot)
+        return NULL;
+    if (!SvOK(*slot) && create)
+        sv_setrv_noinc(*slot, MUTABLE_SV(newAV()));
+    return SvROK(*slot) && SvTYPE(SvRV(*slot)) == SVt_PVAV
+        ? MUTABLE_AV(SvRV(*slot)) : NULL;
+}
+
+void
+Perl_diag_append(pTHX_ SV **exception_slot, SV *err, UV diag_index,
+                 AV *diagnostic_params, U32 category)
+{
+#define PERL_SAFE_HV_FETCHS(hv, key)                                           \
+    STMT_START {                                                          \
+        slot = hv_fetchs((hv), key, 1);                                   \
+        if (UNLIKELY(!slot))                                              \
+            croak_no_mem();                                               \
+    } STMT_END
+
+    PERL_ARGS_ASSERT_DIAG_APPEND;
+    SV *exception = *exception_slot;
+    HV *exception_hv;
+    AV *messages;
+    HV *diagnostic_hv;
+    HV *location_hv;
+    AV *params;
+    SV **slot;
+    SV *diagnostic;
+    const perl_diag_metadata_t *meta;
+    const COP *location_cop;
+
+    assert(diag_index && diag_index <= PERL_DIAG_METADATA_COUNT);
+    meta = &perl_diag_metadata[diag_index];
+    location_cop = PL_curcop;
+    if (PL_curcop && PL_op) {
+        const COP *closest = closest_cop(PL_curcop, OpSIBLING(PL_curcop),
+                                         PL_op, FALSE);
+        if (closest)
+            location_cop = closest;
+    }
+
+    if (!exception) {
+        exception = sv_2mortal(newRV_noinc(MUTABLE_SV(newHV())));
+        exception_hv = MUTABLE_HV(SvRV(exception));
+        (void)sv_bless(exception, Perl_xperl_core_stash(aTHX_
+                                      "XPerl::Exception",
+                                      "XPerl::Exception_stash"));
+
+        PERL_SAFE_HV_FETCHS(exception_hv, "contents");
+        sv_setrv_noinc(*slot, MUTABLE_SV(messages = newAV()));
+        PERL_SAFE_HV_FETCHS(exception_hv, "origin");
+        sv_setsv(*slot, &PL_sv_undef);
+        PERL_SAFE_HV_FETCHS(exception_hv, "error_count");
+        sv_setuv(*slot, 0);
+        PERL_SAFE_HV_FETCHS(exception_hv, "thrown");
+        sv_setiv(*slot, 0);
+    }
+    else {
+        exception_hv = MUTABLE_HV(SvRV(exception));
+        messages = Perl_diag_collector_contents(aTHX_ exception, TRUE);
+        if (!messages)
+            return;
+
+    }
+
+    diagnostic = sv_2mortal(newRV_noinc(MUTABLE_SV(newHV())));
+    diagnostic_hv = MUTABLE_HV(SvRV(diagnostic));
+    {
+        /* An explicit subject class is independent of warning enablement.
+         * Derive a class from runtime categories only for generic warnings. */
+        SV *class_name = meta->dynamic_category
+            && strEQ(meta->class_name, "XPerl::Diagnostic::Warning")
+            ? Perl_diag_warning_lca_class(aTHX_ category)
+            : newSVpv(meta->class_name, 0);
+        (void)sv_bless(diagnostic, Perl_xperl_core_class_stash(aTHX_
+                                      SvPV_nolen(class_name)));
+        SvREFCNT_dec_NN(class_name);
+    }
+
+    PERL_SAFE_HV_FETCHS(diagnostic_hv, "code");
+    sv_setpv(*slot, meta->code);
+    PERL_SAFE_HV_FETCHS(diagnostic_hv, "number");
+    sv_setuv(*slot, meta->number);
+    PERL_SAFE_HV_FETCHS(diagnostic_hv, "kind");
+    sv_setpv(*slot, meta->kind);
+    PERL_SAFE_HV_FETCHS(diagnostic_hv, "severity");
+    sv_setpv(*slot, meta->severity);
+    {
+        const perl_diagpack_engine *engine = Perl_diagpack_current_hint(aTHX);
+        if (engine) {
+            PERL_SAFE_HV_FETCHS(diagnostic_hv, "_diagpack_engine");
+            sv_setuv(*slot, PTR2UV(engine));
+        }
+    }
+    if (meta->has_following_hint) {
+        PERL_SAFE_HV_FETCHS(diagnostic_hv, "has_following_hint");
+        sv_setiv(*slot, 1);
+    }
+    if (meta->is_hint) {
+        PERL_SAFE_HV_FETCHS(diagnostic_hv, "is_hint");
+        sv_setiv(*slot, 1);
+    }
+    params = NULL;
+    PERL_SAFE_HV_FETCHS(diagnostic_hv, "params");
+    if (diagnostic_params) {
+        sv_setrv_inc(*slot, MUTABLE_SV(diagnostic_params));
+        params = diagnostic_params;
+    }
+    else {
+        sv_setrv_noinc(*slot, MUTABLE_SV(params = newAV()));
+    }
+    if (params && !diagnostic_params && err
+        && (!Perl_diag_has_positional_template(diag_index)
+            || strEQ(meta->code, "ERROR_COMPILATION_UNCLASSIFIED_ERROR")
+            || strEQ(meta->code, "ERROR_COMPILATION_UNCLASSIFIED_PARSER_ERROR")
+            || strEQ(meta->code, "ERROR_USER_TEXT"))) {
+        SV * const param = sv_2mortal(newRV_noinc(MUTABLE_SV(newHV())));
+        HV * const param_hv = MUTABLE_HV(SvRV(param));
+        PERL_SAFE_HV_FETCHS(param_hv, "name");
+        sv_setpv(*slot, (strEQ(meta->code, "ERROR_USER_TEXT")
+                         || strEQ(meta->code, "ERROR_COMPILATION_UNCLASSIFIED_ERROR"))
+                        ? "text" : "message");
+        PERL_SAFE_HV_FETCHS(param_hv, "type");
+        sv_setpvs(*slot, "text");
+        PERL_SAFE_HV_FETCHS(param_hv, "value");
+        sv_setsv_flags(*slot, err, SV_GMAGIC|SV_NOSTEAL);
+        av_push(params, SvREFCNT_inc_simple_NN(param));
+    }
+    PERL_SAFE_HV_FETCHS(diagnostic_hv, "location");
+    sv_setrv_noinc(*slot, MUTABLE_SV(location_hv = newHV()));
+    PERL_SAFE_HV_FETCHS(location_hv, "file");
+    sv_setpv(*slot, location_cop ? OutCopFILE(location_cop) : "");
+    PERL_SAFE_HV_FETCHS(location_hv, "line");
+    sv_setiv(*slot, location_cop ? CopLINE(location_cop) : 0);
+    if (category) {
+        AV *warning_categories;
+        U8 values[4];
+        Size_t i;
+
+        PERL_SAFE_HV_FETCHS(diagnostic_hv, "warning_categories");
+        sv_setrv_noinc(*slot,
+                       MUTABLE_SV(warning_categories = newAV()));
+        values[0] = unpackWARN1(category);
+        values[1] = unpackWARN2(category);
+        values[2] = unpackWARN3(category);
+        values[3] = unpackWARN4(category);
+        for (i = 0; i < C_ARRAY_LENGTH(values); i++) {
+            U8 value = values[i];
+            if (i && !value)
+                continue;
+            av_push(warning_categories,
+                    value < C_ARRAY_LENGTH(perl_warning_category_names)
+                    ? newSVpv(perl_warning_category_names[value], 0)
+                    : newSVpvf("WARN_UNKNOWN_%u", (unsigned int)value));
+        }
+
+        PERL_SAFE_HV_FETCHS(diagnostic_hv, "_fatal_warning");
+        sv_setiv(*slot, ckDEAD(category)
+            && !(PL_in_eval & EVAL_KEEPERR) ? 1 : 0);
+    }
+
+    {
+        bool attached_hint = FALSE;
+        if (meta->is_hint && av_top_index(messages) >= 0) {
+            SV **parent_slot = av_fetch(messages, av_top_index(messages), FALSE);
+            if (parent_slot && SvROK(*parent_slot)
+                && SvTYPE(SvRV(*parent_slot)) == SVt_PVHV) {
+                HV *parent = MUTABLE_HV(SvRV(*parent_slot));
+                SV **following = hv_fetchs(parent, "has_following_hint", FALSE);
+                AV *children = following && SvTRUE(*following)
+                    ? Perl_diag_collector_contents(aTHX_ *parent_slot, TRUE) : NULL;
+                if (children) {
+                    av_push(children,
+                            SvREFCNT_inc_simple_NN(diagnostic));
+                    attached_hint = TRUE;
+                }
+            }
+        }
+        if (!attached_hint)
+            av_push(messages, SvREFCNT_inc_simple_NN(diagnostic));
+    }
+    if (!*exception_slot) {
+        *exception_slot = exception;
+        if (exception_slot == &PL_pending_exception)
+            (void)SvREFCNT_inc_simple_NN(exception);
+    }
+    if (meta->counts_as_error)
+        Perl_diag_increment_error_count(aTHX_ exception);
+#undef PERL_SAFE_HV_FETCHS
+}
+
+void
+Perl_diag_reclassify_last(pTHX_ SV **exception_slot, const char *class_name)
+{
+    SV *exception = *exception_slot;
+    AV *messages;
+    SV **diagnostic_slot;
+    SV **code_slot;
+    HV *diagnostic_hv;
+    HV *class_stash;
+    const char *code;
+    SV **severity_slot;
+
+    PERL_ARGS_ASSERT_DIAG_RECLASSIFY_LAST;
+
+    if (!exception || !SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return;
+    messages = Perl_diag_collector_contents(aTHX_ exception, FALSE);
+    if (!messages)
+        return;
+    diagnostic_slot = av_fetch(messages, av_top_index(messages), FALSE);
+    if (!diagnostic_slot || !SvROK(*diagnostic_slot)
+        || SvTYPE(SvRV(*diagnostic_slot)) != SVt_PVHV)
+        return;
+
+    diagnostic_hv = MUTABLE_HV(SvRV(*diagnostic_slot));
+    code_slot = hv_fetchs(diagnostic_hv, "code", FALSE);
+    if (!code_slot || !SvPOK(*code_slot))
+        return;
+    code = SvPV_nolen(*code_slot);
+    if (strEQ(code, "ERROR_STRICT_VARS_GLOBAL_SYMBOL_REQUIRES_EXPLICIT_PACKAGE_NAME")) {
+        if (!strEQ(class_name, "XPerl::Diagnostic::Error::Strict::Vars"))
+            return;
+    }
+    else if (strEQ(code, "NOTE_OMISSION_NAMED_PARAMETER_DIAGNOSTICS")) {
+        if (!strEQ(class_name, "XPerl::Diagnostic::Note::Omission"))
+            return;
+        severity_slot = hv_fetchs(diagnostic_hv, "severity", FALSE);
+        if (severity_slot)
+            sv_setpv(*severity_slot, "NOTE");
+    }
+    else
+        return;
+    class_stash = Perl_xperl_core_class_stash(aTHX_ class_name);
+    sv_bless(*diagnostic_slot, class_stash);
+}
+
+SSize_t
+Perl_diag_exception_message_count(pTHX_ SV **exception_slot)
+{
+    PERL_ARGS_ASSERT_DIAG_EXCEPTION_MESSAGE_COUNT;
+
+    SV *exception;
+    AV *messages;
+
+    if (!exception_slot || !(exception = *exception_slot)
+        || !SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return 0;
+
+    messages = Perl_diag_collector_contents(aTHX_ exception, FALSE);
+    return messages ? av_top_index(messages) + 1 : 0;
+}
+
+static UV
+Perl_diag_removed_error_count(pTHX_ SV *root, AV *visited)
+{
+    AV *pending = newAV();
+    UV count = 0;
+
+    av_push(pending, newSVsv(root));
+    while (av_top_index(pending) >= 0) {
+        SV *node = av_pop(pending);
+        HV *fields;
+        SV **number;
+        SV **children_slot;
+        AV *children;
+        SSize_t i;
+
+        if (!SvROK(node) || SvTYPE(SvRV(node)) != SVt_PVHV) {
+            SvREFCNT_dec_NN(node);
+            continue;
+        }
+        for (i = 0; i <= av_top_index(visited); i++) {
+            SV **seen = av_fetch(visited, i, FALSE);
+            if (seen && SvROK(*seen) && SvRV(*seen) == SvRV(node))
+                break;
+        }
+        if (i <= av_top_index(visited)) {
+            SvREFCNT_dec_NN(node);
+            continue;
+        }
+        av_push(visited, newSVsv(node));
+        fields = MUTABLE_HV(SvRV(node));
+        number = hv_fetchs(fields, "number", FALSE);
+        if (number && SvOK(*number)) {
+            UV diag_index;
+            for (diag_index = 1;
+                 diag_index <= PERL_DIAG_METADATA_COUNT;
+                 diag_index++)
+            {
+                if (perl_diag_metadata[diag_index].number == SvUV(*number)) {
+                    if (perl_diag_metadata[diag_index].counts_as_error)
+                        count++;
+                    break;
+                }
+            }
+        }
+        children_slot = hv_fetchs(fields, "contents", FALSE);
+        children = children_slot && SvROK(*children_slot)
+            && SvTYPE(SvRV(*children_slot)) == SVt_PVAV
+            ? MUTABLE_AV(SvRV(*children_slot)) : NULL;
+        for (i = 0; children && i <= av_top_index(children); i++) {
+            SV **child = av_fetch(children, i, FALSE);
+            if (child && SvROK(*child))
+                av_push(pending, newSVsv(*child));
+        }
+        SvREFCNT_dec_NN(node);
+    }
+
+    SvREFCNT_dec_NN(MUTABLE_SV(pending));
+    return count;
+}
+
+/* Remove diagnostics added from first_index onward, preserving earlier
+ * diagnostics in the same exception. */
+void
+Perl_diag_rollback_exception(pTHX_ SV **exception_slot, SSize_t first_index)
+{
+    SV *exception;
+    SV **error_count_slot;
+    AV *messages;
+    AV *visited;
+    UV removed_errors = 0;
+    SSize_t i;
+
+    PERL_ARGS_ASSERT_DIAG_ROLLBACK_EXCEPTION;
+
+    if (!exception_slot || !(exception = *exception_slot)
+        || !SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return;
+
+    messages = Perl_diag_collector_contents(aTHX_ exception, FALSE);
+    if (!messages)
+        return;
+    if (first_index < 0)
+        first_index = 0;
+
+    /* A diagnostic shared with a surviving root still contributes to the
+     * collector's parser count after rollback. Seed identity tracking from
+     * those roots before summing the removed subtrees. */
+    visited = newAV();
+    for (i = 0; i < first_index && i <= av_top_index(messages); i++) {
+        SV **diagnostic = av_fetch(messages, i, FALSE);
+        if (diagnostic)
+            (void)Perl_diag_removed_error_count(aTHX_ *diagnostic, visited);
+    }
+
+    for (i = av_top_index(messages); i >= first_index; i--) {
+        SV *diagnostic = av_pop(messages);
+
+        if (!diagnostic)
+            continue;
+        removed_errors += Perl_diag_removed_error_count(aTHX_ diagnostic,
+                                                        visited);
+        SvREFCNT_dec(diagnostic);
+    }
+    SvREFCNT_dec_NN(MUTABLE_SV(visited));
+
+    error_count_slot = hv_fetchs(MUTABLE_HV(SvRV(exception)),
+                                 "error_count", 0);
+    if (removed_errors && error_count_slot && SvOK(*error_count_slot)) {
+        UV error_count = SvUV(*error_count_slot);
+        sv_setuv(*error_count_slot,
+                 removed_errors > error_count ? 0 : error_count - removed_errors);
+    }
+
+    if (first_index == 0 && sv_derived_from(exception, "XPerl::Exception")) {
+        *exception_slot = NULL;
+        SvREFCNT_dec_NN(exception);
+    }
+}
+
+void
+Perl_diag_adopt_since(pTHX_ SV **exception_slot, SSize_t first_index)
+{
+    PERL_ARGS_ASSERT_DIAG_ADOPT_SINCE;
+
+    SV *exception;
+    AV *messages;
+    SV **parent_slot;
+    AV *children;
+    AV *moved;
+    SSize_t last;
+
+    if (!exception_slot || !(exception = *exception_slot)
+        || !SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return;
+    messages = Perl_diag_collector_contents(aTHX_ exception, FALSE);
+    if (!messages)
+        return;
+    last = av_top_index(messages);
+    if (first_index < 0 || first_index >= last)
+        return;
+    parent_slot = av_fetch(messages, last, FALSE);
+    if (!parent_slot || !SvROK(*parent_slot)
+        || SvTYPE(SvRV(*parent_slot)) != SVt_PVHV)
+        return;
+    children = Perl_diag_collector_contents(aTHX_ *parent_slot, TRUE);
+    if (!children)
+        return;
+
+    moved = newAV();
+    (void)av_push(moved, av_pop(messages));
+    while (av_top_index(messages) >= first_index)
+        (void)av_push(moved, av_pop(messages));
+    while (av_top_index(moved) > 0)
+        (void)av_push(children, av_pop(moved));
+    (void)av_push(messages, av_pop(moved));
+    SvREFCNT_dec_NN(MUTABLE_SV(moved));
+}
+
+void
+Perl_diag_mark_light_since(pTHX_ SV **exception_slot, SSize_t first_index)
+{
+    PERL_ARGS_ASSERT_DIAG_MARK_LIGHT_SINCE;
+
+    SV *exception;
+    AV *messages;
+    SSize_t tail_index;
+    SSize_t i;
+
+    if (!exception_slot || !(exception = *exception_slot)
+        || !SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return;
+
+    messages = Perl_diag_collector_contents(aTHX_ exception, FALSE);
+    if (!messages)
+        return;
+    tail_index = av_top_index(messages);
+    if (first_index < 0 || first_index >= tail_index)
+        return;
+
+    /* The tail is appended immediately before this call.  Keep its position
+     * in the exception so renderers can find it if the array later changes. */
+    {
+        SV **tail_slot = av_fetch(messages, tail_index, FALSE);
+        SV *tail = tail_slot ? *tail_slot : &PL_sv_undef;
+
+        if (!SvROK(tail) || SvTYPE(SvRV(tail)) != SVt_PVHV)
+            return;
+    }
+
+    for (i = first_index; i < tail_index; i++) {
+        SV **detail_slot = av_fetch(messages, i, FALSE);
+        SV *detail = detail_slot ? *detail_slot : &PL_sv_undef;
+        HV *detail_hv;
+        SV **light_slot;
+        SV **followup_slot;
+
+        if (!SvROK(detail) || SvTYPE(SvRV(detail)) != SVt_PVHV)
+            continue;
+        detail_hv = MUTABLE_HV(SvRV(detail));
+        light_slot = hv_fetchs(detail_hv, "light", TRUE);
+        if (!light_slot)
+            croak_no_mem();
+        sv_setiv(*light_slot, 1);
+
+        followup_slot = hv_fetchs(detail_hv, "context_follows_index", TRUE);
+        if (!followup_slot)
+            croak_no_mem();
+        sv_setuv(*followup_slot, (UV)tail_index);
+    }
+}
+
+UV
+Perl_diag_error_count(pTHX_ SV *exception)
+{
+    SV **slot;
+
+    PERL_ARGS_ASSERT_DIAG_ERROR_COUNT;
+
+    if (!exception || !SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return 0;
+
+    slot = hv_fetchs(MUTABLE_HV(SvRV(exception)), "error_count", 0);
+    return slot && SvOK(*slot) ? SvUV(*slot) : 0;
+}
+
+void
+Perl_diag_increment_error_count(pTHX_ SV *exception)
+{
+    HV *fields;
+    SV **slot;
+
+    PERL_ARGS_ASSERT_DIAG_INCREMENT_ERROR_COUNT;
+    assert(SvROK(exception) && SvTYPE(SvRV(exception)) == SVt_PVHV);
+    fields = MUTABLE_HV(SvRV(exception));
+    slot = hv_fetchs(fields, "error_count", 1);
+    if (!slot)
+        croak_no_mem();
+    sv_setuv(*slot, Perl_diag_error_count(aTHX_ exception) + 1);
+}
+
+static void
+Perl_diag_defer_error_diag_params_internal(pTHX_ SV *err, UV diag_index,
+                          AV *params, U32 category,
+                          const char *parser_context,
+                          SV *parser_context_value)
+{
+    const bool abort_parse = err == NULL;
+
+    /* Generated catalogued errors use undef as a non-null signal that a
+     * diagnostic was produced. Render only when this path must display it. */
+    if (err == &PL_sv_undef && diag_index
+        && (!PL_parser || (PL_in_eval & EVAL_KEEPERR)))
+        err = Perl_diag_format_template(aTHX_ diag_index, params);
+
+    if (err!=NULL) {
+        if (PL_parser) {
+            Perl_diag_append(aTHX_ &PL_pending_exception, err, diag_index,
+                        params, category);
+            if (parser_context && PL_pending_exception) {
+                SV **messages_slot = hv_fetchs(
+                    MUTABLE_HV(SvRV(PL_pending_exception)), "contents", 0);
+                AV *messages = messages_slot && SvROK(*messages_slot)
+                    ? MUTABLE_AV(SvRV(*messages_slot)) : NULL;
+                SV **diagnostic_slot = messages
+                    ? av_fetch(messages, av_top_index(messages), 0) : NULL;
+                HV *diagnostic_hv = diagnostic_slot
+                    && SvROK(*diagnostic_slot)
+                    ? MUTABLE_HV(SvRV(*diagnostic_slot)) : NULL;
+                SV **location_slot = diagnostic_hv
+                    ? hv_fetchs(diagnostic_hv, "location", 0) : NULL;
+                HV *location_hv = location_slot && SvROK(*location_slot)
+                    ? MUTABLE_HV(SvRV(*location_slot)) : NULL;
+
+                if (location_hv) {
+                    SV *context = newSVpv(parser_context, 0);
+
+                    if (UNLIKELY(!hv_stores(location_hv, "parser_context",
+                                            context)))
+                        croak_no_mem();
+                    if (parser_context_value
+                        && UNLIKELY(!hv_stores(location_hv,
+                            "parser_context_value",
+                            newSVsv(parser_context_value))))
+                        croak_no_mem();
+                }
+            }
+        }
+        if (PL_in_eval) {
+            if (PL_in_eval & EVAL_KEEPERR) {
+                    PERL_WARN_WARNING_MISC_EXCEPTION_DURING_CLEANUP(err);
+            }
+            else if (PL_parser && PL_pending_exception)
+                sv_setsv(ERRSV, PL_pending_exception);
+            else
+                PERL_WARN_WARNING_COMPILATION_UNCLASSIFIED_DEFERRED_MESSAGE(err);
+        }
+        else if (!PL_parser || !PL_pending_exception)
+            PERL_WARN_WARNING_COMPILATION_UNCLASSIFIED_DEFERRED_MESSAGE(err);
+    }
+
+    if ( PL_parser && (abort_parse ||
+         PERL_DIAG_ERROR_COUNT >= PERL_STOP_PARSING_AFTER_N_ERRORS)
+    ) {
+        const char * const name = OutCopFILE(PL_curcop);
+            UV raw_error_count = PERL_DIAG_ERROR_COUNT;
+
+        if (abort_parse) {
+            abort_execution(NULL, name);
+        }
+        else
+        if (raw_error_count >= PERL_STOP_PARSING_AFTER_N_ERRORS) {
+            PERL_THROW_ERROR_COMPILATION_TOO_MANY_ERRORS(name);
+        }
+    }
+}
+
+void
+Perl_defer_error_diag_params(pTHX_ SV *err, UV diag_index,
+                             AV *params, U32 category)
+{
+    PERL_ARGS_ASSERT_DEFER_ERROR_DIAG_PARAMS;
+    Perl_diag_defer_error_diag_params_internal(aTHX_ err, diag_index, params,
+                              category, NULL, NULL);
+}
+
+void
+Perl_defer_error_diag_params_context(pTHX_ SV *err, UV diag_index,
+                                     AV *params, U32 category,
+                                     const char *parser_context,
+                                     SV *parser_context_value)
+{
+    PERL_ARGS_ASSERT_DEFER_ERROR_DIAG_PARAMS_CONTEXT;
+    Perl_diag_defer_error_diag_params_internal(aTHX_ err, diag_index, params,
+                              category, parser_context,
+                              parser_context_value);
+}
+
+void
+Perl_defer_error_diag(pTHX_ SV *err, UV diag_index)
+{
+    PERL_ARGS_ASSERT_DEFER_ERROR_DIAG;
+    Perl_defer_error_diag_params(aTHX_ err, diag_index, NULL, 0);
+}
+
+/*
 =for apidoc defer_error
 
-Called to report compilation errors, doing one of:
-
-=over
-
-=item *
-
-adding C<err> to C<$@> within an C<eval EXPR>,
-
-=item *
-
-appending C<err> to C<PL_errors>, to be reported when the next
-exception is thrown, or
-
-=item *
-
-by warning, if called early in interpreter construction or late in
-interpreter destruction, when PL_errors isn't available.
-
-=back
-
-and incrementing the parser error count if we're parsing.
-
-This function may throw an exception if too many errors have been
-produced.
-
-This is intended for use during compilation.
+Defer reporting of a compilation error until the parser reports its collected
+errors. If C<err> is C<NULL>, parsing is aborted immediately.
 
 =cut
 */
@@ -2006,50 +5230,7 @@ void
 Perl_defer_error(pTHX_ SV *err)
 {
     PERL_ARGS_ASSERT_DEFER_ERROR;
-    if (err!=NULL) {
-        if (PL_in_eval) {
-            if (PL_in_eval & EVAL_KEEPERR) {
-                    ck_warner(packWARN(WARN_MISC), "\t(in cleanup) %" SVf,
-                              SVfARG(err));
-            }
-            else {
-                sv_catsv(ERRSV, err);
-            }
-        }
-        else if (PL_errors)
-            sv_catsv(PL_errors, err);
-        else
-            warn("%" SVf, SVfARG(err));
-
-        if (PL_parser) {
-            ++PL_parser->error_count;
-        }
-    }
-
-    if ( PL_parser && (err == NULL ||
-         PL_parser->error_count >= PERL_STOP_PARSING_AFTER_N_ERRORS)
-    ) {
-        const char * const name = OutCopFILE(PL_curcop);
-        SV * errsv = NULL;
-        U8 raw_error_count = PERL_PARSE_ERROR_COUNT(PL_parser->error_count);
-
-        if (PL_in_eval) {
-            errsv = ERRSV;
-        }
-
-        if (err == NULL) {
-            abort_execution(errsv, name);
-        }
-        else
-        if (raw_error_count >= PERL_STOP_PARSING_AFTER_N_ERRORS) {
-            if (errsv) {
-                croak("%" SVf "%s has too many errors.\n",
-                    SVfARG(errsv), name);
-            } else {
-                croak("%s has too many errors.\n", name);
-            }
-        }
-    }
+    Perl_defer_error_diag(aTHX_ err, perl_diag_error_compilation_unclassified_parser_error_idx);
 }
 
 
@@ -2079,22 +5260,19 @@ S_pop_eval_context_maybe_croak(pTHX_ PERL_CONTEXT *cx, SV *errsv, int action)
     CX_POP(cx);
 
     if (do_croak) {
-        const char *fmt;
         HV *inc_hv = GvHVn(PL_incgv);
 
         if (action == 1) {
             (void)hv_delete_ent(inc_hv, namesv, G_DISCARD, 0);
-            fmt = "%" SVf " did not return a true value";
-            errsv = namesv;
+            PERL_THROW_ERROR_LOAD_REQUIRE_TRUE_VALUE_REQUIRED(namesv);
         }
         else {
             (void)hv_store_ent(inc_hv, namesv, &PL_sv_undef, 0);
-            fmt = "%" SVf "Compilation failed in require";
             if (!errsv)
                 errsv = newSVpvs_flags("Unknown error\n", SVs_TEMP);
+            PERL_THROW_ERROR_LOAD_REQUIRE_COMPILATION_FAILED(errsv);
         }
 
-        croak(fmt, SVfARG(errsv));
     }
 }
 
@@ -2107,12 +5285,57 @@ S_pop_eval_context_maybe_croak(pTHX_ PERL_CONTEXT *cx, SV *errsv, int action)
  * actually trap exceptions.
  */
 
+static SV *
+Perl_diag_exception_compat_value(pTHX_ SV *exception)
+{
+    SV **messages;
+    AV *message_array;
+    SSize_t i;
+
+    if (!SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return exception;
+
+    messages = hv_fetchs(MUTABLE_HV(SvRV(exception)), "contents", 0);
+    if (!messages || !SvROK(*messages) || SvTYPE(SvRV(*messages)) != SVt_PVAV)
+        return exception;
+
+    message_array = MUTABLE_AV(SvRV(*messages));
+    for (i = 0; i <= av_top_index(message_array); i++) {
+        SV **message = av_fetch(message_array, i, 0);
+        SV **code;
+        SV **params;
+        AV *param_array;
+        SV **param;
+        SV **value;
+
+        if (!message || !SvROK(*message) || SvTYPE(SvRV(*message)) != SVt_PVHV)
+            continue;
+        code = hv_fetchs(MUTABLE_HV(SvRV(*message)), "code", 0);
+        if (!code || !SvPOK(*code)
+            || !strEQ(SvPV_nolen_const(*code), "ERROR_USER_REFERENCE"))
+            continue;
+        params = hv_fetchs(MUTABLE_HV(SvRV(*message)), "params", 0);
+        if (!params || !SvROK(*params) || SvTYPE(SvRV(*params)) != SVt_PVAV)
+            continue;
+        param_array = MUTABLE_AV(SvRV(*params));
+        param = av_fetch(param_array, 0, 0);
+        if (!param || !SvROK(*param) || SvTYPE(SvRV(*param)) != SVt_PVHV)
+            continue;
+        value = hv_fetchs(MUTABLE_HV(SvRV(*param)), "value", 0);
+        if (value)
+            return *value;
+    }
+
+    return exception;
+}
+
 void
 Perl_die_unwind(pTHX_ SV *msv)
 {
     PERL_ARGS_ASSERT_DIE_UNWIND;
 
     SV *exceptsv = msv;
+    SV *compat_sv;
     U8 in_eval = PL_in_eval;
 
     if (in_eval) {
@@ -2129,6 +5352,7 @@ Perl_die_unwind(pTHX_ SV *msv)
         } else {
             exceptsv = sv_2mortal(SvREFCNT_inc_simple_NN(exceptsv));
         }
+        compat_sv = Perl_diag_exception_compat_value(aTHX_ exceptsv);
 
         /*
          * Historically, perl used to set ERRSV ($@) early in the die
@@ -2163,13 +5387,13 @@ Perl_die_unwind(pTHX_ SV *msv)
             /* remove any read-only/magic from the SV, so we don't
                get infinite recursion when setting ERRSV */
             SANE_ERRSV();
-            sv_setsv_flags(ERRSV, exceptsv,
+            sv_setsv_flags(ERRSV, compat_sv,
                         (SV_GMAGIC|SV_DO_COW_SVSETSV|SV_NOSTEAL));
+            sv_setsv(PERL_ERROR_OBJ, exceptsv);
         }
 
         if (in_eval & EVAL_KEEPERR) {
-            ck_warner(packWARN(WARN_MISC), "\t(in cleanup) %" SVf,
-                      SVfARG(exceptsv));
+            PERL_WARN_WARNING_MISC_EXCEPTION_DURING_CLEANUP(exceptsv);
         }
 
         while ((cxix = dopoptoeval(cxstack_ix)) < 0
@@ -2229,7 +5453,8 @@ Perl_die_unwind(pTHX_ SV *msv)
 
             if (!(in_eval & EVAL_KEEPERR)) {
                 SANE_ERRSV();
-                sv_setsv(ERRSV, exceptsv);
+                sv_setsv(ERRSV, compat_sv);
+                sv_setsv(PERL_ERROR_OBJ, exceptsv);
             }
             PL_restartjmpenv = restartjmpenv;
             PL_restartop = restartop;
@@ -2662,7 +5887,7 @@ PP(pp_dbstate)
             cv = GvCV(gv);
 
         if (!cv || (!CvROOT(cv) && !CvXSUB(cv)))
-            DIE(aTHX_ "No DB::DB routine defined");
+            PERL_THROW_ERROR_DEBUGGER_STATEMENT_HOOK_UNDEFINED();
 
         if (CvDEPTH(cv) >= 1 && !(PL_debug & DEBUG_DB_RECURSE_FLAG))
             /* don't do recursive DB::DB call */
@@ -2866,7 +6091,7 @@ PP(pp_enteriter)
             assert(PL_op->op_next->op_type == OP_ITER);
             if (UNLIKELY((cxflags & CXp_FOR_LVREF) ||
                          (PL_op->op_next->op_private & OPpITER_REFALIAS)))
-                DIE(aTHX_ "Assigned value is not a reference");
+                PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_VALUE_NOT_REFERENCE_DIE();
             SvGETMAGIC(sv);
             SvGETMAGIC(right);
             /* S_outside_integer will convert to NV and perform
@@ -2886,7 +6111,7 @@ PP(pp_enteriter)
                 cx->cx_type |= CXt_LOOP_LAZYIV;
                 if (S_outside_integer(aTHX_ sv) ||
                     S_outside_integer(aTHX_ right))
-                    DIE(aTHX_ "Range iterator outside integer range");
+                    PERL_THROW_ERROR_ITERATOR_RANGE_ENDPOINT_OUTSIDE_INTEGER_RANGE();
                 cx->blk_loop.state_u.lazyiv.cur = SvIV_nomg(sv);
                 cx->blk_loop.state_u.lazyiv.end = SvIV_nomg(right);
                 rpp_popfree_2_NN();
@@ -3020,7 +6245,7 @@ PP(pp_leavesublv)
     else {
         U8   lval    = CxLVAL(cx);
         bool is_lval = (lval && !(lval & OPpENTERSUB_INARGS));
-        const char *what = NULL;
+        const char *return_value_kind = NULL;
 
         if (gimme == G_SCALAR) {
             if (is_lval) {
@@ -3028,19 +6253,18 @@ PP(pp_leavesublv)
                 if (oldsp < PL_stack_sp) {
                     SV *sv = *PL_stack_sp;
                     if ((SvPADTMP(sv) || SvREADONLY(sv))) {
-                        what =
+                        return_value_kind =
                             SvREADONLY(sv) ? (sv == &PL_sv_undef) ? "undef"
-                            : "a readonly value" : "a temporary";
+                            : "readonly" : "temporary";
                     }
                     else goto ok;
                 }
                 else {
                     /* sub:lvalue{} will take us here. */
-                    what = "undef";
+                    return_value_kind = "undef";
                 }
               croak:
-                croak(
-                          "Can't return %s from lvalue subroutine", what);
+                PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_VALUE_NOT_MODIFIABLE(PERL_DIAG_SELECTOR_FROM_ERROR_MUTATION_LVALUE_RETURN_VALUE_NOT_MODIFIABLE_RETURN_VALUE_KIND(return_value_kind));
             }
 
           ok:
@@ -3073,8 +6297,8 @@ PP(pp_leavesublv)
                     if (sv != &PL_sv_undef && (SvPADTMP(sv) || SvREADONLY(sv)))
                     {
                         /* Might be flattened array after $#array =  */
-                        what = SvREADONLY(sv)
-                                ? "a readonly value" : "a temporary";
+                        return_value_kind = SvREADONLY(sv)
+                                ? "readonly" : "temporary";
                         goto croak;
                     }
                 }
@@ -3116,8 +6340,8 @@ PP(pp_return)
                 /* diag_listed_as: Can't "%s" out of a "finally" block */
                 /* GH 23948: probably not reachable from test suite, but
                  * possibly from XS code; retain */
-                croak("Can't \"%s\" out of a \"%s\" block",
-                        "return", S_defer_blockname(&cxstack[i]));
+                PERL_THROW_ERROR_CONTROL_FLOW_SCOPE_CANNOT_LEAVE_PROTECTED_BLOCK(
+                    "return", S_defer_blockname(&cxstack[i]));
         }
         if (cxix < 0) {
             if (!(       PL_curstackinfo->si_type == PERLSI_SORT
@@ -3125,7 +6349,7 @@ PP(pp_return)
                       && (cxstack[0].cx_type & CXp_SUB_RE_FAKE))
                  )
             )
-                DIE(aTHX_ "Can't return outside a subroutine");
+                PERL_THROW_ERROR_CONTROL_FLOW_RETURN_OUTSIDE_SUBROUTINE();
             /* We must be in:
              *  a sort block, which is a CXt_NULL not a CXt_SUB;
              *  or a /(?{...})/ block.
@@ -3229,7 +6453,7 @@ PP(pp_return)
     case CXt_FORMAT:
         return Perl_pp_leavewrite(aTHX);
     default:
-        DIE(aTHX_ "panic: return, type=%u", (unsigned) CxTYPE(cx));
+        PERL_PANIC_ERROR_INTERNAL_CONTROL_FLOW_RETURN_CONTEXT_TYPE_UNEXPECTED((unsigned) CxTYPE(cx));
     }
 }
 
@@ -3243,8 +6467,7 @@ S_unwind_loop(pTHX)
         cxix = dopoptoloop(cxstack_ix);
         if (cxix < 0)
             /* diag_listed_as: Can't "last" outside a loop block */
-            croak("Can't \"%s\" outside a loop block",
-                OP_NAME(PL_op));
+            PERL_THROW_ERROR_CONTROL_FLOW_LOOP_OUTSIDE_LOOP_BLOCK(OP_NAME(PL_op));
     }
     else {
         STRLEN label_len;
@@ -3267,9 +6490,8 @@ S_unwind_loop(pTHX)
         cxix = dopoptolabel(label, label_len, label_flags);
         if (cxix < 0)
             /* diag_listed_as: Label not found for "last %s" */
-            croak("Label not found for \"%s %" SVf "\"",
-                                       OP_NAME(PL_op),
-                                       SVfARG(PL_op->op_flags & OPf_STACKED
+            PERL_THROW_ERROR_CONTROL_FLOW_LOOP_LABEL_NOT_FOUND(OP_NAME(PL_op),
+                                       (PL_op->op_flags & OPf_STACKED
                                               && !SvGMAGICAL(sv)
                                               ? sv
                                               : newSVpvn_flags(label,
@@ -3286,8 +6508,8 @@ S_unwind_loop(pTHX)
             if(CxTYPE(&cxstack[i]) == CXt_DEFER)
                 /* diag_listed_as: Can't "%s" out of a "defer" block */
                 /* diag_listed_as: Can't "%s" out of a "finally" block */
-                croak("Can't \"%s\" out of a \"%s\" block",
-                        OP_NAME(PL_op), S_defer_blockname(&cxstack[i]));
+                PERL_THROW_ERROR_CONTROL_FLOW_SCOPE_CANNOT_LEAVE_PROTECTED_BLOCK(
+                    OP_NAME(PL_op), S_defer_blockname(&cxstack[i]));
         }
         dounwind(cxix);
     }
@@ -3437,10 +6659,9 @@ S_dofindlabel(pTHX_ OP *o, const char *label, STRLEN len, U32 flags, OP **opstac
     PERL_ARGS_ASSERT_DOFINDLABEL;
 
     OP **ops = opstack;
-    static const char* const too_deep = "Target of goto is too deeply nested";
 
     if (ops >= oplimit)
-        croak("%s", too_deep);
+        PERL_THROW_ERROR_CONTROL_FLOW_GOTO_TARGET_NESTING_LIMIT();
     if (o->op_type == OP_LEAVE ||
         o->op_type == OP_SCOPE ||
         o->op_type == OP_LEAVELOOP ||
@@ -3468,7 +6689,7 @@ S_dofindlabel(pTHX_ OP *o, const char *label, STRLEN len, U32 flags, OP **opstac
       }
     }
     if (ops >= oplimit)
-        croak("%s", too_deep);
+        PERL_THROW_ERROR_CONTROL_FLOW_GOTO_TARGET_NESTING_LIMIT();
     *ops = 0;
     if (o->op_flags & OPf_KIDS) {
         OP *kid;
@@ -3514,7 +6735,7 @@ S_dofindlabel(pTHX_ OP *o, const char *label, STRLEN len, U32 flags, OP **opstac
             }
             if ((o = dofindlabel(kid, label, len, flags, ops, oplimit))) {
                 if (kid->op_type == OP_PUSHDEFER)
-                    croak("Can't \"goto\" into a \"defer\" block");
+                    PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_DEFER_BLOCK();
                 return o;
             }
             if (first_kid_of_binary)
@@ -3533,14 +6754,11 @@ S_check_op_type(pTHX_ OP * const o)
      * for each op.  For now, we punt on the hard ones. */
     /* XXX This comment seems to me like wishful thinking.  --sprout */
     if (o == UNENTERABLE)
-        croak(
-                  "Can't \"goto\" into a binary or list expression");
+        PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_EXPRESSION();
     if (o->op_type == OP_ENTERITER)
-        croak(
-                  "Can't \"goto\" into the middle of a foreach loop");
+        PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_FOREACH_BODY();
     if (o->op_type == OP_ENTERGIVEN)
-        croak(
-                  "Can't \"goto\" into a \"given\" block");
+        PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_GIVEN_BLOCK();
 }
 
 /* also used for: pp_dump() */
@@ -3556,7 +6774,6 @@ PP(pp_goto)
     STRLEN label_len = 0;
     U32 label_flags = 0;
     const bool do_dump = (PL_op->op_type == OP_DUMP);
-    static const char* const must_have_label = "goto must have label";
 
     if (PL_op->op_flags & OPf_STACKED) {
         /* goto EXPR  or  goto &foo */
@@ -3587,29 +6804,29 @@ PP(pp_goto)
                         continue;
                     tmpstr = sv_newmortal();
                     gv_efullname3(tmpstr, gv, NULL);
-                    DIE(aTHX_ "Goto undefined subroutine &%" SVf, SVfARG(tmpstr));
+                    PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_UNDEFINED_NAMED_TARGET(tmpstr);
                 }
                 /* GH-23969: This exception should be retained because it can
                  * be reached from XS code. */
-                DIE(aTHX_ "Goto undefined subroutine");
+                PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_UNDEFINED_TARGET();
             }
 
             cxix = dopopto_cursub();
             if (cxix < 0) {
-                DIE(aTHX_ "Can't goto subroutine outside a subroutine");
+                PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_OUTSIDE_SUBROUTINE();
             }
             cx  = &cxstack[cxix];
             /* ban goto in eval: see <20050521150056.GC20213@iabyn.com> */
             if (CxTYPE(cx) == CXt_EVAL) {
                 if (CxREALEVAL(cx))
                 /* diag_listed_as: Can't goto subroutine from an eval-%s */
-                    DIE(aTHX_ "Can't goto subroutine from an eval-string");
+                    PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_EVAL_STRING_FORBIDDEN();
                 else
                 /* diag_listed_as: Can't goto subroutine from an eval-%s */
-                    DIE(aTHX_ "Can't goto subroutine from an eval-block");
+                    PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_EVAL_BLOCK_FORBIDDEN();
             }
             else if (CxMULTICALL(cx))
-                DIE(aTHX_ "Can't goto subroutine from a sort sub (or similar callback)");
+                PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_CALLBACK_FORBIDDEN();
 
             /* First do some returnish stuff. */
 
@@ -3667,12 +6884,11 @@ PP(pp_goto)
                 if (gv) {
                     SV * const tmpstr = sv_newmortal();
                     gv_efullname3(tmpstr, gv, NULL);
-                    DIE(aTHX_ "Goto undefined subroutine &%" SVf,
-                               SVfARG(tmpstr));
+                    PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_UNDEFINED_NAMED_TARGET(tmpstr);
                 }
                 /* GH-23969: This exception should be retained because it can
                  * be reached from XS code. */
-                DIE(aTHX_ "Goto undefined subroutine");
+                PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_UNDEFINED_TARGET();
             }
 
             if (CxTYPE(cx) == CXt_SUB) {
@@ -3869,7 +7085,7 @@ PP(pp_goto)
         label_flags = (cPVOP->op_private & OPpPV_IS_UTF8) ? SVf_UTF8 : 0;
         label_len   = strlen(label);
     }
-    if (!(do_dump || label_len)) DIE(aTHX_ "%s", must_have_label);
+    if (!(do_dump || label_len)) PERL_THROW_ERROR_CONTROL_FLOW_GOTO_LABEL_REQUIRED();
 
     PERL_ASYNC_CHECK();
 
@@ -3928,14 +7144,14 @@ PP(pp_goto)
                 break;
             case CXt_FORMAT:
             case CXt_NULL:
-                DIE(aTHX_ "Can't \"goto\" out of a pseudo block");
+                PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_LEAVE_PSEUDO_BLOCK();
             case CXt_DEFER:
                 /* diag_listed_as: Can't "%s" out of a "defer" block */
-                DIE(aTHX_ "Can't \"%s\" out of a \"%s\" block", "goto", S_defer_blockname(cx));
+                PERL_THROW_ERROR_CONTROL_FLOW_SCOPE_CANNOT_LEAVE_PROTECTED_BLOCK_DIE(
+                    "goto", S_defer_blockname(cx));
             default:
                 if (ix)
-                    DIE(aTHX_ "panic: goto, type=%u, ix=%ld",
-                        CxTYPE(cx), (long) ix);
+                    PERL_PANIC_ERROR_INTERNAL_CONTROL_FLOW_GOTO_CONTEXT_TYPE_UNEXPECTED(CxTYPE(cx), (long) ix);
                 gotoprobe = PL_main_root;
                 break;
             }
@@ -3958,12 +7174,11 @@ PP(pp_goto)
                 }
             }
             if (pseudo_block)
-                DIE(aTHX_ "Can't \"goto\" out of a pseudo block");
+                PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_LEAVE_PSEUDO_BLOCK();
             PL_lastgotoprobe = gotoprobe;
         }
         if (!retop)
-            DIE(aTHX_ "Can't find label %" UTF8f,
-                       UTF8fARG(label_flags, label_len, label));
+            PERL_THROW_ERROR_CONTROL_FLOW_GOTO_LABEL_NOT_FOUND(label_flags, label_len, label);
 
         /* if we're leaving an eval, check before we pop any frames
            that we're not going to punt, otherwise the error
@@ -3988,7 +7203,7 @@ PP(pp_goto)
 
         if (ix < cxstack_ix) {
             if (ix < 0)
-                DIE(aTHX_ "panic: docatch: illegal ix=%ld", (long)ix);
+                PERL_PANIC_ERROR_INTERNAL_CONTROL_FLOW_GOTO_UNWIND_INDEX_NEGATIVE((long)ix);
             dounwind(ix);
             cx = CX_CUR();
             cx_topblock(cx);
@@ -4014,7 +7229,7 @@ PP(pp_goto)
     }
 
     if (into_construct)
-        croak("Use of \"goto\" to jump into a construct is no longer permitted");
+        PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_CONSTRUCT();
 
     if (do_dump) {
 #ifdef VMS
@@ -4554,9 +7769,10 @@ S_doeval_compile(pTHX_ U8 gimme, CV* outside, U32 seq, HV *hh)
                ? S_try_yyparse(aTHX_ GRAMPROG, saveop)
                : yyparse(GRAMPROG);
 
-    if (yystatus || PL_parser->error_count || !PL_eval_root) {
+    if (yystatus || PERL_DIAG_ERROR_COUNT || !PL_eval_root) {
         PERL_CONTEXT *cx;
         SV *errsv;
+        SV *pending_exception = NULL;
 
         PL_op = saveop;
         if (yystatus != 3) {
@@ -4566,11 +7782,29 @@ S_doeval_compile(pTHX_ U8 gimme, CV* outside, U32 seq, HV *hh)
              * the other "failed to compile" cases in yyparse, eg, where
              * yystatus=1, "failed, but did not die". */
 
-            if (!in_require)
-                invoke_exception_hook(ERRSV,FALSE);
-
+            /* Keep the compile diagnostics installed while freeing the
+             * incomplete optree.  op_free() uses PERL_DIAG_ERROR_COUNT to skip
+             * checks on partially formed ops. */
             op_free(PL_eval_root);
             PL_eval_root = NULL;
+
+            if (!in_require) {
+                /* Keep the compile diagnostics out of the accumulator while
+                 * running __DIE__.  If the hook dies, its exception replaces
+                 * the compile error instead of being appended to it. */
+                pending_exception = Perl_diag_take_pending(aTHX);
+                if (!pending_exception) {
+                    PERL_APPEND_ERROR_USER_TEXT(&pending_exception, ERRSV);
+                }
+                invoke_exception_hook(pending_exception, FALSE);
+
+                if (PL_pending_exception)
+                    pending_exception = Perl_diag_take_pending(aTHX);
+            }
+
+            if (PL_pending_exception) {
+                pending_exception = Perl_diag_take_pending(aTHX);
+            }
 
             rpp_popfree_to(PL_stack_base + POPMARK); /* pop original mark */
             cx = CX_CUR();
@@ -4582,6 +7816,14 @@ S_doeval_compile(pTHX_ U8 gimme, CV* outside, U32 seq, HV *hh)
             /* pop the CXt_EVAL, and if was a require, croak */
             S_pop_eval_context_maybe_croak(aTHX_ cx, ERRSV, 2);
 
+            if (pending_exception) {
+                /* Publish after the eval scope restores its saved state,
+                 * just as die_unwind() does for an immediate failure. */
+                sv_setsv(ERRSV,
+                    Perl_diag_exception_compat_value(aTHX_ pending_exception));
+                sv_setsv(PERL_ERROR_OBJ, pending_exception);
+            }
+
         }
 
         /* die_unwind() re-croaks when in require, having popped the
@@ -4590,8 +7832,12 @@ S_doeval_compile(pTHX_ U8 gimme, CV* outside, U32 seq, HV *hh)
         assert(!in_require);
 
         errsv = ERRSV;
-        if (!*(SvPV_nolen_const(errsv)))
-            sv_setpvs(errsv, "Compilation error");
+        if (!*(SvPV_nolen_const(errsv))) {
+            SV *exception = NULL;
+            PERL_APPEND_ERROR_COMPILATION_FAILED(&exception);
+            sv_setsv(errsv, exception);
+            sv_setsv(PERL_ERROR_OBJ, exception);
+        }
 
         if (gimme == G_SCALAR) {
             if (yystatus == 3) {
@@ -4606,6 +7852,8 @@ S_doeval_compile(pTHX_ U8 gimme, CV* outside, U32 seq, HV *hh)
     }
 
     /* Compilation successful. Now clean up */
+
+    Perl_diag_flush_pending_exception(aTHX);
 
     LEAVE_with_name("evalcomp");
 
@@ -4643,7 +7891,10 @@ S_doeval_compile(pTHX_ U8 gimme, CV* outside, U32 seq, HV *hh)
                 /* This happens when using:
                  * eval qq# UNITCHECK { die "\x00"; } #;
                  */
-                sv_setpvs(errsv, "Unit check error");
+                SV *exception = NULL;
+                PERL_APPEND_ERROR_PHASE_UNITCHECK_FAILED(&exception);
+                sv_setsv(errsv, exception);
+                sv_setsv(PERL_ERROR_OBJ, exception);
             }
 
             if (gimme != G_LIST)
@@ -4809,10 +8060,7 @@ S_require_version(pTHX_ SV *sv)
         upg_version(PL_patchlevel, TRUE);
     if (cUNOP->op_first->op_type == OP_CONST && cUNOP->op_first->op_private & OPpCONST_NOVER) {
         if ( vcmp(sv,PL_patchlevel) <= 0 )
-            DIE(aTHX_ "Perls since %" SVf " too modern--this is %" SVf ", stopped",
-                SVfARG(sv_2mortal(vnormal(sv))),
-                SVfARG(sv_2mortal(vnormal(PL_patchlevel)))
-            );
+            PERL_THROW_ERROR_LOAD_PERL_VERSION_TOO_NEW(sv_2mortal(vnormal(sv)), sv_2mortal(vnormal(PL_patchlevel)));
     }
     else {
         if ( vcmp(sv,PL_patchlevel) > 0 ) {
@@ -4830,11 +8078,7 @@ S_require_version(pTHX_ SV *sv)
                 || av_count(lav) > 2             /* FP with > 3 digits */
                 || strstr(SvPVX(pv),".0")        /* FP with leading 0 */
                ) {
-                DIE(aTHX_ "Perl %" SVf " required--this is only "
-                    "%" SVf ", stopped",
-                    SVfARG(sv_2mortal(vnormal(req))),
-                    SVfARG(sv_2mortal(vnormal(PL_patchlevel)))
-                );
+                PERL_THROW_ERROR_LOAD_PERL_VERSION_TOO_OLD(sv_2mortal(vnormal(req)), sv_2mortal(vnormal(PL_patchlevel)));
             }
             else { /* probably 'use 5.10' or 'use 5.8' */
                 SV *hintsv;
@@ -4847,12 +8091,7 @@ S_require_version(pTHX_ SV *sv)
                 hintsv = newSVpvf("v%d.%d.0", (int)first, (int)second);
                 upg_version(hintsv, TRUE);
 
-                DIE(aTHX_ "Perl %" SVf " required (did you mean %" SVf "?)"
-                    "--this is only %" SVf ", stopped",
-                    SVfARG(sv_2mortal(vnormal(req))),
-                    SVfARG(sv_2mortal(vnormal(sv_2mortal(hintsv)))),
-                    SVfARG(sv_2mortal(vnormal(PL_patchlevel)))
-                );
+                PERL_THROW_ERROR_LOAD_PERL_VERSION_AMBIGUOUS_REQUIREMENT(sv_2mortal(vnormal(req)), sv_2mortal(vnormal(sv_2mortal(hintsv))), sv_2mortal(vnormal(PL_patchlevel)));
             }
         }
     }
@@ -4901,10 +8140,10 @@ S_require_file(pTHX_ SV *sv)
     assert(op_is_require || PL_op->op_type == OP_DOFILE);
 
     if (!SvOK(sv))
-        DIE(aTHX_ "Missing or undefined argument to %s", op_name);
+        PERL_THROW_ERROR_LOAD_FILENAME_REQUIRED(op_name);
     name = SvPV_nomg_const(sv, len);
     if (!(name && len > 0 && *name))
-        DIE(aTHX_ "Missing or undefined argument to %s", op_name);
+        PERL_THROW_ERROR_LOAD_FILENAME_REQUIRED(op_name);
 
     if (
         PL_hook__require__before
@@ -4930,8 +8169,7 @@ S_require_file(pTHX_ SV *sv)
             /* they modified the name argument, so do some sleight of hand */
             name = SvPV_nomg_const(name_sv, len);
             if (!(name && len > 0 && *name))
-                DIE(aTHX_ "Missing or undefined argument to %s via %%{^HOOK}{require__before}",
-                        op_name);
+                PERL_THROW_ERROR_LOAD_HOOK_FILENAME_REQUIRED(op_name);
             sv = name_sv;
         }
         FREETMPS;
@@ -4973,10 +8211,8 @@ S_require_file(pTHX_ SV *sv)
             rpp_replace_1_IMM_NN(&PL_sv_undef);
             return NORMAL;
         }
-        DIE(aTHX_ "Can't locate %s:   %s",
-            pv_escape(newSVpvs_flags("",SVs_TEMP),name,len,len*2,
-                      NULL, SvUTF8(sv)?PERL_PV_ESCAPE_UNI:0),
-            Strerror(ENOENT));
+        PERL_THROW_ERROR_LOAD_FILENAME_INVALID(pv_escape(newSVpvs_flags("",SVs_TEMP),name,len,len*2,
+                      NULL, SvUTF8(sv)?PERL_PV_ESCAPE_UNI:0), Strerror(ENOENT));
     }
     TAINT_PROPER(op_name);
 
@@ -5017,8 +8253,7 @@ S_require_file(pTHX_ SV *sv)
                 return NORMAL;
             }
             else
-                DIE(aTHX_ "Attempt to reload %s aborted.\n"
-                            "Compilation failed in require", unixname);
+                PERL_THROW_ERROR_LOAD_REQUIRE_PREVIOUS_LOAD_FAILED(unixname);
         }
 
         /*XXX OPf_KIDS should always be true? -dapm 4/2017 */
@@ -5047,21 +8282,21 @@ S_require_file(pTHX_ SV *sv)
                    that the generated filename ends .pm  */
                 if (!path_searchable || len < 3 || name[0] == '.'
                     || !memEQs(name + package_len, len - package_len, ".pm"))
-                    DIE(aTHX_ "Bareword in require maps to disallowed filename \"%" SVf "\"", sv);
+                    PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_FILENAME_DISALLOWED(sv);
                 if (memchr(name, 0, package_len)) {
                     /* diag_listed_as: Bareword in require contains "%s" */
-                    DIE(aTHX_ "Bareword in require contains \"\\0\"");
+                    PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_NUL_FORBIDDEN();
                 }
                 if (ninstr(name, name + package_len, slashdot,
                            slashdot + sizeof(slashdot))) {
                     /* diag_listed_as: Bareword in require contains "%s" */
-                    DIE(aTHX_ "Bareword in require contains \"/.\"");
+                    PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_SLASH_DOT_FORBIDDEN();
                 }
 #ifdef DOSISH
                 if (ninstr(name, name + package_len, backslashdot,
                            backslashdot + sizeof(backslashdot))) {
                     /* diag_listed_as: Bareword in require contains "%s" */
-                    DIE(aTHX_ "Bareword in require contains \"\\.\"");
+                    PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_BACKSLASH_DOT_FORBIDDEN();
                 }
 #endif
             }
@@ -5191,14 +8426,9 @@ S_require_file(pTHX_ SV *sv)
                                 if (amagic_applies(loader,string_amg,AMGf_unary))
                                     goto treat_as_string;
                                 else {
-                                    croak("Can't locate object method \"INC\", nor"
-                                          " \"INCDIR\" nor string overload via"
-                                          " package %" HvNAMEf_QUOTEDPREFIX " %s"
-                                          " in @INC", pkg,
-                                          dirsv == loader
-                                          ? "in object hook"
-                                          : "in object in ARRAY hook"
-                                    );
+                                    PERL_THROW_ERROR_LOAD_HOOK_INC_METHODS_NOT_FOUND(pkg, dirsv == loader
+                                            ? perl_diag_selector_domain_1754_0_object_hook_2
+                                            : perl_diag_selector_domain_1754_0_array_object_hook_1);
                                 }
                             }
                         }
@@ -5326,27 +8556,14 @@ S_require_file(pTHX_ SV *sv)
                         rpp_popfree_to_NN(base - 1);
                     } else {
                         SV *errsv= ERRSV;
-                        if (SvTRUE(errsv) && !SvROK(errsv)) {
-                            STRLEN l;
-                            char *pv= SvPV(errsv,l);
-                            /* Heuristic to tell if this error message
-                             * includes the standard line number info:
-                             * check if the line ends in digit dot newline.
-                             * If it does then we add some extra info so
-                             * its obvious this is coming from a hook.
-                             * If it is a user generated error we try to
-                             * leave it alone. l>12 is to ensure the
-                             * other checks are in string, but also
-                             * accounts for "at ... line 1.\n" to a
-                             * certain extent. Really we should check
-                             * further, but this is good enough for back
-                             * compat I think.
-                             */
-                            if (l>=12 && pv[l-1] == '\n' && pv[l-2] == '.' && isDIGIT(pv[l-3]))
-                                sv_catpvf(errsv, "%s %s hook died--halting @INC search",
-                                          method ? method : "INC",
-                                          method ? "method" : "sub");
-                            croak_sv(errsv);
+                        if (SvTRUE(errsv)) {
+                            SV *exception = NULL;
+                            if (sv_derived_from(errsv, "XPerl::Exception"))
+                                exception = errsv;
+                            else
+                                PERL_APPEND_ERROR_USER_TEXT(&exception, errsv);
+                            PERL_APPEND_ERROR_LOAD_HOOK_INC_DIED(&exception, method ? method : "INC", method ? perl_diag_selector_domain_2449_0_method_1 : perl_diag_selector_domain_2449_0_sub_2);
+                            PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(exception);
                         }
                     }
 
@@ -5502,13 +8719,13 @@ S_require_file(pTHX_ SV *sv)
         if (op_is_require) {
             if(saved_errno == EMFILE || saved_errno == EACCES) {
                 /* diag_listed_as: Can't locate %s */
-                DIE(aTHX_ "Can't locate %s:   %s: %s",
-                    name, tryname, Strerror(saved_errno));
+                PERL_THROW_ERROR_LOAD_FILE_OPEN_FAILED(name, tryname, Strerror(saved_errno));
             } else {
                 if (path_searchable) {          /* did we lookup @INC? */
                     SSize_t i;
-                    SV *const msg = newSVpvs_flags("", SVs_TEMP);
                     SV *const inc = newSVpvs_flags("", SVs_TEMP);
+                    SV *exception = NULL;
+                    PERL_APPEND_ERROR_LOAD_NOT_FOUND_IN_INC(&exception, name);
                     for (i = 0; i <= AvFILL(inc_checked); i++) {
                         SV **svp= av_fetch(inc_checked, i, TRUE);
                         if (!svp || !*svp) continue;
@@ -5552,32 +8769,29 @@ S_require_file(pTHX_ SV *sv)
                         }
 
                         if (c == e && isIDFIRST_lazy_if_safe(name, e, utf8)) {
-                            sv_catpvs(msg, " (you may need to install the ");
+                            SV *module = sv_2mortal(newSVpvs(""));
                             for (c = name; c < e; c++) {
-                                if (*c == '/') {
-                                    sv_catpvs(msg, "::");
-                                }
-                                else {
-                                    sv_catpvn(msg, c, 1);
-                                }
+                                if (*c == '/')
+                                    sv_catpvs(module, "::");
+                                else
+                                    sv_catpvn(module, c, 1);
                             }
-                            sv_catpvs(msg, " module)");
+                            PERL_APPEND_ERROR_LOAD_CONTEXT_MODULE_INSTALL_HINT(&exception, module);
                         }
                     }
                     else if (memENDs(name, len, ".h")) {
-                        sv_catpvs(msg, " (change .h to .ph maybe?) (did you run h2ph?)");
+                        PERL_APPEND_ERROR_LOAD_CONTEXT_HEADER_SUFFIX_HINT(&exception);
+                        PERL_APPEND_ERROR_LOAD_CONTEXT_H2PH_HINT(&exception);
                     }
                     else if (memENDs(name, len, ".ph")) {
-                        sv_catpvs(msg, " (did you run h2ph?)");
+                        PERL_APPEND_ERROR_LOAD_CONTEXT_H2PH_HINT(&exception);
                     }
 
-                    /* diag_listed_as: Can't locate %s */
-                    DIE(aTHX_
-                        "Can't locate %s in @INC%" SVf " (@INC entries checked:%" SVf ")",
-                        name, msg, inc);
+                    PERL_APPEND_ERROR_LOAD_CONTEXT_INC_ENTRIES_CHECKED(&exception, inc);
+                    PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(exception);
                 }
             }
-            DIE(aTHX_ "Can't locate %s", name);
+            PERL_THROW_ERROR_LOAD_NOT_FOUND_AT_PATH(name);
         }
         else {
 #ifdef DEFAULT_INC_EXCLUDES_DOT
@@ -5595,10 +8809,7 @@ S_require_file(pTHX_ SV *sv)
 
             RESTORE_ERRNO;
             if (do_warn) {
-                warner(packWARN(WARN_DEPRECATED__DOT_IN_INC),
-                       "do \"%s\" failed, '.' is no longer in @INC; "
-                       "did you mean do \"./%s\"?",
-                       name, name);
+                PERL_DEPRECATE_WARNING_DEPRECATED_DOT_IN_INC_RELATIVE_DO_FILE_NOT_IN_INC(name, name);
             }
 #endif
             CLEAR_ERRSV();
@@ -5632,6 +8843,9 @@ S_require_file(pTHX_ SV *sv)
     old_savestack_ix = PL_savestack_ix;
     SAVECOPFILE_FREE(&PL_compiling);
     CopFILE_set(&PL_compiling, tryname);
+    /* Keep this compilation's diagnostics separate from its caller's. */
+    SAVEGENERICSV(PL_pending_exception);
+    PL_pending_exception = NULL;
     lex_start(NULL, tryrsfp, 0);
 
     if (filter_sub || filter_cache) {
@@ -5779,6 +8993,9 @@ PP(pp_entereval)
 
     old_savestack_ix = PL_savestack_ix;
 
+    /* Keep this compilation's diagnostics separate from its caller's. */
+    SAVEGENERICSV(PL_pending_exception);
+    PL_pending_exception = NULL;
     lex_start(sv, NULL, lex_flags | (PL_op->op_private & OPpEVAL_UNICODE
                            ? LEX_IGNORE_UTF8_HINTS
                            : bytes ? LEX_EVALBYTES : LEX_START_SAME_FILTER
@@ -6034,6 +9251,11 @@ PP(pp_catch)
 
     save_clearsv(&(PAD_SVl(PL_op->op_targ)));
     sv_setsv(TARG, ERRSV);
+    if (PL_op->op_private & PERL_OPpCATCH_SECOND_ARG) {
+        OP *catchmeta = cUNOPx(PL_op)->op_first;
+        save_clearsv(&(PAD_SVl(catchmeta->op_targ)));
+        sv_setsv(PAD_SVl(catchmeta->op_targ), PERL_ERROR_OBJ);
+    }
     CLEAR_ERRSV();
 
     return cLOGOP->op_other;
@@ -6072,8 +9294,10 @@ Perl_create_eval_scope(pTHX_ OP *retop, SV **sp, U32 flags)
     PL_in_eval = EVAL_INEVAL;
     if (flags & G_KEEPERR)
         PL_in_eval |= EVAL_KEEPERR;
-    else
+    else if (!(flags & PERL_G_DIAGHOOK))
         CLEAR_ERRSV();
+    if (flags & PERL_G_DIAGHOOK)
+        cx->cx_type |= PERL_CXP_DIAGHOOK;
     if (flags & G_FAKINGEVAL) {
         PL_eval_root = PL_op; /* Only needed so that goto works right. */
     }
@@ -6175,12 +9399,12 @@ PP(pp_enterdispatch)
         const OP *target;
         if (!assignment || assignment->op_type != OP_SASSIGN
             || !(assignment->op_flags & OPf_KIDS))
-            Perl_croak(aTHX_ "dispatch named subject is not a scalar assignment");
+            PERL_THROW_ERROR_INTERNAL_DISPATCH_SUBJECT_ASSIGNMENT_MISSING();
         target = cUNOPx(assignment)->op_first;
         while (OpSIBLING(target))
             target = OpSIBLING(target);
         if (target->op_type != OP_PADSV && target->op_type != OP_PADSV_STORE)
-            Perl_croak(aTHX_ "dispatch subject must be a scalar lexical");
+            PERL_THROW_ERROR_INTERNAL_DISPATCH_SUBJECT_LEXICAL_MISSING();
         subject = PAD_SV(target->op_targ);
     }
     else {
@@ -6318,12 +9542,12 @@ S_dispatch_retain_capture(pTHX_ struct dispatch_capture_owner *owner, SV *value)
     if (!av) {
         owner->values = av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
         if (owner->reserve > (size_t)SSize_t_MAX)
-            Perl_croak(aTHX_ "Too many dispatch captures");
+            PERL_THROW_ERROR_DISPATCH_CAPTURE_CAPACITY_EXCEEDED();
         if (owner->reserve)
             av_extend(av, (SSize_t)owner->reserve - 1);
     }
     if (AvFILLp(av) == SSize_t_MAX)
-        Perl_croak(aTHX_ "Too many dispatch captures");
+        PERL_THROW_ERROR_DISPATCH_CAPTURE_CAPACITY_EXCEEDED();
     ix = AvFILLp(av) + 1;
     if (ix > AvMAX(av))
         av_extend(av, ix);
@@ -6680,7 +9904,7 @@ S_dispatch_pattern_concat_match(pTHX_ const struct dispatch_pattern_node *node,
         sv_utf8_upgrade(text);
 
     if (!nparts)
-        Perl_croak(aTHX_ "unsupported dispatch pattern concatenation expression");
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_EXPRESSION_UNSUPPORTED();
     workspace = sv_2mortal(newSV(capacity * sizeof(*parts)));
     parts = (const struct dispatch_pattern_node **)SvPVX(workspace);
     workspace = sv_2mortal(newSV(capacity * sizeof(*fixed_values)));
@@ -6688,7 +9912,7 @@ S_dispatch_pattern_concat_match(pTHX_ const struct dispatch_pattern_node *node,
     Zero(fixed_values, capacity, SV *);
     nparts = 0;
     if (!S_dispatch_pattern_concat_flatten(node, parts, capacity, &nparts))
-        Perl_croak(aTHX_ "unsupported dispatch pattern concatenation expression");
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_EXPRESSION_UNSUPPORTED();
     subject = SvPV_nomg_const(text, subject_len);
 
     /* Materialize each fixed fragment once. Normalize encodings before
@@ -6701,7 +9925,7 @@ S_dispatch_pattern_concat_match(pTHX_ const struct dispatch_pattern_node *node,
             continue;
         raw = S_dispatch_pattern_concat_fixed_value(aTHX_ parts[i]);
         if (!raw)
-            Perl_croak(aTHX_ "unsupported dispatch pattern concatenation component");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_COMPONENT_UNSUPPORTED();
         sv_2mortal(raw);
         fixed_values[i] = sv_newmortal();
         sv_copypv(fixed_values[i], raw);
@@ -6734,14 +9958,12 @@ S_dispatch_pattern_concat_match(pTHX_ const struct dispatch_pattern_node *node,
             if (S_dispatch_pattern_concat_is_capture(aTHX_ parts[j])
                 && S_dispatch_pattern_unwrap(parts[j])->binding_padix
                     == S_dispatch_pattern_unwrap(parts[i])->binding_padix)
-                Perl_croak(aTHX_
-                    "repeated capture names are not allowed in a dispatch pattern concatenation");
+                PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_DUPLICATE_CAPTURE();
         }
         for (j = i + 1; j < nparts; j++) {
             STRLEN boundary_len;
             if (S_dispatch_pattern_concat_is_capture(aTHX_ parts[j]))
-                Perl_croak(aTHX_
-                    "adjacent captures are not allowed in a dispatch pattern concatenation");
+                PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_ADJACENT_CAPTURES();
             (void)SvPV(fixed_values[j], boundary_len);
             if (boundary_len)
                 break;
@@ -6761,8 +9983,7 @@ S_dispatch_pattern_concat_match(pTHX_ const struct dispatch_pattern_node *node,
              * empty literal are rejected just like directly adjacent pairs. */
             while (next < nparts) {
                 if (S_dispatch_pattern_concat_is_capture(aTHX_ parts[next]))
-                    Perl_croak(aTHX_
-                        "adjacent captures are not allowed in a dispatch pattern concatenation");
+                    PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_ADJACENT_CAPTURES();
                 boundary = fixed_values[next];
                 boundary_pv = SvPV(boundary, boundary_len);
                 if (boundary_len)
@@ -6902,8 +10123,7 @@ S_dispatch_pattern_compile_node(pTHX_ const OP *op, bool preserve_lists)
         const OP *target;
         const OP *subpattern;
         if (!S_dispatch_pattern_assignment_parts(op, &target, &subpattern))
-            Perl_croak(aTHX_
-                "pattern assignment requires a scalar capture target");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ASSIGNMENT_TARGET_NOT_SCALAR();
         node = (struct dispatch_pattern_node *)PerlMemShared_calloc(
             1, sizeof(struct dispatch_pattern_node));
         node->op = op;
@@ -7049,8 +10269,7 @@ S_dispatch_pattern_prepare_regex(pTHX_ const OP *pattern, HV *seen)
     if (!re)
         return;
     if (RX_EXTFLAGS(re) & RXf_EVAL_SEEN)
-        Perl_croak(aTHX_
-            "regex code blocks are not supported in dispatch patterns");
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_REGEXP_CODE_BLOCK_FORBIDDEN();
     names_ref = CALLREG_NAMED_BUFF_ALL(re, RXapif_ALL | RXapif_REGNAMES);
     if (!names_ref || !SvROK(names_ref)) {
         SvREFCNT_dec(names_ref);
@@ -7072,11 +10291,7 @@ S_dispatch_pattern_prepare_regex(pTHX_ const OP *pattern, HV *seen)
          * Keep this separate from dispatch_pattern_vars, which also contains
          * ordinary destructuring targets. */
         if (hv_exists_ent(seen, *name_svp, 0))
-            ck_warner_d(packWARN(WARN_SYNTAX),
-            "Named capture '%" SVf "' occurs in multiple regexes in a dispatch-on clause; "
-                "only the first regex maps to its lexical variable; "
-                "later captures are not visible through that variable",
-                SVfARG(*name_svp));
+            PERL_WARN_WARNING_SYNTAX_DISPATCH_REGEXP_CAPTURE_SHADOWED(*name_svp);
         else
             (void)hv_store_ent(seen, *name_svp, newSViv(1), 0);
         padname = newSVpvn("$", 1);
@@ -7183,14 +10398,14 @@ S_dispatch_pattern_validate_concat(pTHX_ const OP *op)
     const OP *kid;
 
     if (!op)
-        Perl_croak(aTHX_ "unsupported dispatch pattern concatenation expression");
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_EXPRESSION_UNSUPPORTED();
     if (op->op_type == OP_NULL && (op->op_flags & OPf_KIDS)) {
         S_dispatch_pattern_validate_concat(aTHX_ cUNOPx(op)->op_first);
         return;
     }
     if (op->op_type == OP_CONCAT || op->op_type == OP_MULTICONCAT) {
         if (!(op->op_flags & OPf_KIDS))
-            Perl_croak(aTHX_ "unsupported dispatch pattern concatenation expression");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_EXPRESSION_UNSUPPORTED();
         for (kid = cUNOPx(op)->op_first; kid; kid = OpSIBLING(kid))
             S_dispatch_pattern_validate_concat(aTHX_ kid);
         return;
@@ -7208,7 +10423,7 @@ S_dispatch_pattern_validate_concat(pTHX_ const OP *op)
         if (target && target->op_type == OP_PADSV)
             return;
     }
-    Perl_croak(aTHX_ "unsupported dispatch pattern concatenation expression");
+    PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_EXPRESSION_UNSUPPORTED();
 }
 
 static void
@@ -7238,8 +10453,7 @@ S_dispatch_pattern_validate_concat_boundaries(pTHX_ const OP *op,
     }
     if (op->op_type == OP_PADSV) {
         if (*seen_capture && !*has_literal)
-            Perl_croak(aTHX_
-                "dispatch pattern captures must be separated by non-empty constant text");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_CAPTURE_SEPARATOR_MISSING();
         *seen_capture = TRUE;
         *has_literal = FALSE;
     }
@@ -7251,8 +10465,7 @@ S_dispatch_pattern_note_hash_key(pTHX_ HV *keys, const OP *key)
     if (key->op_type == OP_CONST) {
         SV *name = cSVOPx_sv(key);
         if (hv_exists_ent(keys, name, 0))
-            Perl_croak(aTHX_ "duplicate key \"%" SVf "\" in a dispatch hash pattern",
-                       SVfARG(name));
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_DUPLICATE_KEY(name);
         (void)hv_store_ent(keys, name, SvREFCNT_inc(&PL_sv_yes), 0);
     }
 }
@@ -7270,30 +10483,30 @@ S_dispatch_pattern_validate_object_fields(pTHX_ const OP *op)
         return;
     if (!op || (op->op_type != OP_LIST
                 && !(op->op_type == OP_NULL && op->op_targ == OP_LIST)))
-        Perl_croak(aTHX_ "invalid object field pattern");
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_LIST_INVALID();
     for (kid = cUNOPx(op)->op_first; kid; kid = OpSIBLING(kid)) {
         if (kid->op_type == OP_PUSHMARK
             || (kid->op_type == OP_NULL && kid->op_targ == OP_PUSHMARK))
             continue;
         if (S_dispatch_pattern_is_ellipsis(aTHX_ kid)) {
             if (need_value || open || slurp)
-                Perl_croak(aTHX_ "object ellipsis must follow field pairs");
+                PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_ELLIPSIS_POSITION_INVALID();
             open = TRUE;
             continue;
         }
         if (S_dispatch_pattern_is_slurp(kid)) {
             if (need_value || open || slurp)
-                Perl_croak(aTHX_ "object hash slurp must be the final pattern element and cannot use an ellipsis");
+                PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_SLURP_CONFLICT();
             slurp = TRUE;
             continue;
         }
         if (slurp)
-            Perl_croak(aTHX_ "object hash slurp must be the final pattern element");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_SLURP_NOT_LAST();
         if (open)
-            Perl_croak(aTHX_ "object fields cannot follow an ellipsis");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_AFTER_ELLIPSIS();
         if (!need_value) {
             if (kid->op_type != OP_CONST)
-                Perl_croak(aTHX_ "object field names must be constants");
+                PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_NAME_NOT_CONSTANT();
             S_dispatch_pattern_note_hash_key(aTHX_ keys, kid);
             need_value = TRUE;
         }
@@ -7303,7 +10516,7 @@ S_dispatch_pattern_validate_object_fields(pTHX_ const OP *op)
         }
     }
     if (need_value)
-        Perl_croak(aTHX_ "object field pattern requires key/value pairs");
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_VALUE_MISSING();
 }
 
 static bool
@@ -7407,7 +10620,7 @@ S_dispatch_pattern_scan_call(pTHX_ const OP *op, const OP **target,
             continue;
         if (op->op_type == OP_NULL && op->op_targ == OP_RV2CV) {
             if (*target)
-                Perl_croak(aTHX_ "dispatch pattern calls must have no arguments");
+                PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_ZERO_ARGUMENT_CALL_REQUIRED();
             *target = op;
             continue;
         }
@@ -7420,7 +10633,7 @@ S_dispatch_pattern_scan_call(pTHX_ const OP *op, const OP **target,
             || op->op_type == OP_METHOD_NAMED
             || op->op_type == OP_METHOD) {
             if (*target)
-                Perl_croak(aTHX_ "dispatch pattern calls must have no arguments");
+                PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_ZERO_ARGUMENT_CALL_REQUIRED();
             *target = op;
             continue;
         }
@@ -7612,16 +10825,14 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
         const OP *target;
         const OP *subpattern;
         if (!S_dispatch_pattern_assignment_parts(op, &target, &subpattern))
-            Perl_croak(aTHX_
-                "pattern assignment requires a scalar capture target");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ASSIGNMENT_TARGET_NOT_SCALAR();
         PERL_UNUSED_VAR(target);
         S_dispatch_pattern_validate(aTHX_ subpattern);
         return;
     }
 
     if (op->op_type == OP_REGCOMP)
-        Perl_croak(aTHX_
-            "dynamic regexes are only allowed as a guard condition");
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_REGEXP_DYNAMIC_PATTERN_FORBIDDEN();
 
     if (op->op_type == OP_ENTERSUB) {
         const OP *class_op = NULL;
@@ -7654,14 +10865,13 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
         cv = call_target ? S_dispatch_pattern_call_cv(aTHX_ call_target) : NULL;
         if (S_dispatch_pattern_is_predicate_cv(cv)) {
             if (!S_dispatch_pattern_predicate_arity_ok(cv, nargs))
-                Perl_croak(aTHX_
-                    "dispatch predicate has the wrong number of arguments");
+                PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARITY_MISMATCH();
             S_dispatch_pattern_collect_call_args(aTHX_
                 cUNOPx(op)->op_first, &call_args, &ncall_args,
                 &call_args_capacity, &past_target);
             if (ncall_args != nargs) {
                 PerlMem_free((Malloc_t)call_args);
-                Perl_croak(aTHX_ "unsupported argument in dispatch predicate");
+                PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_LAYOUT_UNSUPPORTED();
             }
             for (U32 argix = 0; argix < ncall_args; argix++) {
                 const OP *arg = call_args[argix];
@@ -7670,8 +10880,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
                          && (arg->op_private & DISPATCH_PATTERN_CRITERION_MASK)
                              == DISPATCH_PATTERN_CRITERION_PIN)) {
                     PerlMem_free((Malloc_t)call_args);
-                    Perl_croak(aTHX_
-                        "dispatch predicate arguments must be constants or pinned values");
+                    PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_NOT_CONSTANT_OR_PIN();
                 }
             }
             PerlMem_free((Malloc_t)call_args);
@@ -7685,7 +10894,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
                 && !(call_target->op_type == OP_NULL
                      && call_target->op_targ == OP_RV2CV)
                 && nargs != 1))
-            Perl_croak(aTHX_ "unsupported dispatch pattern call");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_FORM_UNSUPPORTED();
         PERL_UNUSED_VAR(call_invocant);
         return;
     }
@@ -7695,7 +10904,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
         const OP *arg = (op->op_flags & OPf_KIDS)
             ? cUNOPx(op)->op_first : NULL;
         if (!arg || (arg->op_type != OP_CONST && arg->op_type != OP_UNDEF))
-            Perl_croak(aTHX_ "NumEq() requires a literal argument in a dispatch-on pattern");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NUMEQ_LITERAL_REQUIRED();
     }
     if (op->op_type == OP_DISPATCHCOERCE
         && (op->op_private & DISPATCH_PATTERN_CRITERION_MASK)
@@ -7714,7 +10923,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
                 shape = OpSIBLING(arg);
         }
         if (!args || args->op_type != OP_LIST || !shape)
-            Perl_croak(aTHX_ "invalid object pattern");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_CLASS_AND_SHAPE_REQUIRED();
         if (shape->op_type == OP_ANONHASH || shape->op_type == OP_LIST)
             S_dispatch_pattern_validate_object_fields(aTHX_ shape);
         else
@@ -7750,21 +10959,21 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
                 slurps++;
         }
         if (ellipses > 2 || (ellipses == 2 && nchild < 3))
-            Perl_croak(aTHX_ "array pattern has invalid ellipsis placement");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_ELLIPSIS_COUNT_INVALID();
         if (slurps > 1)
-            Perl_croak(aTHX_ "array pattern may contain only one slurp");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_MULTIPLE_SLURPS();
         for (kid = cLISTOPx(op)->op_first; kid; kid = OpSIBLING(kid)) {
             if (kid->op_type == OP_PUSHMARK)
                 continue;
             if (S_dispatch_pattern_is_ellipsis(aTHX_ kid)) {
                 if (logical_ix != 0 && logical_ix != nchild - 1)
-                    Perl_croak(aTHX_ "array pattern ellipsis must be at an edge");
+                    PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_ELLIPSIS_NOT_AT_EDGE();
                 logical_ix++;
                 continue;
             }
             if (S_dispatch_pattern_is_slurp(kid)) {
                 if (logical_ix != nchild - 1 || ellipses)
-                    Perl_croak(aTHX_ "array slurp must be the final pattern element and cannot use an ellipsis");
+                    PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_SLURP_POSITION_CONFLICT();
                 logical_ix++;
                 continue;
             }
@@ -7790,23 +10999,23 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
                 slurps++;
         }
         if (ellipses > 1)
-            Perl_croak(aTHX_ "hash pattern may contain only one ellipsis");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_ELLIPSES();
         if (slurps > 1)
-            Perl_croak(aTHX_ "hash pattern may contain only one slurp");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_SLURPS();
         if ((nchild - ellipses - slurps) & 1)
-            Perl_croak(aTHX_ "hash pattern requires key/value pairs");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_KEY_VALUE_PAIR_REQUIRED();
         for (kid = cLISTOPx(op)->op_first; kid; kid = OpSIBLING(kid)) {
             if (kid->op_type == OP_PUSHMARK)
                 continue;
             if (S_dispatch_pattern_is_ellipsis(aTHX_ kid)) {
                 if (logical_ix != nchild - 1)
-                    Perl_croak(aTHX_ "hash pattern ellipsis must be last");
+                    PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_ELLIPSIS_NOT_LAST();
                 logical_ix++;
                 continue;
             }
             if (S_dispatch_pattern_is_slurp(kid)) {
                 if (logical_ix != nchild - 1 || ellipses)
-                    Perl_croak(aTHX_ "hash slurp must be the final pattern element and cannot use an ellipsis");
+                    PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_SLURP_POSITION_CONFLICT();
                 logical_ix++;
                 continue;
             }
@@ -7818,7 +11027,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
                     && !(kid->op_type == OP_DISPATCHCOERCE
                          && (kid->op_private & DISPATCH_PATTERN_CRITERION_MASK)
                              == DISPATCH_PATTERN_CRITERION_PIN))
-                    Perl_croak(aTHX_ "hash pattern keys must be constants, pins, or zero-argument calls");
+                    PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_KEY_FORM_UNSUPPORTED();
                 S_dispatch_pattern_note_hash_key(aTHX_ keys, kid);
             }
             S_dispatch_pattern_validate(aTHX_ kid);
@@ -7847,7 +11056,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
     case OP_EMPTYAVHV:
         break;
     default:
-        Perl_croak(aTHX_ "unsupported dispatch pattern expression");
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_EXPRESSION_UNSUPPORTED();
     }
 
     if (op->op_flags & OPf_KIDS)
@@ -7877,13 +11086,13 @@ S_dispatch_pattern_call(pTHX_ const OP *op)
         || (target->op_type != OP_RV2CV
             && !(target->op_type == OP_NULL && target->op_targ == OP_RV2CV)
             && nargs != 1))
-        Perl_croak(aTHX_ "dispatch pattern calls must have no arguments");
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_ZERO_ARGUMENT_CALL_REQUIRED();
 
     if (target->op_type == OP_RV2CV
         || (target->op_type == OP_NULL && target->op_targ == OP_RV2CV)) {
         CV *cv = S_dispatch_pattern_call_cv(aTHX_ target);
         if (!cv)
-            Perl_croak(aTHX_ "dispatch pattern call has no callable target");
+            PERL_THROW_ERROR_DISPATCH_CALL_TARGET_MISSING();
         {
             dSP;
             I32 count;
@@ -7903,7 +11112,7 @@ S_dispatch_pattern_call(pTHX_ const OP *op)
     else {
         if (!invocant || invocant->op_type != OP_CONST
             || target->op_type != OP_METHOD_NAMED)
-            Perl_croak(aTHX_ "unsupported dispatch pattern method call");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_METHOD_FORM_UNSUPPORTED();
         {
             dSP;
             I32 count;
@@ -7945,7 +11154,7 @@ S_dispatch_pattern_predicate_call(pTHX_ const OP *op, SV *subject)
     PERL_UNUSED_VAR(invocant);
     cv = target ? S_dispatch_pattern_call_cv(aTHX_ target) : NULL;
     if (!S_dispatch_pattern_is_predicate_cv(cv))
-        Perl_croak(aTHX_ "dispatch pattern call is not a predicate");
+        PERL_THROW_ERROR_DISPATCH_CALL_PREDICATE_REQUIRED();
     ENTER;
     SAVETMPS;
     S_dispatch_pattern_collect_call_args(aTHX_ cUNOPx(op)->op_first,
@@ -7955,7 +11164,7 @@ S_dispatch_pattern_predicate_call(pTHX_ const OP *op, SV *subject)
     if (nargs != scanned_nargs) {
         FREETMPS;
         LEAVE;
-        Perl_croak(aTHX_ "unsupported argument in dispatch predicate");
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_LAYOUT_UNSUPPORTED();
     }
 
     PUSHMARK(SP);
@@ -7978,7 +11187,7 @@ S_dispatch_pattern_predicate_call(pTHX_ const OP *op, SV *subject)
         if (!argvalue) {
             FREETMPS;
             LEAVE;
-            Perl_croak(aTHX_ "invalid argument in dispatch predicate");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_INVALID();
         }
         XPUSHs(sv_2mortal(newSVsv(argvalue)));
     }
@@ -8339,10 +11548,7 @@ S_dispatch_on_warn_duplicate(pTHX_ SV *value, U8 kind,
     const line_t first_line = first_cop ? CopLINE(first_cop) : NOLINE;
     const line_t duplicate_line = duplicate_cop
         ? CopLINE(duplicate_cop) : NOLINE;
-    const char *first_location = form("%s line %" LINE_Tf,
-        first_file, first_line);
-    const char *duplicate_location = form("%s line %" LINE_Tf,
-        duplicate_file, duplicate_line);
+
 
     if (kind == DISPATCH_PATTERN_SIMPLE_UNDEF)
         value_text = "undef";
@@ -8350,9 +11556,8 @@ S_dispatch_on_warn_duplicate(pTHX_ SV *value, U8 kind,
         value_text = SvTRUE(value) ? "true" : "false";
     else
         value_text = SvPV_nolen_const(value);
-    ck_warner_d(packWARN(WARN_SYNTAX),
-        "duplicate dispatch pattern constant %s will never match; duplicate at "
-        "%s, first at %s", value_text, duplicate_location, first_location);
+    PERL_WARN_WARNING_SYNTAX_DISPATCH_CONSTANT_UNREACHABLE(value_text,
+        duplicate_file, duplicate_line, first_file, first_line);
 }
 
 static void
@@ -8551,7 +11756,7 @@ S_dispatch_reserve_captures(pTHX_ OP *op, size_t reserve)
     for (kid = cUNOPx(op)->op_first; kid; kid = OpSIBLING(kid)) {
         size_t count = S_dispatch_reserve_captures(aTHX_ kid, reserve);
         if (count > (size_t)SSize_t_MAX - total)
-            Perl_croak(aTHX_ "Too many dispatch captures");
+            PERL_THROW_ERROR_DISPATCH_CAPTURE_CAPACITY_EXCEEDED();
         total += count;
     }
     return total;
@@ -9044,7 +12249,7 @@ S_dispatch_pattern_match(pTHX_ const struct dispatch_pattern_node *node, SV *val
                     target->op_targ);
         }
         if (!compare_value)
-            Perl_croak(aTHX_ "invalid numeric coercion in a dispatch pattern");
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NUMERIC_COERCION_OPERAND_INVALID();
         return S_dispatch_pattern_numeq(aTHX_ value, compare_value);
     }
     node = S_dispatch_pattern_unwrap(node);
@@ -9217,7 +12422,7 @@ S_dispatch_pattern_match(pTHX_ const struct dispatch_pattern_node *node, SV *val
         else if (criterion == DISPATCH_PATTERN_CRITERION_NUMEQ) {
             const OP *arg = target;
             if (!arg || (arg->op_type != OP_CONST && arg->op_type != OP_UNDEF))
-                Perl_croak(aTHX_ "NumEq() requires a literal argument in a dispatch-on pattern");
+                PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NUMEQ_LITERAL_REQUIRED();
             if ((pattern->op_private & DISPATCH_PATTERN_CRITERION_STRICT)
                 && !S_dispatch_pattern_strict_numeq(aTHX_ value))
                 return FALSE;
@@ -9643,13 +12848,15 @@ S_dispatch_collect_captures(pTHX_ struct dispatch_capture_owner *owner,
                     SSize_t j;
                     if ((end - start) & 1) {
                         SV **first = av_fetch(MUTABLE_AV(value), start, FALSE);
-                        const char *warning = first && SvROK(*first)
+                        const bool has_reference = first && SvROK(*first)
                             && (SvTYPE(SvRV(*first)) == SVt_PVAV
-                                || SvTYPE(SvRV(*first)) == SVt_PVHV)
-                            ? "Reference found where even-sized list expected"
-                            : "Odd number of elements in hash assignment";
-                        if (ckWARN(WARN_MISC))
-                            ck_warner(packWARN(WARN_MISC), "%s", warning);
+                                || SvTYPE(SvRV(*first)) == SVt_PVHV);
+                        if (ckWARN(WARN_MISC)) {
+                            if (has_reference)
+                                PERL_WARN_WARNING_MISC_HASH_ASSIGNMENT_AGGREGATE_REFERENCE_IN_ODD_LIST();
+                            else
+                                PERL_WARN_WARNING_MISC_HASH_ASSIGNMENT_ODD_ELEMENT_COUNT();
+                        }
                     }
                     for (j = start; j < end; j += 2) {
                         SV **key = av_fetch(MUTABLE_AV(value), j, FALSE);
@@ -9720,7 +12927,7 @@ PP(pp_dispatch_on)
         (aux && aux->magic == DISPATCH_PATTERN_AUX_MAGIC && aux->root)
         ? aux->root : NULL;
     if (!pattern)
-        Perl_croak(aTHX_ "missing compiled dispatch pattern");
+        PERL_THROW_ERROR_INTERNAL_DISPATCH_COMPILED_SHAPE_MISSING();
     owner->reserve = aux->dispatch_capture_capacity;
     owner->requests = local_requests;
     owner->request_capacity = aux->binding_capacity;
@@ -10160,7 +13367,7 @@ S_do_smartmatch(pTHX_ HV *seen_this, HV *seen_other, const bool copied)
 
     if (SvROK(e) && SvOBJECT(SvRV(e)) && (SvTYPE(SvRV(e)) != SVt_REGEXP)) {
         DEBUG_M(deb("    applying rule Any-Object\n"));
-        croak("Smart matching a non-overloaded object breaks encapsulation");
+        PERL_THROW_ERROR_SMARTMATCH_OBJECT_OVERLOAD_REQUIRED();
     }
     if (SvROK(d) && SvOBJECT(SvRV(d)) && (SvTYPE(SvRV(d)) != SVt_REGEXP))
         object_on_left = TRUE;
@@ -10654,8 +13861,7 @@ PP(pp_leavewhen)
     cxix = dopoptogivenfor(cxstack_ix);
     if (cxix < 0)
         /* diag_listed_as: Can't "when" outside a topicalizer */
-        DIE(aTHX_ "Can't \"%s\" outside a topicalizer",
-                   PL_op->op_flags & OPf_SPECIAL ? "default" : "when");
+        PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_OUTSIDE_TOPICALIZER(PL_op->op_flags & OPf_SPECIAL ? "default" : "when");
 
     oldsp = PL_stack_base + cx->blk_oldsp;
     if (gimme == G_VOID)
@@ -10709,7 +13915,7 @@ PP(pp_leavedispatchon)
         if (CxTYPE(&cxstack[cxix]) == CXt_DISPATCH)
             break;
     if (cxix < 0)
-        DIE(aTHX_ "dispatch-on clause outside a dispatch");
+        PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_DISPATCH_CLAUSE_OUTSIDE_DISPATCH();
 
     dounwind(cxix);
     cx = CX_CUR();
@@ -10725,7 +13931,7 @@ PP(pp_continue)
     
     cxix = dopoptowhen(cxstack_ix); 
     if (cxix < 0)   
-        DIE(aTHX_ "Can't \"continue\" outside a when block");
+        PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_CONTINUE_OUTSIDE_WHEN();
 
     if (cxix < cxstack_ix)
         dounwind(cxix);
@@ -10749,11 +13955,11 @@ PP(pp_break)
 
     cxix = dopoptogivenfor(cxstack_ix);
     if (cxix < 0)
-        DIE(aTHX_ "Can't \"break\" outside a given block");
+        PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_BREAK_OUTSIDE_GIVEN();
 
     cx = &cxstack[cxix];
     if (CxFOREACH(cx))
-        DIE(aTHX_ "Can't \"break\" in a loop topicalizer");
+        PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_BREAK_IN_LOOP_TOPICALIZER();
 
     if (cxix < cxstack_ix)
         dounwind(cxix);
@@ -10897,7 +14103,7 @@ S_doparseform(pTHX_ SV *sv)
     SV *sv_copy;
 
     if (len == 0)
-        croak("Null picture in formline");
+        PERL_THROW_ERROR_FORMAT_REPORT_EMPTY_PICTURE();
 
     if (SvTYPE(sv) >= SVt_PVMG) {
         /* This might, of course, still return NULL.  */
@@ -11120,7 +14326,7 @@ S_doparseform(pTHX_ SV *sv)
     mg->mg_flags |= MGf_REFCOUNTED;
 
     if (unchopnum && repeat)
-        die("Repeated format line will never terminate (~~ and @#)");
+        PERL_THROW_ERROR_FORMAT_REPORT_NONTERMINATING_REPEAT();
 
     return mg;
 }
@@ -11178,7 +14384,7 @@ S_run_user_filter(pTHX_ int idx, SV *buf_sv, int maxlen)
 
     /* I was having segfault trouble under Linux 2.2.5 after a
        parse error occurred.  (Had to hack around it with a test
-       for PL_parser->error_count == 0.)  Solaris doesn't segfault --
+       for PERL_DIAG_ERROR_COUNT == 0.)  Solaris doesn't segfault --
        not sure where the trouble is yet.  XXX */
 
     {
@@ -11342,7 +14548,7 @@ S_run_user_filter(pTHX_ int idx, SV *buf_sv, int maxlen)
     }
 
     if (err)
-        croak_sv(err);
+        PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(err);
 
     if (status == 0 && read_from_cache) {
         /* If we read some data from the cache (and by getting here it implies

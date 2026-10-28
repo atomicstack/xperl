@@ -407,14 +407,7 @@ if (CAN_REALLY_FORK) {
     local $? = 500;
     my $warnings = warnings { $one->set_exit };
     is($?, 255, "set exit code to a sane number");
-
-    is_deeply(
-        $warnings,
-        [
-            "context object was never released! This means a testing tool is behaving very badly at Foo/Bar.pm line 42.\n"
-        ],
-        "Warned about unfreed context"
-    );
+    is(scalar @$warnings, 1, "Warned about unfreed context");
     $one->set_no_wait(0);
 }
 

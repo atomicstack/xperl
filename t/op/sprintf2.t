@@ -304,6 +304,24 @@ for (int(~0/2+1), ~0, "9999999999999999999") {
     like($@, qr/^Integer overflow in format string for printf /, "overflow in printf");
 }
 
+{
+    local $ENV{PERL_DIAG_RENDER} = 'fr:legacy';
+    my $rendered = runperl(
+        prog   => q{use warnings; my $x = sprintf q{%s};},
+        stderr => 1,
+    );
+    like(
+        $rendered,
+        qr/^Argument manquant dans sprintf\b/,
+        'French wildcard preserves the literal formatter name'
+    );
+    unlike(
+        $rendered,
+        qr/Missing argument in/,
+        'formatter rendering uses the translated French template'
+    );
+}
+
 # check %NNN$ for range bounds
 {
     my ($warn, $bad) = (0,0);

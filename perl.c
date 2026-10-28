@@ -62,6 +62,12 @@ union control_un {
 
 static I32 read_e_script(pTHX_ int idx, SV *buf_sv, int maxlen);
 
+static UV
+S_diag_signed_magnitude(IV value)
+{
+    return value < 0 ? (UV)(-(value + 1)) + (UV)1 : (UV)value;
+}
+
 #ifdef SETUID_SCRIPTS_ARE_SECURE_NOW
 #  define validate_suid(rsfp) NOOP
 #else
@@ -373,7 +379,6 @@ perl_construct(pTHXx)
 
     PL_fdpid = newAV();			/* for remembering popen pids by fd */
     PL_modglobal = newHV();		/* pointers to per-interpreter module globals */
-    PL_errors = newSVpvs("");
     SvPVCLEAR(PERL_DEBUG_PAD(0));        /* For regex debugging. */
     SvPVCLEAR(PERL_DEBUG_PAD(1));        /* ext/re needs these */
     SvPVCLEAR(PERL_DEBUG_PAD(2));        /* even without DEBUGGING. */
@@ -478,8 +483,10 @@ perl_construct(pTHXx)
         PL_mmap_page_size = sysconf(_SC_MMAP_PAGE_SIZE);
 #   endif
         if ((long) PL_mmap_page_size < 0) {
-            croak("panic: sysconf: %s",
-                errno ? Strerror(errno) : "pagesize unknown");
+            if (errno)
+                PERL_PANIC_ERROR_INTERNAL_MEMORY_PAGE_SIZE_QUERY_FAILED(Strerror(errno));
+            else
+                PERL_PANIC_ERROR_INTERNAL_MEMORY_PAGE_SIZE_QUERY_UNKNOWN();
         }
       }
 #elif defined(HAS_GETPAGESIZE)
@@ -488,7 +495,7 @@ perl_construct(pTHXx)
       PL_mmap_page_size = PAGESIZE;       /* compiletime, bad */
 #endif
       if (PL_mmap_page_size <= 0)
-        croak("panic: bad pagesize %" IVdf,
+        PERL_PANIC_ERROR_INTERNAL_MEMORY_PAGE_SIZE_NONPOSITIVE(
                    (IV) PL_mmap_page_size);
     }
 #endif /* HAS_MMAP */
@@ -629,9 +636,9 @@ Perl_dump_sv_child(pTHX_ SV *sv)
     }
 
     if (returned_errno || *buffer) {
-        warn("Debug leaking scalars child failed%s%.*s with errno"
-                  " %d: %s", (*buffer ? " at " : ""), (int) *buffer, buffer + 1,
-                  returned_errno, Strerror(returned_errno));
+        PERL_WARN_WARNING_INTERNAL_SYSTEM_PROCESS_LEAK_DUMP_CHILD_REPORTED_FAILURE(
+            *buffer ? perl_diag_selector_domain_1623_0_present_2 : perl_diag_selector_domain_1623_0_absent_1, (int) *buffer, buffer + 1,
+            returned_errno, Strerror(returned_errno));
     }
 }
 #endif
@@ -742,6 +749,9 @@ perl_destruct(pTHXx)
         parser_free(PL_parser);
     }
 
+    SvREFCNT_dec(PL_pending_exception);
+    PL_pending_exception = NULL;
+
 
     /* Need to flush since END blocks can produce output */
     /* flush stdout separately, since we can identify it */
@@ -751,8 +761,7 @@ perl_destruct(pTHXx)
         if (*stdo && PerlIO_flush(stdo)) {
             PerlIO_restore_errno(stdo);
             if (errno)
-                PerlIO_printf(PerlIO_stderr(), "Unable to flush stdout: %s\n",
-                    Strerror(errno));
+                PerlIO_printf(PerlIO_stderr(), PERL_DIAG_FORMAT_WARNING_IO_STDOUT_SHUTDOWN_FLUSH_FAILED, Strerror(errno));
             if (!STATUS_UNIX)
                 STATUS_ALL_FAILURE;
         }
@@ -992,6 +1001,8 @@ perl_destruct(pTHXx)
     PL_warnhook = NULL;
     SvREFCNT_dec(PL_diehook);
     PL_diehook = NULL;
+    SvREFCNT_dec(PL_excepthook);
+    PL_excepthook = NULL;
     SvREFCNT_dec(PL_hook__require__before);
     PL_hook__require__before = NULL;
     SvREFCNT_dec(PL_hook__require__after);
@@ -1348,28 +1359,33 @@ perl_destruct(pTHXx)
     SvREFCNT_dec(PL_curstname);
     PL_curstname = NULL;
 
-    /* clear queued errors */
-    SvREFCNT_dec(PL_errors);
-    PL_errors = NULL;
-
     SvREFCNT_dec(PL_isarev);
 
     FREETMPS;
     if (destruct_level >= 2) {
-        if (PL_scopestack_ix != 0)
-            ck_warner_d(packWARN(WARN_INTERNAL),
-                        "Unbalanced scopes: %ld more ENTERs than LEAVEs\n",
-                        (long)PL_scopestack_ix);
-        if (PL_savestack_ix != 0)
-            ck_warner_d(packWARN(WARN_INTERNAL),
-                        "Unbalanced saves: %ld more saves than restores\n",
-                        (long)PL_savestack_ix);
+        if (PL_scopestack_ix != 0) {
+            const IV unbalanced = (IV)PL_scopestack_ix;
+            PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SCOPE_STACK_UNBALANCED(
+                PERL_DIAG_SELECTOR_FROM_WARNING_SEVERE_INTERNAL_DESTRUCTION_SCOPE_STACK_UNBALANCED_DIRECTION(
+                    unbalanced < 0 ? "negative" : "positive"),
+                S_diag_signed_magnitude(unbalanced));
+        }
+        if (PL_savestack_ix != 0) {
+            const IV unbalanced = (IV)PL_savestack_ix;
+            PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SAVE_STACK_UNBALANCED(
+                PERL_DIAG_SELECTOR_FROM_WARNING_SEVERE_INTERNAL_DESTRUCTION_SAVE_STACK_UNBALANCED_DIRECTION(
+                    unbalanced < 0 ? "negative" : "positive"),
+                S_diag_signed_magnitude(unbalanced));
+        }
         if (PL_tmps_floor != -1)
-            ck_warner_d(packWARN(WARN_INTERNAL),"Unbalanced tmps: %ld more allocs than frees\n",
-                        (long)PL_tmps_floor + 1);
-        if (cxstack_ix != -1)
-            ck_warner_d(packWARN(WARN_INTERNAL),"Unbalanced context: %ld more PUSHes than POPs\n",
-                        (long)cxstack_ix + 1);
+            PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_TEMP_STACK_FLOOR_UNBALANCED((long)PL_tmps_floor + 1);
+        if (cxstack_ix != -1) {
+            const IV unbalanced = (IV)cxstack_ix + 1;
+            PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_CONTEXT_STACK_UNBALANCED(
+                PERL_DIAG_SELECTOR_FROM_WARNING_SEVERE_INTERNAL_DESTRUCTION_CONTEXT_STACK_UNBALANCED_DIRECTION(
+                    unbalanced < 0 ? "negative" : "positive"),
+                S_diag_signed_magnitude(unbalanced));
+        }
     }
 
 #ifdef USE_ITHREADS
@@ -1424,9 +1440,7 @@ perl_destruct(pTHXx)
         for (;;) {
             if (hent && ckWARN_d(WARN_INTERNAL)) {
                 HE * const next = HeNEXT(hent);
-                warner(packWARN(WARN_INTERNAL),
-                       "Unbalanced string table refcount: (%ld) for \"%s\"",
-                       (long)hent->he_valu.hent_refcount, HeKEY(hent));
+                PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SHARED_STRING_RETAINED((long)hent->he_valu.hent_refcount, HeKEY(hent));
                 Safefree(hent);
                 hent = next;
             }
@@ -1478,7 +1492,7 @@ perl_destruct(pTHXx)
     }
 
     if (PL_sv_count != 0)
-        ck_warner_d(packWARN(WARN_INTERNAL), "Scalars leaked: %ld\n", (long)PL_sv_count);
+        PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SCALAR_ALLOCATION_COUNT_NONZERO((long)PL_sv_count);
 
 #ifdef DEBUG_LEAKING_SCALARS
     if (PL_sv_count != 0) {
@@ -1862,6 +1876,7 @@ perl_parse(pTHXx_ XSINIT_t xsinit, int argc, char **argv, char **env)
     }
     PL_origargc = argc;
     PL_origargv = argv;
+    PL_parse_failed = FALSE;
 
     if (PL_origalen != 0) {
         PL_origalen = 1; /* don't use old PL_origalen if perl_parse() is called again */
@@ -2005,12 +2020,16 @@ perl_parse(pTHXx_ XSINIT_t xsinit, int argc, char **argv, char **env)
             LEAVE;
         FREETMPS;
         SET_CURSTASH(PL_defstash);
-        if (PL_unitcheckav) {
-            call_list(oldscope, PL_unitcheckav);
-        }
-        if (PL_checkav) {
-            PERL_SET_PHASE(PERL_PHASE_CHECK);
-            call_list(oldscope, PL_checkav);
+        if (!PL_parse_failed) {
+            /* Explicit exit during compilation runs these blocks.  A parser
+             * failure skips them even though it uses the same exit path. */
+            if (PL_unitcheckav) {
+                call_list(oldscope, PL_unitcheckav);
+            }
+            if (PL_checkav) {
+                PERL_SET_PHASE(PERL_PHASE_CHECK);
+                call_list(oldscope, PL_checkav);
+            }
         }
         ret = STATUS_EXIT;
         if (ret == 0) {
@@ -2023,7 +2042,7 @@ perl_parse(pTHXx_ XSINIT_t xsinit, int argc, char **argv, char **env)
         }
         break;
     case 3:
-        PerlIO_printf(Perl_error_log, "panic: top_env\n");
+        PerlIO_printf(Perl_error_log, PERL_DIAG_FORMAT_ERROR_INTERNAL_STACK_JUMP_PARSE_EXCEPTION_ESCAPED);
         ret = 1;
         break;
     }
@@ -2226,18 +2245,15 @@ S_moreswitch_m(pTHX_ char option, const char *s)
         }
     }
     if (s == start)
-        croak("Module name required with -%c option",
-                            option);
+        PERL_THROW_ERROR_RUN_OPTION_MODULE_NAME_REQUIRED(option);
     if (colon)
-        croak("Invalid module name %.*s with -%c option: "
-                            "contains single ':'",
-                            (int)(s - start), start, option);
+        PERL_THROW_ERROR_RUN_OPTION_MODULE_NAME_SINGLE_COLON((int)(s - start), start, option);
     end = s + strlen(s);
     if (*s != '=') {
         sv_catpvn(sv, start, end - start);
         if (option == 'm') {
             if (*s != '\0')
-                croak("Can't use '%c' after -mname", *s);
+                PERL_THROW_INVALID_PACKAGE_CODE_SUFFIX(*s);
             sv_catpvs( sv, " ()");
         }
     } else {
@@ -2333,15 +2349,14 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
                 s = S_moreswitch_m(aTHX_ c, *argv);
             }
             else
-                croak("Missing argument to -%c", c);
+                PERL_THROW_ERROR_RUN_OPTION_VALUE_REQUIRED(c);
             break;
 
         case 't':
 #if defined(SILENT_NO_TAINT_SUPPORT)
             /* silently ignore */
 #elif defined(NO_TAINT_SUPPORT)
-            croak("This perl was compiled without taint support. "
-                       "Cowardly refusing to run with -t or -T flags");
+            PERL_THROW_ERROR_RUN_OPTION_TAINT_UNAVAILABLE();
 #else
             CHECK_MALLOC_TOO_LATE_FOR('t');
             if( !TAINTING_get ) {
@@ -2355,8 +2370,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
 #if defined(SILENT_NO_TAINT_SUPPORT)
             /* silently ignore */
 #elif defined(NO_TAINT_SUPPORT)
-            croak("This perl was compiled without taint support. "
-                       "Cowardly refusing to run with -t or -T flags");
+            PERL_THROW_ERROR_RUN_OPTION_TAINT_UNAVAILABLE();
 #else
             CHECK_MALLOC_TOO_LATE_FOR('T');
             TAINTING_set(TRUE);
@@ -2382,7 +2396,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
                 argc--,argv++;
             }
             else
-                croak("No code specified for -%c", c);
+                PERL_THROW_ERROR_RUN_OPTION_PROGRAM_TEXT_REQUIRED(c);
             sv_catpvs(PL_e_script, "\n");
             break;
 
@@ -2403,7 +2417,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
                 incpush(s, len, INCPUSH_ADD_SUB_DIRS|INCPUSH_ADD_OLD_VERS);
             }
             else
-                croak("No directory specified for -I");
+                PERL_THROW_ERROR_RUN_OPTION_INCLUDE_DIRECTORY_REQUIRED();
             break;
         case 'S':
             forbid_setid('S', FALSE);
@@ -2450,7 +2464,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
             s--;
             /* FALLTHROUGH */
         default:
-            croak("Unrecognized switch: -%s  (-h will show valid options)",s);
+            PERL_THROW_ERROR_RUN_OPTION_UNKNOWN_COMMAND_LINE_SWITCH(s);
         }
     }
     }
@@ -2472,8 +2486,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
 #if defined(SILENT_NO_TAINT_SUPPORT)
             /* silently ignore */
 #elif defined(NO_TAINT_SUPPORT)
-            croak("This perl was compiled without taint support. "
-                       "Cowardly refusing to run with -t or -T flags");
+            PERL_THROW_ERROR_RUN_OPTION_TAINT_UNAVAILABLE();
 #else
             CHECK_MALLOC_TOO_LATE_FOR('T');
             TAINTING_set(TRUE);
@@ -2495,7 +2508,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
                 if (!*s)
                     break;
                 if (!memCHRs("CDIMUdmtwW", *s))
-                    croak("Illegal switch in PERL5OPT: -%c", *s);
+                    PERL_THROW_ERROR_RUN_ENVIRONMENT_PERL5OPT_FORBIDDEN_SWITCH(*s);
                 while (++s && *s) {
                     if (isSPACE(*s)) {
                         if (!popt_copy) {
@@ -2512,8 +2525,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
 #if defined(SILENT_NO_TAINT_SUPPORT)
             /* silently ignore */
 #elif defined(NO_TAINT_SUPPORT)
-                    croak("This perl was compiled without taint support. "
-                               "Cowardly refusing to run with -t or -T flags");
+                    PERL_THROW_ERROR_RUN_OPTION_TAINT_UNAVAILABLE();
 #else
                     if( !TAINTING_get) {
                         TAINT_WARN_set(TRUE);
@@ -2627,8 +2639,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
 #endif
             Sighandler_t sigstate = rsignal_state(SIGCHLD);
             if (sigstate == (Sighandler_t) SIG_IGN) {
-                ck_warner(packWARN(WARN_SIGNAL),
-                               "Can't ignore signal CHLD, forcing to default");
+                PERL_WARN_WARNING_SIGNAL_IGNORED_CHLD_RESET_TO_DEFAULT();
                 (void)rsignal(SIGCHLD, (Sighandler_t)SIG_DFL);
             }
         }
@@ -2645,7 +2656,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
             lex_start_flags |= LEX_START_COPIED;
             find_beginning(linestr_sv, rsfp);
             if (cddir && PerlDir_chdir( (char *)cddir ) < 0)
-                croak("Can't chdir to %s",cddir);
+                PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_CHDIR_FAILED(cddir);
         }
     }
 
@@ -2683,6 +2694,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
     /* But running with -u leaves %ENV & @ARGV undefined!    XXX */
     if (!PL_do_undump)
         init_postdump_symbols(argc,argv,env);
+
 
     /* PL_unicode is turned on by -C, or by $ENV{PERL_UNICODE},
      * or explicitly in some platforms.
@@ -2738,7 +2750,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
          else if (strEQ(s, "safe"))
               PL_signals &= ~PERL_SIGNALS_UNSAFE_FLAG;
          else
-              croak("PERL_SIGNALS illegal: \"%s\"", s);
+              PERL_THROW_ERROR_RUN_ENVIRONMENT_SIGNALS_POLICY_INVALID(s);
     }
     }
 
@@ -2748,6 +2760,10 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
 
     PL_subname = newSVpvs("main");
 
+#ifndef PERL_IS_MINIPERL
+    Perl_diagpack_startup(aTHX);
+#endif
+
     if (add_read_e_script)
         filter_add(read_e_script, NULL);
 
@@ -2756,9 +2772,10 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
         PL_hints |= HINTS_DEFAULT; /* after init_main_stash ; need to be after init_predump_symbols */
 
     SETERRNO(0,SS_NORMAL);
-    if (yyparse(GRAMPROG) || PL_parser->error_count) {
+    if (yyparse(GRAMPROG) || PERL_DIAG_ERROR_COUNT) {
         abort_execution(NULL, PL_origfilename);
     }
+    Perl_diag_flush_pending_exception(aTHX);
     CopLINE_set(PL_curcop, 0);
     SET_CURSTASH(PL_defstash);
     if (PL_e_script) {
@@ -2898,7 +2915,7 @@ perl_run(pTHXx)
             POPSTACK_TO(PL_mainstack);
             goto redo_body;
         }
-        PerlIO_printf(Perl_error_log, "panic: restartop in perl_run\n");
+        PerlIO_printf(Perl_error_log, PERL_DIAG_FORMAT_ERROR_INTERNAL_CONTROL_FLOW_RUN_RESTART_TARGET_MISSING);
         FREETMPS;
         ret = 1;
         break;
@@ -3250,6 +3267,7 @@ Perl_call_sv(pTHX_ SV *sv, I32 arg_flags)
     METHOP method_op;
     SSize_t oldmark;
     volatile SSize_t retval = 0;
+    volatile bool hook_failed = FALSE;
     bool oldcatch = CATCH_GET;
     int ret;
     OP* const oldop = PL_op;
@@ -3324,6 +3342,8 @@ Perl_call_sv(pTHX_ SV *sv, I32 arg_flags)
         old_cxix = cxstack_ix;
         create_eval_scope( NULL, PL_stack_base + oldmark, flags|G_FAKINGEVAL);
         INCMARK;
+        /* Clearing $@ can run DESTROY code that reuses this mark slot. */
+        *PL_markstack_ptr = oldmark;
 
         JMPENV_PUSH(ret);
 
@@ -3332,7 +3352,7 @@ Perl_call_sv(pTHX_ SV *sv, I32 arg_flags)
  redo_body:
             CALLRUNOPS(aTHX);
             retval = PL_stack_sp - (PL_stack_base + oldmark);
-            if (!(flags & G_KEEPERR)) {
+            if (!(flags & (G_KEEPERR | PERL_G_DIAGHOOK))) {
                 CLEAR_ERRSV();
             }
             break;
@@ -3353,6 +3373,7 @@ Perl_call_sv(pTHX_ SV *sv, I32 arg_flags)
                 PL_restartop = 0;
                 goto redo_body;
             }
+            hook_failed = TRUE;
             /* Should be nothing left in stack frame apart from a possible
              * scalar context undef. Assert it's safe to reset the stack */
             assert(     PL_stack_sp == PL_stack_base + oldmark
@@ -3390,7 +3411,7 @@ Perl_call_sv(pTHX_ SV *sv, I32 arg_flags)
         LEAVE;
     }
     PL_op = oldop;
-    return retval;
+    return flags & PERL_G_DIAGHOOK ? hook_failed : retval;
 }
 
 /* Eval a string. The G_EVAL flag is always assumed. */
@@ -3508,8 +3529,10 @@ Perl_eval_sv(pTHX_ SV *sv, I32 flags)
         }
       fail:
         if (flags & G_RETHROW) {
+            SV *exception = PERL_ERROR_OBJ;
+            SvGETMAGIC(exception);
             JMPENV_POP;
-            croak_sv(ERRSV);
+            PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(SvOK(exception) ? exception : ERRSV);
         }
         /* Should be nothing left in stack frame apart from a possible
          * scalar context undef. Assert it's safe to reset the stack */
@@ -3731,8 +3754,7 @@ Perl_get_debug_opts(pTHX_ const char **s, bool givehelp)
             if (d)
                 uv |= 1 << (d - debopts);
             else
-                ck_warner_d(packWARN(WARN_DEBUGGING),
-                            "invalid option -D%c, use -D'' to see choices\n", **s);
+                PERL_WARN_WARNING_SEVERE_DEBUGGING_RUN_OPTION_INVALID_FLAG(**s);
         }
     }
     else if (isDIGIT(**s)) {
@@ -3889,8 +3911,7 @@ Perl_moreswitches(pTHX_ const char *s)
         s++;
         PL_debug = get_debug_opts( (const char **)&s, 1) | DEBUG_TOP_FLAG;
 #else /* !DEBUGGING */
-        ck_warner_d(packWARN(WARN_DEBUGGING),
-                    "Recompile perl with -DDEBUGGING to use -D switch (did you mean -d ?)\n");
+        PERL_WARN_WARNING_SEVERE_DEBUGGING_RUN_OPTION_BUILD_REQUIRED();
         for (s++; isWORDCHAR(*s); s++) ;
 #endif
         return s;
@@ -3940,7 +3961,7 @@ Perl_moreswitches(pTHX_ const char *s)
                 s++;
         }
         else
-            croak("No directory specified for -I");
+            PERL_THROW_ERROR_RUN_OPTION_INCLUDE_DIRECTORY_REQUIRED();
         return s;
     case 'l':
         PL_minus_l = TRUE;
@@ -3974,7 +3995,7 @@ Perl_moreswitches(pTHX_ const char *s)
         if (*++s)
             s = S_moreswitch_m(aTHX_ option, s);
         else
-            croak("Missing argument to -%c", option);
+            PERL_THROW_ERROR_RUN_OPTION_VALUE_REQUIRED(option);
         return s;
     case 'n':
         PL_minus_n = TRUE;
@@ -3994,11 +4015,10 @@ Perl_moreswitches(pTHX_ const char *s)
 #if defined(SILENT_NO_TAINT_SUPPORT)
             /* silently ignore */
 #elif defined(NO_TAINT_SUPPORT)
-        croak("This perl was compiled without taint support. "
-                   "Cowardly refusing to run with -t or -T flags");
+        PERL_THROW_ERROR_RUN_OPTION_TAINT_UNAVAILABLE();
 #else
         if (!TAINTING_get)
-            TOO_LATE_FOR(*s);
+            PERL_TOO_LATE_FOR(*s);
 #endif
         s++;
         return s;
@@ -4050,11 +4070,9 @@ Perl_moreswitches(pTHX_ const char *s)
     case 'S':
 #endif
     case 'V':
-        croak("Can't emulate -%.1s on #! line",s);
+        PERL_THROW_ERROR_RUN_OPTION_SHEBANG_SWITCH_NOT_EMULATABLE(s);
     default:
-        croak(
-            "Unrecognized switch: -%.1s  (-h will show valid options)",s
-        );
+        PERL_THROW_ERROR_RUN_OPTION_UNKNOWN_SWITCH(s);
     }
     return NULL;
 }
@@ -4175,7 +4193,7 @@ Perl_my_unexec(pTHX)
 #  ifdef VMS
      lib$signal(SS$_DEBUG);  /* ssdef.h #included from vmsish.h */
 #  elif defined(WIN32) || defined(__CYGWIN__)
-    croak("dump is not supported");
+    PERL_THROW_ERROR_SYSTEM_PROCESS_DUMP_UNSUPPORTED();
 #  else
     ABORT();		/* for use with undump */
 #  endif
@@ -4259,11 +4277,18 @@ S_init_main_stash(pTHX)
     PL_errgv = gv_fetchpvs("@", GV_ADD|GV_NOTQUAL, SVt_PV);
     SvREFCNT_inc_simple_void(PL_errgv);
     GvMULTI_on(PL_errgv);
+    PL_errorobjgv = gv_fetchpvs("\005RROR_OBJ", GV_ADD|GV_NOTQUAL, SVt_PV);
+    SvREFCNT_inc_simple_void(PL_errorobjgv);
+    GvMULTI_on(PL_errorobjgv);
+    PL_curerrorobjgv = gv_fetchpvs("\003UR_ERROR_OBJ", GV_ADD|GV_NOTQUAL, SVt_PV);
+    SvREFCNT_inc_simple_void(PL_curerrorobjgv);
+    GvMULTI_on(PL_curerrorobjgv);
     PL_replgv = gv_fetchpvs("\022", GV_ADD|GV_NOTQUAL, SVt_PV); /* ^R */
     SvREFCNT_inc_simple_void(PL_replgv);
     GvMULTI_on(PL_replgv);
     (void)form("%240s","");	/* Preallocate temp - for immediate signals. */
     (void)gv_SVadd(PL_errgv);
+    sv_magic(ERRSV, MUTABLE_SV(PL_errgv), PERL_MAGIC_sv, "@", 1);
     sv_grow(ERRSV, 240);	/* Preallocate - for immediate signals. */
     CLEAR_ERRSV();
     CopSTASH_set(&PL_compiling, PL_defstash);
@@ -4316,10 +4341,10 @@ S_open_script(pTHX_ const char *scriptname, bool dosearch, bool *suidscript)
                  * Still, can we be sure we got the right thing?
                  */
                 if (*s != '/') {
-                    croak("Wrong syntax (suid) fd script name \"%s\"\n", s);
+                    PERL_THROW_ERROR_SECURITY_PRIVILEGE_FDSCRIPT_NAME_SYNTAX_INVALID(s);
                 }
                 if (! *(s+1)) {
-                    croak("Missing (suid) fd script name\n");
+                    PERL_THROW_ERROR_SECURITY_PRIVILEGE_FDSCRIPT_NAME_MISSING();
                 }
                 scriptname = savepv(s + 1);
                 Safefree(PL_origfilename);
@@ -4360,7 +4385,7 @@ S_open_script(pTHX_ const char *scriptname, bool dosearch, bool *suidscript)
                 scriptname = tmpname;
                 close(tmpfd);
             } else
-                croak("Failed to create a fake bit bucket");
+                PERL_THROW_ERROR_IO_OPEN_SCRIPT_NULL_INPUT_CREATION_FAILED();
         }
 #endif
         rsfp = PerlIO_open(scriptname,PERL_SCRIPT_MODE);
@@ -4376,19 +4401,18 @@ S_open_script(pTHX_ const char *scriptname, bool dosearch, bool *suidscript)
     if (!rsfp) {
         /* PSz 16 Sep 03  Keep neat error message */
         if (PL_e_script)
-            croak("Can't open " BIT_BUCKET ": %s\n", Strerror(errno));
+            PERL_THROW_ERROR_IO_OPEN_SCRIPT_NULL_INPUT_OPEN_FAILED(BIT_BUCKET, Strerror(errno));
         else
-            croak("Can't open perl script \"%s\": %s\n",
-                    CopFILE(PL_curcop), Strerror(errno));
+            PERL_THROW_ERROR_IO_OPEN_SCRIPT_INPUT_UNAVAILABLE(
+                CopFILE(PL_curcop), Strerror(errno));
     }
     fd = PerlIO_fileno(rsfp);
 
     if (fd < 0 ||
         (PerlLIO_fstat(fd, &tmpstatbuf) >= 0
          && S_ISDIR(tmpstatbuf.st_mode)))
-        croak("Can't open perl script \"%s\": %s\n",
-            CopFILE(PL_curcop),
-            Strerror(EISDIR));
+        PERL_THROW_ERROR_IO_OPEN_SCRIPT_INPUT_UNAVAILABLE(
+            CopFILE(PL_curcop), Strerror(EISDIR));
 
     return rsfp;
 }
@@ -4426,15 +4450,14 @@ S_validate_suid(pTHX_ PerlIO *rsfp)
         int fd = PerlIO_fileno(rsfp);
         Stat_t statbuf;
         if (fd < 0 || PerlLIO_fstat(fd, &statbuf) < 0) { /* may be either wrapped or real suid */
-            croak( "Illegal suidscript");
+            PERL_THROW_ERROR_SECURITY_PRIVILEGE_SCRIPT_DESCRIPTOR_UNVERIFIABLE();
         }
         if ((my_euid != my_uid && my_euid == statbuf.st_uid && statbuf.st_mode & S_ISUID)
             ||
             (my_egid != my_gid && my_egid == statbuf.st_gid && statbuf.st_mode & S_ISGID)
             )
             if (!PL_do_undump)
-                croak("YOU HAVEN'T DISABLED SET-ID SCRIPTS IN THE KERNEL YET!\n\
-FIX YOUR KERNEL, PUT A C WRAPPER AROUND THIS SCRIPT, OR USE -u AND UNDUMP!\n");
+                PERL_THROW_ERROR_SECURITY_PRIVILEGE_KERNEL_SETID_SCRIPT_FORBIDDEN();
         /* not set-id, must be wrapped */
     }
 }
@@ -4452,7 +4475,7 @@ S_find_beginning(pTHX_ SV* linestr_sv, PerlIO *rsfp)
 
     do {
         if ((s = sv_gets(linestr_sv, rsfp, 0)) == NULL)
-            croak("No Perl script found in input\n");
+            PERL_THROW_ERROR_RUN_SCRIPT_EXTRACTION_HEADER_NOT_FOUND();
         s2 = s;
     } while (!(*s == '#' && s[1] == '!' && ((s = instr(s,"perl")) || (s = instr(s2,"PERL")))));
     PerlIO_ungetc(rsfp, '\n');		/* to keep line count right */
@@ -4538,31 +4561,23 @@ Perl_doing_taint(int argc, char *argv[], char *envp[])
     return 0;
 }
 
-/* Passing the flag as a single char rather than a string is a slight space
-   optimisation.  The only message that isn't /^-.$/ is
-   "program input from stdin", which is substituted in place of '\0', which
-   could never be a command line flag.  */
+/* The switch is retained as character data.  A zero flag selects the
+   separate stdin template. */
 static void
 S_forbid_setid(pTHX_ const char flag, const bool suidscript) /* g */
 {
     PERL_ARGS_ASSERT_FORBID_SETID;
 
-    char string[3] = "-x";
-    const char *message = "program input from stdin";
-
-    if (flag) {
-        string[1] = flag;
-        message = string;
-    }
+    const char *const input_kind = flag ? "command_line_switch" : "stdin";
 
 #ifdef SETUID_SCRIPTS_ARE_SECURE_NOW
     if (PerlProc_getuid() != PerlProc_geteuid())
-        croak("No %s allowed while running setuid", message);
+        PERL_THROW_ERROR_SECURITY_PRIVILEGE_SETUID_INPUT_FORBIDDEN(PERL_DIAG_SELECTOR_FROM_ERROR_SECURITY_PRIVILEGE_SETUID_INPUT_FORBIDDEN_INPUT_KIND(input_kind), flag);
     if (PerlProc_getgid() != PerlProc_getegid())
-        croak("No %s allowed while running setgid", message);
+        PERL_THROW_ERROR_SECURITY_PRIVILEGE_SETGID_INPUT_FORBIDDEN(PERL_DIAG_SELECTOR_FROM_ERROR_SECURITY_PRIVILEGE_SETGID_INPUT_FORBIDDEN_INPUT_KIND(input_kind), flag);
 #endif /* SETUID_SCRIPTS_ARE_SECURE_NOW */
     if (suidscript)
-        croak("No %s allowed with (suid) fdscript", message);
+        PERL_THROW_ERROR_SECURITY_PRIVILEGE_FDSCRIPT_INPUT_FORBIDDEN(PERL_DIAG_SELECTOR_FROM_ERROR_SECURITY_PRIVILEGE_FDSCRIPT_INPUT_FORBIDDEN_INPUT_KIND(input_kind), flag);
 }
 
 void
@@ -4580,7 +4595,7 @@ Perl_init_dbargs(pTHX)
            "leak" until global destruction.  */
         av_clear(args);
         if (SvTIED_mg((const SV *)args, PERL_MAGIC_tied))
-            croak("Cannot set tied @DB::args");
+            PERL_THROW_ERROR_DEBUGGER_TIED_ARGUMENT_ARRAY();
     }
     AvREIFY_only(PL_dbargs);
 }
@@ -4854,9 +4869,7 @@ Perl_init_argv_symbols(pTHX_ int argc, char **argv)
     }
 
     if (PL_inplace && (!PL_argvgv || AvFILL(GvAV(PL_argvgv)) == -1))
-        ck_warner_d(packWARN(WARN_INPLACE),
-                    "-i used with no filenames on the command line, "
-                    "reading from STDIN");
+        PERL_WARN_WARNING_SEVERE_INPLACE_EDIT_FILENAMES_MISSING();
 }
 
 static void
@@ -5143,8 +5156,8 @@ S_mayberelocate(pTHX_ const char *const dir, STRLEN len, U32 flags)
         }
         else
             PerlIO_printf(Perl_error_log,
-                          "Failed to unixify @INC element \"%s\"\n",
-                          SvPV_nolen_const(libdir));
+                PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_PATH_INC_UNIX_CONVERSION_FAILED,
+                SvPV_nolen_const(libdir));
     }
 #endif
 
@@ -5445,23 +5458,26 @@ Perl_call_list(pTHX_ I32 oldscope, AV *paramList)
         case 0:
             CALL_LIST_BODY(cv);
             atsv = ERRSV;
-            (void)SvPV_const(atsv, len);
-            if (len) {
+            if (SvROK(atsv) || (SvPV_const(atsv, len), len)) {
+                SV *exception = NULL;
                 PL_curcop = &PL_compiling;
                 CopLINE_set(PL_curcop, oldline);
-                if (paramList == PL_beginav)
-                    sv_catpvs(atsv, "BEGIN failed--compilation aborted");
+                if (sv_derived_from(atsv, "XPerl::Exception"))
+                    exception = atsv;
                 else
-                    sv_catpvf(atsv,
-                                   "%s failed--call queue aborted",
-                                   paramList == PL_checkav ? "CHECK"
-                                   : paramList == PL_initav ? "INIT"
-                                   : paramList == PL_unitcheckav ? "UNITCHECK"
-                                   : "END");
+                    PERL_APPEND_ERROR_USER_TEXT(&exception, atsv);
+                if (paramList == PL_beginav)
+                    PERL_APPEND_ERROR_PHASE_BEGIN_FAILED(&exception);
+                else
+                    PERL_APPEND_ERROR_PHASE_CALL_QUEUE_ABORTED(&exception,
+                        paramList == PL_checkav ? "CHECK"
+                        : paramList == PL_initav ? "INIT"
+                        : paramList == PL_unitcheckav ? "UNITCHECK"
+                        : "END");
                 while (PL_scopestack_ix > oldscope)
                     LEAVE;
                 JMPENV_POP;
-                croak("%" SVf, SVfARG(atsv));
+                PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(exception);
             }
             break;
         case 1:
@@ -5484,7 +5500,7 @@ Perl_call_list(pTHX_ I32 oldscope, AV *paramList)
                 CopLINE_set(PL_curcop, oldline);
                 JMPENV_JUMP(3);
             }
-            PerlIO_printf(Perl_error_log, "panic: restartop in call_list\n");
+            PerlIO_printf(Perl_error_log, PERL_DIAG_FORMAT_ERROR_INTERNAL_CONTROL_FLOW_PHASE_RESTART_TARGET_MISSING);
             FREETMPS;
             break;
         }
@@ -5511,7 +5527,7 @@ Perl_my_exit(pTHX_ U32 status)
     }
     if (PL_exit_flags & PERL_EXIT_WARN) {
         PL_exit_flags |= PERL_EXIT_ABORT; /* Protect against reentrant calls */
-        warn("Unexpected exit %lu", (unsigned long)status);
+        PERL_WARN_WARNING_INTERNAL_CONTROL_FLOW_EXIT_REQUEST_REPORTED((unsigned long)status);
         PL_exit_flags &= ~PERL_EXIT_ABORT;
     }
     switch (status) {
@@ -5631,7 +5647,7 @@ Perl_my_failure_exit(pTHX)
     }
     if (PL_exit_flags & PERL_EXIT_WARN) {
         PL_exit_flags |= PERL_EXIT_ABORT; /* Protect against reentrant calls */
-        warn("Unexpected exit failure %ld", (long)PL_statusvalue);
+        PERL_WARN_WARNING_INTERNAL_CONTROL_FLOW_FAILURE_EXIT_REQUEST_REPORTED((long)PL_statusvalue);
         PL_exit_flags &= ~PERL_EXIT_ABORT;
     }
     my_exit_jump();
