@@ -33,6 +33,68 @@
 #include "perl.h"
 #include "invlist_inline.h"
 
+/*
+=for apidoc_section $unicode
+
+=for apidoc repeat_decode_utf8
+
+Stringifies C<sv> and repeatedly decodes its bytes as Perl's extended UTF-8,
+then downgrades the resulting characters to the native byte representation.
+Stops when either conversion fails or a pass does not reduce the byte length.
+This can remove repeated UTF-8 encoding of the same text.
+
+If C<force> is true, the final string is UTF-8 flagged, upgrading undecodable
+native bytes when necessary. Otherwise the final representation may be bytes
+or UTF-8. Conversion failure is a stopping condition, not an exception.
+
+Modifies and returns C<sv>. The return value is borrowed, with no extra
+reference count. Get magic and overloaded stringification run once before
+processing. The caller must invoke C<SvSETMAGIC(sv)> when set magic is required.
+
+=cut
+*/
+
+SV *
+Perl_repeat_decode_utf8(pTHX_ SV *sv, bool force)
+{
+    PERL_ARGS_ASSERT_REPEAT_DECODE_UTF8;
+
+    (void)SvPV_force_nolen(sv);
+    sv_force_normal_flags(sv, 0);
+
+    for (;;) {
+        STRLEN previous_length = SvCUR(sv);
+        U8 *pv = (U8 *)SvPVX(sv);
+        STRLEN length = previous_length;
+
+        if (!SvUTF8(sv)) {
+            if (!is_utf8_string(pv, length))
+                break;
+            SvUTF8_on(sv);
+        }
+        if (!utf8_to_bytes_overwrite(&pv, &length))
+            break;
+        SvCUR_set(sv, length);
+        SvUTF8_off(sv);
+
+        /* Invariant text survives both conversions unchanged. */
+        if (length >= previous_length)
+            break;
+    }
+
+    if (force && !SvUTF8(sv))
+        (void)sv_utf8_upgrade_nomg(sv);
+    SvPOK_only_UTF8(sv);
+
+    /* The buffer changed without going through an SV string setter. */
+    if (SvMAGICAL(sv)) {
+        MAGIC *mg = mg_find(sv, PERL_MAGIC_utf8);
+        if (mg)
+            magic_setutf8(sv, mg);
+    }
+    return sv;
+}
+
 static const char malformed_text[] = "Malformed UTF-8 character";
 static const char unees[] =
                         "Malformed UTF-8 character (unexpected end of string)";
