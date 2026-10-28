@@ -488,7 +488,7 @@ restart:
                                 ;
                                 goto restart;
                         }
-                        PerlIO_printf(Perl_error_log, "panic: restartop\n");
+                        PerlIO_printf(Perl_error_log, PERL_DIAG_FORMAT_ERROR_INTERNAL_CONTROL_FLOW_PSEUDO_CHILD_RESTART_TARGET_MISSING);
                         FREETMPS;
                         status = 1;
                         break;
@@ -631,8 +631,7 @@ static void S_exec_failed(pTHX_ const char *cmd, int fd, int do_report)
 //    PERL_ARGS_ASSERT_EXEC_FAILED;
         if (e)
         {
-            ck_warner(packWARN(WARN_EXEC),
-                      "Can't exec \"%s\": %s", cmd, Strerror(e));
+            PERL_WARN_WARNING_IO_EXEC_EXEC_FAILED(cmd, Strerror(e));
         }
         if (do_report)
         {

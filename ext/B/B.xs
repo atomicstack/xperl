@@ -948,7 +948,7 @@ next(o)
 	    case 27: /* B::OP::name */
 	    case 28: /* B::OP::desc */
 		ret = sv_2mortal(newSVpv(
-			    (char *)(ix == 28 ? OP_DESC(o) : OP_NAME(o)), 0));
+			    (char *)(ix == 28 ? PERL_B_API_OP_DESC(o) : OP_NAME(o)), 0));
 		break;
 	    case 29: /* B::OP::ppaddr */
 		{

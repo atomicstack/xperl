@@ -44,7 +44,7 @@ static SV* module_name_at(void *pp, enum module_name_how how);
 void
 croak_with_os2error(char *s)
 {
-    Perl_croak_nocontext("%s: %s", s, os2error(Perl_rc));
+    PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_API_FAILED(s, os2error(Perl_rc));
 }
 
 struct PMWIN_entries_t PMWIN_entries;
@@ -230,13 +230,13 @@ enum pthreads_state {
     pthreads_st_exited_waited,
 };
 const char * const pthreads_states[] = {
-    "uninit",
-    "running",
-    "exited",
-    "detached",
-    "waited for",
-    "could not start",
-    "exited, then waited on",
+    PERL_DIAG_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_UNINITIALIZED,
+    PERL_DIAG_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_RUNNING,
+    PERL_DIAG_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_EXITED,
+    PERL_DIAG_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_DETACHED,
+    PERL_DIAG_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_WAITED,
+    PERL_DIAG_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_COULD_NOT_START,
+    PERL_DIAG_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_EXITED_WAITED,
 };
 
 enum pthread_exists { pthread_not_existant = -0xff };
@@ -245,8 +245,10 @@ static const char*
 pthreads_state_string(enum pthreads_state state)
 {
   if (state < 0 || state >= sizeof(pthreads_states)/sizeof(*pthreads_states)) {
-    snprintf(pthreads_state_buf, sizeof(pthreads_state_buf),
-             "unknown thread state %d", (int)state);
+    snprintf(pthreads_state_buf,
+        sizeof(pthreads_state_buf),
+        PERL_DIAG_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_UNKNOWN,
+        (int)state);
     return pthreads_state_buf;
   }
   return pthreads_states[state];
@@ -271,8 +273,8 @@ pthread_join(perl_os_thread tid, void **status)
     if (tid < 1 || tid >= thread_join_count) {
         MUTEX_UNLOCK(&start_thread_mutex);
         if (tid != pthread_not_existant)
-            Perl_croak_nocontext("panic: join with a thread with strange ordinal %d", (int)tid);
-        Perl_warn_nocontext("panic: join with a thread which could not start");
+            PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_ORDINAL_INVALID((int)tid);
+        PERL_WARN_WARNING_INTERNAL_SYSTEM_PLATFORM_OS2_JOIN_UNSTARTED_THREAD();
         *status = 0;
         return 0;
     }
@@ -285,7 +287,7 @@ pthread_join(perl_os_thread tid, void **status)
         break;
     case pthreads_st_waited:
         MUTEX_UNLOCK(&start_thread_mutex);
-        Perl_croak_nocontext("join with a thread with a waiter");
+        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_THREADS_JOIN_ALREADY_WAITED();
         break;
     case pthreads_st_norun:
     {
@@ -293,9 +295,7 @@ pthread_join(perl_os_thread tid, void **status)
 
         thread_join_data[tid].state = pthreads_st_none;
         MUTEX_UNLOCK(&start_thread_mutex);
-        Perl_croak_nocontext("panic: join with a thread which could not run"
-                             " due to attempt of tid reuse (state='%s')",
-                             pthreads_state_string(state));
+        PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_REUSED_ID(pthreads_state_string(state));
         break;
     }
     case pthreads_st_run:
@@ -313,8 +313,7 @@ pthread_join(perl_os_thread tid, void **status)
     }
     default:
         MUTEX_UNLOCK(&start_thread_mutex);
-        Perl_croak_nocontext("panic: join with thread in unknown thread state: '%s'", 
-              pthreads_state_string(thread_join_data[tid].state));
+        PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_STATE_UNKNOWN(pthreads_state_string(thread_join_data[tid].state));
         break;
     }
     return 0;
@@ -344,8 +343,7 @@ pthread_startit(void *arg1)
         /* Can't croak, the setjmp() is not in scope... */
         char buf[80];
 
-        snprintf(buf, sizeof(buf),
-                 "panic: thread with strange ordinal %d created\n\r", tid);
+        snprintf(buf, sizeof(buf), PERL_DIAG_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_START_ORDINAL_INVALID, tid);
         write(2,buf,strlen(buf));
         MUTEX_UNLOCK(&start_thread_mutex);
         return;
@@ -367,9 +365,11 @@ pthread_startit(void *arg1)
         /* Can't croak, the setjmp() is not in scope... */
         char buf[80];
 
-        snprintf(buf, sizeof(buf),
-                 "panic: attempt to reuse thread id %d (state='%s')\n\r",
-                 tid, pthreads_state_string(thread_join_data[tid].state));
+        snprintf(buf,
+            sizeof(buf),
+            PERL_DIAG_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_START_ID_REUSED,
+            tid,
+            pthreads_state_string(thread_join_data[tid].state));
         write(2,buf,strlen(buf));
         thread_join_data[tid].status = (void*)thread_join_data[tid].state;
         thread_join_data[tid].state = pthreads_st_norun;
@@ -403,8 +403,7 @@ pthread_startit(void *arg1)
     default:
         state = thread_join_data[tid].state;
         MUTEX_UNLOCK(&start_thread_mutex);
-        Perl_croak_nocontext("panic: unexpected thread state on exit: '%s'",
-                             pthreads_state_string(state));
+        PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_EXIT_STATE_UNKNOWN(pthreads_state_string(state));
     }
     MUTEX_UNLOCK(&start_thread_mutex);
 }
@@ -442,14 +441,14 @@ pthread_detach(perl_os_thread tid)
     if (tid < 1 || tid >= thread_join_count) {
         MUTEX_UNLOCK(&start_thread_mutex);
         if (tid != pthread_not_existant)
-            Perl_croak_nocontext("panic: detach of a thread with strange ordinal %d", (int)tid);
-        Perl_warn_nocontext("detach of a thread which could not start");
+            PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_ORDINAL_INVALID((int)tid);
+        PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_DETACH_UNSTARTED_THREAD();
         return 0;
     }
     switch (thread_join_data[tid].state) {
     case pthreads_st_waited:
         MUTEX_UNLOCK(&start_thread_mutex);
-        Perl_croak_nocontext("detach on a thread with a waiter");
+        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_THREADS_DETACH_ALREADY_WAITED();
         break;
     case pthreads_st_run:
         thread_join_data[tid].state = pthreads_st_detached;
@@ -461,7 +460,7 @@ pthread_detach(perl_os_thread tid)
         break;
     case pthreads_st_detached:
         MUTEX_UNLOCK(&start_thread_mutex);
-        Perl_warn_nocontext("detach on an already detached thread");
+        PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_THREAD_ALREADY_DETACHED();
         break;
     case pthreads_st_norun:
     {
@@ -469,15 +468,12 @@ pthread_detach(perl_os_thread tid)
 
         thread_join_data[tid].state = pthreads_st_none;
         MUTEX_UNLOCK(&start_thread_mutex);
-        Perl_croak_nocontext("panic: detaching thread which could not run"
-                             " due to attempt of tid reuse (state='%s')",
-                             pthreads_state_string(state));
+        PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_REUSED_ID(pthreads_state_string(state));
         break;
     }
     default:
         MUTEX_UNLOCK(&start_thread_mutex);
-        Perl_croak_nocontext("panic: detach of a thread with unknown thread state: '%s'", 
-              pthreads_state_string(thread_join_data[tid].state));
+        PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_STATE_UNKNOWN(pthreads_state_string(thread_join_data[tid].state));
         break;
     }
     return 0;
@@ -646,8 +642,7 @@ loadModule(const char *modname, int fail)
     HMODULE h = (HMODULE)dlopen(modname, 0);
 
     if (!h && fail)
-        Perl_croak_nocontext("Error loading module '%s': %s", 
-                             modname, dlerror());
+        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_LOAD_FAILED(modname, dlerror());
     return h;
 }
 
@@ -675,7 +670,7 @@ my_type_set(int type)
     PIB *pib;
     
     if (!(_emx_env & 0x200))
-        Perl_croak_nocontext("Can't set type on DOS"); /* not OS/2. */
+        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PROCESS_TYPE_CHANGE_REQUIRES_OS2(); /* not OS/2. */
     if (CheckOSError(DosGetInfoBlocks(&tib, &pib))) 
         croak_with_os2error("Error getting info blocks");
     pib->pib_ultype = type;
@@ -685,9 +680,7 @@ PFN
 loadByOrdinal(enum entries_ordinals ord, int fail)
 {
     if (sizeof(loadOrdinals)/sizeof(loadOrdinals[0]) != ORD_NENTRIES)
-            Perl_croak_nocontext(
-                 "Wrong size of loadOrdinals array: expected %d, actual %d", 
-                 sizeof(loadOrdinals)/sizeof(loadOrdinals[0]), ORD_NENTRIES);
+            PERL_THROW_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_ORDINAL_TABLE_SIZE_MISMATCH(sizeof(loadOrdinals)/sizeof(loadOrdinals[0]), ORD_NENTRIES);
     if (ExtFCN[ord] == NULL) {
         PFN fcn = (PFN)-1;
         APIRET rc;
@@ -704,8 +697,7 @@ loadByOrdinal(enum entries_ordinals ord, int fail)
 
                     if (CheckOSError(DosOpenMutexSem("\\SEM32\\PMDRAG.SEM",
                                                      &hMtx)))
-                        Perl_croak_nocontext("Looks like we have no PM; will not load DLL %s without $ENV{PERL_ASIF_PM}",
-                                             loadOrdinals[ord].dll->modname);
+                        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_PM_REQUIRED(loadOrdinals[ord].dll->modname);
                     DosCloseMutexSem(hMtx);
                 }
             }
@@ -725,14 +717,12 @@ loadByOrdinal(enum entries_ordinals ord, int fail)
                 return 0;
             if (!s)
                 sprintf(s = buf, "%d", loadOrdinals[ord].entrypoint);
-            Perl_croak_nocontext(
-                 "This version of OS/2 does not support %s.%s", 
-                 loadOrdinals[ord].dll->modname, s);
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_ENTRY_POINT_UNAVAILABLE(loadOrdinals[ord].dll->modname, s);
         }
         ExtFCN[ord] = fcn;
     } 
     if ((long)ExtFCN[ord] == -1)
-        Perl_croak_nocontext("panic queryaddr");
+        PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_MODULE_ENTRY_POINT_SENTINEL_UNRESOLVED();
     return ExtFCN[ord];
 }
 
@@ -804,7 +794,7 @@ get_sysinfo(ULONG pid, ULONG flags)
     psi = (PQTOPLEVEL)pbuffer;
     if (psi && pid && psi->procdata && pid != psi->procdata->pid) {
       Safefree(psi);
-      Perl_croak_nocontext("panic: wrong pid in sysinfo");
+      PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_PROCESS_ID_MISMATCH();
     }
     return psi;
 }
@@ -952,7 +942,7 @@ file_type(char *path)
     ULONG apptype;
     
     if (!(_emx_env & 0x200)) 
-        Perl_croak_nocontext("file_type not implemented on DOS"); /* not OS/2. */
+        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_APPLICATION_TYPE_QUERY_REQUIRES_OS2(); /* not OS/2. */
     if (CheckOSError(DosQueryAppType(path, &apptype))) {
         switch (rc) {
         case ERROR_FILE_NOT_FOUND:
@@ -1057,8 +1047,7 @@ do_spawn_ve(pTHX_ SV *really, const char **argv, U32 flag, U32 execf, char *inic
                     if (flag == P_NOWAIT)
                         flag = P_PM;
                     else if ((flag & 7) != P_PM && (flag & 7) != P_SESSION && ckWARN(WARN_EXEC))
-                        warner(packWARN(WARN_EXEC), "Starting PM process with flag=%d, mytype=%d",
-                             flag, os2_mytype);
+                        PERL_WARN_WARNING_IO_EXEC_OS2_PM_PROCESS_SESSION_MISMATCH(flag, os2_mytype);
                 }
             }
             break;
@@ -1068,8 +1057,7 @@ do_spawn_ve(pTHX_ SV *really, const char **argv, U32 flag, U32 execf, char *inic
                     if (flag == P_NOWAIT)
                         flag = P_SESSION;
                     else if ((flag & 7) != P_SESSION && ckWARN(WARN_EXEC))
-                        warner(packWARN(WARN_EXEC), "Starting Full Screen process with flag=%d, mytype=%d",
-                             flag, os2_mytype);
+                        PERL_WARN_WARNING_IO_EXEC_OS2_FULLSCREEN_PROCESS_SESSION_MISMATCH(flag, os2_mytype);
                 }
             }
             break;
@@ -1165,8 +1153,7 @@ do_spawn_ve(pTHX_ SV *really, const char **argv, U32 flag, U32 execf, char *inic
                     }
                     if (PerlIO_close(file) != 0) { /* Failure */
                       panic_file:
-                        ck_warner(packWARN(WARN_EXEC), "Error reading \"%s\": %s",
-                                  scr, Strerror(errno));
+                        PERL_WARN_WARNING_IO_EXEC_OS2_SCRIPT_READ_FAILED(scr, Strerror(errno));
                         buf = "";	/* Not #! */
                         goto doshell_args;
                     }
@@ -1209,8 +1196,7 @@ do_spawn_ve(pTHX_ SV *really, const char **argv, U32 flag, U32 execf, char *inic
                         *s++ = 0;
                     }
                     if (nargs == -1) {
-                        warner(packWARN(WARN_EXEC), "Too many args on %.*s line of \"%s\"",
-                             s1 - buf, buf, scr);
+                        PERL_WARN_WARNING_IO_EXEC_OS2_INTERPRETER_LINE_ARGUMENT_LIMIT(s1 - buf, buf, scr);
                         nargs = 4;
                         argsp = fargs;
                     }
@@ -1300,17 +1286,13 @@ do_spawn_ve(pTHX_ SV *really, const char **argv, U32 flag, U32 execf, char *inic
             }
           } else if (errno == ENOEXEC) { /* Cannot transfer `real_name' via shell. */
                 if (rc < 0)
-                    ck_warner(packWARN(WARN_EXEC), "Can't %s script `%s' with ARGV[0] being `%s'",
-                              ((execf != EXECF_EXEC && execf != EXECF_TRUEEXEC)
-                               ? "spawn" : "exec"),
-                              real_name, argv[0]);
+                    PERL_WARN_WARNING_IO_EXEC_OS2_SCRIPT_ARGV0_OVERRIDE_UNSUPPORTED(((execf != EXECF_EXEC && execf != EXECF_TRUEEXEC)
+                               ? "spawn" : "exec"), real_name, argv[0]);
                 goto warned;
           } else if (errno == ENOENT) { /* Cannot transfer `real_name' via shell. */
-                if (rc < 0))
-                    ck_warner(packWARN(WARN_EXEC), "Can't %s `%s' with ARGV[0] being `%s' (looking for executables only, not found)",
-                              ((execf != EXECF_EXEC && execf != EXECF_TRUEEXEC)
-                               ? "spawn" : "exec"),
-                              real_name, argv[0]);
+                if (rc < 0)
+                    PERL_WARN_WARNING_IO_EXEC_OS2_EXECUTABLE_WITH_ARGV0_OVERRIDE_NOT_FOUND(((execf != EXECF_EXEC && execf != EXECF_TRUEEXEC)
+                               ? "spawn" : "exec"), real_name, argv[0]);
                 goto warned;
           }
         } else if (rc < 0 && pass == 2 && errno == ENOENT) { /* File not found */
@@ -1324,11 +1306,9 @@ do_spawn_ve(pTHX_ SV *really, const char **argv, U32 flag, U32 execf, char *inic
                 goto retry;
             }
         }
-        if (rc < 0))
-            ck_warner(packWARN(WARN_EXEC), "Can't %s \"%s\": %s\n",
-                      ((execf != EXECF_EXEC && execf != EXECF_TRUEEXEC)
-                       ? "spawn" : "exec"),
-                      real_name, Strerror(errno));
+        if (rc < 0)
+            PERL_WARN_WARNING_IO_EXEC_OS2_LAUNCH_FAILED(((execf != EXECF_EXEC && execf != EXECF_TRUEEXEC)
+                       ? "spawn" : "exec"), real_name, Strerror(errno));
       warned:
         if (rc < 0 && (execf != EXECF_SPAWN_NOWAIT) 
             && ((trueflag & 0xFF) == P_WAIT)) 
@@ -1436,9 +1416,7 @@ do_spawn3(pTHX_ char *cmd, int execf, int flag)
                    rc = result(aTHX_ P_WAIT,
                                spawnl(P_NOWAIT,shell,shell,copt,cmd,(char*)0));
                 if (rc < 0)
-                    ck_warner(packWARN(WARN_EXEC), "Can't %s \"%s\": %s",
-                              (execf == EXECF_SPAWN ? "spawn" : "exec"),
-                              shell, Strerror(errno));
+                    PERL_WARN_WARNING_IO_EXEC_SELECTED_LAUNCH_OPERATION_FAILED((execf == EXECF_SPAWN ? perl_diag_selector_domain_2335_0_spawn_2 : perl_diag_selector_domain_2335_0_exec_1), shell, Strerror(errno));
                 if (rc < 0)
                     rc = -1;
             }
@@ -1582,7 +1560,7 @@ my_syspopen4(pTHX_ char *cmd, char *mode, I32 cnt, SV** args)
     that = !this;
     if (TAINTING_get) {
         taint_env();
-        taint_proper("Insecure %s%s", "EXEC");
+        taint_proper(PERL_FORMAT_ERROR_TAINT_OPERATION_INSECURE, "EXEC");
     }
     if (pipe(p) < 0)
         return NULL;
@@ -1651,7 +1629,7 @@ my_syspopen4(pTHX_ char *cmd, char *mode, I32 cnt, SV** args)
     SV *sv;
 
     if (cnt)
-        croak("List form of piped open not implemented");
+        PERL_THROW_LIST_FORM_OF_PIPED_OPEN_NOT_IMPLEMENTED();
 
 #  ifdef TRYSHELL
     res = popen(cmd, mode);
@@ -1684,7 +1662,7 @@ my_syspopen(pTHX_ char *cmd, char *mode)
 int
 fork(void)
 {
-    Perl_croak_nocontext(PL_no_func, "Unsupported function fork");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE("fork");
     errno = EINVAL;
     return -1;
 }
@@ -1823,7 +1801,7 @@ sys_alloc(int size) {
     if (rc == ERROR_NOT_ENOUGH_MEMORY) {
         return (void *) -1;
     } else if ( rc ) 
-        Perl_croak_nocontext("Got an error from DosAllocMem: %li", (long)rc);
+        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MEMORY_ALLOCATION_API_FAILED((long)rc);
     return got;
 }
 
@@ -1858,7 +1836,7 @@ XS(XS_File__Copy_syscopy)
 {
     dXSARGS;
     if (items < 2 || items > 3)
-        Perl_croak_nocontext("Usage: File::Copy::syscopy(src,dst,flag=0)");
+        PERL_THROW_FILE_COPY_SYSCOPY_USAGE();
     {
         STRLEN n_a;
         char *	src = (char *)SvPV(ST(0),n_a);
@@ -1889,7 +1867,7 @@ XS(XS_OS2_replaceModule)
 {
     dXSARGS;
     if (items < 1 || items > 3)
-        croak("Usage: OS2::replaceModule(target [, source [, backup]])");
+        PERL_THROW_OS2_REPLACEMODULE_USAGE();
     {
         char *	target = (char *)SvPV_nolen(ST(0));
         char *	source = (items < 2) ? NULL : (char *)SvPV_nolen(ST(1));
@@ -1945,7 +1923,7 @@ XS(XS_OS2_perfSysCall)
 {
     dXSARGS;
     if (items < 0 || items > 4)
-        croak("Usage: OS2::perfSysCall(ulCommand = CMD_KI_RDCNT, ulParm1= 0, ulParm2= 0, ulParm3= 0)");
+        PERL_THROW_OS2_PERFSYSCALL_USAGE();
     SP -= items;
     {
         dXSTARG;
@@ -1964,7 +1942,7 @@ XS(XS_OS2_perfSysCall)
             ulParm1 = (total ? (ULONG)u : 0);
 
             if (total > C_ARRAY_LENGTH(u))
-                croak("Unexpected number of processors: %d", total);
+                PERL_THROW_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_PROCESSOR_COUNT_TOO_LARGE(total);
         } else {
             ulParm1 = (ULONG)SvUV(ST(1));
         }
@@ -2019,14 +1997,14 @@ mod2fname(pTHX_ SV *sv)
     char *s;
     STRLEN n_a;
 
-    if (!SvROK(sv)) Perl_croak_nocontext("Not a reference given to mod2fname");
+    if (!SvROK(sv)) PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_NOT_REFERENCE();
     sv = SvRV(sv);
     if (SvTYPE(sv) != SVt_PVAV) 
-      Perl_croak_nocontext("Not array reference given to mod2fname");
+      PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_NOT_ARRAY();
 
     avlen = av_count((AV*)sv);
     if (avlen == 0)
-      Perl_croak_nocontext("Empty array reference given to mod2fname");
+      PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_EMPTY();
 
     s = SvPV(*av_fetch((AV*)sv, avlen, FALSE), n_a);
     strncpy(fname, s, 8);
@@ -2065,7 +2043,7 @@ XS(XS_DynaLoader_mod2fname)
 {
     dXSARGS;
     if (items != 1)
-        Perl_croak_nocontext("Usage: DynaLoader::mod2fname(sv)");
+        PERL_THROW_DYNALOADER_MOD2FNAME_USAGE();
     {
         SV *	sv = ST(0);
         char *	RETVAL;
@@ -2134,8 +2112,7 @@ os2error(int rc)
                 name = "PMERR_ATOM_NAME_NOT_FOUND";
                 break;
             }
-            sprintf(s, "%s%s[No description found in OSO001.MSG]", 
-                    name, (*name ? "=" : ""));
+            sprintf(s, PERL_DIAG_FORMAT_NOTE_CONTEXT_OS2_ERROR_DESCRIPTION_MISSING, name, (*name ? "=" : ""));
         } else {
                 s[len] = '\0';
                 if (len && s[len - 1] == '\n')
@@ -2293,7 +2270,7 @@ dir_subst(char *s, unsigned int l, char *b, unsigned int bl, enum dir_subst_e fl
                 tol = strlen(INSTALL_PREFIX);
                 if (tol >= bl) {
                     if (flags & dir_subst_fatal)
-                        Perl_croak_nocontext("INSTALL_PREFIX too long: `%s'", INSTALL_PREFIX);
+                        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_INSTALL_PREFIX_TOO_LONG(INSTALL_PREFIX);
                     else
                         return NULL;
                 }
@@ -2333,7 +2310,7 @@ dir_subst(char *s, unsigned int l, char *b, unsigned int bl, enum dir_subst_e fl
             if (strip) {
                 e = strrchr(to, '/');
                 if (!e && (flags & dir_subst_fatal))
-                    Perl_croak_nocontext("%s: Can't parse EXE/DLL name: '%s'", msg, to);
+                    PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_EXECUTABLE_DIRECTORY_MISSING(msg, to);
                 else if (!e)
                     return NULL;
                 *e = 0;
@@ -2349,7 +2326,7 @@ dir_subst(char *s, unsigned int l, char *b, unsigned int bl, enum dir_subst_e fl
                    && (l == 3 || s[3] == '/' || s[3] == '\\' || s[3] == ';')) {
                 e = strrchr(b, '/');
                 if (!e && (flags & dir_subst_fatal))
-                        Perl_croak_nocontext("%s: Error stripping dirs from EXE/DLL/INSTALLDIR name", msg);
+                        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_PARENT_STRIP_FAILED(msg);
                 else if (!e)
                         return NULL;
                 *e = 0;
@@ -2371,7 +2348,7 @@ dir_subst(char *s, unsigned int l, char *b, unsigned int bl, enum dir_subst_e fl
     }
     if (e + l >= b + bl) {
         if (flags & dir_subst_fatal)
-            Perl_croak_nocontext("%s: name `%s%s' too long", msg, b, s);
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_SUBSTITUTION_NAME_TOO_LONG(msg, b, s);
         else
             return NULL;
     }
@@ -2394,7 +2371,7 @@ perllib_mangle_with(char *s, unsigned int l, char *from, unsigned int froml, cha
     if (l < froml || strnicmp(from, s, froml) != 0)
         return s;
     if (l + tol - froml > STATIC_FILE_LENGTH || tol > STATIC_FILE_LENGTH)
-        Perl_croak_nocontext("Malformed PERLLIB_PREFIX");
+        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_PREFIX_RESULT_TOO_LONG();
     if (to && to != mangle_ret)
         memcpy(mangle_ret, to, tol);
     strcpy(mangle_ret + tol, s + froml);
@@ -2433,7 +2410,7 @@ perllib_mangle(char *s, unsigned int l)
                 newp++;			/* Skip whitespace. */
             Perl_OS2_handler_install((void *)newp, Perlos2_handler_perllib_to);
             if (newl == 0 || oldl == 0)
-                Perl_croak_nocontext("Malformed %s", name);
+                PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_PREFIX_COMPONENT_MISSING(name);
         } else
             notfound = 1;
     }
@@ -2444,7 +2421,7 @@ perllib_mangle(char *s, unsigned int l)
     if (l < oldl || strnicmp(oldp, s, oldl) != 0)
         return s;
     if (l + newl - oldl > STATIC_FILE_LENGTH || newl > STATIC_FILE_LENGTH)
-        Perl_croak_nocontext("Malformed PERLLIB_PREFIX");
+        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_PREFIX_RESULT_TOO_LONG();
     strcpy(mangle_ret + newl, s + oldl);
     return mangle_ret;
 }
@@ -2524,11 +2501,11 @@ Perl_Serve_Messages(int force)
     if (Perl_hmq_servers > 0 && !force)
         return 0;
     if (Perl_hmq_refcnt <= 0)
-        Perl_croak_nocontext("No message queue");
+        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_WINDOW_MESSAGE_QUEUE_MISSING();
     while ((*PMWIN_entries.PeekMsg)(Perl_hab, &msg, NULLHANDLE, 0, 0, PM_REMOVE)) {
         cnt++;
         if (msg.msg == WM_QUIT)
-            Perl_croak_nocontext("QUITing...");
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_WINDOW_QUIT_REQUESTED();
         (*PMWIN_entries.DispatchMsg)(Perl_hab, &msg);
     }
     return cnt;
@@ -2542,7 +2519,7 @@ Perl_Process_Messages(int force, I32 *cntp)
     if (Perl_hmq_servers > 0 && !force)
         return 0;
     if (Perl_hmq_refcnt <= 0)
-        Perl_croak_nocontext("No message queue");
+        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_WINDOW_MESSAGE_QUEUE_MISSING();
     while ((*PMWIN_entries.GetMsg)(Perl_hab, &msg, NULLHANDLE, 0, 0)) {
         if (cntp)
             (*cntp)++;
@@ -2552,7 +2529,7 @@ Perl_Process_Messages(int force, I32 *cntp)
         if (msg.msg == WM_CREATE)
             return +1;
     }
-    Perl_croak_nocontext("QUITing...");
+    PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_WINDOW_QUIT_REQUESTED();
 }
 
 void
@@ -2580,8 +2557,7 @@ Perl_Deregister_MQ(int serve)
         if (pib->pib_ultype == 3)		/* 3 is PM */
             pib->pib_ultype = Perl_os2_initial_mode;
         else
-            Perl_warn_nocontext("Unexpected program mode %d when morphing back from PM",
-                                pib->pib_ultype);
+            PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_PM_RESTORE_MODE_UNEXPECTED(pib->pib_ultype);
     }
 }
 
@@ -2599,7 +2575,7 @@ XS(XS_OS2_Error)
 {
     dXSARGS;
     if (items != 2)
-        Perl_croak_nocontext("Usage: OS2::Error(harderr, exception)");
+        PERL_THROW_OS2_ERROR_USAGE();
     {
         int	arg1 = SvIV(ST(0));
         int	arg2 = SvIV(ST(1));
@@ -2609,7 +2585,7 @@ XS(XS_OS2_Error)
         unsigned long rc;
 
         if (CheckOSError(DosError(a)))
-            Perl_croak_nocontext("DosError(%d) failed: %s", a, os2error(Perl_rc));
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_DOS_ERROR_FAILED(a, os2error(Perl_rc));
         ST(0) = sv_newmortal();
         if (DOS_harderr_state >= 0)
             sv_setiv(ST(0), DOS_harderr_state);
@@ -2622,7 +2598,7 @@ XS(XS_OS2_Errors2Drive)
 {
     dXSARGS;
     if (items != 1)
-        Perl_croak_nocontext("Usage: OS2::Errors2Drive(drive)");
+        PERL_THROW_OS2_ERRORS2DRIVE_USAGE();
     {
         STRLEN n_a;
         SV  *sv = ST(0);
@@ -2632,13 +2608,12 @@ XS(XS_OS2_Errors2Drive)
         unsigned long rc;
 
         if (suppress && !isALPHA(drive))
-            Perl_croak_nocontext("Non-char argument '%c' to OS2::Errors2Drive()", drive);
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_DRIVE_NOT_ALPHABETIC(drive);
         if (CheckOSError(DosSuppressPopUps((suppress
                                             ? SPU_ENABLESUPPRESSION 
                                             : SPU_DISABLESUPPRESSION),
                                            drive)))
-            Perl_croak_nocontext("DosSuppressPopUps(%c) failed: %s", drive,
-                                 os2error(Perl_rc));
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_POPUP_SUPPRESSION_FAILED(drive, os2error(Perl_rc));
         ST(0) = sv_newmortal();
         if (DOS_suppression_state > 0)
             sv_setpvn(ST(0), &DOS_suppression_state, 1);
@@ -2741,7 +2716,7 @@ XS(XS_OS2_ms_sleep)		/* for testing only... */
     ULONG ms, lim;
 
     if (items > 2 || items < 1)
-        Perl_croak_nocontext("Usage: OS2::ms_sleep(wait_ms [, high_priority_limit])");
+        PERL_THROW_OS2_MS_SLEEP_USAGE();
     ms = SvUV(ST(0));
     lim = items > 1 ? SvUV(ST(1)) : ms + 1;
     async_mssleep(ms, lim);
@@ -2759,7 +2734,7 @@ XS(XS_OS2_Timer)
     ULONG rc;
 
     if (items != 0)
-        Perl_croak_nocontext("Usage: OS2::Timer()");
+        PERL_THROW_OS2_TIMER_USAGE();
     if (!freq) {
         *(PFN*)&pDosTmrQueryFreq = loadByOrdinal(ORD_DosTmrQueryFreq, 0);
         *(PFN*)&pDosTmrQueryTime = loadByOrdinal(ORD_DosTmrQueryTime, 0);
@@ -2784,7 +2759,7 @@ XS(XS_OS2_msCounter)
     dXSARGS;
 
     if (items != 0)
-        Perl_croak_nocontext("Usage: OS2::msCounter()");
+        PERL_THROW_OS2_MSCOUNTER_USAGE();
     {    
         dXSTARG;
 
@@ -2799,7 +2774,7 @@ XS(XS_OS2__InfoTable)
     int is_local = 0;
 
     if (items > 1)
-        Perl_croak_nocontext("Usage: OS2::_infoTable([isLocal])");
+        PERL_THROW_OS2__INFOTABLE_USAGE();
     if (items == 1)
         is_local = (int)SvIV(ST(0));
     {    
@@ -2870,7 +2845,7 @@ XS(XS_OS2_DevCap)
 {
     dXSARGS;
     if (items > 2)
-        Perl_croak_nocontext("Usage: OS2::DevCap()");
+        PERL_THROW_OS2_DEVCAP_USAGE();
     {
         /* Device Capabilities Data Buffer (10 extra w.r.t. Warp 4.5) */
         LONG   si[CAPS_DEVICE_POLYSET_POINTS - CAPS_FAMILY + 1];
@@ -2900,7 +2875,7 @@ XS(XS_OS2_DevCap)
             hScreenDC = (HDC)SvIV(ST(0));
         else {				/* DevCap_hwnd */
             if (!Perl_hmq)
-                croak("Getting a window's device context without a message queue would lock PM");
+                PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_WINDOW_DEVICE_CONTEXT_REQUIRES_MESSAGE_QUEUE();
             hwnd = (HWND)SvIV(ST(0));
             hScreenDC = pWinOpenWindowDC(hwnd); /* No need to DevCloseDC() */
             if (CheckWinError(hScreenDC))
@@ -2936,7 +2911,7 @@ XS(XS_OS2_DevCap)
             }	    
         }
         if (!items && CheckWinError(pDevCloseDC(hScreenDC)))
-            Perl_warn_nocontext("DevCloseDC() failed: %s", os2error(Perl_rc));
+            PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_DEVICE_CONTEXT_CLOSE_FAILED(os2error(Perl_rc));
         if (rc1)
             Perl_rc = rc1, croak_with_os2error("DevQueryCaps() failed");
         XSRETURN(j);
@@ -3063,7 +3038,7 @@ XS(XS_OS2_SysValues)
 {
     dXSARGS;
     if (items > 2)
-        Perl_croak_nocontext("Usage: OS2::SysValues(which = -1, hwndDesktop = HWND_DESKTOP)");
+        PERL_THROW_OS2_SYSVALUES_USAGE();
     {
         int i = 0, j = 0, which = -1;
         HWND hwnd = HWND_DESKTOP;
@@ -3121,7 +3096,7 @@ XS(XS_OS2_SysValues_set)
 {
     dXSARGS;
     if (items < 2 || items > 3)
-        Perl_croak_nocontext("Usage: OS2::SysValues_set(which, val, hwndDesktop = HWND_DESKTOP)");
+        PERL_THROW_OS2_SYSVALUES_SET_USAGE();
     {
         int which = (int)SvIV(ST(0));
         LONG val = (LONG)SvIV(ST(1));
@@ -3181,7 +3156,7 @@ XS(XS_OS2_SysInfo)
 {
     dXSARGS;
     if (items != 0)
-        Perl_croak_nocontext("Usage: OS2::SysInfo()");
+        PERL_THROW_OS2_SYSINFO_USAGE();
     {
         /* System Information Data Buffer (10 extra w.r.t. Warp 4.5) */
         ULONG   si[C_ARRAY_LENGTH(si_fields) + 10];
@@ -3224,7 +3199,7 @@ XS(XS_OS2_SysInfoFor)
     int count = (items == 2 ? (int)SvIV(ST(1)) : 1);
 
     if (items < 1 || items > 2)
-        Perl_croak_nocontext("Usage: OS2::SysInfoFor(id[,count])");
+        PERL_THROW_OS2_SYSINFOFOR_USAGE();
     {
         /* System Information Data Buffer (10 extra w.r.t. Warp 4.5) */
         ULONG   si[C_ARRAY_LENGTH(si_fields) + 10];
@@ -3233,7 +3208,7 @@ XS(XS_OS2_SysInfoFor)
         int start = (int)SvIV(ST(0));
 
         if (count > C_ARRAY_LENGTH(si) || count <= 0)
-            croak("unexpected count %d for OS2::SysInfoFor()", count);
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_QUERY_COUNT_OUT_OF_RANGE(count);
         if (CheckOSError(DosQuerySysInfo(start,
                                          start + count - 1,
                                          (PVOID)si,
@@ -3253,7 +3228,7 @@ XS(XS_OS2_BootDrive)
 {
     dXSARGS;
     if (items != 0)
-        Perl_croak_nocontext("Usage: OS2::BootDrive()");
+        PERL_THROW_OS2_BOOTDRIVE_USAGE();
     {
         ULONG   si[1] = {0};	/* System Information Data Buffer */
         APIRET  rc    = NO_ERROR;	/* Return code            */
@@ -3274,7 +3249,7 @@ XS(XS_OS2_Beep)
 {
     dXSARGS;
     if (items > 2)			/* Defaults as for WinAlarm(ERROR) */
-        Perl_croak_nocontext("Usage: OS2::Beep(freq = 440, ms = 100)");
+        PERL_THROW_OS2_BEEP_USAGE();
     {
         ULONG freq	= (items > 0 ? (ULONG)SvUV(ST(0)) : 440);
         ULONG ms	= (items > 1 ? (ULONG)SvUV(ST(1)) : 100);
@@ -3292,7 +3267,7 @@ XS(XS_OS2_MorphPM)
 {
     dXSARGS;
     if (items != 1)
-        Perl_croak_nocontext("Usage: OS2::MorphPM(serve)");
+        PERL_THROW_OS2_MORPHPM_USAGE();
     {
         bool  serve = SvOK(ST(0));
         unsigned long   pmq = perl_hmq_GET(serve);
@@ -3307,7 +3282,7 @@ XS(XS_OS2_UnMorphPM)
 {
     dXSARGS;
     if (items != 1)
-        Perl_croak_nocontext("Usage: OS2::UnMorphPM(serve)");
+        PERL_THROW_OS2_UNMORPHPM_USAGE();
     {
         bool  serve = SvOK(ST(0));
 
@@ -3320,7 +3295,7 @@ XS(XS_OS2_Serve_Messages)
 {
     dXSARGS;
     if (items != 1)
-        Perl_croak_nocontext("Usage: OS2::Serve_Messages(force)");
+        PERL_THROW_OS2_SERVE_MESSAGES_USAGE();
     {
         bool  force = SvOK(ST(0));
         unsigned long   cnt = Perl_Serve_Messages(force);
@@ -3335,7 +3310,7 @@ XS(XS_OS2_Process_Messages)
 {
     dXSARGS;
     if (items < 1 || items > 2)
-        Perl_croak_nocontext("Usage: OS2::Process_Messages(force [, cnt])");
+        PERL_THROW_OS2_PROCESS_MESSAGES_USAGE();
     {
         bool  force = SvOK(ST(0));
         unsigned long   cnt;
@@ -3347,7 +3322,7 @@ XS(XS_OS2_Process_Messages)
 
             (void)SvIV(sv);		/* Force SvIVX */	    
             if (!SvIOK(sv))
-                Perl_croak_nocontext("Can't upgrade count to IV");
+                PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MESSAGE_COUNT_INTEGER_STORAGE_REQUIRED();
             cntr = SvIVX(sv);
             cnt =  Perl_Process_Messages(force, &cntr);
             SvIVX(sv) = cntr;
@@ -3363,7 +3338,7 @@ XS(XS_Cwd_current_drive)
 {
     dXSARGS;
     if (items != 0)
-        Perl_croak_nocontext("Usage: Cwd::current_drive()");
+        PERL_THROW_CWD_CURRENT_DRIVE_USAGE();
     {
         char	RETVAL;
         dXSTARG;
@@ -3379,7 +3354,7 @@ XS(XS_Cwd_sys_chdir)
 {
     dXSARGS;
     if (items != 1)
-        Perl_croak_nocontext("Usage: Cwd::sys_chdir(path)");
+        PERL_THROW_CWD_SYS_CHDIR_USAGE();
     {
         STRLEN n_a;
         char *	path = (char *)SvPV(ST(0),n_a);
@@ -3396,7 +3371,7 @@ XS(XS_Cwd_change_drive)
 {
     dXSARGS;
     if (items != 1)
-        Perl_croak_nocontext("Usage: Cwd::change_drive(d)");
+        PERL_THROW_CWD_CHANGE_DRIVE_USAGE();
     {
         STRLEN n_a;
         char	d = (char)*SvPV(ST(0),n_a);
@@ -3413,7 +3388,7 @@ XS(XS_Cwd_sys_is_absolute)
 {
     dXSARGS;
     if (items != 1)
-        Perl_croak_nocontext("Usage: Cwd::sys_is_absolute(path)");
+        PERL_THROW_CWD_SYS_IS_ABSOLUTE_USAGE();
     {
         STRLEN n_a;
         char *	path = (char *)SvPV(ST(0),n_a);
@@ -3430,7 +3405,7 @@ XS(XS_Cwd_sys_is_rooted)
 {
     dXSARGS;
     if (items != 1)
-        Perl_croak_nocontext("Usage: Cwd::sys_is_rooted(path)");
+        PERL_THROW_CWD_SYS_IS_ROOTED_USAGE();
     {
         STRLEN n_a;
         char *	path = (char *)SvPV(ST(0),n_a);
@@ -3447,7 +3422,7 @@ XS(XS_Cwd_sys_is_relative)
 {
     dXSARGS;
     if (items != 1)
-        Perl_croak_nocontext("Usage: Cwd::sys_is_relative(path)");
+        PERL_THROW_CWD_SYS_IS_RELATIVE_USAGE();
     {
         STRLEN n_a;
         char *	path = (char *)SvPV(ST(0),n_a);
@@ -3464,7 +3439,7 @@ XS(XS_Cwd_sys_cwd)
 {
     dXSARGS;
     if (items != 0)
-        Perl_croak_nocontext("Usage: Cwd::sys_cwd()");
+        PERL_THROW_CWD_SYS_CWD_USAGE();
     {
         char p[MAXPATHLEN];
         char *	RETVAL;
@@ -3482,7 +3457,7 @@ XS(XS_Cwd_sys_abspath)
 {
     dXSARGS;
     if (items > 2)
-        Perl_croak_nocontext("Usage: Cwd::sys_abspath(path = '.', dir = NULL)");
+        PERL_THROW_CWD_SYS_ABSPATH_USAGE();
     {
         STRLEN n_a;
         char *	path = items ? (char *)SvPV(ST(0),n_a) : ".";
@@ -3655,7 +3630,7 @@ XS(XS_Cwd_extLibpath)
 {
     dXSARGS;
     if (items < 0 || items > 1)
-        Perl_croak_nocontext("Usage: OS2::extLibpath(type = 0)");
+        PERL_THROW_OS2_EXTLIBPATH_USAGE();
     {
         IV	type;
         char	to[1024];
@@ -3673,7 +3648,7 @@ XS(XS_Cwd_extLibpath)
         to[0] = 1; to[1] = 0;		/* Sometimes no error reported */
         RETVAL = extLibpath(to, type, 1);	/* Make errors fatal */
         if (RETVAL && RETVAL[0] == 1 && RETVAL[1] == 0)
-            Perl_croak_nocontext("panic OS2::extLibpath parameter");
+            PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_PATH_EXTLIBPATH_RESULT_UNCHANGED();
         l = strlen(to);
         if (l >= sizeof(to))
             early_error("Buffer overflow while getting BEGIN/ENDLIBPATH: `",
@@ -3688,7 +3663,7 @@ XS(XS_Cwd_extLibpath_set)
 {
     dXSARGS;
     if (items < 1 || items > 2)
-        Perl_croak_nocontext("Usage: OS2::extLibpath_set(s, type = 0)");
+        PERL_THROW_OS2_EXTLIBPATH_SET_USAGE();
     {
         STRLEN n_a;
         char *	s = (char *)SvPV(ST(0),n_a);
@@ -3792,7 +3767,7 @@ module_name_at(void *pp, enum module_name_how how)
 
     if (how & mod_name_HMODULE) {
         if ((how & ~mod_name_HMODULE) == mod_name_shortname)
-            croak("Can't get short module name from a handle");
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_SHORT_NAME_FROM_HANDLE_UNSUPPORTED();
         mod = (HMODULE)pp;
         how &= ~mod_name_HMODULE;
     } else if (!_DosQueryModFromEIP(&mod, &obj, sizeof(buf), buf, &offset, addr))
@@ -3821,7 +3796,7 @@ module_name_of_cv(SV *cv, enum module_name_how how)
             return module_name_at((void*)SvIV(cv), how & ~mod_name_C_function);
         else if (how & mod_name_HMODULE)
             return module_name_at((void*)SvIV(cv), how);
-        croak("Not an XSUB reference");
+        PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_XSUB_REFERENCE_REQUIRED();
     }
     return module_name_at(CvXSUB(SvRV(cv)), how);
 }
@@ -3830,7 +3805,7 @@ XS(XS_OS2_DLLname)
 {
     dXSARGS;
     if (items > 2)
-        croak("Usage: OS2::DLLname( [ how, [\\&xsub] ] )");
+        PERL_THROW_OS2_DLLNAME_USAGE();
     {
         SV *	RETVAL;
         int	how;
@@ -3858,7 +3833,7 @@ XS(XS_OS2__headerInfo)
 {
     dXSARGS;
     if (items > 4 || items < 2)
-        croak("Usage: OS2::_headerInfo(req,size[,handle,[offset]])");
+        PERL_THROW_OS2__HEADERINFO_USAGE();
     {
         ULONG	req = (ULONG)SvIV(ST(0));
         STRLEN	size = (STRLEN)SvIV(ST(1)), n_a;
@@ -3866,14 +3841,13 @@ XS(XS_OS2__headerInfo)
         ULONG	offset = (items >= 4 ? (ULONG)SvIV(ST(3)) : 0);
 
         if (size <= 0)
-            croak("OS2::_headerInfo(): unexpected size: %d", (int)size);
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_HEADER_BUFFER_SIZE_ZERO((int)size);
         ST(0) = newSVpvs("");
         SvGROW(ST(0), size + 1);
         sv_2mortal(ST(0));
 
         if (!_Dos32QueryHeaderInfo(handle, offset, SvPV(ST(0), n_a), size, req)) 
-            croak("OS2::_headerInfo(%ld,%ld,%ld,%ld) error: %s",
-                       req, size, handle, offset, os2error(Perl_rc));
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_HEADER_QUERY_FAILED(req, size, handle, offset, os2error(Perl_rc));
         SvCUR_set(ST(0), size);
         *SvEND(ST(0)) = 0;
     }
@@ -3887,16 +3861,14 @@ XS(XS_OS2_libPath)
 {
     dXSARGS;
     if (items != 0)
-        croak("Usage: OS2::libPath()");
+        PERL_THROW_OS2_LIBPATH_USAGE();
     {
         ULONG	size;
         STRLEN	n_a;
 
         if (!_Dos32QueryHeaderInfo(0, 0, &size, sizeof(size), 
                                    DQHI_QUERYLIBPATHSIZE)) 
-            croak("OS2::_headerInfo(%ld,%ld,%ld,%ld) error: %s",
-                       DQHI_QUERYLIBPATHSIZE, sizeof(size), 0, 0,
-                       os2error(Perl_rc));
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_HEADER_QUERY_FAILED(DQHI_QUERYLIBPATHSIZE, sizeof(size), 0, 0, os2error(Perl_rc));
         ST(0) = newSVpvs("");
         SvGROW(ST(0), size + 1);
         sv_2mortal(ST(0));
@@ -3906,8 +3878,7 @@ XS(XS_OS2_libPath)
            unrelated data! */
         if (!_Dos32QueryHeaderInfo(0, 0, SvPV(ST(0), n_a), size,
                                    DQHI_QUERYLIBPATH)) 
-            croak("OS2::_headerInfo(%ld,%ld,%ld,%ld) error: %s",
-                       DQHI_QUERYLIBPATH, size, 0, 0, os2error(Perl_rc));
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_HEADER_QUERY_FAILED(DQHI_QUERYLIBPATH, size, 0, 0, os2error(Perl_rc));
         SvCUR_set(ST(0), size);
         *SvEND(ST(0)) = 0;
     }
@@ -3921,7 +3892,7 @@ XS(XS_OS2__control87)
 {
     dXSARGS;
     if (items != 2)
-        croak("Usage: OS2::_control87(new,mask)");
+        PERL_THROW_OS2__CONTROL87_USAGE();
     {
         unsigned	new = (unsigned)SvIV(ST(0));
         unsigned	mask = (unsigned)SvIV(ST(1));
@@ -3940,7 +3911,7 @@ XS(XS_OS2_mytype)
     int which = 0;
 
     if (items < 0 || items > 1)
-        croak("Usage: OS2::mytype([which])");
+        PERL_THROW_OS2_MYTYPE_USAGE();
     if (items == 1)
         which = (int)SvIV(ST(0));
     {
@@ -3961,7 +3932,7 @@ XS(XS_OS2_mytype)
             RETVAL = my_type();		/* Morphed type */
             break;
         default:
-            croak("OS2::mytype(which): unknown which=%d", which);
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PROCESS_TYPE_QUERY_KIND_UNKNOWN(which);
         }
         XSprePUSH; PUSHi((IV)RETVAL);
     }
@@ -3977,7 +3948,7 @@ XS(XS_OS2_mytype_set)
     if (items == 1)
         type = (int)SvIV(ST(0));
     else
-        croak("Usage: OS2::mytype_set(type)");
+        PERL_THROW_OS2_MYTYPE_SET_USAGE();
     my_type_set(type);
     XSRETURN_YES;
 }
@@ -3987,7 +3958,7 @@ XS(XS_OS2_get_control87)
 {
     dXSARGS;
     if (items != 0)
-        croak("Usage: OS2::get_control87()");
+        PERL_THROW_OS2_GET_CONTROL87_USAGE();
     {
         unsigned	RETVAL;
         dXSTARG;
@@ -4003,7 +3974,7 @@ XS(XS_OS2_set_control87)
 {
     dXSARGS;
     if (items < 0 || items > 2)
-        croak("Usage: OS2::set_control87(new=MCW_EM, mask=MCW_EM)");
+        PERL_THROW_OS2_SET_CONTROL87_USAGE();
     {
         unsigned	new;
         unsigned	mask;
@@ -4032,7 +4003,7 @@ XS(XS_OS2_incrMaxFHandles)		/* DosSetRelMaxFH */
 {
     dXSARGS;
     if (items < 0 || items > 1)
-        croak("Usage: OS2::incrMaxFHandles(delta = 0)");
+        PERL_THROW_OS2_INCRMAXFHANDLES_USAGE();
     {
         LONG	delta;
         ULONG	RETVAL, rc;
@@ -4097,7 +4068,7 @@ XS(XS_OS2_pipe)
 {
     dXSARGS;
     if (items < 2 || items > 8)
-        croak("Usage: OS2::pipe(pszName, ulOpenMode, connect= 1, count= 1, ulInbufLength= 8192, ulOutbufLength= ulInbufLength, ulPipeMode= count | NP_NOWAIT | NP_TYPE_BYTE | NP_READMODE_BYTE, ulTimeout= 0)");
+        PERL_THROW_OS2_PIPE_USAGE();
     {
         ULONG	RETVAL;
         PCSZ	pszName = ( SvOK(ST(0)) ? (PCSZ)SvPV_nolen(ST(0)) : NULL );
@@ -4112,7 +4083,7 @@ XS(XS_OS2_pipe)
         double	timeout;
 
         if (!pszName || !*pszName)
-            croak("OS2::pipe(): empty pipe name");
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_NAME_EMPTY();
         s = SvPV(OpenMode, len);
         if (memEQs(s, len, "wait")) {	/* DosWaitNPipe() */
             ULONG ms = 0xFFFFFFFF, ret = ERROR_INTERRUPT; /* Indefinite */
@@ -4125,7 +4096,7 @@ XS(XS_OS2_pipe)
                 else if (timeout && !ms)
                     ms = 1;
             } else if (items > 3)
-                croak("OS2::pipe(): too many arguments for wait-for-connect: %ld", (long)items);
+                PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_WAIT_ARGUMENT_COUNT_EXCEEDED((long)items);
 
             while (ret == ERROR_INTERRUPT)
                 ret = DosWaitNPipe(pszName, ms);	/* XXXX Update ms? */
@@ -4141,7 +4112,7 @@ XS(XS_OS2_pipe)
             char *b = buf;
 
             if (items < 3 || items > 5)
-                croak("usage: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])");
+                PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_CALL_ARGUMENT_COUNT_INVALID();
             s = SvPV(ST(2), l);
             if (items >= 4) {
                 timeout = (double)SvNV(ST(3));
@@ -4174,7 +4145,7 @@ XS(XS_OS2_pipe)
             W = strchr(s, 'W') != 0;
             b = strchr(s, 'b') != 0;
             if (r + w + R + W + b != len || (r && R) || (w && W))
-                croak("OS2::pipe(): unknown OpenMode argument: `%s'", s);
+                PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_OPEN_MODE_INVALID(s);
             if ((r || R) && (w || W))
                 ulOpenMode = NP_INHERIT | NP_NOWRITEBEHIND | NP_ACCESS_DUPLEX;
             else if (r || R)
@@ -4186,7 +4157,7 @@ XS(XS_OS2_pipe)
             if (W)
                 message = 1;
             else if (w && R)
-                croak("OS2::pipe(): can't have message read mode for non-message pipes");
+                PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_MESSAGE_READ_MODE_INVALID();
         } else
             ulOpenMode = (ULONG)SvUV(OpenMode);	/* ST(1) */
 
@@ -4216,7 +4187,7 @@ XS(XS_OS2_pipe)
             else if (memEQs(s, len, "wait"))
                 connect = 1;			/* wait */
             else
-                croak("OS2::pipe(): unknown connect argument: `%s'", s);
+                PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_CONNECT_MODE_UNKNOWN(s);
         }
 
         if (items < 4)
@@ -4235,7 +4206,7 @@ XS(XS_OS2_pipe)
             ulOutbufLength = (ULONG)SvUV(ST(5));
 
         if (count < -1 || count == 0 || count >= 255)
-            croak("OS2::pipe(): count should be -1 or between 1 and 254: %ld", (long)count);
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_INSTANCE_COUNT_OUT_OF_RANGE((long)count);
         if (count < 0 )
             count = 255;		/* Unlimited */
 
@@ -4284,7 +4255,7 @@ XS(XS_OS2_pipeCntl)
 {
     dXSARGS;
     if (items < 2 || items > 3)
-        croak("Usage: OS2::pipeCntl(pipe, op [, wait])");
+        PERL_THROW_OS2_PIPECNTL_USAGE();
     {
         ULONG	rc;
         PerlIO *perlio = IoIFP(sv_2io(ST(0)));
@@ -4296,7 +4267,7 @@ XS(XS_OS2_pipeCntl)
         int	peek = 0, state = 0, info = 0;
 
         if (fn < 0)
-            croak("OS2::pipeCntl(): not a pipe");	
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_HANDLE_DESCRIPTOR_INVALID();
         if (items == 3)
             wait = (SvTRUE(ST(2)) ? 1 : -1);
 
@@ -4339,12 +4310,12 @@ XS(XS_OS2_pipeCntl)
             break;
         default:
           unknown:
-            croak("OS2::pipeCntl(): unknown argument: `%s'", s);
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_CONTROL_OPERATION_UNKNOWN(s);
             break;
         }
 
         if (items == 3 && !connect)
-            croak("OS2::pipeCntl(): no wait argument for `%s'", s);
+            PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_WAIT_ARGUMENT_FORBIDDEN(s);
 
         XSprePUSH;		/* Do not need arguments any more */
         if (disconnect) {
@@ -4453,7 +4424,7 @@ XS(XS_OS2_open)
 {
     dXSARGS;
     if (items < 2 || items > 6)
-        croak("Usage: OS2::open(pszFileName, ulOpenMode, ulOpenFlags= OPEN_ACTION_OPEN_IF_EXISTS | OPEN_ACTION_FAIL_IF_NEW, ulAttribute= FILE_NORMAL, ulFileSize= 0, pEABuf= NULL)");
+        PERL_THROW_OS2_OPEN_USAGE();
     {
 #line 39 "pipe.xs"
         ULONG rc;
@@ -4709,21 +4680,21 @@ force_init_emx_runtime(EXCEPTIONREGISTRATIONRECORD *preg, ULONG flags)
         || tib->tib_pexchain < tib->tib_pstack) {
         error = 1;
         sprintf(buf,
-                "panic: ExceptionHandler misplaced: not %#lx <= %#lx < %#lx\n",
-                (unsigned long)tib->tib_pstack,
-                (unsigned long)tib->tib_pexchain,
-                (unsigned long)tib->tib_pstacklimit);	
+            PERL_DIAG_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_RUNTIME_EXCEPTION_CHAIN_OUTSIDE_STACK,
+            (unsigned long)tib->tib_pstack,
+            (unsigned long)tib->tib_pexchain,
+            (unsigned long)tib->tib_pstacklimit);
         goto finish;
     }
     if (tib->tib_pexchain != &(newstack->xreg)) {
-        sprintf(buf, "ExceptionHandler misplaced: %#lx != %#lx\n",
-                (unsigned long)tib->tib_pexchain,
-                (unsigned long)&(newstack->xreg));	
+        sprintf(buf,
+            PERL_DIAG_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_RUNTIME_EXCEPTION_HANDLER_MISMATCH,
+            (unsigned long)tib->tib_pexchain,
+            (unsigned long)&(newstack->xreg));
     }
     rc = DosUnsetExceptionHandler((EXCEPTIONREGISTRATIONRECORD *)tib->tib_pexchain);
     if (rc)
-        sprintf(buf + strlen(buf), 
-                "warning: DosUnsetExceptionHandler rc=%#lx=%lu\n", rc, rc);
+        sprintf(buf + strlen(buf), PERL_DIAG_FORMAT_WARNING_SYSTEM_PLATFORM_OS2_EXCEPTION_HANDLER_UNSET_FAILED, rc, rc);
 
     if (preg) {
         /* ExceptionRecords should be on stack, in a correct order.  Sigh... */
@@ -4731,8 +4702,7 @@ force_init_emx_runtime(EXCEPTIONREGISTRATIONRECORD *preg, ULONG flags)
         preg->ExceptionHandler = _emx_exception;
         rc = DosSetExceptionHandler(preg);
         if (rc) {
-            sprintf(buf + strlen(buf),
-                    "warning: DosSetExceptionHandler rc=%#lx=%lu\n", rc, rc);
+            sprintf(buf + strlen(buf), PERL_DIAG_FORMAT_WARNING_SYSTEM_PLATFORM_OS2_EXCEPTION_HANDLER_SET_FAILED, rc, rc);
             DosWrite(2, buf, strlen(buf), &out);
             emx_exception_init = 1;	/* Do it around spawn*() calls */
         }
@@ -4843,8 +4813,7 @@ check_emx_runtime(char **env, EXCEPTIONREGISTRATIONRECORD *preg)
             char buf[80];
             ULONG out;
 
-            sprintf(buf,
-                    "panic: EMX backdoor init: DosRequestMutexSem error: %lu=%#lx\n", rc, rc);	    
+            sprintf(buf, PERL_DIAG_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_RUNTIME_INIT_MUTEX_FAILED, rc, rc);
             DosWrite(2, buf, strlen(buf), &out);
             return;
         }
@@ -4992,8 +4961,7 @@ Perl_OS2_init3(char **env, void **preg, int flags)
     if (rc) {
         char buf[1024];
 
-        snprintf(buf, sizeof buf, "Error setting BEGIN/ENDLIBPATH: %s\n",
-                 os2error(rc));
+        snprintf(buf, sizeof buf, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_OS2_PATH_LIBPATH_SETUP_FAILED, os2error(rc));
         DosWrite(2, buf, strlen(buf), &rc);
         exit(2);
     }
@@ -5398,15 +5366,13 @@ int fork_with_resources()
 
             rc = DosQueryModuleName(dlls->handle, sizeof(dllname), dllname);
             if (rc) {
-                Perl_warn_nocontext("Can't find DLL name for the module `%s' by the handle %d, rc=%lu=%#lx",
-                                    dlls->modname, (int)dlls->handle, rc, rc);
+                PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_FORK_DLL_NAME_LOOKUP_FAILED(dlls->modname, (int)dlls->handle, rc, rc);
                 dlls++;
                 continue;
             }
             rc = DosLoadModule(fail, sizeof fail, dllname, &dlls->handle);
             if (rc)
-                Perl_warn_nocontext("Can't load DLL `%s', possible problematic module `%s'",
-                                    dllname, fail);
+                PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_FORK_DLL_RELOAD_FAILED(dllname, fail);
             dlls++;
         }
     }

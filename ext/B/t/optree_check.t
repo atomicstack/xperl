@@ -109,14 +109,21 @@ checkOptree ( name	=> 'empty code or prog',
 	      prog	=> '',
 	      );
     
-checkOptree
-    (  name	=> "self strict, catch err",
-       prog	=> 'use strict; bogus',
-       errs	=> 'Bareword "bogus" not allowed while "strict subs" in use at -e line 1.',
-       expect	=> "nextstate",	# simple expectations
-       expect_nt => "nextstate",
-       noanchors => 1,		# allow them to work
-       );
+my $strict_bareword_output = runperl(
+    switches => [ '-w', '-MO=Concise' ],
+    prog     => 'use strict; bogus',
+    stderr   => 1,
+);
+like(
+    $strict_bareword_output,
+    qr/Bareword "bogus" not allowed while "strict subs" in use at -e line 1\./,
+    'self strict error is reported',
+);
+unlike(
+    $strict_bareword_output,
+    qr/nextstate/,
+    'no optree is emitted after a compilation error',
+);
     
 checkOptree ( name	=> "sort lK - flag specific search",
 	      prog	=> 'our (@a,@b); @b = sort @a',

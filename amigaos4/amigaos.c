@@ -29,6 +29,7 @@
 #include <proto/utility.h>
 
 #include "amigaos.h"
+#include "perldiag.h"
 
 struct UtilityIFace *IUtility = NULL;
 
@@ -195,14 +196,14 @@ int pipe(int filedes[2])
 
 int fork(void)
 {
-        fprintf(stderr, "Can not bloody fork\n");
+        fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_AMIGA_PROCESS_FORK_UNAVAILABLE);
         errno = ENOMEM;
         return -1;
 }
 
 int wait(__attribute__((unused))int *status)
 {
-        fprintf(stderr, "No wait try waitpid instead\n");
+        fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_AMIGA_PROCESS_WAIT_UNAVAILABLE);
         errno = ECHILD;
         return -1;
 }
@@ -411,7 +412,7 @@ int myexecl(bool isperlthread, const char *path, ...)
 
 int pause(void)
 {
-        fprintf(stderr, "Pause not implemented\n");
+        fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_AMIGA_PROCESS_PAUSE_UNAVAILABLE);
 
         errno = EINTR;
         return -1;

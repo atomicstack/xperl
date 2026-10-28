@@ -218,9 +218,8 @@ my_invalid_parameter_handler(const wchar_t* expression,
     ansi_expression = wstr_to_str(expression);
     ansi_function = wstr_to_str(function);
     ansi_file = wstr_to_str(file);
-    fprintf(stderr, "Invalid parameter detected in function %s. "
-                    "File: %s, line: %d\n", ansi_function, ansi_file, line);
-    fprintf(stderr, "Expression: %s\n", ansi_expression);
+    fprintf(stderr, PERL_DIAG_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_CRT_PARAMETER_INVALID, ansi_function, ansi_file, line);
+    fprintf(stderr, PERL_DIAG_FORMAT_NOTE_CONTEXT_WINDOWS_INVALID_PARAMETER_EXPRESSION, ansi_expression);
     free(ansi_expression);
     free(ansi_function);
     free(ansi_file);
@@ -725,7 +724,7 @@ Perl_do_aspawn(pTHX_ SV *really, SV **mark, SV **sp)
     }
     else {
         if (status < 0) {
-            ck_warner(packWARN(WARN_EXEC), "Can't spawn \"%s\": %s", argv[0], strerror(errno));
+            PERL_WARN_WARNING_IO_EXEC_SPAWN_FAILED(argv[0], strerror(errno));
             status = 255 * 256;
         }
         else
@@ -843,9 +842,7 @@ do_spawn2_handles(pTHX_ const char *cmd, int exectype, const int *handles)
     }
     else {
         if (status < 0) {
-            ck_warner(packWARN(WARN_EXEC), "Can't %s \"%s\": %s",
-                      (exectype == EXECF_EXEC ? "exec" : "spawn"),
-                      cmd, strerror(errno));
+            PERL_WARN_WARNING_IO_EXEC_SELECTED_LAUNCH_OPERATION_FAILED((exectype == EXECF_EXEC ? perl_diag_selector_domain_2335_0_exec_1 : perl_diag_selector_domain_2335_0_spawn_2), cmd, strerror(errno));
             status = 255 * 256;
         }
         else
@@ -1434,7 +1431,7 @@ get_hwnd_delay(pTHX, long child, DWORD tries)
         }
     }
 
-    croak("panic: child pseudo-process was never scheduled");
+    PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_PROCESS_PSEUDO_CHILD_START_TIMEOUT();
 }
 #endif
 
@@ -2240,7 +2237,7 @@ win32_croak_not_implemented(const char * fname)
 {
     PERL_ARGS_ASSERT_WIN32_CROAK_NOT_IMPLEMENTED;
 
-    Perl_croak_nocontext("%s not implemented!\n", fname);
+    PERL_THROW_ERROR_SYSTEM_PLATFORM_WINDOWS_FUNCTION_UNAVAILABLE(fname);
 }
 
 #ifdef _DEBUG
@@ -2743,7 +2740,7 @@ do_raise(pTHX_ int sig)
 void
 sig_terminate(pTHX_ int sig)
 {
-    warn("Terminating on signal SIG%s(%d)\n",PL_sig_name[sig], sig);
+    PERL_WARN_WARNING_SYSTEM_SIGNAL_WINDOWS_PROCESS_TERMINATING(PL_sig_name[sig], sig);
     /* exit() seems to be safe, my_exit() or die() is a problem in ^C 
        thread 
      */
@@ -3022,8 +3019,7 @@ win32_sleep(unsigned int t)
     dTHX;
     /* Win32 times are in ms so *1000 in and /1000 out */
     if (t > UINT_MAX / 1000) {
-        ck_warner(packWARN(WARN_OVERFLOW),
-                        "sleep(%lu) too large", t);
+        PERL_WARN_WARNING_OVERFLOW_WIN32_SLEEP_MILLISECONDS_RANGE_EXCEEDED(t);
     }
     return win32_msgwait(aTHX_ 0, NULL, t * 1000, NULL) / 1000;
 }
@@ -5491,7 +5487,7 @@ Perl_win32_init(int *argcp, char ***argvp)
         FILETIME ft;
         if (!SystemTimeToFileTime(&time_t_epoch_base_systemtime,
                                   &ft)) {
-            fprintf(stderr, "panic: cannot convert base system time to filetime\n"); /* no interp */
+            fprintf(stderr, PERL_DIAG_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_TIME_EPOCH_CONVERSION_FAILED); /* no interp */
             exit(1);
         }
         time_t_epoch_base_filetime.LowPart  = ft.dwLowDateTime;
@@ -5669,10 +5665,6 @@ win32_create_message_window(void)
 static void
 win32_csighandler(int sig)
 {
-#if 0
-    dTHXa(PERL_GET_SIG_CONTEXT);
-    warn("Got signal %d",sig);
-#endif
     PERL_UNUSED_ARG(sig);
     /* Does nothing */
 }

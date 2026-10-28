@@ -97,7 +97,7 @@ dl_load_file(filename, flags=0)
     CODE:
     DLDEBUG(1,PerlIO_printf(Perl_debug_log, "dl_load_file(%s,%x):\n", filename,flags));
     if (flags & 0x01)
-	Perl_croak(aTHX_ "Can't make loaded symbols global on this platform while loading %s",filename);
+	PERL_THROW_ERROR_LOAD_GLOBAL_SYMBOL_VISIBILITY_UNSUPPORTED(filename);
     max = AvFILL(dl_require_symbols);
     for (x = 0; x <= max; x++) {
 	char *sym = SvPVX(*av_fetch(dl_require_symbols, x, 0));

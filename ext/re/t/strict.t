@@ -19,7 +19,7 @@ BEGIN { require_ok( 're' ); }
     my @w;
     no warnings;
     local $SIG{__WARN__};
-    BEGIN { $SIG{__WARN__} = sub { push @w, @_ } };
+    BEGIN { $SIG{__WARN__} = sub { push @w, $_[0] } };
     qr/\b*/;
     BEGIN { is(scalar @w, 0, 'No default-on warnings for qr/\b*/'); }
     BEGIN {undef @w; }

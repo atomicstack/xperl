@@ -276,16 +276,14 @@ struct interp_intern {
 #define _ckvmssts(call) STMT_START { unsigned long int __ckvms_sts; \
   if (!((__ckvms_sts=(call))&1)) { \
   set_errno(EVMSERR); set_vaxc_errno(__ckvms_sts); \
-  Perl_croak(aTHX_ "Fatal VMS error (status=%d) at %s, line %d", \
-  __ckvms_sts,__FILE__,__LINE__); } } STMT_END
+  PERL_THROW_ERROR_SYSTEM_PLATFORM_VMS_SERVICE_STATUS_FAILED(__ckvms_sts, __FILE__, __LINE__); } } STMT_END
 
 /* Same thing, but don't call back to Perl's croak(); useful for errors
  * occurring during startup, before Perl's state is initialized */
 #define _ckvmssts_noperl(call) STMT_START { unsigned long int __ckvms_sts; \
   if (!((__ckvms_sts=(call))&1)) { \
   set_errno(EVMSERR); set_vaxc_errno(__ckvms_sts); \
-  (void)fprintf(stderr,"Fatal VMS error (status=%d) at %s, line %d", \
-  __ckvms_sts,__FILE__,__LINE__); (void)lib$signal(__ckvms_sts); } } STMT_END
+  (void)fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_SERVICE_STATUS_FAILED, (int)__ckvms_sts, __FILE__, __LINE__); (void)lib$signal(__ckvms_sts); } } STMT_END
 
 #define PERL_SOCK_SYSREAD_IS_RECV
 #define PERL_SOCK_SYSWRITE_IS_SEND

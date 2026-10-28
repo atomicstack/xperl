@@ -161,7 +161,7 @@ dl_load_file(filename, flags=0)
     CODE:
     DLDEBUG(1,PerlIO_printf(Perl_debug_log, "dl_load_file(%s,%x):\n", filename,flags));
     if (flags & 0x01)
-	Perl_warn(aTHX_ "Can't make loaded symbols global on this platform while loading %s",filename);
+	PERL_WARN_WARNING_LOAD_GLOBAL_SYMBOL_LOADING_UNSUPPORTED(filename);
     RETVAL = dlopen(filename);
     DLDEBUG(2,PerlIO_printf(Perl_debug_log, " libref=%x\n", RETVAL));
     ST(0) = newSV_type_mortal(SVt_IV);
