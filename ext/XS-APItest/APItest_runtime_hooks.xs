@@ -45,6 +45,12 @@ mycroak(sv)
         Perl_croak(aTHX_ NULL);
     }
 
+void
+mycroak_sv(sv)
+    SV *sv
+    CODE:
+        Perl_croak_sv(aTHX_ sv);
+
 SV*
 strtab()
    CODE:
