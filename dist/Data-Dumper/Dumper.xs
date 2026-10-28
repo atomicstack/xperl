@@ -254,13 +254,8 @@ esc_q_utf8(pTHX_ SV* sv, const char *src, STRLEN slen, I32 do_utf8, I32 useqq)
             }
         }
         else if (! UTF8_IS_INVARIANT(k)) {
-            /* We treat as low ordinal any code point whose representation is
-             * the same under UTF-8 as not.  Thus, this is a high ordinal code
-             * point.
-             *
-             * If UTF-8, output as hex, regardless of useqq.  This means there
-             * is an overhead of 4 chars '\x{}'.  Then count the number of hex
-             * digits.  */
+            /* A UTF-8 character is emitted as \N{U+...}, preserving the
+             * string's character semantics when the output is evaluated. */
             if (do_utf8) {
                 k = utf8_to_uvchr_buf((U8*)s, (U8*) send, NULL);
 
@@ -268,18 +263,15 @@ esc_q_utf8(pTHX_ SV* sv, const char *src, STRLEN slen, I32 do_utf8, I32 useqq)
                 * first byte */
                 increment = (k == 0 && *s != '\0') ? 1 : UTF8SKIP(s);
 
-                grow += 6;  /* Smallest we do is "\x{FF}" */
+                grow += 7;  /* "\N{U+" plus one digit and "}" */
                 k >>= 4;
-                while ((k >>= 4) != 0) {   /* Add space for each nibble */
+                while (k != 0) {           /* Add space for each nibble */
                     grow++;
+                    k >>= 4;
                 }
             }
-            else if (useqq) {   /* Not utf8, must be <= 0xFF, hence 2 hex
-                                 * digits. */
-                grow += 4 + 2;
-            }
-            else {  /* Non-qq generates 3 octal digits plus backslash */
-                grow += 4;
+            else {  /* A byte string uses \x{...}. */
+                grow += 6;  /* "\x{" plus two digits and "}" */
             }
 	} /* End of high-ordinal non-printable */
         else if (! useqq) { /* Low ordinal, non-printable, non-qq just
@@ -312,7 +304,7 @@ esc_q_utf8(pTHX_ SV* sv, const char *src, STRLEN slen, I32 do_utf8, I32 useqq)
         }
     } /* End of size-calculating loop */
 
-    if (grow || useqq) {
+    if (grow || useqq || do_utf8) {
         /* We have something needing hex. 3 is ""\0 */
         sv_grow(sv, cur + 3 + grow + 2*backslashes + single_quotes
 		+ 2*qq_escapables + normal);
@@ -326,15 +318,15 @@ esc_q_utf8(pTHX_ SV* sv, const char *src, STRLEN slen, I32 do_utf8, I32 useqq)
 
             if (do_utf8 && ! UTF8_IS_INVARIANT(c0)) {
 
-                /* In UTF-8, we output as \x{} all chars that require more than
-                 * a single byte in UTF-8 to represent. */
+                /* Preserve a character string's semantics in the dumped
+                 * expression, including Latin-1 code points. */
                 k = utf8_to_uvchr_buf((U8*)s, (U8*) send, NULL);
 
                 /* treat invalid utf8 byte by byte.  This loop iteration gets the
                 * first byte */
                 increment = (k == 0 && *s != '\0') ? 1 : UTF8SKIP(s);
 
-                r = r + my_sprintf(r, "\\x{%" UVxf "}", k);
+                r = r + my_sprintf(r, "\\N{U+%" UVXf "}", k);
                 continue;
             }
 
@@ -344,6 +336,11 @@ esc_q_utf8(pTHX_ SV* sv, const char *src, STRLEN slen, I32 do_utf8, I32 useqq)
              * In each case the character occupies just one byte */
             k = *(U8*)s;
             increment = 1;
+
+            if (!UTF8_IS_INVARIANT(k)) {
+                r = r + my_sprintf(r, "\\x{%" UVxf "}", (UV)k);
+                continue;
+            }
 
             if (isPRINT(k)) {
                 /* These need a backslash escape */
@@ -1479,7 +1476,7 @@ MODULE = Data::Dumper		PACKAGE = Data::Dumper         PREFIX = Data_Dumper_
 #
 
 void
-Data_Dumper_Dumpxs(href, ...)
+Data_Dumper__Dumpxs(href, ...)
 	SV	*href;
 	PROTOTYPE: $;$$
 	PPCODE:

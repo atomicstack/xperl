@@ -1,10 +1,22 @@
 Revision history for Perl core module Data::Dumper
 
+2.193_53 2026-10-18
+    - Add the opt-in Useutf8 setting to emit printable Unicode characters
+      literally while retaining escapes for unsafe or invisible characters.
+
+2.193_52 2026-10-08
+    - Use Unicode character names in escapes for UTF-8 strings when available.
+
+2.193_51 2026-10-08
+    - Use uppercase hexadecimal digits in C<\N{U+...}> escapes.
+
 2.193_50 2026-08-28
     - Support dumping and restoring objects created by the experimental class
       feature using the core shallow class-object hash conversion API.
     - Preserve compatibility when built standalone on older Perls without the
       class-object type or API.
+    - Use C<\x{...}> escapes for high bytes in byte strings and C<\N{U+...}>
+      escapes for characters in UTF-8 strings.
 
 2.183 2021-07-05 NWCLARK
     - No changes from previous dev release.

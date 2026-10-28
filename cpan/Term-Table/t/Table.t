@@ -268,9 +268,7 @@ tests sanitize => sub {
 
     my $have_gcstring = eval { require Unicode::GCString; 1 } || 0;
 
-    is_deeply(
-        \@table,
-        [
+    my @expected_table = (
             (
                 $have_gcstring
                 ? ()
@@ -284,7 +282,14 @@ tests sanitize => sub {
             '| 2}\\N{U+2003}\\N{U+2004}\\N{U+2008}\\N{U+2028}\\N{U+2029} |',
             "| \\N{U+3000}\\N{U+200C}\\N{U+FEFF}\\N{U+B}b\x{444}              |",
             '+------------------------------------------------------+'
-        ],
+    );
+    my $first_data_row = $have_gcstring ? 3 : 4;
+    utf8::upgrade($expected_table[$_])
+        for $first_data_row .. $#expected_table - 1;
+
+    is_deeply(
+        \@table,
+        \@expected_table,
         "Sanitized data"
     );
 };

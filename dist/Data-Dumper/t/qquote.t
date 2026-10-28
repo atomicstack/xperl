@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 16;
+use Test::More tests => 22;
 use Data::Dumper;
 
 {
@@ -14,6 +14,25 @@ use Data::Dumper;
     my $str = Data::Dumper::qquote("");
     is($str,   q{""}, q{qquote("") returned ""});
     is($warning, "",  q{qquote("") did not warn});
+}
+
+{
+    my $bytes = "\xE9";
+    my $chars = "\N{U+E9}";
+
+    is(Data::Dumper::qquote($bytes), '"\\x{e9}"',
+       'byte strings use a hexadecimal byte escape');
+    is(Data::Dumper::qquote($chars),
+       '"\\N{LATIN SMALL LETTER E WITH ACUTE}"',
+       'UTF-8 strings use a Unicode character name escape');
+
+    my $roundtrip_bytes = eval Data::Dumper::qquote($bytes);
+    my $roundtrip_chars = eval Data::Dumper::qquote($chars);
+
+    is($roundtrip_bytes, $bytes, 'byte string value round trips');
+    ok(!utf8::is_utf8($roundtrip_bytes), 'byte string remains unflagged');
+    is($roundtrip_chars, $chars, 'character string value round trips');
+    ok(utf8::is_utf8($roundtrip_chars), 'character string remains UTF-8');
 }
 
 {
