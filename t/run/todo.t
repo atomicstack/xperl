@@ -154,7 +154,8 @@ TODO: {
 }
 
 TODO: {
-    local $TODO = "[GH 8859]";
+    # The expected integer needs 58 significant bits when formatted as an NV.
+    local $TODO = $Config{nv_preserves_uv_bits} >= 58 ? undef : "[GH 8859]";
     fresh_perl_is(<<~'EOF',
         my $mul = 2**32; my $a = 104712103; my $b = 50;
         my $c = 449735057880383538; # For these values, $mul * $a + $b == $c. Thus $diff should be zero.
@@ -338,7 +339,8 @@ TODO: {
 }
 
 TODO: {
-    local $::TODO = 'GH 21827';
+    # This argument needs 54 significant bits to survive conversion to an NV.
+    local $::TODO = $Config{nv_preserves_uv_bits} >= 54 ? undef : 'GH 21827';
     my $test = 18446744073709550592;
     my @warnings = capture_warnings(sub { localtime $test });
     {
