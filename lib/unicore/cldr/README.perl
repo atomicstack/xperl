@@ -44,18 +44,27 @@ The focused test checks the release pin, locale and rule-set counts, and
 representative conditions and samples. Review and update those assertions
 when importing a new release.
 
-For a future integer-only evaluator, CLDR's operands reduce to n=i=input and
-v=w=f=t=c=e=0 for a nonnegative integer input. This import preserves rule
-conditions and samples but does not evaluate rules or add runtime lookup
-behavior. Locale mappings use the exact identifiers in the plural files.
+The integer evaluator uses n=i=input and v=w=f=t=c=e=0 for a nonnegative
+integer input. regen/diag_plural.pm parses and specializes the retained
+conditions, and regen/diag.pl writes perldiag_plural.inc. This C table is
+compiled into Perl and miniperl. The cardinal_plural_form and
+ordinal_plural_form queries use it without loading modules or consulting
+diagnostic packs. Packs retain their own rendering-rule callbacks.
+
+To regenerate the compiled table after a reviewed import, run:
+
+    perl regen/diag.pl
+
+The C lookup accepts code-based POSIX locales and language tags, normalizes
+case and separators, and removes trailing subtags until it finds a rule.
+Known languages with no explicit ordinal rule use the default other rule.
+The C and POSIX locales use English. Unknown language codes return no rule.
 The importer retains only regional parent mappings that select a different
 explicit plural rule from normal subtag removal. For CLDR 49, pt has a
 cardinal one rule for i=0..1, while pt-PT has it only for i=1 and v=0. The
 eleven pt-* regions that inherit from pt-PT therefore need an explicit
 cardinal override. This release has no ordinal regional overrides.
-General aliases, script-parent policies, and root/default inheritance are
-outside this import. Locale normalization and runtime fallback remain future
-work.
+General aliases and script-parent policies are outside this import.
 
 Locale counts describe the canonical JSON locale maps. They do not add
 alternate identifiers or synthesize the root locale.

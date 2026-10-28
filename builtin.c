@@ -578,6 +578,52 @@ Perl_XS_builtin_indexed(pTHX_ CV *cv)
     XSRETURN(retcount);
 }
 
+/* Both builtins share argument handling. XSUBANY selects the rule family,
+ * keeping cardinal and ordinal mappings independent of template selection. */
+XS(Perl_builtin_plural_form);
+XS(Perl_builtin_plural_form)
+{
+    dXSARGS;
+    dXSI32;
+    if (items != 2)
+        croak_xs_usage(cv, "language, n");
+
+    /* Snapshot magical arguments once. FETCH may run Perl and change either
+     * argument, so keep the language PV alive while reading the number. */
+    SV *language_sv = sv_mortalcopy(ST(0));
+    SV *n_sv = sv_mortalcopy(ST(1));
+    STRLEN language_length;
+    STRLEN n_length;
+    const char *language;
+    const char *digits;
+    const char *end;
+    UV n;
+
+    if (!SvOK(n_sv) || SvROK(n_sv))
+        croak_xs_usage(cv, "language, unsigned integer n");
+    digits = SvPV(n_sv, n_length);
+    end = digits + n_length;
+    while (digits + 1 < end && *digits == '0')
+        digits++;
+    const char *parsed_end = end;
+    if (!grok_atoUV(digits, &n, &parsed_end) || parsed_end != end)
+        croak_xs_usage(cv, "language, unsigned integer n");
+
+    if (!SvOK(language_sv) || SvROK(language_sv))
+        XSRETURN_UNDEF;
+    language = SvPV(language_sv, language_length);
+    if (strlen(language) != language_length)
+        XSRETURN_UNDEF;
+
+    const char *form = ix
+        ? Perl_ordinal_plural_form(aTHX_ language, n)
+        : Perl_cardinal_plural_form(aTHX_ language, n);
+    if (!form)
+        XSRETURN_UNDEF;
+    ST(0) = sv_2mortal(newSVpv(form, 0));
+    XSRETURN(1);
+}
+
 XS(XS_builtin_load_module);
 XS(XS_builtin_load_module)
 {
@@ -743,6 +789,8 @@ static const struct BuiltinFuncDescriptor builtins[] = {
     { "created_as_string", NO_BUNDLE, true, &XS_builtin_created_as_string, &ck_builtin_func1, 0 },
     { "created_as_number", NO_BUNDLE, true, &XS_builtin_created_as_number, &ck_builtin_func1, 0 },
 
+    { "cardinal_plural_form", NO_BUNDLE, true, &Perl_builtin_plural_form, &ck_builtin_funcN, 0 },
+    { "ordinal_plural_form",  NO_BUNDLE, true, &Perl_builtin_plural_form, &ck_builtin_funcN, 1 },
 
     { "load_module", NO_BUNDLE, true, &XS_builtin_load_module, &ck_builtin_func1, 0 },
 
