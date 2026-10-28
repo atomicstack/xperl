@@ -27,6 +27,7 @@ foreach my $pl (map {chomp; "regen/$_"} <DATA>) {
 # lock_definitions.pl must come after reentr.pl
 __END__
 feature.pl
+diag.pl
 mg_vtable.pl
 miniperlmain.pl
 opcode.pl
