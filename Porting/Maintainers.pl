@@ -1519,6 +1519,7 @@ our %Modules = (
                 lib/_charnames.pm
                 lib/blib.{pm,t}
                 lib/builtin.{pm,t}
+                lib/builtin-plural.t
                 lib/builtin-taint.t
                 lib/diagpack.pm
                 lib/bytes.{pm,t}

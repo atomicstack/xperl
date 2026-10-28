@@ -28,6 +28,7 @@ builtin - Perl pragma to import built-in utility functions
         is_tainted
         export_lexically
         load_module
+        cardinal_plural_form ordinal_plural_form
         get_diagnostic_data
         package_implements
         class_object_to_hash class_object_from_hash
@@ -548,6 +549,71 @@ C<load_module> can't be used to require a particular version of Perl, nor can
 it be given a bareword module name as an argument.
 
 Available starting with Perl 5.40.
+
+=head2 cardinal_plural_form
+
+    $form = cardinal_plural_form($language, $n);
+
+This function is currently B<experimental>.
+
+Returns the grammatical cardinal plural category for the unsigned integer
+C<$n> in C<$language>. Cardinal rules describe quantities, such as "1 error"
+and "2 errors". The result is one of C<zero>, C<one>, C<two>, C<few>, C<many>,
+or C<other>. These names describe language-specific grammar, not fixed
+numeric ranges. For example, English maps 0 to C<other>, French maps 0 to
+C<one>, and Persian maps both 0 and 1 to C<one>.
+
+C<$language> accepts a canonical CLDR language code or a code-based locale
+identifier, such as C<en>, C<fil>, C<en-US>, C<en_US.UTF-8>, or C<sr-Latn-RS>.
+Tag matching is case-insensitive. Underscores are treated as hyphens, and
+POSIX encoding and modifier suffixes are removed. The script modifiers
+C<@latin> and C<@cyrillic> select C<Latn> and C<Cyrl> when no script is present.
+Lookup uses the most specific available rule, including CLDR's regional
+plural overrides. A script subtag does not hide a regional rule. Lookup
+then removes trailing subtags. For example, C<pt-AO>
+uses the European Portuguese cardinal rule, while C<pt-BR> uses C<pt>.
+
+Every language represented by the retained CLDR plural data is available
+without loading modules, including in miniperl. Diagnostic pack registration
+and replacement do not affect these queries. C<C> and C<POSIX> locales use
+English. An unsupported, undefined, or malformed language returns C<undef>.
+The function does not resolve C<auto> or fall back to English for unknown
+languages. Legacy locale aliases and Windows display-name locale strings
+are not resolved.
+
+C<$n> must be an unsigned integer or a decimal digit string within the
+interpreter's unsigned integer range. Fractional, negative, undefined, and
+reference values throw an exception. The rule calculation uses integer
+arithmetic and does not allocate temporary objects.
+
+Diagnostic-specific exact-number overrides and wildcard fallback belong to
+template selection, not this function. In diagnostic configuration, write
+exact numbers as C<"0"> or C<"21"> without an equals sign. C<other> is a real
+category and is distinct from the C<*> wildcard.
+
+=head2 ordinal_plural_form
+
+    $form = ordinal_plural_form($language, $n);
+
+This function is currently B<experimental>.
+
+Uses ordinal rules for positions, such as "1st", "2nd", "3rd", and "4th".
+The arguments, possible results, and unsupported-language behavior are the
+same as L</cardinal_plural_form>, but the mapping is independent. English
+maps 21 to C<one> under ordinal rules and to C<other> under cardinal rules.
+Known languages with no explicit ordinal rule use the CLDR default C<other>.
+
+Both functions implement integer rules from the retained CLDR 49 definitions.
+They do not provide a general CLDR or MF2 implementation.
+
+=head2 package_implements
+
+    package_implements($package_or_object, $role)
+
+This experimental builtin performs the core role-composition check without
+dispatching the object's C<implements> or C<DOES> methods.  It is the
+authoritative implementation used by the default C<implements> method of
+classes and roles declared with the class feature.
 
 =head2 class_object_to_hash
 
