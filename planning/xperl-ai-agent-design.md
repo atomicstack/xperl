@@ -188,6 +188,13 @@ resulting interface should remain distinctly Perl-oriented.
 
 # 2. Machine-Readable Compiler Diagnostics
 
+The core already provides structured exception and diagnostic rendering.
+See [the implementation queue](perl-core-structured-errors.md) and
+[the data layout](diagnostic-data-layout.md) for current behavior. The example
+below is an agent-interface proposal, not the current serialized schema.
+Column spans, suggestions, and the illustrative `XPERL-E0123` spelling are
+not claims about fields implemented by the exception project.
+
 Agents should not need to parse human error messages with regular expressions.
 
 Traditional output such as:
@@ -522,41 +529,15 @@ shell command strings.
 
 # 8. Structured Errors
 
-New XPerl APIs should avoid making free-form strings their public error
-contract.
+The current core exception direction and implementation status are tracked in
+[`perl-core-structured-errors.md`](perl-core-structured-errors.md).
+Design principles, localization, comparisons with other error models, and
+future ideas are collected in
+[`perlexcephack.pod`](../pod/perlexcephack.pod).
 
-Instead, errors should share a common structured interface.
-
-For example:
-
-```perl
-$error->code;
-$error->message;
-$error->cause;
-$error->data;
-$error->file;
-$error->line;
-$error->trace;
-```
-
-Human-readable formatting can be layered on top.
-
-Machine-readable serialization can use the same underlying object.
-
-Ideally, core libraries such as:
-
-- `FS`
-- `Process`
-- `HTTP`
-- `JSON`
-- `Graph`
-- parsers
-- package management
-- compiler diagnostics
-
-would all expose compatible error semantics.
-
-This allows an agent to write generic recovery logic.
+For agent-facing APIs, the useful goal remains stable machine-readable error
+identity and structured context alongside human-readable rendering. Agents
+should branch on codes and documented data, not message wording.
 
 ---
 
