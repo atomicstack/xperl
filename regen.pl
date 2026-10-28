@@ -28,6 +28,7 @@ foreach my $pl (map {chomp; "regen/$_"} <DATA>) {
 __END__
 feature.pl
 diag.pl
+diag_pack.pl
 mg_vtable.pl
 miniperlmain.pl
 opcode.pl

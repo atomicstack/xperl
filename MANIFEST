@@ -5670,6 +5670,10 @@ ext/XPerl-DiagPack-FA/FA.pm		Persian diagnostic language pack
 ext/XPerl-DiagPack-FA/FA.xs		Persian diagnostic language-pack XS interface
 ext/XPerl-DiagPack-FA/FA_data.inc	Persian diagnostic language-pack catalog
 ext/XPerl-DiagPack-FA/Makefile.PL	MakeMaker driver for XPerl::DiagPack::FA
+ext/XPerl-DiagPack-FI/FI.pm		Finnish diagnostic language pack
+ext/XPerl-DiagPack-FI/FI.xs		Finnish diagnostic language-pack XS interface
+ext/XPerl-DiagPack-FI/FI_data.inc	Finnish diagnostic language-pack catalog
+ext/XPerl-DiagPack-FI/Makefile.PL	MakeMaker driver for XPerl::DiagPack::FI
 ext/XPerl-DiagPack-FR/FR.pm		French diagnostic language pack
 ext/XPerl-DiagPack-FR/FR.xs		French diagnostic language-pack XS interface
 ext/XPerl-DiagPack-FR/FR_data.inc	French diagnostic language-pack catalog
@@ -5678,6 +5682,10 @@ ext/XPerl-DiagPack-HE/HE.pm		Hebrew diagnostic language pack
 ext/XPerl-DiagPack-HE/HE.xs		Hebrew diagnostic language-pack XS interface
 ext/XPerl-DiagPack-HE/HE_data.inc	Hebrew diagnostic language-pack catalog
 ext/XPerl-DiagPack-HE/Makefile.PL	MakeMaker driver for XPerl::DiagPack::HE
+ext/XPerl-DiagPack-HU/HU.pm		Hungarian diagnostic language pack
+ext/XPerl-DiagPack-HU/HU.xs		Hungarian diagnostic language-pack XS interface
+ext/XPerl-DiagPack-HU/HU_data.inc	Hungarian diagnostic language-pack catalog
+ext/XPerl-DiagPack-HU/Makefile.PL	MakeMaker driver for XPerl::DiagPack::HU
 ext/XPerl-DiagPack-IS/IS.pm		Icelandic diagnostic language pack
 ext/XPerl-DiagPack-IS/IS.xs		Icelandic diagnostic language-pack XS interface
 ext/XPerl-DiagPack-IS/IS_data.inc	Icelandic diagnostic language-pack catalog
@@ -5698,6 +5706,10 @@ ext/XPerl-DiagPack-RU/Makefile.PL	MakeMaker driver for XPerl::DiagPack::RU
 ext/XPerl-DiagPack-RU/RU.pm		Russian diagnostic language pack
 ext/XPerl-DiagPack-RU/RU.xs		Russian diagnostic language-pack XS interface
 ext/XPerl-DiagPack-RU/RU_data.inc	Russian diagnostic language-pack catalog
+ext/XPerl-DiagPack-TR/Makefile.PL	MakeMaker driver for XPerl::DiagPack::TR
+ext/XPerl-DiagPack-TR/TR.pm		Turkish diagnostic language pack
+ext/XPerl-DiagPack-TR/TR.xs		Turkish diagnostic language-pack XS interface
+ext/XPerl-DiagPack-TR/TR_data.inc	Turkish diagnostic language-pack catalog
 ext/XPerl-DiagPack-UK/Makefile.PL	MakeMaker driver for XPerl::DiagPack::UK
 ext/XPerl-DiagPack-UK/UK.pm		Ukrainian diagnostic language pack
 ext/XPerl-DiagPack-UK/UK.xs		Ukrainian diagnostic language-pack XS interface
@@ -6670,6 +6682,7 @@ regen/charset_translations.pl		Character set utilities
 regen/diag.pl				Generates diagnostic interfaces
 regen/diag_classes.pm			Diagnostic class hierarchy and review model
 regen/diag_lib.pm			Diagnostic migration parser helpers
+regen/diag_pack.pl			Generates the initial German diagnostic language pack
 regen/diag_pack.pm			Generates ordinary diagnostic language-pack XS distributions
 regen/diag_plural.pm			Compile retained CLDR rules for integer plural queries
 regen/diag_pod.pm			Diagnostic documentation import and rendering
@@ -7150,6 +7163,7 @@ t/op/numconvert.t			See if accessing fields does not change numeric values
 t/op/numify.t				See if string-to-number conversion works
 t/op/numify_chkflags.t			See if string-to-number conversion behaves correctly
 t/op/oct.t				See if oct and hex work
+t/op/operation_words.t			Language-owned operation word rendering
 t/op/or.t				See if || works in weird situations
 t/op/ord.t				See if ord works
 t/op/overload_integer.t			See if overload::constant for integer works after "use".
@@ -7254,6 +7268,7 @@ t/op/xperl_diagpacks.t			Direct diagnostic language-pack checks
 t/op/xperl_exception.t			Test structured exception objects
 t/op/xperl_nested_serialization.t	Deep and cyclic diagnostic serialization
 t/op/xperl_nested_validation.t		Catalogued nested diagnostic validation
+t/op/xperl_rendering.t			Structured diagnostic rendering checks
 t/op/yadayada.t				See if ... works
 t/opbasic/arith.t			See if arithmetic works
 t/opbasic/cmp.t				See if the various string and numeric compare work

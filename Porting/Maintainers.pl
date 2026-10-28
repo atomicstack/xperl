@@ -1446,13 +1446,16 @@ our %Modules = (
                 ext/XPerl-DiagPack-EN/
                 ext/XPerl-DiagPack-ES/
                 ext/XPerl-DiagPack-FA/
+                ext/XPerl-DiagPack-FI/
                 ext/XPerl-DiagPack-FR/
                 ext/XPerl-DiagPack-HE/
+                ext/XPerl-DiagPack-HU/
                 ext/XPerl-DiagPack-IS/
                 ext/XPerl-DiagPack-IT/
                 ext/XPerl-DiagPack-NL/
                 ext/XPerl-DiagPack-PT/
                 ext/XPerl-DiagPack-RU/
+                ext/XPerl-DiagPack-TR/
                 ext/XPerl-DiagPack-UK/
                 ext/XS-APItest/
                 ext/XS-Typemap/
