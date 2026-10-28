@@ -40179,7 +40179,8 @@ $CONF = {
           "code" => "ERROR_RNG_BYTES_COUNT_TOO_LARGE",
           "macro" => "PERL_THROW_ERROR_RNG_BYTES_COUNT_TOO_LARGE",
           "source_files" => [
-            "builtin.c"
+            "builtin.c",
+            "pp.c"
           ],
           "tags" => [
             "condition:size_count_range",

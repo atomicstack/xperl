@@ -15,7 +15,7 @@ use RNG::HMAC_DRBG ();
 use RNG::Seed ();
 use RNG::SeedBase ();
 
-plan(tests => 47);
+plan(tests => 49);
 
 sub mk_rand { map int rand 10000, 1..100; }
 
@@ -298,6 +298,19 @@ package main;
        'a list return contributes its final scalar value');
 
     local ${^RNG} = undef;
+    SKIP: {
+        skip 'size_t is wider than UV', 2 if $Config{sizesize} > $Config{uvsize};
+        my $maximum_length = ~0;
+        $maximum_length >>= 8 * ($Config{uvsize} - $Config{sizesize});
+        eval { rand_bytes($maximum_length) };
+        my $maximum_error = $@;
+        like($maximum_error, qr/builtin::rand_bytes\(\) count is too large/,
+             'maximum byte count is rejected before adding a terminator');
+        is($maximum_error->contents->[0]->code,
+           'ERROR_RNG_BYTES_COUNT_TOO_LARGE',
+           'the maximum count uses the size diagnostic');
+    }
+
     srand(4321);
     my $first = rand_bytes(16);
     is(length($first), 16, 'default builtin::rand_bytes returns the requested length');
