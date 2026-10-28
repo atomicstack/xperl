@@ -1277,6 +1277,7 @@ distclean: realclean
 	-if exist $(LIBDIR)\version rmdir /s /q $(LIBDIR)\version
 	-if exist $(LIBDIR)\VMS rmdir /s /q $(LIBDIR)\VMS
 	-if exist $(LIBDIR)\Win32API rmdir /s /q $(LIBDIR)\Win32API
+	-if exist $(LIBDIR)\XPerl\DiagPack rmdir /s /q $(LIBDIR)\XPerl\DiagPack
 	-if exist $(LIBDIR)\XS rmdir /s /q $(LIBDIR)\XS
 	-cd $(PODDIR) && del /f *.html *.bat roffitall \
 	    perl5455delta.pod perlaix.pod perlamiga.pod perlandroid.pod \
