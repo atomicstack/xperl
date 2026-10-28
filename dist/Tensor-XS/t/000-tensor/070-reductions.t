@@ -87,7 +87,8 @@ subtest 'min_value method - 1D tensor with floating point numbers' => sub {
     my $t = Tensor->initialize([5], [1.5, 2.3, 0.9, 3.7, 2.1]);
     my $min = $t->min_value;
 
-    is( $min, 0.9, 'minimum of floating point values is 0.9' );
+    cmp_ok( abs($min - 0.9), '<', 1e-12,
+        'minimum of floating point values is 0.9' );
 };
 
 subtest 'min_value method - 2D tensor minimum' => sub {
@@ -136,7 +137,8 @@ subtest 'max_value method - 1D tensor with floating point numbers' => sub {
     my $t = Tensor->initialize([5], [1.5, 2.3, 0.9, 3.7, 2.1]);
     my $max = $t->max_value;
 
-    is( $max, 3.7, 'maximum of floating point values is 3.7' );
+    cmp_ok( abs($max - 3.7), '<', 1e-12,
+        'maximum of floating point values is 3.7' );
 };
 
 subtest 'max_value method - 2D tensor maximum' => sub {

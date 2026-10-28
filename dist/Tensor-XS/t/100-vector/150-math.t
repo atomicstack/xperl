@@ -39,7 +39,8 @@ subtest 'neg method - with floating point numbers' => sub {
 
     is( $negated->at(0), -1.5, 'negating 1.5 gives -1.5' );
     is( $negated->at(1), 2.5, 'negating -2.5 gives 2.5' );
-    is( $negated->at(2), -3.14, 'negating 3.14 gives -3.14' );
+    cmp_ok( abs($negated->at(2) - (-3.14)), '<', 1e-12,
+        'negating 3.14 gives -3.14' );
 };
 
 subtest 'add method - with scalar values' => sub {
@@ -201,7 +202,8 @@ subtest 'div method - with another vector' => sub {
     my $v4 = Vector->initialize(3, [ 2, 3, 4 ] );
     my $divided_float = $v3->div($v4);
     is( $divided_float->at(0), 3.5, 'first elements: 7 / 2 = 3.5' );
-    is( $divided_float->at(1), 2.66666666666667, 'second elements: 8 / 3 ≈ 2.667' );
+    cmp_ok( abs($divided_float->at(1) - 2.66666666666667), '<', 1e-12,
+        'second elements: 8 / 3 ≈ 2.667' );
     is( $divided_float->at(2), 2.25, 'third elements: 9 / 4 = 2.25' );
 };
 

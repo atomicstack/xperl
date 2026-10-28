@@ -57,7 +57,8 @@ subtest 'initialize method - with floating point initial values' => sub {
     # Check all elements are initialized to 3.14
     for my $i (0..1) {
         for my $j (0..2) {
-            is( $m->at($i, $j), 3.14, "element at ($i,$j) is 3.14" );
+            cmp_ok( abs($m->at($i, $j) - 3.14), '<', 1e-12,
+                "element at ($i,$j) is 3.14" );
         }
     }
 };

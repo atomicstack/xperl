@@ -44,8 +44,10 @@ subtest 'neg method - with floating point numbers' => sub {
 
     is( $negated->at(0, 0), -1.5, 'negating 1.5 gives -1.5' );
     is( $negated->at(0, 1), 2.5, 'negating -2.5 gives 2.5' );
-    is( $negated->at(1, 0), -3.14, 'negating 3.14 gives -3.14' );
-    is( $negated->at(1, 1), 4.2, 'negating -4.2 gives 4.2' );
+    cmp_ok( abs($negated->at(1, 0) - (-3.14)), '<', 1e-12,
+        'negating 3.14 gives -3.14' );
+    cmp_ok( abs($negated->at(1, 1) - 4.2), '<', 1e-12,
+        'negating -4.2 gives 4.2' );
 };
 
 subtest 'add method - with scalar values' => sub {
@@ -274,7 +276,8 @@ subtest 'div method - with another matrix' => sub {
     my $m4 = Matrix->new( shape => [2, 2], data => [2, 3, 4, 5] );
     my $divided_float = $m3->div($m4);
     is( $divided_float->at(0, 0), 3.5, 'element at (0,0): 7 / 2 = 3.5' );
-    is( $divided_float->at(0, 1), 2.66666666666667, 'element at (0,1): 8 / 3 ≈ 2.667' );
+    cmp_ok( abs($divided_float->at(0, 1) - 2.66666666666667), '<', 1e-12,
+        'element at (0,1): 8 / 3 ≈ 2.667' );
     is( $divided_float->at(1, 0), 2.25, 'element at (1,0): 9 / 4 = 2.25' );
     is( $divided_float->at(1, 1), 2, 'element at (1,1): 10 / 5 = 2' );
 };
@@ -290,7 +293,8 @@ subtest 'div method - with vector' => sub {
     is( $divided->at(0, 0), 4, 'element at (0,0): 12 / 3 = 4' );
     is( $divided->at(0, 1), 3, 'element at (0,1): 15 / 5 = 3' );
     is( $divided->at(1, 0), 6, 'element at (1,0): 18 / 3 = 6' );
-    is( $divided->at(1, 1), 4.2, 'element at (1,1): 21 / 5 = 4.2' );
+    cmp_ok( abs($divided->at(1, 1) - 4.2), '<', 1e-12,
+        'element at (1,1): 21 / 5 = 4.2' );
 };
 
 subtest 'mod method - with scalar values' => sub {

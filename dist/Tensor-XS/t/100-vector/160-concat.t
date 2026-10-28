@@ -78,8 +78,10 @@ subtest 'concat method - with floating point numbers' => sub {
     is( $result->size, 4, 'result vector has correct size (2+2=4)' );
     is( $result->at(0), 1.5, 'first element is 1.5' );
     is( $result->at(1), 2.5, 'second element is 2.5' );
-    is( $result->at(2), 3.14, 'third element is 3.14' );
-    is( $result->at(3), 4.2, 'fourth element is 4.2' );
+    cmp_ok( abs($result->at(2) - 3.14), '<', 1e-12,
+        'third element is 3.14' );
+    cmp_ok( abs($result->at(3) - 4.2), '<', 1e-12,
+        'fourth element is 4.2' );
 };
 
 subtest 'concat method - with negative numbers' => sub {

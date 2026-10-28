@@ -17,8 +17,10 @@ subtest 'at method - accessing elements by index' => sub {
 
     # Test with different data types
     my $v2 = Vector->initialize( 2, [ 3.14, -5.2 ] );
-    is( $v2->at(0), 3.14, 'at(0) works with floating point numbers' );
-    is( $v2->at(1), -5.2, 'at(1) works with negative numbers' );
+    cmp_ok( abs($v2->at(0) - 3.14), '<', 1e-12,
+        'at(0) works with floating point numbers' );
+    cmp_ok( abs($v2->at(1) - (-5.2)), '<', 1e-12,
+        'at(1) works with negative numbers' );
 
     # Test with single element vector
     my $v3 = Vector->initialize( 1, [ 42 ] );

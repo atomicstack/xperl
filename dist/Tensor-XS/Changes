@@ -1,5 +1,13 @@
 Revision history for Tensor-XS
 
+Unreleased
+
+Compare rounded F64 results numerically in decimal-value tests. Perl builds
+with wider NVs, including quadmath, expose the F64 storage rounding when
+stringifying values. Decimal and rounded fractional expectations now allow
+an absolute error below 1e-12 for the small values used by these tests.
+Exact integer and binary-fraction checks remain unchanged.
+
 0.02  2026-09-01
 
 The elementwise arithmetic, comparisons, logical operations, reductions,

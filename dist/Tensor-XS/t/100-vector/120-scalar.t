@@ -35,7 +35,8 @@ subtest 'sum method - with floating point numbers' => sub {
     is( $v->sum, 7.0, 'sum of [1.5,2.5,3.0] is 7.0' );
 
     my $v2 = Vector->initialize(2, [ 0.1, 0.2 ] );
-    is( $v2->sum, 0.3, 'sum of [0.1,0.2] is 0.3' );
+    cmp_ok( abs($v2->sum - 0.3), '<', 1e-12,
+        'sum of [0.1,0.2] is 0.3' );
 };
 
 subtest 'sum method - edge cases' => sub {
