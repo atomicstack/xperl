@@ -1,14 +1,21 @@
 # Development planning
 
-This directory contains working material for Perl-core development in this
-checkout.
+This directory contains proposals, investigations and review tools for
+Perl-core development. Installed documentation belongs in `pod/`; generated
+HTML, model responses and temporary build output belong under the workspace
+`tmp/` directory.
 
-It is used for design proposals, implementation notes, investigations,
-profiling and review reports, and small scripts that support this work.  The
-files record reasoning that is useful while a feature is being developed, but
-they are not part of the user-facing Perl documentation.
+For XPerl exceptions and diagnostics, start with:
 
-Keep user-facing explanations and reference material in the appropriate POD
-files.  Keep generated files and temporary build output out of this
-directory.  Planning files should be small enough to review and should name
-the feature or question they address.
+- [Perl interface](../pod/perlexcept.pod) and
+  [implementation details](../pod/perlexcephack.pod).
+- [Remaining work](perl-core-structured-errors.md) and the
+  [translation language queue](diagnostic-language-queue.md).
+- [Generated table layout](diagnostic-data-layout.md).
+- [Classification reports](diagnostic-classification.md) and
+  [producer-based review workflow](diagnostic-classification-review.md).
+- [Class browser and source-reference tools](exception-system-guide/README.md).
+
+The registry, previous classification assignments and source-context files
+are inputs to the review tools. Previous assignments are review evidence;
+the catalog defines the current runtime classes.
