@@ -1,0 +1,19 @@
+digraph engines {
+  graph [rankdir=TB, bgcolor="#fafcfe", pad="0.2", nodesep="0.45", ranksep="0.6"];
+  node [shape=box, style="rounded,filled", fontname="sans-serif", fontsize=12, color="#42647b", fillcolor="#eaf2f8", margin="0.16,0.12"];
+  edge [fontname="sans-serif", fontsize=10, color="#42647b"];
+  pack [label="require XPerl::DiagPack::XX\nXS boot validates and registers static engine"];
+  registry [label="Per-interpreter language registry\ncapability, not language selection", fillcolor="#ddf1e9"];
+  hints [label="use diagpack 'xx'\nlexical hint captures engine pointer"];
+  diagnostic [label="Diagnostic retains engine pointer\nsurvives later registry replacement"];
+  render [label="Diagnostic rendering\nselected engine + whole-message fallback\nengine's own plural callbacks"];
+  cldr [label="Retained CLDR JSON → plural.pl\nmanual import; offline generation"];
+  table [label="perldiag_plural.inc\nall retained integer plural rules"];
+  builtin [label="cardinal_plural_form / ordinal_plural_form\nno pack loading; ignores engine replacement"];
+  pack -> registry;
+  registry -> hints [label="lookup"];
+  hints -> diagnostic [label="capture"];
+  registry -> render [label="explicit / default lookup"];
+  diagnostic -> render [label="implicit lexical choice"];
+  cldr -> table -> builtin;
+}

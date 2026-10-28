@@ -2319,6 +2319,8 @@ It contains the ordered diagnostics for the exception.  When the exception
 was thrown as a reference, C<$@> exposes that original reference while
 C<${^ERROR_OBJ}> retains the structured exception.
 
+See L<perlexcept> for catching and inspecting structured exceptions.
+
 =item ${^DIAG_RENDER}
 X<${^DIAG_RENDER}>
 
@@ -2340,7 +2342,7 @@ C<JSON> or C<Dumper>, wraps each rendered message group with its diagnostic
 metadata on one physical line. C<en:legacy:JSON> selects English legacy text
 in JSON records. Bare C<JSON>/C<JSONL> and C<Dumper>/C<DumperL> use English
 legacy text. See
-L<XPerl::Exception> for grouping, fallback, and explicit rendering methods.
+L<perlexcept> for grouping, fallback, and explicit rendering methods.
 
 =item ${^CUR_ERROR_OBJ}
 X<${^CUR_ERROR_OBJ}>

@@ -519,6 +519,12 @@ file and be sure to link to the appropriate page, e.g. L<perlfunc>.
 
 =head2 New Documentation
 
+L<perlexcept> documents structured exception handling, diagnostic inspection,
+hooks, rendering, and language selection. L<perlexcephack> explains the
+catalog, generated interfaces, ownership, delivery, and language-engine
+internals. F<Porting/render_except_docs.pl> generates illustrated HTML
+versions from the manuals and their diagram sources.
+
 XXX Changes which create B<new> files in F<pod/> go here.
 
 =head3 L<XXX>

@@ -34,6 +34,9 @@ template fallbacks, normalized to C<*> in the catalog.
 
 The constructor is currently private to the core diagnostics work.
 
+See L<perlexcept> for the complete Perl-facing guide and L<perlexcephack>
+for the core implementation.
+
 Diagnostics share the C<XPerl::DiagGroup> operations C<contents>,
 C<contents_count>, C<append>, C<contains>, and C<has_errors>. C<derive> returns
 a distinct diagnostic of the same class and metadata with replacement

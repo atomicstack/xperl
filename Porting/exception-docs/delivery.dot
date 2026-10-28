@@ -1,0 +1,17 @@
+digraph delivery {
+  graph [rankdir=TB, bgcolor="#fafcfe", pad="0.2", nodesep="0.4", ranksep="0.45"];
+  node [shape=box, style="rounded,filled", fontname="sans-serif", fontsize=12, color="#42647b", fillcolor="#eaf2f8", margin="0.16,0.12"];
+  edge [fontname="sans-serif", fontsize=10, color="#42647b"];
+  producer [label="Producers append warnings and errors\ncaller owns recovery / flush point"];
+  pending [label="Pending canonical Exception\nencounter order preserved"];
+  hook [label="__EXCEPT__(canonical) once\ninspect / edit / promote fatal disposition", fillcolor="#fff0d9"];
+  attach [label="Prepare legacy delivery\nrecheck disposition; retain required unwind"];
+  group [label="Form logical group actions\nprimary + owned context; independent roots in order"];
+  legacy [label="Legacy __WARN__ or __DIE__\none rendered value or original user reference", fillcolor="#fff0d9"];
+  output [label="Finish this group's automatic output\nwarning suppression / fatal replacement applied\nno automatic fatal output when caught"];
+  more [label="More groups?", shape=diamond, fillcolor="#ddf1e9"];
+  finish [label="Final disposition\nreturn for warnings; unwind once for fatal"];
+  producer -> pending -> hook -> attach -> group -> legacy -> output -> more;
+  more -> legacy [label="yes: next action"];
+  more -> finish [label="no"];
+}

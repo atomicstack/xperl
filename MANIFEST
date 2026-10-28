@@ -6517,6 +6517,8 @@ pod/perldsc.pod				Perl data structures intro
 pod/perldtrace.pod			Perl's support for DTrace
 pod/perlebcdic.pod			Considerations for running Perl on EBCDIC platforms
 pod/perlembed.pod			Perl ways to embed perl in your C or C++ application
+pod/perlexcephack.pod			Structured exception internals
+pod/perlexcept.pod			Structured exceptions and diagnostics
 pod/perlexperiment.pod			A listing of experimental features in Perl
 pod/perlfilter.pod			Perl source filters
 pod/perlfork.pod			Perl fork() information
@@ -6627,6 +6629,13 @@ Porting/diag_import_pod.pl			Lossless diagnostic documentation importer
 Porting/diag_inventory.pl			Inventories diagnostic adapter calls
 Porting/docs-team-charter.pod			Perl Documentation Team charter
 Porting/epigraphs.pod				the release epigraphs used over the years
+Porting/exception-docs/construction.dot	Exception architecture diagram source
+Porting/exception-docs/containment.dot	Exception architecture diagram source
+Porting/exception-docs/delivery.dot	Exception architecture diagram source
+Porting/exception-docs/engines.dot	Exception architecture diagram source
+Porting/exception-docs/hooks.dot	Exception architecture diagram source
+Porting/exception-docs/rendering.dot	Exception architecture diagram source
+Porting/exception-docs/style.css	Styles for illustrated exception manuals
 Porting/exclude_contrib.txt			Data about contributors that do not want to be listed in AUTHORS
 Porting/exec-bit.txt				List of files that get +x in release tarball
 Porting/exercise_makedef.pl			Brute force testing for makedef.pl
@@ -6665,6 +6674,7 @@ Porting/README.y2038				Perl notes for the 2038 fix
 Porting/release_announcement_template.txt
 Porting/release_managers_guide.pod		Release Manager's Guide
 Porting/release_schedule.pod			Schedule for future releases
+Porting/render_except_docs.pl			Generate illustrated exception manuals
 Porting/rt_list_patches				A tool to help you apply patches from RT
 Porting/security_template.pod			Template for vulnerability announcements
 Porting/sort_perldiag.pl			Keep our diagnostics orderly

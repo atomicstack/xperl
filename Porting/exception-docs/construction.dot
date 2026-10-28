@@ -1,0 +1,23 @@
+digraph construction {
+  graph [rankdir=TB, bgcolor="#fafcfe", pad="0.2", nodesep="0.4", ranksep="0.55"];
+  node [shape=box, style="rounded,filled", fontname="sans-serif", fontsize=12, color="#42647b", fillcolor="#eaf2f8", margin="0.16,0.12"];
+  edge [fontname="sans-serif", fontsize=10, color="#42647b"];
+  config [label="diag_conf.pl + diag_op_conf.pl\nconditions, types, templates, selectors, vocabulary"];
+  regen [label="regen/diag.pl + supporting modules\nvalidate and generate", fillcolor="#ddf1e9"];
+  api [label="perldiag.h + perldiag_helpers.inc\nfixed-arity producer interfaces"];
+  core [label="perldiag_data.inc\nmetadata + permanent English"];
+  packs [label="ext/XPerl-DiagPack-XX/\ngenerated XS + language tables"];
+  docs [label="pod/perldiag.pod\nindividual message reference"];
+  capture [label="pp_ctl.c\ncapture semantic values and source location"];
+  aggregate [label="XPerl::Exception\nordered diagnostic references"];
+  deliver [label="util.c\nhooks, groups, output, disposition"];
+  render [label="xperl_exception.inc\nobject APIs + rendering + structured writers"];
+  config -> regen;
+  regen -> {api core packs docs};
+  api -> capture [label="core producer call"];
+  capture -> aggregate;
+  aggregate -> deliver;
+  deliver -> render [label="request presentation"];
+  core -> render [label="lookup", style=dashed];
+  packs -> render [label="registered capability", style=dashed];
+}

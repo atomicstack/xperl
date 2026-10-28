@@ -139,6 +139,24 @@ produce election mailings, and all that sort of thing.
 
 List of test files to ignore/skip for deparse tests.
 
+=head2 F<diag_bulk_formatted.pl>
+
+Reports legacy diagnostic calls that can be converted to fixed-argument
+catalog macros. With C<--apply>, updates the calls and C<diag_conf.pl>.
+Run C<perl regen/diag.pl> after conversion. It normalizes the catalog
+and preserves the schema POD at the top of C<diag_conf.pl>.
+
+=head2 F<diag_import_pod.pl>
+
+Imports a saved C<perldiag.pod> into declarative documentation records,
+preserving all bytes and shared explanations. Used to bootstrap the catalog.
+Normal regeneration reads C<diag_conf.pl> and generates the POD from its data.
+
+=head2 F<diag_inventory.pl>
+
+Reports unmanaged diagnostic calls grouped by emitter, format and warning
+category. Shares the C call parser and API boundary rules with C<diag.t>.
+
 =head2 F<docs-team-charter.pod>
 
 The charter of the Perl Documentation Team
@@ -146,6 +164,34 @@ The charter of the Perl Documentation Team
 =head2 F<epigraphs.pod>
 
 List of Perl release epigraphs.
+
+=head2 F<exception-docs/construction.dot>
+
+Graphviz source for catalog generation and runtime responsibilities.
+
+=head2 F<exception-docs/containment.dot>
+
+Graphviz source for diagnostic inheritance and shared containment.
+
+=head2 F<exception-docs/delivery.dot>
+
+Graphviz source for accumulation, hooks, output, and final disposition.
+
+=head2 F<exception-docs/engines.dot>
+
+Graphviz source for language-engine registration, capture, and plural queries.
+
+=head2 F<exception-docs/hooks.dot>
+
+Graphviz source for hook emissions, suppression, and replacement.
+
+=head2 F<exception-docs/rendering.dot>
+
+Graphviz source for language choice and complete-message fallback.
+
+=head2 F<exception-docs/style.css>
+
+Stylesheet for the illustrated exception manuals and local reference pages.
 
 =head2 F<exclude_contrib.txt>
 
@@ -338,6 +384,14 @@ This schedule lists the projected or historical development and release
 schedules for the next, current and previous stable versions of Perl. Dates
 with all question marks will only be releases if deemed necessary by the
 Steering Council.
+
+=head2 F<render_except_docs.pl>
+
+Generates illustrated HTML versions of L<perlexcept> and L<perlexcephack>,
+with local reference pages. Reads the manuals' POD and Graphviz sources in
+F<Porting/exception-docs/>. Requires Pod::Simple::XHTML and Graphviz C<dot>:
+
+    perl Porting/render_except_docs.pl --output ../tmp/exception-docs
 
 =head2 F<rt_list_patches>
 

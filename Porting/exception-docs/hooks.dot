@@ -1,0 +1,21 @@
+digraph hooks {
+  graph [rankdir=LR, bgcolor="#fafcfe", pad="0.2", nodesep="0.5", ranksep="0.65"];
+  node [shape=box, style="rounded,filled", fontname="sans-serif", fontsize=12, color="#42647b", fillcolor="#eaf2f8", margin="0.16,0.12"];
+  edge [fontname="sans-serif", fontsize=10, color="#42647b"];
+  except [label="__EXCEPT__", fillcolor="#fff0d9"];
+  warn [label="__WARN__", fillcolor="#fff0d9"];
+  die [label="__DIE__", fillcolor="#fff0d9"];
+  capture [label="Capture canonical-hook emissions\nno hook re-entry"];
+  queue [label="Queue emissions / failure\ncontinue remaining delivery"];
+  replace [label="Replace active fatal group\nno recursive __DIE__"];
+  suppress [label="Suppress this warning's\nautomatic output", fillcolor="#ddf1e9"];
+  retain [label="Retain fatal output\nand required unwind", fillcolor="#ddf1e9"];
+  except -> capture [label="warn"];
+  except -> queue [label="die: stop handler"];
+  warn -> queue [label="emission / die"];
+  warn -> suppress [label="return"];
+  die -> retain [label="return"];
+  die -> replace [label="die"];
+  die -> warn [label="warn: direct call\nkeep enclosing canonical object"];
+  warn -> replace [label="die while inside __DIE__", style=dashed];
+}
