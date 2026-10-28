@@ -92,7 +92,7 @@ xop_build_optree ()
         av_push_simple(MY_CXT.xop_record, newSVpvf("kid:%" UVxf, PTR2UV(kid)));
 
         av_push_simple(MY_CXT.xop_record, newSVpvf("NAME:%s", OP_NAME((OP*)unop)));
-        av_push_simple(MY_CXT.xop_record, newSVpvf("DESC:%s", OP_DESC((OP*)unop)));
+        av_push_simple(MY_CXT.xop_record, newSVpvf("DESC:%s", PERL_XS_API_TEST_OP_DESC((OP*)unop)));
         av_push_simple(MY_CXT.xop_record, newSVpvf("CLASS:%d", (int)OP_CLASS((OP*)unop)));
 
         PL_rpeepp(aTHX_ kid);

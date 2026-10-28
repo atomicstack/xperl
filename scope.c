@@ -36,8 +36,7 @@ Perl_stack_grow(pTHX_ SV **sp, SV **p, SSize_t n)
     SSize_t current = (p - PL_stack_base);
 
     if (UNLIKELY(n < 0))
-        croak(
-            "panic: stack_grow() negative count (%" IVdf ")", (IV)n);
+        PERL_PANIC_ERROR_INTERNAL_STACK_ARGUMENT_GROW_COUNT_NEGATIVE( (IV)n);
 
     PL_stack_sp = sp;
     extra =
@@ -53,7 +52,7 @@ Perl_stack_grow(pTHX_ SV **sp, SV **p, SSize_t n)
                  || current + extra > Stack_off_t_MAX - n
     ))
         /* diag_listed_as: Out of memory during %s extend */
-        croak("Out of memory during stack extend");
+        PERL_THROW_ERROR_MEMORY_SIZE_STACK_EXTEND_OVERFLOW();
 
     av_extend(PL_curstack, current + n + extra);
 #ifdef PERL_USE_HWM
@@ -221,7 +220,7 @@ Perl_savestack_grow_cnt(pTHX_ I32 need)
      * and we have rolled over from I32_MAX to a small value */
     if (new_max > I32_MAX || new_max < PL_savestack_max) {
         if (new_floor > I32_MAX || new_floor < PL_savestack_max) {
-            croak("panic: savestack overflows I32_MAX");
+            PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_CAPACITY_OVERFLOW();
         }
         new_max = new_floor;
     }
@@ -362,6 +361,9 @@ Perl_save_scalar_flags(pTHX_ GV *gv, const U32 flags)
 {
     PERL_ARGS_ASSERT_SAVE_SCALAR_FLAGS;
 
+    if (gv == PL_errgv && PL_errorobjgv)
+        (void)Perl_save_scalar(aTHX_ PL_errorobjgv);
+
     SV ** const sptr = &GvSVn(gv);
 
     if (UNLIKELY(SvGMAGICAL(*sptr))) {
@@ -400,7 +402,7 @@ Implements C<SAVERCPV>.
 
 Saves and restores a refcounted string, similar to what
 save_generic_svref would do for a SV*. Can be used to restore
-a refcounted string to its previous state. Performs the 
+a refcounted string to its previous state. Performs the
 appropriate refcount counting so that nothing should leak
 or be prematurely freed.
 
@@ -841,8 +843,8 @@ Perl_save_clearsv(pTHX_ SV **svp)
     assert(*svp);
     SvPADSTALE_off(*svp); /* mark lexical as active */
     if (UNLIKELY((offset_shifted >> SAVE_TIGHT_SHIFT) != offset)) {
-        croak("panic: pad offset %" UVuf " out of range (%p-%p)",
-                   offset, svp, PL_curpad);
+        PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_CLEAR_SAVE_ENCODING_OVERFLOW(
+            offset, svp, PL_curpad);
     }
 
     {
@@ -877,8 +879,7 @@ Perl_save_padsv(pTHX_ PADOFFSET padix)
 
     const UV padix_shifted = padix << SAVE_TIGHT_SHIFT;
     if (UNLIKELY((padix_shifted >> SAVE_TIGHT_SHIFT) != (UV)padix)) {
-        croak("panic: pad offset %" UVuf " out of range",
-                   (UV)padix);
+        PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_VALUE_SAVE_ENCODING_OVERFLOW((UV)padix);
     }
 
     {
@@ -1166,9 +1167,8 @@ Perl_save_alloc(pTHX_ SSize_t size, I32 pad)
     const UV elems_shifted = elems << SAVE_TIGHT_SHIFT;
 
     if (UNLIKELY((elems_shifted >> SAVE_TIGHT_SHIFT) != elems))
-        croak(
-            "panic: save_alloc elems %" UVuf " out of range (%" IVdf "-%" IVdf ")",
-                   elems, (IV)size, (IV)pad);
+        PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_ALLOCATION_ENCODING_OVERFLOW(
+                   elems,  (IV)size,  (IV)pad);
 
     SSGROW(elems + 1);
 
@@ -1197,7 +1197,7 @@ Perl_leave_scope(pTHX_ I32 base)
     bool was = TAINT_get;
 
     if (UNLIKELY(base < -1))
-        croak("panic: corrupt saved stack index %ld", (long) base);
+        PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_UNWIND_BASE_INVALID((long) base);
     DEBUG_l(deb("savestack: releasing items %ld -> %ld\n",
                 (long)PL_savestack_ix, (long)base));
     while (PL_savestack_ix > base) {
@@ -1435,7 +1435,7 @@ Perl_leave_scope(pTHX_ I32 base)
             bool had_method;
 
             a0 = ap[0]; a1 = ap[1];
-            /* possibly taking a method out of circulation */	
+            /* possibly taking a method out of circulation */
             had_method = cBOOL(GvCVu(a0.any_gv));
             gp_free(a0.any_gv);
             GvGP_set(a0.any_gv, (GP*)a1.any_ptr);
@@ -1443,7 +1443,7 @@ Perl_leave_scope(pTHX_ I32 base)
                 if (memEQs(GvNAME(a0.any_gv), GvNAMELEN(a0.any_gv), "ISA"))
                     mro_isa_changed_in(hv);
                 else if (had_method || GvCVu(a0.any_gv))
-                    /* putting a method back into circulation ("local")*/	
+                    /* putting a method back into circulation ("local")*/
                     gv_method_changed(a0.any_gv);
             }
             SvREFCNT_dec_NN(a0.any_gv);
@@ -1855,8 +1855,7 @@ Perl_leave_scope(pTHX_ I32 base)
             break;
 
         default:
-            croak("panic: leave_scope inconsistency %u",
-                    (U8)uv & SAVE_MASK);
+            PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_ENTRY_TYPE_UNKNOWN((U8)uv & SAVE_MASK);
         }
     }
 
@@ -1929,7 +1928,7 @@ Perl_cx_dump(pTHX_ PERL_CONTEXT *cx)
                 (long)CxOLD_IN_EVAL(cx));
         PerlIO_printf(Perl_debug_log, "BLK_EVAL.OLD_OP_TYPE = %s (%s)\n",
                 PL_op_name[CxOLD_OP_TYPE(cx)],
-                PL_op_desc[CxOLD_OP_TYPE(cx)]);
+                PERL_DEBUG_CONTEXT_OLD_OP_DESC(CxOLD_OP_TYPE(cx)));
         if (cx->blk_eval.old_namesv)
             PerlIO_printf(Perl_debug_log, "BLK_EVAL.OLD_NAME = %s\n",
                           SvPVX_const(cx->blk_eval.old_namesv));
@@ -2092,7 +2091,7 @@ Perl_magic_freedestruct(pTHX_ SV* sv, MAGIC* mg)
 
     IV nargs = 0;
     if (PL_phase == PERL_PHASE_DESTRUCT) {
-        warn("Can't call destructor for 0x%p in global destruction\n", sv);
+        PERL_WARN_WARNING_CLEANUP_MAGIC_DESTRUCTOR_DURING_GLOBAL_DESTRUCTION(sv);
         return 1;
     }
 

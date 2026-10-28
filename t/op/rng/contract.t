@@ -15,7 +15,7 @@ use RNG::HMAC_DRBG ();
 use RNG::Seed ();
 use RNG::SeedBase ();
 
-plan(tests => 45);
+plan(tests => 47);
 
 sub mk_rand { map int rand 10000, 1..100; }
 
@@ -154,6 +154,18 @@ package main;
 }
 
 {
+    package RNG::EmptyReturn;
+    our @ISA = 'RNG::Provider';
+    sub rand_bytes { return () }
+}
+
+{
+    package RNG::ListReturn;
+    our @ISA = 'RNG::Provider';
+    sub rand_bytes { return ('ignored', "\0" x $_[1]) }
+}
+
+{
     package RNG::StackGrowth;
     our @ISA = 'RNG::Provider';
     sub rand_bytes {
@@ -274,6 +286,16 @@ package main;
              qr/builtin::rand_bytes\(\) count must be a non-negative integer/,
              'builtin::rand_bytes rejects an invalid count');
     }
+
+    local ${^RNG} = bless {}, 'RNG::EmptyReturn';
+    eval { rand_bytes(1) };
+    my $empty_error = $@;
+    is($empty_error->contents->[0]->code,
+       'ERROR_RNG_PROVIDER_BYTE_STRING_REQUIRED',
+       'an empty scalar callback result fails the byte-string contract');
+    local ${^RNG} = bless {}, 'RNG::ListReturn';
+    is(rand_bytes(1), "\0",
+       'a list return contributes its final scalar value');
 
     local ${^RNG} = undef;
     srand(4321);

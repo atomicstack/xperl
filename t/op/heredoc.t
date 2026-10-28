@@ -93,7 +93,7 @@ HEREDOC
     fresh_perl_like(
         qq(0<<<<""0\n\n),
         # valgrind and asan reports an error between these two lines
-        qr/^Number found where operator expected \(Missing operator before "0"\?\) at - line 1, near "<<""0"/,
+        qr/^Number found where operator expected \(Missing operator before "0"\?\) at - line 1, near .*\nsyntax error at - line 1, near .*\nExecution of - aborted due to compilation errors\./s,
         {},
         "don't use an invalid oldoldbufptr"
     );

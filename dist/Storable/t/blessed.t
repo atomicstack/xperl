@@ -395,7 +395,12 @@ is(ref $t, 'STRESS_THE_STACK');
     open FH, "<", "store$$" or die;
     binmode FH;
     ok(!eval { fd_retrieve(*FH); 1 }, "fd_retrieve of throw Foo on thaw died");
-    ok(!ref $@, "right thing thrown");
+    ok(
+        !ref($@) && $@ =~ /\AFoo/
+        || ref($@) eq 'XPerl::Exception'
+            && $@->contents->[0]->params->[0]{value} eq 'Foo',
+        "right thing thrown"
+    );
     close FH;
     ok(store($oref, "store$$"), "save throw ref on thaw");
     ok(!eval { retrieve("store$$"); 1 }, "retrieve of throw ref on thaw died");
@@ -407,7 +412,12 @@ is(ref $t, 'STRESS_THE_STACK');
 
     my $strdata = freeze($ostr);
     ok(!eval { thaw($strdata); 1 }, "thaw of throw Foo on thaw died");
-    ok(!ref $@, "and a string thrown");
+    ok(
+        !ref($@) && $@ =~ /\AFoo/
+        || ref($@) eq 'XPerl::Exception'
+            && $@->contents->[0]->params->[0]{value} eq 'Foo',
+        "and a string thrown"
+    );
     my $refdata = freeze($oref);
     ok(!eval { thaw($refdata); 1 }, "thaw of throw [] on thaw died");
     ok(ref $@, "and a ref thrown");

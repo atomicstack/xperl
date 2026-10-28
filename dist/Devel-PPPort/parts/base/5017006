@@ -2,7 +2,6 @@
 ANYOF_UNIPROP                  # Z added by devel/scanprov
 aTHXa                          # Z added by devel/scanprov
 croak_no_mem                   # F added by devel/scanprov
-get_and_check_backslash_N_name # F added by devel/scanprov
 is_HORIZWS_cp_high             # Z added by devel/scanprov
 is_HORIZWS_high                # Z added by devel/scanprov
 isREGEXP                       # Z added by devel/scanprov

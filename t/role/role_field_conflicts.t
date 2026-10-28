@@ -20,6 +20,13 @@ no warnings 'experimental::class';
         class FC1 :implements(FA1) :implements(FB1) { }
     };
     like($@, qr/Field.*\$x.*conflicts/i, "field conflict detected between two roles");
+    is($@->contents->[0]->code, 'ERROR_OBJECT_COMPOSITION_FAILED',
+       'role composition summary keeps its diagnostic identity');
+    is(scalar @{$@->contents}, 1,
+       'role composition summary remains the only top-level diagnostic');
+    is($@->contents->[0]->params->[1]{value},
+       $@->contents->[0]->contents_count,
+       'role composition summary retains the number of error diagnostics');
 }
 
 # Diamond field composition - no conflict (same origin)
@@ -58,9 +65,17 @@ no warnings 'experimental::class';
     eval q{
         class FC3 :implements(FA3) :implements(FB3) { }
     };
-    like($@, qr/Role composition errors/, "batch error header");
+    like($@, qr/Role composition could not be completed/, "batch error header");
     like($@, qr/Field.*\$x.*conflicts/i, "field conflict in batch");
     like($@, qr/Method.*'m'.*conflicts/i, "method conflict in batch");
+    is($@->contents->[0]->params->[1]{value},
+       $@->contents->[0]->contents_count,
+       'role composition summary retains all error diagnostics');
+    is(scalar @{$@->contents}, 1,
+       'role composition summary remains the only top-level batch diagnostic');
+    is($@->contents->[0]->contents_count,
+       $@->contents->[0]->params->[1]{value},
+       'role composition summary owns all field and method conflicts');
 }
 
 # Field conflict cannot be resolved by consumer method

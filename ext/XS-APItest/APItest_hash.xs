@@ -256,6 +256,26 @@ test_share_unshare_pvn(input)
         OUTPUT:
         RETVAL
 
+void
+test_unsharepvn_nonexistent(input, utf8)
+        SV *input
+        IV utf8
+        PREINIT:
+        SV *key;
+        STRLEN len;
+        U32 hash;
+        const char *pv;
+        CODE:
+        key = newSVpvf("xperl-unsharepvn-%p", (void *)input);
+        if (utf8) {
+            sv_catpvn(key, "\xC4\x80", 2);
+            SvUTF8_on(key);
+        }
+        pv = SvPV(key, len);
+        PERL_HASH(hash, pv, len);
+        unsharepvn(pv, utf8 ? -(I32)len : (I32)len, hash);
+        SvREFCNT_dec_NN(key);
+
 bool
 refcounted_he_exists(key, level=0)
         SV *key

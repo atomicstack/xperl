@@ -99,7 +99,8 @@ my $rc = $thr->join();
 ok(! $rc, 'No thread return value');
 
 # Check for thread termination message
-ok(@errs && $errs[0] =~ /Thread killed/, 'Thread termination warning');
+my $thread_termination_warning = @errs && $errs[0] =~ /Thread killed/;
+ok($thread_termination_warning, 'Thread termination warning');
 
 
 ### Thread suspend/resume ###

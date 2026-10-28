@@ -36,6 +36,37 @@ static OP *S_find_op_methstart(pTHX_ OP *o);
 static PADOFFSET S_class_own_field_count(pTHX_ HV *stash);
 #define class_own_field_count(stash) S_class_own_field_count(aTHX_ stash)
 
+static void
+Perl_class_xs_throw_missing_required_constructor_parameter(pTHX_ CV *cv)
+{
+    dXSARGS;
+
+    if (items != 2)
+        croak_xs_usage(cv, "class_name, parameter");
+
+    PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_REQUIRED_PARAMETER_MISSING(ST(1), ST(0));
+    NOT_REACHED;
+}
+
+static OP *
+Perl_class_missing_required_constructor_parameter_op(pTHX_ SV *class_name,
+                                             SV *parameter,
+                                             CV **throw_xsub)
+{
+    if (!*throw_xsub)
+        *throw_xsub = newXS_flags(NULL,
+            Perl_class_xs_throw_missing_required_constructor_parameter,
+            __FILE__, NULL, 0);
+    else
+        SvREFCNT_inc_simple_NN((SV *)*throw_xsub);
+
+    return newLISTOPn(OP_ENTERSUB, OPf_WANT_VOID|OPf_STACKED,
+        newSVOP(OP_CONST, 0, SvREFCNT_inc(class_name)),
+        newSVOP(OP_CONST, 0, SvREFCNT_inc(parameter)),
+        newSVOP(OP_CONST, 0, (SV *)*throw_xsub),
+        NULL);
+}
+
 /* Clone a role CV and store a fieldix offset in its pad for composition.
  * The clone gets its own padlist (via cv_clone) and shares the optree
  * (via OpREFCNT). The offset is stored in pad slot PADIX_ROLE_OFFSET,
@@ -84,7 +115,7 @@ Perl_croak_kw_unless_class(pTHX_ const char *kw)
     PERL_ARGS_ASSERT_CROAK_KW_UNLESS_CLASS;
 
     if(!HvSTASH_IS_CLASS_OR_ROLE(PL_curstash))
-        croak("Cannot '%s' outside of a 'class' or 'role'", kw);
+        PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_OR_ROLE_CONTEXT_REQUIRED(kw);
 }
 
 #define newSVobject(fieldcount)  Perl_newSVobject(aTHX_ fieldcount)
@@ -174,7 +205,7 @@ PP(pp_initfield)
                 STRLEN svcount = PL_stack_sp - svp + 1;
 
                 if(svcount % 2)
-                    warner(packWARN(WARN_MISC), "Odd number of elements in hash field initialization");
+                    PERL_WARN_WARNING_MISC_HASH_FIELD_INITIALIZER_ODD_ELEMENT_COUNT();
 
                 while(svp <= PL_stack_sp) {
                     SV *key = *svp; svp++;
@@ -212,12 +243,10 @@ XS(injected_constructor)
     struct xpvhv_aux *aux = HvAUX(stash);
 
     if((items - 1) % 2)
-        warn("Odd number of arguments passed to %" HvNAMEf_QUOTEDPREFIX " constructor",
-                HvNAMEfARG(stash));
+        PERL_WARN_WARNING_OBJECT_CONSTRUCTOR_ARGUMENT_PAIRS_ODD(stash);
 
     if (!aux->xhv_class_initfields_cv) {
-        croak("Cannot create an object of incomplete class %" HvNAMEf_QUOTEDPREFIX,
-                   HvNAMEfARG(stash));
+        PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_CLASS_INCOMPLETE(stash);
     }
 
     HV *params = NULL;
@@ -298,7 +327,8 @@ XS(injected_constructor)
     POPSTACK;
     SPAGAIN;
 
-    if(params && hv_iterinit(params) > 0) {
+    I32 param_count = params ? hv_iterinit(params) : 0;
+    if(param_count > 0) {
         /* TODO: consider sorting these into a canonical order, but that's awkward */
         HE *he = hv_iternext(params);
 
@@ -308,8 +338,8 @@ XS(injected_constructor)
         while((he = hv_iternext(params)))
             sv_catpvf(paramnames, ", %" SVf, SVfARG(HeSVKEY_force(he)));
 
-        croak("Unrecognized parameters for %" HvNAMEf_QUOTEDPREFIX " constructor: %" SVf,
-                HvNAMEfARG(stash), SVfARG(paramnames));
+        PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_UNKNOWN_PARAMETERS(stash, paramnames,
+                                                  (UV)param_count);
     }
 
     EXTEND(SP, 1);
@@ -410,7 +440,7 @@ Perl_class_object_to_hash(pTHX_ SV *object)
     PERL_ARGS_ASSERT_CLASS_OBJECT_TO_HASH;
 
     if (!SvROK(object) || SvTYPE(SvRV(object)) != SVt_PVOBJ)
-        croak("class_object_to_hash expects a class object");
+        PERL_THROW_ERROR_OBJECT_CONVERSION_NATIVE_OBJECT_REQUIRED();
 
     SV *instance = SvRV(object);
     HV *stash = SvSTASH(instance);
@@ -440,13 +470,13 @@ S_class_object_fields_from_hash(pTHX_ HV *hash, HV *stash, SV *instance)
 
         if (PadnamePV(pn)[0] == '@' || PadnamePV(pn)[0] == '%') {
             if (!SvROK(value))
-                croak("value for field %" SVf " must be a reference",
-                      SVfARG(PadnameSV(pn)));
+                PERL_THROW_ERROR_OBJECT_CONVERSION_FIELD_REFERENCE_REQUIRED(
+                    SvPV_nolen(PadnameSV(pn)));
             SV *referent = SvRV(value);
             const svtype wanted = PadnamePV(pn)[0] == '@' ? SVt_PVAV : SVt_PVHV;
             if (SvTYPE(referent) != wanted)
-                croak("value for field %" SVf " has the wrong reference type",
-                      SVfARG(PadnameSV(pn)));
+                PERL_THROW_ERROR_OBJECT_CONVERSION_FIELD_REFERENCE_TYPE_MISMATCH(
+                    SvPV_nolen(PadnameSV(pn)));
             value = referent;
         }
 
@@ -470,8 +500,8 @@ S_class_object_fields_from_hash(pTHX_ HV *hash, HV *stash, SV *instance)
                     SV *value = he ? HeVAL(he) : &PL_sv_undef;
                     if (PadnamePV(pn)[0] == '@' || PadnamePV(pn)[0] == '%') {
                         if (!SvROK(value))
-                            croak("value for field %" SVf " must be a reference",
-                                  SVfARG(PadnameSV(pn)));
+                            PERL_THROW_ERROR_OBJECT_CONVERSION_FIELD_REFERENCE_REQUIRED(
+                                SvPV_nolen(PadnameSV(pn)));
                         value = SvRV(value);
                     }
                     ObjectFIELDS(instance)[offset + fi->relative_fieldix] =
@@ -497,16 +527,15 @@ Perl_class_object_from_hash(pTHX_ SV *hashref, SV *classname)
     PERL_ARGS_ASSERT_CLASS_OBJECT_FROM_HASH;
 
     if (!SvROK(hashref) || SvTYPE(SvRV(hashref)) != SVt_PVHV)
-        croak("class_object_from_hash expects a hash reference");
+        PERL_THROW_ERROR_OBJECT_CONVERSION_HASH_REFERENCE_REQUIRED();
 
     HV *stash = gv_stashsv(classname, 0);
     if (!stash || !HvSTASH_IS_CLASS(stash))
-        croak("class_object_from_hash expects the name of a class");
+        PERL_THROW_ERROR_OBJECT_CONVERSION_NATIVE_CLASS_REQUIRED();
 
     struct xpvhv_aux *aux = HvAUX(stash);
     if (!aux->xhv_class_initfields_cv)
-        croak("Cannot create an object of incomplete class %" HvNAMEf_QUOTEDPREFIX,
-              HvNAMEfARG(stash));
+        PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_CLASS_INCOMPLETE(stash);
 
     SV *instance = newSVobject(aux->xhv_class_next_fieldix);
     SvOBJECT_on(instance);
@@ -577,18 +606,14 @@ PP(pp_methstart)
         !SvOBJECT((rv = SvRV(self))) ||
         SvTYPE(rv) != SVt_PVOBJ) {
         HEK *namehek = CvGvNAME_HEK(curcv);
-        croak(
-            namehek ? "Cannot invoke method %" HEKf_QUOTEDPREFIX " on a non-instance" :
-                      "Cannot invoke method on a non-instance",
-            namehek);
+        namehek ? PERL_THROW_ERROR_OBJECT_METHOD_CALL_NAMED_NATIVE_INSTANCE_REQUIRED(namehek) : PERL_THROW_ERROR_OBJECT_METHOD_CALL_ANONYMOUS_NATIVE_INSTANCE_REQUIRED();
     }
 
     if(CvSTASH(curcv) != SvSTASH(rv) &&
         !sv_derived_from_hv(self, CvSTASH(curcv)) &&
         /* For role methods, check if the instance's class composes the role */
         !(HvSTASH_IS_ROLE(CvSTASH(curcv)) && class_implements_role(SvSTASH(rv), CvSTASH(curcv))))
-        croak("Cannot invoke a method of %" HvNAMEf_QUOTEDPREFIX " on an instance of %" HvNAMEf_QUOTEDPREFIX,
-            HvNAMEfARG(CvSTASH(curcv)), HvNAMEfARG(SvSTASH(rv)));
+        PERL_THROW_ERROR_OBJECT_METHOD_CALL_INVOCANT_CLASS_INCOMPATIBLE(CvSTASH(curcv), SvSTASH(rv));
 
     if (!self_in_pad) {
         save_clearsv(&PAD_SVl(PADIX_SELF));
@@ -672,8 +697,7 @@ Perl_class_setup_stash(pTHX_ HV *stash)
     assert(HvHasAUX(stash));
 
     if(HvSTASH_IS_CLASS(stash)) {
-        croak("Cannot reopen existing class %" HvNAMEf_QUOTEDPREFIX,
-            HvNAMEfARG(stash));
+        PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_REOPEN_FORBIDDEN(stash);
     }
 
     {
@@ -683,8 +707,7 @@ Perl_class_setup_stash(pTHX_ HV *stash)
         AV *isa = get_av(SvPV_nolen(isaname), (SvFLAGS(isaname) & SVf_UTF8));
 
         if(isa && av_count(isa) > 0)
-            croak("Cannot create class %" HEKf " as it already has a non-empty @ISA",
-                HvNAME_HEK(stash));
+            PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_EXISTING_ISA_FORBIDDEN(stash);
     }
 
     char *classname = HvNAME(stash);
@@ -828,7 +851,7 @@ static void S_split_attr_nameval(pTHX_ SV *sv, SV **namp, SV **valp)
              * don't bother listing it in perldiag.
              */
             /* diag_listed_as: SKIPME */
-            croak("Malformed attribute string");
+            PERL_THROW_ERROR_OBJECT_DEFINITION_ATTRIBUTE_VALUE_UNTERMINATED();
         *namp = newSVpvn_flags(SvPVX(sv), namelen, SVs_TEMP|do_utf8);
 
         const char *value_at = paren_at + 1;
@@ -857,7 +880,7 @@ static void
 apply_class_attribute_isa(pTHX_ HV *stash, SV *value)
 {
     if(HvSTASH_IS_ROLE(stash))
-        croak("Roles cannot use :isa");
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_ROLE_ISA_FORBIDDEN();
 
     assert(HvSTASH_IS_CLASS(stash));
     struct xpvhv_aux *aux = HvAUX(stash);
@@ -866,14 +889,14 @@ apply_class_attribute_isa(pTHX_ HV *stash, SV *value)
     SV *superclassname = sv_newmortal(), *superclassver = sv_newmortal();
     const char *end = split_package_ver(value, superclassname, superclassver);
     if(*end)
-        croak("Unexpected characters while parsing class :isa attribute: %s", end);
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_ATTRIBUTE_TRAILING_TEXT(end);
 
     SV *resolved = namespace_resolve(superclassname);
     sv_setsv(superclassname, resolved);
     SvREFCNT_dec_NN(resolved);
 
     if(aux->xhv_class_superclass)
-        croak("Class already has a superclass, cannot add another");
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_SUPERCLASS_ALREADY_ASSIGNED();
 
     HV *superstash = gv_stashsv(superclassname, 0);
     if (!superstash || !HvSTASH_IS_CLASS(superstash)) {
@@ -882,8 +905,7 @@ apply_class_attribute_isa(pTHX_ HV *stash, SV *value)
         superstash = gv_stashsv(superclassname, 0);
     }
     if(!superstash || !HvSTASH_IS_CLASS(superstash))
-        croak("Class :isa attribute requires a class but %" SVf_QUOTEDPREFIX " is not one",
-            SVfARG(superclassname));
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_NATIVE_SUPERCLASS_REQUIRED(superclassname);
 
     if(superclassver && SvOK(superclassver))
         ensure_module_version(superclassname, superclassver);
@@ -938,7 +960,7 @@ S_apply_one_role(pTHX_ struct xpvhv_aux *aux, SV *namesv)
     SV *rolename = sv_newmortal(), *rolever = sv_newmortal();
     const char *end = split_package_ver(namesv, rolename, rolever);
     if(*end)
-        croak("Unexpected characters while parsing :implements attribute: %s", end);
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_IMPLEMENTS_ATTRIBUTE_TRAILING_TEXT(end);
 
     SV *resolved = namespace_resolve(rolename);
     sv_setsv(rolename, resolved);
@@ -950,8 +972,7 @@ S_apply_one_role(pTHX_ struct xpvhv_aux *aux, SV *namesv)
         rolestash = gv_stashsv(rolename, 0);
     }
     if(!rolestash || !HvSTASH_IS_ROLE(rolestash))
-        croak(":implements attribute requires a role but %" HvNAMEf_QUOTEDPREFIX " is not one",
-            rolestash ? HvNAMEfARG(rolestash) : "\"(unknown)\"");
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_NATIVE_ROLE_REQUIRED(rolestash);
 
     if(rolever && SvOK(rolever))
         ensure_module_version(rolename, rolever);
@@ -1028,13 +1049,13 @@ S_class_apply_attribute(pTHX_ HV *stash, OP *attr)
             continue;
 
         if(class_attributes[i].requires_value && !(value && SvOK(value)))
-            croak("Class attribute %" SVf " requires a value", SVfARG(name));
+            PERL_THROW_ERROR_OBJECT_DEFINITION_ATTRIBUTE_VALUE_REQUIRED(name);
 
         (*class_attributes[i].apply)(aTHX_ stash, value);
         return;
     }
 
-    croak("Unrecognized class attribute %" SVf, SVfARG(name));
+    PERL_THROW_ERROR_OBJECT_DEFINITION_ATTRIBUTE_UNKNOWN(name);
 }
 
 void
@@ -1330,8 +1351,7 @@ S_role_field_base(pTHX_ AV *roles, AV *bases, HV *rolestash)
             return SvUV(AvARRAY(bases)[i]);
     }
 
-    croak("panic: no field layout for role %" HvNAMEf_QUOTEDPREFIX,
-          HvNAMEfARG(rolestash));
+    PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_FIELD_LAYOUT_MISSING(rolestash);
 }
 #define role_field_base(roles, bases, rolestash) \
     S_role_field_base(aTHX_ roles, bases, rolestash)
@@ -1456,8 +1476,7 @@ S_proto_role_assign_ids(pTHX_ proto_role_t *consumer,
     /* Assign IDs to roles */
     for (UV r = 0; r < role_count; r++) {
         if (map->next_id >= ORIGIN_SET_MAX_BITS)
-            croak("Too many roles in a single composition (max %d)",
-                  ORIGIN_SET_MAX_BITS - 1);
+            PERL_THROW_ERROR_OBJECT_COMPOSITION_DIRECT_ROLE_LIMIT_EXCEEDED(ORIGIN_SET_MAX_BITS - 1);
 
         map->stashes[map->next_id] = roles[r]->stash;
         origin_set_t role_bit = (origin_set_t)1 << map->next_id++;
@@ -1702,15 +1721,12 @@ S_class_inherits_method(pTHX_ HV *stash, SV *name)
 #define class_inherits_method(stash, name) \
     S_class_inherits_method(aTHX_ stash, name)
 
-/* Resolution: check composed result against consumer's explicit methods.
- * Returns NULL if no errors, or an AV of error SVs. */
-static AV *
+/* Resolution: check composed result against consumer's explicit methods. */
+static void
 S_proto_role_resolve(pTHX_ proto_role_t *composed,
                      proto_role_t *consumer, HV *stash,
-                     origin_map_t *map, bool is_role)
+                     origin_map_t *map, bool is_role, SV **errors)
 {
-    AV *errors = NULL;
-
     for (UV i = 0; i < composed->method_count; i++) {
         method_slot_t *slot = &composed->method_slots[i];
         origin_set_t origins = slot->origins;
@@ -1726,11 +1742,8 @@ S_proto_role_resolve(pTHX_ proto_role_t *composed,
             if (is_role)
                 continue;
 
-            if (!errors) errors = newAV();
-            av_push(errors, newSVpvf(
-                "Method '%" SVf "' is required but not provided by %"
-                HvNAMEf_QUOTEDPREFIX,
-                SVfARG(slot->name), HvNAMEfARG(stash)));
+            PERL_APPEND_ERROR_OBJECT_COMPOSITION_METHOD_IMPLEMENTATION_REQUIRED(errors, slot->name,
+                newSVhek_mortal(HvNAME_HEK(stash)));
         }
         else if (origin_is_conflicted(origins)) {
             /* Conflicted — only consumer explicit method resolves */
@@ -1742,28 +1755,22 @@ S_proto_role_resolve(pTHX_ proto_role_t *composed,
                 continue;
 
             /* Inherited method does NOT resolve conflicts */
-            if (!errors) errors = newAV();
-
-            /* Build list of conflicting role names */
-            SV *role_names = newSVpvs("");
-            bool first = TRUE;
+            /* Store each pair separately so the catalog template controls
+             * how role names are joined in the current language. */
             for (U8 bit = 0; bit < map->next_id; bit++) {
-                if ((origins & ((origin_set_t)1 << bit)) && map->stashes[bit]) {
-                    /* Skip consumer's own origin in the message */
-                    if (map->stashes[bit] == stash)
-                        continue;
-                    if (!first)
-                        sv_catpvs(role_names, " and ");
-                    sv_catpvf(role_names, "%" HvNAMEf_QUOTEDPREFIX,
-                              HvNAMEfARG(map->stashes[bit]));
-                    first = FALSE;
+                if (!(origins & ((origin_set_t)1 << bit))
+                    || !map->stashes[bit] || map->stashes[bit] == stash)
+                    continue;
+                for (U8 other = bit + 1; other < map->next_id; other++) {
+                    if ((origins & ((origin_set_t)1 << other))
+                        && map->stashes[other]
+                        && map->stashes[other] != stash)
+                        PERL_APPEND_ERROR_OBJECT_COMPOSITION_METHOD_PROVIDER_CONFLICT(errors,
+                            slot->name,
+                            newSVhek_mortal(HvNAME_HEK(map->stashes[bit])),
+                            newSVhek_mortal(HvNAME_HEK(map->stashes[other])));
                 }
             }
-
-            av_push(errors, newSVpvf(
-                "Method '%" SVf "' conflicts between %" SVf,
-                SVfARG(slot->name), SVfARG(role_names)));
-            SvREFCNT_dec(role_names);
         }
         /* Defined (popcount == 1): no action needed */
     }
@@ -1772,53 +1779,71 @@ S_proto_role_resolve(pTHX_ proto_role_t *composed,
     for (UV i = 0; i < composed->field_count; i++) {
         field_slot_t *slot = &composed->field_slots[i];
         if (origin_is_conflicted(slot->origins)) {
-            if (!errors) errors = newAV();
-
-            SV *role_names = newSVpvs("");
-            bool first = TRUE;
             for (U8 bit = 0; bit < map->next_id; bit++) {
-                if ((slot->origins & ((origin_set_t)1 << bit)) && map->stashes[bit]) {
-                    if (!first)
-                        sv_catpvs(role_names, " and ");
-                    sv_catpvf(role_names, "%" HvNAMEf_QUOTEDPREFIX,
-                              HvNAMEfARG(map->stashes[bit]));
-                    first = FALSE;
+                if (!(slot->origins & ((origin_set_t)1 << bit))
+                    || !map->stashes[bit])
+                    continue;
+                for (U8 other = bit + 1; other < map->next_id; other++) {
+                    if ((slot->origins & ((origin_set_t)1 << other))
+                        && map->stashes[other])
+                        PERL_APPEND_ERROR_OBJECT_COMPOSITION_FIELD_PROVIDER_CONFLICT(errors,
+                            PadnameSV(slot->padname),
+                            newSVhek_mortal(HvNAME_HEK(map->stashes[bit])),
+                            newSVhek_mortal(HvNAME_HEK(map->stashes[other])));
                 }
             }
-
-            av_push(errors, newSVpvf(
-                "Field '%" SVf "' conflicts between %" SVf,
-                SVfARG(PadnameSV(slot->padname)), SVfARG(role_names)));
-            SvREFCNT_dec(role_names);
         }
     }
-
-    return errors; /* NULL = no errors */
 }
-#define proto_role_resolve(composed, consumer, stash, map, is_role) \
-    S_proto_role_resolve(aTHX_ composed, consumer, stash, map, is_role)
+#define PERL_PROTO_ROLE_RESOLVE(composed, consumer, stash, map, is_role, errors) \
+    S_proto_role_resolve(aTHX_ composed, consumer, stash, map, is_role, errors)
 
 /* Format and croak with all collected errors */
 static void
-S_proto_role_croak_errors(pTHX_ AV *errors, HV *stash)
+S_proto_role_croak_errors(pTHX_ SV *errors, HV *stash)
 {
-    assert(errors && av_count(errors) > 0);
+    HV *fields;
+    SV **messages_slot;
+    AV *messages;
+    SV *header;
+    SV **children_slot;
+    AV *children;
+    UV error_count;
 
-    SV *msg = newSVpvf("Role composition errors in %" HvNAMEf_QUOTEDPREFIX
-                        ":\n", HvNAMEfARG(stash));
-
-    for (SSize_t i = 0; i <= AvFILL(errors); i++) {
-        sv_catpvf(msg, "  - %" SVf "\n", SVfARG(AvARRAY(errors)[i]));
+    assert(errors && sv_derived_from(errors, "XPerl::Exception"));
+    fields = MUTABLE_HV(SvRV(errors));
+    messages_slot = hv_fetchs(fields, "contents", 0);
+    assert(messages_slot && SvROK(*messages_slot)
+           && SvTYPE(SvRV(*messages_slot)) == SVt_PVAV);
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    error_count = (UV)av_count(messages);
+    PERL_APPEND_ERROR_OBJECT_COMPOSITION_FAILED(&errors,
+        newSVhek_mortal(HvNAME_HEK(stash)), error_count);
+    header = av_pop(messages);
+    assert(header);
+    children_slot = hv_fetchs(MUTABLE_HV(SvRV(header)), "contents", TRUE);
+    if (children_slot && !SvOK(*children_slot))
+        sv_setrv_noinc(*children_slot, MUTABLE_SV(newAV()));
+    assert(children_slot && SvROK(*children_slot)
+           && SvTYPE(SvRV(*children_slot)) == SVt_PVAV);
+    children = MUTABLE_AV(SvRV(*children_slot));
+    {
+        SSize_t i;
+        for (i = 0; i <= av_top_index(messages); i++) {
+            SV **child = av_fetch(messages, i, FALSE);
+            if (child && SvROK(*child))
+                av_push(children, newSVsv(*child));
+        }
     }
-
-    SvREFCNT_dec(errors);
-    croak_sv(msg);
+    av_clear(messages);
+    av_push(messages, header);
+    PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(errors);
 }
 #define proto_role_croak_errors(errors, stash) \
     S_proto_role_croak_errors(aTHX_ errors, stash)
 
 static void
-S_check_role_provider_fields(pTHX_ HV *provider, HV *seen, AV **errors)
+S_check_role_provider_fields(pTHX_ HV *provider, HV *seen, SV **errors)
 {
     PADNAMELIST *fields = HvAUX(provider)->xhv_class_fields;
 
@@ -1833,13 +1858,9 @@ S_check_role_provider_fields(pTHX_ HV *provider, HV *seen, AV **errors)
         if(he) {
             HV *previous = INT2PTR(HV *, SvUV(HeVAL(he)));
             if(previous != provider) {
-                if(!*errors)
-                    *errors = newAV();
-                av_push(*errors, newSVpvf(
-                    "Field '%" SVf "' conflicts between %"
-                    HvNAMEf_QUOTEDPREFIX " and %" HvNAMEf_QUOTEDPREFIX,
-                    SVfARG(PadnameSV(pn)), HvNAMEfARG(previous),
-                    HvNAMEfARG(provider)));
+                PERL_APPEND_ERROR_OBJECT_COMPOSITION_FIELD_PROVIDER_CONFLICT(errors, PadnameSV(pn),
+                    newSVhek_mortal(HvNAME_HEK(previous)),
+                    newSVhek_mortal(HvNAME_HEK(provider)));
             }
             continue;
         }
@@ -1883,15 +1904,15 @@ S_proto_role_compose_and_install(pTHX_ HV *stash)
     /* The direct-role algebra cannot see fields hidden behind an
      * intermediate role.  Check the flattened providers so unrelated
      * transitive fields with the same name cannot share an object slot. */
-    AV *field_errors = NULL;
+    SV *errors = NULL;
     {
         HV *seen_fields = newHV();
         SAVEFREESV((SV *)seen_fields);
 
-        check_role_provider_fields(stash, seen_fields, &field_errors);
+        check_role_provider_fields(stash, seen_fields, &errors);
         for(SSize_t i = 0; i <= AvFILL(field_roles); i++)
             check_role_provider_fields((HV *)AvARRAY(field_roles)[i],
-                                       seen_fields, &field_errors);
+                                       seen_fields, &errors);
     }
 
     UV role_count = (UV)av_count(direct_roles);
@@ -1910,8 +1931,7 @@ S_proto_role_compose_and_install(pTHX_ HV *stash)
 
         if (!roleaux->xhv_class_proto_role) {
             Safefree(all_roles);
-            croak("panic: role %" HvNAMEf_QUOTEDPREFIX " has no proto-role",
-                  HvNAMEfARG(rolestash));
+            PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_PROTOTYPE_MISSING(rolestash);
         }
         all_roles[1 + i] = roleaux->xhv_class_proto_role;
     }
@@ -1923,28 +1943,7 @@ S_proto_role_compose_and_install(pTHX_ HV *stash)
     proto_role_t *composed = proto_role_compose_all(all_roles, 1 + role_count);
 
     /* Step 4: Resolve */
-    AV *errors = proto_role_resolve(composed, consumer_pr, stash, &map, is_role);
-
-    if(field_errors) {
-        if(!errors)
-            errors = field_errors;
-        else {
-            for(SSize_t i = 0; i <= AvFILL(field_errors); i++) {
-                SV *field_error = AvARRAY(field_errors)[i];
-                bool duplicate = FALSE;
-
-                for(SSize_t j = 0; j <= AvFILL(errors); j++) {
-                    if(sv_eq(field_error, AvARRAY(errors)[j])) {
-                        duplicate = TRUE;
-                        break;
-                    }
-                }
-                if(!duplicate)
-                    av_push(errors, SvREFCNT_inc(field_error));
-            }
-            SvREFCNT_dec((SV *)field_errors);
-        }
-    }
+    PERL_PROTO_ROLE_RESOLVE(composed, consumer_pr, stash, &map, is_role, &errors);
 
     if (errors) {
         proto_role_free(composed);
@@ -2077,7 +2076,7 @@ S_proto_role_compose_and_install(pTHX_ HV *stash)
                         goto new_install_method;
 
                     /* Consumer's explicit method takes precedence (conflict
-                     * was already checked by proto_role_resolve) */
+                     * was already checked by PERL_PROTO_ROLE_RESOLVE) */
                     if (existcv && CvIsMETHOD(existcv) &&
                         consumer_has_explicit(consumer_pr, HeSVKEY_force(he)))
                         continue;
@@ -2086,13 +2085,14 @@ S_proto_role_compose_and_install(pTHX_ HV *stash)
                      * each role.  Methods composed into those roles are
                      * found while walking their stashes, so retain this
                      * check for conflicts between transitive providers. */
-                    if (existcv && CvIsMETHOD(existcv))
-                        croak("Method '%" SVf "' conflicts between %"
-                              HvNAMEf_QUOTEDPREFIX " and %"
-                              HvNAMEf_QUOTEDPREFIX,
-                              SVfARG(HeSVKEY_force(he)),
-                              HvNAMEfARG(CvSTASH(existcv)),
-                              HvNAMEfARG(CvSTASH(rolecv)));
+                    if (existcv && CvIsMETHOD(existcv)) {
+                        SV *exception = NULL;
+                        PERL_APPEND_ERROR_OBJECT_COMPOSITION_METHOD_PROVIDER_CONFLICT(&exception,
+                            HeSVKEY_force(he),
+                            newSVhek_mortal(HvNAME_HEK(CvSTASH(existcv))),
+                            newSVhek_mortal(HvNAME_HEK(CvSTASH(rolecv))));
+                        PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(exception);
+                    }
                 }
 
                 new_install_method: {
@@ -2265,7 +2265,7 @@ Perl_class_seal_stash(pTHX_ HV *stash)
     if(HvSTASH_IS_CLASS_SEALED(stash))
         return;
 
-    if (PL_parser->error_count) {
+    if (PERL_DIAG_ERROR_COUNT || Perl_diag_error_count(aTHX_ PERL_ERROR_OBJ)) {
         /* we had errors, clean up */
         class_cleanup_definition(stash);
         return;
@@ -2442,6 +2442,8 @@ Perl_class_seal_stash(pTHX_ HV *stash)
     }
 
     PADNAMELIST *fieldnames = aux->xhv_class_fields;
+    CV *throw_xsub = NULL;
+    SV *class_name = NULL;
 
     for(SSize_t i = 0; fieldnames && i <= PadnamelistMAX(fieldnames); i++) {
         PADNAME *pn = PadnamelistARRAY(fieldnames)[i];
@@ -2478,13 +2480,11 @@ Perl_class_seal_stash(pTHX_ HV *stash)
         case '$':
             if(paramname) {
                 if(!valop) {
-                    SV *message =
-                        newSVpvf("Required parameter '%" SVf "' is missing for "
-                                 "%" HvNAMEf_QUOTEDPREFIX " constructor",
-                                 SVfARG(paramname), HvNAMEfARG(stash));
-                    valop = newLISTOPn(OP_DIE, 0,
-                                       newSVOP(OP_CONST, 0, message),
-                                       NULL);
+                    if (!class_name)
+                        class_name = sv_2mortal(newSVpvf("%" HvNAMEf_QUOTEDPREFIX,
+                                                        HvNAMEfARG(stash)));
+                    valop = Perl_class_missing_required_constructor_parameter_op(aTHX_
+                        class_name, paramname, &throw_xsub);
                 }
 
                 OP *helemop =
@@ -2561,13 +2561,11 @@ Perl_role_setup_stash(pTHX_ HV *stash)
     assert(HvHasAUX(stash));
 
     if(HvSTASH_IS_ROLE(stash)) {
-        croak("Cannot reopen existing role %" HvNAMEf_QUOTEDPREFIX,
-            HvNAMEfARG(stash));
+        PERL_THROW_ERROR_OBJECT_DEFINITION_ROLE_REOPEN_FORBIDDEN(stash);
     }
 
     if(HvSTASH_IS_CLASS(stash)) {
-        croak("Cannot define role %" HvNAMEf_QUOTEDPREFIX " as it is already a class",
-            HvNAMEfARG(stash));
+        PERL_THROW_ERROR_OBJECT_DEFINITION_ROLE_PACKAGE_ALREADY_CLASS(stash);
     }
 
     {
@@ -2577,8 +2575,7 @@ Perl_role_setup_stash(pTHX_ HV *stash)
         AV *isa = get_av(SvPV_nolen(isaname), (SvFLAGS(isaname) & SVf_UTF8));
 
         if(isa && av_count(isa) > 0)
-            croak("Cannot create role %" HEKf " as it already has a non-empty @ISA",
-                HvNAME_HEK(stash));
+            PERL_THROW_ERROR_OBJECT_DEFINITION_ROLE_EXISTING_ISA_FORBIDDEN(stash);
     }
 
     /* A role cannot be instantiated, so it does not get a constructor. */
@@ -2641,7 +2638,7 @@ Perl_role_seal_stash(pTHX_ HV *stash)
 
     assert(HvSTASH_IS_ROLE(stash));
 
-    if (PL_parser->error_count) {
+    if (PERL_DIAG_ERROR_COUNT) {
         class_cleanup_definition(stash);
         return;
     }
@@ -2747,6 +2744,8 @@ Perl_role_seal_stash(pTHX_ HV *stash)
     }
 
     PADNAMELIST *fieldnames = aux->xhv_class_fields;
+    CV *throw_xsub = NULL;
+    SV *class_name = NULL;
 
     for(SSize_t i = 0; fieldnames && i <= PadnamelistMAX(fieldnames); i++) {
         PADNAME *pn = PadnamelistARRAY(fieldnames)[i];
@@ -2779,13 +2778,11 @@ Perl_role_seal_stash(pTHX_ HV *stash)
         case '$':
             if(paramname) {
                 if(!valop) {
-                    SV *message =
-                        newSVpvf("Required parameter '%" SVf "' is missing for "
-                                 "%" HvNAMEf_QUOTEDPREFIX " constructor",
-                                 SVfARG(paramname), HvNAMEfARG(stash));
-                    valop = newLISTOPn(OP_DIE, 0,
-                                       newSVOP(OP_CONST, 0, message),
-                                       NULL);
+                    if (!class_name)
+                        class_name = sv_2mortal(newSVpvf("%" HvNAMEf_QUOTEDPREFIX,
+                                                        HvNAMEfARG(stash)));
+                    valop = Perl_class_missing_required_constructor_parameter_op(aTHX_
+                        class_name, paramname, &throw_xsub);
                 }
 
                 OP *helemop =
@@ -3047,10 +3044,10 @@ apply_field_attribute_param(pTHX_ PADNAME *pn, SV *value)
     }
 
     if(PadnamePV(pn)[0] != '$')
-        croak("Only scalar fields can take a :param attribute");
+        PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_REQUIRES_SCALAR();
 
     if(PadnameFIELDINFO(pn)->paramname)
-        croak("Field already has a parameter name, cannot add another");
+        PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_ALREADY_ASSIGNED();
 
     HV *stash = PadnameFIELDINFO(pn)->fieldstash;
     assert(HvSTASH_IS_CLASS_OR_ROLE(stash));
@@ -3058,8 +3055,7 @@ apply_field_attribute_param(pTHX_ PADNAME *pn, SV *value)
 
     if(aux->xhv_class_param_map &&
             hv_exists_ent(aux->xhv_class_param_map, value, 0))
-        croak("Cannot assign :param(%" SVf ") to field %" SVf " because that name is already in use",
-                SVfARG(value), SVfARG(PadnameSV(pn)));
+        PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_NAME_CONFLICT(value, PadnameSV(pn));
 
     PadnameFIELDINFO(pn)->paramname = SvREFCNT_inc(value);
 
@@ -3089,7 +3085,7 @@ apply_field_attribute_reader(pTHX_ PADNAME *pn, SV *value)
     }
 
     if(!valid_identifier_sv(value))
-        croak("%" SVf_QUOTEDPREFIX " is not a valid name for a generated method", value);
+        PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_GENERATED_METHOD_NAME_INVALID(value);
 
     I32 floor_ix = start_subparse(FALSE, 0);
     SAVEFREESV(PL_compcv);
@@ -3166,7 +3162,7 @@ apply_field_attribute_writer(pTHX_ PADNAME *pn, SV *value)
 {
     char sigil = PadnamePV(pn)[0];
     if(sigil != '$')
-        croak("Cannot apply a :writer attribute to a non-scalar field");
+        PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_WRITER_REQUIRES_SCALAR();
 
     if(value)
         SvREFCNT_inc(value);
@@ -3183,7 +3179,7 @@ apply_field_attribute_writer(pTHX_ PADNAME *pn, SV *value)
     }
 
     if(!valid_identifier_sv(value))
-        croak("%" SVf_QUOTEDPREFIX " is not a valid name for a generated method", value);
+        PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_GENERATED_METHOD_NAME_INVALID(value);
 
     I32 floor_ix = start_subparse(FALSE, 0);
     SAVEFREESV(PL_compcv);
@@ -3257,22 +3253,18 @@ apply_field_attribute_writer(pTHX_ PADNAME *pn, SV *value)
 
 static struct {
     const char *name;
-    bool requires_value;
     void (*apply)(pTHX_ PADNAME *pn, SV *value);
 } const field_attributes[] = {
     { .name           = "param",
-      .requires_value = false,
       .apply          = &apply_field_attribute_param,
     },
     { .name           = "reader",
-      .requires_value = false,
       .apply          = &apply_field_attribute_reader,
     },
     { .name           = "writer",
-      .requires_value = false,
       .apply          = &apply_field_attribute_writer,
     },
-    { NULL, false, NULL }
+    { NULL, NULL }
 };
 
 static void
@@ -3288,14 +3280,11 @@ S_class_apply_field_attribute(pTHX_ PADNAME *pn, OP *attr)
         if(!strEQ(SvPVX(name), field_attributes[i].name))
             continue;
 
-        if(field_attributes[i].requires_value && !(value && SvOK(value)))
-            croak("Field attribute %" SVf " requires a value", SVfARG(name));
-
         (*field_attributes[i].apply)(aTHX_ pn, value);
         return;
     }
 
-    croak("Unrecognized field attribute %" SVf, SVfARG(name));
+    PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_UNKNOWN(name);
 }
 
 void
@@ -3392,7 +3381,7 @@ Perl_ck_classname(pTHX_ OP *o)
     PERL_ARGS_ASSERT_CK_CLASSNAME;
 
     if(!CvIsMETHOD(PL_compcv))
-        croak("Cannot use __CLASS__ outside of a method or field initializer expression");
+        PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_NAME_CONTEXT_REQUIRED();
 
     return o;
 }

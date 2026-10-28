@@ -277,7 +277,7 @@ S_generator_xsub(pTHX_ CV *cv)
 
     PERL_UNUSED_ARG(cv);
     if (!generator || generator->magic != PERL_GENERATOR_MAGIC)
-        croak("invalid generator");
+        PERL_THROW_ERROR_ITERATOR_GENERATOR_INVALID_WRAPPER();
     args = newAV();
     for (i = 0; i < items; i++)
         av_push(args, SvREFCNT_inc_simple(ST(i)));
@@ -348,7 +348,7 @@ static XS(XS_iterator_new)
         croak_xs_usage(cv, "coderef");
 
     if (!SvROK(iterator_sv) || SvTYPE(SvRV(iterator_sv)) != SVt_PVCV)
-        croak("iterator->new expects a code reference");
+        PERL_THROW_ERROR_ITERATOR_CONSTRUCTOR_CODE_REFERENCE_REQUIRED();
 
     iterator_cv = MUTABLE_CV(SvRV(iterator_sv));
     if (!S_iterator_from_sv(aTHX_ iterator_sv)) {
@@ -391,11 +391,11 @@ static XS(XS_iterator_set_state)
     iterator = S_iterator_from_sv(aTHX_ iterator_sv);
     if (!iterator || iterator->magic != PERL_ITERATOR_MAGIC) {
         if (S_iterator_is_generator(aTHX_ iterator_sv))
-            croak("cannot set the state of a generator");
+            PERL_THROW_ERROR_ITERATOR_GENERATOR_STATE_MUTATION_FORBIDDEN();
         XSRETURN_UNDEF;
     }
     if (state == PERL_ITERATOR_INVALID || state > PERL_ITERATOR_FAILED)
-        croak("invalid iterator state");
+        PERL_THROW_ERROR_ITERATOR_INVALID_STATE();
     iterator->state = (PERL_ITERATOR_STATE)state;
     ST(0) = iterator_sv;
     XSRETURN(1);
@@ -502,7 +502,7 @@ static XS(XS_generator_running)
 
     for (i = 0; i < items; i++) {
         if (!generator_is_valid(ST(i)))
-            croak("generator::running expects generator arguments");
+            PERL_THROW_ERROR_ITERATOR_GENERATOR_RUNNING_INVALID_ARGUMENT();
         if (generator_is_running(ST(i)))
             ST(out++) = ST(i);
     }
@@ -759,7 +759,7 @@ Perl_generator_yield_values(pTHX_ SV **values, SSize_t count)
     PERL_ARGS_ASSERT_GENERATOR_YIELD_VALUES;
     if (!generator || generator->magic != PERL_GENERATOR_MAGIC
         || generator->state != PERL_GENERATOR_RUNNING)
-        croak("yield outside a running gen");
+        PERL_THROW_ERROR_ITERATOR_GENERATOR_YIELD_WITHOUT_RUNNING_CONTEXT();
 
     SvREFCNT_dec((SV *)generator->values);
     generator->values = newAV();
@@ -786,7 +786,7 @@ Perl_generator_yield_suspend(pTHX)
     if (!generator || generator->magic != PERL_GENERATOR_MAGIC
         || generator->state != PERL_GENERATOR_RUNNING
         || !generator->yield_pending)
-        croak("yield outside a running gen");
+        PERL_THROW_ERROR_ITERATOR_GENERATOR_YIELD_WITHOUT_RUNNING_CONTEXT();
 
     /* Suspending here is safe only from the runops invocation owned by the
      * generator.  A yield reached through a nested runops invocation must
@@ -941,7 +941,7 @@ Perl_generator_capture(pTHX_ PERL_GENERATOR *generator, SV *value)
     if (generator->captured
         || (generator->state != PERL_GENERATOR_NEW
             && generator->state != PERL_GENERATOR_RUNNING))
-        croak("generator continuation is not available");
+        PERL_THROW_ERROR_ITERATOR_GENERATOR_CONTINUATION_UNAVAILABLE();
 
     SvREFCNT_dec(generator->value);
     generator->value = value ? newSVsv(value) : NULL;
@@ -986,13 +986,13 @@ Perl_generator_resume(pTHX_ PERL_GENERATOR *generator, AV *args)
         return 0;
     }
     if (generator->state == PERL_GENERATOR_FAILED)
-        croak("Cannot resume a failed generator");
+        PERL_THROW_ERROR_ITERATOR_GENERATOR_CANNOT_RESUME_FAILED();
     if (generator->state != PERL_GENERATOR_NEW && !generator->captured)
-        croak("Generator has no suspended continuation");
+        PERL_THROW_ERROR_ITERATOR_GENERATOR_NO_SUSPENDED_CONTINUATION();
 
     if (new_generator) {
         if (generator->initial_args)
-            croak("Generator has already been invoked");
+            PERL_THROW_ERROR_ITERATOR_GENERATOR_ALREADY_INVOKED();
         generator->initial_args = args;
     }
     else {

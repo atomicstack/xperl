@@ -1973,7 +1973,7 @@ Use L</UV> to declare variables of the maximum usable size on this platform.
                 code;							\
     } STMT_END
 #  define CHECK_MALLOC_TOO_LATE_FOR(ch)				\
-        CHECK_MALLOC_TOO_LATE_FOR_(MALLOC_TOO_LATE_FOR(ch))
+        CHECK_MALLOC_TOO_LATE_FOR_(PERL_MALLOC_TOO_LATE_FOR(ch))
 #  define panic_write2(s)		write(2, s, strlen(s))
 #  define CHECK_MALLOC_TAINT(newval)				\
         CHECK_MALLOC_TOO_LATE_FOR_(				\
@@ -1997,9 +1997,9 @@ Use L</UV> to declare variables of the maximum usable size on this platform.
 #endif /* MYMALLOC */
 
 /* diag_listed_as: "-T" is on the #! line, it must also be used on the command line */
-#define TOO_LATE_FOR_(ch,what)	Perl_croak(aTHX_ "\"-%c\" is on the #! line, it must also be used on the command line%s", (char)(ch), what)
-#define TOO_LATE_FOR(ch)	TOO_LATE_FOR_(ch, "")
-#define MALLOC_TOO_LATE_FOR(ch)	TOO_LATE_FOR_(ch, " with $ENV{PERL_MALLOC_OPT}")
+#define PERL_TOO_LATE_FOR_(ch,source)	PERL_THROW_ERROR_RUN_OPTION_STARTUP_SWITCH_REQUIRED((char)(ch), PERL_DIAG_SELECTOR_FROM_ERROR_RUN_OPTION_STARTUP_SWITCH_REQUIRED_SWITCH_SOURCE(source))
+#define PERL_TOO_LATE_FOR(ch)	PERL_TOO_LATE_FOR_(ch, "other")
+#define PERL_MALLOC_TOO_LATE_FOR(ch)	PERL_TOO_LATE_FOR_(ch, "malloc_options")
 #define MALLOC_CHECK_TAINT2(argc,argv)	MALLOC_CHECK_TAINT(argc,argv,NULL)
 
 /*
@@ -2240,19 +2240,38 @@ Returns the SV for C<$@>, creating it if needed.
 
 Clear the contents of C<$@>, setting it to the empty string.
 
-This replaces any read-only SV with a fresh SV and removes any magic.
+This replaces any read-only SV with a fresh SV and removes non-core magic.
 
 =for apidoc Am|void|SANE_ERRSV
 
 Clean up ERRSV so we can safely set it.
 
 This replaces any read-only SV with a fresh writable copy and removes
-any magic.
+non-core magic.  The core C<$@> magic keeps C<${^ERROR_OBJ}> in sync.
+
+=for apidoc E|SV *|PERL_ERROR_OBJ
+
+Returns the SV holding the current structured exception object.
 
 =cut
 */
 
 #define ERRSV GvSVn(PL_errgv)
+#define PERL_ERROR_OBJ GvSVn(PL_errorobjgv)
+#ifdef PERL_CORE
+#  define PERL_SET_ERRSV_MAGIC() STMT_START { \
+    if (PL_errgv && GvSV(PL_errgv) \
+        && (!SvMAGICAL(ERRSV) || !mg_find(ERRSV, PERL_MAGIC_sv))) \
+        sv_magic(ERRSV, MUTABLE_SV(PL_errgv), PERL_MAGIC_sv, "@", 1); \
+    } STMT_END
+#  define PERL_CLEAR_ERROR_OBJ() STMT_START { \
+    if (PL_errorobjgv) \
+        sv_setsv(PERL_ERROR_OBJ, &PL_sv_undef); \
+    } STMT_END
+#else
+#  define PERL_SET_ERRSV_MAGIC() ((void)0)
+#  define PERL_CLEAR_ERROR_OBJ() ((void)0)
+#endif
 
 /* contains inlined gv_add_by_type */
 #define CLEAR_ERRSV() STMT_START {					\
@@ -2266,10 +2285,12 @@ any magic.
         SV *const errsv = *svp;						\
         SvPVCLEAR(errsv);                                               \
         SvPOK_only(errsv);						\
-        if (SvMAGICAL(errsv)) {						\
+        if (SvMAGICAL(errsv) && !mg_find(errsv, PERL_MAGIC_sv)) {						\
             mg_free(errsv);						\
         }								\
     }									\
+    PERL_SET_ERRSV_MAGIC();\
+    PERL_CLEAR_ERROR_OBJ();\
     } STMT_END
 
 /* contains inlined gv_add_by_type */
@@ -2283,10 +2304,11 @@ any magic.
         *svp = dupsv;							\
     } else {								\
         SV *const errsv = *svp;						\
-        if (SvMAGICAL(errsv)) {						\
+        if (SvMAGICAL(errsv) && !mg_find(errsv, PERL_MAGIC_sv)) {						\
             mg_free(errsv);						\
         }								\
     }									\
+    PERL_SET_ERRSV_MAGIC();\
     } STMT_END
 
 
@@ -2556,7 +2578,7 @@ my_snprintf()
  * that should be true only if the snprintf()/vsnprintf() are true
  * to the standard. */
 
-#define PERL_SNPRINTF_CHECK(len, max, api) STMT_START { if ((max) > 0 && (Size_t)len > (max)) croak("panic: %s buffer overflow", STRINGIFY(api)); } STMT_END
+#define PERL_SNPRINTF_CHECK(len, max, api) STMT_START { if ((max) > 0 && (Size_t)len > (max)) PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_BUFFER_OVERFLOW(STRINGIFY(api)); } STMT_END
 
 #if defined(USE_LOCALE_NUMERIC) || defined(USE_QUADMATH)
 #  define my_snprintf Perl_my_snprintf
@@ -4439,6 +4461,15 @@ out there, Solaris being the most prominent.
 #define HvNAMEf "6p"
 #define HvNAMEf_QUOTEDPREFIX "10p"
 
+typedef struct {
+    HV *hv;
+    const char *fallback;
+} perl_hvname_default;
+
+#define PERL_HvNAMEf_DEFAULT "11p"
+#define PERL_HvNAMEfARG_DEFAULT(hv, fallback) \
+    (&(perl_hvname_default){ (hv), (fallback) })
+
 #define HvNAMEfARG(hv) ((void*)(hv))
 
 #ifdef PERL_CORE
@@ -5461,10 +5492,11 @@ Gid_t getegid (void);
                          __FILE__, (line_t) __LINE__, aTHX, mutex
 #define PERL_K_SUFFIXf                                                      \
         " %s%zd threads have read locks on it, xcounter=%d, rcounter=%d\n"
-/* Adds a '?' if the readers_count is not completely reliable, i.e., there
- * could be a race */
+#define PERL_K_UNRELIABLE_READERS                                           \
+        "Reader count sampled without its mutex; it may have changed: "
 #define PERL_K_SUFFIXa(locked, m, x, r)                                     \
-                            ((locked) ? "" : "?"), (m)->readers_count, x, r
+                   ((locked) ? "" : PERL_K_UNRELIABLE_READERS),            \
+                   (m)->readers_count, x, r
 
 #define DEBUG_SCOPE(where) \
     DEBUG_l( \
@@ -5524,8 +5556,7 @@ contexts in C, and in all contexts in C++.
 #  define Perl_assert(what)                                                 \
         ((what)                                                             \
          ? ((void) 0)                                                       \
-         : (croak("Assertion %s failed: file \"" __FILE__ "\", line %"      \
-                  LINE_Tf, STRINGIFY(what), (line_t) __LINE__),             \
+         : (PERL_THROW_ERROR_INTERNAL_ASSERTION_FAILED(STRINGIFY(what), __FILE__, (line_t) __LINE__), \
             (void) 0))
 #  define Perl_assert_(what)    assert(what),
 #else
@@ -6571,6 +6602,12 @@ struct tempsym; /* defined in pp_pack.c */
 
 #include "thread.h"
 #include "pp.h"
+#include "perldiag.h"
+
+typedef struct perl_diagpack_engine perl_diagpack_engine;
+typedef struct perl_diagpack_input perl_diagpack_input;
+
+#define PERL_DIAG_THROW_DIAGNOSTICS() Perl_diag_throw_pending(aTHX)
 
 #undef PERL_CKDEF
 #undef PERL_PPDEF
@@ -6632,6 +6669,8 @@ END_EXTERN_C
    In particular, need the relevant *ish file included already, as it may
    define HAVE_INTERP_INTERN  */
 #include "embed.h"
+
+#define PERL_DIAG_ERROR_COUNT (Perl_diag_error_count(aTHX_ PL_pending_exception))
 
 /* Weak entropy always falls back to process state.  Strong entropy croaks
  * with its supplied message when no operating-system entropy is available. */
@@ -6997,18 +7036,15 @@ INIT({
             if (UNLIKELY(rcounter != 0)) {                                  \
                 if (rcounter > 0) {                                         \
                     /* diag_listed_as: SKIPME */                            \
-                    croak("panic: " PERL_K_PREFIXf(name) "Attempting to"    \
-                          " convert non-exclusive lock to exclusive; "      \
-                          PERL_K_SUFFIXf,                                   \
-                          PERL_K_PREFIXa(mutex),                            \
-                          PERL_K_SUFFIXa(0, mutex, xcounter, rcounter));    \
+                    PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_TO_EXCLUSIVE_UPGRADE_FORBIDDEN(name, __FILE__, (line_t)__LINE__, \
+                        aTHX, mutex, PERL_K_UNRELIABLE_READERS, (mutex)->readers_count, \
+                        xcounter, rcounter); \
                 }                                                           \
                 else {                                                      \
                     /* diag_listed_as: SKIPME */                            \
-                    croak("panic: " PERL_K_PREFIXf(name) "This thread's"    \
-                          " read lock count < 0; " PERL_K_SUFFIXf,          \
-                          PERL_K_PREFIXa(mutex),                            \
-                          PERL_K_SUFFIXa(0, mutex, xcounter, rcounter));    \
+                    PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_COUNT_NEGATIVE(name, __FILE__, (line_t)__LINE__, \
+                        aTHX, mutex, PERL_K_UNRELIABLE_READERS, (mutex)->readers_count, \
+                        xcounter, rcounter); \
                 }                                                           \
             }                                                               \
                                                                             \
@@ -7039,19 +7075,16 @@ INIT({
                     PERL_K_SUFFIXa(1, mutex, xcounter, rcounter)));         \
             if (cond_to_panic_if_already_locked) {                          \
                     /* diag_listed_as: SKIPME */                            \
-                croak("panic: " PERL_K_PREFIXf(name) "Increment failed"     \
-                      " because %s is true; " PERL_K_SUFFIXf,               \
-                      PERL_K_PREFIXa(mutex),                                \
-                      STRINGIFY(cond_to_panic_if_already_locked),           \
-                      PERL_K_SUFFIXa(1, mutex, xcounter, rcounter));        \
+                PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_NESTED_EXCLUSIVE_ACQUIRE_FORBIDDEN(name, __FILE__, (line_t)__LINE__, \
+                    aTHX, mutex, STRINGIFY(cond_to_panic_if_already_locked), \
+                    "", (mutex)->readers_count, xcounter, rcounter);        \
             }                                                               \
         }                                                                   \
         else {                                                              \
                     /* diag_listed_as: SKIPME */                            \
-            croak("panic: " PERL_K_PREFIXf(name) "This thread's write lock" \
-                  " count < 0; " PERL_K_SUFFIXf,                            \
-                  PERL_K_PREFIXa(mutex),                                    \
-                  PERL_K_SUFFIXa(0, mutex, xcounter, rcounter));            \
+            PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_WRITE_COUNT_NEGATIVE(name, __FILE__, (line_t)__LINE__, \
+                aTHX, mutex, PERL_K_UNRELIABLE_READERS, (mutex)->readers_count, \
+                xcounter, rcounter); \
         }                                                                   \
         CLANG_DIAG_RESTORE                                                  \
     } STMT_END
@@ -7081,10 +7114,9 @@ INIT({
         }                                                                   \
         else {                                                              \
                     /* diag_listed_as: SKIPME */\
-            croak("panic: " PERL_K_PREFIXf(name) "Attempting to unlock"     \
-                  " unowned mutex; " PERL_K_SUFFIXf,                        \
-                  PERL_K_PREFIXa(mutex),                                    \
-                  PERL_K_SUFFIXa(0, mutex, xcounter, rcounter));            \
+            PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_EXCLUSIVE_RELEASE_WITHOUT_OWNERSHIP(name, __FILE__, (line_t)__LINE__, \
+                aTHX, mutex, PERL_K_UNRELIABLE_READERS, (mutex)->readers_count, \
+                xcounter, rcounter); \
         }                                                                   \
     } STMT_END
 
@@ -7117,10 +7149,9 @@ INIT({
         }                                                                   \
         else {                                                              \
                     /* diag_listed_as: SKIPME */                            \
-            croak("panic: " PERL_K_PREFIXf(name) "This thread's xcounter"   \
-                  " < 0; " PERL_K_SUFFIXf,                                  \
-                  PERL_K_PREFIXa(mutex),                                    \
-                  PERL_K_SUFFIXa(0, mutex, xcounter, rcounter));            \
+            PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_ACQUIRE_COUNTER_STATE_INVALID(name, __FILE__, (line_t)__LINE__, \
+                aTHX, mutex, PERL_K_UNRELIABLE_READERS, (mutex)->readers_count, \
+                xcounter, rcounter); \
         }                                                                   \
         CLANG_DIAG_RESTORE                                                  \
     } STMT_END
@@ -7154,10 +7185,9 @@ INIT({
         }                                                                   \
         else {                                                              \
                     /* diag_listed_as: SKIPME */                            \
-            croak("panic: " PERL_K_PREFIXf(name) "This thread's rcounter"   \
-                  " <= 0; " PERL_K_SUFFIXf,                                 \
-                  PERL_K_PREFIXa(mutex),                                    \
-                  PERL_K_SUFFIXa(0, mutex, xcounter, rcounter));            \
+            PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_RELEASE_COUNT_NONPOSITIVE(name, __FILE__, (line_t)__LINE__, \
+                aTHX, mutex, PERL_K_UNRELIABLE_READERS, (mutex)->readers_count, \
+                xcounter, rcounter); \
         }                                                                   \
         CLANG_DIAG_RESTORE                                                  \
     } STMT_END
@@ -8456,9 +8486,9 @@ the plain locale pragma without a parameter (S<C<use locale>>) is in effect.
 #    define CHECK_AND_OUTPUT_WIDE_LOCALE_CP_MSG_(cp)                        \
         STMT_START {                                                        \
             if (! IN_UTF8_CTYPE_LOCALE && ckWARN(WARN_LOCALE)) {            \
-                Perl_warner(aTHX_ packWARN(WARN_LOCALE),                    \
-                                       "Wide character (U+%" UVXf ") in %s under a non-UTF-8 locale",\
-                                       (UV) cp, OP_DESC(PL_op));            \
+                PERL_WARN_WARNING_LOCALE_WIDE_CHARACTER_UNDER_BYTE_CTYPE(                        \
+                    PERL_DIAG_WORD_OPERATION(PL_op->op_type), (UV) cp,                            \
+                    PERL_DIAG_OP_DESC_WARNING_LOCALE_WIDE_CHARACTER_UNDER_BYTE_CTYPE(PL_op)); \
             }                                                               \
         }  STMT_END
 
@@ -8468,9 +8498,9 @@ the plain locale pragma without a parameter (S<C<use locale>>) is in effect.
                 UV cp = utf8_to_uv_or_die((const U8 *) (s),                 \
                                           (const U8 *) (send),              \
                                           NULL);                            \
-                Perl_warner(aTHX_ packWARN(WARN_LOCALE),                    \
-                        "Wide character (U+%" UVXf ") in %s under a non-UTF-8 locale", \
-                        (UV) cp, OP_DESC(PL_op));                           \
+                PERL_WARN_WARNING_LOCALE_WIDE_CHARACTER_UNDER_BYTE_CTYPE(                        \
+                    PERL_DIAG_WORD_OPERATION(PL_op->op_type), (UV) cp,                            \
+                    PERL_DIAG_OP_DESC_WARNING_LOCALE_WIDE_CHARACTER_UNDER_BYTE_CTYPE(PL_op)); \
             }                                                               \
         }  STMT_END
 
@@ -8496,6 +8526,20 @@ the plain locale pragma without a parameter (S<C<use locale>>) is in effect.
 
 #define locale_panic_via_(m, f, l)  Perl_locale_panic((m), __LINE__, f, l)
 #define locale_panic_(m)  locale_panic_via_((m), __FILE__, __LINE__)
+
+/* Release locale locks before constructing the diagnostic. Preserve errno
+ * across parameter capture and leave caller context as structured data. */
+#define PERL_LOCALE_PANIC_DIAG_VIA_(diagnostic, file, line) STMT_START { \
+    dTHX; \
+    dSAVE_ERRNO; \
+    Perl_force_locale_unlock(aTHX); \
+    SV *locale_exception = NULL; \
+    diagnostic; \
+    RESTORE_ERRNO; \
+    Perl_locale_panic_sv(locale_exception, __FILE__, __LINE__, (file), (line)); \
+} STMT_END
+#define PERL_LOCALE_PANIC_DIAG_(diagnostic) \
+    PERL_LOCALE_PANIC_DIAG_VIA_(diagnostic, __FILE__, __LINE__)
 
 #ifdef USE_LOCALE_NUMERIC
 
@@ -8839,6 +8883,7 @@ cannot have changed since the precalculation.
 
 START_EXTERN_C
 
+#  include "perldiag_helpers.inc"
 #  include "perlstatic.h"
 #  include "inline.h"
 #  include "sv_inline.h"

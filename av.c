@@ -30,7 +30,7 @@ Perl_av_reify(pTHX_ AV *av)
         return;
 #ifdef DEBUGGING
     if (SvTIED_mg((const SV *)av, PERL_MAGIC_tied))
-        ck_warner_d(packWARN(WARN_DEBUGGING), "av_reify called on tied array");
+        PERL_WARN_WARNING_SEVERE_DEBUGGING_TIED_ARRAY_REIFICATION();
 #endif
     key = AvMAX(av) + 1;
     while (key > AvFILLp(av) + 1)
@@ -86,7 +86,7 @@ Perl_av_extend(pTHX_ AV *av, SSize_t key)
         return;
     }
     av_extend_guts(av,key,&AvMAX(av),&AvALLOC(av),&AvARRAY(av));
-}    
+}
 
 /* The guts of av_extend.  *Not* for general use! */
 /* Also called directly from pp_assign, padlist_store, padnamelist_store */
@@ -97,8 +97,7 @@ Perl_av_extend_guts(pTHX_ AV *av, SSize_t key, SSize_t *maxp, SV ***allocp,
     PERL_ARGS_ASSERT_AV_EXTEND_GUTS;
 
     if (key < -1) /* -1 is legal */
-        croak(
-            "panic: av_extend_guts() negative count (%" IVdf ")", (IV)key);
+        PERL_PANIC_ERROR_INTERNAL_ARRAY_EXTEND_INDEX_INVALID( (IV)key);
 
     if (key > *maxp) {
         SSize_t ary_offset = *maxp + 1; /* Start NULL initialization
@@ -181,7 +180,7 @@ Perl_av_extend_guts(pTHX_ AV *av, SSize_t key, SSize_t *maxp, SV ***allocp,
            * index lower than we should in theory; in practice
            * its unlikely the system has SSize_t_MAX/sizeof(SV*)
            * bytes to spare! */
-          MEM_WRAP_CHECK_s(newmax, SV*, "Out of memory during array extend");
+          PERL_MEM_WRAP_CHECK_DIAG(newmax, SV*, PERL_THROW_ERROR_MEMORY_SIZE_ARRAY_EXTEND_OVERFLOW);
         }
 #ifdef STRESS_REALLOC
             {
@@ -212,8 +211,8 @@ Perl_av_extend_guts(pTHX_ AV *av, SSize_t key, SSize_t *maxp, SV ***allocp,
                           PERL_ARRAY_NEW_MIN_KEY : key;
             {
                 /* see comment above about newmax+1*/
-                MEM_WRAP_CHECK_s(*maxp, SV*,
-                                 "Out of memory during array extend");
+                PERL_MEM_WRAP_CHECK_DIAG(*maxp, SV*,
+                                   PERL_THROW_ERROR_MEMORY_SIZE_ARRAY_EXTEND_OVERFLOW);
             }
             /* Newxz isn't used below because testing showed it to be slower
              * than Newx+Zero (also slower than Newx + the previous while
@@ -247,7 +246,7 @@ it wasn't real before), which you can then modify.  Check that the return
 value is non-NULL before dereferencing it to a C<SV*>.
 
 See L<perlguts/"Understanding the Magic of Tied Hashes and Arrays"> for
-more information on how to use this function on tied arrays. 
+more information on how to use this function on tied arrays.
 
 The rough perl equivalent is C<$myarray[$key]>.
 
@@ -651,7 +650,7 @@ Perl_av_clear(pTHX_ AV *av)
 
 #ifdef DEBUGGING
     if (SvREFCNT(av) == 0) {
-        ck_warner_d(packWARN(WARN_DEBUGGING), "Attempt to clear deleted array");
+        PERL_WARN_WARNING_SEVERE_DEBUGGING_DELETED_ARRAY_CLEAR();
     }
 #endif
 
@@ -664,7 +663,7 @@ Perl_av_clear(pTHX_ AV *av)
         if (PL_delaymagic && mg && mg->mg_type == PERL_MAGIC_isa)
             PL_delaymagic |= DM_ARRAY_ISA;
         else
-            mg_clear(MUTABLE_SV(av)); 
+            mg_clear(MUTABLE_SV(av));
     }
 
     if (AvMAX(av) < 0)
@@ -723,7 +722,7 @@ Perl_av_undef(pTHX_ AV *av)
     SSize_t orig_ix = PL_tmps_ix; /* silence bogus warning about possible uninitialized use */
 
     /* Give any tie a chance to cleanup first */
-    if (SvTIED_mg((const SV *)av, PERL_MAGIC_tied)) 
+    if (SvTIED_mg((const SV *)av, PERL_MAGIC_tied))
         av_fill(av, -1);
 
     real = cBOOL(AvREAL(av));
@@ -798,7 +797,7 @@ assumptions may not hold.
 
 void
 Perl_av_push(pTHX_ AV *av, SV *val)
-{             
+{
     PERL_ARGS_ASSERT_AV_PUSH;
 
     MAGIC *mg;
@@ -910,7 +909,7 @@ Perl_av_unshift(pTHX_ AV *av, SSize_t num)
         if (i > num)
             i = num;
         num -= i;
-    
+
         AvMAX(av) += i;
         AvFILLp(av) += i;
         AvARRAY(av) = AvARRAY(av) - i;
@@ -1056,7 +1055,7 @@ Perl_av_fill(pTHX_ AV *av, SSize_t fill)
             while (key < fill)
                 ary[++key] = NULL;
         }
-            
+
         AvFILLp(av) = fill;
         if (SvSMAGICAL(av))
             mg_set(MUTABLE_SV(av));

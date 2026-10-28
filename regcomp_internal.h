@@ -34,6 +34,7 @@ typedef struct scan_frame {
 struct RExC_state_t {
     U32         flags;                  /* RXf_* are we folding, multilining? */
     U32         pm_flags;               /* PMf_* stuff from the calling PMOP */
+    SV          **exception_slot;       /* Compile accumulator or runtime error object */
     char        *precomp;               /* uncompiled string. */
     char        *precomp_end;           /* pointer to end of uncompiled string. */
     REGEXP      *rx_sv;                 /* The SV that is the regexp. */
@@ -155,7 +156,6 @@ struct RExC_state_t {
     bool        strict;
     bool        study_started;
     bool        in_script_run;
-    AV         *warn_text;
     HV         *unlexed_names;
     SV          *runtime_code_qr;       /* qr with the runtime code blocks */
     bool        use_BRANCHJ;
@@ -192,6 +192,7 @@ struct RExC_state_t {
 #endif
 
 #define RExC_flags      (pRExC_state->flags)
+#define PERL_REXC_EXCEPTION_SLOT (pRExC_state->exception_slot)
 #define RExC_pm_flags   (pRExC_state->pm_flags)
 #define RExC_precomp    (pRExC_state->precomp)
 #define RExC_copy_start_in_input (pRExC_state->copy_start_in_input)
@@ -254,7 +255,6 @@ struct RExC_state_t {
 #define RExC_frame_count (pRExC_state->frame_count)
 #define RExC_strict (pRExC_state->strict)
 #define RExC_study_started      (pRExC_state->study_started)
-#define RExC_warn_text (pRExC_state->warn_text)
 #define RExC_in_script_run      (pRExC_state->in_script_run)
 #define RExC_use_BRANCHJ        (pRExC_state->use_BRANCHJ)
 #define RExC_have_flattened          (pRExC_state->have_flattened)
@@ -873,21 +873,22 @@ static const scan_data_t zero_scan_data = {
 #define xI(xC)          (tI + (xC - tC))
 #define xI_offset(xC)   (xI(xC) - sI)
 
-#define REPORT_LOCATION_ARGS(xC)                                            \
-    UTF8fARG(UTF,                                                           \
-             (xI(xC) > eI) /* Don't run off end */                          \
+#define PERL_REPORT_LOCATION_BEFORE_LENGTH(xC)                                   \
+             ((xI(xC) > eI) /* Don't run off end */                         \
               ? eI - sI   /* Length before the <--HERE */                   \
               : ((xI_offset(xC) >= 0)                                       \
                  ? xI_offset(xC)                                            \
-                 : (croak("panic: %s: %d: negative offset: "                \
-                                    " %td trying to output message for "    \
-                                    " pattern %.*s",                        \
-                                    __FILE__, __LINE__, xI_offset(xC),      \
-                                    ((int) (eC - sC)), sC), 0)),            \
-             sI),         /* The input pattern printed up to the <--HERE */ \
-    UTF8fARG(UTF,                                                           \
-             (xI(xC) > eI) ? 0 : eI - xI(xC), /* Length after <--HERE */    \
-             (xI(xC) > eI) ? eI : xI(xC))     /* pattern after <--HERE */
+                 : (PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_PATTERN_OFFSET_NEGATIVE( \
+                         __FILE__, __LINE__, xI_offset(xC),                 \
+                         ((int) (eC - sC)), sC), 0)))
+
+#define PERL_REPORT_LOCATION_AFTER_LENGTH(xC) ((xI(xC) > eI) ? 0 : eI - xI(xC))
+#define PERL_REPORT_LOCATION_AFTER_START(xC) ((xI(xC) > eI) ? eI : xI(xC))
+
+#define REPORT_LOCATION_ARGS(xC)                                            \
+    UTF8fARG(UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(xC), sI),                    \
+    UTF8fARG(UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(xC),                           \
+                 PERL_REPORT_LOCATION_AFTER_START(xC))
 
 /* Used to point after bad bytes for an error message, but avoid skipping
  * past a nul byte. */
@@ -908,53 +909,6 @@ static const scan_data_t zero_scan_data = {
         ellipses = "...";                                               \
     }                                                                   \
     code;                                                               \
-} STMT_END
-
-#define FAIL(msg) FAIL_(                            \
-    croak("%s in regex m/%" UTF8f "%s/",         \
-            msg, UTF8fARG(UTF, len, RExC_precomp), ellipses))
-
-#define FAIL2(msg,arg) FAIL_(                       \
-    croak(msg " in regex m/%" UTF8f "%s/",       \
-            arg, UTF8fARG(UTF, len, RExC_precomp), ellipses))
-
-#define FAIL3(msg,arg1,arg2) FAIL_(                         \
-    croak(msg " in regex m/%" UTF8f "%s/",                  \
-     arg1, arg2, UTF8fARG(UTF, len, RExC_precomp), ellipses))
-
-/*
- * Simple_vFAIL -- like FAIL, but marks the current location in the scan
- */
-#define Simple_vFAIL(m) STMT_START {                                    \
-    croak("%s" REPORT_LOCATION,                                         \
-            m, REPORT_LOCATION_ARGS(RExC_parse));                       \
-} STMT_END
-
-#define vFAIL(m) Simple_vFAIL(m)
-
-/*
- * Like Simple_vFAIL(), but accepts extra arguments.
- */
-#define Simple_vFAILn(m, ...) STMT_START {                              \
-    S_re_croak(aTHX_ UTF, m REPORT_LOCATION, __VA_ARGS__,               \
-                      REPORT_LOCATION_ARGS(RExC_parse));                \
-} STMT_END
-
-#define vFAIL2(m,a1) Simple_vFAILn(m, a1)
-
-#define vFAIL3(m,a1,a2) Simple_vFAILn(m, a1, a2)
-
-#define vFAIL4(m,a1,a2,a3) Simple_vFAILn(m, a1, a2, a3)
-
-/* A specialized version of vFAIL2 that works with UTF8f */
-#define vFAIL2utf8f(m, a1) STMT_START {             \
-    S_re_croak(aTHX_ UTF, m REPORT_LOCATION, a1,  \
-            REPORT_LOCATION_ARGS(RExC_parse));      \
-} STMT_END
-
-#define vFAIL3utf8f(m, a1, a2) STMT_START {             \
-    S_re_croak(aTHX_ UTF, m REPORT_LOCATION, a1, a2,  \
-            REPORT_LOCATION_ARGS(RExC_parse));          \
 } STMT_END
 
 /* Setting this to NULL is a signal to not output warnings */
@@ -988,8 +942,7 @@ static const scan_data_t zero_scan_data = {
 #define WARN_HELPER_(loc, warns, code)                                  \
     STMT_START {                                                        \
         if (! RExC_copy_start_in_constructed) {                         \
-            croak("panic! %s: %d: Tried to warn when none"              \
-                              " expected at '%s'",                      \
+            PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_WARNING_MAPPING_MISSING( \
                               __FILE__, __LINE__, loc);                 \
         }                                                               \
         if (TO_OUTPUT_WARNINGS(loc)) {                                  \
@@ -998,129 +951,7 @@ static const scan_data_t zero_scan_data = {
         }                                                               \
     } STMT_END
 
-/* m is not necessarily a "literal string", in this macro */
-#define warn_non_literal_string(loc, packed_warn, m)                    \
-    WARN_HELPER_(loc, packed_warn,                                      \
-                      Perl_warner(aTHX_ packed_warn,                    \
-                                       "%s" REPORT_LOCATION,            \
-                                  m, REPORT_LOCATION_ARGS(loc)))
-#define reg_warn_non_literal_string(loc, m)                             \
-                warn_non_literal_string(loc, packWARN(WARN_REGEXP), m)
-
-#define ckWARN2_non_literal_string(loc, packwarn, m, a1)                    \
-    STMT_START {                                                            \
-                char * format;                                              \
-                Size_t format_size = strlen(m) + strlen(REPORT_LOCATION)+ 1;\
-                Newx(format, format_size, char);                            \
-                my_strlcpy(format, m, format_size);                         \
-                my_strlcat(format, REPORT_LOCATION, format_size);           \
-                SAVEFREEPV(format);                                         \
-                WARN_HELPER_(loc, packwarn,                                 \
-                      Perl_ck_warner(aTHX_ packwarn,                        \
-                                        format,                             \
-                                        a1, REPORT_LOCATION_ARGS(loc)));    \
-    } STMT_END
-
-#define ckWARNreg(loc,m)                                                \
-    WARN_HELPER_(loc, packWARN(WARN_REGEXP),                            \
-                      Perl_ck_warner(aTHX_ packWARN(WARN_REGEXP),       \
-                                          m REPORT_LOCATION,            \
-                                          REPORT_LOCATION_ARGS(loc)))
-
-#define vWARN(loc, m)                                                   \
-    WARN_HELPER_(loc, packWARN(WARN_REGEXP),                            \
-                      Perl_warner(aTHX_ packWARN(WARN_REGEXP),          \
-                                       m REPORT_LOCATION,               \
-                                       REPORT_LOCATION_ARGS(loc)))      \
-
-#define vWARN_dep(loc,category,m)                                           \
-    WARN_HELPER_(loc, packWARN(category),                                   \
-                      Perl_warner(aTHX_ packWARN(category),                 \
-                                       m REPORT_LOCATION,                   \
-                                       REPORT_LOCATION_ARGS(loc)))
-
-#define ckWARNdep(loc,category,m)                                           \
-    WARN_HELPER_(loc, packWARN(category),                                   \
-                      Perl_ck_warner_d(aTHX_ packWARN(category),            \
-                                            m REPORT_LOCATION,              \
-                                            REPORT_LOCATION_ARGS(loc)))
-
-#define ckWARNregdep(loc,category,m)                                        \
-    WARN_HELPER_(loc, packWARN2(category, WARN_REGEXP),                     \
-                      Perl_ck_warner_d(aTHX_ packWARN2(category,            \
-                                                      WARN_REGEXP),         \
-                                             m REPORT_LOCATION,             \
-                                             REPORT_LOCATION_ARGS(loc)))
-
-#define ckWARN2reg_d(loc,m, a1)                                             \
-    WARN_HELPER_(loc, packWARN(WARN_REGEXP),                                \
-                      Perl_ck_warner_d(aTHX_ packWARN(WARN_REGEXP),         \
-                                            m REPORT_LOCATION,              \
-                                            a1, REPORT_LOCATION_ARGS(loc)))
-
-#define ckWARN2reg(loc, m, a1)                                              \
-    WARN_HELPER_(loc, packWARN(WARN_REGEXP),                                \
-                      Perl_ck_warner(aTHX_ packWARN(WARN_REGEXP),           \
-                                          m REPORT_LOCATION,                \
-                                          a1, REPORT_LOCATION_ARGS(loc)))
-
-#define vWARN3(loc, m, a1, a2)                                              \
-    WARN_HELPER_(loc, packWARN(WARN_REGEXP),                                \
-                      Perl_warner(aTHX_ packWARN(WARN_REGEXP),              \
-                                       m REPORT_LOCATION,                   \
-                                       a1, a2, REPORT_LOCATION_ARGS(loc)))
-
-#define ckWARN3reg(loc, m, a1, a2)                                          \
-    WARN_HELPER_(loc, packWARN(WARN_REGEXP),                                \
-                      Perl_ck_warner(aTHX_ packWARN(WARN_REGEXP),           \
-                                          m REPORT_LOCATION,                \
-                                          a1, a2,                           \
-                                          REPORT_LOCATION_ARGS(loc)))
-
-#define vWARN4(loc, m, a1, a2, a3)                                      \
-    WARN_HELPER_(loc, packWARN(WARN_REGEXP),                            \
-                      Perl_warner(aTHX_ packWARN(WARN_REGEXP),          \
-                                       m REPORT_LOCATION,               \
-                                       a1, a2, a3,                      \
-                                       REPORT_LOCATION_ARGS(loc)))
-
-#define ckWARN4reg(loc, m, a1, a2, a3)                                  \
-    WARN_HELPER_(loc, packWARN(WARN_REGEXP),                            \
-                      Perl_ck_warner(aTHX_ packWARN(WARN_REGEXP),       \
-                                          m REPORT_LOCATION,            \
-                                          a1, a2, a3,                   \
-                                          REPORT_LOCATION_ARGS(loc)))
-
-#define vWARN5(loc, m, a1, a2, a3, a4)                                  \
-    WARN_HELPER_(loc, packWARN(WARN_REGEXP),                            \
-                      Perl_warner(aTHX_ packWARN(WARN_REGEXP),          \
-                                       m REPORT_LOCATION,               \
-                                       a1, a2, a3, a4,                  \
-                                       REPORT_LOCATION_ARGS(loc)))
-
-#define ckWARNexperimental(loc, class, m)                               \
-    STMT_START {                                                        \
-        if (! RExC_warned_ ## class) { /* warn once per compilation */  \
-            RExC_warned_ ## class = 1;                                  \
-            WARN_HELPER_(loc, packWARN(class),                          \
-                      Perl_ck_warner_d(aTHX_ packWARN(class),           \
-                                            m REPORT_LOCATION,          \
-                                            REPORT_LOCATION_ARGS(loc)));\
-        }                                                               \
-    } STMT_END
-
-#define ckWARNexperimental_with_arg(loc, class, m, arg)                 \
-    STMT_START {                                                        \
-        if (! RExC_warned_ ## class) { /* warn once per compilation */  \
-            RExC_warned_ ## class = 1;                                  \
-            WARN_HELPER_(loc, packWARN(class),                          \
-                      Perl_ck_warner_d(aTHX_ packWARN(class),           \
-                                       m REPORT_LOCATION,               \
-                                       arg, REPORT_LOCATION_ARGS(loc)));\
-        }                                                               \
-    } STMT_END
-
-/* Convert between a pointer to a node and its offset from the beginning of the
+ /* Convert between a pointer to a node and its offset from the beginning of the
  * program */
 #define REGNODE_p(offset)    (RExC_emit_start + (offset))
 #define REGNODE_OFFSET(node) (assert((node) >= RExC_emit_start),        \

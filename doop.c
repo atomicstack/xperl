@@ -808,7 +808,7 @@ Perl_do_vecget(pTHX_ SV *sv, STRLEN offset, int size)
     }
 
     if (size < 1 || ! isPOWER_OF_2(size))
-        croak("Illegal number of bits in vec");
+        PERL_THROW_ERROR_STRING_VEC_ELEMENT_WIDTH_INVALID();
 
     if (SvUTF8(sv)) {
         if (sv_utf8_downgrade_flags(sv, TRUE, 0)) {
@@ -816,8 +816,7 @@ Perl_do_vecget(pTHX_ SV *sv, STRLEN offset, int size)
             s = (unsigned char *) SvPV_flags(sv, srclen, svpv_flags);
         }
         else {
-            croak("Use of strings with code points over 0xFF"
-                             " as arguments to vec is forbidden");
+            PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_VEC_STRING_NOT_BYTES();
         }
     }
 
@@ -837,8 +836,7 @@ Perl_do_vecget(pTHX_ SV *sv, STRLEN offset, int size)
 #ifdef UV_IS_QUAD
 
         if (size == 64) {
-            ck_warner(packWARN(WARN_PORTABLE),
-                      "Bit vector size > 32 non-portable");
+            PERL_WARN_WARNING_PORTABLE_VEC_WIDTH_EXCEEDS_32_BITS();
         }
 #endif
         if (offset > Size_t_MAX / n - 1) /* would overflow */
@@ -910,8 +908,8 @@ Perl_do_vecset(pTHX_ SV *sv)
     if (errflags) {
         assert(!(errflags & ~(LVf_NEG_OFF|LVf_OUT_OF_RANGE)));
         if (errflags & LVf_NEG_OFF)
-            croak("Negative offset to vec in lvalue context");
-        croak("Out of memory during vec in lvalue context");
+            PERL_THROW_ERROR_STRING_VEC_LVALUE_OFFSET_NEGATIVE();
+        PERL_THROW_ERROR_MEMORY_SIZE_VEC_OFFSET_OUT_OF_RANGE();
     }
 
     if (!targ)
@@ -932,7 +930,7 @@ Perl_do_vecset(pTHX_ SV *sv)
     size = LvTARGLEN(sv);
 
     if (size < 1 || (size & (size-1))) /* size < 1 or not a power of two */
-        croak("Illegal number of bits in vec");
+        PERL_THROW_ERROR_STRING_VEC_ELEMENT_WIDTH_INVALID();
 
     if (size < 8) {
         bitoffs = ((offset%8)*size)%8;
@@ -941,7 +939,7 @@ Perl_do_vecset(pTHX_ SV *sv)
     else if (size > 8) {
         int n = size/8;
         if (offset > Size_t_MAX / n - 1) /* would overflow */
-            croak("Out of memory during vec in lvalue context");
+            PERL_THROW_ERROR_MEMORY_SIZE_VEC_OFFSET_OUT_OF_RANGE();
         offset *= n;
     }
 
@@ -965,8 +963,7 @@ Perl_do_vecset(pTHX_ SV *sv)
 #ifdef UV_IS_QUAD
 
       case 64:
-        ck_warner(packWARN(WARN_PORTABLE),
-                  "Bit vector size > 32 non-portable");
+        PERL_WARN_WARNING_PORTABLE_VEC_WIDTH_EXCEEDS_32_BITS();
         s[offset+7] = (U8)( lval      );    /* = size - 64 */
         s[offset+6] = (U8)( lval >>  8);    /* = size - 56 */
         s[offset+5] = (U8)( lval >> 16);    /* = size - 48 */
@@ -990,6 +987,10 @@ void
 Perl_do_vop(pTHX_ I32 optype, SV *sv, SV *left, SV *right)
 {
     PERL_ARGS_ASSERT_DO_VOP;
+
+#ifdef DEBUGGING
+    assert(optype == OP_BIT_AND || optype == OP_BIT_OR || optype == OP_BIT_XOR);
+#endif
 
     long *dl;
     long *ll;
@@ -1043,7 +1044,9 @@ Perl_do_vop(pTHX_ I32 optype, SV *sv, SV *left, SV *right)
      * result is the same as the other operand, so the dangling part is just
      * appended to the final result, unchanged. */
     if (left_utf8 || right_utf8) {
-        croak(FATAL_ABOVE_FF_MSG, PL_op_desc[optype]);
+        PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_BITWISE_STRING_NOT_BYTES(
+            PERL_DIAG_PL_OP_DESC_ERROR_UNICODE_WIDE_CHARACTER_BITWISE_STRING_NOT_BYTES(optype),
+            PERL_DIAG_SELECTOR_FROM_ERROR_UNICODE_WIDE_CHARACTER_BITWISE_STRING_NOT_BYTES_OPERATION_NAME(PL_op_name[optype]));
     }
     else {  /* Neither is UTF-8 */
         len = MIN(leftlen, rightlen);
@@ -1228,7 +1231,7 @@ PP(do_kv)
         const I32 flags = is_lvalue_sub();
         if (flags && !(flags & OPpENTERSUB_INARGS))
             /* diag_listed_as: Can't modify %s in %s */
-            croak("Can't modify keys in list assignment");
+            PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_HASH_KEYS_NOT_MODIFIABLE();
     }
 
     /* push all keys and/or values onto stack */

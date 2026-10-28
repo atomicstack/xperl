@@ -546,7 +546,6 @@ my %unresolved_visibility_overrides = map { $_ => 1 } qw(
     EVAL_KEEPERR
     EVAL_NULL
     EVAL_RE_REPARSING
-    EVAL_WARNONLY
     EXEC_ARGV_CAST
     EXEC_PAT_MOD
     EXEC_PAT_MODS
@@ -2211,7 +2210,6 @@ my %unresolved_visibility_overrides = map { $_ => 1 } qw(
     SAFE_FUNCTION__
     SBOX32_CASE_
     SVf_
-    TOO_LATE_FOR_
     type1_
     UNISKIP_BY_MSB_
     UTF8_IS_SUPER_NO_CHECK_
@@ -2834,6 +2832,10 @@ my %needed_by_ext_re = map { $_ => 1 } qw(
     invlist_union_complement_2nd_
     PARSE_IDENT_ERROR_POSITION
     PARSE_IDENT_ERROR_TEXT
+    is_MULTI_CHAR_FOLD_utf8_safe_part4_
+    is_MULTI_CHAR_FOLD_utf8_safe_part5_
+    is_MULTI_CHAR_FOLD_utf8_safe_part6_
+    is_MULTI_CHAR_FOLD_utf8_safe_part7_
     RExC_parse_advance
     LATIN_SMALL_LIGATURE_LONG_S_WITH_DESCENDER_S
     LATIN_SMALL_LIGATURE_LONG_S_WITH_DESCENDER_S_UTF8
@@ -5375,6 +5377,10 @@ sub find_undefs {
         # Functions are dealt with elsewhere in this file by not generating a
         # short-name macro at all for them unless wanted.
         next unless $visibility{$name}{is_macro};
+
+        # Diagnostic index defines are referenced from generated diagnostic
+        # macros which can also be used by extension code.
+        next if $name =~ /\ADIAG_.*_IDX\z/;
 
         my @warnings;
         my $flags_visibility = $visibility{$name}{flags};

@@ -493,7 +493,7 @@ Perl_newSV_type(pTHX_ const svtype type)
         assert(!sv->sv_u.svu_rv);
         break;
     default:
-        NOT_REACHED;
+        PERL_PANIC_ERROR_INTERNAL_SCALAR_TYPE_ALLOCATION_TARGET_UNKNOWN((unsigned long)type);
     }
     return sv;
 }

@@ -232,7 +232,7 @@ S_emulate_eaccess(pTHX_ const char* path, Mode_t mode)
     int res;
 
 #if !defined(HAS_SETREUID) && !defined(HAS_SETRESUID)
-    croak("switching effective uid is not implemented");
+    PERL_THROW_SWITCHING_EFFECTIVE_UID_IS_NOT_IMPLEMENTED();
 #else
 #  ifdef HAS_SETREUID
     if (setreuid(euid, ruid))
@@ -240,11 +240,11 @@ S_emulate_eaccess(pTHX_ const char* path, Mode_t mode)
     if (setresuid(euid, ruid, (Uid_t)-1))
 #  endif
         /* diag_listed_as: entering effective %s failed */
-        croak("entering effective uid failed");
+        PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_USER_ENTER_FAILED();
 #endif
 
 #if !defined(HAS_SETREGID) && !defined(HAS_SETRESGID)
-    croak("switching effective gid is not implemented");
+    PERL_THROW_SWITCHING_EFFECTIVE_GID_IS_NOT_IMPLEMENTED();
 #else
 #  ifdef HAS_SETREGID
     if (setregid(egid, rgid))
@@ -252,7 +252,7 @@ S_emulate_eaccess(pTHX_ const char* path, Mode_t mode)
     if (setresgid(egid, rgid, (Gid_t)-1))
 #  endif
         /* diag_listed_as: entering effective %s failed */
-        croak("entering effective gid failed");
+        PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_GROUP_ENTER_FAILED();
 #endif
 
     res = access(path, mode);
@@ -263,7 +263,7 @@ S_emulate_eaccess(pTHX_ const char* path, Mode_t mode)
     if (setresuid(ruid, euid, (Uid_t)-1))
 #endif
         /* diag_listed_as: leaving effective %s failed */
-        croak("leaving effective uid failed");
+        PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_USER_RESTORE_FAILED();
 
 #ifdef HAS_SETREGID
     if (setregid(rgid, egid))
@@ -271,7 +271,7 @@ S_emulate_eaccess(pTHX_ const char* path, Mode_t mode)
     if (setresgid(rgid, egid, (Gid_t)-1))
 #endif
         /* diag_listed_as: leaving effective %s failed */
-        croak("leaving effective gid failed");
+        PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_GROUP_RESTORE_FAILED();
 
     return res;
 }
@@ -538,7 +538,9 @@ PP_wrapped(pp_warn, 0, 1)
 {
     dSP; dMARK;
     SV *exsv;
+    SV *warning;
     STRLEN len;
+    bool caught = FALSE;
     if (SP - MARK > 1) {
         dTARGET;
         do_join(TARG, &PL_sv_no, MARK, SP);
@@ -566,19 +568,53 @@ PP_wrapped(pp_warn, 0, 1)
             exsv = sv_mortalcopy_flags(errsv, SV_DO_COW_SVSETSV);
         }
         else exsv = errsv;
+        caught = sv_derived_from(exsv, "XPerl::Exception");
       }
       else if (SvPOKp(errsv) ? SvCUR(errsv) : SvNIOKp(errsv)) {
         exsv = sv_mortalcopy_flags(errsv, SV_DO_COW_SVSETSV);
-        sv_catpvs(exsv, "\t...caught");
+        caught = TRUE;
       }
       else {
         exsv = newSVpvs_flags("Warning: something's wrong", SVs_TEMP);
       }
     }
-    if (SvROK(exsv) && !PL_warnhook)
-         warn("%" SVf, SVfARG(exsv));
-    else warn_sv(exsv);
+    if (caught) {
+        warning = NULL;
+        PERL_APPEND_WARNING_PROPAGATION_CAUGHT_EXCEPTION_REPORTED_AS_WARNING(&warning, exsv, CopFILE(PL_curcop),
+                                   CopLINE(PL_curcop));
+        Perl_diag_flush_exception_slot(aTHX_ &warning);
+    }
+    else if (!SvROK(exsv)) {
+        warning = NULL;
+        PERL_APPEND_WARNING_USER_TEXT(&warning, exsv);
+        Perl_diag_flush_exception_slot(aTHX_ &warning);
+    }
+    else if (SvROK(exsv) && !PL_warnhook)
+         PERL_WARN_WARNING_USER_REFERENCE(exsv);
+    else PERL_WARN_SV(exsv);
     RETSETYES;
+}
+
+static void
+Perl_diag_mark_last_legacy_raw(pTHX_ SV *exception)
+{
+    SV **messages_slot;
+    SV **diagnostic_slot;
+    AV *messages;
+    HV *diagnostic;
+
+    assert(SvROK(exception) && SvTYPE(SvRV(exception)) == SVt_PVHV);
+    messages_slot = hv_fetchs(MUTABLE_HV(SvRV(exception)), "contents", 0);
+    assert(messages_slot && SvROK(*messages_slot)
+           && SvTYPE(SvRV(*messages_slot)) == SVt_PVAV);
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    diagnostic_slot = av_fetch(messages, av_top_index(messages), 0);
+    assert(diagnostic_slot && SvROK(*diagnostic_slot)
+           && SvTYPE(SvRV(*diagnostic_slot)) == SVt_PVHV);
+    diagnostic = MUTABLE_HV(SvRV(*diagnostic_slot));
+
+    if (UNLIKELY(!hv_stores(diagnostic, "legacy_raw", newSViv(1))))
+        Perl_croak_no_mem();
 }
 
 PP_wrapped(pp_die, 0, 1)
@@ -598,6 +634,29 @@ PP_wrapped(pp_die, 0, 1)
     }
     else {
         exsv = TOPs;
+        if (SvROK(exsv)
+            && sv_derived_from(exsv, "XPerl::Exception")) {
+            SV **thrown = hv_fetchs(MUTABLE_HV(SvRV(exsv)), "thrown", 0);
+
+            if (thrown && SvTRUE(*thrown)) {
+                HV *stash = SvSTASH(SvRV(exsv));
+                GV *gv = gv_fetchmethod(stash, "PROPAGATE");
+
+                if (gv) {
+                    SV *file = sv_2mortal(newSVpv(CopFILE(PL_curcop), 0));
+                    SV *line = sv_2mortal(newSVuv(CopLINE(PL_curcop)));
+
+                    EXTEND(SP, 3);
+                    PUSHMARK(SP);
+                    PUSHs(exsv);
+                    PUSHs(file);
+                    PUSHs(line);
+                    PUTBACK;
+                    call_sv(MUTABLE_SV(GvCV(gv)), G_SCALAR|G_EVAL|G_KEEPERR);
+                    exsv = sv_mortalcopy(*PL_stack_sp--);
+                }
+            }
+        }
     }
 
     if (SvROK(exsv) || (SvPV_const(exsv, len), len)) {
@@ -627,14 +686,23 @@ PP_wrapped(pp_die, 0, 1)
             }
         }
         else if (SvOK(errsv) && (SvPV_nomg(errsv,len), len)) {
-            exsv = sv_mortalcopy(errsv);
-            sv_catpvs(exsv, "\t...propagated");
+            SV *exception = NULL;
+            PERL_APPEND_ERROR_USER_TEXT(&exception, errsv);
+            Perl_diag_mark_last_legacy_raw(aTHX_ exception);
+            PERL_APPEND_ERROR_PROPAGATION_RETHROW_CONTEXT(&exception, CopFILE(PL_curcop),
+                                        CopLINE(PL_curcop));
+            exsv = exception;
         }
         else {
             exsv = newSVpvs_flags("Died", SVs_TEMP);
         }
     }
-    die_sv(exsv);
+    if (!SvROK(exsv)) {
+        SV *exception = NULL;
+        PERL_APPEND_ERROR_USER_TEXT(&exception, exsv);
+        exsv = exception;
+    }
+    PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY_DIE_SV(exsv);
     NOT_REACHED; /* NOTREACHED */
     return NULL; /* avoid missing return from non-void function warning */
 }
@@ -820,15 +888,14 @@ PP_wrapped(pp_open, 0, 1)
     GV * const gv = MUTABLE_GV(*++MARK);
 
     if (!isGV(gv) && !(SvTYPE(gv) == SVt_PVLV && isGV_with_GP(gv)))
-        DIE(aTHX_ PL_no_usym, "filehandle");
+        PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_DIE(perl_diag_selector_domain_1755_0_filehandle_2);
 
     if ((io = GvIOp(gv))) {
         const MAGIC *mg;
         IoFLAGS(GvIOp(gv)) &= ~IOf_UNTAINT;
 
         if (IoDIRP(io))
-            croak("Cannot open %" HEKf " as a filehandle: it is already open as a dirhandle",
-                             HEKfARG(GvENAME_HEK(gv)));
+            PERL_THROW_ERROR_IO_HANDLE_DIRHANDLE_USED_AS_FILEHANDLE(GvENAME_HEK(gv));
 
         mg = SvTIED_mg((const SV *)io, PERL_MAGIC_tiedscalar);
         if (mg) {
@@ -928,7 +995,7 @@ PP_wrapped(pp_pipe_op, 2, 0)
   badexit:
     RETPUSHUNDEF;
 #else
-    DIE(aTHX_ PL_no_func, "pipe");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("pipe");
 #endif
 }
 
@@ -1004,7 +1071,7 @@ PP_wrapped(pp_umask, MAXARG, 0)
      * Otherwise it's harmless and more useful to just return undef
      * since 'group' and 'other' concepts probably don't exist here. */
     if (MAXARG >= 1 && (TOPs||POPs) && (POPi & 0700))
-        DIE(aTHX_ "umask not implemented");
+        PERL_THROW_UMASK_NOT_IMPLEMENTED();
     XPUSHs(&PL_sv_undef);
 #endif
     RETURN;
@@ -1100,7 +1167,7 @@ PP_wrapped(pp_tie, 0, 1)
             methname = "TIEARRAY";
             if (!AvREAL(varsv)) {
                 if (!AvREIFY(varsv))
-                    croak("Cannot tie unreifiable array");
+                    PERL_THROW_ERROR_MUTATION_TIE_ARRAY_NOT_REIFIABLE();
                 av_clear((AV *)varsv);
                 AvREIFY_off(varsv);
                 AvREAL_on(varsv);
@@ -1148,27 +1215,23 @@ PP_wrapped(pp_tie, 0, 1)
        stash = gv_stashsv(*MARK, 0);
        if (!stash) {
            if (SvROK(*MARK))
-               DIE(aTHX_ "Can't locate object method %" PVf_QUOTEDPREFIX
-                         " via package %" SVf_QUOTEDPREFIX,
-                   methname, SVfARG(*MARK));
+               PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NOT_FOUND_DIE(
+                   0, strlen(methname), methname, *MARK);
            else if (isGV(*MARK)) {
                /* If the glob doesn't name an existing package, using
                 * SVfARG(*MARK) would yield "*Foo::Bar" or *main::Foo. So
                 * generate the name for the error message explicitly. */
                SV *stashname = sv_newmortal();
                gv_fullname4(stashname, (GV *) *MARK, NULL, FALSE);
-               DIE(aTHX_ "Can't locate object method %" PVf_QUOTEDPREFIX
-                         " via package %" SVf_QUOTEDPREFIX,
-                   methname, SVfARG(stashname));
+               PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NOT_FOUND_DIE(
+                   0, strlen(methname), methname, stashname);
            }
            else {
                SV *stashname = !SvPOK(*MARK) ? &PL_sv_no
                              : SvCUR(*MARK)  ? *MARK
                              :                 newSVpvs_flags("main", SVs_TEMP);
-               DIE(aTHX_ "Can't locate object method %" PVf_QUOTEDPREFIX
-                         " via package %" SVf_QUOTEDPREFIX
-                   " (perhaps you forgot to load %" SVf_QUOTEDPREFIX "?)",
-                   methname, SVfARG(stashname), SVfARG(stashname));
+               PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_PACKAGE_NOT_FOUND_DIE(
+                   0, strlen(methname), methname, stashname, stashname);
            }
        }
        else if (!(gv = gv_fetchmethod(stash, methname))) {
@@ -1176,9 +1239,8 @@ PP_wrapped(pp_tie, 0, 1)
             * been deleted from the symbol table, which this one can't
             * be, since we just looked it up by name.
             */
-           DIE(aTHX_ "Can't locate object method %" PVf_QUOTEDPREFIX
-                     " via package %" HEKf_QUOTEDPREFIX ,
-               methname, HvENAME_HEK_NN(stash));
+           PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NOT_FOUND_DIE(
+               0, strlen(methname), methname, newSVhek_mortal(HvENAME_HEK_NN(stash)));
        }
         ENTER_with_name("call_TIE");
         PUSHSTACKi(PERLSI_MAGIC);
@@ -1199,8 +1261,7 @@ PP_wrapped(pp_tie, 0, 1)
         if (varsv == SvRV(sv) &&
             (SvTYPE(varsv) == SVt_PVAV ||
              SvTYPE(varsv) == SVt_PVHV))
-            croak(
-                       "Self-ties of arrays and hashes are not supported");
+            PERL_THROW_ERROR_MUTATION_TIE_AGGREGATE_SELF_REFERENCE_FORBIDDEN();
         sv_magic(varsv, (SvRV(sv) == varsv ? NULL : sv), how, NULL, 0);
     }
     LEAVE_with_name("call_TIE");
@@ -1242,9 +1303,7 @@ PP_wrapped(pp_untie, 1, 0)
                SPAGAIN;
             }
             else if (mg && SvREFCNT(obj) > 1) {
-                ck_warner(packWARN(WARN_UNTIE),
-                          "untie attempted while %" UVuf " inner references still exist",
-                          (UV)SvREFCNT(obj) - 1 ) ;
+                PERL_WARN_WARNING_UNTIE_INNER_REFERENCES_REMAIN((UV)SvREFCNT(obj) - 1) ;
             }
         }
     }
@@ -1302,7 +1361,7 @@ PP_wrapped(pp_dbmopen, 3, 0)
         require_pv("AnyDBM_File.pm");
         SPAGAIN;
         if (!stash || !(gv = gv_fetchmethod(stash, "TIEHASH")))
-            DIE(aTHX_ "No dbm on this machine");
+            PERL_THROW_ERROR_IO_DBM_BACKEND_UNAVAILABLE();
     }
 
     ENTER;
@@ -1390,8 +1449,7 @@ PP_wrapped(pp_sselect, 4, 0)
         }
         else {
             if (!SvPOKp(sv))
-                ck_warner(packWARN(WARN_MISC),
-                          "Non-string passed as bitmask");
+                PERL_WARN_WARNING_MISC_IO_SELECT_BITMASK_NOT_STRING();
             if (SvGAMAGIC(sv)) {
                 svs[i] = sv_newmortal();
                 sv_copypv_nomg(svs[i], sv);
@@ -1519,7 +1577,7 @@ PP_wrapped(pp_sselect, 4, 0)
     }
     RETURN;
 #else
-    DIE(aTHX_ "select not implemented");
+    PERL_THROW_SELECT_NOT_IMPLEMENTED();
 #endif
 }
 
@@ -1699,7 +1757,7 @@ PP(pp_enterwrite)
     if (!cv) {
         SV * const tmpsv = sv_newmortal();
         gv_efullname4(tmpsv, fgv, NULL, FALSE);
-        DIE(aTHX_ "Undefined format \"%" SVf "\" called", SVfARG(tmpsv));
+        PERL_THROW_ERROR_FORMAT_REPORT_BODY_UNDEFINED(tmpsv);
     }
     IoFLAGS(io) &= ~IOf_DIDTOP;
     return doform(cv,gv,PL_op->op_next);
@@ -1783,7 +1841,7 @@ PP(pp_leavewrite)
         if (!cv) {
             SV * const sv = sv_newmortal();
             gv_efullname4(sv, fgv, NULL, FALSE);
-            DIE(aTHX_ "Undefined top format \"%" SVf "\" called", SVfARG(sv));
+            PERL_THROW_ERROR_FORMAT_REPORT_HEADER_UNDEFINED(sv);
         }
         return doform(cv, gv, PL_op);
     }
@@ -1815,7 +1873,7 @@ PP(pp_leavewrite)
     }
     else {
         if ((IoLINES_LEFT(io) -= FmLINES(PL_formtarget)) < 0) {
-            ck_warner(packWARN(WARN_IO), "page overflow");
+            PERL_WARN_WARNING_IO_REPORT_PAGE_OVERFLOW();
         }
         if (!do_print(PL_formtarget, fp))
             rpp_push_IMM(&PL_sv_no);
@@ -1962,7 +2020,7 @@ PP_wrapped(pp_sysread, 0, 1)
         SvPVCLEAR(bufsv);
     length = SvIVx(*++MARK);
     if (length < 0)
-        DIE(aTHX_ "Negative length");
+        PERL_THROW_ERROR_IO_BUFFER_LENGTH_NEGATIVE();
     SETERRNO(0,0);
     if (MARK < SP)
         offset = SvIVx(*++MARK);
@@ -1980,9 +2038,8 @@ PP_wrapped(pp_sysread, 0, 1)
 
     if ((fp_utf8 = PerlIO_isutf8(IoIFP(io))) && !IN_BYTES) {
         if (PL_op->op_type == OP_SYSREAD || PL_op->op_type == OP_RECV) {
-            croak(
-                       "%s() isn't allowed on :utf8 handles",
-                       OP_DESC(PL_op));
+            PERL_THROW_ERROR_IO_LAYER_BYTE_OPERATION_ON_UTF8_HANDLE(
+                PERL_DIAG_OP_DESC_ERROR_IO_LAYER_BYTE_OPERATION_ON_UTF8_HANDLE(PL_op));
         }
         buffer = SvPVutf8_force(bufsv, blen);
         /* UTF-8 may not have been set if they are all low bytes */
@@ -2049,8 +2106,7 @@ PP_wrapped(pp_sysread, 0, 1)
 #endif
         /* recvfrom() may return a length larger than the supplied buffer. */
         if (bufsize > namesize) {
-            ck_warner(packWARN(WARN_IO),
-                      "Socket address truncated in %s()", "recvfrom");
+            PERL_WARN_WARNING_IO_SOCKET_ADDRESS_TRUNCATED("recvfrom");
             bufsize = namesize;
         }
         sv_setpvn(TARG, namebuf, bufsize);
@@ -2060,7 +2116,7 @@ PP_wrapped(pp_sysread, 0, 1)
 #endif
     if (offset < 0) {
         if (-offset > (SSize_t)blen)
-            DIE(aTHX_ "Offset outside string");
+            PERL_THROW_ERROR_IO_BUFFER_OFFSET_OUT_OF_RANGE();
         offset += blen;
     }
     if (DO_UTF8(bufsv)) {
@@ -2246,16 +2302,17 @@ PP_wrapped(pp_syswrite, 0, 1)
     doing_utf8 = DO_UTF8(bufsv);
 
     if (PerlIO_isutf8(IoIFP(io))) {
-        croak(
-                   "%s() isn't allowed on :utf8 handles",
-                   OP_DESC(PL_op));
+        PERL_THROW_ERROR_IO_LAYER_BYTE_OPERATION_ON_UTF8_HANDLE(
+            PERL_DIAG_OP_DESC_ERROR_IO_LAYER_BYTE_OPERATION_ON_UTF8_HANDLE(PL_op));
     }
     else if (doing_utf8) {
         if (utf8_to_bytes_temp_pv((const U8**)&buffer, &blen)) {
             doing_utf8 = false;
         }
         else {
-            croak("Wide character in %s", OP_DESC(PL_op));
+            PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_BYTE_CONVERSION_FAILED_IN_OPERATION(
+                PERL_DIAG_WORD_OPERATION(PL_op->op_type),
+                PERL_DIAG_OP_DESC_ERROR_UNICODE_WIDE_CHARACTER_BYTE_CONVERSION_FAILED_IN_OPERATION(PL_op));
         }
     }
 
@@ -2287,7 +2344,7 @@ PP_wrapped(pp_syswrite, 0, 1)
             length = (Size_t)SvIVx(*++MARK);
 #endif
             if ((SSize_t)length < 0) {
-                DIE(aTHX_ "Negative length");
+                PERL_THROW_ERROR_IO_BUFFER_LENGTH_NEGATIVE();
             }
         }
 
@@ -2295,11 +2352,11 @@ PP_wrapped(pp_syswrite, 0, 1)
             offset = SvIVx(*++MARK);
             if (offset < 0) {
                 if (-offset > (IV)blen) {
-                    DIE(aTHX_ "Offset outside string");
+      PERL_THROW_ERROR_IO_BUFFER_OFFSET_OUT_OF_RANGE();
                 }
                 offset += blen;
             } else if (offset > (IV)blen) {
-                DIE(aTHX_ "Offset outside string");
+      PERL_THROW_ERROR_IO_BUFFER_OFFSET_OUT_OF_RANGE();
             }
         } else
             offset = 0;
@@ -2631,17 +2688,17 @@ PP_wrapped(pp_ioctl, 3, 0)
     }
 
     optype = PL_op->op_type;
-    TAINT_PROPER(PL_op_desc[optype]);
+    TAINT_PROPER(PERL_TAINT_PL_OP_DESC_IOCTL_FCNTL(optype));
 
     if (optype == OP_IOCTL)
 #ifdef HAS_IOCTL
         retval = PerlLIO_ioctl(PerlIO_fileno(IoIFP(io)), func, s);
 #else
-        DIE(aTHX_ "ioctl is not implemented");
+        PERL_THROW_IOCTL_IS_NOT_IMPLEMENTED();
 #endif
     else
 #ifndef HAS_FCNTL
-      DIE(aTHX_ "fcntl is not implemented");
+      PERL_THROW_FCNTL_IS_NOT_IMPLEMENTED();
 #elif defined(OS2) && defined(__EMX__)
         retval = fcntl(PerlIO_fileno(IoIFP(io)), func, (int)s);
 #else
@@ -2651,8 +2708,7 @@ PP_wrapped(pp_ioctl, 3, 0)
 #if defined(HAS_IOCTL) || defined(HAS_FCNTL)
     if (SvPOK(argsv)) {
         if (s[SvCUR(argsv)] != 17)
-            DIE(aTHX_ "Possible memory corruption: %s overflowed 3rd argument",
-                OP_NAME(PL_op));
+            PERL_THROW_ERROR_IO_CONTROL_ARGUMENT_BUFFER_OVERRUN(OP_NAME(PL_op));
         s[SvCUR(argsv)] = 0;		/* put our null back */
         SvSETMAGIC(argsv);		/* Assume it has changed */
     }
@@ -2692,7 +2748,7 @@ PP_wrapped(pp_flock, 2, 0)
     PUSHi(value);
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, "flock");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("flock");
 #endif
 }
 
@@ -2772,7 +2828,7 @@ PP_wrapped(pp_sockpair, 5, 0)
 
     RETPUSHYES;
 #else
-    DIE(aTHX_ PL_no_sock_func, "socketpair");
+    PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("socketpair");
 #endif
 }
 
@@ -2800,7 +2856,7 @@ PP_wrapped(pp_bind, 2, 0)
 
     addr = SvPV_const(addrsv, len);
     op_type = PL_op->op_type;
-    TAINT_PROPER(PL_op_desc[op_type]);
+    TAINT_PROPER(PERL_TAINT_PL_OP_DESC_SOCKET_CONNECT(op_type));
     if ((op_type == OP_BIND
          ? PerlSock_bind(fd, (struct sockaddr *)addr, len)
          : PerlSock_connect(fd, (struct sockaddr *)addr, len))
@@ -2888,8 +2944,7 @@ PP_wrapped(pp_accept, 2, 0)
 
     /* accept() may return a length larger than the supplied buffer. */
     if (len > namesize) {
-        ck_warner(packWARN(WARN_IO),
-                  "Socket address truncated in %s()", "accept");
+        PERL_WARN_WARNING_IO_SOCKET_ADDRESS_TRUNCATED("accept");
         len = namesize;
     }
 
@@ -3074,8 +3129,7 @@ PP_wrapped(pp_getpeername, 1, 0)
     /* getpeername() and getsockname() may return a length larger than the
      * supplied buffer. */
     if (len > namesize) {
-        ck_warner(packWARN(WARN_IO),
-                  "Socket address truncated in %s()", OP_NAME(PL_op));
+        PERL_WARN_WARNING_IO_SOCKET_ADDRESS_TRUNCATED(OP_NAME(PL_op));
         len = namesize;
     }
     SvCUR_set(sv, len);
@@ -3111,15 +3165,13 @@ PP_wrapped(pp_stat, !(PL_op->op_flags & OPf_REF), 0)
         if (PL_op->op_type == OP_LSTAT) {
             if (gv != PL_defgv) {
             do_fstat_warning_check:
-                ck_warner(packWARN(WARN_IO),
-                          "lstat() on filehandle%s%" SVf,
-                          gv ? " " : "",
-                          SVfARG(gv
-                                 ? newSVhek_mortal(GvENAME_HEK(gv))
-                                 : &PL_sv_no));
+                PERL_WARN_WARNING_IO_LSTAT_ON_FILEHANDLE(
+                    gv ? perl_diag_selector_domain_2221_0_named_2 : perl_diag_selector_domain_2221_0_anonymous_1,
+                    gv ? newSVhek_mortal(GvENAME_HEK(gv))
+                       : sv_2mortal(newSVpvs("")));
             } else if (PL_laststype != OP_LSTAT)
                 /* diag_listed_as: The stat preceding %s wasn't an lstat */
-                croak("The stat preceding lstat() wasn't an lstat");
+                PERL_THROW_ERROR_IO_FILE_TEST_LSTAT_REQUIRES_LSTAT_CACHE();
         }
 
         if (gv == PL_defgv) {
@@ -3189,7 +3241,7 @@ PP_wrapped(pp_stat, !(PL_op->op_flags & OPf_REF), 0)
             if (ckWARN(WARN_NEWLINE) && should_warn_nl(file)) {
                 /* PL_warn_nl is constant */
                 GCC_DIAG_IGNORE_STMT(-Wformat-nonliteral);
-                warner(packWARN(WARN_NEWLINE), PL_warn_nl, "stat");
+                PERL_WARN_WARNING_IO_NEWLINE_FAILED_OPERATION_ON_NEWLINE_FILENAME("stat");
                 GCC_DIAG_RESTORE_STMT;
             }
             max = 0;
@@ -3515,15 +3567,14 @@ PP(pp_ftrread)
 #  ifdef PERL_EFF_ACCESS
             result = PERL_EFF_ACCESS(name, access_mode);
 #  else
-            DIE(aTHX_ "panic: attempt to call PERL_EFF_ACCESS in %s",
-                OP_NAME(PL_op));
+            PERL_PANIC_ERROR_INTERNAL_IO_FILESYSTEM_PERMISSION_EFFECTIVE_ACCESS_UNAVAILABLE(OP_NAME(PL_op));
 #  endif
         }
         else {
 #  ifdef HAS_ACCESS
             result = access(name, access_mode);
 #  else
-            DIE(aTHX_ "panic: attempt to call access() in %s", OP_NAME(PL_op));
+            PERL_PANIC_ERROR_INTERNAL_IO_FILESYSTEM_PERMISSION_REAL_ACCESS_UNAVAILABLE(OP_NAME(PL_op));
 #  endif
         }
         if (result == 0)
@@ -3781,7 +3832,7 @@ PP(pp_fttext)
         if (io && IoIFP(io)) {
             int fd;
             if (! PerlIO_has_base(IoIFP(io)))
-                DIE(aTHX_ "-T and -B not implemented on filehandles");
+                PERL_THROW_ERROR_IO_FILE_TEST_TEXT_BINARY_UNSUPPORTED_ON_HANDLE();
             fd = PerlIO_fileno(IoIFP(io));
             if (fd < 0) {
                 SETERRNO(EBADF,RMS_IFI);
@@ -3842,7 +3893,7 @@ PP(pp_fttext)
             if (ckWARN(WARN_NEWLINE) && should_warn_nl(file)) {
                 /* PL_warn_nl is constant */
                 GCC_DIAG_IGNORE_STMT(-Wformat-nonliteral);
-                warner(packWARN(WARN_NEWLINE), PL_warn_nl, "open");
+                PERL_WARN_WARNING_IO_NEWLINE_FAILED_OPERATION_ON_NEWLINE_FILENAME("open");
                 GCC_DIAG_RESTORE_STMT;
             }
             FT_RETURNUNDEF;
@@ -3949,8 +4000,7 @@ PP_wrapped(pp_chdir, MAXARG, 0)
         if (PL_op->op_flags & OPf_SPECIAL) {
             gv = gv_fetchsv(sv, 0, SVt_PVIO);
             if (!gv) {
-                ck_warner(packWARN(WARN_UNOPENED),
-                          "chdir() on unopened filehandle %" SVf, sv);
+                PERL_WARN_WARNING_IO_UNOPENED_CHDIR_HANDLE_UNOPENED(sv);
                 SETERRNO(EBADF,RMS_IFI);
                 TAINT_PROPER("chdir");
                 RETPUSHNO;
@@ -3996,7 +4046,7 @@ PP_wrapped(pp_chdir, MAXARG, 0)
         }
         PUSHs(boolSV(fchdir(fd) >= 0));
 #else
-        DIE(aTHX_ PL_no_func, "fchdir");
+        PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("fchdir");
 #endif
     }
     else 
@@ -4031,7 +4081,7 @@ PP_wrapped(pp_chroot, 1, 0)
     PUSHi( chroot(tmps) >= 0 );
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, "chroot");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("chroot");
 #endif
 }
 
@@ -4075,27 +4125,27 @@ PP_wrapped(pp_link, 2, 0)
 
 #  ifndef HAS_LINK
     if (op_type == OP_LINK)
-        DIE(aTHX_ PL_no_func, "link");
+        PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("link");
 #  endif
 #  ifndef HAS_SYMLINK
     if (op_type == OP_SYMLINK)
-        DIE(aTHX_ PL_no_func, "symlink");
+        PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("symlink");
 #  endif
 
     {
         const char * const tmps2 = POPpconstx;
         const char * const tmps = SvPV_nolen_const(TOPs);
-        TAINT_PROPER(PL_op_desc[op_type]);
+        TAINT_PROPER(PERL_TAINT_PL_OP_DESC_LINK_OPERATION(op_type));
         result =
 #  if defined(HAS_LINK) && defined(HAS_SYMLINK)
             /* Both present - need to choose which.  */
             (op_type == OP_LINK) ?
             PerlLIO_link(tmps, tmps2) : PerlLIO_symlink(tmps, tmps2);
 #  elif defined(HAS_LINK)
-    /* Only have link, so calls to pp_symlink will have DIE()d above.  */
+    /* Only link is available. Calls to pp_symlink throw above. */
         PerlLIO_link(tmps, tmps2);
 #  elif defined(HAS_SYMLINK)
-    /* Only have symlink, so calls to pp_link will have DIE()d above.  */
+    /* Only symlink is available. Calls to pp_link throw above. */
         PerlLIO_symlink(tmps, tmps2);
 #  endif
     }
@@ -4110,7 +4160,7 @@ PP_wrapped(pp_link, 2, 0)
 PP(pp_link)
 {
     /* Have neither.  */
-    DIE(aTHX_ PL_no_func, PL_op_desc[PL_op->op_type]);
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE(PERL_DIAG_PL_OP_DESC_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE(PL_op->op_type));
 }
 #endif
 
@@ -4302,8 +4352,7 @@ PP_wrapped(pp_open_dir, 2, 0)
     IO * const io = GvIOn(gv);
 
     if ((IoIFP(io) || IoOFP(io)))
-        croak("Cannot open %" HEKf " as a dirhandle: it is already open as a filehandle",
-                         HEKfARG(GvENAME_HEK(gv)));
+        PERL_THROW_ERROR_IO_HANDLE_FILEHANDLE_USED_AS_DIRHANDLE(GvENAME_HEK(gv));
     if (IoDIRP(io))
         PerlDir_close(IoDIRP(io));
     if (!(IoDIRP(io) = PerlDir_open(dirname)))
@@ -4315,7 +4364,7 @@ PP_wrapped(pp_open_dir, 2, 0)
         SETERRNO(EBADF,RMS_DIR);
     RETPUSHUNDEF;
 #else
-    DIE(aTHX_ PL_no_dir_func, "opendir");
+    PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_OPERATION_UNAVAILABLE("opendir");
 #endif
 }
 
@@ -4327,15 +4376,10 @@ S_warn_not_dirhandle(pTHX_ GV *gv)
     IO *io = GvIOn(gv);
 
     if (IoIFP(io)) {
-        ck_warner(packWARN(WARN_IO),
-                  "%s() attempted on handle %" HEKf
-                  " opened with open()",
-                  OP_DESC(PL_op), HEKfARG(GvENAME_HEK(gv)));
+        PERL_WARN_WARNING_IO_DIRECTORY_OPERATION_ON_FILEHANDLE(PERL_DIAG_OP_DESC_DIRECTORY_OPERATION(PL_op), GvENAME_HEK(gv));
     }
     else {
-        ck_warner(packWARN(WARN_IO),
-                  "%s() attempted on invalid dirhandle %" HEKf,
-                  OP_DESC(PL_op), HEKfARG(GvENAME_HEK(gv)));
+        PERL_WARN_WARNING_IO_DIRECTORY_OPERATION_ON_INVALID_HANDLE(PERL_DIAG_OP_DESC_DIRECTORY_OPERATION(PL_op), GvENAME_HEK(gv));
     }
 }
 
@@ -4343,7 +4387,7 @@ PP_wrapped(pp_readdir, 1, 0)
 {
 
 #if !defined(Direntry_t) || !defined(HAS_READDIR)
-    DIE(aTHX_ PL_no_dir_func, "readdir");
+    PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_OPERATION_UNAVAILABLE("readdir");
 #else
 #if !defined(I_DIRENT) && !defined(VMS)
     Direntry_t *readdir (DIR *);
@@ -4416,7 +4460,7 @@ PP_wrapped(pp_telldir, 1, 0)
         SETERRNO(EBADF,RMS_ISI);
     RETPUSHUNDEF;
 #else
-    DIE(aTHX_ PL_no_dir_func, "telldir");
+    PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_OPERATION_UNAVAILABLE("telldir");
 #endif
 }
 
@@ -4440,7 +4484,7 @@ PP_wrapped(pp_seekdir, 2, 0)
         SETERRNO(EBADF,RMS_ISI);
     RETPUSHUNDEF;
 #else
-    DIE(aTHX_ PL_no_dir_func, "seekdir");
+    PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_OPERATION_UNAVAILABLE("seekdir");
 #endif
 }
 
@@ -4462,7 +4506,7 @@ PP_wrapped(pp_rewinddir, 1, 0)
         SETERRNO(EBADF,RMS_ISI);
     RETPUSHUNDEF;
 #else
-    DIE(aTHX_ PL_no_dir_func, "rewinddir");
+    PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_OPERATION_UNAVAILABLE("rewinddir");
 #endif
 }
 
@@ -4493,7 +4537,7 @@ PP_wrapped(pp_closedir, 1, 0)
         SETERRNO(EBADF,RMS_IFI);
     RETPUSHUNDEF;
 #else
-    DIE(aTHX_ PL_no_dir_func, "closedir");
+    PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_OPERATION_UNAVAILABLE("closedir");
 #endif
 }
 
@@ -4567,7 +4611,7 @@ PP_wrapped(pp_fork, 0, 0)
     PUSHi(childpid);
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, "fork");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("fork");
 #endif
 }
 
@@ -4595,7 +4639,7 @@ PP_wrapped(pp_wait, 0, 0)
     XPUSHi(childpid);
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, "wait");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("wait");
 #endif
 }
 
@@ -4632,7 +4676,7 @@ PP_wrapped(pp_waitpid, 2, 0)
     SETi(result);
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, "waitpid");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("waitpid");
 #endif
 }
 
@@ -4781,7 +4825,7 @@ PP_wrapped(pp_system, 0, 1)
                 PerlLIO_close(pp[0]);
                 if (n) {			/* Error */
                     if (n != sizeof(int))
-                        DIE(aTHX_ "panic: kid popen errno read, n=%u", n);
+                        PERL_PANIC_ERROR_INTERNAL_SYSTEM_PROCESS_CHILD_ERRNO_PIPE_PARTIAL_READ_DIE(n);
                     errno = errkid;		/* Propagate errno from kid */
 #ifdef __amigaos4__
                     /* The pipe always has something in it
@@ -4892,7 +4936,7 @@ PP(pp_getppid)
     rpp_xpush_1(targ);
     return NORMAL;
 #else
-    DIE(aTHX_ PL_no_func, "getppid");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("getppid");
 #endif
 }
 
@@ -4908,13 +4952,13 @@ PP_wrapped(pp_getpgrp, MAXARG, 0)
     pgrp = (I32)BSD_GETPGRP(pid);
 #else
     if (pid != 0 && pid != PerlProc_getpid())
-        DIE(aTHX_ "POSIX getpgrp can't take an argument");
+        PERL_THROW_ERROR_SYSTEM_PROCESS_GETPGRP_UNSUPPORTED_PROCESS_ID();
     pgrp = getpgrp();
 #endif
     XPUSHi(pgrp);
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, "getpgrp");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("getpgrp");
 #endif
 }
 
@@ -4939,13 +4983,13 @@ PP_wrapped(pp_setpgrp, MAXARG, 0)
     if ((pgrp != 0 && pgrp != PerlProc_getpid())
         || (pid != 0 && pid != PerlProc_getpid()))
     {
-        DIE(aTHX_ "setpgrp can't take arguments");
+        PERL_THROW_ERROR_SYSTEM_PROCESS_SETPGRP_UNSUPPORTED_IDS();
     }
     SETi( setpgrp() >= 0 );
 #endif /* USE_BSDPGRP */
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, "setpgrp");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("setpgrp");
 #endif
 }
 
@@ -4969,7 +5013,7 @@ PP_wrapped(pp_getpriority, 2, 0)
     SETi( getpriority(PRIORITY_WHICH_T(which), who) );
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, "getpriority");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("getpriority");
 #endif
 }
 
@@ -4984,7 +5028,7 @@ PP_wrapped(pp_setpriority, 3, 0)
     SETi( setpriority(PRIORITY_WHICH_T(which), who, niceval) >= 0 );
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, "setpriority");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("setpriority");
 #endif
 }
 
@@ -5021,7 +5065,7 @@ PP_wrapped(pp_tms, 0, 0)
     }
     RETURN;
 #else
-    DIE(aTHX_ "times not implemented");
+    PERL_THROW_TIMES_NOT_IMPLEMENTED();
 #endif /* HAS_TIMES */
 }
 
@@ -5061,8 +5105,7 @@ PP_wrapped(pp_gmtime, MAXARG, 0)
         when = (Time64_T)input;
         if (UNLIKELY(pl_isnan || when != input)) {
             /* diag_listed_as: gmtime(%f) too large */
-            ck_warner(packWARN(WARN_OVERFLOW),
-                      "%s(%.0" NVff ") too large", opname, input);
+            PERL_WARN_WARNING_OVERFLOW_TIME_INPUT_OUT_OF_RANGE(opname, input);
             if (pl_isnan) {
                 err = NULL;
                 goto failed;
@@ -5072,14 +5115,12 @@ PP_wrapped(pp_gmtime, MAXARG, 0)
 
     if ( TIME_LOWER_BOUND > when ) {
         /* diag_listed_as: gmtime(%f) too small */
-        ck_warner(packWARN(WARN_OVERFLOW),
-                  "%s(%.0" NVff ") too small", opname, when);
+        PERL_WARN_WARNING_OVERFLOW_TIME_INPUT_BELOW_MINIMUM(opname, when);
         err = NULL;
     }
     else if( when > TIME_UPPER_BOUND ) {
         /* diag_listed_as: gmtime(%f) too small */
-        ck_warner(packWARN(WARN_OVERFLOW),
-                  "%s(%.0" NVff ") too large", opname, when);
+        PERL_WARN_WARNING_OVERFLOW_TIME_INPUT_OUT_OF_RANGE(opname, when);
         err = NULL;
     }
     else {
@@ -5093,8 +5134,7 @@ PP_wrapped(pp_gmtime, MAXARG, 0)
         /* diag_listed_as: gmtime(%f) failed */
         /* XXX %lld broken for quads */
       failed:
-        ck_warner(packWARN(WARN_OVERFLOW),
-                  "%s(%.0" NVff ") failed", opname, when);
+        PERL_WARN_WARNING_OVERFLOW_TIME_CONVERSION_FAILED(opname, when);
     }
 
     if (GIMME_V != G_LIST) {	/* scalar context */
@@ -5149,8 +5189,7 @@ PP_wrapped(pp_alarm, 1, 0)
          * setitimer() and often being implemented in terms of
          * setitimer(), can fail. */
         /* diag_listed_as: %s() with negative argument */
-        ck_warner_d(packWARN(WARN_MISC),
-                    "alarm() with negative argument");
+        PERL_WARN_WARNING_MISC_ALARM_DURATION_NEGATIVE();
         SETERRNO(EINVAL, LIB_INVARG);
         RETPUSHUNDEF;
     }
@@ -5162,7 +5201,7 @@ PP_wrapped(pp_alarm, 1, 0)
         RETURN;
     }
 #else
-    DIE(aTHX_ PL_no_func, "alarm");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("alarm");
 #endif
 }
 
@@ -5179,8 +5218,7 @@ PP_wrapped(pp_sleep, MAXARG, 0)
         const IV duration = POPi;
         if (duration < 0) {
           /* diag_listed_as: %s() with negative argument */
-          ck_warner_d(packWARN(WARN_MISC),
-                      "sleep() with negative argument");
+          PERL_WARN_WARNING_MISC_SLEEP_DURATION_NEGATIVE();
           SETERRNO(EINVAL, LIB_INVARG);
           XPUSHs(&PL_sv_zero);
           RETURN;
@@ -5243,7 +5281,7 @@ PP_wrapped(pp_semget, 0, 1)
     PUSHi(anum);
     RETURN;
 #else
-    DIE(aTHX_ "System V IPC is not implemented on this machine");
+    PERL_THROW_ERROR_SYSTEM_IPC_SYSTEM_V_UNAVAILABLE();
 #endif
 }
 
@@ -5320,7 +5358,7 @@ PP_wrapped(pp_ghostent,
         const char* const name = POPpbytex;
         hent = PerlSock_gethostbyname(name);
 #else
-        DIE(aTHX_ PL_no_sock_func, "gethostbyname");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("gethostbyname");
 #endif
     }
     else if (which == OP_GHBYADDR) {
@@ -5332,14 +5370,14 @@ PP_wrapped(pp_ghostent,
 
         hent = PerlSock_gethostbyaddr(addr, (Netdb_hlen_t) addrlen, addrtype);
 #else
-        DIE(aTHX_ PL_no_sock_func, "gethostbyaddr");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("gethostbyaddr");
 #endif
     }
     else
 #ifdef HAS_GETHOSTENT
         hent = PerlSock_gethostent();
 #else
-        DIE(aTHX_ PL_no_sock_func, "gethostent");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("gethostent");
 #endif
 
 #ifdef HOST_NOT_FOUND
@@ -5387,7 +5425,7 @@ PP_wrapped(pp_ghostent,
     }
     RETURN;
 #else
-    DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+    PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
 }
 
@@ -5414,7 +5452,7 @@ PP_wrapped(pp_gnetent,
         const char * const name = POPpbytex;
         nent = PerlSock_getnetbyname(name);
 #else
-        DIE(aTHX_ PL_no_sock_func, "getnetbyname");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("getnetbyname");
 #endif
     }
     else if (which == OP_GNBYADDR) {
@@ -5423,14 +5461,14 @@ PP_wrapped(pp_gnetent,
         const Netdb_net_t addr = (Netdb_net_t) (U32)POPu;
         nent = PerlSock_getnetbyaddr(addr, addrtype);
 #else
-        DIE(aTHX_ PL_no_sock_func, "getnetbyaddr");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("getnetbyaddr");
 #endif
     }
     else
 #ifdef HAS_GETNETENT
         nent = PerlSock_getnetent();
 #else
-        DIE(aTHX_ PL_no_sock_func, "getnetent");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("getnetent");
 #endif
 
 #ifdef HOST_NOT_FOUND
@@ -5465,7 +5503,7 @@ PP_wrapped(pp_gnetent,
 
     RETURN;
 #else
-    DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+    PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
 }
 
@@ -5493,7 +5531,7 @@ PP_wrapped(pp_gprotoent,
         const char* const name = POPpbytex;
         pent = PerlSock_getprotobyname(name);
 #else
-        DIE(aTHX_ PL_no_sock_func, "getprotobyname");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("getprotobyname");
 #endif
     }
     else if (which == OP_GPBYNUMBER) {
@@ -5501,14 +5539,14 @@ PP_wrapped(pp_gprotoent,
         const int number = POPi;
         pent = PerlSock_getprotobynumber(number);
 #else
-        DIE(aTHX_ PL_no_sock_func, "getprotobynumber");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("getprotobynumber");
 #endif
     }
     else
 #ifdef HAS_GETPROTOENT
         pent = PerlSock_getprotoent();
 #else
-        DIE(aTHX_ PL_no_sock_func, "getprotoent");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("getprotoent");
 #endif
 
     EXTEND(SP, 3);
@@ -5531,7 +5569,7 @@ PP_wrapped(pp_gprotoent,
 
     RETURN;
 #else
-    DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+    PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
 }
 
@@ -5560,7 +5598,7 @@ PP_wrapped(pp_gservent,
         const char * const name = POPpbytex;
         sent = PerlSock_getservbyname(name, (proto && !*proto) ? NULL : proto);
 #else
-        DIE(aTHX_ PL_no_sock_func, "getservbyname");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("getservbyname");
 #endif
     }
     else if (which == OP_GSBYPORT) {
@@ -5570,14 +5608,14 @@ PP_wrapped(pp_gservent,
         port = PerlSock_htons(port);
         sent = PerlSock_getservbyport(port, (proto && !*proto) ? NULL : proto);
 #else
-        DIE(aTHX_ PL_no_sock_func, "getservbyport");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("getservbyport");
 #endif
     }
     else
 #ifdef HAS_GETSERVENT
         sent = PerlSock_getservent();
 #else
-        DIE(aTHX_ PL_no_sock_func, "getservent");
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE("getservent");
 #endif
 
     EXTEND(SP, 4);
@@ -5602,7 +5640,7 @@ PP_wrapped(pp_gservent,
 
     RETURN;
 #else
-    DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+    PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
 }
 
@@ -5619,28 +5657,28 @@ PP_wrapped(pp_shostent, 1, 0)
 #ifdef HAS_SETHOSTENT
         PerlSock_sethostent(stayopen);
 #else
-        DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     case OP_SNETENT:
 #ifdef HAS_SETNETENT
         PerlSock_setnetent(stayopen);
 #else
-        DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     case OP_SPROTOENT:
 #ifdef HAS_SETPROTOENT
         PerlSock_setprotoent(stayopen);
 #else
-        DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     case OP_SSERVENT:
 #ifdef HAS_SETSERVENT
         PerlSock_setservent(stayopen);
 #else
-        DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     }
@@ -5658,56 +5696,56 @@ PP(pp_ehostent)
 #ifdef HAS_ENDHOSTENT
         PerlSock_endhostent();
 #else
-        DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     case OP_ENETENT:
 #ifdef HAS_ENDNETENT
         PerlSock_endnetent();
 #else
-        DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     case OP_EPROTOENT:
 #ifdef HAS_ENDPROTOENT
         PerlSock_endprotoent();
 #else
-        DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     case OP_ESERVENT:
 #ifdef HAS_ENDSERVENT
         PerlSock_endservent();
 #else
-        DIE(aTHX_ PL_no_sock_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PERL_DIAG_PL_OP_DESC_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     case OP_SGRENT:
 #if defined(HAS_GROUP) && defined(HAS_SETGRENT)
         setgrent();
 #else
-        DIE(aTHX_ PL_no_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE(PERL_DIAG_PL_OP_DESC_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     case OP_EGRENT:
 #if defined(HAS_GROUP) && defined(HAS_ENDGRENT)
         endgrent();
 #else
-        DIE(aTHX_ PL_no_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE(PERL_DIAG_PL_OP_DESC_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     case OP_SPWENT:
 #if defined(HAS_PASSWD) && defined(HAS_SETPWENT)
         setpwent();
 #else
-        DIE(aTHX_ PL_no_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE(PERL_DIAG_PL_OP_DESC_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     case OP_EPWENT:
 #if defined(HAS_PASSWD) && defined(HAS_ENDPWENT)
         endpwent();
 #else
-        DIE(aTHX_ PL_no_func, PL_op_desc[PL_op->op_type]);
+        PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE(PERL_DIAG_PL_OP_DESC_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE(PL_op->op_type));
 #endif
         break;
     }
@@ -5822,7 +5860,7 @@ PP_wrapped(pp_gpwent,
         }
 #endif
 #   else
-        DIE(aTHX_ PL_no_func, "getpwent");
+        PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("getpwent");
 #   endif
         break;
     }
@@ -5941,7 +5979,7 @@ PP_wrapped(pp_gpwent,
     }
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, PL_op_desc[PL_op->op_type]);
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE(PERL_DIAG_PL_OP_DESC_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE(PL_op->op_type));
 #endif
 }
 
@@ -5976,7 +6014,7 @@ PP_wrapped(pp_ggrent,
 #ifdef HAS_GETGRENT
         grent = (struct group *)getgrent();
 #else
-        DIE(aTHX_ PL_no_func, "getgrent");
+        PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("getgrent");
 #endif
 
     EXTEND(SP, 4);
@@ -6019,7 +6057,7 @@ PP_wrapped(pp_ggrent,
 
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, PL_op_desc[PL_op->op_type]);
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE(PERL_DIAG_PL_OP_DESC_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE(PL_op->op_type));
 #endif
 }
 
@@ -6037,7 +6075,7 @@ PP(pp_getlogin)
     rpp_push_1(TARG);
     return NORMAL;
 #else
-    DIE(aTHX_ PL_no_func, "getlogin");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("getlogin");
 #endif
 }
 
@@ -6079,9 +6117,9 @@ PP_wrapped(pp_syscall, 0, 1)
     }
     switch (items) {
     default:
-        DIE(aTHX_ "Too many args to syscall");
+        PERL_THROW_ERROR_SYSTEM_SYSCALL_TOO_MANY_ARGUMENTS();
     case 0:
-        DIE(aTHX_ "Too few args to syscall");
+        PERL_THROW_ERROR_SYSTEM_SYSCALL_NUMBER_REQUIRED();
     case 1:
         retval = syscall(a[0]);
         break;
@@ -6111,7 +6149,7 @@ PP_wrapped(pp_syscall, 0, 1)
     PUSHi(retval);
     RETURN;
 #else
-    DIE(aTHX_ PL_no_func, "syscall");
+    PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE("syscall");
 #endif
 }
 

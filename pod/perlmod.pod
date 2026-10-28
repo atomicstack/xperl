@@ -373,6 +373,12 @@ C<CHECK> code blocks are run just after the B<initial> Perl compile phase ends
 and before the run time begins, in LIFO order.  C<CHECK> code blocks are used
 in the Perl compiler suite to save the compiled state of the program.
 
+If compilation of the main program fails, Perl skips its queued
+C<UNITCHECK> and C<CHECK> blocks.  A C<UNITCHECK> block belonging to an
+earlier compilation unit may already have run before the failure.
+An explicit C<exit> during compilation retains the existing behavior of
+running queued C<UNITCHECK> and C<CHECK> blocks.
+
 Inside of a C<CHECK> block, the value of C<${^GLOBAL_PHASE}> will be
 C<"CHECK">.
 

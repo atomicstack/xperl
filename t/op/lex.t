@@ -55,7 +55,7 @@ curr_test(3);
  delete local $ENV{PERL_UNICODE};
  fresh_perl_is(
   'BEGIN{ ++$_ for @INC{"charnames.pm","_charnames.pm"} } "\N{a}"',
-  'Constant(\N{a}) unknown at - line 1, within string' . "\n"
+  'Constant(charnames) unknown at - line 1, within string' . "\n"
  ."Execution of - aborted due to compilation errors.\n",
    { stderr => 1 },
   'correct output (and no crash) when charnames cannot load for \N{...}'
@@ -135,7 +135,7 @@ SKIP: {
     skip "Different output on EBCDIC (presumably)", 3 if $::IS_EBCDIC;
     fresh_perl_is(
       qq'"ab}"ax;&\0z\x8Ao}\x82x;', <<gibberish,
-Bareword found where operator expected (Missing operator before "ax"?) at - line 1, near ""ab}"ax"
+Bareword found where operator expected (Missing operator before "ax"?) at - line 1, near "\"ab}\"ax"
 syntax error at - line 1, near ""ab}"ax"
 Execution of - aborted due to compilation errors.
 gibberish
@@ -144,7 +144,7 @@ gibberish
     );
     fresh_perl_is(
       qq'"ab}"ax;&{+z}\x8Ao}\x82x;', <<gibberish,
-Bareword found where operator expected (Missing operator before "ax"?) at - line 1, near ""ab}"ax"
+Bareword found where operator expected (Missing operator before "ax"?) at - line 1, near "\"ab}\"ax"
 syntax error at - line 1, near ""ab}"ax"
 Execution of - aborted due to compilation errors.
 gibberish

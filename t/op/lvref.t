@@ -5,7 +5,7 @@ BEGIN {
     set_up_inc("../lib");
 }
 
-plan 203;
+plan 207;
 
 eval '\$x = \$y';
 like $@, qr/^Experimental aliasing via reference not enabled/,
@@ -515,6 +515,11 @@ like $@, qr/^Assigned value is not a reference at/, 'assigning non-ref';
 eval { my $x; \$x = [] };
 like $@, qr/^Assigned value is not a SCALAR reference at/,
     'assigning non-scalar ref to scalar ref';
+is $@->contents->[0]->code,
+    'ERROR_MUTATION_REFERENCE_ALIASING_REFERENT_TYPE_MISMATCH',
+    'scalar ref mismatch uses the typed-reference diagnostic';
+is $@->contents->[0]->params->[0]{value}, 6,
+  'scalar ref mismatch retains SVrt_SCALAR plus one as its native selector ID';
 eval { \$::x = [] };
 like $@, qr/^Assigned value is not a SCALAR reference at/,
     'assigning non-scalar ref to package scalar ref';
@@ -545,6 +550,11 @@ like $@, qr/^Assigned value is not a reference at/,
 eval { my $x; (\$x) = [] };
 like $@, qr/^Assigned value is not a SCALAR reference at/,
     'list-assigning non-scalar ref to scalar ref';
+is $@->contents->[0]->code,
+    'ERROR_MUTATION_REFERENCE_ALIASING_REFERENT_TYPE_MISMATCH',
+    'list scalar ref mismatch uses the typed-reference diagnostic';
+is $@->contents->[0]->params->[0]{value}, 6,
+  'list scalar ref mismatch retains SVrt_SCALAR plus one as its native selector ID';
 eval { (\$::x = []) };
 like $@, qr/^Assigned value is not a SCALAR reference at/,
     'list-assigning non-scalar ref to package scalar ref';
@@ -615,7 +625,8 @@ like $@,
     qr/^Can't modify reference to hash dereference in scalar assignment a/,
    "Can't modify reference to hash dereference in scalar assignment";
 eval '$foo ? \%{"42"} : \%43 = 42';
-like $@,
+my $conditional_reference_error = $@;
+like $conditional_reference_error->render_as_legacy('en'),
     qr/^Can't modify reference to hash dereference in scalar assignment a/,
    "Can't modify ref to whatever in scalar assignment via cond expr";
 eval '\$0=~y///=0';

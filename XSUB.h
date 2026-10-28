@@ -421,7 +421,7 @@ Rethrows a previously caught exception.  See L<perlguts/"Exception Handling">.
     STMT_START {						\
         if (db->type) {						\
             if (db->filtering) {				\
-                croak("recursion detected in %s", name) ;	\
+                PERL_THROW_ERROR_IO_DBM_FILTER_REENTRY(name) ;	\
             }                     				\
             ENTER ;						\
             SAVETMPS ;						\

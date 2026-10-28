@@ -171,14 +171,12 @@ enum {
 #ifdef DEBUGGING
 #  define ASSERT_CURPAD_LEGAL(label) \
     if (PL_comppad ? (AvARRAY(PL_comppad) != PL_curpad) : (PL_curpad != 0))  \
-        Perl_croak(aTHX_ "panic: illegal pad in %s: 0x%" UVxf "[0x%" UVxf "]",\
-            label, PTR2UV(PL_comppad), PTR2UV(PL_curpad));
+        PERL_PANIC_ERROR_INTERNAL_PAD_STATE_ARRAY_PAIR_INCONSISTENT(label, PTR2UV(PL_comppad), PTR2UV(PL_curpad));
 
 
 #  define ASSERT_CURPAD_ACTIVE(label) \
     if (!PL_comppad || (AvARRAY(PL_comppad) != PL_curpad))		  \
-        Perl_croak(aTHX_ "panic: invalid pad in %s: 0x%" UVxf "[0x%" UVxf "]",\
-            label, PTR2UV(PL_comppad), PTR2UV(PL_curpad));
+        PERL_PANIC_ERROR_INTERNAL_PAD_STATE_ACTIVE_ARRAY_REQUIRED(label, PTR2UV(PL_comppad), PTR2UV(PL_curpad));
 #else
 #  define ASSERT_CURPAD_LEGAL(label)
 #  define ASSERT_CURPAD_ACTIVE(label)

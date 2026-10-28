@@ -28,7 +28,7 @@ skip_all_without_unicode_tables();
 my $has_locales = locales_enabled('LC_CTYPE');
 my $utf8_locale = find_utf8_ctype_locale();
 
-plan tests => 6822 + 6 * $Config{uvsize};  # Update when adding/deleting tests.
+plan tests => 6824 + 6 * $Config{uvsize};  # Update when adding/deleting tests.
 
 run_tests() unless caller;
 
@@ -761,6 +761,32 @@ sub run_tests {
         my $long_wide_target = ('Q' x 17) . $long_wide_word;
         ok($long_wide_target =~ $long_encoded_re && $-[0] == 17,
            'AC capped shifts find a long wide word through continuation anchors');
+    }
+
+    {
+        my @warnings;
+        {
+            local $SIG{__WARN__} = sub { push @warnings, $_[0] };
+            my $undef;
+            my $re = qr/$undef/;
+        }
+        is(scalar @warnings, 1,
+           'interpolating an undefined value into a regex warns once');
+    }
+
+    {
+        require Scalar::Util;
+        eval { die "earlier exception\n" };
+        my $earlier_exception = ${^ERROR_OBJ};
+        my @warnings;
+        {
+            local $SIG{__WARN__} = sub { push @warnings, $_[0] };
+            my $undef;
+            my $re = qr/$undef/;
+        }
+        is(Scalar::Util::refaddr(${^ERROR_OBJ}),
+           Scalar::Util::refaddr($earlier_exception),
+           'regex compilation preserves the existing exception object');
     }
 
     {

@@ -97,9 +97,7 @@ Perl_mro_set_private_data(pTHX_ struct mro_meta *const smeta,
                    which->name, which->length, which->kflags,
                    HV_FETCH_ISSTORE, data, which->hash))
     {
-        croak("panic: hv_store() failed in set_mro_private_data() "
-                   "for '%.*s' %d", (int) which->length, which->name,
-                   which->kflags);
+        PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_DATA_STORE_FAILED((int) which->length, which->name, which->kflags);
     }
 
     return data;
@@ -150,8 +148,7 @@ Perl_mro_register(pTHX_ const struct mro_alg *mro) {
                    HV_FETCH_ISSTORE, wrapper, mro->hash))
     {
         SvREFCNT_dec_NN(wrapper);
-        croak("panic: hv_store() failed in mro_register() "
-                   "for '%.*s' %d", (int) mro->length, mro->name, mro->kflags);
+        PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_REGISTER_FAILED((int) mro->length, mro->name, mro->kflags);
     }
 }
 
@@ -255,12 +252,10 @@ S_mro_get_linear_isa_dfs(pTHX_ HV *stash, U32 level)
         : HvNAME_HEK(stash);
 
     if (!stashhek)
-      croak("Can't linearize anonymous symbol table");
+      PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_ANONYMOUS_STASH();
 
     if (level > 100)
-        croak(
-                  "Recursive inheritance detected in package '%" HEKf "'",
-                   HEKfARG(stashhek));
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_DEPTH_EXCEEDED(stashhek);
 
     meta = HvMROMETA(stash);
 
@@ -424,11 +419,11 @@ Perl_mro_get_linear_isa(pTHX_ HV *stash)
     AV *isa;
 
     if(!HvHasAUX(stash))
-        croak("Can't linearize anonymous symbol table");
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_ANONYMOUS_STASH();
 
     meta = HvMROMETA(stash);
     if (!meta->mro_which)
-        croak("panic: invalid MRO!");
+        PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_ALGORITHM_MISSING();
     isa = meta->mro_which->resolve(aTHX_ stash, 0);
 
     if (meta->mro_which != &dfs_alg) { /* skip for dfs, for speed */
@@ -527,7 +522,7 @@ Perl_mro_isa_changed_in(pTHX_ HV* stash)
     const STRLEN stashname_len = HvENAMELEN_get(stash);
 
     if(!stashname)
-        croak("Can't call mro_isa_changed_in() on anonymous symbol table");
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_CHANGE_ANONYMOUS_STASH();
 
 
     /* wipe out the cached linearizations for this stash */
@@ -1340,7 +1335,7 @@ Perl_mro_method_changed_in(pTHX_ HV *stash)
     const char * const stashname = HvENAME_get(stash);
 
     if(!stashname)
-        croak("Can't call mro_method_changed_in() on anonymous symbol table");
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_ANONYMOUS_STASH();
 
     const STRLEN stashname_len = HvENAMELEN_get(stash);
 
@@ -1406,7 +1401,7 @@ Perl_mro_set_mro(pTHX_ struct mro_meta *const meta, SV *const name)
     const struct mro_alg *const which = Perl_mro_get_from_name(aTHX_ name);
 
     if (!which)
-        croak("Invalid mro name: '%" SVf "'", name);
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_MRO_NAME_UNKNOWN(name);
 
     if(meta->mro_which != which) {
         if (meta->mro_linear_current && !meta->mro_linear_all) {
@@ -1454,7 +1449,7 @@ XS(XS_mro_method_changed_in)
     classname = ST(0);
 
     class_stash = gv_stashsv(classname, 0);
-    if(!class_stash) croak("No such class: '%" SVf "'!", SVfARG(classname));
+    if(!class_stash) PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_PACKAGE_NOT_FOUND(classname);
 
     mro_method_changed_in(class_stash);
 

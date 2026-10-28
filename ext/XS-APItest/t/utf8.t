@@ -173,6 +173,19 @@ foreach ([0, '', '', 'empty'],
     is(bytes_cmp_utf8($right, $left), -$expect, "... and $desc reversed");
 }
 
+{
+    my $malformed = $pound_sign;
+    utf8::encode($malformed);
+    substr($malformed, -1, 1) = 'x';
+    my @warnings;
+    local $SIG{__WARN__} = sub { push @warnings, $_[0] };
+    is(bytes_cmp_utf8($pound_sign, $malformed, 1), -2,
+        'bytes_cmp_utf8 rejects a bad continuation without an active op');
+    is(scalar @warnings, 1, 'the no-op comparison emits one warning');
+    like($warnings[0], qr/unexpected non-continuation byte/,
+        'the no-op warning retains its encoding failure context');
+}
+
 # The keys to this hash are Unicode code points, their values are the native
 # UTF-8 representations of them.  The code points are chosen because they are
 # "interesting" on either or both ASCII and EBCDIC platforms.  First we add

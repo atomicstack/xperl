@@ -5,6 +5,36 @@ apitest_exception(throw_e)
         RETVAL
 
 void
+locale_panic_diagnostic(category, error)
+    int category
+    int error
+    CODE:
+        SV *exception = NULL;
+        PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_CATEGORY_UNKNOWN(&exception, category);
+        SETERRNO(error, 0);
+        Perl_locale_panic_sv(exception, __FILE__, __LINE__,
+                             "locale-test-caller.c", 71);
+
+SV *
+constrained_diagnostic_text(which)
+    int which
+    CODE:
+        char buffer[256];
+        if (which == 0)
+            my_snprintf(buffer, sizeof(buffer),
+                PERL_DIAG_FORMAT_ERROR_SYSTEM_SIGNAL_HANDLER_MISSING, "TEST");
+        else if (which == 1)
+            my_snprintf(buffer, sizeof(buffer),
+                PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_SERVICE_STATUS_FAILED, 17, "bootstrap.c", 23);
+        else
+            my_snprintf(buffer, sizeof(buffer),
+                PERL_DIAG_FORMAT_NOTE_CONTEXT_OS2_MODULE_LOAD_DETAIL,
+                "external error", "module.dll");
+        RETVAL = newSVpv(buffer, 0);
+    OUTPUT:
+        RETVAL
+
+void
 mycroak(sv)
     SV* sv
     CODE:

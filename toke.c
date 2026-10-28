@@ -40,6 +40,9 @@ Individual members of C<PL_parser> have their own documentation.
 #include "perl.h"
 #include "invlist_inline.h"
 
+static void Perl_diag_mark_last_parser_context(pTHX_ SV *exception,
+    const char *context_name, SV *context_value, bool only_if_missing);
+
 #define new_constant(a,b,c,d,e,f,g, h)	\
         S_new_constant(aTHX_ a,b,STR_WITH_LEN(c),d,e,f, g, h)
 
@@ -82,7 +85,6 @@ Individual members of C<PL_parser> have their own documentation.
 #define PL_in_my_stash		(PL_parser->in_my_stash)
 #define PL_tokenbuf		(PL_parser->tokenbuf)
 #define PL_multi_end		(PL_parser->multi_end)
-#define PL_error_count		(PL_parser->error_count)
 
 #  define PL_nexttoke		(PL_parser->nexttoke)
 #  define PL_nexttype		(PL_parser->nexttype)
@@ -673,24 +675,17 @@ S_ao(pTHX_ int toketype)
 
 /*
  * S_warn_expect_operator
- * When Perl expects an operator and finds something else, no_op
- * prints the warning.  It always prints "<something> found where
- * operator expected.  It prints "Missing semicolon on previous line?"
- * if the surprise occurs at the start of the line.  "do you need to
- * predeclare ..." is printed out for code like "sub bar; foo bar $x"
- * where the compiler doesn't know if foo is a method call or a function.
- * It prints "Missing operator before end of line" if there's nothing
- * after the missing operator, or "... before <...>" if there is something
- * after the missing operator.
- *
- * PL_bufptr is expected to point to the start of the thing that was found,
- * and s after the next token or partial token.
+ * When Perl expects an operator and finds something else, append a structured
+ * warning and any applicable hint to the parser's pending exception.
+ * PL_bufptr points to the start of the token that was found, and s points
+ * after the next token or partial token.
  */
 
 #define POP_OLDBUFPTR TRUE
 
 static void
-S_warn_expect_operator(pTHX_ const char *const what, char *s, I32 pop_oldbufptr)
+S_warn_expect_operator(pTHX_ const char *const found_kind, char *s,
+                        I32 pop_oldbufptr)
 {
     PERL_ARGS_ASSERT_WARN_EXPECT_OPERATOR;
 
@@ -704,10 +699,6 @@ S_warn_expect_operator(pTHX_ const char *const what, char *s, I32 pop_oldbufptr)
 
     char * const oldbp = PL_bufptr;
     const bool is_first = (PL_oldbufptr == PL_linestart);
-    SV *message = sv_2mortal( newSVpvf(
-                   PERL_DIAG_WARN_SYNTAX("%s found where operator expected"),
-                   what
-                  ) );
 
     if (!s)
         s = oldbp;
@@ -715,14 +706,36 @@ S_warn_expect_operator(pTHX_ const char *const what, char *s, I32 pop_oldbufptr)
         PL_bufptr = s;
 
     if (ckWARN_d(WARN_SYNTAX)) {
-        bool has_more = FALSE;
+        bool has_hint = FALSE;
+
+        PERL_APPEND_WARNING_SYNTAX_OPERATOR_EXPECTED(&PL_pending_exception, PERL_DIAG_SELECTOR_FROM_WARNING_SYNTAX_OPERATOR_EXPECTED_FOUND_KIND(found_kind));
+
+        {
+            const char *context_start = PL_oldoldbufptr;
+            SV *context_value;
+            U32 context_flags = UTF ? SVf_UTF8 : 0;
+
+            if (!context_start || context_start > s
+                || s - context_start >= 200)
+                context_start = oldbp;
+            while (context_start < s && isSPACE(*context_start))
+                context_start++;
+            if (context_start < s && s - context_start < 200) {
+                context_value = sv_2mortal(newSVpvn_flags(context_start,
+                    s - context_start, context_flags));
+                Perl_diag_mark_last_parser_context(aTHX_
+                    PL_pending_exception, "near", context_value, FALSE);
+            }
+        }
+
         if (is_first) {
-            has_more = TRUE;
-            sv_catpvs(message,
-                    " (Missing semicolon on previous line?)");
+            PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_MISSING_SEMICOLON(
+                &PL_pending_exception);
+            has_hint = TRUE;
         }
         else if (PL_oldoldbufptr) {
-            /* yyerror (via yywarn) would do this itself, so we should too */
+            /* Suggest predeclaration when the previous token looks like an
+             * identifier followed by whitespace. */
             const char *t = PL_oldoldbufptr;
             while (t < PL_bufptr && isSPACE(*t)) {
                  t++;
@@ -741,26 +754,37 @@ S_warn_expect_operator(pTHX_ const char *const what, char *s, I32 pop_oldbufptr)
                                                              UTF)));
 
                 if (t < PL_bufptr && isSPACE(*t)) {
-                    has_more = TRUE;
-                    sv_catpvf( message,
-                            " (Do you need to predeclare \"%" UTF8f "\"?)",
-                          UTF8fARG(UTF, t - t_start, t_start));
+                    PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_PREDECLARE(
+                        &PL_pending_exception, UTF, t - t_start, t_start);
+                    has_hint = TRUE;
                 }
             }
         }
-        if (!has_more) {
+        if (!has_hint) {
             const char *t= oldbp;
             assert(s >= oldbp);
             while (t < s && isSPACE(*t)) {
                 t++;
             }
 
-            sv_catpvf(message,
-                    " (Missing operator before \"%" UTF8f "\"?)",
-                     UTF8fARG(UTF, s - t, t));
+            PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_MISSING_OPERATOR(
+                &PL_pending_exception, UTF, s - t, t);
+        }
+
+        if (   PL_multi_start < PL_multi_end
+            && (U32)(CopLINE(PL_curcop) - PL_multi_end) <= 1)
+        {
+            SV *open_value = sv_2mortal(newSV(0));
+            SV *close_value = sv_2mortal(newSV(0));
+
+            sv_setpvf(open_value, "%c", (int)PL_multi_open);
+            sv_setpvf(close_value, "%c", (int)PL_multi_close);
+            PERL_APPEND_WARNING_SYNTAX_RUNAWAY_MULTILINE_STRING_SUGGESTION(
+                &PL_pending_exception, open_value, close_value,
+                PL_multi_start);
+            PL_multi_end = 0;
         }
     }
-    yywarn(SvPV_nolen(message), UTF ? SVf_UTF8 : 0);
     PL_bufptr = oldbp;
 }
 
@@ -812,8 +836,7 @@ S_missingterm(pTHX_ char *s, STRLEN len)
     }
 
     q = memchr(s, '"', len) ? '\'' : '"';
-    croak("Can't find string terminator %c%" UTF8f "%c"
-                     " anywhere before EOF", q, UTF8fARG(uni, len, s), q);
+    PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TERMINATOR_MISSING(q, uni, len, s, q);
 }
 
 static char *
@@ -835,9 +858,7 @@ S_yyerror_non_ascii_message(pTHX_ const U8 * const s)
 {
     PERL_ARGS_ASSERT_YYERROR_NON_ASCII_MESSAGE;
 
-    yyerror_pv(form("Use of non-ASCII character 0x%02X"
-                               " illegal when 'use source::encoding"
-                               " \"ascii\"' is in effect", *s), 0);
+    PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SOURCE_NON_ASCII_CHARACTER_FORBIDDEN(*s, 0);
 }
 
 #ifndef EBCDIC  /* On ASCII platforms, invariants are identical to ASCII; can
@@ -906,11 +927,16 @@ Perl_lex_start(pTHX_ SV *line, PerlIO *rsfp, U32 flags)
 {
     PERL_ARGS_ASSERT_LEX_START;
 
+    /* Diagnostics belong to the active compilation, not to a parser instance.
+     * Temporary parsers used while compiling a use declaration can start
+     * with pending diagnostics. Eval and require isolate their accumulators
+     * at entry.
+     */
     const char *s = NULL;
     yy_parser *parser, *oparser;
 
     if (flags && flags & ~LEX_START_FLAGS)
-        croak("Lexing code internal error (%s)", "lex_start");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_start");
 
     /* create and initialise a parser */
 
@@ -929,7 +955,6 @@ Perl_lex_start(pTHX_ SV *line, PerlIO *rsfp, U32 flags)
     /* initialise lexer state */
 
     parser->nexttoke = 0;
-    parser->error_count = oparser ? oparser->error_count : 0;
     parser->copline = parser->preambling = NOLINE;
     parser->lex_state = LEX_NORMAL;
     parser->expect = XSTATE;
@@ -1250,7 +1275,7 @@ Perl_lex_stuff_pvn(pTHX_ const char *pv, STRLEN len, U32 flags)
 
     char *bufptr;
     if (flags & ~(LEX_STUFF_UTF8))
-        croak("Lexing code internal error (%s)", "lex_stuff_pvn");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_stuff_pvn");
     if (UTF) {
         if (flags & LEX_STUFF_UTF8) {
             goto plain_copy;
@@ -1277,8 +1302,7 @@ Perl_lex_stuff_pvn(pTHX_ const char *pv, STRLEN len, U32 flags)
             for (p = pv; p != e; p++) {
                 U8 c = (U8)*p;
                 if (UTF8_IS_ABOVE_LATIN1(c)) {
-                    croak("Lexing code attempted to stuff "
-                                "non-Latin-1 character into Latin-1 input");
+                    PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_LEXER_BYTE_INPUT_REQUIRED();
                 } else if (UTF8_IS_NEXT_CHAR_DOWNGRADEABLE(p, e)) {
                     p++;
                     highhalf++;
@@ -1331,7 +1355,7 @@ Perl_lex_stuff_sv(pTHX_ SV *sv, U32 flags)
     char *pv;
     STRLEN len;
     if (flags)
-        croak("Lexing code internal error (%s)", "lex_stuff_sv");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_stuff_sv");
     pv = SvPV(sv, len);
     lex_stuff_pvn(pv, len, flags | (SvUTF8(sv) ? LEX_STUFF_UTF8 : 0));
 }
@@ -1359,12 +1383,12 @@ Perl_lex_unstuff(pTHX_ char *ptr)
     STRLEN unstuff_len;
     buf = PL_parser->bufptr;
     if (ptr < buf)
-        croak("Lexing code internal error (%s)", "lex_unstuff");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_unstuff");
     if (ptr == buf)
         return;
     bufend = PL_parser->bufend;
     if (ptr > bufend)
-        croak("Lexing code internal error (%s)", "lex_unstuff");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_unstuff");
     unstuff_len = ptr - buf;
     Move(ptr, buf, bufend+1-ptr, char);
     SvCUR_set(PL_parser->linestr, SvCUR(PL_parser->linestr) - unstuff_len);
@@ -1394,7 +1418,7 @@ Perl_lex_read_to(pTHX_ char *ptr)
     char *s;
     s = PL_parser->bufptr;
     if (ptr < s || ptr > PL_parser->bufend)
-        croak("Lexing code internal error (%s)", "lex_read_to");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_read_to");
     for (; s != ptr; s++)
         if (*s == '\n') {
             COPLINE_INC_WITH_HERELINES;
@@ -1432,11 +1456,11 @@ Perl_lex_discard_to(pTHX_ char *ptr)
     STRLEN discard_len;
     buf = SvPVX(PL_parser->linestr);
     if (ptr < buf)
-        croak("Lexing code internal error (%s)", "lex_discard_to");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_discard_to");
     if (ptr == buf)
         return;
     if (ptr > PL_parser->bufptr)
-        croak("Lexing code internal error (%s)", "lex_discard_to");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_discard_to");
     discard_len = ptr - buf;
     if (PL_parser->oldbufptr < ptr)
         PL_parser->oldbufptr = ptr;
@@ -1519,7 +1543,7 @@ Perl_lex_next_chunk(pTHX_ U32 flags)
     bool got_some;
 
     if (flags & ~(LEX_KEEP_PREVIOUS|LEX_FAKE_EOF|LEX_NO_TERM))
-        croak("Lexing code internal error (%s)", "lex_next_chunk");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_next_chunk");
     if (!(flags & LEX_NO_TERM) && PL_lex_inwhat)
         return FALSE;
     linestr = PL_parser->linestr;
@@ -1655,7 +1679,7 @@ Perl_lex_peek_unichar(pTHX_ U32 flags)
 
     char *s, *bufend;
     if (flags & ~(LEX_KEEP_PREVIOUS))
-        croak("Lexing code internal error (%s)", "lex_peek_unichar");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_peek_unichar");
     s = PL_parser->bufptr;
     bufend = PL_parser->bufend;
     if (UTF) {
@@ -1720,7 +1744,7 @@ Perl_lex_read_unichar(pTHX_ U32 flags)
 
     I32 c;
     if (flags & ~(LEX_KEEP_PREVIOUS))
-        croak("Lexing code internal error (%s)", "lex_read_unichar");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_read_unichar");
     c = lex_peek_unichar(flags);
     if (c != -1) {
         if (c == '\n')
@@ -1762,7 +1786,7 @@ Perl_lex_read_space(pTHX_ U32 flags)
     const bool can_incline = !(flags & LEX_NO_INCLINE);
     bool need_incline = 0;
     if (flags & ~(LEX_KEEP_PREVIOUS|LEX_NO_NEXT_CHUNK|LEX_NO_INCLINE))
-        croak("Lexing code internal error (%s)", "lex_read_space");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID("lex_read_space");
     s = PL_parser->bufptr;
     bufend = PL_parser->bufend;
     while (1) {
@@ -1899,21 +1923,13 @@ Perl_validate_proto(pTHX_ SV *name, SV *proto, bool warn, bool curstash)
         }
 
         if (proto_after_greedy_proto)
-            warner(packWARN(WARN_ILLEGALPROTO),
-                   "Prototype after '%c' for %" SVf " : %s",
-                   greedy_proto, SVfARG(name), p);
+            PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_AFTER_GREEDY_SLOT(greedy_proto, name, p);
         if (in_brackets)
-            warner(packWARN(WARN_ILLEGALPROTO),
-                   "Missing ']' in prototype for %" SVf " : %s",
-                   SVfARG(name), p);
+            PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_BRACKET_GROUP_UNTERMINATED(name, p);
         if (bad_proto)
-            warner(packWARN(WARN_ILLEGALPROTO),
-                   "Illegal character in prototype for %" SVf " : %s",
-                   SVfARG(name), p);
+            PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_UNRECOGNIZED(name, p);
         if (bad_proto_after_underscore)
-            warner(packWARN(WARN_ILLEGALPROTO),
-                   "Illegal character after '_' in prototype for %" SVf " : %s",
-                   SVfARG(name), p);
+            PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_AFTER_UNDERSCORE_INVALID(name, p);
     }
 
     return (! (proto_after_greedy_proto || bad_proto) );
@@ -2143,9 +2159,7 @@ S_check_unary(pTHX)
     if (s < PL_bufptr && memchr(s, '(', PL_bufptr - s))
         return;
 
-    ck_warner_d(packWARN(WARN_AMBIGUOUS),
-                "Warning: Use of \"%" UTF8f "\" without parentheses is ambiguous",
-                UTF8fARG(UTF, (int)(s - PL_last_uni), PL_last_uni));
+    PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_UNARY_CALL_WITHOUT_PARENTHESES(UTF, (int)(s - PL_last_uni), PL_last_uni);
 }
 
 /*
@@ -2344,7 +2358,7 @@ S_force_word(pTHX_ char *start, int token, U32 flags)
                 s++;
             len = s - start;
             if (len >= C_ARRAY_LENGTH(PL_tokenbuf))
-                croak("Identifier too long");
+                PERL_THROW_ERROR_SYNTAX_IDENTIFIER_LENGTH_EXCEEDED();
             Copy(start, PL_tokenbuf, len, char);
             PL_tokenbuf[len] = 0;
         }
@@ -2521,12 +2535,13 @@ S_force_strict_version(pTHX_ char *s)
     PERL_ARGS_ASSERT_FORCE_STRICT_VERSION;
 
     OP *version = NULL;
-    const char *errstr = NULL;
+    const char *reason = NULL;
 
     while (isSPACE(*s)) /* leading whitespace */
         s++;
 
-    if (is_STRICT_VERSION(s,&errstr)) {
+    if (s != Perl_prescan_version_reason(aTHX_ s, TRUE, &reason,
+                                         NULL, NULL, NULL, NULL)) {
         SV *ver = newSV_type(SVt_NULL);
         s = (char *)scan_version(s, ver, 0);
         version = newSVOP(OP_CONST, 0, ver);
@@ -2535,8 +2550,8 @@ S_force_strict_version(pTHX_ char *s)
              && (s = skipspace(s), (*s != ';' && *s != ':' && *s != '{' && *s != '}' )))
     {
         PL_bufptr = s;
-        if (errstr)
-            yyerror(errstr); /* version required */
+        if (reason)
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_VERSION_INVALID_DECLARATION(PERL_DIAG_SELECTOR_FROM_ERROR_SYNTAX_VERSION_INVALID_DECLARATION_REASON(reason));
         return s;
     }
 
@@ -2591,8 +2606,9 @@ S_tokeq(pTHX_ SV *sv)
     *d = '\0';
     SvCUR_set(sv, d - SvPVX_const(sv));
   finish:
-    if ( PL_hints & HINT_NEW_STRING )
+    if ( PL_hints & HINT_NEW_STRING ) {
        return new_constant(NULL, 0, "q", sv, pv, "q", 1, NULL);
+    }
     return sv;
 }
 
@@ -2657,7 +2673,7 @@ S_sublex_start(pTHX)
     PL_parser->lex_sub_inwhat = (U16)op_type;
     PL_parser->lex_sub_op = PL_lex_op;
     PL_parser->sub_no_recover = FALSE;
-    PL_parser->sub_error_count = PL_error_count;
+    PL_parser->sub_error_count = PERL_DIAG_ERROR_COUNT;
     PL_lex_state = LEX_INTERPPUSH;
 
     PL_expect = XTERM;
@@ -2842,7 +2858,7 @@ S_sublex_done(pTHX)
         const line_t l = CopLINE(PL_curcop);
         PL_parser->in_dispatch_pattern_dquote = FALSE;
         LEAVE;
-        if (PL_parser->sub_error_count != PL_error_count) {
+        if (PL_parser->sub_error_count != PERL_DIAG_ERROR_COUNT) {
             if (PL_parser->sub_no_recover) {
                 yyquit();
                 NOT_REACHED;
@@ -2858,24 +2874,18 @@ S_sublex_done(pTHX)
 }
 
 HV *
-Perl_load_charnames(pTHX_ SV * char_name, const char * context,
-                          const STRLEN context_len, const char ** error_msg)
+Perl_load_charnames(pTHX_ SV **exception_slot)
 {
     PERL_ARGS_ASSERT_LOAD_CHARNAMES;
 
-    /* Load the official _charnames module if not already there.  The
-     * parameters are just to give info for any error messages generated:
-     *  char_name   a name to look up which is the reason for loading this
-     *  context     'char_name' in the context in the input in which it appears
-     *  context_len how many bytes 'context' occupies
-     *  error_msg   *error_msg will be set to any error
+    /* Load the official _charnames module if not already there.  Any failure
+     * diagnostic is appended to exception_slot.
      *
      *  Returns the ^H table if success; otherwise NULL */
 
     unsigned int i;
     HV * table;
     SV **cvp;
-    SV * res;
 
     /* This loop is executed 1 1/2 times.  On the first time through, if it
      * isn't already loaded, try loading it, and iterate just once to see if it
@@ -2906,47 +2916,108 @@ Perl_load_charnames(pTHX_ SV * char_name, const char * context,
         }
     }
 
-    /* Here, it failed; new_constant will give appropriate error messages */
-    *error_msg = NULL;
-    res = new_constant( NULL, 0, "charnames", char_name, NULL,
-                        context, context_len, error_msg);
-    SvREFCNT_dec(res);
+    /* The loader couldn't install a charnames handler.  Record the failure
+     * directly instead of asking new_constant() to build a text message. */
+    if (exception_slot)
+        PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_HANDLER_UNAVAILABLE(exception_slot);
 
     return NULL;
+}
+
+static void
+Perl_diag_mark_last_parser_context(pTHX_ SV *exception,
+                                     const char *context_name,
+                                     SV *context_value,
+                                     bool only_if_missing)
+{
+    SV **messages_slot;
+    AV *messages;
+    SV **diagnostic_slot;
+    SV **location_slot;
+    SV *context;
+    HV *exception_hv;
+    HV *diagnostic_hv;
+    HV *location_hv;
+
+    if (!SvROK(exception) || SvTYPE(SvRV(exception)) != SVt_PVHV)
+        return;
+
+    exception_hv = MUTABLE_HV(SvRV(exception));
+    messages_slot = hv_fetchs(exception_hv, "contents", 0);
+    if (!messages_slot || !SvROK(*messages_slot)
+        || SvTYPE(SvRV(*messages_slot)) != SVt_PVAV)
+        return;
+
+    messages = MUTABLE_AV(SvRV(*messages_slot));
+    diagnostic_slot = av_fetch(messages, av_top_index(messages), 0);
+    if (!diagnostic_slot || !SvROK(*diagnostic_slot)
+        || SvTYPE(SvRV(*diagnostic_slot)) != SVt_PVHV)
+        return;
+
+    diagnostic_hv = MUTABLE_HV(SvRV(*diagnostic_slot));
+    location_slot = hv_fetchs(diagnostic_hv, "location", 0);
+    if (!location_slot || !SvROK(*location_slot)
+        || SvTYPE(SvRV(*location_slot)) != SVt_PVHV)
+        return;
+
+    location_hv = MUTABLE_HV(SvRV(*location_slot));
+    if (only_if_missing) {
+        SV **existing_context = hv_fetchs(location_hv, "parser_context", 0);
+
+        if (existing_context && SvOK(*existing_context))
+            return;
+    }
+    context = newSVpv(context_name, 0);
+    if (UNLIKELY(!hv_stores(location_hv, "parser_context", context)))
+        croak_no_mem();
+    if (context_value
+        && UNLIKELY(!hv_stores(location_hv, "parser_context_value",
+                               newSVsv(context_value))))
+        croak_no_mem();
 }
 
 static SV*
 S_get_and_check_backslash_N_name_wrapper(pTHX_ const char* s, const char* const e)
 {
     PERL_ARGS_ASSERT_GET_AND_CHECK_BACKSLASH_N_NAME_WRAPPER;
-
-    /* This justs wraps get_and_check_backslash_N_name() to output any error
-     * message it returns. */
-
-    const char * error_msg = NULL;
-    SV * result;
+    SV *result;
 
     /* charnames doesn't work well if there have been errors found */
-    if (PL_error_count > 0) {
+    if (PERL_DIAG_ERROR_COUNT > 0) {
         return NULL;
     }
 
-    result = get_and_check_backslash_N_name(s, e, cBOOL(UTF), &error_msg);
-
-    if (error_msg) {
-        yyerror_pv(error_msg, UTF ? SVf_UTF8 : 0);
-    }
+    result = get_and_check_backslash_N_name(s, e, cBOOL(UTF),
+                                            &PL_pending_exception);
+    if (!result && PL_pending_exception)
+        Perl_diag_mark_last_parser_context(aTHX_ PL_pending_exception,
+            PL_lex_inpat ? "within_pattern" : "within_string", NULL,
+            FALSE);
 
     return result;
 }
 
-SV*
-Perl_get_and_check_backslash_N_name(pTHX_ const char* s,
-                                          const char* e,
-                                          const bool is_utf8,
-                                          const char ** error_msg)
+static SV*
+Perl_charnames_new_marked_context(pTHX_ const char *context, const char *s,
+                               const char *e, const bool is_utf8)
 {
-    PERL_ARGS_ASSERT_GET_AND_CHECK_BACKSLASH_N_NAME;
+    const STRLEN prefix_len = s - context + 1;
+    const STRLEN suffix_len = e - s + 1;
+    SV *marked = newSVpvn_flags(context, prefix_len,
+                                is_utf8 ? SVf_UTF8 : 0);
+
+    sv_catpvs(marked, "<-- HERE ");
+    sv_catpvn(marked, s + 1, suffix_len);
+    return marked;
+}
+
+static SV*
+Perl_get_and_check_backslash_N_name_internal(pTHX_ const char *s, const char *e,
+                                  const bool is_utf8,
+                                  SV **exception_slot)
+{
+    assert(s);
+    assert(e);
     assert(s > (char *) 3);
 
     /* <s> points to first character of interior of \N{}, <e> to one beyond the
@@ -2963,6 +3034,7 @@ Perl_get_and_check_backslash_N_name(pTHX_ const char* s,
     SV *cv;
     SV *rv;
     HV *stash;
+    bool constant_failed = FALSE;
 
     /* Points to the beginning of the \N{... so that any messages include the
      * context of what's failing*/
@@ -2980,27 +3052,39 @@ Perl_get_and_check_backslash_N_name(pTHX_ const char* s,
     char_name = newSVpvn_flags(s, e - s, (is_utf8) ? SVf_UTF8 : 0);
 
     if (!SvCUR(char_name)) {
+        if (exception_slot)
+            PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_UNKNOWN(exception_slot,
+                                         sv_2mortal(newSVpvs("")));
         SvREFCNT_dec_NN(char_name);
-        /* diag_listed_as: Unknown charname '%s' */
-        *error_msg = form("Unknown charname ''");
         return NULL;
     }
 
     /* Autoload the charnames module */
 
-    table = load_charnames(char_name, context, context_len, error_msg);
+    table = Perl_load_charnames(aTHX_ exception_slot);
     if (table == NULL) {
+        SvREFCNT_dec_NN(char_name);
         return NULL;
     }
 
-    *error_msg = NULL;
-    res = new_constant( NULL, 0, "charnames", char_name, NULL,
-                        context, context_len, error_msg);
-    if (*error_msg) {
-        *error_msg = form("Unknown charname '%s'", SvPVX(char_name));
+    {
+        const UV errors_before_handler = exception_slot && *exception_slot
+            ? Perl_diag_error_count(aTHX_ *exception_slot) : 0;
+        res = new_constant(NULL, 0, "charnames", char_name, NULL,
+                           "charnames", STRLENs("charnames"),
+                           &constant_failed);
+        if (exception_slot && *exception_slot
+            && Perl_diag_error_count(aTHX_ *exception_slot) > errors_before_handler)
+        {
+            return NULL;
+        }
+        if (constant_failed) {
+            if (exception_slot)
+                PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_UNKNOWN(exception_slot, char_name);
 
-        SvREFCNT_dec(res);
-        return NULL;
+            SvREFCNT_dec(res);
+            return NULL;
+        }
     }
 
     /* See if the charnames handler is the Perl core's, and if so, we can skip
@@ -3097,17 +3181,6 @@ Perl_get_and_check_backslash_N_name(pTHX_ const char* s,
             }
         }
     }
-    if (*(s-1) == ' ') {
-        /* diag_listed_as: charnames alias definitions may not contain
-                           trailing white-space; marked by <-- HERE in %s
-         */
-        *error_msg = form(
-            "charnames alias definitions may not contain trailing "
-            "white-space; marked by <-- HERE in %.*s<-- HERE %.*s",
-            (int)(s - context + 1), context,
-            (int)(e - s + 1), s + 1);
-        return NULL;
-    }
 
     if (SvUTF8(res)) { /* Don't accept malformed charname value */
         const U8* first_bad_char_loc;
@@ -3120,12 +3193,14 @@ Perl_get_and_check_backslash_N_name(pTHX_ const char* s,
                                               (U8 *) PL_parser->bufend,
                                               0,
                                               MALFORMED_UTF8_WARN);
-            /* diag_listed_as: Malformed UTF-8 returned by \N{%s}
-                               immediately after '%s' */
-            *error_msg = form(
-                "Malformed UTF-8 returned by %.*s immediately after '%.*s'",
-                 (int) context_len, context,
-                 (int) ((char *) first_bad_char_loc - str), str);
+            if (exception_slot) {
+                SV *escape = sv_2mortal(newSVpvn_flags(
+                    context, context_len, is_utf8 ? SVf_UTF8 : 0));
+                SV *value_prefix = sv_2mortal(newSVpvn(str,
+                    first_bad_char_loc - (const U8 *) str));
+                PERL_APPEND_ERROR_UNICODE_UTF8_CHARNAME_RESULT_MALFORMED(
+                    exception_slot, escape, value_prefix);
+            }
             return NULL;
         }
     }
@@ -3134,27 +3209,31 @@ Perl_get_and_check_backslash_N_name(pTHX_ const char* s,
 
   bad_charname: {
 
-        /* The final %.*s makes sure that should the trailing NUL be missing
-         * that this print won't run off the end of the string */
-        /* diag_listed_as: Invalid character in \N{...}; marked by <-- HERE
-                           in \N{%s} */
-        *error_msg = form(
-            "Invalid character in \\N{...}; marked by <-- HERE in %.*s<-- HERE %.*s",
-            (int)(s - context + 1), context,
-            (int)(e - s + 1), s + 1);
+        if (exception_slot) {
+            SV *marked = sv_2mortal(Perl_charnames_new_marked_context(
+                aTHX_ context, s, e, is_utf8));
+            PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_CHARACTER_INVALID(exception_slot, marked);
+        }
         return NULL;
     }
 
   multi_spaces:
-        /* diag_listed_as: charnames alias definitions may not contain a
-                           sequence of multiple spaces; marked by <-- HERE
-                           in %s */
-        *error_msg = form(
-            "charnames alias definitions may not contain a sequence of "
-            "multiple spaces; marked by <-- HERE in %.*s<-- HERE %.*s",
-            (int)(s - context + 1), context,
-            (int)(e - s + 1), s + 1);
+        if (exception_slot) {
+            SV *marked = sv_2mortal(Perl_charnames_new_marked_context(
+                aTHX_ context, s, e, is_utf8));
+            PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_REPEATED_SPACE(exception_slot, marked);
+        }
         return NULL;
+}
+
+SV*
+Perl_get_and_check_backslash_N_name(pTHX_ const char *s, const char *e,
+                                    const bool is_utf8,
+                                    SV **exception_slot)
+{
+    PERL_ARGS_ASSERT_GET_AND_CHECK_BACKSLASH_N_NAME;
+    return Perl_get_and_check_backslash_N_name_internal(aTHX_ s, e, is_utf8,
+                                            exception_slot);
 }
 
 /*
@@ -3373,8 +3452,7 @@ S_scan_const(pTHX_ char *start)
                 }
                 else {  /* Is a '-' in the context where it means a range */
                     if (didrange) { /* Something like y/A-C-Z// */
-                        croak("Ambiguous range in transliteration"
-                                         " operator");
+                        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_CHAIN_AMBIGUOUS();
                     }
 
                     dorange = TRUE;
@@ -3490,25 +3568,17 @@ S_scan_const(pTHX_ char *start)
                      * ASCII printables; otherwise some visible representation
                      * of them */
                     if (isPRINT_A(range_min) && isPRINT_A(range_max)) {
-                        croak(
-                         "Invalid range \"%c-%c\" in transliteration operator",
-                         (char)range_min, (char)range_max);
+                        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_PRINTABLE((char)range_min, (char)range_max);
                     }
 #ifdef EBCDIC
                     else if (convert_unicode) {
         /* diag_listed_as: Invalid range "%s" in transliteration operator */
-                        croak(
-                           "Invalid range \"\\N{U+%04" UVXf "}-\\N{U+%04"
-                           UVXf "}\" in transliteration operator",
-                           range_min, range_max);
+                        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_NAMED_ESCAPE(range_min, range_max);
                     }
 #endif
                     else {
         /* diag_listed_as: Invalid range "%s" in transliteration operator */
-                        croak(
-                           "Invalid range \"\\x{%04" UVXf "}-\\x{%04" UVXf "}\""
-                           " in transliteration operator",
-                           range_min, range_max);
+                        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_HEX_ESCAPE(range_min, range_max);
                     }
                 }
 
@@ -3793,23 +3863,17 @@ S_scan_const(pTHX_ char *start)
         else if (*s == '@' && s[1]) {
             if (isDIGIT_A(s[1]) || isIDFIRST_lazy_if_safe(s+1, send, UTF)) {
                 if (PL_parser->in_dispatch_pattern_dquote)
-                    Perl_croak(aTHX_
-                        "interpolated variables are not allowed in "
-                        "double-quoted dispatch patterns");
+                    PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_STRING_INTERPOLATION_FORBIDDEN();
                 break;
             }
             if (memCHRs(":'{$", s[1])) {
                 if (PL_parser->in_dispatch_pattern_dquote)
-                    Perl_croak(aTHX_
-                        "interpolated variables are not allowed in "
-                        "double-quoted dispatch patterns");
+                    PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_STRING_INTERPOLATION_FORBIDDEN();
                 break;
             }
             if (!PL_lex_inpat && (s[1] == '+' || s[1] == '-')) {
                 if (PL_parser->in_dispatch_pattern_dquote)
-                    Perl_croak(aTHX_
-                        "interpolated variables are not allowed in "
-                        "double-quoted dispatch patterns");
+                    PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_STRING_INTERPOLATION_FORBIDDEN();
                 break; /* in regexp, neither @+ nor @- are interpolated */
             }
         }
@@ -3818,15 +3882,13 @@ S_scan_const(pTHX_ char *start)
         else if (*s == '$') {
             if (!PL_lex_inpat) {
                 if (PL_parser->in_dispatch_pattern_dquote)
-                    Perl_croak(aTHX_
-                        "interpolated variables are not allowed in "
-                        "double-quoted dispatch patterns");
+                    PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_STRING_INTERPOLATION_FORBIDDEN();
                 break;
             }
             if (s + 1 < send && !memCHRs("()| \r\n\t", s[1])) {
                 if (s[1] == '\\') {
-                    ck_warner(packWARN(WARN_AMBIGUOUS),
-                              "Possible unintended interpolation of $\\ in regex");
+                    PERL_APPEND_WARNING_SYNTAX_AMBIGUOUS_REGEXP_BACKSLASH_VARIABLE_INTERPOLATION(
+                        &PL_pending_exception);
                 }
                 break;		/* in regexp, $ might be tail anchor */
             }
@@ -3856,7 +3918,8 @@ S_scan_const(pTHX_ char *start)
                 && !isDIGIT(s[1]))
             {
                 /* diag_listed_as: \%d better written as $%d */
-                ck_warner(packWARN(WARN_SYNTAX), "\\%c better written as $%c", *s, *s);
+                PERL_APPEND_WARNING_SYNTAX_SUBSTITUTION_BACKREFERENCE_DOLLAR_PREFERRED(
+                    &PL_pending_exception, *s, *s);
                 s = bslash;
                 *s = '$';
                 break;
@@ -3894,9 +3957,8 @@ S_scan_const(pTHX_ char *start)
             default:
                 {
                     if ((isALPHANUMERIC(*s)))
-                        ck_warner(packWARN(WARN_MISC),
-                                  "Unrecognized escape \\%c passed through",
-                                  *s);
+                        PERL_APPEND_WARNING_MISC_STRING_ESCAPE_UNRECOGNIZED(
+                            &PL_pending_exception, *s);
                     /* default action is to copy the quoted character */
                     goto default_action;
                 }
@@ -3908,15 +3970,23 @@ S_scan_const(pTHX_ char *start)
                     I32 flags = PERL_SCAN_SILENT_ILLDIGIT
                               | PERL_SCAN_NOTIFY_ILLDIGIT;
                     STRLEN len = 3;
+                    SSize_t messages_on_entry =
+                        Perl_diag_exception_message_count(aTHX_ &PL_pending_exception);
                     uv = grok_oct(s, &len, &flags, NULL);
                     s += len;
                     if (  (flags & PERL_SCAN_NOTIFY_ILLDIGIT)
                         && s < send
-                        && isDIGIT(*s)  /* like \08, \178 */
-                        && ckWARN(WARN_MISC))
+                        && isDIGIT(*s))  /* like \08, \178 */
                     {
-                        warner(packWARN(WARN_MISC), "%s",
-                               form_alien_digit_msg(8, len, s, send, UTF, FALSE));
+                        Perl_diag_append_alien_digit_warning(aTHX_
+                            &PL_pending_exception,
+                            perl_diag_warning_syntax_digit_escape_terminated_early_idx,
+                            8, len, s, send, UTF, FALSE);
+                        if (Perl_diag_exception_message_count(aTHX_ &PL_pending_exception)
+                            > messages_on_entry)
+                            Perl_diag_mark_last_parser_context(aTHX_
+                                PL_pending_exception, "within_string", NULL,
+                                FALSE);
                     }
                 }
                 goto NUM_ESCAPE_INSERT;
@@ -3924,36 +3994,42 @@ S_scan_const(pTHX_ char *start)
             /* eg. \o{24} indicates the octal constant \024 */
             case 'o':
                 {
-                    const char* error;
-
-                    if (! grok_bslash_o(&s, send,
-                                               &uv, &error,
-                                               NULL,
-                                               FALSE, /* Not strict */
-                                               FALSE, /* No illegal cp's */
-                                               UTF))
-                    {
-                        yyerror(error);
+                    SSize_t messages_on_entry =
+                        Perl_diag_exception_message_count(aTHX_ &PL_pending_exception);
+                    if (Perl_grok_bslash_o_diag(aTHX_ &s, send, &uv,
+                                           &PL_pending_exception,
+                                           FALSE, /* Not strict */
+                                           FALSE, /* No illegal cp's */
+                                           UTF,
+                                           TRUE)) {
                         uv = 0; /* drop through to ensure range ends are set */
                     }
+                    if (Perl_diag_exception_message_count(aTHX_ &PL_pending_exception)
+                        > messages_on_entry)
+                        Perl_diag_mark_last_parser_context(aTHX_
+                            PL_pending_exception, "within_string", NULL,
+                            FALSE);
                     goto NUM_ESCAPE_INSERT;
                 }
 
             /* eg. \x24 indicates the hex constant 0x24 */
             case 'x':
                 {
-                    const char* error;
-
-                    if (! grok_bslash_x(&s, send,
-                                               &uv, &error,
-                                               NULL,
-                                               FALSE, /* Not strict */
-                                               FALSE, /* No illegal cp's */
-                                               UTF))
-                    {
-                        yyerror(error);
+                    SSize_t messages_on_entry =
+                        Perl_diag_exception_message_count(aTHX_ &PL_pending_exception);
+                    if (Perl_grok_bslash_x_diag(aTHX_ &s, send, &uv,
+                                           &PL_pending_exception,
+                                           FALSE, /* Not strict */
+                                           FALSE, /* No illegal cp's */
+                                           UTF,
+                                           TRUE)) {
                         uv = 0; /* drop through to ensure range ends are set */
                     }
+                    if (Perl_diag_exception_message_count(aTHX_ &PL_pending_exception)
+                        > messages_on_entry)
+                        Perl_diag_mark_last_parser_context(aTHX_
+                            PL_pending_exception, "within_string", NULL,
+                            FALSE);
                 }
 
               NUM_ESCAPE_INSERT:
@@ -4068,7 +4144,7 @@ S_scan_const(pTHX_ char *start)
                  * braces */
                 s++;
                 if (*s != '{') {
-                    yyerror("Missing braces on \\N{}");
+                    PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_ESCAPE_CHARACTER_NAME_BRACES_REQUIRED();
                     *d++ = '\0';
                     continue;
                 }
@@ -4077,11 +4153,10 @@ S_scan_const(pTHX_ char *start)
                 /* If there is no matching '}', it is an error. */
                 if (! (rbrace = (char *) memchr(s, '}', send - s))) {
                     if (! PL_lex_inpat) {
-                        yyerror("Missing right brace on \\N{}");
+                        PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_ESCAPE_CHARACTER_NAME_CLOSE_BRACE_MISSING();
                     } else {
-                        yyerror("Missing right brace on \\N{} or unescaped left brace after \\N");
+                        PERL_ADD_COMPILE_ERR_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_SOURCE_BRACE_MISMATCH();
                     }
-                    yyquit(); /* Have exhausted the input. */
                 }
 
                 /* Here it looks like a named character */
@@ -4102,9 +4177,7 @@ S_scan_const(pTHX_ char *start)
                         /* Check the syntax.  */
                         if (!isXDIGIT(*s)) {
                           bad_NU:
-                            yyerror(
-                                "Invalid hexadecimal number in \\N{U+...}"
-                            );
+                            PERL_ADD_COMPILE_ERR_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_SOURCE_HEX_SEQUENCE_INVALID();
                             s = rbrace + 1;
                             *d++ = '\0';
                             continue;
@@ -4137,7 +4210,8 @@ S_scan_const(pTHX_ char *start)
                         if (    uv > MAX_LEGAL_CP
                             || (flags & PERL_SCAN_GREATER_THAN_UV_MAX))
                         {
-                            yyerror(form_cp_too_large_msg(16, s, len, 0));
+                            PERL_APPEND_ERROR_UNICODE_CODE_POINT_HEX_ESCAPE_OVERFLOW(
+                                &PL_pending_exception, len, s, MAX_LEGAL_CP);
                             uv = 0; /* drop through to ensure range ends are
                                        set */
                         }
@@ -4324,11 +4398,8 @@ S_scan_const(pTHX_ char *start)
                                        ? UTF8SKIP(str)
                                        : 1U))
                             {
-                                yyerror(form(
-                                    "%.*s must not be a named sequence"
-                                    " in transliteration operator",
-                                        /*  +1 to include the "}" */
-                                    (int) (rbrace + 1 - start), start));
+                                PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_NAMED_SEQUENCE_TOO_LONG(
+                                    (int) (rbrace + 1 - start), start);
                                 *d++ = '\0';
                                 goto end_backslash_N;
                             }
@@ -4395,18 +4466,21 @@ S_scan_const(pTHX_ char *start)
             case 'c':
                 s++;
                 if (s < send) {
-                    const char * message;
-
-                    if (! grok_bslash_c(*s, (U8 *) d, &message, NULL)) {
-                        yyerror(message);
-                        yyquit();   /* Have always immediately croaked on
-                                       errors in this */
+                    SSize_t messages_on_entry =
+                        Perl_diag_exception_message_count(aTHX_ &PL_pending_exception);
+                    if (Perl_grok_bslash_c_diag(aTHX_ *s, (U8 *) d,
+                                           &PL_pending_exception, TRUE)) {
+                        *d = '\0';
                     }
+                    if (Perl_diag_exception_message_count(aTHX_ &PL_pending_exception)
+                        > messages_on_entry)
+                        Perl_diag_mark_last_parser_context(aTHX_
+                            PL_pending_exception, "within_string", NULL,
+                            FALSE);
                     d++;
                 }
                 else {
-                    yyerror("Missing control char name in \\c");
-                    yyquit();   /* Are at end of input, no sense continuing */
+                    PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_ESCAPE_CONTROL_CHARACTER_MISSING();
                 }
 #ifdef EBCDIC
                 non_portable_endpoint++;
@@ -4513,8 +4587,7 @@ S_scan_const(pTHX_ char *start)
 
             if (off > SvLEN(sv))
 #endif
-                croak("panic: constant overflowed allocated space,"
-                        " %" UVuf " >= %" UVuf, (UV)off, (UV)SvLEN(sv));
+                PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_BUFFER_CAPACITY_EXCEEDED( (UV)off,  (UV)SvLEN(sv));
 
             /* Whew!  Here we don't have room for the terminating NUL, but
              * everything else so far has fit.  It's not too late to grow
@@ -4572,6 +4645,7 @@ S_scan_const(pTHX_ char *start)
         }
         pl_yylval.opval = newSVOP(OP_CONST, 0, sv);
     }
+
     LEAVE_with_name("scan_const");
     return s;
 }
@@ -5069,9 +5143,7 @@ S_intuit_more(pTHX_ char *s, char *e,
                     break;
 
                   default:
-                    croak("panic: Unexpected case %x in switch in"
-                          " %s, line %" LINE_Tf,
-                          switch_on, __FILE__, (line_t) __LINE__);
+                    PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_SUBSCRIPT_HEURISTIC_STATE_UNKNOWN(switch_on, __FILE__, (line_t) __LINE__);
                 }
 
 #               undef embraced
@@ -5467,7 +5539,7 @@ Perl_filter_add(pTHX_ filter_t funcp, SV *datasv)
         return NULL;
 
     if (PL_parser->lex_flags & LEX_IGNORE_UTF8_HINTS)
-        croak("Source filters apply only to byte streams");
+        PERL_THROW_ERROR_LOAD_SOURCE_FILTER_CHARACTER_STREAM_UNSUPPORTED();
 
     if (!PL_rsfp_filters)
         PL_rsfp_filters = newAV();
@@ -5556,7 +5628,7 @@ Perl_filter_del(pTHX_ filter_t funcp)
         return;
     }
     /* we need to search for the correct entry and clear it	*/
-    die("filter_del can only delete in reverse order (currently)");
+    PERL_THROW_ERROR_LOAD_SOURCE_FILTER_DELETE_ORDER_INVALID();
 }
 
 
@@ -5750,8 +5822,8 @@ S_tokenize_use(pTHX_ int is_use, char *s)
 
     if (PL_expect != XSTATE)
         /* diag_listed_as: "use" not allowed in expression */
-        yyerror(form("\"%s\" not allowed in expression",
-                    is_use ? "use" : "no"));
+        PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_USE_NO_IN_EXPRESSION(
+            is_use ? "use" : "no");
     PL_expect = XTERM;
     s = skipspace(s);
     if (isDIGIT(*s) || (*s == 'v' && isDIGIT(s[1]))) {
@@ -5839,7 +5911,7 @@ S_vcs_conflict_marker(pTHX_ char *s)
 {
     lex_token_boundary();
     PL_bufptr = s;
-    yyerror("Version control conflict marker");
+    PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SOURCE_VERSION_CONTROL_CONFLICT_MARKER();
     while (s < PL_bufend && *s != '\n')
         s++;
     return s;
@@ -5874,16 +5946,16 @@ yyl_sigvar(pTHX_ char *s)
     case '%':
         /* spot stuff that looks like a prototype */
         if (memCHRs("$:@%&*;\\[]", *s)) {
-            yyerror("Illegal character following sigil in a subroutine signature");
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_PROTOTYPE_SYNTAX_AFTER_SIGIL();
             break;
         }
         /* '$#' is banned, while '$ # comment' isn't */
         if (*s == '#') {
-            yyerror("'#' not allowed immediately following a sigil in a subroutine signature");
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_COMMENT_ADJACENT_TO_SIGIL();
             break;
         }
         if (is_named && sigil != '$') {
-            yyerror("A named signature parameter must start with '$'");
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_SIGIL_INVALID();
             break;
         }
         s = skipspace(s);
@@ -5897,7 +5969,7 @@ yyl_sigvar(pTHX_ char *s)
         }
         else {
             if (is_named) {
-                yyerror("Named parameters must actually have a name");
+                PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_NAME_MISSING();
                 break;
             }
             *PL_tokenbuf = 0;
@@ -5944,7 +6016,7 @@ yyl_sigvar(pTHX_ char *s)
             while (*s && *s != '$' && *s != '@' && *s != '%' && *s != ')')
                 s++;
             PL_bufptr = s; /* for error reporting */
-            yyerror("Illegal operator following parameter in a subroutine signature");
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_PARAMETER_SUFFIX_INVALID();
             PL_in_my = 0;
         }
         if (*PL_tokenbuf) {
@@ -5962,9 +6034,9 @@ yyl_sigvar(pTHX_ char *s)
     default:
         PL_in_my = 0;
         if(is_named)
-            yyerror("A named signature parameter must start with '$'");
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_SIGIL_INVALID();
         else
-            yyerror("A signature parameter must start with '$', '@' or '%'");
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_PARAMETER_SIGIL_INVALID();
         /* very crude error recovery: skip to likely next signature
          * element */
         while (*s && *s != '$' && *s != '@' && *s != '%' && *s != ')')
@@ -5972,7 +6044,7 @@ yyl_sigvar(pTHX_ char *s)
         break;
     }
 
-    if (!PL_parser->error_count && is_named) {
+    if (!PERL_DIAG_ERROR_COUNT && is_named) {
         assert(sigil == '$');
         force_next(PERLY_DOLLAR);
         TOKEN (PERLY_COLON);
@@ -6007,7 +6079,7 @@ yyl_dollar(pTHX_ char *s)
     {
         PL_tokenbuf[0] = '@';
         s = scan_ident(s + 1, PL_tokenbuf + 1, C_ARRAY_END(PL_tokenbuf), 0);
-        S_warn_expect_operator(aTHX_ "Array length", s, POP_OLDBUFPTR);
+        S_warn_expect_operator(aTHX_ "array_length", s, POP_OLDBUFPTR);
         if (!PL_tokenbuf[1])
             PREREF(DOLSHARP);
         PL_expect = XOPERATOR;
@@ -6017,10 +6089,10 @@ yyl_dollar(pTHX_ char *s)
 
     PL_tokenbuf[0] = '$';
     s = scan_ident(s, PL_tokenbuf + 1, C_ARRAY_END(PL_tokenbuf), 0);
-    S_warn_expect_operator(aTHX_ "Scalar", s, POP_OLDBUFPTR);
+    S_warn_expect_operator(aTHX_ "scalar", s, POP_OLDBUFPTR);
     if (!PL_tokenbuf[1]) {
         if (s == PL_bufend)
-            yyerror("Final $ should be \\$ or $name");
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_IDENTIFIER_SCALAR_NAME_INCOMPLETE();
         PREREF(PERLY_DOLLAR);
     }
 
@@ -6078,9 +6150,7 @@ yyl_dollar(pTHX_ char *s)
                     PL_bufptr = skipspace(PL_bufptr); /* XXX can realloc */
                     while (t < PL_bufend && *t != ']')
                         t++;
-                    warner(packWARN(WARN_SYNTAX),
-                           "Multidimensional syntax %" UTF8f " not supported",
-                           UTF8fARG(UTF,(int)((t - PL_bufptr) + 1), PL_bufptr));
+                    PERL_WARN_WARNING_SYNTAX_MULTIDIMENSIONAL_SUBSCRIPT_UNSUPPORTED(UTF, (int)((t - PL_bufptr) + 1), PL_bufptr);
                 }
             }
         }
@@ -6106,9 +6176,7 @@ yyl_dollar(pTHX_ char *s)
                                                         ? SVf_UTF8
                                                         : 0))
                     {
-                        warner(packWARN(WARN_SYNTAX),
-                               "You need to quote \"%" UTF8f "\"",
-                               UTF8fARG(UTF, len, tmpbuf));
+                        PERL_WARN_WARNING_SYNTAX_SIGNAL_HANDLER_BAREWORD_NEEDS_QUOTES(UTF, len, tmpbuf);
                     }
                 }
             }
@@ -6226,8 +6294,7 @@ yyl_sub(pTHX_ char *s, const int key)
         if (key == KEY_my || key == KEY_our || key==KEY_state) {
             *d = '\0';
             /* diag_listed_as: Missing name in "%s sub" */
-            croak(
-                      "Missing name in \"%s\"", PL_bufptr);
+            PERL_THROW_ERROR_SYNTAX_DECLARATION_SUBROUTINE_LEXICAL_NAME_MISSING(PL_bufptr);
         }
         PL_expect = XATTRTERM;
         sv_setpvs(PL_subname,"?");
@@ -6248,7 +6315,7 @@ yyl_sub(pTHX_ char *s, const int key)
     if (*s == '(' && !is_sigsub) {
         s = scan_str(s,FALSE,FALSE,FALSE,NULL);
         if (!s)
-            croak("Prototype not terminated");
+            PERL_THROW_ERROR_SYNTAX_PROTOTYPE_UNTERMINATED();
         COPLINE_SET_FROM_MULTI_END;
         (void)validate_proto(PL_subname, PL_lex_stuff,
                              ckWARN(WARN_ILLEGALPROTO), 0);
@@ -6269,7 +6336,7 @@ yyl_sub(pTHX_ char *s, const int key)
                key == KEY_my || key == KEY_state ||
                key == KEY_our);
         if (have_name && *s != ';' && *s != '}')
-            croak("Illegal declaration of subroutine %" SVf, SVfARG(PL_subname));
+            PERL_THROW_ERROR_SYNTAX_DECLARATION_SUBROUTINE_NAMED_SUFFIX_INVALID(PL_subname);
     }
 
     if (have_proto) {
@@ -6305,9 +6372,7 @@ yyl_interpcasemod(pTHX_ char *s)
 {
 #ifdef DEBUGGING
     if (PL_bufptr != PL_bufend && *PL_bufptr != '\\')
-        croak(
-                   "panic: INTERPCASEMOD bufptr=%p, bufend=%p, *bufptr=%u",
-                   PL_bufptr, PL_bufend, *PL_bufptr);
+        PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CASEMOD_MARKER_EXPECTED(PL_bufptr, PL_bufend, *PL_bufptr);
 #endif
 
     if (PL_bufptr == PL_bufend || PL_bufptr[1] == 'E') {
@@ -6327,8 +6392,7 @@ yyl_interpcasemod(pTHX_ char *s)
         }
         else if ( PL_bufptr != PL_bufend && PL_bufptr[1] == 'E' ) {
            /* Got an unpaired \E */
-           ck_warner(packWARN(WARN_MISC),
-                     "Useless use of \\E");
+           PERL_WARN_WARNING_MISC_STRING_CASEMOD_END_WITHOUT_START();
         }
         if (PL_bufptr != PL_bufend)
             PL_bufptr += 2;
@@ -6379,7 +6443,7 @@ yyl_interpcasemod(pTHX_ char *s)
             else if (*s == 'F')
                 NEXTVAL_NEXTTOKE.ival = OP_FC;
             else
-                croak("panic: yylex, *s=%u", *s);
+                PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CASEMOD_ESCAPE_UNKNOWN(*s);
             PL_bufptr = s + 1;
         }
         force_next(FUNC);
@@ -6445,15 +6509,12 @@ yyl_secondclass_keyword(pTHX_ char *s, STRLEN len, int key, I32 *orig_keyword,
     else {			/* no override */
         key = -key;
         if (key == KEY_dump) {
-            croak("dump() must be written as CORE::dump() as of Perl 5.30");
+            PERL_THROW_ERROR_SYSTEM_PROCESS_DUMP_CORE_QUALIFICATION_REQUIRED();
         }
         *pgv = NULL;
         *pgvp = 0;
         if (hgv && key != KEY_x)	/* never ambiguous */
-            ck_warner(packWARN(WARN_AMBIGUOUS),
-                      "Ambiguous call resolved as CORE::%s(), "
-                      "qualify as such or use &",
-                      GvENAME(hgv));
+            PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_CORE_CALL_RESOLUTION(GvENAME(hgv));
         return key;
     }
 }
@@ -6481,13 +6542,11 @@ yyl_qw(pTHX_ char *s, STRLEN len)
                 if (!warned_comma || !warned_comment || !warned_escape) {
                     for (; !isSPACE(*d) && len; --len, ++d) {
                         if (!warned_comma && *d == ',') {
-                            warner(packWARN(WARN_QW),
-                                   "Possible attempt to separate words with commas");
+                            PERL_WARN_WARNING_SYNTAX_QW_COMMA_IN_WORD_LIST();
                             ++warned_comma;
                         }
                         else if (!warned_comment && *d == '#') {
-                            warner(packWARN(WARN_QW),
-                                   "Possible attempt to put comments in qw() list");
+                            PERL_WARN_WARNING_SYNTAX_QW_COMMENT_MARKER_IN_WORD_LIST();
                             ++warned_comment;
                         }
                         else if (!warned_escape && *d == '\\' && len > 1) {
@@ -6495,8 +6554,7 @@ yyl_qw(pTHX_ char *s, STRLEN len)
                                 --len, ++d;
                             }
                             else if (isSPACE(*(d+1))) {
-                                warner(packWARN(WARN_QW),
-                                       "Possible attempt to escape whitespace in qw() list");
+                                PERL_WARN_WARNING_SYNTAX_QW_WHITESPACE_ESCAPE_IN_WORD_LIST();
                                 ++warned_escape;
                             }
                         }
@@ -6797,8 +6855,7 @@ yyl_colon(pTHX_ char *s)
             break;
         PL_bufptr = s;	/* update in case we back off */
         if (*s == '=') {
-            croak(
-                       "Use of := for an empty attribute list is not allowed");
+            PERL_THROW_ERROR_SYNTAX_DECLARATION_ATTRIBUTE_EMPTY_LIST_ASSIGNMENT_FORBIDDEN();
         }
         goto grabattrs;
     case XATTRBLOCK:
@@ -6845,7 +6902,7 @@ yyl_colon(pTHX_ char *s)
                     op_free(attrs);
                     ASSUME(sv && SvREFCNT(sv) == 1);
                     SvREFCNT_dec(sv);
-                    croak("Unterminated attribute parameter in attribute list");
+                    PERL_THROW_ERROR_SYNTAX_DECLARATION_ATTRIBUTE_PARAMETER_UNTERMINATED();
                 }
                 COPLINE_SET_FROM_MULTI_END;
             }
@@ -6875,21 +6932,16 @@ yyl_colon(pTHX_ char *s)
                  ? (*s == '=' || *s == ')' || *s == '/' || *s == '|')
                  : (*s == '{' || *s == '(')))
         {
-            const char q = ((*s == '\'') ? '"' : '\'');
             /* If here for an expression, and parsed no attrs, back off. */
             if (PL_expect == XOPERATOR && !attrs) {
                 s = PL_bufptr;
                 break;
             }
             /* MUST advance bufptr here to avoid bogus "at end of line"
-               context messages from yyerror().
+               context messages from the parser diagnostic.
             */
             PL_bufptr = s;
-            yyerror( (const char *)
-                     (*s
-                      ? form("Invalid separator character "
-                                  "%c%c%c in attribute list", q, *s, q)
-                      : "Unterminated attribute list" ) );
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_ATTRIBUTE_LIST_SUFFIX_INVALID(*s ? perl_diag_selector_domain_1439_0_invalid_separator_1 : perl_diag_selector_domain_1439_0_unterminated_2, *s ? (int)*s : 0);
             op_free(attrs);
             OPERATOR(PERLY_COLON);
         }
@@ -6899,8 +6951,7 @@ yyl_colon(pTHX_ char *s)
             /* see comment about about sig_seen and parser error
              * handling */
             op_free(attrs);
-            croak("Subroutine attributes must come "
-                             "before the signature");
+            PERL_THROW_ERROR_SYNTAX_SIGNATURE_ATTRIBUTES_FOLLOW_SIGNATURE();
         }
         if (attrs) {
             NEXTVAL_NEXTTOKE.opval = attrs;
@@ -7042,8 +7093,7 @@ yyl_leftcurly(pTHX_ char *s, const U8 formbrack)
                     PL_expect = XTERM;
                     /* This hack is to get the ${} in the message. */
                     PL_bufptr = s+1;
-                    yyerror("syntax error");
-                    yyquit();
+                    PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_ABORT();
                     break;
                 }
                 OPERATOR(HASHBRACK);
@@ -7197,7 +7247,7 @@ yyl_rightcurly(pTHX_ char *s, const U8 formbrack)
 
     if (PL_lex_brackets <= 0)
         /* diag_listed_as: Unmatched right %s bracket */
-        yyerror("Unmatched right curly bracket");
+        PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_RIGHT_CURLY_UNMATCHED();
     else
         PL_expect = (expectation)PL_lex_brackstack[--PL_lex_brackets];
 
@@ -7262,7 +7312,7 @@ yyl_ampersand(pTHX_ char *s)
             && isIDFIRST_lazy_if_safe(s, PL_bufend, UTF))
         {
             CopLINE_dec(PL_curcop);
-            warner(packWARN(WARN_SEMICOLON), "%s", PL_warn_nosemi);
+            PERL_WARN_WARNING_SYNTAX_SEMICOLON_PREVIOUS_LINE_SEMICOLON_MAY_BE_MISSING();
             CopLINE_inc(PL_curcop);
         }
         d = s;
@@ -7342,8 +7392,7 @@ yyl_bang(pTHX_ char *s)
                 || ((*t == 'm' || *t == 's' || *t == 'y')
                     && !isWORDCHAR(t[1]))
                 || (*t == 't' && t[1] == 'r' && !isWORDCHAR(t[2])))
-                warner(packWARN(WARN_SYNTAX),
-                       "!=~ should be !~");
+                PERL_WARN_WARNING_SYNTAX_NEGATED_PATTERN_BINDING_OPERATOR_REVERSED();
         }
 
         if (!PL_lex_allbrackets && PL_lex_fakeeof >= LEX_FAKEEOF_COMPARE) {
@@ -7352,8 +7401,7 @@ yyl_bang(pTHX_ char *s)
         }
 
         if (s[0] == '=') {
-            ck_warner_d(packWARN(WARN_EXPERIMENTAL__EQU),
-                    "The '!==' operator is experimental");
+            PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_NUMERIC_INEQUALITY_USED();
             s++;
             ChEop(OP_NEU);
         }
@@ -7375,7 +7423,7 @@ yyl_snail(pTHX_ char *s)
         POSTDEREF(PERLY_SNAIL);
     PL_tokenbuf[0] = '@';
     s = scan_ident(s, PL_tokenbuf + 1, C_ARRAY_END(PL_tokenbuf), 0);
-    S_warn_expect_operator(aTHX_ "Array", s, POP_OLDBUFPTR);
+    S_warn_expect_operator(aTHX_ "array", s, POP_OLDBUFPTR);
     pl_yylval.ival = 0;
     if (!PL_tokenbuf[1]) {
         PREREF(PERLY_SNAIL);
@@ -7453,7 +7501,7 @@ yyl_rightsquare(pTHX_ char *s)
     s++;
     if (PL_lex_brackets <= 0)
         /* diag_listed_as: Unmatched right %s bracket */
-        yyerror("Unmatched right square bracket");
+        PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_RIGHT_SQUARE_UNMATCHED();
     else
         --PL_lex_brackets;
     PL_lex_allbrackets--;
@@ -7599,7 +7647,7 @@ yyl_sglquote(pTHX_ char *s)
     s = S_scan_terminated(aTHX_ s, OP_CONST);
     COPLINE_SET_FROM_MULTI_END;
     DEBUG_T( { printbuf("### Saw string before %s\n", s); } );
-    S_warn_expect_operator(aTHX_ "String", s, FALSE);
+    S_warn_expect_operator(aTHX_ "string", s, FALSE);
     TERM(sublex_start());
 }
 
@@ -7611,7 +7659,7 @@ yyl_dblquote(pTHX_ char *s)
 
     s = S_scan_terminated(aTHX_ s, OP_CONST);
     DEBUG_T( { printbuf("### Saw string before %s\n", s); } );
-    S_warn_expect_operator(aTHX_ "String", s, FALSE);
+    S_warn_expect_operator(aTHX_ "string", s, FALSE);
     /* FIXME. I think that this can be const if char *d is replaced by
        more localised variables.  */
     for (d = SvPV(PL_lex_stuff, len); len; len--, d++) {
@@ -7632,7 +7680,7 @@ yyl_backtick(pTHX_ char *s)
 {
     s = S_scan_terminated(aTHX_ s, OP_BACKTICK);
     DEBUG_T( { printbuf("### Saw backtick string before %s\n", s); } );
-    S_warn_expect_operator(aTHX_ "Backticks", s, FALSE);
+    S_warn_expect_operator(aTHX_ "backticks", s, FALSE);
     TERM(sublex_start());
 }
 
@@ -7640,10 +7688,9 @@ static int
 yyl_backslash(pTHX_ char *s)
 {
     if (PL_lex_inwhat == OP_SUBST && PL_lex_repl == PL_linestr && isDIGIT(*s))
-        ck_warner(packWARN(WARN_SYNTAX),"Can't use \\%c to mean $%c in expression",
-                  *s, *s);
+        PERL_WARN_WARNING_SYNTAX_SUBSTITUTION_EXPRESSION_BACKSLASH_DIGIT(*s, *s);
     if (!PL_parser->in_dispatch_pattern)
-        S_warn_expect_operator(aTHX_ "Backslash", s, FALSE);
+        S_warn_expect_operator(aTHX_ "backslash", s, FALSE);
     OPERATOR(REFGEN);
 }
 
@@ -7738,9 +7785,7 @@ yyl_croak_unrecognised(pTHX_ char *s)
         d = UTF ? (char *) utf8_hop_back((U8 *) s, -UNRECOGNIZED_PRECEDE_COUNT, (U8 *)d) : s - UNRECOGNIZED_PRECEDE_COUNT;
     }
 
-    croak("Unrecognized character %s; marked by <-- HERE after %" UTF8f "<-- HERE near column %d", c,
-                      UTF8fARG(UTF, (s - d), d),
-                     (int) len + 1);
+    PERL_THROW_ERROR_SYNTAX_SOURCE_CHARACTER_UNRECOGNIZED(c, UTF, (s - d), d, (int) len + 1);
 }
 
 static int
@@ -7764,7 +7809,7 @@ yyl_require(pTHX_ char *s, I32 orig_keyword)
                         GV_ADD | (UTF ? SVf_UTF8 : 0));
         }
         else if (*s == '<')
-            yyerror("<> at require-statement should be quotes");
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_REQUIRE_NAME_ANGLE_BRACKETS_FORBIDDEN();
     }
 
     if (orig_keyword == KEY_require)
@@ -7830,7 +7875,7 @@ yyl_foreach(pTHX_ char *s)
             }
         }
         if (saw_core && !core_valid) {
-            croak("Missing $ on loop variable");
+            PERL_THROW_ERROR_SYNTAX_DECLARATION_VARIABLE_LOOP_SIGIL_MISSING();
         }
 
         if (maybe_package && !saw_core) {
@@ -7849,7 +7894,7 @@ yyl_foreach(pTHX_ char *s)
         }
         else if (UNLIKELY(*p != '$' && *p != '\\')) {
             /* "for myfoo (" will end up here, but with p pointing at the 'f' */
-            croak("Missing $ on loop variable");
+            PERL_THROW_ERROR_SYNTAX_DECLARATION_VARIABLE_LOOP_SIGIL_MISSING();
         }
         /* The buffer may have been reallocated, update s */
         s = SvPVX(PL_linestr) + s_off;
@@ -7907,17 +7952,11 @@ yyl_my(pTHX_ char *s, I32 my)
     if (PL_in_my) {
         PL_bufptr = s;
         if (PL_in_my == KEY_catch) {
-            yyerror(form(
-                "Can't redeclare catch variable as \"%s\"",
-                    declarator_name(my)
-            ));
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_CATCH_DECLARATOR_REPEATED(declarator_name(my));
         } else {
             assert(PL_in_my == KEY_my || PL_in_my == KEY_state || PL_in_my == KEY_our);
-            yyerror(form(
-                "Can't redeclare \"%s\" in \"%s\"",
-                    declarator_name(my),
-                    declarator_name(PL_in_my)
-            ));
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_DECLARATOR_REPEATED(
+                declarator_name(my), declarator_name(PL_in_my));
         }
     }
     PL_in_my = (U16)my;
@@ -7933,21 +7972,17 @@ yyl_my(pTHX_ char *s, I32 my)
             return yyl_sub(aTHX_ s, KEY_method);
         PL_in_my_stash = find_in_my_stash(PL_tokenbuf, len);
         if (!PL_in_my_stash) {
-            char tmpbuf[1024];
-            int i;
+            const STRLEN name_len = len < 1000 ? len : 1000;
             PL_bufptr = s;
-            i = my_snprintf(tmpbuf, C_ARRAY_LENGTH(tmpbuf),
-                            "No such class %.1000s", PL_tokenbuf);
-            PERL_MY_SNPRINTF_POST_GUARD(i, C_ARRAY_LENGTH(tmpbuf));
-            yyerror_pv(tmpbuf, UTF ? SVf_UTF8 : 0);
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_VARIABLE_TYPE_PACKAGE_NOT_FOUND(
+                UTF ? 1 : 0, name_len, PL_tokenbuf,
+                UTF ? SVf_UTF8 : 0);
         }
     }
     else if (*s == '\\') {
         if (!FEATURE_MYREF_IS_ENABLED)
-            croak("The experimental declared_refs "
-                             "feature is not enabled");
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__DECLARED_REFS),
-                    "Declaring references is experimental");
+            PERL_THROW_DECLARED_REFS_FEATURE_DISABLED();
+        PERL_WARN_WARNING_EXPERIMENTAL_DECLARED_REFS_REFERENCE_DECLARATION_USED();
     }
     OPERATOR(KW_MY);
 }
@@ -8197,7 +8232,7 @@ yyl_fake_eof(pTHX_ U32 fake_eof, bool bof, char *s)
                 PERL_FPU_PRE_EXEC
                 PerlProc_execv(ipath, EXEC_ARGV_CAST(newargv));
                 PERL_FPU_POST_EXEC
-                croak("Can't exec %s", ipath);
+                PERL_THROW_ERROR_SYSTEM_PROCESS_SHEBANG_EXEC_FAILED(ipath);
             }
             if (d) {
                 while (*d && !isSPACE(*d))
@@ -8224,8 +8259,7 @@ yyl_fake_eof(pTHX_ U32 fake_eof, bool bof, char *s)
                             const char * const m = d1;
                             while (*d1 && !isSPACE(*d1))
                                 d1++;
-                            croak("Too late for \"-%.*s\" option",
-                                  (int)(d1 - m), m);
+                            PERL_THROW_ERROR_RUN_OPTION_SHEBANG_SWITCH_TOO_LATE((int)(d1 - m), m);
                         }
                         d1 = moreswitches(d1);
                     } while (d1);
@@ -8283,13 +8317,8 @@ yyl_safe_bareword(pTHX_ char *s, const char lastchar)
     if ((lastchar == '*' || lastchar == '%' || lastchar == '&')
         && PL_parser->saw_infix_sigil)
     {
-        ck_warner_d(packWARN(WARN_AMBIGUOUS),
-                    "Operator or semicolon missing before %c%" UTF8f,
-                    lastchar,
-                    UTF8fARG(UTF, strlen(PL_tokenbuf), PL_tokenbuf));
-        ck_warner_d(packWARN(WARN_AMBIGUOUS),
-                    "Ambiguous use of %c resolved as operator %c",
-                    lastchar, lastchar);
+        PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_SEPARATOR_MISSING_BEFORE_SIGILED_NAME(lastchar, UTF, strlen(PL_tokenbuf), PL_tokenbuf);
+        PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_SIGIL_RESOLVED_AS_OPERATOR(lastchar, lastchar);
     }
     TOKEN(BAREWORD);
 }
@@ -8364,7 +8393,7 @@ yyl_strictwarn_bareword(pTHX_ const char lastchar)
         if (!*d && !gv_stashpv(PL_tokenbuf, UTF ? SVf_UTF8 : 0)) {
             /* PL_warn_reserved is constant */
             GCC_DIAG_IGNORE_STMT(-Wformat-nonliteral);
-            warner(packWARN(WARN_RESERVED), PL_warn_reserved, PL_tokenbuf);
+            PERL_WARN_WARNING_SYNTAX_RESERVED_LOWERCASE_BAREWORD_MAY_BECOME_RESERVED(PL_tokenbuf);
             GCC_DIAG_RESTORE_STMT;
         }
     }
@@ -8390,7 +8419,7 @@ yyl_just_a_word(pTHX_ char *s, STRLEN len, I32 orig_keyword, struct code c)
     if (PL_expect == XOPERATOR) {
         if (PL_bufptr == PL_linestart) {
             CopLINE_dec(PL_curcop);
-            warner(packWARN(WARN_SEMICOLON), "%s", PL_warn_nosemi);
+            PERL_WARN_WARNING_SYNTAX_SEMICOLON_PREVIOUS_LINE_SEMICOLON_MAY_BE_MISSING();
             CopLINE_inc(PL_curcop);
         }
         else
@@ -8414,7 +8443,7 @@ yyl_just_a_word(pTHX_ char *s, STRLEN len, I32 orig_keyword, struct code c)
                 s++;
             morelen = s - package_start;
             if (len + morelen >= C_ARRAY_LENGTH(PL_tokenbuf))
-                croak("Identifier too long");
+                PERL_THROW_ERROR_SYNTAX_IDENTIFIER_LENGTH_EXCEEDED();
             Copy(package_start, PL_tokenbuf + len, morelen, char);
             PL_tokenbuf[len + morelen] = '\0';
         }
@@ -8423,19 +8452,17 @@ yyl_just_a_word(pTHX_ char *s, STRLEN len, I32 orig_keyword, struct code c)
                           C_ARRAY_LENGTH(PL_tokenbuf) - len,
                           TRUE, &morelen);
         if (no_op_error) {
-            S_warn_expect_operator(aTHX_ "Bareword",s,FALSE);
+            S_warn_expect_operator(aTHX_ "bareword", s, FALSE);
             no_op_error = FALSE;
         }
         if (!morelen)
-            croak("Bad name after %" UTF8f "%s",
-                    UTF8fARG(UTF, len, PL_tokenbuf),
-                    *s == '\'' ? "'" : "::");
+            PERL_THROW_ERROR_SYNTAX_IDENTIFIER_QUALIFIED_COMPONENT_MISSING(UTF, len, PL_tokenbuf, *s == '\'' ? "'" : "::");
         len += morelen;
         pkgname = 1;
     }
 
     if (no_op_error)
-        S_warn_expect_operator(aTHX_ "Bareword",s,FALSE);
+        S_warn_expect_operator(aTHX_ "bareword", s, FALSE);
 
     /* See if the name is "Foo::",
        in which case Foo is a bareword
@@ -8444,10 +8471,7 @@ yyl_just_a_word(pTHX_ char *s, STRLEN len, I32 orig_keyword, struct code c)
     if (len > 2 && PL_tokenbuf[len - 2] == ':' && PL_tokenbuf[len - 1] == ':') {
         if (ckWARN(WARN_BAREWORD)
             && ! gv_fetchpvn_flags(PL_tokenbuf, len, UTF ? SVf_UTF8 : 0, SVt_PVHV))
-            warner(packWARN(WARN_BAREWORD),
-                   "Bareword \"%" UTF8f
-                   "\" refers to nonexistent package",
-                   UTF8fARG(UTF, len, PL_tokenbuf));
+            PERL_WARN_WARNING_SYNTAX_BAREWORD_PACKAGE_BAREWORD_HAS_NO_STASH(UTF, len, PL_tokenbuf);
         len -= 2;
         PL_tokenbuf[len] = '\0';
         c.gv = NULL;
@@ -8671,8 +8695,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         );
 
     case KEY___NAMESPACE__:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__NAMESPACES),
-                    "__NAMESPACE__ is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_NAMESPACES_CURRENT_NAMESPACE_CONSTANT_USED();
         FUN0OP(newSVOP(OP_CONST, OPpCONST_TOKEN_PACKAGE<<8,
                        namespace_current()));
 
@@ -8691,7 +8714,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
                     : newSVOP(OP_RUNCV, 0, &PL_sv_undef));
 
     case KEY___CLASS__:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__CLASS), "__CLASS__ is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_CLASS_CURRENT_CLASS_CONSTANT_USED();
         FUN0(OP_CLASSNAME);
 
     case KEY_AUTOLOAD:
@@ -8706,7 +8729,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
 
     case KEY_ADJUST:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__CLASS), "ADJUST is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_CLASS_ADJUST_BLOCK_USED();
 
         /* The way that KEY_CHECK et.al. are handled currently are nothing
          * short of crazy. We won't copy that model for new phasers, but use
@@ -8728,7 +8751,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         LOP(OP_ACCEPT,XTERM);
 
     case KEY_all:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__KEYWORD_ALL), "all is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_KEYWORD_ALL_BLOCK_OPERATOR_USED();
         BLKLOP(OP_ALLSTART);
 
     case KEY_and:
@@ -8737,7 +8760,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         OPERATOR(ANDOP);
 
     case KEY_any:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__KEYWORD_ANY), "any is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_KEYWORD_ANY_BLOCK_OPERATOR_USED();
         BLKLOP(OP_ANYSTART);
 
     case KEY_atan2:
@@ -8778,7 +8801,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         UNI(OP_CHOP);
 
     case KEY_class:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__CLASS), "class is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_CLASS_DECLARATION_USED();
 
         s = force_word(s, BAREWORD, ALLOW_PACKAGE | RESOLVE_NAMESPACE);
         s = skipspace(s);
@@ -8843,7 +8866,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         PREBLOCK(KW_DEFAULT);
 
     case KEY_defer:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__DEFER), "defer is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_DEFER_BLOCK_USED();
         PL_hints |= HINT_BLOCK_SCOPE;
         PREBLOCK(KW_DEFER);
 
@@ -8900,8 +8923,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         ChEop(OP_SEQ);
 
     case KEY_equ:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__EQU),
-                    "The 'equ' operator is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_STRING_EQUALITY_USED();
         if (!PL_lex_allbrackets && PL_lex_fakeeof >= LEX_FAKEEOF_COMPARE)
             return REPORT(0);
         ChEop(OP_SEQU);
@@ -8961,7 +8983,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         /* TODO: maybe this should use the same parser/grammar structures as
          * `my`, but it's also rather messy because of the `our` conflation
          */
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__CLASS), "field is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_CLASS_FIELD_DECLARATION_USED();
 
         croak_kw_unless_class("field");
 
@@ -8969,7 +8991,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         OPERATOR(KW_FIELD);
 
     case KEY_finally:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__TRY), "try/catch/finally is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_TRY_FINALLY_BLOCK_USED();
         PREBLOCK(KW_FINALLY);
 
     case KEY_for:
@@ -9223,8 +9245,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         LOP(OP_MSGSND,XTERM);
 
     case KEY_namespace:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__NAMESPACES),
-                    "namespace is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_NAMESPACES_NAMESPACE_DECLARATION_USED();
         s = skipspace(s);
         if (isIDFIRST_lazy_if_safe(s, PL_bufend, UTF)
             || (*s == ':' && s[1] == ':')) {
@@ -9237,7 +9258,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
                     s++;
                 nslen = s - start;
                 if (nslen >= C_ARRAY_LENGTH(PL_tokenbuf))
-                    croak("Namespace name is too long");
+                    PERL_THROW_ERROR_SYNTAX_IDENTIFIER_NAMESPACE_LENGTH_EXCEEDED();
                 Copy(start, PL_tokenbuf, nslen, char);
                 PL_tokenbuf[nslen] = 0;
             }
@@ -9267,8 +9288,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         ChEop(OP_SNE);
 
     case KEY_neu:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__EQU),
-                    "The 'neu' operator is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_STRING_INEQUALITY_USED();
         if (!PL_lex_allbrackets && PL_lex_fakeeof >= LEX_FAKEEOF_COMPARE)
             return REPORT(0);
         ChEop(OP_SNEU);
@@ -9300,9 +9320,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
                 && !(t[0] == ':' && t[1] == ':')
                 && !keyword(s, d-s, 0)
             ) {
-                warner(packWARN(WARN_PRECEDENCE),
-                       "Precedence problem: open %" UTF8f " should be open(%" UTF8f ")",
-                       UTF8fARG(UTF, d-s, s), UTF8fARG(UTF, d-s, s));
+                PERL_WARN_WARNING_SYNTAX_PRECEDENCE_UNPARENTHESIZED_OPEN_BAREWORD(UTF, d-s, s, UTF, d-s, s);
             }
         }
         LOP(OP_OPEN,XTERM);
@@ -9323,11 +9341,11 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         LOP(OP_OPEN_DIR,XTERM);
 
     case KEY_print:
-        checkcomma(s,PL_tokenbuf,"filehandle");
+        S_checkcomma(aTHX_ s,PL_tokenbuf,"filehandle");
         LOP(OP_PRINT,XREF);
 
     case KEY_printf:
-        checkcomma(s,PL_tokenbuf,"filehandle");
+        S_checkcomma(aTHX_ s,PL_tokenbuf,"filehandle");
         LOP(OP_PRTF,XREF);
 
     case KEY_prototype:
@@ -9431,7 +9449,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         UNI(OP_REF);
 
     case KEY_role:
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__CLASS), "role is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_CLASS_ROLE_DECLARATION_USED();
 
         s = force_word(s, BAREWORD, ALLOW_PACKAGE | RESOLVE_NAMESPACE);
         s = skipspace(s);
@@ -9447,7 +9465,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
             TOKEN(1);	/* force error */
 
     case KEY_say:
-        checkcomma(s,PL_tokenbuf,"filehandle");
+        S_checkcomma(aTHX_ s,PL_tokenbuf,"filehandle");
         LOP(OP_SAY,XREF);
 
     case KEY_chomp:
@@ -9535,7 +9553,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
         LOP(OP_SOCKPAIR,XTERM);
 
     case KEY_sort:
-        checkcomma(s,PL_tokenbuf,"subroutine name");
+        S_checkcomma(aTHX_ s,PL_tokenbuf,"subroutine");
         s = skipspace(s);
         PL_expect = XTERM;
         s = force_word(s, BAREWORD, CHECK_KEYWORD | ALLOW_PACKAGE
@@ -9574,7 +9592,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
 
     case KEY_method:
         /* For now we just treat 'method' identical to 'sub' plus a warning */
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__CLASS), "method is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_CLASS_METHOD_DECLARATION_USED();
         return yyl_sub(aTHX_ s, KEY_method);
 
     case KEY_format:
@@ -9749,8 +9767,7 @@ yyl_key_core(pTHX_ char *s, STRLEN len, struct code c)
         return yyl_just_a_word(aTHX_ d, olen, 0, c);
     }
     if (!key)
-        croak("CORE::%" UTF8f " is not a keyword",
-                          UTF8fARG(UTF, len, PL_tokenbuf));
+        PERL_THROW_ERROR_SYNTAX_IDENTIFIER_CORE_KEYWORD_UNKNOWN(UTF, len, PL_tokenbuf);
     if (key < 0)
         key = -key;
     else if (key == KEY_require || key == KEY_do
@@ -9864,7 +9881,7 @@ yyl_keylookup(pTHX_ char *s, GV *gv)
             if (!PL_nexttoke) PL_expect = XOPERATOR;
             return REPORT(PLUGEXPR);
         } else {
-            croak("Bad plugin affecting keyword '%s'", PL_tokenbuf);
+            PERL_THROW_ERROR_INTERNAL_SYNTAX_PLUGIN_KEYWORD_RESULT_INVALID(PL_tokenbuf);
         }
     }
 
@@ -9875,8 +9892,7 @@ yyl_keylookup(pTHX_ char *s, GV *gv)
         result = PL_infix_plugin(aTHX_ PL_tokenbuf, len, &def);
         if(result) {
             if(result != len)
-                croak("Bad infix plugin result (%zd) - did not consume entire identifier <%s>\n",
-                    result, PL_tokenbuf);
+                PERL_THROW_ERROR_INTERNAL_SYNTAX_PLUGIN_INFIX_PARTIAL_IDENTIFIER_MATCH(result, PL_tokenbuf);
             PL_bufptr = s = d;
             struct Perl_custom_infix_result *result;
             Newx(result, 1, struct Perl_custom_infix_result);
@@ -10029,10 +10045,8 @@ yyl_try(pTHX_ char *s)
             if (PL_lex_brackets
                 && PL_lex_brackstack[PL_lex_brackets-1] != XFAKEEOF)
             {
-                yyerror((const char *)
-                        (PL_lex_formbrack
-                         ? "Format not terminated"
-                         : "Missing right curly or square bracket"));
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_UNCLOSED_STRUCTURE(PL_lex_formbrack ? perl_diag_selector_domain_1440_0_format_not_terminated_1
+                                 : perl_diag_selector_domain_1440_0_missing_right_bracket_2);
             }
             DEBUG_T({
                 PerlIO_printf(Perl_debug_log, "### Tokener got EOF\n");
@@ -10218,8 +10232,7 @@ yyl_try(pTHX_ char *s)
                     TOKEN(0);
                 }
                 if (s[0] == '=') {
-                    ck_warner_d(packWARN(WARN_EXPERIMENTAL__EQU),
-                            "The '===' operator is experimental");
+                    PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_NUMERIC_EQUALITY_USED();
                     s++;
                     ChEop(OP_EQU);
                 }
@@ -10238,8 +10251,7 @@ yyl_try(pTHX_ char *s)
                 PMop(OP_MATCH);
             if (tmp && isSPACE(*s) && ckWARN(WARN_SYNTAX)
                 && memCHRs("+-*/%.^&|<",tmp))
-                warner(packWARN(WARN_SYNTAX),
-                       "Reversed %c= operator",(int)tmp);
+                PERL_WARN_WARNING_SYNTAX_ASSIGNMENT_OPERATOR_REVERSED((int)tmp);
             s--;
             if (PL_expect == XSTATE
                 && isALPHA(tmp)
@@ -10282,7 +10294,7 @@ yyl_try(pTHX_ char *s)
                 SAVEI32(PL_lex_formbrack);
                 PL_parser->form_lex_state = PL_lex_state;
                 PL_lex_formbrack = PL_lex_brackets + 1;
-                PL_parser->sub_error_count = PL_error_count;
+                PL_parser->sub_error_count = PERL_DIAG_ERROR_COUNT;
                 return yyl_leftcurly(aTHX_ s, 1);
             }
         }
@@ -10382,7 +10394,7 @@ yyl_try(pTHX_ char *s)
     case '5': case '6': case '7': case '8': case '9':
         s = scan_num(s, &pl_yylval);
         DEBUG_T( { printbuf("### Saw number in %s\n", s); } );
-        S_warn_expect_operator(aTHX_ "Number", s, FALSE);
+        S_warn_expect_operator(aTHX_ "number", s, FALSE);
         TERM(THING);
 
     case '\'':
@@ -10666,7 +10678,7 @@ Perl_yylex(pTHX)
             && SvEVALED(PL_lex_repl))
         {
             if (PL_bufptr != PL_bufend)
-                croak("Bad evalled substitution pattern");
+                PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_EVAL_TRAILING_INPUT();
             PL_lex_repl = NULL;
         }
         /* Paranoia.  re_eval_start is adjusted when S_scan_heredoc sets
@@ -10677,7 +10689,7 @@ Perl_yylex(pTHX)
          || PL_parser->lex_shared->re_eval_str) {
             SV *sv;
             if (*PL_bufptr != ')')
-                croak("Sequence (?{...}) not terminated with ')'");
+                PERL_THROW_ERROR_REGEXP_EVAL_CODE_BLOCK_UNTERMINATED();
             PL_bufptr++;
             /* having compiled a (?{..}) expression, return the original
              * text too, as a const */
@@ -10703,8 +10715,7 @@ Perl_yylex(pTHX)
     case LEX_INTERPCONCAT:
 #ifdef DEBUGGING
         if (PL_lex_brackets)
-            croak("panic: INTERPCONCAT, lex_brackets=%ld",
-                       (long) PL_lex_brackets);
+            PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CONCAT_BRACKETS_OPEN((long) PL_lex_brackets);
 #endif
         if (PL_bufptr == PL_bufend)
             return REPORT(sublex_done());
@@ -10717,14 +10728,14 @@ Perl_yylex(pTHX)
             s = PL_bufend;
         }
         else {
-            int save_error_count = PL_error_count;
+            UV save_error_count = PERL_DIAG_ERROR_COUNT;
 
             s = scan_const(PL_bufptr);
 
             /* Set flag if this was a pattern and there were errors.  op.c will
              * refuse to compile a pattern with this flag set.  Otherwise, we
              * could get segfaults, etc. */
-            if (PL_lex_inpat && PL_error_count > save_error_count) {
+            if (PL_lex_inpat && PERL_DIAG_ERROR_COUNT > save_error_count) {
                 ((PMOP*)PL_lex_inpat)->op_pmflags |= PMf_HAS_ERROR;
             }
             if (*s == '\\')
@@ -10752,7 +10763,7 @@ Perl_yylex(pTHX)
 
         return yylex();
     case LEX_FORMLINE:
-        if (PL_parser->sub_error_count != PL_error_count) {
+        if (PL_parser->sub_error_count != PERL_DIAG_ERROR_COUNT) {
             /* There was an error parsing a formline, which tends to
                mess up the parser.
                Unlike interpolated sub-parsing, we can't treat any of
@@ -10845,7 +10856,7 @@ S_pending_ident(pTHX)
         STRLEN resolved_len;
         const char *resolved_pv = SvPV_const(resolved, resolved_len);
         if (resolved_len + 1 >= C_ARRAY_LENGTH(PL_tokenbuf))
-            croak("Variable name is too long");
+            PERL_THROW_ERROR_SYNTAX_IDENTIFIER_RESOLVED_VARIABLE_LENGTH_EXCEEDED();
         Copy(resolved_pv, PL_tokenbuf + 1, resolved_len, char);
         PL_tokenbuf[resolved_len + 1] = 0;
         tokenbuf_len = resolved_len + 1;
@@ -10877,8 +10888,7 @@ S_pending_ident(pTHX)
 
         if (PL_parser->in_dispatch_pattern_pin) {
             if (PL_tokenbuf[0] != '$' || existing == NOT_IN_PAD)
-                Perl_croak(aTHX_
-                    "pinned pattern value must be an existing scalar lexical");
+                PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_PIN_REQUIRES_EXISTING_SCALAR();
             pl_yylval.opval = newOP(OP_PADANY, 0);
             pl_yylval.opval->op_targ = existing;
             return PRIVATEREF;
@@ -10889,8 +10899,7 @@ S_pending_ident(pTHX)
         PADOFFSET off;
 
         if (found)
-            Perl_croak(aTHX_ "duplicate capture %" UTF8f " in a dispatch-on clause",
-                UTF8fARG(UTF, tokenbuf_len, PL_tokenbuf));
+            PERL_THROW_ERROR_SYNTAX_DISPATCH_CAPTURE_DUPLICATE_NAME(UTF, tokenbuf_len, PL_tokenbuf);
         off = pad_add_name_pvn(PL_tokenbuf, tokenbuf_len,
                                padadd_NO_DUP_CHECK, NULL, NULL);
         (void)hv_store(PL_parser->dispatch_pattern_vars,
@@ -10912,25 +10921,14 @@ S_pending_ident(pTHX)
             if (has_colon)
                 /* diag_listed_as: No package name allowed for variable %s
                                    in "our" */
-                yyerror_pv(form("No package name allowed for "
-                                  "%s %s in \"our\"",
-                                  *PL_tokenbuf=='&' ? "subroutine" : "variable",
-                                  PL_tokenbuf), UTF ? SVf_UTF8 : 0);
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_OUR_NAME_QUALIFIED(*PL_tokenbuf == '&' ? perl_diag_selector_domain_1414_0_subroutine_1 : perl_diag_selector_domain_1414_0_variable_2, PL_tokenbuf, UTF ? SVf_UTF8 : 0);
             tmp = allocmy(PL_tokenbuf, tokenbuf_len, UTF ? SVf_UTF8 : 0);
         }
         else {
             OP *o;
             if (has_colon) {
-                /* "my" variable %s can't be in a package */
-                /* PL_no_myglob is constant */
-                GCC_DIAG_IGNORE_STMT(-Wformat-nonliteral);
-                yyerror_pv(form(PL_no_myglob,
-                            PL_in_my == KEY_my ? "my" :
-                            PL_in_my == KEY_field ? "field" : "state",
-                            *PL_tokenbuf == '&' ? "subroutine" : "variable",
-                            PL_tokenbuf),
-                            UTF ? SVf_UTF8 : 0);
-                GCC_DIAG_RESTORE_STMT;
+                PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_LEXICAL_NAME_QUALIFIED(PL_in_my == KEY_my ? perl_diag_selector_domain_2500_0_my_2 :
+                    PL_in_my == KEY_field ? perl_diag_selector_domain_2500_0_field_1 : perl_diag_selector_domain_2500_0_state_3, *PL_tokenbuf == '&' ? perl_diag_selector_domain_1414_0_subroutine_1 : perl_diag_selector_domain_1414_0_variable_2, PL_tokenbuf, UTF ? SVf_UTF8 : 0);
             }
 
             o = newOP(OP_PADANY, 0);
@@ -10995,9 +10993,7 @@ S_pending_ident(pTHX)
            )
         {
             /* Downgraded from fatal to warning 20000522 mjd */
-            warner(packWARN(WARN_AMBIGUOUS),
-                   "Possible unintended interpolation of %" UTF8f " in string",
-                   UTF8fARG(UTF, tokenbuf_len, PL_tokenbuf));
+            PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_UNDECLARED_AGGREGATE_INTERPOLATION(UTF, tokenbuf_len, PL_tokenbuf);
         }
     }
 
@@ -11039,8 +11035,7 @@ S_checkcomma(pTHX_ const char *s, const char *name, const char *what)
              * constructs (or, and, if, until, unless, while, for).
              * Not a very solid hack... */
             if (!*w || !memCHRs(";&/|})]oaiuwf!=", *w))
-                warner(packWARN(WARN_SYNTAX),
-                       "%s (...) interpreted as function",name);
+                PERL_WARN_WARNING_SYNTAX_PARENTHESIZED_FORM_INTERPRETED_AS_FUNCTION(name);
         }
     }
     while (s < PL_bufend && isSPACE(*s))
@@ -11071,7 +11066,7 @@ S_checkcomma(pTHX_ const char *s, const char *name, const char *what)
                 off = pad_findmy_pvn(tmpbuf, s-w+1, 0);
                 if (off != NOT_IN_PAD) return;
             }
-            croak("No comma allowed after %s", what);
+            PERL_THROW_ERROR_SYNTAX_CALL_COMMA_AFTER_INDIRECT_NAME(PERL_DIAG_SELECTOR_FROM_ERROR_SYNTAX_CALL_COMMA_AFTER_INDIRECT_NAME_TARGET_KIND(what));
         }
     }
 }
@@ -11084,13 +11079,13 @@ S_checkcomma(pTHX_ const char *s, const char *name, const char *what)
    and <type> is used with error messages only.
    <type> is assumed to be well formed UTF-8.
 
-   If error_msg is not NULL, *error_msg will be set to any error encountered.
-   Otherwise yyerror() will be used to output it */
+   If failed is not NULL, it is set when the handler did not produce a value.
+   Otherwise a structured parser diagnostic is appended. */
 
 static SV *
 S_new_constant(pTHX_ const char *s, STRLEN len, const char *key, STRLEN keylen,
                SV *sv, SV *pv, const char *type, STRLEN typelen,
-               const char ** error_msg)
+               bool *failed)
 {
     PERL_ARGS_ASSERT_NEW_CONSTANT;
 
@@ -11100,9 +11095,9 @@ S_new_constant(pTHX_ const char *s, STRLEN len, const char *key, STRLEN keylen,
     SV *errsv = NULL;
     SV **cvp;
     SV *cv, *typesv;
-    const char *why1 = "", *why2 = "", *why3 = "";
-    const char * optional_colon = ":";  /* Only some messages have a colon */
-    char *msg;
+    const char *reason = NULL;
+    const char *constant;
+    STRLEN constant_len;
 
     /* We assume that this is true: */
     assert(type || s);
@@ -11112,16 +11107,13 @@ S_new_constant(pTHX_ const char *s, STRLEN len, const char *key, STRLEN keylen,
     if (   ! table
         || ! (PL_hints & HINT_LOCALIZE_HH))
     {
-        why1 = "unknown";
-        optional_colon = "";
+        reason = "unknown";
         goto report;
     }
 
     cvp = hv_fetch(table, key, keylen, FALSE);
     if (!cvp || !SvOK(*cvp)) {
-        why1 = "$^H{";
-        why2 = key;
-        why3 = "} is not defined";
+        reason = "overload_type_not_defined";
         goto report;
     }
 
@@ -11151,11 +11143,17 @@ S_new_constant(pTHX_ const char *s, STRLEN len, const char *key, STRLEN keylen,
 
     /* Check the eval first */
     if (!PL_in_eval && ((errsv = ERRSV), SvTRUE_NN(errsv))) {
-        STRLEN errlen;
-        const char * errstr;
-        sv_catpvs(errsv, "Propagated");
-        errstr = SvPV_const(errsv, errlen);
-        yyerror_pvn(errstr, errlen, 0); /* Duplicates the message inside eval */
+        if (SvROK(PERL_ERROR_OBJ)
+            && sv_derived_from(PERL_ERROR_OBJ, "XPerl::Exception"))
+        {
+            Perl_diag_append_exception(aTHX_ &PL_pending_exception, PERL_ERROR_OBJ);
+        }
+        else {
+            STRLEN errlen;
+            const char * errstr = SvPV_const(errsv, errlen);
+            PERL_ADD_COMPILE_ERR_ERROR_PROPAGATION_EVAL_ERROR_TEXT(errstr, errlen, 0);
+        }
+        PERL_APPEND_ERROR_PROPAGATION_EVAL_CONTEXT(&PL_pending_exception);
         (void)POPs;
         res = SvREFCNT_inc_simple_NN(sv);
     }
@@ -11176,22 +11174,69 @@ S_new_constant(pTHX_ const char *s, STRLEN len, const char *key, STRLEN keylen,
     sv = res;
     (void)sv_2mortal(sv);
 
-    why1 = "Call to &{$^H{";
-    why2 = key;
-    why3 = "}} did not return a defined value";
+    reason = "handler_returned_undefined";
 
   report:
 
-    msg = form("Constant(%.*s)%s %s%s%s",
-                        (int)(type ? typelen : len),
-                        (type ? type: s),
-                        optional_colon,
-                        why1, why2, why3);
-    if (error_msg) {
-        *error_msg = msg;
+    constant = type ? type : s;
+    constant_len = type ? typelen : len;
+    if (failed) {
+        *failed = TRUE;
     }
     else {
-        yyerror_pv(msg, UTF ? SVf_UTF8 : 0);
+        PERL_ADD_COMPILE_ERR_ERROR_OVERLOAD_CONSTANT_CONVERSION_FAILED(PERL_DIAG_SELECTOR_FROM_ERROR_OVERLOAD_CONSTANT_CONVERSION_FAILED_REASON(reason), UTF, constant_len, constant, key, UTF ? SVf_UTF8 : 0);
+        if (PL_oldoldbufptr
+            && PL_bufptr > PL_oldoldbufptr
+            && PL_bufptr - PL_oldoldbufptr < 200
+            && PL_oldoldbufptr != PL_oldbufptr
+            && PL_oldbufptr != PL_bufptr) {
+            char *context = PL_oldoldbufptr;
+
+            while (isSPACE(*context))
+                context++;
+            if (PL_bufptr > context) {
+                SV *context_value = sv_2mortal(newSVpvn_flags(
+                    context, PL_bufptr - context, UTF ? SVf_UTF8 : 0));
+                Perl_diag_mark_last_parser_context(aTHX_
+                    PL_pending_exception, "near", context_value, FALSE);
+            }
+        }
+        else if (PL_oldbufptr
+                 && PL_bufptr > PL_oldbufptr
+                 && PL_bufptr - PL_oldbufptr < 200
+                 && PL_oldbufptr != PL_bufptr) {
+            char *context = PL_oldbufptr;
+
+            while (isSPACE(*context))
+                context++;
+            if (PL_bufptr > context) {
+                SV *context_value = sv_2mortal(newSVpvn_flags(
+                    context, PL_bufptr - context, UTF ? SVf_UTF8 : 0));
+                Perl_diag_mark_last_parser_context(aTHX_
+                    PL_pending_exception, "near", context_value, FALSE);
+            }
+        }
+        if (PL_pending_exception && keylen == 1 && *key == 'q'
+            && type && (strEQ(type, "q") || strEQ(type, "qq"))) {
+            STRLEN context_len = len;
+            const char *context_pv = s;
+
+            if (!context_pv && pv)
+                context_pv = SvPV_const(pv, context_len);
+            if (context_pv && context_len < 198
+                && PL_multi_open && PL_multi_close) {
+                const char open_quote = (char)PL_multi_open;
+                const char close_quote = (char)PL_multi_close;
+                SV *context_value = sv_2mortal(newSVpvn(&open_quote, 1));
+
+                sv_catpvn_flags(context_value, context_pv, context_len,
+                                (pv && !s && SvUTF8(pv))
+                                    ? SVf_UTF8 : (UTF ? SVf_UTF8 : 0));
+                sv_catpvn(context_value, &close_quote, 1);
+                Perl_diag_mark_last_parser_context(aTHX_
+                    PL_pending_exception, "near", context_value, TRUE);
+            }
+        }
     }
     return SvREFCNT_inc_simple_NN(sv);
 }
@@ -11234,7 +11279,7 @@ S_parse_ident(pTHX_ const char *s, const char * const s_end,
      * If the identifier is empty (s_end == s), *d is set to the NUL
      * character; otherwise if the identifier is illegal, the function croaks
      * unless this flag is passed in: */
-    const bool check_only = flags & CHECK_ONLY;
+    bool check_only = flags & CHECK_ONLY;
 
     /* In this case NULL is returned instead of croaking, and the contents
      * of '*d' are undefined.
@@ -11263,25 +11308,23 @@ S_parse_ident(pTHX_ const char *s, const char * const s_end,
      * accept the first character being an IDCont, and not necessarily an
      * IDFIRST.  The 'IDCONT_first_OK' flag is used to indicate this */
 
-    /* When a normally fatal error occurs, and the 'failure_details' parameter
-     * is set, the function, instead of dieing, returns what would be the
-     * croak message and the position in the source string where it was
-     * encountered.  This variable holds the message text internally. */
-    const char * error;
+    /* A failure kind identifies which structured diagnostic to throw and
+     * which compatibility text to return to callers requesting details. */
+    const char *error_kind = NULL;
+    UV error_codepoint = 0;
+    STRLEN error_position = 0;
+    const char *error_before = NULL;
+    STRLEN error_before_length = 0;
+    const char *error_after = NULL;
+    STRLEN error_after_length = 0;
 
     /* This causes the CHECK_ONLY flag to also be set. */
     if (failure_details) {
         flags |= CHECK_ONLY;
+        check_only = TRUE;
     }
 
-    /* However, the error position this function knows about is in the
-     * destination, normalized, string and a caller looking to mark where an
-     * error occurred, will want to use the source to report it. This variable
-     * is changed whenever a length change occurs, so that upon return, we can
-     * convert to the source position. */
-    SSize_t position_offset = 0;
     const char * const s0 = s;  /* First byte, for any error message */
-    const char * d0 = *d;
 
     while (s < s_end) {
 
@@ -11309,7 +11352,8 @@ S_parse_ident(pTHX_ const char *s, const char * const s_end,
                  * Syntax". */
                 advance = is_WORD_BUT_NONCONT_safe(s, s_end, is_utf8);
                 if (advance) {
-                    UV cp = valid_utf8_to_uv((U8 *) s, NULL);
+                    error_codepoint = valid_utf8_to_uv((U8 *) s, NULL);
+                    error_position = s - s0;
                     const char *error_pos = s + advance;
 
                     /* Display the whole name */
@@ -11318,12 +11362,11 @@ S_parse_ident(pTHX_ const char *s, const char * const s_end,
                     }
                     while ((advance = isWORDCHAR_lazy_if_safe(s, s_end,
                                                               is_utf8)));
-                    error = form("\\x{%04" UVXf "} is a \\w char that isn't"
-                                 " valid in a name; marked by <-- HERE"
-                                 " after %" UTF8f "<-- HERE %" UTF8f,
-                                 cp,
-                                 UTF8fARG(is_utf8, error_pos - s0, s0),
-                                 UTF8fARG(is_utf8, s - error_pos, error_pos));
+                    error_kind = PERL_PARSE_IDENT_ERROR_INVALID_CHARACTER;
+                    error_before = s0;
+                    error_before_length = error_pos - s0;
+                    error_after = error_pos;
+                    error_after_length = s - error_pos;
                     goto found_error;
                 }
                 else {
@@ -11364,7 +11407,8 @@ S_parse_ident(pTHX_ const char *s, const char * const s_end,
 
             /* Leading zeros are not permitted */
             if (is_zero && *d - digit_start > 1) {
-                error = ident_var_zero_multi_digit;
+                error_kind = PERL_PARSE_IDENT_ERROR_LEADING_ZERO;
+                error_position = s - s0;
                 goto found_error;
             }
 
@@ -11425,18 +11469,46 @@ S_parse_ident(pTHX_ const char *s, const char * const s_end,
     return (char *) s;
 
   too_long:
-    error = ident_too_long;
+    error_kind = PERL_PARSE_IDENT_ERROR_TOO_LONG;
+    error_position = s - s0;
         /* FALLTHROUGH */
 
   found_error:
     if (failure_details) {
+        SV *msg_sv;
+        HV *details = (HV *) newSV_type_mortal(SVt_PVHV);
+        SV *position_sv = newSVuv(error_position);
 
-        SV * msg_sv = newSVpv(error, 0);
-        SV * position_sv = newSVuv(*d - d0 - position_offset);
-        HV * details = (HV *) newSV_type_mortal(SVt_PVHV);
+        if (strEQ(error_kind, PERL_PARSE_IDENT_ERROR_INVALID_CHARACTER)) {
+            msg_sv = newSVpvf("\\x{%04" UVXf "} is a \\w char that isn't"
+                              " valid in a name; marked by <-- HERE"
+                              " after %" UTF8f "<-- HERE %" UTF8f,
+                              error_codepoint,
+                              UTF8fARG(is_utf8, error_before_length,
+                                       error_before),
+                              UTF8fARG(is_utf8, error_after_length,
+                                       error_after));
+            (void) hv_stores(details, PERL_PARSE_IDENT_ERROR_CODEPOINT,
+                             newSVuv(error_codepoint));
+            (void) hv_stores(details, PERL_PARSE_IDENT_ERROR_BEFORE,
+                newSVpvn_flags(error_before, error_before_length,
+                               is_utf8 ? SVf_UTF8 : 0));
+            (void) hv_stores(details, PERL_PARSE_IDENT_ERROR_AFTER,
+                newSVpvn_flags(error_after, error_after_length,
+                               is_utf8 ? SVf_UTF8 : 0));
+        }
+        else if (strEQ(error_kind, PERL_PARSE_IDENT_ERROR_TOO_LONG)) {
+            msg_sv = newSVpv(ident_too_long, 0);
+        }
+        else {
+            assert(strEQ(error_kind, PERL_PARSE_IDENT_ERROR_LEADING_ZERO));
+            msg_sv = newSVpv(ident_var_zero_multi_digit, 0);
+        }
 
-        (void) hv_stores(details, PARSE_IDENT_ERROR_TEXT, msg_sv);
-        (void) hv_stores(details, PARSE_IDENT_ERROR_POSITION,  position_sv);
+        (void) hv_stores(details, PERL_PARSE_IDENT_ERROR_TEXT, msg_sv);
+        (void) hv_stores(details, PERL_PARSE_IDENT_ERROR_POSITION,  position_sv);
+        (void) hv_stores(details, PERL_PARSE_IDENT_ERROR_KIND,
+                         newSVpv(error_kind, 0));
 
         *failure_details = details;
     }
@@ -11445,7 +11517,19 @@ S_parse_ident(pTHX_ const char *s, const char * const s_end,
         return NULL;
     }
 
-    croak("%" UTF8f, UTF8fARG(is_utf8, strlen(error), error));
+    if (strEQ(error_kind, PERL_PARSE_IDENT_ERROR_INVALID_CHARACTER)) {
+        PERL_THROW_ERROR_SYNTAX_IDENTIFIER_CHARACTER_INVALID(
+            error_codepoint,
+            is_utf8, error_before_length, error_before,
+            is_utf8, error_after_length, error_after);
+    }
+    else if (strEQ(error_kind, PERL_PARSE_IDENT_ERROR_TOO_LONG)) {
+        PERL_THROW_ERROR_SYNTAX_IDENTIFIER_LENGTH_EXCEEDED();
+    }
+    else {
+        assert(strEQ(error_kind, PERL_PARSE_IDENT_ERROR_LEADING_ZERO));
+        PERL_THROW_ERROR_SYNTAX_IDENTIFIER_NUMERIC_NAME_LEADING_ZERO();
+    }
 }
 
 PERL_STATIC_INLINE char *
@@ -11474,12 +11558,35 @@ number of characters which match \p{XID_Continue}.
 
 It returns a pointer to the first character in 's' beyond the next such
 identifier, or NULL if a serious error was found in the parsed string.
-Currently the only such serious error is that the identifier is too long for
-the perl interpreter to handle (the maximum is guaranteed to be at least 255
-characters).
+It returns NULL if the identifier contains a character that is a word
+character but is not valid in an identifier, or if the identifier is too long
+for the perl interpreter to handle (the maximum is guaranteed to be at least
+255 characters).
 
 If 'error_detail' is not NULL, when a serious error is found, it creates a
-mortal hash containing details of the error, as follows:
+mortal hash with the following entries:
+
+=over 4
+
+=item C<text>
+
+The legacy English message.
+
+=item C<position>
+
+The byte offset into the source string where parsing failed.
+
+=item C<kind>
+
+The stable failure kind: C<invalid_character> or C<too_long>.
+
+=item C<codepoint>, C<identifier_before>, and C<identifier_after>
+
+These entries are present for C<invalid_character>. The identifier pieces
+include the invalid character at the end of C<identifier_before>, matching
+the location described by the legacy message.
+
+=back
 
  {
    'text'     => The error message
@@ -11755,9 +11862,7 @@ S_scan_ident(pTHX_ char *s, char *dest, char *dest_end, U32 flags)
                     orig_copline = CopLINE(PL_curcop);
                     CopLINE_set(PL_curcop, tmp_copline);
    /* diag_listed_as: Ambiguous use of %c{%s[...]} resolved to %c%s[...] */
-                    warner(packWARN(WARN_AMBIGUOUS),
-                           "Ambiguous use of %c{%s%s} resolved to %c%s%s",
-                           funny, dest, brack, funny, dest, brack);
+                    PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_BRACKETED_KEYWORD_DEREFERENCE_RESOLUTION(funny, dest, brack, funny, dest, brack);
                     CopLINE_set(PL_curcop, orig_copline);
                 }
                 bracket++;
@@ -11828,9 +11933,7 @@ S_scan_ident(pTHX_ char *s, char *dest, char *dest_end, U32 flags)
                         funny = '@';
                     orig_copline = CopLINE(PL_curcop);
                     CopLINE_set(PL_curcop, tmp_copline);
-                    warner(packWARN(WARN_AMBIGUOUS),
-                           "Ambiguous use of %c{%" SVf "} resolved to %c%" SVf,
-                           funny, SVfARG(tmp), funny, SVfARG(tmp));
+                    PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_BRACED_NAME_DEREFERENCE_RESOLUTION(funny, tmp, funny, tmp);
                     CopLINE_set(PL_curcop, orig_copline);
                 }
             }
@@ -11859,8 +11962,8 @@ S_pmflag(pTHX_ const char* const valid_flags, U32 * pmfl, char** s, char* charse
 
     if ( charlen != 1 || ! strchr(valid_flags, c) ) {
         if (isWORDCHAR_lazy_if_safe( *s, PL_bufend, UTF)) {
-            yyerror_pv(form("Unknown regexp modifier \"/%.*s\"", (int)charlen, *s),
-                       UTF ? SVf_UTF8 : 0);
+            PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_UNKNOWN(
+                (int)charlen, *s, UTF ? SVf_UTF8 : 0);
             (*s) += charlen;
             /* Pretend that it worked, so will continue processing before
              * dieing */
@@ -11923,14 +12026,14 @@ S_pmflag(pTHX_ const char* const valid_flags, U32 * pmfl, char** s, char* charse
 
     multiple_charsets:
         if (*charset != c) {
-            yyerror(form("Regexp modifiers \"/%c\" and \"/%c\" are mutually exclusive", *charset, c));
+            PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_CHARSET_CONFLICT(*charset, c);
         }
         else if (c == 'a') {
   /* diag_listed_as: Regexp modifier "/%c" may appear a maximum of twice */
-            yyerror("Regexp modifier \"/a\" may appear a maximum of twice");
+            PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_ASCII_LIMIT_EXCEEDED();
         }
         else {
-            yyerror(form("Regexp modifier \"/%c\" may not appear twice", c));
+            PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_REPEATED(c);
         }
 
         /* Pretend that it worked, so will continue processing before dieing */
@@ -11952,7 +12055,7 @@ S_scan_pat(pTHX_ char *start, I32 type)
 
     s = scan_str(start,TRUE,FALSE, (PL_in_eval & EVAL_RE_REPARSING), NULL);
     if (!s)
-        croak("Search pattern not terminated");
+        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_REGEXP_UNTERMINATED();
 
     pm = (PMOP*)newPMOP(type, 0);
     if (PL_multi_open == '?') {
@@ -12005,13 +12108,11 @@ S_scan_pat(pTHX_ char *start, I32 type)
     /* issue a warning if /c is specified,but /g is not */
     if ((pm->op_pmflags & PMf_CONTINUE) && !(pm->op_pmflags & PMf_GLOBAL))
     {
-        ck_warner(packWARN(WARN_REGEXP),
-                  "Use of /c modifier is meaningless without /g" );
+        PERL_WARN_WARNING_REGEXP_MODIFIER_MATCH_CONTINUE_WITHOUT_GLOBAL();
     }
 
     if (x_mod_count > 1 && FEATURE_ENHANCED_XX_IS_ENABLED) {
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__ENHANCED_XX),
-                         "enhanced_xx is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_ENHANCED_XX_DOUBLE_EXTENDED_MODIFIER_USED();
     }
 
     PL_lex_op = (OP*)pm;
@@ -12039,7 +12140,7 @@ S_scan_subst(pTHX_ char *start)
     s = scan_str(start, TRUE, FALSE, FALSE, &t);
 
     if (!s)
-        croak("Substitution pattern not terminated");
+        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_PATTERN_UNTERMINATED();
 
     s = t;
 
@@ -12049,7 +12150,7 @@ S_scan_subst(pTHX_ char *start)
     if (!s) {
         SvREFCNT_dec_NN(PL_lex_stuff);
         PL_lex_stuff = NULL;
-        croak("Substitution replacement not terminated");
+        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_REPLACEMENT_UNTERMINATED();
     }
     PL_multi_start = first_start;	/* so whole substitution is taken together */
 
@@ -12069,12 +12170,11 @@ S_scan_subst(pTHX_ char *start)
     }
 
     if ((pm->op_pmflags & PMf_CONTINUE)) {
-        ck_warner(packWARN(WARN_REGEXP), "Use of /c modifier is meaningless in s///" );
+        PERL_WARN_WARNING_REGEXP_MODIFIER_SUBSTITUTION_CONTINUE_IGNORED();
     }
 
     if (x_mod_count > 1 && FEATURE_ENHANCED_XX_IS_ENABLED) {
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__ENHANCED_XX),
-                         "enhanced_xx is experimental");
+        PERL_WARN_WARNING_EXPERIMENTAL_ENHANCED_XX_DOUBLE_EXTENDED_MODIFIER_USED();
     }
 
     if (es) {
@@ -12129,7 +12229,7 @@ S_scan_trans(pTHX_ char *start)
 
     s = scan_str(start,FALSE,FALSE,FALSE,&t);
     if (!s)
-        croak("Transliteration pattern not terminated");
+        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_SEARCH_UNTERMINATED();
 
     s = t;
 
@@ -12137,7 +12237,7 @@ S_scan_trans(pTHX_ char *start)
     if (!s) {
         SvREFCNT_dec_NN(PL_lex_stuff);
         PL_lex_stuff = NULL;
-        croak("Transliteration replacement not terminated");
+        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_REPLACEMENT_UNTERMINATED();
     }
 
     complement = del = squash = 0;
@@ -12235,7 +12335,7 @@ S_scan_heredoc(pTHX_ char *s)
         term = *s++;
         s = delimcpy(d, e, s, PL_bufend, term, &len);
         if (s == PL_bufend)
-            croak("Unterminated delimiter for here document");
+            PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_QUOTED_DELIMITER_UNTERMINATED();
         d += len;
         s++;
     }
@@ -12247,7 +12347,7 @@ S_scan_heredoc(pTHX_ char *s)
             term = '"';
 
         if (! isWORDCHAR_lazy_if_safe(s, PL_bufend, UTF))
-            croak("Use of bare << to mean <<\"\" is forbidden");
+            PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_UNQUOTED_DELIMITER_MISSING();
 
         peek = s;
 
@@ -12263,7 +12363,7 @@ S_scan_heredoc(pTHX_ char *s)
     }
 
     if (d >= C_ARRAY_END(PL_tokenbuf) - 1)
-        croak("Delimiter for here document is too long");
+        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_DELIMITER_LENGTH_EXCEEDED();
 
     *d++ = '\n';
     *d = '\0';
@@ -12600,10 +12700,7 @@ S_scan_heredoc(pTHX_ char *s)
             }
             else {
                 Safefree(indent);
-                croak(
-                    "Indentation on line %d of here-doc doesn't match delimiter",
-                    (int)linecount
-                );
+                PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_INDENTATION_MISMATCH((int)linecount);
             }
         } /* while */
 
@@ -12680,9 +12777,9 @@ S_scan_inputsymbol(pTHX_ char *start)
     */
 
     if (len >= (I32) C_ARRAY_LENGTH(PL_tokenbuf))
-        croak("Excessively long <> operator");
+        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_ANGLE_LENGTH_EXCEEDED();
     if (s >= end)
-        croak("Unterminated <> operator");
+        PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_ANGLE_UNTERMINATED();
 
     s++;
 
@@ -12708,7 +12805,7 @@ S_scan_inputsymbol(pTHX_ char *start)
         pl_yylval.ival = OP_GLOB;
         s = scan_str(start,FALSE,FALSE,FALSE,NULL);
         if (!s)
-           croak("Glob not terminated");
+           PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_ANGLE_GLOB_UNTERMINATED();
         return s;
     }
     else {
@@ -12873,10 +12970,6 @@ Perl_scan_str(pTHX_ char *start, int keep_bracketed_quoted, int keep_delims, int
 
     /* The only non-UTF character that isn't a stand alone grapheme is
      * white-space, hence can't be a delimiter. */
-    const char * non_grapheme_msg = "Use of unassigned code point or"
-                                    " non-standalone grapheme for a delimiter"
-                                    " is not allowed";
-
     /* skip space before the delimiter */
     if (isSPACE(*s)) {  /* skipspace can change the buffer 's' is in, so
                            'start' also has to change */
@@ -12900,7 +12993,7 @@ Perl_scan_str(pTHX_ char *start, int keep_bracketed_quoted, int keep_delims, int
                                    (U8 *) PL_bufend,
                                    open_delim_code)))
         {
-            yyerror(non_grapheme_msg);
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_NOT_GRAPHEME();
         }
 
         Copy(s, open_delim_str, delim_byte_len, char);
@@ -12966,9 +13059,7 @@ Perl_scan_str(pTHX_ char *start, int keep_bracketed_quoted, int keep_delims, int
          * always been legal, and no other ASCIIs.  Don't raise a message if
          * using one of these */
         if (! isASCII(open_delim_code)) {
-            ck_warner_d(packWARN(WARN_EXPERIMENTAL__EXTRA_PAIRED_DELIMITERS),
-                        "Use of '%" UTF8f "' is experimental as a string delimiter",
-                        UTF8fARG(UTF, delim_byte_len, open_delim_str));
+            PERL_WARN_WARNING_EXPERIMENTAL_EXTRA_PAIRED_DELIMITERS_NON_ASCII_DELIMITER_USED(UTF, delim_byte_len, open_delim_str);
         }
 
         close_delim_code = (UTF)
@@ -12982,9 +13073,7 @@ Perl_scan_str(pTHX_ char *start, int keep_bracketed_quoted, int keep_delims, int
         if (ninstr(deprecated_opening_delims, deprecated_delims_end,
                    open_delim_str, open_delim_str + delim_byte_len))
         {
-            ck_warner_d(packWARN(WARN_DEPRECATED__DELIMITER_WILL_BE_PAIRED),
-                        "Use of '%" UTF8f "' is deprecated as a string delimiter",
-                        UTF8fARG(UTF, delim_byte_len, open_delim_str));
+            PERL_DEPRECATE_WARNING_DEPRECATED_DELIMITER_WILL_BE_PAIRED_UNPAIRED_DELIMITER_USED(UTF, delim_byte_len, open_delim_str);
         }
 
         /* Note that a NUL may be used as a delimiter, and this happens when
@@ -13065,7 +13154,7 @@ Perl_scan_str(pTHX_ char *start, int keep_bracketed_quoted, int keep_delims, int
                                               (U8 *) PL_bufend,
                                               close_delim_code)))
                 {
-                    yyerror(non_grapheme_msg);
+                    PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_NOT_GRAPHEME();
                 }
 
                 break;
@@ -13211,8 +13300,7 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
         STMT_START {                                    \
             if (!warned_about_underscore) {             \
                 warned_about_underscore = 1;            \
-                ck_warner(packWARN(WARN_SYNTAX),        \
-                          "Misplaced _ in number");     \
+                PERL_WARN_WARNING_SYNTAX_NUMBER_UNDERSCORE_MISPLACED();     \
             }                                           \
         } STMT_END
 
@@ -13285,7 +13373,7 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
 
     switch (*s) {
       default:
-        croak("panic: scan_num, *s=%c", *s);
+        PERL_PANIC_ERROR_INTERNAL_SYNTAX_NUMERIC_LITERAL_START_CHARACTER_UNEXPECTED(*s);
 
       case 'v':
       vstring:
@@ -13395,14 +13483,14 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
             /* 8 and 9 are not octal */
             case '8': case '9':
                 if (shift == 3)
-                    yyerror(form("Illegal octal digit '%c'", *s));
+                    PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_NUMERIC_LITERAL_OCTAL_DIGIT_INVALID(*s);
                 /* FALLTHROUGH */
 
             /* octal digits */
             case '2': case '3': case '4':
             case '5': case '6': case '7':
                 if (shift == 1)
-                    yyerror(form("Illegal binary digit '%c'", *s));
+                    PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_NUMERIC_LITERAL_BINARY_DIGIT_INVALID(*s);
                 /* FALLTHROUGH */
 
             case '0': case '1':
@@ -13432,9 +13520,10 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
                         && !(PL_hints & HINT_NEW_BINARY)) {
                         overflowed = TRUE;
                         n = (NV) u;
-                        ck_warner_d(packWARN(WARN_OVERFLOW),
-                                    "Integer overflow in %s number",
-                                    bases[shift]);
+                        PERL_WARN_WARNING_OVERFLOW_INTEGER_LITERAL_RANGE_EXCEEDED_DEFAULT_ENABLED(
+                            shift == 1 ? perl_diag_selector_domain_2116_0_binary_1
+                          : shift == 3 ? perl_diag_selector_domain_2116_0_octal_3
+                                       : perl_diag_selector_domain_2116_0_hexadecimal_2);
                     } else
                         u = x | b;		/* add the digit to the end */
                 }
@@ -13601,16 +13690,14 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
                                          *
                                          * This may or may not be a good
                                          * thing. */
-                                        ck_warner(packWARN(WARN_OVERFLOW),
-                                      "Hexadecimal float: exponent underflow");
+                                        PERL_WARN_WARNING_OVERFLOW_HEXADECIMAL_FLOAT_EXPONENT_UNDERFLOW();
                                         break;
                                     }
 #endif
 #ifdef NV_MAX_EXP
                                     if (!negexp
                                         && hexfp_exp > NV_MAX_EXP - 1) {
-                                        ck_warner(packWARN(WARN_OVERFLOW),
-                                      "Hexadecimal float: exponent overflow");
+                                        PERL_WARN_WARNING_OVERFLOW_HEXADECIMAL_FLOAT_EXPONENT_OVERFLOW();
                                         break;
                                     }
 #endif
@@ -13637,8 +13724,7 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
                 char *oldbp = PL_bufptr;
                 if (*d) ++d; /* so the user sees the bad non-digit */
                 PL_bufptr = (char *)d; /* so yyerror reports the context */
-                yyerror(form("No digits found for %s literal",
-                                  bases[shift]));
+                PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING(bases[shift]);
                 PL_bufptr = oldbp;
             }
 
@@ -13668,7 +13754,6 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
       case '.':
       decimal:
        {
-        static const char* const number_too_long = "Number too long";
 
         /* handle decimal numbers.
            we're also sent here when we read a 0 as the first digit
@@ -13715,7 +13800,7 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
             else {
                 /* check for end of fixed-length buffer */
                 if (d >= e)
-                    croak("%s", number_too_long);
+                    PERL_THROW_ERROR_SYNTAX_NUMERIC_LITERAL_TOO_LONG();
                 /* if we're ok, copy the character */
                 *d++ = *s++;
             }
@@ -13743,7 +13828,7 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
             {
                 /* fixed length buffer check */
                 if (d >= e)
-                    croak("%s", number_too_long);
+                    PERL_THROW_ERROR_SYNTAX_NUMERIC_LITERAL_TOO_LONG();
                 if (*s == '_') {
                     HANDLE_UNDERSCORE(s);
                 }
@@ -13797,7 +13882,7 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
                 if (isDIGIT(*s)) {
                     ++exp_digits;
                     if (d >= e)
-                        croak("%s", number_too_long);
+                        PERL_THROW_ERROR_SYNTAX_NUMERIC_LITERAL_TOO_LONG();
                     *d++ = *s++;
                 }
                 else {  /* Must be an underscore */
@@ -13848,8 +13933,7 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
             if (UNLIKELY(base != 10)) {
 #  ifdef NV_MANT_DIG
                 if (significant_bits > NV_MANT_DIG)
-                    ck_warner(packWARN(WARN_OVERFLOW),
-                              "Hexadecimal float: mantissa overflow");
+                    PERL_WARN_WARNING_OVERFLOW_HEXADECIMAL_FLOAT_MANTISSA_PRECISION_EXCEEDED();
 #  endif
 #ifdef HEXFP_UQUAD
                 nv = (NV)hexfp_uquad;
@@ -14053,7 +14137,7 @@ S_apply_builtin_cv_attribute(pTHX_ CV *cv, OP *o)
     else if(memEQs(SvPVX(sv), len, "const")) {
         CvANONCONST_on(cv);
         if (!CvANON(cv))
-            yyerror(":const is not permitted on named subroutines");
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_NAMED_DEFINITION_FORBIDDEN();
     }
     else
         return false;
@@ -14156,36 +14240,20 @@ Perl_init_named_cv(pTHX_ CV *cv, OP *nameop)
 }
 
 
-static int
-S_yywarn(pTHX_ const char *const s, U32 flags)
-{
-    PERL_ARGS_ASSERT_YYWARN;
-
-    PL_in_eval |= EVAL_WARNONLY;
-    yyerror_pv(s, flags);
-    return 0;
-}
-
 void
 Perl_abort_execution(pTHX_ SV* msg_sv, const char * const name)
 {
     PERL_ARGS_ASSERT_ABORT_EXECUTION;
+    const UV error_count = PERL_DIAG_ERROR_COUNT;
+    PERL_UNUSED_VAR(msg_sv);
 
-    if (msg_sv) {
-        if (PL_minus_c)
-            croak("%" SVf "%s had compilation errors.\n", SVfARG(msg_sv), name);
-        else {
-            croak(
-                    "%" SVf "Execution of %s aborted due to compilation errors.\n", SVfARG(msg_sv), name);
-        }
-    } else {
-        if (PL_minus_c)
-            croak("%s had compilation errors.\n", name);
-        else {
-            croak(
-                    "Execution of %s aborted due to compilation errors.\n", name);
-        }
-    }
+    if (PL_parser && !(PL_in_eval & EVAL_INEVAL))
+        PL_parse_failed = TRUE;
+
+    if (PL_minus_c)
+        PERL_THROW_ERROR_COMPILATION_FILE_HAS_ERRORS(name, error_count);
+    else
+        PERL_THROW_ERROR_COMPILATION_EXECUTION_ABORTED(name, error_count);
 
     NOT_REACHED; /* NOTREACHED */
 }
@@ -14198,14 +14266,16 @@ Perl_yyquit(pTHX)
     /* Called, after at least one error has been found, to abort the parse now,
      * instead of trying to forge ahead */
 
-    yyerror_pvn(NULL, 0, 0);
+    const char *name = OutCopFILE(PL_curcop);
+    Perl_abort_execution(aTHX_ NULL, name ? name : "");
 }
 
 int
 Perl_yyerror(pTHX_ const char *const s)
 {
     PERL_ARGS_ASSERT_YYERROR;
-    int r = yyerror_pvn(s, strlen(s), 0);
+    int r = Perl_yyerror_diag_pvn(aTHX_ perl_diag_error_compilation_unclassified_parser_error_idx,
+                             s, strlen(s), 0);
     return r;
 }
 
@@ -14213,111 +14283,346 @@ int
 Perl_yyerror_pv(pTHX_ const char *const s, U32 flags)
 {
     PERL_ARGS_ASSERT_YYERROR_PV;
-    int r = yyerror_pvn(s, strlen(s), flags);
+    int r = Perl_yyerror_diag_pvn(aTHX_ perl_diag_error_compilation_unclassified_parser_error_idx,
+                             s, strlen(s), flags);
     return r;
+}
+
+static SV *
+Perl_diag_parse_fallback_message(pTHX_ const char *s, STRLEN len, U32 flags,
+                         AV **diagnostic_params, bool *runaway_out,
+                         SV **open_value_out, SV **close_value_out,
+                         bool render_message)
+{
+    const char *context = NULL;
+    int context_length = -1;
+    const char *context_kind;
+    const line_t line = PL_parser->preambling == NOLINE
+        ? CopLINE(PL_curcop) : PL_parser->preambling;
+    const bool runaway = PL_multi_start < PL_multi_end
+        && (U32)(CopLINE(PL_curcop) - PL_multi_end) <= 1;
+    SV *context_value = newSVpvs("");
+    IV context_id;
+    SV *message_value = newSVpvn(s, len);
+    const char *file = OutCopFILE(PL_curcop);
+    SV *file_value = newSVpv(file ? file : "", 0);
+    SV *open_value = sv_2mortal(newSVpvs(""));
+    SV *close_value = sv_2mortal(newSVpvs(""));
+    AV *params = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    SV *value;
+    int yychar = PL_parser->yychar;
+
+    if (flags & SVf_UTF8)
+        SvUTF8_on(message_value);
+
+    if (!yychar || (yychar == PERLY_SEMICOLON && !PL_rsfp))
+        context_kind = "eof";
+    else if (   PL_oldoldbufptr
+             && PL_bufptr > PL_oldoldbufptr
+             && PL_bufptr - PL_oldoldbufptr < 200
+             && PL_oldoldbufptr != PL_oldbufptr
+             && PL_oldbufptr != PL_bufptr)
+    {
+        while (isSPACE(*PL_oldoldbufptr))
+            PL_oldoldbufptr++;
+        context = PL_oldoldbufptr;
+        context_length = PL_bufptr - PL_oldoldbufptr;
+        context_kind = "near";
+    }
+    else if (  PL_oldbufptr
+            && PL_bufptr > PL_oldbufptr
+            && PL_bufptr - PL_oldbufptr < 200
+            && PL_oldbufptr != PL_bufptr)
+    {
+        while (isSPACE(*PL_oldbufptr))
+            PL_oldbufptr++;
+        context = PL_oldbufptr;
+        context_length = PL_bufptr - PL_oldbufptr;
+        context_kind = "near";
+    }
+    else if (yychar > 255)
+        context_kind = "next_token";
+    else if (yychar == YYEMPTY) {
+        if (PL_lex_state == LEX_NORMAL)
+            context_kind = "end_of_line";
+        else if (PL_lex_inpat)
+            context_kind = "within_pattern";
+        else
+            context_kind = "within_string";
+    }
+    else {
+        context_kind = "next_char";
+        if (yychar < 32)
+            sv_catpvf(context_value, "^%c", toCTRL(yychar));
+        else if (isPRINT_LC(yychar)) {
+            const char character = yychar;
+            sv_catpvn(context_value, &character, 1);
+        }
+        else
+            sv_catpvf(context_value, "\\%03o", yychar & 255);
+    }
+
+    if (context && context_length > 0) {
+        sv_setpvn(context_value, context, context_length);
+        if (UTF)
+            SvUTF8_on(context_value);
+    }
+
+    if (runaway) {
+        sv_setpvf(open_value, "%c", (int)PL_multi_open);
+        sv_setpvf(close_value, "%c", (int)PL_multi_close);
+        PL_multi_end = 0;
+    }
+
+#define PERL_PARSER_CONTEXT_PARAM(param_index, argument)                      \
+    STMT_START {                                                          \
+        value = (argument);                                               \
+        sv_setsv(Perl_diag_setup_param(aTHX_ params,                      \
+                    perl_diag_error_compilation_unclassified_parser_context_idx,                \
+                    (param_index), 0, perl_diag_selector_invalid),       \
+                value);                                                   \
+    } STMT_END
+
+    context_id = Perl_diag_selector_from_cstr(aTHX_
+        perl_diag_selector_domain_2501_0_id, context_kind);
+    PERL_PARSER_CONTEXT_PARAM(0, message_value);
+    Perl_diag_setup_param(aTHX_ params,
+        perl_diag_error_compilation_unclassified_parser_context_idx, 1,
+        perl_diag_selector_domain_2501_0_id, context_id);
+    PERL_PARSER_CONTEXT_PARAM(2, file_value);
+    PERL_PARSER_CONTEXT_PARAM(3, newSViv((IV)line));
+    PERL_PARSER_CONTEXT_PARAM(4, context_value);
+
+#undef PERL_PARSER_CONTEXT_PARAM
+
+    *diagnostic_params = params;
+    *runaway_out = runaway;
+    *open_value_out = open_value;
+    *close_value_out = close_value;
+    /* Perl_defer_error_diag_params(aTHX_ ) reserves NULL to mean abort the parser. */
+    if (!render_message)
+        return &PL_sv_undef;
+
+    return Perl_diag_format_template(aTHX_ perl_diag_error_compilation_unclassified_parser_context_idx,
+                                params);
+}
+
+static int
+Perl_diag_parse_diagnostic_pvn(pTHX_ const char *const s, STRLEN len, U32 flags,
+                       UV diag_index, AV *params)
+{
+    const char *context = NULL;
+    const char *parser_context = NULL;
+    int contlen = -1;
+    SV *parser_context_value = NULL;
+    SV *msg;
+    int yychar  = PL_parser->yychar;
+    bool parser_runaway = FALSE;
+    const bool catalogued = diag_index != 0
+        && (diag_index != perl_diag_error_compilation_unclassified_parser_error_idx || params);
+
+    /* A null message on the unclassified parser entry point means abort.
+     * Catalogued parser diagnostics carry their identity and parameters, so
+     * they can be recorded without rendering their message here. */
+
+    if (s != NULL || catalogued) {
+        if (diag_index == perl_diag_error_compilation_unclassified_parser_error_idx && !params) {
+            AV *diagnostic_params;
+            bool runaway;
+            SV *open_value;
+            SV *close_value;
+
+            msg = Perl_diag_parse_fallback_message(aTHX_ s, len, flags,
+                                            &diagnostic_params, &runaway,
+                                            &open_value, &close_value,
+                                            PL_in_eval & EVAL_KEEPERR);
+            Perl_defer_error_diag_params(aTHX_ msg,
+                perl_diag_error_compilation_unclassified_parser_context_idx,
+                diagnostic_params, 0);
+            if (runaway)
+                PERL_APPEND_WARNING_SYNTAX_RUNAWAY_MULTILINE_STRING_SUGGESTION(
+                    &PL_pending_exception, open_value, close_value,
+                    PL_multi_start);
+        }
+        else {
+            SV * const next_character = newSVpvs_flags("", SVs_TEMP);
+
+            if (!yychar || (yychar == PERLY_SEMICOLON && !PL_rsfp)) {
+                parser_context = "eof";
+            }
+            else if (   PL_oldoldbufptr
+                     && PL_bufptr > PL_oldoldbufptr
+                     && PL_bufptr - PL_oldoldbufptr < 200
+                     && PL_oldoldbufptr != PL_oldbufptr
+                     && PL_oldbufptr != PL_bufptr)
+            {
+                while (isSPACE(*PL_oldoldbufptr))
+                    PL_oldoldbufptr++;
+                context = PL_oldoldbufptr;
+                contlen = PL_bufptr - PL_oldoldbufptr;
+                parser_context = "near";
+            }
+            else if (  PL_oldbufptr
+                    && PL_bufptr > PL_oldbufptr
+                    && PL_bufptr - PL_oldbufptr < 200
+                    && PL_oldbufptr != PL_bufptr)
+            {
+                while (isSPACE(*PL_oldbufptr))
+                    PL_oldbufptr++;
+                context = PL_oldbufptr;
+                contlen = PL_bufptr - PL_oldbufptr;
+                parser_context = "near";
+            }
+            else if (yychar > 255) {
+                parser_context = "next_token";
+            }
+            else if (yychar == YYEMPTY) {
+                if (PL_lex_state == LEX_NORMAL) {
+                    parser_context = "end_of_line";
+                }
+                else if (PL_lex_inpat) {
+                    parser_context = "within_pattern";
+                }
+                else {
+                    parser_context = "within_string";
+                }
+            }
+            else {
+                parser_context = "next_char";
+                if (yychar < 32)
+                    sv_catpvf(next_character, "^%c", toCTRL(yychar));
+                else if (isPRINT_LC(yychar)) {
+                    const char string = yychar;
+                    sv_catpvn(next_character, &string, 1);
+                }
+                else
+                    sv_catpvf(next_character, "\\%03o", yychar & 255);
+            }
+            if (parser_context && strEQ(parser_context, "near")
+                && context && contlen > 0) {
+                parser_context_value = sv_2mortal(
+                    newSVpvn_flags(context, contlen, UTF ? SVf_UTF8 : 0));
+            }
+            else if (parser_context && strEQ(parser_context, "next_char")) {
+                parser_context_value = sv_2mortal(newSVsv(next_character));
+            }
+            if (parser_context && strEQ(parser_context, "near")
+                && !parser_context_value)
+                parser_context = "empty_near";
+            if (s != NULL) {
+                msg = newSVpvn_flags(s, len, (flags & SVf_UTF8) | SVs_TEMP);
+            }
+            else if (PL_in_eval & EVAL_KEEPERR) {
+                msg = Perl_diag_format_template(aTHX_ diag_index,
+                                                params);
+            }
+            else {
+                /* Perl_defer_error_diag_params(aTHX_ ) distinguishes a recorded
+                 * diagnostic from an immediate parser abort by nullness. */
+                msg = &PL_sv_undef;
+            }
+
+            /* Cleanup warnings consume this compatibility text. Ordinary
+             * parser diagnostics keep their semantic context for rendering. */
+            if (SvOK(msg)) {
+                AV *values = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+                const char *file = OutCopFILE(PL_curcop);
+                line_t line = PL_parser->preambling == NOLINE
+                    ? CopLINE(PL_curcop) : PL_parser->preambling;
+
+                av_push(values, newSVpv(file ? file : "", 0));
+                av_push(values, newSViv((IV)line));
+                av_push(values, newSVsv(parser_context_value
+                    ? parser_context_value : &PL_sv_no));
+                av_push(values, newSVpv(parser_context, 0));
+                av_push(values, newSVpvs("parser"));
+                sv_catsv(msg, Perl_diag_render_format(aTHX_
+                    perl_diag_note_context_location_idx, values, "en"));
+            }
+            parser_runaway =
+                PL_multi_start < PL_multi_end
+                && (U32)(CopLINE(PL_curcop) - PL_multi_end) <= 1;
+            SV *open_value = NULL;
+            SV *close_value = NULL;
+            if (parser_runaway) {
+                open_value = sv_2mortal(newSVpvs(""));
+                close_value = sv_2mortal(newSVpvs(""));
+
+                sv_setpvf(open_value, "%c", (int)PL_multi_open);
+                sv_setpvf(close_value, "%c", (int)PL_multi_close);
+                if (SvOK(msg)) {
+                    AV *hint_values = MUTABLE_AV(
+                        sv_2mortal(MUTABLE_SV(newAV())));
+                    av_push(hint_values, newSVsv(open_value));
+                    av_push(hint_values, newSVsv(close_value));
+                    av_push(hint_values, newSVuv(PL_multi_start));
+                    sv_catsv(msg, Perl_diag_render_format(aTHX_
+                        perl_diag_warning_syntax_runaway_multiline_string_suggestion_idx,
+                        hint_values, "en"));
+                }
+            }
+            Perl_defer_error_diag_params_context(aTHX_ msg, diag_index, params,
+                0, parser_context,
+                parser_context_value);
+            if (parser_runaway) {
+                PERL_APPEND_WARNING_SYNTAX_RUNAWAY_MULTILINE_STRING_SUGGESTION(
+                    &PL_pending_exception, open_value, close_value,
+                    PL_multi_start);
+                PL_multi_end = 0;
+            }
+        }
+    }
+    /* The unclassified entry point still uses null to request an immediate
+     * abort. Catalogued calls with null messages were recorded above. */
+    if (s == NULL && !catalogued)
+        defer_error(NULL);
+
+    PL_in_my = 0;
+    PL_in_my_stash = NULL;
+    return 0;
 }
 
 int
 Perl_yyerror_pvn(pTHX_ const char *const s, STRLEN len, U32 flags)
 {
     PERL_ARGS_ASSERT_YYERROR_PVN;
+    return Perl_diag_parse_diagnostic_pvn(aTHX_ s, len, flags,
+                                  perl_diag_error_compilation_unclassified_parser_error_idx,
+                                  NULL);
+}
 
-    const char *context = NULL;
-    int contlen = -1;
-    SV *msg;
-    SV * const where_sv = newSVpvs_flags("", SVs_TEMP);
-    int yychar  = PL_parser->yychar;
+int
+Perl_yyerror_diag_params(pTHX_ UV diag_index, const char *s,
+                         U32 flags, AV *params)
+{
+    PERL_ARGS_ASSERT_YYERROR_DIAG_PARAMS;
+    return Perl_diag_parse_diagnostic_pvn(aTHX_ s, s ? strlen(s) : 0, flags,
+                         diag_index, params);
+}
 
-    /* Output error message 's' with length 'len'.  'flags' are SV flags that
-     * apply.  If the number of errors found is large enough, it abandons
-     * parsing.  If 's' is NULL, there is no message, and it abandons
-     * processing unconditionally */
+int
+Perl_yyerror_diag(pTHX_ UV diag_index, const char *s, U32 flags)
+{
+    PERL_ARGS_ASSERT_YYERROR_DIAG;
+    return Perl_yyerror_diag_params(aTHX_ diag_index, s, flags, NULL);
+}
 
-    if (s != NULL) {
-        if (!yychar || (yychar == PERLY_SEMICOLON && !PL_rsfp))
-            sv_catpvs(where_sv, "at EOF");
-        else if (   PL_oldoldbufptr
-                 && PL_bufptr > PL_oldoldbufptr
-                 && PL_bufptr - PL_oldoldbufptr < 200
-                 && PL_oldoldbufptr != PL_oldbufptr
-                 && PL_oldbufptr != PL_bufptr)
-        {
-            while (isSPACE(*PL_oldoldbufptr))
-                PL_oldoldbufptr++;
-            context = PL_oldoldbufptr;
-            contlen = PL_bufptr - PL_oldoldbufptr;
-        }
-        else if (  PL_oldbufptr
-                && PL_bufptr > PL_oldbufptr
-                && PL_bufptr - PL_oldbufptr < 200
-                && PL_oldbufptr != PL_bufptr)
-        {
-            while (isSPACE(*PL_oldbufptr))
-                PL_oldbufptr++;
-            context = PL_oldbufptr;
-            contlen = PL_bufptr - PL_oldbufptr;
-        }
-        else if (yychar > 255)
-            sv_catpvs(where_sv, "next token ???");
-        else if (yychar == YYEMPTY) {
-            if (PL_lex_state == LEX_NORMAL)
-                sv_catpvs(where_sv, "at end of line");
-            else if (PL_lex_inpat)
-                sv_catpvs(where_sv, "within pattern");
-            else
-                sv_catpvs(where_sv, "within string");
-        }
-        else {
-            sv_catpvs(where_sv, "next char ");
-            if (yychar < 32)
-                sv_catpvf(where_sv, "^%c", toCTRL(yychar));
-            else if (isPRINT_LC(yychar)) {
-                const char string = yychar;
-                sv_catpvn(where_sv, &string, 1);
-            }
-            else
-                sv_catpvf(where_sv, "\\%03o", yychar & 255);
-        }
-        msg = newSVpvn_flags(s, len, (flags & SVf_UTF8) | SVs_TEMP);
-        sv_catpvf(msg, " at %s line %" LINE_Tf ", ",
-            OutCopFILE(PL_curcop),
-            (PL_parser->preambling == NOLINE
-                   ? CopLINE(PL_curcop)
-                   : PL_parser->preambling));
+int
+Perl_yyerror_diag_pvn(pTHX_ UV diag_index, const char *s,
+                      STRLEN len, U32 flags)
+{
+    PERL_ARGS_ASSERT_YYERROR_DIAG_PVN;
+    return Perl_diag_parse_diagnostic_pvn(aTHX_ s, len, flags, diag_index,
+                                   NULL);
+}
 
-        /* Some syntax errors in an eval to result in a context being set
-         * but contlen being < 0. See GH#16945 for an example. In this
-         * situation, don't try to include context in the error message. */
-        if (context && contlen > 0)
-            sv_catpvf(msg, "near \"%" UTF8f "\"\n",
-                                 UTF8fARG(UTF, contlen, context));
-        else
-            sv_catpvf(msg, "%" SVf "\n", SVfARG(where_sv));
-        if (   PL_multi_start < PL_multi_end
-            && (U32)(CopLINE(PL_curcop) - PL_multi_end) <= 1)
-        {
-            sv_catpvf(msg,
-            "  (Might be a runaway multi-line %c%c string starting on"
-            " line %" LINE_Tf ")\n",
-                    (int)PL_multi_open,(int)PL_multi_close,(line_t)PL_multi_start);
-            PL_multi_end = 0;
-        }
-        if (PL_in_eval & EVAL_WARNONLY) {
-            PL_in_eval &= ~EVAL_WARNONLY;
-            ck_warner_d(packWARN(WARN_SYNTAX), "%" SVf, SVfARG(msg));
-        }
-        else {
-            defer_error(msg);
-        }
-    }
-    /* if there was no message then this is a yyquit(), which is actualy handled
-     * by defer_error() with a NULL argument */
-    if (s == NULL)
-        defer_error(NULL);
-
-    PL_in_my = 0;
-    PL_in_my_stash = NULL;
-    return 0;
+int
+Perl_yyerror_diag_pvn_params(pTHX_ UV diag_index, const char *s,
+                             STRLEN len, U32 flags, AV *params)
+{
+    PERL_ARGS_ASSERT_YYERROR_DIAG_PVN_PARAMS;
+    return Perl_diag_parse_diagnostic_pvn(aTHX_ s, len, flags, diag_index,
+                                  params);
 }
 
 static char*
@@ -14333,7 +14638,7 @@ S_swallow_bom(pTHX_ U8 *s)
             /* UTF-16 little-endian? (or UTF-32LE?) */
             if (s[2] == 0 && s[3] == 0)  /* UTF-32 little-endian */
                 /* diag_listed_as: Unsupported script encoding %s */
-                croak("Unsupported script encoding UTF-32LE");
+                PERL_THROW_ERROR_UNICODE_UTF32_LITTLE_ENDIAN_SCRIPT_UNSUPPORTED();
 #ifndef PERL_NO_UTF16_FILTER
 #ifdef DEBUGGING
             if (DEBUG_p_TEST || DEBUG_T_TEST) PerlIO_printf(Perl_debug_log, "UTF-16LE script encoding (BOM)\n");
@@ -14344,7 +14649,7 @@ S_swallow_bom(pTHX_ U8 *s)
             }
 #else
             /* diag_listed_as: Unsupported script encoding %s */
-            croak("Unsupported script encoding UTF-16LE");
+            PERL_THROW_ERROR_UNICODE_UTF16_SCRIPT_ENCODING_UNSUPPORTED("UTF-16LE");
 #endif
         }
         break;
@@ -14360,7 +14665,7 @@ S_swallow_bom(pTHX_ U8 *s)
             }
 #else
             /* diag_listed_as: Unsupported script encoding %s */
-            croak("Unsupported script encoding UTF-16BE");
+            PERL_THROW_ERROR_UNICODE_UTF16_SCRIPT_ENCODING_UNSUPPORTED("UTF-16BE");
 #endif
         }
         break;
@@ -14379,7 +14684,7 @@ S_swallow_bom(pTHX_ U8 *s)
                   if (s[2] == 0xFE && s[3] == 0xFF) {
                        /* UTF-32 big-endian */
                        /* diag_listed_as: Unsupported script encoding %s */
-                       croak("Unsupported script encoding UTF-32BE");
+                       PERL_THROW_ERROR_UNICODE_UTF32_BIG_ENDIAN_SCRIPT_UNSUPPORTED();
                   }
              }
              else if (s[2] == 0 && s[3] != 0) {
@@ -14393,7 +14698,7 @@ S_swallow_bom(pTHX_ U8 *s)
                   s = add_utf16_textfilter(s, FALSE);
 #else
                   /* diag_listed_as: Unsupported script encoding %s */
-                  croak("Unsupported script encoding UTF-16BE");
+                  PERL_THROW_ERROR_UNICODE_UTF16_SCRIPT_ENCODING_UNSUPPORTED("UTF-16BE");
 #endif
              }
         }
@@ -14411,7 +14716,7 @@ S_swallow_bom(pTHX_ U8 *s)
               s = add_utf16_textfilter(s, TRUE);
 #else
               /* diag_listed_as: Unsupported script encoding %s */
-              croak("Unsupported script encoding UTF-16LE");
+              PERL_THROW_ERROR_UNICODE_UTF16_SCRIPT_ENCODING_UNSUPPORTED("UTF-16LE");
 #endif
          }
     }
@@ -14443,10 +14748,10 @@ S_utf16_textfilter(pTHX_ int idx, SV *sv, int maxlen)
        from this file, we can be sure that we're not called in block mode. Hence
        don't bother writing code to deal with block mode.  */
     if (maxlen) {
-        croak("panic: utf16_textfilter called in block mode (for %d characters)", maxlen);
+        PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF16_FILTER_BLOCK_MODE_FORBIDDEN(maxlen);
     }
     if (status < 0) {
-        croak("panic: utf16_textfilter called after error (status=%" IVdf ")", status);
+        PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF16_FILTER_REENTERED_AFTER_ERROR( status);
     }
     DEBUG_P(PerlIO_printf(Perl_debug_log,
                           "utf16_textfilter(%p,%ce): idx=%d maxlen=%d status=%" IVdf " utf16=%" UVuf " utf8=%" UVuf "\n",
@@ -14644,8 +14949,7 @@ Perl_scan_vstring(pTHX_ const char *s, const char *const e, SV *sv)
                     mult *= 10;
                     if (orev > rev)
                         /* diag_listed_as: Integer overflow in %s number */
-                        ck_warner_d(packWARN(WARN_OVERFLOW),
-                                    "Integer overflow in decimal number");
+                        PERL_WARN_WARNING_OVERFLOW_VSTRING_DECIMAL_COMPONENT();
                 }
             }
 
@@ -14814,8 +15118,8 @@ S_parse_recdescent(pTHX_ int gramtype, I32 fakeeof)
     PL_lex_allbrackets = 0;
     SAVEI8(PL_lex_fakeeof);
     PL_lex_fakeeof = (U8)fakeeof;
-    if(yyparse(gramtype) && !PL_parser->error_count)
-        defer_error(mess("Parse error"));
+    if(yyparse(gramtype) && !PERL_DIAG_ERROR_COUNT)
+        PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_PARSE_FAILED();
 }
 
 #define parse_recdescent_for_op(g,p) S_parse_recdescent_for_op(aTHX_ g,p)
@@ -14838,11 +15142,11 @@ S_parse_expr(pTHX_ I32 fakeeof, U32 flags)
 {
     OP *exprop;
     if (flags & ~PARSE_OPTIONAL)
-        croak("Parsing code internal error (%s)", "parse_expr");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_PARSER_FLAGS_INVALID("parse_expr");
     exprop = parse_recdescent_for_op(GRAMEXPR, fakeeof);
     if (!exprop && !(flags & PARSE_OPTIONAL)) {
-        if (!PL_parser->error_count)
-            defer_error(mess("Parse error"));
+        if (!PERL_DIAG_ERROR_COUNT)
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_PARSE_FAILED();
         exprop = newOP(OP_NULL, 0);
     }
     return exprop;
@@ -15022,7 +15326,7 @@ Perl_parse_block(pTHX_ U32 flags)
     PERL_ARGS_ASSERT_PARSE_BLOCK;
 
     if (flags)
-        croak("Parsing code internal error (%s)", "parse_block");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_PARSER_FLAGS_INVALID("parse_block");
     return parse_recdescent_for_op(GRAMBLOCK, LEX_FAKEEOF_NEVER);
 }
 
@@ -15062,7 +15366,7 @@ Perl_parse_barestmt(pTHX_ U32 flags)
     PERL_ARGS_ASSERT_PARSE_BARESTMT;
 
     if (flags)
-        croak("Parsing code internal error (%s)", "parse_barestmt");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_PARSER_FLAGS_INVALID("parse_barestmt");
     return parse_recdescent_for_op(GRAMBARESTMT, LEX_FAKEEOF_NEVER);
 }
 
@@ -15092,7 +15396,7 @@ Perl_parse_label(pTHX_ U32 flags)
     PERL_ARGS_ASSERT_PARSE_LABEL;
 
     if (flags & ~PARSE_OPTIONAL)
-        croak("Parsing code internal error (%s)", "parse_label");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_PARSER_FLAGS_INVALID("parse_label");
     if (PL_nexttoke) {
         PL_parser->yychar = yylex();
         if (PL_parser->yychar == LABEL) {
@@ -15132,7 +15436,7 @@ Perl_parse_label(pTHX_ U32 flags)
             if (flags & PARSE_OPTIONAL) {
                 return NULL;
             } else {
-                defer_error(mess("Parse error"));
+                PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_PARSE_FAILED();
                 return newSVpvs("x");
             }
         }
@@ -15172,7 +15476,7 @@ Perl_parse_fullstmt(pTHX_ U32 flags)
     PERL_ARGS_ASSERT_PARSE_FULLSTMT;
 
     if (flags)
-        croak("Parsing code internal error (%s)", "parse_fullstmt");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_PARSER_FLAGS_INVALID("parse_fullstmt");
     return parse_recdescent_for_op(GRAMFULLSTMT, LEX_FAKEEOF_NEVER);
 }
 
@@ -15214,11 +15518,11 @@ Perl_parse_stmtseq(pTHX_ U32 flags)
     OP *stmtseqop;
     I32 c;
     if (flags)
-        croak("Parsing code internal error (%s)", "parse_stmtseq");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_PARSER_FLAGS_INVALID("parse_stmtseq");
     stmtseqop = parse_recdescent_for_op(GRAMSTMTSEQ, LEX_FAKEEOF_CLOSING);
     c = lex_peek_unichar(0);
     if (c != -1 && c != /*{*/'}')
-        defer_error(mess("Parse error"));
+        PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_PARSE_FAILED();
     return stmtseqop;
 }
 
@@ -15252,7 +15556,7 @@ Perl_parse_subsignature(pTHX_ U32 flags)
     PERL_ARGS_ASSERT_PARSE_SUBSIGNATURE;
 
     if (flags)
-        croak("Parsing code internal error (%s)", "parse_subsignature");
+        PERL_THROW_ERROR_INTERNAL_SYNTAX_PARSER_FLAGS_INVALID("parse_subsignature");
     /* sub signatures might be empty, but perly.y can't cope with the
      * ambiguity of an empty construction. We'll detect it manually and do
      * something suitable in that case. */

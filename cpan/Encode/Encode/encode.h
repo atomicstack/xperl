@@ -350,9 +350,9 @@ S_unexpected_non_continuation_text(const U8 * const s,
 
     dTHX;
     const char * const where = (non_cont_byte_pos == 1)
-                               ? "immediately"
-                               : Perl_form(aTHX_ "%d bytes",
-                                                 (int) non_cont_byte_pos);
+        ? Perl_form(aTHX_ "immediately after start byte 0x%02x", *s)
+        : Perl_form(aTHX_ "after a valid prefix of length %d starting with byte 0x%02x",
+                    (int) non_cont_byte_pos, *s);
     const U8 * x = s + non_cont_byte_pos;
     const U8 * e = s + print_len;
 
@@ -370,13 +370,12 @@ S_unexpected_non_continuation_text(const U8 * const s,
         }
     }
 
-    return Perl_form(aTHX_ "%s: %s (unexpected non-continuation byte 0x%02x,"
-                           " %s after start byte 0x%02x; need %d bytes, got %d)",
+    return Perl_form(aTHX_ "%s: %s (unexpected non-continuation byte 0x%02x; %s;"
+                           " required sequence length %d bytes; valid prefix length %d)",
                            malformed_text,
                            _byte_dump_string(s, x - s),
                            *(s + non_cont_byte_pos),
                            where,
-                           *s,
                            (int) expect_len,
                            (int) non_cont_byte_pos);
 }
@@ -853,11 +852,11 @@ utf8n_to_uvchr_msgs(const U8 *s,
                     {
                         pack_warn = packWARN(WARN_UTF8);
                         message = Perl_form(aTHX_
-                             "%s: %s (too short; %d byte%s available, need %d)",
+                             "%s: %s (too short; available byte count: %d;"
+                             " required byte count: %d)",
                              malformed_text,
                              _byte_dump_string(s0, send - s0),
                              (int)curlen,
-                             curlen == 1 ? "" : "s",
                              (int)expectlen);
                         this_flag_bit = UTF8_GOT_SHORT;
                     }
@@ -1037,7 +1036,7 @@ utf8n_to_uvchr_msgs(const U8 *s,
                 }
                 else if (PL_op)
                     Perl_warner(aTHX_ pack_warn, "%s in %s", message,
-                                                 OP_DESC(PL_op));
+                                                 PERL_ENCODE_TEXT_WARNING_OP_DESC(PL_op));
                 else
                     Perl_warner(aTHX_ pack_warn, "%s", message);
             }

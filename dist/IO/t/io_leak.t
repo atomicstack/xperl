@@ -14,12 +14,16 @@ sub leak {
     my ($n, $delta, $code, $name) = @_;
     my $sv0 = 0;
     my $sv1 = 0;
+    # The second eval clears the first exception from $@. Destroying it fills
+    # the inheritance and destructor lookup caches for XPerl::Exception and
+    # XPerl::Diagnostic, retaining four SVs per class. We use the second
+    # iteration as the baseline so this setup is not counted as a leak.
     for my $i (1..$n) {
 	&$code();
 	$sv1 = sv_count();
-	$sv0 = $sv1 if $i == 1;
+	$sv0 = $sv1 if $i == 2;
     }
-    cmp_ok($sv1-$sv0, '<=', ($n-1)*$delta, $name);
+    cmp_ok($sv1-$sv0, '<=', ($n-2)*$delta, $name);
 }
 
 # [perl #129788] IO::Poll shouldn't leak on errors

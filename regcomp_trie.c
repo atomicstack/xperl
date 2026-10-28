@@ -613,7 +613,7 @@ Perl_make_trie(pTHX_ RExC_state_t *pRExC_state, regnode *startbranch,
             folder = PL_fold_latin1;
             break;
         case EXACTF:  folder = PL_fold; break;
-        default: croak("panic! In trie construction, unknown node type %u %s", (unsigned) flags, REGNODE_NAME(flags) );
+        default: PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_TRIE_LITERAL_NODE_UNSUPPORTED((unsigned) flags, REGNODE_NAME(flags));
     }
 
     /* Trie data is immutable after compilation and is shared by cloned

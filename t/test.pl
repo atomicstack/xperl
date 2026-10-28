@@ -1763,7 +1763,7 @@ sub object_ok {
 
 # Purposefully avoiding a closure.
 sub __capture {
-    push @::__capture, join "", @_;
+    push @::__capture, $_[0];
 }
     
 sub capture_warnings {

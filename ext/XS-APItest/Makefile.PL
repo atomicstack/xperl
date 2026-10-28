@@ -78,6 +78,12 @@ sub MY::postamble
 {
     package MY;
     my $post = shift->SUPER::postamble(@_);
+    $post .= <<'DIAG_FIXTURE';
+
+diag_match_fixture.inc: diag_match_fixture.json gen_diag_match_fixture.pl
+	perl gen_diag_match_fixture.pl diag_match_fixture.json diag_match_fixture.inc
+
+DIAG_FIXTURE
     use Config;
     return $post unless $Config{dtraceobject};
 

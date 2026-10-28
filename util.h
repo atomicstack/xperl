@@ -234,13 +234,13 @@ means arg not present, 1 is empty string/null byte */
 #define HS_KEYp(interpsize, cxt, setxsubfn, popmark, apiverlen, xsverlen) \
     (((interpsize)  << 16) \
     | ((xsverlen) > HS_XSVERLEN_MAX \
-        ? (Perl_croak_nocontext("panic: handshake overflow"), HS_XSVERLEN_MAX) \
+        ? (PERL_PANIC_ERROR_INTERNAL_EMBEDDING_HANDSHAKE_KEY_OVERFLOW(), HS_XSVERLEN_MAX) \
         : (xsverlen) << 8) \
     | (cBOOL(setxsubfn) ? HSf_SETXSUBFN : 0) \
     | (cBOOL(cxt) ? HSf_IMP_CXT : 0) \
     | (cBOOL(popmark) ? HSf_POPMARK : 0) \
     | ((apiverlen) > HS_APIVERLEN_MAX \
-        ? (Perl_croak_nocontext("panic: handshake overflow"), HS_APIVERLEN_MAX) \
+        ? (PERL_PANIC_ERROR_INTERNAL_EMBEDDING_HANDSHAKE_KEY_OVERFLOW(), HS_APIVERLEN_MAX) \
         : (apiverlen)))
 /* overflows above will optimize away unless they will execute */
 

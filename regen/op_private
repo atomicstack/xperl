@@ -1008,6 +1008,10 @@ addbits('dispatchcoerce',
         label    => '-',
     });
 
+addbits('catch',
+    7 => qw(PERL_OPpCATCH_SECOND_ARG SECOND_ARG),
+);
+
 1;
 
 # ex: set ts=8 sts=4 sw=4 et:

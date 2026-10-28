@@ -39,7 +39,7 @@ S_scalar_slice_warning(pTHX_ const OP *o)
 
     if (!(o->op_private & OPpSLICEWARNING))
         return;
-    if (PL_parser && PL_parser->error_count)
+    if (PL_parser && PERL_DIAG_ERROR_COUNT)
         /* This warning can be nonsensical when there is a syntax error. */
         return;
 
@@ -1056,8 +1056,7 @@ S_warn_implicit_snail_cvsig(pTHX_ OP *o)
         cv = CvOUTSIDE(cv);
 
     if(cv && CvSIGNATURE(cv))
-        ck_warner_d(packWARN(WARN_EXPERIMENTAL__ARGS_ARRAY_WITH_SIGNATURES),
-            "Implicit use of @_ in %s with signatured subroutine is experimental", OP_DESC(o));
+        PERL_WARN_WARNING_EXPERIMENTAL_ARGS_ARRAY_WITH_SIGNATURES_IMPLICIT_USE(PERL_DIAG_WORD_OPERATION(o->op_type), PERL_DIAG_OP_DESC_WARNING_EXPERIMENTAL_ARGS_ARRAY_WITH_SIGNATURES_IMPLICIT_USE(o));
 }
 
 
@@ -1122,8 +1121,9 @@ S_optimize_op(pTHX_ OP* o)
                 while(OP_TYPE_IS(parent, OP_NULL))
                     parent = op_parent(parent);
 
-                ck_warner_d(packWARN(WARN_EXPERIMENTAL__ARGS_ARRAY_WITH_SIGNATURES),
-                    "Use of @_ in %s with signatured subroutine is experimental", OP_DESC(parent));
+                PERL_WARN_WARNING_EXPERIMENTAL_ARGS_ARRAY_WITH_SIGNATURES_EXPLICIT_USE(
+                    PERL_DIAG_WORD_OPERATION(parent->op_type),
+                    PERL_DIAG_OP_DESC_WARNING_EXPERIMENTAL_ARGS_ARRAY_WITH_SIGNATURES_EXPLICIT_USE(parent));
             }
             break;
         }
@@ -1267,10 +1267,8 @@ S_finalize_op(pTHX_ OP* o)
                     if (type != OP_EXIT && type != OP_WARN && type != OP_DIE) {
                         const line_t oldline = CopLINE(PL_curcop);
                         CopLINE_set(PL_curcop, CopLINE((COP*)sib));
-                        warner(packWARN(WARN_EXEC),
-                            "Statement unlikely to be reached");
-                        warner(packWARN(WARN_EXEC),
-                            "\t(Maybe you meant system() when you said exec()?)\n");
+                        PERL_WARN_WARNING_IO_EXEC_STATEMENT_AFTER_EXEC_UNLIKELY_REACHED();
+                        PERL_WARN_WARNING_IO_EXEC_SYSTEM_INSTEAD_OF_EXEC_SUGGESTION();
                         CopLINE_set(PL_curcop, oldline);
                     }
                 }
@@ -1284,9 +1282,7 @@ S_finalize_op(pTHX_ OP* o)
                     /* XXX could check prototype here instead of just carping */
                     SV * const sv = sv_newmortal();
                     gv_efullname3(sv, gv, NULL);
-                    warner(packWARN(WARN_PROTOTYPE),
-                           "%" SVf "() called too early to check prototype",
-                           SVfARG(sv));
+                    PERL_WARN_WARNING_SYNTAX_PROTOTYPE_CALL_TOO_EARLY_TO_CHECK_PROTOTYPE(sv);
                 }
             }
             break;
@@ -3814,7 +3810,7 @@ Perl_rpeep(pTHX_ OP *o)
                          || kid->op_targ == OP_DBSTATE  ))
                     || kid->op_type == OP_STUB
                     || kid->op_type == OP_ENTER
-                    || (PL_parser && PL_parser->error_count));
+                    || (PL_parser && PERL_DIAG_ERROR_COUNT));
                 nullop->op_next = kid->op_next;
                 DEFER(nullop->op_next);
             }

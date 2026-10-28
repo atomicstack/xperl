@@ -192,7 +192,7 @@ is(do {
     # Have we cured panic which occurred with require/eval in die handler ?
     local $SIG{__DIE__} = sub { eval {1}; die shift };
     eval { die "wham_eth\n" };
-    is($@, "wham_eth\n");
+    is($@, "wham_eth\n", 'die handler can rethrow its rendered argument');
 }
 
 {

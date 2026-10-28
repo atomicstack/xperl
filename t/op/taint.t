@@ -24,7 +24,7 @@ if ($NoTaintSupport) {
     exit 0;
 }
 
-plan tests => 1071;
+plan tests => 1074;
 
 $| = 1;
 
@@ -1258,6 +1258,12 @@ SKIP: {
 # Operations which affect files can't use tainted data.
 {
     violates_taint(sub { chmod 0, $TAINT }, 'chmod');
+    is( $@->contents->[0]->code,
+        'ERROR_TAINT_DEPENDENCY_INSECURE', 'taint failures retain their catalog identity' );
+    ok( $@->contents->[0]->selector_key,
+        'taint failures store their security context as a selector' );
+    is( $@->contents->[0]->params->[0]{name},
+        'operation', 'taint failures store only the displayed operation' );
 
     SKIP: {
         skip "truncate() is not available", 2 unless $Config{d_truncate};

@@ -89,7 +89,7 @@ my @void_warnings;
 }
 "@void_warnings"
 EXPECT
-Useless use of anonymous subroutine in void context at - line 5.
+Useless use of an anonymous subroutine in void context at - line 5.
 ########
 # [perl #71154] undef &$code makes $code->() die with: Not a CODE reference
 sub __ANON__ { print "42\n" }

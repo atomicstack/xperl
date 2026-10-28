@@ -2,15 +2,13 @@ package Test2::Tools::Tiny;
 use strict;
 use warnings;
 
-use Scalar::Util qw/blessed/;
-
 use Test2::Util qw/try/;
 use Test2::API qw/context run_subtest test2_stack/;
 
 use Test2::Hub::Interceptor();
 use Test2::Hub::Interceptor::Terminator();
 
-our $VERSION = '1.302226';
+our $VERSION = '1.302226_001';
 
 BEGIN { require Exporter; our @ISA = qw(Exporter) }
 our @EXPORT = qw{
@@ -216,7 +214,13 @@ sub done_testing {
 sub warnings(&) {
     my $code = shift;
     my @warnings;
-    local $SIG{__WARN__} = sub { push @warnings => @_ };
+    local $SIG{__WARN__} = sub {
+        push @warnings => map {
+            my $warning = "$_";
+            utf8::downgrade($warning, 1);
+            $warning;
+        } @_;
+    };
     $code->();
     return \@warnings;
 }

@@ -20,7 +20,8 @@ is($open_success,undef,"Open should fail");
 
 isnt($@,"",'$@ should not be empty');
 
-is(ref($@),"",'$@ should not be a reference or object');
+ok(!ref($@) || ref($@) eq 'XPerl::Exception',
+   '$@ should not be an invalid autodie exception object');
 
 like($@, qr/Failed to load/, '$@ should contain bad exception class msg');
 
@@ -36,7 +37,8 @@ is($open_success2,undef,"Open should fail");
 
 isnt($@,"",'$@ should not be empty');
 
-is(ref($@),"",'$@ should not be a reference or object');
+ok(!ref($@) || ref($@) eq 'XPerl::Exception',
+   '$@ should not be an invalid autodie exception object');
 
 like($@, qr/Bad exception class/, '$@ should contain bad exception class msg');
 

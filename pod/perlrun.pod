@@ -362,10 +362,11 @@ You can also use binmode() to set the encoding of an I/O stream.
 X<-c>
 
 causes Perl to check the syntax of the program and then exit without
-executing it.  Actually, it I<will> execute any C<BEGIN>, C<UNITCHECK>,
-or C<CHECK> blocks and any C<use> statements: these are considered as
-occurring outside the execution of your program.  C<INIT> and C<END>
-blocks, however, will be skipped.
+executing it.  It will execute any C<BEGIN> blocks and C<use> statements
+while compiling the program.  After a successful syntax check, it will
+run any queued C<UNITCHECK> and C<CHECK> blocks.  If compilation fails,
+those queued blocks are skipped.  C<INIT> and C<END> blocks are skipped
+when using B<-c>.
 
 If the syntax check is successful perl will exit with a status of zero
 and report C<I<yourprogram> syntax OK>.  On failure perl will print
@@ -1264,6 +1265,17 @@ X<PERL_DESTRUCT_LEVEL>
 
 Controls the behaviour of global destruction of objects and other
 references.  See L<perlhacktips/PERL_DESTRUCT_LEVEL> for more information.
+
+=item PERL_DIAG_RENDER
+X<PERL_DIAG_RENDER>
+
+Setting this to C<Dumper> makes structured compiler exceptions stringify
+as a C<Data::Dumper> view of the exception and its diagnostics. The
+exception itself remains available in C<$@> after a caught compile failure.
+The default rendering preserves the usual error text. Other errors retain
+their usual behavior while the structured exception machinery is being
+introduced. If the optional classes cannot be loaded during startup, Perl
+uses the usual error text.
 
 =item PERL_DL_NONLAZY
 X<PERL_DL_NONLAZY>

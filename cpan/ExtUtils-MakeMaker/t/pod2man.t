@@ -42,6 +42,7 @@ use Test::More tests => 3;
     ok !pod2man();
     is $warnings, <<'END'
 Pod::Man is not available: Simulated Pod::Man failure
+INC sub hook died--halting @INC search
 Man pages will not be generated during this install.
 END
 

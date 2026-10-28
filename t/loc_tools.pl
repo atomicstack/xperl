@@ -190,10 +190,9 @@ sub _trylocale ($$$$) { # For use only by other functions in this file!
 
     local $SIG{__WARN__} = sub {
         $badutf8 = 1 if grep { /Malformed UTF-8/ } @_;
-        $unsupported = 1 if grep { /Locale .* is unsupported/i } @_;
+        $unsupported = 1 if grep { /LC_CTYPE locale .* is unsupported/i } @_;
         $plays_well = 0 if grep {
-                    /The following characters .* may not have the same meaning as the Perl program expects(?#
-                   )|The Perl program will use the expected meanings/i
+                    /characters (?:with unexpected meanings|may not have the meanings Perl expects)|Perl will use the expected meanings/i
             } @_;
     };
 

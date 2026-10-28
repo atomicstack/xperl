@@ -40,8 +40,9 @@ is_deeply(
     "'is_deeply' test"
 );
 
+my $warning_messages = warnings { warn "aaa\n"; warn "bbb\n" };
 is_deeply(
-    warnings { warn "aaa\n"; warn "bbb\n" },
+    [map { "$_" } @$warning_messages],
     [ "aaa\n", "bbb\n" ],
     "Got warnings"
 );

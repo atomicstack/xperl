@@ -3008,12 +3008,17 @@ Use newSV() instead.
 
 #  define MEM_WRAP_CHECK_1(n,t,a) \
         (void)(UNLIKELY(MEM_WRAP_WILL_WRAP_(n,t)) \
-        && (Perl_croak_nocontext("%s",(a)),0))
+        && (PERL_THROW_ERROR_USER_OPAQUE_RENDERED_MESSAGE_NO_CONTEXT((a)),0))
 
 /* "a" arg must be a string literal */
 #  define MEM_WRAP_CHECK_s(n,t,a) \
         (   (void) (UNLIKELY(MEM_WRAP_WILL_WRAP_(n,t))          \
-         && (Perl_croak_nocontext(ASSERT_IS_LITERAL(a)), 0)))
+         && (PERL_THROW_ERROR_USER_OPAQUE_LITERAL_FORMAT(ASSERT_IS_LITERAL(a)), 0)))
+
+#  define PERL_MEM_WRAP_CHECK_DIAG(n,t,diagnostic) \
+        STMT_START { \
+            if (UNLIKELY(MEM_WRAP_WILL_WRAP_(n,t))) diagnostic(); \
+        } STMT_END
 
 #  define MEM_WRAP_CHECK_(n,t) MEM_WRAP_CHECK(n,t),
 
@@ -3023,6 +3028,7 @@ Use newSV() instead.
 #  define MEM_WRAP_CHECK(n,t)
 #  define MEM_WRAP_CHECK_1(n,t,a)
 #  define MEM_WRAP_CHECK_s(n,t,a)
+#  define PERL_MEM_WRAP_CHECK_DIAG(n,t,diagnostic)
 #  define MEM_WRAP_CHECK_(n,t)
 
 #  define PERL_STRLEN_ROUNDUP(n) PERL_STRLEN_ROUNDUP_UNCHECKED_(n)
@@ -3312,16 +3318,13 @@ In C<deprecate_fatal_in>, the message will be of the form:
 
 #ifdef PERL_CORE
 #  define deprecate(category,message)                       \
-    Perl_ck_warner_d(aTHX_ packWARN(category),              \
-        message " is deprecated")
+    PERL_DEPRECATE_WARNING_DEPRECATED_COMPONENT_USED(message, packWARN(category))
 
 #  define deprecate_disappears_in(category,when,message)    \
-    Perl_ck_warner_d(aTHX_ packWARN(category),              \
-        message " is deprecated, and will disappear in Perl " when)
+    PERL_DEPRECATE_WARNING_DEPRECATED_COMPONENT_REMOVAL_SCHEDULED(message, when, packWARN(category))
 
 #  define deprecate_fatal_in(category,when,message)         \
-    Perl_ck_warner_d(aTHX_ packWARN(category),              \
-        message " is deprecated, and will become fatal in Perl " when)
+    PERL_DEPRECATE_WARNING_DEPRECATED_COMPONENT_FATALIZATION_SCHEDULED(message, when, packWARN(category))
 #endif
 
 /* Internal macros to deal with gids and uids */

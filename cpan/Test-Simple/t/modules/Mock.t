@@ -945,6 +945,7 @@ subtest prototypes => sub {
         $one->before(foo_022 => sub ($) { warn "Before foo_022( '$_[0]' )" });
         is(foo_022 'baz', 'baz', 'foo_022 still returns its argument');
     };
+    $warning = [map { "$_" } @$warning];
     is(
         $warning, [
             match qr/\ABefore foo_022\( 'baz' \)/,
@@ -962,6 +963,7 @@ subtest prototypes => sub {
         $one->after(foo_022 => sub ($) { warn "After foo_022( '$_[0]' )" });
         is(foo_022 'plugh', 'plugh', 'foo_022 steadfastly returns its argument');
     };
+    $warning = [map { "$_" } @$warning];
     is(
         $warning, [
             match qr/\AAfter foo_022\( 'plugh' \)/,

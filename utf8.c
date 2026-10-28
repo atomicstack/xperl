@@ -95,9 +95,21 @@ Perl_repeat_decode_utf8(pTHX_ SV *sv, bool force)
     return sv;
 }
 
+static void
+Perl_utf8_throw_code_point_too_large(pTHX_ UV code_point)
+{
+    char digits[2 * sizeof(UV) + 1];
+    int length;
+
+    length = my_snprintf(digits, sizeof(digits), "%" UVXf, code_point);
+    assert(length > 0 && (Size_t)length < sizeof(digits));
+    PERL_THROW_ERROR_UNICODE_CODE_POINT_ENCODING_LIMIT_EXCEEDED((UV)length, digits,
+                                           MAX_LEGAL_CP);
+    NOT_REACHED;
+    NORETURN_FUNCTION_END;
+}
+
 static const char malformed_text[] = "Malformed UTF-8 character";
-static const char unees[] =
-                        "Malformed UTF-8 character (unexpected end of string)";
 
 UV
 Perl_long_valid_utf8_to_uv(const U8 * const s, const U8 * const e)
@@ -163,8 +175,7 @@ Perl_force_out_malformed_utf8_message_(pTHX_
     (void) utf8_to_uv_errors(p, e, &dummy, NULL, flags, &errors);
 
     if (! errors) {
-        croak("panic: force_out_malformed_utf8_message_ should"
-                  " be called only when there are errors found");
+        PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_MALFORMED_REPORT_WITHOUT_DECODER_ERROR();
     }
 }
 
@@ -192,11 +203,9 @@ S_new_msg_hv(pTHX_ const char * const message, /* The message text */
 }
 
 /* All these formats take a single UV code point argument */
-const char surrogate_cp_format[] = "UTF-16 surrogate U+%04" UVXf;
-const char nonchar_cp_format[]   = "Unicode non-character U+%04" UVXf
-                                   " is not recommended for open interchange";
-const char super_cp_format[]     = "Code point 0x%" UVXf " is not Unicode,"
-                                   " may not be portable";
+const char surrogate_cp_format[] = PERL_FORMAT_WARNING_UTF8_SURROGATE_SURROGATE_ENCODED;
+const char nonchar_cp_format[]   = PERL_FORMAT_WARNING_UTF8_NONCHAR_NONCHARACTER_ENCODED;
+const char super_cp_format[]     = PERL_FORMAT_WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX;
 
 /*  Use shorter names internally in this file */
 #define SHIFT   UTF_ACCUMULATION_SHIFT
@@ -299,13 +308,12 @@ Perl_uvoffuni_to_utf8_flags_msgs(pTHX_ U8 *d, UV input_uv, UV flags, HV** msgs)
         if (   UNLIKELY(input_uv > MAX_LEGAL_CP
             && UNLIKELY(! (flags & UNICODE_ALLOW_ABOVE_IV_MAX))))
         {
-            croak("%s", form_cp_too_large_msg(16, /* Hex output */
-                                                         NULL, 0, input_uv));
+            Perl_utf8_throw_code_point_too_large(aTHX_ input_uv);
         }
 
         if ((flags & (UNICODE_WARN_PERL_EXTENDED|UNICODE_WARN_SUPER))) {
             U32 category = packWARN2(WARN_NON_UNICODE, WARN_PORTABLE);
-            const char * format = PL_extended_cp_format;
+            const char * format = PERL_FORMAT_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT;
             if (msgs) {
                 *msgs = new_msg_hv(form(format, input_uv),
                                    category,
@@ -314,7 +322,9 @@ Perl_uvoffuni_to_utf8_flags_msgs(pTHX_ U8 *d, UV input_uv, UV flags, HV** msgs)
                                    : UNICODE_GOT_SUPER);
             }
             else {
-                ck_warner_d(category, format, input_uv);
+                PERL_WARN_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT(
+                    perl_diag_word_operation_none,
+                    input_uv, perl_diag_selector_domain_2311_0_none_1, "", category);
             }
 
             /* Don't output a 2nd msg */
@@ -357,7 +367,9 @@ Perl_uvoffuni_to_utf8_flags_msgs(pTHX_ U8 *d, UV input_uv, UV flags, HV** msgs)
                                        UNICODE_GOT_SUPER);
                 }
                 else {
-                    ck_warner_d(category, format, input_uv);
+                    PERL_WARN_WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX(
+                        perl_diag_word_operation_none,
+                        input_uv, perl_diag_selector_domain_2311_0_none_1, "", category);
                 }
 
                 if (flags & UNICODE_DISALLOW_SUPER) {
@@ -389,7 +401,7 @@ Perl_uvoffuni_to_utf8_flags_msgs(pTHX_ U8 *d, UV input_uv, UV flags, HV** msgs)
                                            UNICODE_GOT_NONCHAR);
                     }
                     else {
-                        ck_warner_d(category, format, input_uv);
+                        PERL_WARN_WARNING_UTF8_NONCHAR_NONCHARACTER_ENCODED(input_uv);
                     }
                 }
                 if (flags & UNICODE_DISALLOW_NONCHAR) {
@@ -406,7 +418,7 @@ Perl_uvoffuni_to_utf8_flags_msgs(pTHX_ U8 *d, UV input_uv, UV flags, HV** msgs)
                                            UNICODE_GOT_SURROGATE);
                     }
                     else {
-                        ck_warner_d(category, format, input_uv);
+                        PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_ENCODED(input_uv);
                     }
                 }
                 if (flags & UNICODE_DISALLOW_SURROGATE) {
@@ -1030,6 +1042,27 @@ Perl_byte_dump_string_(pTHX_ const U8 * const start, const STRLEN len, const boo
     return output;
 }
 
+PERL_STATIC_INLINE const char *
+Perl_utf8_unexpected_non_continuation_bytes(pTHX_ const U8 * const s,
+                                    STRLEN print_len,
+                                    const STRLEN non_cont_byte_pos)
+{
+    const U8 * x = s + non_cont_byte_pos;
+    const U8 * e = s + print_len;
+
+    /* As a defensive coding measure, don't output anything past a NUL.  Such
+     * bytes shouldn't be in the middle of a malformation, and could mark the
+     * end of the allocated string, and what comes after is undefined */
+    for (; x < e; x++) {
+        if (*x == '\0') {
+            x++;            /* Output this particular NUL */
+            break;
+        }
+    }
+
+    return byte_dump_string_(s, x - s, 0);
+}
+
 PERL_STATIC_INLINE char *
 S_unexpected_non_continuation_text(pTHX_ const U8 * const s,
 
@@ -1044,37 +1077,25 @@ S_unexpected_non_continuation_text(pTHX_ const U8 * const s,
 {
     PERL_ARGS_ASSERT_UNEXPECTED_NON_CONTINUATION_TEXT;
 
-    /* Return the malformation warning text for an unexpected continuation
+    /* Return the malformation warning text for an unexpected non-continuation
      * byte. */
 
     const char * const where = (non_cont_byte_pos == 1)
-                               ? "immediately"
-                               : form("%d bytes",
-                                                 (int) non_cont_byte_pos);
-    const U8 * x = s + non_cont_byte_pos;
-    const U8 * e = s + print_len;
+        ? form("immediately after start byte 0x%02x", *s)
+        : form("after a valid prefix of length %d starting with byte 0x%02x",
+               (int) non_cont_byte_pos, *s);
 
     /* We don't need to pass this parameter, but since it has already been
      * calculated, it's likely faster to pass it; verify under DEBUGGING */
     assert(expect_len == UTF8SKIP(s));
 
-    /* As a defensive coding measure, don't output anything past a NUL.  Such
-     * bytes shouldn't be in the middle of a malformation, and could mark the
-     * end of the allocated string, and what comes after is undefined */
-    for (; x < e; x++) {
-        if (*x == '\0') {
-            x++;            /* Output this particular NUL */
-            break;
-        }
-    }
-
-    return form("%s: %s (unexpected non-continuation byte 0x%02x,"
-                           " %s after start byte 0x%02x; need %d bytes, got %d)",
+    return form("%s: %s (unexpected non-continuation byte 0x%02x; %s;"
+                           " required sequence length %d bytes; valid prefix length %d)",
                            malformed_text,
-                           byte_dump_string_(s, x - s, 0),
+                           Perl_utf8_unexpected_non_continuation_bytes(aTHX_ s,
+                               print_len, non_cont_byte_pos),
                            *(s + non_cont_byte_pos),
                            where,
-                           *s,
                            (int) expect_len,
                            (int) non_cont_byte_pos);
 }
@@ -1728,6 +1749,20 @@ The caller, of course, is responsible for freeing any returned AV.
 =cut
 */
 
+/* Deliver a catalogued UTF-8 warning either immediately or into an exception
+ * being assembled by a caller.  Append macros take the exception slot and
+ * category before the diagnostic parameters; warning macros take the
+ * category last. */
+#define PERL_UTF8_WARN_OR_APPEND(exception_slot, category, warn_macro, append_macro, ...) \
+    STMT_START {                                                               \
+        if (exception_slot) {                                                  \
+            append_macro(exception_slot, category, __VA_ARGS__);              \
+        }                                                                      \
+        else {                                                                 \
+            warn_macro(__VA_ARGS__, category);                                \
+        }                                                                      \
+    } STMT_END
+
 bool
 Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                              const U8 * const e,
@@ -1735,7 +1770,8 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                              Size_t *advance_p,
                              U32 flags,
                              U32 * errors,
-                             AV ** msgs)
+                             AV ** msgs,
+                             SV ** exception_slot)
 {
     PERL_ARGS_ASSERT_UTF8_TO_UV_MSGS_HELPER_;
 
@@ -2290,6 +2326,31 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
         while (possible_problems) { /* Handle each possible problem */
             IV pack_warn = 0;
             char * message = NULL;
+            const char * short_sequence_bytes = NULL;
+            bool structured_short_sequence_warning = FALSE;
+            const char * continuation_sequence_bytes = NULL;
+            bool structured_continuation_warning = FALSE;
+            const char * non_continuation_sequence_bytes = NULL;
+            bool structured_non_continuation_warning = FALSE;
+            const char * overlong_sequence_bytes = NULL;
+            const char * overlong_sequence_prefix = NULL;
+            bool structured_overlong_sequence_warning = FALSE;
+            const char * overlong_value_bytes = NULL;
+            const char * overlong_value_canonical_bytes = NULL;
+            const char * overlong_value_codepoint = NULL;
+            bool structured_overlong_value_warning = FALSE;
+            const char * overflow_sequence_bytes = NULL;
+            bool structured_overflow_sequence_warning = FALSE;
+            const char * extended_sequence_prefix = NULL;
+            bool structured_extended_sequence_warning = FALSE;
+            const char * non_unicode_sequence_prefix = NULL;
+            bool structured_non_unicode_sequence_warning = FALSE;
+            bool structured_empty_sequence_warning = FALSE;
+            bool structured_surrogate_codepoint_warning = FALSE;
+            bool structured_surrogate_prefix_warning = FALSE;
+            bool structured_nonchar_codepoint_warning = FALSE;
+            bool structured_extended_codepoint_warning = FALSE;
+            bool structured_super_codepoint_warning = FALSE;
 
             /* The lowest bit positions, as #defined in utf8.h, are handled
              * first.  Some of the ordering is important so that higher
@@ -2326,8 +2387,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
 
             switch (this_problem_bit) {
               default:
-                croak("panic: Unexpected case value in utf8_to_uv_msgs() %"
-                      U32uf, this_problem);
+                PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_DECODER_PROBLEM_UNHANDLED(this_problem);
                 /* NOTREACHED */
                 break;
 
@@ -2349,28 +2409,47 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                  * function */
 
                 assert(0);
-                message = form("%s: (empty string)", malformed_text);
+                if (msgs) {
+                    message = form("%s: (empty string)", malformed_text);
+                }
+                else {
+                    structured_empty_sequence_warning = TRUE;
+                }
                 break;
 
               case UTF8_GOT_CONTINUATION_BIT_POS_:
                 COMMON_DEFAULT_REJECTS(,);
-                message = form(
+                if (msgs) {
+                    message = form(
                                 "%s: %s (unexpected continuation byte 0x%02x,"
                                 " with no preceding start byte)",
                                 malformed_text,
                                 byte_dump_string_(s0, 1, 0),
                                 *s0);
+                }
+                else {
+                    continuation_sequence_bytes = byte_dump_string_(s0,
+                                                                     1, 0);
+                    structured_continuation_warning = TRUE;
+                }
                 break;
 
               case UTF8_GOT_SHORT_BIT_POS_:
                 COMMON_DEFAULT_REJECTS(,);
-                message = form(
-                             "%s: %s (too short; %d byte%s available, need %d)",
+                if (msgs) {
+                    message = form(
+                             "%s: %s (too short; available byte count: %d;"
+                             " required byte count: %d)",
                              malformed_text,
                              byte_dump_string_(s0, avail_len, 0),
                              (int)avail_len,
-                             avail_len == 1 ? "" : "s", /* Pluralize */
                              (int)expectlen);
+                }
+                else {
+                    short_sequence_bytes = byte_dump_string_(s0,
+                                                              avail_len, 0);
+                    structured_short_sequence_warning = TRUE;
+                }
                 break;
 
               case UTF8_GOT_NON_CONTINUATION_BIT_POS_:
@@ -2383,11 +2462,18 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                 int printlen = (flags & UTF8_NO_CONFIDENCE_IN_CURLEN_)
                                 ? (int) (s - s0)
                                 : (int) (avail_len);
-                message = form("%s",
-                                    unexpected_non_continuation_text(s0,
-                                                            printlen,
-                                                            s - s0,
-                                                            (int) expectlen));
+                if (msgs) {
+                    message = form("%s",
+                        unexpected_non_continuation_text(s0, printlen,
+                                                         s - s0,
+                                                         (int) expectlen));
+                }
+                else {
+                    non_continuation_sequence_bytes =
+                        Perl_utf8_unexpected_non_continuation_bytes(aTHX_ s0,
+                            printlen, s - s0);
+                    structured_non_continuation_warning = TRUE;
+                }
                 break;
                }
 
@@ -2400,16 +2486,25 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                  * The other error types either can't generate an overlong, or
                  * else the 'input_uv' is valid */
                 if (orig_problems & (UTF8_GOT_TOO_SHORT|UTF8_GOT_OVERFLOW)) {
-                    message = form(
+                    if (msgs) {
+                        message = form(
                             "%s: %s (any UTF-8 sequence that starts with"
                             " \"%s\" is overlong which can and should be"
                             " represented with a different, shorter sequence)",
                             malformed_text,
                             byte_dump_string_(s0, curlen, 0),
                             byte_dump_string_(s0,
-                                              MIN((SSize_t) avail_len,
-                                                   overlong_detect_length),
-                                              0));
+                                MIN((SSize_t) avail_len,
+                                    overlong_detect_length), 0));
+                    }
+                    else {
+                        overlong_sequence_bytes =
+                            byte_dump_string_(s0, curlen, 0);
+                        overlong_sequence_prefix = byte_dump_string_(s0,
+                            MIN((SSize_t) avail_len,
+                                overlong_detect_length), 0);
+                        structured_overlong_sequence_warning = TRUE;
+                    }
                 }
                 else {
                     U8 tmpbuf[UTF8_MAXBYTES+1];
@@ -2425,7 +2520,8 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                                             )
                                             ? "0x"
                                             : "U+";
-                    message = form(
+                    if (msgs) {
+                        message = form(
                                 "%s: %s (overlong; instead use %s to represent"
                                 " %s%0*" UVXf ")",
                                 malformed_text,
@@ -2436,6 +2532,17 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                                                                for small code
                                                                points */
                                 UNI_TO_NATIVE(input_uv));
+                    }
+                    else {
+                        overlong_value_bytes = byte_dump_string_(s0,
+                                                                  avail_len, 0);
+                        overlong_value_canonical_bytes = byte_dump_string_(
+                            tmpbuf, e - tmpbuf, 0);
+                        overlong_value_codepoint = form("%s%0*" UVXf,
+                            preface, ((input_uv < 256) ? 2 : 4),
+                            UNI_TO_NATIVE(input_uv));
+                        structured_overlong_value_warning = TRUE;
+                    }
                 }
                 break;
 
@@ -2475,13 +2582,24 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                 /* This is the only error that can occur with a surrogate when
                  * the 'input_uv' isn't valid */
                 if (orig_problems & UTF8_GOT_TOO_SHORT) {
-                    message = form(
-                                   "UTF-16 surrogate (any UTF-8 sequence that"
-                                   " starts with \"%s\" is for a surrogate)",
-                                   byte_dump_string_(s0, curlen, 0));
+                    if (msgs) {
+                        message = form(
+                            "UTF-16 surrogate (any UTF-8 sequence that"
+                            " starts with \"%s\" is for a surrogate)",
+                            byte_dump_string_(s0, curlen, 0));
+                    }
+                    else {
+                        short_sequence_bytes = byte_dump_string_(s0, curlen, 0);
+                        structured_surrogate_prefix_warning = TRUE;
+                    }
                 }
                 else {
-                    message = form(surrogate_cp_format, input_uv);
+                    if (msgs) {
+                        message = form(surrogate_cp_format, input_uv);
+                    }
+                    else {
+                        structured_surrogate_codepoint_warning = TRUE;
+                    }
                 }
 
                 break;
@@ -2501,7 +2619,12 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                                              |UTF8_GOT_PERL_EXTENDED
                                              |UTF8_GOT_NONCHAR)));
 #endif
-                message = form(nonchar_cp_format, input_uv);
+                if (msgs) {
+                    message = form(nonchar_cp_format, input_uv);
+                }
+                else {
+                    structured_nonchar_codepoint_warning = TRUE;
+                }
                 break;
 
                 /* The final three cases are all closely related.  They are
@@ -2572,34 +2695,65 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                  * have this situation. */
 
                 if (overflows) {
-                    message = form("%s: %s (overflows)",
-                                              malformed_text,
-                                              byte_dump_string_(s0, curlen, 0));
+                    if (msgs) {
+                        message = form("%s: %s (overflows)",
+                                       malformed_text,
+                                       byte_dump_string_(s0, curlen, 0));
+                    }
+                    else {
+                        overflow_sequence_bytes = byte_dump_string_(s0,
+                                                                     curlen, 0);
+                        structured_overflow_sequence_warning = TRUE;
+                    }
                 }
                 else if (   (orig_problems & UTF8_GOT_TOO_SHORT)
                          || (     UTF8_IS_PERL_EXTENDED(s0)
                              && ! UNICODE_IS_SUPER(input_uv)))
                 {
                     if (is_extended) {
-                        message = form(
+                        if (msgs) {
+                            message = form(
                                         "Any UTF-8 sequence that starts with"
                                         " \"%s\" is a Perl extension, and so"
                                         " is not portable",
                                         byte_dump_string_(s0, curlen, 0));
+                        }
+                        else {
+                            extended_sequence_prefix = byte_dump_string_(s0,
+                                                                          curlen, 0);
+                            structured_extended_sequence_warning = TRUE;
+                        }
                     }
                     else {
-                        message = form(
+                        if (msgs) {
+                            message = form(
                                         "Any UTF-8 sequence that starts with"
                                         " \"%s\" is for a non-Unicode code"
                                         " point, may not be portable",
                                         byte_dump_string_(s0, curlen, 0));
+                        }
+                        else {
+                            non_unicode_sequence_prefix = byte_dump_string_(s0,
+                                                                            curlen, 0);
+                            structured_non_unicode_sequence_warning = TRUE;
+                        }
                     }
                 }
                 else if (is_extended) {
-                    message = form(PL_extended_cp_format, input_uv);
+                    if (msgs) {
+                        message = form(PL_extended_cp_format, input_uv);
+                    }
+                    else {
+                        structured_extended_codepoint_warning = TRUE;
+                    }
                 }
                 else {
-                    message = form(super_cp_format, input_uv);
+                    if (msgs) {
+                        message = form(super_cp_format, input_uv);
+                    }
+                    else {
+                        structured_super_codepoint_warning = TRUE;
+                    }
                 }
 
                 /* This message only needs to output once.  Ww can potentially
@@ -2652,11 +2806,144 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                     }
                 }
 
-                if (PL_op) {
-                    warner(pack_warn, "%s in %s", message, OP_DESC(PL_op));
+                if (structured_empty_sequence_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_EMPTY_SEQUENCE,
+                        PERL_APPEND_WARNING_UTF8_EMPTY_SEQUENCE,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_EMPTY_SEQUENCE(PL_op) : "");
+                }
+                else if (structured_surrogate_prefix_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_SEQUENCE_PREFIX,
+                        PERL_APPEND_WARNING_UTF8_SURROGATE_SURROGATE_SEQUENCE_PREFIX,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        short_sequence_bytes,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_SURROGATE_SURROGATE_SEQUENCE_PREFIX(PL_op) : "");
+                }
+                else if (structured_surrogate_codepoint_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_DECODED,
+                        PERL_APPEND_WARNING_UTF8_SURROGATE_SURROGATE_DECODED,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        input_uv,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_SURROGATE_SURROGATE_DECODED(PL_op) : "");
+                }
+                else if (structured_nonchar_codepoint_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_NONCHAR_NONCHARACTER_DECODED,
+                        PERL_APPEND_WARNING_UTF8_NONCHAR_NONCHARACTER_DECODED,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        input_uv,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NONCHAR_NONCHARACTER_DECODED(PL_op) : "");
+                }
+                else if (structured_short_sequence_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_SEQUENCE_TOO_SHORT,
+                        PERL_APPEND_WARNING_UTF8_SEQUENCE_TOO_SHORT,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        short_sequence_bytes,
+                        (UV) avail_len,
+                        (UV) expectlen,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_SEQUENCE_TOO_SHORT(PL_op) : "");
+                }
+                else if (structured_continuation_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_CONTINUATION_WITHOUT_START,
+                        PERL_APPEND_WARNING_UTF8_CONTINUATION_WITHOUT_START,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        continuation_sequence_bytes,
+                        (UV) *s0,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_CONTINUATION_WITHOUT_START(PL_op) : "");
+                }
+                else if (structured_non_continuation_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_SEQUENCE_CONTINUATION_INVALID,
+                        PERL_APPEND_WARNING_UTF8_SEQUENCE_CONTINUATION_INVALID,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        non_continuation_sequence_bytes,
+                        (UV) s0[curlen],
+                        (UV) s0[0],
+                        (UV) expectlen,
+                        (UV) curlen,
+                        curlen == 1 ? perl_diag_selector_domain_2620_0_immediate_2 : perl_diag_selector_domain_2620_0_after_bytes_1,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_SEQUENCE_CONTINUATION_INVALID(PL_op) : "");
+                }
+                else if (structured_overlong_sequence_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_OVERLONG_PREFIX,
+                        PERL_APPEND_WARNING_UTF8_OVERLONG_PREFIX,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        overlong_sequence_bytes,
+                        overlong_sequence_prefix,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_OVERLONG_PREFIX(PL_op) : "");
+                }
+                else if (structured_overlong_value_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_OVERLONG_VALUE,
+                        PERL_APPEND_WARNING_UTF8_OVERLONG_VALUE,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        overlong_value_bytes,
+                        overlong_value_canonical_bytes,
+                        overlong_value_codepoint,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_OVERLONG_VALUE(PL_op) : "");
+                }
+                else if (structured_overflow_sequence_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_NON_UNICODE_SEQUENCE_VALUE_OVERFLOW,
+                        PERL_APPEND_WARNING_UTF8_NON_UNICODE_SEQUENCE_VALUE_OVERFLOW,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        overflow_sequence_bytes,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NON_UNICODE_SEQUENCE_VALUE_OVERFLOW(PL_op) : "");
+                }
+                else if (structured_extended_sequence_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_SEQUENCE_PREFIX,
+                        PERL_APPEND_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_SEQUENCE_PREFIX,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        extended_sequence_prefix,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_SEQUENCE_PREFIX(PL_op) : "");
+                }
+                else if (structured_non_unicode_sequence_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_NON_UNICODE_ABOVE_UNICODE_SEQUENCE_PREFIX,
+                        PERL_APPEND_WARNING_UTF8_NON_UNICODE_ABOVE_UNICODE_SEQUENCE_PREFIX,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        non_unicode_sequence_prefix,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NON_UNICODE_ABOVE_UNICODE_SEQUENCE_PREFIX(PL_op) : "");
+                }
+                else if (structured_extended_codepoint_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT,
+                        PERL_APPEND_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        input_uv,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT(PL_op) : "");
+                }
+                else if (structured_super_codepoint_warning) {
+                    PERL_UTF8_WARN_OR_APPEND(exception_slot, pack_warn,
+                        PERL_WARN_WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX,
+                        PERL_APPEND_WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX,
+                        PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                        input_uv,
+                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX(PL_op) : "");
                 }
                 else {
-                    warner(pack_warn, "%s", message);
+                    PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_DECODER_PROBLEM_UNHANDLED(this_problem);
                 }
 
                 if (UNLIKELY(flags & ( UTF8_DIE_IF_MALFORMED
@@ -2677,7 +2964,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
 
         if (disallowed) {
             if ((flags & ~UTF8_CHECK_ONLY) & UTF8_DIE_IF_MALFORMED) {
-                croak("Malformed UTF-8 character (fatal)");
+                PERL_THROW_ERROR_UNICODE_UTF8_CHARACTER_MALFORMED();
             }
 
             success = false;
@@ -2692,6 +2979,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
     *cp_p = UNI_TO_NATIVE(uv);
     return success;
 }
+#undef PERL_UTF8_WARN_OR_APPEND
 
 /*
 =for apidoc utf8_length
@@ -2757,10 +3045,11 @@ Perl_utf8_length(pTHX_ const U8 * const s0, const U8 * const e)
 
       warn_and_return:
         if (PL_op)
-            ck_warner_d(packWARN(WARN_UTF8),
-                        "%s in %s", unees, OP_DESC(PL_op));
+            PERL_WARN_WARNING_UTF8_TRUNCATED_SEQUENCE_IN_OPERATION(
+                PERL_DIAG_WORD_OPERATION(PL_op->op_type),
+                PERL_DIAG_OP_DESC_WARNING_UTF8_TRUNCATED_SEQUENCE_IN_OPERATION(PL_op));
         else
-            ck_warner_d(packWARN(WARN_UTF8), "%s", unees);
+            PERL_WARN_WARNING_UTF8_TRUNCATED_SEQUENCE_WITHOUT_OPERATION();
 
         return s - s0;
     }
@@ -2875,19 +3164,24 @@ Perl_bytes_cmp_utf8(pTHX_ const U8 *b, STRLEN blen, const U8 *u, STRLEN ulen)
                         c = EIGHT_BIT_UTF8_TO_NATIVE(c, c1);
                     } else {
                         /* diag_listed_as: Malformed UTF-8 character%s */
-                        ck_warner_d(packWARN(WARN_UTF8),
-                                    "%s %s%s",
-                                    unexpected_non_continuation_text(u - 2, 2, 1, 2),
-                                    PL_op ? " in " : "",
-                                    PL_op ? OP_DESC(PL_op) : "");
+                        PERL_WARN_WARNING_UTF8_TWO_BYTE_SEQUENCE_CONTINUATION_INVALID(
+                            PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                            byte_dump_string_(u - 2, 2, 0),
+                            *(u - 1),
+                            *(u - 2),
+                            PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                            PL_op
+                                ? PERL_DIAG_OP_DESC_WARNING_UTF8_TWO_BYTE_SEQUENCE_CONTINUATION_INVALID(PL_op)
+                                : "");
                         return -2;
                     }
                 } else {
                     if (PL_op)
-                        ck_warner_d(packWARN(WARN_UTF8),
-                                    "%s in %s", unees, OP_DESC(PL_op));
+                        PERL_WARN_WARNING_UTF8_TRUNCATED_SEQUENCE_IN_OPERATION(
+                            PERL_DIAG_WORD_OPERATION(PL_op->op_type),
+                            PERL_DIAG_OP_DESC_WARNING_UTF8_TRUNCATED_SEQUENCE_IN_OPERATION(PL_op));
                     else
-                        ck_warner_d(packWARN(WARN_UTF8), "%s", unees);
+                        PERL_WARN_WARNING_UTF8_TRUNCATED_SEQUENCE_WITHOUT_OPERATION();
                     return -2; /* Really want to return undef :-)  */
                 }
             } else {
@@ -3496,8 +3790,7 @@ Perl_utf16_to_utf8_base(pTHX_ U8* p, U8* d, Size_t bytelen, Size_t *newlen,
     U8* dstart = d;
 
     if (isODD(bytelen))
-        croak("panic: utf16_to_utf8%s: odd bytelen %" UVuf,
-                ((high_byte == 0) ? "" : "_reversed"), (UV)bytelen);
+        PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF16_CONVERSION_BYTE_LENGTH_ODD(((high_byte == 0) ? "" : "_reversed"), (UV)bytelen);
     pend = p + bytelen;
 
     while (p < pend) {
@@ -3519,14 +3812,14 @@ Perl_utf16_to_utf8_base(pTHX_ U8* p, U8* d, Size_t bytelen, Size_t *newlen,
 #define FIRST_IN_PLANE1      0x10000
 
             if (UNLIKELY(p >= pend) || UNLIKELY(uv > LAST_HIGH_SURROGATE)) {
-                croak("Malformed UTF-16 surrogate");
+                PERL_THROW_ERROR_UNICODE_UTF16_SURROGATE_PAIR_INVALID();
             }
             else {
                 U32 low_surrogate = (p[(U8) high_byte] << 8) + p[(U8) low_byte];
                 if (UNLIKELY(! inRANGE(low_surrogate, FIRST_LOW_SURROGATE,
                                                        LAST_LOW_SURROGATE)))
                 {
-                    croak("Malformed UTF-16 surrogate");
+                    PERL_THROW_ERROR_UNICODE_UTF16_SURROGATE_PAIR_INVALID();
                 }
 
                 p += 2;
@@ -3681,9 +3974,7 @@ Perl_to_upper_title_latin1_(pTHX_ const U8 c, U8* p, STRLEN *lenp,
                 return 'S';
 #endif
             default:
-                croak("panic: to_upper_title_latin1 did not expect"
-                                 " '%c' to map to '%c'",
-                                 c, LATIN_SMALL_LETTER_Y_WITH_DIAERESIS);
+                PERL_PANIC_ERROR_INTERNAL_UNICODE_CASE_MAPPING_LATIN1_OUTLIER_UNEXPECTED(c, LATIN_SMALL_LETTER_Y_WITH_DIAERESIS);
                 NOT_REACHED; /* NOTREACHED */
         }
     }
@@ -3938,52 +4229,7 @@ Perl_to_uni_fold_flags_(pTHX_ UV c, U8* p, STRLEN *lenp, U8 flags)
     }
 }
 
-#if 0	/* Not currently used, but may be needed in the future */
-PERLVAR(I, seen_deprecated_macro, HV *)
 
-static void
-S_warn_on_first_deprecated_use(pTHX_ U32 category,
-                                     const char * const name,
-                                     const char * const alternative,
-                                     const bool use_locale,
-                                     const char * const file,
-                                     const unsigned line)
-{
-    PERL_ARGS_ASSERT_WARN_ON_FIRST_DEPRECATED_USE;
-
-    const char * key;
-
-    if (ckWARN_d(category)) {
-
-        key = form("%s;%d;%s;%d", name, use_locale, file, line);
-        if (! hv_fetch(PL_seen_deprecated_macro, key, strlen(key), 0)) {
-            if (! PL_seen_deprecated_macro) {
-                PL_seen_deprecated_macro = newHV();
-            }
-            if (! hv_store(PL_seen_deprecated_macro, key,
-                           strlen(key), &PL_sv_undef, 0))
-            {
-                croak("panic: hv_store() unexpectedly failed");
-            }
-
-            if (instr(file, "mathoms.c")) {
-                warner(category,
-                       "In %s, line %d, starting in Perl v5.32, %s()"
-                       " will be removed.  Avoid this message by"
-                       " converting to use %s().\n",
-                       file, line, name, alternative);
-            }
-            else {
-                warner(category,
-                       "In %s, line %d, starting in Perl v5.32, %s() will"
-                       " require an additional parameter.  Avoid this"
-                       " message by converting to use %s().\n",
-                       file, line, name, alternative);
-            }
-        }
-    }
-}
-#endif
 
 /* returns the number of bytes comprising the UTF8-encoded character that
  * starts at <p>, and extending no further than <e - 1> if it is in the
@@ -4073,21 +4319,19 @@ S_to_case_cp_list(pTHX_
          * points */
         if (isUNICODE_POSSIBLY_PROBLEMATIC(original)) {
             if (UNLIKELY(UNICODE_IS_SURROGATE(original))) {
-                ck_warner_d(packWARN(WARN_SURROGATE),
-                            "Operation \"%s\" returns its argument for"
-                            " UTF-16 surrogate U+%04" UVXf,
-                            (PL_op) ? OP_DESC(PL_op) : normal,
-                            original);
+                PERL_WARN_WARNING_UTF8_SURROGATE_CASE_MAPPING_RETURNS_SURROGATE_UNCHANGED(
+                    PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                    (PL_op) ? PERL_DIAG_OP_DESC_WARNING_UTF8_SURROGATE_CASE_MAPPING_RETURNS_SURROGATE_UNCHANGED(PL_op)
+                            : normal, original);
             }
             else if (UNLIKELY(UNICODE_IS_SUPER(original))) {
                 if (UNLIKELY(original > MAX_LEGAL_CP))
-                    croak("%s", form_cp_too_large_msg(16, NULL, 0, original));
+                    Perl_utf8_throw_code_point_too_large(aTHX_ original);
 
-                ck_warner_d(packWARN(WARN_NON_UNICODE),
-                            "Operation \"%s\" returns its argument for"
-                            " non-Unicode code point 0x%04" UVXf,
-                            (PL_op) ? OP_DESC(PL_op) : normal,
-                            original);
+                PERL_WARN_WARNING_UTF8_NON_UNICODE_CASE_MAPPING_RETURNS_SUPER_UNCHANGED(
+                    PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                    (PL_op) ? PERL_DIAG_OP_DESC_WARNING_UTF8_NON_UNICODE_CASE_MAPPING_RETURNS_SUPER_UNCHANGED(PL_op)
+                            : normal, original);
             }
 
             /* Note that non-characters are perfectly legal, so no warning
@@ -4296,10 +4540,9 @@ S_check_locale_boundary_crossing(pTHX_ const U8* const p, const UV result,
     original = valid_utf8_to_uv(p, lenp);
 
     /* diag_listed_as: Can't do %s("%s") on non-UTF-8 locale; resolved to "%s". */
-    ck_warner(packWARN(WARN_LOCALE),
-              "Can't do %s(\"\\x{%" UVXf "}\") on non-UTF-8"
-              " locale; resolved to \"\\x{%" UVXf "}\".",
-              OP_DESC(PL_op), original, original);
+    PERL_WARN_WARNING_LOCALE_CASE_MAPPING_CROSSES_BYTE_BOUNDARY(
+        PERL_DIAG_WORD_OPERATION(PL_op->op_type),
+        PERL_DIAG_OP_DESC_WARNING_LOCALE_CASE_MAPPING_CROSSES_BYTE_BOUNDARY(PL_op), original, original);
     Copy(p, ustrp, *lenp, char);
     return original;
 }
@@ -4616,9 +4859,7 @@ Perl_to_utf8_fold_flags_(pTHX_ const U8 *p,
             if (memBEGINs((char *) p, e - p, CAP_SHARP_S))
             {
                 /* diag_listed_as: Can't do %s("%s") on non-UTF-8 locale; resolved to "%s". */
-                ck_warner(packWARN(WARN_LOCALE),
-                          "Can't do fc(\"\\x{1E9E}\") on non-UTF-8 locale; "
-                          "resolved to \"\\x{17F}\\x{17F}\".");
+                PERL_WARN_WARNING_LOCALE_CAPITAL_SHARP_S_FOLD_SUBSTITUTED();
                 goto return_long_s;
             }
 
@@ -4626,18 +4867,14 @@ Perl_to_utf8_fold_flags_(pTHX_ const U8 *p,
 
             if (memBEGINs((char *) p, e - p, LATIN_SMALL_LIGATURE_LONG_S_WITH_DESCENDER_S_UTF8)) {
                 /* diag_listed_as: Can't do %s("%s") on non-UTF-8 locale; resolved to "%s". */
-                ck_warner(packWARN(WARN_LOCALE),
-                          "Can't do fc(\"\\x{1DF95}\") on non-UTF-8 locale; "
-                          "resolved to \"\\x{17F}\\x{17F}\".");
+                PERL_WARN_WARNING_LOCALE_DESCENDER_S_LIGATURE_FOLD_SUBSTITUTED();
                 goto return_long_s;
             }
 #  endif
 #endif
             if (memBEGINs((char *) p, e - p, LONG_S_T)) {
                 /* diag_listed_as: Can't do %s("%s") on non-UTF-8 locale; resolved to "%s". */
-                ck_warner(packWARN(WARN_LOCALE),
-                          "Can't do fc(\"\\x{FB05}\") on non-UTF-8 locale; "
-                          "resolved to \"\\x{FB06}\".");
+                PERL_WARN_WARNING_LOCALE_LONG_ST_LIGATURE_FOLD_SUBSTITUTED();
                 goto return_ligature_st;
             }
 
@@ -4653,9 +4890,7 @@ Perl_to_utf8_fold_flags_(pTHX_ const U8 *p,
              * this release) */
             if (memBEGINs((char *) p, e - p, DOTTED_I)) {
                 /* diag_listed_as: Can't do %s("%s") on non-UTF-8 locale; resolved to "%s". */
-                ck_warner(packWARN(WARN_LOCALE),
-                          "Can't do fc(\"\\x{0130}\") on non-UTF-8 locale; "
-                          "resolved to \"\\x{0131}\".");
+                PERL_WARN_WARNING_LOCALE_DOTTED_I_FOLD_SUBSTITUTED();
                 goto return_dotless_i;
             }
 #endif
@@ -4777,8 +5012,10 @@ Perl_check_utf8_print(pTHX_ const U8* s, const STRLEN len)
 
     while (s < e) {
         if (UTF8SKIP(s) > len) {
-            ck_warner_d(packWARN(WARN_UTF8),
-                        "%s in %s", unees, PL_op ? OP_DESC(PL_op) : "print");
+            PERL_WARN_WARNING_UTF8_TRUNCATED_SEQUENCE_IN_OPERATION(
+                PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
+                PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_TRUNCATED_SEQUENCE_IN_OPERATION(PL_op)
+                      : "print");
             return FALSE;
         }
         if (UNLIKELY(isUTF8_POSSIBLY_PROBLEMATIC(*s))) {
@@ -4799,9 +5036,7 @@ Perl_check_utf8_print(pTHX_ const U8* s, const STRLEN len)
                      * function would output, so can't just call it, unlike we
                      * do for the non-chars and above-unicodes */
                     UV uv = utf8_to_uv_or_die(s, e, NULL);
-                    warner(packWARN(WARN_SURROGATE),
-                           "Unicode surrogate U+%04" UVXf " is illegal in UTF-8",
-                           uv);
+                    PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_IN_OUTPUT(uv);
                     ok = FALSE;
                 }
             }

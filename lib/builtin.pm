@@ -1,4 +1,4 @@
-package builtin 0.020;
+package builtin 0.021;
 
 use v5.40;
 
@@ -28,6 +28,7 @@ builtin - Perl pragma to import built-in utility functions
         is_tainted
         export_lexically
         load_module
+        get_diagnostic_data
         package_implements
         class_object_to_hash class_object_from_hash
     );
@@ -211,6 +212,43 @@ must not rely on combining separate requests producing the same result as one
 larger request.
 
 Available starting with Perl 5.46.
+
+=head2 get_diagnostic_data
+
+    $metadata = get_diagnostic_data($number_or_code);
+
+This function is currently B<experimental>.
+
+Looks up a diagnostic by its unsigned catalog number or code string. It
+returns C<undef> when the identifier is malformed or does not identify a
+catalog entry. Each successful call returns a fresh hash reference.
+
+The result includes the diagnostic's severity, kind, parameters, selectors,
+and available translated template cases. Parameter metadata distinguishes
+captured parameters and raw C inputs from the template parameters and
+selector-only values. Template cases contain named placeholders and explicit
+selector criteria. Each case's C<template_parameters> lists its dense
+positional arguments in display order. C<retained_only_parameters> lists
+captured parameters kept for
+other cases or fallback but not supplied to this template. A complete exact
+message therefore has no template arguments even when a wildcard case uses
+the same captured display value. Selector entries report the selector field
+width in bits as C<value_width> (8 or 16). This describes the internal
+packed-key layout, not a durable selector ID. Translations are read from
+registered language packs and the permanent English catalog;
+the separate fallback field describes the English fallback used when a
+requested language has no matching case.
+
+The result also exposes the proposed C<class>, C<allowed_class>, C<role>,
+C<category_policy>, C<grouping_role>, C<leaf_only>, and C<review_status> used
+by the diagnostic hierarchy. C<dynamic_category> distinguishes warnings whose
+category is selected at runtime; their class policy uses the runtime warning
+category's lowest common ancestor while preserving the exact category list.
+
+The function reads catalog data directly without loading language packs.
+Use C<use XPerl::DiagPack qw(all)> to inspect all installed translations. It does
+not emit or render a diagnostic, and changing the returned data does not
+change a catalog.
 
 =head2 weaken
 
@@ -510,15 +548,6 @@ C<load_module> can't be used to require a particular version of Perl, nor can
 it be given a bareword module name as an argument.
 
 Available starting with Perl 5.40.
-
-=head2 package_implements
-
-    package_implements($package_or_object, $role)
-
-This experimental builtin performs the core role-composition check without
-dispatching the object's C<implements> or C<DOES> methods.  It is the
-authoritative implementation used by the default C<implements> method of
-classes and roles declared with the class feature.
 
 =head2 class_object_to_hash
 

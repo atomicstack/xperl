@@ -7,7 +7,6 @@ execute_wildcard               # F added by devel/scanprov
 FEATURE_INDIRECT_BIT           # Z added by devel/scanprov
 FEATURE_INDIRECT_IS_ENABLED    # Z added by devel/scanprov
 FILL_ADVANCE_NODE_ARGp         # Z added by devel/scanprov
-load_charnames                 # F added by devel/scanprov
 PL_mbrlen_ps                   # Z added by devel/scanprov
 PL_mbrtowc_ps                  # Z added by devel/scanprov
 PL_wcrtomb_ps                  # Z added by devel/scanprov

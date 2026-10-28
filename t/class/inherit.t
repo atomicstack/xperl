@@ -61,6 +61,13 @@ no warnings 'experimental::class';
         ':isa() version test can throw');
     like($@, qr/^Testcase2A version 2\.0 required--this is only version 1\.23 at /,
         'Exception thrown from :isa version test');
+
+    ok(!defined eval "class Testcase2D :isa(Testcase2A 1__2) {}; 1",
+        ':isa() rejects malformed version syntax');
+    is(${^ERROR_OBJ}->contents->[0]->code, 'ERROR_VALUE_VERSION_FORMAT_INVALID',
+        'malformed :isa() version uses a catalog diagnostic');
+    like($@, qr/^Invalid version format \(misplaced underscore\) at /,
+        'malformed :isa() version preserves its wording and location');
 }
 
 {

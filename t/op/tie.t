@@ -91,7 +91,7 @@ use Tie::Hash ;
 $a = tie %h, Tie::StdHash;
 untie %h;
 EXPECT
-untie attempted while 1 inner references still exist at - line 6.
+untie attempted while 1 inner reference still exists at - line 6.
 ########
 
 # strict behaviour, with 1 extra references via tied generating an error
@@ -101,7 +101,7 @@ tie %h, Tie::StdHash;
 $a = tied %h;
 untie %h;
 EXPECT
-untie attempted while 1 inner references still exist at - line 7.
+untie attempted while 1 inner reference still exists at - line 7.
 ########
 
 # strict behaviour, with 1 extra references which are destroyed

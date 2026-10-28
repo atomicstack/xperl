@@ -249,14 +249,14 @@ Perl_output_non_portable(pTHX_ const U8 base)
         which = "Hexadecimal number > 0xffffffff";
         break;
       default:
-        croak("panic: Unexpected numeric base %d", base);
+        PERL_PANIC_ERROR_INTERNAL_NUMERIC_CONVERSION_BASE_UNSUPPORTED(base);
     }
 
     /* Also there are diag listings for the others.  That's because, since
      * %s is the first thing in the message, it would be hard for a user to
      * find them there */
     /* diag_listed_as: Hexadecimal number > 0xffffffff non-portable */
-    ck_warner(packWARN(WARN_PORTABLE), "%s non-portable", which);
+    PERL_WARN_WARNING_PORTABLE_INTEGER_LITERAL_EXCEEDS_32_BITS(which);
 }
 
 UV
@@ -619,12 +619,12 @@ Other compromises kick in only when the result is within a digit of overflowing.
     if (s < e && *s) {  /* *s is to keep a terminating NUL from warning */
         if (! (input_flags & PERL_SCAN_SILENT_ILLDIGIT) && ckWARN(WARN_DIGIT))
         {
-            const char * base_name;
+            U16 radix;
 
             switch (base) {
               default: goto bad_base;
-              case 2:  base_name = "binary";      break;
-              case 16: base_name = "hexadecimal"; break;
+              case 2:  radix = perl_diag_selector_domain_2116_0_binary_1;      break;
+              case 16: radix = perl_diag_selector_domain_2116_0_hexadecimal_2; break;
               case 10: /* Base 10 historically has not raised warnings here */
                 goto illegal_warning_done;
               case 8:
@@ -638,12 +638,11 @@ Other compromises kick in only when the result is within a digit of overflowing.
                     goto illegal_warning_done;
                 }
 
-                base_name = "octal";
+                radix = perl_diag_selector_domain_2116_0_octal_3;
                 break;
             }
 
-            warner(packWARN(WARN_DIGIT), "Illegal %s digit '%c' ignored",
-                                         base_name, *s);
+            PERL_WARN_WARNING_SYNTAX_DIGIT_INVALID_RADIX_DIGIT_IGNORED(radix, *s);
           illegal_warning_done: ;
         }
 
@@ -661,7 +660,7 @@ Other compromises kick in only when the result is within a digit of overflowing.
     return accumulated;
 
   bad_base:
-    croak("panic: Unexpected numeric base %d", base);
+    PERL_PANIC_ERROR_INTERNAL_NUMERIC_CONVERSION_BASE_UNSUPPORTED(base);
 
   overflowed: ;
 
@@ -691,19 +690,18 @@ Other compromises kick in only when the result is within a digit of overflowing.
             *flags |= PERL_SCAN_SILENT_OVERFLOW;
         }
         else if (ckWARN_d(WARN_OVERFLOW)) {
-            const char * base_name;
+            U16 radix;
 
             switch (base) {
               default: goto bad_base;
-              case 2:  base_name = "binary";      break;
-              case 8:  base_name = "octal";       break;
-              case 16: base_name = "hexadecimal"; break;
+              case 2:  radix = perl_diag_selector_domain_2116_0_binary_1;      break;
+              case 8:  radix = perl_diag_selector_domain_2116_0_octal_3;       break;
+              case 16: radix = perl_diag_selector_domain_2116_0_hexadecimal_2; break;
               case 10: /* Base 10 historically has not raised a warning here */
                 goto overflow_warning_done;
             }
 
-            warner(packWARN(WARN_OVERFLOW), "Integer overflow in %s number",
-                                            base_name);
+            PERL_WARN_WARNING_OVERFLOW_INTEGER_LITERAL_RANGE_EXCEEDED(radix);
           overflow_warning_done: ;
         }
 

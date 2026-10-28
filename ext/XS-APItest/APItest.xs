@@ -200,6 +200,164 @@ START_MY_CXT
 
 #include "APItest_magicv2.inc"
 
+#include "../../diag_template_match.h"
+
+#include "diag_match_fixture.inc"
+
+#include "../../diagpack.h"
+
+typedef struct {
+    const perl_diagpack_engine *original;
+    perl_diagpack_engine replacement;
+} APItest_diagpack_override_t;
+
+static APItest_diagpack_override_t APItest_diagpack_overrides[4];
+
+static perl_diagpack_catalog APItest_partial_catalog;
+static perl_diagpack_engine APItest_partial_engine;
+static perl_diag_template_t APItest_partial_templates[4];
+static const perl_diagpack_schema_t *APItest_partial_schemas[4];
+static perl_diag_template_case_t APItest_partial_cases[2048];
+static perl_diag_selector_t APItest_partial_selectors[1];
+
+static UV
+APItest_diagpack_row(const perl_diagpack_catalog *catalog, UV number)
+{
+    for (UV index = 1; index < catalog->template_count; index++)
+        if (catalog->schemas[index]
+            && catalog->schemas[index]->diagnostic_number == number)
+            return index;
+    return 0;
+}
+
+static SV *
+APItest_diagpack_partial_render(pTHX_ const perl_diagpack_engine *engine,
+                                const perl_diagpack_input *input)
+{
+    SV *rendered = Perl_diagpack_render_catalog(aTHX_ engine, input);
+    if (rendered)
+        sv_insert(rendered, 0, 0, "partial: ", sizeof("partial: ") - 1);
+    return rendered;
+}
+
+static void
+APItest_diagpack_make_partial(pTHX_ const perl_diagpack_engine *base)
+{
+    UV first = APItest_diagpack_row(base->catalog, 1429);
+    UV second = APItest_diagpack_row(base->catalog, 2743);
+    UV third = APItest_diagpack_row(base->catalog, 2618);
+    if (!first || !second || !third)
+        Perl_croak(aTHX_ "partial catalog test rows are unavailable");
+
+    APItest_partial_catalog = *base->catalog;
+    APItest_partial_templates[0] = base->catalog->templates[0];
+    APItest_partial_schemas[0] = NULL;
+    APItest_partial_templates[1] = base->catalog->templates[first];
+    APItest_partial_schemas[1] = base->catalog->schemas[first];
+    APItest_partial_templates[2] = base->catalog->templates[second];
+    APItest_partial_schemas[2] = base->catalog->schemas[second];
+    APItest_partial_templates[3] = base->catalog->templates[third];
+    APItest_partial_schemas[3] = base->catalog->schemas[third];
+    {
+        const perl_diag_template_t *source = &base->catalog->templates[third];
+        bool found_context = FALSE;
+        for (U8 index = 0; index < source->selector_count; index++) {
+            if (strEQ(source->selectors[index].name, "context")) {
+                APItest_partial_selectors[0] = source->selectors[index];
+                found_context = TRUE;
+                break;
+            }
+        }
+        if (!found_context)
+            Perl_croak(aTHX_ "partial selector subset test row is unavailable");
+        APItest_partial_templates[3].selector_count = 1;
+        APItest_partial_templates[3].selectors = APItest_partial_selectors;
+    }
+    UV case_count = 1;
+    APItest_partial_cases[0] = base->catalog->cases[0];
+    for (U8 row = 1; row <= 3; row++) {
+        const UV source_index = row == 1 ? first : row == 2 ? second : third;
+        const UV number = APItest_partial_schemas[row]->diagnostic_number;
+        UV source_case = base->catalog->templates[source_index].first_case;
+        APItest_partial_templates[row].first_case = case_count;
+        while (source_case < base->catalog->case_count
+               && base->catalog->cases[source_case].diagnostic_number == number) {
+            if (case_count + 1 >= C_ARRAY_LENGTH(APItest_partial_cases))
+                Perl_croak(aTHX_ "partial catalog case fixture exceeds static capacity");
+            APItest_partial_cases[case_count++] = base->catalog->cases[source_case++];
+        }
+    }
+    Zero(&APItest_partial_cases[case_count], 1, perl_diag_template_case_t);
+    APItest_partial_catalog.templates = APItest_partial_templates;
+    APItest_partial_catalog.template_count = C_ARRAY_LENGTH(APItest_partial_templates);
+    APItest_partial_catalog.schemas = APItest_partial_schemas;
+    APItest_partial_catalog.cases = APItest_partial_cases;
+    APItest_partial_catalog.case_count = case_count + 1;
+
+    APItest_partial_engine = *base;
+    APItest_partial_engine.catalog = &APItest_partial_catalog;
+    APItest_partial_engine.render = APItest_diagpack_partial_render;
+}
+
+static perl_diagpack_catalog APItest_bad_catalog;
+static perl_diagpack_engine APItest_bad_engine;
+static perl_diag_template_t APItest_bad_templates[2048];
+static const perl_diagpack_schema_t *APItest_bad_schemas[2048];
+static perl_diagpack_schema_t APItest_bad_schema_row;
+static perl_diagpack_param_schema_t APItest_bad_params[4096];
+static perl_diag_selector_t APItest_bad_selectors[7];
+
+static SV *
+APItest_diagpack_poison_render(pTHX_ const perl_diagpack_engine *engine,
+                               const perl_diagpack_input *input)
+{
+    PERL_UNUSED_ARG(engine);
+    if (input->param_count && input->params[0].value)
+        sv_setpvs(input->params[0].value, "poisoned parameter");
+    if (input->arguments) {
+        SV **value = av_fetch(input->arguments, 0, FALSE);
+        if (value)
+            sv_setpvs(*value, "poisoned display value");
+    }
+    return NULL;
+}
+
+static SV *
+APItest_diagpack_override_render(pTHX_ const perl_diagpack_engine *engine,
+                                 const perl_diagpack_input *input)
+{
+    PERL_UNUSED_ARG(engine);
+    PERL_UNUSED_ARG(input);
+    PERL_UNUSED_CONTEXT;
+    return newSVpvs("registered English replacement");
+}
+
+static SV *
+APItest_diagpack_partial_override_render(pTHX_ const perl_diagpack_engine *engine,
+                                         const perl_diagpack_input *input)
+{
+    PERL_UNUSED_ARG(engine);
+    if (input->diagnostic_number == 1429)
+        return newSVpvs("registered English partial override");
+    return NULL;
+}
+
+static U8
+APItest_diagpack_override_plural(pTHX_ UV n)
+{
+    PERL_UNUSED_CONTEXT;
+    PERL_UNUSED_ARG(n);
+    return perl_diag_selector_plural_two;
+}
+
+static U8
+APItest_diagpack_invalid_plural(pTHX_ UV n)
+{
+    PERL_UNUSED_CONTEXT;
+    PERL_UNUSED_ARG(n);
+    return 255;
+}
+
 /* indirect functions to test the [pa]MY_CXT macros */
 
 int
@@ -1022,6 +1180,10 @@ INCLUDE: APItest_optree_multicall.xs
 INCLUDE: APItest_runtime_helpers.xs
 
 INCLUDE: APItest_runtime_utils.xs
+
+INCLUDE: APItest_diag_match.xs
+
+INCLUDE: APItest_sv_copy.xs
 
 INCLUDE: APItest_sv_compare_custom.xs
 

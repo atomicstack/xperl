@@ -387,7 +387,7 @@ Perl_new_invlist_C_array_(pTHX_ const UV* const list)
     SV* invlist = newSV_type(SVt_INVLIST);
 
     if (version_id != INVLIST_VERSION_ID) {
-        croak("panic: Incorrect version for previously generated inversion list");
+        PERL_PANIC_ERROR_INTERNAL_UNICODE_INVERSION_LIST_GENERATED_VERSION_MISMATCH();
     }
 
     /* The generated array passed in includes header elements that aren't part
@@ -446,11 +446,7 @@ S_append_range_to_invlist_(pTHX_ SV* const invlist,
         if (   array[final_element] > start
             || ELEMENT_RANGE_MATCHES_INVLIST(final_element))
         {
-            croak("panic: attempting to append to an inversion list, but "
-                             "wasn't at the end of the list, final = %" UVuf 
-                             ", start = %" UVuf ", match = %c",
-                     array[final_element], start,
-                     ELEMENT_RANGE_MATCHES_INVLIST(final_element) ? 't' : 'f');
+            PERL_PANIC_ERROR_INTERNAL_UNICODE_INVERSION_LIST_APPEND_ORDER_INVALID(array[final_element], start, ELEMENT_RANGE_MATCHES_INVLIST(final_element) ? 't' : 'f');
         }
 
         /* Here, it is a legal append.  If the new range begins 1 above the end

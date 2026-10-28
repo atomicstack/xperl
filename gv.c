@@ -68,20 +68,20 @@ Perl_gv_add_by_type(pTHX_ GV *gv, svtype type)
          && SvTYPE((const SV *)gv) != SVt_PVLV
         )
     ) {
-        const char *what;
+        const char *symbol_kind;
         if (type == SVt_PVIO) {
             /*
              * if it walks like a dirhandle, then let's assume that
              * this is a dirhandle.
              */
-            what = OP_IS_DIRHOP(PL_op->op_type) ?
+            symbol_kind = OP_IS_DIRHOP(PL_op->op_type) ?
                 "dirhandle" : "filehandle";
         } else if (type == SVt_PVHV) {
-            what = "hash";
+            symbol_kind = "hash";
         } else {
-            what = type == SVt_PVAV ? "array" : "scalar";
+            symbol_kind = type == SVt_PVAV ? "array" : "scalar";
         }
-        croak("Bad symbol for %s", what);
+        PERL_THROW_ERROR_SYMBOL_TABLE_SLOT_SYMBOL_INVALID(PERL_DIAG_SELECTOR_FROM_ERROR_SYMBOL_TABLE_SLOT_SYMBOL_INVALID_SYMBOL_KIND(symbol_kind));
     }
 
     if (type == SVt_PVHV) {
@@ -480,8 +480,7 @@ Perl_gv_init_pvn(pTHX_ GV *gv, HV *stash, const char *name, STRLEN len, U32 flag
         case SVt_PVHV:
         case SVt_PVFM:
         case SVt_PVIO:
-            croak("Cannot convert a reference to %s to typeglob",
-                       sv_reftype(has_constant, 0));
+            PERL_THROW_ERROR_TYPE_GLOB_CONSTANT_CONVERSION_UNSUPPORTED(sv_reftype(has_constant, 0));
             NOT_REACHED; /* NOTREACHED */
             break;
 
@@ -898,7 +897,7 @@ S_gv_fetchmeth_internal(pTHX_ HV* stash, SV* meth, const char* name, STRLEN len,
     hvname = HvNAME_get(stash);
     hvnamelen = HvNAMELEN_get(stash);
     if (!hvname)
-      croak("Can't use anonymous symbol table for method lookup");
+      PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NAMED_STASH_REQUIRED();
 
     assert(hvname);
     assert(name || meth);
@@ -971,23 +970,12 @@ S_gv_fetchmeth_internal(pTHX_ HV* stash, SV* meth, const char* name, STRLEN len,
                            ( len    && name[0] == '(' )  /* overload.pm related, in particular "()" */
                         || ( memEQs( name, len, "DESTROY") )
                 ) {
-                     ck_warner(packWARN(WARN_SYNTAX),
-                               "Can't locate package %" SVf " for @%" HEKf "::ISA",
-                               SVfARG(linear_sv),
-                               HEKfARG(HvNAME_HEK(stash)));
+                     PERL_WARN_WARNING_SYNTAX_INHERITANCE_PACKAGE_UNAVAILABLE_FOR_SPECIAL_LOOKUP(linear_sv, HvNAME_HEK(stash));
 
                 } else if( memEQs( name, len, "AUTOLOAD") ) {
                     /* gobble this warning */
                 } else {
-                    ck_warner(packWARN(WARN_SYNTAX),
-                              "While trying to resolve method call %.*s->%.*s()"
-                              " can not locate package %" SVf_QUOTEDPREFIX " yet it is mentioned in @%.*s::ISA"
-                              " (perhaps you forgot to load %" SVf_QUOTEDPREFIX "?)",
-                              (int) hvnamelen, hvname,
-                              (int) len, name,
-                              SVfARG(linear_sv),
-                              (int) hvnamelen, hvname,
-                              SVfARG(linear_sv));
+                    PERL_WARN_WARNING_SYNTAX_METHOD_LOOKUP_ANCESTOR_PACKAGE_UNAVAILABLE((int) hvnamelen, hvname, (int) len, name, linear_sv, (int) hvnamelen, hvname, linear_sv);
                 }
             }
             continue;
@@ -1269,11 +1257,8 @@ Perl_gv_fetchmethod_pvn_flags(pTHX_ HV *stash, const char *name, const STRLEN le
                     if (gv)
                         return gv;
                 }
-                croak(
-                           "Can't locate object method %" UTF8f_QUOTEDPREFIX ""
-                           " via package %" HEKf_QUOTEDPREFIX,
-                                    UTF8fARG(is_utf8, name_end - name, name),
-                                    HEKfARG(HvNAME_HEK(stash)));
+                PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NOT_FOUND(is_utf8, name_end - name, name,
+                    newSVhek_mortal(HvNAME_HEK(stash)));
             }
             else {
                 SV* packnamesv;
@@ -1285,12 +1270,7 @@ Perl_gv_fetchmethod_pvn_flags(pTHX_ HV *stash, const char *name, const STRLEN le
                     packnamesv = error_report;
                 }
 
-                croak(
-                           "Can't locate object method %" UTF8f_QUOTEDPREFIX ""
-                           " via package %" SVf_QUOTEDPREFIX ""
-                           " (perhaps you forgot to load %" SVf_QUOTEDPREFIX "?)",
-                           UTF8fARG(is_utf8, name_end - name, name),
-                           SVfARG(packnamesv), SVfARG(packnamesv));
+                PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_PACKAGE_NOT_FOUND(is_utf8, name_end - name, name, packnamesv, packnamesv);
             }
         }
     }
@@ -1428,10 +1408,7 @@ Perl_gv_autoload_pvn(pTHX_ HV *stash, const char *name, STRLEN len, U32 flags)
         !(flags & GV_AUTOLOAD_ISMETHOD)
      && (GvCVGEN(gv) || GvSTASH(gv) != stash)
     )
-        croak("Use of inherited AUTOLOAD for non-method %" SVf
-                         "::%" UTF8f "() is no longer allowed",
-                         SVfARG(packname),
-                         UTF8fARG(is_utf8, len, name));
+        PERL_THROW_ERROR_CALL_LOOKUP_INHERITED_AUTOLOAD_FORBIDDEN(packname, is_utf8, len, name);
 
     if (CvISXSUB(cv)) {
         /* Instead of forcing the XSUB to do another lookup for $AUTOLOAD
@@ -1569,11 +1546,9 @@ S_require_tie_mod(pTHX_ GV *gv, const char varname, const char * name,
         assert(sp == PL_stack_sp);
         stash = gv_stashpvn(name, len, 0);
         if (!stash)
-            croak("panic: Can't use %c%c because %s is not available",
-                    type, varname, name);
+            PERL_PANIC_ERROR_INTERNAL_MUTATION_TIE_BACKEND_PACKAGE_MISSING(type, varname, name);
         else if (! GET_HV_FETCH_TIE_FUNC)
-            croak("panic: Can't use %c%c because %s does not define _tie_it",
-                    type, varname, name);
+            PERL_PANIC_ERROR_INTERNAL_MUTATION_TIE_BACKEND_ENTRY_POINT_MISSING(type, varname, name);
       }
       /* Now call the tie function.  It should be in *gvp.  */
       assert(gvp); assert(*gvp);
@@ -1991,6 +1966,8 @@ S_find_default_stash(pTHX_ HV **stash, const char *name, STRLEN len,
                const U32 is_utf8, const I32 add,
                const svtype sv_type)
 {
+    bool strict_vars_failure = FALSE;
+
     PERL_ARGS_ASSERT_FIND_DEFAULT_STASH;
 
     /* No stash in name, so see how we can default */
@@ -2014,25 +1991,19 @@ S_find_default_stash(pTHX_ HV **stash, const char *name, STRLEN len,
                     SvTYPE(*gvp) != SVt_PVGV)
                 {
                     *stash = NULL;
+                    strict_vars_failure = TRUE;
                 }
                 else if ((sv_type == SVt_PV   && !GvIMPORTED_SV(*gvp)) ||
                          (sv_type == SVt_PVAV && !GvIMPORTED_AV(*gvp)) ||
                          (sv_type == SVt_PVHV && !GvIMPORTED_HV(*gvp)) )
                 {
                     /* diag_listed_as: Variable "%s" is not imported%s */
-                    ck_warner_d(
-                        packWARN(WARN_MISC),
-                        "Variable \"%c%" UTF8f "\" is not imported",
-                        sv_type == SVt_PVAV ? '@' :
-                        sv_type == SVt_PVHV ? '%' : '$',
-                        UTF8fARG(is_utf8, len, name));
+                    PERL_WARN_WARNING_MISC_VARIABLE_NOT_IMPORTED(sv_type == SVt_PVAV ? '@' :
+                        sv_type == SVt_PVHV ? '%' : '$', len, name, is_utf8);
                     if (GvCVu(*gvp))
-                        ck_warner_d(
-                            packWARN(WARN_MISC),
-                            "\t(Did you mean &%" UTF8f " instead?)\n",
-                            UTF8fARG(is_utf8, len, name)
-                        );
+                        PERL_WARN_WARNING_MISC_VARIABLE_NOT_IMPORTED_SUBROUTINE_HINT(is_utf8, len, name);
                     *stash = NULL;
+                    strict_vars_failure = TRUE;
                 }
             }
         }
@@ -2045,18 +2016,14 @@ S_find_default_stash(pTHX_ HV **stash, const char *name, STRLEN len,
     if (!*stash) {
         if (add && !PL_in_clean_all) {
             GV *gv;
-            defer_error(mess(
-                 "Global symbol \"%s%" UTF8f
-                 "\" requires explicit package name (did you forget to "
-                 "declare \"my %s%" UTF8f "\"?)",
-                 (sv_type == SVt_PV ? "$"
-                  : sv_type == SVt_PVAV ? "@"
-                  : sv_type == SVt_PVHV ? "%"
-                  : ""), UTF8fARG(is_utf8, len, name),
-                 (sv_type == SVt_PV ? "$"
-                  : sv_type == SVt_PVAV ? "@"
-                  : sv_type == SVt_PVHV ? "%"
-                  : ""), UTF8fARG(is_utf8, len, name)));
+            PERL_ADD_COMPILE_ERR_ERROR_STRICT_VARS_GLOBAL_SYMBOL_REQUIRES_EXPLICIT_PACKAGE_NAME(
+                (sv_type == SVt_PV ? "$"
+                 : sv_type == SVt_PVAV ? "@"
+                 : sv_type == SVt_PVHV ? "%"
+                 : ""), len, name, is_utf8);
+            if (strict_vars_failure)
+                Perl_diag_reclassify_last(aTHX_ &PL_pending_exception,
+                    "XPerl::Diagnostic::Error::Strict::Vars");
             /* To maintain the output of errors after the strict exception
              * above, and to keep compat with older releases, rather than
              * placing the variables in the pad, we place
@@ -2398,7 +2365,7 @@ S_gv_magicalize(pTHX_ GV *gv, HV *stash, const char *name, STRLEN len,
           case '#':		/* $# */
             if (sv_type == SVt_PV)
                 /* diag_listed_as: $* is no longer supported as of Perl 5.30 */
-                croak("$%c is no longer supported as of Perl 5.30", *name);
+                PERL_THROW_ERROR_SYMBOL_TABLE_OBSOLETE_SPECIAL_VARIABLE(*name);
             break;
           case '\010':	/* $^H */
             {
@@ -2498,7 +2465,7 @@ S_maybe_multimagic_gv(pTHX_ GV *gv, const char *name, const svtype sv_type)
     } else if (sv_type == SVt_PV) {
         if (*name == '*' || *name == '#') {
             /* diag_listed_as: $* is no longer supported as of Perl 5.30 */
-            croak("$%c is no longer supported as of Perl 5.30", *name);
+            PERL_THROW_ERROR_SYMBOL_TABLE_OBSOLETE_SPECIAL_VARIABLE(*name);
         }
     }
     if (sv_type==SVt_PV || sv_type==SVt_PVGV) {
@@ -2689,9 +2656,7 @@ Perl_gv_fetchpvn_flags(pTHX_ const char *nambeg, STRLEN full_len, I32 flags,
     faking_it = SvOK(gv);
 
     if (add & GV_ADDWARN)
-        ck_warner_d(packWARN(WARN_INTERNAL),
-                "Had to create %" UTF8f " unexpectedly",
-                 UTF8fARG(is_utf8, name_end-nambeg, nambeg));
+        PERL_WARN_WARNING_SEVERE_INTERNAL_SYMBOL_CREATED_DURING_LOOKUP(is_utf8, name_end-nambeg, nambeg);
     gv_init_pvn(gv, stash, name, len, (add & GV_ADDMULTI)|is_utf8);
 
     if (   full_len != 0
@@ -2835,18 +2800,10 @@ Perl_gv_check(pTHX_ HV *stash)
                     = gv_fetchfile_flags(file, HEK_LEN(GvFILE_HEK(gv)), 0);
 #endif
                 if (GvONCE_FATAL(gv)) {
-                    fatal_warner(packWARN(WARN_ONCE),
-                                 "Name \"%" HEKf "::%" HEKf
-                                 "\" used only once: possible typo",
-                                 HEKfARG(HvNAME_HEK(stash)),
-                                 HEKfARG(GvNAME_HEK(gv)));
+                    PERL_THROW_WARNING_ONCE_PACKAGE_NAME_USED_ONCE(HvNAME_HEK(stash), GvNAME_HEK(gv));
                 }
                 else {
-                    warner(packWARN(WARN_ONCE),
-                           "Name \"%" HEKf "::%" HEKf
-                           "\" used only once: possible typo",
-                           HEKfARG(HvNAME_HEK(stash)),
-                           HEKfARG(GvNAME_HEK(gv)));
+                    PERL_WARN_WARNING_ONCE_PACKAGE_NAME_USED_ONCE(HvNAME_HEK(stash), GvNAME_HEK(gv));
                 }
             }
         }
@@ -2916,9 +2873,7 @@ Perl_gp_free(pTHX_ GV *gv)
     if (!gv || !isGV_with_GP(gv) || !(gp = GvGP(gv)))
         return;
     if (gp->gp_refcnt == 0) {
-        ck_warner_d(packWARN(WARN_INTERNAL),
-                    "Attempt to free unreferenced glob pointers"
-                    pTHX__FORMAT pTHX__VALUE);
+        PERL_WARN_WARNING_SEVERE_INTERNAL_UNREFERENCED_GLOB_POINTERS_FREE();
         return;
     }
     if (gp->gp_refcnt > 1) {
@@ -3102,10 +3057,7 @@ Perl_gp_free(pTHX_ GV *gv)
        && !gp->gp_form) break;
 
       if (--attempts == 0) {
-        die(
-          "panic: gp_free failed to free glob pointer - "
-          "something is repeatedly re-creating entries"
-        );
+        PERL_PANIC_ERROR_INTERNAL_SYMBOL_TABLE_GLOB_DESTRUCTION_RECREATION_LIMIT();
       }
     }
 
@@ -3266,15 +3218,9 @@ Perl_Gv_AMupdate(pTHX_ HV *stash, bool destructing)
                                                     ? gvsv
                                                     : newSVpvs_flags("???", SVs_TEMP);
                         /* diag_listed_as: Can't resolve method "%s" overloading "%s" in package "%s" */
-                        croak("%s method \"%" SVf256
-                                    "\" overloading \"%s\" "\
-                                    "in package \"%" HEKf256 "\"",
-                                   (GvCVGEN(gv) ? "Stub found while resolving"
-                                    : "Can't resolve"),
-                                   SVfARG(name), cp,
-                                   HEKfARG(
-                                        HvNAME_HEK(stash)
-                                   ));
+                        PERL_THROW_ERROR_OVERLOAD_METHOD_RESOLUTION_FAILED(
+                            GvCVGEN(gv) ? perl_diag_selector_domain_1757_0_stub_found_2 : perl_diag_selector_domain_1757_0_method_not_found_1,
+                            name, cp, HvNAME_HEK(stash));
                     }
                 }
                 cv = GvCV(gv = ngv);
@@ -3724,7 +3670,7 @@ Perl_amagic_deref_call(pTHX_ SV *ref, int method)
     while ((tmpsv = amagic_call(ref, &PL_sv_undef, method,
                                 AMGf_noright | AMGf_unary))) {
         if (!SvROK(tmpsv))
-            croak("Overloaded dereference did not return a reference");
+            PERL_THROW_ERROR_OVERLOAD_RETURN_VALUE_DEREFERENCE_REFERENCE_REQUIRED();
         if (tmpsv == ref || SvRV(tmpsv) == SvRV(ref)) {
             /* Bail out if it returns us the same reference.  */
             return tmpsv;
@@ -3809,6 +3755,54 @@ Perform overloading even in the context of C<no overloading;>.
 
 =cut
 */
+
+#ifdef DEBUGGING
+static SV *
+Perl_diag_overload_method_not_found_message(pTHX_ const char *operation,
+                                    const char *arity,
+                                    const char *left_overload_state,
+                                    SV *left_package,
+                                    const char *right_overload_state,
+                                    SV *right_package)
+{
+    AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    IV left_state_id = Perl_diag_selector_from_cstr(aTHX_
+        perl_diag_selector_domain_1589_1_id, left_overload_state);
+    IV right_state_id = Perl_diag_selector_from_cstr(aTHX_
+        perl_diag_selector_domain_1589_1_id, right_overload_state);
+
+    SV * const tmpl_operation = Perl_diag_setup_param(aTHX_
+        params_av, perl_diag_error_overload_operation_method_not_found_idx, 0,
+        0, perl_diag_selector_invalid);
+    sv_setpv(tmpl_operation, operation);
+
+    SV * const tmpl_arity = Perl_diag_setup_param(aTHX_
+        params_av, perl_diag_error_overload_operation_method_not_found_idx, 1,
+        0, perl_diag_selector_invalid);
+    sv_setpv(tmpl_arity, arity);
+
+    Perl_diag_setup_param(aTHX_
+        params_av, perl_diag_error_overload_operation_method_not_found_idx, 2,
+        perl_diag_selector_domain_1589_1_id, left_state_id);
+
+    SV * const tmpl_left_package = Perl_diag_setup_param(aTHX_
+        params_av, perl_diag_error_overload_operation_method_not_found_idx, 3,
+        0, perl_diag_selector_invalid);
+    sv_setsv(tmpl_left_package, left_package);
+
+    Perl_diag_setup_param(aTHX_
+        params_av, perl_diag_error_overload_operation_method_not_found_idx, 4,
+        perl_diag_selector_domain_1589_1_id, right_state_id);
+
+    SV * const tmpl_right_package = Perl_diag_setup_param(aTHX_
+        params_av, perl_diag_error_overload_operation_method_not_found_idx, 5,
+        0, perl_diag_selector_invalid);
+    sv_setsv(tmpl_right_package, right_package);
+
+    return Perl_diag_format_template(aTHX_
+        perl_diag_error_overload_operation_method_not_found_idx, params_av);
+}
+#endif
 
 SV*
 Perl_amagic_call(pTHX_ SV *left, SV *right, int method, int flags)
@@ -4036,30 +4030,33 @@ Perl_amagic_call(pTHX_ SV *left, SV *right, int method, int flags)
         /* Skip generating the "no method found" message.  */
         return NULL;
       } else {
-        SV *msg;
+        const char * const operation = AMG_id2name(method + assignshift);
+        const bool is_unary = cBOOL(flags & AMGf_unary);
+        const bool left_has_overload = cBOOL(SvAMAGIC(left));
+        const bool right_has_overload =
+            !is_unary && cBOOL(SvAMAGIC(right));
+        const char * const arity = is_unary ? "unary" : "binary";
+        const char * const left_overload_state = left_has_overload
+            ? "overloaded" : "no_overloaded_magic";
+        const char * const right_overload_state = right_has_overload
+            ? "overloaded" : "no_overloaded_magic";
+        SV * const left_package = left_has_overload
+            ? newSVhek_mortal(HvNAME_HEK(SvSTASH(SvRV(left))))
+            : sv_2mortal(newSVpvs(""));
+        SV * const right_package = right_has_overload
+            ? newSVhek_mortal(HvNAME_HEK(SvSTASH(SvRV(right))))
+            : sv_2mortal(newSVpvs(""));
+
         if (off==-1) off=method;
-        msg = sv_2mortal(newSVpvf(
-                      "Operation \"%s\": no method found,%sargument %s%" SVf "%s%" SVf,
-                      AMG_id2name(method + assignshift),
-                      (flags & AMGf_unary ? " " : "\n\tleft "),
-                      SvAMAGIC(left)?
-                        "in overloaded package ":
-                        "has no overloaded magic",
-                      SvAMAGIC(left)?
-                        SVfARG(newSVhek_mortal(HvNAME_HEK(SvSTASH(SvRV(left))))):
-                        SVfARG(&PL_sv_no),
-                      SvAMAGIC(right)?
-                        ",\n\tright argument in overloaded package ":
-                        (flags & AMGf_unary
-                         ? ""
-                         : ",\n\tright argument has no overloaded magic"),
-                      SvAMAGIC(right)?
-                        SVfARG(newSVhek_mortal(HvNAME_HEK(SvSTASH(SvRV(right))))):
-                        SVfARG(&PL_sv_no)));
         if (use_default_op) {
-          DEBUG_o( deb("%" SVf, SVfARG(msg)) );
+          DEBUG_o( deb("%" SVf, SVfARG(
+              Perl_diag_overload_method_not_found_message(aTHX_
+                  operation, arity, left_overload_state, left_package,
+                  right_overload_state, right_package))) );
         } else {
-          croak("%" SVf, SVfARG(msg));
+          PERL_THROW_ERROR_OVERLOAD_OPERATION_METHOD_NOT_FOUND(
+              operation, PERL_DIAG_SELECTOR_FROM_ERROR_OVERLOAD_OPERATION_METHOD_NOT_FOUND_ARITY(arity), PERL_DIAG_SELECTOR_FROM_ERROR_OVERLOAD_OPERATION_METHOD_NOT_FOUND_LEFT_OVERLOAD_STATE(left_overload_state), left_package,
+              PERL_DIAG_SELECTOR_FROM_ERROR_OVERLOAD_OPERATION_METHOD_NOT_FOUND_RIGHT_OVERLOAD_STATE(right_overload_state), right_package);
         }
         return NULL;
       }
@@ -4320,7 +4317,7 @@ Perl_amagic_call(pTHX_ SV *left, SV *right, int method, int flags)
       return boolSV(ans);
     } else if (method==copy_amg) {
       if (!SvROK(res)) {
-        croak("Copy method did not return a reference");
+        PERL_THROW_ERROR_OVERLOAD_RETURN_VALUE_COPY_REFERENCE_REQUIRED();
       }
       return SvREFCNT_inc(SvRV(res));
     } else {
@@ -4349,7 +4346,7 @@ Perl_gv_name_set(pTHX_ GV *gv, const char *name, U32 len, U32 flags)
     U32 hash;
 
     if (len > I32_MAX)
-        croak("panic: gv name too long (%" UVuf ")", (UV) len);
+        PERL_PANIC_ERROR_INTERNAL_SYMBOL_TABLE_GLOB_NAME_LENGTH_OUT_OF_RANGE( (UV) len);
 
     if (!(flags & GV_ADD) && GvNAME_HEK(gv)) {
         unshare_hek(GvNAME_HEK(gv));
@@ -4461,9 +4458,7 @@ Perl_gv_override(pTHX_ const char * const name, const STRLEN len)
 static void
 core_xsub(pTHX_ CV* cv)
 {
-    croak(
-       "&CORE::%s cannot be called directly", GvNAME(CvGV(cv))
-    );
+    PERL_THROW_ERROR_CALL_CORE_KEYWORD_NOT_CALLABLE(GvNAME(CvGV(cv)));
 }
 
 /*

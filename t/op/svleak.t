@@ -15,7 +15,7 @@ BEGIN {
 
 use Config;
 
-plan tests => 158;
+plan tests => 159;
 
 # run some code N times. If the number of SVs at the end of loop N is
 # greater than (N-1)*delta at the end of loop 1, we've got a leak
@@ -26,6 +26,7 @@ sub leak {
     my $sv1 = 0;
     for my $i (1..$n) {
 	&$code();
+	$@ = '';
 	$sv1 = sv_count();
 	$sv0 = $sv1 if $i == 1;
     }
@@ -537,6 +538,9 @@ EOF
         $do_die = 1;
     }
     sub g {
+        # Each iteration must reach restoration of the localized value.
+        # Otherwise STORE dies earlier on subsequent calls to f().
+        $do_die = 0;
         eval { my $x = f(); };
     }
 
@@ -735,5 +739,30 @@ package GH16197 {
     ::leak(5, 0,
          sub { eval { "" =~ /(?{ local $x99;  $x99 = 9 })/; }; },
          "no leak in \$^R copy during stack unwind",
+    );
+}
+
+{
+
+    package DiagSnapshotFetchFailure;
+    sub TIESCALAR { bless {}, shift }
+    sub FETCH     { die "diagnostic snapshot fetch failed\n" }
+}
+
+{
+    require XPerl::Diagnostic;
+    my $diagnostic = bless {
+        code   => 'ERROR_SYNTAX_DECLARATION_USE_NO_IN_EXPRESSION',
+        number => 1429,
+        params => [ { name => 'keyword', type => 'text', value => undef } ],
+      },
+      'XPerl::Diagnostic';
+    tie $diagnostic->{params}[0]{value}, 'DiagSnapshotFetchFailure';
+    leak(
+        5, 0,
+        sub {
+            eval { $diagnostic->render_as_legacy('en') }
+        },
+        'diagnostic snapshots do not leak when tied-value FETCH dies'
     );
 }
