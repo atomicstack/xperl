@@ -1440,6 +1440,7 @@ our %Modules = (
                 ext/VMS-Filespec/
                 ext/VMS-Stdio/
                 ext/Win32CORE/
+                ext/XPerl-DiagPack-EN/
                 ext/XS-APItest/
                 ext/XS-Typemap/
                 ext/attributes/
@@ -1489,6 +1490,7 @@ our %Modules = (
                 lib/Tie/Scalar.{pm,t}
                 lib/Tie/StdHandle.pm
                 lib/Tie/SubstrHash.{pm,t}
+                lib/XPerl/
                 lib/Time/gmtime.{pm,t}
                 lib/Time/localtime.{pm,t}
                 lib/Time/tm.pm
@@ -1502,6 +1504,7 @@ our %Modules = (
                 lib/blib.{pm,t}
                 lib/builtin.{pm,t}
                 lib/builtin-taint.t
+                lib/diagpack.pm
                 lib/bytes.{pm,t}
                 lib/charnames.{pm,t}
                 lib/dbm_filter_util.pl

@@ -5645,6 +5645,10 @@ ext/Win32CORE/Makefile.PL		Win32CORE extension
 ext/Win32CORE/t/win32core.t		Win32CORE extension
 ext/Win32CORE/Win32CORE.c		Win32CORE extension
 ext/Win32CORE/Win32CORE.pm		Win32CORE extension (stubs for Win32 CORE subs)
+ext/XPerl-DiagPack-EN/EN.pm		English diagnostic language pack
+ext/XPerl-DiagPack-EN/EN.xs		English diagnostic language-pack XS interface
+ext/XPerl-DiagPack-EN/EN_data.inc	English diagnostic language-pack catalog
+ext/XPerl-DiagPack-EN/Makefile.PL	MakeMaker driver for XPerl::DiagPack::EN
 ext/XS-APItest/APItest.pm			XS::APItest extension
 ext/XS-APItest/APItest.xs			XS::APItest extension
 ext/XS-APItest/APItest_autoload.xs		XS::APItest AUTOLOAD-related XS split
@@ -6001,6 +6005,7 @@ lib/dbm_filter_util.pl			Utility functions used by DBM Filter tests
 lib/deprecate.pm			A pragma for deprecating modules from the core.
 lib/diagnostics.pm			Print verbose diagnostics
 lib/diagnostics.t			See if diagnostics.pm works
+lib/diagpack.pm				Lexically select a diagnostic language pack
 lib/DirHandle.pm			like FileHandle only for directories
 lib/DirHandle.t				See if DirHandle works
 lib/dispatch/Predicates.pm		Shared predicates for dispatch-on patterns
@@ -6245,6 +6250,7 @@ lib/warnings.t				See if warning controls work
 lib/warnings/register.pm		For "use warnings::register"
 lib/XPerl/DiagGroup.pm			Common diagnostic collector operations
 lib/XPerl/Diagnostic.pm			Structured diagnostic object
+lib/XPerl/DiagPack.pm			Loads optional diagnostic language packs
 lib/XPerl/Exception.pm			Structured exception object
 os2/Changes				Changelog for OS/2 port
 os2/diff.configure			Patches to Configure
@@ -6611,6 +6617,7 @@ regen/charset_translations.pl		Character set utilities
 regen/diag.pl				Generates diagnostic interfaces
 regen/diag_classes.pm			Diagnostic class hierarchy and review model
 regen/diag_lib.pm			Diagnostic migration parser helpers
+regen/diag_pack.pm			Generates ordinary diagnostic language-pack XS distributions
 regen/diag_plural.pm			Compile retained CLDR rules for integer plural queries
 regen/diag_pod.pm			Diagnostic documentation import and rendering
 regen/diag_words.pm			Operation vocabulary validation and translation context
@@ -7189,6 +7196,7 @@ t/op/wantarray.t			See if wantarray works
 t/op/warn.t				See if warn works
 t/op/while.t				See if while loops work
 t/op/write.t				See if write works (formats work)
+t/op/xperl_diagpacks.t			Direct diagnostic language-pack checks
 t/op/xperl_exception.t			Test structured exception objects
 t/op/xperl_nested_serialization.t	Deep and cyclic diagnostic serialization
 t/op/xperl_nested_validation.t		Catalogued nested diagnostic validation

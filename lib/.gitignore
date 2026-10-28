@@ -193,6 +193,7 @@
 /Win32.pm
 /Win32API/
 /Win32CORE.pm
+/XPerl/DiagPack/
 /XS/
 /XSLoader.pm
 /attributes.pm
