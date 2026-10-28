@@ -393,6 +393,13 @@ all AUTHORS related test fails.
 The class used by F<updateAUTHORS.pl> to do its business. Package name
 C<Porting::updateAUTHORS>.
 
+=head2 F<update_cldr.pl>
+
+Imports supplemental JSON from a local C<cldr-core> package into
+F<lib/unicore/cldr/>. See F<lib/unicore/cldr/README.perl> for the release
+pin, input layout, and regeneration commands. The script does not download
+data or add runtime lookup behavior.
+
 =head2 F<valgrindpp.pl>
 
 A post-processor for C<make test.valgrind>.  F<valgrindpp.pl> is a
