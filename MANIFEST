@@ -7139,6 +7139,7 @@ t/op/universal.t			See if UNIVERSAL class works
 t/op/unlink.t				See if unlink works
 t/op/unshift.t				See if unshift works
 t/op/upgrade.t				See if upgrading and assigning scalars works
+t/op/utf8_repeat_decode.t		Repeated UTF-8 decoding tests
 t/op/utf8cache.t			Tests malfunctions of utf8 cache
 t/op/utf8decode.t			See if UTF-8 decoding works
 t/op/utf8magic.t			See if utf8:: functions handle magic variables

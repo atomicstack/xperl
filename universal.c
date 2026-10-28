@@ -691,6 +691,22 @@ XS(XS_utf8_decode)
     XSRETURN(1);
 }
 
+XS(XS_utf8_repeat_decode); /* prototype to pass -Wmissing-prototypes */
+XS(XS_utf8_repeat_decode)
+{
+    dXSARGS;
+    if (items < 1 || items > 2)
+        croak_xs_usage(cv, "sv, force=0");
+
+    SV *sv = ST(0);
+    bool force = items == 2 && SvTRUE(ST(1));
+    (void)repeat_decode_utf8(sv, force);
+    SV *result = SvGMAGICAL(sv) ? sv_2mortal(newSVsv_flags(sv, 0)) : sv;
+    SvSETMAGIC(sv);
+    ST(0) = result;
+    XSRETURN(1);
+}
+
 XS(XS_utf8_upgrade); /* prototype to pass -Wmissing-prototypes */
 XS(XS_utf8_upgrade)
 {
@@ -1417,6 +1433,7 @@ static const struct xsub_details these_details[] = {
     {"utf8::valid", XS_utf8_valid, NULL, 0 },
     {"utf8::encode", XS_utf8_encode, NULL, 0 },
     {"utf8::decode", XS_utf8_decode, NULL, 0 },
+    {"utf8::repeat_decode", XS_utf8_repeat_decode, NULL, 0 },
     {"utf8::upgrade", XS_utf8_upgrade, NULL, 0 },
     {"utf8::downgrade", XS_utf8_downgrade, NULL, 0 },
     {"utf8::native_to_unicode", XS_utf8_native_to_unicode, NULL, 0 },

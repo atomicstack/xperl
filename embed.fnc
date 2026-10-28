@@ -3179,6 +3179,9 @@ ATdp	|void	|repeatcpy	|NN char *to				\
 				|NN const char *from			\
 				|SSize_t len				\
 				|IV count
+Adp	|SV *	|repeat_decode_utf8					\
+				|NN SV *sv				\
+				|bool force
 : Used in doio.c, pp_hot.c, pp_sys.c
 p	|void	|report_evil_fh |NULLOK const GV *gv
 : Used in mg.c, pp.c, pp_hot.c, regcomp.c

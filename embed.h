@@ -635,6 +635,7 @@
 # define regexec_flags(a,b,c,d,e,f,g,h)         Perl_regexec_flags(aTHX_ a,b,c,d,e,f,g,h)
 # define regfree_internal(a)                    Perl_regfree_internal(aTHX_ a)
 # define reginitcolors()                        Perl_reginitcolors(aTHX)
+# define repeat_decode_utf8(a,b)                Perl_repeat_decode_utf8(aTHX_ a,b)
 # define repeatcpy                              Perl_repeatcpy
 # define require_pv(a)                          Perl_require_pv(aTHX_ a)
 # define rninstr                                Perl_rninstr

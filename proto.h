@@ -7324,6 +7324,15 @@ Perl_release_RExC_state(pTHX_ void *vstate)
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
+PERL_CALLCONV SV *
+Perl_repeat_decode_utf8(pTHX_ SV *sv, bool force)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_REPEAT_DECODE_UTF8     \
+    STMT_START { Perl_assert_aTHX; assert(sv);         \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 PERL_CALLCONV void
 Perl_repeatcpy(char *to, const char *from, SSize_t len, IV count)
         Perl_attribute_nonnull(1)

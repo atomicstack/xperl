@@ -1,4 +1,4 @@
-package utf8 1.29;
+package utf8 1.30;
 
 # This file only defines the import/unimport subs, the rest are implemented by
 # always-present functions in the perl interpreter itself.
@@ -39,6 +39,7 @@ utf8 - Perl pragma to enable/disable UTF-8 (or UTF-EBCDIC) in source code
 
  utf8::encode($string);  # "\x{100}"  becomes "\xc4\x80"
  utf8::decode($string);  # "\xc4\x80" becomes "\x{100}"
+ utf8::repeat_decode($string[, $force]); # remove repeated encoding
 
  # Convert a code point from the platform native character set to
  # Unicode, and vice-versa.
@@ -208,6 +209,30 @@ otherwise returns true.
 
 B<Note that this function does not handle arbitrary encodings>;
 use L<Encode> instead.
+
+=item * C<$decoded = utf8::repeat_decode($string[, $force])>
+
+Stringifies and modifies C<$string> in place, returning the resulting string.
+It repeatedly decodes bytes as Perl's extended UTF-8 and downgrades the
+characters to native bytes. It stops when decoding or downgrading fails, or
+when a pass does not reduce the byte length. ASCII text therefore terminates
+without repeated work.
+
+With C<$force> true, the final string has its UTF-8 flag set. Undecodable
+native bytes are upgraded to achieve that representation. Without C<$force>,
+the result may be a byte string or a UTF-8 string. Conversion failure ends
+processing without throwing an error.
+
+For example, on an ASCII platform:
+
+ my $text = "\xc3\x83\xc2\xab";
+ utf8::repeat_decode($text, 1);  # $text now contains "\x{eb}"
+
+Use this when the input is known to have been encoded repeatedly. Legitimate
+text whose bytes happen to form UTF-8 sequences will also be decoded. This
+function does not detect the intended encoding of arbitrary input. Tied
+arguments are fetched once and the decoded result is stored once. The return
+value is a plain scalar, so reading it does not fetch the tied argument again.
 
 =item * C<$unicode = utf8::native_to_unicode($code_point)>
 

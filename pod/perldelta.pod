@@ -280,6 +280,13 @@ C<builtin::class_object_to_hash> API and emits code using
 C<builtin::class_object_from_hash> to recreate the object without invoking
 its constructor.  Field values are shared rather than recursively copied.
 
+=head2 Repeated UTF-8 decoding
+
+C<utf8::repeat_decode($string, $force)> stringifies and modifies its argument
+in place to remove repeated UTF-8 encoding. It stops when a conversion fails
+or a pass does not shrink the byte length. The optional C<$force> ensures a
+UTF-8 flagged result. See L<utf8>.
+
 =head1 Security
 
 XXX Any security-related notices go here. In particular, any security
