@@ -8,7 +8,7 @@ BEGIN {
     require './charset_tools.pl';
 }
 
-plan 35;
+plan 39;
 
 my @warnings;
 my $wa = []; my $ea = [];
@@ -247,6 +247,20 @@ fresh_perl_is(<<~'EOF', "good\n", {}, "GH #22987 (warn)");
     $SIG{__WARN__} = \&bar;
     warn "bad";
     EOF
+
+{
+    local $ENV{PERL_DIAG_RENDER} = 'ru';
+    my $output = runperl(
+        prog   => 'use warnings; binmode STDERR, q[:raw]; my $zero = 0; my $result = 1 / $zero;',
+        stderr => 1,
+    );
+    my $status = $?;
+    ok( utf8::decode($output), 'translated raw STDERR output contains valid UTF-8' );
+    is( $status & 127, 0,   'translated encoding warnings do not recurse into a signal' );
+    is( $status >> 8,  255, 'the original exception retains its fatal exit status' );
+    is( scalar( grep { /\p{Cyrillic}/ } split /\n/, $output ),
+        2, 'raw STDERR reports one translated encoding warning and the original error' );
+}
 
 fresh_perl_is( <<'EOF', '2', {}, 'an encoding-warning hook that dies restores the recursion guard' );
 use warnings;
