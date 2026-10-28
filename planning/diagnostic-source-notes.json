@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "scope": "Focused orientation and producer-contract notes, not an exhaustive source audit.",
+  "files": {
+    "pp_ctl.c": {
+      "review": {
+        "source_sha256": "unavailable-in-recovered-review",
+        "summary": "Control-oriented opcode implementations, including eval, exception delivery, dispatch/on, loops, and Perl report-picture parsing/execution.",
+        "terminology_traps": [
+          "A report picture is the first argument to formline, not a printf format.",
+          "This file contains several unrelated language subsystems; use the enclosing function."
+        ],
+        "related_files": [
+          "pp_sys.c",
+          "form.h",
+          "perly.y"
+        ]
+      },
+      "functions": {
+        "S_doparseform": {
+          "source_sha256": "unavailable-in-recovered-review",
+          "summary": "Compile a Perl report/formline picture to FF instructions cached as format magic.",
+          "contract": "Rejects an empty picture and the combination of ~~ repetition with a non-chopping numeric field. The latter is a nontermination check, not recursive-call detection.",
+          "callers": [
+            "pp_formline calls doparseform before executing the cached FF instructions."
+          ],
+          "evidence": [
+            "len == 0 guard",
+            "repeat set on ~~; unchopnum set for non-chopping numeric fields; final unchopnum && repeat guard"
+          ]
+        },
+        "S_require_file": {
+          "source_sha256": "c32d3e577b011e99ad376fb1f6d6bc8b5abc6cfdf0d31f1f692e5d8a28026fdb",
+          "summary": "Load Perl source through require/do and INC hooks.",
+          "contract": "Validates filenames, resolves cached load state, calls INC/INCDIR hooks, opens source and records lookup failure with its context. Explicit hook failures preserve the original exception.",
+          "evidence": [
+            "Producer predicates and adjacent control flow inspected during the Load family review."
+          ]
+        },
+        "S_pop_eval_context_maybe_croak": {
+          "source_sha256": "faec950a3dc989b307c501af995d75320a13178cdf70bc6e687813eddc2ae676",
+          "summary": "Leave eval context and enforce require completion.",
+          "contract": "Only require applies the false-result and failed-compilation actions. INC cache handling differs between those actions.",
+          "evidence": [
+            "Producer predicates and adjacent control flow inspected during the Load family review."
+          ]
+        }
+      }
+    },
+    "pp_sys.c": {
+      "review": {
+        "source_sha256": "unavailable-in-recovered-review",
+        "summary": "System and IO opcode implementations, including write/report-format selection and pagination.",
+        "terminology_traps": [
+          "write uses Perl report formats; printf uses the separate scalar printf formatter.",
+          "A missing optional top format can be skipped; do not infer an error from its absence alone."
+        ],
+        "related_files": [
+          "pp_ctl.c",
+          "doop.c",
+          "sv.c"
+        ]
+      },
+      "functions": {
+        "pp_enterwrite": {
+          "source_sha256": "unavailable-in-recovered-review",
+          "summary": "Select and invoke the body format used by write.",
+          "contract": "The selected GV must contain a format CV. GvFORM(fgv) being NULL triggers UNDEFINED_FORMAT_CALLED.",
+          "callers": [
+            "write enters this opcode."
+          ],
+          "evidence": [
+            "GvFORM(fgv) check before doform(cv, gv, PL_op->op_next)"
+          ]
+        },
+        "pp_leavewrite": {
+          "source_sha256": "unavailable-in-recovered-review",
+          "summary": "Finish report output and invoke a top-of-page format when pagination requires it.",
+          "contract": "Initial lookup can skip a missing top format. A cached selected top GV whose format CV is absent triggers UNDEFINED_TOP_FORMAT_CALLED; these paths must not be conflated.",
+          "callers": [
+            "Runs after the body format and may invoke doform for the top format."
+          ],
+          "evidence": [
+            "topgv lookup can goto forget_top",
+            "later GvFORM(IoTOP_GV(io)) check before doform"
+          ]
+        }
+      }
+    },
+    "sv.c": {
+      "review": {
+        "source_sha256": "unavailable-in-recovered-review",
+        "summary": "Scalar allocation, representation, conversion, copying and destruction; also implements printf-style SV formatting.",
+        "terminology_traps": [
+          "A formatting error in sv_vcatpvfn is not a Perl report-format error.",
+          "An ambient PL_op can identify the caller, not necessarily the underlying formatting operation."
+        ],
+        "related_files": [
+          "doop.c",
+          "pp.c",
+          "pp_sys.c"
+        ]
+      },
+      "functions": {
+        "Perl_sv_vcatpvfn_flags": {
+          "source_sha256": "unavailable-in-recovered-review",
+          "summary": "Append printf-style formatted output using C varargs or an array of SV arguments.",
+          "contract": "Handles conversions, flags, width and precision. CANNOT_PRINTF specifically rejects infinity or NaN for %c. It is also reachable through C/XS formatting APIs, independently of the current opcode.",
+          "callers": [
+            "Perl_do_sprintf reaches this formatter through sv_vsetpvfn.",
+            "Other sv_*pvf/pvfn APIs can call the formatter."
+          ],
+          "evidence": [
+            "Perl_isinfnan(nv) followed by c == c guard and PERL_THROW_CANNOT_PRINTF",
+            "signature accepts both va_list and SV-array inputs"
+          ]
+        }
+      }
+    },
+    "regcomp.c": {
+      "review": {
+        "source_sha256": "unavailable-in-recovered-review",
+        "summary": "Regular expression parsing and compilation, including bracketed character classes and extended set-expression syntax.",
+        "terminology_traps": [
+          "Regexp compilation can happen during compilation or at runtime.",
+          "handle_regex_sets parses (?[...]); regclass is also called for operands inside those sets."
+        ],
+        "related_files": [
+          "regexec.c",
+          "regcomp.h",
+          "regcomp_internal.h"
+        ]
+      },
+      "functions": {
+        "S_handle_regex_sets": {
+          "source_sha256": "unavailable-in-recovered-review",
+          "summary": "Parse the extended regexp character-class set-expression construct (?[...]).",
+          "contract": "Uses operator/operand stacks and precedence to combine character sets. Unexpected binary-operator diagnostics here concern extended character-class expression syntax.",
+          "callers": [
+            "Regexp parser delegates the (?[...]) construct to this helper."
+          ],
+          "evidence": [
+            "Handle the (?[...]) construct to do set operations comment",
+            "REGEX_UNEXPECTED_BINARY_OPERATOR calls in operator/operand handling"
+          ]
+        },
+        "S_regclass": {
+          "source_sha256": "unavailable-in-recovered-review",
+          "summary": "Parse bracketed regexp character classes, or individual class operands when requested.",
+          "contract": "Can produce regexp nodes or an inversion list. Callers can request stop_at_1 and ret_invlist; a diagnostic here is not automatically exclusive to ordinary classes.",
+          "callers": [
+            "Used for ordinary bracketed classes and operands of extended set expressions."
+          ],
+          "evidence": [
+            "stop_at_1 and ret_invlist parameters",
+            "ANYOF and multi-character-fold behavior documented in function comment"
+          ]
+        }
+      }
+    },
+    "toke.c": {
+      "functions": {
+        "Perl_filter_del": {
+          "source_sha256": "4ce59b46fede4835b89f7bb55c40a13011c73502391185f77d9ce7465d523b27",
+          "summary": "Remove the most recently installed matching source filter.",
+          "contract": "An empty filter stack returns normally. A non-top filter cannot be removed through this API.",
+          "evidence": [
+            "Producer predicates and adjacent control flow inspected during the Load family review."
+          ]
+        }
+      }
+    },
+    "util.c": {
+      "functions": {
+        "Perl_xs_handshake": {
+          "source_sha256": "066cea230d85af99398449850b8375729067621adadc39f1fc09abad17489d47",
+          "summary": "Validate and establish the extension/interpreter bootstrap contract.",
+          "contract": "Checks packed layout/context identity and Perl API versions. Incompatible binaries use the existing no-Perl delivery paths; XS release-version checking is delegated to xs_version_bootcheck.",
+          "evidence": [
+            "Producer predicates and adjacent control flow inspected during the Load family review."
+          ]
+        },
+        "S_xs_version_bootcheck": {
+          "source_sha256": "c194b6b795d4c1ebec3532638cf23b9342904a340b6de6b39f4272fc9be4fb69",
+          "summary": "Compare an XS object release version with the requested Perl-side version.",
+          "contract": "An explicit bootstrap argument takes precedence over package XS_VERSION and VERSION. This is independent of Perl API compatibility.",
+          "evidence": [
+            "Producer predicates and adjacent control flow inspected during the Load family review."
+          ]
+        },
+        "Perl_api_version_assert": {
+          "source_sha256": "b99a0a390dea09f5a502f775c7430c293a491d5ae5e9e7b8dfa8fd1700d0831d",
+          "summary": "Validate an embedding caller against linked libperl.",
+          "contract": "Interpreter size, interpreter pointer/multiplicity and API version must match. A mismatch can originate from a different caller configuration, not an internal memory corruption.",
+          "evidence": [
+            "Producer predicates and adjacent control flow inspected during the Load family review."
+          ]
+        }
+      }
+    },
+    "universal.c": {
+      "functions": {
+        "XS_UNIVERSAL_import_unimport": {
+          "source_sha256": "23710ce9c997f0b568b79bc27ad4b806409a55c12b5c1d7b8eee2031c35b168e",
+          "summary": "Handle the default import/unimport methods.",
+          "contract": "Nonempty export requests to UNIVERSAL fail. Other packages follow missing-method warnings, except the special _charnames path.",
+          "evidence": [
+            "Producer predicates and adjacent control flow inspected during the Load family review."
+          ]
+        }
+      }
+    },
+    "os2/os2.c": {
+      "functions": {
+        "loadModule": {
+          "source_sha256": "250d1b6cd875ff168e8408c87a96cebf5d7dde0ae0a198a1bc7648f4d95c32d4",
+          "summary": "Open a native OS2 module.",
+          "contract": "dlopen failure throws only when fail is set; this is native DLL loading, not Perl require.",
+          "evidence": [
+            "Producer predicates and adjacent control flow inspected during the Load family review."
+          ]
+        },
+        "loadByOrdinal": {
+          "source_sha256": "ea894d29d89004819e7a8718dbe2941b675c277073480ce98a10a92919eccee5",
+          "summary": "Resolve entries in the native OS2 module ordinal table.",
+          "contract": "The static table size must equal ORD_NENTRIES before access. OS module loading and function lookup are separate operations.",
+          "evidence": [
+            "Producer predicates and adjacent control flow inspected during the Load family review."
+          ]
+        }
+      }
+    }
+  },
+  "recovery": "Review text restored from the session history. Original source fingerprints were unavailable; reviews remain stale until explicitly revalidated."
+}
