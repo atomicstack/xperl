@@ -29,6 +29,10 @@ rg -n "<FILE>|<STEM>|buildtoc|autodoc|makedef|regen_[a-z_]+" regen Porting Makef
 
 ## Commands
 
+Run regeneration scripts with the environment `perl`, not `./perl`. The built
+interpreter may be stale or lack modules needed by regeneration. Reserve
+`./perl` for runtime checks and tests after the build is current.
+
 ```sh
 make regen
 make regen_headers

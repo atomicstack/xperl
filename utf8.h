@@ -321,8 +321,9 @@ platforms, even though the value of C<'A'> differs between them.
 
 It is generally unnecessary between Perl character APIs that already use
 native-Unicode numbering, including L</toUPPER_uvchr> and L</toFOLD_uvchr>.
-Check both APIs' contracts before adding a conversion.  This macro converts
-a code point number, not an encoded string.  See L</UNI_TO_NATIVE> for the
+Check both APIs' contracts before adding a conversion.  The historical C<uni>
+in an API name does not establish which numbering convention it uses.
+This macro converts a code point number, not an encoded string.  See L</UNI_TO_NATIVE> for the
 reverse conversion.
 
 =for apidoc Am|UV|UNI_TO_NATIVE|UV ch

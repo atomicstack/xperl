@@ -19,6 +19,9 @@ asks for a different approach.
   locale, threads, multiplicity, and non-Unix assumptions when relevant.
 - Prefer existing Perl core patterns, helper macros, regeneration targets, and
   porting tools over new local conventions.
+- Do not change shared porting, build, test, regeneration, or other generic
+  infrastructure merely to accommodate a specific feature or distribution.
+  Such changes require the user's explicit authorization.
 - Do not hand-edit generated files without also identifying and running the
   generator, or documenting why regeneration is not appropriate.
 - Keep public API, binary compatibility, and XS/embedding compatibility in mind
@@ -34,11 +37,25 @@ asks for a different approach.
 
 ## Agent Skills
 
-Repository-specific skill files live in `.agents/skills`. Read the relevant
+Repository-specific skill files live in `.agents/skills/`. Read the relevant
 skill before editing the associated subsystem.
 
-When updating skills, use the sibling `../perl_core_skillz/sync-agent-skills`
-utility to verify or update the legacy mirror.
+This is the canonical skill tree. From the sibling `perl_core_skillz`
+repository, run `./sync-agent-skills --check` to verify its legacy mirror, or
+use `./sync-agent-skills --sync` to update it. Use `--from-mirror` to restore
+the guidance and skill tree to a Perl branch which does not contain them.
+
+Generic skills are mirrored under `perl_agents/skills/`. Skills named
+`xperl-*` apply only to XPerl and are mirrored under `xperl_agents/skills/`.
+Use `--xperl` with the synchronizer to include those skills. Omit it when
+restoring guidance for an ordinary Perl checkout.
+
+## Tmux activity status
+
+When working in the user's tmux session, follow
+`.agents/skills/tmux-agent-status/SKILL.md`. Keep the tab colour and terminal
+title symbol current for the whole agent team. Amber input waits take
+priority over the five-operation cyan/green activity indicator.
 
 ## Core API design
 

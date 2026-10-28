@@ -46,6 +46,68 @@ rg -n "DEBUG_[A-Z_]+_r|DECLARE_AND_GET_RE_DEBUG_FLAGS|regdump|regprop|PERL_RE_BU
 
 ## Tests
 
+### Folding and representation contracts
+
+Regex character processing normally uses native-Unicode code points: native
+numbering below 256 and standard Unicode numbering above 255. In particular,
+`PL_HasMultiCharFold` members are already native-Unicode values suitable for
+`to_uni_fold()`. Do not apply `UNI_TO_NATIVE()` to them. The historical `uni`
+names do not imply standard Unicode numbering throughout. Before converting, check the producer
+and consumer contracts in the source and consult
+[the portability reference](../../perl-core-portability/references/core-portability.md#character-representation-contracts).
+
+Look for existing fold classifiers before computing a fold merely to classify
+it. Keep these operations distinct:
+
+- `is_FOLDS_TO_MULTI_utf8(p)` recognizes a UTF-8 character whose full fold
+  expands to multiple characters. It returns that input character's encoded
+  length, or zero. It does not return the fold or its character count.
+- `is_MULTI_CHAR_FOLD_utf8_safe(p, e)` recognizes a folded sequence that can
+  correspond to one character. This is the opposite side of the fold and
+  cannot be replaced by the first macro.
+- A fold operation is needed when its actual first codepoint or complete
+  output is used. A classifier cannot replace that result. Likewise, testing
+  membership again is redundant when already iterating the relevant property.
+
+When building a fixed table of UTF-8 octets for native values below 256,
+check `UVCHR_IS_INVARIANT()` first. Invariant values encode as their single
+native octet. Encode the remaining values with `UTF8_EIGHT_BIT_HI()` and
+`UTF8_EIGHT_BIT_LO()`. The `HI` macro gives the first encoded octet. When
+packing for the native-octet trie table, store it in the low byte of the `U16`
+and the `LO` octet in the high byte; the executor reads octets in that order.
+This avoids calling a general encoder and reconstructing a result whose length
+and validity are already guaranteed by the 8-bit input range. Reserve the
+general encoder for values outside that constrained range or when its full
+validation behavior is needed.
+
+Prefilters must admit every possible match under the runtime folding rules.
+A conservative Unicode closure can admit extra `/aa` candidates safely when
+the matcher applies the actual restrictions. Tightening such a map is an
+optimization decision, separate from correcting an invalid conversion.
+
+### Character-set portability
+
+Never hardcode `0xDF` or another character value below `0x100` unless it is
+explicitly permitted by `pod/perlhacktips.pod`, "Assuming the character set
+is ASCIIish", or converted with a helper from `t/charset_tools.pl`.
+These numeric values denote native characters, which can differ between
+ASCII and EBCDIC. Check patterns, subjects, and expected debug output.
+
+For example, after loading `t/charset_tools.pl`, use
+`uni_to_native("\x{DF}")` for a sharp-s subject. For a non-ASCII character
+that does not participate in folding, `\x{B6}` is PILCROW SIGN on both
+ASCII and supported EBCDIC platforms. Explain this choice next to the
+test. `\x{F7}` is unsuitable for that purpose because it is digit 7 on
+EBCDIC. When comparing debug output, account for native code point
+numbers and ordering rather than assuming ASCII output is universal.
+
+Convert fixture characters before mixing them with ordinary native text. For
+example, use `my $sharp_s = uni_to_native("\x{DF}")`, then interpolate
+`$sharp_s` into the pattern or subject. Converting a whole mixed string can
+convert its already-native ordinary letters incorrectly on EBCDIC.
+
+### Test locations
+
 - Primary tests: `t/re/`.
 - Table-driven cases: `t/re/re_tests`, consumed by `t/re/regexp.t`.
 - Richer behavior: `t/re/pat.t`, `t/re/pat_advanced.t`, `t/re/pat_rt_report.t`, `t/re/subst.t`.

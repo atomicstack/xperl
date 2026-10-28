@@ -26,6 +26,79 @@
 - Threads/multiplicity: avoid direct globals where interpreter-local state is required; check clone, teardown, and `PERL_IMPLICIT_CONTEXT`.
 - Platforms: do not assume Unix paths, file descriptors, fork, symlinks, signals, case-sensitive filesystems, or ELF exports.
 
+## Character Representation Contracts
+
+The interfaces below use **native-Unicode code points**. This is a hybrid
+numbering convention: values 0..255 use native character numbering, while
+values above 255 use standard Unicode numbering. On ASCII platforms these
+agree throughout. On EBCDIC platforms the low 256 values differ. A
+native-Unicode code point is not restricted to one byte.
+
+Use this term to disambiguate the numbering, rather than replacing "Unicode"
+with "native" and leaving the range unclear. Do not add a conversion just
+because code handles Unicode or needs to work on EBCDIC.
+
+Before adding a conversion, identify both contracts: what representation does
+the producer return, and what representation does the consumer accept? If both
+use native-Unicode numbering, pass the value directly. Check the implementation and API docs
+rather than inferring the contract from the function name.
+
+| Producer or consumer | Representation |
+|---|---|
+| Members of `PL_HasMultiCharFold` | Native-Unicode code points |
+| `valid_utf8_to_uv()` result | Native-Unicode code point decoded from native UTF-8 |
+| `to_uni_fold()` / `toFOLD_uvchr()` input and code-point result | Native-Unicode code points; the full fold is written separately as native UTF-8 |
+| `to_uni_upper()` / `toUPPER_uvchr()` input and code-point result | Native-Unicode code points, including values above 255; the full uppercase mapping is written separately as native UTF-8 |
+| `uvchr_to_utf8()` / `uv_to_utf8()` input | Native-Unicode code point |
+| `UNI_TO_NATIVE()` | Standard Unicode numbering to native-Unicode numbering; values above 255 are unchanged |
+| `NATIVE_TO_UNI()` | Native-Unicode numbering to standard Unicode numbering; values above 255 are unchanged |
+
+For example, a value obtained by iterating `PL_HasMultiCharFold` is already
+suitable for `to_uni_fold()`. Applying `UNI_TO_NATIVE()` first is wrong. ASCII
+tests cannot expose this mistake because the conversion is an identity there.
+Conversely, `UNI_TO_NATIVE(0xDF)` is appropriate when a literal Unicode U+00DF
+number is being introduced into native-Unicode processing.
+
+The API documentation states this hybrid convention explicitly under
+`UVCHR_IS_INVARIANT` in `pod/perlapi.pod` (source: `utf8.h`). That POD also
+documents `NATIVE_TO_UNI` and `UNI_TO_NATIVE`. `pod/perlebcdic.pod`, "Function
+Differences", illustrates the distinction using `pack("U", ...)` for standard
+Unicode numbering and `pack("W", ...)` for native-Unicode numbering. Some
+individual APIs describe their input merely as "Unicode" or "native";
+check their implementations before treating that wording as a precise contract.
+
+Keep codepoint numbering separate from byte encoding. `UNI_TO_NATIVE()` does
+not decode a UTF-8 string. Native UTF-8 means UTF-8 on ASCII platforms and
+UTF-EBCDIC on EBCDIC platforms; use the core encoders, decoders and boundary
+macros for encoded data.
+
+### Test Fixtures
+
+Numeric character escapes below `0x100` select native values, not portable
+Unicode characters. Use the exceptions in `pod/perlhacktips.pod`, "Assuming
+the character set is ASCIIish", or convert intended Unicode characters with
+`t/charset_tools.pl`. For example:
+
+```perl
+my $sharp_s = uni_to_native("\x{DF}");
+my $subject = "Stra${sharp_s}e";
+```
+
+Convert the intended character before composing the pattern or subject. Do
+not pass an arbitrary mixed string such as `"Stra\x{DF}e"` to that helper:
+its ordinary letters already use native numbering, and the helper converts
+every character. Preserve the fixture's UTF-8 flag when byte versus upgraded
+representations are part of the test. Use Perl's `'a' .. 'z'` range instead of
+arithmetic on `ord('a')`, since EBCDIC letters are not contiguous.
+
+Distinguish character constants from intentional native-byte enumeration:
+testing every value in `0 .. 255` does not require converting those values.
+Check pattern construction, subjects and expected debug output together.
+
+These contracts address Karl Williamson's review of Perl/perl5 PR #24937,
+especially comments 4321407197 and 4317353478. Source contracts belong beside
+the APIs and data declarations as well as in contributor guidance.
+
 ## Tests
 
 ```sh
