@@ -24,10 +24,13 @@ subtest 'at method - accessing elements by coordinates' => sub {
 
     # Test with different data types
     my $m2 = Matrix->new( shape => [2, 2], data => [3.14, -5.2, 0.5, 1.7] );
-    is( $m2->at(0, 0), 3.14, 'at(0,0) works with floating point numbers' );
-    is( $m2->at(0, 1), -5.2, 'at(0,1) works with negative numbers' );
+    cmp_ok( abs($m2->at(0, 0) - 3.14), '<', 1e-12,
+        'at(0,0) works with floating point numbers' );
+    cmp_ok( abs($m2->at(0, 1) - (-5.2)), '<', 1e-12,
+        'at(0,1) works with negative numbers' );
     is( $m2->at(1, 0), 0.5, 'at(1,0) works with decimal numbers' );
-    is( $m2->at(1, 1), 1.7, 'at(1,1) works with floating point numbers' );
+    cmp_ok( abs($m2->at(1, 1) - 1.7), '<', 1e-12,
+        'at(1,1) works with floating point numbers' );
 };
 
 subtest 'at method - edge cases and error conditions' => sub {

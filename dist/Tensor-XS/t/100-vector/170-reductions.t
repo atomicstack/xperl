@@ -37,7 +37,8 @@ subtest 'sum method - with floating point numbers' => sub {
     # Test with more precision
     my $v2 = Vector->initialize(4, [0.1, 0.2, 0.3, 0.4] );
     my $sum2 = $v2->sum;
-    is( $sum2, 1.0, 'sum of small floating point numbers is correct' );
+    cmp_ok( abs($sum2 - 1.0), '<', 1e-12,
+        'sum of small floating point numbers is correct' );
 };
 
 subtest 'sum method - edge cases' => sub {

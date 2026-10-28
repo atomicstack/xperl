@@ -103,7 +103,8 @@ subtest 'initialize method - with floating point values' => sub {
 
     for my $i (0..1) {
         for my $j (0..1) {
-            is( $t->at($i, $j), 3.14, "element at ($i,$j) is 3.14" );
+            cmp_ok( abs($t->at($i, $j) - 3.14), '<', 1e-12,
+                "element at ($i,$j) is 3.14" );
         }
     }
 

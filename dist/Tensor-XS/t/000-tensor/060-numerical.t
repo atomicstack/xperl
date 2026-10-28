@@ -217,7 +217,8 @@ subtest 'numerical operations - 2D tensors' => sub {
     is( $round_up_result->at(1, 1), -4, 'round_up at (1,1)' );
 
     my $clamp_result = $t->clamp(0, 3);
-    is( $clamp_result->at(0, 0), 1.7, 'clamp at (0,0)' );
+    cmp_ok( abs($clamp_result->at(0, 0) - 1.7), '<', 1e-12,
+        'clamp at (0,0)' );
     is( $clamp_result->at(0, 1), 0, 'clamp at (0,1)' );
     is( $clamp_result->at(1, 0), 3, 'clamp at (1,0)' );
     is( $clamp_result->at(1, 1), 0, 'clamp at (1,1)' );
