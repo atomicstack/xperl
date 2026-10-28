@@ -114,6 +114,11 @@ together.  If a changed `Makefile.PL` causes the first `make` to regenerate
 the Makefile and stop with a request to rerun, rerun the same make command;
 that first pass is configuration refresh, not a final build result.
 
+`make regen_invlist` is an exception to the usual environment-Perl rule.
+Its `RUN_PERL` intentionally uses the interpreter and libraries being built,
+so the inversion lists match the current tree's newest Unicode data. Do not
+substitute an installed host Perl with its own Unicode library tables.
+
 ## Porting Tests
 
 Use `t/porting/*.t` for checks around generated files, docs, metadata, exports, manifests, and policy.
@@ -140,11 +145,33 @@ Read `pod/perlhacktips.pod` before setting up deeper tooling.
 Useful areas:
 
 - gdb support and macros.
+- `Devel::Peek` for inspecting scalar flags, storage, and magic.
 - `PERL_DESTRUCT_LEVEL=2` for leak-sensitive checks.
 - `Porting/bisect.pl` for automated `git bisect` workflows, old-commit build shims, and regression isolation across history.
 - `Porting/valgrindpp.pl` for valgrind workflows.
 - AddressSanitizer build notes.
 - `Porting/bench.pl`, `t/perf/*.t`, and `pod/perlperf.pod` for performance work.
+
+### Inspecting Perl scalars with `Devel::Peek`
+
+Use `Devel::Peek::Dump()` when a question depends on an SV's internal flags,
+PV bytes, reference state, or magic. For example, it shows whether a string
+has the UTF-8 flag and how its bytes are stored:
+
+```perl
+use Devel::Peek;
+
+my $byte_string = "\x{00E9}";
+my $utf8_string = "\N{U+00E9}";
+
+Dump($byte_string);
+Dump($utf8_string);
+```
+
+The `FLAGS` and `PV` lines expose the distinction between an unflagged byte
+string and a UTF-8 flagged string. `Devel::Peek` reports implementation
+details, so use it to investigate behavior rather than treating its output as
+a stable interface for ordinary tests.
 
 ## AddressSanitizer and LeakSanitizer
 

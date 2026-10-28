@@ -9,6 +9,10 @@
 - `pod/perlapi.pod`: public API.
 - `pod/perlintern.pod`: documented internal API.
 - `handy.h`: common macros, memory helpers, character-class wrappers, context-sensitive convenience macros, and many small conventions used throughout core.
+  Search it before inventing a helper. `ASSERT_IS_LITERAL(s)` checks that an
+  input is a C string literal. `STR_WITH_LEN(s)` supplies that checked literal
+  and its compile-time length. Pass `STR_WITH_LEN` to the full
+  `Perl_xxx(aTHX_ ...)` function form because it expands to two arguments.
 - `pod/perlpolicy.pod`: compatibility and deprecation policy.
 
 ## Route Narrowly
@@ -39,6 +43,7 @@
 - `pTHX`, `pTHX_`, `aTHX`, `aTHX_`, and `dTHX` are macros, not ordinary identifiers.
 - `pTHX`/`pTHX_` appear in function declarations and prototypes that take an interpreter context. The trailing underscore form includes the following comma.
 - `aTHX`/`aTHX_` appear at call sites when passing the current interpreter context. The trailing underscore form includes the following comma.
+- Use `aTHX`/`aTHX_` to pass context in the leading context-parameter position. In non-multiplicity builds these macros expand away, so do not pass them as ordinary macro or function arguments unless every expansion site is guaranteed to be multiplicity-only. A diagnostic may use `aTHX` as data when it deliberately reports the current interpreter address as a thread identity; keep that use in multiplicity-only code and name the diagnostic field to describe what it reports.
 - Prefer explicitly threading interpreter context through internal helpers with `pTHX_` in the signature and `aTHX_` at call sites.
 - `dTHX` is the fallback for functions that need interpreter context but do not receive it as an argument; it fetches context from thread-local storage or equivalent. Avoid it in core internals where you can pass context explicitly, and avoid it in XS code too unless the calling convention genuinely leaves no cleaner option.
 - `Perl_` names are in Perl's global C namespace, but that prefix alone does not mean public API. Check `pod/perlapi.pod`, `pod/perlintern.pod`, and `embed.fnc` before treating a `Perl_*` symbol as stable or exported.

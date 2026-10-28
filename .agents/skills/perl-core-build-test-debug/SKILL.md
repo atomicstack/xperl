@@ -14,4 +14,6 @@ Choose the narrowest command that validates the risk. Broaden only after targete
 3. Use `t/porting` tests for generated files, metadata, docs, and API consistency.
 4. Use debug builds, gdb, valgrind, ASan, or profiling only when the failure mode calls for them.
 
-Read [references/testing-debugging.md](references/testing-debugging.md) for commands and decision points.
+Read [references/testing-debugging.md](references/testing-debugging.md) for
+commands, debugger workflows, and inspecting scalar internals with
+`Devel::Peek`.
