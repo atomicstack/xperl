@@ -10,7 +10,7 @@ BEGIN {
     set_up_inc( qw(. ../lib) );
 }
 
-plan( tests => 77 );
+plan( tests => 79 );
 
 {
     my @lol = ([qw(a b c)], [], [qw(1 2 3)]);
@@ -211,8 +211,26 @@ plan( tests => 77 );
 {
     my $x;
     eval 'grep $x (1,2,3);';
-    like($@, qr/Missing comma after first argument to grep function/,
-         "proper error on variable as block. [perl #37314]");
+    like(
+        $@,
+        qr/Missing comma after first argument to grep function/,
+        "proper error on variable as block. [perl #37314]"
+    );
+    my $exception = $@;
+  SKIP: {
+        skip 'French diagnostic pack is unavailable', 2
+          unless eval { require XPerl::DiagPack::FR; 1 };
+        like(
+            $exception->render_as_legacy('fr'),
+            qr/^Virgule manquante apr.s le premier argument de la fonction grep\b/,
+            'grepstart renders through the shared French function sentence'
+        );
+        unlike(
+            $exception->render_as_legacy('fr'),
+            qr/grep function/,
+            'French rendering does not append the English operation description'
+        );
+    }
 }
 
 # [perl #78194] grep/map aliasing op return values

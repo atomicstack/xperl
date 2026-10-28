@@ -1440,7 +1440,14 @@ our %Modules = (
                 ext/VMS-Filespec/
                 ext/VMS-Stdio/
                 ext/Win32CORE/
+                ext/XPerl-DiagPack-DE/
                 ext/XPerl-DiagPack-EN/
+                ext/XPerl-DiagPack-ES/
+                ext/XPerl-DiagPack-FR/
+                ext/XPerl-DiagPack-IS/
+                ext/XPerl-DiagPack-IT/
+                ext/XPerl-DiagPack-NL/
+                ext/XPerl-DiagPack-PT/
                 ext/XS-APItest/
                 ext/XS-Typemap/
                 ext/attributes/
