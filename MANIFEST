@@ -6621,6 +6621,8 @@ Porting/corelist.pl				Generates data for Module::CoreList
 Porting/corelist-diff				Tool to produce corelist diffs
 Porting/corelist-perldelta.pl			Generates data perldelta from Module::CoreList
 Porting/deparse-skips.txt			List of test files to ignore/skip for deparse tests.
+Porting/diag_bulk_formatted.pl			Bulk-converts simple formatted diagnostics
+Porting/diag_import_pod.pl			Lossless diagnostic documentation importer
 Porting/diag_inventory.pl			Inventories diagnostic adapter calls
 Porting/docs-team-charter.pod			Perl Documentation Team charter
 Porting/epigraphs.pod				the release epigraphs used over the years
@@ -6682,11 +6684,15 @@ regen/charset_translations.pl		Character set utilities
 regen/diag.pl				Generates diagnostic interfaces
 regen/diag_classes.pm			Diagnostic class hierarchy and review model
 regen/diag_lib.pm			Diagnostic migration parser helpers
+regen/diag_mapping.pl			Diagnostic classification review reports
 regen/diag_pack.pl			Generates the initial German diagnostic language pack
 regen/diag_pack.pm			Generates ordinary diagnostic language-pack XS distributions
 regen/diag_plural.pm			Compile retained CLDR rules for integer plural queries
 regen/diag_pod.pm			Diagnostic documentation import and rendering
+regen/diag_review.pm			Read-only Codex diagnostic naming and hierarchy review
+regen/diag_translate.pm			Optional Codex diagnostic translation and review
 regen/diag_translation_provenance.json	Translation source fingerprints
+regen/diag_word_translate.pm		Optional operation vocabulary translation and repair
 regen/diag_words.pm			Operation vocabulary validation and translation context
 regen/ebcdic.pl				Generates ebcdic_tables.h
 regen/embed.pl				Produces {embed,embedvar,proto}.h
@@ -7308,6 +7314,10 @@ t/porting/customized.dat		Data file for porting/customized.t
 t/porting/customized.t			Check all CUSTOMIZED files are as they should be
 t/porting/deprecation.t			Test that deprecation warnings are handled right
 t/porting/diag.t			Test completeness of perldiag.pod
+t/porting/diag_churn.t			Diagnostic generation stability tests
+t/porting/diag_pack.t			Language pack generation independence tests
+t/porting/diag_word_translate.t		Operation vocabulary translation workflow tests
+t/porting/diag_words.t			Operation vocabulary config and rule contract tests
 t/porting/dual-life.t			Check that dual-life bins are in utils/
 t/porting/exec-bit.t			Check that exec-bit bins are identified
 t/porting/extrefs.t			Check perl headers don't make extern refs
