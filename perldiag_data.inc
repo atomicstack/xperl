@@ -21222,7 +21222,7 @@ static const perl_diagpack_engine * const perl_diagpack_builtin_engines[] = {
 
 
 /* Generated from:
- * 256af68eefaa705c869618b393c3197c8171c3c53fa44b29ec42ec6ce6fbfff0 diag_conf.pl
+ * 43b1edf7e34737d07b722a5953d13748198b3b116aa6af781fcd84c958e51e12 diag_conf.pl
  * 4d5ea2c68c07d8b67a01411f57a355fd47b545ebcbbda8b14355c3d7154213fa diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */
