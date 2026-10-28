@@ -1,4 +1,4 @@
-package attributes 0.37;
+package attributes 0.38;
 
 use v5.40;
 
@@ -73,10 +73,10 @@ sub import {
 		for my $attr (@pkgattrs) {
 		    $attr =~ s/\(.+\z//s;
 		}
-		my $s = ((@pkgattrs == 1) ? '' : 's');
-		carp "$svtype package attribute$s " .
-		    "may clash with future reserved word$s: " .
-		    join(' : ' , @pkgattrs);
+		my $message = @pkgattrs == 1
+		    ? "$svtype package attribute may clash with future reserved word: "
+		    : "$svtype package attributes may clash with future reserved words: ";
+		carp $message . join(' : ' , @pkgattrs);
 	    }
 	}
     }
@@ -84,10 +84,10 @@ sub import {
 	@badattrs = modify_attrs_and_deprecate($svtype, $svref, @attrs);
     }
     if (@badattrs) {
-	croak "Invalid $svtype attribute" .
-	    (( @badattrs == 1 ) ? '' : 's') .
-	    ": " .
-	    join(' : ', @badattrs);
+	my $message = @badattrs == 1
+	    ? "Invalid $svtype attribute: "
+	    : "Invalid $svtype attributes: ";
+	croak $message . join(' : ', @badattrs);
     }
 }
 

@@ -923,11 +923,10 @@ Perl_vmstrnenv(const char *lnm, char *eqv, unsigned long int idx,
             ivenv = 1; 
 #if defined(MULTIPLICITY)
             if (aTHX == NULL) {
-                fprintf(stderr,
-                    "Can't read CRTL environ\n");
+                fprintf(stderr, PERL_DIAG_FORMAT_WARNING_SYSTEM_PLATFORM_VMS_CRTL_ENVIRONMENT_UNAVAILABLE);
             } else
 #endif
-                warn("Can't read CRTL environ\n");
+                PERL_WARN_WARNING_SYSTEM_PLATFORM_VMS_CRTL_ENVIRONMENT_UNAVAILABLE();
             continue;
           }
           retsts = SS$_NOLOGNAM;
@@ -966,11 +965,10 @@ Perl_vmstrnenv(const char *lnm, char *eqv, unsigned long int idx,
               /* both to be valid if running threaded */
 #if defined(MULTIPLICITY)
               if (aTHX == NULL) {
-                  fprintf(stderr,
-                     "Value of CLI symbol \"%s\" too long",lnm);
+                  fprintf(stderr, PERL_DIAG_FORMAT_WARNING_MISC_VMS_CLI_SYMBOL_VALUE_TOO_LONG, lnm);
               } else
 #endif
-                  ck_warner(packWARN(WARN_MISC),"Value of CLI symbol \"%s\" too long",lnm);
+                  PERL_WARN_WARNING_MISC_VMS_CLI_SYMBOL_VALUE_TOO_LONG(lnm);
             }
             strncpy(eqv,eqvdsc.dsc$a_pointer,eqvlen);
           }
@@ -1335,7 +1333,7 @@ prime_env_iter(void)
       for (j = 0; environ[j]; j++);
       for (j--; j >= 0; j--) {
         if (!(start = strchr(environ[j],'='))) {
-          ck_warner(packWARN(WARN_INTERNAL),"Ill-formed CRTL environ value \"%s\"\n",environ[j]);
+          PERL_WARN_WARNING_SEVERE_INTERNAL_VMS_CRTL_ENVIRONMENT_ENTRY_MALFORMED(environ[j]);
         }
         else {
           start++;
@@ -1399,12 +1397,12 @@ prime_env_iter(void)
       buf[retlen] = '\0';
       if (iosb[1] != subpid) {
         if (iosb[1]) {
-          croak("Unknown process %x sent message to prime_env_iter: %s",buf);
+          PERL_THROW_ERROR_SYSTEM_PLATFORM_VMS_ENVIRONMENT_ENUMERATION_SENDER_UNKNOWN((unsigned int)iosb[1], buf);
         }
         continue;
       }
       if (sts == SS$_BUFFEROVF)
-        ck_warner(packWARN(WARN_INTERNAL),"Buffer overflow in prime_env_iter: %s",buf);
+        PERL_WARN_WARNING_SEVERE_INTERNAL_VMS_ENVIRONMENT_ENUMERATION_BUFFER_OVERFLOW(buf);
 
       for (cp1 = buf; *cp1 && isSPACE_L1(*cp1); cp1++) ;
       if (*cp1 == '(' || /* Logical name table name */
@@ -1425,7 +1423,7 @@ prime_env_iter(void)
         cp1--;  /* stop on last non-space char */
       }
       if ((!keylen || (cp1 - cp2 < -1)) && ckWARN(WARN_INTERNAL)) {
-        warner(packWARN(WARN_INTERNAL),"Ill-formed message in prime_env_iter: |%s|",buf);
+        PERL_WARN_WARNING_SEVERE_INTERNAL_VMS_ENVIRONMENT_ENUMERATION_MESSAGE_MALFORMED(buf);
         continue;
       }
       PERL_HASH(hash,key,keylen);
@@ -1569,8 +1567,7 @@ Perl_vmssetenv(pTHX_ const char *lnm, const char *eqv, struct dsc$descriptor_s *
 
             nseg = (eqvdsc.dsc$w_length + LNM$C_NAMLENGTH - 1) / LNM$C_NAMLENGTH;
             if (nseg > PERL_LNM_MAX_ALLOWED_INDEX + 1) {
-              warner(packWARN(WARN_MISC),"Value of logical \"%s\" too long. Truncating to %i bytes",
-                     lnm, LNM$C_NAMLENGTH * (PERL_LNM_MAX_ALLOWED_INDEX+1));
+              PERL_WARN_WARNING_MISC_VMS_LOGICAL_VALUE_TRUNCATED(lnm, LNM$C_NAMLENGTH * (PERL_LNM_MAX_ALLOWED_INDEX+1));
               eqvdsc.dsc$w_length = LNM$C_NAMLENGTH * (PERL_LNM_MAX_ALLOWED_INDEX+1);
               nseg = PERL_LNM_MAX_ALLOWED_INDEX + 1;
             }
@@ -4253,7 +4250,7 @@ safe_popen(pTHX_ const char *cmd, const char *in_mode, int *psts)
     } else {        /* uh, oh...we're in tempfile hell */
         tpipe = vmspipe_tempfile(aTHX);
         if (!tpipe) {       /* a fish popular in Boston */
-            ck_warner(packWARN(WARN_PIPE),"unable to find VMSPIPE.COM for i/o piping");
+            PERL_WARN_WARNING_IO_PIPE_VMS_HELPER_SCRIPT_UNAVAILABLE();
             return NULL;
         }
         fgetname(tpipe,tfilebuf+1,1);
@@ -4283,7 +4280,7 @@ safe_popen(pTHX_ const char *cmd, const char *in_mode, int *psts)
       }
       set_vaxc_errno(sts);
       if (*in_mode != 'n')
-        ck_warner(packWARN(WARN_PIPE), "Can't pipe \"%*s\": %s", strlen(cmd), cmd, Strerror(errno));
+        PERL_WARN_WARNING_IO_PIPE_VMS_COMMAND_START_FAILED(strlen(cmd), cmd, Strerror(errno));
 
       *psts = sts;
       return NULL; 
@@ -4824,9 +4821,7 @@ Perl_my_waitpid(pTHX_ Pid_t pid, int *statusp, int flags)
         /* remind folks they are asking for non-standard waitpid behavior */
         _ckvmssts(lib$getjpi(&pidcode,0,0,&mypid,0,0));
         if (ownerpid != mypid)
-          warner(packWARN(WARN_EXEC),
-                      "waitpid: process %x is not a child of process %x",
-                      pid,mypid);
+          PERL_WARN_WARNING_IO_EXEC_VMS_WAITPID_TARGET_NOT_CHILD(pid, mypid);
       }
 
       /* simply check on it once a second until it's not there anymore. */
@@ -9185,7 +9180,7 @@ mp_getredirection(pTHX_ int *ac, char ***av)
             {
             if (j+1 >= argc)
                 {
-                fprintf(stderr,"No input file after < on command line");
+                fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_FILE_MISSING);
                 exit(LIB$_WRONUMARG);
                 }
             in = argv[++j];
@@ -9200,7 +9195,7 @@ mp_getredirection(pTHX_ int *ac, char ***av)
             {
             if (j+1 >= argc)
                 {
-                fprintf(stderr,"No output file after > on command line");
+                fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_OUTPUT_FILE_MISSING);
                 exit(LIB$_WRONUMARG);
                 }
             out = argv[++j];
@@ -9220,7 +9215,7 @@ mp_getredirection(pTHX_ int *ac, char ***av)
                 out = 1 + ap;
             if (j >= argc)
                 {
-                fprintf(stderr,"No output file after > or >> on command line");
+                fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_APPEND_OUTPUT_FILE_MISSING);
                 exit(LIB$_WRONUMARG);
                 }
             continue;
@@ -9242,7 +9237,7 @@ mp_getredirection(pTHX_ int *ac, char ***av)
                     err = 2 + ap;
             if (j >= argc)
                 {
-                fprintf(stderr,"No output file after 2> or 2>> on command line");
+                fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_ERROR_FILE_MISSING);
                 exit(LIB$_WRONUMARG);
                 }
             continue;
@@ -9251,7 +9246,7 @@ mp_getredirection(pTHX_ int *ac, char ***av)
             {
             if (j+1 >= argc)
                 {
-                fprintf(stderr,"No command into which to pipe on command line");
+                fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_PIPE_COMMAND_MISSING);
                 exit(LIB$_WRONUMARG);
                 }
             cmargc = argc-(j+1);
@@ -9283,7 +9278,7 @@ mp_getredirection(pTHX_ int *ac, char ***av)
         {
         if (out != NULL)
             {
-            fprintf(stderr,"'|' and '>' may not both be specified on command line");
+            fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_PIPE_OUTPUT_CONFLICT);
             exit(LIB$_INVARGORD);
             }
         pipe_and_fork(aTHX_ cmargv);
@@ -9316,18 +9311,18 @@ mp_getredirection(pTHX_ int *ac, char ***av)
         freopen(mbxname, "rb", stdin);
         if (errno != 0)
             {
-            fprintf(stderr,"Can't reopen input pipe (name: %s) in binary mode",mbxname);
+            fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_PIPE_REOPEN_FAILED, mbxname);
             exit(vaxc$errno);
             }
         }
     if ((in != NULL) && (NULL == freopen(in, "r", stdin, "mbc=32", "mbf=2")))
         {
-        fprintf(stderr,"Can't open input file %s as stdin",in);
+        fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_OPEN_FAILED, in);
         exit(vaxc$errno);
         }
     if ((out != NULL) && (NULL == freopen(out, outmode, stdout, "mbc=32", "mbf=2")))
         {	
-        fprintf(stderr,"Can't open output file %s as stdout",out);
+        fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_OUTPUT_OPEN_FAILED, out);
         exit(vaxc$errno);
         }
         if (out != NULL) vmssetuserlnm("SYS$OUTPUT", out);
@@ -9340,7 +9335,7 @@ mp_getredirection(pTHX_ int *ac, char ***av)
         FILE *tmperr;
         if (NULL == (tmperr = fopen(err, errmode, "mbc=32", "mbf=2")))
             {
-            fprintf(stderr,"Can't open error file %s as stderr",err);
+            fprintf(stderr, PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_ERROR_OPEN_FAILED, err);
             exit(vaxc$errno);
             }
             fclose(tmperr);
@@ -9656,9 +9651,10 @@ vms_image_init(int *argcp, char ***argvp)
        */
       if (rsz <= jpilist[1].buflen) { 
          /* Perl_croak accvios when used this early in startup. */
-         fprintf(stderr, "vms_image_init: $getjpiw refuses to store RIGHTSLIST of %u bytes in buffer of %u bytes.\n%s", 
-                         rsz, (unsigned long) jpilist[1].buflen,
-                         "Check your rights database for corruption.\n");
+         fprintf(stderr,
+             PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_IDENTITY_RIGHTS_LIST_LENGTH_INCONSISTENT,
+             (unsigned long)(rsz),
+             (unsigned long)((unsigned long) jpilist[1].buflen));
          exit(SS$_ABORT);
       }
       if (jpilist[1].bufadr != rlst) PerlMem_free(jpilist[1].bufadr);
@@ -10912,7 +10908,7 @@ Perl_vms_do_aexec(pTHX_ SV *really,SV **mark,SV **sp)
   if (vfork_called) {           /* this follows a vfork - act Unixish */
     vfork_called--;
     if (vfork_called < 0) {
-      warn("Internal inconsistency in tracking vforks");
+      PERL_WARN_WARNING_INTERNAL_SYSTEM_PLATFORM_VMS_VFORK_TRACKING_UNBALANCED();
       vfork_called = 0;
     }
     else return do_aexec(really,mark,sp);
@@ -10940,7 +10936,7 @@ Perl_vms_do_exec(pTHX_ const char *cmd)
   if (vfork_called) {             /* this follows a vfork - act Unixish */
     vfork_called--;
     if (vfork_called < 0) {
-      warn("Internal inconsistency in tracking vforks");
+      PERL_WARN_WARNING_INTERNAL_SYSTEM_PLATFORM_VMS_VFORK_TRACKING_UNBALANCED();
       vfork_called = 0;
     }
     else return do_exec(cmd);
@@ -10973,8 +10969,7 @@ Perl_vms_do_exec(pTHX_ const char *cmd)
         set_errno(EVMSERR); 
     }
     set_vaxc_errno(retsts);
-    ck_warner(packWARN(WARN_EXEC),"Can't exec \"%*s\": %s",
-              vmscmd->dsc$w_length, vmscmd->dsc$a_pointer, Strerror(errno));
+    PERL_WARN_WARNING_IO_EXEC_VMS_EXEC_FAILED(vmscmd->dsc$w_length, vmscmd->dsc$a_pointer, Strerror(errno));
 
     vms_execfree(vmscmd);
   }
@@ -11072,8 +11067,7 @@ do_spawn2(pTHX_ const char *cmd, int flags)
           set_errno(EVMSERR);
       }
       set_vaxc_errno(sts);
-      ck_warner(packWARN(WARN_EXEC),"Can't spawn: %s",
-                Strerror(errno));
+      PERL_WARN_WARNING_IO_EXEC_VMS_SPAWN_FAILED(Strerror(errno));
     }
     sts = substs;
   }
@@ -11368,7 +11362,7 @@ fillpasswd (pTHX_ const char *name, struct passwd *pwd)
         pwd->pw_gid= uic.uic$v_group;
     }
     else
-      warn("getpwnam returned invalid UIC %#o for user \"%s\"");
+      PERL_WARN_WARNING_SYSTEM_PLATFORM_VMS_PASSWORD_ENTRY_UIC_INVALID((unsigned int)uic.uic$l_uic, name);
     pwd->pw_passwd=  pw_passwd;
     pwd->pw_gecos=   owner.pw_gecos;
     pwd->pw_dir=     defdev.pw_dir;
@@ -11581,7 +11575,7 @@ Perl_my_time(pTHX_ time_t *timep)
       if (!vmstrnenv("SYS$TIMEZONE_DIFFERENTIAL",off,0,fildev,0)) {
         gmtime_emulation_type++;
         utc_offset_secs = 0;
-        warn("no UTC offset information; assuming local time is UTC");
+        PERL_WARN_WARNING_SYSTEM_PLATFORM_VMS_UTC_OFFSET_UNAVAILABLE();
       }
       else { utc_offset_secs = atol(off); }
     }
@@ -12608,7 +12602,7 @@ rmsexpand_fromperl(pTHX_ CV *cv)
   fs_utf8 = 0;
   dfs_utf8 = 0;
   if (!items || items > 2)
-    croak("Usage: VMS::Filespec::rmsexpand(spec[,defspec])");
+    PERL_THROW_VMS_FILESPEC_RMSEXPAND_USAGE();
   fspec = SvPV(ST(0),n_a);
   fs_utf8 = SvUTF8(ST(0));
   if (!fspec || !*fspec) XSRETURN_UNDEF;
@@ -12635,7 +12629,7 @@ vmsify_fromperl(pTHX_ CV *cv)
   STRLEN n_a;
   int utf8_fl;
 
-  if (items != 1) croak("Usage: VMS::Filespec::vmsify(spec)");
+  if (items != 1) PERL_THROW_VMS_FILESPEC_VMSIFY_USAGE();
   utf8_fl = SvUTF8(ST(0));
   vmsified = do_tovmsspec(SvPV(ST(0),n_a),NULL,1,&utf8_fl);
   ST(0) = sv_newmortal();
@@ -12656,7 +12650,7 @@ unixify_fromperl(pTHX_ CV *cv)
   STRLEN n_a;
   int utf8_fl;
 
-  if (items != 1) croak("Usage: VMS::Filespec::unixify(spec)");
+  if (items != 1) PERL_THROW_VMS_FILESPEC_UNIXIFY_USAGE();
   utf8_fl = SvUTF8(ST(0));
   unixified = do_tounixspec(SvPV(ST(0),n_a),NULL,1,&utf8_fl);
   ST(0) = sv_newmortal();
@@ -12677,7 +12671,7 @@ fileify_fromperl(pTHX_ CV *cv)
   STRLEN n_a;
   int utf8_fl;
 
-  if (items != 1) croak("Usage: VMS::Filespec::fileify(spec)");
+  if (items != 1) PERL_THROW_VMS_FILESPEC_FILEIFY_USAGE();
   utf8_fl = SvUTF8(ST(0));
   fileified = do_fileify_dirspec(SvPV(ST(0),n_a),NULL,1,&utf8_fl);
   ST(0) = sv_newmortal();
@@ -12698,7 +12692,7 @@ pathify_fromperl(pTHX_ CV *cv)
   STRLEN n_a;
   int utf8_fl;
 
-  if (items != 1) croak("Usage: VMS::Filespec::pathify(spec)");
+  if (items != 1) PERL_THROW_VMS_FILESPEC_PATHIFY_USAGE();
   utf8_fl = SvUTF8(ST(0));
   pathified = do_pathify_dirspec(SvPV(ST(0),n_a),NULL,1,&utf8_fl);
   ST(0) = sv_newmortal();
@@ -12719,7 +12713,7 @@ vmspath_fromperl(pTHX_ CV *cv)
   STRLEN n_a;
   int utf8_fl;
 
-  if (items != 1) croak("Usage: VMS::Filespec::vmspath(spec)");
+  if (items != 1) PERL_THROW_VMS_FILESPEC_VMSPATH_USAGE();
   utf8_fl = SvUTF8(ST(0));
   vmspath = do_tovmspath(SvPV(ST(0),n_a),NULL,1,&utf8_fl);
   ST(0) = sv_newmortal();
@@ -12740,7 +12734,7 @@ unixpath_fromperl(pTHX_ CV *cv)
   STRLEN n_a;
   int utf8_fl;
 
-  if (items != 1) croak("Usage: VMS::Filespec::unixpath(spec)");
+  if (items != 1) PERL_THROW_VMS_FILESPEC_UNIXPATH_USAGE();
   utf8_fl = SvUTF8(ST(0));
   unixpath = do_tounixpath(SvPV(ST(0),n_a),NULL,1,&utf8_fl);
   ST(0) = sv_newmortal();
@@ -12762,7 +12756,7 @@ candelete_fromperl(pTHX_ CV *cv)
   IO *io;
   STRLEN n_a;
 
-  if (items != 1) croak("Usage: VMS::Filespec::candelete(spec)");
+  if (items != 1) PERL_THROW_VMS_FILESPEC_CANDELETE_USAGE();
 
   mysv = SvROK(ST(0)) ? SvRV(ST(0)) : ST(0);
   Newx(fspec, VMS_MAXRSS, char);
@@ -12801,7 +12795,7 @@ rmscopy_fromperl(pTHX_ CV *cv)
   STRLEN n_a;
 
   if (items < 2 || items > 3)
-    croak("Usage: File::Copy::rmscopy(from,to[,date_flag])");
+    PERL_THROW_FILE_COPY_RMSCOPY_USAGE();
 
   mysv = SvROK(ST(0)) ? SvRV(ST(0)) : ST(0);
   Newx(inspec, VMS_MAXRSS, char);
@@ -13235,7 +13229,7 @@ unixrealpath_fromperl(pTHX_ CV *cv)
     STRLEN n_a;
 
     if (!items || items != 1)
-        croak("Usage: VMS::Filespec::unixrealpath(spec)");
+        PERL_THROW_VMS_FILESPEC_UNIXREALPATH_USAGE();
 
     fspec = SvPV(ST(0),n_a);
     if (!fspec || !*fspec) XSRETURN_UNDEF;
@@ -13263,7 +13257,7 @@ vmsrealpath_fromperl(pTHX_ CV *cv)
     STRLEN n_a;
 
     if (!items || items != 1)
-        croak("Usage: VMS::Filespec::vmsrealpath(spec)");
+        PERL_THROW_VMS_FILESPEC_VMSREALPATH_USAGE();
 
     fspec = SvPV(ST(0),n_a);
     if (!fspec || !*fspec) XSRETURN_UNDEF;

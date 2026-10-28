@@ -90,7 +90,7 @@ package DynaLoader;
 # Tim.Bunce@ig.co.uk, August 1994
 
 BEGIN {
-    our $VERSION = '1.57';
+    our $VERSION = '1.58';
 }
 
 # Note: in almost any other piece of code "our" would have been a better
@@ -1003,4 +1003,3 @@ assistance from Tim Bunce, January 1996.
 EOT
 
 close OUT or die $!;
-

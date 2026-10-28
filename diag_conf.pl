@@ -18818,8 +18818,10 @@ $CONF = {
           "macro" => "PERL_THROW_ERROR_CALL_BINDING_ARITY_SIGNATURE_MISMATCH",
           "source_files" => [
             "cygwin/cygwin.c",
+            "os2/os2.c",
             "os390/os390.c",
-            "universal.c"
+            "universal.c",
+            "vms/vms.c"
           ],
           "tags" => [
             "condition:size_count_range",
@@ -26183,7 +26185,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_ORDINAL_TABLE_SIZE_MISMATCH",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_ORDINAL_TABLE_SIZE_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "condition:size_count_range",
@@ -26235,7 +26239,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_PROCESSOR_COUNT_TOO_LARGE",
           "macro" => "PERL_THROW_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_PROCESSOR_COUNT_TOO_LARGE",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific"
@@ -26409,7 +26415,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_IO_CONTROL_IOCTL_REQUIRES_SOCKET",
           "macro" => "PERL_THROW_ERROR_IO_CONTROL_IOCTL_REQUIRES_SOCKET",
-          "source_files" => [],
+          "source_files" => [
+            "win32/win32sck.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:io_handles_filesystem",
@@ -30127,7 +30135,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_LOAD_GLOBAL_SYMBOL_VISIBILITY_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_LOAD_GLOBAL_SYMBOL_VISIBILITY_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "ext/DynaLoader/dl_freemint.xs"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:module_version_loading",
@@ -31471,7 +31481,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_MEMORY_ALLOCATION_FAILED",
           "macro" => "PERL_THROW_ERROR_MEMORY_ALLOCATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "win32/vmem.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:memory_allocation_lifetime"
@@ -33957,7 +33969,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_HIERARCHY_INCONSISTENT",
           "macro" => "PERL_APPEND_ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_HIERARCHY_INCONSISTENT",
-          "source_files" => [],
+          "source_files" => [
+            "ext/mro/mro.xs"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -34009,7 +34023,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_MERGE_RESULT_CONTEXT",
           "macro" => "PERL_APPEND_ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_MERGE_RESULT_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "ext/mro/mro.xs"
+          ],
           "tags" => [
             "role:context_hint",
             "subject:object_role_field"
@@ -34061,7 +34077,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_PARENT_CONFLICT_CONTEXT",
           "macro" => "PERL_APPEND_ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_PARENT_CONFLICT_CONTEXT",
-          "source_files" => [],
+          "source_files" => [
+            "ext/mro/mro.xs"
+          ],
           "tags" => [
             "condition:conflict_duplicate",
             "role:context_hint",
@@ -34203,6 +34221,7 @@ $CONF = {
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_ANONYMOUS_STASH",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_ANONYMOUS_STASH",
           "source_files" => [
+            "ext/mro/mro.xs",
             "mro_core.c"
           ],
           "tags" => [
@@ -34244,6 +34263,7 @@ $CONF = {
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_DEPTH_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_DEPTH_EXCEEDED",
           "source_files" => [
+            "ext/mro/mro.xs",
             "mro_core.c"
           ],
           "tags" => [
@@ -34381,6 +34401,7 @@ $CONF = {
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_MRO_NAME_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_MRO_NAME_UNKNOWN",
           "source_files" => [
+            "ext/mro/mro.xs",
             "mro_core.c"
           ],
           "tags" => [
@@ -34476,7 +34497,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_PACKAGE_CREATION_FAILED",
           "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_PACKAGE_CREATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "ext/mro/mro.xs"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:object_role_field"
@@ -36415,6 +36438,7 @@ $CONF = {
           "code" => "ERROR_OBJECT_METHOD_LOOKUP_NAMED_STASH_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NAMED_STASH_REQUIRED",
           "source_files" => [
+            "ext/mro/mro.xs",
             "gv.c"
           ],
           "tags" => [
@@ -36455,7 +36479,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_LOOKUP_NEXT_ENCLOSING_METHOD_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NEXT_ENCLOSING_METHOD_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "ext/mro/mro.xs"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts",
@@ -36495,7 +36521,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_LOOKUP_NEXT_METHOD_CONTEXT_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NEXT_METHOD_CONTEXT_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "ext/mro/mro.xs"
+          ],
           "tags" => [
             "condition:invalid_control_scope",
             "subject:call_callback_contracts",
@@ -36535,7 +36563,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_LOOKUP_NEXT_METHOD_NOT_FOUND",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NEXT_METHOD_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "ext/mro/mro.xs"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:call_callback_contracts",
@@ -47518,7 +47548,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_API_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_API_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -47568,7 +47600,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_APPLICATION_TYPE_QUERY_REQUIRES_OS2",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_APPLICATION_TYPE_QUERY_REQUIRES_OS2",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific",
@@ -47608,7 +47642,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_DOS_ERROR_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_DOS_ERROR_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -47658,7 +47694,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_DRIVE_NOT_ALPHABETIC",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_DRIVE_NOT_ALPHABETIC",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -47703,7 +47741,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_POPUP_SUPPRESSION_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_POPUP_SUPPRESSION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -47753,7 +47793,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MEMORY_ALLOCATION_API_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MEMORY_ALLOCATION_API_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -47798,7 +47840,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MESSAGE_COUNT_INTEGER_STORAGE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MESSAGE_COUNT_INTEGER_STORAGE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -47837,7 +47881,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MODULE_ENTRY_POINT_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_ENTRY_POINT_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific"
@@ -47887,7 +47933,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MODULE_HEADER_BUFFER_SIZE_ZERO",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_HEADER_BUFFER_SIZE_ZERO",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific"
@@ -47932,7 +47980,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MODULE_HEADER_QUERY_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_HEADER_QUERY_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -47997,7 +48047,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MODULE_LOAD_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_LOAD_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:module_version_loading",
@@ -48048,7 +48100,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_EMPTY",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_EMPTY",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -48087,7 +48141,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_NOT_ARRAY",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_NOT_ARRAY",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:platform_specific",
@@ -48127,7 +48183,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_NOT_REFERENCE",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_NOT_REFERENCE",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:platform_specific",
@@ -48167,7 +48225,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MODULE_PM_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_PM_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -48212,7 +48272,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MODULE_SHORT_NAME_FROM_HANDLE_UNSUPPORTED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_SHORT_NAME_FROM_HANDLE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific"
@@ -48251,7 +48313,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MODULE_XSUB_REFERENCE_REQUIRED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_XSUB_REFERENCE_REQUIRED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:type_mismatch",
             "subject:call_callback_contracts",
@@ -48292,7 +48356,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PATH_EXECUTABLE_DIRECTORY_MISSING",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_EXECUTABLE_DIRECTORY_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -48342,7 +48408,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PATH_INSTALL_PREFIX_TOO_LONG",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_INSTALL_PREFIX_TOO_LONG",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific"
@@ -48387,7 +48455,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PATH_PARENT_STRIP_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_PARENT_STRIP_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -48432,7 +48502,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PATH_PREFIX_COMPONENT_MISSING",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_PREFIX_COMPONENT_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -48477,7 +48549,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PATH_PREFIX_RESULT_TOO_LONG",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_PREFIX_RESULT_TOO_LONG",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific"
@@ -48516,7 +48590,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PATH_SUBSTITUTION_NAME_TOO_LONG",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_SUBSTITUTION_NAME_TOO_LONG",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:io_handles_filesystem",
@@ -48572,7 +48648,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PIPE_CALL_ARGUMENT_COUNT_INVALID",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_CALL_ARGUMENT_COUNT_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific"
@@ -48611,7 +48689,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PIPE_CONNECT_MODE_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_CONNECT_MODE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -48656,7 +48736,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PIPE_CONTROL_OPERATION_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_CONTROL_OPERATION_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -48701,7 +48783,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PIPE_HANDLE_DESCRIPTOR_INVALID",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_HANDLE_DESCRIPTOR_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -48740,7 +48824,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PIPE_INSTANCE_COUNT_OUT_OF_RANGE",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_INSTANCE_COUNT_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific"
@@ -48785,7 +48871,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PIPE_MESSAGE_READ_MODE_INVALID",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_MESSAGE_READ_MODE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -48824,7 +48912,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PIPE_NAME_EMPTY",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_NAME_EMPTY",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -48863,7 +48953,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PIPE_OPEN_MODE_INVALID",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_OPEN_MODE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -48908,7 +49000,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PIPE_WAIT_ARGUMENT_COUNT_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_WAIT_ARGUMENT_COUNT_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific"
@@ -48953,7 +49047,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PIPE_WAIT_ARGUMENT_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_WAIT_ARGUMENT_FORBIDDEN",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -48998,7 +49094,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PROCESS_TYPE_CHANGE_REQUIRES_OS2",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PROCESS_TYPE_CHANGE_REQUIRES_OS2",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific",
@@ -49038,7 +49136,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PROCESS_TYPE_QUERY_KIND_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PROCESS_TYPE_QUERY_KIND_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -49083,7 +49183,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_QUERY_COUNT_OUT_OF_RANGE",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_QUERY_COUNT_OUT_OF_RANGE",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific"
@@ -49128,7 +49230,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_THREADS_DETACH_ALREADY_WAITED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_THREADS_DETACH_ALREADY_WAITED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific",
@@ -49168,7 +49272,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_THREADS_JOIN_ALREADY_WAITED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_THREADS_JOIN_ALREADY_WAITED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific",
@@ -49208,7 +49314,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_THREADS_TLS_ALLOCATION_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_THREADS_TLS_ALLOCATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2ish.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -49247,7 +49355,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_WINDOW_DEVICE_CONTEXT_REQUIRES_MESSAGE_QUEUE",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_WINDOW_DEVICE_CONTEXT_REQUIRES_MESSAGE_QUEUE",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -49286,7 +49396,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_WINDOW_MESSAGE_QUEUE_MISSING",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_WINDOW_MESSAGE_QUEUE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -49325,7 +49437,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_WINDOW_QUIT_REQUESTED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_WINDOW_QUIT_REQUESTED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -49364,7 +49478,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_PLAN9_NETWORK_FUNCTION_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_PLAN9_NETWORK_FUNCTION_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "plan9/plan9.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:io_handles_filesystem",
@@ -49565,7 +49681,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_ENVIRONMENT_ENUMERATION_SENDER_UNKNOWN",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_VMS_ENVIRONMENT_ENUMERATION_SENDER_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -49658,7 +49776,8 @@ $CONF = {
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_SERVICE_STATUS_FAILED",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_VMS_SERVICE_STATUS_FAILED",
           "source_files" => [
-            "ext/XS-APItest/APItest_runtime_hooks.xs"
+            "ext/XS-APItest/APItest_runtime_hooks.xs",
+            "vms/vmsish.h"
           ],
           "tags" => [
             "condition:operation_failed",
@@ -49715,7 +49834,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_WINDOWS_FUNCTION_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_SYSTEM_PLATFORM_WINDOWS_FUNCTION_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "win32/win32.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific",
@@ -50588,6 +50709,7 @@ $CONF = {
           "macro" => "PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE",
           "source_files" => [
             "doio.c",
+            "os2/os2.c",
             "pp_sys.c",
             "util.c"
           ],
@@ -51648,6 +51770,7 @@ $CONF = {
           "code" => "ERROR_TAINT_OPERATION_INSECURE",
           "macro" => "PERL_CHECK_TAINT_ERROR_TAINT_OPERATION_INSECURE",
           "source_files" => [
+            "os2/os2.c",
             "taint.c"
           ],
           "tags" => [
@@ -54243,6 +54366,7 @@ $CONF = {
             "builtin.c",
             "doio.c",
             "mg.c",
+            "os2/os2.c",
             "pp_sys.c",
             "util.c"
           ],
@@ -56753,7 +56877,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_CONTROL_FLOW_PSEUDO_CHILD_RESTART_TARGET_MISSING",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_CONTROL_FLOW_PSEUDO_CHILD_RESTART_TARGET_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "amigaos4/amigaio.c",
+            "win32/perlhost.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:control_flow_scope"
@@ -59674,7 +59801,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_LOCALE_SWITCH_FORK_RESTORE_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_LOCALE_SWITCH_FORK_RESTORE_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "win32/perlhost.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -67536,7 +67665,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_MODULE_ENTRY_POINT_SENTINEL_UNRESOLVED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_MODULE_ENTRY_POINT_SENTINEL_UNRESOLVED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67577,7 +67708,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_PATH_EXTLIBPATH_RESULT_UNCHANGED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_PATH_EXTLIBPATH_RESULT_UNCHANGED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67618,7 +67751,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_RUNTIME_EXCEPTION_CHAIN_OUTSIDE_STACK",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_RUNTIME_EXCEPTION_CHAIN_OUTSIDE_STACK",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:platform_specific"
@@ -67676,7 +67811,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_RUNTIME_EXCEPTION_HANDLER_MISMATCH",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_RUNTIME_EXCEPTION_HANDLER_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:platform_specific"
@@ -67728,7 +67865,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_RUNTIME_INIT_MUTEX_FAILED",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_RUNTIME_INIT_MUTEX_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -67781,7 +67920,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_PROCESS_ID_MISMATCH",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_PROCESS_ID_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67822,7 +67963,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_CONDITION_SIGNAL_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_CONDITION_SIGNAL_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2ish.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -67869,7 +68012,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_ORDINAL_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_ORDINAL_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -67916,7 +68061,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_REUSED_ID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_REUSED_ID",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -67963,7 +68110,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_STATE_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_STATE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -68010,7 +68159,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_EXIT_STATE_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_EXIT_STATE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -68057,7 +68208,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_ORDINAL_INVALID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_ORDINAL_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "contract:panic_producer",
@@ -68104,7 +68257,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_REUSED_ID",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_REUSED_ID",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -68151,7 +68306,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_STATE_UNKNOWN",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_STATE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -68198,7 +68355,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_START_ID_REUSED",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_START_ID_REUSED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:platform_specific"
@@ -68251,7 +68410,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_START_ORDINAL_INVALID",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_START_ORDINAL_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:platform_specific"
@@ -68299,7 +68460,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_CRT_PARAMETER_INVALID",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_CRT_PARAMETER_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "win32/win32.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -68356,7 +68519,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_PROCESS_PSEUDO_CHILD_START_TIMEOUT",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_PROCESS_PSEUDO_CHILD_START_TIMEOUT",
-          "source_files" => [],
+          "source_files" => [
+            "win32/win32.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "contract:panic_producer",
@@ -68398,7 +68563,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_THREADS_TLS_ALLOCATION_FAILED",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_THREADS_TLS_ALLOCATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "win32/win32thread.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -68440,7 +68607,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_TIME_EPOCH_CONVERSION_FAILED",
           "macro" => "PERL_FORMAT_ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_TIME_EPOCH_CONVERSION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "win32/win32.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -68538,7 +68707,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_API_FAILED",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_API_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2ish.h",
+            "win32/win32thread.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -68825,7 +68997,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_API_FAILED_WITH_RETURN_CODE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_API_FAILED_WITH_RETURN_CODE",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2ish.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -68978,7 +69152,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_CONDITION_API_FAILED_WITH_RETURN_CODE",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_CONDITION_API_FAILED_WITH_RETURN_CODE",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2ish.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -69050,7 +69226,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_THREADS_CONDITION_API_FAILED_WITH_STATUS",
           "macro" => "PERL_PANIC_ERROR_INTERNAL_THREADS_CONDITION_API_FAILED_WITH_STATUS",
-          "source_files" => [],
+          "source_files" => [
+            "win32/win32thread.h"
+          ],
           "tags" => [
             "condition:operation_failed",
             "contract:panic_producer",
@@ -70700,7 +70878,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_AMIGA_PROCESS_FORK_UNAVAILABLE",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_AMIGA_PROCESS_FORK_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "amigaos4/amigaos.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific"
@@ -70741,7 +70921,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_AMIGA_PROCESS_PAUSE_UNAVAILABLE",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_AMIGA_PROCESS_PAUSE_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "amigaos4/amigaos.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific"
@@ -70782,7 +70964,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_AMIGA_PROCESS_WAIT_UNAVAILABLE",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_AMIGA_PROCESS_WAIT_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "amigaos4/amigaos.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific"
@@ -70823,7 +71007,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_MODULE_PROCEDURE_TYPE_INVALID",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_OS2_MODULE_PROCEDURE_TYPE_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "os2/dl_os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -70864,7 +71050,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_OS2_PATH_LIBPATH_SETUP_FAILED",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_OS2_PATH_LIBPATH_SETUP_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -70911,7 +71099,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_APPEND_OUTPUT_FILE_MISSING",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_APPEND_OUTPUT_FILE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -70952,7 +71142,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_ERROR_FILE_MISSING",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_ERROR_FILE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -70993,7 +71185,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_ERROR_OPEN_FAILED",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_ERROR_OPEN_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -71040,7 +71234,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_FILE_MISSING",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_FILE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -71081,7 +71277,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_OPEN_FAILED",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_OPEN_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -71128,7 +71326,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_PIPE_REOPEN_FAILED",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_PIPE_REOPEN_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -71175,7 +71375,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_OUTPUT_FILE_MISSING",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_OUTPUT_FILE_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -71216,7 +71418,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_OUTPUT_OPEN_FAILED",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_OUTPUT_OPEN_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -71263,7 +71467,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_PIPE_COMMAND_MISSING",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_PIPE_COMMAND_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific"
@@ -71304,7 +71510,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_PIPE_OUTPUT_CONFLICT",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_PIPE_OUTPUT_CONFLICT",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -71345,7 +71553,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_SYSTEM_PLATFORM_VMS_IDENTITY_RIGHTS_LIST_LENGTH_INCONSISTENT",
           "macro" => "PERL_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_IDENTITY_RIGHTS_LIST_LENGTH_INCONSISTENT",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:platform_specific"
@@ -71496,7 +71706,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_OS2_ERROR_DESCRIPTION_MISSING",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_OS2_ERROR_DESCRIPTION_MISSING",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -71550,7 +71762,8 @@ $CONF = {
           "code" => "NOTE_CONTEXT_OS2_MODULE_LOAD_DETAIL",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_OS2_MODULE_LOAD_DETAIL",
           "source_files" => [
-            "ext/XS-APItest/APItest_runtime_hooks.xs"
+            "ext/XS-APItest/APItest_runtime_hooks.xs",
+            "os2/dl_os2.c"
           ],
           "tags" => [
             "delivery:format_only",
@@ -71604,7 +71817,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_OS2_THREAD_STATE_COULD_NOT_START",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_COULD_NOT_START",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -71646,7 +71861,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_OS2_THREAD_STATE_DETACHED",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_DETACHED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -71688,7 +71905,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_OS2_THREAD_STATE_EXITED",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_EXITED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -71730,7 +71949,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_OS2_THREAD_STATE_EXITED_WAITED",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_EXITED_WAITED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -71772,7 +71993,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_OS2_THREAD_STATE_RUNNING",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_RUNNING",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -71814,7 +72037,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_OS2_THREAD_STATE_UNINITIALIZED",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_UNINITIALIZED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -71856,7 +72081,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_OS2_THREAD_STATE_UNKNOWN",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_UNKNOWN",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -71904,7 +72131,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_OS2_THREAD_STATE_WAITED",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_OS2_THREAD_STATE_WAITED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -71946,7 +72175,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "NOTE_CONTEXT_WINDOWS_INVALID_PARAMETER_EXPRESSION",
           "macro" => "PERL_FORMAT_NOTE_CONTEXT_WINDOWS_INVALID_PARAMETER_EXPRESSION",
-          "source_files" => [],
+          "source_files" => [
+            "win32/win32.c"
+          ],
           "tags" => [
             "delivery:format_only",
             "role:context_hint",
@@ -72095,7 +72326,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_PLATFORM_OS2_EXCEPTION_HANDLER_SET_FAILED",
           "macro" => "PERL_FORMAT_WARNING_SYSTEM_PLATFORM_OS2_EXCEPTION_HANDLER_SET_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "delivery:format_only",
@@ -72148,7 +72381,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_PLATFORM_OS2_EXCEPTION_HANDLER_UNSET_FAILED",
           "macro" => "PERL_FORMAT_WARNING_SYSTEM_PLATFORM_OS2_EXCEPTION_HANDLER_UNSET_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "delivery:format_only",
@@ -75290,7 +75525,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_MEMORY_WINDOWS_FREE_TO_WRONG_POOL",
           "macro" => "PERL_WARN_WARNING_INTERNAL_MEMORY_WINDOWS_FREE_TO_WRONG_POOL",
-          "source_files" => [],
+          "source_files" => [
+            "win32/vmem.h"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime",
@@ -75388,7 +75625,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_SYSTEM_PLATFORM_OS2_JOIN_UNSTARTED_THREAD",
           "macro" => "PERL_WARN_WARNING_INTERNAL_SYSTEM_PLATFORM_OS2_JOIN_UNSTARTED_THREAD",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:platform_specific",
@@ -75429,7 +75668,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_INTERNAL_SYSTEM_PLATFORM_VMS_VFORK_TRACKING_UNBALANCED",
           "macro" => "PERL_WARN_WARNING_INTERNAL_SYSTEM_PLATFORM_VMS_VFORK_TRACKING_UNBALANCED",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:corruption_invariant",
             "subject:process_system_calls"
@@ -75933,6 +76174,7 @@ $CONF = {
           "code" => "WARNING_IO_EXEC_EXEC_FAILED",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_EXEC_FAILED",
           "source_files" => [
+            "amigaos4/amigaio.c",
             "doio.c"
           ],
           "tags" => [
@@ -75986,7 +76228,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_OS2_EXECUTABLE_WITH_ARGV0_OVERRIDE_NOT_FOUND",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_OS2_EXECUTABLE_WITH_ARGV0_OVERRIDE_NOT_FOUND",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:platform_specific",
@@ -76044,7 +76288,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_OS2_FULLSCREEN_PROCESS_SESSION_MISMATCH",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_OS2_FULLSCREEN_PROCESS_SESSION_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "subject:platform_specific",
             "subject:process_system_calls"
@@ -76096,7 +76342,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_OS2_INTERPRETER_LINE_ARGUMENT_LIMIT",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_OS2_INTERPRETER_LINE_ARGUMENT_LIMIT",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific",
@@ -76159,7 +76407,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_OS2_LAUNCH_FAILED",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_OS2_LAUNCH_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific",
@@ -76217,7 +76467,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_OS2_PM_PROCESS_SESSION_MISMATCH",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_OS2_PM_PROCESS_SESSION_MISMATCH",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "subject:platform_specific",
             "subject:process_system_calls"
@@ -76269,7 +76521,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_OS2_SCRIPT_ARGV0_OVERRIDE_UNSUPPORTED",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_OS2_SCRIPT_ARGV0_OVERRIDE_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific",
@@ -76327,7 +76581,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_OS2_SCRIPT_READ_FAILED",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_OS2_SCRIPT_READ_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific",
@@ -76380,7 +76636,10 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_SELECTED_LAUNCH_OPERATION_FAILED",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_SELECTED_LAUNCH_OPERATION_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c",
+            "win32/win32.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:process_system_calls"
@@ -76493,7 +76752,8 @@ $CONF = {
           "code" => "WARNING_IO_EXEC_SPAWN_FAILED",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_SPAWN_FAILED",
           "source_files" => [
-            "cygwin/cygwin.c"
+            "cygwin/cygwin.c",
+            "win32/win32.c"
           ],
           "tags" => [
             "condition:operation_failed",
@@ -76632,7 +76892,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_VMS_EXEC_FAILED",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_VMS_EXEC_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific",
@@ -76695,7 +76957,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_VMS_SPAWN_FAILED",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_VMS_SPAWN_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific",
@@ -76743,7 +77007,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_EXEC_VMS_WAITPID_TARGET_NOT_CHILD",
           "macro" => "PERL_WARN_WARNING_IO_EXEC_VMS_WAITPID_TARGET_NOT_CHILD",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "subject:platform_specific",
             "subject:process_system_calls"
@@ -78541,7 +78807,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_PIPE_VMS_COMMAND_START_FAILED",
           "macro" => "PERL_WARN_WARNING_IO_PIPE_VMS_COMMAND_START_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:io_handles_filesystem",
@@ -78605,7 +78873,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_IO_PIPE_VMS_HELPER_SCRIPT_UNAVAILABLE",
           "macro" => "PERL_WARN_WARNING_IO_PIPE_VMS_HELPER_SCRIPT_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:missing_absent",
             "subject:io_handles_filesystem",
@@ -79058,7 +79328,12 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_LOAD_GLOBAL_SYMBOL_LOADING_UNSUPPORTED",
           "macro" => "PERL_WARN_WARNING_LOAD_GLOBAL_SYMBOL_LOADING_UNSUPPORTED",
-          "source_files" => [],
+          "source_files" => [
+            "ext/DynaLoader/dl_aix.xs",
+            "ext/DynaLoader/dl_dlopen.xs",
+            "ext/DynaLoader/dl_dyld.xs",
+            "ext/DynaLoader/dl_hpux.xs"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:module_version_loading"
@@ -81946,7 +82221,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_VMS_CLI_SYMBOL_VALUE_TOO_LONG",
           "macro" => "PERL_WARN_WARNING_MISC_VMS_CLI_SYMBOL_VALUE_TOO_LONG",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific"
@@ -81994,7 +82271,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_VMS_LOGICAL_VALUE_TRUNCATED",
           "macro" => "PERL_WARN_WARNING_MISC_VMS_LOGICAL_VALUE_TRUNCATED",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific"
@@ -83268,7 +83547,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_OVERFLOW_WIN32_SLEEP_MILLISECONDS_RANGE_EXCEEDED",
           "macro" => "PERL_WARN_WARNING_OVERFLOW_WIN32_SLEEP_MILLISECONDS_RANGE_EXCEEDED",
-          "source_files" => [],
+          "source_files" => [
+            "win32/win32.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific",
@@ -88393,7 +88674,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_VMS_CRTL_ENVIRONMENT_ENTRY_MALFORMED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_VMS_CRTL_ENVIRONMENT_ENTRY_MALFORMED",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific",
@@ -88441,7 +88724,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_VMS_ENVIRONMENT_ENUMERATION_BUFFER_OVERFLOW",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_VMS_ENVIRONMENT_ENUMERATION_BUFFER_OVERFLOW",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:size_count_range",
             "subject:platform_specific",
@@ -88489,7 +88774,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_VMS_ENVIRONMENT_ENUMERATION_MESSAGE_MALFORMED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_VMS_ENVIRONMENT_ENUMERATION_MESSAGE_MALFORMED",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific",
@@ -93427,7 +93714,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_PLATFORM_OS2_DETACH_UNSTARTED_THREAD",
           "macro" => "PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_DETACH_UNSTARTED_THREAD",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "subject:platform_specific",
             "subject:threads_locks"
@@ -93466,7 +93755,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_PLATFORM_OS2_DEVICE_CONTEXT_CLOSE_FAILED",
           "macro" => "PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_DEVICE_CONTEXT_CLOSE_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:platform_specific"
@@ -93511,7 +93802,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_PLATFORM_OS2_FORK_DLL_NAME_LOOKUP_FAILED",
           "macro" => "PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_FORK_DLL_NAME_LOOKUP_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:module_version_loading",
@@ -93572,7 +93865,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_PLATFORM_OS2_FORK_DLL_RELOAD_FAILED",
           "macro" => "PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_FORK_DLL_RELOAD_FAILED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:operation_failed",
             "subject:module_version_loading",
@@ -93623,7 +93918,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_PLATFORM_OS2_PM_RESTORE_MODE_UNEXPECTED",
           "macro" => "PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_PM_RESTORE_MODE_UNEXPECTED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -93668,7 +93965,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_PLATFORM_OS2_THREAD_ALREADY_DETACHED",
           "macro" => "PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_THREAD_ALREADY_DETACHED",
-          "source_files" => [],
+          "source_files" => [
+            "os2/os2.c"
+          ],
           "tags" => [
             "subject:platform_specific",
             "subject:threads_locks"
@@ -93707,7 +94006,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_PLATFORM_VMS_CRTL_ENVIRONMENT_UNAVAILABLE",
           "macro" => "PERL_WARN_WARNING_SYSTEM_PLATFORM_VMS_CRTL_ENVIRONMENT_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific",
@@ -93748,7 +94049,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_PLATFORM_VMS_PASSWORD_ENTRY_UIC_INVALID",
           "macro" => "PERL_WARN_WARNING_SYSTEM_PLATFORM_VMS_PASSWORD_ENTRY_UIC_INVALID",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:platform_specific"
@@ -93798,7 +94101,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_PLATFORM_VMS_UTC_OFFSET_UNAVAILABLE",
           "macro" => "PERL_WARN_WARNING_SYSTEM_PLATFORM_VMS_UTC_OFFSET_UNAVAILABLE",
-          "source_files" => [],
+          "source_files" => [
+            "vms/vms.c"
+          ],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:platform_specific"
@@ -93837,7 +94142,9 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SYSTEM_SIGNAL_WINDOWS_PROCESS_TERMINATING",
           "macro" => "PERL_WARN_WARNING_SYSTEM_SIGNAL_WINDOWS_PROCESS_TERMINATING",
-          "source_files" => [],
+          "source_files" => [
+            "win32/win32.c"
+          ],
           "tags" => [
             "subject:platform_specific",
             "subject:signals"

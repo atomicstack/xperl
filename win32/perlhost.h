@@ -1883,7 +1883,7 @@ win32_start_child(LPVOID arg)
     thread_locale_init();
 #ifdef USE_LOCALE
     if (! Perl_setlocale(LC_ALL, params->locale))
-        Perl_croak(aTHX_ "panic: cannot restore locale after fork");
+        PERL_PANIC_ERROR_INTERNAL_LOCALE_SWITCH_FORK_RESTORE_FAILED();
 #endif
 #ifndef PERL_SYNC_FORK
     PerlMemShared_free(params);
@@ -1958,7 +1958,7 @@ restart:
                 PL_restartop = (OP*)NULL;
                 goto restart;
             }
-            PerlIO_printf(Perl_error_log, "panic: restartop\n");
+            PerlIO_printf(Perl_error_log, PERL_DIAG_FORMAT_ERROR_INTERNAL_CONTROL_FLOW_PSEUDO_CHILD_RESTART_TARGET_MISSING);
             FREETMPS;
             status = 1;
             break;

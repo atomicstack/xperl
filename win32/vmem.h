@@ -63,12 +63,12 @@ inline void MEMODSlx(char *str, long x)
 #define VMEM_H_NEW_OP \
     void* operator new(size_t size) noexcept {                              \
         void * p = (void*)win32_malloc(size);                               \
-        if (!p) noperl_die("%s%s","Out of memory in perl:", "???");         \
+        if (!p) PERL_THROW_ERROR_MEMORY_ALLOCATION_FAILED();         \
         return p;                                                           \
     };                                                                      \
     void* operator new[](size_t size) noexcept {                            \
         void * p = (void*)win32_malloc(size);                               \
-        if (!p) noperl_die("%s%s","Out of memory in perl:", "???");         \
+        if (!p) PERL_THROW_ERROR_MEMORY_ALLOCATION_FAILED();         \
         return p; };                                                        \
     void* operator new( size_t size, int block_use,                         \
                           char const* file_name, int line_number) noexcept {\
@@ -76,7 +76,7 @@ inline void MEMODSlx(char *str, long x)
         UNREFERENCED_PARAMETER(file_name);                                  \
         UNREFERENCED_PARAMETER(line_number);                                \
         void * p = (void*)win32_malloc(size);                               \
-        if(!p) noperl_die("%s%s","Out of memory in perl:", "???");          \
+        if(!p) PERL_THROW_ERROR_MEMORY_ALLOCATION_FAILED();          \
         return p;                                                           \
     };                                                                      \
     void* operator new[]( size_t size, int block_use,                       \
@@ -85,7 +85,7 @@ inline void MEMODSlx(char *str, long x)
         UNREFERENCED_PARAMETER(file_name);                                  \
         UNREFERENCED_PARAMETER(line_number);                                \
         void * p = (void*)win32_malloc(size);                               \
-        if(!p) noperl_die("%s%s","Out of memory in perl:", "???");          \
+        if(!p) PERL_THROW_ERROR_MEMORY_ALLOCATION_FAILED();          \
         return p; };                                                        \
     void operator delete (void* p) noexcept { win32_free(p); return; };     \
     void operator delete[] (void* p) noexcept { win32_free(p);  return; }
@@ -305,7 +305,7 @@ void VMemNL::Free(void* pMem)
             if (ptr->u.owner_nl) {
 #if 1
                 int *nowhere = NULL;
-                Perl_warn_nocontext("Free to wrong pool %p not %p",this,ptr->u.owner_nl);
+                PERL_WARN_WARNING_INTERNAL_MEMORY_WINDOWS_FREE_TO_WRONG_POOL(this, ptr->u.owner_nl);
                 *nowhere = 0; /* this segfault is deliberate, 
                                  so you can see the stack trace */
 #else

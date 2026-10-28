@@ -119,44 +119,44 @@ extern int rc;
     STMT_START {						\
         int rc;							\
         if ((rc = _rmutex_create(m,0)))				\
-            Perl_croak_nocontext("panic: MUTEX_INIT: rc=%i", rc);	\
+            PERL_PANIC_MUTEX_INIT_ERROR(rc);	\
     } STMT_END
 #define MUTEX_LOCK(m) \
     STMT_START {						\
         int rc;							\
         if ((rc = _rmutex_request(m,_FMR_IGNINT)))		\
-            Perl_croak_nocontext("panic: MUTEX_LOCK: rc=%i", rc);	\
+            PERL_PANIC_MUTEX_LOCK_ERROR(rc);	\
     } STMT_END
 #define MUTEX_UNLOCK(m) \
     STMT_START {						\
         int rc;							\
         if ((rc = _rmutex_release(m)))				\
-            Perl_croak_nocontext("panic: MUTEX_UNLOCK: rc=%i", rc);	\
+            PERL_PANIC_MUTEX_UNLOCK_ERROR(rc);	\
     } STMT_END
 #define MUTEX_DESTROY(m) \
     STMT_START {						\
         int rc;							\
         if ((rc = _rmutex_close(m)))				\
-            Perl_croak_nocontext("panic: MUTEX_DESTROY: rc=%i", rc);	\
+            PERL_PANIC_MUTEX_DESTROY_ERROR(rc);	\
     } STMT_END
 
 #define COND_INIT(c) \
     STMT_START {						\
         int rc;							\
         if ((rc = DosCreateEventSem(NULL,c,0,0)))		\
-            Perl_croak_nocontext("panic: COND_INIT: rc=%i", rc);	\
+            PERL_PANIC_COND_INIT_ERROR(rc);	\
     } STMT_END
 #define COND_SIGNAL(c) \
     STMT_START {						\
         int rc;							\
         if ((rc = DosPostEventSem(*(c))) && rc != OS2_ERROR_ALREADY_POSTED)\
-            Perl_croak_nocontext("panic: COND_SIGNAL, rc=%ld", rc);	\
+            PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_CONDITION_SIGNAL_FAILED(rc);	\
     } STMT_END
 #define COND_BROADCAST(c) \
     STMT_START {						\
         int rc;							\
         if ((rc = DosPostEventSem(*(c))) && rc != OS2_ERROR_ALREADY_POSTED)\
-            Perl_croak_nocontext("panic: COND_BROADCAST, rc=%i", rc);	\
+            PERL_PANIC_COND_BROADCAST_ERROR(rc);	\
     } STMT_END
 /* #define COND_WAIT(c, m) \
     STMT_START {						\
@@ -170,7 +170,7 @@ extern int rc;
     STMT_START {						\
         int rc;							\
         if ((rc = SignalObjectAndWait(*(m),*(c),INFINITE,FALSE)))	\
-            Perl_croak_nocontext("panic: COND_WAIT");			\
+            PERL_PANIC_COND_WAIT_FAILED();			\
         else							\
             MUTEX_LOCK(m);					\
     } STMT_END
@@ -178,7 +178,7 @@ extern int rc;
     STMT_START {						\
         int rc;							\
         if ((rc = DosCloseEventSem(*(c))))			\
-            Perl_croak_nocontext("panic: COND_DESTROY, rc=%i", rc);	\
+            PERL_PANIC_COND_DESTROY_ERROR(rc);	\
     } STMT_END
 /*#define THR ((struct thread *) TlsGetValue(PL_thr_key))
 */
@@ -193,7 +193,7 @@ extern int rc;
 #  define pthread_key_create(keyp,flag)			\
         ( DosAllocThreadLocalMemory(1,(unsigned long**)keyp)	\
           /* diag_listed_as: Out of memory in perl:%s */ \
-          ? Perl_croak_nocontext("Out of memory in perl:os2:pthread_key_create"), 1        \
+          ? PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_THREADS_TLS_ALLOCATION_FAILED(), 1        \
           : 0						\
         )
 #endif /* USE_SLOW_THREAD_SPECIFIC */

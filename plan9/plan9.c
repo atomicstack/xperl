@@ -29,13 +29,13 @@ int fpclassify(double d) {
 
 int recvmsg(int a, struct msghdr *b, int c)
 {
-    croak("Function \"recvmsg\" not implemented in this version of perl.");
+    PERL_THROW_RECVMSG_NOT_IMPLEMENTED();
     return (int)NULL;
 } 
 
 int sendmsg(int a, struct msghdr *b, int c)
 {
-    croak("Function \"sendmsg\" not implemented in this version of perl.");
+    PERL_THROW_SENDMSG_NOT_IMPLEMENTED();
     return (int)NULL;
 } 
 
@@ -43,83 +43,83 @@ int sendmsg(int a, struct msghdr *b, int c)
 /* Functions mentioned in /sys/include/ape/sys/netdb.h but not implemented */
 struct netent *getnetbyname(const char *a)
 {
-    croak("Function \"getnetbyname\" not implemented in this version of perl.");
+    PERL_THROW_GETNETBYNAME_NOT_IMPLEMENTED();
     return (struct netent *)NULL;
 }
 
 struct netent *getnetbyaddr(long a, int b)
 {
-    croak("Function \"getnetbyaddr\" not implemented in this version of perl.");
+    PERL_THROW_GETNETBYADDR_NOT_IMPLEMENTED();
     return (struct netent *)NULL;
 }
 
 struct netent *getnetent()
 {
-    croak("Function \"getnetent\" not implemented in this version of perl.");
+    PERL_THROW_GETNETENT_NOT_IMPLEMENTED();
     return (struct netent *)NULL;
 }
 
 struct protoent *getprotobyname(const char *a)
 {
-    croak("Function \"getprotobyname\" not implemented in this version of perl.");
+    PERL_THROW_GETPROTOBYNAME_NOT_IMPLEMENTED();
     return (struct protoent *)NULL;
 }
 
 struct protoent *getprotobynumber(int a)
 {
-    croak("Function \"getprotobynumber\" not implemented in this version of perl.");
+    PERL_THROW_GETPROTOBYNUMBER_NOT_IMPLEMENTED();
     return (struct protoent *)NULL;
 }
 
 struct protoent *getprotoent()
 {
-    croak("Function \"getprotoent\" not implemented in this version of perl.");
+    PERL_THROW_GETPROTOENT_NOT_IMPLEMENTED();
     return (struct protoent *)NULL;
 }
 
 struct servent *getservbyport(int a, const char *b)
 {
-    croak("Function \"getservbyport\" not implemented in this version of perl.");
+    PERL_THROW_GETSERVBYPORT_NOT_IMPLEMENTED();
     return (struct servent *)NULL;
 }
 
 struct servent *getservent()
 {
-    croak("Function \"getservent\" not implemented in this version of perl.");
+    PERL_THROW_GETSERVENT_NOT_IMPLEMENTED();
     return (struct servent *)NULL;
 }
 
 void sethostent(int a)
 {
-    croak("Function \"sethostent\" not implemented in this version of perl.");
+    PERL_THROW_SETHOSTENT_NOT_IMPLEMENTED();
 }
 
 void setnetent(int a)
 {
-    croak("Function \"setnetent\" not implemented in this version of perl.");
+    PERL_THROW_SETNETENT_NOT_IMPLEMENTED();
 }
 
 void setprotoent(int a)
 {
-    croak("Function \"setprotoent\" not implemented in this version of perl.");
+    PERL_THROW_SETPROTOENT_NOT_IMPLEMENTED();
 }
 
 void setservent(int a)
 {
-    croak("Function \"setservent\" not implemented in this version of perl.");
+    PERL_THROW_SETSERVENT_NOT_IMPLEMENTED();
 }
 
 void endnetent()
 {
-    croak("Function \"endnetent\" not implemented in this version of perl.");
+    PERL_THROW_ENDNETENT_NOT_IMPLEMENTED();
 }
 
 void endprotoent()
 {
-    croak("Function \"endprotoent\" not implemented in this version of perl.");
+    PERL_THROW_ENDPROTOENT_NOT_IMPLEMENTED();
 }
 
 void endservent()
 {
-    croak("Function \"endservent\" not implemented in this version of perl.");
+    PERL_THROW_ENDSERVENT_NOT_IMPLEMENTED();
 }

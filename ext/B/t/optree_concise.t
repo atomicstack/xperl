@@ -255,15 +255,21 @@ EONT_EONT
 
 ;
 
-checkOptree
-    ( name	=> 'cmdline self-strict compile err using prog',
-      prog	=> 'use strict; sort @a',
-      bcopts	=> [qw/ -basic -concise -exec /],
-      errs	=> 'Global symbol "@a" requires explicit package name (did you forget to declare "my @a"?) at -e line 1.',
-      expect	=> 'nextstate',
-      expect_nt	=> 'nextstate',
-      noanchors => 1, # allow simple expectations to work
-      );
+my $strict_variable_output = runperl(
+    switches => [ '-w', '-MO=Concise,-basic,-concise,-exec' ],
+    prog     => 'use strict; sort @a',
+    stderr   => 1,
+);
+like(
+    $strict_variable_output,
+    qr/Global symbol "\@a" requires explicit package name .* at -e line 1\./,
+    'cmdline strict error is reported',
+);
+unlike(
+    $strict_variable_output,
+    qr/nextstate/,
+    'no optree is emitted after a compilation error',
+);
 
 checkOptree
     ( name	=> 'cmdline self-strict compile err using code',

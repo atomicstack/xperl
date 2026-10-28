@@ -170,7 +170,7 @@ dlerror(void)
         if (retcode == 0)
                 return NULL;
         if (retcode == ERROR_WRONG_PROCTYPE)
-            err = "Wrong procedure type";
+            err = PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_OS2_MODULE_PROCEDURE_TYPE_INVALID;
         else
             err = os2error(retcode);
         len = strlen(err);
@@ -178,7 +178,7 @@ dlerror(void)
             len = sizeof(buf) - 1;
         strncpy(buf, err, len+1);
         if (fail[0] && len + strlen(fail) < sizeof(buf) - 100)
-            sprintf(buf + len, ", possible problematic module: '%s'", fail);
+            sprintf(buf, PERL_DIAG_FORMAT_NOTE_CONTEXT_OS2_MODULE_LOAD_DETAIL, err, fail);
         retcode = 0;
         return buf;
 }

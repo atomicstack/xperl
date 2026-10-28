@@ -720,7 +720,7 @@ win32_ioctl(int i, unsigned int u, char *data)
         int wsaerr = WSAGetLastError();
         int err = convert_wsa_error_to_errno(wsaerr);
         if (err == ENOTSOCK) {
-            Perl_croak_nocontext("ioctl implemented only on sockets");
+            PERL_THROW_ERROR_IO_CONTROL_IOCTL_REQUIRES_SOCKET();
             /* NOTREACHED */
         }
         errno = err;
