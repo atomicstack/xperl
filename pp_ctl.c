@@ -1939,8 +1939,8 @@ Perl_diag_data_selector_value(const perl_diag_selector_t *selector, U16 value)
 static int
 Perl_diag_data_numeric_value_compare(const void *left, const void *right)
 {
-    const SV *left_sv = *(const SV * const *)left;
-    const SV *right_sv = *(const SV * const *)right;
+    SV *left_sv = *(SV * const *)left;
+    SV *right_sv = *(SV * const *)right;
     const STRLEN left_length = SvCUR(left_sv);
     const STRLEN right_length = SvCUR(right_sv);
     if (left_length != right_length)
@@ -1972,10 +1972,11 @@ Perl_diag_data_engine_language_compare(const void *left, const void *right)
 {
     const SV *left_value = *(const SV * const *)left;
     const SV *right_value = *(const SV * const *)right;
+    /* Registry entries are plain UVs. qsort supplies no interpreter context. */
     const perl_diagpack_engine *left_engine =
-        INT2PTR(const perl_diagpack_engine *, SvUV(left_value));
+        INT2PTR(const perl_diagpack_engine *, SvUVX(left_value));
     const perl_diagpack_engine *right_engine =
-        INT2PTR(const perl_diagpack_engine *, SvUV(right_value));
+        INT2PTR(const perl_diagpack_engine *, SvUVX(right_value));
     return strcmp(left_engine->language, right_engine->language);
 }
 

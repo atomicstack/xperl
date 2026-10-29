@@ -30,7 +30,7 @@ Perl_xperl_render_engine(pTHX_ HV *fields, HV *context)
 }
 
 static void
-Perl_xperl_render_context_set_explicit(HV *context, bool explicit_language)
+Perl_xperl_render_context_set_explicit(pTHX_ HV *context, bool explicit_language)
 {
     SV **slot = hv_fetchs(context, "_explicit_language", TRUE);
     if (!slot)
@@ -1602,7 +1602,7 @@ Perl_xperl_legacy_from_diagnostics(pTHX_ SV *object, HV *fields,
     result = newSVpvs("");
     render_context_ref = sv_2mortal(newRV_noinc(MUTABLE_SV(newHV())));
     render_context = MUTABLE_HV(SvRV(render_context_ref));
-    Perl_xperl_render_context_set_explicit(render_context,
+    Perl_xperl_render_context_set_explicit(aTHX_ render_context,
                                            explicit_language);
     Perl_xperl_render_context_set(aTHX_ render_context, object, 0);
     for (i = 0;; i++) {
@@ -2910,7 +2910,7 @@ XS(Perl_XPerl_Diagnostic_render)
         save_helem(context, explicit_key, explicit_slot);
     else
         SAVEHDELETE(context, explicit_key);
-    Perl_xperl_render_context_set_explicit(context, FALSE);
+    Perl_xperl_render_context_set_explicit(aTHX_ context, FALSE);
     result = Perl_xperl_render_diagnostic_legacy(aTHX_ fields, "en",
                                                  context);
     FREETMPS;
@@ -2945,7 +2945,7 @@ XS(Perl_XPerl_Diagnostic_render_as_legacy)
         save_helem(context, explicit_key, explicit_slot);
     else
         SAVEHDELETE(context, explicit_key);
-    Perl_xperl_render_context_set_explicit(context, TRUE);
+    Perl_xperl_render_context_set_explicit(aTHX_ context, TRUE);
     result = Perl_xperl_render_diagnostic_legacy(aTHX_ fields,
         SvPV_nolen(ST(1)), context);
     FREETMPS;
@@ -2996,7 +2996,7 @@ Perl_xperl_render_exception_annotated(pTHX_ SV *object, const char *language,
         HV *context = MUTABLE_HV(SvRV(context_ref));
         SSize_t i = 0;
 
-        Perl_xperl_render_context_set_explicit(context, explicit_language);
+        Perl_xperl_render_context_set_explicit(aTHX_ context, explicit_language);
 
         result = newSVpvs("");
         Perl_xperl_render_context_set(aTHX_ context, object, i);
