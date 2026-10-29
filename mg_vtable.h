@@ -33,6 +33,7 @@
 #define PERL_MAGIC_hintselem      'h' /* %^H hash element */
 #define PERL_MAGIC_isa            'I' /* @ISA array */
 #define PERL_MAGIC_isaelem        'i' /* @ISA array element */
+#define PERL_MAGIC_legacy_self    'j' /* Weak link from a legacy referent to its native object */
 #define PERL_MAGIC_nkeys          'k' /* scalar(keys()) lvalue */
 #define PERL_MAGIC_dbfile         'L' /* Debugger %_<filename */
 #define PERL_MAGIC_dbline         'l' /* Debugger %_<filename element */

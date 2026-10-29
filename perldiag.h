@@ -592,6 +592,7 @@ enum perl_diag_index {
     perl_diag_error_object_composition_inheritance_c3_parent_conflict_context_idx,
     perl_diag_error_object_composition_inheritance_isa_attribute_trailing_text_idx,
     perl_diag_error_object_composition_inheritance_isa_change_anonymous_stash_idx,
+    perl_diag_error_object_composition_inheritance_legacy_superclass_required_idx,
     perl_diag_error_object_composition_inheritance_linearization_anonymous_stash_idx,
     perl_diag_error_object_composition_inheritance_linearization_depth_exceeded_idx,
     perl_diag_error_object_composition_inheritance_method_change_anonymous_stash_idx,
@@ -619,6 +620,7 @@ enum perl_diag_index {
     perl_diag_error_object_definition_class_name_context_required_idx,
     perl_diag_error_object_definition_class_or_role_context_required_idx,
     perl_diag_error_object_definition_class_reopen_forbidden_idx,
+    perl_diag_error_object_definition_legacy_self_required_idx,
     perl_diag_error_object_definition_role_existing_isa_forbidden_idx,
     perl_diag_error_object_definition_role_package_already_class_idx,
     perl_diag_error_object_definition_role_reopen_forbidden_idx,
@@ -626,15 +628,20 @@ enum perl_diag_index {
     perl_diag_error_object_field_access_declaring_class_required_idx,
     perl_diag_error_object_field_access_method_context_required_idx,
     perl_diag_error_object_field_attribute_generated_method_name_invalid_idx,
+    perl_diag_error_object_field_attribute_legacy_self_already_assigned_idx,
+    perl_diag_error_object_field_attribute_legacy_self_invalid_idx,
     perl_diag_error_object_field_attribute_parameter_already_assigned_idx,
     perl_diag_error_object_field_attribute_parameter_name_conflict_idx,
     perl_diag_error_object_field_attribute_parameter_requires_scalar_idx,
     perl_diag_error_object_field_attribute_unknown_idx,
     perl_diag_error_object_field_attribute_writer_requires_scalar_idx,
     perl_diag_error_object_field_legacy_name_not_declared_idx,
+    perl_diag_error_object_legacy_already_attached_idx,
+    perl_diag_error_object_legacy_reference_invalid_idx,
     perl_diag_error_object_method_call_anonymous_native_instance_required_idx,
     perl_diag_error_object_method_call_invocant_class_incompatible_idx,
     perl_diag_error_object_method_call_invocant_required_idx,
+    perl_diag_error_object_method_call_legacy_self_unavailable_idx,
     perl_diag_error_object_method_call_named_native_instance_required_idx,
     perl_diag_error_object_method_call_unblessed_invocant_idx,
     perl_diag_error_object_method_call_uninitialized_invocant_idx,
@@ -1327,6 +1334,7 @@ enum perl_diag_index {
     perl_diag_warning_misc_hash_field_initializer_odd_element_count_idx,
     perl_diag_warning_misc_io_select_bitmask_not_string_idx,
     perl_diag_warning_misc_object_bless_empty_class_name_defaulted_idx,
+    perl_diag_warning_misc_object_legacy_reference_survives_idx,
     perl_diag_warning_misc_rng_seed_reference_without_string_overload_idx,
     perl_diag_warning_misc_sleep_duration_negative_idx,
     perl_diag_warning_misc_splice_offset_past_array_end_idx,
@@ -2149,6 +2157,7 @@ enum perl_diag_number {
     perl_diag_error_object_composition_inheritance_c3_parent_conflict_context_number           = 2517,
     perl_diag_error_object_composition_inheritance_isa_attribute_trailing_text_number          = 1218,
     perl_diag_error_object_composition_inheritance_isa_change_anonymous_stash_number           = 1041,
+    perl_diag_error_object_composition_inheritance_legacy_superclass_required_number           = 2746,
     perl_diag_error_object_composition_inheritance_linearization_anonymous_stash_number        = 1045,
     perl_diag_error_object_composition_inheritance_linearization_depth_exceeded_number         = 1590,
     perl_diag_error_object_composition_inheritance_method_change_anonymous_stash_number        = 1042,
@@ -2176,6 +2185,7 @@ enum perl_diag_number {
     perl_diag_error_object_definition_class_name_context_required_number                       = 1055,
     perl_diag_error_object_definition_class_or_role_context_required_number                    = 1199,
     perl_diag_error_object_definition_class_reopen_forbidden_number                            = 1577,
+    perl_diag_error_object_definition_legacy_self_required_number                              = 2748,
     perl_diag_error_object_definition_role_existing_isa_forbidden_number                       = 1586,
     perl_diag_error_object_definition_role_package_already_class_number                        = 1585,
     perl_diag_error_object_definition_role_reopen_forbidden_number                             = 1584,
@@ -2183,15 +2193,20 @@ enum perl_diag_number {
     perl_diag_error_object_field_access_declaring_class_required_number                        = 1694,
     perl_diag_error_object_field_access_method_context_required_number                         = 1693,
     perl_diag_error_object_field_attribute_generated_method_name_invalid_number                = 1602,
+    perl_diag_error_object_field_attribute_legacy_self_already_assigned_number                 = 2753,
+    perl_diag_error_object_field_attribute_legacy_self_invalid_number                          = 2747,
     perl_diag_error_object_field_attribute_parameter_already_assigned_number                   = 1066,
     perl_diag_error_object_field_attribute_parameter_name_conflict_number                      = 1688,
     perl_diag_error_object_field_attribute_parameter_requires_scalar_number                    = 1085,
     perl_diag_error_object_field_attribute_unknown_number                                      = 1588,
     perl_diag_error_object_field_attribute_writer_requires_scalar_number                       = 1050,
     perl_diag_error_object_field_legacy_name_not_declared_number                               = 1690,
+    perl_diag_error_object_legacy_already_attached_number                                      = 2750,
+    perl_diag_error_object_legacy_reference_invalid_number                                     = 2749,
     perl_diag_error_object_method_call_anonymous_native_instance_required_number               = 1741,
     perl_diag_error_object_method_call_invocant_class_incompatible_number                      = 1686,
     perl_diag_error_object_method_call_invocant_required_number                                = 1595,
+    perl_diag_error_object_method_call_legacy_self_unavailable_number                          = 2751,
     perl_diag_error_object_method_call_named_native_instance_required_number                   = 1740,
     perl_diag_error_object_method_call_unblessed_invocant_number                               = 1730,
     perl_diag_error_object_method_call_uninitialized_invocant_number                           = 1596,
@@ -2884,6 +2899,7 @@ enum perl_diag_number {
     perl_diag_warning_misc_hash_field_initializer_odd_element_count_number                     = 2074,
     perl_diag_warning_misc_io_select_bitmask_not_string_number                                 = 2218,
     perl_diag_warning_misc_object_bless_empty_class_name_defaulted_number                      = 2185,
+    perl_diag_warning_misc_object_legacy_reference_survives_number                             = 2752,
     perl_diag_warning_misc_rng_seed_reference_without_string_overload_number                   = 2189,
     perl_diag_warning_misc_sleep_duration_negative_number                                      = 2229,
     perl_diag_warning_misc_splice_offset_past_array_end_number                                 = 2193,
@@ -4765,7 +4781,7 @@ enum perl_diag_selector_domain_id {
 
 
 #if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)
-#define PERL_DIAG_METADATA_COUNT 1553
+#define PERL_DIAG_METADATA_COUNT 1561
 
 #endif
 
@@ -17031,6 +17047,47 @@ enum perl_diag_selector_domain_id {
 #define PERL_FORMAT_WARNING_DIAGNOSTIC_LANGUAGE_PACK_LOAD_FAILED(language, values) \
     Perl_diag_render_format(aTHX_ perl_diag_warning_diagnostic_language_pack_load_failed_idx, (values), (language))
 
+#define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_object_composition_inheritance_legacy_superclass_required_idx \
+    )
+
+#define PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_object_field_attribute_legacy_self_invalid_idx \
+    )
+
+#define PERL_THROW_ERROR_OBJECT_DEFINITION_LEGACY_SELF_REQUIRED() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_object_definition_legacy_self_required_idx \
+    )
+
+#define PERL_THROW_ERROR_OBJECT_LEGACY_REFERENCE_INVALID() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_object_legacy_reference_invalid_idx \
+    )
+
+#define PERL_THROW_ERROR_OBJECT_LEGACY_ALREADY_ATTACHED() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_object_legacy_already_attached_idx \
+    )
+
+#define PERL_THROW_ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_object_method_call_legacy_self_unavailable_idx \
+    )
+
+#define PERL_WARN_WARNING_MISC_OBJECT_LEGACY_REFERENCE_SURVIVES() \
+    Perl_throw_warner_0_2074( \
+        aTHX_ perl_diag_warning_misc_object_legacy_reference_survives_idx, \
+        packWARN(WARN_MISC) \
+    )
+
+#define PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_ALREADY_ASSIGNED() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_object_field_attribute_legacy_self_already_assigned_idx \
+    )
+
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_ABORT() \
     STMT_START { \
         PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID(); \
@@ -17451,7 +17508,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * 43b1edf7e34737d07b722a5953d13748198b3b116aa6af781fcd84c958e51e12 diag_conf.pl
+ * 5bb2fd552b5c2bc43e6dfbaaf753f6335c807081d58ac9d76b6d0dde430a0269 diag_conf.pl
  * 4d5ea2c68c07d8b67a01411f57a355fd47b545ebcbbda8b14355c3d7154213fa diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

@@ -223,6 +223,7 @@
 # define ck_entersub_args_proto_or_list(a,b,c)  Perl_ck_entersub_args_proto_or_list(aTHX_ a,b,c)
 # define ck_warner(a,...)                       Perl_ck_warner(aTHX_ a,__VA_ARGS__)
 # define ck_warner_d(a,...)                     Perl_ck_warner_d(aTHX_ a,__VA_ARGS__)
+# define class_method_invocant(a,b)             Perl_class_method_invocant(aTHX_ a,b)
 # define class_method_parse_post_blockstart(a)  Perl_class_method_parse_post_blockstart(aTHX_ a)
 # define class_object_from_hash(a,b)            Perl_class_object_from_hash(aTHX_ a,b)
 # define class_object_to_hash(a)                Perl_class_object_to_hash(aTHX_ a)

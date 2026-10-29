@@ -26,6 +26,7 @@
 	{ PERL_MAGIC_hintselem,      "hintselem(h)" },
 	{ PERL_MAGIC_isa,            "isa(I)" },
 	{ PERL_MAGIC_isaelem,        "isaelem(i)" },
+	{ PERL_MAGIC_legacy_self,    "legacy_self(j)" },
 	{ PERL_MAGIC_nkeys,          "nkeys(k)" },
 	{ PERL_MAGIC_dbfile,         "dbfile(L)" },
 	{ PERL_MAGIC_dbline,         "dbline(l)" },

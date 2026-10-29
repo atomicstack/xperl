@@ -27,6 +27,14 @@ here, but most should go in the L</Performance Enhancements> section.
 
 [ List each enhancement as a =head2 entry ]
 
+=head2 Experimental inheritance from conventional packages
+
+Native classes can use C<:legacy_isa(Parent)> and a C<:legacy_self> scalar
+field to inherit from conventional blessed-reference classes. Method calls
+select the native or legacy representation according to the target method,
+including callbacks from conventional parent methods to native overrides.
+See L<perlclass/:legacy_isa> for construction and destruction rules.
+
 =head2 Experimental diagnostic catalog lookup
 
 The experimental C<builtin::get_diagnostic_data> function returns a fresh

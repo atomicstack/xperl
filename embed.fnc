@@ -1114,6 +1114,9 @@ Adfpt	|void	|ck_warner	|U32 err				\
 Adfpt	|void	|ck_warner_d	|U32 err				\
 				|NN const char *pat			\
 				|...
+Cp	|SV *	|class_method_invocant					\
+				|NN SV *self				\
+				|NN CV *cv
 Adpx	|void	|class_method_parse_post_blockstart			\
 				|NN CV *cv
 Adp	|SV *	|class_object_from_hash 				\

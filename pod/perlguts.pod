@@ -1640,6 +1640,9 @@ will be lost.
  h  PERL_MAGIC_hintselem      vtbl_hintselem %^H hash element
  I  PERL_MAGIC_isa            vtbl_isa       @ISA array
  i  PERL_MAGIC_isaelem        vtbl_isaelem   @ISA array element
+ j  PERL_MAGIC_legacy_self    (none)         Weak link from a legacy
+                                             referent to its native
+                                             object
  k  PERL_MAGIC_nkeys          vtbl_nkeys     scalar(keys()) lvalue
  L  PERL_MAGIC_dbfile         (none)         Debugger %_<filename
  l  PERL_MAGIC_dbline         vtbl_dbline    Debugger %_<filename
@@ -1703,6 +1706,7 @@ will be lost.
 =for apidoc_item ||PERL_MAGIC_hookelem
 =for apidoc_item ||PERL_MAGIC_isa
 =for apidoc_item ||PERL_MAGIC_isaelem
+=for apidoc_item ||PERL_MAGIC_legacy_self
 =for apidoc_item ||PERL_MAGIC_lvref
 =for apidoc_item ||PERL_MAGIC_nkeys
 =for apidoc_item ||PERL_MAGIC_nonelem

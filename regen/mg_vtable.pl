@@ -201,6 +201,8 @@ my %mg =
                  desc => 'Array length ($#ary)' },
      pos => { char => '.', vtable => 'pos', value_magic => 1,
               desc => 'pos() lvalue' },
+     legacy_self => { char => 'j', readonly_acceptable => 1,
+         desc => 'Weak link from a legacy referent to its native object' },
      backref => { char => '<', vtable => 'backref', value_magic => 1,
                   readonly_acceptable => 1, desc => 'For weak ref data' },
      symtab => { char => ':', value_magic => 1,

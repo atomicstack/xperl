@@ -678,7 +678,7 @@ XS(XS_builtin_class_object_to_hash)
     dXSARGS;
     if (items != 1)
         croak_xs_usage(cv, "object");
-    ST(0) = class_object_to_hash(ST(0));
+    ST(0) = sv_2mortal(class_object_to_hash(ST(0)));
     XSRETURN(1);
 }
 
@@ -687,7 +687,7 @@ XS(XS_builtin_class_object_from_hash)
     dXSARGS;
     if (items != 2)
         croak_xs_usage(cv, "hashref, classname");
-    ST(0) = class_object_from_hash(ST(0), ST(1));
+    ST(0) = sv_2mortal(class_object_from_hash(ST(0), ST(1)));
     XSRETURN(1);
 }
 

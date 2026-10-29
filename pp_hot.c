@@ -6388,6 +6388,7 @@ PP(pp_entersub)
     PERL_CONTEXT *cx;
     I32 old_savestack_ix;
     SV *sv = *PL_stack_sp;
+    SV *bridge_argument = NULL;
 
     if (UNLIKELY(!sv))
         goto do_die;
@@ -6503,6 +6504,26 @@ PP(pp_entersub)
     /* unrolled "CvCLONE(cv) && ! CvCLONED(cv)" */
     if (UNLIKELY((CvFLAGS(cv) & (CVf_CLONE|CVf_CLONED)) == CVf_CLONE))
         PERL_THROW_ERROR_CALL_CLOSURE_PROTOTYPE_NOT_CALLABLE();
+
+    if(UNLIKELY(PL_op->op_flags & OPf_REF)) {
+        SV **slot = PL_stack_base + TOPMARK + 1;
+        if(slot < PL_stack_sp && *slot && SvROK(*slot)) {
+            SV *mapped = class_method_invocant(*slot, cv);
+            if(mapped != *slot) {
+                /* Retain the owner through argument cleanup. The private
+                 * argument belongs to this invocation's save scope, so it
+                 * cannot survive a return as an apparent escaped reference. */
+                sv_2mortal(newSVsv(*slot));
+                bridge_argument = newSVsv(mapped);
+                SAVEFREESV(bridge_argument);
+#ifdef PERL_RC_STACK
+                SvREFCNT_inc_simple_void_NN(bridge_argument);
+                SvREFCNT_dec_NN(*slot);
+#endif
+                *slot = bridge_argument;
+            }
+        }
+    }
 
     if (UNLIKELY((PL_op->op_private & OPpENTERSUB_DB) && GvCV(PL_DBsub)
             && !CvNODEBUG(cv)))
@@ -6693,6 +6714,23 @@ PP(pp_entersub)
         assert(CvXSUB(cv));
 
         rpp_invoke_xs(cv);
+
+        if(bridge_argument) {
+            /* An XSUB may return its argument SV without copying it. Move
+             * such results to the caller's temporaries before LEAVE frees
+             * our private invocation argument. */
+            SV **slot = PL_stack_base + markix + 1;
+            for(; slot <= PL_stack_sp; slot++) {
+                if(*slot == bridge_argument) {
+                    SV *result = sv_mortalcopy(bridge_argument);
+#ifdef PERL_RC_STACK
+                    SvREFCNT_inc_simple_void_NN(result);
+                    SvREFCNT_dec_NN(*slot);
+#endif
+                    *slot = result;
+                }
+            }
+        }
 
 #ifdef PERL_USE_HWM
         /* This duplicates the check done in runops_debug(), but provides more

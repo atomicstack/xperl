@@ -1,4 +1,11 @@
 void
+return_first_arg(...)
+    PPCODE:
+        if(!items)
+            XSRETURN_EMPTY;
+        XSRETURN(1);
+
+void
 call_sv_C()
 PREINIT:
     CV * i_sub;

@@ -869,6 +869,17 @@ Perl_ckwarn_d(pTHX_ U32 w)
         __attribute__pure__;
 #define PERL_ARGS_ASSERT_CKWARN_D
 
+PERL_CALLCONV SV *
+Perl_class_method_invocant(pTHX_ SV *self, CV *cv)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2);
+#define PERL_ARGS_ASSERT_CLASS_METHOD_INVOCANT  \
+    STMT_START { Perl_assert_aTHX; assert(self); assert(cv);                \
+                 assert(SvTYPE(cv) == SVt_PVCV || SvTYPE(cv) == SVt_PVFM);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                       \
+    } STMT_END
+
 PERL_CALLCONV void
 Perl_class_method_parse_post_blockstart(pTHX_ CV *cv)
         Perl_attribute_nonnull_aTHX

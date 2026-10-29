@@ -8296,8 +8296,24 @@ S_curse(pTHX_ SV * const sv, const bool check_refcnt)
     PERL_ARGS_ASSERT_CURSE;
     assert(SvOBJECT(sv));
 
+    /* Only an established owner may run destruction for the pair. A failed
+     * constructor or field-hash restoration can leave a partial object. */
+    SV *legacy = NULL;
+    bool legacy_class = SvTYPE(sv) == SVt_PVOBJ &&
+        HvSTASH_IS_CLASS(SvSTASH(sv)) &&
+        HvAUX(SvSTASH(sv))->xhv_class_legacy_parent;
+    if(legacy_class) {
+        PADOFFSET ix = HvAUX(SvSTASH(sv))->xhv_class_legacy_self;
+        SV *field = ix ? ObjectFIELDS(sv)[ix - 1] : NULL;
+        if(field && SvROK(field) && SvOBJECT(SvRV(field))) {
+            MAGIC *mg = mg_find(SvRV(field), PERL_MAGIC_legacy_self);
+            if(mg && mg->mg_obj && SvROK(mg->mg_obj) && SvRV(mg->mg_obj) == sv)
+                legacy = SvRV(field);
+        }
+    }
+
     if (PL_defstash &&	/* Still have a symbol table? */
-        SvDESTROYABLE(sv))
+        SvDESTROYABLE(sv) && (!legacy_class || legacy))
     {
         dSP;
         HV* stash;
@@ -8375,7 +8391,7 @@ S_curse(pTHX_ SV * const sv, const bool check_refcnt)
                 PUSHSTACKi(PERLSI_DESTROY);
                 EXTEND(SP, 2);
                 PUSHMARK(SP);
-                PUSHs(tmpref);
+                PUSHs(class_method_invocant(tmpref, destructor));
                 PUTBACK;
                 call_sv(MUTABLE_SV(destructor),
                             G_DISCARD|G_EVAL|G_KEEPERR|G_VOID);
@@ -8399,6 +8415,30 @@ S_curse(pTHX_ SV * const sv, const bool check_refcnt)
                 PERL_THROW_ERROR_OBJECT_DESTRUCTION_GLOBAL_RESURRECTION_FORBIDDEN(HvNAME_HEK(stash));
             /* DESTROY gave object new lease on life */
             return FALSE;
+        }
+    }
+
+    /* The resurrection check above commits native destruction. Unbless the
+     * legacy referent before releasing its field to prevent a second DESTROY. */
+    if(legacy && SvOBJECT(legacy)) {
+        HV *legacy_stash = SvSTASH(legacy);
+        SvOBJECT_off(legacy);
+        SvSTASH_set(legacy, NULL);
+        SvREFCNT_dec(legacy_stash);
+        if(SvREFCNT(legacy) > 1) {
+            /* A fatal warning must finish freeing the native object while
+             * unwinding. Its legacy referent is already unblessed, so that
+             * cleanup cannot invoke either destructor again. */
+            ENTER;
+            SV *guard = newRV_inc(sv);
+            SAVEFREESV(guard);
+            PERL_WARN_WARNING_MISC_OBJECT_LEGACY_REFERENCE_SURVIVES();
+            SvREFCNT(sv)--;
+            SvRV_set(guard, NULL);
+            SvROK_off(guard);
+            LEAVE;
+            if(check_refcnt && SvREFCNT(sv))
+                return FALSE;
         }
     }
 
@@ -12409,7 +12449,7 @@ Perl_sv_bless(pTHX_ SV *const sv, HV *const stash)
     SvGETMAGIC(sv);
     if (!SvROK(sv))
         PERL_THROW_ERROR_OBJECT_BLESS_REFERENCE_REQUIRED();
-    if (HvSTASH_IS_CLASS(stash))
+    if (HvSTASH_IS_CLASS(stash) && !HvAUX(stash)->xhv_class_legacy_parent)
         PERL_THROW_ERROR_OBJECT_BLESS_NATIVE_CLASS_FORBIDDEN();
 
     tmpRef = SvRV(sv);
@@ -16134,6 +16174,8 @@ S_sv_dup_hvaux(pTHX_ const SV *const ssv, SV *dsv, CLONE_PARAMS *const param)
         av_push(param->stashes, dsv);
 
     if (HvSTASH_IS_CLASS(ssv) || HvSTASH_IS_ROLE(ssv)) {
+        daux->xhv_class_legacy_parent = hv_dup_inc(saux->xhv_class_legacy_parent, param);
+        daux->xhv_class_legacy_self = saux->xhv_class_legacy_self;
         daux->xhv_class_superclass    = hv_dup_inc(saux->xhv_class_superclass,    param);
         daux->xhv_class_initfields_cv = cv_dup_inc(saux->xhv_class_initfields_cv, param);
         daux->xhv_class_adjust_blocks = av_dup_inc(saux->xhv_class_adjust_blocks, param);

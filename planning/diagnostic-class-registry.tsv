@@ -209,6 +209,7 @@ XPerl::Diagnostic::Error::Object::Destruction	XPerl::Diagnostic::Error::Object	0
 XPerl::Diagnostic::Error::Object::Field	XPerl::Diagnostic::Error::Object	0	catalog class	-
 XPerl::Diagnostic::Error::Object::Field::Access	XPerl::Diagnostic::Error::Object::Field	0	catalog class	-
 XPerl::Diagnostic::Error::Object::Field::Attribute	XPerl::Diagnostic::Error::Object::Field	0	catalog class	-
+XPerl::Diagnostic::Error::Object::Legacy	XPerl::Diagnostic::Error::Object	0	catalog class	-
 XPerl::Diagnostic::Error::Object::MethodCall	XPerl::Diagnostic::Error::Object	0	catalog class	-
 XPerl::Diagnostic::Error::Object::MethodCall::Uninitialized	XPerl::Diagnostic::Error::Object::MethodCall	0	catalog class	-
 XPerl::Diagnostic::Error::Object::MethodLookup	XPerl::Diagnostic::Error::Object	0	catalog class	-

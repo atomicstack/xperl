@@ -271,6 +271,64 @@ compilation will fail.
 The C<:isa> attribute will attempt to C<require> the named module if it is not
 already loaded.
 
+=head3 :legacy_isa
+
+A class may inherit from one conventional package with C<:legacy_isa>.
+The class must declare one scalar field marked C<:legacy_self>:
+
+    package Point {
+        sub new {
+            my ($class, %args) = @_;
+            return bless { x => $args{x}, y => $args{y} }, $class;
+        }
+        sub kind { "plain" }
+        sub describe {
+            my ($self) = @_;
+            return "($self->{x}, $self->{y}): " . $self->kind;
+        }
+    }
+
+    class RGBPoint :legacy_isa(Point) {
+        field $legacy :legacy_self;
+        field $red :param;
+        field $green :param;
+        field $blue :param;
+
+        method kind { "rgb($red, $green, $blue)" }
+    }
+
+    my $point = RGBPoint->new(
+        x => 10, y => 20, red => 200, green => 100, blue => 50,
+    );
+    say $point->describe;  # (10, 20): rgb(200, 100, 50)
+
+The generated constructor sends native C<:param> arguments to the native
+fields and the remaining argument pairs to the parent's C<new>. The parent
+receives the subclass name and must return a non-native reference blessed
+into that subclass. Hash, array, scalar, and code references are supported.
+The parent constructor runs before native field initializers and C<ADJUST>.
+It cannot invoke native methods on its result before returning it.
+
+Method lookup follows the subclass's inheritance normally. A selected
+conventional sub receives the legacy reference. A selected native method
+receives the native object. Thus a conventional parent method can call a
+native override, as C<describe> does above. Ordinary function calls do not
+convert their arguments. Direct calls to native method CVs recognize the
+associated legacy reference.
+
+The native object owns the legacy reference. A weak link on the legacy
+referent identifies its native owner. One legacy referent can belong to
+only one live native object. Further native subclasses use C<:isa> and
+inherit this association by field slot, independently of the lexical field
+name. A subclass cannot declare another C<:legacy_self> field, even under a
+different name. Use an inherited accessor if subclass methods need access to
+the legacy reference. C<:isa> and C<:legacy_isa> cannot both specify a
+parent on the same class. Roles cannot declare C<:legacy_isa>.
+
+Field-hash restoration bypasses constructors as usual. It establishes the
+association using the restored C<:legacy_self> field, and rejects a referent
+that already belongs to another live native object.
+
 =head3 :implements
 
 A class or role composes one or more roles with C<:implements>:
@@ -306,6 +364,13 @@ in C<@ISA>.  The default C<DOES> implementation reports composed roles as well
 as ordinary inheritance relationships.
 
 =head2 Field attributes
+
+=head3 :legacy_self
+
+This attribute marks the scalar field that holds the conventional parent's
+object in a C<:legacy_isa> class. It takes no attribute value, initializer,
+or C<:param>. The constructor fills the field and makes it read-only.
+The referenced object's contents remain mutable.
 
 =head3 :param
 
@@ -453,6 +518,17 @@ C<'OBJECT'>.
 
 An object is destroyed when the last reference to it goes away, just as with
 other data structures in Perl.
+
+For C<:legacy_isa> objects, the native object owns destruction. A native
+C<DESTROY> override receives the native object and can explicitly call
+C<SUPER::DESTROY>. Otherwise, an inherited conventional destructor receives
+the legacy reference. Once native destruction is committed, Perl unblesses
+the legacy referent before releasing it, preventing another automatic
+C<DESTROY> call. Native resurrection preserves the association.
+
+If the legacy referent's reference count exceeds the reference owned by the
+native field at this point, Perl warns that legacy references outlive their
+native owner. These surviving references refer to an unblessed value.
 
 =head1 TODO
 
