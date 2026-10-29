@@ -2422,6 +2422,7 @@ Perl_hv_undef_flags(pTHX_ HV *hv, U32 flags)
       }
 
       if(HvSTASH_IS_CLASS(hv) || HvSTASH_IS_ROLE(hv)) {
+          SvREFCNT_dec(aux->xhv_class_legacy_parent);
           SvREFCNT_dec(aux->xhv_class_superclass);
           SvREFCNT_dec(aux->xhv_class_initfields_cv);
           SvREFCNT_dec(aux->xhv_class_adjust_blocks);

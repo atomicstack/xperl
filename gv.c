@@ -4204,7 +4204,7 @@ Perl_amagic_call(pTHX_ SV *left, SV *right, int method, int flags)
 
     CATCH_SET(TRUE);
     Zero(&myop, 1, UNOP);
-    myop.op_flags = OPf_STACKED;
+    myop.op_flags = OPf_STACKED | OPf_REF;
     myop.op_ppaddr = PL_ppaddr[OP_ENTERSUB];
     myop.op_type = OP_ENTERSUB;
 

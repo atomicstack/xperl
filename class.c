@@ -220,7 +220,14 @@ PP(pp_initfield)
         }
     }
 
-    fields[fieldix] = val;
+    if(fields[fieldix]) {
+        /* Construction installs legacy_self before running field initializers. */
+        assert(HvAUX(SvSTASH(instance))->xhv_class_legacy_self == fieldix + 1);
+        SvREFCNT_dec(val);
+        val = fields[fieldix];
+    }
+    else
+        fields[fieldix] = val;
 
     PADOFFSET padix = PL_op->op_targ;
     if(padix) {
@@ -230,6 +237,58 @@ PP(pp_initfield)
     }
 
     return NORMAL;
+}
+
+SV *
+Perl_class_method_invocant(pTHX_ SV *self, CV *cv)
+{
+    PERL_ARGS_ASSERT_CLASS_METHOD_INVOCANT;
+    if(!SvROK(self) || !SvOBJECT(SvRV(self)))
+        return self;
+    SV *object = SvRV(self);
+    if(SvTYPE(object) == SVt_PVOBJ) {
+        if(CvIsMETHOD(cv))
+            return self;
+        HV *stash = SvSTASH(object);
+        if(!HvSTASH_IS_CLASS(stash) || !HvAUX(stash)->xhv_class_legacy_parent)
+            return self;
+        PADOFFSET ix = HvAUX(stash)->xhv_class_legacy_self;
+        SV *legacy = ix ? ObjectFIELDS(object)[ix - 1] : NULL;
+        if(!legacy || !SvROK(legacy) || !SvOBJECT(SvRV(legacy)))
+            PERL_THROW_ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE();
+        return legacy;
+    }
+    if(CvIsMETHOD(cv)) {
+        MAGIC *mg = mg_find(object, PERL_MAGIC_legacy_self);
+        if(mg && mg->mg_obj && SvROK(mg->mg_obj))
+            return mg->mg_obj;
+    }
+    return self;
+}
+
+static void
+S_class_attach_legacy(pTHX_ SV *instance, SV *legacy)
+{
+    HV *stash = SvSTASH(instance);
+    struct xpvhv_aux *aux = HvAUX(stash);
+    if(!SvROK(legacy) || !SvOBJECT(SvRV(legacy)) ||
+        SvTYPE(SvRV(legacy)) == SVt_PVOBJ || SvSTASH(SvRV(legacy)) != stash)
+        PERL_THROW_ERROR_OBJECT_LEGACY_REFERENCE_INVALID();
+    /* Check before changing either object: a failed second attachment must
+     * leave the original owner and its backlink intact. */
+    MAGIC *mg = mg_find(SvRV(legacy), PERL_MAGIC_legacy_self);
+    if(mg && mg->mg_obj && SvROK(mg->mg_obj))
+        PERL_THROW_ERROR_OBJECT_LEGACY_ALREADY_ATTACHED();
+    if(mg)
+        sv_unmagic(SvRV(legacy), PERL_MAGIC_legacy_self);
+    /* Magic owns the weak RV. Perl's backref and thread-cloning machinery
+     * manage its target, including clearing it when the native object dies. */
+    SV *backref = sv_2mortal(newRV_inc(instance));
+    sv_rvweaken(backref);
+    sv_magicext(SvRV(legacy), backref, PERL_MAGIC_legacy_self, NULL, NULL, 0);
+    SV *field = newSVsv(legacy);
+    SvREADONLY_on(field);
+    ObjectFIELDS(instance)[aux->xhv_class_legacy_self - 1] = field;
 }
 
 XS(injected_constructor);
@@ -275,6 +334,35 @@ XS(injected_constructor)
     SvSTASH_set(instance, HvREFCNT_inc_simple(stash));
 
     SV *self = sv_2mortal(newRV_noinc(instance));
+
+    if(aux->xhv_class_legacy_parent) {
+        GV *gv = gv_fetchmethod_pvn_flags(aux->xhv_class_legacy_parent,
+                                          "new", 3, GV_AUTOLOAD|GV_CROAK);
+        ENTER;
+        SAVETMPS;
+        PUSHMARK(SP);
+        XPUSHs(ST(0));
+        for(SSize_t i = 1; i < items; i += 2) {
+            SV *name = ST(i);
+            if(aux->xhv_class_param_map &&
+                    hv_exists_ent(aux->xhv_class_param_map, name, 0))
+                continue;
+            XPUSHs(name);
+            XPUSHs(i+1 < items ? ST(i+1) : &PL_sv_undef);
+            (void)hv_delete_ent(params, name, G_DISCARD, 0);
+        }
+        PUTBACK;
+        I32 count = call_sv((SV *)GvCV(gv), G_SCALAR);
+        SPAGAIN;
+        assert(count == 1);
+        PERL_UNUSED_VAR(count);
+        SV *legacy = POPs;
+        S_class_attach_legacy(aTHX_ instance, legacy);
+        PUTBACK;
+        FREETMPS;
+        LEAVE;
+        SPAGAIN;
+    }
 
     PUSHSTACKi(PERLSI_CONSTRUCTOR);
 
@@ -541,8 +629,20 @@ Perl_class_object_from_hash(pTHX_ SV *hashref, SV *classname)
     SvOBJECT_on(instance);
     SvSTASH_set(instance, HvREFCNT_inc_simple(stash));
 
+    ENTER;
+    SAVEFREESV(instance);
     S_class_object_fields_from_hash(aTHX_ (HV *)SvRV(hashref), stash, instance);
-    return newRV_noinc(instance);
+    if(aux->xhv_class_legacy_parent) {
+        PADOFFSET ix = aux->xhv_class_legacy_self - 1;
+        SV *legacy = ObjectFIELDS(instance)[ix];
+        /* Failed restoration must not destroy another object's legacy self. */
+        ObjectFIELDS(instance)[ix] = NULL;
+        SAVEFREESV(legacy);
+        S_class_attach_legacy(aTHX_ instance, legacy);
+    }
+    SV *result = newRV_inc(instance);
+    LEAVE;
+    return result;
 }
 
 /* Check if a class/role stash composes a given role (directly or transitively).
@@ -601,6 +701,14 @@ PP(pp_methstart)
         curcv = CX_CUR()->blk_sub.cv;
     else
         curcv = find_runcv(NULL);
+
+    SV *mapped = class_method_invocant(self, curcv);
+    if(mapped != self) {
+        if(self_in_pad)
+            sv_setsv(self, mapped);
+        else
+            self = mapped;
+    }
 
     if(!SvROK(self) ||
         !SvOBJECT((rv = SvRV(self))) ||
@@ -741,6 +849,8 @@ Perl_class_setup_stash(pTHX_ HV *stash)
     }
 
     struct xpvhv_aux *aux = HvAUX(stash);
+    aux->xhv_class_legacy_parent      = NULL;
+    aux->xhv_class_legacy_self        = 0;
     aux->xhv_class_superclass         = NULL;
     aux->xhv_class_initfields_cv      = NULL;
     aux->xhv_class_adjust_blocks      = NULL;
@@ -877,7 +987,7 @@ static void S_split_attr_nameval(pTHX_ SV *sv, SV **namp, SV **valp)
 }
 
 static void
-apply_class_attribute_isa(pTHX_ HV *stash, SV *value)
+apply_class_attribute_parent(pTHX_ HV *stash, SV *value, bool legacy)
 {
     if(HvSTASH_IS_ROLE(stash))
         PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_ROLE_ISA_FORBIDDEN();
@@ -895,17 +1005,19 @@ apply_class_attribute_isa(pTHX_ HV *stash, SV *value)
     sv_setsv(superclassname, resolved);
     SvREFCNT_dec_NN(resolved);
 
-    if(aux->xhv_class_superclass)
+    if(aux->xhv_class_superclass || aux->xhv_class_legacy_parent)
         PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_SUPERCLASS_ALREADY_ASSIGNED();
 
     HV *superstash = gv_stashsv(superclassname, 0);
-    if (!superstash || !HvSTASH_IS_CLASS(superstash)) {
+    if (!superstash || (!legacy && !HvSTASH_IS_CLASS(superstash))) {
         /* Try to `require` the module then attempt a second time */
         load_module(PERL_LOADMOD_NOIMPORT, newSVsv(superclassname), NULL, NULL);
         superstash = gv_stashsv(superclassname, 0);
     }
-    if(!superstash || !HvSTASH_IS_CLASS(superstash))
+    if(!superstash || (!legacy && !HvSTASH_IS_CLASS(superstash)))
         PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_NATIVE_SUPERCLASS_REQUIRED(superclassname);
+    if(legacy && HvSTASH_IS_CLASS_OR_ROLE(superstash))
+        PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED();
 
     if(superclassver && SvOK(superclassver))
         ensure_module_version(superclassname, superclassver);
@@ -931,6 +1043,11 @@ apply_class_attribute_isa(pTHX_ HV *stash, SV *value)
         LEAVE;
     }
 
+    if(legacy) {
+        aux->xhv_class_legacy_parent = (HV *)SvREFCNT_inc(superstash);
+        return;
+    }
+
     aux->xhv_class_superclass = (HV *)SvREFCNT_inc(superstash);
 
     struct xpvhv_aux *superaux = HvAUX(superstash);
@@ -952,6 +1069,18 @@ apply_class_attribute_isa(pTHX_ HV *stash, SV *value)
     if(superaux->xhv_class_param_map) {
         aux->xhv_class_param_map = newHVhv(superaux->xhv_class_param_map);
     }
+}
+
+static void
+apply_class_attribute_isa(pTHX_ HV *stash, SV *value)
+{
+    apply_class_attribute_parent(aTHX_ stash, value, false);
+}
+
+static void
+apply_class_attribute_legacy_isa(pTHX_ HV *stash, SV *value)
+{
+    apply_class_attribute_parent(aTHX_ stash, value, true);
 }
 
 static void
@@ -1024,6 +1153,8 @@ static struct {
     bool requires_value;
     void (*apply)(pTHX_ HV *stash, SV *value);
 } const class_attributes[] = {
+    { .name = "legacy_isa", .requires_value = true,
+      .apply = &apply_class_attribute_legacy_isa },
     { .name           = "isa",
       .requires_value = true,
       .apply          = &apply_class_attribute_isa,
@@ -1100,6 +1231,9 @@ S_class_cleanup_definition(pTHX_ HV *stash)
 
     struct xpvhv_aux *aux = HvAUX(stash);
 
+    SvREFCNT_dec(aux->xhv_class_legacy_parent);
+    aux->xhv_class_legacy_parent = NULL;
+    aux->xhv_class_legacy_self = 0;
     SvREFCNT_dec(aux->xhv_class_superclass);
     aux->xhv_class_superclass = NULL;
 
@@ -2308,6 +2442,16 @@ Perl_class_seal_stash(pTHX_ HV *stash)
      */
     {
         PADOFFSET base_offset = aux->xhv_class_next_fieldix;
+        if(aux->xhv_class_legacy_parent) {
+            if(!aux->xhv_class_legacy_self)
+                PERL_THROW_ERROR_OBJECT_DEFINITION_LEGACY_SELF_REQUIRED();
+            aux->xhv_class_legacy_self += base_offset;
+        }
+        else if(aux->xhv_class_superclass) {
+            struct xpvhv_aux *superaux = HvAUX(aux->xhv_class_superclass);
+            aux->xhv_class_legacy_parent = (HV *)SvREFCNT_inc(superaux->xhv_class_legacy_parent);
+            aux->xhv_class_legacy_self = superaux->xhv_class_legacy_self;
+        }
 
         PADNAMELIST *fieldnames = aux->xhv_class_fields;
         PADOFFSET own_field_count = 0;
@@ -2318,6 +2462,9 @@ Perl_class_seal_stash(pTHX_ HV *stash)
                 struct padname_fieldinfo *fi = PadnameFIELDINFO(pn);
                 assert(fi->fieldix == (PADOFFSET)-1); /* should be unresolved */
                 fi->fieldix = base_offset + fi->relative_fieldix;
+                if(aux->xhv_class_legacy_self == fi->fieldix + 1 &&
+                        (fi->defop || fi->paramname))
+                    PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID();
                 own_field_count++;
             }
         }
@@ -2592,6 +2739,8 @@ Perl_role_setup_stash(pTHX_ HV *stash)
     }
 
     struct xpvhv_aux *aux = HvAUX(stash);
+    aux->xhv_class_legacy_parent      = NULL;
+    aux->xhv_class_legacy_self        = 0;
     aux->xhv_class_superclass         = NULL;
     aux->xhv_class_initfields_cv      = NULL;
     aux->xhv_class_adjust_blocks      = NULL;
@@ -3031,6 +3180,23 @@ S_pad_import_field(pTHX_ PADNAME *fieldpn)
 }
 
 static void
+apply_field_attribute_legacy_self(pTHX_ PADNAME *pn, SV *value)
+{
+    struct padname_fieldinfo *fi = PadnameFIELDINFO(pn);
+    struct xpvhv_aux *aux = HvAUX(fi->fieldstash);
+    if(aux->xhv_class_legacy_self)
+        PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_ALREADY_ASSIGNED();
+    for(HV *parent = aux->xhv_class_superclass; parent;
+            parent = HvAUX(parent)->xhv_class_superclass) {
+        if(HvAUX(parent)->xhv_class_legacy_parent)
+            PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_ALREADY_ASSIGNED();
+    }
+    if(value || PadnamePV(pn)[0] != '$' || !aux->xhv_class_legacy_parent)
+        PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID();
+    aux->xhv_class_legacy_self = fi->relative_fieldix + 1;
+}
+
+static void
 apply_field_attribute_param(pTHX_ PADNAME *pn, SV *value)
 {
     if(!value) {
@@ -3255,6 +3421,7 @@ static struct {
     const char *name;
     void (*apply)(pTHX_ PADNAME *pn, SV *value);
 } const field_attributes[] = {
+    { .name = "legacy_self", .apply = &apply_field_attribute_legacy_self },
     { .name           = "param",
       .apply          = &apply_field_attribute_param,
     },

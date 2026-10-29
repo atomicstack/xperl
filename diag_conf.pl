@@ -2429,6 +2429,9 @@ $CONF = {
     "XPerl::Diagnostic::Error::Object::Field::Attribute" => {
       "parent" => "XPerl::Diagnostic::Error::Object::Field"
     },
+    "XPerl::Diagnostic::Error::Object::Legacy" => {
+      "parent" => "XPerl::Diagnostic::Error::Object"
+    },
     "XPerl::Diagnostic::Error::Object::MethodCall" => {
       "parent" => "XPerl::Diagnostic::Error::Object"
     },
@@ -34214,6 +34217,30 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Composition::Inheritance"
         },
+        "ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED" => {
+          "number" => 2746,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "The :legacy_isa parent must be a conventional package"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Composition::Inheritance"
+        },
         "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_ANONYMOUS_STASH" => {
           "number" => 1045,
           "severity" => "FATAL_ERROR",
@@ -35502,6 +35529,30 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Definition"
         },
+        "ERROR_OBJECT_DEFINITION_LEGACY_SELF_REQUIRED" => {
+          "number" => 2748,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_DEFINITION_LEGACY_SELF_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_LEGACY_SELF_REQUIRED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "A :legacy_isa class requires a :legacy_self field"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Definition"
+        },
         "ERROR_OBJECT_DEFINITION_ROLE_EXISTING_ISA_FORBIDDEN" => {
           "number" => 1586,
           "severity" => "FATAL_ERROR",
@@ -35852,6 +35903,55 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Field::Attribute"
         },
+        "ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_ALREADY_ASSIGNED" => {
+          "number" => 2753,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_ALREADY_ASSIGNED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_ALREADY_ASSIGNED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:conflict_duplicate",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Class already has a declared or inherited :legacy_self field"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Field::Attribute"
+        },
+        "ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID" => {
+          "number" => 2747,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID",
+          "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "The :legacy_self attribute requires one scalar field in a :legacy_isa class, without a value, initializer or :param"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Field::Attribute"
+        },
         "ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_ALREADY_ASSIGNED" => {
           "number" => 1066,
           "severity" => "FATAL_ERROR",
@@ -36137,6 +36237,54 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Field"
         },
+        "ERROR_OBJECT_LEGACY_ALREADY_ATTACHED" => {
+          "number" => 2750,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_LEGACY_ALREADY_ATTACHED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_LEGACY_ALREADY_ATTACHED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "The legacy referent already belongs to a live native object"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Legacy"
+        },
+        "ERROR_OBJECT_LEGACY_REFERENCE_INVALID" => {
+          "number" => 2749,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_LEGACY_REFERENCE_INVALID",
+          "macro" => "PERL_THROW_ERROR_OBJECT_LEGACY_REFERENCE_INVALID",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Legacy self must be a blessed non-native reference in the native object's class"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Legacy"
+        },
         "ERROR_OBJECT_METHOD_CALL_ANONYMOUS_NATIVE_INSTANCE_REQUIRED" => {
           "number" => 1741,
           "severity" => "FATAL_ERROR",
@@ -36280,6 +36428,30 @@ $CONF = {
           "emit" => {
             "api" => "CROAK",
             "expression" => 1
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::MethodCall"
+        },
+        "ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE" => {
+          "number" => 2751,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE",
+          "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "The native object has no initialized legacy self"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
           },
           "class" => "XPerl::Diagnostic::Error::Object::MethodCall"
         },
@@ -81381,6 +81553,32 @@ $CONF = {
           "counts_as_error" => 0,
           "emit" => {
             "api" => "CK_WARNER",
+            "warning_categories" => [
+              "WARN_MISC"
+            ]
+          }
+        },
+        "WARNING_MISC_OBJECT_LEGACY_REFERENCE_SURVIVES" => {
+          "number" => 2752,
+          "severity" => "WARNING",
+          "kind" => "CORE_RUNTIME",
+          "code" => "WARNING_MISC_OBJECT_LEGACY_REFERENCE_SURVIVES",
+          "macro" => "PERL_WARN_WARNING_MISC_OBJECT_LEGACY_REFERENCE_SURVIVES",
+          "source_files" => [
+            "sv.c"
+          ],
+          "tags" => [
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Legacy references outlive their native object; the legacy referent has been unblessed"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 0,
+          "emit" => {
+            "api" => "WARNER",
             "warning_categories" => [
               "WARN_MISC"
             ]

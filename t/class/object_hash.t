@@ -92,4 +92,25 @@ is($role_copy->left, 'left', 'from_hash restores the left role field');
 is($role_copy->right, 'right', 'from_hash restores the right role field');
 is($role_copy->own, 'own', 'from_hash restores the class field');
 
+our $restored_destroyed = 0;
+class ObjectHashLifetime {
+    field $value :param;
+    method DESTROY { ++$main::restored_destroyed }
+}
+{
+    my $restored = builtin::class_object_from_hash({'$value' => 1}, 'ObjectHashLifetime');
+}
+is($restored_destroyed, 1, 'restored object is released at end of scope');
+{
+    my $referent = {};
+    my $weak = $referent;
+    Scalar::Util::weaken($weak);
+    {
+        my $object = ObjectHashLifetime->new(value => $referent);
+        builtin::class_object_to_hash($object);
+    }
+    undef $referent;
+    ok(!defined($weak), 'discarded field hash releases its field references');
+}
+
 done_testing();

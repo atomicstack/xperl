@@ -3316,6 +3316,7 @@ Perl_call_sv(pTHX_ SV *sv, I32 arg_flags)
         myop.op_private |= OPpENTERSUB_DB;
 
     if (flags & (G_METHOD|G_METHOD_NAMED)) {
+        myop.op_flags |= OPf_REF;
         Zero(&method_op, 1, METHOP);
         method_op.op_next = (OP*)&myop;
         PL_op = (OP*)&method_op;

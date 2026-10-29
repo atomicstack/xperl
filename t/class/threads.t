@@ -59,4 +59,28 @@ threads->create(sub {
 })->join;
 next_test(); # account for is() inside thread
 
+{
+    package LegacyThreadPoint;
+    sub new { my ($class, %args) = @_; bless \%args, $class }
+    sub describe { my ($self) = @_; "$self->{x}:" . $self->colour }
+}
+class NativeThreadPoint :legacy_isa(LegacyThreadPoint) {
+    field $legacy :legacy_self;
+    field $colour :param;
+    method colour { $colour }
+}
+{
+    my $obj = NativeThreadPoint->new(x => 17, colour => 'red');
+    my $result = threads->create(sub {
+        my @warnings;
+        local $SIG{__WARN__} = sub { push @warnings, "$_[0]" };
+        my $new = NativeThreadPoint->new(x => 18, colour => 'blue');
+        return [$obj->describe, $new->describe, \@warnings];
+    })->join;
+    is(join(',', @{$result}[0, 1]), '17:red,18:blue',
+        'cloned and newly constructed legacy associations work in a thread');
+    is(join('', @{$result->[2]}), '', 'thread method calls leave no escaped references');
+    is($obj->describe, '17:red', 'thread destruction leaves the parent association intact');
+}
+
 done_testing;
