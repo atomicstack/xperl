@@ -1455,8 +1455,10 @@ our %Modules = (
                 ext/XPerl-DiagPack-NL/
                 ext/XPerl-DiagPack-PT/
                 ext/XPerl-DiagPack-RU/
+                ext/XPerl-DiagPack-SR/
                 ext/XPerl-DiagPack-TR/
                 ext/XPerl-DiagPack-UK/
+                ext/XPerl-DiagPack-ZH/
                 ext/XS-APItest/
                 ext/XS-Typemap/
                 ext/attributes/

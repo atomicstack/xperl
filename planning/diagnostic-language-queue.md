@@ -43,7 +43,9 @@ substitution of Mandarin wording.
    messages, canonical data, hooks and structured output.
 6. Build and test each complete addition. Label machine drafts separately
    from linguistic review. Keep transient worksheets and model checkpoints
-   under the workspace `tmp/` directory.
+   under the workspace `tmp/` directory. Include `porting/diag_words.t` for
+   exact operator spellings and language-specific phrase roles, and
+   `porting/maintainers.t` for the new pack's distribution ownership.
 
 When adding a pack to an already configured build, keep `config.sh` extension
 lists consistent: selected `dynamic_ext`, combined `extensions`, and discovered
