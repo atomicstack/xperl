@@ -522,23 +522,12 @@ L<perlrun/PERL_HASH_SEED>.  This environment variable controls how
 items are actually stored, not how they are presented via
 C<keys>, C<values> and C<each>.
 
-=item Hash Traversal Randomization
+=item Entry Traversal Independent of Hash Values
 
-Independent of which seed is used in the hash function, C<keys>,
-C<values>, and C<each> return items in a per-hash randomized order.
-Modifying a hash by insertion will change the iteration order of that hash.
-This behavior can be overridden by using C<hash_traversal_mask()> from
-L<Hash::Util> or by using the PERL_PERTURB_KEYS environment variable,
-see L<perlrun/PERL_PERTURB_KEYS>.  Note that this feature controls the
-"visible" order of the keys, and not the actual order they are stored in.
-
-=item Bucket Order Perturbance
-
-When items collide into a given hash bucket the order they are stored in
-the chain is no longer predictable in Perl 5.18.  This
-has the intention to make it harder to observe a
-collision.  This behavior can be overridden by using
-the PERL_PERTURB_KEYS environment variable, see L<perlrun/PERL_PERTURB_KEYS>.
+XPerl traverses the compact entry array rather than the lookup index.
+The order returned by C<keys>, C<values>, and C<each> therefore does not
+expose bucket positions or probe distances. Key-order randomization and
+C<PERL_PERTURB_KEYS> are removed. Hash-function seed randomization remains.
 
 =item New Default Hash Function
 
@@ -554,12 +543,6 @@ Perl 5.18.0 Siphash is believed to be of cryptographic strength.  This is
 not the default as it is much slower than the default hash.
 
 =back
-
-Without compiling a special Perl, there is no way to get the exact same
-behavior of any versions prior to Perl 5.18.0.  The closest one can get
-is by setting PERL_PERTURB_KEYS to 0 and setting the PERL_HASH_SEED
-to a known value.  We do not advise those settings for production use
-due to the above security considerations.
 
 B<Perl has never guaranteed any ordering of the hash keys>, and
 the ordering has already changed several times during the lifetime of

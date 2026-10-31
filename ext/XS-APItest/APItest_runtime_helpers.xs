@@ -233,6 +233,93 @@ CODE:
 OUTPUT:
     RETVAL
 
+HV *
+copy_hints_hv_with_tied_value(HV *hv, SV *scalarref)
+PREINIT:
+    SV *value;
+CODE:
+    if (!SvROK(scalarref))
+        croak("expected a scalar reference");
+    value = SvRV(scalarref);
+    if (!hv_store(hv, "trigger", 7, SvREFCNT_inc_simple_NN(value), 0)) {
+        SvREFCNT_dec_NN(value);
+        croak("failed to store tied scalar");
+    }
+    hv_magic(hv, NULL, PERL_MAGIC_hints);
+    RETVAL = hv_copy_hints_hv(hv);
+OUTPUT:
+    RETVAL
+
+HV *
+newHVhv_with_tied_value(HV *hv, SV *scalarref)
+PREINIT:
+    SV *value;
+CODE:
+    if (!SvROK(scalarref))
+        croak("expected a scalar reference");
+    value = SvRV(scalarref);
+    if (!hv_store(hv, "trigger", 7, SvREFCNT_inc_simple_NN(value), 0)) {
+        SvREFCNT_dec_NN(value);
+        croak("failed to store tied scalar");
+    }
+    hv_magic(hv, NULL, PERL_MAGIC_hints);
+    RETVAL = newHVhv(hv);
+OUTPUT:
+    RETVAL
+
+void
+store_prehashed(HV *hv, SV *keysv, IV value, U32 hash)
+PREINIT:
+    STRLEN len;
+    const char *key;
+    SV **slot;
+    SV *value_sv;
+CODE:
+    key = SvPV_const(keysv, len);
+    value_sv = newSViv(value);
+    slot = hv_store(hv, key, len, value_sv, hash);
+    if (!slot)
+        SvREFCNT_dec_NN(value_sv);
+
+U32
+store_using_raw_entry_key(HV *hv)
+PREINIT:
+    HE *entry;
+    const char *key;
+    STRLEN len;
+    U32 hash;
+    SV *value;
+    SV **slot;
+CODE:
+    hv_iterinit(hv);
+    entry = hv_iternext(hv);
+    if (!entry)
+        croak("hash has no entry");
+    key = HeKEY(entry);
+    len = HeKLEN(entry);
+    hash = HeHASH(entry);
+    RETVAL = cBOOL(HeKWASUTF8(entry));
+    value = newSVpvs("rewritten");
+    slot = hv_store_flags(hv, key, len, value, hash, 0);
+    if (!slot)
+        SvREFCNT_dec_NN(value);
+OUTPUT:
+    RETVAL
+
+void
+disable_hv_sharekeys(HV *hv)
+CODE:
+    HvSHAREKEYS_off(hv);
+
+void
+store_ent_with_callback_owner(HV *hv, SV *key, SV *value)
+PREINIT:
+    HE *entry;
+CODE:
+    entry = hv_store_ent(hv, key, SvREFCNT_inc(value), 0);
+    if (!entry)
+        SvREFCNT_dec_NN(value);
+
 U32
 SvIsCOW(SV *sv)
 CODE:

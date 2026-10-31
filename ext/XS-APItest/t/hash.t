@@ -256,6 +256,208 @@ sub test_precomputed_hashes {
       'newHVhv on tied hash';
 }
 
+{
+    my %source;
+    disable_hv_sharekeys(\%source);
+    $source{plain} = 'unshared value';
+    my $utf8_key = "wide:\x{100}";
+    utf8::upgrade($utf8_key);
+    $source{$utf8_key} = 'UTF-8 value';
+
+    my $copy = newHVhv \%source;
+    is($copy->{plain}, 'unshared value', 'newHVhv copies unshared keys');
+    is($copy->{$utf8_key}, 'UTF-8 value', 'newHVhv copies UTF-8 key value');
+    my ($copy_key) = grep { $_ eq $utf8_key } keys %$copy;
+    ok(defined($copy_key) && utf8::is_utf8($copy_key),
+       'newHVhv preserves UTF-8 key flag');
+}
+
+{
+    my %hash;
+    {
+        my $original_key = chr 0xE9;
+        utf8::upgrade($original_key);
+        $hash{$original_key} = 'original';
+    }
+    ok(store_using_raw_entry_key(\%hash),
+       'raw-key replacement targets a key marked WASUTF8');
+    my $byte_key = pack 'C', 0xE9;
+    ok(!utf8::is_utf8($byte_key), 'replacement lookup key is byte encoded');
+    is($hash{$byte_key}, 'rewritten',
+       'replacement is safe when the key pointer aliases the old HEK');
+}
+
+{
+    my %source = (first => 1, second => 2, third => 3);
+    my ($current) = each %source;
+    delete $source{$current};
+    my $copy = newHVhv \%source;
+    is_deeply([sort keys %$copy], [sort grep { $_ ne $current } qw(first second third)],
+              'newHVhv copies entries around a lazy-deleted iterator entry');
+    my ($next) = each %source;
+    ok(defined($next) && $next ne $current && exists $source{$next},
+       'newHVhv leaves the source iterator safe to continue');
+}
+
+{
+    package XSAPITestHintsGrow;
+    our ($hash, $fetches);
+    sub TIESCALAR { bless {}, shift }
+    sub FETCH {
+        ++$fetches;
+        $hash->{"hints-grow-$_"} = $_ for 1..200;
+        return 'magical value';
+    }
+    package main;
+
+    my %source = (first => 1, second => 2, third => 3);
+    my ($current) = each %source;
+    delete $source{$current};
+    tie my $magical, 'XSAPITestHintsGrow';
+    $XSAPITestHintsGrow::hash = \%source;
+    $XSAPITestHintsGrow::fetches = 0;
+    my $copy = copy_hints_hv_with_tied_value(\%source, \$magical);
+    is($copy->{trigger}, 'magical value',
+       'hv_copy_hints_hv copies a magical value');
+    is($XSAPITestHintsGrow::fetches, 1,
+       'hv_copy_hints_hv fetches the magical value once');
+    is($source{'hints-grow-200'}, 200,
+       'magical value callback grows source hash');
+
+    my @warnings;
+    local $SIG{__WARN__} = sub { push @warnings, @_ };
+    my $next = each %source;
+    ok(!defined($next), 'copy leaves source iterator safe after growth');
+    like(join('', @warnings), qr/after insertion.*iterator/i,
+         'source iterator reports insertion after callback');
+}
+
+{
+    my %source = (first => 1, second => 2, third => 3);
+    my ($current) = each %source;
+    delete $source{$current};
+    tie my $magical, 'XSAPITestHintsGrow';
+    $XSAPITestHintsGrow::hash = \%source;
+    $XSAPITestHintsGrow::fetches = 0;
+    my $copy = newHVhv_with_tied_value(\%source, \$magical);
+    is($copy->{trigger}, 'magical value',
+       'newHVhv copies values from a magical non-tied hash');
+    is($XSAPITestHintsGrow::fetches, 1,
+       'newHVhv fetches a magical value once');
+    is($source{'hints-grow-200'}, 200,
+       'newHVhv callback grows source hash');
+    my @warnings;
+    local $SIG{__WARN__} = sub { push @warnings, @_ };
+    my $next = each %source;
+    ok(!defined($next), 'newHVhv leaves the source iterator safe');
+}
+
+{
+    require Hash::Util;
+    my %hash;
+    my (@keys, @hashes);
+    my $collision;
+    for my $i (0..10000) {
+        my $key = "collision-policy:$i";
+        my $value = Hash::Util::hash_value($key);
+        my $home = $value & 7;
+        if (!defined $keys[$home]) {
+            $keys[$home] = $key;
+            $hashes[$home] = $value;
+        }
+        elsif ($home == 0) {
+            $collision = [$key, $value];
+        }
+        last if $collision && grep(defined, @keys) == 8;
+    }
+    die 'Could not find keys for the collision-policy test'
+        unless $collision && grep(defined, @keys) == 8;
+    store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 0..5;
+    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 8,
+       'noncolliding inserts keep the initial index size');
+    store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 6..7;
+    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 8,
+       'noncolliding inserts may fill the whole index');
+    ok(!exists $hash{'absent from full index'},
+       'unsuccessful lookup terminates when no index slot is empty');
+    is($hash{$keys[7]}, 7, 'successful lookup works in a full index');
+    store_prehashed(\%hash, $collision->[0], 99, $collision->[1]);
+    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 16,
+       'a collision grows the index at the two-thirds threshold');
+
+    my %lazy;
+    store_prehashed(\%lazy, $keys[$_], $_, $hashes[$_]) for 0..7;
+    my $current = each %lazy;
+    delete $lazy{$current};
+    store_prehashed(\%lazy, $collision->[0], 99, $collision->[1]);
+    my $lazy_info = Hash::Util::hash_storage_info(\%lazy);
+    is($lazy_info->{entry_used}, 9,
+       'insertion appends while the deleted iterator entry is retained');
+    is($lazy_info->{free_list_length}, 0,
+       'the lazy-deleted entry stays out of the free list until iterator reset');
+
+    my %sparse_lazy;
+    store_prehashed(\%sparse_lazy, $keys[0], 0, $hashes[0]);
+    my $sparse_current = each %sparse_lazy;
+    delete $sparse_lazy{$sparse_current};
+    store_prehashed(\%sparse_lazy, $collision->[0], 99, $collision->[1]);
+    store_prehashed(\%sparse_lazy, $keys[$_], $_, $hashes[$_]) for 1..7;
+    my $sparse_info = Hash::Util::hash_storage_info(\%sparse_lazy);
+    is($sparse_info->{index_capacity}, 8,
+       'noncolliding inserts can fill an index with a lazy entry retained');
+    is($sparse_info->{entry_used}, 9,
+       'one-byte indices encode an entry number above slot capacity');
+    is($sparse_info->{index_width}, 1,
+       'the full eight-slot index retains one-byte entry indices');
+    is($sparse_lazy{$collision->[0]}, 99,
+       'lookup works after filling slots around a lazy entry');
+}
+
+{
+    my %source = map { ("key$_" => $_) } (1..20);
+    my ($current) = each %source;
+    delete $source{$current};
+    $source{$current} = 'reinserted';
+    my $warnings = 0;
+    local $SIG{__WARN__} = sub {
+        ++$warnings;
+        $source{"warning-grow-$_"} = $_ for (1..1000);
+    };
+    my $next = each %source;
+    ok(!defined($next), 'insertion stops the active iterator');
+    is($warnings, 1, 'iterator insertion warning is emitted once');
+    is($source{'warning-grow-1000'}, 1000,
+       'warning callback can grow the hash after lazy deletion');
+}
+
+{
+    package XSAPITestStoreDtor;
+    our ($callback, $calls);
+    sub new { bless {}, shift }
+    sub DESTROY {
+        ++$calls;
+        my $cb = $callback;
+        $callback = undef;
+        $cb->() if $cb;
+    }
+}
+
+{
+    my %source = (replace => XSAPITestStoreDtor->new);
+    my $replacement = XSAPITestStoreDtor->new;
+    my $delete_ran = 0;
+    $XSAPITestStoreDtor::callback = sub {
+        ++$delete_ran;
+        delete $source{replace};
+    };
+    store_ent_with_callback_owner(\%source, 'replace', $replacement);
+    ok(!exists $source{replace},
+       'store returns safely when old value destructor deletes the new entry');
+    is($delete_ran, 1, 'reentrant store callback ran once');
+    is(ref($replacement), 'XSAPITestStoreDtor',
+       'failed reentrant store leaves caller value reference valid');
+}
+
 # helem and hslice on entry with null value
 # This is actually a test for a Perl operator, not an XS API test.  But it
 # requires a hash that can only be produced by XS (although recently it

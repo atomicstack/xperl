@@ -8,26 +8,6 @@
  *
  */
 
-/* These control hash traversal randomization and the environment variable PERL_PERTURB_KEYS.
- * Currently disabling this functionality will break a few tests, but should otherwise work fine.
- * See perlrun for more details. */
-
-#if defined(PERL_PERTURB_KEYS_DISABLED)
-#   define PL_HASH_RAND_BITS_ENABLED        0
-#   define PERL_HASH_ITER_BUCKET(iter)      ((iter)->xhv_riter)
-#else
-#   define PERL_HASH_RANDOMIZE_KEYS         1
-#   if defined(PERL_PERTURB_KEYS_RANDOM)
-#       define PL_HASH_RAND_BITS_ENABLED    1
-#   elif defined(PERL_PERTURB_KEYS_DETERMINISTIC)
-#       define PL_HASH_RAND_BITS_ENABLED    2
-#   else
-#       define USE_PERL_PERTURB_KEYS        1
-#       define PL_HASH_RAND_BITS_ENABLED    PL_hash_rand_bits_enabled
-#   endif
-#   define PERL_HASH_ITER_BUCKET(iter)      (((iter)->xhv_riter) ^ ((iter)->xhv_rand))
-#endif
-
 #ifdef PERL_USE_UNSHARED_KEYS_IN_LARGE_HASHES
 #define LARGE_HASH_HEURISTIC(hv,new_max) S_large_hash_heuristic(aTHX_ (hv), (new_max))
 #else
@@ -35,18 +15,42 @@
 #endif
 
 
-/* entry in hash value chain */
+/* Compact hash entry. */
 struct he {
-    /* Keep hent_next first in this structure, because sv_free_arenas take
-       advantage of this to share code between the he arenas and the SV
-       body arenas  */
-    HE		*hent_next;	/* next entry in chain */
     HEK		*hent_hek;	/* hash key */
     union {
         SV	*hent_val;	/* scalar value that was hashed */
         Size_t	hent_refcount;	/* references for this shared hash key */
+        U32     hent_next_free; /* OA free-list link, encoded as index + 1 */
+        HE      *hent_next_pool; /* tied-fetch pool link while retired */
     } he_valu;
 };
+
+#define HV_OA_DELETED U32_MAX
+
+struct hv_oa {
+    HE *entries;
+    U32 capacity;
+    U32 used;
+    U32 free_head;
+    U32 tombstones;
+    U8 indices[1];
+};
+
+#define HvOA_INDEX_WIDTH_FOR(capacity) \
+    ((capacity) <= 128 ? 1 : (capacity) <= 32768 ? 2 : 4)
+#define HvOA_INDEX_WIDTH(hv) \
+    HvOA_INDEX_WIDTH_FOR((U32)HvMAX(hv) + 1)
+#define HvOA_INDEX_BYTES_FOR(capacity) \
+    ((Size_t)(capacity) * HvOA_INDEX_WIDTH_FOR(capacity))
+#define HvOA_INDEX_REGION(oa,capacity) ((U8 *)(oa)->indices)
+
+
+#define HvOA_INDEX_GET(hv,pos) \
+    S_hv_oa_index_get(HvOA(hv), (U32)HvMAX(hv) + 1, (U32)(pos))
+#define HvOA_INDEX_SET(hv,pos,value) \
+    S_hv_oa_index_set(HvOA(hv), (U32)HvMAX(hv) + 1, (U32)(pos), (U32)(value))
+
 
 /* hash key -- defined separately for use as shared pointer */
 struct hek {
@@ -65,6 +69,7 @@ struct hek {
 
 struct shared_he {
     struct he shared_he_he;
+    HE *next;
     struct hek shared_he_hek;
 };
 
@@ -130,11 +135,6 @@ struct xpvhv_aux {
  */
     I32		xhv_name_count;
     struct mro_meta *xhv_mro_meta;
-#ifdef PERL_HASH_RANDOMIZE_KEYS
-    U32         xhv_rand;       /* random value for hash traversal */
-    U32         xhv_last_rand;  /* last random value for hash traversal,
-                                   used to detect each() after insert for warnings */
-#endif
     U32         xhv_aux_flags;      /* assorted extra flags */
 
     /* These fields are valid for class and role stashes. */
@@ -161,6 +161,8 @@ struct xpvhv_aux {
 #define HvAUXf_IS_CLASS     0x4   /* the package is a 'class' */
 #define HvAUXf_IS_ROLE      0x8   /* the package is a 'role' */
 #define HvAUXf_IS_CLASS_SEALED 0x10
+#define HvAUXf_ITER_INSERTED   0x20
+#define HvAUXf_ITER_ACTIVE     0x40
 
 #define HvSTASH_IS_CLASS(hv) \
     (HvHasAUX(hv) && HvAUX(hv)->xhv_aux_flags & HvAUXf_IS_CLASS)
@@ -349,6 +351,11 @@ thus converted down to plain bytes.
 
 #define PERL_HASH_DEFAULT_HvMAX 7
 
+/* The high bit of xhv_max marks a headerless, dense linear HE array.  The
+ * remaining bits hold its allocated capacity. */
+#define HV_LINEAR_FLAG ((STRLEN)1 << (sizeof(STRLEN) * CHAR_BIT - 1))
+#define HV_LINEAR_CAP_MASK (~HV_LINEAR_FLAG)
+
 /* these hash entry flags ride on hent_klen (for use only in magic/tied HVs) */
 #define HEf_SVKEY	-2	/* hent_key is an SV* */
 
@@ -374,7 +381,15 @@ hash.
 */
 
 #define HvFILL(hv)	Perl_hv_fill(aTHX_ MUTABLE_HV(hv))
-#define HvMAX(hv)	((XPVHV*)  SvANY(hv))->xhv_max
+#define HvMAX_RAW(hv)	(((XPVHV*)SvANY(hv))->xhv_max)
+#define HvIS_LINEAR(hv) (HvMAX_RAW(hv) & HV_LINEAR_FLAG)
+#define HvLINEAR_CAP(hv) ((U32)(HvMAX_RAW(hv) & HV_LINEAR_CAP_MASK))
+#define HvMAX(hv) (HvIS_LINEAR(hv) \
+                   ? (STRLEN)(HvLINEAR_CAP(hv) ? HvLINEAR_CAP(hv) - 1 : 0) \
+                   : HvMAX_RAW(hv))
+#define HvMAX_SET(hv,max) (HvMAX_RAW(hv) = (STRLEN)(max))
+#define HvMAX_SET_LINEAR(hv,cap) \
+    (HvMAX_RAW(hv) = HV_LINEAR_FLAG | (STRLEN)(cap))
 
 /*
 
@@ -397,8 +412,6 @@ whether it is valid to call C<HvAUX()>.
 #define HvEITER_set(hv,e)	Perl_hv_eiter_set(aTHX_ MUTABLE_HV(hv), e)
 #define HvRITER_get(hv)	(HvHasAUX(hv) ? HvAUX(hv)->xhv_riter : -1)
 #define HvEITER_get(hv)	(HvHasAUX(hv) ? HvAUX(hv)->xhv_eiter : NULL)
-#define HvRAND_get(hv)	(HvHasAUX(hv) ? HvAUX(hv)->xhv_rand : 0)
-#define HvLASTRAND_get(hv)	(HvHasAUX(hv) ? HvAUX(hv)->xhv_last_rand : 0)
 
 #define HvNAME(hv)	HvNAME_get(hv)
 #define HvNAMELEN(hv)   HvNAMELEN_get(hv)
@@ -501,7 +514,152 @@ Null HE pointer.
 
 #  define Nullhe Null(HE*)
 #endif
-#define HeNEXT(he)		(he)->hent_next
+#define HeNEXT_FREE(he)		((he)->he_valu.hent_next_free)
+#define HeSHARED_NEXT(he)	(((struct shared_he *)(he))->next)
+#define HePOOL_NEXT(he)		((he)->he_valu.hent_next_pool)
+#define HvIS_OA(hv)		((const HV *)(hv) != PL_strtab)
+#define HvOA(hv)		((struct hv_oa *)HvARRAY(hv))
+#define HvENTRIES(hv) \
+    (HvIS_LINEAR(hv) ? (HE *)HvARRAY(hv) : \
+     (HvARRAY(hv) ? HvOA(hv)->entries : NULL))
+/*
+=for apidoc_section $HV
+=for apidoc Cm|HE *|HeSHARED_NEXT|HE *he
+
+Accesses the chain link for an entry in the shared string table.
+
+=for apidoc Cm|HE *|HePOOL_NEXT|HE *he
+
+Accesses the next free tied-fetch entry. The value field stores this link only
+while the HE is retired in the tied-fetch pool.
+
+=for apidoc Cm|U32|HeNEXT_FREE|HE *he
+
+Accesses a vacant compact entry's free-list link, encoded as index plus
+one. Zero ends the free list.
+
+=for apidoc Cmn|U32|HV_OA_DELETED
+
+The reserved index-slot entry value identifying a tombstone.
+
+=for apidoc Cm|U32|HvOA_INDEX_WIDTH_FOR|U32 capacity
+
+Returns the stored entry-index width: one byte through 128 slots, two bytes
+through 32,768 slots, and four bytes above that.
+
+=for apidoc Cm|U32|HvOA_INDEX_WIDTH|HV *hv
+
+Returns the stored entry-index width for C<hv>.
+
+=for apidoc Cm|Size_t|HvOA_INDEX_BYTES_FOR|U32 capacity
+
+Returns the byte size of the compact entry-index region for C<capacity>
+slots.
+
+=for apidoc Cm|U8 *|HvOA_INDEX_REGION|struct hv_oa *oa|U32 capacity
+
+Returns the compact entry-index region after the open-addressed header.
+
+=for apidoc Cm|struct hv_oa *|HvOA|HV *hv
+
+Returns the open-addressed storage header. The hash must have an allocated
+index and must not be the shared string table.
+
+=for apidoc Cm|U32|HvOA_INDEX_GET|HV *hv|U32 pos
+
+Returns an entry index encoded as index plus one, zero for an empty slot,
+or C<HV_OA_DELETED> for a tombstone.
+
+=for apidoc Cm|void|HvOA_INDEX_SET|HV *hv|U32 pos|U32 value
+
+Stores a normalized encoded entry index, empty value, or tombstone.
+
+=for apidoc Cm|bool|HvIS_OA|HV *hv
+
+Returns true for ordinary hashes using compact HE entries. They may use a
+small linear array or an open-addressed index. The shared string table keeps
+its separate bucket chains.
+
+=for apidoc Cm|bool|HvIS_LINEAR|HV *hv
+
+Returns true when C<hv> stores its entries in a small, headerless dense array.
+
+=for apidoc Cmn|STRLEN|HV_LINEAR_FLAG
+
+The tag bit in the raw maximum field identifying headerless linear storage.
+
+=for apidoc Cmn|STRLEN|HV_LINEAR_CAP_MASK
+
+The mask extracting the linear entry capacity from the raw maximum field.
+
+=for apidoc Cm|STRLEN|HvMAX_RAW|HV *hv
+
+Accesses the raw maximum field, including the linear-storage tag. Use
+C<HvMAX> for the logical maximum and the form-specific setters for updates.
+
+=for apidoc Cm|U32|HvLINEAR_CAP|HV *hv
+
+Returns the allocated entry capacity for a headerless linear hash.
+
+=for apidoc Cm|HE *|HvENTRIES|HV *hv
+
+Returns the compact entry array for either linear or indexed storage.
+
+=for apidoc Cm|void|HvMAX_SET|HV *hv|STRLEN max
+
+Sets the index maximum for an indexed hash. C<HvMAX> is read-only.
+
+=for apidoc Cm|void|HvMAX_SET_LINEAR|HV *hv|U32 capacity
+
+Sets the capacity for headerless linear storage. C<HvMAX> is read-only.
+
+=for apidoc Amx|STRLEN|HvENTRY_LIMIT|HV *hv
+
+Returns the storage traversal limit for XPerl's experimental hash layout.
+
+=for apidoc Amx|HE *|HvENTRY_FIRST|HV *hv|STRLEN index
+
+Returns the first live entry at storage position C<index>, or NULL for a
+vacant position. C<index> must be less than C<HvENTRY_LIMIT(hv)>.
+
+=for apidoc Amx|HE *|HvENTRY_NEXT|HV *hv|HE *entry
+
+Returns the next entry at the same storage position, or NULL. Compact
+entry arrays have one entry per position. The shared string table
+can have multiple entries in a bucket.
+
+These macros traverse storage without changing the hash iterator. Obtain
+each position with C<HvENTRY_FIRST> and follow it with C<HvENTRY_NEXT>.
+Entry-array growth and transitions between a singleton HE and an entry array
+invalidate returned entry pointers. Retain integer positions and reacquire
+entries after callbacks that can insert or delete keys. The SV values remain
+separately allocated.
+
+=cut
+*/
+/* Direct traversal leaves the public iterator state untouched. A current
+ * lazily deleted entry owns its key until iterator advance or reset. */
+#define HvENTRY_LIMIT(hv) \
+    (HvIS_LINEAR(hv) ? HvTOTALKEYS(hv) : \
+     HvIS_OA(hv) ? (HvARRAY(hv) ? HvOA(hv)->used : 0) : HvMAX(hv) + 1)
+#define HvENTRY_FIRST(hv,i) \
+    (HvIS_LINEAR(hv) ? (HvARRAY(hv) ? &((HE *)HvARRAY(hv))[(i)] : NULL) : HvIS_OA(hv) \
+     ? ((HvARRAY(hv) && HvOA(hv)->entries[(i)].hent_hek \
+         && !(HvLAZYDEL(hv) \
+              && &HvOA(hv)->entries[(i)] == HvEITER_get(hv))) \
+        ? &HvOA(hv)->entries[(i)] : NULL) \
+     : HvARRAY(hv)[i])
+#define HvENTRY_NEXT(hv,e) (HvIS_OA(hv) ? NULL : HeSHARED_NEXT(e))
+#define HvENTRY_INDEX(hv,sptr,idx) \
+    (HvIS_OA(hv) && !HvIS_LINEAR(hv) && HvARRAY(hv) && HvOA(hv)->entries \
+     && PTR2UV(sptr) >= PTR2UV(&HeVAL(HvOA(hv)->entries)) \
+     && (PTR2UV(sptr) - PTR2UV(&HeVAL(HvOA(hv)->entries))) \
+        % sizeof(HE) == 0 \
+     && (PTR2UV(sptr) - PTR2UV(&HeVAL(HvOA(hv)->entries))) \
+        / sizeof(HE) < HvOA(hv)->used \
+     && (((idx) = (U32)((PTR2UV(sptr) \
+                        - PTR2UV(&HeVAL(HvOA(hv)->entries))) / sizeof(HE))), 1))
+#define HvENTRY_SVP(hv,idx)	(&HeVAL(&HvENTRIES(hv)[(idx)]))
 #define HeKEY_hek(he)		(he)->hent_hek
 #define HeKEY(he)		HEK_KEY(HeKEY_hek(he))
 #define HeKEY_sv(he)		(*(SV**)HeKEY(he))

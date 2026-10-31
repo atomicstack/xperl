@@ -3,6 +3,9 @@
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
+#if defined(__GLIBC__) && !defined(PERL_TRACK_MEMPOOL) && !defined(MYMALLOC)
+#  include <malloc.h>
+#endif
 
 MODULE = Hash::Util		PACKAGE = Hash::Util
 
@@ -105,28 +108,6 @@ hash_value(string,...)
 }
 
 void
-hash_traversal_mask(rhv, ...)
-        SV* rhv
-    PPCODE:
-{
-#ifdef PERL_HASH_RANDOMIZE_KEYS
-    if (SvROK(rhv) && SvTYPE(SvRV(rhv))==SVt_PVHV && !SvMAGICAL(SvRV(rhv))) {
-        HV *hv = (HV *)SvRV(rhv);
-        if (items>1) {
-            hv_rand_set(hv, SvUV(ST(1)));
-        }
-        if (HvHasAUX(hv)) {
-            XSRETURN_UV(HvRAND_get(hv));
-        } else {
-            XSRETURN_UNDEF;
-        }
-    }
-#else
-    Perl_croak(aTHX_ "Perl has not been compiled with support for randomized hash key traversal");
-#endif
-}
-
-void
 bucket_info(rhv)
         SV* rhv
     PPCODE:
@@ -177,7 +158,15 @@ bucket_info(rhv)
             U32 bucket_index;
             for ( bucket_index= 0; bucket_index <= max_bucket_index; bucket_index++ ) {
                 I32 chain_length= BUCKET_INFO_ITEMS_ON_STACK;
-                for (he= bucket_array[bucket_index]; he; he= HeNEXT(he) ) {
+                for (he= HvIS_LINEAR(hv)
+                         ? bucket_array[bucket_index]
+                         : HvIS_OA(hv)
+                         ? (HvOA_INDEX_GET(hv, bucket_index) != 0
+                            && HvOA_INDEX_GET(hv, bucket_index) != U32_MAX
+                            ? &HvOA(hv)->entries[HvOA_INDEX_GET(hv, bucket_index) - 1]
+                            : NULL)
+                         : bucket_array[bucket_index];
+                     he; he= HvENTRY_NEXT(hv, he)) {
                     chain_length++;
                 }
                 while ( max_chain_length < chain_length ) {
@@ -233,7 +222,15 @@ bucket_array(rhv)
             mXPUSHs(newRV_noinc((SV*)info_av));
             for ( i= 0; i <= max; i++ ) {
                 AV *key_av= NULL;
-                for (he= he_ptr[i]; he; he= HeNEXT(he) ) {
+                for (he= HvIS_LINEAR(hv)
+                         ? (HE *)&HvENTRIES(hv)[i]
+                         : HvIS_OA(hv)
+                         ? (HvOA_INDEX_GET(hv, i) != 0
+                            && HvOA_INDEX_GET(hv, i) != U32_MAX
+                            ? &HvOA(hv)->entries[HvOA_INDEX_GET(hv, i) - 1]
+                            : NULL)
+                         : he_ptr[i];
+                     he; he= HvENTRY_NEXT(hv, he)) {
                     SV *key_sv;
                     char *str;
                     STRLEN len;
@@ -326,3 +323,138 @@ used_buckets(rhv)
     XSRETURN_UNDEF;
 }
 
+
+SV *
+hash_storage_info(hash)
+        HV *hash
+    CODE:
+    {
+        HV *info = newHV();
+        UV index_bytes = HvARRAY(hash) ? (HvMAX(hash) + 1) * sizeof(HE *) : 0;
+        UV entry_bytes = HvTOTALKEYS(hash) * sizeof(HE);
+        UV allocated_bytes = 0;
+#define STORAGE_INFO(name, value) \
+        (void)hv_stores(info, name, newSVuv((UV)(value)))
+        STORAGE_INFO("he_size", sizeof(HE));
+        STORAGE_INFO("hv_size", sizeof(HV));
+        STORAGE_INFO("hv_body_size", sizeof(XPVHV));
+        STORAGE_INFO("live", HvTOTALKEYS(hash));
+        STORAGE_INFO("index_capacity", HvARRAY(hash) && !HvIS_LINEAR(hash)
+                     ? HvMAX(hash) + 1 : 0);
+#ifdef HvIS_OA
+        STORAGE_INFO("linear", HvIS_LINEAR(hash) ? 1 : 0);
+        STORAGE_INFO("open_addressed", HvIS_OA(hash) && !HvIS_LINEAR(hash));
+        if (HvIS_LINEAR(hash)) {
+            const U32 capacity = HvLINEAR_CAP(hash);
+            const bool arena_backed = capacity == 1 && HvARRAY(hash);
+            index_bytes = 0;
+            entry_bytes = arena_backed ? sizeof(HE)
+                         : (UV)capacity * sizeof(HE);
+            STORAGE_INFO("entry_capacity", capacity);
+            STORAGE_INFO("entry_used", HvTOTALKEYS(hash));
+            STORAGE_INFO("arena_backed", arena_backed ? 1 : 0);
+            STORAGE_INFO("arena_slot_size", arena_backed
+                         ? sizeof(HE) : 0);
+            STORAGE_INFO("free_head", 0);
+            STORAGE_INFO("tombstones", 0);
+            STORAGE_INFO("index_width", 0);
+            STORAGE_INFO("slot_size", 0);
+            STORAGE_INFO("metadata_bytes", 0);
+            STORAGE_INFO("hash_bytes", 0);
+            STORAGE_INFO("entry_index_bytes", 0);
+            STORAGE_INFO("entry_spare", capacity - HvTOTALKEYS(hash));
+            STORAGE_INFO("free_list_length", 0);
+            STORAGE_INFO("index_empty", 0);
+            STORAGE_INFO("index_deleted", 0);
+            STORAGE_INFO("probe_total", 0);
+            STORAGE_INFO("probe_max", 0);
+            (void)hv_stores(info, "probe_mean", newSVnv(0));
+            STORAGE_INFO("entries_address", PTR2UV(HvARRAY(hash)));
+            STORAGE_INFO("index_address", 0);
+#if defined(__GLIBC__) && !defined(PERL_TRACK_MEMPOOL) && !defined(MYMALLOC)
+            if (capacity >= 2)
+                allocated_bytes = malloc_usable_size(HvARRAY(hash));
+#endif
+        }
+        else if (HvIS_OA(hash)) {
+            struct hv_oa *oa = HvARRAY(hash) ? HvOA(hash) : NULL;
+            const U32 capacity = oa ? HvMAX(hash) + 1 : 0;
+            const U32 index_width = oa ? HvOA_INDEX_WIDTH(hash) : 0;
+            const UV hash_bytes = 0;
+            const UV entry_index_bytes = (UV)capacity * index_width;
+            index_bytes = oa ? STRUCT_OFFSET(struct hv_oa, indices)
+                              + entry_index_bytes : 0;
+            entry_bytes = oa ? oa->capacity * sizeof(HE) : 0;
+            STORAGE_INFO("entry_capacity", oa ? oa->capacity : 0);
+            STORAGE_INFO("entry_used", oa ? oa->used : 0);
+            STORAGE_INFO("free_head", oa ? oa->free_head : 0);
+            STORAGE_INFO("tombstones", oa ? oa->tombstones : 0);
+            STORAGE_INFO("index_width", index_width);
+            STORAGE_INFO("slot_size", index_width);
+            STORAGE_INFO("metadata_bytes", oa
+                         ? STRUCT_OFFSET(struct hv_oa, indices) : 0);
+            STORAGE_INFO("hash_bytes", hash_bytes);
+            STORAGE_INFO("entry_index_bytes", entry_index_bytes);
+            STORAGE_INFO("entry_spare", oa ? oa->capacity - oa->used : 0);
+            if (oa) {
+                U32 link = oa->free_head;
+                UV free_count = 0, empty = 0, deleted = 0;
+                UV probe_total = 0, probe_max = 0;
+                STRLEN i;
+                while (link) {
+                    if (link > oa->used || free_count >= oa->used)
+                        Perl_croak(aTHX_ "Corrupt hash entry free list");
+                    free_count++;
+                    link = HeNEXT_FREE(&oa->entries[link - 1]);
+                }
+                for (i = 0; i <= HvMAX(hash); i++) {
+                    const U32 entry_index = HvOA_INDEX_GET(hash, i);
+                    if (!entry_index)
+                        empty++;
+                    else if (entry_index == U32_MAX)
+                        deleted++;
+                    else {
+                        const U32 slot_hash = HeHASH(&oa->entries[entry_index - 1]);
+                        UV distance = (i - (slot_hash & HvMAX(hash))) & HvMAX(hash);
+                        probe_total += distance;
+                        if (distance > probe_max) probe_max = distance;
+                    }
+                }
+                STORAGE_INFO("free_list_length", free_count);
+                STORAGE_INFO("index_empty", empty);
+                STORAGE_INFO("index_deleted", deleted);
+                STORAGE_INFO("probe_total", probe_total);
+                STORAGE_INFO("probe_max", probe_max);
+                (void)hv_stores(info, "probe_mean", newSVnv(HvTOTALKEYS(hash)
+                    ? (NV)probe_total / HvTOTALKEYS(hash) : 0));
+            }
+            else {
+                STORAGE_INFO("free_list_length", 0);
+                STORAGE_INFO("index_empty", 0);
+                STORAGE_INFO("index_deleted", 0);
+                STORAGE_INFO("probe_total", 0);
+                STORAGE_INFO("probe_max", 0);
+                (void)hv_stores(info, "probe_mean", newSVnv(0));
+            }
+            STORAGE_INFO("entries_address", oa ? PTR2UV(oa->entries) : 0);
+            STORAGE_INFO("index_address", PTR2UV(oa));
+#if defined(__GLIBC__) && !defined(PERL_TRACK_MEMPOOL) && !defined(MYMALLOC)
+            if (oa) {
+                allocated_bytes = malloc_usable_size(oa);
+                if (oa->entries)
+                    allocated_bytes += malloc_usable_size(oa->entries);
+            }
+#endif
+        }
+#else
+        STORAGE_INFO("open_addressed", 0);
+#endif
+        STORAGE_INFO("index_bytes", index_bytes);
+        STORAGE_INFO("entry_bytes", entry_bytes);
+        STORAGE_INFO("requested_bytes", index_bytes + entry_bytes);
+        STORAGE_INFO("allocator_bytes", allocated_bytes);
+#undef STORAGE_INFO
+        RETVAL = newRV_noinc((SV *)info);
+    }
+    OUTPUT:
+        RETVAL

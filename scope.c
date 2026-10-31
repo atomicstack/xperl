@@ -1101,20 +1101,52 @@ Perl_save_helem_flags(pTHX_ HV *hv, SV *key, SV **sptr, const U32 flags)
     PERL_ARGS_ASSERT_SAVE_HELEM_FLAGS;
 
     SV *sv;
+    SV *saved_key;
+    U32 entry_index = 0;
+    bool is_oa_entry;
+    bool is_linear_entry = FALSE;
+
+    is_oa_entry = HvENTRY_INDEX(hv, sptr, entry_index);
+    if (HvIS_LINEAR(hv) && HvTOTALKEYS(hv)) {
+        const UV ptr = PTR2UV(sptr);
+        const UV first = PTR2UV(&HeVAL(&HvENTRIES(hv)[0]));
+        const UV bytes = (UV)HvTOTALKEYS(hv) * sizeof(HE);
+        is_linear_entry = ptr >= first && ptr - first < bytes
+            && (ptr - first) % sizeof(HE) == 0;
+    }
+    saved_key = sv_2mortal(newSVsv(key));
+
+    /* Copying a magical key can run code that grows the hash. */
+    if (is_linear_entry) {
+        HE *he = hv_fetch_ent(hv, saved_key, 0, 0);
+        if (!he)
+            he = hv_fetch_ent(hv, saved_key, 1, 0);
+        if (he)
+            sptr = &HeVAL(he);
+    }
+    else if (is_oa_entry)
+        sptr = HvENTRY_SVP(hv, entry_index);
 
     SvGETMAGIC(*sptr);
+    if (is_linear_entry) {
+        HE *he = hv_fetch_ent(hv, saved_key, 0, 0);
+        if (!he)
+            he = hv_fetch_ent(hv, saved_key, 1, 0);
+        sptr = he ? &HeVAL(he) : sptr;
+    }
+    else if (is_oa_entry)
+        sptr = HvENTRY_SVP(hv, entry_index);
     {
         dSS_ADD;
         SS_ADD_PTR(SvREFCNT_inc_simple(hv));
-        SS_ADD_PTR(newSVsv(key));
+        SS_ADD_PTR(SvREFCNT_inc_simple_NN(saved_key));
         SS_ADD_PTR(SvREFCNT_inc(*sptr));
         SS_ADD_UV(SAVEt_HELEM);
         SS_ADD_END(4);
     }
-    save_scalar_at(sptr, flags);
+    sv = save_scalar_at(sptr, flags);
     if (flags & SAVEf_KEEPOLDELEM)
         return;
-    sv = *sptr;
     /* If we're localizing a tied hash element, this new sv
      * won't actually be stored in the hash - so it won't get
      * reaped when the localize ends. Ensure it gets reaped by

@@ -379,6 +379,54 @@ Perl_posix_LC_foo(pTHX_ const int c, const U8 classnum) {
 
 #endif
 
+/* ------------------------------- hv.h ------------------------------- */
+
+PERL_STATIC_INLINE U32
+S_hv_oa_index_get(const struct hv_oa *oa, U32 capacity, U32 pos)
+{
+    U8 width = (U8)HvOA_INDEX_WIDTH_FOR(capacity);
+    const U8 *region = (const U8 *)oa->indices;
+    assert(pos < capacity);
+    if (width == 1) {
+        U8 value = region[pos];
+        return value == (U8)~(U8)0 ? HV_OA_DELETED : value;
+    }
+    if (width == 2) {
+        U16 value;
+        Copy(region + (Size_t)pos * sizeof(U16), &value, 1, U16);
+        return value == (U16)~(U16)0 ? HV_OA_DELETED : value;
+    }
+    {
+        U32 value;
+        Copy(region + (Size_t)pos * sizeof(U32), &value, 1, U32);
+        return value;
+    }
+}
+
+
+PERL_STATIC_INLINE void
+S_hv_oa_index_set(struct hv_oa *oa, U32 capacity, U32 pos, U32 value)
+{
+    U8 width = (U8)HvOA_INDEX_WIDTH_FOR(capacity);
+    U8 *region = (U8 *)oa->indices;
+    assert(pos < capacity);
+    if (width == 1) {
+        assert(value == HV_OA_DELETED || value <= 0xFE);
+        region[pos] = value == HV_OA_DELETED ? (U8)~(U8)0 : (U8)value;
+    }
+    else if (width == 2) {
+        U16 encoded = value == HV_OA_DELETED ? (U16)~(U16)0 : (U16)value;
+        assert(value == HV_OA_DELETED || value <= 0xFFFE);
+        Copy(&encoded, region + (Size_t)pos * sizeof(U16), 1, U16);
+    }
+    else {
+        U32 encoded = value;
+        assert(value == HV_OA_DELETED || value < U32_MAX);
+        Copy(&encoded, region + (Size_t)pos * sizeof(U32), 1, U32);
+    }
+}
+
+
 /* ------------------------------- mg.h ------------------------------- */
 
 #if defined(PERL_CORE) || defined(PERL_EXT)

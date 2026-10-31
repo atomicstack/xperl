@@ -27,6 +27,12 @@ BEGIN {
 }
 require Tie::Hash;
 
+our $compact_hashes = eval {
+    require Hash::Util;
+    my $info = Hash::Util::hash_storage_info({ probe => 1 });
+    $info->{integer_chained} || $info->{open_addressed};
+};
+
 our $DEBUG = 0;
 open(SAVERR, ">&STDERR") or die "Can't dup STDERR: $!";
 
@@ -42,10 +48,25 @@ $::mmmm
 
 use constant thr => $Config{useithreads};
 
+sub compact_hash_pattern {
+    my ($pattern) = @_;
+    if ($::compact_hashes) {
+        # Dense entry vectors have one displayed slot per live entry and no
+        # pointer-bucket quality estimate. Empty hashes have no allocation.
+        $pattern =~ s/^\h*hash quality = .*\n//mg;
+        $pattern =~ s/0:7, 1:1/1:1/g;
+        $pattern =~ s/0:\[67\],\.\*/1:2/g;
+        $pattern =~ s/(KEYS = ([012])\n\h+FILL = )[^\n]+(\n\h+MAX = )7/$1 . $2 . $3 . ($2 ? $2 - 1 : "(?:0|7)")/ge;
+        $pattern =~ s/(ARRAY = )\$ADDR(\n\h+KEYS = 0)/${1}0x0$2/g;
+    }
+
+    return $pattern;
+}
+
 sub do_test {
     my $todo = $_[3];
     my $repeat_todo = $_[4];
-    my $pattern = $_[2];
+    my $pattern = compact_hash_pattern($_[2]);
     my $do_eval = $_[5];
     if (open(OUT,'>', "peek$$")) {
         my $setup_stderr = sub { open(STDERR, ">&OUT") or die "Can't dup OUT: $!" };
@@ -785,7 +806,6 @@ do_test('ENAME on a stash',
     MAX = 7
     RITER = -1
     EITER = 0x0
-    RAND = $ADDR
     NAME = "RWOM"
     ENAME = "RWOM"				# $] > 5.012
 ');
@@ -808,7 +828,6 @@ do_test('ENAMEs on a stash',
     MAX = 7
     RITER = -1
     EITER = 0x0
-    RAND = $ADDR
     NAME = "RWOM"
     NAMECOUNT = 2				# $] > 5.012
     ENAME = "RWOM", "KLANK"			# $] > 5.012
@@ -834,7 +853,6 @@ do_test('ENAMEs on a stash with no NAME',
     MAX = 7
     RITER = -1
     EITER = 0x0
-    RAND = $ADDR
     NAMECOUNT = -3				# $] > 5.012
     ENAME = "RWOM", "KLANK"			# $] > 5.012
 ');
@@ -884,7 +902,6 @@ do_test('small hash after keys',
     MAX = 7
     RITER = -1
     EITER = 0x0
-    RAND = $ADDR
 (?:    Elt "(?:Perl|Beer)" HASH = $ADDR
     SV = PV\\($ADDR\\) at $ADDR
       REFCNT = 1
@@ -914,7 +931,6 @@ do_test('small hash after keys and scalar',
     MAX = 7
     RITER = -1
     EITER = 0x0
-    RAND = $ADDR
 (?:    Elt "(?:Perl|Beer)" HASH = $ADDR
     SV = PV\\($ADDR\\) at $ADDR
       REFCNT = 1
@@ -988,7 +1004,7 @@ tie %tied, "Tie::StdHash";
 do_test('Dump %tied', '%tied', <<'HASH', "", undef, 1);
 SV = PVHV\($ADDR\) at $ADDR
   REFCNT = \d+
-  FLAGS = \(RMG,SHAREKEYS\)
+  FLAGS = \(RMG,OOK,SHAREKEYS\)
   MAGIC = $ADDR
     MG_VIRTUAL = &PL_vtbl_pack
     MG_TYPE = PERL_MAGIC_tied\(P\)
@@ -1007,10 +1023,13 @@ SV = PVHV\($ADDR\) at $ADDR
         KEYS = 0
         FILL = 0
         MAX = 7
-  ARRAY = 0x0
+  AUX_FLAGS = 0
+  ARRAY = $ADDR
   KEYS = 0
   FILL = 0
   MAX = 7
+  RITER = -1
+  EITER = 0x0
 HASH
 
 $_ = "hello";

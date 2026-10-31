@@ -1153,14 +1153,8 @@ PP_wrapped(pp_tie, 0, 1)
     switch(SvTYPE(varsv)) {
         case SVt_PVHV:
         {
-            HE *entry;
             methname = "TIEHASH";
-            if (HvLAZYDEL(varsv) && (entry = HvEITER_get((HV *)varsv))) {
-                HvLAZYDEL_off(varsv);
-                hv_free_ent(NULL, entry);
-            }
-            HvEITER_set(MUTABLE_HV(varsv), 0);
-            HvRITER_set(MUTABLE_HV(varsv), -1);
+            (void)hv_iterinit(MUTABLE_HV(varsv));
             break;
         }
         case SVt_PVAV:
@@ -1312,12 +1306,8 @@ PP_wrapped(pp_untie, 1, 0)
     if (SvTYPE(sv) == SVt_PVHV) {
         /* If the tied hash was partway through iteration, free the iterator and
          * any key that it is pointing to. */
-        HE *entry;
-        if (HvLAZYDEL(sv) && (entry = HvEITER_get((HV *)sv))) {
-            HvLAZYDEL_off(sv);
-            hv_free_ent(NULL, entry);
-            HvEITER_set(MUTABLE_HV(sv), 0);
-        }
+        if (HvLAZYDEL(sv) && HvEITER_get((HV *)sv))
+            (void)hv_iterinit(MUTABLE_HV(sv));
     }
 
     RETPUSHYES;
