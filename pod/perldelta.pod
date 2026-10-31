@@ -795,6 +795,33 @@ Jaguar (Darwin 6) once again.
 
 =head1 Internal Changes
 
+=head2 Experimental XPerl hash storage
+
+Ordinary hashes now use a compact array of two-pointer C<HE> records and
+an independently grown open-addressed index. A singleton uses one compact
+16-byte C<HE> from the arena on 64-bit builds. When
+C<PERL_HASH_LINEAR_MAX> is positive, hashes with two or more keys can use a
+dense C<HE> array with linear search and promote to indexed storage after the
+selected threshold. The index stores
+adaptive-width entry identifiers only; the full cached hash remains in the
+entry's C<HEK>. Indexed hashes recycle deleted entry positions through a
+per-hash free list. C<HV> and C<XPVHV> sizes are unchanged. Shared-key
+interning keeps its chained representation. Traversal scans the entry array
+independently of hash values. The C<PERL_PERTURB_KEYS> controls and
+C<Hash::Util::hash_traversal_mask> are removed. Hash-function seeding is
+retained. Insertion during an active traversal is detected without random
+state.
+
+This changes the XS ABI and direct-storage interfaces. C<HeNEXT> is
+removed. C<HvMAX> is no longer writable as an lvalue; use C<HvMAX_SET> or
+C<HvMAX_SET_LINEAR> according to storage form. C<HE *> and C<SV **> pointers
+into a hash must be reacquired after entry-array growth and after deletion
+from a headerless linear hash, which shifts later entries. See
+L<perlguts/Working with HVs> and
+F<Porting/hash-oa-design.pod> for the experimental compatibility limits.
+C<Hash::Util::hash_storage_info> reports capacities, free-list length,
+tombstones, probe distances, and allocation sizes.
+
 XXX Changes which affect the interface available to C<XS> code go here. Other
 significant internal changes for future core maintainers should be noted as
 well.

@@ -1,0 +1,390 @@
+=head1 NAME
+
+hash-oa-design - Experimental hash storage with open addressing
+
+=head1 STATUS
+
+This document records the design and compatibility questions for the
+experimental open-addressed hash representation. It is not a promise that
+every Perl hash uses this representation.
+
+=head1 REPRESENTATION
+
+Empty ordinary hashes allocate no entry storage, and C<keys> or C<each> on an
+empty hash does not allocate it. A one-entry hash uses an arena-backed compact
+C<HE> slot with no chain pointer. With two or more entries, very small hashes
+can use a dense array of compact C<HE> entries and linear search without
+allocating open-addressing metadata. The startup
+environment variable C<PERL_HASH_LINEAR_MAX> selects the maximum number of
+entries kept in this form: zero (the default) uses the indexed form once a
+hash grows beyond one entry;
+two, four, or eight enables the corresponding threshold. Adding a second key
+moves the singleton into a compact entry array, which grows through capacities
+two, four, and eight as needed. Deletion shifts later entries left to keep
+the array dense. Inserting beyond the selected threshold promotes the same
+entries into the indexed form. Deleting from two entries to one returns to
+the arena-backed singleton representation;
+deleting the last entry or clearing the hash returns it to the unallocated
+state.
+
+After promotion, the hash uses an open-addressed index separate from the
+contiguous array of entries. Each index slot stores only an entry identifier.
+The full cached hash remains in the entry's C<HEK>. The identifier uses one
+byte when slot capacity is at most 128, two bytes when it is at most 32,768,
+and four bytes above that. Zero means empty; an all-ones identifier marks a
+deleted slot; live identifiers are entry positions plus one. The entry array
+grows independently, by about 1.2 times its current capacity. The slot array
+doubles when an insertion collision occurs at or beyond two-thirds
+occupancy. This is a target, not a hard occupancy ceiling: an insertion that
+does not collide can take the table above two-thirds. Deleted entries join a
+freelist whose link is encoded as an integer, allowing the entry allocation
+to be reused without storing a pointer in every entry.
+
+On 64-bit builds, the singleton arena slot is one 16-byte compact C<HE>.
+Including the common 24-byte C<HV> and 32-byte C<XPVHV>, its structural
+total is 72 bytes. The promoted open-addressed form has 24 bytes of metadata
+before the entry-identifier array in the same allocation. Its index slots use
+one, two, or four bytes as the identifier widens. The linear form has no
+index allocation or metadata header. This design does not enlarge the C<HV>
+or C<XPVHV> structure. The original chained representation used a 24-byte
+C<HE> on 64-bit builds; these sizes depend on pointer width.
+
+This separates probe-table growth from entry growth. It avoids moving live
+entry records when the slot table expands and keeps the per-slot index small.
+The trade-off is that a lookup follows an index identifier to an entry and
+then reaches its C<HEK> to check the cached hash and key. Deletion and
+iteration must maintain entry allocation and slot state together.
+
+=head1 API AND ABI COMPATIBILITY
+
+The Perl-level hash behavior remains the compatibility target: key identity,
+iteration, deletion, tied magic, restricted keys, and value lifetime must
+continue to follow existing rules.
+
+The C API exposes more than Perl-level behavior. C<hv_fetch()> and related
+functions return an C<SV **> that points to a value field. That field is
+inside the entry record. Growing the contiguous entry array relocates that
+record and invalidates a previously returned C<SV **>. In the optional
+headerless linear mode, deletion shifts later records and invalidates their
+pointers too. Reacquire returned C<HE *> and C<SV **> pointers after these
+mutations. XS code that saved such a pointer across growth or deletion may
+need changes. Perl-level lvalue references do not have the same problem
+because they refer to the value SV, not its slot.
+
+The C<HE *> interface is more sensitive. Public macros such as C<HeVAL()> and
+C<HeKEY()> expose entry fields, and hash iteration APIs can expose entries to
+XS code. Code that saves an C<HE *> across mutation may depend on a stable
+address. A compact entry in a relocatable array cannot provide that stability
+by itself; reacquire it after entry-array growth or deletion from linear
+storage. The tied-fetch pool uses a standalone 16-byte arena C<HE>; when
+retired, its link is stored in the value union. The shared-key C<PL_strtab>
+uses a separate C<shared_he> container, whose link is accessed through
+C<HeSHARED_NEXT()>.
+
+C<HeNEXT()> was a public macro for following chained entries. Ordinary hash
+entries have no chain link, and the macro has no hash argument that can
+identify the entry kind. The macro is therefore removed. C<HeSHARED_NEXT()>
+applies to entries in the shared-key table container, not ordinary hash
+entries. This is a source compatibility change for XS code that used
+C<HeNEXT()>. New code should use the hash-aware entry index macros
+C<HvENTRY_LIMIT()>, C<HvENTRY_FIRST()>, and C<HvENTRY_NEXT()>, or the
+iterator APIs.
+
+C<HvMAX(hv)> is no longer an lvalue. XS code that wrote it must use
+C<HvMAX_SET(hv, max)> for indexed storage or
+C<HvMAX_SET_LINEAR(hv, capacity)> for headerless linear storage. The raw
+C<xhv_max> field contains the linear-mode tag and must not be written
+directly. C<HvIS_OA(hv)> identifies the compact non-strtab hash family,
+including headerless linear hashes; C<Hash::Util::hash_storage_info()> uses
+C<open_addressed> for actual index allocation and C<linear> for the
+headerless form.
+
+Any change to C<HE>, C<HV>, or the C<hv_fetch()> contract can affect XS and
+embedding code even when Perl-level tests pass. Review generated API
+documentation, existing extensions, and the source compatibility surface
+before treating the experiment as a settled ABI.
+
+=head1 VALIDATION
+
+F<t/op/hash-oa.t> covers repeated insert/delete reuse, binary and UTF-8 keys,
+iteration while deleting, restricted hashes, tied hashes, destructor
+reentrancy during replace/delete/clear, lvalue references retained through
+growth, optional thread cloning, independent index and entry growth, free-list
+reuse, and tombstone rebuilding. The focused XS hash tests also exercise
+collision-triggered growth using keys selected by their computed homes.
+
+F<Porting/bench-hash-oa.pl> runs each workload in a fresh process and reports
+CSV fields for interpreter version, operation, size, repetitions, operations,
+elapsed seconds, seconds per batch, seconds per operation, peak resident
+memory in KiB where Linux procfs is available, and final key count. Small and
+medium sizes target about 100,000 operations. The one-million-entry workloads
+use three batches. Each batch is measured separately, with input table setup
+outside the timed region. A group shares one timer across up to about 100
+entries, limiting clock-call overhead for small hashes while keeping temporary
+hashes small. Per-operation times include Perl loop and key-access overhead.
+Churn counts a delete and an insert as two operations. The high-hole workload
+deletes 90 percent of a populated table. The keys/values/each high-hole cases
+delete before timing and divide iteration time by the remaining live entries.
+Tombstone churn repeatedly replaces all live keys while retaining the same
+live count. Both current RSS and peak RSS are recorded, showing the process
+footprint after deletion beside its high-water mark.
+
+When C<Hash::Util::hash_storage_info()> is available, the CSV includes live
+entries, index and entry capacities, tombstones, entry and freelist usage,
+probe counts, requested bytes, and allocator bytes. The baseline requested
+byte count includes live C<HE> records and the bucket array, but excludes
+arena slack. Its allocator-bytes field is zero because the baseline chained
+C<HE> records come from Perl's shared HE arena. The open-addressed allocator
+count uses glibc C<malloc_usable_size()> for both the index allocation,
+including its metadata
+header and slots, and the entry allocation. Its requested-byte fields break
+out metadata, index, and entry storage. Process RSS includes benchmark keys
+and values, plus the small number of hashes in the current timing group. Read
+it separately from table
+allocation figures. The traversal cases measure C<keys>, C<values>, and
+C<each> separately. Insert timings cover all entries in a fresh hash and
+include any table growth; the separate growth-event workloads time a single
+index or entry-capacity transition. The legacy build reports entry-vector
+growth as unsupported because it has no separately growing vector.
+
+In the tiny form, including empty and singleton hashes, C<linear> is true and
+C<open_addressed> is false.
+Index capacity, index allocation, hash storage, tombstones, freelist, and
+probe counts are zero. Entry bytes and requested bytes describe only the
+dense HE array; C<entry_used> is the live count and C<entry_spare> is the
+remaining capacity. Promotion switches these fields to indexed storage.
+The singleton state is reported separately by C<arena_backed>; its entry
+bytes describe the compact HE arena slot, with C<arena_slot_size> equal to
+C<he_size>. An empty hash reports zero entry bytes
+and a null entry address, including after C<keys>, C<each>, or C<clear>.
+
+F<Porting/bench-hash-oa-compare.py> runs baseline and candidate workers in
+paired trials, uses the same deterministic C<PERL_HASH_SEED> in each pair,
+randomizes which interpreter runs first, and writes raw CSV, a JSON summary,
+and JSON metadata. Metadata records the Perl executable digest, source
+revision and dirty state, compiler/configuration flags, CPU, kernel, input
+sizes, trial count, driver seed, worker/driver digests, and source diffs
+where a Git source tree is available. An archived build without Git metadata
+is identified by binary digest and marked as lacking a source diff. Each
+run also records the selected candidate C<PERL_HASH_LINEAR_MAX> value. Each
+paired trial uses a common hash seed and a
+separate query seed; run order is randomized. The random-hit
+case shuffles its query keys before timing. Default sizes include every size
+from 1 through 32 plus 128, 1,000, 10,000, 100,000, and 1,000,000. Use
+C<--sizes> and C<--workloads> to select a smaller run. For example:
+
+  python3 Porting/bench-hash-oa-compare.py \
+    --baseline /path/to/original/perl \
+    --candidate /path/to/oa/perl \
+    --outputdir /path/to/results
+
+Use C<--linear-max 0>, C<--linear-max 2>, C<--linear-max 4>, or
+C<--linear-max 8> to set C<PERL_HASH_LINEAR_MAX> for the candidate process.
+The driver unsets this variable for the baseline. The selected mode is
+recorded in the output metadata and raw CSV.
+
+Summary speedup is baseline nanoseconds per operation divided by candidate
+nanoseconds per operation, so values above one favor the candidate. It gives
+the median and observed minimum/maximum across paired trials. Growth-event
+rows report the start live count for every timed sample and the before/after
+capacity transitions. A speed ratio is included only when both builds
+measure all samples at the same live counts. Memory summaries include
+requested bytes and peak RSS per live entry, along
+with allocator bytes per live entry; candidate allocator bytes sum
+C<malloc_usable_size()> for index and entry allocations where available.
+The baseline allocator count is zero because its hash entries are arena
+cells, not standalone allocations. Process RSS includes Perl, keys, values,
+and setup; RSS per live entry is dominated by interpreter and input
+overhead at small table sizes. Use the requested-allocation fields to compare
+hash storage directly. Per-operation
+timings still include Perl loop and key-access overhead. Results are specific
+to the recorded host and build and do not establish performance on other
+platforms or workloads.
+
+The final HE16 tree passed C<TEST_JOBS=4 make -j4 test_harness>: 3,156 files
+and 1,449,666 tests passed in 744 seconds. This includes F<t/porting/podcheck.t>
+and the benchmark-script porting checks. The final 64-bit, non-threaded
+DEBUGGING ASan/LSan run used C<PERL_DESTRUCT_LEVEL=2> and
+C<ASAN_OPTIONS=detect_leaks=1:abort_on_error=1>; all five focused files and
+1,597 tests passed without sanitizer reports. Logs are in
+F<tmp/hash-oa-he16-full.log> and F<tmp/hash-oa-he16-lsan.log>.
+
+=head1 MEASURED RESULTS
+
+Measurements compare the original chained hash with the experimental compact
+hash on Linux x86_64, kernel C<7.0.0-42-generic>, using an Intel Core
+i7-1185G7. The final candidate uses C<PERL_HASH_LINEAR_MAX=4>, compact 16-byte
+C<HE> records, and an identifier-only index. Both builds use Perl v5.45.5,
+GCC 13.3.0, C<-O3>, and no threads.
+
+=head2 Small-hash storage
+
+The table gives requested hash storage plus the common 24-byte C<HV> and
+32-byte C<XPVHV>. It excludes keys, values, allocator rounding, and shared
+arena slack.
+
+  N   Original bytes  K4 bytes
+  0          56           56
+  1         144           72
+  2         168           88
+  3         192          120
+  4         216          120
+  5         240          168
+  6         264          192
+  7         352          208
+  8         376          224
+  9         400          240
+ 10         424          256
+ 11         576          304
+ 12         600          304
+ 13         624          336
+ 14         648          336
+ 15         672          368
+ 16         696          368
+
+The K4 representation uses one arena-backed 16-byte C<HE> for a singleton,
+then a dense vector through four entries. At five entries it promotes to the
+indexed form. These counts show the storage estimate; process RSS at tiny
+sizes is dominated by Perl and the benchmark's key/value arrays.
+
+=head2 Controlled small-hash lookup timings
+
+Each process pinned itself to CPU 0, warmed the exact measured loop for 0.5
+seconds, then performed two million lookups. The run used seven randomized
+baseline/candidate pairs per size and recorded hit and no-hash control
+workers for both builds. CPU frequency samples ranged from 2.90 to 3.10 GHz;
+the paired control medians were close at every size.
+
+  N   Original ns  K4 ns  Baseline/K4 [observed range]
+  0       54.2      53.8   1.008 [0.935-1.054]
+  1       73.0      76.2   0.962 [0.913-1.011]
+  2       75.5      83.7   0.891 [0.825-1.019]
+  3       74.0      85.8   0.851 [0.828-1.039]
+  4       78.3      87.3   0.884 [0.801-1.007]
+  5       77.1      82.5   0.940 [0.872-0.956]
+  6       78.6      82.1   0.941 [0.915-1.060]
+  7       80.1      83.9   0.941 [0.890-0.990]
+  8       75.4      81.4   0.954 [0.890-0.965]
+  9       77.9      84.9   0.936 [0.888-0.980]
+ 10       75.5      81.5   0.932 [0.872-0.939]
+ 11       80.4      80.2   0.977 [0.855-1.065]
+ 12       79.0      84.7   0.932 [0.895-1.027]
+ 13       78.0      83.2   0.935 [0.829-0.962]
+ 14       76.2      83.0   0.914 [0.890-0.964]
+ 15       79.0      84.8   0.943 [0.905-0.986]
+ 16       81.2      82.9   0.943 [0.885-1.043]
+
+The ratios compare baseline time with candidate time; values below one mean
+the candidate was slower. The table suggests lookup costs are often higher
+for K4 on these short keys, while several paired ranges include parity. The
+control loop medians ranged from 39.1 to 40.6 ns for the baseline and 39.1 to
+41.6 ns for the candidate. These results are specific to this key pattern
+and host, and do not establish a general small-hash lookup cost.
+
+Reproduce with:
+
+    python3 Porting/bench-hash-oa-lookup-compare.py \
+        --baseline /path/to/original/perl \
+        --candidate ./perl \
+        --outputdir ../tmp/hash-oa-flat-lookup-he16-warmup-k4 \
+        --sizes 0-16 --trials 7 --lookups 2000000 \
+        --seed 20261031 --linear-max 4 \
+        --warmup-seconds 0.5 --cpu 0
+
+The raw CSV, JSON summary, metadata, and source patches are in
+F<tmp/hash-oa-flat-lookup-he16-warmup-k4/>. This candidate executable has
+SHA-256 C<3f0f8a59392d1cbb710e114b7f1d9aca27c9d4e9e1d1c0241afd9aee70c453a>.
+
+=head2 Large-table results
+
+The large comparison used three randomized paired trials at 1,000, 10,000,
+100,000, and 1,000,000 entries. It measured hits, shuffled hits, misses,
+insertion, deletion, churn, C<keys>, C<values>, and C<each>. These are batch
+costs including Perl loop overhead. The 1M medians and observed paired ranges
+were:
+
+  Workload     Original ns/op  K4 ns/op  Speedup
+  hit                  449        241   1.86 [1.85-1.92]
+  random-hit           881        905   0.98 [0.96-0.99]
+  miss                 253        223   1.13 [1.09-1.13]
+  insert               478        360   1.33 [1.33-1.33]
+  delete                326        249   1.29 [1.28-1.34]
+  churn                 418        355   1.17 [1.16-1.18]
+  keys                  165         49   3.37 [3.24-3.44]
+  values                145         25   5.76 [5.18-6.21]
+  each                  584        107   5.41 [5.31-5.46]
+
+At 1,000 entries, hit and churn were 0.89 and 0.80 times baseline, while
+C<keys> and C<values> were 1.26 and 1.39 times faster. At 10,000 entries,
+C<keys>, C<values>, and C<each> were 1.31, 1.40, and 1.23 times faster;
+churn was 0.70 times baseline. At 100,000 entries, traversal improved 1.92,
+2.20, and 3.17 times for C<keys>, C<values>, and C<each>.
+
+For the successful-lookup process, requested table bytes per live entry and
+current process RSS were:
+
+  N          Requested bytes/live  Current RSS KiB
+             Original  K4          Original  K4
+  1,000        40.38  21.90          10,320  11,224
+  10,000       37.11  22.26          15,424  16,160
+  100,000      44.97  27.41          70,672  69,964
+  1,000,000    40.78  26.50         615,080 605,996
+
+At one million entries, the K4 index has 2,097,152 slots with four-byte
+identifiers. It uses 8,388,632 index bytes and 18,108,064 entry bytes, for
+26,496,696 requested bytes total. The original diagnostic estimates
+40,777,216 bytes; its arena allocation cannot be attributed per hash. The
+candidate glibc allocator usable size was 26,496,704 bytes. Current RSS was
+about 9 MiB lower for the candidate at 1M, and slightly higher in the
+1,000- and 10,000-entry processes. The run predates the singleton-slot
+change, but all measured hashes had at least 1,000 entries.
+
+The large run's raw CSV, summaries, source patches, and build metadata are in
+F<tmp/hash-oa-final-k4-index-only-vs-original/>. Candidate executable
+SHA-256: C<aeec7f784c64f268218b0d7f6d985fbf520926ee79d3d31e31419d338ab10f9a>.
+
+=head1 LIMITS AND FOLLOW-UP
+
+The process-wide C<PL_strtab> remains a chained legacy hash. Ordinary hash
+entry identifiers use adaptive one-, two-, or four-byte widths; the slot
+index is limited to 2^26 slots. Deleted entries
+are reused, but the entry vector does not shrink or compact after heavy
+deletion; iteration therefore scans up to its historical high-water mark.
+With the default C<PERL_HASH_LINEAR_MAX=0>, the indexed form has a minimum
+entry capacity of eight, adding fixed table storage for tiny hashes. A
+positive linear threshold avoids this index allocation for small hashes but
+uses linear lookup and shifts entries on deletion. Repeated lookup and
+replacement also pay for key-copy and
+compatibility guards needed for magic and reentrant mutation. The earlier
+64-bit inline-hash comparison showed substantial lookup and iteration gains
+at one million entries, but insertion and deletion regressions through 1,000
+entries. More
+workloads and platforms are needed before generalizing these results.
+
+The historical measurements are for 64-bit builds. On a 32-bit build, the
+legacy representation uses a 12-byte C<HE> and 4-byte bucket pointer, while
+the compact entry is 8 bytes. The current adaptive index adds one, two, or
+four bytes per slot, depending on identifier width. The 64-bit measurements
+do not imply a 32-bit memory win.
+The shared C<HEK> layout retains the legacy key offset.
+
+XS code must not retain C<HE *> or C<SV **> addresses across a hash growth.
+The original chained implementation's HE arena has shared allocation slack
+that cannot be attributed to one hash by the current diagnostics. It also
+retains freed arena cells, so
+the baseline live-cell estimate is a lower bound on retained memory after
+deletion; compare current process RSS for that case. Candidate allocator
+bytes report usable capacity for the index and entry allocations, but exclude
+allocator metadata stored outside those blocks.
+
+C<Cpanel::JSON::XS> canonical encoding is a concrete compatibility case.
+When C<TO_JSON> callbacks run during encoding, they can mutate and grow the
+source hash while the encoder is using its entries. The encoder now snapshots
+the original entries into standalone C<HE>/C<HEK> records and retains the
+key/value SVs before calling callbacks. This preserves the original canonical
+key/value set across reentrant mutation and avoids retaining pointers into a
+relocating entry array. The snapshot adds per-entry allocation, key-copy, and
+reference-counting costs to canonical encoding; the regression test exercises
+mutation, growth, and callback exceptions.
+
+=cut

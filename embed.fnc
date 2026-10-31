@@ -2172,6 +2172,7 @@ Adp	|void	|hv_name_set	|NN HV *hv				\
 				|NULLOK const char *name		\
 				|U32 len				\
 				|U32 flags
+CRdp	|HE *	|hv_new_he
 CRdop	|I32	|hv_placeholders_get					\
 				|NN const HV *hv
 RXop	|SSize_t *|hv_placeholders_p					\
@@ -2181,8 +2182,6 @@ Cdop	|void	|hv_placeholders_set					\
 				|I32 ph
 p	|void	|hv_pushkv	|NN HV *hv				\
 				|U32 flags
-Cp	|void	|hv_rand_set	|NN HV *hv				\
-				|U32 new_xhv_rand
 CRdop	|I32 *	|hv_riter_p	|NN HV *hv
 Cdop	|void	|hv_riter_set	|NN HV *hv				\
 				|I32 riter

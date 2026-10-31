@@ -52,6 +52,10 @@
 #   undef HASATTRIBUTE_UNINITIALIZED
 #   undef HvAUXf_IS_CLASS_SEALED
 #   undef HvAUXf_IS_ROLE
+#   undef HvAUXf_ITER_ACTIVE
+#   undef HvAUXf_ITER_INSERTED
+#   undef HvENTRY_INDEX
+#   undef HvENTRY_SVP
 #   undef HvSTASH_IS_CLASS_OR_ROLE
 #   undef HvSTASH_IS_CLASS_SEALED
 #   undef HvSTASH_IS_ROLE
@@ -387,7 +391,7 @@
 # define hv_iterval(a,b)                        Perl_hv_iterval(aTHX_ a,b)
 # define hv_ksplit(a,b)                         Perl_hv_ksplit(aTHX_ a,b)
 # define hv_name_set(a,b,c,d)                   Perl_hv_name_set(aTHX_ a,b,c,d)
-# define hv_rand_set(a,b)                       Perl_hv_rand_set(aTHX_ a,b)
+# define hv_new_he()                            Perl_hv_new_he(aTHX)
 # define hv_scalar(a)                           Perl_hv_scalar(aTHX_ a)
 # define init_i18nl10n(a)                       Perl_init_i18nl10n(aTHX_ a)
 # define init_stacks()                          Perl_init_stacks(aTHX)

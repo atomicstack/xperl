@@ -1320,7 +1320,7 @@ Perl_sv_upgrade(pTHX_ SV *const sv, svtype new_type)
                     .xmg_u = {.xmg_magic = NULL},
                     .xhv_keys = 0,
                     /* start with PERL_HASH_DEFAULT_HvMAX+1 buckets: */
-                    .xhv_max = PERL_HASH_DEFAULT_HvMAX
+                    .xhv_max = PERL_HASH_DEFAULT_HvMAX,
                 };
                 *((XPVHV*) SvANY(sv)) = pvhv;
             }
@@ -8036,7 +8036,7 @@ Perl_sv_clear(pTHX_ SV *const orig_sv)
         case SVt_PVLV:
             if (LvTYPE(sv) == 'T') { /* for tie: return HE to pool */
                 SvREFCNT_dec(HeKEY_sv((HE*)LvTARG(sv)));
-                HeNEXT((HE*)LvTARG(sv)) = PL_hv_fetch_ent_mh;
+                HePOOL_NEXT((HE*)LvTARG(sv)) = PL_hv_fetch_ent_mh;
                 PL_hv_fetch_ent_mh = (HE*)LvTARG(sv);
             }
             else if (LvTYPE(sv) != 't') /* unless tie: unrefcnted fake SV**  */
@@ -11726,11 +11726,11 @@ Perl_sv_resetpvn(pTHX_ const char *s, STRLEN len, HV * const stash)
         for ( ; i <= max; i++) {
             todo[i] = 1;
         }
-        for (i = 0; i <= (I32) HvMAX(stash); i++) {
+        for (i = 0; i < (I32) HvENTRY_LIMIT(stash); i++) {
             HE *entry;
-            for (entry = HvARRAY(stash)[i];
+            for (entry = HvENTRY_FIRST(stash, i);
                  entry;
-                 entry = HeNEXT(entry))
+                 entry = HvENTRY_NEXT(stash, entry))
             {
                 GV *gv;
                 SV *sv;
@@ -16108,6 +16108,42 @@ S_sv_dup_inc_multiple(pTHX_ SV *const *source, SV **dest,
     return dest;
 }
 
+/* Duplicate a compact OA entry.  The caller records the entry mapping before
+ * duplicating keys or values, so recursive references to the containing HV
+ * can find the destination entry. */
+static void
+S_sv_dup_oa_entry(pTHX_ const HE *source, HE *dest,
+                  CLONE_PARAMS *const param)
+{
+    if (HeKLEN(source) == HEf_SVKEY) {
+        char *key;
+        HEK *hek;
+        Newx(key, HEK_BASESIZE + sizeof(const SV *), char);
+        hek = (HEK *)key;
+        HEK_LEN(hek) = HEf_SVKEY;
+        HEK_HASH(hek) = HeHASH(source);
+        HeKEY_hek(dest) = hek;
+        HeKEY_sv(dest) = sv_dup_inc(HeKEY_sv(source), param);
+    }
+    else if (!(HeKFLAGS(source) & HVhek_NOTSHARED))
+        HeKEY_hek(dest) = hek_dup(HeKEY_hek(source), param);
+    else {
+        const I32 len = HeKLEN(source);
+        char *key;
+        HEK *hek;
+        Newx(key, HEK_BASESIZE + len + 2, char);
+        hek = (HEK *)key;
+        Copy(HeKEY(source), HEK_KEY(hek), len, char);
+        HEK_KEY(hek)[len] = '\0';
+        HEK_LEN(hek) = len;
+        HEK_HASH(hek) = HeHASH(source);
+        HEK_FLAGS(hek) = HVhek_NOTSHARED
+                       | (HeKFLAGS(source) & (0xFF & ~HVhek_NOTSHARED));
+        HeKEY_hek(dest) = hek;
+    }
+    HeVAL(dest) = sv_dup_inc(HeVAL(source), param);
+}
+
 /* duplicate the HvAUX of an HV */
 static void
 S_sv_dup_hvaux(pTHX_ const SV *const ssv, SV *dsv, CLONE_PARAMS *const param)
@@ -16139,12 +16175,27 @@ S_sv_dup_hvaux(pTHX_ const SV *const ssv, SV *dsv, CLONE_PARAMS *const param)
     daux->xhv_name_count = saux->xhv_name_count;
 
     daux->xhv_aux_flags = saux->xhv_aux_flags;
-#ifdef PERL_HASH_RANDOMIZE_KEYS
-    daux->xhv_rand = saux->xhv_rand;
-    daux->xhv_last_rand = saux->xhv_last_rand;
-#endif
     daux->xhv_riter = saux->xhv_riter;
-    daux->xhv_eiter = saux->xhv_eiter ? he_dup(saux->xhv_eiter, FALSE, param) : 0;
+    if (saux->xhv_eiter) {
+        U32 eiter_index;
+        bool mapped = HvENTRY_INDEX(ssv, &HeVAL(saux->xhv_eiter),
+                                     eiter_index);
+        PERL_UNUSED_VAR(eiter_index);
+        if (HvIS_LINEAR(ssv)) {
+            const UV base = PTR2UV(HvENTRIES(ssv));
+            const UV eiter = PTR2UV(saux->xhv_eiter);
+            const UV bytes = (UV)HvTOTALKEYS(ssv) * sizeof(HE);
+            mapped = eiter >= base && eiter - base < bytes
+                && (eiter - base) % sizeof(HE) == 0;
+        }
+        if (mapped)
+            daux->xhv_eiter = (HE *)ptr_table_fetch(PL_ptr_table,
+                                                    saux->xhv_eiter);
+        else
+            daux->xhv_eiter = he_dup(saux->xhv_eiter, FALSE, param);
+    }
+    else
+        daux->xhv_eiter = NULL;
     /* backref array needs refcnt=2; see sv_add_backref */
     daux->xhv_backreferences =
         (param->flags & CLONEf_JOIN_IN)
@@ -16493,21 +16544,97 @@ S_sv_dup_common(pTHX_ const SV *const ssv, CLONE_PARAMS *const param)
                     STRLEN i = 0;
                     XPVHV * const dxhv = (XPVHV*)SvANY(dsv);
                     XPVHV * const sxhv = (XPVHV*)SvANY(ssv);
-                    char *darray;
-                    Newx(darray, PERL_HV_ARRAY_ALLOC_BYTES(dxhv->xhv_max+1),
-                        char);
-                    HvARRAY(dsv) = (HE**)darray;
-                    while (i <= sxhv->xhv_max) {
-                        const HE * const source = HvARRAY(ssv)[i];
-                        HvARRAY(dsv)[i] = source
-                            ? he_dup(source, FALSE, param) : 0;
-                        ++i;
+                    if (HvIS_LINEAR(ssv)) {
+                        const U32 capacity = HvLINEAR_CAP(ssv);
+                        if (capacity == 1 && HvTOTALKEYS(ssv) == 1) {
+                            HE *entry = Perl_hv_new_he(aTHX);
+                            HvARRAY(dsv) = (HE **)entry;
+                            ptr_table_store(PL_ptr_table, HvENTRIES(ssv), entry);
+                            ptr_table_store(PL_ptr_table,
+                                &HeVAL(HvENTRIES(ssv)), &HeVAL(entry));
+                            S_sv_dup_oa_entry(aTHX_ HvENTRIES(ssv), entry,
+                                              param);
+                        }
+                        else if (capacity >= 2) {
+                            HE *entries;
+                            Newxz(entries, capacity, HE);
+                            HvARRAY(dsv) = (HE **)entries;
+                            for (i = 0; i < HvTOTALKEYS(ssv); ++i) {
+                                ptr_table_store(PL_ptr_table,
+                                    &HvENTRIES(ssv)[i], &entries[i]);
+                                ptr_table_store(PL_ptr_table,
+                                    &HeVAL(&HvENTRIES(ssv)[i]),
+                                    &HeVAL(&entries[i]));
+                            }
+                            for (i = 0; i < HvTOTALKEYS(ssv); ++i)
+                                S_sv_dup_oa_entry(aTHX_ &HvENTRIES(ssv)[i],
+                                                  &entries[i], param);
+                        }
+                        else {
+                            HvARRAY(dsv) = NULL;
+                        }
                     }
-                    if (HvHasAUX(ssv))
-                        sv_dup_hvaux(ssv, dsv, param);
+                    else if (HvIS_OA(ssv)) {
+                        struct hv_oa *oa;
+                        char *oa_bytes;
+                        const struct hv_oa * const soa = HvOA(ssv);
+                        const U32 used = soa->used;
+                        const U32 index_capacity = HvMAX(ssv) + 1;
+                        const size_t index_bytes = STRUCT_OFFSET(struct hv_oa,
+                            indices) + HvOA_INDEX_BYTES_FOR(index_capacity);
+                        Newx(oa_bytes, index_bytes, char);
+                        oa = (struct hv_oa *)oa_bytes;
+                        oa->capacity = soa->capacity;
+                        oa->used = used;
+                        oa->free_head = soa->free_head;
+                        oa->tombstones = soa->tombstones;
+                        oa->entries = NULL;
+                        HvARRAY(dsv) = (HE **)oa;
+                        if (soa->capacity) {
+                            Newxz(oa->entries, soa->capacity, HE);
+                        }
+                        if (used) {
+                            for (i = 0; i < used; ++i) {
+                                const HE *source = &soa->entries[i];
+                                HE *dest = &oa->entries[i];
+                                if (!HeKEY_hek(source)) {
+                                    HeNEXT_FREE(dest) = HeNEXT_FREE(source);
+                                    continue;
+                                }
+                                ptr_table_store(PL_ptr_table, source, dest);
+                                ptr_table_store(PL_ptr_table,
+                                    &HeVAL(source), &HeVAL(dest));
+                            }
+                            for (i = 0; i < used; ++i) {
+                                const HE *source = &soa->entries[i];
+                                if (HeKEY_hek(source))
+                                    S_sv_dup_oa_entry(aTHX_ source,
+                                        &oa->entries[i], param);
+                            }
+                        }
+                        {
+                            U32 pos;
+                            for (pos = 0; pos < index_capacity; ++pos)
+                                HvOA_INDEX_SET(dsv, pos,
+                                               HvOA_INDEX_GET(ssv, pos));
+                        }
+                    }
+                    else {
+                        char *darray;
+                        Newx(darray, PERL_HV_ARRAY_ALLOC_BYTES(dxhv->xhv_max+1), char);
+                        HvARRAY(dsv) = (HE**)darray;
+                        while (i <= sxhv->xhv_max) {
+                            const HE * const source = HvARRAY(ssv)[i];
+                            HvARRAY(dsv)[i] = source
+                                ? he_dup(source, FALSE, param) : 0;
+                            ++i;
+                        }
+                    }
                 }
                 else
                     HvARRAY(MUTABLE_HV(dsv)) = NULL;
+                if (HvHasAUX(ssv))
+                    sv_dup_hvaux(ssv, dsv, param);
                 break;
             case SVt_PVCV:
                 if (!(param->flags & CLONEf_COPY_STACKS)) {
@@ -17524,6 +17651,7 @@ perl_clone_using(PerlInterpreter *proto_perl, UV flags,
     PL_rng_U01_state    = NULL;
     PL_srand_override   = proto_perl->Isrand_override;
     PL_srand_override_next = proto_perl->Isrand_override_next;
+    PL_hash_linear_max  = proto_perl->Ihash_linear_max;
 
     if (flags & CLONEf_COPY_STACKS) {
         /* next allocation will be PL_tmps_stack[PL_tmps_ix+1] */
@@ -18400,8 +18528,7 @@ S_find_hash_subscript(pTHX_ const HV *const hv, const SV *const val)
 {
     PERL_ARGS_ASSERT_FIND_HASH_SUBSCRIPT;
 
-    HE **array;
-    I32 i;
+    STRLEN i;
 
     if (!hv || SvMAGICAL(hv) || !HvTOTALKEYS(hv) ||
                         (HvTOTALKEYS(hv) > FUV_MAX_SEARCH_SIZE))
@@ -18410,11 +18537,10 @@ S_find_hash_subscript(pTHX_ const HV *const hv, const SV *const val)
     if (val == &PL_sv_undef || val == &PL_sv_placeholder)
         return NULL;
 
-    array = HvARRAY(hv);
-
-    for (i=HvMAX(hv); i>=0; i--) {
+    for (i=0; i<HvENTRY_LIMIT(hv); i++) {
         HE *entry;
-        for (entry = array[i]; entry; entry = HeNEXT(entry)) {
+        for (entry = HvENTRY_FIRST(hv, i); entry;
+             entry = HvENTRY_NEXT(hv, entry)) {
             if (HeVAL(entry) == val)
                 return newSVhek_mortal(HeKEY_hek(entry));
         }

@@ -783,6 +783,7 @@ cpan/Cpanel-JSON-XS/t/98_56only.t									Cpanel-JSON-XS
 cpan/Cpanel-JSON-XS/t/99_binary.t									Cpanel-JSON-XS
 cpan/Cpanel-JSON-XS/t/_unicode_handling.pm								Cpanel-JSON-XS
 cpan/Cpanel-JSON-XS/t/appveyor-test.bat									Cpanel-JSON-XS
+cpan/Cpanel-JSON-XS/t/compact-hash.t									Test canonical encoding across hash relocation
 cpan/Cpanel-JSON-XS/t/test_parsing/i_number_neg_int_huge_exp.json					Cpanel-JSON-XS
 cpan/Cpanel-JSON-XS/t/test_parsing/i_number_pos_double_huge_exp.json					Cpanel-JSON-XS
 cpan/Cpanel-JSON-XS/t/test_parsing/i_object_key_lone_2nd_surrogate.json					Cpanel-JSON-XS
@@ -5428,6 +5429,7 @@ ext/Hash-Util/Changes			Change history of Hash::Util
 ext/Hash-Util/lib/Hash/Util.pm		Hash::Util
 ext/Hash-Util/Makefile.PL		Makefile for Hash::Util
 ext/Hash-Util/t/builtin.t		See if Hash::Util builtin exports work as expected
+ext/Hash-Util/t/storage.t		Test compact hash storage diagnostics
 ext/Hash-Util/t/Util.t			See if Hash::Util works
 ext/Hash-Util/Util.xs			XS bits of Hash::Util
 ext/Hash-Util-FieldHash/Changes				Changes for Hash::Util::FieldHash
@@ -6611,6 +6613,10 @@ Porting/add-pod-file				Utility to add new pod/*.pod file to core distribution
 Porting/bench.pl				Run benchmarks against t/perf/benchmarks
 Porting/bench-class-value.pl			Class, Moo, and bless benchmark worker
 Porting/bench-class-value.py			Run isolated object performance comparisons
+Porting/bench-hash-oa.pl			Benchmark experimental hash storage
+Porting/bench-hash-oa-compare.py		Run paired hash storage benchmarks
+Porting/bench-hash-oa-lookup.pl			Benchmark flat hash lookups and storage
+Porting/bench-hash-oa-lookup-compare.py		Run paired flat hash lookup benchmarks
 Porting/bench-trie.pl				Compare trie corpus scans across Perl builds
 Porting/bisect.pl				A tool to make bisecting easy
 Porting/bisect-example.sh			Example script to use with git bisect run
@@ -6656,6 +6662,7 @@ Porting/git-find-p4-change			Find the change for a p4 change number
 Porting/git-make-p4-refs			Output git refs for each p4 change number, suitable for appending to .git/packed-refs
 Porting/Glossary				Glossary of config.sh variables
 Porting/harness-timer-report.pl			Analyze the timings from the test harness
+Porting/hash-oa-design.pod			Experimental hash storage design and results
 Porting/how_to_write_a_perldelta.pod		Bluffer's guide to writing a perldelta.
 Porting/leakfinder.pl				Hacky script for finding memory leaks
 Porting/Maintainers				Program to pretty print info in Maintainers.pl
@@ -7143,6 +7150,8 @@ t/op/gv.t				See if typeglobs work
 t/op/hash.t				See if the complexity attackers are repelled
 t/op/hash-clear-placeholders.t		Tests for corner cases in S_clear_placeholders
 t/op/hash-iteration-gh11157.t		See if hash iteration/deletion works
+t/op/hash-oa.t				Test experimental hash storage behavior
+t/op/hash-oa-localize.t			Test hash relocation during localization
 t/op/hashassign.t			See if hash assignments work
 t/op/hashwarn.t				See if warnings for bad hash assignments work
 t/op/heredoc.t				See if heredoc edge and corner cases work

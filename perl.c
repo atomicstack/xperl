@@ -276,6 +276,16 @@ perl_construct(pTHXx)
 #endif
     PL_curcop = &PL_compiling;	/* needed by ckWARN, right away */
 
+    /* Select the optional dense representation before creating ordinary
+     * hashes. Invalid values leave the default indexed representation on. */
+    {
+        const char *linear_max = PerlEnv_getenv("PERL_HASH_LINEAR_MAX");
+        PL_hash_linear_max = linear_max && linear_max[1] == '\0'
+            && (linear_max[0] == '2' || linear_max[0] == '4'
+                || linear_max[0] == '8')
+            ? (U8)(linear_max[0] - '0') : 0;
+    }
+
 #ifdef PERL_TRACE_OPS
     Zero(PL_op_exec_cnt, OP_max+2, UV);
 #endif
@@ -504,7 +514,7 @@ perl_construct(pTHXx)
 
     PL_registered_mros = newHV();
     /* Start with 1 bucket, for DFS.  It's unlikely we'll need more.  */
-    HvMAX(PL_registered_mros) = 0;
+    HvMAX_SET(PL_registered_mros, 0);
 
     PL_valuemagic_annotations = NULL;
 
@@ -1439,7 +1449,7 @@ perl_destruct(pTHXx)
 
         for (;;) {
             if (hent && ckWARN_d(WARN_INTERNAL)) {
-                HE * const next = HeNEXT(hent);
+                HE * const next = HeSHARED_NEXT(hent);
                 PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SHARED_STRING_RETAINED((long)hent->he_valu.hent_refcount, HeKEY(hent));
                 Safefree(hent);
                 hent = next;
@@ -2114,15 +2124,6 @@ S_Internals_V(pTHX_ CV *cv)
 #  endif
 #  ifdef PERL_OP_PARENT
                              " PERL_OP_PARENT"
-#  endif
-#  ifdef PERL_PERTURB_KEYS_DETERMINISTIC
-                             " PERL_PERTURB_KEYS_DETERMINISTIC"
-#  endif
-#  ifdef PERL_PERTURB_KEYS_DISABLED
-                             " PERL_PERTURB_KEYS_DISABLED"
-#  endif
-#  ifdef PERL_PERTURB_KEYS_RANDOM
-                             " PERL_PERTURB_KEYS_RANDOM"
 #  endif
 #  ifdef PERL_PRESERVE_IVUV
                              " PERL_PRESERVE_IVUV"
@@ -3724,8 +3725,7 @@ Perl_get_debug_opts(pTHX_ const char **s, bool givehelp)
       "  L  trace some locale setting information--for Perl core development\n",
       "  i  trace PerlIO layer processing\n",
       "  y  trace y///, tr/// compilation and execution\n",
-      "  h  Show (h)ash randomization debug output"
-                " (changes to PL_hash_rand_bits)\n",
+      "  h  Show (h)ash seed debug output\n",
       "  K  trace mutex locking (requires Configure to be passed"
                 " -Accflags=DPERL_DEBUG_MUTEXES)\n",
       NULL

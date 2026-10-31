@@ -1395,6 +1395,85 @@ he_cmp_tied (const void *a, const void *b)
   return utf16_cmp (aTHX_ HeKEY_sv (*(HE **)b), HeKEY_sv (*(HE **)a));
 }
 
+struct encode_he_snapshots {
+  HE **entries;
+  RITER_T count;
+};
+
+static void
+free_encode_he_snapshots (pTHX_ void *p)
+{
+  struct encode_he_snapshots *snapshots = (struct encode_he_snapshots *)p;
+  RITER_T i;
+
+  PERL_UNUSED_CONTEXT;
+  if (snapshots->entries)
+    {
+      for (i = 0; i < snapshots->count; i++)
+        {
+          HE *he = snapshots->entries[i];
+          if (!he)
+            continue;
+          if (he->hent_hek)
+            {
+              if (He_IS_SVKEY (he) && HeKEY_sv (he)
+                  && !SvIMMORTAL (HeKEY_sv (he)))
+                SvREFCNT_dec (HeKEY_sv (he));
+              Safefree (HeKEY_hek (he));
+            }
+          if (HeVAL (he) && !SvIMMORTAL (HeVAL (he)))
+            SvREFCNT_dec (HeVAL (he));
+          Safefree (he);
+        }
+      Safefree (snapshots->entries);
+    }
+  Safefree (snapshots);
+}
+
+static HE *
+snapshot_encode_he (pTHX_ HE *source,
+                    struct encode_he_snapshots *snapshots)
+{
+  HE *copy;
+  HEK *source_hek = HeKEY_hek (source);
+  HEK *copy_hek;
+  char *key;
+  STRLEN bytes;
+
+  Newxz (copy, 1, HE);
+  snapshots->entries[snapshots->count++] = copy;
+  if (HeVAL (source))
+    HeVAL (copy) = SvIMMORTAL (HeVAL (source))
+      ? HeVAL (source) : SvREFCNT_inc (HeVAL (source));
+
+  if (He_IS_SVKEY (source))
+    {
+      bytes = HEK_BASESIZE + sizeof (SV *) + 2;
+      Newx (key, bytes, char);
+      Zero (key, bytes, char);
+      copy_hek = (HEK *)key;
+      HEK_HASH (copy_hek) = HEK_HASH (source_hek);
+      HEK_LEN (copy_hek) = HEf_SVKEY;
+      HEK_FLAGS (copy_hek) = HEK_FLAGS (source_hek);
+      HeKEY_hek (copy) = copy_hek;
+      HeSVKEY_set (copy, SvREFCNT_inc (HeKEY_sv (source)));
+    }
+  else
+    {
+      STRLEN len = HeKLEN (source);
+      bytes = HEK_BASESIZE + len + 2;
+      Newx (key, bytes, char);
+      copy_hek = (HEK *)key;
+      HEK_HASH (copy_hek) = HEK_HASH (source_hek);
+      HEK_LEN (copy_hek) = HEK_LEN (source_hek);
+      HEK_FLAGS (copy_hek) = HEK_FLAGS (source_hek);
+      Copy (HEK_KEY (source_hek), HEK_KEY (copy_hek), len + 2, char);
+      HeKEY_hek (copy) = copy_hek;
+    }
+
+  return copy;
+}
+
 static void
 encode_hv (pTHX_ enc_t *enc, HV *hv, SV *typesv)
 {
@@ -1463,6 +1542,7 @@ encode_hv (pTHX_ enc_t *enc, HV *hv, SV *typesv)
       RITER_T i, count = hv_iterinit (hv);
       HE *hes_stack [STACK_HES];
       HE **hes = hes_stack;
+      struct encode_he_snapshots *snapshots = NULL;
       int is_tied = 0;
 
       if (SvMAGICAL (hv))
@@ -1487,8 +1567,18 @@ encode_hv (pTHX_ enc_t *enc, HV *hv, SV *typesv)
         {
           int has_utf8 = 0;
 
+          ENTER; SAVETMPS;
+
+          if (!is_tied)
+            {
+              Newxz (snapshots, 1, struct encode_he_snapshots);
+              SAVEDESTRUCTOR_X (free_encode_he_snapshots, snapshots);
+              Newx (hes, count, HE *);
+              snapshots->entries = hes;
+            }
+
           /* allocate larger arrays on the heap */
-          if (count > STACK_HES)
+          if (is_tied && count > STACK_HES)
             {
               SV *sv = sv_2mortal (NEWSV (0, count * sizeof (*hes)));
               hes = (HE **)SvPVX (sv);
@@ -1508,7 +1598,9 @@ encode_hv (pTHX_ enc_t *enc, HV *hv, SV *typesv)
                   hes[i++] = he1;
                 }
               else
-                hes[i++] = he;
+                hes[i++] = snapshot_encode_he (aTHX_ he, snapshots);
+              if (snapshots)
+                snapshots->count = i;
               /* check the SV for UTF8 and seperate use bytes handling */
               if (!has_utf8)
                 {
@@ -1596,6 +1688,7 @@ encode_hv (pTHX_ enc_t *enc, HV *hv, SV *typesv)
             }
 
           encode_nl (aTHX_ enc); --enc->indent; encode_indent (aTHX_ enc);
+          FREETMPS; LEAVE;
         }
     }
   else

@@ -2755,16 +2755,17 @@ Perl_gv_check(pTHX_ HV *stash)
 
     I32 i;
 
-    if (!HvHasAUX(stash))
+    if (!HvHasAUX(stash) || !HvTOTALKEYS(stash))
         return;
 
     assert(HvARRAY(stash));
 
     /* mark stash is being scanned, to avoid recursing */
     HvAUX(stash)->xhv_aux_flags |= HvAUXf_SCAN_STASH;
-    for (i = 0; i <= (I32) HvMAX(stash); i++) {
+    for (i = 0; i < (I32) HvENTRY_LIMIT(stash); i++) {
         const HE *entry;
-        for (entry = HvARRAY(stash)[i]; entry; entry = HeNEXT(entry)) {
+        for (entry = HvENTRY_FIRST(stash, i); entry;
+             entry = HvENTRY_NEXT(stash, entry)) {
             GV *gv;
             HV *hv;
             STRLEN keylen = HeKLEN(entry);

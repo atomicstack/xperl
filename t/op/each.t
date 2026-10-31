@@ -287,7 +287,6 @@ SKIP:{
     print "b:$warned\n";
 TEST_CODE
     local $ENV{PERL_HASH_SEED};
-    local $ENV{PERL_PERTURB_KEYS};
     fresh_perl_like($code,
             qr/\Aa:1,b:0\z/,
             undef,

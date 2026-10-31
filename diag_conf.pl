@@ -57406,9 +57406,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE",
-          "source_files" => [
-            "hv.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "condition:unavailable_unsupported",
             "subject:string_sequence_container"
@@ -91261,9 +91259,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_RUN_ENVIRONMENT_HASH_PERTURBATION_INVALID",
           "macro" => "PERL_WARN_WARNING_RUN_ENVIRONMENT_HASH_PERTURBATION_INVALID",
-          "source_files" => [
-            "util.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "condition:invalid_syntax_value_state",
             "subject:interpreter_configuration"

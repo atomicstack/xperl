@@ -4471,11 +4471,35 @@ PP(pp_helem)
         }
 
         if (localizing) {
+            U32 entry_index = 0;
+            bool is_oa_entry = FALSE;
+            const bool was_linear = HvIS_LINEAR(hv);
             if (HvNAME_get(hv) && isGV_or_RVCV(*svp))
+            {
+                is_oa_entry = HvENTRY_INDEX(hv, svp, entry_index);
                 save_gp(MUTABLE_GV(*svp), !(PL_op->op_flags & OPf_SPECIAL));
-            else if (preeminent)
+                if (was_linear) {
+                    HE *he = hv_fetch_ent(hv, keysv, 0, 0);
+                    if (!he)
+                        he = hv_fetch_ent(hv, keysv, 1, 0);
+                    svp = he ? &HeVAL(he) : NULL;
+                }
+                else if (is_oa_entry)
+                    svp = HvENTRY_SVP(hv, entry_index);
+            }
+            else if (preeminent) {
+                is_oa_entry = HvENTRY_INDEX(hv, svp, entry_index);
                 save_helem_flags(hv, keysv, svp,
                      (PL_op->op_flags & OPf_SPECIAL) ? 0 : SAVEf_SETMAGIC);
+                if (was_linear) {
+                    HE *he = hv_fetch_ent(hv, keysv, 0, 0);
+                    if (!he)
+                        he = hv_fetch_ent(hv, keysv, 1, 0);
+                    svp = he ? &HeVAL(he) : NULL;
+                }
+                else if (is_oa_entry)
+                    svp = HvENTRY_SVP(hv, entry_index);
+            }
             else
                 SAVEHDELETE(hv, keysv);
         }
@@ -4908,12 +4932,38 @@ PP(pp_multideref)
                         else {
                             if (localizing) {
                                 if (HvNAME_get(hv) && isGV_or_RVCV(sv))
+                                {
+                                    U32 entry_index = 0;
+                                    const bool was_linear = HvIS_LINEAR(hv);
+                                    const bool is_oa_entry =
+                                        HvENTRY_INDEX(hv, svp, entry_index);
                                     save_gp(MUTABLE_GV(sv),
                                         !(PL_op->op_flags & OPf_SPECIAL));
+                                    if (was_linear) {
+                                        HE *he = hv_fetch_ent(hv, keysv, 0, 0);
+                                        if (!he)
+                                            he = hv_fetch_ent(hv, keysv, 1, 0);
+                                        svp = he ? &HeVAL(he) : NULL;
+                                    }
+                                    else if (is_oa_entry)
+                                        svp = HvENTRY_SVP(hv, entry_index);
+                                }
                                 else if (preeminent) {
+                                    U32 entry_index = 0;
+                                    const bool was_linear = HvIS_LINEAR(hv);
+                                    const bool is_oa_entry =
+                                        HvENTRY_INDEX(hv, svp, entry_index);
                                     save_helem_flags(hv, keysv, svp,
                                          (PL_op->op_flags & OPf_SPECIAL)
                                             ? 0 : SAVEf_SETMAGIC);
+                                    if (was_linear) {
+                                        HE *he = hv_fetch_ent(hv, keysv, 0, 0);
+                                        if (!he)
+                                            he = hv_fetch_ent(hv, keysv, 1, 0);
+                                        svp = he ? &HeVAL(he) : NULL;
+                                    }
+                                    else if (is_oa_entry)
+                                        svp = HvENTRY_SVP(hv, entry_index);
                                     sv = *svp; /* may have changed */
                                 }
                                 else

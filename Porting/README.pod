@@ -27,6 +27,28 @@ resident memory. The Python driver runs isolated Perl workers in randomized
 order and saves raw samples, generated classes, build details, and CSV
 summaries. See the worker's POD for the cases and comparison limits.
 
+=head2 F<bench-hash-oa-compare.py>
+
+Compare hash lookup, insertion, deletion, churn, iteration, and allocation
+costs between the experimental compact-entry implementation and its baseline.
+The Python driver pairs fresh-process measurements, varies hash seeds,
+randomizes run order, and records raw samples, configuration, and summary
+statistics.
+
+=head2 F<bench-hash-oa-lookup-compare.py> and F<bench-hash-oa-lookup.pl>
+
+Compare fixed-count lookup loops over prebuilt hashes, with shuffled query
+cycles and a control loop. The paired driver records timing, hash contents,
+and storage figures when the interpreter provides the storage diagnostics.
+Use C<--warmup-seconds> and C<--cpu> to warm the measured loop and optionally
+pin workers to one CPU; per-worker frequency and process CPU readings are
+recorded when available.
+
+=head2 F<bench-hash-oa.pl>
+
+Measure complete hash workloads in batches. Lookup costs include per-hash
+loop setup. Use the flat lookup benchmark when comparing small hash sizes.
+
 =head2 F<bench.pl>
 
 Do performance analysis on the code snippets in F<t/perf/benchmarks>.
@@ -247,6 +269,11 @@ It later gets incorporated into the pod for F<Config.pm>.
 
 For analyzing the output of "env HARNESS_TIMER=1 make test", to find
 outliers of test execution times.
+
+=head2 F<hash-oa-design.pod>
+
+Describes the experimental hash representation, API compatibility changes,
+validation, and memory and performance comparisons.
 
 =head2 F<how_to_write_a_perldelta.pod> 
 

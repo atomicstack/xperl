@@ -547,40 +547,13 @@ this:
 
 =for apidoc Amn|U32|SBOX32_MAX_LEN
 
-As of Perl 5.18 the order returned by keys(), values(), and each() is
-non-deterministic and distinct per hash, and the insert order for
-colliding keys is randomized as well, and perl allows for controlling this
-by the PERL_PERTURB_KEYS environment setting. You can disable this behavior
-entirely with the define C<PERL_PERTURB_KEYS_DISABLED> with
+XPerl scans a separate compact entry array for C<keys>, C<values>, and
+C<each>. This traversal is independent of hash values and index positions.
+The C<PERL_PERTURB_KEYS> environment variable and its compile-time variants
+are removed.
 
-    -Accflags='-DPERL_PERTURB_KEYS_DISABLED'
-
-You can disable the environment variable checks and compile time specify
-the type of key traversal randomization to be used by defining either
-C<PERL_PERTURB_KEYS_RANDOM> or C<PERL_PERTURB_KEYS_DETERMINISTIC> with
-
-    -Accflags='-DPERL_PERTURB_KEYS_RANDOM'
-
-or
-
-    -Accflags='-DPERL_PERTURB_KEYS_DETERMINISTIC'
-
-=for apidoc Amnh;||PERL_PERTURB_KEYS_DETERMINISTIC
-=for apidoc_item ||PERL_PERTURB_KEYS_DISABLED
-=for apidoc_item ||PERL_PERTURB_KEYS_RANDOM
-
-Since Perl 5.18 the seed used for the hash function is randomly selected
-at process start, which can be overridden by specifying a seed by setting
-the PERL_HASH_SEED environment variable. Be aware that
-PERL_PERTURB_KEYS_DETERMINISTIC and the equivalent environment variable
-setting will produce the same results if and only if the code does not
-put non-deterministic data into a hash, and the code is executed in exactly
-the same context in terms of the environment. If the code populates a hash
-with random data, or builds a hash using the address of its items, or
-if the code is run in a different environment context with a different
-number or selection of environment variables then the result may differ.
-DETERMINISTIC in this context means "if everything else is kept the same
-the same results should be observed".
+The hash-function seed is randomly selected at process start. Override it
+for reproducible testing with the C<PERL_HASH_SEED> environment variable.
 
 You can change this behavior so that your perl is built with a hard coded
 seed with the define C<NO_HASH_SEED> by providing to Configure
@@ -604,12 +577,11 @@ between different runs of Perl, since Data::Dumper serializes the key in the
 native order for the hash.  The use of the Data::Dumper C<Sortkeys> option is
 recommended if you are comparing dumps between different invocations of perl.
 
-See L<perlrun/PERL_HASH_SEED> and L<perlrun/PERL_PERTURB_KEYS> for
-details on the environment variables, and L<perlsec/Algorithmic
-Complexity Attacks> for further security details.
+See L<perlrun/PERL_HASH_SEED> for details on the environment variable,
+and L<perlsec/Algorithmic Complexity Attacks> for security details.
 
-The C<PERL_HASH_SEED> and C<PERL_PERTURB_KEYS> environment variables can
-be disabled by building configuring perl with
+The C<PERL_HASH_SEED> environment variable can be disabled by configuring
+perl with
 C<-Accflags=-DNO_PERL_HASH_ENV>.
 
 The C<PERL_HASH_SEED_DEBUG> environment variable can be disabled by

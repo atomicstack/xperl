@@ -3944,6 +3944,14 @@ Perl_hv_name_set(pTHX_ HV *hv, const char *name, U32 len, U32 flags)
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
+PERL_CALLCONV HE *
+Perl_hv_new_he(pTHX)
+        Perl_attribute_nonnull_aTHX
+        __attribute__warn_unused_result__;
+#define PERL_ARGS_ASSERT_HV_NEW_HE              \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 PERL_CALLCONV I32
 Perl_hv_placeholders_get(pTHX_ const HV *hv)
         Perl_attribute_nonnull_aTHX
@@ -3981,16 +3989,6 @@ Perl_hv_pushkv(pTHX_ HV *hv, U32 flags)
         Perl_attribute_nonnull(pTHX_1)
         __attribute__visibility__("hidden");
 #define PERL_ARGS_ASSERT_HV_PUSHKV              \
-    STMT_START { Perl_assert_aTHX; assert(hv);         \
-                 assert(SvTYPE(hv) == SVt_PVHV);       \
-                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
-    } STMT_END
-
-PERL_CALLCONV void
-Perl_hv_rand_set(pTHX_ HV *hv, U32 new_xhv_rand)
-        Perl_attribute_nonnull_aTHX
-        Perl_attribute_nonnull(pTHX_1);
-#define PERL_ARGS_ASSERT_HV_RAND_SET            \
     STMT_START { Perl_assert_aTHX; assert(hv);         \
                  assert(SvTYPE(hv) == SVt_PVHV);       \
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \

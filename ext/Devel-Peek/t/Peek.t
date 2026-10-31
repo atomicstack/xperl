@@ -785,7 +785,6 @@ do_test('ENAME on a stash',
     MAX = 7
     RITER = -1
     EITER = 0x0
-    RAND = $ADDR
     NAME = "RWOM"
     ENAME = "RWOM"				# $] > 5.012
 ');
@@ -808,7 +807,6 @@ do_test('ENAMEs on a stash',
     MAX = 7
     RITER = -1
     EITER = 0x0
-    RAND = $ADDR
     NAME = "RWOM"
     NAMECOUNT = 2				# $] > 5.012
     ENAME = "RWOM", "KLANK"			# $] > 5.012
@@ -834,7 +832,6 @@ do_test('ENAMEs on a stash with no NAME',
     MAX = 7
     RITER = -1
     EITER = 0x0
-    RAND = $ADDR
     NAMECOUNT = -3				# $] > 5.012
     ENAME = "RWOM", "KLANK"			# $] > 5.012
 ');
@@ -884,7 +881,6 @@ do_test('small hash after keys',
     MAX = 7
     RITER = -1
     EITER = 0x0
-    RAND = $ADDR
 (?:    Elt "(?:Perl|Beer)" HASH = $ADDR
     SV = PV\\($ADDR\\) at $ADDR
       REFCNT = 1
@@ -914,7 +910,6 @@ do_test('small hash after keys and scalar',
     MAX = 7
     RITER = -1
     EITER = 0x0
-    RAND = $ADDR
 (?:    Elt "(?:Perl|Beer)" HASH = $ADDR
     SV = PV\\($ADDR\\) at $ADDR
       REFCNT = 1
@@ -988,7 +983,7 @@ tie %tied, "Tie::StdHash";
 do_test('Dump %tied', '%tied', <<'HASH', "", undef, 1);
 SV = PVHV\($ADDR\) at $ADDR
   REFCNT = \d+
-  FLAGS = \(RMG,SHAREKEYS\)
+  FLAGS = \(RMG,OOK,SHAREKEYS\)
   MAGIC = $ADDR
     MG_VIRTUAL = &PL_vtbl_pack
     MG_TYPE = PERL_MAGIC_tied\(P\)
@@ -1007,10 +1002,13 @@ SV = PVHV\($ADDR\) at $ADDR
         KEYS = 0
         FILL = 0
         MAX = 7
-  ARRAY = 0x0
+  AUX_FLAGS = 0
+  ARRAY = $ADDR
   KEYS = 0
   FILL = 0
   MAX = 7
+  RITER = -1
+  EITER = 0x0
 HASH
 
 $_ = "hello";

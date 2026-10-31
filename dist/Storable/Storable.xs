@@ -16,6 +16,10 @@
 #include <perl.h>
 #include <XSUB.h>
 
+#ifndef HvMAX_SET
+#  define HvMAX_SET(hv, max) (HvMAX(hv) = (max))
+#endif
+
 #define NEED_sv_2pv_flags
 #define NEED_load_module
 #define NEED_vload_module
@@ -1620,7 +1624,7 @@ static void init_store_context(pTHX_
      */
 #define HBUCKETS        4096            /* Buckets for %hseen */
 #ifndef USE_PTR_TABLE
-    HvMAX(cxt->hseen) = HBUCKETS - 1;   /* keys %hseen = $HBUCKETS; */
+    HvMAX_SET(cxt->hseen, HBUCKETS - 1);   /* keys %hseen = $HBUCKETS; */
 #endif
 
     /*
@@ -1633,7 +1637,7 @@ static void init_store_context(pTHX_
 
     cxt->hclass = newHV();              /* Where seen classnames are stored */
 
-    HvMAX(cxt->hclass) = HBUCKETS - 1;  /* keys %hclass = $HBUCKETS; */
+    HvMAX_SET(cxt->hclass, HBUCKETS - 1);  /* keys %hclass = $HBUCKETS; */
 
     /*
      * The 'hook' hash table is used to keep track of the references on
@@ -3172,7 +3176,7 @@ static int store_lhash(pTHX_ stcxt_t *cxt, HV *hv, unsigned char hash_flags)
     int ret = 0;
     Size_t i;
     UV ix = 0;
-    HE** array;
+    UV traversal_limit;
 #ifdef DEBUGME
     UV len = (UV)HvTOTALKEYS(hv);
 #endif
@@ -3197,15 +3201,27 @@ static int store_lhash(pTHX_ stcxt_t *cxt, HV *hv, unsigned char hash_flags)
         CROAK((MAX_DEPTH_ERROR));
     }
 
-    array = HvARRAY(hv);
-    for (i = 0; i <= (Size_t)HvMAX(hv); i++) {
-        HE* entry = array[i];
+#ifdef HvENTRY_LIMIT
+    traversal_limit = HvENTRY_LIMIT(hv);
+#else
+    traversal_limit = (UV)HvMAX(hv) + 1;
+#endif
+    for (i = 0; i < traversal_limit; i++) {
+#ifdef HvENTRY_FIRST
+        HE* entry = HvENTRY_FIRST(hv, i);
+#else
+        HE* entry = HvARRAY(hv)[i];
+#endif
 
         while (entry) {
             SV* val = hv_iterval(hv, entry);
             if ((ret = store_hentry(aTHX_ cxt, hv, ix++, HeKEY_hek(entry), val, hash_flags)))
                 return ret;
+#ifdef HvENTRY_NEXT
+            entry = HvENTRY_NEXT(hv, entry);
+#else
             entry = HeNEXT(entry);
+#endif
         }
     }
     if (recur_sv != (SV*)hv && cxt->max_recur_depth_hash != -1 && cxt->recur_depth > 0) {

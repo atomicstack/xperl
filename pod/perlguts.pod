@@ -881,6 +881,38 @@ information on how to use the hash access functions on tied hashes.
 =for apidoc_section $HV
 =for apidoc Amh|void|PERL_HASH|U32 hash|char *key|STRLEN klen
 
+XPerl stores ordinary hash entries in a compact, relocatable array. The
+default C<PERL_HASH_LINEAR_MAX=0> uses indexed storage after the singleton
+arena form. With a positive setting, hashes with two or more keys use a dense
+entry array and linear search until their configured threshold, without an
+index allocation or metadata header. Deleting from this representation shifts later entries
+left. Inserting beyond the threshold promotes the entries to an
+open-addressed index, which stores adaptive-width entry identifiers only.
+The full cached hash remains in the entry's C<HEK>. An index resize leaves
+entry addresses unchanged. Growing the entry array or deleting from the
+linear form can invalidate C<HE *> and C<SV **> pointers returned by hash access functions.
+Reacquire these pointers after such mutations and after calls into Perl or
+magic callbacks. The value's separately allocated C<SV> does not move with
+the entry array. Retain an owned SV reference when its lifetime must extend
+across callbacks or deletion.
+
+C<HvARRAY> is no longer an array of bucket-head pointers for ordinary
+hashes. Use the iterator API, or XPerl's hash-aware C<HvENTRY_LIMIT>,
+C<HvENTRY_FIRST>, and C<HvENTRY_NEXT> macros for direct storage traversal.
+C<HeNEXT> is removed because compact entries have no collision-chain
+pointer. C<HeSHARED_NEXT> applies only to entries in C<PL_strtab>;
+standalone entries have no chain link. XS extensions must be rebuilt for
+this experimental representation.
+
+C<HvMAX(hv)> is now read-only. Code that changed it as an lvalue must use
+C<HvMAX_SET(hv, max)> for indexed storage or
+C<HvMAX_SET_LINEAR(hv, capacity)> for headerless linear storage. The raw
+C<xhv_max> field contains a storage-form tag in linear mode and must not be
+written directly. C<HvIS_OA(hv)> identifies the compact non-strtab hash
+family, including its headerless linear state; use
+C<Hash::Util::hash_storage_info()> and its C<open_addressed> and C<linear>
+fields to distinguish whether an index is currently allocated.
+
 =head2 Hash API Extensions
 
 Beginning with version 5.004, the following functions are also supported:

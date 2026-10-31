@@ -7227,15 +7227,6 @@ Perl_get_hash_seed(pTHX_ unsigned char * const seed_buffer)
         /* ignore leading spaces */
         while (isSPACE(*env_pv))
             env_pv++;
-#    ifdef USE_PERL_PERTURB_KEYS
-        /* if they set it to "0" we disable key traversal randomization completely */
-        if (strEQ(env_pv,"0")) {
-            PL_hash_rand_bits_enabled= 0;
-        } else {
-            /* otherwise switch to deterministic mode */
-            PL_hash_rand_bits_enabled= 2;
-        }
-#    endif
         /* ignore a leading 0x... if it is there */
         if (env_pv[0] == '0' && env_pv[1] == 'x')
             env_pv += 2;
@@ -7263,54 +7254,6 @@ Perl_get_hash_seed(pTHX_ unsigned char * const seed_buffer)
             seed_buffer[i] = (unsigned char)(Perl_internal_drand48() * (U8_MAX+1));
         }
     }
-#ifdef USE_PERL_PERTURB_KEYS
-#  ifndef NO_PERL_HASH_ENV
-    env_pv= PerlEnv_getenv("PERL_PERTURB_KEYS");
-    if (env_pv) {
-        if (DEBUG_h_TEST)
-            PerlIO_printf(Perl_debug_log,
-                "Got PERL_PERTURB_KEYS=<%s>\n", env_pv);
-        if (strEQ(env_pv,"0") || strEQ(env_pv,"NO")) {
-            PL_hash_rand_bits_enabled= 0;
-        } else if (strEQ(env_pv,"1") || strEQ(env_pv,"RANDOM")) {
-            PL_hash_rand_bits_enabled= 1;
-        } else if (strEQ(env_pv,"2") || strEQ(env_pv,"DETERMINISTIC")) {
-            PL_hash_rand_bits_enabled= 2;
-        } else {
-            PERL_WARN_WARNING_RUN_ENVIRONMENT_HASH_PERTURBATION_INVALID(env_pv);
-        }
-    }
-#  endif
-    {   /* initialize PL_hash_rand_bits from the hash seed.
-         * This value is highly volatile, it is updated every
-         * hash insert, and is used as part of hash bucket chain
-         * randomization and hash iterator randomization. */
-        if (PL_hash_rand_bits_enabled == 1) {
-            U64 entropy;
-            PERL_GET_WEAK_ENTROPY((U8 *)&entropy, sizeof(entropy));
-            PL_hash_rand_bits= (UV)entropy;
-        }
-        else {
-            /* Use a constant */
-            PL_hash_rand_bits= 0xbe49d17f; /* I just picked a number */
-            /* and then mix in the leading bytes of the hash seed */
-            for( i = 0; i < sizeof(UV) ; i++ ) {
-                PL_hash_rand_bits ^= seed_buffer[i % PERL_HASH_SEED_BYTES];
-                PL_hash_rand_bits = ROTL_UV(PL_hash_rand_bits,8);
-            }
-        }
-        if (!PL_hash_rand_bits) {
-            /* we use an XORSHIFT RNG to munge PL_hash_rand_bits,
-             * which means it cannot be 0 or it will stay 0 for the
-             * lifetime of the process, so if by some insane chance we
-             * ended up with a 0 after the above initialization
-             * then set it to this. This really should not happen, or
-             * very very very rarely.
-             */
-            PL_hash_rand_bits = 0x8110ba9d; /* a randomly chosen prime */
-        }
-    }
-#endif
 }
 
 void
@@ -7329,16 +7272,6 @@ Perl_debug_hash_seed(pTHX_ bool via_debug_h)
             while (seed < seed_end) {
                 PerlIO_printf(Perl_debug_log, "%02x", *seed++);
             }
-#ifdef PERL_HASH_RANDOMIZE_KEYS
-            PerlIO_printf(Perl_debug_log, " PERTURB_KEYS = %d (%s)",
-                    PL_HASH_RAND_BITS_ENABLED,
-                    PL_HASH_RAND_BITS_ENABLED == 0 ? "NO" :
-                    PL_HASH_RAND_BITS_ENABLED == 1 ? "RANDOM"
-                                                   : "DETERMINISTIC");
-            if (DEBUG_h_TEST)
-                PerlIO_printf(Perl_debug_log,
-                        " RAND_BITS=0x%" UVxf, PL_hash_rand_bits);
-#endif
             PerlIO_printf(Perl_debug_log, "\n");
         }
     }

@@ -17508,7 +17508,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * cbf5bd9e1cf8e93e94e5e4d6f1314b247f6566b58dab88e9fbae2852adf20214 diag_conf.pl
+ * 8e44b846be4499bb2497c0f44894ab7915ad9ca47721400333c0b9ba8d9bb813 diag_conf.pl
  * 6510e6553ea58cc2c5404bc3524e14de99d6b39d5bf4cb3fc3271ba678cf283b diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

@@ -72,7 +72,7 @@ Perl_mro_set_private_data(pTHX_ struct mro_meta *const smeta,
         } else {
             HV *const hv = newHV();
             /* Start with 2 buckets. It's unlikely we'll need more. */
-            HvMAX(hv) = 1;
+            HvMAX_SET(hv, 1);
             smeta->mro_linear_all = hv;
 
             if (smeta->mro_linear_current) {
@@ -905,7 +905,6 @@ S_mro_gather_and_rename(pTHX_ HV * const stashes, HV * const seen_stashes,
 {
     PERL_ARGS_ASSERT_MRO_GATHER_AND_RENAME;
 
-    XPVHV* xhv;
     HE *entry;
     I32 riter = -1;
     I32 items = 0;
@@ -1130,18 +1129,17 @@ S_mro_gather_and_rename(pTHX_ HV * const stashes, HV * const seen_stashes,
 
     /* Skip the entire loop if the hash is empty.   */
     if(oldstash && HvTOTALKEYS(oldstash)) {
-        xhv = (XPVHV*)SvANY(oldstash);
         seen = (HV *) newSV_type_mortal(SVt_PVHV);
 
         /* Iterate through entries in the oldstash, adding them to the
            list, meanwhile doing the equivalent of $seen{$key} = 1.
          */
 
-        while (++riter <= (I32)xhv->xhv_max) {
-            entry = (HvARRAY(oldstash))[riter];
+        while (++riter < (I32)HvENTRY_LIMIT(oldstash)) {
+            entry = HvENTRY_FIRST(oldstash, riter);
 
             /* Iterate through the entries in this list */
-            for(; entry; entry = HeNEXT(entry)) {
+            for(; entry; entry = HvENTRY_NEXT(oldstash, entry)) {
                 const char* key;
                 I32 len;
 
@@ -1158,6 +1156,10 @@ S_mro_gather_and_rename(pTHX_ HV * const stashes, HV * const seen_stashes,
 
                     /* Avoid main::main::main::... */
                     if(oldsubstash == oldstash) continue;
+
+                    /* Recursive renaming may grow hashes.  Record the key
+                     * before it can invalidate this compact entry pointer. */
+                    (void)hv_storehek(seen, HeKEY_hek(entry), &PL_sv_yes);
 
                     stashentry = stash ? hv_fetchhek(stash, HeKEY_hek(entry), 0) : NULL;
 
@@ -1209,7 +1211,6 @@ S_mro_gather_and_rename(pTHX_ HV * const stashes, HV * const seen_stashes,
                         );
                     }
 
-                    (void)hv_storehek(seen, HeKEY_hek(entry), &PL_sv_yes);
                 }
             }
         }
@@ -1217,16 +1218,15 @@ S_mro_gather_and_rename(pTHX_ HV * const stashes, HV * const seen_stashes,
 
     /* Skip the entire loop if the hash is empty.   */
     if (stash && HvTOTALKEYS(stash)) {
-        xhv = (XPVHV*)SvANY(stash);
         riter = -1;
 
         /* Iterate through the new stash, skipping $seen{$key} items,
            calling mro_gather_and_rename(stashes,seen,entry,NULL, ...). */
-        while (++riter <= (I32)xhv->xhv_max) {
-            entry = (HvARRAY(stash))[riter];
+        while (++riter < (I32)HvENTRY_LIMIT(stash)) {
+            entry = HvENTRY_FIRST(stash, riter);
 
             /* Iterate through the entries in this list */
-            for(; entry; entry = HeNEXT(entry)) {
+            for(; entry; entry = HvENTRY_NEXT(stash, entry)) {
                 const char* key;
                 I32 len;
 

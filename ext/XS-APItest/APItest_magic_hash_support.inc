@@ -56,17 +56,12 @@ test_freeent(freeent_function *f) {
 #ifdef PURIFY
     victim = (HE*)safemalloc(sizeof(HE));
 #else
-    /* Storing then deleting something should ensure that a hash entry is
-       available.  */
-    (void) hv_stores(test_hash, "", &PL_sv_yes);
-    (void) hv_deletes(test_hash, "", 0);
-
-    /* We need to "inline" new_he here as it's static, and the functions we
-       test expect to be able to call del_HE on the HE  */
+    /* These APIs free standalone entries. Ordinary hash entries belong to
+       their hash's compact array and do not use this arena. */
     if (!PL_body_roots[HE_ARENA_ROOT_IX])
-        croak("PL_he_root is 0");
+        Perl_more_bodies(aTHX_ HE_ARENA_ROOT_IX);
     victim = (HE*) PL_body_roots[HE_ARENA_ROOT_IX];
-    PL_body_roots[HE_ARENA_ROOT_IX] = HeNEXT(victim);
+    PL_body_roots[HE_ARENA_ROOT_IX] = *(void **)victim;
 #endif
 
 #ifdef NODEFAULT_SHAREKEYS

@@ -33,8 +33,7 @@ our @EXPORT_OK  = qw(
                      lock_hash_recurse unlock_hash_recurse
                      lock_hashref_recurse unlock_hashref_recurse
 
-                     hash_traversal_mask
-
+                     hash_storage_info
                      bucket_ratio
                      used_buckets
                      num_buckets
@@ -42,7 +41,7 @@ our @EXPORT_OK  = qw(
 BEGIN {
     # make sure all our XS routines are available early so their prototypes
     # are correctly applied in the following code.
-    our $VERSION = '0.32';
+    our $VERSION = '0.33';
     require XSLoader;
     XSLoader::load();
 }
@@ -89,7 +88,6 @@ Hash::Util - A selection of general-utility hash subroutines
                      lock_hash_recurse unlock_hash_recurse
                      lock_hashref_recurse unlock_hashref_recurse
 
-                     hash_traversal_mask
                    );
 
   my %hash = (foo => 42, bar => 23);
@@ -119,9 +117,6 @@ Hash::Util - A selection of general-utility hash subroutines
 
   my $int_hash_value = hash_value( 'string' );
 
-  my $mask= hash_traversal_mask(%hash);
-
-  hash_traversal_mask(%hash,1234);
 
 =head1 DESCRIPTION
 
@@ -549,6 +544,10 @@ Fields are as follows:
     rest : list of counts, Kth element is the number of buckets
            with K keys in it.
 
+On XPerl open-addressed hashes, buckets are index slots. Each occupied
+slot contains one entry. Deleted slots count as empty in this summary.
+Use C<hash_storage_info()> to distinguish tombstones and measure probing.
+
 See also bucket_stats() and bucket_array().
 
 =item B<bucket_stats>
@@ -574,6 +573,10 @@ Fields are as follows:
 
 See also bucket_info() and bucket_array().
 
+On open-addressed hashes, the chain-based quality score and collision
+percentage do not measure probe costs. Use C<hash_storage_info()> for
+probe distances and tombstones.
+
 Note that Hash Quality Score would be 1 for an ideal hash, numbers
 close to and below 1 indicate good hashing, and number significantly
 above indicate a poor score. In practice it should be around 0.95 to 1.05.
@@ -595,7 +598,12 @@ Returns a packed representation of the bucket array associated with a hash. Each
 of the array is either an integer K, in which case it represents K empty buckets, or
 a reference to another array which contains the keys that are in that bucket.
 
-B<Note that the information returned by bucket_array is sensitive information>:
+On open-addressed hashes, each nonempty slot contains a single key.
+The output shows physical index order. Hash iteration scans the separate
+entry array, so these orders need not match. Tombstones are grouped with
+empty slots here. C<hash_storage_info()> reports their number separately.
+
+B<Note that the information returned by these diagnostics is sensitive information>:
 by knowing it one can directly attack perl's hash function which in turn may allow
 one to craft a denial-of-service attack against Perl code, even remotely,
 see L<perlsec/"Algorithmic Complexity Attacks"> for more information.
@@ -603,6 +611,57 @@ B<Do not disclose the output of this function> to people who don't need to
 know it. See also L<perlrun/PERL_HASH_SEED_DEBUG>. This function is provided strictly
 for  debugging and diagnostics purposes only, it is hard to imagine a reason why it
 would be used in production code.
+
+=item B<hash_storage_info>
+
+    my $info = hash_storage_info(\%hash);
+
+Returns a hash reference describing XPerl's physical hash storage. This is
+an experimental diagnostic interface. Field names and meanings may change
+with the hash implementation.
+
+C<live> counts indexed entries, including restricted-hash placeholders.
+C<index_capacity>, C<index_empty>, and C<index_deleted> describe the index.
+C<linear> is true when the hash uses its dense, headerless tiny-entry form.
+Such a hash has no index allocation: index fields and probe statistics are
+zero, including C<index_bytes>, while C<entry_capacity> reports the current
+capacity (at most eight). An empty linear hash has no entry allocation. A
+singleton uses an arena slot, reported by C<arena_backed> and
+C<arena_slot_size>, which equals C<he_size> (16 bytes on 64-bit systems).
+Its C<entry_bytes> and C<requested_bytes> include that HE slot, while
+C<allocator_bytes> is zero because the slot is not a separate allocation.
+Vectors with two or more entries use compact HE slots.
+C<tombstones> is the table's maintained deleted-slot count.
+C<index_width> is the number of bytes used by each entry identifier (one,
+two, or four); it may be zero or one before an index is allocated.
+C<hash_bytes> is zero because cached hashes remain in HEKs.
+C<entry_index_bytes> is the encoded entry-identifier array size.
+C<slot_size> is the identifier width for each index slot.
+C<entry_capacity> counts allocated HE positions, C<entry_used> is the
+entry-array high-water mark, and C<entry_spare> is capacity beyond that
+mark. C<free_list_length> counts deleted positions available for reuse.
+A deleted current iterator entry is retained until the iterator advances
+or resets, so it is not yet on the free list.
+
+C<probe_total>, C<probe_max>, and C<probe_mean> give the total, maximum,
+and mean displacement of live slots from their initial hash position.
+These distances count slots passed before a successful match. They do
+not measure unsuccessful lookups or count key comparisons.
+
+C<he_size>, C<hv_size>, C<hv_body_size>, C<slot_size>, and
+C<metadata_bytes> report structure sizes in bytes. For indexed hashes,
+C<index_bytes> includes the index header and encoded entry identifiers.
+C<entry_bytes> includes spare HE positions. An arena-backed singleton uses
+one HE slot, so its C<arena_slot_size> equals C<he_size>.
+C<requested_bytes> sums those two allocations, excluding keys, values,
+and the HV itself. On supported glibc builds, C<allocator_bytes> reports
+their allocator-usable sizes; zero means unavailable. C<entries_address>
+and C<index_address> help detect relocation and are process-local
+addresses. No address is a stable identifier.
+
+This function scans the index and free list. It reports physical storage
+for tied hashes, rather than the tied object's contents.
+
 
 =cut
 
@@ -742,20 +801,6 @@ sub bucket_stats_formatted {
   print $sv; # prints 1
 
 Stores an alias to a variable in a hash instead of copying the value.
-
-=item B<hash_traversal_mask>
-
-As of Perl 5.18 every hash has its own hash traversal order, and this order
-changes every time a new element is inserted into the hash. This functionality
-is provided by maintaining an unsigned integer mask (U32) which is xor'ed
-with the actual bucket id during a traversal of the hash buckets using keys(),
-values() or each().
-
-You can use this subroutine to get and set the traversal mask for a specific
-hash. Setting the mask ensures that a given hash will produce the same key
-order. B<Note> that this does B<not> guarantee that B<two> hashes will produce
-the same key order for the same hash seed and traversal mask, items that
-collide into one bucket may have different orders regardless of this setting.
 
 =item B<bucket_ratio>
 

@@ -78,15 +78,6 @@ PERLVARCTXI(I, curcopdb,	COP *,	NULL)
 
 PERLVARI(I, sub_generation, U32, 1)	/* incr to invalidate method cache */
 
-#ifdef PERL_HASH_RANDOMIZE_KEYS
-#ifdef USE_PERL_PERTURB_KEYS
-PERLVARI(I, hash_rand_bits_enabled, U8, 1) /* used to randomize hash stuff
-                                              0. no-random
-                                              1. random
-                                              2. deterministic */
-#endif
-PERLVARI(I, hash_rand_bits, UV, 0)      /* used to randomize hash stuff */
-#endif
 PERLVAR(I, strtab,	HV *)		/* shared string table */
 /* Fields used by magic variables such as $@, $/ and so on */
 
@@ -1150,6 +1141,8 @@ PERLVARI(I, runops_boundary_data, void *, NULL)
 PERLVAR(I, execution_context, PERL_EXECUTION_CONTEXT)
 PERLVAR(I, excepthook, SV *)
 PERLVARI(I, in_excepthook, bool, FALSE)
+/* Maximum inline entry-vector capacity for small hashes (2, 4, 8, or 0). */
+PERLVARI(I, hash_linear_max, U8, 0)
 
 /* If you are adding a U8 or U16, check to see if there are 'Space' comments
  * above on where there are gaps which currently will be structure padding.  */

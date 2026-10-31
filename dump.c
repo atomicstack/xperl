@@ -872,10 +872,12 @@ Perl_dump_packsubs_perl(pTHX_ const HV *stash, bool justperl)
 
     if (!HvTOTALKEYS(stash))
         return;
-    for (i = 0; i <= (I32) HvMAX(stash); i++) {
+    for (i = 0; i < (I32) HvENTRY_LIMIT(stash); i++) {
         const HE *entry;
-        for (entry = HvARRAY(stash)[i]; entry; entry = HeNEXT(entry)) {
+        for (entry = HvENTRY_FIRST(stash, i); entry;
+             entry = HvENTRY_NEXT(stash, entry)) {
             GV * gv = (GV *)HeVAL(entry);
+            const bool nested_package = HeKEY(entry)[HeKLEN(entry)-1] == ':';
             if (SvROK(gv) && SvTYPE(SvRV(gv)) == SVt_PVCV)
                 /* unfake a fake GV */
                 (void)CvGV(SvRV(gv));
@@ -885,7 +887,7 @@ Perl_dump_packsubs_perl(pTHX_ const HV *stash, bool justperl)
                 dump_sub_perl(gv, justperl);
             if (GvFORM(gv))
                 dump_form(gv);
-            if (HeKEY(entry)[HeKLEN(entry)-1] == ':') {
+            if (nested_package) {
                 const HV * const hv = GvHV(gv);
                 if (hv && (hv != PL_defstash))
                     dump_packsubs_perl(hv, justperl); /* nested package */
@@ -2783,16 +2785,31 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
 
             PerlIO_printf(file, "  (");
             Zero(freq, FREQ_MAX + 1, int);
-            for (i = 0; (STRLEN)i <= HvMAX(sv); i++) {
-                HE* h;
-                int count = 0;
-                for (h = HvARRAY(sv)[i]; h; h = HeNEXT(h))
-                    count++;
-                if (count > FREQ_MAX)
-                    count = FREQ_MAX;
-                freq[count]++;
-                if (max < count)
-                    max = count;
+            if (HvIS_LINEAR(MUTABLE_HV(sv))) {
+                const U32 capacity = HvLINEAR_CAP(sv);
+                freq[0] = capacity - totalkeys;
+                freq[1] = totalkeys;
+                max = 1;
+            }
+            else if (HvIS_OA(MUTABLE_HV(sv))) {
+                const U32 capacity = HvMAX(sv) + 1;
+                freq[0] = capacity - totalkeys;
+                freq[1] = totalkeys;
+                max = 1;
+            }
+            else {
+                for (i = 0; (STRLEN)i < HvENTRY_LIMIT(sv); i++) {
+                    HE* h;
+                    int count = 0;
+                    for (h = HvENTRY_FIRST(sv, i); h;
+                         h = HvENTRY_NEXT(sv, h))
+                        count++;
+                    if (count > FREQ_MAX)
+                        count = FREQ_MAX;
+                    freq[count]++;
+                    if (max < count)
+                        max = count;
+                }
             }
             for (i = 0; i <= max; i++) {
                 if (freq[i]) {
@@ -2815,31 +2832,27 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
                                 n + n(n-1)/2k
             */
 
-            for (i = max; i > 0; i--) { /* Precision: count down. */
-                sum += freq[i] * i * i;
+            if (!HvIS_LINEAR(MUTABLE_HV(sv))) {
+                for (i = max; i > 0; i--) { /* Precision: count down. */
+                    sum += freq[i] * i * i;
+                }
+                while ((keys = keys >> 1))
+                    pow2 = pow2 << 1;
+                theoret = totalkeys;
+                theoret += theoret * (theoret-1)/pow2;
+                (void)PerlIO_putc(file, '\n');
+                dump_indent(level, file, "  hash quality = %.1"
+                                         NVff "%%", theoret/sum*100);
             }
-            while ((keys = keys >> 1))
-                pow2 = pow2 << 1;
-            theoret = totalkeys;
-            theoret += theoret * (theoret-1)/pow2;
-            (void)PerlIO_putc(file, '\n');
-            dump_indent(level, file, "  hash quality = %.1"
-                                     NVff "%%", theoret/sum*100);
         }
         (void)PerlIO_putc(file, '\n');
         dump_indent(level, file, "  KEYS = %" IVdf "\n", (IV)totalkeys);
         {
             STRLEN count = 0;
-            HE **ents = HvARRAY(sv);
-
-            if (ents) {
-                HE *const *const last = ents + HvMAX(sv);
-                count = last + 1 - ents;
-                
-                do {
-                    if (!*ents)
-                        --count;
-                } while (++ents <= last);
+            if (HvARRAY(sv)) {
+                STRLEN i;
+                for (i = 0; i < HvENTRY_LIMIT(sv); ++i)
+                    if (HvENTRY_FIRST(sv, i)) ++count;
             }
 
             dump_indent(level, file, "  FILL = %" UVuf "\n", (UV)count);
@@ -2851,15 +2864,6 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
                                      (IV)HvRITER_get(sv));
             dump_indent(level, file, "  EITER = 0x%" UVxf "\n",
                                      PTR2UV(HvEITER_get(sv)));
-#ifdef PERL_HASH_RANDOMIZE_KEYS
-            dump_indent(level, file, "  RAND = 0x%" UVxf,
-                                     (UV)HvRAND_get(sv));
-            if (HvRAND_get(sv) != HvLASTRAND_get(sv) && HvRITER_get(sv) != -1 ) {
-                PerlIO_printf(file, " (LAST = 0x%" UVxf ")",
-                                    (UV)HvLASTRAND_get(sv));
-            }
-#endif
-            (void)PerlIO_putc(file, '\n');
         }
         {
             const char * const hvname = HvNAME_get(sv);
@@ -2964,9 +2968,10 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
             if (HvTOTALKEYS(hv)) {
                 STRLEN i;
                 int count = maxnest - nest;
-                for (i=0; i <= HvMAX(hv); i++) {
+                for (i=0; i < HvENTRY_LIMIT(hv); i++) {
                     HE *he;
-                    for (he = HvARRAY(hv)[i]; he; he = HeNEXT(he)) {
+                    for (he = HvENTRY_FIRST(hv, i); he;
+                         he = HvENTRY_NEXT(hv, he)) {
                         U32 hash;
                         SV * keysv;
                         const char * keypv;
