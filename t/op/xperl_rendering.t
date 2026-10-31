@@ -588,4 +588,50 @@ for my $case (
     }
 }
 
+for my $case (
+    [ "finished\n", 1 ],
+    [ "finished", 0 ],
+    [ "first\nsecond", 0 ],
+    [ "\x{263a}\n", 1 ],
+) {
+    my ($message, $terminated) = @$case;
+    my ($exception, $delivered);
+    {
+        local ${^DIAG_RENDER} = 'en:annotated';
+        local $SIG{__EXCEPT__} = sub { $exception = $_[0] };
+        local $SIG{__WARN__} = sub { $delivered = $_[0] };
+        warn 'prefix:', $message;
+    }
+    my $diagnostic = $exception->contents->[0];
+    my $location = $diagnostic->location;
+    ok( $location->{file} && $location->{line},
+        'warning retains its structured source location' );
+    my $before = $exception->as_json;
+    for my $language (qw(en fr sr)) {
+        my $rendered = $exception->render_as_annotated($language);
+        if ($terminated) {
+            is( $rendered, "#2439 WARNING.USER_RUNTIME.WARNING_USER_TEXT\nprefix:$message",
+                "$language final newline suppresses header and body locations" );
+            is( $exception->render_as_legacy($language), "prefix:$message",
+                "$language final newline preserves legacy warning text" );
+        }
+        else {
+            like( $rendered, qr/\Q$location->{file}:$location->{line}\E\n/,
+                "$language unterminated warning retains its header location" );
+        }
+    }
+    is( $delivered, $exception->render_as_annotated('en'),
+        'warning hook receives the selected annotated rendering' );
+    is( $exception->as_json, $before,
+        'rendering does not remove retained location metadata' );
+}
+
+{
+    eval { die "terminated error\n" };
+    my $exception = $@;
+    my $file = $exception->contents->[0]->location->{file};
+    unlike( $exception->render_as_annotated('en'), qr/\Q$file\E/,
+        'a final newline also suppresses annotated user-error locations' );
+}
+
 done_testing();

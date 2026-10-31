@@ -88,6 +88,10 @@ source freshness separately from linguistic review.
 
 =head2 Experimental structured core exceptions
 
+Annotated rendering respects a final newline in user warning and error
+messages: it adds no source location to the header or message body. The
+structured diagnostic retains its source location for inspection.
+
 Parser errors and catalogued C<croak> and C<DIE> failures now deliver
 C<XPerl::Exception> objects by default. Plain C<die "text"> and
 C<warn "text"> create C<ERROR_USER_TEXT> and C<WARNING_USER_TEXT> diagnostics
