@@ -11,7 +11,10 @@ Treat object lifetime, flags, magic callbacks, and ownership as compatibility-se
 
 1. Identify the concrete value type, owner, and lifetime boundary.
 2. Check flags, magic, copy-on-write, weak reference, and tied/overloaded behavior before simplifying.
-3. Keep allocation and free paths paired with the established `Newx`/`Safefree`, arena, or stack discipline.
+3. Use Perl's memory wrappers (`Copy`, `Move`, `Zero`, `Newx`, `Renew`, and
+   `Safefree`) where applicable, and keep allocation and free paths paired
+   with the established arena or stack discipline. Follow the wrapper
+   guidance in `perl-core-hacking` when declaration or context issues arise.
 4. Add leak, magic, tie, thread, or XS/API coverage when the change crosses those surfaces.
 5. Route symbol exposure or API documentation changes through `perl-embed-fnc`.
 
