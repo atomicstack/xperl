@@ -25,7 +25,7 @@ use B ();
 use builtin qw(cardinal_plural_form get_diagnostic_data ordinal_plural_form);
 no warnings 'experimental::builtin';
 
-my @languages              = qw(ar cy de en es fa fi fr he hu is it nl pt ru sr tr uk);
+my @languages              = qw(ar cy de en es fa fi fr he hu is it nl pt ru sr tr uk zh);
 my $initial_render_default = ${^DIAG_RENDER};
 my %packs;
 my %load_default;
@@ -194,6 +194,33 @@ SKIP: {
         'other,one,few,other,other,one,few', 'Serbian cardinal rules handle teen exceptions' );
     is( join(',', map { ordinal_plural_form('sr', $_) } (1, 2, 21)),
         'other,other,other', 'Serbian ordinal counts use other' );
+}
+
+SKIP: {
+    skip 'Simplified Chinese diagnostic pack is unavailable', 8 unless $packs{zh};
+
+    my $runtime = eval q{
+        use diagpack 'zh';
+        my $zero = 0;
+        eval { my $result = 1 / $zero };
+        $@;
+    };
+    ok( $runtime && ref $runtime, 'a runtime error captures the Simplified Chinese pack lexically' );
+    my $legacy = $runtime->render_as_legacy('zh');
+    like( $legacy, qr/\p{Han}/, 'Simplified Chinese errors use Han characters' );
+    {
+        local ${^DIAG_RENDER} = 'en:legacy';
+        is( $runtime->render, $legacy, 'implicit rendering retains the captured Simplified Chinese pack' );
+        isnt( $legacy, $runtime->render_as_legacy('en'), 'Simplified Chinese rendering differs from English' );
+    }
+    require JSON::PP;
+    my $record = JSON::PP->new->decode( $runtime->render('zh:legacy:JSON') );
+    is( $record->{message}, $legacy, 'structured output retains the Simplified Chinese message' );
+    ok( utf8::is_utf8($legacy), 'Simplified Chinese text retains decoded Unicode characters' );
+    is( join(',', map { cardinal_plural_form('zh', $_) } (0, 1, 2, 11, 12, 21, 22)),
+        'other,other,other,other,other,other,other', 'Simplified Chinese cardinal counts use other' );
+    is( join(',', map { ordinal_plural_form('zh', $_) } (1, 2, 21)),
+        'other,other,other', 'Simplified Chinese ordinal counts use other' );
 }
 
 SKIP: {

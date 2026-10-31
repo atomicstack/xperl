@@ -3242,7 +3242,8 @@ $CONF = {
               "ru" => "Устаревшая возможность: %{message}; в Perl %{when} её использование будет приводить к фатальной ошибке",
               "sr" => "%{message} је застарео и постаће фатална грешка у Перлу %{when}",
               "tr" => "%{message} kullanımdan kaldırılmıştır ve Perl %{when} sürümünde ölümcül hata haline gelecektir",
-              "uk" => "Використання %{message} визнано застарілим, а в Perl %{when} воно спричинятиме фатальну помилку"
+              "uk" => "Використання %{message} визнано застарілим, а в Perl %{when} воно спричинятиме фатальну помилку",
+              "zh" => "%{message} 已弃用，并将在 Perl %{when} 中变成致命错误"
             },
             "args" => [
               {
@@ -3301,7 +3302,8 @@ $CONF = {
               "ru" => "Устаревшая возможность: %{message}; будет удалена в Perl %{when}",
               "sr" => "%{message} је застарео и биће уклоњен у Перлу %{when}",
               "tr" => "%{message} kullanımdan kaldırılmıştır ve Perl %{when} sürümünde ortadan kalkacaktır",
-              "uk" => "%{message}: застаріло, буде вилучено в Perl %{when}"
+              "uk" => "%{message}: застаріло, буде вилучено в Perl %{when}",
+              "zh" => "%{message} 已弃用，并将在 Perl %{when} 中移除"
             },
             "args" => [
               {
@@ -3360,7 +3362,8 @@ $CONF = {
               "ru" => "Устаревшая возможность: %{message}",
               "sr" => "%{message} је застарео",
               "tr" => "%{message} kullanımdan kaldırılmıştır",
-              "uk" => "Використання %{message} визнано застарілим"
+              "uk" => "Використання %{message} визнано застарілим",
+              "zh" => "%{message} 已弃用"
             },
             "args" => [
               {
@@ -3414,7 +3417,8 @@ $CONF = {
               "ru" => "Использование '%{arg1}' в качестве разделителя строки является устаревшим",
               "sr" => "Употреба „%{arg1}“ као граничника ниске је застарела",
               "tr" => "'%{arg1}' karakterinin dize ayıracı olarak kullanımı kullanımdan kaldırılmıştır",
-              "uk" => "Використання '%{arg1}' як роздільника рядка є застарілим"
+              "uk" => "Використання '%{arg1}' як роздільника рядка є застарілим",
+              "zh" => "将 '%{arg1}' 用作字符串分隔符已弃用"
             },
             "args" => [
               {
@@ -3479,7 +3483,8 @@ $CONF = {
               "ru" => "Не удалось выполнить do \"%{arg1}\": '.' больше не входит в \@INC; возможно, имелось в виду do \"./%{arg2}\"?",
               "sr" => "do \"%{arg1}\" није успео, '.' више није у \@INC; да ли сте мислили do \"./%{arg2}\"?",
               "tr" => "do \"%{arg1}\" başarısız oldu; '.' artık \@INC içinde değil. do \"./%{arg2}\" demek mi istediniz?",
-              "uk" => "Не вдалося виконати do \"%{arg1}\", '.' більше немає в \@INC; можливо, ви мали на увазі do \"./%{arg2}\"?"
+              "uk" => "Не вдалося виконати do \"%{arg1}\", '.' більше немає в \@INC; можливо, ви мали на увазі do \"./%{arg2}\"?",
+              "zh" => "do \"%{arg1}\" 失败；'.' 已不再位于 \@INC 中。你是否想写 do \"./%{arg2}\"？"
             },
             "args" => [
               {
@@ -3533,7 +3538,8 @@ $CONF = {
               "ru" => "Использование неэкранированных символов вертикального пробела в [] при /xx устарело",
               "sr" => "Употреба дословног вертикалног размака у [] је застарела под /xx",
               "tr" => " /xx altında [] içinde gerçek dikey boşluk karakteri kullanımı kullanımdan kaldırılmıştır",
-              "uk" => "Використання літеральних вертикальних пробільних символів у [] з модифікатором /xx визнано застарілим"
+              "uk" => "Використання літеральних вертикальних пробільних символів у [] з модифікатором /xx визнано застарілим",
+              "zh" => "在 [] 中使用字面垂直空白字符在 /xx 下已弃用"
             },
             "args" => []
           },
@@ -3584,7 +3590,8 @@ $CONF = {
               "ru" => "Использование неэкранированного '#' в [] при /xx устарело",
               "sr" => "Употреба неескејпованог '#' у [] је застарела под /xx",
               "tr" => " /xx altında [] içinde kaçışlanmamış '#' kullanımı kullanımdan kaldırılmıştır",
-              "uk" => "Використання неекранованого '#' у [] з модифікатором /xx вважається застарілим"
+              "uk" => "Використання неекранованого '#' у [] з модифікатором /xx вважається застарілим",
+              "zh" => "在 [] 中使用未转义的 '#' 在 /xx 下已弃用"
             },
             "args" => []
           },
@@ -3705,6 +3712,11 @@ $CONF = {
                 "*" => "Використання '%{property}' у \\p{} або \\P{} є застарілим з такої причини: %{detail}",
                 "line_break_values" => "Використання '%{property}' у \\p{} або \\P{} є застарілим з такої причини: замінено значеннями властивості Line_Break; див. www.unicode.org/reports/tr14",
                 "surrogate_line_break" => "Використання '%{property}' у \\p{} або \\P{} є застарілим з такої причини: сурогати ніколи не повинні траплятися в коректно сформованому тексті, а отже, не повинні бути основою для розбиття на рядки"
+              },
+              "zh" => {
+                "*" => "在 \\p{} 或 \\P{} 中使用 '%{property}' 已弃用，原因：%{detail}",
+                "line_break_values" => "在 \\p{} 或 \\P{} 中使用 '%{property}' 已弃用，原因：已由 Line_Break 属性值取代；参见 www.unicode.org/reports/tr14",
+                "surrogate_line_break" => "在 \\p{} 或 \\P{} 中使用 '%{property}' 已弃用，原因：代理码位不应出现在格式正确的文本中，因此不应作为换行依据"
               }
             },
             "args" => [
@@ -3785,7 +3797,8 @@ $CONF = {
               "ru" => "Недостаточно аргументов для %{name}",
               "sr" => "Нема довољно аргумената за %{name}",
               "tr" => "%{name} için yeterli bağımsız değişken verilmedi",
-              "uk" => "Недостатньо аргументів для %{name}"
+              "uk" => "Недостатньо аргументів для %{name}",
+              "zh" => "%{name} 的参数数量不足"
             },
             "args" => [
               {
@@ -3823,7 +3836,8 @@ $CONF = {
                 "ru" => "genitive",
                 "sr" => "genitive",
                 "tr" => "operation",
-                "uk" => "genitive"
+                "uk" => "genitive",
+                "zh" => "default"
               },
               "source" => "name_operation"
             }
@@ -3873,7 +3887,8 @@ $CONF = {
               "ru" => "Слишком много аргументов для %{name}",
               "sr" => "Превише аргумената за %{name}",
               "tr" => "%{name} için fazla bağımsız değişken verildi",
-              "uk" => "Забагато аргументів для %{name}"
+              "uk" => "Забагато аргументів для %{name}",
+              "zh" => "%{name} 的参数数量过多"
             },
             "args" => [
               {
@@ -3911,7 +3926,8 @@ $CONF = {
                 "ru" => "genitive",
                 "sr" => "genitive",
                 "tr" => "operation",
-                "uk" => "genitive"
+                "uk" => "genitive",
+                "zh" => "default"
               },
               "source" => "name_operation"
             }
@@ -4160,6 +4176,18 @@ $CONF = {
                 "sub" => "Аргумент %{number} для %{function} має бути sub {} (а не %{actual})",
                 "subroutine" => "Аргумент %{number} для %{function} має бути підпрограмою (а не %{actual})",
                 "symbol" => "Аргумент %{number} для %{function} має бути символом (а не %{actual})"
+              },
+              "zh" => {
+                "array_ref" => "传给 %{function} 的第 %{number} 个参数必须是数组（而不是 %{actual}）",
+                "block_or_sub" => "传给 %{function} 的第 %{number} 个参数必须是代码块或子程序 {}（而不是 %{actual}）",
+                "filehandle" => "传给 %{function} 的第 %{number} 个参数必须是句柄（而不是 %{actual}）",
+                "hash_or_array_ref" => "传给 %{function} 的第 %{number} 个参数必须是哈希或数组（而不是 %{actual}）",
+                "hash_ref" => "传给 %{function} 的第 %{number} 个参数必须是哈希（而不是 %{actual}）",
+                "scalar" => "传给 %{function} 的第 %{number} 个参数必须是标量（而不是 %{actual}）",
+                "sigil_set" => "传给 %{function} 的第 %{number} 个参数必须是 %{sigils} 之一（而不是 %{actual}）",
+                "sub" => "传给 %{function} 的第 %{number} 个参数必须是子程序 {}（而不是 %{actual}）",
+                "subroutine" => "传给 %{function} 的第 %{number} 个参数必须是子程序（而不是 %{actual}）",
+                "symbol" => "传给 %{function} 的第 %{number} 个参数必须是符号（而不是 %{actual}）"
               }
             },
             "args" => [
@@ -4227,7 +4255,8 @@ $CONF = {
                 "ru" => "nominative",
                 "sr" => "nominative",
                 "tr" => "operation",
-                "uk" => "nominative"
+                "uk" => "nominative",
+                "zh" => "default"
               },
               "source" => "actual_operation"
             },
@@ -4252,7 +4281,8 @@ $CONF = {
                 "ru" => "genitive",
                 "sr" => "genitive",
                 "tr" => "operation",
-                "uk" => "genitive"
+                "uk" => "genitive",
+                "zh" => "default"
               },
               "source" => "function_operation"
             }
@@ -4303,7 +4333,8 @@ $CONF = {
               "ru" => "Экспериментальное применение %{feature} к скаляру теперь запрещено",
               "sr" => "Експериментална функција %{feature} над скаларом сада није дозвољена",
               "tr" => "Skaler üzerinde deneysel %{feature} kullanımına artık izin verilmiyor",
-              "uk" => "Експериментальне застосування %{feature} до скаляра тепер заборонено"
+              "uk" => "Експериментальне застосування %{feature} до скаляра тепер заборонено",
+              "zh" => "现在禁止在标量上使用实验性 %{feature}"
             },
             "args" => [
               {
@@ -4360,7 +4391,8 @@ $CONF = {
               "ru" => "Ошибка компиляции",
               "sr" => "Грешка при компилацији",
               "tr" => "Derleme hatası",
-              "uk" => "Помилка компіляції"
+              "uk" => "Помилка компіляції",
+              "zh" => "编译错误"
             },
             "args" => []
           },
@@ -4408,7 +4440,8 @@ $CONF = {
               "ru" => "%{text}",
               "sr" => "%{text}",
               "tr" => "%{text}",
-              "uk" => "%{text}"
+              "uk" => "%{text}",
+              "zh" => "%{text}"
             },
             "args" => [
               {
@@ -4608,6 +4641,15 @@ $CONF = {
                 "next_char" => "%{message} у файлі %{file}, рядок %{line}, наступний символ %{context_value}\n",
                 "next_token" => "%{message} у файлі %{file}, рядок %{line}, наступна лексема ???\n",
                 "within_pattern" => "%{message} у файлі %{file}, рядок %{line}, усередині шаблону\n"
+              },
+              "zh" => {
+                "end_of_line" => "%{message} 于 %{file} 第 %{line} 行，位于行尾\n",
+                "eof" => "%{message} 于 %{file} 第 %{line} 行，位于文件末尾\n",
+                "near" => "%{message} 于 %{file} 第 %{line} 行，靠近“%{context_value}”\n",
+                "next_char" => "%{message} 于 %{file} 第 %{line} 行，下一个字符为 %{context_value}\n",
+                "next_token" => "%{message} 于 %{file} 第 %{line} 行，下一个记号为 ???\n",
+                "within_pattern" => "%{message} 于 %{file} 第 %{line} 行，位于模式内部\n",
+                "within_string" => "%{message} 于 %{file} 第 %{line} 行，位于字符串内部\n"
               }
             },
             "args" => [
@@ -4688,7 +4730,8 @@ $CONF = {
               "ru" => "%{message}",
               "sr" => "%{message}",
               "tr" => "%{message}",
-              "uk" => "%{message}"
+              "uk" => "%{message}",
+              "zh" => "%{message}"
             },
             "args" => [
               {
@@ -4738,7 +4781,8 @@ $CONF = {
               "ru" => "Внутренний сбой в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Унутрашњи урп у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede dahili urp; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Внутрішній збій urp у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Внутрішній збій urp у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式内部错误；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -4821,7 +4865,8 @@ $CONF = {
               "ru" => "Внутренняя катастрофа в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Унутрашњи квар у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede dahili hata; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Внутрішня катастрофа в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Внутрішня катастрофа в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式内部错误；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -4905,7 +4950,8 @@ $CONF = {
               "ru" => "Дескриптор файла с именем без кавычек \"%{filehandle}\" недопустим при 'no feature \"bareword_filehandles\"'",
               "sr" => "Ручка датотеке наведена голом речју „%{filehandle}“ није дозвољена уз 'no feature \"bareword_filehandles\"'",
               "tr" => "'bareword_filehandles' özelliği devre dışıyken çıplak sözcük dosya tanıtıcısı \"%{filehandle}\" kullanılamaz",
-              "uk" => "Файловий дескриптор \"%{filehandle}\" у вигляді слова без лапок заборонено за 'no feature \"bareword_filehandles\"'"
+              "uk" => "Файловий дескриптор \"%{filehandle}\" у вигляді слова без лапок заборонено за 'no feature \"bareword_filehandles\"'",
+              "zh" => "在 'no feature \"bareword_filehandles\"' 下不允许使用裸字文件句柄 \"%{filehandle}\""
             },
             "args" => [
               {
@@ -4957,7 +5003,8 @@ $CONF = {
               "ru" => "yield вне gen",
               "sr" => "yield ван gen-а",
               "tr" => "gen dışında yield",
-              "uk" => "yield поза gen"
+              "uk" => "yield поза gen",
+              "zh" => "在 gen 外部调用了 yield"
             },
             "args" => []
           },
@@ -5001,7 +5048,8 @@ $CONF = {
               "ru" => "Присваивание одновременно списку и скаляру",
               "sr" => "Додела истовремено листи и скалару",
               "tr" => "Hem listeye hem skalere atama",
-              "uk" => "Присвоєння одночасно списку та скаляру"
+              "uk" => "Присвоєння одночасно списку та скаляру",
+              "zh" => "同时赋值给列表和标量"
             },
             "args" => []
           },
@@ -5045,7 +5093,8 @@ $CONF = {
               "ru" => "Нельзя изменить результат вызова подпрограммы &%{subroutine}, не возвращающей lvalue, при %{context}",
               "sr" => "Није могуће мењати позив потпрограма %{subroutine} који не враћа л-вредност у %{context}",
               "tr" => "%{context} bağlamında &%{subroutine} alt yordamına yapılan çağrı, lvalue olmadığı için değiştirilemez",
-              "uk" => "Не можна змінювати результат виклику підпрограми &%{subroutine}, яка не є lvalue-підпрограмою, у %{context}"
+              "uk" => "Не можна змінювати результат виклику підпрограми &%{subroutine}, яка не є lvalue-підпрограмою, у %{context}",
+              "zh" => "不能在 %{context} 中修改非左值子程序调用 &%{subroutine}"
             },
             "args" => [
               {
@@ -5088,7 +5137,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "context_operation"
             }
@@ -5138,7 +5188,8 @@ $CONF = {
               "ru" => "Нельзя изменить %{target} при %{context}",
               "sr" => "Не може се мењати %{target} у %{context}",
               "tr" => "%{context} bağlamında %{target} değiştirilemez",
-              "uk" => "Не можна змінювати %{target} у %{context}"
+              "uk" => "Не можна змінювати %{target} у %{context}",
+              "zh" => "不能在 %{context} 中修改 %{target}"
             },
             "args" => [
               {
@@ -5187,7 +5238,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "context_operation"
             },
@@ -5212,7 +5264,8 @@ $CONF = {
                 "ru" => "accusative",
                 "sr" => "accusative",
                 "tr" => "operation",
-                "uk" => "accusative"
+                "uk" => "accusative",
+                "zh" => "default"
               },
               "source" => "target_operation"
             }
@@ -5258,7 +5311,8 @@ $CONF = {
               "ru" => "Нельзя изменить ссылку на локализованный массив в скобках при списковом присваивании",
               "sr" => "Није могуће изменити референцу на локализовани низ у заградама у додели листе",
               "tr" => "Liste atamasında yerelleştirilmiş parantezli diziye başvuru değiştirilemiyor",
-              "uk" => "Не можна змінювати посилання на локалізований масив у дужках у списковому присвоєнні"
+              "uk" => "Не можна змінювати посилання на локалізований масив у дужках у списковому присвоєнні",
+              "zh" => "不能在列表赋值中修改对已局部化且带括号的数组的引用"
             },
             "args" => []
           },
@@ -5303,7 +5357,8 @@ $CONF = {
               "ru" => "Нельзя изменить ссылку на хеш в скобках при списковом присваивании",
               "sr" => "Није могуће изменити референцу на хеш у заградама у додели листе",
               "tr" => "Liste atamasında parantezli hash'e başvuru değiştirilemiyor",
-              "uk" => "Не можна змінювати посилання на хеш у дужках у списковому присвоєнні"
+              "uk" => "Не можна змінювати посилання на хеш у дужках у списковому присвоєнні",
+              "zh" => "不能在列表赋值中修改对带括号的哈希的引用"
             },
             "args" => []
           },
@@ -5347,7 +5402,8 @@ $CONF = {
               "ru" => "Нельзя изменить ссылку на значение %{target} при скалярном присваивании",
               "sr" => "Није могуће мењати референцу на %{target} у додели скалара",
               "tr" => "Skaler atamada \"%{target}\" hedefine yapılan başvuru değiştirilemez",
-              "uk" => "Не можна змінювати посилання до %{target} у скалярному присвоєнні"
+              "uk" => "Не можна змінювати посилання до %{target} у скалярному присвоєнні",
+              "zh" => "不能在标量赋值中修改对 %{target} 的引用"
             },
             "args" => [
               {
@@ -5385,7 +5441,8 @@ $CONF = {
                 "ru" => "genitive",
                 "sr" => "genitive",
                 "tr" => "operation",
-                "uk" => "genitive"
+                "uk" => "genitive",
+                "zh" => "default"
               },
               "source" => "target_operation"
             }
@@ -5430,7 +5487,8 @@ $CONF = {
               "ru" => "Нельзя изменить ссылку на значение %{target} при %{context}",
               "sr" => "Није могуће мењати референцу на %{target} у %{context}",
               "tr" => "%{context} bağlamında \"%{target}\" hedefine yapılan başvuru değiştirilemez",
-              "uk" => "Не можна змінювати посилання до %{target} у %{context}"
+              "uk" => "Не можна змінювати посилання до %{target} у %{context}",
+              "zh" => "不能在 %{context} 中修改对 %{target} 的引用"
             },
             "args" => [
               {
@@ -5484,7 +5542,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "context_operation"
             },
@@ -5509,7 +5568,8 @@ $CONF = {
                 "ru" => "genitive",
                 "sr" => "genitive",
                 "tr" => "operation",
-                "uk" => "genitive"
+                "uk" => "genitive",
+                "zh" => "default"
               },
               "source" => "target_operation"
             }
@@ -5626,6 +5686,11 @@ $CONF = {
                 "handler_returned_undefined" => "Константа(%{constant}): виклик &{\$^H{%{overload_type}}} не повернув визначеного значення",
                 "overload_type_not_defined" => "Константа(%{constant}): \$^H{%{overload_type}} не визначено",
                 "unknown" => "Константа(%{constant}) невідома"
+              },
+              "zh" => {
+                "handler_returned_undefined" => "常量(%{constant})：对 &{\$^H{%{overload_type}}} 的调用未返回已定义的值",
+                "overload_type_not_defined" => "常量(%{constant})：\$^H{%{overload_type}} 未定义",
+                "unknown" => "常量(%{constant})：未知"
               }
             },
             "args" => [
@@ -5712,7 +5777,8 @@ $CONF = {
               "ru" => "Исключение передано далее",
               "sr" => "Пренето",
               "tr" => "Aktarıldı",
-              "uk" => "Передано далі"
+              "uk" => "Передано далі",
+              "zh" => "已传播"
             },
             "args" => []
           },
@@ -5801,7 +5867,8 @@ $CONF = {
               "ru" => "Неизвестная escape-последовательность \\%{escape_char} в классе символов в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Непрепознато заштићено слово \\%{escape_char} у класи знакова у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede karakter sınıfında tanınmayan \\%{escape_char} kaçışı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Нерозпізнана escape-послідовність \\%{escape_char} у класі символів у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Нерозпізнана escape-послідовність \\%{escape_char} у класі символів у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式的字符类中有无法识别的转义 \\%{escape_char}；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -5890,7 +5957,8 @@ $CONF = {
               "ru" => "Неожиданный бинарный оператор '%{operator}' без предшествующего операнда в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неочекивани бинарни оператор „%{operator}“ без претходног операнда у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede öncesinde işlenen bulunmayan beklenmedik ikili işleç '%{operator}'; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretli",
-              "uk" => "Неочікуваний бінарний оператор '%{operator}' без попереднього операнда в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Неочікуваний бінарний оператор '%{operator}' без попереднього операнда в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中二元运算符 '%{operator}' 前没有操作数；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -5979,7 +6047,8 @@ $CONF = {
               "ru" => "Неожиданный символ в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неочекивани знак у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede beklenmeyen karakter; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Неочікуваний символ у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Неочікуваний символ у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中出现意外字符；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -6063,7 +6132,8 @@ $CONF = {
               "ru" => "Неожиданный символ ']', за которым не следует ')', в конструкции (?[... в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неочекивано „]“ без наредне заграде „)“ у (?[... у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede (?[... ifadesinde ardından ')' gelmeyen beklenmedik ']'; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Неочікувана ']', після якої немає ')', у (?[... у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Неочікувана ']', після якої немає ')', у (?[... у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 (?[... 里出现意外的 ']'，其后没有 ')'；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -6147,7 +6217,8 @@ $CONF = {
               "ru" => "Неожиданный символ ')' в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неочекивана заграда „)“ у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede beklenmeyen ')'; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Неочікувана ')' у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Неочікувана ')' у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中出现意外的 ')'；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -6231,7 +6302,8 @@ $CONF = {
               "ru" => "Незавершённое выражение внутри '(?[ ])' в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Непотпун израз унутар „(?[ ])“ у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede '(?[ ])' içinde tamamlanmamış ifade; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretli",
-              "uk" => "Незавершений вираз усередині '(?[ ])' у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Незавершений вираз усередині '(?[ ])' у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 '(?[ ])' 内有未完成的表达式；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -6315,7 +6387,8 @@ $CONF = {
               "ru" => "Ожидается интерполированный расширенный класс символов в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Очекује се интерполирана проширена класа знакова у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede enterpole edilmiş genişletilmiş karakter sınıfı bekleniyor; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Очікується інтерпольований розширений клас символів у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Очікується інтерпольований розширений клас символів у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中应为插值式扩展字符类；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -6399,7 +6472,8 @@ $CONF = {
               "ru" => "Неожиданный символ '(' без предшествующего оператора в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неочекивана заграда „(“ без претходног оператора у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede öncesinde operatör bulunmayan beklenmedik '('; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Неочікувана '(' без попереднього оператора в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Неочікувана '(' без попереднього оператора в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中出现意外的 '('，前面没有运算符；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -6483,7 +6557,8 @@ $CONF = {
               "ru" => "Операнд без предшествующего оператора в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Операнд нема претходни оператор у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede öncesinde operatör bulunmayan işlenen; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Перед операндом немає оператора в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Перед операндом немає оператора в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中有操作数前缺少运算符；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -6567,7 +6642,8 @@ $CONF = {
               "ru" => "Строковые свойства Unicode не реализованы в (?[...]) в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Unicode својства ниски нису имплементирана у (?[...]) у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede (?[...]) içinde Unicode dize özellikleri uygulanmamıştır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Властивості рядків Unicode не реалізовано в (?[...]) у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Властивості рядків Unicode не реалізовано в (?[...]) у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式的 (?[...]) 中尚未实现 Unicode 字符串属性；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -6651,7 +6727,8 @@ $CONF = {
               "ru" => "Синтаксическая ошибка в (?[...]) в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Синтаксна грешка у (?[...]) у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede (?[...]) içinde sözdizimi hatası; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Синтаксична помилка в (?[...]) у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Синтаксична помилка в (?[...]) у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 (?[...]) 语法错误；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -6734,7 +6811,8 @@ $CONF = {
               "ru" => "Инверсия класса символов, содержащего последовательность из нескольких символов, недопустима в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Инвертовање класе знакова која садржи низ од више знакова није дозвољено у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede birden çok karakterli dizi içeren karakter sınıfını tersine çevirmek yasa dışıdır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Інвертування класу символів, що містить послідовність із кількох символів, заборонено в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Інвертування класу символів, що містить послідовність із кількох символів, заборонено в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "在正则表达式中，反转包含多字符序列的字符类不合法；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -6817,7 +6895,8 @@ $CONF = {
               "ru" => "Неэкранированные вертикальные пробельные символы в [] допустимы только при использовании /x в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Дословни вертикални размак у [] није дозвољен осим уз /x у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede /x altında değilken [] içinde gerçek dikey boşluk karakteri yasa dışıdır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Літеральний вертикальний пробільний символ у [] заборонено, крім режиму /x, у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Літеральний вертикальний пробільний символ у [] заборонено, крім режиму /x, у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "在正则表达式中，除非使用 /x，否则字符类中的字面垂直空白字符不合法；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -6900,7 +6979,8 @@ $CONF = {
               "ru" => "\\N в классе символов должно обозначать именованный символ: \\N{...} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "\\N у класи знакова мора да означава именовани знак: \\N{...} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede bir karakter sınıfı içindeki \\N, adlandırılmış bir karakter olmalı: \\N{...}; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretli",
-              "uk" => "\\N у класі символів має позначати іменований символ: \\N{...} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "\\N у класі символів має позначати іменований символ: \\N{...} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "字符类中的 \\N 必须是命名字符形式：\\N{...}；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -6983,7 +7063,8 @@ $CONF = {
               "ru" => "\\N{} здесь может обозначать только один символ в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "\\N{} је овде ограничено на један знак у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede \\N{} yalnızca tek karakter için kullanılabilir; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "\\N{} тут обмежено одним символом у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "\\N{} тут обмежено одним символом у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 \\N{} 仅限表示单个字符；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -7066,7 +7147,8 @@ $CONF = {
               "ru" => "Требуются ровно 3 восьмеричные цифры в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Потребне су тачно 3 окталне цифре у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede tam olarak 3 sekizlik basamak gerekiyor; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Потрібні рівно 3 вісімкові цифри в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Потрібні рівно 3 вісімкові цифри в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中必须恰好有 3 个八进制数字；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -7203,6 +7285,10 @@ $CONF = {
               "uk" => {
                 "*" => "Невідомий клас POSIX [:%{class_name}:] у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
                 "complemented" => "Невідомий клас POSIX [:^%{class_name}:] у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
+              "zh" => {
+                "complemented" => "正则表达式中的 POSIX 类 [\\^%{class_name}:] 未知；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出",
+                "positive" => "正则表达式中的 POSIX 类 [:%{class_name}:] 未知；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
               }
             },
             "args" => [
@@ -7315,7 +7401,8 @@ $CONF = {
               "ru" => "Синтаксис POSIX [%{delimiter} %{delimiter}] зарезервирован для будущих расширений в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "POSIX синтакса [%{delimiter} %{delimiter}] резервисана је за будућа проширења у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede POSIX sözdizimi [%{delimiter} %{delimiter}] gelecekteki genişletmeler için ayrılmıştır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretli",
-              "uk" => "Синтаксис POSIX [%{delimiter} %{delimiter}] зарезервовано для майбутніх розширень у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Синтаксис POSIX [%{delimiter} %{delimiter}] зарезервовано для майбутніх розширень у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 POSIX 语法 [%{delimiter} %{delimiter}] 保留供将来扩展使用；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -7403,7 +7490,8 @@ $CONF = {
               "ru" => "Одна из границ диапазона \"%{range}\" в [] не является отдельным символом в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Опсег [] „%{range}“ има крајњу тачку која није знак у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede geçersiz [] aralığı \"%{range}\"; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretli",
-              "uk" => "Хибний діапазон [] \"%{range}\" у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Хибний діапазон [] \"%{range}\" у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的字符类范围 \"%{range}\" 端点不是字符；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -7506,7 +7594,8 @@ $CONF = {
               "ru" => "Недопустимый диапазон \"%{range}\" в [] в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неважећи опсег [] „%{range}“ у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede geçersiz [] aralığı \"%{range}\"; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Некоректний діапазон [] \"%{range}\" у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Некоректний діапазон [] \"%{range}\" у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的字符类范围 \"%{range}\" 无效；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -7609,7 +7698,8 @@ $CONF = {
               "ru" => "Непарная скобка [ в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Незатворена класа знакова [ у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede eşleşmeyen '['; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Незакрита [ у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Незакрита [ у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中有未匹配的 [；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -7692,7 +7782,8 @@ $CONF = {
               "ru" => "Условная конструкция (?(condition)... содержит слишком много ветвей в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Пребацивање (?(condition)... садржи превише грана у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede switch (?(condition)... çok fazla dal içeriyor; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Умовна конструкція (?(condition)... містить забагато гілок у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Умовна конструкція (?(condition)... містить забагато гілок у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的条件分支 (?(condition)... 包含过多分支；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -7775,7 +7866,8 @@ $CONF = {
               "ru" => "В конструкции (?(DEFINE)....) не допускаются ветви альтернативы в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "(?(DEFINE)....) не дозвољава гране у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (?(DEFINE)....) dallara izin vermez; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "(?(DEFINE)....) не допускає гілок у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "(?(DEFINE)....) не допускає гілок у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 (?(DEFINE)....) 不允许包含分支；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -7858,7 +7950,8 @@ $CONF = {
               "ru" => "Последовательность (?(%{condition_opener}... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Низ (?(%{condition_opener}... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te Sequence (?(%{condition_opener}... sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Послідовність (?(%{condition_opener}... не завершено в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Послідовність (?(%{condition_opener}... не завершено в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的序列 (?(%{condition_opener}... 未终止；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -7946,7 +8039,8 @@ $CONF = {
               "ru" => "Условие условной конструкции не распознано в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Услов пребацивања није препознат у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te Switch condition tanınmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Не розпізнано умову умовної конструкції у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Не розпізнано умову умовної конструкції у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的条件分支条件无法识别；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -8029,7 +8123,8 @@ $CONF = {
               "ru" => "Неизвестное условие в конструкции (?(...)) в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Непознат услов пребацивања (?(...)) у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te bilinmeyen switch koşulu (?(...)); m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Невідома умова умовної конструкції (?(...)) у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Невідома умова умовної конструкції (?(...)) у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中有未知的条件分支条件 (?(...)；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -8112,7 +8207,8 @@ $CONF = {
               "ru" => "Условная конструкция (?(condition)... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Пребацивање (?(condition)... није завршено у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te Switch (?(condition)... sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Незавершена умовна конструкція (?(condition)... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Незавершена умовна конструкція (?(condition)... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的条件分支 (?(condition)... 未终止；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -8195,7 +8291,8 @@ $CONF = {
               "ru" => "'%{bound_type}' — неизвестный тип границы в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "„%{bound_type}“ је непозната врста границе у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "'%{bound_type}' regex'te bilinmeyen bir sınır türüdür; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "'%{bound_type}' — невідомий тип межі в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "'%{bound_type}' — невідомий тип межі в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的边界类型 '%{bound_type}' 未知；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -8298,7 +8395,8 @@ $CONF = {
               "ru" => "Пустое содержимое \\%{escape}{} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Празан садржај у \\%{escape}{} у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te boş \\%{escape}{}; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Порожня конструкція \\%{escape}{} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Порожня конструкція \\%{escape}{} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 \\%{escape}{} 内容为空；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -8386,7 +8484,8 @@ $CONF = {
               "ru" => "Отсутствуют фигурные скобки в \\N{} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Недостају витичасте заграде у \\N{} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\N{} için küme parantezleri eksik; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Відсутні фігурні дужки в \\N{} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Відсутні фігурні дужки в \\N{} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 \\N{} 缺少相邻的花括号；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -8469,7 +8568,8 @@ $CONF = {
               "ru" => "\\N{} обозначает последовательность нулевой длины в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Нулта дужина \\N{} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te sıfır uzunluklu \\N{}; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "\\N{} нульової довжини у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "\\N{} нульової довжини у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中不允许使用零长度的 \\N{}；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -8552,7 +8652,8 @@ $CONF = {
               "ru" => "Недопустимое шестнадцатеричное число в \\N{U+...} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неважећи хексадекадни број у \\N{U+...} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\N{U+...} içinde geçersiz onaltılık sayı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Некоректне шістнадцяткове число в \\N{U+...} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Некоректне шістнадцяткове число в \\N{U+...} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 \\N{U+...} 含有无效的十六进制数；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -8635,7 +8736,8 @@ $CONF = {
               "ru" => "Отсутствует закрывающая фигурная скобка в \\N{} или не экранирована открывающая фигурная скобка после \\N",
               "sr" => "Недостаје десна витичаста заграда у \\N{} или знак за екранизацију испред леве витичасте заграде после \\N",
               "tr" => "\\N{} için sağ küme parantezi eksik veya \\N sonrasında kaçışlanmamış sol küme parantezi var",
-              "uk" => "Відсутня закривальна фігурна дужка в \\N{} або неекранована відкривальна фігурна дужка після \\N"
+              "uk" => "Відсутня закривальна фігурна дужка в \\N{} або неекранована відкривальна фігурна дужка після \\N",
+              "zh" => "\\N{} 缺少右花括号，或 \\N 后的左花括号未转义"
             },
             "args" => []
           },
@@ -8678,7 +8780,8 @@ $CONF = {
               "ru" => "Недопустимое шестнадцатеричное число в \\N{U+...}",
               "sr" => "Неважећи хексадекадни број у \\N{U+...}",
               "tr" => "\\N{U+...} içinde geçersiz onaltılık sayı",
-              "uk" => "Некоректне шістнадцяткове число в \\N{U+...}"
+              "uk" => "Некоректне шістнадцяткове число в \\N{U+...}",
+              "zh" => "\\N{U+...} 中的十六进制数无效"
             },
             "args" => []
           },
@@ -8721,7 +8824,8 @@ $CONF = {
               "ru" => "Отсутствует закрывающая фигурная скобка в \\%{escape}{} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Недостаје десна витичаста заграда у \\%{escape}{} у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\%{escape}{} için sağ küme parantezi eksik; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Відсутня закривальна фігурна дужка в \\%{escape}{} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Відсутня закривальна фігурна дужка в \\%{escape}{} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 \\%{escape}{} 缺少右花括号；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -8881,6 +8985,11 @@ $CONF = {
                 "*" => "Символ після \"\\c\" має бути друкованим символом ASCII у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
                 "brace_control" => "Використовуйте \"%{control}\" замість \"\\c{\" у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
                 "brace_invalid" => "Послідовність \"\\c{\" недопустима в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
+              "zh" => {
+                "brace_control" => "在正则表达式中应使用“%{control}”，而不是“\\c{”；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/",
+                "brace_invalid" => "正则表达式中的序列“\\c{”无效；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/",
+                "non_printable" => "正则表达式中“\\c”后面的字符必须是可打印的 ASCII 字符；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
               }
             },
             "args" => [
@@ -8979,7 +9088,8 @@ $CONF = {
               "ru" => "\\C больше не поддерживается в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "\\C више није подржано у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\C artık desteklenmiyor; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "\\C більше не підтримується в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "\\C більше не підтримується в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式不再支持 \\C；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -9062,7 +9172,8 @@ $CONF = {
               "ru" => "Использование '%{operation}' запрещено в подшаблонах с подстановочными знаками для свойств Unicode в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Употреба „%{operation}“ није дозвољена у подобразцима џокера Unicode својства у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te Unicode özellik joker alt desenlerinde '%{operation}' kullanılamaz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Використання '%{operation}' заборонено в підшаблонах із символами узагальнення для властивостей Unicode в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Використання '%{operation}' заборонено в підшаблонах із символами узагальнення для властивостей Unicode в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式的 Unicode 属性通配符子模式中不允许使用 '%{operation}'；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -9150,7 +9261,8 @@ $CONF = {
               "ru" => "Неэкранированная открывающая фигурная скобка недопустима в этом месте регулярного выражения; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Незаштићена лева витичаста заграда овде није дозвољена у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te burada kaçışlanmamış sol küme parantezi kullanılamaz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Неекранована ліва фігурна дужка тут заборонена в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Неекранована ліва фігурна дужка тут заборонена в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式此处不允许未转义的左花括号；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -9233,7 +9345,8 @@ $CONF = {
               "ru" => "Не указано имя свойства после \\%{escape} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Празан \\%{escape} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te boş \\%{escape}; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Порожня \\%{escape} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Порожня \\%{escape} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 \\%{escape} 后缺少属性名；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -9321,7 +9434,8 @@ $CONF = {
               "ru" => "После \\%{escape} должен следовать символ '{' или односимвольное имя свойства Unicode в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Знак после \\%{escape} мора бити „{“ или једнознаковно име Unicode својства у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\%{escape} sonrasındaki karakter '{' veya tek karakterli bir Unicode özellik adı olmalıdır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Після \\%{escape} має бути '{' або односивольна назва властивості Unicode в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Після \\%{escape} має бути '{' або односивольна назва властивості Unicode в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中 \\%{escape} 后的字符必须是 '{' 或单字符 Unicode 属性名；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -9409,7 +9523,8 @@ $CONF = {
               "ru" => "Использование '\\%{escape_char}%{following_char}' запрещено в подшаблонах с подстановочными знаками для свойств Unicode в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Употреба „\\%{escape_char}%{following_char}“ није дозвољена у подобразцима џокера Unicode својства у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te Unicode özellik joker alt desenlerinde '\\%{escape_char}%{following_char}' kullanılamaz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Використання '\\%{escape_char}%{following_char}' заборонено в підшаблонах із символами узагальнення для властивостей Unicode в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Використання '\\%{escape_char}%{following_char}' заборонено в підшаблонах із символами узагальнення для властивостей Unicode в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式的 Unicode 属性通配符子模式中不允许使用 '\\%{escape_char}%{following_char}'；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -9502,7 +9617,8 @@ $CONF = {
               "ru" => "Незавершённая конструкция \\g{...} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Незавршен образац \\g{...} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te sonlandırılmamış \\g{...} kalıbı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Незавершений шаблон \\g{...} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Незавершений шаблон \\g{...} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 \\g{...} 模式未终止；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -9585,7 +9701,8 @@ $CONF = {
               "ru" => "Последовательность %{sequence}... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Низ %{sequence}... није завршен у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te %{sequence} dizisi sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Послідовність %{sequence}... не завершено в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Послідовність %{sequence}... не завершено в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的序列 %{sequence}... 未终止；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -9683,7 +9800,8 @@ $CONF = {
               "ru" => "Ссылка на недопустимую группу 0 в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Упућивање на неважећу групу 0 у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te geçersiz grup 0'a başvuru; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Посилання на недопустиму групу 0 у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Посилання на недопустиму групу 0 у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中引用了无效的组 0；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -9766,7 +9884,8 @@ $CONF = {
               "ru" => "Ссылка на несуществующую или незакрытую группу в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Упућивање на непостојећу или незатворену групу у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te var olmayan veya kapatılmamış gruba başvuru; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Посилання на неіснуючу або незакриту групу в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Посилання на неіснуючу або незакриту групу в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中引用了不存在或未闭合的组；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -9849,7 +9968,8 @@ $CONF = {
               "ru" => "Незавершённая конструкция \\g... в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Незавршен образац \\g... у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te sonlandırılmamış \\g... kalıbı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Незавершений шаблон \\g... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Незавершений шаблон \\g... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 \\g... 模式未终止；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -9932,7 +10052,8 @@ $CONF = {
               "ru" => "Непарная скобка ) в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неупарена заграда ) у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te eşleşmeyen ) parantezi; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Непарна ) у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Непарна ) у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中有未匹配的 )；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -10015,7 +10136,8 @@ $CONF = {
               "ru" => "Последовательность (? не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Непотпун низ (? у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (? dizisi tamamlanmamış; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Незавершена послідовність (? у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Незавершена послідовність (? у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 (? 序列不完整；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -10098,7 +10220,8 @@ $CONF = {
               "ru" => "\\K запрещено в проверках с просмотром вперёд или назад в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "\\K није дозвољено у позитивном или негативном lookahead/lookbehind-у у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\K lookahead/lookbehind içinde kullanılamaz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "\\K заборонено в перевірках із переглядом уперед/назад у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "\\K заборонено в перевірках із переглядом уперед/назад у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式的前瞻/后顾断言中不允许使用 \\K；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -10181,7 +10304,8 @@ $CONF = {
               "ru" => "Последовательность (%{lookaround}... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Низ (%{lookaround}... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (%{lookaround} dizisi sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Послідовність (%{lookaround}... не завершено в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Послідовність (%{lookaround}... не завершено в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的序列 (%{lookaround}... 未终止；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -10269,7 +10393,8 @@ $CONF = {
               "ru" => "Последовательность (?%{sequence_opener}... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Низ (?%{sequence_opener}... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (?%{sequence_opener} dizisi sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Незавершена послідовність (?%{sequence_opener}... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Незавершена послідовність (?%{sequence_opener}... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的序列 (?%{sequence_opener}... 未终止；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -10411,6 +10536,10 @@ $CONF = {
               "uk" => {
                 "*" => "Надто довгий ідентифікатор у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
                 "invalid_character" => "\\x{%{codepoint}} — це символ \\w, недопустимий в імені; позначено <-- HERE після %{identifier_before}<-- HERE %{identifier_after} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
+              "zh" => {
+                "invalid_character" => "\\x{%{codepoint}} 是一个不能用于名称的 \\w 字符；它位于正则表达式中的 %{identifier_before}<-- HERE %{identifier_after} 之后，位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出",
+                "too_long" => "正则表达式中的标识符过长；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
               }
             },
             "args" => [
@@ -10548,7 +10677,8 @@ $CONF = {
               "ru" => "Имя группы должно начинаться с символа класса \\w, не являющегося цифрой, в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Име групе у регуларном изразу мора да почиње знаком речи који није цифра; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te grup adı, rakam olmayan bir sözcük karakteriyle başlamalıdır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Назва групи в регулярному виразі має починатися із символу слова, який не є цифрою; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Назва групи в регулярному виразі має починатися із символу слова, який не є цифрою; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的组名必须以非数字的单词字符开头；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -10685,6 +10815,10 @@ $CONF = {
               "uk" => {
                 "*" => "Послідовність (?P<... не завершено в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
                 "named_recursion" => "Послідовність (?P>... не завершено в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
+              "zh" => {
+                "named_capture" => "正则表达式中的序列 (?P<... 未终止；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/",
+                "named_recursion" => "正则表达式中的序列 (?P>... 未终止；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
               }
             },
             "args" => [
@@ -10777,7 +10911,8 @@ $CONF = {
               "ru" => "Ссылка на несуществующую именованную группу в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Упућивање на непостојећу именовану групу у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te var olmayan adlı gruba başvuru; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Посилання на неіснуючу іменовану групу в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Посилання на неіснуючу іменовану групу в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中引用了不存在的命名组；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -10860,7 +10995,8 @@ $CONF = {
               "ru" => "Непарная скобка ( в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неупарена заграда ( у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te eşleşmeyen ( parantezi; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Непарна ( у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Непарна ( у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中有未匹配的 (；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -10943,7 +11079,8 @@ $CONF = {
               "ru" => "В конструкции '(?...)' символы '(' и '?' должны стоять непосредственно друг за другом в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "У „(?...)“ заграде „(“ и „?“ морају да буду суседне у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "'(?...') içinde '(' ve '?' bitişik olmalıdır; regex'te m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "У '(?...)' символи '(' і '?' мають стояти поруч у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "У '(?...)' символи '(' і '?' мають стояти поруч у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的“(?...)”要求“(”和“?”相邻；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -11026,7 +11163,8 @@ $CONF = {
               "ru" => "Недопустимая ссылка на группу в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неисправно упућивање на групу у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te gruba başvuru geçersiz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Некоректне посилання на групу в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Некоректне посилання на групу в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中对组的引用无效；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -11109,7 +11247,8 @@ $CONF = {
               "ru" => "Ссылка на несуществующую группу в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Упућивање на непостојећу групу у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te var olmayan gruba başvuru; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Посилання на неіснуючу групу в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Посилання на неіснуючу групу в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中引用了不存在的组；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -11192,7 +11331,8 @@ $CONF = {
               "ru" => "Последовательность (?%{sequence_char}...) не реализована в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Низ (?%{sequence_char}...) није имплементиран у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (?%{sequence_char}...) dizisi uygulanmamış; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Послідовність (?%{sequence_char}...) не реалізовано в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Послідовність (?%{sequence_char}...) не реалізовано в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中尚未实现序列 (?%{sequence_char}...)；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -11280,7 +11420,8 @@ $CONF = {
               "ru" => "Последовательность (%{sequence}...) не распознана в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Непознат низ (%{sequence}...) у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (%{sequence}...) dizisi tanınmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Послідовність (%{sequence}...) не розпізнано в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Послідовність (%{sequence}...) не розпізнано в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中无法识别序列 (%{sequence}...)；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -11383,7 +11524,8 @@ $CONF = {
               "ru" => "Ожидается закрывающая скобка в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Очекује се затворена угласта заграда у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te kapatma parantezi bekleniyordu; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Очікується закривальна дужка в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Очікується закривальна дужка в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中缺少右括号；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -11466,7 +11608,8 @@ $CONF = {
               "ru" => "Последовательность (?&... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Низ (?&... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (?&... dizisi sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Послідовність (?&... не завершено в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Послідовність (?&... не завершено в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的序列 (?&... 未终止；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -11549,7 +11692,8 @@ $CONF = {
               "ru" => "Недопустимый шаблон в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Недозвољен образац у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te kalıp geçersiz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Недопустимий шаблон у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Недопустимий шаблон у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的模式不合法；位置由 m/%{before} <-- HERE %{after}/ 中的 <-- HERE 标出"
             },
             "args" => [
               {
@@ -11632,7 +11776,8 @@ $CONF = {
               "ru" => "Слишком много вложенных открывающих скобок в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Превише угнежђених отворених заграда у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te iç içe çok fazla açılış parantezi var; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Забагато вкладених відкривальних дужок у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Забагато вкладених відкривальних дужок у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的嵌套左括号过多；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -11715,7 +11860,8 @@ $CONF = {
               "ru" => "Значение квантификатора в {,} превышает %{limit} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Квантификатор у {,} је већи од %{limit} у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te {,} niceleyicisi %{limit} değerinden büyük; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Квантифікатор у {,} перевищує %{limit} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Квантифікатор у {,} перевищує %{limit} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 {,} 量词超过上限 %{limit}；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -11803,7 +11949,8 @@ $CONF = {
               "ru" => "%{message} в регулярном выражении; место отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "%{message} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "%{message} regex'te; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "%{message} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "%{message} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "%{message}，位于正则表达式中；在 m/%{before} <-- HERE %{after}/ 中由 <-- HERE 标记"
             },
             "args" => [
               {
@@ -11891,7 +12038,8 @@ $CONF = {
               "ru" => "Модификатор \"%{modifier}\" может встречаться не более двух раз в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Модификатор регуларног израза „%{modifier}“ сме да се појави највише два пута у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifade değiştiricisi \"%{modifier}\", düzenli ifadede en fazla iki kez kullanılabilir; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "Модифікатор регулярного виразу \"%{modifier}\" може з’являтися щонайбільше двічі в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Модифікатор регулярного виразу \"%{modifier}\" може з’являтися щонайбільше двічі в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式修饰符“%{modifier}”最多只能出现两次；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -11979,7 +12127,8 @@ $CONF = {
               "ru" => "Модификаторы \"%{first}\" и \"%{second}\" взаимно исключают друг друга в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Модификатори регуларног израза „%{first}“ и „%{second}“ међусобно се искључују у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifade değiştiricileri \"%{first}\" ve \"%{second}\", düzenli ifadede birbirini dışlar; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "Модифікатори \"%{first}\" і \"%{second}\" взаємовиключні в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Модифікатори \"%{first}\" і \"%{second}\" взаємовиключні в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式修饰符 \"%{first}\" 和 \"%{second}\" 不能同时用于正则表达式；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -12072,7 +12221,8 @@ $CONF = {
               "ru" => "Модификатор \"%{modifier}\" не может стоять после \"-\" в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Модификатор регуларног израза „%{modifier}“ не сме да се појави после знака „-“ у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifade değiştiricisi \"%{modifier}\", düzenli ifadede \"-\" işaretinden sonra kullanılamaz; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "Модифікатор регулярного виразу \"%{modifier}\" не може з'являтися після \"-\" у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Модифікатор регулярного виразу \"%{modifier}\" не може з'являтися після \"-\" у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式修饰符 \"%{modifier}\" 不能出现在正则表达式中的 \"-\" 之后；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -12160,7 +12310,8 @@ $CONF = {
               "ru" => "Модификатор \"%{modifier}\" не может встречаться дважды в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Модификатор регуларног израза „%{modifier}“ не сме да се појави двапут у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifade değiştiricisi \"%{modifier}\", düzenli ifadede iki kez kullanılamaz; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "Модифікатор регулярного виразу \"%{modifier}\" не може з'являтися двічі в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Модифікатор регулярного виразу \"%{modifier}\" не може з'являтися двічі в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式修饰符 \"%{modifier}\" 不能在正则表达式中重复出现；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -12248,7 +12399,8 @@ $CONF = {
               "ru" => "Последовательность (?... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Низ (?... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede (?... dizisi sonlandırılmamış; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "Незавершена послідовність (?... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Незавершена послідовність (?... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的序列 (?... 未终止；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -12331,7 +12483,8 @@ $CONF = {
               "ru" => "Модификатор регулярного выражения \"/a\" может встречаться не более двух раз",
               "sr" => "Модификатор регуларног израза „/a“ може да се појави највише два пута",
               "tr" => "Düzenli ifade değiştiricisi \"/a\" en fazla iki kez kullanılabilir",
-              "uk" => "Модифікатор регулярного виразу \"/a\" може з'являтися щонайбільше двічі"
+              "uk" => "Модифікатор регулярного виразу \"/a\" може з'являтися щонайбільше двічі",
+              "zh" => "正则表达式修饰符 \"/a\" 最多只能出现两次"
             },
             "args" => []
           },
@@ -12374,7 +12527,8 @@ $CONF = {
               "ru" => "Модификаторы регулярного выражения \"/%{first}\" и \"/%{second}\" являются взаимоисключающими",
               "sr" => "Модификатори регуларног израза „/%{first}“ и „/%{second}“ међусобно се искључују",
               "tr" => "Düzenli ifade değiştiricileri \"/%{first}\" ve \"/%{second}\" birbirini dışlar",
-              "uk" => "Модифікатори регулярного виразу \"/%{first}\" і \"/%{second}\" є взаємовиключними"
+              "uk" => "Модифікатори регулярного виразу \"/%{first}\" і \"/%{second}\" є взаємовиключними",
+              "zh" => "正则表达式修饰符 \"/%{first}\" 和 \"/%{second}\" 互斥"
             },
             "args" => [
               {
@@ -12428,7 +12582,8 @@ $CONF = {
               "ru" => "Модификатор регулярного выражения \"/%{modifier}\" не может встречаться дважды",
               "sr" => "Модификатор регуларног израза „/%{modifier}“ не може да се појави двапут",
               "tr" => "Düzenli ifade değiştiricisi \"/%{modifier}\" iki kez kullanılamaz",
-              "uk" => "Модифікатор регулярного виразу \"/%{modifier}\" не може з'являтися двічі"
+              "uk" => "Модифікатор регулярного виразу \"/%{modifier}\" не може з'являтися двічі",
+              "zh" => "正则表达式修饰符 \"/%{modifier}\" 不得出现两次"
             },
             "args" => [
               {
@@ -12477,7 +12632,8 @@ $CONF = {
               "ru" => "Неизвестный модификатор регулярного выражения \"/%{modifier}\"",
               "sr" => "Непозната модификација регуларног израза „/%{modifier}“",
               "tr" => "Bilinmeyen düzenli ifade değiştiricisi \"/%{modifier}\"",
-              "uk" => "Невідомий модифікатор регулярного виразу \"/%{modifier}\""
+              "uk" => "Невідомий модифікатор регулярного виразу \"/%{modifier}\"",
+              "zh" => "未知的正则表达式修饰符“/%{modifier}”"
             },
             "args" => [
               {
@@ -12542,7 +12698,8 @@ $CONF = {
               "ru" => "Использование модификатора '%{modifier}' запрещено в подшаблонах с подстановочными знаками для свойств Unicode в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Употреба модификатора „%{modifier}“ није дозвољена у подобразцима џокера Unicode својства у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Unicode özellik joker alt kalıplarında '%{modifier}' değiştiricisinin düzenli ifadede kullanılması yasaktır; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "Використання модифікатора '%{modifier}' заборонено в підшаблонах із підстановними символами для властивостей Unicode у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Використання модифікатора '%{modifier}' заборонено в підшаблонах із підстановними символами для властивостей Unicode у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式的 Unicode 属性通配符子模式中不允许使用修饰符 '%{modifier}'；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -12641,7 +12798,8 @@ $CONF = {
               "ru" => "Недопустимое значение квантификатора в {,} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неисправан квантификатор у {,} у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede {,} içinde geçersiz niceleyici; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "Некоректний квантифікатор у {,} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Некоректний квантифікатор у {,} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中 {,} 量词无效；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -12724,7 +12882,8 @@ $CONF = {
               "ru" => "Вложенные квантификаторы в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Угнежђени квантификатори у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede iç içe niceleyiciler; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "Вкладені квантифікатори в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Вкладені квантифікатори в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中量词嵌套；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -12807,7 +12966,8 @@ $CONF = {
               "ru" => "Отсутствует элемент, к которому применяется квантификатор, в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Квантификатору у регуларном изразу не претходи ништа; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede niceleyiciden önce eşleştirilecek bir ifade yok; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "Перед квантифікатором нічого немає в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Перед квантифікатором нічого немає в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中量词前没有可重复的内容；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -12890,7 +13050,8 @@ $CONF = {
               "ru" => "Использование квантификатора '*' запрещено в подшаблонах с подстановочными знаками для свойств Unicode в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Употреба квантификатора „*“ није дозвољена у подобразцима џокера Unicode својства у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Unicode özellik joker alt kalıplarında '*' niceleyicisinin düzenli ifadede kullanılması yasaktır; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "Використання квантифікатора '*' заборонено в підшаблонах зі знаками підстановки для властивостей Unicode у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Використання квантифікатора '*' заборонено в підшаблонах зі знаками підстановки для властивостей Unicode у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式的 Unicode 属性通配符子模式中不允许使用量词 '*'；位置标记为 <-- HERE：m/%{before} <-- %{after}/"
             },
             "args" => [
               {
@@ -12973,7 +13134,8 @@ $CONF = {
               "ru" => "Глагол '%{verb}' требует обязательного аргумента в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Образац команде „%{verb}“ захтева обавезан аргумент у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede '%{verb}' fiil kalıbı zorunlu bir bağımsız değişken gerektirir; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "Шаблон дієслова '%{verb}' потребує обов'язкового аргументу в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Шаблон дієслова '%{verb}' потребує обов'язкового аргументу в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的动词模式 '%{verb}' 必须带参数；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -13071,7 +13233,8 @@ $CONF = {
               "ru" => "Для '(*%{verb}' требуется завершающий символ ':' в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "„(*%{verb}“ захтева завршну двотачку у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede '(*%{verb}' için sonlandırıcı ':' gerekir; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
-              "uk" => "'(*%{verb}' потребує завершального ':' у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "'(*%{verb}' потребує завершального ':' у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 '(*%{verb}' 需要以 ':' 结束；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -13336,6 +13499,16 @@ $CONF = {
                   "*" => "Незавершена конструкція '(*...' у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
                   "argument" => "Незавершений аргумент '(*...' у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
                 }
+              },
+              "zh" => {
+                "generic_construct" => {
+                  "argument" => "正则表达式中的“(*...”参数未终止；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/",
+                  "construct" => "正则表达式中的“(*...”结构未终止；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
+                },
+                "named_verb" => {
+                  "argument" => "正则表达式中的动词模式参数未终止；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/",
+                  "construct" => "正则表达式中的动词模式未终止；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
+                }
               }
             },
             "args" => [
@@ -13491,6 +13664,10 @@ $CONF = {
               "uk" => {
                 "*" => "Невідомий шаблон дієслова '%{verb}' у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
                 "generic_construct" => "Невідома конструкція '(*...)' '%{verb}' у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
+              "zh" => {
+                "generic_construct" => "正则表达式中有未知的 '(*...)' 构造 '%{verb}'；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/",
+                "named_verb" => "正则表达式中有未知的动词模式 '%{verb}'；位置标记为 <-- HERE：m/%{before} <-- HERE %{after}/"
               }
             },
             "args" => [
@@ -13657,6 +13834,10 @@ $CONF = {
               "uk" => {
                 "*" => "У '(*VERB...)' символи '(' і '*' мають стояти поруч у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
                 "generic_construct" => "У '(*...)' символи '(' і '*' мають стояти поруч у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
+              "zh" => {
+                "generic_construct" => "正则表达式中的“(*...)”要求“(”和“*”相邻；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/",
+                "named_verb" => "正则表达式中的“(*VERB...)”要求“(”和“*”相邻；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
               }
             },
             "args" => [
@@ -13749,7 +13930,8 @@ $CONF = {
               "ru" => "Слово без кавычек \"%{word}\" недопустимо при использовании \"strict subs\"",
               "sr" => "Гола реч „%{word}“ није дозвољена док је „strict subs“ активан",
               "tr" => "\"strict subs\" kullanımdayken \"%{word}\" çıplak sözcüğüne izin verilmez",
-              "uk" => "Слово без лапок \"%{word}\" заборонено, коли діє \"strict subs\""
+              "uk" => "Слово без лапок \"%{word}\" заборонено, коли діє \"strict subs\"",
+              "zh" => "使用 \"strict subs\" 时，不允许裸字 \"%{word}\""
             },
             "args" => [
               {
@@ -13801,7 +13983,8 @@ $CONF = {
               "ru" => "Глобальный символ \"%{var_name}\" требует явного указания имени пакета (вы не забыли объявить \"my %{var_name}\"?)",
               "sr" => "Глобални симбол „%{var_name}“ захтева изричито име пакета (да ли сте заборавили да декларишете „my %{var_name}“?)",
               "tr" => "\"%{var_name}\" genel simgesi için paket adı açıkça belirtilmeli (\"my %{var_name}\" bildirimini yapmayı mı unuttunuz?)",
-              "uk" => "Глобальний символ \"%{var_name}\" потребує явно вказаного імені пакета (можливо, ви забули оголосити \"my %{var_name}\"?)"
+              "uk" => "Глобальний символ \"%{var_name}\" потребує явно вказаного імені пакета (можливо, ви забули оголосити \"my %{var_name}\"?)",
+              "zh" => "全局符号 \"%{var_name}\" 必须显式指定包名 (是否忘记声明 \"my %{var_name}\"？)"
             },
             "args" => [
               {
@@ -13870,7 +14053,8 @@ $CONF = {
               "ru" => "Отсутствует запятая после первого аргумента %{function}",
               "sr" => "Недостаје зарез после првог аргумента функције %{function}",
               "tr" => "%{function} işlevine verilen ilk bağımsız değişkenden sonra virgül eksik",
-              "uk" => "Пропущено кому після першого аргументу %{function}"
+              "uk" => "Пропущено кому після першого аргументу %{function}",
+              "zh" => "调用 %{function} 函数时，第一个参数后缺少逗号"
             },
             "args" => [
               {
@@ -13909,7 +14093,8 @@ $CONF = {
                 "ru" => "genitive",
                 "sr" => "genitive",
                 "tr" => "operation",
-                "uk" => "genitive"
+                "uk" => "genitive",
+                "zh" => "default"
               },
               "source" => "function_operation"
             }
@@ -13953,7 +14138,8 @@ $CONF = {
               "ru" => "Отсутствует запятая после первого аргумента return",
               "sr" => "Недостаје зарез после првог аргумента за return",
               "tr" => "return işlevine ilk bağımsız değişkenden sonra virgül eksik",
-              "uk" => "Пропущено кому після першого аргументу return"
+              "uk" => "Пропущено кому після першого аргументу return",
+              "zh" => "return 的第一个参数后缺少逗号"
             },
             "args" => []
           },
@@ -13996,7 +14182,8 @@ $CONF = {
               "ru" => "Многомерный поиск в хеше отключён",
               "sr" => "Вишедимензионално претраживање у хешу је искључено",
               "tr" => "Çok boyutlu karma tablosu araması devre dışı",
-              "uk" => "Багатовимірний пошук у хеші вимкнено"
+              "uk" => "Багатовимірний пошук у хеші вимкнено",
+              "zh" => "多维哈希查找已禁用"
             },
             "args" => []
           },
@@ -14093,6 +14280,10 @@ $CONF = {
               "uk" => {
                 "invalid_separator" => "Неприпустимий роздільник списку атрибутів: %{separator}",
                 "unterminated" => "Незавершений список атрибутів"
+              },
+              "zh" => {
+                "invalid_separator" => "属性列表分隔符无效：%{separator}",
+                "unterminated" => "属性列表未终止"
               }
             },
             "args" => [
@@ -14151,7 +14342,8 @@ $CONF = {
               "ru" => "Нельзя повторно объявлять переменную catch с помощью \"%{name}\"",
               "sr" => "Променљива catch блока не може поново да се декларише као „%{name}“",
               "tr" => "catch değişkeni \"%{name}\" olarak yeniden tanımlanamaz",
-              "uk" => "Не можна повторно оголосити змінну catch як \"%{name}\""
+              "uk" => "Не можна повторно оголосити змінну catch як \"%{name}\"",
+              "zh" => "不能将 catch 变量重新声明为 \"%{name}\""
             },
             "args" => [
               {
@@ -14200,7 +14392,8 @@ $CONF = {
               "ru" => "Для блока catch требуется (VAR)",
               "sr" => "Блок catch захтева променљиву у заградама",
               "tr" => "catch bloğu bir (VAR) gerektirir",
-              "uk" => "Блок catch потребує (VAR)"
+              "uk" => "Блок catch потребує (VAR)",
+              "zh" => "catch 块必须包含 (变量)"
             },
             "args" => []
           },
@@ -14243,7 +14436,8 @@ $CONF = {
               "ru" => "Нельзя повторно использовать объявление \"%{name}\" внутри \"%{scope}\"",
               "sr" => "„%{name}“ не може поново да се декларише у „%{scope}“",
               "tr" => "\"%{name}\" değişkeni \"%{scope}\" içinde yeniden tanımlanamaz",
-              "uk" => "Не можна повторно оголосити \"%{name}\" у \"%{scope}\""
+              "uk" => "Не можна повторно оголосити \"%{name}\" у \"%{scope}\"",
+              "zh" => "不能在 \"%{scope}\" 中重新声明 \"%{name}\""
             },
             "args" => [
               {
@@ -14500,6 +14694,11 @@ $CONF = {
                   "*" => "Змінна %{name}, оголошена через \"%{scope}\", не може належати до пакета",
                   "subroutine" => "Підпрограма %{name}, оголошена через \"%{scope}\", не може належати до пакета"
                 }
+              },
+              "zh" => {
+                "*" => {
+                  "*" => "“%{scope}”作用域的%{kind} %{name}不能位于包中"
+                }
               }
             },
             "args" => [
@@ -14575,7 +14774,8 @@ $CONF = {
               "ru" => "Псевдонимы пакетов разрешены только в объявлениях use",
               "sr" => "Алијаси пакета дозвољени су само уз use",
               "tr" => "Paket takma adlarına yalnızca use ile izin verilir",
-              "uk" => "Псевдоніми пакетів дозволено лише з use"
+              "uk" => "Псевдоніми пакетів дозволено лише з use",
+              "zh" => "包别名只能通过 use 声明"
             },
             "args" => []
           },
@@ -14673,6 +14873,10 @@ $CONF = {
               "uk" => {
                 "subroutine" => "Ім'я пакета для підпрограми %{name} в \"our\" не дозволено",
                 "variable" => "Ім'я пакета для змінної %{name} в \"our\" не дозволено"
+              },
+              "zh" => {
+                "subroutine" => "\"our\" 中的子程序 %{name} 不允许带包名",
+                "variable" => "\"our\" 中的变量 %{name} 不允许带包名"
               }
             },
             "args" => [
@@ -14860,6 +15064,15 @@ $CONF = {
                 "*" => "Не можна використовувати глобальну змінну %{var_name} у \"%{context}\"",
                 "subroutine_signature" => "Не можна використовувати глобальну змінну %{var_name} у сигнатурі підпрограми",
                 "unknown" => "Не можна використовувати глобальну змінну %{var_name} у ???"
+              },
+              "zh" => {
+                "catch" => "不能在 \"catch\" 中使用全局变量 %{var_name}",
+                "field" => "不能在 \"field\" 中使用全局变量 %{var_name}",
+                "my" => "不能在 \"my\" 中使用全局变量 %{var_name}",
+                "our" => "不能在 \"our\" 中使用全局变量 %{var_name}",
+                "state" => "不能在 \"state\" 中使用全局变量 %{var_name}",
+                "subroutine_signature" => "不能在子程序签名中使用全局变量 %{var_name}",
+                "unknown" => "不能在 ??? 中使用全局变量 %{var_name}"
               }
             },
             "args" => [
@@ -15054,6 +15267,15 @@ $CONF = {
                 "*" => "Не можна використовувати глобальну змінну %{var_name} у \"%{context}\"",
                 "subroutine_signature" => "Не можна використовувати глобальну змінну %{var_name} у сигнатурі підпрограми",
                 "unknown" => "Не можна використовувати глобальну змінну %{var_name} у ???"
+              },
+              "zh" => {
+                "catch" => "不能在 \"catch\" 中使用全局变量 %{var_name}",
+                "field" => "不能在 \"field\" 中使用全局变量 %{var_name}",
+                "my" => "不能在 \"my\" 中使用全局变量 %{var_name}",
+                "our" => "不能在 \"our\" 中使用全局变量 %{var_name}",
+                "state" => "不能在 \"state\" 中使用全局变量 %{var_name}",
+                "subroutine_signature" => "不能在子程序签名中使用全局变量 %{var_name}",
+                "unknown" => "不能在 ??? 中使用全局变量 %{var_name}"
               }
             },
             "args" => [
@@ -15133,7 +15355,8 @@ $CONF = {
               "ru" => "Недопустимое объявление анонимной подпрограммы",
               "sr" => "Недозвољена декларација анонимног потпрограма",
               "tr" => "Anonim alt yordam bildirimi geçersiz",
-              "uk" => "Недопустиме оголошення анонімної підпрограми"
+              "uk" => "Недопустиме оголошення анонімної підпрограми",
+              "zh" => "匿名子程序声明不合法"
             },
             "args" => []
           },
@@ -15176,7 +15399,8 @@ $CONF = {
               "ru" => ":const не допускается для именованных подпрограмм",
               "sr" => ":const није дозвољен за именоване потпрограме",
               "tr" => ":const niteliği adlandırılmış alt yordamlarda kullanılamaz",
-              "uk" => ":const не дозволено для іменованих підпрограм"
+              "uk" => ":const не дозволено для іменованих підпрограм",
+              "zh" => "命名子程序不允许使用 :const"
             },
             "args" => []
           },
@@ -15219,7 +15443,8 @@ $CONF = {
               "ru" => "Нельзя объявить %{target} в \"%{scope}\"",
               "sr" => "Није могуће декларисати %{target} у „%{scope}“",
               "tr" => "\"%{scope}\" bildiriminde %{target} kullanılamaz",
-              "uk" => "Не можна оголосити %{target} у \"%{scope}\""
+              "uk" => "Не можна оголосити %{target} у \"%{scope}\"",
+              "zh" => "不能在 \"%{scope}\" 中声明 %{target}"
             },
             "args" => [
               {
@@ -15262,7 +15487,8 @@ $CONF = {
                 "ru" => "accusative",
                 "sr" => "accusative",
                 "tr" => "operation",
-                "uk" => "accusative"
+                "uk" => "accusative",
+                "zh" => "default"
               },
               "source" => "target_operation"
             }
@@ -15307,7 +15533,8 @@ $CONF = {
               "ru" => "\"%{keyword}\" недопустимо в выражении",
               "sr" => "„%{keyword}“ није дозвољен у изразу",
               "tr" => "\"%{keyword}\" ifadede kullanılamaz",
-              "uk" => "\"%{keyword}\" не дозволено у виразі"
+              "uk" => "\"%{keyword}\" не дозволено у виразі",
+              "zh" => "表达式中不允许使用 \"%{keyword}\""
             },
             "args" => [
               {
@@ -15356,7 +15583,8 @@ $CONF = {
               "ru" => "Инициализация переменных state в списке в настоящее время запрещена",
               "sr" => "Иницијализација променљивих state у листи тренутно није дозвољена",
               "tr" => "state değişkenlerinin listede başlatılmasına şu anda izin verilmiyor",
-              "uk" => "Ініціалізацію змінних state у списку наразі заборонено"
+              "uk" => "Ініціалізацію змінних state у списку наразі заборонено",
+              "zh" => "目前禁止在列表中初始化 state 变量"
             },
             "args" => []
           },
@@ -15400,7 +15628,8 @@ $CONF = {
               "ru" => "Класс %{name} не существует",
               "sr" => "Не постоји класа %{name}",
               "tr" => "Böyle bir sınıf yok: %{name}",
-              "uk" => "Немає такого класу %{name}"
+              "uk" => "Немає такого класу %{name}",
+              "zh" => "没有名为 %{name} 的类"
             },
             "args" => [
               {
@@ -15471,7 +15700,8 @@ $CONF = {
               "ru" => "Нельзя использовать в качестве разделителя неназначенную кодовую точку или символ, не образующий самостоятельную графему",
               "sr" => "Није дозвољена употреба недодељене тачке кода или графеме која не стоји самостално као граничник",
               "tr" => "Bir ayraç olarak atanmamış kod noktalarının veya tek başına birer grafem oluşturmayan karakterlerin kullanılmasına izin verilmez",
-              "uk" => "Не дозволено використовувати непризначену кодову точку або несамостійну графему як роздільник"
+              "uk" => "Не дозволено використовувати непризначену кодову точку або несамостійну графему як роздільник",
+              "zh" => "不能将未分配的码点或非独立字素用作分隔符"
             },
             "args" => []
           },
@@ -15514,7 +15744,8 @@ $CONF = {
               "ru" => "Закрывающая фигурная скобка без пары",
               "sr" => "Непарна десна витичаста заграда",
               "tr" => "Eşleşmeyen sağ küme parantezi",
-              "uk" => "Непарна закривальна фігурна дужка"
+              "uk" => "Непарна закривальна фігурна дужка",
+              "zh" => "右花括号不匹配"
             },
             "args" => []
           },
@@ -15557,7 +15788,8 @@ $CONF = {
               "ru" => "Закрывающая квадратная скобка без пары",
               "sr" => "Непарна десна угласта заграда",
               "tr" => "Eşleşmeyen sağ köşeli parantez",
-              "uk" => "Непарна закривальна квадратна дужка"
+              "uk" => "Непарна закривальна квадратна дужка",
+              "zh" => "右方括号不匹配"
             },
             "args" => []
           },
@@ -15653,6 +15885,10 @@ $CONF = {
               "uk" => {
                 "format_not_terminated" => "Формат не завершено",
                 "missing_right_bracket" => "Відсутня закривальна фігурна або квадратна дужка"
+              },
+              "zh" => {
+                "format_not_terminated" => "格式未终止",
+                "missing_right_bracket" => "缺少右花括号或方括号"
               }
             },
             "args" => [
@@ -15706,7 +15942,8 @@ $CONF = {
               "ru" => "Непосредственно в блоке dispatch разрешены только ветви dispatch-on",
               "sr" => "Непосредно унутар dispatch блока дозвољене су само клаузе dispatch-on",
               "tr" => "Bir dispatch içinde doğrudan yalnızca dispatch-on yan tümcelerine izin verilir",
-              "uk" => "Безпосередньо в dispatch дозволено лише гілки dispatch-on"
+              "uk" => "Безпосередньо в dispatch дозволено лише гілки dispatch-on",
+              "zh" => "dispatch 中只能直接包含 dispatch-on 子句"
             },
             "args" => []
           },
@@ -15749,7 +15986,8 @@ $CONF = {
               "ru" => "Ветви dispatch-on разрешены только непосредственно в блоке dispatch",
               "sr" => "Клаузе dispatch-on су дозвољене само непосредно унутар dispatch блока",
               "tr" => "dispatch-on yan tümcelerine yalnızca doğrudan bir dispatch içinde izin verilir",
-              "uk" => "Гілки dispatch-on дозволено лише безпосередньо в dispatch"
+              "uk" => "Гілки dispatch-on дозволено лише безпосередньо в dispatch",
+              "zh" => "dispatch-on 子句只能直接出现在 dispatch 中"
             },
             "args" => []
           },
@@ -15792,7 +16030,8 @@ $CONF = {
               "ru" => "Отсутствуют фигурные скобки в \\N{}",
               "sr" => "Недостају витичасте заграде у \\N{}",
               "tr" => "\\N{} için küme parantezleri eksik",
-              "uk" => "Відсутні фігурні дужки в \\N{}"
+              "uk" => "Відсутні фігурні дужки в \\N{}",
+              "zh" => "\\N{} 缺少花括号"
             },
             "args" => []
           },
@@ -15835,7 +16074,8 @@ $CONF = {
               "ru" => "Отсутствует закрывающая фигурная скобка в \\N{}",
               "sr" => "Недостаје десна витичаста заграда у \\N{}",
               "tr" => "\\N{} için sağ küme parantezi eksik",
-              "uk" => "Відсутня закривальна фігурна дужка в \\N{}"
+              "uk" => "Відсутня закривальна фігурна дужка в \\N{}",
+              "zh" => "\\N{} 缺少右花括号"
             },
             "args" => []
           },
@@ -15878,7 +16118,8 @@ $CONF = {
               "ru" => "Отсутствует имя управляющего символа в \\c",
               "sr" => "Недостаје име контролисног знака после \\c",
               "tr" => "\\c içinde kontrol karakterinin adı eksik",
-              "uk" => "Відсутнє ім'я керувального символу в \\c"
+              "uk" => "Відсутнє ім'я керувального символу в \\c",
+              "zh" => "\\c 缺少控制字符名称"
             },
             "args" => []
           },
@@ -15922,7 +16163,8 @@ $CONF = {
               "ru" => "Символ после \"\\c\" должен быть печатным символом ASCII",
               "sr" => "Знак после „\\c“ мора бити исписиви ASCII знак",
               "tr" => "\"\\c\" karakterinden sonra yazdırılabilir bir ASCII karakteri gelmelidir",
-              "uk" => "Після \"\\c\" має йти друкований символ ASCII"
+              "uk" => "Після \"\\c\" має йти друкований символ ASCII",
+              "zh" => "“\\c”后面的字符必须是可打印的 ASCII 字符"
             },
             "args" => []
           },
@@ -15972,7 +16214,8 @@ $CONF = {
               "ru" => "Последовательность \"\\c{\" недопустима",
               "sr" => "Низ „\\c{“ није исправан",
               "tr" => "\"\\c{\" dizisi geçersiz",
-              "uk" => "Послідовність \"\\c{\" недопустима"
+              "uk" => "Послідовність \"\\c{\" недопустима",
+              "zh" => "序列“\\c{”无效"
             },
             "args" => []
           },
@@ -16022,7 +16265,8 @@ $CONF = {
               "ru" => "Используйте \"%{control}\" вместо \"\\c{\"",
               "sr" => "Употребите „%{control}“ уместо „\\c{“",
               "tr" => "\"\\c{\" yerine \"%{control}\" kullanın",
-              "uk" => "Використовуйте \"%{control}\" замість \"\\c{\""
+              "uk" => "Використовуйте \"%{control}\" замість \"\\c{\"",
+              "zh" => "应使用“%{control}”，而不是“\\c{”"
             },
             "args" => [
               {
@@ -16077,7 +16321,8 @@ $CONF = {
               "ru" => "Пустая последовательность \\x{}",
               "sr" => "Празан \\x{}",
               "tr" => "\\x{} boş",
-              "uk" => "Порожня послідовність \\x{}"
+              "uk" => "Порожня послідовність \\x{}",
+              "zh" => "\\x{} 为空"
             },
             "args" => []
           },
@@ -16126,7 +16371,8 @@ $CONF = {
               "ru" => "Символ, не являющийся шестнадцатеричной цифрой",
               "sr" => "Знак није хексадецимални",
               "tr" => "Onaltılık olmayan karakter",
-              "uk" => "Символ не є шістнадцятковою цифрою"
+              "uk" => "Символ не є шістнадцятковою цифрою",
+              "zh" => "出现非十六进制字符"
             },
             "args" => []
           },
@@ -16175,7 +16421,8 @@ $CONF = {
               "ru" => "Отсутствует закрывающая фигурная скобка в \\x{}",
               "sr" => "Недостаје десна витичаста заграда у \\x{}",
               "tr" => "\\x{} için sağ küme parantezi eksik",
-              "uk" => "Відсутня закривальна фігурна дужка в \\x{}"
+              "uk" => "Відсутня закривальна фігурна дужка в \\x{}",
+              "zh" => "\\x{} 缺少右花括号"
             },
             "args" => []
           },
@@ -16224,7 +16471,8 @@ $CONF = {
               "ru" => "Пустая последовательность \\x",
               "sr" => "Празан \\x",
               "tr" => "\\x boş",
-              "uk" => "Порожня послідовність \\x"
+              "uk" => "Порожня послідовність \\x",
+              "zh" => "\\x 为空"
             },
             "args" => []
           },
@@ -16273,7 +16521,8 @@ $CONF = {
               "ru" => "Для более чем двух шестнадцатеричных цифр используйте \\x{...}",
               "sr" => "За више од два хексадецимална знака употребите \\x{...}",
               "tr" => "İkiden fazla onaltılık basamak için \\x{...} kullanın",
-              "uk" => "Для більш ніж двох шістнадцяткових цифр використовуйте \\x{...}"
+              "uk" => "Для більш ніж двох шістнадцяткових цифр використовуйте \\x{...}",
+              "zh" => "十六进制字符超过两个时，请使用 \\x{...}"
             },
             "args" => []
           },
@@ -16322,7 +16571,8 @@ $CONF = {
               "ru" => "Символ, не являющийся шестнадцатеричной цифрой",
               "sr" => "Знак није хексадецимални",
               "tr" => "Onaltılık olmayan karakter",
-              "uk" => "Символ не є шістнадцятковою цифрою"
+              "uk" => "Символ не є шістнадцятковою цифрою",
+              "zh" => "出现非十六进制字符"
             },
             "args" => []
           },
@@ -16371,7 +16621,8 @@ $CONF = {
               "ru" => "Отсутствуют фигурные скобки в \\o{}",
               "sr" => "Недостају витичасте заграде у \\o{}",
               "tr" => "\\o{} biçiminde küme parantezleri eksik",
-              "uk" => "Відсутні фігурні дужки у \\o{}"
+              "uk" => "Відсутні фігурні дужки у \\o{}",
+              "zh" => "\\o{} 缺少花括号"
             },
             "args" => []
           },
@@ -16420,7 +16671,8 @@ $CONF = {
               "ru" => "Отсутствует закрывающая фигурная скобка в \\o{}",
               "sr" => "Недостаје десна витичаста заграда у \\o{}",
               "tr" => "\\o{} için sağ küme parantezi eksik",
-              "uk" => "Відсутня закривальна фігурна дужка в \\o{}"
+              "uk" => "Відсутня закривальна фігурна дужка в \\o{}",
+              "zh" => "\\o{} 缺少右花括号"
             },
             "args" => []
           },
@@ -16469,7 +16721,8 @@ $CONF = {
               "ru" => "Пустая последовательность \\o{}",
               "sr" => "Празан \\o{}",
               "tr" => "\\o{} boş",
-              "uk" => "Порожня послідовність \\o{}"
+              "uk" => "Порожня послідовність \\o{}",
+              "zh" => "\\o{} 为空"
             },
             "args" => []
           },
@@ -16518,7 +16771,8 @@ $CONF = {
               "ru" => "Символ, не являющийся восьмеричной цифрой",
               "sr" => "Знак није октални",
               "tr" => "Sekizlik olmayan karakter",
-              "uk" => "Символ не є вісімковою цифрою"
+              "uk" => "Символ не є вісімковою цифрою",
+              "zh" => "出现非八进制字符"
             },
             "args" => []
           },
@@ -16567,7 +16821,8 @@ $CONF = {
               "ru" => "\\x{%{codepoint}} — символ класса \\w, недопустимый в имени; позиция отмечена <-- HERE после %{identifier_before}<-- HERE %{identifier_after}",
               "sr" => "\\x{%{codepoint}} је знак класе \\w који није дозвољен у имену; означено са <-- HERE после %{identifier_before}<-- HERE %{identifier_after}",
               "tr" => "\\x{%{codepoint}}, bir \\w karakteridir ancak ad içinde geçerli değildir; <-- HERE %{identifier_before}<-- HERE %{identifier_after} sonrasında işaretlenmiştir",
-              "uk" => "\\x{%{codepoint}} є символом \\w, неприпустимим в імені; позначено <-- HERE після %{identifier_before}<-- HERE %{identifier_after}"
+              "uk" => "\\x{%{codepoint}} є символом \\w, неприпустимим в імені; позначено <-- HERE після %{identifier_before}<-- HERE %{identifier_after}",
+              "zh" => "\\x{%{codepoint}} 是一个不能用于名称的 \\w 字符；它位于 %{identifier_before}<-- HERE %{identifier_after} 之后"
             },
             "args" => [
               {
@@ -16656,7 +16911,8 @@ $CONF = {
               "ru" => "Числовые имена переменных, состоящие более чем из одной цифры, не могут начинаться с '0'",
               "sr" => "Нумеричке променљиве са више од једне цифре не смеју да почињу са '0'",
               "tr" => "Birden fazla basamaklı sayısal değişken adları '0' ile başlayamaz",
-              "uk" => "Змінні з числовими іменами, що містять більше однієї цифри, не можуть починатися з '0'"
+              "uk" => "Змінні з числовими іменами, що містять більше однієї цифри, не можуть починатися з '0'",
+              "zh" => "位数超过一位的数字变量不能以 '0' 开头"
             },
             "args" => []
           },
@@ -16699,7 +16955,8 @@ $CONF = {
               "ru" => "Недопустимое имя после %{arg1}%{arg2}",
               "sr" => "Неисправно име после %{arg1}%{arg2}",
               "tr" => "%{arg1}%{arg2} sonrasında geçersiz ad",
-              "uk" => "Некоректне ім'я після %{arg1}%{arg2}"
+              "uk" => "Некоректне ім'я після %{arg1}%{arg2}",
+              "zh" => "%{arg1}%{arg2} 后的名称无效"
             },
             "args" => [
               {
@@ -16768,7 +17025,8 @@ $CONF = {
               "ru" => "Завершающий \$ следует записать как \\\$ или \$name",
               "sr" => "Завршни \$ мора бити \\\$ или \$name",
               "tr" => "Sondaki \$ işareti \\\$ ya da \$name olmalıdır",
-              "uk" => "Кінцевий \$ слід записати як \\\$ або \$name"
+              "uk" => "Кінцевий \$ слід записати як \\\$ або \$name",
+              "zh" => "末尾的 \$ 应写作 \\\$ 或 \$name"
             },
             "args" => []
           },
@@ -16814,7 +17072,8 @@ $CONF = {
               "ru" => "синтаксическая ошибка",
               "sr" => "Грешка у синтакси",
               "tr" => "Sözdizimi hatası",
-              "uk" => "синтаксична помилка"
+              "uk" => "синтаксична помилка",
+              "zh" => "语法错误"
             },
             "args" => []
           },
@@ -16873,7 +17132,8 @@ $CONF = {
               "ru" => "Не найдены цифры в литерале типа «%{base}»",
               "sr" => "Нема цифара у литералу основе %{base}",
               "tr" => "%{base} tabanlı sabit için basamak bulunamadı",
-              "uk" => "Не знайдено цифр у числовому літералі (%{base})"
+              "uk" => "Не знайдено цифр у числовому літералі (%{base})",
+              "zh" => "%{base} 字面量中没有找到数字"
             },
             "args" => [
               {
@@ -16922,7 +17182,8 @@ $CONF = {
               "ru" => "Недопустимая двоичная цифра '%{digit}'",
               "sr" => "Недозвољена бинарна цифра „%{digit}“",
               "tr" => "Geçersiz ikili basamak '%{digit}'",
-              "uk" => "Недопустима двійкова цифра '%{digit}'"
+              "uk" => "Недопустима двійкова цифра '%{digit}'",
+              "zh" => "二进制数字中不允许出现数字 '%{digit}'"
             },
             "args" => [
               {
@@ -16971,7 +17232,8 @@ $CONF = {
               "ru" => "Недопустимая восьмеричная цифра '%{digit}'",
               "sr" => "Недозвољена октална цифра „%{digit}“",
               "tr" => "Geçersiz sekizlik basamak '%{digit}'",
-              "uk" => "Недопустима вісімкова цифра '%{digit}'"
+              "uk" => "Недопустима вісімкова цифра '%{digit}'",
+              "zh" => "八进制数字中不允许出现数字 '%{digit}'"
             },
             "args" => [
               {
@@ -17021,7 +17283,8 @@ $CONF = {
               "ru" => "Слишком длинная запись числа",
               "sr" => "Број је предугачак",
               "tr" => "Sayı çok uzun",
-              "uk" => "Задовгий запис числа"
+              "uk" => "Задовгий запис числа",
+              "zh" => "数字过长"
             },
             "args" => []
           },
@@ -17063,7 +17326,8 @@ $CONF = {
               "ru" => "Ошибка синтаксического разбора",
               "sr" => "Грешка при рашчлањивању",
               "tr" => "Ayrıştırma hatası",
-              "uk" => "Помилка синтаксичного аналізу"
+              "uk" => "Помилка синтаксичного аналізу",
+              "zh" => "解析错误"
             },
             "args" => []
           },
@@ -17108,7 +17372,8 @@ $CONF = {
               "ru" => "Использование !~ с s///r не имеет смысла",
               "sr" => "Употреба оператора !~ са s///r нема смисла",
               "tr" => "s///r ile !~ kullanmak anlamlı değil",
-              "uk" => "Використання !~ із s///r не має сенсу"
+              "uk" => "Використання !~ із s///r не має сенсу",
+              "zh" => "在 s///r 中使用 !~ 没有意义"
             },
             "args" => []
           },
@@ -17151,7 +17416,8 @@ $CONF = {
               "ru" => "%{sequence} не может быть именованной последовательностью в операторе транслитерации",
               "sr" => "У оператору транслитерације не сме се користити %{sequence}, јер је то именовани низ",
               "tr" => "%{sequence}, transliterasyon işleci içinde adlandırılmış bir dizi olmamalıdır",
-              "uk" => "%{sequence} не може бути іменованою послідовністю в операторі транслітерації"
+              "uk" => "%{sequence} не може бути іменованою послідовністю в операторі транслітерації",
+              "zh" => "转写操作符中不能使用命名序列 %{sequence}"
             },
             "args" => [
               {
@@ -17210,7 +17476,8 @@ $CONF = {
               "ru" => "Использование !~ с tr///r не имеет смысла",
               "sr" => "Употреба оператора !~ са tr///r нема смисла",
               "tr" => "tr///r ile !~ kullanmak anlamlı değil",
-              "uk" => "Використання !~ із tr///r не має сенсу"
+              "uk" => "Використання !~ із tr///r не має сенсу",
+              "zh" => "在 tr///r 中使用 !~ 没有意义"
             },
             "args" => []
           },
@@ -17253,7 +17520,8 @@ $CONF = {
               "ru" => "В операторе require вместо <> следует использовать кавычки",
               "sr" => "<> у наредби require мора бити замењено наводницима",
               "tr" => "require deyimindeki <> tırnak içine alınmalıdır",
-              "uk" => "Замість <> в інструкції require слід використовувати лапки"
+              "uk" => "Замість <> в інструкції require слід використовувати лапки",
+              "zh" => "require 语句中的 <> 应改用引号"
             },
             "args" => []
           },
@@ -17297,7 +17565,8 @@ $CONF = {
               "ru" => "'#' недопустим непосредственно после сигила в сигнатуре подпрограммы",
               "sr" => "Знак '#' не сме непосредно да следи после сигила у потпису потпрограма",
               "tr" => "Alt yordam imzasında bir sigilin hemen ardından '#' gelemez",
-              "uk" => "'#' не дозволено безпосередньо після сигіла в сигнатурі підпрограми"
+              "uk" => "'#' не дозволено безпосередньо після сигіла в сигнатурі підпрограми",
+              "zh" => "子程序签名中的 sigil 后不能紧跟 '#'"
             },
             "args" => []
           },
@@ -17341,7 +17610,8 @@ $CONF = {
               "ru" => "Обязательный параметр следует за необязательным",
               "sr" => "Обавезни параметар следи после опционог параметра",
               "tr" => "İsteğe bağlı parametreden sonra zorunlu parametre geliyor",
-              "uk" => "Обов’язковий параметр іде після необов’язкового"
+              "uk" => "Обов’язковий параметр іде після необов’язкового",
+              "zh" => "必选参数位于可选参数之后"
             },
             "args" => []
           },
@@ -17385,7 +17655,8 @@ $CONF = {
               "ru" => "Повторяющееся имя параметра подпрограммы",
               "sr" => "Дуплирано име параметра потпрограма",
               "tr" => "Alt yordam parametre adı yinelenmiş",
-              "uk" => "Повторне використання імені параметра підпрограми"
+              "uk" => "Повторне використання імені параметра підпрограми",
+              "zh" => "子程序参数名称重复"
             },
             "args" => []
           },
@@ -17429,7 +17700,8 @@ $CONF = {
               "ru" => "Именованные параметры должны иметь имя",
               "sr" => "Именовани параметри морају имати име",
               "tr" => "Adlandırılmış parametrelerin mutlaka bir adı olmalıdır",
-              "uk" => "Іменовані параметри обов'язково повинні мати ім'я"
+              "uk" => "Іменовані параметри обов'язково повинні мати ім'я",
+              "zh" => "命名参数必须指定名称"
             },
             "args" => []
           },
@@ -17473,7 +17745,8 @@ $CONF = {
               "ru" => "Именованный параметр сигнатуры должен начинаться с '\$'",
               "sr" => "Именовани параметар потписа мора да почиње знаком '\$'",
               "tr" => "Adlandırılmış imza parametresi '\$' ile başlamalıdır",
-              "uk" => "Іменований параметр сигнатури має починатися з '\$'"
+              "uk" => "Іменований параметр сигнатури має починатися з '\$'",
+              "zh" => "命名签名参数必须以 '\$' 开头"
             },
             "args" => []
           },
@@ -17517,7 +17790,8 @@ $CONF = {
               "ru" => "У необязательного параметра отсутствует выражение значения по умолчанию",
               "sr" => "Опционом параметру недостаје подразумевани израз",
               "tr" => "İsteğe bağlı parametrenin varsayılan ifadesi eksik",
-              "uk" => "Для необов'язкового параметра не задано виразу значення за замовчуванням"
+              "uk" => "Для необов'язкового параметра не задано виразу значення за замовчуванням",
+              "zh" => "可选参数缺少默认表达式"
             },
             "args" => []
           },
@@ -17561,7 +17835,8 @@ $CONF = {
               "ru" => "Параметр, поглощающий все оставшиеся аргументы, должен быть последним",
               "sr" => "Параметар који прихвата све аргументе мора бити последњи",
               "tr" => "Slurpy parametreden sonra başka parametre gelemez",
-              "uk" => "Параметр, що поглинає решту аргументів, не є останнім"
+              "uk" => "Параметр, що поглинає решту аргументів, не є останнім",
+              "zh" => "slurpy 参数必须位于最后"
             },
             "args" => []
           },
@@ -17605,7 +17880,8 @@ $CONF = {
               "ru" => "Параметр сигнатуры должен начинаться с '\$', '\@' или '%%'",
               "sr" => "Параметар потписа мора да почне са '\$', '\@' или '%%'",
               "tr" => "İmza parametresi '\$', '\@' veya '%%' ile başlamalıdır",
-              "uk" => "Параметр сигнатури має починатися з '\$', '\@' або '%%'"
+              "uk" => "Параметр сигнатури має починатися з '\$', '\@' або '%%'",
+              "zh" => "签名参数必须以 '\$'、'\@' 或 '%%' 开头"
             },
             "args" => []
           },
@@ -17649,7 +17925,8 @@ $CONF = {
               "ru" => "Недопустимый оператор после параметра в сигнатуре подпрограммы",
               "sr" => "Недозвољен оператор после параметра у потпису потпрограма",
               "tr" => "Alt yordam imzasındaki parametreden sonra geçersiz işleç",
-              "uk" => "Недопустимий оператор після параметра в сигнатурі підпрограми"
+              "uk" => "Недопустимий оператор після параметра в сигнатурі підпрограми",
+              "zh" => "子程序签名中的参数后有非法运算符"
             },
             "args" => []
           },
@@ -17693,7 +17970,8 @@ $CONF = {
               "ru" => "Позиционный параметр следует за именованным",
               "sr" => "Позициони параметар следи после именованог параметра",
               "tr" => "Konumsal parametre, adlandırılmış parametreden sonra geliyor",
-              "uk" => "Позиційний параметр іде після іменованого параметра"
+              "uk" => "Позиційний параметр іде після іменованого параметра",
+              "zh" => "位置参数位于命名参数之后"
             },
             "args" => []
           },
@@ -17737,7 +18015,8 @@ $CONF = {
               "ru" => "Недопустимый символ после сигила в сигнатуре подпрограммы",
               "sr" => "Недозвољен знак после сигила у потпису потпрограма",
               "tr" => "Alt yordam imzasında sigilden sonra geçersiz karakter",
-              "uk" => "Недопустимий символ після сигіла в сигнатурі підпрограми"
+              "uk" => "Недопустимий символ після сигіла в сигнатурі підпрограми",
+              "zh" => "子程序签名中的 sigil 后有非法字符"
             },
             "args" => []
           },
@@ -17781,7 +18060,8 @@ $CONF = {
               "ru" => "Параметр, собирающий оставшиеся аргументы, не может иметь значение по умолчанию",
               "sr" => "Параметар који прима остатак аргумената не може имати подразумевану вредност",
               "tr" => "Slurpy parametrenin varsayılan değeri olamaz",
-              "uk" => "Параметр, що поглинає решту аргументів, не може мати значення за замовчуванням"
+              "uk" => "Параметр, що поглинає решту аргументів, не може мати значення за замовчуванням",
+              "zh" => "slurpy 参数不能有默认值"
             },
             "args" => []
           },
@@ -17825,7 +18105,8 @@ $CONF = {
               "ru" => "Не допускается несколько параметров, поглощающих оставшиеся аргументы",
               "sr" => "Више slurpy параметара није дозвољено",
               "tr" => "Birden fazla slurpy parametreye izin verilmez",
-              "uk" => "Не дозволено мати кілька параметрів, що поглинають решту аргументів"
+              "uk" => "Не дозволено мати кілька параметрів, що поглинають решту аргументів",
+              "zh" => "不允许有多个 slurpy 参数"
             },
             "args" => []
           },
@@ -17869,7 +18150,8 @@ $CONF = {
               "ru" => "Использование символа 0x%{character}, не входящего в ASCII, запрещено при действии 'use source::encoding \"ascii\"'",
               "sr" => "Употреба не-АСКИ знака 0x%{character} није дозвољена када је на снази 'use source::encoding \"ascii\"'",
               "tr" => "'use source::encoding \"ascii\"' etkinken ASCII dışı 0x%{character} karakterinin kullanılması yasa dışıdır",
-              "uk" => "Використання символу 0x%{character} поза ASCII заборонено, коли діє 'use source::encoding \"ascii\"'"
+              "uk" => "Використання символу 0x%{character} поза ASCII заборонено, коли діє 'use source::encoding \"ascii\"'",
+              "zh" => "启用 'use source::encoding \"ascii\"' 时，不允许使用非 ASCII 字符 0x%{character}"
             },
             "args" => [
               {
@@ -17924,7 +18206,8 @@ $CONF = {
               "ru" => "Маркер конфликта системы управления версиями",
               "sr" => "Ознака сукоба у систему за контролу верзија",
               "tr" => "Sürüm kontrolü çakışma işaretçisi",
-              "uk" => "Маркер конфлікту системи керування версіями"
+              "uk" => "Маркер конфлікту системи керування версіями",
+              "zh" => "发现版本控制冲突标记"
             },
             "args" => []
           },
@@ -18241,6 +18524,23 @@ $CONF = {
                 "underscore_not_allowed" => "Неправильний формат версії (знаки підкреслення не дозволено)",
                 "version_required" => "Неправильний формат версії (потрібна версія)",
                 "zero_before_decimal" => "Неправильний формат версії (перед десятковою крапкою потрібен 0)"
+              },
+              "zh" => {
+                "alpha_without_decimal" => "版本格式无效（字母版本号缺少小数点）",
+                "component_too_long" => "版本格式无效（小数点之间最多允许 3 位数字）",
+                "dotted_decimal_needs_v" => "版本格式无效（点分十进制版本号必须以 'v' 开头）",
+                "dotted_decimal_parts" => "版本格式无效（点分十进制版本号至少需要三段）",
+                "fractional_part_required" => "版本格式无效（必须有小数部分）",
+                "leading_zero" => "版本格式无效（不能有前导零）",
+                "misplaced_underscore" => "版本格式无效（下划线位置不正确）",
+                "multiple_underscores" => "版本格式无效（不能有多个下划线）",
+                "negative_version" => "版本格式无效（版本号不能为负数）",
+                "non_numeric_data" => "版本格式无效（包含非数字数据）",
+                "trailing_decimal" => "版本格式无效（末尾不能有小数点）",
+                "underscore_before_decimal" => "版本格式无效（小数点前不能有下划线）",
+                "underscore_not_allowed" => "版本格式无效（不能使用下划线）",
+                "version_required" => "版本格式无效（必须指定版本号）",
+                "zero_before_decimal" => "版本格式无效（小数点前必须有 0）"
               }
             },
             "args" => [
@@ -18307,7 +18607,8 @@ $CONF = {
               "ru" => "Недопустимый символ в \\N{...}; место ошибки отмечено <-- HERE в %{context}",
               "sr" => "Неисправан знак у \\N{...}; означено са <-- HERE у %{context}",
               "tr" => "\\N{...} içinde geçersiz karakter; %{context} içinde <-- HERE ile işaretli",
-              "uk" => "Недопустимий символ у \\N{...}; позначено маркером <-- HERE у %{context}"
+              "uk" => "Недопустимий символ у \\N{...}; позначено маркером <-- HERE у %{context}",
+              "zh" => "\\N{...} 中含有无效字符；位置标记为 <-- HERE，所在上下文：%{context}"
             },
             "args" => [
               {
@@ -18365,7 +18666,8 @@ $CONF = {
               "ru" => "в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "düzenli ifadede; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "在正则表达式中；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -18454,7 +18756,8 @@ $CONF = {
               "ru" => "Константа(charnames) неизвестна",
               "sr" => "Константа(charnames): непознато",
               "tr" => "Constant(charnames) bilinmiyor",
-              "uk" => "Константа(charnames) невідома"
+              "uk" => "Константа(charnames) невідома",
+              "zh" => "常量(charnames)：未知"
             },
             "args" => []
           },
@@ -18502,7 +18805,8 @@ $CONF = {
               "ru" => "Определения псевдонимов charnames не могут содержать несколько пробелов подряд; место ошибки отмечено <-- HERE в %{context}",
               "sr" => "Дефиниције псеудонима charnames не смеју садржати низ узастопних размака; означено са <-- HERE у %{context}",
               "tr" => "charnames takma ad tanımları art arda birden fazla boşluk içeremez; %{context} içinde <-- HERE ile işaretli",
-              "uk" => "Визначення псевдонімів charnames не можуть містити кількох пробілів поспіль; позначено <-- HERE у %{context}"
+              "uk" => "Визначення псевдонімів charnames не можуть містити кількох пробілів поспіль; позначено <-- HERE у %{context}",
+              "zh" => "charnames 别名定义中不得包含连续多个空格；位置标记为 <-- HERE，所在上下文：%{context}"
             },
             "args" => [
               {
@@ -18557,7 +18861,8 @@ $CONF = {
               "ru" => "Неизвестное имя символа '%{name}'",
               "sr" => "Непознато име знака „%{name}“",
               "tr" => "Bilinmeyen karakter adı '%{name}'",
-              "uk" => "Невідома назва символу '%{name}'"
+              "uk" => "Невідома назва символу '%{name}'",
+              "zh" => "未知的字符名称“%{name}”"
             },
             "args" => [
               {
@@ -18614,7 +18919,8 @@ $CONF = {
               "ru" => "Использование кодовой точки 0x%{code_point} запрещено; максимально допустимое значение — 0x%{maximum}",
               "sr" => "Употреба тачке кода 0x%{code_point} није дозвољена; највећа дозвољена вредност је 0x%{maximum}",
               "tr" => "0x%{code_point} kod noktasının kullanımına izin verilmiyor; izin verilen en yüksek değer 0x%{maximum}",
-              "uk" => "Використання кодової точки 0x%{code_point} не дозволено; допустимий максимум — 0x%{maximum}"
+              "uk" => "Використання кодової точки 0x%{code_point} не дозволено; допустимий максимум — 0x%{maximum}",
+              "zh" => "不允许使用码点 0x%{code_point}；允许的最大值为 0x%{maximum}"
             },
             "args" => [
               {
@@ -18684,7 +18990,8 @@ $CONF = {
               "ru" => "Использование кодовой точки 0%{code_point} недопустимо; максимально допустимое значение — 0%{maximum}",
               "sr" => "Употреба кодне тачке 0%{code_point} није дозвољена; највећа дозвољена вредност је 0%{maximum}",
               "tr" => "0%{code_point} kod noktasının kullanımına izin verilmiyor; izin verilen en yüksek değer 0%{maximum}",
-              "uk" => "Використання кодової точки 0%{code_point} не дозволено; максимально допустиме значення — 0%{maximum}"
+              "uk" => "Використання кодової точки 0%{code_point} не дозволено; максимально допустиме значення — 0%{maximum}",
+              "zh" => "不允许使用码点 0%{code_point}；允许的最大值为 0%{maximum}"
             },
             "args" => [
               {
@@ -18754,7 +19061,8 @@ $CONF = {
               "ru" => "Использование кодовой точки 0x%{code_point} недопустимо; максимально допустимое значение — 0x%{maximum} в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Употреба кодне тачке 0x%{code_point} није дозвољена; највећа дозвољена вредност је 0x%{maximum} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "0x%{code_point} kod noktasının kullanımına izin verilmiyor; izin verilen en yüksek değer 0x%{maximum}; düzenli ifadede m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Використання кодової точки 0x%{code_point} заборонено; максимально допустиме значення — 0x%{maximum} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Використання кодової точки 0x%{code_point} заборонено; максимально допустиме значення — 0x%{maximum} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "不允许使用码点 0x%{code_point}；允许的最大值为 0x%{maximum}，在正则表达式中；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -18860,7 +19168,8 @@ $CONF = {
               "ru" => "Недопустимое определение свойства Unicode в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неважећа дефиниција Уникод својства у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede geçersiz Unicode özellik tanımı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
-              "uk" => "Некоректне визначення властивості Unicode у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Некоректне визначення властивості Unicode у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的 Unicode 属性定义无效；位置标记为 <-- HERE，位于 m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -18949,7 +19258,8 @@ $CONF = {
               "ru" => "Некорректная последовательность UTF-8 в результате %{escape} сразу после '%{value_prefix}'",
               "sr" => "Неисправан UTF-8 који је вратио %{escape}, одмах после „%{value_prefix}“",
               "tr" => "%{escape} tarafından döndürülen UTF-8, '%{value_prefix}' bölümünün hemen ardından bozuk",
-              "uk" => "%{escape} повернула некоректну послідовність UTF-8 безпосередньо після '%{value_prefix}'"
+              "uk" => "%{escape} повернула некоректну послідовність UTF-8 безпосередньо після '%{value_prefix}'",
+              "zh" => "%{escape} 返回了格式错误的 UTF-8，紧接在“%{value_prefix}”之后"
             },
             "args" => [
               {
@@ -19066,6 +19376,10 @@ $CONF = {
               "uk" => {
                 "too_few" => "Замало аргументів для %{function}",
                 "too_many" => "Забагато аргументів для %{function}"
+              },
+              "zh" => {
+                "too_few" => "传递给 %{function} 的参数不足",
+                "too_many" => "传递给 %{function} 的参数过多"
               }
             },
             "args" => [
@@ -19120,7 +19434,8 @@ $CONF = {
               "ru" => "Нечётное число аргументов «имя/значение» для подпрограммы '%{arg1}'",
               "sr" => "Непаран број аргумената име/вредност за потпрограму '%{arg1}'",
               "tr" => "'%{arg1}' alt yordamına tek sayıda ad/değer argümanı verildi",
-              "uk" => "Непарна кількість аргументів ім’я/значення для підпрограми '%{arg1}'"
+              "uk" => "Непарна кількість аргументів ім’я/значення для підпрограми '%{arg1}'",
+              "zh" => "子程序 '%{arg1}' 的名称/值参数数量为奇数"
             },
             "args" => [
               {
@@ -19173,7 +19488,8 @@ $CONF = {
               "ru" => "Использование: %{signature}",
               "sr" => "Употреба: %{signature}",
               "tr" => "Kullanım: %{signature}",
-              "uk" => "Використання: %{signature}"
+              "uk" => "Використання: %{signature}",
+              "zh" => "用法：%{signature}"
             },
             "args" => [
               {
@@ -20040,6 +20356,16 @@ $CONF = {
                   "*" => "Забагато аргументів для підпрограми '%{name}' (отримано %{actual_count}; очікується %{expected_count})",
                   "maximum" => "Забагато аргументів для підпрограми '%{name}' (отримано %{actual_count}; очікується щонайбільше %{expected_count})"
                 }
+              },
+              "zh" => {
+                "too_few" => {
+                  "exact" => "子程序 '%{name}' 的参数过少 (收到 %{actual_count} 个；应为 %{expected_count} 个)",
+                  "minimum" => "子程序 '%{name}' 的参数过少 (收到 %{actual_count} 个；至少需要 %{expected_count} 个)"
+                },
+                "too_many" => {
+                  "exact" => "子程序 '%{name}' 的参数过多 (收到 %{actual_count} 个；应为 %{expected_count} 个)",
+                  "maximum" => "子程序 '%{name}' 的参数过多 (收到 %{actual_count} 个；至多允许 %{expected_count} 个)"
+                }
               }
             },
             "args" => [
@@ -20122,7 +20448,8 @@ $CONF = {
               "ru" => "Использование: CODE(0x%{arg1})(%{arg2})",
               "sr" => "Употреба: CODE(0x%{arg1})(%{arg2})",
               "tr" => "Kullanım: CODE(0x%{arg1})(%{arg2})",
-              "uk" => "Використання: CODE(0x%{arg1})(%{arg2})"
+              "uk" => "Використання: CODE(0x%{arg1})(%{arg2})",
+              "zh" => "用法：CODE(0x%{arg1})(%{arg2})"
             },
             "args" => [
               {
@@ -20174,7 +20501,8 @@ $CONF = {
               "ru" => "Использование: %{arg1}::%{arg2}(%{arg3})",
               "sr" => "Употреба: %{arg1}::%{arg2}(%{arg3})",
               "tr" => "Kullanım: %{arg1}::%{arg2}(%{arg3})",
-              "uk" => "Використання: %{arg1}::%{arg2}(%{arg3})"
+              "uk" => "Використання: %{arg1}::%{arg2}(%{arg3})",
+              "zh" => "用法：%{arg1}::%{arg2}(%{arg3})"
             },
             "args" => [
               {
@@ -20233,7 +20561,8 @@ $CONF = {
               "ru" => "Использование: %{arg1}(%{arg2})",
               "sr" => "Употреба: %{arg1}(%{arg2})",
               "tr" => "Kullanım: %{arg1}(%{arg2})",
-              "uk" => "Використання: %{arg1}(%{arg2})"
+              "uk" => "Використання: %{arg1}(%{arg2})",
+              "zh" => "用法：%{arg1}(%{arg2})"
             },
             "args" => [
               {
@@ -20288,7 +20617,8 @@ $CONF = {
               "ru" => "Не указан обязательный именованный параметр '%{parameter}' для подпрограммы '%{function}'",
               "sr" => "Недостаје обавезни именовани параметар '%{parameter}' за потпрограму '%{function}'",
               "tr" => "'%{function}' alt yordamı için zorunlu adlandırılmış parametre '%{parameter}' eksik",
-              "uk" => "Відсутній обов’язковий іменований параметр '%{parameter}' для підпрограми '%{function}'"
+              "uk" => "Відсутній обов’язковий іменований параметр '%{parameter}' для підпрограми '%{function}'",
+              "zh" => "子程序 '%{function}' 缺少必需的命名参数 '%{parameter}'"
             },
             "args" => [
               {
@@ -20509,6 +20839,16 @@ $CONF = {
                   "*" => "Нерозпізнаний іменований параметр %{names} підпрограми '%{function}'",
                   "missing" => "Відсутній обов'язковий іменований параметр %{names} підпрограми '%{function}'"
                 }
+              },
+              "zh" => {
+                "*" => {
+                  "*" => "子程序“%{function}”收到无法识别的命名参数 %{names}",
+                  "missing" => "子程序“%{function}”缺少必需的命名参数 %{names}"
+                },
+                "one" => {
+                  "*" => "子程序“%{function}”收到无法识别的命名参数 %{names}",
+                  "missing" => "子程序“%{function}”缺少必需的命名参数 %{names}"
+                }
               }
             },
             "args" => [
@@ -20583,7 +20923,8 @@ $CONF = {
               "ru" => "Неизвестный именованный параметр '%{parameter}' для подпрограммы '%{function}'",
               "sr" => "Непрепознат именовани параметар '%{parameter}' за потпрограму '%{function}'",
               "tr" => "'%{function}' alt yordamı için tanınmayan adlandırılmış parametre '%{parameter}'",
-              "uk" => "Нерозпізнаний іменований параметр '%{parameter}' для підпрограми '%{function}'"
+              "uk" => "Нерозпізнаний іменований параметр '%{parameter}' для підпрограми '%{function}'",
+              "zh" => "子程序 '%{function}' 收到无法识别的命名参数 '%{parameter}'"
             },
             "args" => [
               {
@@ -20645,7 +20986,8 @@ $CONF = {
               "ru" => "Аргумент %{arg1} функции &CORE::%{arg2} должен быть ссылкой на массив",
               "sr" => "Тип аргумента %{arg1} функције &CORE::%{arg2} мора бити референца на низ",
               "tr" => "&CORE::%{arg2} işlevine verilen argüman %{arg1} bir dizi başvurusu olmalıdır",
-              "uk" => "Аргумент %{arg1} для &CORE::%{arg2} має бути посиланням на масив"
+              "uk" => "Аргумент %{arg1} для &CORE::%{arg2} має бути посиланням на масив",
+              "zh" => "&CORE::%{arg2} 的第 %{arg1} 个参数必须是数组引用"
             },
             "args" => [
               {
@@ -20753,6 +21095,10 @@ $CONF = {
               "uk" => {
                 "*" => "Аргумент %{argument_number} для &CORE::%{operation_description} має бути посиланням на хеш",
                 "hash_or_array" => "Аргумент %{argument_number} для &CORE::%{operation_description} має бути посиланням на хеш або масив"
+              },
+              "zh" => {
+                "hash_only" => "&CORE::%{operation_description} 的第 %{argument_number} 个参数必须是哈希引用",
+                "hash_or_array" => "&CORE::%{operation_description} 的第 %{argument_number} 个参数必须是哈希或数组引用"
               }
             },
             "args" => [
@@ -20888,6 +21234,11 @@ $CONF = {
                 "*" => "Аргумент %{argument_number} для &CORE::%{operation_name} має бути посиланням на скаляр",
                 "reference_with_code" => "Аргумент %{argument_number} для &CORE::%{operation_name} має бути посиланням на один із типів [\$\@%%&*]",
                 "reference_without_code" => "Аргумент %{argument_number} для &CORE::%{operation_name} має бути посиланням на один із типів [\$\@%%*]"
+              },
+              "zh" => {
+                "reference_with_code" => "&CORE::%{operation_name} 的第 %{argument_number} 个参数必须是 [\$\@%%&*] 中的一种引用",
+                "reference_without_code" => "&CORE::%{operation_name} 的第 %{argument_number} 个参数必须是 [\$\@%%*] 中的一种引用",
+                "scalar_reference" => "&CORE::%{operation_name} 的第 %{argument_number} 个参数必须是标量引用"
               }
             },
             "args" => [
@@ -20951,7 +21302,8 @@ $CONF = {
               "ru" => "Вызван прототип замыкания",
               "sr" => "Позван је прототип затворене функције",
               "tr" => "Kapanış prototipi çağrıldı",
-              "uk" => "Викликано прототип замикання"
+              "uk" => "Викликано прототип замикання",
+              "zh" => "调用了闭包原型"
             },
             "args" => []
           },
@@ -20994,7 +21346,8 @@ $CONF = {
               "ru" => "&CORE::%{arg1} нельзя вызывать напрямую",
               "sr" => "&CORE::%{arg1} не може се непосредно позвати",
               "tr" => "&CORE::%{arg1} doğrudan çağrılamaz",
-              "uk" => "&CORE::%{arg1} неможливо викликати безпосередньо"
+              "uk" => "&CORE::%{arg1} неможливо викликати безпосередньо",
+              "zh" => "&CORE::%{arg1} 不能直接调用"
             },
             "args" => [
               {
@@ -21042,7 +21395,8 @@ $CONF = {
               "ru" => "Использование унаследованного AUTOLOAD для %{arg1}::%{arg2}(), вызываемой не как метод, больше не разрешено",
               "sr" => "Употреба наслеђеног AUTOLOAD-а за %{arg1}::%{arg2}() који није метод више није дозвољена",
               "tr" => "Yöntem olmayan %{arg1}::%{arg2}() için devralınan AUTOLOAD kullanımı artık izinli değil",
-              "uk" => "Використання успадкованого AUTOLOAD для підпрограми %{arg1}::%{arg2}(), викликаної не як метод, більше не дозволено"
+              "uk" => "Використання успадкованого AUTOLOAD для підпрограми %{arg1}::%{arg2}(), викликаної не як метод, більше не дозволено",
+              "zh" => "不再允许对非方法 %{arg1}::%{arg2}() 使用继承的 AUTOLOAD"
             },
             "args" => [
               {
@@ -21111,7 +21465,8 @@ $CONF = {
               "ru" => "Вызвана неопределённая подпрограмма сортировки \"%{arg1}\"",
               "sr" => "Позван је недефинисан потпрограм за сортирање „%{arg1}“",
               "tr" => "Tanımsız sıralama alt yordamı \"%{arg1}\" çağrıldı",
-              "uk" => "Викликано невизначену підпрограму сортування \"%{arg1}\""
+              "uk" => "Викликано невизначену підпрограму сортування \"%{arg1}\"",
+              "zh" => "调用了未定义的排序子例程 \"%{arg1}\""
             },
             "args" => [
               {
@@ -21160,7 +21515,8 @@ $CONF = {
               "ru" => "Вызвана неопределённая подпрограмма &%{name}",
               "sr" => "Позвана је недефинисана потпрограма &%{name}",
               "tr" => "Tanımsız alt yordam &%{name} çağrıldı",
-              "uk" => "Викликано невизначену підпрограму &%{name}"
+              "uk" => "Викликано невизначену підпрограму &%{name}",
+              "zh" => "调用了未定义的子程序 &%{name}"
             },
             "args" => [
               {
@@ -21209,7 +21565,8 @@ $CONF = {
               "ru" => "Неопределённая подпрограмма в sort",
               "sr" => "Недефинисан потпрограм у сортирању",
               "tr" => "Sıralamada tanımsız alt yordam",
-              "uk" => "Невизначена підпрограма в sort"
+              "uk" => "Невизначена підпрограма в sort",
+              "zh" => "sort 中的子例程未定义"
             },
             "args" => []
           },
@@ -21251,7 +21608,8 @@ $CONF = {
               "ru" => "Вызвана неопределённая подпрограмма",
               "sr" => "Позвана је недефинисана потпрограма",
               "tr" => "Tanımsız alt yordam çağrıldı",
-              "uk" => "Викликано невизначену підпрограму"
+              "uk" => "Викликано невизначену підпрограму",
+              "zh" => "调用了未定义的子程序"
             },
             "args" => []
           },
@@ -21293,7 +21651,8 @@ $CONF = {
               "ru" => "Вызвана неопределённая подпрограмма &%{name}, рядом с меткой '%{label}'",
               "sr" => "Позвана је недефинисана потпрограма &%{name}, близу ознаке „%{label}“",
               "tr" => "&%{name} adlı tanımsız alt yordam, '%{label}' etiketinin yakınında çağrıldı",
-              "uk" => "Викликано невизначену підпрограму &%{name}, поблизу мітки '%{label}'"
+              "uk" => "Викликано невизначену підпрограму &%{name}, поблизу мітки '%{label}'",
+              "zh" => "调用了未定义的子程序 &%{name}，靠近标签 '%{label}'"
             },
             "args" => [
               {
@@ -21348,7 +21707,8 @@ $CONF = {
               "ru" => "Не удалось найти номер операции для \"%{arg1}\"",
               "sr" => "Није могуће пронаћи број операције за \"%{arg1}\"",
               "tr" => "\"%{arg1}\" için işlem numarası bulunamıyor",
-              "uk" => "Неможливо знайти номер операції для \"%{arg1}\""
+              "uk" => "Неможливо знайти номер операції для \"%{arg1}\"",
+              "zh" => "找不到 \"%{arg1}\" 对应的 opnumber"
             },
             "args" => [
               {
@@ -21413,7 +21773,8 @@ $CONF = {
               "ru" => "Выполнение %{arg2} прервано из-за ошибок компиляции.\n",
               "sr" => "Извршавање %{arg2} је прекинуто због грешака при компилацији.\n",
               "tr" => "Derleme hataları nedeniyle %{arg2} yürütmesi durduruldu.\n",
-              "uk" => "Виконання %{arg2} перервано через помилки компіляції.\n"
+              "uk" => "Виконання %{arg2} перервано через помилки компіляції.\n",
+              "zh" => "由于编译错误，已中止执行 %{arg2}。\n"
             },
             "args" => [
               {
@@ -21468,7 +21829,8 @@ $CONF = {
               "ru" => "При компиляции %{arg2} обнаружены ошибки.\n",
               "sr" => "У %{arg2} су откривене грешке при компилацији.\n",
               "tr" => "%{arg2} derleme hataları içeriyor.\n",
-              "uk" => "У %{arg2} виявлено помилки компіляції.\n"
+              "uk" => "У %{arg2} виявлено помилки компіляції.\n",
+              "zh" => "%{arg2} 编译时出错。\n"
             },
             "args" => [
               {
@@ -21524,7 +21886,8 @@ $CONF = {
               "ru" => "Слишком много ошибок в %{arg2}.\n",
               "sr" => "%{arg2} има превише грешака.\n",
               "tr" => "%{arg2} çok fazla hata içeriyor.\n",
-              "uk" => "У %{arg2} забагато помилок.\n"
+              "uk" => "У %{arg2} забагато помилок.\n",
+              "zh" => "%{arg2}有太多错误。\n"
             },
             "args" => [
               {
@@ -21572,7 +21935,8 @@ $CONF = {
               "ru" => "Использование \"goto\" для перехода внутрь конструкции больше не допускается",
               "sr" => "Употреба наредбе \"goto\" за скок унутар конструкције више није дозвољена",
               "tr" => "Bir yapının içine atlamak için \"goto\" kullanılamaz",
-              "uk" => "Використання \"goto\" для переходу всередину конструкції більше не дозволено"
+              "uk" => "Використання \"goto\" для переходу всередину конструкції більше не дозволено",
+              "zh" => "从外部跳入构造体的用法 \"goto\" 已不再允许"
             },
             "args" => []
           },
@@ -21614,7 +21978,8 @@ $CONF = {
               "ru" => "Нельзя выполнить переход \"goto\" внутрь блока \"defer\"",
               "sr" => "Не може се извршити „goto“ унутар блока „defer“",
               "tr" => "\"goto\" ile bir \"defer\" bloğunun içine girilemez",
-              "uk" => "Неможливо виконати \"goto\" всередину блока \"defer\""
+              "uk" => "Неможливо виконати \"goto\" всередину блока \"defer\"",
+              "zh" => "不能用 \"goto\" 跳入 \"defer\" 块"
             },
             "args" => []
           },
@@ -21656,7 +22021,8 @@ $CONF = {
               "ru" => "Нельзя перейти с помощью \"goto\" внутрь бинарного или списочного выражения",
               "sr" => "Није могуће извршити \"goto\" унутар бинарног израза или израза са листом",
               "tr" => "\"goto\" ile ikili veya liste ifadesinin içine girilemez",
-              "uk" => "Не можна перейти за допомогою \"goto\" всередину бінарного або спискового виразу"
+              "uk" => "Не можна перейти за допомогою \"goto\" всередину бінарного або спискового виразу",
+              "zh" => "不能用 \"goto\" 跳入二元表达式或列表表达式"
             },
             "args" => []
           },
@@ -21698,7 +22064,8 @@ $CONF = {
               "ru" => "Нельзя перейти с помощью \"goto\" в середину цикла foreach",
               "sr" => "Није могуће извршити \"goto\" у средину петље foreach",
               "tr" => "\"goto\" ile bir foreach döngüsünün ortasına girilemez",
-              "uk" => "Не можна перейти за допомогою \"goto\" всередину циклу foreach"
+              "uk" => "Не можна перейти за допомогою \"goto\" всередину циклу foreach",
+              "zh" => "不能用 \"goto\" 跳入 foreach 循环体中间"
             },
             "args" => []
           },
@@ -21740,7 +22107,8 @@ $CONF = {
               "ru" => "Нельзя перейти с помощью \"goto\" внутрь блока \"given\"",
               "sr" => "Није могуће извршити \"goto\" унутар блока \"given\"",
               "tr" => "\"goto\" ile bir \"given\" bloğunun içine girilemez",
-              "uk" => "Не можна перейти за допомогою \"goto\" всередину блоку \"given\""
+              "uk" => "Не можна перейти за допомогою \"goto\" всередину блоку \"given\"",
+              "zh" => "不能用 \"goto\" 跳入 \"given\" 块"
             },
             "args" => []
           },
@@ -21782,7 +22150,8 @@ $CONF = {
               "ru" => "Невозможно выйти из псевдоблока с помощью \"goto\"",
               "sr" => "Није могуће извршити \"goto\" из псеудоблока",
               "tr" => "\"goto\" ile sözde bir bloğun dışına çıkılamaz",
-              "uk" => "Не можна вийти з псевдоблоку за допомогою \"goto\""
+              "uk" => "Не можна вийти з псевдоблоку за допомогою \"goto\"",
+              "zh" => "不能用 \"goto\" 跳出伪代码块"
             },
             "args" => []
           },
@@ -21824,7 +22193,8 @@ $CONF = {
               "ru" => "Не удалось найти метку %{arg1}",
               "sr" => "Није могуће пронаћи ознаку %{arg1}",
               "tr" => "%{arg1} etiketi bulunamıyor",
-              "uk" => "Не вдалося знайти мітку %{arg1}"
+              "uk" => "Не вдалося знайти мітку %{arg1}",
+              "zh" => "找不到标签 %{arg1}"
             },
             "args" => [
               {
@@ -21887,7 +22257,8 @@ $CONF = {
               "ru" => "Для goto требуется метка",
               "sr" => "goto мора да има ознаку",
               "tr" => "goto için bir etiket belirtilmelidir",
-              "uk" => "Для goto потрібна мітка"
+              "uk" => "Для goto потрібна мітка",
+              "zh" => "goto 必须指定标签"
             },
             "args" => []
           },
@@ -21931,7 +22302,8 @@ $CONF = {
               "ru" => "Невозможно выполнить goto к подпрограмме из подпрограммы сравнения sort (или аналогичной функции обратного вызова)",
               "sr" => "Није могуће извршити goto потпрограме из sort потпрограма (или сличног повратног позива)",
               "tr" => "Bir sort alt yordamından (veya benzer bir geri çağrıdan) alt yordam çağrısına goto yapılamaz",
-              "uk" => "Неможливо виконати goto до підпрограми з підпрограми sort (або подібної функції зворотного виклику)"
+              "uk" => "Неможливо виконати goto до підпрограми з підпрограми sort (або подібної функції зворотного виклику)",
+              "zh" => "不能从 sort 子例程（或类似回调）中使用 goto 跳转到子例程"
             },
             "args" => []
           },
@@ -21974,7 +22346,8 @@ $CONF = {
               "ru" => "Невозможно выполнить goto к подпрограмме из блока eval",
               "sr" => "Није могуће извршити goto потпрограме из eval-блока",
               "tr" => "Bir eval bloğundan alt yordam çağrısına goto yapılamaz",
-              "uk" => "Не можна виконати goto до підпрограми з блоку eval"
+              "uk" => "Не можна виконати goto до підпрограми з блоку eval",
+              "zh" => "不能从 eval 块中使用 goto 跳转到子例程"
             },
             "args" => []
           },
@@ -22017,7 +22390,8 @@ $CONF = {
               "ru" => "Невозможно выполнить goto к подпрограмме из строки eval",
               "sr" => "Није могуће извршити goto потпрограме из eval-стринга",
               "tr" => "Bir eval dizgesinden alt yordam çağrısına goto yapılamaz",
-              "uk" => "Неможливо виконати goto до підпрограми з рядкового eval"
+              "uk" => "Неможливо виконати goto до підпрограми з рядкового eval",
+              "zh" => "不能从 eval 字符串中使用 goto 跳转到子例程"
             },
             "args" => []
           },
@@ -22060,7 +22434,8 @@ $CONF = {
               "ru" => "Невозможно выполнить goto к подпрограмме вне подпрограммы",
               "sr" => "Није могуће извршити goto потпрограме ван потпрограме",
               "tr" => "Bir alt yordamın dışından alt yordam çağrısına goto yapılamaz",
-              "uk" => "Не можна виконати goto до підпрограми поза підпрограмою"
+              "uk" => "Не можна виконати goto до підпрограми поза підпрограмою",
+              "zh" => "不能在子例程外使用 goto 跳转到子例程"
             },
             "args" => []
           },
@@ -22103,7 +22478,8 @@ $CONF = {
               "ru" => "Переход goto к неопределённой подпрограмме &%{arg1}",
               "sr" => "Goto: недефинисана потпрограма &%{arg1}",
               "tr" => "Tanımsız alt yordam &%{arg1} için goto",
-              "uk" => "Перехід goto до невизначеної підпрограми &%{arg1}"
+              "uk" => "Перехід goto до невизначеної підпрограми &%{arg1}",
+              "zh" => "跳转到未定义的子例程 &%{arg1}"
             },
             "args" => [
               {
@@ -22153,7 +22529,8 @@ $CONF = {
               "ru" => "Переход goto к неопределённой подпрограмме",
               "sr" => "Goto: недефинисана потпрограма",
               "tr" => "Tanımsız alt yordam için goto",
-              "uk" => "Перехід goto до невизначеної підпрограми"
+              "uk" => "Перехід goto до невизначеної підпрограми",
+              "zh" => "跳转到未定义的子例程"
             },
             "args" => []
           },
@@ -22195,7 +22572,8 @@ $CONF = {
               "ru" => "Цель goto находится на слишком глубоком уровне вложенности",
               "sr" => "Циљ команде goto је превише дубоко угнежђен",
               "tr" => "goto hedefi çok derin iç içe",
-              "uk" => "Ціль goto має надто глибокий рівень вкладеності"
+              "uk" => "Ціль goto має надто глибокий рівень вкладеності",
+              "zh" => "goto 的目标嵌套过深"
             },
             "args" => []
           },
@@ -22237,7 +22615,8 @@ $CONF = {
               "ru" => "Метка для \"%{op} %{label}\" не найдена",
               "sr" => "Ознака није пронађена за „%{op} %{label}”",
               "tr" => "\"%{op} %{label}\" için etiket bulunamadı",
-              "uk" => "Не знайдено мітку для \"%{op} %{label}\""
+              "uk" => "Не знайдено мітку для \"%{op} %{label}\"",
+              "zh" => "未找到 \"%{op} %{label}\" 对应的标签"
             },
             "args" => [
               {
@@ -22291,7 +22670,8 @@ $CONF = {
               "ru" => "Невозможно выполнить \"%{arg2}\" вне блока цикла",
               "sr" => "Не може се употребити „%{arg2}“ изван блока петље",
               "tr" => "Bir döngü bloğunun dışında \"%{arg2}\" kullanılamaz",
-              "uk" => "Не можна виконати \"%{arg2}\" поза блоком циклу"
+              "uk" => "Не можна виконати \"%{arg2}\" поза блоком циклу",
+              "zh" => "无法在循环块外“%{arg2}”"
             },
             "args" => [
               {
@@ -22340,7 +22720,8 @@ $CONF = {
               "ru" => "Нельзя выполнить return вне подпрограммы",
               "sr" => "Не може се извршити return изван потпрограма",
               "tr" => "Bir alt yordamın dışında return kullanılamaz",
-              "uk" => "Неможливо виконати return поза підпрограмою"
+              "uk" => "Неможливо виконати return поза підпрограмою",
+              "zh" => "不能在子程序外执行 return"
             },
             "args" => []
           },
@@ -22382,7 +22763,8 @@ $CONF = {
               "ru" => "Нельзя выйти из блока \"%{block}\" с помощью \"%{operation}\"",
               "sr" => "Није могуће изаћи из блока „%{block}“ помоћу „%{operation}“",
               "tr" => "\"%{block}\" bloğunun dışına \"%{operation}\" ile çıkılamaz",
-              "uk" => "Не можна вийти з блоку \"%{block}\" за допомогою \"%{operation}\""
+              "uk" => "Не можна вийти з блоку \"%{block}\" за допомогою \"%{operation}\"",
+              "zh" => "不能从 \"%{block}\" 块中执行 \"%{operation}\""
             },
             "args" => [
               {
@@ -22441,7 +22823,8 @@ $CONF = {
               "ru" => "Нельзя выполнить \"%{arg2}\" для выхода за пределы %{arg3}",
               "sr" => "Није могуће изаћи из %{arg3} помоћу „%{arg2}“",
               "tr" => "%{arg3} dışına \"%{arg2}\" ile çıkılamaz",
-              "uk" => "Не можна вийти за межі %{arg3} за допомогою \"%{arg2}\""
+              "uk" => "Не можна вийти за межі %{arg3} за допомогою \"%{arg2}\"",
+              "zh" => "无法从 %{arg3} 中跳出“%{arg2}”"
             },
             "args" => [
               {
@@ -22494,7 +22877,8 @@ $CONF = {
               "ru" => "Нельзя использовать \"break\" в цикле, задающем текущую тему",
               "sr" => "Не можете да користите „break“ у топикализатору петље",
               "tr" => "Bir döngü topicalizer'ında \"break\" kullanılamaz",
-              "uk" => "Не можна виконати \"break\" у циклічному топікалізаторі"
+              "uk" => "Не можна виконати \"break\" у циклічному топікалізаторі",
+              "zh" => "不能在循环 topicalizer 中使用 \"break\""
             },
             "args" => []
           },
@@ -22536,7 +22920,8 @@ $CONF = {
               "ru" => "Нельзя использовать \"break\" вне блока given",
               "sr" => "Не можете да користите „break“ изван блока given",
               "tr" => "Bir given bloğunun dışında \"break\" kullanılamaz",
-              "uk" => "Неможливо виконати \"break\" поза блоком given"
+              "uk" => "Неможливо виконати \"break\" поза блоком given",
+              "zh" => "不能在 given 块外使用 \"break\""
             },
             "args" => []
           },
@@ -22578,7 +22963,8 @@ $CONF = {
               "ru" => "Нельзя использовать \"continue\" вне блока when",
               "sr" => "Није могуће употребити \"continue\" ван when блока",
               "tr" => "Bir when bloğunun dışında \"continue\" kullanılamaz",
-              "uk" => "Не можна виконати \"continue\" поза блоком when"
+              "uk" => "Не можна виконати \"continue\" поза блоком when",
+              "zh" => "不能在 when 块外使用 \"continue\""
             },
             "args" => []
           },
@@ -22621,7 +23007,8 @@ $CONF = {
               "ru" => "Ветвь dispatch-on вне блока dispatch",
               "sr" => "Клаузула dispatch-on ван dispatch блока",
               "tr" => "dispatch dışında dispatch-on clause",
-              "uk" => "гілка dispatch-on поза блоком dispatch"
+              "uk" => "гілка dispatch-on поза блоком dispatch",
+              "zh" => "dispatch 外部出现 dispatch-on 子句"
             },
             "args" => []
           },
@@ -22663,7 +23050,8 @@ $CONF = {
               "ru" => "Нельзя использовать \"%{arg1}\" вне конструкции, задающей текущую тему",
               "sr" => "Није могуће употребити \"%{arg1}\" ван topicalizer-а",
               "tr" => "Bir topicalizer dışında \"%{arg1}\" kullanılamaz",
-              "uk" => "Не можна виконати \"%{arg1}\" поза топікалізатором"
+              "uk" => "Не можна виконати \"%{arg1}\" поза топікалізатором",
+              "zh" => "不能在 topicalizer 外使用 \"%{arg1}\""
             },
             "args" => [
               {
@@ -22712,7 +23100,8 @@ $CONF = {
               "ru" => "Подпрограмма DB::DB не определена",
               "sr" => "Није дефинисана рутина DB::DB",
               "tr" => "DB::DB yordamı tanımlı değil",
-              "uk" => "Підпрограму DB::DB не визначено"
+              "uk" => "Підпрограму DB::DB не визначено",
+              "zh" => "未定义 DB::DB 子例程"
             },
             "args" => []
           },
@@ -22755,7 +23144,8 @@ $CONF = {
               "ru" => "Подпрограмма DB::sub не определена",
               "sr" => "Није дефинисана рутина DB::sub",
               "tr" => "DB::sub yordamı tanımlı değil",
-              "uk" => "Підпрограму DB::sub не визначено"
+              "uk" => "Підпрограму DB::sub не визначено",
+              "zh" => "未定义 DB::sub 子例程"
             },
             "args" => []
           },
@@ -22798,7 +23188,8 @@ $CONF = {
               "ru" => "Нельзя присвоить значения массиву \@DB::args, связанному через tie",
               "sr" => "Није могуће поставити везани низ \@DB::args",
               "tr" => "Bağlanmış \@DB::args ayarlanamaz",
-              "uk" => "Не можна встановити значення \@DB::args, прив'язаного через tie"
+              "uk" => "Не можна встановити значення \@DB::args, прив'язаного через tie",
+              "zh" => "不能设置 tied 的 \@DB::args"
             },
             "args" => []
           },
@@ -22840,7 +23231,8 @@ $CONF = {
               "ru" => "Дочерний элемент группы диагностических сообщений должен быть диагностическим объектом\n",
               "sr" => "Дете групе дијагностике мора бити дијагностика\n",
               "tr" => "Tanı grubu çocuğu bir tanı olmalıdır\n",
-              "uk" => "Дочірній елемент групи діагностик має бути діагностичним об’єктом\n"
+              "uk" => "Дочірній елемент групи діагностик має бути діагностичним об’єктом\n",
+              "zh" => "诊断组的子项必须是诊断对象\n"
             },
             "args" => []
           },
@@ -22882,7 +23274,8 @@ $CONF = {
               "ru" => "Добавление в группу диагностических сообщений привело бы к образованию цикла\n",
               "sr" => "Додавање детета групи дијагностике направило би циклус\n",
               "tr" => "Tanı grubuna ekleme işlemi bir döngü oluştururdu\n",
-              "uk" => "Додавання до групи діагностичних об’єктів призвело б до циклу\n"
+              "uk" => "Додавання до групи діагностичних об’єктів призвело б до циклу\n",
+              "zh" => "向诊断组追加子项会造成循环\n"
             },
             "args" => []
           },
@@ -22924,7 +23317,8 @@ $CONF = {
               "ru" => "Список дочерних элементов производного диагностического объекта должен быть ссылкой на массив\n",
               "sr" => "Изведена деца дијагностике морају бити референца на низ\n",
               "tr" => "Türetilmiş tanı çocukları bir dizi başvurusu olmalıdır\n",
-              "uk" => "Дочірні елементи похідного діагностичного об’єкта мають бути задані посиланням на масив\n"
+              "uk" => "Дочірні елементи похідного діагностичного об’єкта мають бути задані посиланням на масив\n",
+              "zh" => "派生的诊断子项必须是数组引用\n"
             },
             "args" => []
           },
@@ -22966,7 +23360,8 @@ $CONF = {
               "ru" => "Дочерние элементы производного диагностического объекта должны быть диагностическими объектами\n",
               "sr" => "Изведена деца дијагностике морају бити дијагностички објекти\n",
               "tr" => "Türetilmiş tanı çocukları tanı nesneleri olmalıdır\n",
-              "uk" => "Похідні дочірні елементи діагностики мають бути діагностичними об’єктами\n"
+              "uk" => "Похідні дочірні елементи діагностики мають бути діагностичними об’єктами\n",
+              "zh" => "派生的诊断子项必须是诊断对象\n"
             },
             "args" => []
           },
@@ -23008,7 +23403,8 @@ $CONF = {
               "ru" => "Вызов derive для диагностического объекта привёл бы к образованию цикла\n",
               "sr" => "Извођење дијагностике би направило циклус\n",
               "tr" => "Tanı türetme işlemi bir döngü oluşturur\n",
-              "uk" => "Створення похідного діагностичного об’єкта призвело б до циклу\n"
+              "uk" => "Створення похідного діагностичного об’єкта призвело б до циклу\n",
+              "zh" => "派生诊断会造成循环\n"
             },
             "args" => []
           },
@@ -23050,7 +23446,8 @@ $CONF = {
               "ru" => "Сообщение исключения должно быть диагностическим объектом\n",
               "sr" => "Порука изузетка мора бити дијагностика\n",
               "tr" => "İstisna iletisi bir tanı olmalıdır\n",
-              "uk" => "Повідомлення винятку має бути діагностичним об’єктом\n"
+              "uk" => "Повідомлення винятку має бути діагностичним об’єктом\n",
+              "zh" => "异常消息必须是诊断对象\n"
             },
             "args" => []
           },
@@ -23092,7 +23489,8 @@ $CONF = {
               "ru" => "Объекты Diagnostic::Note не могут содержать дочерние элементы\n",
               "sr" => "Објекти Diagnostic::Note не могу имати децу\n",
               "tr" => "Diagnostic::Note nesneleri çocuk içeremez\n",
-              "uk" => "Об’єкти Diagnostic::Note не можуть містити дочірніх елементів\n"
+              "uk" => "Об’єкти Diagnostic::Note не можуть містити дочірніх елементів\n",
+              "zh" => "Diagnostic::Note 对象不能包含子项\n"
             },
             "args" => []
           },
@@ -23134,7 +23532,8 @@ $CONF = {
               "ru" => "Список дочерних элементов диагностического объекта должен быть ссылкой на массив\n",
               "sr" => "Деца дијагностике морају бити референца на низ\n",
               "tr" => "Tanı çocukları bir dizi başvurusu olmalıdır\n",
-              "uk" => "Дочірні елементи діагностики мають бути задані посиланням на масив\n"
+              "uk" => "Дочірні елементи діагностики мають бути задані посиланням на масив\n",
+              "zh" => "诊断子项必须是数组引用\n"
             },
             "args" => []
           },
@@ -23176,7 +23575,8 @@ $CONF = {
               "ru" => "Дочерние элементы диагностического объекта должны быть диагностическими объектами\n",
               "sr" => "Деца дијагностике морају бити дијагностички објекти\n",
               "tr" => "Tanı çocukları tanı nesneleri olmalıdır\n",
-              "uk" => "Дочірні елементи діагностичного об’єкта мають бути діагностичними об’єктами\n"
+              "uk" => "Дочірні елементи діагностичного об’єкта мають бути діагностичними об’єктами\n",
+              "zh" => "诊断子项必须是诊断对象\n"
             },
             "args" => []
           },
@@ -23218,7 +23618,8 @@ $CONF = {
               "ru" => "Список дочерних элементов группы диагностических сообщений должен быть ссылкой на массив\n",
               "sr" => "Деца групе дијагностике морају бити референца на низ\n",
               "tr" => "Tanı grubu çocukları bir dizi başvurusu olmalıdır\n",
-              "uk" => "Дочірні елементи групи діагностик мають бути задані посиланням на масив\n"
+              "uk" => "Дочірні елементи групи діагностик мають бути задані посиланням на масив\n",
+              "zh" => "诊断组的子项必须是数组引用\n"
             },
             "args" => []
           },
@@ -23260,7 +23661,8 @@ $CONF = {
               "ru" => "Для диагностического объекта требуется код\n",
               "sr" => "Дијагностици је потребан код\n",
               "tr" => "Tanı için bir kod gereklidir\n",
-              "uk" => "Діагностичному об’єкту потрібен код\n"
+              "uk" => "Діагностичному об’єкту потрібен код\n",
+              "zh" => "诊断必须指定代码\n"
             },
             "args" => []
           },
@@ -23302,7 +23704,8 @@ $CONF = {
               "ru" => "Индекс последующего контекстного сообщения диагностического объекта должен быть неотрицательным целым числом\n",
               "sr" => "Индекс за накнадни корак контекста дијагностике мора бити ненегативан цео број\n",
               "tr" => "Tanı bağlamı izleyen öğe dizini negatif olmayan bir tamsayı olmalıdır\n",
-              "uk" => "Індекс додаткового контекстного повідомлення діагностики має бути невід’ємним цілим числом\n"
+              "uk" => "Індекс додаткового контекстного повідомлення діагностики має бути невід’ємним цілим числом\n",
+              "zh" => "诊断上下文后续索引必须是非负整数\n"
             },
             "args" => []
           },
@@ -23344,7 +23747,8 @@ $CONF = {
               "ru" => "Поля диагностического объекта должны быть заданы ссылкой на хеш\n",
               "sr" => "Поља дијагностике морају бити референца на хеш\n",
               "tr" => "Tanı alanları bir hash başvurusu olmalıdır\n",
-              "uk" => "Поля діагностики мають бути задані посиланням на хеш\n"
+              "uk" => "Поля діагностики мають бути задані посиланням на хеш\n",
+              "zh" => "诊断字段必须是哈希引用\n"
             },
             "args" => []
           },
@@ -23386,7 +23790,8 @@ $CONF = {
               "ru" => "Флаг light диагностического объекта должен быть скаляром\n",
               "sr" => "Заставица за светлу дијагностику мора бити скалар\n",
               "tr" => "Tanı light bayrağı bir skaler olmalıdır\n",
-              "uk" => "Прапорець light діагностичного об’єкта має бути скаляром\n"
+              "uk" => "Прапорець light діагностичного об’єкта має бути скаляром\n",
+              "zh" => "诊断轻量标志必须是标量\n"
             },
             "args" => []
           },
@@ -23428,7 +23833,8 @@ $CONF = {
               "ru" => "Местоположение диагностического сообщения должно быть задано ссылкой на хеш\n",
               "sr" => "Локација дијагностике мора бити референца на хеш\n",
               "tr" => "Tanılama konumu bir hash başvurusu olmalıdır\n",
-              "uk" => "Розташування діагностичного об’єкта має бути задане посиланням на хеш\n"
+              "uk" => "Розташування діагностичного об’єкта має бути задане посиланням на хеш\n",
+              "zh" => "诊断位置必须是哈希引用\n"
             },
             "args" => []
           },
@@ -23471,7 +23877,8 @@ $CONF = {
               "ru" => "Параметры диагностического объекта должны быть заданы ссылкой на массив\n",
               "sr" => "Параметри дијагностике морају бити референца на низ\n",
               "tr" => "Tanılama parametreleri bir dizi başvurusu olmalıdır\n",
-              "uk" => "Параметри діагностики мають бути задані посиланням на масив\n"
+              "uk" => "Параметри діагностики мають бути задані посиланням на масив\n",
+              "zh" => "诊断参数必须是数组引用\n"
             },
             "args" => []
           },
@@ -23513,7 +23920,8 @@ $CONF = {
               "ru" => "Категории предупреждений диагностического объекта должны быть заданы ссылкой на массив\n",
               "sr" => "Категорије упозорења за дијагностику морају бити референца на низ\n",
               "tr" => "Tanılama uyarı kategorileri bir dizi başvurusu olmalıdır\n",
-              "uk" => "Категорії попереджень діагностики мають бути задані посиланням на масив\n"
+              "uk" => "Категорії попереджень діагностики мають бути задані посиланням на масив\n",
+              "zh" => "诊断警告类别必须是数组引用\n"
             },
             "args" => []
           },
@@ -23556,7 +23964,8 @@ $CONF = {
               "ru" => "Ожидался объект класса %{class_name}",
               "sr" => "Очекиван је објекат класе %{class_name}",
               "tr" => "%{class_name} sınıfından bir nesne bekleniyordu",
-              "uk" => "Очікувався об’єкт класу %{class_name}"
+              "uk" => "Очікувався об’єкт класу %{class_name}",
+              "zh" => "应为 %{class_name} 对象"
             },
             "args" => [
               {
@@ -23604,7 +24013,8 @@ $CONF = {
               "ru" => "Контекст отображения диагностического сообщения должен быть ссылкой на хеш\n",
               "sr" => "Контекст приказа дијагностике мора бити референца на хеш\n",
               "tr" => "Tanılama oluşturma bağlamı bir hash başvurusu olmalıdır\n",
-              "uk" => "Контекст відображення діагностичного об’єкта має бути посиланням на хеш\n"
+              "uk" => "Контекст відображення діагностичного об’єкта має бути посиланням на хеш\n",
+              "zh" => "诊断渲染上下文必须是哈希引用\n"
             },
             "args" => []
           },
@@ -23646,7 +24056,8 @@ $CONF = {
               "ru" => "Неизвестный формат отображения диагностического сообщения '%{format}'\n",
               "sr" => "Непознат формат приказа дијагностике „%{format}“\n",
               "tr" => "Bilinmeyen tanılama oluşturma biçimi '%{format}'\n",
-              "uk" => "Невідомий формат відображення діагностики '%{format}'\n"
+              "uk" => "Невідомий формат відображення діагностики '%{format}'\n",
+              "zh" => "未知的诊断渲染格式“%{format}”\n"
             },
             "args" => [
               {
@@ -23695,7 +24106,8 @@ $CONF = {
               "ru" => "Недопустимые входные данные для прямого формирования диагностики\n",
               "sr" => "Неважећи улазни подаци за непосредно приказивање дијагностике\n",
               "tr" => "Doğrudan işleme için geçersiz tanılama girdisi\n",
-              "uk" => "Неприпустимі вхідні дані для безпосереднього формування діагностики\n"
+              "uk" => "Неприпустимі вхідні дані для безпосереднього формування діагностики\n",
+              "zh" => "直接渲染的诊断输入无效\n"
             },
             "args" => []
           },
@@ -23737,7 +24149,8 @@ $CONF = {
               "ru" => "Недопустимая запись параметров диагностики для прямого формирования\n",
               "sr" => "Неважећи запис параметара дијагностике за непосредно приказивање\n",
               "tr" => "Doğrudan işleme için geçersiz tanılama parametre kaydı\n",
-              "uk" => "Неприпустимий запис параметра діагностики для безпосереднього формування\n"
+              "uk" => "Неприпустимий запис параметра діагностики для безпосереднього формування\n",
+              "zh" => "直接渲染的诊断参数记录无效\n"
             },
             "args" => []
           },
@@ -23779,7 +24192,8 @@ $CONF = {
               "ru" => "Событие выброса исключения должно быть ссылкой на хеш\n",
               "sr" => "Догађај бацања изузетка мора бити референца на хеш\n",
               "tr" => "İstisna fırlatma olayı bir hash başvurusu olmalıdır\n",
-              "uk" => "Подія викидання винятку має бути посиланням на хеш\n"
+              "uk" => "Подія викидання винятку має бути посиланням на хеш\n",
+              "zh" => "异常抛出事件必须是哈希引用\n"
             },
             "args" => []
           },
@@ -23821,7 +24235,8 @@ $CONF = {
               "ru" => "Событие выброса исключения не может задавать message_index\n",
               "sr" => "Догађај бацања изузетка не може да постави message_index\n",
               "tr" => "İstisna fırlatma olayı message_index değerini ayarlayamaz\n",
-              "uk" => "Подія викидання винятку не може встановлювати message_index\n"
+              "uk" => "Подія викидання винятку не може встановлювати message_index\n",
+              "zh" => "异常抛出事件不能设置 message_index\n"
             },
             "args" => []
           },
@@ -23863,7 +24278,8 @@ $CONF = {
               "ru" => "Для явного повторного выброса исключения требуется диагностический объект\n",
               "sr" => "Експлицитно поновно бацање захтева дијагностику\n",
               "tr" => "Açıkça yeniden fırlatmak için bir tanılama gerekir\n",
-              "uk" => "Для явного повторного викидання потрібен діагностичний об’єкт\n"
+              "uk" => "Для явного повторного викидання потрібен діагностичний об’єкт\n",
+              "zh" => "显式重新抛出异常需要提供诊断对象\n"
             },
             "args" => []
           },
@@ -23906,7 +24322,8 @@ $CONF = {
               "ru" => "Вызов в образце dispatch не является предикатом",
               "sr" => "позив у обрасцу диспечирања није предикат",
               "tr" => "dispatch kalıbındaki çağrı bir koşul işlevi değil",
-              "uk" => "Виклик у шаблоні dispatch не є предикатом"
+              "uk" => "Виклик у шаблоні dispatch не є предикатом",
+              "zh" => "dispatch 模式中的调用不是谓词"
             },
             "args" => []
           },
@@ -23949,7 +24366,8 @@ $CONF = {
               "ru" => "для вызова в шаблоне dispatch нет вызываемой функции или метода",
               "sr" => "позив у шаблону диспечирања нема позивљиву мету",
               "tr" => "dispatch kalıbındaki çağrının çağrılabilir bir hedefi yok",
-              "uk" => "виклик у шаблоні dispatch не має цільової функції чи методу, які можна викликати"
+              "uk" => "виклик у шаблоні dispatch не має цільової функції чи методу, які можна викликати",
+              "zh" => "dispatch 模式调用没有可调用的目标"
             },
             "args" => []
           },
@@ -23991,7 +24409,8 @@ $CONF = {
               "ru" => "Слишком много захватов в dispatch",
               "sr" => "Превише dispatch хватања",
               "tr" => "Çok fazla dispatch yakalaması",
-              "uk" => "Забагато захоплень dispatch"
+              "uk" => "Забагато захоплень dispatch",
+              "zh" => "dispatch 捕获项过多"
             },
             "args" => []
           },
@@ -24034,7 +24453,8 @@ $CONF = {
               "ru" => "Предупреждение трактуется как ошибка",
               "sr" => "Упозорење је третирано као грешка",
               "tr" => "Uyarı hata olarak ele alındı",
-              "uk" => "Попередження розглядається як помилка"
+              "uk" => "Попередження розглядається як помилка",
+              "zh" => "警告被当作错误处理"
             },
             "args" => []
           },
@@ -24082,7 +24502,8 @@ $CONF = {
               "ru" => "Нельзя вывести %{value} с помощью printf с форматом '%{format}'",
               "sr" => "Није могуће применити printf на %{value} помоћу „%{format}”",
               "tr" => "%{value} değeri '%{format}' biçimiyle printf edilemez",
-              "uk" => "Неможливо вивести %{value} за допомогою printf із форматом '%{format}'"
+              "uk" => "Неможливо вивести %{value} за допомогою printf із форматом '%{format}'",
+              "zh" => "无法使用 '%{format}' 将 %{value} 作为字符打印"
             },
             "args" => [
               {
@@ -24177,6 +24598,11 @@ $CONF = {
                 "*" => "Відсутній аргумент для %%n у %{arg1}",
                 "printf" => "Відсутній аргумент для %%n у printf",
                 "sprintf" => "Відсутній аргумент для %%n у sprintf"
+              },
+              "zh" => {
+                "*" => "%{arg1} 中 %%n 缺少参数",
+                "printf" => "printf 中 %%n 缺少参数",
+                "sprintf" => "sprintf 中 %%n 缺少参数"
               }
             },
             "args" => [
@@ -24233,7 +24659,8 @@ $CONF = {
               "ru" => "Целочисленное переполнение в строке формата для %{arg1}",
               "sr" => "Прекорачење целобројног опсега у формату за %{arg1}",
               "tr" => "%{arg1} için biçim dizgesinde tamsayı taşması oluştu",
-              "uk" => "Цілочисельне переповнення в рядку формату для %{arg1}"
+              "uk" => "Цілочисельне переповнення в рядку формату для %{arg1}",
+              "zh" => "格式字符串中的整数溢出（操作：%{arg1}）"
             },
             "args" => [
               {
@@ -24271,7 +24698,8 @@ $CONF = {
                 "ru" => "genitive",
                 "sr" => "genitive",
                 "tr" => "operation",
-                "uk" => "genitive"
+                "uk" => "genitive",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -24314,7 +24742,8 @@ $CONF = {
               "ru" => "Слишком большой результат форматирования числа",
               "sr" => "Резултат нумеричког формата је превелик",
               "tr" => "Sayısal biçim sonucu çok büyük",
-              "uk" => "Результат числового форматування надто великий"
+              "uk" => "Результат числового форматування надто великий",
+              "zh" => "数值格式的结果过大"
             },
             "args" => []
           },
@@ -24356,7 +24785,8 @@ $CONF = {
               "ru" => "Изменение порядка аргументов sv_vcatpvfn() из va_list пока не поддерживается",
               "sr" => "За сада није могуће преуредити аргументе функције sv_vcatpvfn() из листе va_list",
               "tr" => "sv_vcatpvfn() bağımsız değişkenleri va_list içinden henüz yeniden sıralanamıyor",
-              "uk" => "Зміна порядку аргументів sv_vcatpvfn() із va_list поки що не підтримується"
+              "uk" => "Зміна порядку аргументів sv_vcatpvfn() із va_list поки що не підтримується",
+              "zh" => "目前无法从 va_list 重排 sv_vcatpvfn() 的参数"
             },
             "args" => []
           },
@@ -24398,7 +24828,8 @@ $CONF = {
               "ru" => "Вызван неопределённый формат \"%{arg1}\"",
               "sr" => "Позван је недефинисан формат „%{arg1}“",
               "tr" => "Tanımlanmamış \"%{arg1}\" biçimi çağrıldı",
-              "uk" => "Викликано невизначений формат \"%{arg1}\""
+              "uk" => "Викликано невизначений формат \"%{arg1}\"",
+              "zh" => "调用了未定义的格式 \"%{arg1}\""
             },
             "args" => [
               {
@@ -24447,7 +24878,8 @@ $CONF = {
               "ru" => "Пустой шаблон формата в formline",
               "sr" => "Празна слика формата у formline",
               "tr" => "formline içinde boş biçim resmi",
-              "uk" => "Порожній шаблон формату в formline"
+              "uk" => "Порожній шаблон формату в formline",
+              "zh" => "formline 的格式说明为空"
             },
             "args" => []
           },
@@ -24489,7 +24921,8 @@ $CONF = {
               "ru" => "Вызван неопределённый формат заголовка \"%{arg1}\"",
               "sr" => "Позван је недефинисан горњи формат „%{arg1}“",
               "tr" => "Tanımlanmamış üst düzey \"%{arg1}\" biçimi çağrıldı",
-              "uk" => "Викликано невизначений формат заголовка \"%{arg1}\""
+              "uk" => "Викликано невизначений формат заголовка \"%{arg1}\"",
+              "zh" => "调用了未定义的顶层格式“%{arg1}”"
             },
             "args" => [
               {
@@ -24538,7 +24971,8 @@ $CONF = {
               "ru" => "Повторение строки формата никогда не завершится (~~ и \@#)",
               "sr" => "Поновљени ред формата никада се неће завршити (~~ и \@#)",
               "tr" => "Tekrarlanan biçim satırı hiç sonlanmayacak (~~ ve \@#)",
-              "uk" => "Повторення рядка формату ніколи не завершиться (~~ і \@#)"
+              "uk" => "Повторення рядка формату ніколи не завершиться (~~ і \@#)",
+              "zh" => "重复的格式行将永远不会结束 (~~ 和 \@#)"
             },
             "args" => []
           },
@@ -24580,7 +25014,8 @@ $CONF = {
               "ru" => "Нарушено проверяемое условие %{condition}: файл \"%{file}\", строка %{line}",
               "sr" => "Провера %{condition} није успела: датотека \"%{file}\", ред %{line}",
               "tr" => "Assertion %{condition} başarısız oldu: dosya \"%{file}\", satır %{line}",
-              "uk" => "Перевірка твердження %{condition} завершилася невдачею: файл \"%{file}\", рядок %{line}"
+              "uk" => "Перевірка твердження %{condition} завершилася невдачею: файл \"%{file}\", рядок %{line}",
+              "zh" => "断言 %{condition} 失败：文件 \"%{file}\", 第 %{line} 行"
             },
             "args" => [
               {
@@ -24638,7 +25073,8 @@ $CONF = {
               "ru" => "отсутствует скомпилированный шаблон dispatch",
               "sr" => "недостаје компајлирани шаблон диспечирања",
               "tr" => "Derlenmiş dispatch kalıbı eksik",
-              "uk" => "відсутній скомпільований шаблон dispatch"
+              "uk" => "відсутній скомпільований шаблон dispatch",
+              "zh" => "缺少已编译的 dispatch 模式"
             },
             "args" => []
           },
@@ -24680,7 +25116,8 @@ $CONF = {
               "ru" => "именованный субъект dispatch не является скалярным присваиванием",
               "sr" => "именовани subject у dispatch-у није скаларно додељивање",
               "tr" => "dispatch adlı konu bir skaler ataması değil",
-              "uk" => "іменований об'єкт зіставлення dispatch не є скалярним присвоєнням"
+              "uk" => "іменований об'єкт зіставлення dispatch не є скалярним присвоєнням",
+              "zh" => "dispatch 命名主体不是标量赋值"
             },
             "args" => []
           },
@@ -24722,7 +25159,8 @@ $CONF = {
               "ru" => "субъект dispatch должен быть скалярной лексической переменной",
               "sr" => "subject у dispatch-у мора бити скаларна лексичка променљива",
               "tr" => "dispatch konusu skaler bir sözcüksel değişken olmalıdır",
-              "uk" => "предмет зіставлення dispatch має бути лексичною скалярною змінною"
+              "uk" => "предмет зіставлення dispatch має бути лексичною скалярною змінною",
+              "zh" => "dispatch 主体必须是标量词法变量"
             },
             "args" => []
           },
@@ -24764,7 +25202,8 @@ $CONF = {
               "ru" => "Шестнадцатеричное число с плавающей точкой: внутренняя ошибка (переполнение)",
               "sr" => "Хексадецимални број са покретним зарезом: унутрашња грешка (прекорачење опсега)",
               "tr" => "Onaltılık kayan nokta: iç hata (taşma)",
-              "uk" => "Шістнадцяткове число з рухомою комою: внутрішня помилка (переповнення)"
+              "uk" => "Шістнадцяткове число з рухомою комою: внутрішня помилка (переповнення)",
+              "zh" => "十六进制浮点数：内部错误（溢出）"
             },
             "args" => []
           },
@@ -24806,7 +25245,8 @@ $CONF = {
               "ru" => "Шестнадцатеричное число с плавающей точкой: внутренняя ошибка (при входе)",
               "sr" => "Хексадецимални покретни зарез: интерна грешка (улаз)",
               "tr" => "Onaltılık kayan nokta: iç hata (giriş)",
-              "uk" => "Шістнадцяткове число з рухомою комою: внутрішня помилка (вхід)"
+              "uk" => "Шістнадцяткове число з рухомою комою: внутрішня помилка (вхід)",
+              "zh" => "十六进制浮点数：内部错误 (entry)"
             },
             "args" => []
           },
@@ -24849,7 +25289,8 @@ $CONF = {
               "ru" => "Аргумент OP_HELEMEXISTSOR не является элементом HASH",
               "sr" => "Аргумент OP_HELEMEXISTSOR није елемент HASH",
               "tr" => "OP_HELEMEXISTSOR bağımsız değişkeni bir HASH öğesi değil",
-              "uk" => "Аргумент OP_HELEMEXISTSOR не є елементом HASH"
+              "uk" => "Аргумент OP_HELEMEXISTSOR не є елементом HASH",
+              "zh" => "OP_HELEMEXISTSOR 参数不是 HASH 元素"
             },
             "args" => []
           },
@@ -24892,7 +25333,8 @@ $CONF = {
               "ru" => "Нельзя изменять общую таблицу строк в hv_%{operation}",
               "sr" => "Није могуће изменити заједничку табелу низова у hv_%{operation}",
               "tr" => "hv_%{operation} içinde paylaşılan dize tablosu değiştirilemez",
-              "uk" => "Неможливо змінити спільну таблицю рядків у hv_%{operation}"
+              "uk" => "Неможливо змінити спільну таблицю рядків у hv_%{operation}",
+              "zh" => "无法在 hv_%{operation} 中修改共享字符串表"
             },
             "args" => [
               {
@@ -24940,7 +25382,8 @@ $CONF = {
               "ru" => "refcnt_dec: fd %{arg2}: %{arg3} <= 0\n",
               "sr" => "refcnt_dec: fd %{arg2}: %{arg3} <= 0\n",
               "tr" => "refcnt_dec: fd %{arg2}: %{arg3} <= 0\n",
-              "uk" => "refcnt_dec: fd %{arg2}: %{arg3} <= 0\n"
+              "uk" => "refcnt_dec: fd %{arg2}: %{arg3} <= 0\n",
+              "zh" => "refcnt_dec: fd %{arg2}：%{arg3} <= 0\n"
             },
             "args" => [
               {
@@ -24993,7 +25436,8 @@ $CONF = {
               "ru" => "refcnt_dec: fd %{arg2} < 0\n",
               "sr" => "refcnt_dec: fd %{arg2} < 0\n",
               "tr" => "refcnt_dec: fd %{arg2} < 0\n",
-              "uk" => "refcnt_dec: fd %{arg2} < 0\n"
+              "uk" => "refcnt_dec: fd %{arg2} < 0\n",
+              "zh" => "refcnt_dec: fd %{arg2} < 0\n"
             },
             "args" => [
               {
@@ -25041,7 +25485,8 @@ $CONF = {
               "ru" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n",
               "sr" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n",
               "tr" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n",
-              "uk" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n"
+              "uk" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n",
+              "zh" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n"
             },
             "args" => [
               {
@@ -25094,7 +25539,8 @@ $CONF = {
               "ru" => "refcnt_inc: fd %{arg2} < 0\n",
               "sr" => "refcnt_inc: fd %{arg2} < 0\n",
               "tr" => "refcnt_inc: fd %{arg2} < 0\n",
-              "uk" => "refcnt_inc: fd %{arg2} < 0\n"
+              "uk" => "refcnt_inc: fd %{arg2} < 0\n",
+              "zh" => "refcnt_inc: fd %{arg2} < 0\n"
             },
             "args" => [
               {
@@ -25142,7 +25588,8 @@ $CONF = {
               "ru" => "refcnt_inc: fd %{arg2}: %{arg3} <= 0\n",
               "sr" => "refcnt_inc: fd %{arg2}: %{arg3} <= 0\n",
               "tr" => "refcnt_inc: fd %{arg2}: %{arg3} <= 0\n",
-              "uk" => "refcnt_inc: fd %{arg2}: %{arg3} <= 0\n"
+              "uk" => "refcnt_inc: fd %{arg2}: %{arg3} <= 0\n",
+              "zh" => "refcnt_inc: fd %{arg2}：%{arg3} <= 0\n"
             },
             "args" => [
               {
@@ -25195,7 +25642,8 @@ $CONF = {
               "ru" => "refcnt: fd %{arg2}: %{arg3} <= 0\n",
               "sr" => "refcnt: fd %{arg2}: %{arg3} <= 0\n",
               "tr" => "refcnt: fd %{arg2}: %{arg3} <= 0\n",
-              "uk" => "refcnt: fd %{arg2}: %{arg3} <= 0\n"
+              "uk" => "refcnt: fd %{arg2}: %{arg3} <= 0\n",
+              "zh" => "refcnt: fd %{arg2}：%{arg3} <= 0\n"
             },
             "args" => [
               {
@@ -25248,7 +25696,8 @@ $CONF = {
               "ru" => "refcnt: fd %{arg2} < 0\n",
               "sr" => "refcnt: fd %{arg2} < 0\n",
               "tr" => "refcnt: fd %{arg2} < 0\n",
-              "uk" => "refcnt: fd %{arg2} < 0\n"
+              "uk" => "refcnt: fd %{arg2} < 0\n",
+              "zh" => "refcnt: fd %{arg2} < 0\n"
             },
             "args" => [
               {
@@ -25296,7 +25745,8 @@ $CONF = {
               "ru" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n",
               "sr" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n",
               "tr" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n",
-              "uk" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n"
+              "uk" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n",
+              "zh" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n"
             },
             "args" => [
               {
@@ -25350,7 +25800,8 @@ $CONF = {
               "ru" => "Использование освобождённого значения при итерации",
               "sr" => "Употреба ослобођене вредности током итерације",
               "tr" => "Yineleme sırasında serbest bırakılmış değer kullanıldı",
-              "uk" => "Використання звільненого значення під час ітерації"
+              "uk" => "Використання звільненого значення під час ітерації",
+              "zh" => "迭代过程中使用了已释放的值"
             },
             "args" => []
           },
@@ -25392,7 +25843,8 @@ $CONF = {
               "ru" => "неправильное выравнивание в free()",
               "sr" => "погрешно поравнање у free()",
               "tr" => "free() işleminde hizalama yanlış",
-              "uk" => "неправильне вирівнювання у free()"
+              "uk" => "неправильне вирівнювання у free()",
+              "zh" => "free() 时指针对齐错误"
             },
             "args" => []
           },
@@ -25436,7 +25888,8 @@ $CONF = {
               "ru" => "Невозможно сжать целое число в pack",
               "sr" => "Не може се компресовати цео број у pack-у",
               "tr" => "pack içinde tamsayı sıkıştırılamıyor",
-              "uk" => "Неможливо стиснути ціле число в pack"
+              "uk" => "Неможливо стиснути ціле число в pack",
+              "zh" => "无法在 pack 中压缩该整数"
             },
             "args" => []
           },
@@ -25478,7 +25931,8 @@ $CONF = {
               "ru" => "Лишние данные в конце регулярного выражения m/%{arg1}%{arg2}/",
               "sr" => "Сувишан текст на крају регуларног израза m/%{arg1}%{arg2}/",
               "tr" => "regex m/%{arg1}%{arg2}/ ifadesinin sonunda gereksiz içerik var",
-              "uk" => "Зайві символи наприкінці регулярного виразу m/%{arg1}%{arg2}/"
+              "uk" => "Зайві символи наприкінці регулярного виразу m/%{arg1}%{arg2}/",
+              "zh" => "正则表达式 m/%{arg1}%{arg2}/ 末尾有无效内容"
             },
             "args" => [
               {
@@ -25546,7 +26000,8 @@ $CONF = {
               "ru" => "Элемент массива равен NULL в re::regnames()",
               "sr" => "NULL елемент низа у функцији re::regnames()",
               "tr" => "re::regnames() içinde NULL dizi öğesi",
-              "uk" => "Елемент масиву дорівнює NULL у re::regnames()"
+              "uk" => "Елемент масиву дорівнює NULL у re::regnames()",
+              "zh" => "re::regnames() 中存在 NULL 数组元素"
             },
             "args" => []
           },
@@ -25588,7 +26043,8 @@ $CONF = {
               "ru" => "Повреждённый код операции регулярного выражения: %{arg1} > %{arg2}",
               "sr" => "Оштећен опкод регуларног израза: %{arg1} > %{arg2}",
               "tr" => "Bozuk regexp işlem kodu %{arg1} > %{arg2}",
-              "uk" => "Пошкоджений код операції регулярного виразу: %{arg1} > %{arg2}"
+              "uk" => "Пошкоджений код операції регулярного виразу: %{arg1} > %{arg2}",
+              "zh" => "正则表达式操作码损坏：%{arg1} > %{arg2}"
             },
             "args" => [
               {
@@ -25641,7 +26097,8 @@ $CONF = {
               "ru" => "повреждение памяти регулярного выражения",
               "sr" => "оштећење меморије регуларног израза",
               "tr" => "regexp belleği bozulması",
-              "uk" => "пошкодження пам'яті регулярного виразу"
+              "uk" => "пошкодження пам'яті регулярного виразу",
+              "zh" => "正则表达式内存损坏"
             },
             "args" => []
           },
@@ -25683,7 +26140,8 @@ $CONF = {
               "ru" => "повреждена программа регулярного выражения",
               "sr" => "оштећен програм регуларног израза",
               "tr" => "bozuk regexp programı",
-              "uk" => "пошкоджена програма регулярного виразу"
+              "uk" => "пошкоджена програма регулярного виразу",
+              "zh" => "正则表达式程序已损坏"
             },
             "args" => []
           },
@@ -25726,7 +26184,8 @@ $CONF = {
               "ru" => "Параметр regexp равен NULL",
               "sr" => "Параметар регуларног израза је NULL",
               "tr" => "NULL regexp parametresi",
-              "uk" => "Параметр регулярного виразу дорівнює NULL"
+              "uk" => "Параметр регулярного виразу дорівнює NULL",
+              "zh" => "正则表达式参数为 NULL"
             },
             "args" => []
           },
@@ -25768,7 +26227,8 @@ $CONF = {
               "ru" => "повреждены указатели регулярного выражения",
               "sr" => "оштећени показивачи регуларног израза",
               "tr" => "bozuk regexp işaretçileri",
-              "uk" => "пошкоджені вказівники регулярного виразу"
+              "uk" => "пошкоджені вказівники регулярного виразу",
+              "zh" => "正则表达式指针已损坏"
             },
             "args" => []
           },
@@ -25810,7 +26270,8 @@ $CONF = {
               "ru" => "Зацикливание split",
               "sr" => "Петља у split-у",
               "tr" => "Split döngüsü",
-              "uk" => "Зациклення split"
+              "uk" => "Зациклення split",
+              "zh" => "Split 循环"
             },
             "args" => []
           },
@@ -25853,7 +26314,8 @@ $CONF = {
               "ru" => "Зацикливание подстановки",
               "sr" => "Петља у замени",
               "tr" => "Substitution döngüsü",
-              "uk" => "Зациклення підстановки"
+              "uk" => "Зациклення підстановки",
+              "zh" => "替换循环"
             },
             "args" => []
           },
@@ -25896,7 +26358,8 @@ $CONF = {
               "ru" => "Аномальное копирование %{arg1}",
               "sr" => "Необично копирање вредности %{arg1}",
               "tr" => "%{arg1} öğesinin tuhaf kopyası",
-              "uk" => "Дивне копіювання %{arg1}"
+              "uk" => "Дивне копіювання %{arg1}",
+              "zh" => "异常的 %{arg1} 复制"
             },
             "args" => [
               {
@@ -25926,6 +26389,7 @@ $CONF = {
             "subject:memory_allocation_lifetime",
             "subject:reference_type"
           ],
+          "is_panic" => 1,
           "message" => {
             "templates" => {
               "ar" => "نسخ غريب لـ %{arg2} في %{arg3}",
@@ -25945,7 +26409,8 @@ $CONF = {
               "ru" => "Некорректное копирование %{arg2} в %{arg3}",
               "sr" => "Неисправно копирање вредности %{arg2} у операцији %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} değeri için olağandışı bir kopyalama işlemi saptandı",
-              "uk" => "Дивне копіювання %{arg2} у %{arg3}"
+              "uk" => "Дивне копіювання %{arg2} у %{arg3}",
+              "zh" => "panic: 在 %{arg3} 中复制 %{arg2} 时出现异常"
             },
             "args" => [
               {
@@ -25988,7 +26453,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg3_operation"
             }
@@ -26032,7 +26498,8 @@ $CONF = {
               "ru" => "Невозможно скопировать значение в %{arg1}",
               "sr" => "Није могуће копирати у %{arg1}",
               "tr" => "%{arg1} hedefine kopyalanamaz",
-              "uk" => "Не можна скопіювати значення до %{arg1}"
+              "uk" => "Не можна скопіювати значення до %{arg1}",
+              "zh" => "不能复制到 %{arg1}"
             },
             "args" => [
               {
@@ -26081,7 +26548,8 @@ $CONF = {
               "ru" => "Невозможно скопировать в %{arg2} в %{arg3}",
               "sr" => "Није могуће копирати у %{arg2} у операцији %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} hedefine kopyalama yapılamaz",
-              "uk" => "Неможливо скопіювати до %{arg2} у %{arg3}"
+              "uk" => "Неможливо скопіювати до %{arg2} у %{arg3}",
+              "zh" => "在 %{arg3} 中无法复制到 %{arg2}"
             },
             "args" => [
               {
@@ -26124,7 +26592,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg3_operation"
             }
@@ -26167,7 +26636,8 @@ $CONF = {
               "ru" => "Невозможно применить magicfuncs с формой %{arg1} к SV типа %{arg2}",
               "sr" => "Облик магије %{arg1} не може се применити на SV типа %{arg2}",
               "tr" => "magicfuncs şekil %{arg1}, SV türüne (%{arg2}) uygulanamaz",
-              "uk" => "Не можна застосувати magicfuncs із формою %{arg1} до SV типу %{arg2}"
+              "uk" => "Не можна застосувати magicfuncs із формою %{arg1} до SV типу %{arg2}",
+              "zh" => "不能将形状 %{arg1} 的 magicfuncs 应用于 SV 类型 %{arg2}"
             },
             "args" => [
               {
@@ -26220,7 +26690,8 @@ $CONF = {
               "ru" => "Нераспознанное значение magicfuncs->shape: %{arg1}",
               "sr" => "Непрепозната вредност magicfuncs->shape: %{arg1}",
               "tr" => "Tanınmayan magicfuncs->shape değeri: %{arg1}",
-              "uk" => "Нерозпізнане значення magicfuncs->shape: %{arg1}"
+              "uk" => "Нерозпізнане значення magicfuncs->shape: %{arg1}",
+              "zh" => "无法识别 magicfuncs->shape 的值 %{arg1}"
             },
             "args" => [
               {
@@ -26268,7 +26739,8 @@ $CONF = {
               "ru" => "Неизвестно, как обрабатывать магию типа \\%{arg1}",
               "sr" => "Није познато како да се обради магија типа \\%{arg1}",
               "tr" => "%{arg1} türündeki magic işlenemiyor",
-              "uk" => "Невідомо, як обробляти магію типу \\%{arg1}"
+              "uk" => "Невідомо, як обробляти магію типу \\%{arg1}",
+              "zh" => "不知道如何处理类型为 \\%{arg1} 的 magic"
             },
             "args" => [
               {
@@ -26317,7 +26789,8 @@ $CONF = {
               "ru" => "Неподдерживаемое значение MagicFunctions->ver: %{arg1}",
               "sr" => "Неподржана вредност MagicFunctions->ver: %{arg1}",
               "tr" => "Desteklenmeyen MagicFunctions->ver değeri: %{arg1}",
-              "uk" => "Непідтримуване значення MagicFunctions->ver: %{arg1}"
+              "uk" => "Непідтримуване значення MagicFunctions->ver: %{arg1}",
+              "zh" => "不支持 MagicFunctions->ver 的值 %{arg1}"
             },
             "args" => [
               {
@@ -26365,7 +26838,8 @@ $CONF = {
               "ru" => "Странный SvTYPE [%{type}]",
               "sr" => "Неисправан тип SvTYPE [%{type}]",
               "tr" => "Tuhaf SvTYPE [%{type}]",
-              "uk" => "Дивний SvTYPE [%{type}]"
+              "uk" => "Дивний SvTYPE [%{type}]",
+              "zh" => "异常的 SvTYPE [%{type}]"
             },
             "args" => [
               {
@@ -26420,7 +26894,8 @@ $CONF = {
               "ru" => "sv_upgrade: понижение типа с %{arg1} до %{arg2}",
               "sr" => "sv_upgrade: прелазак са типа %{arg1} на нижи тип %{arg2}",
               "tr" => "sv_upgrade, %{arg1} türünden daha alt bir tür olan %{arg2} türüne geçmeye çalıştı",
-              "uk" => "sv_upgrade з типу %{arg1} до нижчого типу %{arg2}"
+              "uk" => "sv_upgrade з типу %{arg1} до нижчого типу %{arg2}",
+              "zh" => "sv_upgrade：从类型 %{arg1} 降级到类型 %{arg2}"
             },
             "args" => [
               {
@@ -26474,7 +26949,8 @@ $CONF = {
               "ru" => "Нельзя преобразовать %{type} (%{old}) в %{new}",
               "sr" => "Није могуће надоградити %{type} (%{old}) у %{new}",
               "tr" => "%{type} (%{old}) türü %{new} türüne yükseltilemiyor",
-              "uk" => "Неможливо перетворити %{type} (%{old}) на %{new}"
+              "uk" => "Неможливо перетворити %{type} (%{old}) на %{new}",
+              "zh" => "无法将 %{type}（%{old}）升级为 %{new}"
             },
             "args" => [
               {
@@ -26533,7 +27009,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка кода лексического анализа (%{operation})",
               "sr" => "Интерна грешка при лексичкој анализи кода (%{operation})",
               "tr" => "Sözdizimi çözümleme kodunda iç hata (%{operation})",
-              "uk" => "Внутрішня помилка коду лексичного аналізу (%{operation})"
+              "uk" => "Внутрішня помилка коду лексичного аналізу (%{operation})",
+              "zh" => "词法分析代码内部错误（%{operation}）"
             },
             "args" => [
               {
@@ -26582,7 +27059,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка кода синтаксического анализа (%{operation})",
               "sr" => "Интерна грешка при рашчлањивању кода (%{operation})",
               "tr" => "Ayrıştırma kodunda iç hata (%{operation})",
-              "uk" => "Внутрішня помилка коду синтаксичного аналізу (%{operation})"
+              "uk" => "Внутрішня помилка коду синтаксичного аналізу (%{operation})",
+              "zh" => "解析代码内部错误（%{operation}）"
             },
             "args" => [
               {
@@ -26631,7 +27109,8 @@ $CONF = {
               "ru" => "Неверный результат инфиксного плагина (%{arg2}) - идентификатор <%{arg3}> разобран не полностью\n",
               "sr" => "Неисправан резултат инфиксног додатка (%{arg2}) — није потрошено цело име идентификатора <%{arg3}>\n",
               "tr" => "Hatalı infix eklentisi sonucu (%{arg2}) - %{arg3} tanımlayıcısının tamamı tüketilmedi\n",
-              "uk" => "Некоректний результат плагіна інфіксних операторів (%{arg2}) - ідентифікатор <%{arg3}> спожито не повністю\n"
+              "uk" => "Некоректний результат плагіна інфіксних операторів (%{arg2}) - ідентифікатор <%{arg3}> спожито не повністю\n",
+              "zh" => "中缀插件结果错误（%{arg2}）- 未消费整个标识符 <%{arg3}>\n"
             },
             "args" => [
               {
@@ -26684,7 +27163,8 @@ $CONF = {
               "ru" => "Некорректный плагин, обрабатывающий ключевое слово '%{arg1}'",
               "sr" => "Неисправан додатак који утиче на кључну реч „%{arg1}“",
               "tr" => "'%{arg1}' anahtar sözcüğünü etkileyen hatalı eklenti",
-              "uk" => "Некоректний плагін, що впливає на ключове слово '%{arg1}'"
+              "uk" => "Некоректний плагін, що впливає на ключове слово '%{arg1}'",
+              "zh" => "影响关键字 '%{arg1}' 的插件无效"
             },
             "args" => [
               {
@@ -26734,7 +27214,8 @@ $CONF = {
               "ru" => "Неверный размер массива loadOrdinals: ожидается %{arg1}, фактический размер %{arg2}",
               "sr" => "Погрешна величина низа loadOrdinals: очекивано %{arg1}, стварно %{arg2}",
               "tr" => "loadOrdinals dizisinin boyutu yanlış: beklenen %{arg1}, gerçek %{arg2}",
-              "uk" => "Неправильний розмір масиву loadOrdinals: очікуваний %{arg1}, фактичний %{arg2}"
+              "uk" => "Неправильний розмір масиву loadOrdinals: очікуваний %{arg1}, фактичний %{arg2}",
+              "zh" => "loadOrdinals 数组大小错误：预期 %{arg1}，实际为 %{arg2}"
             },
             "args" => [
               {
@@ -26787,7 +27268,8 @@ $CONF = {
               "ru" => "Неожиданное количество процессоров: %{arg2}",
               "sr" => "Неочекиван број процесора: %{arg2}",
               "tr" => "Beklenmeyen işlemci sayısı: %{arg2}",
-              "uk" => "Неочікувана кількість процесорів: %{arg2}"
+              "uk" => "Неочікувана кількість процесорів: %{arg2}",
+              "zh" => "处理器数量异常：%{arg2}"
             },
             "args" => [
               {
@@ -26835,7 +27317,8 @@ $CONF = {
               "ru" => "Отрицательная длина",
               "sr" => "Негативна дужина",
               "tr" => "Negatif uzunluk",
-              "uk" => "Від’ємна довжина"
+              "uk" => "Від’ємна довжина",
+              "zh" => "长度为负数"
             },
             "args" => []
           },
@@ -26877,7 +27360,8 @@ $CONF = {
               "ru" => "Смещение за пределами строки",
               "sr" => "Померај је изван стринга",
               "tr" => "Ofset dizenin dışında",
-              "uk" => "Зсув за межі рядка"
+              "uk" => "Зсув за межі рядка",
+              "zh" => "偏移量超出字符串范围"
             },
             "args" => []
           },
@@ -26919,7 +27403,8 @@ $CONF = {
               "ru" => "Возможно повреждение памяти: вызов %{arg1} привёл к переполнению буфера третьего аргумента",
               "sr" => "Могуће оштећење меморије: %{arg1} је прекорачио трећи аргумент",
               "tr" => "Olası bellek bozulması: %{arg1}, 3. argümanı taşırdı",
-              "uk" => "Можливе пошкодження пам'яті: %{arg1} спричинив переповнення буфера 3-го аргументу"
+              "uk" => "Можливе пошкодження пам'яті: %{arg1} спричинив переповнення буфера 3-го аргументу",
+              "zh" => "可能发生内存损坏：%{arg1}溢出了第 3 个参数"
             },
             "args" => [
               {
@@ -26968,7 +27453,8 @@ $CONF = {
               "ru" => "ioctl реализована только для сокетов",
               "sr" => "ioctl је имплементиран само за сокете",
               "tr" => "ioctl yalnızca soketlerde uygulanır",
-              "uk" => "ioctl реалізовано лише для сокетів"
+              "uk" => "ioctl реалізовано лише для сокетів",
+              "zh" => "ioctl 仅在套接字上实现"
             },
             "args" => []
           },
@@ -27010,7 +27496,8 @@ $CONF = {
               "ru" => "На этой машине отсутствует dbm",
               "sr" => "На овој машини нема DBM-а",
               "tr" => "Bu makinede dbm yok",
-              "uk" => "На цій машині немає dbm"
+              "uk" => "На цій машині немає dbm",
+              "zh" => "此计算机上没有 dbm"
             },
             "args" => []
           },
@@ -27053,7 +27540,8 @@ $CONF = {
               "ru" => "Обнаружена рекурсия в %{arg2}",
               "sr" => "Откривена рекурзија у %{arg2}",
               "tr" => "%{arg2} içinde özyineleme algılandı",
-              "uk" => "виявлено рекурсію у %{arg2}"
+              "uk" => "виявлено рекурсію у %{arg2}",
+              "zh" => "在 %{arg2} 中检测到递归"
             },
             "args" => [
               {
@@ -27101,7 +27589,8 @@ $CONF = {
               "ru" => "Нестабильный путь к каталогу, текущий каталог неожиданно изменился",
               "sr" => "Нестабилна путања директоријума, тренутни директоријум се неочекивано променио",
               "tr" => "Kararsız dizin yolu: geçerli dizin beklenmedik biçimde değişti",
-              "uk" => "Нестабільний шлях до каталогу, поточний каталог несподівано змінився"
+              "uk" => "Нестабільний шлях до каталогу, поточний каталог несподівано змінився",
+              "zh" => "目录路径不稳定，当前目录意外发生变化"
             },
             "args" => []
           },
@@ -27143,7 +27632,8 @@ $CONF = {
               "ru" => "Не удалось сменить текущий каталог на %{directory}",
               "sr" => "Није могуће променити директоријум у %{directory}",
               "tr" => "%{directory} dizinine geçilemiyor",
-              "uk" => "Неможливо перейти до каталогу %{directory}"
+              "uk" => "Неможливо перейти до каталогу %{directory}",
+              "zh" => "无法切换到目录 %{directory}"
             },
             "args" => [
               {
@@ -27191,7 +27681,8 @@ $CONF = {
               "ru" => "Вызвана неподдерживаемая функция работы с каталогами \"%{arg1}\"",
               "sr" => "Позвана је неподржана функција за директоријум „%{arg1}“",
               "tr" => "Desteklenmeyen dizin işlevi \"%{arg1}\" çağrıldı",
-              "uk" => "Викликано непідтримувану функцію роботи з каталогами \"%{arg1}\""
+              "uk" => "Викликано непідтримувану функцію роботи з каталогами \"%{arg1}\"",
+              "zh" => "调用了不受支持的目录函数“%{arg1}”"
             },
             "args" => [
               {
@@ -27240,7 +27731,8 @@ $CONF = {
               "ru" => "невозможно преобразовать пустой путь",
               "sr" => "није могуће претворити празну путању",
               "tr" => "Boş yol dönüştürülemez",
-              "uk" => "неможливо перетворити порожній шлях"
+              "uk" => "неможливо перетворити порожній шлях",
+              "zh" => "无法转换空路径"
             },
             "args" => []
           },
@@ -27283,7 +27775,8 @@ $CONF = {
               "ru" => "Использование: Cygwin::%{arg2}(pathname, [absolute])",
               "sr" => "Употреба: Cygwin::%{arg2}(pathname, [absolute])",
               "tr" => "Kullanım: Cygwin::%{arg2}(yoladı, [absolute])",
-              "uk" => "Використання: Cygwin::%{arg2}(pathname, [absolute])"
+              "uk" => "Використання: Cygwin::%{arg2}(pathname, [absolute])",
+              "zh" => "用法：Cygwin::%{arg2}(pathname, [absolute])"
             },
             "args" => [
               {
@@ -27331,7 +27824,8 @@ $CONF = {
               "ru" => "Вызов stat, предшествовавший lstat(), не был вызовом lstat",
               "sr" => "stat пре lstat() није био lstat",
               "tr" => "lstat() öncesindeki stat bir lstat değildi",
-              "uk" => "Виклик stat перед lstat() не був викликом lstat"
+              "uk" => "Виклик stat перед lstat() не був викликом lstat",
+              "zh" => "此前的 stat 并非 lstat"
             },
             "args" => []
           },
@@ -27373,7 +27867,8 @@ $CONF = {
               "ru" => "Вызов stat, предшествовавший -l _, не был вызовом lstat",
               "sr" => "stat пре -l _ није био lstat",
               "tr" => "-l _ öncesindeki stat bir lstat değildi",
-              "uk" => "Виклик stat перед -l _ не був викликом lstat"
+              "uk" => "Виклик stat перед -l _ не був викликом lstat",
+              "zh" => "-l _ 前面的 stat 不是 lstat"
             },
             "args" => []
           },
@@ -27415,7 +27910,8 @@ $CONF = {
               "ru" => "-T и -B не реализованы для файловых дескрипторов",
               "sr" => "-T и -B нису имплементирани за ручке датотека",
               "tr" => "-T ve -B, dosya tutamaçlarında uygulanmıyor",
-              "uk" => "-T і -B не реалізовано для файлових дескрипторів"
+              "uk" => "-T і -B не реалізовано для файлових дескрипторів",
+              "zh" => "文件句柄上尚未实现 -T 和 -B"
             },
             "args" => []
           },
@@ -27456,7 +27952,8 @@ $CONF = {
               "ru" => "Нельзя открыть %{arg1} как файловый дескриптор: он уже открыт как дескриптор каталога",
               "sr" => "Није могуће отворити %{arg1} као датотечку ручицу: већ је отворена као ручица директоријума",
               "tr" => "%{arg1} bir dosya tutamacı olarak açılamıyor: zaten bir dizin tutamacı olarak açık",
-              "uk" => "Неможливо відкрити %{arg1} як файловий дескриптор: його вже відкрито як дескриптор каталогу"
+              "uk" => "Неможливо відкрити %{arg1} як файловий дескриптор: його вже відкрито як дескриптор каталогу",
+              "zh" => "无法将 %{arg1} 作为文件句柄打开：它已经作为目录句柄打开"
             },
             "args" => [
               {
@@ -27504,7 +28001,8 @@ $CONF = {
               "ru" => "Нельзя открыть %{arg1} как дескриптор каталога: он уже открыт как файловый дескриптор",
               "sr" => "Није могуће отворити %{arg1} као ручицу директоријума: већ је отворена као датотечка ручица",
               "tr" => "%{arg1} bir dizin tutamacı olarak açılamıyor: zaten bir dosya tutamacı olarak açık",
-              "uk" => "Неможливо відкрити %{arg1} як дескриптор каталогу: його вже відкрито як файловий дескриптор"
+              "uk" => "Неможливо відкрити %{arg1} як дескриптор каталогу: його вже відкрито як файловий дескриптор",
+              "zh" => "无法将 %{arg1} 作为目录句柄打开：它已经作为文件句柄打开"
             },
             "args" => [
               {
@@ -27553,7 +28051,8 @@ $CONF = {
               "ru" => "Неизвестно, как получить имя файла",
               "sr" => "Није познат начин за добијање имена датотеке",
               "tr" => "Dosya adı nasıl alınır bilinmiyor",
-              "uk" => "Невідомо, як отримати назву файла"
+              "uk" => "Невідомо, як отримати назву файла",
+              "zh" => "不知道如何获取文件名"
             },
             "args" => []
           },
@@ -27595,7 +28094,8 @@ $CONF = {
               "ru" => "Недопустимый файловый дескриптор: %{arg1}",
               "sr" => "Неисправна датотечка ручица: %{arg1}",
               "tr" => "Geçersiz dosya tutamacı: %{arg1}",
-              "uk" => "Некоректний файловий дескриптор: %{arg1}"
+              "uk" => "Некоректний файловий дескриптор: %{arg1}",
+              "zh" => "文件句柄无效：%{arg1}"
             },
             "args" => [
               {
@@ -27644,7 +28144,8 @@ $CONF = {
               "ru" => "Недопустимый файловый дескриптор: %{newsv}",
               "sr" => "Неисправан руковалац датотеком: %{newsv}",
               "tr" => "Geçersiz dosya tutamacı: %{newsv}",
-              "uk" => "Некоректний файловий дескриптор: %{newsv}"
+              "uk" => "Некоректний файловий дескриптор: %{newsv}",
+              "zh" => "文件句柄无效：%{newsv}"
             },
             "args" => [
               {
@@ -27693,7 +28194,8 @@ $CONF = {
               "ru" => "Не удалось закрыть рабочий файл %{arg1}, используемый при редактировании на месте: %{arg2}",
               "sr" => "Затварање радне датотеке за измену на месту %{arg1} није успело: %{arg2}",
               "tr" => "Yerinde düzenleme için kullanılan %{arg1} çalışma dosyası kapatılamadı: %{arg2}",
-              "uk" => "Не вдалося закрити робочий файл %{arg1} для редагування на місці: %{arg2}"
+              "uk" => "Не вдалося закрити робочий файл %{arg1} для редагування на місці: %{arg2}",
+              "zh" => "无法关闭原地编辑工作文件 %{arg1}：%{arg2}"
             },
             "args" => [
               {
@@ -27746,7 +28248,8 @@ $CONF = {
               "ru" => "Не удалось переименовать %{original} в %{backup}: %{error}, файл пропускается",
               "sr" => "Није могуће преименовати %{original} у %{backup}: %{error}; датотека се прескаче",
               "tr" => "%{original} dosyasının adı %{backup} olarak değiştirilemiyor: %{error}, dosya atlanıyor",
-              "uk" => "Неможливо перейменувати %{original} на %{backup}: %{error}, файл пропускається"
+              "uk" => "Неможливо перейменувати %{original} на %{backup}: %{error}, файл пропускається",
+              "zh" => "无法将 %{original} 重命名为 %{backup}：%{error}，跳过此文件"
             },
             "args" => [
               {
@@ -27804,7 +28307,8 @@ $CONF = {
               "ru" => "Невозможно завершить редактирование файла %{arg2} на месте: не удалось переименовать рабочий файл '%{arg3}' в '%{arg4}': %{arg5}",
               "sr" => "Није могуће завршити измену датотеке на месту %{arg2}: преименовање радне датотеке „%{arg3}“ у „%{arg4}“ није успело: %{arg5}",
               "tr" => "%{arg2} dosyasının yerinde düzenlenmesi tamamlanamıyor: '%{arg3}' çalışma dosyasının adı '%{arg4}' olarak değiştirilemedi: %{arg5}",
-              "uk" => "Неможливо завершити редагування %{arg2} на місці: не вдалося перейменувати робочий файл '%{arg3}' на '%{arg4}': %{arg5}"
+              "uk" => "Неможливо завершити редагування %{arg2} на місці: не вдалося перейменувати робочий файл '%{arg3}' на '%{arg4}': %{arg5}",
+              "zh" => "无法完成对 %{arg2} 的原地编辑：将工作文件“%{arg3}”重命名为“%{arg4}”失败：%{arg5}"
             },
             "args" => [
               {
@@ -27921,6 +28425,10 @@ $CONF = {
               "uk" => {
                 "cwd_changed" => "Неможливо завершити редагування %{path} на місці: Поточний каталог змінився",
                 "work_file_missing" => "Неможливо завершити редагування %{path} на місці: Робочий файл відсутній - чи не змінили ви каталог?"
+              },
+              "zh" => {
+                "cwd_changed" => "无法完成对 %{path} 的就地编辑：当前目录已更改",
+                "work_file_missing" => "无法完成对 %{path} 的就地编辑：工作文件缺失——是否更改了目录？"
               }
             },
             "args" => [
@@ -27979,7 +28487,8 @@ $CONF = {
               "ru" => "Размер таблицы функций слоя PerlIO (%{arg1}) не совпадает с размером, ожидаемым этой версией perl (%{arg2})",
               "sr" => "Величина табеле функција PerlIO слоја (%{arg1}) не одговара величини коју очекује овај perl (%{arg2})",
               "tr" => "PerlIO katman işlev tablosunun boyutu (%{arg1}), bu perl için beklenen boyutla (%{arg2}) eşleşmiyor",
-              "uk" => "Розмір таблиці функцій шару PerlIO (%{arg1}) не відповідає розміру, очікуваному цією версією perl (%{arg2})"
+              "uk" => "Розмір таблиці функцій шару PerlIO (%{arg1}) не відповідає розміру, очікуваному цією версією perl (%{arg2})",
+              "zh" => "PerlIO 层函数表大小（%{arg1}）与此 perl 预期的大小（%{arg2}）不匹配"
             },
             "args" => [
               {
@@ -28033,7 +28542,8 @@ $CONF = {
               "ru" => "Размер экземпляра слоя PerlIO (%{arg1}) меньше размера, ожидаемого этой версией perl (%{arg2})",
               "sr" => "Величина инстанце PerlIO слоја (%{arg1}) мања је од величине коју очекује овај perl (%{arg2})",
               "tr" => "PerlIO katmanı örnek boyutu (%{arg1}), bu perl için beklenen boyuttan (%{arg2}) küçük",
-              "uk" => "Розмір екземпляра шару PerlIO (%{arg1}) менший за розмір, очікуваний цією версією perl (%{arg2})"
+              "uk" => "Розмір екземпляра шару PerlIO (%{arg1}) менший за розмір, очікуваний цією версією perl (%{arg2})",
+              "zh" => "PerlIO 层实例大小（%{arg1}）小于此 perl 预期的大小（%{arg2}）"
             },
             "args" => [
               {
@@ -28086,7 +28596,8 @@ $CONF = {
               "ru" => "Невозможно применить \"%{arg2}\" в perl без поддержки PerlIO",
               "sr" => "Није могуће применити „%{arg2}“ у Perl-у без PerlIO",
               "tr" => "PerlIO kullanmayan perl'de \"%{arg2}\" uygulanamıyor",
-              "uk" => "Неможливо застосувати \"%{arg2}\" у perl без підтримки PerlIO"
+              "uk" => "Неможливо застосувати \"%{arg2}\" у perl без підтримки PerlIO",
+              "zh" => "无法在非 PerlIO perl 中应用“%{arg2}”"
             },
             "args" => [
               {
@@ -28134,7 +28645,8 @@ $CONF = {
               "ru" => "%{arg1}() нельзя использовать с дескрипторами со слоем :utf8",
               "sr" => "Оператор %{arg1}() није дозвољен над :utf8 руковаоцима датотека",
               "tr" => "%{arg1}() :utf8 katmanlı tutamaçlarda kullanılamaz",
-              "uk" => "%{arg1}() не дозволено для дескрипторів із шаром :utf8"
+              "uk" => "%{arg1}() не дозволено для дескрипторів із шаром :utf8",
+              "zh" => ":utf8 句柄不允许对 %{arg1}() 执行此操作"
             },
             "args" => [
               {
@@ -28182,7 +28694,8 @@ $CONF = {
               "ru" => "Использование: class->find(name[,load])",
               "sr" => "Употреба: class->find(name[,load])",
               "tr" => "Kullanım: class->find(name[,load])",
-              "uk" => "Використання: class->find(name[,load])"
+              "uk" => "Використання: class->find(name[,load])",
+              "zh" => "用法：class->find(name[,load])"
             },
             "args" => []
           },
@@ -28225,7 +28738,8 @@ $CONF = {
               "ru" => "Рекурсивный вызов Perl_load_module в PerlIO_find_layer",
               "sr" => "Рекурзивни позив функције Perl_load_module у функцији PerlIO_find_layer",
               "tr" => "PerlIO_find_layer içinde Perl_load_module için özyinelemeli çağrı",
-              "uk" => "Рекурсивний виклик Perl_load_module у PerlIO_find_layer"
+              "uk" => "Рекурсивний виклик Perl_load_module у PerlIO_find_layer",
+              "zh" => "在 PerlIO_find_layer 中递归调用 Perl_load_module"
             },
             "args" => []
           },
@@ -28267,7 +28781,8 @@ $CONF = {
               "ru" => "Слои ввода-вывода (такие как '%{arg1}') недоступны",
               "sr" => "IO слојеви (као што је „%{arg1}“) нису доступни",
               "tr" => "IO katmanları ('%{arg1}' gibi) kullanılamıyor",
-              "uk" => "Шари введення-виведення (як-от '%{arg1}') недоступні"
+              "uk" => "Шари введення-виведення (як-от '%{arg1}') недоступні",
+              "zh" => "IO 层（如“%{arg1}”）不可用"
             },
             "args" => [
               {
@@ -28324,7 +28839,8 @@ $CONF = {
               "ru" => "Более одного аргумента в open(,':%{arg2}')",
               "sr" => "Више од једног аргумента за open(,':%{arg2}')",
               "tr" => "open(,':%{arg2}') için birden fazla argüman",
-              "uk" => "Більше одного аргументу для open(,':%{arg2}')"
+              "uk" => "Більше одного аргументу для open(,':%{arg2}')",
+              "zh" => "传递给 open(,':%{arg2}') 的参数超过一个"
             },
             "args" => [
               {
@@ -28372,7 +28888,8 @@ $CONF = {
               "ru" => "get_layers: неизвестный аргумент '%{arg1}'",
               "sr" => "get_layers: непознат аргумент „%{arg1}“",
               "tr" => "get_layers: bilinmeyen '%{arg1}' argümanı",
-              "uk" => "get_layers: невідомий аргумент '%{arg1}'"
+              "uk" => "get_layers: невідомий аргумент '%{arg1}'",
+              "zh" => "get_layers：未知参数 '%{arg1}'"
             },
             "args" => [
               {
@@ -28420,7 +28937,8 @@ $CONF = {
               "ru" => "Более одного аргумента для open в режиме '%{arg2}&'",
               "sr" => "Више од једног аргумента за open „%{arg2}&“",
               "tr" => "'%{arg2}&' open için birden fazla argüman",
-              "uk" => "Більше одного аргументу для open у режимі '%{arg2}&'"
+              "uk" => "Більше одного аргументу для open у режимі '%{arg2}&'",
+              "zh" => "传递给“%{arg2}&”open 的参数超过一个"
             },
             "args" => [
               {
@@ -28468,7 +28986,8 @@ $CONF = {
               "ru" => "Не удалось открыть скрипт perl \"%{file}\": %{error}\n",
               "sr" => "Није могуће отворити Perl скрипту „%{file}“: %{error}\n",
               "tr" => "Perl betiği \"%{file}\" açılamıyor: %{error}\n",
-              "uk" => "Не вдалося відкрити скрипт perl \"%{file}\": %{error}\n"
+              "uk" => "Не вдалося відкрити скрипт perl \"%{file}\": %{error}\n",
+              "zh" => "无法打开 perl 脚本 \"%{file}\"：%{error}\n"
             },
             "args" => [
               {
@@ -28521,7 +29040,8 @@ $CONF = {
               "ru" => "Не удалось создать имитацию /dev/null",
               "sr" => "Није успело стварање привидне празне датотеке",
               "tr" => "Sahte çöp kutusu oluşturulamadı",
-              "uk" => "Не вдалося створити імітацію нульового пристрою"
+              "uk" => "Не вдалося створити імітацію нульового пристрою",
+              "zh" => "无法创建模拟空设备的文件"
             },
             "args" => []
           },
@@ -28563,7 +29083,8 @@ $CONF = {
               "ru" => "Не удалось открыть %{bucket}: %{error}\n",
               "sr" => "Не могу да отворим %{bucket}: %{error}\n",
               "tr" => "%{bucket} açılamıyor: %{error}\n",
-              "uk" => "Неможливо відкрити %{bucket}: %{error}\n"
+              "uk" => "Неможливо відкрити %{bucket}: %{error}\n",
+              "zh" => "无法打开 %{bucket}：%{error}\n"
             },
             "args" => [
               {
@@ -28616,7 +29137,8 @@ $CONF = {
               "ru" => "Более одного аргумента для open в режиме '<%{arg2}'",
               "sr" => "Више од једног аргумента за open „<%{arg2}“",
               "tr" => "'<%{arg2}' open için birden fazla argüman",
-              "uk" => "Більше одного аргументу для open у режимі '<%{arg2}'"
+              "uk" => "Більше одного аргументу для open у режимі '<%{arg2}'",
+              "zh" => "传递给“<%{arg2}”open 的参数超过一个"
             },
             "args" => [
               {
@@ -28664,7 +29186,8 @@ $CONF = {
               "ru" => "Более одного аргумента для open в режиме '>%{arg2}'",
               "sr" => "Више од једног аргумента за open „>%{arg2}“",
               "tr" => "'>%{arg2}' open için birden fazla argüman",
-              "uk" => "Більше одного аргументу для open у режимі '>%{arg2}'"
+              "uk" => "Більше одного аргументу для open у режимі '>%{arg2}'",
+              "zh" => "传递给“>%{arg2}”open 的参数超过一个"
             },
             "args" => [
               {
@@ -28712,7 +29235,8 @@ $CONF = {
               "ru" => "В open передано более одного аргумента",
               "sr" => "Више од једног аргумента функцији open",
               "tr" => "open için birden fazla argüman",
-              "uk" => "Більше одного аргументу для open"
+              "uk" => "Більше одного аргументу для open",
+              "zh" => "open 的参数不能多于一个"
             },
             "args" => []
           },
@@ -28754,7 +29278,8 @@ $CONF = {
               "ru" => "Неизвестный режим open() '%{arg1}'",
               "sr" => "Непознат режим open() „%{arg1}“",
               "tr" => "Bilinmeyen open() modu: '%{arg1}'",
-              "uk" => "Невідомий режим open() '%{arg1}'"
+              "uk" => "Невідомий режим open() '%{arg1}'",
+              "zh" => "未知的 open() 模式“%{arg1}”"
             },
             "args" => [
               {
@@ -28867,6 +29392,10 @@ $CONF = {
               "uk" => {
                 "negative_integer" => "Заборонено встановлювати \$/ у посилання на від'ємне ціле число",
                 "zero" => "Заборонено встановлювати \$/ у посилання на нуль"
+              },
+              "zh" => {
+                "negative_integer" => "禁止将 \$/ 设置为指向负整数的引用",
+                "zero" => "禁止将 \$/ 设置为指向零的引用"
               }
             },
             "args" => [
@@ -28921,7 +29450,8 @@ $CONF = {
               "ru" => "Присваивание \$/ ссылки типа %{ref_type} запрещено",
               "sr" => "Забрањено је постављање \$/ на референцу типа %{ref_type}",
               "tr" => "\$/ öğesinin %{ref_type} türünde bir referansa ayarlanması yasaktır",
-              "uk" => "Заборонено надавати \$/ значення посилання типу %{ref_type}"
+              "uk" => "Заборонено надавати \$/ значення посилання типу %{ref_type}",
+              "zh" => "禁止将 \$/ 设置为 %{ref_type} 类型的引用"
             },
             "args" => [
               {
@@ -28971,7 +29501,8 @@ $CONF = {
               "ru" => "Вызвана неподдерживаемая функция работы с сокетами \"%{name}\"",
               "sr" => "Позвана је неподржана socket функција \"%{name}\"",
               "tr" => "Desteklenmeyen soket işlevi \"%{name}\" çağrıldı",
-              "uk" => "Викликано непідтримувану сокетну функцію \"%{name}\""
+              "uk" => "Викликано непідтримувану сокетну функцію \"%{name}\"",
+              "zh" => "调用了不受支持的套接字函数 \"%{name}\""
             },
             "args" => [
               {
@@ -29020,7 +29551,8 @@ $CONF = {
               "ru" => "iterator->new ожидает ссылку на подпрограмму",
               "sr" => "iterator->new очекује референцу на код",
               "tr" => "iterator->new bir kod referansı bekliyor",
-              "uk" => "iterator->new очікує посилання на код"
+              "uk" => "iterator->new очікує посилання на код",
+              "zh" => "iterator->new 需要代码引用"
             },
             "args" => []
           },
@@ -29063,7 +29595,8 @@ $CONF = {
               "ru" => "В цикле foreach нельзя использовать более 256 переменных итератора, если хотя бы одна из них объявлена как ссылка",
               "sr" => "У петљи foreach није могуће користити више од 256 променљивих ако су неке од њих декларисане као референце",
               "tr" => "foreach döngüsünde, herhangi biri bildirilmiş referanssa 256'dan fazla yineleyici değişkeni kullanılamaz",
-              "uk" => "У циклі foreach не можна використовувати понад 256 змінних ітератора, якщо хоч одну з них оголошено як посилання"
+              "uk" => "У циклі foreach не можна використовувати понад 256 змінних ітератора, якщо хоч одну з них оголошено як посилання",
+              "zh" => "如果有任何迭代变量是声明式引用，则 foreach 循环中的迭代变量不能超过 256 个"
             },
             "args" => []
           },
@@ -29106,7 +29639,8 @@ $CONF = {
               "ru" => "В цикле foreach нельзя использовать переменные итератора, объявленные как ссылки, после 24-й переменной",
               "sr" => "У петљи foreach није могуће користити декларисане референтне променљиве после 24. променљиве",
               "tr" => "foreach döngüsünde 24. değişkenden sonra bildirilmiş referans yineleyici değişkenleri kullanılamaz",
-              "uk" => "У циклі foreach не можна використовувати змінні ітератора, оголошені як посилання, після 24-ї змінної"
+              "uk" => "У циклі foreach не можна використовувати змінні ітератора, оголошені як посилання, після 24-ї змінної",
+              "zh" => "foreach 循环中第 24 个变量之后不能使用声明式引用迭代变量"
             },
             "args" => []
           },
@@ -29149,7 +29683,8 @@ $CONF = {
               "ru" => "Генератор уже был вызван",
               "sr" => "Генератор је већ позван",
               "tr" => "Üreteç zaten çağrıldı",
-              "uk" => "Генератор уже викликано"
+              "uk" => "Генератор уже викликано",
+              "zh" => "生成器已被调用"
             },
             "args" => []
           },
@@ -29192,7 +29727,8 @@ $CONF = {
               "ru" => "Нельзя возобновить работу генератора, завершившегося с ошибкой",
               "sr" => "Не може се наставити неуспели генератор",
               "tr" => "Başarısız olmuş bir üreteç devam ettirilemez",
-              "uk" => "Неможливо відновити виконання генератора, що завершився з помилкою"
+              "uk" => "Неможливо відновити виконання генератора, що завершився з помилкою",
+              "zh" => "无法恢复已失败的生成器"
             },
             "args" => []
           },
@@ -29235,7 +29771,8 @@ $CONF = {
               "ru" => "продолжение генератора недоступно",
               "sr" => "наставак генератора није доступан",
               "tr" => "Üreteç devamı kullanılamıyor",
-              "uk" => "продовження генератора недоступне"
+              "uk" => "продовження генератора недоступне",
+              "zh" => "生成器的续体不可用"
             },
             "args" => []
           },
@@ -29278,7 +29815,8 @@ $CONF = {
               "ru" => "недопустимый генератор",
               "sr" => "неисправан генератор",
               "tr" => "Geçersiz üreteç",
-              "uk" => "некоректний генератор"
+              "uk" => "некоректний генератор",
+              "zh" => "生成器无效"
             },
             "args" => []
           },
@@ -29321,7 +29859,8 @@ $CONF = {
               "ru" => "У генератора нет приостановленного продолжения",
               "sr" => "Генератор нема суспендовани наставак",
               "tr" => "Üretecin askıya alınmış bir devamı yok",
-              "uk" => "Генератор не має призупиненого продовження"
+              "uk" => "Генератор не має призупиненого продовження",
+              "zh" => "生成器没有挂起的延续执行"
             },
             "args" => []
           },
@@ -29365,7 +29904,8 @@ $CONF = {
               "ru" => "generator::running ожидает генераторы в качестве аргументов",
               "sr" => "generator::running очекује аргументе који су генератори",
               "tr" => "generator::running üreteç bağımsız değişkenleri bekliyor",
-              "uk" => "generator::running очікує генератори як аргументи"
+              "uk" => "generator::running очікує генератори як аргументи",
+              "zh" => "generator::running 需要生成器参数"
             },
             "args" => []
           },
@@ -29408,7 +29948,8 @@ $CONF = {
               "ru" => "нельзя устанавливать состояние генератора",
               "sr" => "није могуће поставити стање генератора",
               "tr" => "Bir üretecin durumu ayarlanamaz",
-              "uk" => "неможливо встановити стан генератора"
+              "uk" => "неможливо встановити стан генератора",
+              "zh" => "无法设置生成器的状态"
             },
             "args" => []
           },
@@ -29451,7 +29992,8 @@ $CONF = {
               "ru" => "yield вне выполняющегося gen",
               "sr" => "yield ван активног gen-а",
               "tr" => "çalışan bir gen dışında yield çağrıldı",
-              "uk" => "yield поза gen, що виконується"
+              "uk" => "yield поза gen, що виконується",
+              "zh" => "在运行中的 gen 之外调用了 yield"
             },
             "args" => []
           },
@@ -29494,7 +30036,8 @@ $CONF = {
               "ru" => "Нельзя использовать %{arg1} в качестве переменной цикла",
               "sr" => "Није могуће користити %{arg1} као променљиву петље",
               "tr" => "%{arg1} döngü değişkeni olarak kullanılamaz",
-              "uk" => "Неможливо використати %{arg1} як змінну циклу"
+              "uk" => "Неможливо використати %{arg1} як змінну циклу",
+              "zh" => "不能将 %{arg1} 用作循环变量"
             },
             "args" => [
               {
@@ -29532,7 +30075,8 @@ $CONF = {
                 "ru" => "accusative",
                 "sr" => "accusative",
                 "tr" => "operation",
-                "uk" => "accusative"
+                "uk" => "accusative",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -29575,7 +30119,8 @@ $CONF = {
               "ru" => "недопустимое состояние итератора",
               "sr" => "неисправно стање итератора",
               "tr" => "Geçersiz yineleyici durumu",
-              "uk" => "некоректний стан ітератора"
+              "uk" => "некоректний стан ітератора",
+              "zh" => "迭代器状态无效"
             },
             "args" => []
           },
@@ -29618,7 +30163,8 @@ $CONF = {
               "ru" => "Итератор диапазона выходит за пределы представимых целых чисел",
               "sr" => "Итератор опсега је изван целобројног опсега",
               "tr" => "Aralık yineleyicisi tam sayı aralığının dışında",
-              "uk" => "Ітератор діапазону виходить за межі діапазону цілих чисел"
+              "uk" => "Ітератор діапазону виходить за межі діапазону цілих чисел",
+              "zh" => "范围迭代器超出整数范围"
             },
             "args" => []
           },
@@ -29660,7 +30206,8 @@ $CONF = {
               "ru" => "Нечётное число элементов в export_lexically",
               "sr" => "Непаран број елемената у export_lexically",
               "tr" => "export_lexically için çift sayıda olmayan bağımsız değişken",
-              "uk" => "Непарна кількість елементів у export_lexically"
+              "uk" => "Непарна кількість елементів у export_lexically",
+              "zh" => "export_lexically 中的元素数量为奇数"
             },
             "args" => []
           },
@@ -29702,7 +30249,8 @@ $CONF = {
               "ru" => "export_lexically можно вызывать только во время компиляции",
               "sr" => "export_lexically може да се позове само у време компајлирања",
               "tr" => "export_lexically yalnızca derleme zamanında çağrılabilir",
-              "uk" => "export_lexically можна викликати лише під час компіляції"
+              "uk" => "export_lexically можна викликати лише під час компіляції",
+              "zh" => "export_lexically 只能在编译时调用"
             },
             "args" => []
           },
@@ -29745,7 +30293,8 @@ $CONF = {
               "ru" => "В export_lexically ожидалась ссылка",
               "sr" => "У функцији export_lexically очекивана је референца",
               "tr" => "export_lexically içinde bir referans bekleniyordu",
-              "uk" => "У export_lexically очікувалося посилання"
+              "uk" => "У export_lexically очікувалося посилання",
+              "zh" => "export_lexically 需要一个引用"
             },
             "args" => []
           },
@@ -29881,6 +30430,9 @@ $CONF = {
               },
               "uk" => {
                 "*" => "У export_lexically очікувалося посилання типу %{reference_type}"
+              },
+              "zh" => {
+                "*" => "export_lexically 中需要 %{reference_type} 类型的引用"
               }
             },
             "args" => [
@@ -29933,7 +30485,8 @@ $CONF = {
               "ru" => "Недопустимый набор для версии %{sym}",
               "sr" => "Неисправан пакет верзије %{sym}",
               "tr" => "Geçersiz sürüm paketi %{sym}",
-              "uk" => "Недопустимий набір для версії %{sym}"
+              "uk" => "Недопустимий набір для версії %{sym}",
+              "zh" => "版本包 %{sym} 无效"
             },
             "args" => [
               {
@@ -29983,7 +30536,8 @@ $CONF = {
               "ru" => "builtin::import можно вызывать только во время компиляции",
               "sr" => "builtin::import може да се позове само у време компајлирања",
               "tr" => "builtin::import yalnızca derleme zamanında çağrılabilir",
-              "uk" => "builtin::import можна викликати лише під час компіляції"
+              "uk" => "builtin::import можна викликати лише під час компіляції",
+              "zh" => "builtin::import 只能在编译时调用"
             },
             "args" => []
           },
@@ -30026,7 +30580,8 @@ $CONF = {
               "ru" => "%{name} не распознано как встроенная функция",
               "sr" => "%{name} није препознато као уграђена функција",
               "tr" => "%{name} yerleşik bir işlev olarak tanınmıyor",
-              "uk" => "%{name} не розпізнано як вбудовану функцію"
+              "uk" => "%{name} не розпізнано як вбудовану функцію",
+              "zh" => "%{name} 未被识别为内置函数"
             },
             "args" => [
               {
@@ -30077,7 +30632,8 @@ $CONF = {
               "ru" => "Набор встроенных функций для версии \"%{bundle}\" не поддерживается в Perl %{version}",
               "sr" => "Уграђени пакет верзије „%{bundle}” није подржан у Перлу %{version}",
               "tr" => "Yerleşik sürüm paketi \"%{bundle}\", Perl %{version} tarafından desteklenmiyor",
-              "uk" => "Набір вбудованих функцій для версії \"%{bundle}\" не підтримується Perl %{version}"
+              "uk" => "Набір вбудованих функцій для версії \"%{bundle}\" не підтримується Perl %{version}",
+              "zh" => "Perl %{version} 不支持内置版本包 \"%{bundle}\""
             },
             "args" => [
               {
@@ -30130,7 +30686,8 @@ $CONF = {
               "ru" => "Указатель на интерпретатор из libperl не совпадает с ожидаемым",
               "sr" => "Неусклађен показивач на интерпретатор између очекиваног и libperl",
               "tr" => "Beklenen ve libperl'deki yorumlayıcı işaretçisi eşleşmiyor",
-              "uk" => "Невідповідність між очікуваним вказівником на інтерпретатор і вказівником із libperl"
+              "uk" => "Невідповідність між очікуваним вказівником на інтерпретатор і вказівником із libperl",
+              "zh" => "预期的 libperl 解释器指针与实际指针不匹配"
             },
             "args" => []
           },
@@ -30172,7 +30729,8 @@ $CONF = {
               "ru" => "Несоответствие ожидаемого размера структуры интерпретатора размеру в libperl: %{arg2} и %{arg3}",
               "sr" => "Неслагање између очекиване величине структуре интерпретатора и величине у libperl: %{arg2} наспрам %{arg3}",
               "tr" => "Beklenen ve libperl'deki yorumlayıcı yapısının boyutu eşleşmiyor: %{arg2} ve %{arg3}",
-              "uk" => "Невідповідність між очікуваним розміром структури інтерпретатора та розміром у libperl: %{arg2} проти %{arg3}"
+              "uk" => "Невідповідність між очікуваним розміром структури інтерпретатора та розміром у libperl: %{arg2} проти %{arg3}",
+              "zh" => "libperl 解释器结构大小与预期不符：%{arg2} 与 %{arg3}"
             },
             "args" => [
               {
@@ -30225,7 +30783,8 @@ $CONF = {
               "ru" => "%{arg1}: загружаемая библиотека и исполняемые файлы perl несовместимы (получен ключ согласования %{arg3} для %{arg2}, требовался %{arg4})\n",
               "sr" => "%{arg1}: библиотека која се може учитати и извршне датотеке Перла нису усклађене (добијен је кључ руковања %{arg2} %{arg3}, потребан је %{arg4})\n",
               "tr" => "%{arg1}: yüklenebilir kitaplık ile perl ikilileri eşleşmiyor (alınan %{arg2} el sıkışma anahtarı %{arg3}, gereken %{arg4})\n",
-              "uk" => "%{arg1}: завантажувана бібліотека та виконувані файли perl несумісні (отримано ключ узгодження %{arg2} %{arg3}, потрібен %{arg4})\n"
+              "uk" => "%{arg1}: завантажувана бібліотека та виконувані файли perl несумісні (отримано ключ узгодження %{arg2} %{arg3}, потрібен %{arg4})\n",
+              "zh" => "%{arg1}：可加载库与 perl 二进制文件不匹配 (收到 %{arg2} 握手键 %{arg3}，需要 %{arg4})\n"
             },
             "args" => [
               {
@@ -30288,7 +30847,8 @@ $CONF = {
               "ru" => "Версия API Perl %{arg1} модуля %{arg2} не соответствует %{arg3}",
               "sr" => "Верзија Perl API-ја %{arg1} за %{arg2} не одговара верзији %{arg3}",
               "tr" => "%{arg2} içindeki %{arg1} Perl API sürümü, %{arg3} ile eşleşmiyor",
-              "uk" => "Версія API Perl %{arg1} для %{arg2} не відповідає %{arg3}"
+              "uk" => "Версія API Perl %{arg1} для %{arg2} не відповідає %{arg3}",
+              "zh" => "%{arg2} 的 Perl API 版本 %{arg1} 与 %{arg3} 不匹配"
             },
             "args" => [
               {
@@ -30352,7 +30912,8 @@ $CONF = {
               "ru" => "Несоответствие ожидаемой версии API версии в libperl: %{arg2} и %{arg3}",
               "sr" => "Неслагање између очекиване и libperl API верзије: %{arg2} наспрам %{arg3}",
               "tr" => "Beklenen ve libperl'deki Perl API sürümleri eşleşmiyor: %{arg2} ve %{arg3}",
-              "uk" => "Невідповідність між очікуваною версією API та версією API libperl: %{arg2} проти %{arg3}"
+              "uk" => "Невідповідність між очікуваною версією API та версією API libperl: %{arg2} проти %{arg3}",
+              "zh" => "libperl API 版本与预期不符：%{arg2} 与 %{arg3}"
             },
             "args" => [
               {
@@ -30405,7 +30966,8 @@ $CONF = {
               "ru" => " (вы запускали h2ph?)",
               "sr" => " (да ли сте покренули h2ph?)",
               "tr" => " (h2ph çalıştırdınız mı?)",
-              "uk" => " (ви запускали h2ph?)"
+              "uk" => " (ви запускали h2ph?)",
+              "zh" => " (是否运行了 h2ph？)"
             },
             "args" => []
           },
@@ -30453,7 +31015,8 @@ $CONF = {
               "ru" => " (возможно, следует заменить .h на .ph?)",
               "sr" => " (можда треба променити .h у .ph?)",
               "tr" => " (.h uzantısını belki .ph olarak değiştirin?)",
-              "uk" => " (можливо, слід замінити .h на .ph?)"
+              "uk" => " (можливо, слід замінити .h на .ph?)",
+              "zh" => " (试试将 .h 改为 .ph？)"
             },
             "args" => []
           },
@@ -30501,7 +31064,8 @@ $CONF = {
               "ru" => " (проверены элементы \@INC:%{entries})",
               "sr" => " (проверени уноси \@INC:%{entries})",
               "tr" => " (\@INC girdileri denetlendi:%{entries})",
-              "uk" => " (перевірені елементи \@INC:%{entries})"
+              "uk" => " (перевірені елементи \@INC:%{entries})",
+              "zh" => " (\@INC 已检查的条目：%{entries})"
             },
             "args" => [
               {
@@ -30556,7 +31120,8 @@ $CONF = {
               "ru" => " (возможно, необходимо установить модуль %{module})",
               "sr" => " (можда треба да инсталирате модул %{module})",
               "tr" => " (%{module} modülünü yüklemeniz gerekebilir)",
-              "uk" => " (можливо, потрібно встановити модуль %{module})"
+              "uk" => " (можливо, потрібно встановити модуль %{module})",
+              "zh" => " (你可能需要安装 %{module} 模块)"
             },
             "args" => [
               {
@@ -30611,7 +31176,8 @@ $CONF = {
               "ru" => "Не удалось найти %{arg1}:   %{arg2}",
               "sr" => "Није могуће пронаћи %{arg1}:   %{arg2}",
               "tr" => "%{arg1} bulunamıyor:   %{arg2}",
-              "uk" => "Неможливо знайти %{arg1}:   %{arg2}"
+              "uk" => "Неможливо знайти %{arg1}:   %{arg2}",
+              "zh" => "无法定位 %{arg1}：   %{arg2}"
             },
             "args" => [
               {
@@ -30664,7 +31230,8 @@ $CONF = {
               "ru" => "Аргумент %{arg1} отсутствует или не определён",
               "sr" => "Недостаје или је недефинисан аргумент за %{arg1}",
               "tr" => "%{arg1} için eksik veya tanımsız bağımsız değişken",
-              "uk" => "Аргумент для %{arg1} відсутній або має невизначене значення"
+              "uk" => "Аргумент для %{arg1} відсутній або має невизначене значення",
+              "zh" => "传给 %{arg1} 的参数缺失或未定义"
             },
             "args" => [
               {
@@ -30712,7 +31279,8 @@ $CONF = {
               "ru" => "Не удалось найти %{arg1}:   %{arg2}: %{arg3}",
               "sr" => "Није могуће пронаћи %{arg1}:   %{arg2}: %{arg3}",
               "tr" => "%{arg1} bulunamıyor:   %{arg2}: %{arg3}",
-              "uk" => "Неможливо знайти %{arg1}:   %{arg2}: %{arg3}"
+              "uk" => "Неможливо знайти %{arg1}:   %{arg2}: %{arg3}",
+              "zh" => "无法定位 %{arg1}：   %{arg2}：%{arg3}"
             },
             "args" => [
               {
@@ -30771,7 +31339,8 @@ $CONF = {
               "ru" => "Невозможно сделать загруженные символы глобальными на этой платформе при загрузке %{arg1}",
               "sr" => "Није могуће учинити учитане симболе глобалним на овој платформи приликом учитавања %{arg1}",
               "tr" => "%{arg1} yüklenirken bu platformda yüklenen semboller genel kullanıma açılamıyor",
-              "uk" => "Неможливо зробити завантажені символи глобальними на цій платформі під час завантаження %{arg1}"
+              "uk" => "Неможливо зробити завантажені символи глобальними на цій платформі під час завантаження %{arg1}",
+              "zh" => "在此平台加载 %{arg1} 时，无法将已加载的符号设为全局可见"
             },
             "args" => [
               {
@@ -30819,7 +31388,8 @@ $CONF = {
               "ru" => "Аргумент %{arg1}, переданный через %%{^HOOK}{require__before}, отсутствует или не определён",
               "sr" => "Недостаје или је недефинисан аргумент за %{arg1} преко %%{^HOOK}{require__before}",
               "tr" => "%%{^HOOK}{require__before} aracılığıyla %{arg1} için eksik veya tanımsız bağımsız değişken",
-              "uk" => "Відсутній або невизначений аргумент для %{arg1} через %%{^HOOK}{require__before}"
+              "uk" => "Відсутній або невизначений аргумент для %{arg1} через %%{^HOOK}{require__before}",
+              "zh" => "通过 %%{^HOOK}{require__before} 传给 %{arg1} 的参数缺失或未定义"
             },
             "args" => [
               {
@@ -30921,6 +31491,10 @@ $CONF = {
               "uk" => {
                 "*" => "Підпрограма-перехоплювач %{hook} завершилася з винятком--пошук у \@INC припинено\n",
                 "method" => "Метод-перехоплювач %{hook} завершився з винятком--пошук у \@INC припинено\n"
+              },
+              "zh" => {
+                "method" => "%{hook} 方法钩子异常退出——正在停止 \@INC 搜索\n",
+                "sub" => "%{hook} 子程序钩子异常退出——正在停止 \@INC 搜索\n"
               }
             },
             "args" => [
@@ -31038,6 +31612,10 @@ $CONF = {
               "uk" => {
                 "*" => "Неможливо знайти метод об'єкта \"INC\", \"INCDIR\" або перевантаження перетворення на рядок через пакет %{package} в об'єктному обробнику \@INC",
                 "array_object_hook" => "Неможливо знайти метод об'єкта \"INC\", \"INCDIR\" або перевантаження перетворення на рядок через пакет %{package} в об'єкті в обробнику ARRAY у \@INC"
+              },
+              "zh" => {
+                "array_object_hook" => "在 \@INC 的 ARRAY hook 对象中，无法通过包 %{package} 找到对象方法 \"INC\"、\"INCDIR\"，也找不到字符串重载",
+                "object_hook" => "在 \@INC 对象 hook 中，无法通过包 %{package} 找到对象方法 \"INC\"、\"INCDIR\"，也找不到字符串重载"
               }
             },
             "args" => [
@@ -31096,7 +31674,8 @@ $CONF = {
               "ru" => "Попытка установить неизвестный обработчик '%{arg1}' в %%{^HOOK}",
               "sr" => "Покушај постављања непознате куке „%{arg1}“ у %%{^HOOK}",
               "tr" => "%%{^HOOK} içinde bilinmeyen '%{arg1}' kancası ayarlanmaya çalışıldı",
-              "uk" => "Спроба встановити невідомий обробник '%{arg1}' у %%{^HOOK}"
+              "uk" => "Спроба встановити невідомий обробник '%{arg1}' у %%{^HOOK}",
+              "zh" => "尝试在 %%{^HOOK} 中设置未知的钩子“%{arg1}”"
             },
             "args" => [
               {
@@ -31144,7 +31723,8 @@ $CONF = {
               "ru" => "\${^HOOK}{%{arg1}} может быть только ссылкой типа CODE или значением undef",
               "sr" => "\${^HOOK}{%{arg1}} може бити само CODE референца или undef",
               "tr" => "\${^HOOK}{%{arg1}} yalnızca bir CODE referansı veya undef olabilir",
-              "uk" => "\${^HOOK}{%{arg1}} може бути лише посиланням CODE або undef"
+              "uk" => "\${^HOOK}{%{arg1}} може бути лише посиланням CODE або undef",
+              "zh" => "\${^HOOK}{%{arg1}} 只能是 CODE 引用或 undef"
             },
             "args" => [
               {
@@ -31202,7 +31782,8 @@ $CONF = {
               "ru" => "UNIVERSAL ничего не экспортирует",
               "sr" => "UNIVERSAL не извози ништа",
               "tr" => "UNIVERSAL hiçbir şeyi dışa aktarmıyor",
-              "uk" => "UNIVERSAL нічого не експортує"
+              "uk" => "UNIVERSAL нічого не експортує",
+              "zh" => "UNIVERSAL 不导出任何内容"
             },
             "args" => []
           },
@@ -31244,7 +31825,8 @@ $CONF = {
               "ru" => "Не удалось найти %{arg1}",
               "sr" => "Није могуће пронаћи %{arg1}",
               "tr" => "%{arg1} bulunamıyor",
-              "uk" => "Неможливо знайти %{arg1}"
+              "uk" => "Неможливо знайти %{arg1}",
+              "zh" => "无法定位 %{arg1}"
             },
             "args" => [
               {
@@ -31292,7 +31874,8 @@ $CONF = {
               "ru" => "Не удалось найти %{arg1} в \@INC",
               "sr" => "Није могуће пронаћи %{arg1} у \@INC",
               "tr" => "%{arg1}, \@INC içinde bulunamıyor",
-              "uk" => "Не вдалося знайти %{arg1} у \@INC"
+              "uk" => "Не вдалося знайти %{arg1} у \@INC",
+              "zh" => "在 \@INC 中找不到 %{arg1}"
             },
             "args" => [
               {
@@ -31346,7 +31929,8 @@ $CONF = {
               "ru" => "Требуется Perl %{arg1} (возможно, имелась в виду версия %{arg2}?) — используется лишь %{arg3}, выполнение остановлено",
               "sr" => "Потребан је Perl %{arg1} (да ли сте мислили %{arg2}?) — доступан је само %{arg3}; извршавање је заустављено",
               "tr" => "Perl %{arg1} gerekiyor ( %{arg2} demek mi istediniz?)—bu yalnızca %{arg3}, durduruldu",
-              "uk" => "Потрібен Perl %{arg1} (можливо, ви мали на увазі %{arg2}?) — поточна версія лише %{arg3}, виконання зупинено"
+              "uk" => "Потрібен Perl %{arg1} (можливо, ви мали на увазі %{arg2}?) — поточна версія лише %{arg3}, виконання зупинено",
+              "zh" => "需要 Perl %{arg1}（你是想写 %{arg2} 吗？）——当前版本只有 %{arg3}，已停止"
             },
             "args" => [
               {
@@ -31407,7 +31991,8 @@ $CONF = {
               "ru" => "Версии Perl начиная с %{arg1} слишком новые — используется %{arg2}, выполнение остановлено",
               "sr" => "Perl је превише нов од %{arg1} — ово је %{arg2}; извршавање је заустављено",
               "tr" => "%{arg1} ve sonraki Perl sürümleri çok yeni—bu %{arg2}, durduruldu",
-              "uk" => "Версії Perl, починаючи з %{arg1}, занадто нові — поточна версія %{arg2}, виконання зупинено"
+              "uk" => "Версії Perl, починаючи з %{arg1}, занадто нові — поточна версія %{arg2}, виконання зупинено",
+              "zh" => "Perl %{arg1} 之后的版本过新——当前版本是 %{arg2}，已停止"
             },
             "args" => [
               {
@@ -31462,7 +32047,8 @@ $CONF = {
               "ru" => "Требуется Perl %{arg1} — используется лишь %{arg2}, выполнение остановлено",
               "sr" => "Потребан је Perl %{arg1} — доступан је само %{arg2}; извршавање је заустављено",
               "tr" => "Perl %{arg1} gerekiyor; bu yalnızca %{arg2}, durduruldu",
-              "uk" => "Потрібен Perl %{arg1} — поточна версія лише %{arg2}, виконання зупинено"
+              "uk" => "Потрібен Perl %{arg1} — поточна версія лише %{arg2}, виконання зупинено",
+              "zh" => "需要 Perl %{arg1}——当前版本只有 %{arg2}，已停止"
             },
             "args" => [
               {
@@ -31518,7 +32104,8 @@ $CONF = {
               "ru" => "%{error}Ошибка компиляции в require",
               "sr" => "%{error}Компајлирање у require није успело",
               "tr" => "%{error}require sırasında derleme başarısız oldu",
-              "uk" => "%{error}Помилка компіляції в require"
+              "uk" => "%{error}Помилка компіляції в require",
+              "zh" => "%{error}require 编译失败"
             },
             "args" => [
               {
@@ -31568,7 +32155,8 @@ $CONF = {
               "ru" => "Слово без кавычек в require содержит \"\\.\"",
               "sr" => "Bareword у require садржи \"\\.\"",
               "tr" => "require içindeki yalın sözcük \"\\.\" içeriyor",
-              "uk" => "Слово без лапок у require містить \"\\.\""
+              "uk" => "Слово без лапок у require містить \"\\.\"",
+              "zh" => "require 中的裸字包含 \"\\.\""
             },
             "args" => []
           },
@@ -31611,7 +32199,8 @@ $CONF = {
               "ru" => "Слово без кавычек в require преобразуется в недопустимое имя файла \"%{arg1}\"",
               "sr" => "Bareword у require одговара недозвољеном имену датотеке \"%{arg1}\"",
               "tr" => "require içindeki yalın sözcük, izin verilmeyen \"%{arg1}\" dosya adına karşılık geliyor",
-              "uk" => "Слово без лапок у require відповідає недозволеному імені файлу \"%{arg1}\""
+              "uk" => "Слово без лапок у require відповідає недозволеному імені файлу \"%{arg1}\"",
+              "zh" => "require 中的裸字映射到不允许的文件名 \"%{arg1}\""
             },
             "args" => [
               {
@@ -31661,7 +32250,8 @@ $CONF = {
               "ru" => "Слово без кавычек в require содержит \"\\0\"",
               "sr" => "Bareword у require садржи \"\\0\"",
               "tr" => "require içindeki yalın sözcük \"\\0\" içeriyor",
-              "uk" => "Слово без лапок у require містить \"\\0\""
+              "uk" => "Слово без лапок у require містить \"\\0\"",
+              "zh" => "require 中的裸字包含 \"\\0\""
             },
             "args" => []
           },
@@ -31704,7 +32294,8 @@ $CONF = {
               "ru" => "Слово без кавычек в require содержит \"/.\"",
               "sr" => "Bareword у require садржи \"/.\"",
               "tr" => "require içindeki yalın sözcük \"/.\" içeriyor",
-              "uk" => "Слово без лапок у require містить \"/.\""
+              "uk" => "Слово без лапок у require містить \"/.\"",
+              "zh" => "require 中的裸字包含 \"/.\""
             },
             "args" => []
           },
@@ -31747,7 +32338,8 @@ $CONF = {
               "ru" => "Слово без кавычек в require преобразуется в пустое имя файла",
               "sr" => "Bareword у require одговара празном имену датотеке",
               "tr" => "require içindeki yalın sözcük boş bir dosya adına karşılık geliyor",
-              "uk" => "Слово без лапок у require перетворюється на порожнє ім'я файлу"
+              "uk" => "Слово без лапок у require перетворюється на порожнє ім'я файлу",
+              "zh" => "require 中的裸字映射为空文件名"
             },
             "args" => []
           },
@@ -31790,7 +32382,8 @@ $CONF = {
               "ru" => "Слово без кавычек в require не должно начинаться с двойного двоеточия: \"%{arg1}\"\n",
               "sr" => "Bareword у require не сме да почиње са двоструким двотачјем: \"%{arg1}\"\n",
               "tr" => "require içindeki yalın sözcük çift iki noktayla başlayamaz: \"%{arg1}\"\n",
-              "uk" => "Слово без лапок у require не повинно починатися з подвійної двокрапки: \"%{arg1}\"\n"
+              "uk" => "Слово без лапок у require не повинно починатися з подвійної двокрапки: \"%{arg1}\"\n",
+              "zh" => "require 中的裸字不得以双冒号开头：\"%{arg1}\"\n"
             },
             "args" => [
               {
@@ -31838,7 +32431,8 @@ $CONF = {
               "ru" => "Попытка повторной загрузки %{arg1} прервана.\nОшибка компиляции в require",
               "sr" => "Поновно учитавање %{arg1} је прекинуто.\nКомпилација није успела у require",
               "tr" => "%{arg1} yeniden yüklenmeye çalışıldı; işlem iptal edildi.\nrequire sırasında derleme başarısız oldu",
-              "uk" => "Спробу повторного завантаження %{arg1} перервано.\nПомилка компіляції в require"
+              "uk" => "Спробу повторного завантаження %{arg1} перервано.\nПомилка компіляції в require",
+              "zh" => "重新加载 %{arg1} 的尝试已中止。\nrequire 编译失败"
             },
             "args" => [
               {
@@ -31886,7 +32480,8 @@ $CONF = {
               "ru" => "Файл %{name} не вернул истинное значение",
               "sr" => "%{name} није вратио истиниту вредност",
               "tr" => "%{name} doğru (true) bir değer döndürmedi",
-              "uk" => "%{name} не повернув істинного значення"
+              "uk" => "%{name} не повернув істинного значення",
+              "zh" => "%{name} 未返回真值"
             },
             "args" => [
               {
@@ -31935,7 +32530,8 @@ $CONF = {
               "ru" => "Фильтры исходного кода применимы только к байтовым потокам",
               "sr" => "Филтери извора се примењују само на бајтне токове",
               "tr" => "Kaynak filtreleri yalnızca bayt akışlarına uygulanır",
-              "uk" => "Фільтри вихідного коду застосовуються лише до байтових потоків"
+              "uk" => "Фільтри вихідного коду застосовуються лише до байтових потоків",
+              "zh" => "源过滤器仅适用于字节流"
             },
             "args" => []
           },
@@ -31978,7 +32574,8 @@ $CONF = {
               "ru" => "filter_del может удалять фильтры только в обратном порядке (на данный момент)",
               "sr" => "filter_del може да брише само обрнутим редоследом (тренутно)",
               "tr" => "filter_del yalnızca ters sırada silme yapabilir (şu anda)",
-              "uk" => "filter_del може видаляти лише у зворотному порядку (наразі)"
+              "uk" => "filter_del може видаляти лише у зворотному порядку (наразі)",
+              "zh" => "filter_del 只能按逆序删除 (当前顺序不正确)"
             },
             "args" => []
           },
@@ -32020,7 +32617,8 @@ $CONF = {
               "ru" => "Версия объектного кода модуля %{module} (%{object_version}) не совпадает с параметром bootstrap %{perl_version}",
               "sr" => "Верзија објекта модула %{module} (%{object_version}) не одговара параметру за покретање %{perl_version}",
               "tr" => "%{module} nesne sürümü %{object_version}, bootstrap parametresi %{perl_version} ile eşleşmiyor",
-              "uk" => "Версія об'єктного коду %{module} %{object_version} не відповідає параметру bootstrap %{perl_version}"
+              "uk" => "Версія об'єктного коду %{module} %{object_version} не відповідає параметру bootstrap %{perl_version}",
+              "zh" => "%{module} 对象版本 %{object_version} 与引导参数 %{perl_version} 不匹配"
             },
             "args" => [
               {
@@ -32081,7 +32679,8 @@ $CONF = {
               "ru" => "Версия объектного кода модуля %{module} (%{object_version}) не совпадает с \$%{module}::%{version_name} %{perl_version}",
               "sr" => "Верзија објекта модула %{module} (%{object_version}) не одговара вредности \$%{module}::%{version_name} %{perl_version}",
               "tr" => "%{module} nesne sürümü, %{module}::%{version_name} %{perl_version} ile eşleşmiyor",
-              "uk" => "Версія об’єктного коду %{module} %{object_version} не збігається з \$%{module}::%{version_name} %{perl_version}"
+              "uk" => "Версія об’єктного коду %{module} %{object_version} не збігається з \$%{module}::%{version_name} %{perl_version}",
+              "zh" => "%{module} 对象版本 %{object_version} 与 \$%{module}::%{version_name} %{perl_version} 不匹配"
             },
             "args" => [
               {
@@ -32147,7 +32746,8 @@ $CONF = {
               "ru" => "Недостаточно памяти в perl:???",
               "sr" => "Недостатак меморије у perl:???",
               "tr" => "perl içinde bellek yetersiz:???",
-              "uk" => "Недостатньо пам’яті в perl:???"
+              "uk" => "Недостатньо пам’яті в perl:???",
+              "zh" => "perl 中内存不足：??? "
             },
             "args" => []
           },
@@ -32189,7 +32789,8 @@ $CONF = {
               "ru" => "Недостаточно памяти при запросе нелепо большого объёма",
               "sr" => "Недостатак меморије током неразумно великог захтева",
               "tr" => "Aşırı büyük bir bellek isteği sırasında bellek yetersiz",
-              "uk" => "Брак пам'яті під час обробки безглуздо великого запиту"
+              "uk" => "Брак пам'яті під час обробки безглуздо великого запиту",
+              "zh" => "请求的内存量大得离谱，内存耗尽"
             },
             "args" => []
           },
@@ -32233,7 +32834,8 @@ $CONF = {
               "ru" => "Недостаточно памяти при расширении массива",
               "sr" => "Нема довољно меморије током проширивања низа",
               "tr" => "Dizi genişletilirken bellek yetersiz",
-              "uk" => "Брак пам'яті під час розширення масиву"
+              "uk" => "Брак пам'яті під час розширення масиву",
+              "zh" => "扩展数组时内存不足"
             },
             "args" => []
           },
@@ -32276,7 +32878,8 @@ $CONF = {
               "ru" => "Недостаточно памяти при расширении списка",
               "sr" => "Нема довољно меморије при проширењу листе",
               "tr" => "Liste genişletilirken bellek yetersiz",
-              "uk" => "Брак пам'яті під час розширення списку"
+              "uk" => "Брак пам'яті під час розширення списку",
+              "zh" => "扩展列表时内存不足"
             },
             "args" => []
           },
@@ -32319,7 +32922,8 @@ $CONF = {
               "ru" => "Недостаточно памяти при выполнении pack()",
               "sr" => "Недовољно меморије током pack()",
               "tr" => "pack() sırasında bellek yetersiz",
-              "uk" => "Недостатньо пам’яті під час виконання pack()"
+              "uk" => "Недостатньо пам’яті під час виконання pack()",
+              "zh" => "pack() 期间内存耗尽"
             },
             "args" => []
           },
@@ -32361,7 +32965,8 @@ $CONF = {
               "ru" => "Недостаточно памяти при расширении стека",
               "sr" => "Нема довољно меморије приликом проширивања стека",
               "tr" => "Yığın genişletilirken bellek yetersiz",
-              "uk" => "Брак пам'яті під час розширення стека"
+              "uk" => "Брак пам'яті під час розширення стека",
+              "zh" => "扩展栈时内存不足"
             },
             "args" => []
           },
@@ -32404,7 +33009,8 @@ $CONF = {
               "ru" => "Недостаточно памяти при расширении строки",
               "sr" => "Нема довољно меморије приликом проширивања ниске",
               "tr" => "Dizge genişletilirken bellek yetersiz",
-              "uk" => "Брак пам'яті під час розширення рядка"
+              "uk" => "Брак пам'яті під час розширення рядка",
+              "zh" => "扩展字符串时内存不足"
             },
             "args" => []
           },
@@ -32447,7 +33053,8 @@ $CONF = {
               "ru" => "Недостаточно памяти при выполнении vec в контексте lvalue",
               "sr" => "Недостатак меморије током vec у контексту леве вредности",
               "tr" => "lvalue bağlamındaki vec sırasında bellek yetersiz",
-              "uk" => "Недостатньо пам’яті під час виконання vec у контексті lvalue"
+              "uk" => "Недостатньо пам’яті під час виконання vec у контексті lvalue",
+              "zh" => "在左值上下文中调用 vec 时内存分配超出范围"
             },
             "args" => []
           },
@@ -32490,7 +33097,8 @@ $CONF = {
               "ru" => "Присваивать ненулевое значение переменной \$[ больше нельзя",
               "sr" => "Више није могуће доделити ненулту вредност променљивој \$[",
               "tr" => "\$[ değişkenine sıfırdan farklı bir değer atanamaz",
-              "uk" => "Присвоєння ненульового значення змінній \$[ більше неможливе"
+              "uk" => "Присвоєння ненульового значення змінній \$[ більше неможливе",
+              "zh" => "无法再向 \$[ 赋非零值"
             },
             "args" => []
           },
@@ -32533,7 +33141,8 @@ $CONF = {
               "ru" => "Нельзя присвоить ссылку на %{arg1} глобу GLOB",
               "sr" => "Није могуће доделити референцу на %{arg1} у GLOB",
               "tr" => "Bir GLOB içine %{arg1} öğesine başvuru atanamaz",
-              "uk" => "Неможливо присвоїти посилання на %{arg1} глобу GLOB"
+              "uk" => "Неможливо присвоїти посилання на %{arg1} глобу GLOB",
+              "zh" => "无法将指向 %{arg1} 的引用赋值给 GLOB"
             },
             "args" => [
               {
@@ -32584,7 +33193,8 @@ $CONF = {
               "ru" => "Попытка изменить значение элемента массива, который невозможно создать, индекс %{index}",
               "sr" => "Покушана је измена вредности низа која не може да се креира, индекс %{index}",
               "tr" => "Oluşturulamayan dizi değerini değiştirme girişimi; alt indis %{index}",
-              "uk" => "Спроба змінити значення елемента масиву, який неможливо створити, індекс %{index}"
+              "uk" => "Спроба змінити значення елемента масиву, який неможливо створити, індекс %{index}",
+              "zh" => "尝试修改不可创建的数组值，下标为 %{index}"
             },
             "args" => [
               {
@@ -32641,7 +33251,8 @@ $CONF = {
               "ru" => "Попытка изменить значение элемента хеша, который невозможно создать, ключ \"%{key}\"",
               "sr" => "Покушана је измена вредности хеша која не може да се креира, индекс „%{key}”",
               "tr" => "Oluşturulamayan karma değerini değiştirme girişimi; alt indis \"%{key}\"",
-              "uk" => "Спроба змінити значення елемента хешу, який неможливо створити, ключ \"%{key}\""
+              "uk" => "Спроба змінити значення елемента хешу, який неможливо створити, ключ \"%{key}\"",
+              "zh" => "尝试修改不可创建的哈希值，下标为「%{key}」"
             },
             "args" => [
               {
@@ -32698,7 +33309,8 @@ $CONF = {
               "ru" => "Нельзя локализовать лексическую переменную %{arg1}",
               "sr" => "Није могуће локализовати лексичку променљиву %{arg1}",
               "tr" => "Sözlüksel değişken %{arg1} yerelleştirilemiyor",
-              "uk" => "Неможливо локалізувати лексичну змінну %{arg1}"
+              "uk" => "Неможливо локалізувати лексичну змінну %{arg1}",
+              "zh" => "无法对词法变量 %{arg1} 使用 local"
             },
             "args" => [
               {
@@ -32750,7 +33362,8 @@ $CONF = {
               "ru" => "Нельзя выполнить локализацию через ссылку",
               "sr" => "Није могуће локализовати кроз референцу",
               "tr" => "Bir başvuru üzerinden yerelleştirme yapılamıyor",
-              "uk" => "Неможливо виконати локалізацію через посилання"
+              "uk" => "Неможливо виконати локалізацію через посилання",
+              "zh" => "不能通过引用进行局部化"
             },
             "args" => []
           },
@@ -32793,7 +33406,8 @@ $CONF = {
               "ru" => "Нельзя изменять результат вызова подпрограммы &%{arg1}, не объявленной как lvalue",
               "sr" => "Не можете да мењате позив потпрограма &%{arg1} који није левовредност",
               "tr" => "Lvalue olmayan &%{arg1} alt yordam çağrısı değiştirilemiyor",
-              "uk" => "Не можна змінювати результат виклику підпрограми &%{arg1}, не оголошеної як lvalue"
+              "uk" => "Не можна змінювати результат виклику підпрограми &%{arg1}, не оголошеної як lvalue",
+              "zh" => "不能修改非左值子例程调用 &%{arg1}"
             },
             "args" => [
               {
@@ -32897,6 +33511,9 @@ $CONF = {
               "uk" => {
                 "array" => "Неможливо повернути масив у скалярному lvalue-контексті",
                 "hash" => "Неможливо повернути хеш у скалярному lvalue-контексті"
+              },
+              "zh" => {
+                "*" => "左值标量上下文不能返回 %{aggregate_kind}"
               }
             },
             "args" => [
@@ -32951,7 +33568,8 @@ $CONF = {
               "ru" => "Нельзя изменять срез массива из пар индекс/значение при списочном присваивании",
               "sr" => "Није могуће мењати исечак низа индекса/вредности у додели листе",
               "tr" => "Liste atamasında dizinin indis/değer dilimi değiştirilemiyor",
-              "uk" => "Не можна змінювати зріз пар індекс/значення масиву в списковому присвоєнні"
+              "uk" => "Не можна змінювати зріз пар індекс/значення масиву в списковому присвоєнні",
+              "zh" => "不能在列表赋值中修改索引/值数组切片"
             },
             "args" => []
           },
@@ -32995,7 +33613,8 @@ $CONF = {
               "ru" => "Нельзя изменять результат keys для массива при списочном присваивании",
               "sr" => "Није могуће мењати кључеве низа у додели листе",
               "tr" => "Liste atamasında dizinin anahtarları değiştirilemiyor",
-              "uk" => "Не можна змінювати результат keys для масиву в списковому присвоєнні"
+              "uk" => "Не можна змінювати результат keys для масиву в списковому присвоєнні",
+              "zh" => "不能在列表赋值中修改数组上的键"
             },
             "args" => []
           },
@@ -33039,7 +33658,8 @@ $CONF = {
               "ru" => "Нельзя изменять результат keys при списочном присваивании",
               "sr" => "Није могуће мењати кључеве у додели листе",
               "tr" => "Liste atamasında anahtarlar değiştirilemiyor",
-              "uk" => "Не можна змінювати keys у списковому присвоєнні"
+              "uk" => "Не можна змінювати keys у списковому присвоєнні",
+              "zh" => "不能在列表赋值中修改键"
             },
             "args" => []
           },
@@ -33083,7 +33703,8 @@ $CONF = {
               "ru" => "Невозможно изменить срез пар ключ/значение хеша при присваивании %{arg2}",
               "sr" => "Не може се мењати исечак кључа/вредности хеша у додели %{arg2}",
               "tr" => "%{arg2} atamasında karma anahtar/değer dilimi değiştirilemiyor",
-              "uk" => "Неможливо змінити зріз пар ключ/значення хешу під час присвоєння %{arg2}"
+              "uk" => "Неможливо змінити зріз пар ключ/значення хешу під час присвоєння %{arg2}",
+              "zh" => "无法修改 %{arg2} 赋值中的键值哈希切片"
             },
             "args" => [
               {
@@ -33133,7 +33754,8 @@ $CONF = {
               "ru" => "Нельзя возвращать массив в скалярном контексте, требующем lvalue",
               "sr" => "Није могуће вратити низ у скаларни контекст леве вредности",
               "tr" => "Lvalue skaler bağlamına dizi döndürülemez",
-              "uk" => "Не можна повертати масив у скалярному контексті lvalue"
+              "uk" => "Не можна повертати масив у скалярному контексті lvalue",
+              "zh" => "不能在左值标量上下文中返回数组"
             },
             "args" => []
           },
@@ -33177,7 +33799,8 @@ $CONF = {
               "ru" => "Нельзя возвращать хеш в скалярном контексте, требующем lvalue",
               "sr" => "Није могуће вратити хеш у скаларни контекст леве вредности",
               "tr" => "Lvalue skaler bağlamına karma döndürülemez",
-              "uk" => "Не можна повертати хеш у скалярному контексті lvalue"
+              "uk" => "Не можна повертати хеш у скалярному контексті lvalue",
+              "zh" => "不能在左值标量上下文中返回哈希"
             },
             "args" => []
           },
@@ -33291,6 +33914,9 @@ $CONF = {
                 "readonly" => "Неможливо повернути значення лише для читання з lvalue-підпрограми",
                 "temporary" => "Неможливо повернути тимчасове значення з lvalue-підпрограми",
                 "undef" => "Неможливо повернути undef з lvalue-підпрограми"
+              },
+              "zh" => {
+                "*" => "左值子例程不能返回 %{return_value_kind} 值"
               }
             },
             "args" => [
@@ -33345,7 +33971,8 @@ $CONF = {
               "ru" => "Попытка удалить ключ '%{key}' со значением, доступным только для чтения, из хеша с ограниченным набором ключей",
               "sr" => "Покушај брисања кључа „%{key}”, означеног само за читање, из ограниченог хеша",
               "tr" => "Kısıtlı bir karmadan salt okunur '%{key}' anahtarı silinmeye çalışıldı",
-              "uk" => "Спроба видалити з хешу з обмеженим набором ключів ключ '%{key}', значення якого доступне лише для читання"
+              "uk" => "Спроба видалити з хешу з обмеженим набором ключів ключ '%{key}', значення якого доступне лише для читання",
+              "zh" => "尝试从受限哈希中删除只读键 '%{key}'"
             },
             "args" => [
               {
@@ -33394,7 +34021,8 @@ $CONF = {
               "ru" => "Попытка изменения значения, доступного только для чтения",
               "sr" => "Покушана је измена вредности која је само за читање",
               "tr" => "Salt okunur bir değeri değiştirme girişimi",
-              "uk" => "Спроба змінити значення, доступне лише для читання"
+              "uk" => "Спроба змінити значення, доступне лише для читання",
+              "zh" => "尝试修改只读值"
             },
             "args" => []
           },
@@ -33437,7 +34065,8 @@ $CONF = {
               "ru" => "Экспериментальное создание псевдонимов через ссылки не включено",
               "sr" => "Експериментално алијасирање преко референце није омогућено",
               "tr" => "Başvuru yoluyla deneysel takma ad verme özelliği etkin değil",
-              "uk" => "Експериментальне створення псевдонімів через посилання не ввімкнено"
+              "uk" => "Експериментальне створення псевдонімів через посилання не ввімкнено",
+              "zh" => "尚未启用通过引用进行的实验性别名赋值"
             },
             "args" => []
           },
@@ -33590,6 +34219,9 @@ $CONF = {
               },
               "uk" => {
                 "*" => "Присвоєне значення не є посиланням типу %{reference_type}"
+              },
+              "zh" => {
+                "*" => "赋值的值不是 %{reference_type} 引用"
               }
             },
             "args" => [
@@ -33664,7 +34296,8 @@ $CONF = {
               "ru" => "Присваиваемое значение не является ссылкой",
               "sr" => "Додељена вредност није референца",
               "tr" => "Atanan değer bir başvuru değil",
-              "uk" => "Присвоєне значення не є посиланням"
+              "uk" => "Присвоєне значення не є посиланням",
+              "zh" => "赋值的值不是引用"
             },
             "args" => []
           },
@@ -33713,7 +34346,8 @@ $CONF = {
               "ru" => "Нельзя применить undef к выполняющейся подпрограмме",
               "sr" => "Не може се уклонити дефиниција активног потпрограма",
               "tr" => "Etkin alt yordam tanımsız hâle getirilemez",
-              "uk" => "Неможливо застосувати undef до підпрограми, що виконується"
+              "uk" => "Неможливо застосувати undef до підпрограми, що виконується",
+              "zh" => "不能 undef 正在运行的子程序"
             },
             "args" => []
           },
@@ -33755,7 +34389,8 @@ $CONF = {
               "ru" => "Привязка массивов и хешей к самим себе через tie не поддерживается",
               "sr" => "Самовезивање низова и хешева није подржано",
               "tr" => "Dizilerin ve hash'lerin kendilerine bağlanması desteklenmiyor",
-              "uk" => "Прив'язування масивів і хешів до самих себе через tie не підтримується"
+              "uk" => "Прив'язування масивів і хешів до самих себе через tie не підтримується",
+              "zh" => "目前不支持对数组和哈希进行自绑定"
             },
             "args" => []
           },
@@ -33799,7 +34434,8 @@ $CONF = {
               "ru" => "Нельзя применить tie к массиву, который невозможно перевести в режим подсчёта ссылок на его элементы",
               "sr" => "Не може се извршити tie над низом који не може да задржи бројач референци",
               "tr" => "Yeniden oluşturulamayan diziye tie uygulanamaz",
-              "uk" => "Неможливо застосувати tie до масиву, для якого неможливо ввімкнути підрахунок посилань на елементи"
+              "uk" => "Неможливо застосувати tie до масиву, для якого неможливо ввімкнути підрахунок посилань на елементи",
+              "zh" => "无法 tie 不可重化的数组"
             },
             "args" => []
           },
@@ -33841,7 +34477,8 @@ $CONF = {
               "ru" => "FETCHSIZE вернул отрицательное значение",
               "sr" => "FETCHSIZE је вратио негативну вредност",
               "tr" => "FETCHSIZE negatif bir değer döndürdü",
-              "uk" => "FETCHSIZE повернув від’ємне значення"
+              "uk" => "FETCHSIZE повернув від’ємне значення",
+              "zh" => "FETCHSIZE 返回了负值"
             },
             "args" => []
           },
@@ -33883,7 +34520,8 @@ $CONF = {
               "ru" => "Невозможно преобразовать %{arg2} в целое число в %{arg3}",
               "sr" => "Није могуће претворити %{arg2} у цео број при %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} değeri tamsayıya dönüştürülemez",
-              "uk" => "Неможливо привести %{arg2} до цілого числа у %{arg3}"
+              "uk" => "Неможливо привести %{arg2} до цілого числа у %{arg3}",
+              "zh" => "无法将 %{arg2} 强制转换为整数（位于 %{arg3}）"
             },
             "args" => [
               {
@@ -33926,7 +34564,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg3_operation"
             }
@@ -33969,7 +34608,8 @@ $CONF = {
               "ru" => "Невозможно преобразовать %{arg2} в число в %{arg3}",
               "sr" => "Није могуће претворити %{arg2} у број при %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} değeri sayıya dönüştürülemez",
-              "uk" => "Неможливо привести %{arg2} до числа у %{arg3}"
+              "uk" => "Неможливо привести %{arg2} до числа у %{arg3}",
+              "zh" => "无法将 %{arg2} 强制转换为数字（位于 %{arg3}）"
             },
             "args" => [
               {
@@ -34012,7 +34652,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg3_operation"
             }
@@ -34056,7 +34697,8 @@ $CONF = {
               "ru" => "Недопустимое деление на ноль",
               "sr" => "Недозвољено дељење нулом",
               "tr" => "Sıfıra bölme geçersiz",
-              "uk" => "Неприпустиме ділення на нуль"
+              "uk" => "Неприпустиме ділення на нуль",
+              "zh" => "非法的除零运算"
             },
             "args" => []
           },
@@ -34149,6 +34791,10 @@ $CONF = {
               },
               "uk" => {
                 "*" => "Неможливо обчислити %{operation} для %{value}"
+              },
+              "zh" => {
+                "log" => "不能对 %{value} 求 %{operation}",
+                "sqrt" => "不能对 %{value} 求 %{operation}"
               }
             },
             "args" => [
@@ -34213,7 +34859,8 @@ $CONF = {
               "ru" => "Недопустимое вычисление остатка от деления на ноль",
               "sr" => "Недозвољен модуло нулом",
               "tr" => "Sıfır modülü geçersiz",
-              "uk" => "Неприпустиме обчислення остачі від ділення на нуль"
+              "uk" => "Неприпустиме обчислення остачі від ділення на нуль",
+              "zh" => "非法的模零运算"
             },
             "args" => []
           },
@@ -34256,7 +34903,8 @@ $CONF = {
               "ru" => "Попытка использовать bless для привязки к освобождённому пакету",
               "sr" => "Покушај bless-а у ослобођени пакет",
               "tr" => "Serbest bırakılmış bir pakete bless uygulama girişimi",
-              "uk" => "Спроба застосувати bless для надання належності до звільненого пакета"
+              "uk" => "Спроба застосувати bless для надання належності до звільненого пакета",
+              "zh" => "尝试 bless 到一个已释放的包中"
             },
             "args" => []
           },
@@ -34299,7 +34947,8 @@ $CONF = {
               "ru" => "Попытка передать ссылку вместо имени пакета в bless",
               "sr" => "Покушај bless-а у референцу",
               "tr" => "Bir başvuruya bless uygulama girişimi",
-              "uk" => "Спроба застосувати bless із посиланням замість назви класу"
+              "uk" => "Спроба застосувати bless із посиланням замість назви класу",
+              "zh" => "尝试 bless 到一个引用中"
             },
             "args" => []
           },
@@ -34341,7 +34990,8 @@ $CONF = {
               "ru" => "Попытка использовать bless для привязки к классу, объявленному через class",
               "sr" => "Покушај bless-а у класу",
               "tr" => "Bir sınıfa bless uygulama girişimi",
-              "uk" => "Спроба застосувати bless для надання належності до класу"
+              "uk" => "Спроба застосувати bless для надання належності до класу",
+              "zh" => "尝试 bless 到一个 class 中"
             },
             "args" => []
           },
@@ -34384,7 +35034,8 @@ $CONF = {
               "ru" => "Нельзя применить bless к ссылке на объект",
               "sr" => "Не може се извршити bless над референцом на објекат",
               "tr" => "Bir nesne başvurusuna bless uygulanamaz",
-              "uk" => "Неможливо застосувати bless до посилання на об’єкт"
+              "uk" => "Неможливо застосувати bless до посилання на об’єкт",
+              "zh" => "不能 bless 一个对象引用"
             },
             "args" => []
           },
@@ -34427,7 +35078,8 @@ $CONF = {
               "ru" => "Нельзя применить bless к значению, не являющемуся ссылкой",
               "sr" => "Не може се извршити bless над вредношћу која није референца",
               "tr" => "Başvuru olmayan bir değere bless uygulanamaz",
-              "uk" => "Неможливо застосувати bless до значення, що не є посиланням"
+              "uk" => "Неможливо застосувати bless до значення, що не є посиланням",
+              "zh" => "不能 bless 非引用值"
             },
             "args" => []
           },
@@ -34469,7 +35121,8 @@ $CONF = {
               "ru" => "Слишком много ролей в одной композиции (максимум %{arg1})",
               "sr" => "Није дозвољено више од %{arg1} улога у једној композицији",
               "tr" => "Tek bir bileşimde çok fazla rol var (en fazla %{arg1})",
-              "uk" => "Забагато ролей в одній композиції (максимум %{arg1})"
+              "uk" => "Забагато ролей в одній композиції (максимум %{arg1})",
+              "zh" => "单次组合中的角色过多（上限 %{arg1}）"
             },
             "args" => [
               {
@@ -34519,7 +35172,8 @@ $CONF = {
               "ru" => "Не удалось завершить композицию ролей для '%{class}':\n",
               "sr" => "Састављање улоге није могло да се доврши за „%{class}“:\n",
               "tr" => "'%{class}' için rol bileşimi tamamlanamadı:\n",
-              "uk" => "Не вдалося завершити композицію ролей для '%{class}':\n"
+              "uk" => "Не вдалося завершити композицію ролей для '%{class}':\n",
+              "zh" => "无法完成角色组合 '%{class}'：\n"
             },
             "args" => [
               {
@@ -34580,7 +35234,8 @@ $CONF = {
               "ru" => "Конфликт поля '%{field}' между ролями '%{role1}' и '%{role2}'\n",
               "sr" => "Поље „%{field}“ је у сукобу између „%{role1}“ и „%{role2}“\n",
               "tr" => "'%{field}' alanı '%{role1}' ile '%{role2}' arasında çakışıyor\n",
-              "uk" => "Конфлікт поля '%{field}' між '%{role1}' і '%{role2}'\n"
+              "uk" => "Конфлікт поля '%{field}' між '%{role1}' і '%{role2}'\n",
+              "zh" => "字段 '%{field}' 在 '%{role1}' 和 '%{role2}' 之间冲突\n"
             },
             "args" => [
               {
@@ -34647,7 +35302,8 @@ $CONF = {
               "ru" => "Неожиданные символы при разборе атрибута :implements: %{arg1}",
               "sr" => "Неочекивани знакови при рашчлањивању атрибута :implements: %{arg1}",
               "tr" => ":implements niteliği ayrıştırılırken beklenmeyen karakterler: %{arg1}",
-              "uk" => "Неочікувані символи під час розбору атрибута :implements: %{arg1}"
+              "uk" => "Неочікувані символи під час розбору атрибута :implements: %{arg1}",
+              "zh" => "解析 :implements 属性时遇到意外字符：%{arg1}"
             },
             "args" => [
               {
@@ -34695,7 +35351,8 @@ $CONF = {
               "ru" => "Несогласованная иерархия при слиянии C3 для класса '%{class}'.",
               "sr" => "Недоследна хијерархија током C3 спајања класе „%{class}“.",
               "tr" => "'%{class}' sınıfının C3 birleştirmesi sırasında hiyerarşi tutarsız.",
-              "uk" => "Неузгоджена ієрархія під час злиття C3 для класу '%{class}'."
+              "uk" => "Неузгоджена ієрархія під час злиття C3 для класу '%{class}'.",
+              "zh" => "类“%{class}”的 C3 合并过程中，继承层次结构不一致。"
             },
             "args" => [
               {
@@ -34750,7 +35407,8 @@ $CONF = {
               "ru" => "Текущий результат слияния включает '%{class}'.",
               "sr" => "Тренутни резултат спајања садржи „%{class}“.",
               "tr" => "Geçerli birleştirme sonucu '%{class}' içeriyor.",
-              "uk" => "Поточний результат злиття містить '%{class}'."
+              "uk" => "Поточний результат злиття містить '%{class}'.",
+              "zh" => "当前合并结果包含“%{class}”。"
             },
             "args" => [
               {
@@ -34806,7 +35464,8 @@ $CONF = {
               "ru" => "Слияние не удалось на родительском классе '%{parent}'.",
               "sr" => "Спајање није успело на родитељу „%{parent}“.",
               "tr" => "Birleştirme '%{parent}' üst sınıfında başarısız oldu.",
-              "uk" => "Злиття не вдалося виконати через батьківський клас '%{parent}'."
+              "uk" => "Злиття не вдалося виконати через батьківський клас '%{parent}'.",
+              "zh" => "合并在父类“%{parent}”处失败。"
             },
             "args" => [
               {
@@ -34861,7 +35520,8 @@ $CONF = {
               "ru" => "Неожиданные символы при разборе атрибута :isa класса: %{arg1}",
               "sr" => "Неочекивани знакови при рашчлањивању атрибута :isa класе: %{arg1}",
               "tr" => "Sınıf :isa niteliği ayrıştırılırken beklenmeyen karakterler: %{arg1}",
-              "uk" => "Неочікувані символи під час розбору атрибута класу :isa: %{arg1}"
+              "uk" => "Неочікувані символи під час розбору атрибута класу :isa: %{arg1}",
+              "zh" => "解析 class :isa 属性时遇到意外字符：%{arg1}"
             },
             "args" => [
               {
@@ -34909,7 +35569,8 @@ $CONF = {
               "ru" => "Нельзя вызвать mro_isa_changed_in() для анонимной таблицы символов",
               "sr" => "Не може се позвати mro_isa_changed_in() над анонимном табелом симбола",
               "tr" => "Anonim simge tablosunda mro_isa_changed_in() çağrılamaz",
-              "uk" => "Неможливо викликати mro_isa_changed_in() для анонімної таблиці символів"
+              "uk" => "Неможливо викликати mro_isa_changed_in() для анонімної таблиці символів",
+              "zh" => "不能对匿名符号表调用 mro_isa_changed_in()"
             },
             "args" => []
           },
@@ -34952,7 +35613,8 @@ $CONF = {
               "ru" => "Нельзя линеаризовать анонимную таблицу символов",
               "sr" => "Не може се одредити редослед разрешавања метода за анонимну табелу симбола",
               "tr" => "Anonim simge tablosunun doğrusal sıralaması oluşturulamaz",
-              "uk" => "Неможливо лінеаризувати анонімну таблицю символів"
+              "uk" => "Неможливо лінеаризувати анонімну таблицю символів",
+              "zh" => "不能对匿名符号表进行线性化"
             },
             "args" => []
           },
@@ -34995,7 +35657,8 @@ $CONF = {
               "ru" => "Обнаружено рекурсивное наследование в пакете '%{stashhek}'",
               "sr" => "Откривено рекурзивно наслеђивање у пакету „%{stashhek}“",
               "tr" => "'%{stashhek}' paketinde özyinelemeli kalıtım algılandı",
-              "uk" => "У пакеті '%{stashhek}' виявлено рекурсивне успадкування"
+              "uk" => "У пакеті '%{stashhek}' виявлено рекурсивне успадкування",
+              "zh" => "在包 '%{stashhek}' 中检测到递归继承"
             },
             "args" => [
               {
@@ -35044,7 +35707,8 @@ $CONF = {
               "ru" => "Нельзя вызвать mro_method_changed_in() для анонимной таблицы символов",
               "sr" => "Не може се позвати mro_method_changed_in() над анонимном табелом симбола",
               "tr" => "Anonim simge tablosunda mro_method_changed_in() çağrılamaz",
-              "uk" => "Неможливо викликати mro_method_changed_in() для анонімної таблиці символів"
+              "uk" => "Неможливо викликати mro_method_changed_in() для анонімної таблиці символів",
+              "zh" => "不能对匿名符号表调用 mro_method_changed_in()"
             },
             "args" => []
           },
@@ -35086,7 +35750,8 @@ $CONF = {
               "ru" => "Нет такого класса: '%{classname}'!",
               "sr" => "Не постоји класа: „%{classname}“!",
               "tr" => "Böyle bir sınıf yok: '%{classname}'!",
-              "uk" => "Немає такого класу: '%{classname}'!"
+              "uk" => "Немає такого класу: '%{classname}'!",
+              "zh" => "没有这个类：'%{classname}'！"
             },
             "args" => [
               {
@@ -35136,7 +35801,8 @@ $CONF = {
               "ru" => "Недопустимое имя mro: '%{name}'",
               "sr" => "Неисправно име MRO-а: „%{name}“",
               "tr" => "Geçersiz mro adı: '%{name}'",
-              "uk" => "Недопустима назва mro: '%{name}'"
+              "uk" => "Недопустима назва mro: '%{name}'",
+              "zh" => "无效的 mro 名称：“%{name}”"
             },
             "args" => [
               {
@@ -35185,7 +35851,8 @@ $CONF = {
               "ru" => "Атрибут класса :isa требует указать класс, но %{superclassname} классом не является",
               "sr" => "Атрибут :isa класе захтева класу, али %{superclassname} то није",
               "tr" => ":isa niteliği bir sınıf gerektiriyor, ancak %{superclassname} bir sınıf değil",
-              "uk" => "Атрибут класу :isa вимагає класу, але %{superclassname} ним не є"
+              "uk" => "Атрибут класу :isa вимагає класу, але %{superclassname} ним не є",
+              "zh" => "类 :isa 属性要求提供一个类，但 %{superclassname} 不是类"
             },
             "args" => [
               {
@@ -35234,7 +35901,8 @@ $CONF = {
               "ru" => "Не удалось создать класс: '%{class}'!",
               "sr" => "Не може да се креира класа: „%{class}“!",
               "tr" => "Sınıf oluşturulamıyor: '%{class}'!",
-              "uk" => "Не вдалося створити клас: '%{class}'!"
+              "uk" => "Не вдалося створити клас: '%{class}'!",
+              "zh" => "无法创建类：“%{class}”！"
             },
             "args" => [
               {
@@ -35283,7 +35951,8 @@ $CONF = {
               "ru" => "Роли не могут использовать :isa",
               "sr" => "Улоге не могу да користе :isa",
               "tr" => "Roller :isa kullanamaz",
-              "uk" => "Ролі не можуть використовувати :isa"
+              "uk" => "Ролі не можуть використовувати :isa",
+              "zh" => "角色不能使用 :isa"
             },
             "args" => []
           },
@@ -35325,7 +35994,8 @@ $CONF = {
               "ru" => "У класса уже есть суперкласс, добавить ещё один нельзя",
               "sr" => "Класа већ има суперкласу; не може да јој се дода друга",
               "tr" => "Sınıfın zaten bir üst sınıfı var; başka bir üst sınıf eklenemez",
-              "uk" => "Клас уже має суперклас, неможливо додати ще один"
+              "uk" => "Клас уже має суперклас, неможливо додати ще один",
+              "zh" => "类已指定一个父类，不能再添加其他父类"
             },
             "args" => []
           },
@@ -35367,7 +36037,8 @@ $CONF = {
               "ru" => "Требуется метод '%{method}', но класс '%{class}' его не предоставляет\n",
               "sr" => "Метода „%{method}“ је обавезна, али је не обезбеђује „%{class}“\n",
               "tr" => "'%{method}' yöntemi gerekli, ancak '%{class}' tarafından sağlanmıyor\n",
-              "uk" => "Метод '%{method}' є обов’язковим, але '%{class}' його не надає\n"
+              "uk" => "Метод '%{method}' є обов’язковим, але '%{class}' його не надає\n",
+              "zh" => "'%{class}' 未提供必需的方法 '%{method}'\n"
             },
             "args" => [
               {
@@ -35428,7 +36099,8 @@ $CONF = {
               "ru" => "Конфликт метода '%{arg1}' между '%{arg2}' и '%{arg3}'\n",
               "sr" => "Метода „%{arg1}” је у сукобу између „%{arg2}” и „%{arg3}”\n",
               "tr" => "'%{arg1}' yöntemi '%{arg2}' ile '%{arg3}' arasında çakışıyor\n",
-              "uk" => "Конфлікт методу '%{arg1}' між '%{arg2}' та '%{arg3}'\n"
+              "uk" => "Конфлікт методу '%{arg1}' між '%{arg2}' та '%{arg3}'\n",
+              "zh" => "方法“%{arg1}”在“%{arg2}”和“%{arg3}”之间冲突\n"
             },
             "args" => [
               {
@@ -35495,7 +36167,8 @@ $CONF = {
               "ru" => "Атрибут :implements требует роль, но %{role} ролью не является",
               "sr" => "Атрибут :implements захтева улогу, али %{role} није улога",
               "tr" => ":implements niteliği bir rol gerektiriyor, ancak %{role} bir rol değil",
-              "uk" => "Атрибут :implements вимагає ролі, але %{role} не є роллю"
+              "uk" => "Атрибут :implements вимагає ролі, але %{role} не є роллю",
+              "zh" => ":implements 属性要求提供一个角色，但 %{role} 不是角色"
             },
             "args" => [
               {
@@ -35545,7 +36218,8 @@ $CONF = {
               "ru" => "Невозможно создать объект незавершённого класса %{stash}",
               "sr" => "Није могуће направити објекат непотпуне класе %{stash}",
               "tr" => "Tamamlanmamış %{stash} sınıfının bir nesnesi oluşturulamaz",
-              "uk" => "Неможливо створити об'єкт незавершеного класу %{stash}"
+              "uk" => "Неможливо створити об'єкт незавершеного класу %{stash}",
+              "zh" => "无法创建不完整类 %{stash} 的对象"
             },
             "args" => [
               {
@@ -35594,7 +36268,8 @@ $CONF = {
               "ru" => "Для конструктора класса %{class_name} не указан обязательный параметр '%{parameter}'",
               "sr" => "Недостаје обавезни параметар '%{parameter}' за конструктор класе %{class_name}",
               "tr" => "%{class_name} kurucusu için gerekli '%{parameter}' parametresi eksik",
-              "uk" => "Відсутній обов'язковий параметр '%{parameter}' для конструктора класу %{class_name}"
+              "uk" => "Відсутній обов'язковий параметр '%{parameter}' для конструктора класу %{class_name}",
+              "zh" => "类 %{class_name} 的构造函数缺少必需参数 '%{parameter}'"
             },
             "args" => [
               {
@@ -35650,7 +36325,8 @@ $CONF = {
               "ru" => "Нераспознанные параметры конструктора %{stash}: %{paramnames}",
               "sr" => "Непознати параметри за конструктор %{stash}: %{paramnames}",
               "tr" => "%{stash} kurucusu için tanınmayan parametreler: %{paramnames}",
-              "uk" => "Нерозпізнані параметри конструктора %{stash}: %{paramnames}"
+              "uk" => "Нерозпізнані параметри конструктора %{stash}: %{paramnames}",
+              "zh" => "%{stash} 构造函数的参数无法识别：%{paramnames}"
             },
             "args" => [
               {
@@ -35712,7 +36388,8 @@ $CONF = {
               "ru" => "значение поля %{field} должно быть ссылкой",
               "sr" => "вредност поља %{field} мора бити референца",
               "tr" => "%{field} alanının değeri bir başvuru olmalıdır",
-              "uk" => "значення поля %{field} має бути посиланням"
+              "uk" => "значення поля %{field} має бути посиланням",
+              "zh" => "字段 %{field} 的值必须是引用"
             },
             "args" => [
               {
@@ -35761,7 +36438,8 @@ $CONF = {
               "ru" => "значение поля %{field} имеет неверный тип ссылки",
               "sr" => "вредност поља %{field} има погрешан тип референце",
               "tr" => "%{field} alanının değeri yanlış başvuru türünde",
-              "uk" => "значення поля %{field} має неправильний тип посилання"
+              "uk" => "значення поля %{field} має неправильний тип посилання",
+              "zh" => "字段 %{field} 的值具有错误的引用类型"
             },
             "args" => [
               {
@@ -35811,7 +36489,8 @@ $CONF = {
               "ru" => "class_object_from_hash ожидает ссылку на хеш",
               "sr" => "class_object_from_hash очекује референцу на хеш",
               "tr" => "class_object_from_hash bir hash başvurusu bekliyor",
-              "uk" => "class_object_from_hash очікує посилання на хеш"
+              "uk" => "class_object_from_hash очікує посилання на хеш",
+              "zh" => "class_object_from_hash 需要哈希引用"
             },
             "args" => []
           },
@@ -35853,7 +36532,8 @@ $CONF = {
               "ru" => "class_object_from_hash ожидает имя класса",
               "sr" => "class_object_from_hash очекује име класе",
               "tr" => "class_object_from_hash bir sınıfın adını bekliyor",
-              "uk" => "class_object_from_hash очікує ім'я класу"
+              "uk" => "class_object_from_hash очікує ім'я класу",
+              "zh" => "class_object_from_hash 需要类名"
             },
             "args" => []
           },
@@ -35896,7 +36576,8 @@ $CONF = {
               "ru" => "class_object_to_hash ожидает объект класса",
               "sr" => "class_object_to_hash очекује објекат класе",
               "tr" => "class_object_to_hash bir sınıf nesnesi bekliyor",
-              "uk" => "class_object_to_hash очікує об'єкт класу"
+              "uk" => "class_object_to_hash очікує об'єкт класу",
+              "zh" => "class_object_to_hash 需要类对象"
             },
             "args" => []
           },
@@ -35938,7 +36619,8 @@ $CONF = {
               "ru" => "Нераспознанный атрибут класса %{name}",
               "sr" => "Непознат атрибут класе %{name}",
               "tr" => "Tanınmayan sınıf niteliği: %{name}",
-              "uk" => "Нерозпізнаний атрибут класу %{name}"
+              "uk" => "Нерозпізнаний атрибут класу %{name}",
+              "zh" => "无法识别类属性 %{name}"
             },
             "args" => [
               {
@@ -35987,7 +36669,8 @@ $CONF = {
               "ru" => "Атрибут класса %{name} требует значения",
               "sr" => "Атрибут класе %{name} захтева вредност",
               "tr" => "Sınıf niteliği %{name} bir değer gerektiriyor",
-              "uk" => "Атрибут класу %{name} вимагає значення"
+              "uk" => "Атрибут класу %{name} вимагає значення",
+              "zh" => "类属性 %{name} 需要一个值"
             },
             "args" => [
               {
@@ -36036,7 +36719,8 @@ $CONF = {
               "ru" => "Некорректная строка атрибута",
               "sr" => "Неправилно завршен нискасти атрибут",
               "tr" => "Bozuk öznitelik dizgesi",
-              "uk" => "Некоректний рядок атрибута"
+              "uk" => "Некоректний рядок атрибута",
+              "zh" => "属性字符串格式错误"
             },
             "args" => []
           },
@@ -36078,7 +36762,8 @@ $CONF = {
               "ru" => "Невозможно создать класс %{stash}, поскольку у него уже есть непустой массив \@ISA",
               "sr" => "Није могуће направити класу %{stash} јер већ има непразан \@ISA",
               "tr" => "%{stash} sınıfı oluşturulamıyor; çünkü sınıfın boş olmayan bir \@ISA dizisi zaten var",
-              "uk" => "Неможливо створити клас %{stash}, оскільки він уже має непорожній масив \@ISA"
+              "uk" => "Неможливо створити клас %{stash}, оскільки він уже має непорожній масив \@ISA",
+              "zh" => "无法创建类 %{stash}，因为它已有非空的 \@ISA"
             },
             "args" => [
               {
@@ -36127,7 +36812,8 @@ $CONF = {
               "ru" => "Нельзя использовать __CLASS__ вне метода или выражения инициализации поля",
               "sr" => "Не можете користити __CLASS__ изван метода или израза за иницијализацију поља",
               "tr" => "__CLASS__, bir yöntem veya alan başlatma ifadesi dışında kullanılamaz",
-              "uk" => "Неможливо використовувати __CLASS__ поза методом або виразом ініціалізації поля"
+              "uk" => "Неможливо використовувати __CLASS__ поза методом або виразом ініціалізації поля",
+              "zh" => "不能在方法或字段初始化表达式之外使用 __CLASS__"
             },
             "args" => []
           },
@@ -36169,7 +36855,8 @@ $CONF = {
               "ru" => "Нельзя использовать '%{arg1}' вне 'class' или 'role'",
               "sr" => "Не може се користити „%{arg1}“ изван „class“ или „role“ контекста",
               "tr" => "'class' veya 'role' dışında '%{arg1}' kullanılamaz",
-              "uk" => "Не можна використовувати '%{arg1}' поза 'class' або 'role'"
+              "uk" => "Не можна використовувати '%{arg1}' поза 'class' або 'role'",
+              "zh" => "不能在 'class' 或 'role' 外使用 '%{arg1}'"
             },
             "args" => [
               {
@@ -36217,7 +36904,8 @@ $CONF = {
               "ru" => "Невозможно повторно открыть определение существующего класса %{stash}",
               "sr" => "Није могуће поново отворити постојећу класу %{stash}",
               "tr" => "Mevcut %{stash} sınıfı yeniden açılamaz",
-              "uk" => "Неможливо повторно відкрити наявний клас %{stash}"
+              "uk" => "Неможливо повторно відкрити наявний клас %{stash}",
+              "zh" => "无法重新打开现有类 %{stash}"
             },
             "args" => [
               {
@@ -36265,7 +36953,8 @@ $CONF = {
               "ru" => "Классу с обычным суперклассом требуется поле :blessed_self\n",
               "sr" => "Класа са уобичајеном суперкласом захтева поље :blessed_self",
               "tr" => "Geleneksel bir üst sınıfa sahip sınıfta :blessed_self alanı bulunmalıdır",
-              "uk" => "Клас зі звичайним суперкласом повинен містити поле :blessed_self"
+              "uk" => "Клас зі звичайним суперкласом повинен містити поле :blessed_self",
+              "zh" => "具有常规父类的类必须包含 :blessed_self 字段"
             },
             "args" => []
           },
@@ -36307,7 +36996,8 @@ $CONF = {
               "ru" => "Невозможно создать роль %{stash}, поскольку у неё уже есть непустой массив \@ISA",
               "sr" => "Није могуће направити улогу %{stash} јер већ има непразан \@ISA",
               "tr" => "%{stash} rolü oluşturulamıyor; çünkü rolün boş olmayan bir \@ISA dizisi zaten var",
-              "uk" => "Неможливо створити роль %{stash}, оскільки вона вже має непорожній масив \@ISA"
+              "uk" => "Неможливо створити роль %{stash}, оскільки вона вже має непорожній масив \@ISA",
+              "zh" => "无法创建角色 %{stash}，因为它已有非空的 \@ISA"
             },
             "args" => [
               {
@@ -36356,7 +37046,8 @@ $CONF = {
               "ru" => "Невозможно определить роль %{stash}, поскольку это уже класс",
               "sr" => "Није могуће дефинисати улогу %{stash} јер је већ класа",
               "tr" => "%{stash} rolü tanımlanamıyor; çünkü zaten bir sınıf",
-              "uk" => "Неможливо визначити роль %{stash}, оскільки це вже клас"
+              "uk" => "Неможливо визначити роль %{stash}, оскільки це вже клас",
+              "zh" => "无法定义角色 %{stash}，因为它已经是一个类"
             },
             "args" => [
               {
@@ -36405,7 +37096,8 @@ $CONF = {
               "ru" => "Невозможно повторно открыть существующую роль %{stash}",
               "sr" => "Није могуће поново отворити постојећу улогу %{stash}",
               "tr" => "Mevcut %{stash} rolü yeniden açılamaz",
-              "uk" => "Неможливо повторно відкрити наявну роль %{stash}"
+              "uk" => "Неможливо повторно відкрити наявну роль %{stash}",
+              "zh" => "无法重新打开现有角色 %{stash}"
             },
             "args" => [
               {
@@ -36456,7 +37148,8 @@ $CONF = {
               "ru" => "DESTROY создал новую ссылку на уничтоженный объект '%{arg1}'",
               "sr" => "DESTROY је створио нову референцу на уништени објекат „%{arg1}”",
               "tr" => "DESTROY, artık geçerli olmayan '%{arg1}' nesnesine yeni bir başvuru oluşturdu",
-              "uk" => "DESTROY створив нове посилання на знищений об'єкт '%{arg1}'"
+              "uk" => "DESTROY створив нове посилання на знищений об'єкт '%{arg1}'",
+              "zh" => "DESTROY 为已销毁的对象 '%{arg1}' 创建了新引用"
             },
             "args" => [
               {
@@ -36505,7 +37198,8 @@ $CONF = {
               "ru" => "Поле %{arg1} класса %{fieldstash} недоступно в методе класса %{PL_curstash}",
               "sr" => "Пољу %{arg1} класе %{fieldstash} није могуће приступити у методи класе %{PL_curstash}",
               "tr" => "%{fieldstash} alanı, %{PL_curstash} yönteminde erişilebilir değil",
-              "uk" => "Поле %{arg1} класу %{fieldstash} недоступне в методі класу %{PL_curstash}"
+              "uk" => "Поле %{arg1} класу %{fieldstash} недоступне в методі класу %{PL_curstash}",
+              "zh" => "类 %{fieldstash} 的字段 %{arg1} 无法在类 %{PL_curstash} 的方法中访问"
             },
             "args" => [
               {
@@ -36566,7 +37260,8 @@ $CONF = {
               "ru" => "Поле %{arg1} недоступно вне метода",
               "sr" => "Пољу %{arg1} није могуће приступити ван методе",
               "tr" => "%{arg1} alanına bir yöntem dışında erişilemez",
-              "uk" => "Поле %{arg1} недоступне поза методом"
+              "uk" => "Поле %{arg1} недоступне поза методом",
+              "zh" => "在方法外无法访问字段 %{arg1}"
             },
             "args" => [
               {
@@ -36615,7 +37310,8 @@ $CONF = {
               "ru" => "%{value} не является допустимым именем для генерируемого метода",
               "sr" => "%{value} није важеће име генерисаног метода",
               "tr" => "%{value}, oluşturulan bir yöntem için geçerli bir ad değil",
-              "uk" => "%{value} не є допустимим ім'ям для згенерованого методу"
+              "uk" => "%{value} не є допустимим ім'ям для згенерованого методу",
+              "zh" => "%{value} 不是有效的生成方法名称"
             },
             "args" => [
               {
@@ -36664,7 +37360,8 @@ $CONF = {
               "ru" => "В классе уже объявлено поле :blessed_self либо оно унаследовано\n",
               "sr" => "Класа већ има декларисано или наслеђено поље :blessed_self",
               "tr" => "Sınıfta zaten bildirilmiş veya miras alınmış bir :blessed_self alanı var",
-              "uk" => "Клас уже має оголошене або успадковане поле :blessed_self"
+              "uk" => "Клас уже має оголошене або успадковане поле :blessed_self",
+              "zh" => "类已经声明或继承了 :blessed_self 字段"
             },
             "args" => []
           },
@@ -36705,7 +37402,8 @@ $CONF = {
               "ru" => "Атрибут :blessed_self требует ровно одно скалярное поле в классе с обычным суперклассом и не принимает значения\n",
               "sr" => "Атрибут :blessed_self захтева једно скаларно поље у класи са уобичајеном суперкласом и не прихвата вредност атрибута",
               "tr" => ":blessed_self özniteliği, geleneksel bir üst sınıfa sahip bir sınıfta tek bir skaler alan gerektirir ve öznitelik değeri almaz",
-              "uk" => "Атрибут :blessed_self вимагає одного скалярного поля в класі зі звичайним суперкласом і не приймає значення атрибута"
+              "uk" => "Атрибут :blessed_self вимагає одного скалярного поля в класі зі звичайним суперкласом і не приймає значення атрибута",
+              "zh" => ":blessed_self 属性要求在具有常规父类的类中声明一个标量字段，且不能带属性值"
             },
             "args" => []
           },
@@ -36747,7 +37445,8 @@ $CONF = {
               "ru" => "У поля уже есть имя параметра, добавить ещё одно нельзя",
               "sr" => "Поље већ има име параметра; не може да му се дода друго",
               "tr" => "Alana zaten bir parametre adı atanmış; başka bir ad eklenemez",
-              "uk" => "Поле вже має ім’я параметра, неможливо додати ще одне"
+              "uk" => "Поле вже має ім’я параметра, неможливо додати ще одне",
+              "zh" => "字段已指定参数名，不能再添加另一个"
             },
             "args" => []
           },
@@ -36789,7 +37488,8 @@ $CONF = {
               "ru" => "Нельзя назначить :param(%{value}) полю %{arg2}, поскольку это имя уже используется",
               "sr" => "Није могуће доделити :param(%{value}) пољу %{arg2} јер је то име већ у употреби",
               "tr" => "%{value} :param değeri %{arg2} alanına atanamıyor; bu ad zaten kullanımda",
-              "uk" => "Неможливо призначити :param(%{value}) полю %{arg2}, оскільки це ім'я вже використовується"
+              "uk" => "Неможливо призначити :param(%{value}) полю %{arg2}, оскільки це ім'я вже використовується",
+              "zh" => "无法将 :param(%{value}) 指定给字段 %{arg2}，因为该名称已被使用"
             },
             "args" => [
               {
@@ -36844,7 +37544,8 @@ $CONF = {
               "ru" => "Атрибут :param можно применять только к скалярным полям",
               "sr" => "Само поља скаларног типа могу имати атрибут :param",
               "tr" => ":param özniteliği yalnızca skaler alanlara uygulanabilir",
-              "uk" => "Лише скалярні поля можуть мати атрибут :param"
+              "uk" => "Лише скалярні поля можуть мати атрибут :param",
+              "zh" => "只有标量字段才能使用 :param 属性"
             },
             "args" => []
           },
@@ -36886,7 +37587,8 @@ $CONF = {
               "ru" => "Неизвестный атрибут поля %{name}",
               "sr" => "Непознат атрибут поља %{name}",
               "tr" => "Tanınmayan alan özniteliği: %{name}",
-              "uk" => "Нерозпізнаний атрибут поля %{name}"
+              "uk" => "Нерозпізнаний атрибут поля %{name}",
+              "zh" => "无法识别字段属性 %{name}"
             },
             "args" => [
               {
@@ -36935,7 +37637,8 @@ $CONF = {
               "ru" => "Нельзя применить атрибут :writer к нескалярному полю",
               "sr" => "Атрибут :writer се не може применити на поље које није скаларно",
               "tr" => ":writer özniteliği skaler olmayan bir alana uygulanamaz",
-              "uk" => "Неможливо застосувати атрибут :writer до нескалярного поля"
+              "uk" => "Неможливо застосувати атрибут :writer до нескалярного поля",
+              "zh" => "不能对非标量字段应用 :writer 属性"
             },
             "args" => []
           },
@@ -36977,7 +37680,8 @@ $CONF = {
               "ru" => "Нет поля класса \"%{arg1}\" в переменной %{lexname} типа %{arg3}",
               "sr" => "Нема поља класе „%{arg1}” у променљивој %{lexname} типа %{arg3}",
               "tr" => "%{arg3} türündeki %{lexname} değişkeninde \"%{arg1}\" adlı sınıf alanı yok",
-              "uk" => "Немає такого поля класу \"%{arg1}\" у змінній %{lexname} типу %{arg3}"
+              "uk" => "Немає такого поля класу \"%{arg1}\" у змінній %{lexname} типу %{arg3}",
+              "zh" => "类型为 %{arg3} 的变量 %{lexname} 中没有名为“%{arg1}”的类字段"
             },
             "args" => [
               {
@@ -37037,7 +37741,8 @@ $CONF = {
               "ru" => "Референт legacy уже принадлежит существующему нативному объекту\n",
               "sr" => "Наслеђени референт већ припада живом нативном објекту",
               "tr" => "Legacy referent zaten yaşayan bir native nesneye aittir",
-              "uk" => "Референт legacy уже належить активному нативному об’єкту"
+              "uk" => "Референт legacy уже належить активному нативному об’єкту",
+              "zh" => "该 legacy referent 已属于一个存活的原生对象"
             },
             "args" => []
           },
@@ -37078,7 +37783,8 @@ $CONF = {
               "ru" => "Legacy self должен быть благословлённой ссылкой на объект не на нативном языке в классе нативного объекта\n",
               "sr" => "Наслеђени self мора бити благословена референца која није нативна, у класи нативног објекта",
               "tr" => "Legacy self, native nesnenin sınıfında blessed edilmiş, native olmayan bir başvuru olmalıdır",
-              "uk" => "Legacy self має бути благословленим посиланням не на нативний об’єкт, що належить до класу нативного об’єкта"
+              "uk" => "Legacy self має бути благословленим посиланням не на нативний об’єкт, що належить до класу нативного об’єкта",
+              "zh" => "Legacy self 必须是原生对象所属类中的、已祝福的非原生引用"
             },
             "args" => []
           },
@@ -37120,7 +37826,8 @@ $CONF = {
               "ru" => "Нельзя вызвать метод для значения, не являющегося экземпляром класса",
               "sr" => "Није могуће позвати методу над објектом који није инстанца",
               "tr" => "Bir örnek olmayan değer üzerinde yöntem çağrılamaz",
-              "uk" => "Неможливо викликати метод для значення, яке не є екземпляром класу"
+              "uk" => "Неможливо викликати метод для значення, яке не є екземпляром класу",
+              "zh" => "不能在非实例上调用方法"
             },
             "args" => []
           },
@@ -37163,7 +37870,8 @@ $CONF = {
               "ru" => "Нельзя вызвать метод класса %{arg1} для экземпляра класса %{arg2}",
               "sr" => "Није могуће позвати методу класе %{arg1} над инстанцом класе %{arg2}",
               "tr" => "%{arg2} örneği üzerinde %{arg1} sınıfının yöntemi çağrılamaz",
-              "uk" => "Неможливо викликати метод класу %{arg1} для екземпляра класу %{arg2}"
+              "uk" => "Неможливо викликати метод класу %{arg1} для екземпляра класу %{arg2}",
+              "zh" => "无法在 %{arg2} 的实例上调用 %{arg1} 的方法"
             },
             "args" => [
               {
@@ -37219,7 +37927,8 @@ $CONF = {
               "ru" => "Невозможно вызвать метод \"%{meth}\" без имени пакета или ссылки на объект",
               "sr" => "Не може се позвати метод „%{meth}“ без имена пакета или референце на објекат",
               "tr" => "Bir paket veya nesne başvurusu olmadan \"%{meth}\" yöntemi çağrılamaz",
-              "uk" => "Неможливо викликати метод \"%{meth}\" без імені пакета або посилання на об'єкт"
+              "uk" => "Неможливо викликати метод \"%{meth}\" без імені пакета або посилання на об'єкт",
+              "zh" => "没有包名或对象引用，无法调用方法“%{meth}”"
             },
             "args" => [
               {
@@ -37268,7 +37977,8 @@ $CONF = {
               "ru" => "У нативного объекта нет инициализированного legacy self\n",
               "sr" => "Нативни објекат нема иницијализовани наслеђени self",
               "tr" => "Native nesnenin başlatılmış bir legacy self'i yok",
-              "uk" => "Нативний об’єкт не має ініціалізованого legacy self"
+              "uk" => "Нативний об’єкт не має ініціалізованого legacy self",
+              "zh" => "原生对象没有已初始化的 legacy self"
             },
             "args" => []
           },
@@ -37310,7 +38020,8 @@ $CONF = {
               "ru" => "Нельзя вызвать метод %{name} для значения, не являющегося экземпляром класса",
               "sr" => "Није могуће позвати методу %{name} над објектом који није инстанца",
               "tr" => "Bir örnek olmayan değer üzerinde %{name} yöntemi çağrılamaz",
-              "uk" => "Неможливо викликати метод %{name} для значення, яке не є екземпляром класу"
+              "uk" => "Неможливо викликати метод %{name} для значення, яке не є екземпляром класу",
+              "zh" => "不能在非实例上调用方法 %{name}"
             },
             "args" => [
               {
@@ -37362,7 +38073,8 @@ $CONF = {
               "ru" => "Нельзя вызвать метод \"%{method}\" для ссылки, к которой не применена bless",
               "sr" => "Није могуће позвати методу „%{method}” над нереференцом која није благословена",
               "tr" => "Bless edilmemiş bir başvuru üzerinde \"%{method}\" yöntemi çağrılamaz",
-              "uk" => "Неможливо викликати метод \"%{method}\" для посилання, до якого не застосовано bless"
+              "uk" => "Неможливо викликати метод \"%{method}\" для посилання, до якого не застосовано bless",
+              "zh" => "不能在未祝福的引用上调用方法 \"%{method}\""
             },
             "args" => [
               {
@@ -37412,7 +38124,8 @@ $CONF = {
               "ru" => "Невозможно вызвать метод \"%{meth}\" для неопределённого значения",
               "sr" => "Не може се позвати метод „%{meth}“ над недефинисаном вредношћу",
               "tr" => "Tanımsız bir değer üzerinde \"%{meth}\" yöntemi çağrılamaz",
-              "uk" => "Неможливо викликати метод \"%{meth}\" для невизначеного значення"
+              "uk" => "Неможливо викликати метод \"%{meth}\" для невизначеного значення",
+              "zh" => "无法在未定义的值上调用方法“%{meth}”"
             },
             "args" => [
               {
@@ -37462,7 +38175,8 @@ $CONF = {
               "ru" => "Нельзя использовать анонимную таблицу символов для поиска методов",
               "sr" => "Не може се користити анонимна табела симбола за претрагу метода",
               "tr" => "Yöntem araması için anonim simge tablosu kullanılamaz",
-              "uk" => "Неможливо використовувати анонімну таблицю символів для пошуку методів"
+              "uk" => "Неможливо використовувати анонімну таблицю символів для пошуку методів",
+              "zh" => "不能使用匿名符号表查找方法"
             },
             "args" => []
           },
@@ -37505,7 +38219,8 @@ $CONF = {
               "ru" => "next::method/next::can/maybe::next::method не могут найти метод, из которого они вызваны",
               "sr" => "next::method/next::can/maybe::next::method не може да пронађе обухватајућу методу",
               "tr" => "next::method/next::can/maybe::next::method için çevreleyen yöntem bulunamıyor",
-              "uk" => "Для next::method/next::can/maybe::next::method не вдалося знайти метод, у якому здійснено виклик"
+              "uk" => "Для next::method/next::can/maybe::next::method не вдалося знайти метод, у якому здійснено виклик",
+              "zh" => "next::method/next::can/maybe::next::method 找不到外围方法"
             },
             "args" => []
           },
@@ -37548,7 +38263,8 @@ $CONF = {
               "ru" => "next::method/next::can/maybe::next::method должны использоваться в контексте метода",
               "sr" => "next::method/next::can/maybe::next::method мора да се користи у контексту методе",
               "tr" => "next::method/next::can/maybe::next::method, yöntem bağlamında kullanılmalıdır",
-              "uk" => "next::method/next::can/maybe::next::method слід використовувати в контексті методу"
+              "uk" => "next::method/next::can/maybe::next::method слід використовувати в контексті методу",
+              "zh" => "next::method/next::can/maybe::next::method 必须在方法上下文中使用"
             },
             "args" => []
           },
@@ -37591,7 +38307,8 @@ $CONF = {
               "ru" => "Не найден next::method '%{method}' для %{class}",
               "sr" => "Није пронађена следећа метода „%{method}“ за класу %{class}",
               "tr" => "%{class} için '%{method}' adlı next::method bulunamadı",
-              "uk" => "Не знайдено next::method '%{method}' для %{class}"
+              "uk" => "Не знайдено next::method '%{method}' для %{class}",
+              "zh" => "在 %{class} 中找不到名为“%{method}”的下一个 next::method"
             },
             "args" => [
               {
@@ -37661,7 +38378,8 @@ $CONF = {
               "ru" => "Не удалось найти метод объекта %{arg1} через пакет %{arg2}",
               "sr" => "Не могу да пронађем метод објекта %{arg1} преко пакета %{arg2}",
               "tr" => "%{arg2} paketi üzerinden %{arg1} nesne yöntemi bulunamıyor",
-              "uk" => "Неможливо знайти метод об'єкта %{arg1} через пакет %{arg2}"
+              "uk" => "Неможливо знайти метод об'єкта %{arg1} через пакет %{arg2}",
+              "zh" => "无法通过包 %{arg2} 找到对象方法 %{arg1}"
             },
             "args" => [
               {
@@ -37737,7 +38455,8 @@ $CONF = {
               "ru" => "Не удалось найти метод объекта %{arg1} через пакет %{arg2} (возможно, вы забыли загрузить %{arg3}?)",
               "sr" => "Не могу да пронађем метод објекта %{arg1} преко пакета %{arg2} (можда сте заборавили да учитате %{arg3}?)",
               "tr" => "%{arg2} paketi üzerinden %{arg1} nesne yöntemi bulunamıyor (belki %{arg3} yüklemeyi unuttunuz?)",
-              "uk" => "Неможливо знайти метод об'єкта %{arg1} через пакет %{arg2} (можливо, ви забули завантажити %{arg3}?)"
+              "uk" => "Неможливо знайти метод об'єкта %{arg1} через пакет %{arg2} (можливо, ви забули завантажити %{arg3}?)",
+              "zh" => "无法通过包 %{arg2} 找到对象方法 %{arg1}（或许你忘了加载 %{arg3}？）"
             },
             "args" => [
               {
@@ -37873,6 +38592,10 @@ $CONF = {
               "uk" => {
                 "*" => "Неможливо визначити метод \"%{method_name}\", що перевантажує \"%{operator}\", у пакеті \"%{package}\"",
                 "stub_found" => "Під час визначення методу \"%{method_name}\", що перевантажує \"%{operator}\", у пакеті \"%{package}\" знайдено заглушку"
+              },
+              "zh" => {
+                "method_not_found" => "无法在包 \"%{package}\" 中解析重载方法 \"%{method_name}\"（运算符 \"%{operator}\"）",
+                "stub_found" => "解析包 \"%{package}\" 中的重载方法 \"%{method_name}\"（运算符 \"%{operator}\"）时发现存根"
               }
             },
             "args" => [
@@ -38309,6 +39032,26 @@ $CONF = {
                     "*" => "Операція \"%{operation}\": метод не знайдено, аргумент належить до пакета %{left_package} з перевантаженням"
                   }
                 }
+              },
+              "zh" => {
+                "binary" => {
+                  "no_overloaded_magic" => {
+                    "no_overloaded_magic" => "操作“%{operation}”：未找到方法，\n\t左参数没有重载魔法，\n\t右参数没有重载魔法",
+                    "overloaded" => "操作“%{operation}”：未找到方法，\n\t左参数没有重载魔法，\n\t右参数属于重载包 %{right_package}"
+                  },
+                  "overloaded" => {
+                    "no_overloaded_magic" => "操作“%{operation}”：未找到方法，\n\t左参数属于重载包 %{left_package}，\n\t右参数没有重载魔法",
+                    "overloaded" => "操作“%{operation}”：未找到方法，\n\t左参数属于重载包 %{left_package}，\n\t右参数属于重载包 %{right_package}"
+                  }
+                },
+                "unary" => {
+                  "no_overloaded_magic" => {
+                    "*" => "操作“%{operation}”：未找到方法，参数没有重载魔法"
+                  },
+                  "overloaded" => {
+                    "*" => "操作“%{operation}”：未找到方法，参数属于重载包 %{left_package}"
+                  }
+                }
               }
             },
             "args" => [
@@ -38398,7 +39141,8 @@ $CONF = {
               "ru" => "Метод копирования не вернул ссылку",
               "sr" => "Метода копирања није вратила референцу",
               "tr" => "Kopyalama yöntemi bir başvuru döndürmedi",
-              "uk" => "Метод копіювання не повернув посилання"
+              "uk" => "Метод копіювання не повернув посилання",
+              "zh" => "复制方法未返回引用"
             },
             "args" => []
           },
@@ -38442,7 +39186,8 @@ $CONF = {
               "ru" => "Перегруженная операция разыменования не вернула ссылку",
               "sr" => "Оператор за преусмеравање није вратио референцу",
               "tr" => "Aşırı yüklenmiş başvuru çözümleme işlemi bir başvuru döndürmedi",
-              "uk" => "Перевантажена операція розіменування не повернула посилання"
+              "uk" => "Перевантажена операція розіменування не повернула посилання",
+              "zh" => "重载的解引用操作未返回引用"
             },
             "args" => []
           },
@@ -38485,7 +39230,8 @@ $CONF = {
               "ru" => "Перегруженная операция qr не вернула REGEXP",
               "sr" => "Преоптерећени qr није вратио REGEXP",
               "tr" => "Aşırı yüklenmiş qr, bir REGEXP döndürmedi",
-              "uk" => "Перевантажена операція qr не повернула REGEXP"
+              "uk" => "Перевантажена операція qr не повернула REGEXP",
+              "zh" => "重载的 qr 未返回正则表达式"
             },
             "args" => []
           },
@@ -38528,7 +39274,8 @@ $CONF = {
               "ru" => "'%{character}' выходит за границы строки в pack",
               "sr" => "„%{character}“ је ван стринга у pack",
               "tr" => "pack içinde dizenin dışında '%{character}'",
-              "uk" => "'%{character}' поза межами рядка в pack"
+              "uk" => "'%{character}' поза межами рядка в pack",
+              "zh" => "pack 中的字符串外部有 '%{character}'"
             },
             "args" => [
               {
@@ -38577,7 +39324,8 @@ $CONF = {
               "ru" => "'X' выходит за границы строки в unpack",
               "sr" => "'X' је изван стринга у функцији unpack",
               "tr" => "unpack içinde dizenin dışında 'X'",
-              "uk" => "'X' виходить за межі рядка в unpack"
+              "uk" => "'X' виходить за межі рядка в unpack",
+              "zh" => "unpack 中的 'X' 超出了字符串范围"
             },
             "args" => []
           },
@@ -38620,7 +39368,8 @@ $CONF = {
               "ru" => "'\@' указывает за пределы строки в unpack",
               "sr" => "'\@' је изван стринга у unpack",
               "tr" => "unpack içinde dizenin dışında '\@'",
-              "uk" => "'\@' виходить за межі рядка в unpack"
+              "uk" => "'\@' виходить за межі рядка в unpack",
+              "zh" => "unpack 中的 '\@' 超出字符串范围"
             },
             "args" => []
           },
@@ -38663,7 +39412,8 @@ $CONF = {
               "ru" => "'x' указывает за пределы строки в unpack",
               "sr" => "'x' је изван стринга у unpack",
               "tr" => "unpack içinde dizenin dışında 'x'",
-              "uk" => "'x' виходить за межі рядка в unpack"
+              "uk" => "'x' виходить за межі рядка в unpack",
+              "zh" => "unpack 中的 'x' 超出字符串范围"
             },
             "args" => []
           },
@@ -38705,7 +39455,8 @@ $CONF = {
               "ru" => "'%%' нельзя использовать в pack",
               "sr" => "'%%' се не може користити у функцији pack",
               "tr" => "pack içinde '%%' kullanılamaz",
-              "uk" => "'%%' не можна використовувати в pack"
+              "uk" => "'%%' не можна використовувати в pack",
+              "zh" => "pack 中不能使用 '%%'"
             },
             "args" => []
           },
@@ -38747,7 +39498,8 @@ $CONF = {
               "ru" => "Нельзя одновременно использовать '<' и '>' после типа '%{arg1}' в %{arg2}",
               "sr" => "Није могуће истовремено користити модификаторе „<“ и „>“ после типа „%{arg1}“ у формату %{arg2}",
               "tr" => "%{arg2} içinde '%{arg1}' türünden sonra hem '<' hem '>' kullanılamaz",
-              "uk" => "Не можна одночасно використовувати '<' і '>' після типу '%{arg1}' у %{arg2}"
+              "uk" => "Не можна одночасно використовувати '<' і '>' після типу '%{arg1}' у %{arg2}",
+              "zh" => "类型“%{arg1}”后不能同时使用“<”和“>”（位于 %{arg2} 中）"
             },
             "args" => [
               {
@@ -38800,7 +39552,8 @@ $CONF = {
               "ru" => "В unpack указан счётчик после длины/кода",
               "sr" => "Бројање после дужине/кода у операцији unpack",
               "tr" => "unpack içinde uzunluk/koddan sonra sayı belirtilemez",
-              "uk" => "Кількість повторень після довжини/коду в unpack"
+              "uk" => "Кількість повторень після довжини/коду в unpack",
+              "zh" => "unpack 中长度/代码后不能再指定计数"
             },
             "args" => []
           },
@@ -38842,7 +39595,8 @@ $CONF = {
               "ru" => "Слишком глубокая вложенность групп () в %{arg2}",
               "sr" => "Групе () су предубоко угнежђене у %{arg2}",
               "tr" => "%{arg2} içindeki () grupları fazla derin iç içe geçmiş",
-              "uk" => "Надто глибока вкладеність груп () у %{arg2}"
+              "uk" => "Надто глибока вкладеність груп () у %{arg2}",
+              "zh" => "%{arg2} 中的 () 组嵌套过深"
             },
             "args" => [
               {
@@ -38890,7 +39644,8 @@ $CONF = {
               "ru" => "Группа () начинается со счётчика в %{arg2}",
               "sr" => "Група () почиње бројем у %{arg2}",
               "tr" => "%{arg2} içindeki () grubu bir sayıyla başlıyor",
-              "uk" => "Група () починається з числа повторень у %{arg2}"
+              "uk" => "Група () починається з числа повторень у %{arg2}",
+              "zh" => "%{arg2} 中的 () 组以计数开头"
             },
             "args" => [
               {
@@ -38938,7 +39693,8 @@ $CONF = {
               "ru" => "Нельзя использовать '%{arg1}' в группе с другим порядком байтов в %{arg2}",
               "sr" => "Није могуће користити „%{arg1}“ у групи са другачијим редоследом бајтова у %{arg2}",
               "tr" => "%{arg2} içinde farklı bayt sırasına sahip bir grupta '%{arg1}' kullanılamaz",
-              "uk" => "Неможливо використовувати '%{arg1}' у групі з іншим порядком байтів у %{arg2}"
+              "uk" => "Неможливо використовувати '%{arg1}' у групі з іншим порядком байтів у %{arg2}",
+              "zh" => "在 %{arg2} 的字节序修饰组中不能使用 '%{arg1}'"
             },
             "args" => [
               {
@@ -38991,7 +39747,8 @@ $CONF = {
               "ru" => "Недопустимый тип '%{arg2}' в %{arg3}",
               "sr" => "Неважећи тип „%{arg2}“ у %{arg3}",
               "tr" => "%{arg3} içinde geçersiz '%{arg2}' türü",
-              "uk" => "Неприпустимий тип '%{arg2}' у %{arg3}"
+              "uk" => "Неприпустимий тип '%{arg2}' у %{arg3}",
+              "zh" => "%{arg3} 中的类型“%{arg2}”无效"
             },
             "args" => [
               {
@@ -39045,7 +39802,8 @@ $CONF = {
               "ru" => "Символ '%{arg2}' запрещён в длине, заданной в [], в %{arg3}",
               "sr" => "Унутар дужине [] знак „%{arg2}“ није дозвољен у %{arg3}",
               "tr" => "%{arg3} içinde [] uzunluk belirtecinde '%{arg2}' kullanılamaz",
-              "uk" => "У довжині, заданій у [], '%{arg2}' не дозволено в %{arg3}"
+              "uk" => "У довжині, заданій у [], '%{arg2}' не дозволено в %{arg3}",
+              "zh" => "[] 长度格式中不允许使用“%{arg2}”（位于 %{arg3}）"
             },
             "args" => [
               {
@@ -39099,7 +39857,8 @@ $CONF = {
               "ru" => "'%{arg1}' разрешён только после типов %{arg2} в %{arg3}",
               "sr" => "„%{arg1}“ је дозвољен само после типова %{arg2} у %{arg3}",
               "tr" => "%{arg3} içinde '%{arg1}' yalnızca şu türlerden sonra kullanılabilir: %{arg2}",
-              "uk" => "'%{arg1}' дозволено лише після типів %{arg2} у %{arg3}"
+              "uk" => "'%{arg1}' дозволено лише після типів %{arg2} у %{arg3}",
+              "zh" => "'%{arg1}' 只能放在 %{arg2} 中的类型之后（%{arg3}）"
             },
             "args" => [
               {
@@ -39157,7 +39916,8 @@ $CONF = {
               "ru" => "Недопустимый тип '%{arg2}' в pack",
               "sr" => "Неважећи тип „%{arg2}“ у pack",
               "tr" => "pack içinde geçersiz '%{arg2}' türü",
-              "uk" => "Недопустимий тип '%{arg2}' у pack"
+              "uk" => "Недопустимий тип '%{arg2}' у pack",
+              "zh" => "pack 中的类型“%{arg2}”无效"
             },
             "args" => [
               {
@@ -39205,7 +39965,8 @@ $CONF = {
               "ru" => "Недопустимый тип '%{arg2}' в unpack",
               "sr" => "Неважећи тип „%{arg2}“ у unpack",
               "tr" => "unpack içinde geçersiz '%{arg2}' türü",
-              "uk" => "Недопустимий тип '%{arg2}' у unpack"
+              "uk" => "Недопустимий тип '%{arg2}' у unpack",
+              "zh" => "unpack 中的类型“%{arg2}”无效"
             },
             "args" => [
               {
@@ -39253,7 +40014,8 @@ $CONF = {
               "ru" => "В unpack символ '/' должен следовать за числовым типом",
               "sr" => "'/' мора да следи после нумеричког типа у unpack",
               "tr" => "unpack içinde '/' işaretinden önce sayısal bir tür gelmelidir",
-              "uk" => "У unpack '/' має йти після числового типу"
+              "uk" => "У unpack '/' має йти після числового типу",
+              "zh" => "unpack 中的 '/' 前面必须是数值类型"
             },
             "args" => []
           },
@@ -39297,7 +40059,8 @@ $CONF = {
               "ru" => "Неверная запись целого числа в [] в %{arg2}",
               "sr" => "Неисправан цео број у [] у %{arg2}",
               "tr" => "%{arg2} içinde bozuk tamsayı",
-              "uk" => "Неправильно записане ціле число в [] у %{arg2}"
+              "uk" => "Неправильно записане ціле число в [] у %{arg2}",
+              "zh" => "%{arg2} 的 [] 中包含格式错误的整数"
             },
             "args" => [
               {
@@ -39346,7 +40109,8 @@ $CONF = {
               "ru" => "Несогласованные скобки в шаблоне",
               "sr" => "Неусклађене заграде у шаблону",
               "tr" => "Şablondaki köşeli ayraçlar eşleşmiyor",
-              "uk" => "Невідповідні дужки в шаблоні"
+              "uk" => "Невідповідні дужки в шаблоні",
+              "zh" => "模板中的括号不匹配"
             },
             "args" => []
           },
@@ -39388,7 +40152,8 @@ $CONF = {
               "ru" => "В шаблоне не найден символ '%{arg1}', завершающий группу",
               "sr" => "У шаблону није пронађен завршни знак групе „%{arg1}“",
               "tr" => "Şablonda '%{arg1}' eşleşen grup kapatma karakteri bulunamadı",
-              "uk" => "У шаблоні не знайдено символу завершення групи '%{arg1}'"
+              "uk" => "У шаблоні не знайдено символу завершення групи '%{arg1}'",
+              "zh" => "模板中找不到组结束字符 '%{arg1}'"
             },
             "args" => [
               {
@@ -39437,7 +40202,8 @@ $CONF = {
               "ru" => "После '/' в pack отсутствует код формата",
               "sr" => "Недостаје код после знака '/' у pack",
               "tr" => "pack içinde '/' işaretinden sonra kod eksik",
-              "uk" => "Після '/' у pack відсутній код формату"
+              "uk" => "Після '/' у pack відсутній код формату",
+              "zh" => "pack 中 '/' 后缺少代码"
             },
             "args" => []
           },
@@ -39480,7 +40246,8 @@ $CONF = {
               "ru" => "После '/' в unpack отсутствует код формата",
               "sr" => "Недостаје код после знака '/' у unpack",
               "tr" => "unpack içinde '/' işaretinden sonra kod eksik",
-              "uk" => "Після '/' в unpack відсутній код формату"
+              "uk" => "Після '/' в unpack відсутній код формату",
+              "zh" => "unpack 中 '/' 后缺少代码"
             },
             "args" => []
           },
@@ -39522,7 +40289,8 @@ $CONF = {
               "ru" => "Для 'P' в unpack необходимо явно указать размер",
               "sr" => "'P' мора имати експлицитну величину у unpack",
               "tr" => "unpack içinde 'P' için açık bir boyut belirtilmelidir",
-              "uk" => "Для 'P' у unpack потрібно явно вказати розмір"
+              "uk" => "Для 'P' у unpack потрібно явно вказати розмір",
+              "zh" => "unpack 中的 'P' 必须指定显式大小"
             },
             "args" => []
           },
@@ -39564,7 +40332,8 @@ $CONF = {
               "ru" => "'X' выходит за границы строки в %{arg2}",
               "sr" => "„X“ изван ниске у %{arg2}",
               "tr" => "%{arg2} içinde 'X' dize başlangıcının dışında",
-              "uk" => "'X' виходить за межі рядка у %{arg2}"
+              "uk" => "'X' виходить за межі рядка у %{arg2}",
+              "zh" => "“X”位于 %{arg2} 的字符串之外"
             },
             "args" => [
               {
@@ -39613,7 +40382,8 @@ $CONF = {
               "ru" => "переполнение счётчика повторений в pack/unpack",
               "sr" => "прекорачење броја понављања у pack/unpack",
               "tr" => "pack/unpack tekrar sayısı taştı",
-              "uk" => "переповнення лічильника повторень у pack/unpack"
+              "uk" => "переповнення лічильника повторень у pack/unpack",
+              "zh" => "pack/unpack 重复次数溢出"
             },
             "args" => []
           },
@@ -39655,7 +40425,8 @@ $CONF = {
               "ru" => "После '/' нельзя указывать число повторений в %{arg1}",
               "sr" => "„/“ не прихвата број понављања у %{arg1}",
               "tr" => "%{arg1} içinde '/' işarefinden sonra tekrar sayısı kullanılamaz",
-              "uk" => "'/' не приймає кількість повторень у %{arg1}"
+              "uk" => "'/' не приймає кількість повторень у %{arg1}",
+              "zh" => "在 %{arg1} 中，'/' 后不能指定重复次数"
             },
             "args" => [
               {
@@ -39703,7 +40474,8 @@ $CONF = {
               "ru" => "Символ '*' запрещён в длине, заданной в [], в %{arg2}",
               "sr" => "Унутар дужине [] знак '*' није дозвољен у %{arg2}",
               "tr" => "%{arg2} içinde [] uzunluğu kapsamında '*' kullanılamaz",
-              "uk" => "У довжині, заданій у [], '*' не дозволено в %{arg2}"
+              "uk" => "У довжині, заданій у [], '*' не дозволено в %{arg2}",
+              "zh" => "在 [] 长度中，%{arg2} 不允许使用 '*'"
             },
             "args" => [
               {
@@ -39751,7 +40523,8 @@ $CONF = {
               "ru" => "Слишком большой размер структуры в шаблоне pack",
               "sr" => "Структура шаблона pack је превелика",
               "tr" => "Pack şablonunun yapı boyutu çok büyük",
-              "uk" => "Розмір структури в шаблоні pack надто великий"
+              "uk" => "Розмір структури в шаблоні pack надто великий",
+              "zh" => "pack 模板结构过大"
             },
             "args" => []
           },
@@ -39794,7 +40567,8 @@ $CONF = {
               "ru" => "длина/код после конца строки в unpack",
               "sr" => "дужина/код после краја ниске у unpack",
               "tr" => "unpack işleminde dize sonundan sonra uzunluk/kod",
-              "uk" => "довжина/код після кінця рядка в unpack"
+              "uk" => "довжина/код після кінця рядка в unpack",
+              "zh" => "在 unpack 中，字符串末尾之后出现长度/代码组合"
             },
             "args" => []
           },
@@ -39838,7 +40612,8 @@ $CONF = {
               "ru" => "Нельзя сжимать отрицательные числа в pack",
               "sr" => "У pack-у се не могу компресовати негативни бројеви",
               "tr" => "pack içinde negatif sayılar sıkıştırılamaz",
-              "uk" => "Неможливо стискати від’ємні числа в pack"
+              "uk" => "Неможливо стискати від’ємні числа в pack",
+              "zh" => "pack 不能压缩负数"
             },
             "args" => []
           },
@@ -39880,7 +40655,8 @@ $CONF = {
               "ru" => "Отрицательный счётчик '/' в unpack",
               "sr" => "Негативно бројање „/“ у операцији unpack",
               "tr" => "unpack işleminde negatif '/' sayısı",
-              "uk" => "Від’ємний лічильник '/' у unpack"
+              "uk" => "Від’ємний лічильник '/' у unpack",
+              "zh" => "unpack 中“/”计数为负数"
             },
             "args" => []
           },
@@ -39922,7 +40698,8 @@ $CONF = {
               "ru" => "Невозможно сжать %{arg1} в pack",
               "sr" => "Није могуће компресовати %{arg1} у функцији pack",
               "tr" => "pack içinde %{arg1} sıkıştırılamaz",
-              "uk" => "Неможливо стиснути %{arg1} у pack"
+              "uk" => "Неможливо стиснути %{arg1} у pack",
+              "zh" => "无法在 pack 中压缩 %{arg1}"
             },
             "args" => [
               {
@@ -39970,7 +40747,8 @@ $CONF = {
               "ru" => "Нельзя упаковать %{value} с помощью pack с форматом '%{format}'",
               "sr" => "Није могуће упаковати %{value} помоћу „%{format}”",
               "tr" => "%{value}, '%{format}' ile pack edilemez",
-              "uk" => "Неможливо упакувати %{value} за допомогою pack із форматом '%{format}'"
+              "uk" => "Неможливо упакувати %{value} за допомогою pack із форматом '%{format}'",
+              "zh" => "无法使用 '%{format}' 打包 %{value}"
             },
             "args" => [
               {
@@ -40023,7 +40801,8 @@ $CONF = {
               "ru" => "В pack можно сжимать только беззнаковые целые числа",
               "sr" => "У pack-у се могу компресовати само ненегативни цели бројеви",
               "tr" => "pack içinde yalnızca işaretsiz tamsayılar sıkıştırılabilir",
-              "uk" => "У pack можна стискати лише беззнакові цілі числа"
+              "uk" => "У pack можна стискати лише беззнакові цілі числа",
+              "zh" => "pack 中只能压缩无符号整数"
             },
             "args" => []
           },
@@ -40065,7 +40844,8 @@ $CONF = {
               "ru" => "Режим U0 применён к байтовой строке",
               "sr" => "Режим U0 над бајтним ниском",
               "tr" => "Bir bayt dizgesinde U0 modu",
-              "uk" => "Режим U0 для байтового рядка"
+              "uk" => "Режим U0 для байтового рядка",
+              "zh" => "字节字符串不能使用 U0 模式"
             },
             "args" => []
           },
@@ -40109,7 +40889,8 @@ $CONF = {
               "ru" => "Незавершённое сжатое целое число в unpack",
               "sr" => "Недовршен компримовани цео број у unpack",
               "tr" => "unpack işleminde sonlandırılmamış sıkıştırılmış tamsayı",
-              "uk" => "Незавершене стиснене ціле число в unpack"
+              "uk" => "Незавершене стиснене ціле число в unpack",
+              "zh" => "unpack 中的压缩整数未终止"
             },
             "args" => []
           },
@@ -40153,7 +40934,8 @@ $CONF = {
               "ru" => "Ошибка в BEGIN--компиляция прервана",
               "sr" => "BEGIN није успео — компилација је прекинута",
               "tr" => "BEGIN başarısız oldu—derleme iptal edildi",
-              "uk" => "Помилка виконання BEGIN--компіляцію перервано"
+              "uk" => "Помилка виконання BEGIN--компіляцію перервано",
+              "zh" => "BEGIN 失败——编译中止"
             },
             "args" => []
           },
@@ -40201,7 +40983,8 @@ $CONF = {
               "ru" => "Слишком много вложенных блоков BEGIN, допустимый максимум — %{arg1}",
               "sr" => "Превише угнежђених BEGIN блокова; дозвољено је највише %{arg1}",
               "tr" => "İç içe çok fazla BEGIN bloğu var; en fazla %{arg1} bloğa izin verilir",
-              "uk" => "Забагато вкладених блоків BEGIN, максимальна дозволена кількість — %{arg1}"
+              "uk" => "Забагато вкладених блоків BEGIN, максимальна дозволена кількість — %{arg1}",
+              "zh" => "嵌套的 BEGIN 块过多，最多允许 %{arg1} 个"
             },
             "args" => [
               {
@@ -40251,7 +41034,8 @@ $CONF = {
               "ru" => "Выполнение BEGIN после ошибок небезопасно--компиляция прервана",
               "sr" => "BEGIN није безбедан након грешака — компилација је прекинута",
               "tr" => "Hatalardan sonra BEGIN güvenli değil—derleme iptal edildi",
-              "uk" => "BEGIN небезпечний після помилок--компіляцію перервано"
+              "uk" => "BEGIN небезпечний після помилок--компіляцію перервано",
+              "zh" => "发生错误后，BEGIN 不安全——编译已中止"
             },
             "args" => []
           },
@@ -40295,7 +41079,8 @@ $CONF = {
               "ru" => "Ошибка при выполнении %{phase}--обработка очереди вызовов прервана",
               "sr" => "%{phase} није успео — ред позива је прекинут",
               "tr" => "%{phase} başarısız oldu—çağrı kuyruğu iptal edildi",
-              "uk" => "%{phase}: помилка--обробку черги викликів перервано"
+              "uk" => "%{phase}: помилка--обробку черги викликів перервано",
+              "zh" => "%{phase} 失败——调用队列已中止"
             },
             "args" => [
               {
@@ -40349,7 +41134,8 @@ $CONF = {
               "ru" => "Ошибка UNITCHECK",
               "sr" => "Грешка при провери јединице",
               "tr" => "Unit check hatası",
-              "uk" => "Помилка UNITCHECK"
+              "uk" => "Помилка UNITCHECK",
+              "zh" => "单元检查错误"
             },
             "args" => []
           },
@@ -40399,7 +41185,8 @@ $CONF = {
               "ru" => "%{errsv}",
               "sr" => "%{errsv}",
               "tr" => "%{errsv}",
-              "uk" => "%{errsv}"
+              "uk" => "%{errsv}",
+              "zh" => "%{errsv}"
             },
             "args" => [
               {
@@ -40449,7 +41236,8 @@ $CONF = {
               "ru" => "\t...исключение передано далее в файле %{file}, строка %{line}.\n",
               "sr" => "\t...пренето из %{file} у реду %{line}.\n",
               "tr" => "\t...%{file} dosyasının %{line}. satırında yayıldı.\n",
-              "uk" => "\t...передано далі у %{file}, рядок %{line}.\n"
+              "uk" => "\t...передано далі у %{file}, рядок %{line}.\n",
+              "zh" => "\t...在 %{file} 第 %{line} 行传播。\n"
             },
             "args" => [
               {
@@ -40508,7 +41296,8 @@ $CONF = {
               "ru" => "Обратная косая черта \\ в конце регулярного выражения m/%{arg1}%{arg2}/",
               "sr" => "Завршна \\ у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "Düzenli ifadede sondaki \\: m/%{arg1}%{arg2}/",
-              "uk" => "Зворотна скісна риска \\ наприкінці регулярного виразу m/%{arg1}%{arg2}/"
+              "uk" => "Зворотна скісна риска \\ наприкінці регулярного виразу m/%{arg1}%{arg2}/",
+              "zh" => "正则表达式 m/%{arg1}%{arg2}/ 末尾有未配对的反斜杠 \\"
             },
             "args" => [
               {
@@ -40576,7 +41365,8 @@ $CONF = {
               "ru" => "Последовательность (?{...}) не завершена символом ')'",
               "sr" => "Низ (?{...}) није затворен са „)“",
               "tr" => "(?{...}) dizisi ')' ile sonlandırılmadı",
-              "uk" => "Послідовність (?{...}) не завершено символом ')'"
+              "uk" => "Послідовність (?{...}) не завершено символом ')'",
+              "zh" => "序列 (?{...}) 未以 ')' 终止"
             },
             "args" => []
           },
@@ -40618,7 +41408,8 @@ $CONF = {
               "ru" => "Группа eval запрещена во время выполнения, используйте use re 'eval' в регулярном выражении m/%{arg1}%{arg2}/",
               "sr" => "Група Eval није дозвољена током извршавања; користите re 'eval' у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "Düzenli ifade m/%{arg1}%{arg2}/ içinde çalışma zamanında Eval grubu kullanılamaz; re 'eval' kullanın",
-              "uk" => "Група eval не дозволена під час виконання; скористайтеся use re 'eval' для регулярного виразу m/%{arg1}%{arg2}/"
+              "uk" => "Група eval не дозволена під час виконання; скористайтеся use re 'eval' для регулярного виразу m/%{arg1}%{arg2}/",
+              "zh" => "运行时不允许使用 eval 组；请在正则表达式 m/%{arg1}%{arg2}/ 中使用 re 'eval'"
             },
             "args" => [
               {
@@ -40686,7 +41477,8 @@ $CONF = {
               "ru" => "Последовательность (?#... не завершена в регулярном выражении m/%{arg1}%{arg2}/",
               "sr" => "Низ (?#... није завршен у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "Düzenli ifade m/%{arg1}%{arg2}/ içinde (?#... dizisi sonlandırılmadı",
-              "uk" => "Незавершена послідовність (?#... у регулярному виразі m/%{arg1}%{arg2}/"
+              "uk" => "Незавершена послідовність (?#... у регулярному виразі m/%{arg1}%{arg2}/",
+              "zh" => "正则表达式 m/%{arg1}%{arg2}/ 中的序列 (?#... 未终止"
             },
             "args" => [
               {
@@ -40754,7 +41546,8 @@ $CONF = {
               "ru" => "Незавершённая последовательность (?R) в регулярном выражении m/%{arg1}%{arg2}/",
               "sr" => "Низ (?R) није завршен у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "Düzenli ifade m/%{arg1}%{arg2}/ içinde (?R) dizisi sonlandırılmadı",
-              "uk" => "Незавершена послідовність (?R) у регулярному виразі m/%{arg1}%{arg2}/"
+              "uk" => "Незавершена послідовність (?R) у регулярному виразі m/%{arg1}%{arg2}/",
+              "zh" => "正则表达式 m/%{arg1}%{arg2}/ 中的序列 (?R) 未终止"
             },
             "args" => [
               {
@@ -40822,7 +41615,8 @@ $CONF = {
               "ru" => "Слишком много захватывающих групп (предел: %{arg1}) в регулярном выражении m/%{arg2}%{arg3}/",
               "sr" => "Превише група за хватање (ограничење је %{arg1}) у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "Düzenli ifade m/%{arg2}%{arg3}/ içinde çok fazla yakalama grubu var (sınır %{arg1})",
-              "uk" => "Забагато груп захоплення (обмеження: %{arg1}) у регулярному виразі m/%{arg2}%{arg3}/"
+              "uk" => "Забагато груп захоплення (обмеження: %{arg1}) у регулярному виразі m/%{arg2}%{arg3}/",
+              "zh" => "正则表达式 m/%{arg2}%{arg3}/ 中捕获组过多（上限为 %{arg1}）"
             },
             "args" => [
               {
@@ -40895,7 +41689,8 @@ $CONF = {
               "ru" => "Ретроспективная проверка длиной более %{arg1} не реализована в регулярном выражении m/%{arg2}%{arg3}/",
               "sr" => "Поглед уназад дужи од %{arg1} није имплементиран у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "Düzenli ifade m/%{arg2}%{arg3}/ içinde %{arg1} karakterden uzun lookbehind uygulanmıyor",
-              "uk" => "Ретроспективну перевірку довжиною понад %{arg1} не реалізовано в регулярному виразі m/%{arg2}%{arg3}/"
+              "uk" => "Ретроспективну перевірку довжиною понад %{arg1} не реалізовано в регулярному виразі m/%{arg2}%{arg3}/",
+              "zh" => "正则表达式 m/%{arg2}%{arg3}/ 中的后顾断言长度超过 %{arg1}；尚未实现"
             },
             "args" => [
               {
@@ -40969,7 +41764,8 @@ $CONF = {
               "ru" => "Недостаточно места для регулярного выражения m/%{arg1}%{arg2}/",
               "sr" => "Нема довољно простора за регуларни израз m/%{arg1}%{arg2}/",
               "tr" => "Düzenli ifade m/%{arg1}%{arg2}/ için alan yetersiz",
-              "uk" => "Недостатньо пам'яті для регулярного виразу m/%{arg1}%{arg2}/"
+              "uk" => "Недостатньо пам'яті для регулярного виразу m/%{arg1}%{arg2}/",
+              "zh" => "正则表达式 m/%{arg1}%{arg2}/ 空间不足"
             },
             "args" => [
               {
@@ -41038,7 +41834,8 @@ $CONF = {
               "ru" => "Бесконечная рекурсия из-за пустого шаблона",
               "sr" => "Бесконачна рекурзија преко празног обрасца",
               "tr" => "Boş desen nedeniyle sonsuz özyineleme",
-              "uk" => "Нескінченна рекурсія через порожній шаблон"
+              "uk" => "Нескінченна рекурсія через порожній шаблон",
+              "zh" => "通过空模式导致无限递归"
             },
             "args" => []
           },
@@ -41080,7 +41877,8 @@ $CONF = {
               "ru" => "Превышен предел числа EVAL без изменения pos в регулярном выражении",
               "sr" => "EVAL без промене позиције прекорачио је ограничење у регуларном изразу",
               "tr" => "Düzenli ifadede EVAL, pos değişikliği olmadan sınırı aştı",
-              "uk" => "Перевищено ліміт EVAL без зміни pos у регулярному виразі"
+              "uk" => "Перевищено ліміт EVAL без зміни pos у регулярному виразі",
+              "zh" => "正则表达式中的 EVAL 未改变位置，超出限制"
             },
             "args" => []
           },
@@ -41122,7 +41920,8 @@ $CONF = {
               "ru" => "Бесконечная рекурсия в регулярном выражении",
               "sr" => "Бесконачна рекурзија у регуларном изразу",
               "tr" => "Düzenli ifadede sonsuz özyineleme",
-              "uk" => "Нескінченна рекурсія в регулярному виразі"
+              "uk" => "Нескінченна рекурсія в регулярному виразі",
+              "zh" => "正则表达式中发生无限递归"
             },
             "args" => []
           },
@@ -41164,7 +41963,8 @@ $CONF = {
               "ru" => "В регулярном выражении превышен предел вложенности вызовов подшаблонов без изменения pos",
               "sr" => "Угнежђивање потпрограма шаблона без промене pos премашило је ограничење у регуларном изразу",
               "tr" => "Düzenli ifadede, pos değişikliği olmadan desen yordamının iç içe çağrı sınırı aşıldı",
-              "uk" => "У регулярному виразі перевищено межу вкладеності викликів підпрограм шаблону без зміни pos"
+              "uk" => "У регулярному виразі перевищено межу вкладеності викликів підпрограм шаблону без зміни pos",
+              "zh" => "正则表达式中的子程序嵌套未改变位置，超过了限制"
             },
             "args" => []
           },
@@ -41206,7 +42006,8 @@ $CONF = {
               "ru" => "Клонирование контекста подстановки не реализовано",
               "sr" => "Клонирање контекста замене није имплементирано",
               "tr" => "Değiştirme bağlamının kopyalanması uygulanmadı",
-              "uk" => "Клонування контексту підстановки не реалізовано"
+              "uk" => "Клонування контексту підстановки не реалізовано",
+              "zh" => "尚未实现克隆替换上下文"
             },
             "args" => []
           },
@@ -41249,7 +42050,8 @@ $CONF = {
               "ru" => "Количество байтов для builtin::rand_bytes() должно быть неотрицательным целым числом",
               "sr" => "Број бајтова у builtin::rand_bytes() мора бити ненегативан цео број",
               "tr" => "builtin::rand_bytes() sayısı negatif olmayan bir tamsayı olmalıdır",
-              "uk" => "Кількість байтів для builtin::rand_bytes() має бути невід'ємним цілим числом"
+              "uk" => "Кількість байтів для builtin::rand_bytes() має бути невід'ємним цілим числом",
+              "zh" => "builtin::rand_bytes() 的字节数必须是非负整数"
             },
             "args" => []
           },
@@ -41292,7 +42094,8 @@ $CONF = {
               "ru" => "Слишком большое количество байтов для builtin::rand_bytes()",
               "sr" => "Број бајтова у builtin::rand_bytes() је превелик",
               "tr" => "builtin::rand_bytes() sayısı çok büyük",
-              "uk" => "Кількість байтів для builtin::rand_bytes() надто велика"
+              "uk" => "Кількість байтів для builtin::rand_bytes() надто велика",
+              "zh" => "builtin::rand_bytes() 的字节数过大"
             },
             "args" => []
           },
@@ -41334,7 +42137,8 @@ $CONF = {
               "ru" => "Метод rand_bytes() поставщика генератора случайных чисел не вернул запрошенное количество байтов",
               "sr" => "Метода rand_bytes() RNG провајдера није вратила тражени број бајтова",
               "tr" => "RNG sağlayıcısının rand_bytes() yöntemi istenen bayt sayısını döndürmedi",
-              "uk" => "Метод rand_bytes() постачальника генератора випадкових чисел не повернув запитану кількість байтів"
+              "uk" => "Метод rand_bytes() постачальника генератора випадкових чисел не повернув запитану кількість байтів",
+              "zh" => "RNG 提供程序的 rand_bytes() 未返回请求数量的字节"
             },
             "args" => []
           },
@@ -41376,7 +42180,8 @@ $CONF = {
               "ru" => "Метод rand_bytes() поставщика генератора случайных чисел не вернул байтовую строку",
               "sr" => "Метода rand_bytes() RNG провајдера није вратила низ бајтова",
               "tr" => "RNG sağlayıcısının rand_bytes() yöntemi bir bayt dizgesi döndürmedi",
-              "uk" => "Метод rand_bytes() постачальника генератора випадкових чисел не повернув байтовий рядок"
+              "uk" => "Метод rand_bytes() постачальника генератора випадкових чисел не повернув байтовий рядок",
+              "zh" => "RNG 提供程序的 rand_bytes() 未返回字节串"
             },
             "args" => []
           },
@@ -41418,7 +42223,8 @@ $CONF = {
               "ru" => "Адрес быстрого поставщика генератора случайных чисел должен быть целым числом",
               "sr" => "Адреса брзог RNG провајдера мора бити цео број",
               "tr" => "RNG hızlı sağlayıcı adresi tamsayı olmalıdır",
-              "uk" => "Адреса швидкого постачальника генератора випадкових чисел має бути цілим числом"
+              "uk" => "Адреса швидкого постачальника генератора випадкових чисел має бути цілим числом",
+              "zh" => "RNG 快速提供程序地址必须是整数"
             },
             "args" => []
           },
@@ -41460,7 +42266,8 @@ $CONF = {
               "ru" => "\${^RNG} должна содержать объект RNG::Provider или undef",
               "sr" => "\${^RNG} мора бити објекат RNG::Provider или undef",
               "tr" => "\${^RNG}, bir RNG::Provider nesnesi veya undef olmalıdır",
-              "uk" => "\${^RNG} має бути об’єктом RNG::Provider або undef"
+              "uk" => "\${^RNG} має бути об’єктом RNG::Provider або undef",
+              "zh" => "\${^RNG} 必须是 RNG::Provider 对象或 undef"
             },
             "args" => []
           },
@@ -41502,7 +42309,8 @@ $CONF = {
               "ru" => "RNG::SeedBase::bytes() не вернул октеты начальных данных",
               "sr" => "RNG::SeedBase::bytes() није вратио октете семена",
               "tr" => "RNG::SeedBase::bytes(), tohum baytlarını döndürmedi",
-              "uk" => "RNG::SeedBase::bytes() не повернув октети початкового значення генератора"
+              "uk" => "RNG::SeedBase::bytes() не повернув октети початкового значення генератора",
+              "zh" => "RNG::SeedBase::bytes() 未返回种子八位字节"
             },
             "args" => []
           },
@@ -41544,7 +42352,8 @@ $CONF = {
               "ru" => "RNG::Seed для встроенного генератора Drand48 должен содержать ровно 4 октета",
               "sr" => "RNG::Seed за уграђени Drand48 мора да садржи тачно 4 октета",
               "tr" => "Yerleşik Drand48 için RNG::Seed tam olarak 4 bayt içermelidir",
-              "uk" => "RNG::Seed для вбудованого Drand48 має містити рівно 4 октети"
+              "uk" => "RNG::Seed для вбудованого Drand48 має містити рівно 4 октети",
+              "zh" => "内置 Drand48 的 RNG::Seed 必须恰好包含 4 个八位字节"
             },
             "args" => []
           },
@@ -41586,7 +42395,8 @@ $CONF = {
               "ru" => "Нельзя использовать начальные данные генератора случайных чисел, из которых удалено содержимое",
               "sr" => "Не можете користити редиговано семе генератора случајних бројева",
               "tr" => "Üzeri maskelenmiş bir RNG tohumu kullanılamaz",
-              "uk" => "Неможливо використовувати початкове значення генератора випадкових чисел із вилученими даними"
+              "uk" => "Неможливо використовувати початкове значення генератора випадкових чисел із вилученими даними",
+              "zh" => "不能使用已脱敏的 RNG 种子"
             },
             "args" => []
           },
@@ -41628,7 +42438,8 @@ $CONF = {
               "ru" => "Недопустимый параметр в PERL5OPT: -%{option}",
               "sr" => "Недозвољена опција у променљивој PERL5OPT: -%{option}",
               "tr" => "PERL5OPT içinde geçersiz anahtar: -%{option}",
-              "uk" => "Недопустимий параметр у PERL5OPT: -%{option}"
+              "uk" => "Недопустимий параметр у PERL5OPT: -%{option}",
+              "zh" => "PERL5OPT 中有非法选项：-%{option}"
             },
             "args" => [
               {
@@ -41676,7 +42487,8 @@ $CONF = {
               "ru" => "Недопустимое значение PERL_SIGNALS: \"%{arg1}\"",
               "sr" => "Недозвољена вредност PERL_SIGNALS: „%{arg1}“",
               "tr" => "PERL_SIGNALS geçersiz: \"%{arg1}\"",
-              "uk" => "Недопустиме значення PERL_SIGNALS: \"%{arg1}\""
+              "uk" => "Недопустиме значення PERL_SIGNALS: \"%{arg1}\"",
+              "zh" => "PERL_SIGNALS 非法值：“%{arg1}”"
             },
             "args" => [
               {
@@ -41724,7 +42536,8 @@ $CONF = {
               "ru" => "Для -I не указан каталог",
               "sr" => "За -I није наведен директоријум",
               "tr" => "-I için dizin belirtilmedi",
-              "uk" => "Не вказано каталог для -I"
+              "uk" => "Не вказано каталог для -I",
+              "zh" => "未为 -I 指定目录"
             },
             "args" => []
           },
@@ -41766,7 +42579,8 @@ $CONF = {
               "ru" => "Для параметра -%{option} требуется имя модуля",
               "sr" => "Уз опцију -%{option} потребно је име модула",
               "tr" => "-%{option} seçeneğiyle modül adı gerekli",
-              "uk" => "Для параметра -%{option} потрібне ім'я модуля"
+              "uk" => "Для параметра -%{option} потрібне ім'я модуля",
+              "zh" => "-%{option} 选项需要模块名"
             },
             "args" => [
               {
@@ -41814,7 +42628,8 @@ $CONF = {
               "ru" => "Недопустимое имя модуля %{arg1} в параметре -%{arg2}: содержит одиночное ':'",
               "sr" => "Неисправно име модула %{arg1} уз опцију -%{arg2}: садржи самосталну ':'",
               "tr" => "-%{arg2} seçeneğiyle geçersiz modül adı %{arg1}: tek ':' içeriyor",
-              "uk" => "Неприпустиме ім'я модуля %{arg1} для параметра -%{arg2}: містить одинарну ':'"
+              "uk" => "Неприпустиме ім'я модуля %{arg1} для параметра -%{arg2}: містить одинарну ':'",
+              "zh" => "-%{arg2} 选项中的模块名 %{arg1} 无效：包含单个冒号“:”"
             },
             "args" => [
               {
@@ -41877,7 +42692,8 @@ $CONF = {
               "ru" => "Для -%{option} не указан код",
               "sr" => "За -%{option} није наведен код",
               "tr" => "-%{option} için kod belirtilmedi",
-              "uk" => "Не вказано код для -%{option}"
+              "uk" => "Не вказано код для -%{option}",
+              "zh" => "-%{option} 未指定代码"
             },
             "args" => [
               {
@@ -41925,7 +42741,8 @@ $CONF = {
               "ru" => "Невозможно эмулировать -%{arg2} в строке #!",
               "sr" => "Није могуће емулирати -%{arg2} у #! линији",
               "tr" => "#! satırında -%{arg2} taklit edilemiyor",
-              "uk" => "Неможливо емулювати -%{arg2} у рядку #!"
+              "uk" => "Неможливо емулювати -%{arg2} у рядку #!",
+              "zh" => "无法在 #! 行中模拟 -%{arg2}"
             },
             "args" => [
               {
@@ -41973,7 +42790,8 @@ $CONF = {
               "ru" => "Слишком поздно для параметра \"-%{option}\"",
               "sr" => "Прекасно је за опцију „-%{option}“",
               "tr" => "\"-%{option}\" seçeneği için çok geç",
-              "uk" => "Запізно для параметра \"-%{option}\""
+              "uk" => "Запізно для параметра \"-%{option}\"",
+              "zh" => "“-%{option}”选项使用得太晚"
             },
             "args" => [
               {
@@ -42085,6 +42903,10 @@ $CONF = {
               "uk" => {
                 "*" => "\"-%{switch}\" зазначено в рядку #!, його також потрібно вказати в командному рядку",
                 "malloc_options" => "\"-%{switch}\" зазначено в рядку #!, його також потрібно вказати в командному рядку разом із \$ENV{PERL_MALLOC_OPT}"
+              },
+              "zh" => {
+                "malloc_options" => "#! 行中指定了 \"-%{switch}\"，命令行中也必须使用该开关，并设置 \$ENV{PERL_MALLOC_OPT}",
+                "other" => "#! 行中指定了 \"-%{switch}\"，命令行中也必须使用该开关"
               }
             },
             "args" => [
@@ -42143,7 +42965,8 @@ $CONF = {
               "ru" => "Этот perl скомпилирован без поддержки проверки taint. Из осторожности отказываюсь запускаться с флагами -t или -T",
               "sr" => "Овај perl је преведен без подршке за taint. Из безбедносних разлога одбија се покретање са опцијом -t или -T",
               "tr" => "Bu perl taint desteği olmadan derlenmiş. -t veya -T bayraklarıyla çalıştırmayı korkakça reddediyor",
-              "uk" => "Цей perl скомпільовано без підтримки перевірки забруднених даних. Боягузливо відмовляюся запускатися з прапорцями -t або -T"
+              "uk" => "Цей perl скомпільовано без підтримки перевірки забруднених даних. Боягузливо відмовляюся запускатися з прапорцями -t або -T",
+              "zh" => "此 perl 未编译启用污点检查支持。为安全起见，拒绝使用 -t 或 -T 标志运行"
             },
             "args" => []
           },
@@ -42186,7 +43009,8 @@ $CONF = {
               "ru" => "Недопустимое число '%{arg2}' для параметра -C.\n",
               "sr" => "Неисправан број „%{arg2}“ за опцију -C.\n",
               "tr" => "-C seçeneği için geçersiz sayı '%{arg2}'.\n",
-              "uk" => "Недопустиме число '%{arg2}' для параметра -C.\n"
+              "uk" => "Недопустиме число '%{arg2}' для параметра -C.\n",
+              "zh" => "-C 选项的数字 '%{arg2}' 无效。\n"
             },
             "args" => [
               {
@@ -42235,7 +43059,8 @@ $CONF = {
               "ru" => "Неизвестное значение параметра Unicode %{arg1}",
               "sr" => "Непозната вредност Unicode опције %{arg1}",
               "tr" => "Bilinmeyen Unicode seçeneği değeri %{arg1}",
-              "uk" => "Невідоме значення параметра Unicode %{arg1}"
+              "uk" => "Невідоме значення параметра Unicode %{arg1}",
+              "zh" => "未知的 Unicode 选项值 %{arg1}"
             },
             "args" => [
               {
@@ -42284,7 +43109,8 @@ $CONF = {
               "ru" => "Неизвестная буква параметра Unicode: '%{arg1}'",
               "sr" => "Непознато слово у Уникод опцији „%{arg1}“",
               "tr" => "Bilinmeyen Unicode seçeneği harfi '%{arg1}'",
-              "uk" => "Невідома літера параметра Unicode '%{arg1}'"
+              "uk" => "Невідома літера параметра Unicode '%{arg1}'",
+              "zh" => "未知的 Unicode 选项字母 '%{arg1}'"
             },
             "args" => [
               {
@@ -42332,7 +43158,8 @@ $CONF = {
               "ru" => "Нераспознанный ключ: -%{arg1}  (-h покажет допустимые параметры).",
               "sr" => "Непрепозната опција: -%{arg1}  (са -h можете видети важеће опције).",
               "tr" => "Tanınmayan anahtar: -%{arg1}  (-h geçerli seçenekleri gösterir).",
-              "uk" => "Нерозпізнаний параметр: -%{arg1}  (-h покаже допустимі параметри)."
+              "uk" => "Нерозпізнаний параметр: -%{arg1}  (-h покаже допустимі параметри).",
+              "zh" => "无法识别的开关：-%{arg1}  （-h 可显示有效选项）。"
             },
             "args" => [
               {
@@ -42380,7 +43207,8 @@ $CONF = {
               "ru" => "Неизвестный ключ: -%{arg2}  (-h покажет допустимые параметры)",
               "sr" => "Непозната опција: -%{arg2}  (-h приказује важеће опције)",
               "tr" => "Tanınmayan anahtar: -%{arg2}  (-h geçerli seçenekleri gösterir)",
-              "uk" => "Нерозпізнаний параметр: -%{arg2}  (-h покаже допустимі параметри)"
+              "uk" => "Нерозпізнаний параметр: -%{arg2}  (-h покаже допустимі параметри)",
+              "zh" => "无法识别的开关：-%{arg2}  （-h 将显示有效选项）"
             },
             "args" => [
               {
@@ -42428,7 +43256,8 @@ $CONF = {
               "ru" => "Отсутствует аргумент для -%{option}",
               "sr" => "Недостаје аргумент за -%{option}",
               "tr" => "-%{option} seçeneği için bağımsız değişken eksik",
-              "uk" => "Відсутній аргумент для -%{option}"
+              "uk" => "Відсутній аргумент для -%{option}",
+              "zh" => "缺少 -%{option} 的参数"
             },
             "args" => [
               {
@@ -42476,7 +43305,8 @@ $CONF = {
               "ru" => "Во входных данных не найден скрипт Perl\n",
               "sr" => "У улазу није пронађена Perl скрипта\n",
               "tr" => "Girdide Perl betiği bulunamadı\n",
-              "uk" => "У вхідних даних не знайдено сценарію Perl\n"
+              "uk" => "У вхідних даних не знайдено сценарію Perl\n",
+              "zh" => "输入中未找到 Perl 脚本\n"
             },
             "args" => []
           },
@@ -42518,7 +43348,8 @@ $CONF = {
               "ru" => "Маска операций запрещает следующую операцию: '%{arg1}'",
               "sr" => "Оператор „%{arg1}“ је ухваћен маском оператора",
               "tr" => "'%{arg1}' işlem maskesi tarafından engellendi",
-              "uk" => "Операцію заблоковано маскою операцій: '%{arg1}'"
+              "uk" => "Операцію заблоковано маскою операцій: '%{arg1}'",
+              "zh" => "'%{arg1}' 被操作掩码拦截"
             },
             "args" => [
               {
@@ -42556,7 +43387,8 @@ $CONF = {
                 "ru" => "nominative",
                 "sr" => "nominative",
                 "tr" => "operation",
-                "uk" => "nominative"
+                "uk" => "nominative",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -42654,6 +43486,10 @@ $CONF = {
               "uk" => {
                 "command_line_switch" => "Параметр -%{switch} не дозволено з (suid) fdscript",
                 "stdin" => "Читання тексту програми зі stdin не дозволено з (suid) fdscript"
+              },
+              "zh" => {
+                "command_line_switch" => "使用 (suid) fdscript 时不允许使用 -%{switch}",
+                "stdin" => "使用 (suid) fdscript 时不允许从 stdin 输入程序"
               }
             },
             "args" => [
@@ -42711,7 +43547,8 @@ $CONF = {
               "ru" => "Отсутствует имя скрипта (suid), заданного файловым дескриптором\n",
               "sr" => "Недостаје име fd скрипте (suid)\n",
               "tr" => "(suid) fd betik adı eksik\n",
-              "uk" => "Відсутнє ім'я сценарію (suid), переданого через fd\n"
+              "uk" => "Відсутнє ім'я сценарію (suid), переданого через fd\n",
+              "zh" => "缺少 (suid) fd 脚本名称\n"
             },
             "args" => []
           },
@@ -42753,7 +43590,8 @@ $CONF = {
               "ru" => "Неверный синтаксис имени скрипта (suid), переданного через файловый дескриптор: \"%{arg2}\"\n",
               "sr" => "Погрешна синтакса (suid) fd скрипте „%{arg2}“\n",
               "tr" => "(suid) fd betik adı \"%{arg2}\" yanlış sözdiziminde\n",
-              "uk" => "Неправильний синтаксис імені скрипту через файловий дескриптор (suid) \"%{arg2}\"\n"
+              "uk" => "Неправильний синтаксис імені скрипту через файловий дескриптор (suid) \"%{arg2}\"\n",
+              "zh" => "(suid) fd 脚本名称“%{arg2}”语法错误\n"
             },
             "args" => [
               {
@@ -42801,7 +43639,8 @@ $CONF = {
               "ru" => "ВЫ ЕЩЁ НЕ ОТКЛЮЧИЛИ СКРИПТЫ С SET-ID В ЯДРЕ!\nИСПРАВЬТЕ ЯДРО, СОЗДАЙТЕ ДЛЯ ЭТОГО СКРИПТА ОБЁРТКУ НА C ИЛИ ИСПОЛЬЗУЙТЕ -u И UNDUMP!\n",
               "sr" => "ЈОШ НИСТЕ ИСКЉУЧИЛИ SET-ID СКРИПТЕ У ЈЕЗГРУ ОПЕРАТИВНОГ СИСТЕМА!\nПОПРАВИТЕ ЈЕЗГРО, НАПРАВИТЕ C-ОМОТАЧ ОКО ОВЕ СКРИПТЕ ИЛИ КОРИСТИТЕ -u И UNDUMP!\n",
               "tr" => "ÇEKİRDEKTE SET-ID BETİKLERİNİ HENÜZ DEVRE DIŞI BIRAKMADINIZ!\nÇEKİRDEĞİNİZİ DÜZELTİN, BU BETİĞİ BİR C SARICIYLA ÇALIŞTIRIN YA DA -u KULLANIP UN-DUMP EDİN!\n",
-              "uk" => "ВИ ЩЕ НЕ ВИМКНУЛИ СКРИПТИ SET-ID У ЯДРІ!\nВИПРАВТЕ ЯДРО, СТВОРІТЬ ОБГОРТКУ МОВОЮ C ДЛЯ ЦЬОГО СКРИПТУ АБО ВИКОРИСТАЙТЕ -u ТА UNDUMP!\n"
+              "uk" => "ВИ ЩЕ НЕ ВИМКНУЛИ СКРИПТИ SET-ID У ЯДРІ!\nВИПРАВТЕ ЯДРО, СТВОРІТЬ ОБГОРТКУ МОВОЮ C ДЛЯ ЦЬОГО СКРИПТУ АБО ВИКОРИСТАЙТЕ -u ТА UNDUMP!\n",
+              "zh" => "你尚未在内核中禁用 SET-ID 脚本！\n修复内核、为此脚本添加 C 包装器，或使用 -u 并执行 undump！\n"
             },
             "args" => []
           },
@@ -42843,7 +43682,8 @@ $CONF = {
               "ru" => "Недопустимый suid-скрипт",
               "sr" => "Недозвољена суид скрипта",
               "tr" => "Geçersiz suidscript",
-              "uk" => "Недопустимий сценарій suid"
+              "uk" => "Недопустимий сценарій suid",
+              "zh" => "非法 suidscript"
             },
             "args" => []
           },
@@ -42939,6 +43779,10 @@ $CONF = {
               "uk" => {
                 "command_line_switch" => "Параметр -%{switch} не дозволено під час виконання в режимі setgid",
                 "stdin" => "Читання тексту програми зі stdin не дозволено під час виконання в режимі setgid"
+              },
+              "zh" => {
+                "command_line_switch" => "以 setgid 身份运行时不允许使用 -%{switch}",
+                "stdin" => "以 setgid 身份运行时不允许从 stdin 输入程序"
               }
             },
             "args" => [
@@ -43050,6 +43894,10 @@ $CONF = {
               "uk" => {
                 "command_line_switch" => "Параметр -%{switch} заборонено під час виконання з setuid",
                 "stdin" => "Введення програми зі stdin заборонено під час виконання з setuid"
+              },
+              "zh" => {
+                "command_line_switch" => "以 setuid 身份运行时不允许使用 -%{switch}",
+                "stdin" => "以 setuid 身份运行时不允许从 stdin 输入程序"
               }
             },
             "args" => [
@@ -43108,7 +43956,8 @@ $CONF = {
               "ru" => "Умное сопоставление объекта без перегрузки этой операции нарушает инкапсуляцию",
               "sr" => "Паметно поређење објекта без преоптерећења нарушава енкапсулацију",
               "tr" => "Aşırı yüklenmemiş bir nesneyle akıllı eşleştirme yapmak kapsüllemeyi bozar",
-              "uk" => "Розумне зіставлення об’єкта без перевантаження порушує інкапсуляцію"
+              "uk" => "Розумне зіставлення об’єкта без перевантаження порушує інкапсуляцію",
+              "zh" => "对未重载的对象进行智能匹配会破坏封装"
             },
             "args" => []
           },
@@ -43222,6 +44071,11 @@ $CONF = {
                 "*" => "Неможливо використати слово без лапок (\"%{word}\") як посилання на скаляр, коли діє \"strict refs\"",
                 "array" => "Неможливо використати слово без лапок (\"%{word}\") як посилання на масив, коли діє \"strict refs\"",
                 "hash" => "Неможливо використати слово без лапок (\"%{word}\") як посилання на хеш, коли діє \"strict refs\""
+              },
+              "zh" => {
+                "array" => "使用 \"strict refs\" 时，不能将裸字 (\"%{word}\") 用作 ARRAY 引用",
+                "hash" => "使用 \"strict refs\" 时，不能将裸字 (\"%{word}\") 用作 HASH 引用",
+                "scalar" => "使用 \"strict refs\" 时，不能将裸字 (\"%{word}\") 用作 SCALAR 引用"
               }
             },
             "args" => [
@@ -43576,6 +44430,24 @@ $CONF = {
                   "*" => "Неможливо використати рядок (\"%{value}\") як посилання типу SCALAR, коли діє \"strict refs\"",
                   "truncated" => "Неможливо використати рядок (\"%{value}\"...) як посилання типу SCALAR, коли діє \"strict refs\""
                 }
+              },
+              "zh" => {
+                "array" => {
+                  "complete" => "不能在使用 \"strict refs\" 时将字符串 (\"%{value}\") 用作 ARRAY 引用",
+                  "truncated" => "不能在使用 \"strict refs\" 时将字符串 (\"%{value}\"...) 用作 ARRAY 引用"
+                },
+                "hash" => {
+                  "complete" => "不能在使用 \"strict refs\" 时将字符串 (\"%{value}\") 用作 HASH 引用",
+                  "truncated" => "不能在使用 \"strict refs\" 时将字符串 (\"%{value}\"...) 用作 HASH 引用"
+                },
+                "scalar" => {
+                  "complete" => "不能在使用 \"strict refs\" 时将字符串 (\"%{value}\") 用作 SCALAR 引用",
+                  "truncated" => "不能在使用 \"strict refs\" 时将字符串 (\"%{value}\"...) 用作 SCALAR 引用"
+                },
+                "symbol" => {
+                  "complete" => "不能在使用 \"strict refs\" 时将字符串 (\"%{value}\") 用作 symbol 引用",
+                  "truncated" => "不能在使用 \"strict refs\" 时将字符串 (\"%{value}\"...) 用作 symbol 引用"
+                }
               }
             },
             "args" => [
@@ -43699,6 +44571,10 @@ $CONF = {
               "uk" => {
                 "*" => "Не можна використовувати рядок (\"%{value}\") як посилання на підпрограму, коли діє \"strict refs\"",
                 "truncated" => "Не можна використовувати рядок (\"%{value}\"...) як посилання на підпрограму, коли діє \"strict refs\""
+              },
+              "zh" => {
+                "complete" => "使用字符串（\"%{value}\"）作为子例程引用时，不能启用 \"strict refs\"",
+                "truncated" => "使用字符串（\"%{value}\"...）作为子例程引用时，不能启用 \"strict refs\""
               }
             },
             "args" => [
@@ -43758,7 +44634,8 @@ $CONF = {
               "ru" => "substr за пределами строки",
               "sr" => "substr ван ниске",
               "tr" => "substr dizenin dışında",
-              "uk" => "substr за межами рядка"
+              "uk" => "substr за межами рядка",
+              "zh" => "substr 超出字符串范围"
             },
             "args" => []
           },
@@ -43800,7 +44677,8 @@ $CONF = {
               "ru" => "Недопустимое число битов в vec",
               "sr" => "Недозвољен број битова у vec",
               "tr" => "vec içindeki bit sayısı geçersiz",
-              "uk" => "Неприпустима кількість бітів у vec"
+              "uk" => "Неприпустима кількість бітів у vec",
+              "zh" => "vec 中的位数无效"
             },
             "args" => []
           },
@@ -43842,7 +44720,8 @@ $CONF = {
               "ru" => "Отрицательное смещение в vec в контексте lvalue",
               "sr" => "Негативан померај за vec у контексту леве вредности",
               "tr" => "lvalue bağlamında vec için negatif konum",
-              "uk" => "Від’ємний зсув для vec у контексті lvalue"
+              "uk" => "Від’ємний зсув для vec у контексті lvalue",
+              "zh" => "在左值上下文中，vec 的偏移量不能为负数"
             },
             "args" => []
           },
@@ -43884,7 +44763,8 @@ $CONF = {
               "ru" => "\$%{arg2} больше не поддерживается начиная с Perl 5.30",
               "sr" => "\$%{arg2} више није подржан од Perl-а 5.30",
               "tr" => "\$%{arg2}, Perl 5.30 itibarıyla artık desteklenmiyor",
-              "uk" => "\$%{arg2} більше не підтримується, починаючи з Perl 5.30"
+              "uk" => "\$%{arg2} більше не підтримується, починаючи з Perl 5.30",
+              "zh" => "自 Perl 5.30 起不再支持 \$%{arg2}"
             },
             "args" => [
               {
@@ -44040,6 +44920,9 @@ $CONF = {
                 "filehandle" => "Некоректний символ для дескриптора файлу",
                 "hash" => "Некоректний символ для хешу",
                 "scalar" => "Некоректний символ для скаляра"
+              },
+              "zh" => {
+                "*" => "无效的符号：%{symbol_kind}"
               }
             },
             "args" => [
@@ -44149,6 +45032,10 @@ $CONF = {
               "uk" => {
                 "filehandle" => "Кома після файлового дескриптора заборонена",
                 "subroutine" => "Кома після імені підпрограми заборонена"
+              },
+              "zh" => {
+                "filehandle" => "文件句柄后不允许加逗号",
+                "subroutine" => "子程序名称后不允许加逗号"
               }
             },
             "args" => [
@@ -44201,7 +45088,8 @@ $CONF = {
               "ru" => "Нельзя использовать 'defined(\@array)' (Возможно, следует просто убрать defined()?)",
               "sr" => "Није могуће користити 'defined(\@array)' (Можда треба само да изоставите defined()?)",
               "tr" => "'defined(\@array)' kullanılamaz (Belki defined() işlevini tamamen kaldırmalısınız?)",
-              "uk" => "Не можна використовувати 'defined(\@array)' (Можливо, варто просто прибрати defined()?)"
+              "uk" => "Не можна використовувати 'defined(\@array)' (Можливо, варто просто прибрати defined()?)",
+              "zh" => "不能对数组使用 'defined(\@array)'（也许应该直接省略 defined()？）"
             },
             "args" => []
           },
@@ -44243,7 +45131,8 @@ $CONF = {
               "ru" => "Нельзя использовать 'defined(%%hash)' (Возможно, следует просто убрать defined()?)",
               "sr" => "Није могуће користити 'defined(%%hash)' (Можда треба само да изоставите defined()?)",
               "tr" => "'defined(%%hash)' kullanılamaz (Belki defined() işlevini tamamen kaldırmalısınız?)",
-              "uk" => "Не можна використовувати 'defined(%%hash)' (Можливо, варто просто прибрати defined()?)"
+              "uk" => "Не можна використовувати 'defined(%%hash)' (Можливо, варто просто прибрати defined()?)",
+              "zh" => "不能使用 'defined(%%hash)'（也许应该直接省略 defined()？）"
             },
             "args" => []
           },
@@ -44285,7 +45174,8 @@ $CONF = {
               "ru" => "Аргумент delete не является элементом или срезом HASH или ARRAY",
               "sr" => "Аргумент функције delete није елемент или исечак HASH-а или ARRAY-а",
               "tr" => "delete argümanı bir HASH veya ARRAY elemanı ya da dilimi değil",
-              "uk" => "Аргумент delete не є елементом або зрізом HASH чи ARRAY"
+              "uk" => "Аргумент delete не є елементом або зрізом HASH чи ARRAY",
+              "zh" => "delete 的参数不是 HASH 或 ARRAY 元素或切片"
             },
             "args" => []
           },
@@ -44327,7 +45217,8 @@ $CONF = {
               "ru" => "Аргумент exists не является элементом HASH или ARRAY либо подпрограммой",
               "sr" => "Аргумент функције exists није елемент HASH-а или ARRAY-а нити потпрограм",
               "tr" => "exists argümanı bir HASH veya ARRAY elemanı ya da alt yordam değil",
-              "uk" => "Аргумент exists не є елементом HASH чи ARRAY або підпрограмою"
+              "uk" => "Аргумент exists не є елементом HASH чи ARRAY або підпрограмою",
+              "zh" => "exists 的参数不是 HASH 或 ARRAY 元素或子例程"
             },
             "args" => []
           },
@@ -44369,7 +45260,8 @@ $CONF = {
               "ru" => "Аргумент exists не является именем подпрограммы",
               "sr" => "Аргумент exists није име потпрограма",
               "tr" => "exists argümanı bir alt yordam adı değil",
-              "uk" => "Аргумент exists не є іменем підпрограми"
+              "uk" => "Аргумент exists не є іменем підпрограми",
+              "zh" => "exists 参数不是子程序名称"
             },
             "args" => []
           },
@@ -44411,7 +45303,8 @@ $CONF = {
               "ru" => "Использование := для пустого списка атрибутов не допускается",
               "sr" => "Употреба := за празну листу атрибута није дозвољена",
               "tr" => "Boş bir öznitelik listesi için := kullanılamaz",
-              "uk" => "Використання := для порожнього списку атрибутів не дозволено"
+              "uk" => "Використання := для порожнього списку атрибутів не дозволено",
+              "zh" => "不允许使用 := 表示空属性列表"
             },
             "args" => []
           },
@@ -44454,7 +45347,8 @@ $CONF = {
               "ru" => "Незавершённый параметр атрибута в списке атрибутов",
               "sr" => "Незавршен параметар атрибута у списку атрибута",
               "tr" => "Öznitelik listesindeki öznitelik parametresi sonlandırılmamış",
-              "uk" => "Незавершений параметр атрибута в списку атрибутів"
+              "uk" => "Незавершений параметр атрибута в списку атрибутів",
+              "zh" => "属性列表中的属性参数未终止"
             },
             "args" => []
           },
@@ -44497,7 +45391,8 @@ $CONF = {
               "ru" => "Повторное объявление псевдонима пакета '%{arg1}'",
               "sr" => "Дуплирани псеудоним пакета „%{arg1}“",
               "tr" => "Yinelenen paket takma adı '%{arg1}'",
-              "uk" => "Повторне оголошення псевдоніма пакета '%{arg1}'"
+              "uk" => "Повторне оголошення псевдоніма пакета '%{arg1}'",
+              "zh" => "包别名 '%{arg1}' 重复"
             },
             "args" => [
               {
@@ -44546,7 +45441,8 @@ $CONF = {
               "ru" => "Имя псевдонима должно быть непустым компонентом имени пакета",
               "sr" => "Име алијаса мора бити непразна компонента пакета",
               "tr" => "Takma ad adı boş olmayan bir paket bileşeni olmalıdır",
-              "uk" => "Ім'я псевдоніма має бути непорожнім компонентом імені пакета"
+              "uk" => "Ім'я псевдоніма має бути непорожнім компонентом імені пакета",
+              "zh" => "别名名称必须是非空的包名组件"
             },
             "args" => []
           },
@@ -44589,7 +45485,8 @@ $CONF = {
               "ru" => "Некорректный разделитель пространств имён в имени пакета",
               "sr" => "Неисправан раздвајач простора имена у имену пакета",
               "tr" => "Paket adındaki ad alanı ayırıcı biçimi bozuk",
-              "uk" => "Некоректний роздільник простору імен у назві пакета"
+              "uk" => "Некоректний роздільник простору імен у назві пакета",
+              "zh" => "包名中的命名空间分隔符格式错误"
             },
             "args" => []
           },
@@ -44631,7 +45528,8 @@ $CONF = {
               "ru" => "Константы из лексических переменных, которые могут изменяться в другом месте, больше не допускаются",
               "sr" => "Константе из лексичких променљивих које се потенцијално мењају на другом месту више нису дозвољене",
               "tr" => "Başka yerde değiştirilebilecek sözcüksel değişkenlerden sabit oluşturulmasına artık izin verilmiyor",
-              "uk" => "Константи з лексичних змінних, які можуть змінюватися деінде, більше не дозволені"
+              "uk" => "Константи з лексичних змінних, які можуть змінюватися деінде, більше не дозволені",
+              "zh" => "不再允许使用可能在其他位置被修改的词法变量创建常量"
             },
             "args" => []
           },
@@ -44673,7 +45571,8 @@ $CONF = {
               "ru" => "Списковые константы с магией не поддерживаются",
               "sr" => "Магичке константе листе нису подржане",
               "tr" => "Sihirli liste sabitleri desteklenmiyor",
-              "uk" => "Магічні спискові константи не підтримуються"
+              "uk" => "Магічні спискові константи не підтримуються",
+              "zh" => "不支持魔法列表常量"
             },
             "args" => []
           },
@@ -44715,7 +45614,8 @@ $CONF = {
               "ru" => "Отсутствует имя в \"%{arg2}\"",
               "sr" => "Недостаје име у „%{arg2}“",
               "tr" => "\"%{arg2}\" içinde ad eksik",
-              "uk" => "Відсутнє ім'я в \"%{arg2}\""
+              "uk" => "Відсутнє ім'я в \"%{arg2}\"",
+              "zh" => "“%{arg2}”中缺少名称"
             },
             "args" => [
               {
@@ -44763,7 +45663,8 @@ $CONF = {
               "ru" => "Недопустимое объявление подпрограммы %{PL_subname}",
               "sr" => "Недозвољена декларација потпрограма %{PL_subname}",
               "tr" => "%{PL_subname} alt yordamının bildirimi geçersiz",
-              "uk" => "Недопустиме оголошення підпрограми %{PL_subname}"
+              "uk" => "Недопустиме оголошення підпрограми %{PL_subname}",
+              "zh" => "子程序 %{PL_subname} 的声明不合法"
             },
             "args" => [
               {
@@ -44812,7 +45713,8 @@ $CONF = {
               "ru" => "Имя модуля должно быть константой",
               "sr" => "Име модула мора бити константно",
               "tr" => "Modül adı sabit olmalıdır",
-              "uk" => "Ім'я модуля має бути константою"
+              "uk" => "Ім'я модуля має бути константою",
+              "zh" => "模块名称必须是常量"
             },
             "args" => []
           },
@@ -44854,7 +45756,8 @@ $CONF = {
               "ru" => "Перед переменной цикла отсутствует \$",
               "sr" => "Недостаје \$ испред променљиве у петљи",
               "tr" => "Döngü değişkeninde \$ eksik",
-              "uk" => "Відсутній \$ перед змінною циклу"
+              "uk" => "Відсутній \$ перед змінною циклу",
+              "zh" => "循环变量缺少 \$"
             },
             "args" => []
           },
@@ -44896,7 +45799,8 @@ $CONF = {
               "ru" => "Такое использование my() с ложным условием больше не допускается",
               "sr" => "Ова употреба my() у услову који није испуњен више није дозвољена",
               "tr" => "Yanlış bir koşul içindeki my() kullanımı artık izinli değil",
-              "uk" => "Таке використання my() з хибною умовою більше не дозволено"
+              "uk" => "Таке використання my() з хибною умовою більше не дозволено",
+              "zh" => "不再允许在 false 条件中使用 my()"
             },
             "args" => []
           },
@@ -44939,7 +45843,8 @@ $CONF = {
               "ru" => "Экспериментальная возможность declared_refs не включена",
               "sr" => "Експериментална функција declared_refs није омогућена",
               "tr" => "Deneysel declared_refs özelliği etkin değil",
-              "uk" => "Експериментальну можливість declared_refs не ввімкнено"
+              "uk" => "Експериментальну можливість declared_refs не ввімкнено",
+              "zh" => "尚未启用 experimental declared_refs 特性"
             },
             "args" => []
           },
@@ -44988,7 +45893,8 @@ $CONF = {
               "ru" => "Нельзя использовать массив как ссылку",
               "sr" => "Низ се не може користити као референца",
               "tr" => "Dizi başvuru olarak kullanılamaz",
-              "uk" => "Не можна використовувати масив як посилання"
+              "uk" => "Не можна використовувати масив як посилання",
+              "zh" => "不能将数组用作引用"
             },
             "args" => []
           },
@@ -45031,7 +45937,8 @@ $CONF = {
               "ru" => "Нельзя использовать хеш как ссылку",
               "sr" => "Хеш се не може користити као референца",
               "tr" => "Hash başvuru olarak kullanılamaz",
-              "uk" => "Не можна використовувати хеш як посилання"
+              "uk" => "Не можна використовувати хеш як посилання",
+              "zh" => "不能将哈希用作引用"
             },
             "args" => []
           },
@@ -45074,7 +45981,8 @@ $CONF = {
               "ru" => "неподдерживаемый вызов в шаблоне dispatch",
               "sr" => "неподржан позив у шаблону диспечирања",
               "tr" => "Desteklenmeyen dispatch kalıbı çağrısı",
-              "uk" => "непідтримуваний виклик у шаблоні dispatch"
+              "uk" => "непідтримуваний виклик у шаблоні dispatch",
+              "zh" => "不支持的 dispatch 模式调用"
             },
             "args" => []
           },
@@ -45117,7 +46025,8 @@ $CONF = {
               "ru" => "неподдерживаемый вызов метода в шаблоне dispatch",
               "sr" => "неподржан облик позива методе у шаблону диспечирања",
               "tr" => "Desteklenmeyen dispatch kalıbı yöntem çağrısı",
-              "uk" => "непідтримуваний виклик методу в шаблоні dispatch"
+              "uk" => "непідтримуваний виклик методу в шаблоні dispatch",
+              "zh" => "不支持此 dispatch 模式方法调用"
             },
             "args" => []
           },
@@ -45160,7 +46069,8 @@ $CONF = {
               "ru" => "Недопустимый аргумент в предикате dispatch",
               "sr" => "неважећи аргумент у предикату диспечирања",
               "tr" => "Dispatch koşulunda geçersiz argüman",
-              "uk" => "некоректний аргумент у предикаті dispatch"
+              "uk" => "некоректний аргумент у предикаті dispatch",
+              "zh" => "dispatch 谓词中有无效参数"
             },
             "args" => []
           },
@@ -45203,7 +46113,8 @@ $CONF = {
               "ru" => "Неподдерживаемый аргумент в предикате dispatch",
               "sr" => "неподржан аргумент у предикату диспечирања",
               "tr" => "Dispatch koşulundaki desteklenmeyen argüman",
-              "uk" => "Непідтримуваний аргумент у предикаті dispatch"
+              "uk" => "Непідтримуваний аргумент у предикаті dispatch",
+              "zh" => "dispatch 谓词中有不受支持的参数"
             },
             "args" => []
           },
@@ -45246,7 +46157,8 @@ $CONF = {
               "ru" => "Аргументы предиката dispatch должны быть константами или закреплёнными значениями",
               "sr" => "аргументи предиката диспечирања морају бити константе или закачене вредности",
               "tr" => "Dispatch koşulu argümanları sabit veya sabitlenmiş değer olmalıdır",
-              "uk" => "аргументи предиката dispatch мають бути константами або закріпленими значеннями"
+              "uk" => "аргументи предиката dispatch мають бути константами або закріпленими значеннями",
+              "zh" => "dispatch 谓词的参数必须是常量或固定值"
             },
             "args" => []
           },
@@ -45289,7 +46201,8 @@ $CONF = {
               "ru" => "Неверное число аргументов у предиката dispatch",
               "sr" => "предикат диспечирања има погрешан број аргумената",
               "tr" => "Dispatch koşuluna yanlış sayıda argüman verildi",
-              "uk" => "Предикату dispatch передано неправильну кількість аргументів"
+              "uk" => "Предикату dispatch передано неправильну кількість аргументів",
+              "zh" => "dispatch 谓词的参数数量不正确"
             },
             "args" => []
           },
@@ -45332,7 +46245,8 @@ $CONF = {
               "ru" => "вызовы в шаблоне dispatch не должны иметь аргументов",
               "sr" => "позиви у шаблону диспечирања не смеју имати аргументе",
               "tr" => "Dispatch kalıbı çağrıları argümansız olmalıdır",
-              "uk" => "виклики в шаблоні dispatch не повинні мати аргументів"
+              "uk" => "виклики в шаблоні dispatch не повинні мати аргументів",
+              "zh" => "dispatch 模式中的调用不能带参数"
             },
             "args" => []
           },
@@ -45374,7 +46288,8 @@ $CONF = {
               "ru" => "повторяющийся захват %{arg1} в ветви dispatch-on",
               "sr" => "дупликат хватања %{arg1} у клаузули диспечирања",
               "tr" => "Dispatch-on yan tümcesinde yinelenen yakalama adı: %{arg1}",
-              "uk" => "повторне захоплення %{arg1} у гілці dispatch-on"
+              "uk" => "повторне захоплення %{arg1} у гілці dispatch-on",
+              "zh" => "dispatch-on 子句中捕获名称 %{arg1} 重复"
             },
             "args" => [
               {
@@ -45437,7 +46352,8 @@ $CONF = {
               "ru" => "недопустимое расположение многоточий в шаблоне массива",
               "sr" => "неисправан положај тројтачке у шаблону низа",
               "tr" => "Dizi kalıbındaki üç noktanın yeri geçersiz",
-              "uk" => "некоректне розташування трикрапок у шаблоні масиву"
+              "uk" => "некоректне розташування трикрапок у шаблоні масиву",
+              "zh" => "数组模式中的省略号位置无效"
             },
             "args" => []
           },
@@ -45479,7 +46395,8 @@ $CONF = {
               "ru" => "многоточие в шаблоне массива должно находиться в начале или в конце",
               "sr" => "тројтачка у шаблону низа мора бити на једном од крајева",
               "tr" => "Dizi kalıbındaki üç nokta bir uçta olmalıdır",
-              "uk" => "трикрапка в шаблоні масиву має бути на початку або в кінці"
+              "uk" => "трикрапка в шаблоні масиву має бути на початку або в кінці",
+              "zh" => "数组模式中的省略号必须位于边缘"
             },
             "args" => []
           },
@@ -45521,7 +46438,8 @@ $CONF = {
               "ru" => "шаблон массива может содержать только один захват остатка",
               "sr" => "шаблон низа може да садржи само једно захватање остатка",
               "tr" => "Dizi kalıbında yalnızca bir toplama hedefi bulunabilir",
-              "uk" => "шаблон масиву може містити лише одне захоплення решти"
+              "uk" => "шаблон масиву може містити лише одне захоплення решти",
+              "zh" => "数组模式中只能包含一个 slurp"
             },
             "args" => []
           },
@@ -45563,7 +46481,8 @@ $CONF = {
               "ru" => "захват остатка массива должен быть последним элементом шаблона и не может сочетаться с многоточием",
               "sr" => "захватање остатка низа мора бити последњи елемент шаблона и не може се користити са тројтачком",
               "tr" => "Dizi kalıbındaki toplama hedefi son öğe olmalı ve üç noktayla birlikte kullanılamaz",
-              "uk" => "захоплення решти масиву має бути останнім елементом шаблону й не може поєднуватися з трикрапкою"
+              "uk" => "захоплення решти масиву має бути останнім елементом шаблону й не може поєднуватися з трикрапкою",
+              "zh" => "数组 slurp 必须是模式的最后一个元素，且不能与省略号同时使用"
             },
             "args" => []
           },
@@ -45605,7 +46524,8 @@ $CONF = {
               "ru" => "присваивание в шаблоне требует скалярной переменной захвата в качестве цели",
               "sr" => "за доделу у шаблону потребна је скаларна мета хватања",
               "tr" => "Kalıp ataması için skaler bir yakalama hedefi gerekir",
-              "uk" => "присвоєння в шаблоні потребує скалярної цілі захоплення"
+              "uk" => "присвоєння в шаблоні потребує скалярної цілі захоплення",
+              "zh" => "模式赋值要求目标是标量捕获"
             },
             "args" => []
           },
@@ -45647,7 +46567,8 @@ $CONF = {
               "ru" => "соседние захваты недопустимы в конкатенации шаблона dispatch",
               "sr" => "суседна хватања нису дозвољена у спајању шаблона диспечирања",
               "tr" => "Dispatch kalıbı birleştirmesinde bitişik yakalamalara izin verilmez",
-              "uk" => "суміжні захоплення не дозволені в конкатенації шаблону dispatch"
+              "uk" => "суміжні захоплення не дозволені в конкатенації шаблону dispatch",
+              "zh" => "dispatch 模式拼接中不允许相邻的捕获"
             },
             "args" => []
           },
@@ -45689,7 +46610,8 @@ $CONF = {
               "ru" => "захваты в шаблоне dispatch должны быть разделены непустым постоянным текстом",
               "sr" => "хватања у шаблону диспечирања морају бити раздвојена непразним константним текстом",
               "tr" => "Dispatch kalıbındaki yakalamalar boş olmayan sabit metinle ayrılmalıdır",
-              "uk" => "захоплення в шаблоні dispatch мають бути розділені непорожнім сталим текстом"
+              "uk" => "захоплення в шаблоні dispatch мають бути розділені непорожнім сталим текстом",
+              "zh" => "dispatch 模式中的捕获之间必须由非空的常量文本分隔"
             },
             "args" => []
           },
@@ -45731,7 +46653,8 @@ $CONF = {
               "ru" => "неподдерживаемый компонент конкатенации в шаблоне dispatch",
               "sr" => "неподржана компонента спајања у шаблону диспечирања",
               "tr" => "Desteklenmeyen dispatch kalıbı birleştirme bileşeni",
-              "uk" => "непідтримуваний компонент конкатенації в шаблоні dispatch"
+              "uk" => "непідтримуваний компонент конкатенації в шаблоні dispatch",
+              "zh" => "不支持的 dispatch 模式拼接组件"
             },
             "args" => []
           },
@@ -45773,7 +46696,8 @@ $CONF = {
               "ru" => "повторяющиеся имена захватов недопустимы в конкатенации шаблона dispatch",
               "sr" => "поновљена имена хватања нису дозвољена у спајању шаблона диспечирања",
               "tr" => "Dispatch kalıbı birleştirmesinde yinelenen yakalama adlarına izin verilmez",
-              "uk" => "у конкатенації шаблону dispatch не дозволено повторювати імена захоплень"
+              "uk" => "у конкатенації шаблону dispatch не дозволено повторювати імена захоплень",
+              "zh" => "dispatch 模式拼接中不允许重复使用捕获名称"
             },
             "args" => []
           },
@@ -45815,7 +46739,8 @@ $CONF = {
               "ru" => "неподдерживаемое выражение конкатенации в шаблоне dispatch",
               "sr" => "неподржан израз спајања у шаблону диспечирања",
               "tr" => "Desteklenmeyen dispatch kalıbı birleştirme ifadesi",
-              "uk" => "непідтримуваний вираз конкатенації в шаблоні dispatch"
+              "uk" => "непідтримуваний вираз конкатенації в шаблоні dispatch",
+              "zh" => "不支持的 dispatch 模式拼接表达式"
             },
             "args" => []
           },
@@ -45857,7 +46782,8 @@ $CONF = {
               "ru" => "неподдерживаемое выражение в шаблоне dispatch",
               "sr" => "неподржан израз у шаблону диспечирања",
               "tr" => "Desteklenmeyen dispatch kalıbı ifadesi",
-              "uk" => "непідтримуваний вираз у шаблоні dispatch"
+              "uk" => "непідтримуваний вираз у шаблоні dispatch",
+              "zh" => "不支持此 dispatch 模式表达式"
             },
             "args" => []
           },
@@ -45899,7 +46825,8 @@ $CONF = {
               "ru" => "повторяющийся ключ \"%{arg1}\" в шаблоне хеша dispatch",
               "sr" => "дупликат кључа „%{arg1}“ у хеш шаблону диспечирања",
               "tr" => "Dispatch hash kalıbında yinelenen anahtar: \"%{arg1}\"",
-              "uk" => "повторний ключ \"%{arg1}\" у шаблоні хешу dispatch"
+              "uk" => "повторний ключ \"%{arg1}\" у шаблоні хешу dispatch",
+              "zh" => "dispatch 哈希模式中键 \"%{arg1}\" 重复"
             },
             "args" => [
               {
@@ -45948,7 +46875,8 @@ $CONF = {
               "ru" => "многоточие в шаблоне хеша должно стоять в конце",
               "sr" => "тројтачка у хеш шаблону мора бити последња",
               "tr" => "Hash kalıbındaki üç nokta son öğe olmalıdır",
-              "uk" => "трикрапка в шаблоні хешу має бути останньою"
+              "uk" => "трикрапка в шаблоні хешу має бути останньою",
+              "zh" => "哈希模式中的省略号必须位于末尾"
             },
             "args" => []
           },
@@ -45990,7 +46918,8 @@ $CONF = {
               "ru" => "ключи шаблона хеша должны быть константами, закреплёнными значениями или вызовами без аргументов",
               "sr" => "кључеви хеш шаблона морају бити константе, фиксиране вредности или позиви без аргумената",
               "tr" => "Hash kalıbı anahtarları sabit, sabitlenmiş değer veya sıfır argümanlı çağrı olmalıdır",
-              "uk" => "ключі в шаблоні хешу мають бути константами, закріпленими значеннями або викликами без аргументів"
+              "uk" => "ключі в шаблоні хешу мають бути константами, закріпленими значеннями або викликами без аргументів",
+              "zh" => "哈希模式的键必须是常量、固定值或零参数调用"
             },
             "args" => []
           },
@@ -46032,7 +46961,8 @@ $CONF = {
               "ru" => "шаблон хеша требует пар ключ/значение",
               "sr" => "хеш шаблон захтева парове кључ/вредност",
               "tr" => "Hash kalıbında anahtar/değer çiftleri gerekir",
-              "uk" => "шаблон хешу потребує пар ключ/значення"
+              "uk" => "шаблон хешу потребує пар ключ/значення",
+              "zh" => "哈希模式必须包含键值对"
             },
             "args" => []
           },
@@ -46074,7 +47004,8 @@ $CONF = {
               "ru" => "шаблон хеша может содержать только одно многоточие",
               "sr" => "хеш шаблон може да садржи само једну тројтачку",
               "tr" => "Hash kalıbında yalnızca bir üç nokta bulunabilir",
-              "uk" => "шаблон хешу може містити лише одну трикрапку"
+              "uk" => "шаблон хешу може містити лише одну трикрапку",
+              "zh" => "哈希模式中只能包含一个省略号"
             },
             "args" => []
           },
@@ -46116,7 +47047,8 @@ $CONF = {
               "ru" => "шаблон хеша может содержать только один захват остатка",
               "sr" => "хеш шаблон може да садржи само једно захватање остатка",
               "tr" => "Hash kalıbında yalnızca bir toplama hedefi bulunabilir",
-              "uk" => "шаблон хешу може містити лише одне захоплення решти"
+              "uk" => "шаблон хешу може містити лише одне захоплення решти",
+              "zh" => "哈希模式中只能包含一个 slurp"
             },
             "args" => []
           },
@@ -46158,7 +47090,8 @@ $CONF = {
               "ru" => "захват остатка хеша должен быть последним элементом шаблона и не может сочетаться с многоточием",
               "sr" => "захватање остатка хеша мора бити последњи елемент шаблона и не може се користити са тројтачком",
               "tr" => "Hash kalıbındaki toplama hedefi son öğe olmalı ve üç noktayla birlikte kullanılamaz",
-              "uk" => "захоплення решти хешу має бути останнім елементом шаблону й не може поєднуватися з трикрапкою"
+              "uk" => "захоплення решти хешу має бути останнім елементом шаблону й не може поєднуватися з трикрапкою",
+              "zh" => "哈希 slurp 必须是模式的最后一个元素，且不能与省略号同时使用"
             },
             "args" => []
           },
@@ -46201,7 +47134,8 @@ $CONF = {
               "ru" => "NumEq() требует литерального аргумента в шаблоне dispatch-on",
               "sr" => "NumEq() у шаблону диспечирања захтева литерални аргумент",
               "tr" => "Dispatch-on kalıbında NumEq() için değişmez bir bağımsız değişken gerekir",
-              "uk" => "NumEq() потребує літерального аргументу в шаблоні dispatch-on"
+              "uk" => "NumEq() потребує літерального аргументу в шаблоні dispatch-on",
+              "zh" => "dispatch 模式中的 NumEq() 参数必须是字面量"
             },
             "args" => []
           },
@@ -46244,7 +47178,8 @@ $CONF = {
               "ru" => "некорректное приведение к числу в шаблоне dispatch",
               "sr" => "неисправна нумеричка конверзија у шаблону диспечирања",
               "tr" => "Dispatch kalıbında geçersiz sayısal dönüştürme",
-              "uk" => "некоректне приведення до числа в шаблоні dispatch"
+              "uk" => "некоректне приведення до числа в шаблоні dispatch",
+              "zh" => "dispatch 模式中的数值强制转换无效"
             },
             "args" => []
           },
@@ -46286,7 +47221,8 @@ $CONF = {
               "ru" => "некорректный шаблон объекта",
               "sr" => "неисправан шаблон објекта",
               "tr" => "Geçersiz nesne kalıbı",
-              "uk" => "некоректний шаблон об'єкта"
+              "uk" => "некоректний шаблон об'єкта",
+              "zh" => "对象模式无效"
             },
             "args" => []
           },
@@ -46328,7 +47264,8 @@ $CONF = {
               "ru" => "многоточие в шаблоне объекта должно следовать после пар имя/значение полей",
               "sr" => "тројтачка у објекту мора да следи после парова поља",
               "tr" => "Nesne üç noktası, alan çiftlerinden sonra gelmelidir",
-              "uk" => "трикрапка в шаблоні об'єкта має йти після пар полів"
+              "uk" => "трикрапка в шаблоні об'єкта має йти після пар полів",
+              "zh" => "对象模式中的省略号必须位于字段对之后"
             },
             "args" => []
           },
@@ -46370,7 +47307,8 @@ $CONF = {
               "ru" => "поля объекта не могут следовать после многоточия",
               "sr" => "поља објекта не могу следити после тројтачке",
               "tr" => "Üç noktadan sonra nesne alanları gelemez",
-              "uk" => "поля об’єкта не можуть стояти після трикрапки"
+              "uk" => "поля об’єкта не можуть стояти після трикрапки",
+              "zh" => "省略号之后不能再有对象字段"
             },
             "args" => []
           },
@@ -46412,7 +47350,8 @@ $CONF = {
               "ru" => "некорректный шаблон полей объекта",
               "sr" => "неисправан шаблон поља објекта",
               "tr" => "Geçersiz nesne alanı kalıbı",
-              "uk" => "некоректний шаблон полів об’єкта"
+              "uk" => "некоректний шаблон полів об’єкта",
+              "zh" => "对象字段模式无效"
             },
             "args" => []
           },
@@ -46454,7 +47393,8 @@ $CONF = {
               "ru" => "имена полей объекта должны быть константами",
               "sr" => "имена поља објекта морају бити константе",
               "tr" => "Nesne alan adları sabit olmalıdır",
-              "uk" => "імена полів об'єкта мають бути константами"
+              "uk" => "імена полів об'єкта мають бути константами",
+              "zh" => "对象字段名必须是常量"
             },
             "args" => []
           },
@@ -46496,7 +47436,8 @@ $CONF = {
               "ru" => "шаблон полей объекта требует пар ключ/значение",
               "sr" => "шаблон поља објекта захтева парове кључ/вредност",
               "tr" => "Nesne alanı kalıbı anahtar/değer çiftleri gerektirir",
-              "uk" => "шаблон полів об’єкта потребує пар ключ/значення"
+              "uk" => "шаблон полів об’єкта потребує пар ключ/значення",
+              "zh" => "对象字段模式必须包含键值对"
             },
             "args" => []
           },
@@ -46538,7 +47479,8 @@ $CONF = {
               "ru" => "захват остатка хеша в шаблоне объекта должен быть последним элементом шаблона и не может сочетаться с многоточием",
               "sr" => "хватање остатка хеша у објекту мора бити последњи елемент шаблона и не може се комбиновати са тројтачком",
               "tr" => "Nesne karma artığının son kalıp öğesi olması gerekir ve üç noktayla birlikte kullanılamaz",
-              "uk" => "захоплення решти хешу об’єкта має бути останнім елементом шаблону й не може поєднуватися з трикрапкою"
+              "uk" => "захоплення решти хешу об’єкта має бути останнім елементом шаблону й не може поєднуватися з трикрапкою",
+              "zh" => "对象哈希收集必须是模式的最后一项，且不能与省略号同时使用"
             },
             "args" => []
           },
@@ -46580,7 +47522,8 @@ $CONF = {
               "ru" => "захват остатка хеша в шаблоне объекта должен быть последним элементом шаблона",
               "sr" => "хватање остатка хеша у објекту мора бити последњи елемент шаблона",
               "tr" => "Nesne karma artığının son kalıp öğesi olması gerekir",
-              "uk" => "захоплення решти хешу об'єкта має бути останнім елементом шаблону"
+              "uk" => "захоплення решти хешу об'єкта має бути останнім елементом шаблону",
+              "zh" => "对象哈希收集必须是模式的最后一项"
             },
             "args" => []
           },
@@ -46623,7 +47566,8 @@ $CONF = {
               "ru" => "закреплённое значение в шаблоне должно быть существующей скалярной лексической переменной",
               "sr" => "вредност закаченог обрасца мора бити постојећа скаларна лексичка променљива",
               "tr" => "Sabitlenmiş kalıp değeri, mevcut bir skaler sözcüksel değişken olmalıdır",
-              "uk" => "закріплене значення шаблону має бути наявною лексичною скалярною змінною"
+              "uk" => "закріплене значення шаблону має бути наявною лексичною скалярною змінною",
+              "zh" => "固定模式值必须是一个已存在的标量词法变量"
             },
             "args" => []
           },
@@ -46666,7 +47610,8 @@ $CONF = {
               "ru" => "блоки кода в регулярных выражениях не поддерживаются в шаблонах dispatch",
               "sr" => "блокови кода регуларних израза нису подржани у шаблонима диспечирања",
               "tr" => "Sevk kalıplarında düzenli ifade kod blokları desteklenmez",
-              "uk" => "блоки коду в регулярних виразах не підтримуються в шаблонах dispatch"
+              "uk" => "блоки коду в регулярних виразах не підтримуються в шаблонах dispatch",
+              "zh" => "dispatch 模式不支持正则表达式代码块"
             },
             "args" => []
           },
@@ -46709,7 +47654,8 @@ $CONF = {
               "ru" => "динамические регулярные выражения допустимы только в качестве защитного условия",
               "sr" => "динамички регуларни изрази дозвољени су само као услов страже",
               "tr" => "Dinamik düzenli ifadelere yalnızca korul koşulunda izin verilir",
-              "uk" => "динамічні регулярні вирази дозволено лише в умові перевірки"
+              "uk" => "динамічні регулярні вирази дозволено лише в умові перевірки",
+              "zh" => "动态正则表达式只能用作守卫条件"
             },
             "args" => []
           },
@@ -46751,7 +47697,8 @@ $CONF = {
               "ru" => "интерполяция переменных недопустима в шаблонах dispatch в двойных кавычках",
               "sr" => "променљиве са интерполацијом нису дозвољене у двоструко наводниченим шаблонима диспечирања",
               "tr" => "Çift tırnaklı sevk kalıplarında değişken interpolasyonuna izin verilmez",
-              "uk" => "інтерполяція змінних у шаблонах dispatch у подвійних лапках не дозволена"
+              "uk" => "інтерполяція змінних у шаблонах dispatch у подвійних лапках не дозволена",
+              "zh" => "双引号 dispatch 模式中不允许插值变量"
             },
             "args" => []
           },
@@ -46793,7 +47740,8 @@ $CONF = {
               "ru" => "Интерфейс %{api} устарел; его вызов невозможен",
               "sr" => "Интерфејс %{api} је застарео и не може се позвати",
               "tr" => "%{api} arayüzü kullanımdan kaldırılmıştır ve çağrılamaz",
-              "uk" => "Інтерфейс %{api} застарів, і його не можна викликати"
+              "uk" => "Інтерфейс %{api} застарів, і його не можна викликати",
+              "zh" => "%{api} 接口已弃用，无法调用"
             },
             "args" => [
               {
@@ -46842,7 +47790,8 @@ $CONF = {
               "ru" => "CORE::%{arg1} не является ключевым словом",
               "sr" => "CORE::%{arg1} није кључна реч",
               "tr" => "CORE::%{arg1} bir anahtar sözcük değil",
-              "uk" => "CORE::%{arg1} не є ключовим словом"
+              "uk" => "CORE::%{arg1} не є ключовим словом",
+              "zh" => "CORE::%{arg1} 不是关键字"
             },
             "args" => [
               {
@@ -46906,7 +47855,8 @@ $CONF = {
               "ru" => "Слишком длинный идентификатор",
               "sr" => "Идентификатор је предугачак",
               "tr" => "Tanımlayıcı çok uzun",
-              "uk" => "Ідентифікатор надто довгий"
+              "uk" => "Ідентифікатор надто довгий",
+              "zh" => "标识符过长"
             },
             "args" => []
           },
@@ -46949,7 +47899,8 @@ $CONF = {
               "ru" => "Слишком длинное имя пространства имён",
               "sr" => "Име именског простора је предугачко",
               "tr" => "Ad alanı adı çok uzun",
-              "uk" => "Назва простору імен надто довга"
+              "uk" => "Назва простору імен надто довга",
+              "zh" => "命名空间名称过长"
             },
             "args" => []
           },
@@ -46992,7 +47943,8 @@ $CONF = {
               "ru" => "Слишком длинное имя переменной",
               "sr" => "Име променљиве је предугачко",
               "tr" => "Değişken adı çok uzun",
-              "uk" => "Ім'я змінної надто довге"
+              "uk" => "Ім'я змінної надто довге",
+              "zh" => "变量名过长"
             },
             "args" => []
           },
@@ -47035,7 +47987,8 @@ $CONF = {
               "ru" => "Некорректный прототип для %{arg1}: %{protosv}",
               "sr" => "Неисправан прототип за %{arg1}: %{protosv}",
               "tr" => "%{arg1} için bozuk prototip: %{protosv}",
-              "uk" => "Некоректний прототип для %{arg1}: %{protosv}"
+              "uk" => "Некоректний прототип для %{arg1}: %{protosv}",
+              "zh" => "%{arg1} 的原型格式错误：%{protosv}"
             },
             "args" => [
               {
@@ -47091,7 +48044,8 @@ $CONF = {
               "ru" => "Отсутствует завершающая скобка прототипа",
               "sr" => "Прототип није затворен",
               "tr" => "Prototip sonlandırılmadı",
-              "uk" => "Прототип не завершено"
+              "uk" => "Прототип не завершено",
+              "zh" => "原型未终止"
             },
             "args" => []
           },
@@ -47133,7 +48087,8 @@ $CONF = {
               "ru" => "Отсутствует завершающий разделитель glob",
               "sr" => "Глоб образац није затворен",
               "tr" => "Glob sonlandırılmadı",
-              "uk" => "Конструкцію glob не завершено"
+              "uk" => "Конструкцію glob не завершено",
+              "zh" => "glob 未终止"
             },
             "args" => []
           },
@@ -47175,7 +48130,8 @@ $CONF = {
               "ru" => "Слишком длинный оператор <>",
               "sr" => "Оператор <> је предугачак",
               "tr" => "<> işleci aşırı uzun",
-              "uk" => "Надмірно довгий оператор <>"
+              "uk" => "Надмірно довгий оператор <>",
+              "zh" => "<> 运算符内容过长"
             },
             "args" => []
           },
@@ -47217,7 +48173,8 @@ $CONF = {
               "ru" => "Незавершённый оператор <>",
               "sr" => "Незавршен оператор <>",
               "tr" => "<> işleci sonlandırılmadı",
-              "uk" => "Незавершений оператор <>"
+              "uk" => "Незавершений оператор <>",
+              "zh" => "<> 运算符未终止"
             },
             "args" => []
           },
@@ -47259,7 +48216,8 @@ $CONF = {
               "ru" => "Слишком длинный разделитель here-документа",
               "sr" => "Разграничивач here-doc документа је предугачак",
               "tr" => "Here-doc ayırıcısı çok uzun",
-              "uk" => "Роздільник вбудованого документа надто довгий"
+              "uk" => "Роздільник вбудованого документа надто довгий",
+              "zh" => "here 文档分隔符过长"
             },
             "args" => []
           },
@@ -47301,7 +48259,8 @@ $CONF = {
               "ru" => "Отступ в строке %{arg1} here-doc не совпадает с отступом разделителя",
               "sr" => "Увлачење у реду %{arg1} here-doc документа не одговара граничнику",
               "tr" => "Here-doc'un %{arg1} numaralı satırındaki girinti ayırıcıyla eşleşmiyor",
-              "uk" => "Відступ у рядку %{arg1} here-doc не відповідає відступу роздільника"
+              "uk" => "Відступ у рядку %{arg1} here-doc не відповідає відступу роздільника",
+              "zh" => "此处文档第 %{arg1} 行的缩进与结束标记不匹配"
             },
             "args" => [
               {
@@ -47349,7 +48308,8 @@ $CONF = {
               "ru" => "Незавершённый разделитель here-документа",
               "sr" => "Незавршен разделник овог документа",
               "tr" => "Here-doc ayırıcısı sonlandırılmadı",
-              "uk" => "Незавершений роздільник here-документа"
+              "uk" => "Незавершений роздільник here-документа",
+              "zh" => "此处文档的定界符未终止"
             },
             "args" => []
           },
@@ -47391,7 +48351,8 @@ $CONF = {
               "ru" => "Использование << без разделителя в значении <<\"\" запрещено",
               "sr" => "Забрањена је употреба голе ознаке << у значењу <<\"\"",
               "tr" => "Bare << kullanımının <<\"\" anlamına gelmesi yasaktır",
-              "uk" => "Використовувати окреме << у значенні <<\"\" заборонено"
+              "uk" => "Використовувати окреме << у значенні <<\"\" заборонено",
+              "zh" => "禁止使用裸写的 << 表示 <<\"\""
             },
             "args" => []
           },
@@ -47434,7 +48395,8 @@ $CONF = {
               "ru" => "Отсутствует завершающий разделитель шаблона поиска",
               "sr" => "Образац претраге није затворен",
               "tr" => "Arama kalıbı sonlandırılmadı",
-              "uk" => "Шаблон пошуку не завершено"
+              "uk" => "Шаблон пошуку не завершено",
+              "zh" => "搜索模式未终止"
             },
             "args" => []
           },
@@ -47476,7 +48438,8 @@ $CONF = {
               "ru" => "Некорректный шаблон подстановки с вычисляемой заменой",
               "sr" => "Неисправан образац замене са eval",
               "tr" => "Değiştirme işleci için değerlendirilen kodda sözdizimi hatası",
-              "uk" => "Некоректний шаблон підстановки з обчисленням заміни"
+              "uk" => "Некоректний шаблон підстановки з обчисленням заміни",
+              "zh" => "替换部分的求值代码格式错误"
             },
             "args" => []
           },
@@ -47519,7 +48482,8 @@ $CONF = {
               "ru" => "Отсутствует завершающий разделитель шаблона подстановки",
               "sr" => "Образац замене није затворен",
               "tr" => "Değiştirme kalıbı sonlandırılmadı",
-              "uk" => "Шаблон підстановки не завершено"
+              "uk" => "Шаблон підстановки не завершено",
+              "zh" => "替换模式未终止"
             },
             "args" => []
           },
@@ -47561,7 +48525,8 @@ $CONF = {
               "ru" => "Отсутствует завершающий разделитель строки замены в подстановке",
               "sr" => "Замена није затворена",
               "tr" => "Değiştirme metni sonlandırılmadı",
-              "uk" => "Рядок заміни в підстановці не завершено"
+              "uk" => "Рядок заміни в підстановці не завершено",
+              "zh" => "替换部分未终止"
             },
             "args" => []
           },
@@ -47604,7 +48569,8 @@ $CONF = {
               "ru" => "До конца файла (EOF) не найден завершающий разделитель строки %{arg1}%{arg2}%{arg3}",
               "sr" => "Не могу да пронађем завршетак ниске %{arg1}%{arg2}%{arg3} нигде пре EOF-а",
               "tr" => "EOF'dan önce %{arg1}%{arg2}%{arg3} dize sonlandırıcısı bulunamadı",
-              "uk" => "Неможливо знайти завершувач рядка %{arg1}%{arg2}%{arg3} до кінця файлу (EOF)"
+              "uk" => "Неможливо знайти завершувач рядка %{arg1}%{arg2}%{arg3} до кінця файлу (EOF)",
+              "zh" => "直到 EOF 之前的任何位置都找不到字符串终止符 %{arg1}%{arg2}%{arg3}"
             },
             "args" => [
               {
@@ -47677,7 +48643,8 @@ $CONF = {
               "ru" => "Неоднозначный диапазон в операторе транслитерации",
               "sr" => "Двосмислен опсег у оператору транслитерације",
               "tr" => "Çeviri işleci aralığı belirsiz",
-              "uk" => "Неоднозначний діапазон в операторі транслітерації"
+              "uk" => "Неоднозначний діапазон в операторі транслітерації",
+              "zh" => "转写运算符中的范围有歧义"
             },
             "args" => []
           },
@@ -47719,7 +48686,8 @@ $CONF = {
               "ru" => "Недопустимый диапазон \"\\x{%{min}}-\\x{%{max}}\" в операторе транслитерации",
               "sr" => "Неважећи опсег „\\x{%{min}}-\\x{%{max}}“ у оператору transliteration",
               "tr" => "Çeviri işleci içinde geçersiz \"\\x{%{min}}-\\x{%{max}}\" aralığı",
-              "uk" => "Некоректний діапазон \"\\x{%{min}}-\\x{%{max}}\" в операторі транслітерації"
+              "uk" => "Некоректний діапазон \"\\x{%{min}}-\\x{%{max}}\" в операторі транслітерації",
+              "zh" => "转写运算符中的范围 \"\\x{%{min}}-\\x{%{max}}\" 无效"
             },
             "args" => [
               {
@@ -47774,7 +48742,8 @@ $CONF = {
               "ru" => "Недопустимый диапазон \"\\N{U+%{min}}-\\N{U+%{max}}\" в операторе транслитерации",
               "sr" => "Неважећи опсег „\\N{U+%{min}}-\\N{U+%{max}}“ у оператору transliteration",
               "tr" => "Çeviri işleci içinde geçersiz \"\\N{U+%{min}}-\\N{U+%{max}}\" aralığı",
-              "uk" => "Некоректний діапазон \"\\N{U+%{min}}-\\N{U+%{max}}\" в операторі транслітерації"
+              "uk" => "Некоректний діапазон \"\\N{U+%{min}}-\\N{U+%{max}}\" в операторі транслітерації",
+              "zh" => "转写运算符中的范围 \"\\N{U+%{min}}-\\N{U+%{max}}\" 无效"
             },
             "args" => [
               {
@@ -47829,7 +48798,8 @@ $CONF = {
               "ru" => "Недопустимый диапазон \"%{arg2}-%{arg3}\" в операторе транслитерации",
               "sr" => "Неисправан опсег „%{arg2}-%{arg3}“ у оператору транслитерације",
               "tr" => "Çeviri işleci içinde geçersiz \"%{arg2}-%{arg3}\" aralığı",
-              "uk" => "Недопустимий діапазон \"%{arg2}-%{arg3}\" в операторі транслітерації"
+              "uk" => "Недопустимий діапазон \"%{arg2}-%{arg3}\" в операторі транслітерації",
+              "zh" => "字符转换运算符中的范围“%{arg2}-%{arg3}”无效"
             },
             "args" => [
               {
@@ -47882,7 +48852,8 @@ $CONF = {
               "ru" => "Не завершена часть замены в транслитерации",
               "sr" => "Није завршен други разделник транслитерације",
               "tr" => "Çeviri işleci değiştirme bölümü sonlandırılmadı",
-              "uk" => "Незавершений список заміни в транслітерації"
+              "uk" => "Незавершений список заміни в транслітерації",
+              "zh" => "替换部分未终止的转写操作"
             },
             "args" => []
           },
@@ -47924,7 +48895,8 @@ $CONF = {
               "ru" => "Отсутствует завершающий разделитель шаблона транслитерации",
               "sr" => "Образац транслитерације није затворен",
               "tr" => "Çeviri işleci kalıbı sonlandırılmadı",
-              "uk" => "Шаблон транслітерації не завершено"
+              "uk" => "Шаблон транслітерації не завершено",
+              "zh" => "音译模式未终止"
             },
             "args" => []
           },
@@ -47967,7 +48939,8 @@ $CONF = {
               "ru" => "Атрибуты подпрограммы должны предшествовать сигнатуре",
               "sr" => "Атрибути потпрограма морају да стоје пре потписа",
               "tr" => "Alt yordam öznitelikleri imzadan önce gelmelidir",
-              "uk" => "Атрибути підпрограми мають передувати сигнатурі"
+              "uk" => "Атрибути підпрограми мають передувати сигнатурі",
+              "zh" => "子程序属性必须写在签名前面"
             },
             "args" => []
           },
@@ -48009,7 +48982,8 @@ $CONF = {
               "ru" => "Экспериментальные сигнатуры подпрограмм не включены",
               "sr" => "Експериментални потписи потпрограма нису омогућени",
               "tr" => "Deneysel alt yordam imzaları etkin değil",
-              "uk" => "Експериментальні сигнатури підпрограм не ввімкнено"
+              "uk" => "Експериментальні сигнатури підпрограм не ввімкнено",
+              "zh" => "尚未启用实验性子程序签名"
             },
             "args" => []
           },
@@ -48051,7 +49025,8 @@ $CONF = {
               "ru" => "Нераспознанный символ %{arg1}; отмечен указателем <-- HERE после %{arg2}<-- HERE около столбца %{arg3}",
               "sr" => "Непрепознат знак %{arg1}; означен са <-- HERE после %{arg2}<-- HERE близу колоне %{arg3}",
               "tr" => "Tanınmayan karakter %{arg1}; %{arg2} sonrasında <-- HERE ile, %{arg3} sütunu yakınında işaretlendi",
-              "uk" => "Нерозпізнаний символ %{arg1}; позначено маркером <-- HERE після %{arg2}<-- HERE поблизу стовпця %{arg3}"
+              "uk" => "Нерозпізнаний символ %{arg1}; позначено маркером <-- HERE після %{arg2}<-- HERE поблизу стовпця %{arg3}",
+              "zh" => "无法识别字符 %{arg1}；在 %{arg2} 之后由 <-- HERE 标记，靠近第 %{arg3} 列"
             },
             "args" => [
               {
@@ -48124,7 +49099,8 @@ $CONF = {
               "ru" => "Изменение use VERSION в области действия другого объявления use VERSION не допускается",
               "sr" => "Није дозвољено мењати use VERSION док је друга декларација use VERSION у опсегу важења",
               "tr" => "Başka bir use VERSION kapsam içindeyken use VERSION değiştirilmesine izin verilmez",
-              "uk" => "Змінювати use VERSION, поки інше use VERSION перебуває в області видимості, заборонено"
+              "uk" => "Змінювати use VERSION, поки інше use VERSION перебуває в області видимості, заборонено",
+              "zh" => "另一个 use VERSION 仍在作用域内时，不允许更改 use VERSION"
             },
             "args" => []
           },
@@ -48166,7 +49142,8 @@ $CONF = {
               "ru" => "Номер версии должен быть числовой константой",
               "sr" => "Број верзије мора бити константан број",
               "tr" => "Sürüm numarası sabit bir sayı olmalıdır",
-              "uk" => "Номер версії має бути числовою константою"
+              "uk" => "Номер версії має бути числовою константою",
+              "zh" => "版本号必须是常量数值"
             },
             "args" => []
           },
@@ -48208,7 +49185,8 @@ $CONF = {
               "ru" => "Понижение версии в объявлении use VERSION до версии ниже v5.11 не допускается",
               "sr" => "Није дозвољено снизити декларацију use VERSION испод v5.11",
               "tr" => "use VERSION bildirimini v5.11'in altına düşürmeye izin verilmez",
-              "uk" => "Знижувати версію в оголошенні use VERSION до версії нижче v5.11 заборонено"
+              "uk" => "Знижувати версію в оголошенні use VERSION до версії нижче v5.11 заборонено",
+              "zh" => "不允许将 use VERSION 声明降级到 v5.11 以下"
             },
             "args" => []
           },
@@ -48250,7 +49228,8 @@ $CONF = {
               "ru" => "use VERSION не допускается, пока в области видимости действует другое объявление use VERSION для версии 5.39 или выше",
               "sr" => "use VERSION није дозвољен док је у опсегу друга декларација use VERSION за верзију 5.39 или новију",
               "tr" => "5.39 veya üzeri bir use VERSION kapsam içindeyken başka bir use VERSION bildirimine izin verilmez",
-              "uk" => "use VERSION не дозволено, доки в області видимості діє інше оголошення use VERSION для версії 5.39 або новішої"
+              "uk" => "use VERSION не дозволено, доки в області видимості діє інше оголошення use VERSION для версії 5.39 або новішої",
+              "zh" => "另一个 5.39 或更高版本的 use VERSION 仍在作用域内时，不允许使用 use VERSION"
             },
             "args" => []
           },
@@ -48292,7 +49271,8 @@ $CONF = {
               "ru" => "use VERSION для версии 5.39 или выше не допускается, пока в области видимости действует другое объявление use VERSION",
               "sr" => "use VERSION за верзију 5.39 или новију није дозвољен док је у опсегу друга декларација use VERSION",
               "tr" => "Başka bir use VERSION kapsam içindeyken 5.39 veya üzeri bir use VERSION bildirimine izin verilmez",
-              "uk" => "use VERSION для версії 5.39 або новішої не дозволено, доки в області видимості діє інше оголошення use VERSION"
+              "uk" => "use VERSION для версії 5.39 або новішої не дозволено, доки в області видимості діє інше оголошення use VERSION",
+              "zh" => "另一个 use VERSION 仍在作用域内时，不允许使用 5.39 或更高版本的 use VERSION"
             },
             "args" => []
           },
@@ -48334,7 +49314,8 @@ $CONF = {
               "ru" => "Функция crypt() не реализована из-за чрезмерной паранойи.",
               "sr" => "Функција crypt() није имплементирана због претеране параноје.",
               "tr" => "Aşırı paranoya nedeniyle crypt() işlevi uygulanmamıştır.",
-              "uk" => "Функцію crypt() не реалізовано через надмірну параною."
+              "uk" => "Функцію crypt() не реалізовано через надмірну параною.",
+              "zh" => "由于过度偏执，crypt() 函数未实现。"
             },
             "args" => []
           },
@@ -48377,7 +49358,8 @@ $CONF = {
               "ru" => "setregid недоступен",
               "sr" => "setregid није доступан",
               "tr" => "setregid kullanılamıyor",
-              "uk" => "setregid недоступний"
+              "uk" => "setregid недоступний",
+              "zh" => "没有可用的 setregid"
             },
             "args" => []
           },
@@ -48420,7 +49402,8 @@ $CONF = {
               "ru" => "setreuid недоступен",
               "sr" => "setreuid није доступан",
               "tr" => "setreuid kullanılamıyor",
-              "uk" => "setreuid недоступний"
+              "uk" => "setreuid недоступний",
+              "zh" => "没有可用的 setreuid"
             },
             "args" => []
           },
@@ -48462,7 +49445,8 @@ $CONF = {
               "ru" => "не удалось перейти к эффективному gid",
               "sr" => "улазак у ефективни gid није успео",
               "tr" => "Etkin gid'ye geçilemedi",
-              "uk" => "не вдалося перейти до ефективного gid"
+              "uk" => "не вдалося перейти до ефективного gid",
+              "zh" => "进入有效 gid 失败"
             },
             "args" => []
           },
@@ -48504,7 +49488,8 @@ $CONF = {
               "ru" => "не удалось восстановить gid после перехода к эффективному gid",
               "sr" => "напуштање ефективног gid-а није успело",
               "tr" => "Etkin gid'den çıkılamadı",
-              "uk" => "не вдалося вийти з режиму ефективного gid"
+              "uk" => "не вдалося вийти з режиму ефективного gid",
+              "zh" => "离开有效 gid 失败"
             },
             "args" => []
           },
@@ -48546,7 +49531,8 @@ $CONF = {
               "ru" => "не удалось перейти к эффективному uid",
               "sr" => "улазак у ефективни uid није успео",
               "tr" => "etkin uid'ye geçilemedi",
-              "uk" => "не вдалося перейти до ефективного uid"
+              "uk" => "не вдалося перейти до ефективного uid",
+              "zh" => "进入有效 uid 失败"
             },
             "args" => []
           },
@@ -48588,7 +49574,8 @@ $CONF = {
               "ru" => "не удалось восстановить uid после перехода к эффективному uid",
               "sr" => "напуштање ефективног uid-а није успело",
               "tr" => "etkin uid'den çıkılamadı",
-              "uk" => "не вдалося вийти з режиму ефективного uid"
+              "uk" => "не вдалося вийти з режиму ефективного uid",
+              "zh" => "离开有效 uid 失败"
             },
             "args" => []
           },
@@ -48630,7 +49617,8 @@ $CONF = {
               "ru" => "Неверная длина аргумента для %{arg2}: %{arg3}, должна быть %{arg4}",
               "sr" => "Погрешна дужина аргумента за %{arg2}, износи %{arg3}, а требало би да буде %{arg4}",
               "tr" => "%{arg2} için bağımsız değişken uzunluğu hatalı: %{arg3}; olması gereken: %{arg4}",
-              "uk" => "Неправильна довжина аргументу для %{arg2}: %{arg3}, має бути %{arg4}"
+              "uk" => "Неправильна довжина аргументу для %{arg2}: %{arg3}, має бути %{arg4}",
+              "zh" => "%{arg2} 的参数长度错误：实际为 %{arg3}，应为 %{arg4}"
             },
             "args" => [
               {
@@ -48688,7 +49676,8 @@ $CONF = {
               "ru" => "Аргумент слишком короткий для msgsnd",
               "sr" => "Аргумент је прекратак за msgsnd",
               "tr" => "msgsnd için bağımsız değişken çok kısa",
-              "uk" => "Аргумент закороткий для msgsnd"
+              "uk" => "Аргумент закороткий для msgsnd",
+              "zh" => "传给 msgsnd 的参数过短"
             },
             "args" => []
           },
@@ -48730,7 +49719,8 @@ $CONF = {
               "ru" => "Межпроцессное взаимодействие System V IPC не реализовано на этой машине",
               "sr" => "System V IPC није имплементиран на овој машини",
               "tr" => "System V IPC bu makinede uygulanmamış",
-              "uk" => "IPC System V не реалізовано на цій машині"
+              "uk" => "IPC System V не реалізовано на цій машині",
+              "zh" => "此机器尚未实现 System V IPC"
             },
             "args" => []
           },
@@ -48772,7 +49762,8 @@ $CONF = {
               "ru" => "Использование: Haiku::debugger(\$format,...)",
               "sr" => "употреба: Haiku::debugger(\$format,...)",
               "tr" => "kullanım: Haiku::debugger(\$format,...)",
-              "uk" => "використання: Haiku::debugger(\$format,...)"
+              "uk" => "використання: Haiku::debugger(\$format,...)",
+              "zh" => "用法：Haiku::debugger(\$format,...)"
             },
             "args" => []
           },
@@ -48814,7 +49805,8 @@ $CONF = {
               "ru" => "Использование: Haiku::debug_printf(\$format,...)",
               "sr" => "употреба: Haiku::debug_printf(\$format,...)",
               "tr" => "kullanım: Haiku::debug_printf(\$format,...)",
-              "uk" => "використання: Haiku::debug_printf(\$format,...)"
+              "uk" => "використання: Haiku::debug_printf(\$format,...)",
+              "zh" => "用法：Haiku::debug_printf(\$format,...)"
             },
             "args" => []
           },
@@ -48856,7 +49848,8 @@ $CONF = {
               "ru" => "%{arg1}: %{arg2}",
               "sr" => "%{arg1}: %{arg2}",
               "tr" => "%{arg1}: %{arg2}",
-              "uk" => "%{arg1}: %{arg2}"
+              "uk" => "%{arg1}: %{arg2}",
+              "zh" => "%{arg1}：%{arg2}"
             },
             "args" => [
               {
@@ -48910,7 +49903,8 @@ $CONF = {
               "ru" => "file_type не реализована в DOS",
               "sr" => "file_type није имплементиран на DOS-у",
               "tr" => "file_type DOS'ta uygulanmamış",
-              "uk" => "file_type не реалізовано в DOS"
+              "uk" => "file_type не реалізовано в DOS",
+              "zh" => "DOS 上未实现 file_type"
             },
             "args" => []
           },
@@ -48952,7 +49946,8 @@ $CONF = {
               "ru" => "Ошибка вызова DosError(%{arg1}): %{arg2}",
               "sr" => "DosError(%{arg1}) није успео: %{arg2}",
               "tr" => "DosError(%{arg1}) başarısız oldu: %{arg2}",
-              "uk" => "Помилка DosError(%{arg1}): %{arg2}"
+              "uk" => "Помилка DosError(%{arg1}): %{arg2}",
+              "zh" => "DosError(%{arg1}) 失败：%{arg2}"
             },
             "args" => [
               {
@@ -49005,7 +50000,8 @@ $CONF = {
               "ru" => "Аргумент '%{arg1}' функции OS2::Errors2Drive() не является буквой",
               "sr" => "Аргумент '%{arg1}' за OS2::Errors2Drive() није знак",
               "tr" => "OS2::Errors2Drive() için karakter olmayan bağımsız değişken: '%{arg1}'",
-              "uk" => "Аргумент '%{arg1}' для OS2::Errors2Drive() не є літерою"
+              "uk" => "Аргумент '%{arg1}' для OS2::Errors2Drive() не є літерою",
+              "zh" => "传递给 OS2::Errors2Drive() 的参数 '%{arg1}' 不是字符"
             },
             "args" => [
               {
@@ -49053,7 +50049,8 @@ $CONF = {
               "ru" => "Ошибка вызова DosSuppressPopUps(%{arg1}): %{arg2}",
               "sr" => "DosSuppressPopUps(%{arg1}) није успео: %{arg2}",
               "tr" => "DosSuppressPopUps(%{arg1}) başarısız oldu: %{arg2}",
-              "uk" => "Виклик DosSuppressPopUps(%{arg1}) завершився помилкою: %{arg2}"
+              "uk" => "Виклик DosSuppressPopUps(%{arg1}) завершився помилкою: %{arg2}",
+              "zh" => "DosSuppressPopUps(%{arg1}) 失败：%{arg2}"
             },
             "args" => [
               {
@@ -49106,7 +50103,8 @@ $CONF = {
               "ru" => "DosAllocMem вернула ошибку: %{arg1}",
               "sr" => "DosAllocMem је пријавио грешку: %{arg1}",
               "tr" => "DosAllocMem'den hata alındı: %{arg1}",
-              "uk" => "Отримано помилку від DosAllocMem: %{arg1}"
+              "uk" => "Отримано помилку від DosAllocMem: %{arg1}",
+              "zh" => "DosAllocMem 返回错误：%{arg1}"
             },
             "args" => [
               {
@@ -49154,7 +50152,8 @@ $CONF = {
               "ru" => "Невозможно преобразовать счётчик в IV",
               "sr" => "Није могуће проширити бројач до IV",
               "tr" => "Sayı IV türüne yükseltilemiyor",
-              "uk" => "Не вдалося підвищити тип лічильника до IV"
+              "uk" => "Не вдалося підвищити тип лічильника до IV",
+              "zh" => "无法将计数升级为 IV"
             },
             "args" => []
           },
@@ -49196,7 +50195,8 @@ $CONF = {
               "ru" => "Эта версия OS/2 не поддерживает %{arg1}.%{arg2}",
               "sr" => "Ова верзија OS/2 не подржава %{arg1}.%{arg2}",
               "tr" => "Bu OS/2 sürümü %{arg1}.%{arg2} desteği sunmuyor",
-              "uk" => "Ця версія OS/2 не підтримує %{arg1}.%{arg2}"
+              "uk" => "Ця версія OS/2 не підтримує %{arg1}.%{arg2}",
+              "zh" => "此版本的 OS/2 不支持 %{arg1}.%{arg2}"
             },
             "args" => [
               {
@@ -49249,7 +50249,8 @@ $CONF = {
               "ru" => "OS2::_headerInfo(): неожиданный размер: %{arg2}",
               "sr" => "OS2::_headerInfo(): неочекивана величина: %{arg2}",
               "tr" => "OS2::_headerInfo(): beklenmeyen boyut: %{arg2}",
-              "uk" => "OS2::_headerInfo(): неочікуваний розмір: %{arg2}"
+              "uk" => "OS2::_headerInfo(): неочікуваний розмір: %{arg2}",
+              "zh" => "OS2::_headerInfo()：大小异常：%{arg2}"
             },
             "args" => [
               {
@@ -49297,7 +50298,8 @@ $CONF = {
               "ru" => "Ошибка OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}): %{arg6}",
               "sr" => "Грешка у OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}): %{arg6}",
               "tr" => "OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}) hatası: %{arg6}",
-              "uk" => "Помилка OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}): %{arg6}"
+              "uk" => "Помилка OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}): %{arg6}",
+              "zh" => "OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}) 出错：%{arg6}"
             },
             "args" => [
               {
@@ -49366,7 +50368,8 @@ $CONF = {
               "ru" => "Ошибка загрузки модуля '%{arg1}': %{arg2}",
               "sr" => "Грешка при учитавању модула „%{arg1}“: %{arg2}",
               "tr" => "'%{arg1}' modülü yüklenirken hata oluştu: %{arg2}",
-              "uk" => "Помилка завантаження модуля '%{arg1}': %{arg2}"
+              "uk" => "Помилка завантаження модуля '%{arg1}': %{arg2}",
+              "zh" => "加载模块“%{arg1}”时出错：%{arg2}"
             },
             "args" => [
               {
@@ -49419,7 +50422,8 @@ $CONF = {
               "ru" => "В mod2fname передана ссылка на пустой массив",
               "sr" => "Функцији mod2fname прослеђена је референца на празан низ",
               "tr" => "mod2fname'e boş dizi başvurusu verildi",
-              "uk" => "До mod2fname передано посилання на порожній масив"
+              "uk" => "До mod2fname передано посилання на порожній масив",
+              "zh" => "传递给 mod2fname 的数组引用为空"
             },
             "args" => []
           },
@@ -49462,7 +50466,8 @@ $CONF = {
               "ru" => "В mod2fname передано значение, не являющееся ссылкой на массив",
               "sr" => "Функцији mod2fname није прослеђена референца на низ",
               "tr" => "mod2fname'e dizi başvurusu verilmedi",
-              "uk" => "До mod2fname передано значення, яке не є посиланням на масив"
+              "uk" => "До mod2fname передано значення, яке не є посиланням на масив",
+              "zh" => "传递给 mod2fname 的不是数组引用"
             },
             "args" => []
           },
@@ -49505,7 +50510,8 @@ $CONF = {
               "ru" => "В mod2fname передано значение, не являющееся ссылкой",
               "sr" => "Функцији mod2fname није прослеђена референца",
               "tr" => "mod2fname'e başvuru verilmedi",
-              "uk" => "До mod2fname передано значення, яке не є посиланням"
+              "uk" => "До mod2fname передано значення, яке не є посиланням",
+              "zh" => "传递给 mod2fname 的不是引用"
             },
             "args" => []
           },
@@ -49547,7 +50553,8 @@ $CONF = {
               "ru" => "По-видимому, PM отсутствует; DLL %{arg1} не будет загружена без \$ENV{PERL_ASIF_PM}",
               "sr" => "Изгледа да немамо PM; DLL %{arg1} неће бити учитан без \$ENV{PERL_ASIF_PM}",
               "tr" => "Görünüşe göre PM yok; \$ENV{PERL_ASIF_PM} olmadan %{arg1} DLL'si yüklenmeyecek",
-              "uk" => "Схоже, PM відсутній; DLL %{arg1} не буде завантажено без \$ENV{PERL_ASIF_PM}"
+              "uk" => "Схоже, PM відсутній; DLL %{arg1} не буде завантажено без \$ENV{PERL_ASIF_PM}",
+              "zh" => "看起来没有 PM；没有 \$ENV{PERL_ASIF_PM} 时不会加载 DLL %{arg1}"
             },
             "args" => [
               {
@@ -49595,7 +50602,8 @@ $CONF = {
               "ru" => "Невозможно получить короткое имя модуля по дескриптору",
               "sr" => "Није могуће добити кратко име модула из ручке",
               "tr" => "Bir tanıtıcıdan kısa modül adı alınamıyor",
-              "uk" => "Не можна отримати коротке ім'я модуля за дескриптором"
+              "uk" => "Не можна отримати коротке ім'я модуля за дескриптором",
+              "zh" => "无法从句柄获取模块短名称"
             },
             "args" => []
           },
@@ -49639,7 +50647,8 @@ $CONF = {
               "ru" => "Это не ссылка на XSUB",
               "sr" => "Није референца на XSUB",
               "tr" => "Bir XSUB başvurusu değil",
-              "uk" => "Не є посиланням на XSUB"
+              "uk" => "Не є посиланням на XSUB",
+              "zh" => "不是 XSUB 引用"
             },
             "args" => []
           },
@@ -49681,7 +50690,8 @@ $CONF = {
               "ru" => "%{arg1}: не удалось разобрать имя EXE/DLL: '%{arg2}'",
               "sr" => "%{arg1}: Није могуће обрадити име EXE/DLL-а: '%{arg2}'",
               "tr" => "%{arg1}: EXE/DLL adı ayrıştırılamıyor: '%{arg2}'",
-              "uk" => "%{arg1}: Неможливо розібрати ім’я EXE/DLL: '%{arg2}'"
+              "uk" => "%{arg1}: Неможливо розібрати ім’я EXE/DLL: '%{arg2}'",
+              "zh" => "%{arg1}：无法解析 EXE/DLL 名称：'%{arg2}'"
             },
             "args" => [
               {
@@ -49734,7 +50744,8 @@ $CONF = {
               "ru" => "Слишком длинное значение INSTALL_PREFIX: `%{arg1}'",
               "sr" => "INSTALL_PREFIX је предугачак: `%{arg1}'",
               "tr" => "INSTALL_PREFIX çok uzun: `%{arg1}'",
-              "uk" => "INSTALL_PREFIX задовгий: `%{arg1}'"
+              "uk" => "INSTALL_PREFIX задовгий: `%{arg1}'",
+              "zh" => "INSTALL_PREFIX 过长：`%{arg1}'"
             },
             "args" => [
               {
@@ -49782,7 +50793,8 @@ $CONF = {
               "ru" => "%{arg1}: ошибка удаления каталогов из пути EXE/DLL/INSTALLDIR",
               "sr" => "%{arg1}: Грешка при уклањању директоријума из имена EXE/DLL/INSTALLDIR",
               "tr" => "%{arg1}: EXE/DLL/INSTALLDIR adından dizinler çıkarılamadı",
-              "uk" => "%{arg1}: помилка вилучення каталогів з імені EXE/DLL/INSTALLDIR"
+              "uk" => "%{arg1}: помилка вилучення каталогів з імені EXE/DLL/INSTALLDIR",
+              "zh" => "%{arg1}：从 EXE/DLL/INSTALLDIR 名称中移除目录时出错"
             },
             "args" => [
               {
@@ -49830,7 +50842,8 @@ $CONF = {
               "ru" => "Некорректное значение %{arg1}",
               "sr" => "Неисправан %{arg1}",
               "tr" => "Hatalı biçim: %{arg1}",
-              "uk" => "Некоректний формат: %{arg1}"
+              "uk" => "Некоректний формат: %{arg1}",
+              "zh" => "%{arg1} 格式错误"
             },
             "args" => [
               {
@@ -49878,7 +50891,8 @@ $CONF = {
               "ru" => "Некорректное значение PERLLIB_PREFIX",
               "sr" => "Неисправан PERLLIB_PREFIX",
               "tr" => "Hatalı PERLLIB_PREFIX",
-              "uk" => "Неправильний формат PERLLIB_PREFIX"
+              "uk" => "Неправильний формат PERLLIB_PREFIX",
+              "zh" => "PERLLIB_PREFIX 格式错误"
             },
             "args" => []
           },
@@ -49921,7 +50935,8 @@ $CONF = {
               "ru" => "%{arg1}: имя `%{arg2}%{arg3}' слишком длинное",
               "sr" => "%{arg1}: име `%{arg2}%{arg3}' је предугачко",
               "tr" => "%{arg1}: `%{arg2}%{arg3}' adı çok uzun",
-              "uk" => "%{arg1}: ім’я `%{arg2}%{arg3}' задовге"
+              "uk" => "%{arg1}: ім’я `%{arg2}%{arg3}' задовге",
+              "zh" => "%{arg1}：名称 `%{arg2}%{arg3}' 过长"
             },
             "args" => [
               {
@@ -49979,7 +50994,8 @@ $CONF = {
               "ru" => "использование: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])",
               "sr" => "употреба: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])",
               "tr" => "kullanım: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])",
-              "uk" => "використання: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])"
+              "uk" => "використання: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])",
+              "zh" => "用法：OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])"
             },
             "args" => []
           },
@@ -50021,7 +51037,8 @@ $CONF = {
               "ru" => "OS2::pipe(): неизвестный аргумент connect: `%{arg2}'",
               "sr" => "OS2::pipe(): непознат аргумент connect: `%{arg2}'",
               "tr" => "OS2::pipe(): bilinmeyen bağlantı bağımsız değişkeni: `%{arg2}'",
-              "uk" => "OS2::pipe(): невідомий аргумент connect: `%{arg2}'"
+              "uk" => "OS2::pipe(): невідомий аргумент connect: `%{arg2}'",
+              "zh" => "OS2::pipe()：未知的 connect 参数：`%{arg2}'"
             },
             "args" => [
               {
@@ -50069,7 +51086,8 @@ $CONF = {
               "ru" => "OS2::pipeCntl(): неизвестный аргумент: `%{arg2}'",
               "sr" => "OS2::pipeCntl(): непознат аргумент: `%{arg2}'",
               "tr" => "OS2::pipeCntl(): bilinmeyen bağımsız değişken: `%{arg2}'",
-              "uk" => "OS2::pipeCntl(): невідомий аргумент: `%{arg2}'"
+              "uk" => "OS2::pipeCntl(): невідомий аргумент: `%{arg2}'",
+              "zh" => "OS2::pipeCntl()：未知参数：`%{arg2}'"
             },
             "args" => [
               {
@@ -50117,7 +51135,8 @@ $CONF = {
               "ru" => "OS2::pipeCntl(): это не канал",
               "sr" => "OS2::pipeCntl(): није цев",
               "tr" => "OS2::pipeCntl(): bir pipe değil",
-              "uk" => "OS2::pipeCntl(): не є каналом"
+              "uk" => "OS2::pipeCntl(): не є каналом",
+              "zh" => "OS2::pipeCntl()：不是管道"
             },
             "args" => []
           },
@@ -50159,7 +51178,8 @@ $CONF = {
               "ru" => "OS2::pipe(): количество должно быть равно -1 или находиться в диапазоне от 1 до 254: %{arg2}",
               "sr" => "OS2::pipe(): број мора бити -1 или између 1 и 254: %{arg2}",
               "tr" => "OS2::pipe(): sayı -1 ya da 1 ile 254 arasında olmalı: %{arg2}",
-              "uk" => "OS2::pipe(): кількість має бути -1 або в межах від 1 до 254: %{arg2}"
+              "uk" => "OS2::pipe(): кількість має бути -1 або в межах від 1 до 254: %{arg2}",
+              "zh" => "OS2::pipe()：数量必须为 -1 或介于 1 到 254 之间：%{arg2}"
             },
             "args" => [
               {
@@ -50207,7 +51227,8 @@ $CONF = {
               "ru" => "OS2::pipe(): режим чтения сообщений недопустим для каналов, не работающих в режиме сообщений",
               "sr" => "OS2::pipe(): режим читања порука не може се користити за цеви које нису порукасте",
               "tr" => "OS2::pipe(): ileti okuma modu ileti türünde olmayan pipe'lar için kullanılamaz",
-              "uk" => "OS2::pipe(): режим читання повідомлень недоступний для каналів, що не передають повідомлень"
+              "uk" => "OS2::pipe(): режим читання повідомлень недоступний для каналів, що не передають повідомлень",
+              "zh" => "OS2::pipe()：非消息管道不能使用消息读取模式"
             },
             "args" => []
           },
@@ -50249,7 +51270,8 @@ $CONF = {
               "ru" => "OS2::pipe(): пустое имя канала",
               "sr" => "OS2::pipe(): празно име цеви",
               "tr" => "OS2::pipe(): pipe adı boş",
-              "uk" => "OS2::pipe(): порожнє ім'я каналу"
+              "uk" => "OS2::pipe(): порожнє ім'я каналу",
+              "zh" => "OS2::pipe()：管道名称为空"
             },
             "args" => []
           },
@@ -50291,7 +51313,8 @@ $CONF = {
               "ru" => "OS2::pipe(): неизвестный аргумент OpenMode: `%{arg2}'",
               "sr" => "OS2::pipe(): непознат аргумент OpenMode: `%{arg2}'",
               "tr" => "OS2::pipe(): bilinmeyen OpenMode bağımsız değişkeni: `%{arg2}'",
-              "uk" => "OS2::pipe(): невідомий аргумент OpenMode: `%{arg2}'"
+              "uk" => "OS2::pipe(): невідомий аргумент OpenMode: `%{arg2}'",
+              "zh" => "OS2::pipe()：未知的 OpenMode 参数：`%{arg2}'"
             },
             "args" => [
               {
@@ -50339,7 +51362,8 @@ $CONF = {
               "ru" => "OS2::pipe(): слишком много аргументов для ожидания подключения: %{arg2}",
               "sr" => "OS2::pipe(): превише аргумената за чекање на везу: %{arg2}",
               "tr" => "OS2::pipe(): bağlantı bekleme için çok fazla bağımsız değişken: %{arg2}",
-              "uk" => "OS2::pipe(): забагато аргументів для wait-for-connect: %{arg2}"
+              "uk" => "OS2::pipe(): забагато аргументів для wait-for-connect: %{arg2}",
+              "zh" => "OS2::pipe()：wait-for-connect 参数过多：%{arg2}"
             },
             "args" => [
               {
@@ -50387,7 +51411,8 @@ $CONF = {
               "ru" => "OS2::pipeCntl(): аргумент wait недопустим для `%{arg2}'",
               "sr" => "OS2::pipeCntl(): нема аргумента wait за `%{arg2}'",
               "tr" => "OS2::pipeCntl(): `%{arg2}' için wait bağımsız değişkeni yok",
-              "uk" => "OS2::pipeCntl(): аргумент wait не допускається для `%{arg2}'"
+              "uk" => "OS2::pipeCntl(): аргумент wait не допускається для `%{arg2}'",
+              "zh" => "OS2::pipeCntl()：`%{arg2}' 不接受 wait 参数"
             },
             "args" => [
               {
@@ -50436,7 +51461,8 @@ $CONF = {
               "ru" => "Невозможно задать тип процесса в DOS",
               "sr" => "Није могуће поставити тип на DOS",
               "tr" => "DOS'ta tür ayarlanamıyor",
-              "uk" => "Неможливо встановити тип у DOS"
+              "uk" => "Неможливо встановити тип у DOS",
+              "zh" => "无法在 DOS 上设置类型"
             },
             "args" => []
           },
@@ -50478,7 +51504,8 @@ $CONF = {
               "ru" => "OS2::mytype(which): неизвестное значение which=%{arg2}",
               "sr" => "OS2::mytype(which): непознато which=%{arg2}",
               "tr" => "OS2::mytype(which): bilinmeyen which=%{arg2}",
-              "uk" => "OS2::mytype(which): невідоме значення which=%{arg2}"
+              "uk" => "OS2::mytype(which): невідоме значення which=%{arg2}",
+              "zh" => "OS2::mytype(which)：which=%{arg2} 未知"
             },
             "args" => [
               {
@@ -50526,7 +51553,8 @@ $CONF = {
               "ru" => "Неожиданное значение счётчика %{arg2} для OS2::SysInfoFor()",
               "sr" => "неочекивани број %{arg2} за OS2::SysInfoFor()",
               "tr" => "OS2::SysInfoFor() için beklenmeyen sayı: %{arg2}",
-              "uk" => "неочікувана кількість %{arg2} для OS2::SysInfoFor()"
+              "uk" => "неочікувана кількість %{arg2} для OS2::SysInfoFor()",
+              "zh" => "OS2::SysInfoFor() 的计数 %{arg2} 异常"
             },
             "args" => [
               {
@@ -50575,7 +51603,8 @@ $CONF = {
               "ru" => "detach для потока, завершения которого уже ожидают",
               "sr" => "одвајање нити која има чекаоца",
               "tr" => "bekleyeni olan bir iş parçacığında detach",
-              "uk" => "detach для потоку, завершення якого вже очікує інший потік"
+              "uk" => "detach для потоку, завершення якого вже очікує інший потік",
+              "zh" => "对已有等待者的线程执行 detach"
             },
             "args" => []
           },
@@ -50618,7 +51647,8 @@ $CONF = {
               "ru" => "join для потока, завершения которого уже ожидают",
               "sr" => "спајање са нити која има чекаоца",
               "tr" => "bekleyeni olan bir iş parçacığıyla join",
-              "uk" => "спроба join із потоком, на який уже чекає інший потік"
+              "uk" => "спроба join із потоком, на який уже чекає інший потік",
+              "zh" => "对已有等待者的线程执行 join"
             },
             "args" => []
           },
@@ -50660,7 +51690,8 @@ $CONF = {
               "ru" => "Недостаточно памяти в perl:os2:pthread_key_create",
               "sr" => "Нема довољно меморије у perl:os2:pthread_key_create",
               "tr" => "perl:os2:pthread_key_create içinde bellek yetersiz",
-              "uk" => "Недостатньо пам’яті в perl:os2:pthread_key_create"
+              "uk" => "Недостатньо пам’яті в perl:os2:pthread_key_create",
+              "zh" => "perl:os2:pthread_key_create 中内存不足"
             },
             "args" => []
           },
@@ -50702,7 +51733,8 @@ $CONF = {
               "ru" => "Получение контекста устройства окна без очереди сообщений привело бы к блокировке PM",
               "sr" => "Преузимање контекста уређаја прозора без реда порука закључало би PM",
               "tr" => "İleti kuyruğu olmadan bir pencerenin aygıt bağlamını almak PM'yi kilitler",
-              "uk" => "Отримання контексту пристрою вікна без черги повідомлень призвело б до блокування PM"
+              "uk" => "Отримання контексту пристрою вікна без черги повідомлень призвело б до блокування PM",
+              "zh" => "没有消息队列却获取窗口设备上下文会导致 PM 锁定"
             },
             "args" => []
           },
@@ -50744,7 +51776,8 @@ $CONF = {
               "ru" => "Нет очереди сообщений",
               "sr" => "Нема реда порука",
               "tr" => "İleti kuyruğu yok",
-              "uk" => "Немає черги повідомлень"
+              "uk" => "Немає черги повідомлень",
+              "zh" => "没有消息队列"
             },
             "args" => []
           },
@@ -50786,7 +51819,8 @@ $CONF = {
               "ru" => "Завершение по QUIT...",
               "sr" => "Захтев за излаз...",
               "tr" => "Çıkılıyor...",
-              "uk" => "Завершення за запитом QUIT..."
+              "uk" => "Завершення за запитом QUIT...",
+              "zh" => "正在退出..."
             },
             "args" => []
           },
@@ -50829,7 +51863,8 @@ $CONF = {
               "ru" => "Функция \"%{function}\" не реализована в этой версии perl.",
               "sr" => "Функција \"%{function}\" није имплементирана у овој верзији перла.",
               "tr" => "\"%{function}\" işlevi perl'in bu sürümünde uygulanmamış.",
-              "uk" => "Функцію \"%{function}\" не реалізовано в цій версії perl."
+              "uk" => "Функцію \"%{function}\" не реалізовано в цій версії perl.",
+              "zh" => "此版本的 perl 未实现函数 \"%{function}\"。"
             },
             "args" => [
               {
@@ -51032,7 +52067,8 @@ $CONF = {
               "ru" => "Неизвестный процесс %{process} отправил сообщение в prime_env_iter: %{message}",
               "sr" => "Непознат процес %{process} послао је поруку функцији prime_env_iter: %{message}",
               "tr" => "Bilinmeyen %{process} süreci prime_env_iter'a ileti gönderdi: %{message}",
-              "uk" => "Невідомий процес %{process} надіслав повідомлення до prime_env_iter: %{message}"
+              "uk" => "Невідомий процес %{process} надіслав повідомлення до prime_env_iter: %{message}",
+              "zh" => "未知进程 %{process} 向 prime_env_iter 发送了消息：%{message}"
             },
             "args" => [
               {
@@ -51086,7 +52122,8 @@ $CONF = {
               "ru" => "На этой системе нельзя выполнить списковое присваивание в %%ENV",
               "sr" => "На овом систему није могуће доделити листу променљивој %%ENV",
               "tr" => "Bu sistemde %%ENV'ye liste ataması yapılamaz",
-              "uk" => "У цій системі неможливо виконати спискове присвоєння до %%ENV"
+              "uk" => "У цій системі неможливо виконати спискове присвоєння до %%ENV",
+              "zh" => "此系统无法对 %%ENV 进行列表赋值"
             },
             "args" => []
           },
@@ -51129,7 +52166,8 @@ $CONF = {
               "ru" => "Неустранимая ошибка VMS (статус=%{arg1}) в %{arg2}, строка %{arg3}",
               "sr" => "Кобна VMS грешка (статус=%{arg1}) у %{arg2}, ред %{arg3}",
               "tr" => "Ölümcül VMS hatası (durum=%{arg1}), %{arg2} konumunda, %{arg3}. satırda",
-              "uk" => "Фатальна помилка VMS (стан=%{arg1}) у %{arg2}, рядок %{arg3}"
+              "uk" => "Фатальна помилка VMS (стан=%{arg1}) у %{arg2}, рядок %{arg3}",
+              "zh" => "VMS 致命错误（status=%{arg1}），位置：%{arg2}，行号：%{arg3}"
             },
             "args" => [
               {
@@ -51189,7 +52227,8 @@ $CONF = {
               "ru" => "%{arg1}: реализация отсутствует!\n",
               "sr" => "%{arg1} није имплементиран!\n",
               "tr" => "%{arg1} uygulanmamış!\n",
-              "uk" => "%{arg1} не реалізовано!\n"
+              "uk" => "%{arg1} не реалізовано!\n",
+              "zh" => "%{arg1} 尚未实现！\n"
             },
             "args" => [
               {
@@ -51237,7 +52276,8 @@ $CONF = {
               "ru" => "Начиная с Perl 5.30, dump() следует записывать как CORE::dump()",
               "sr" => "Од Perl-а 5.30, dump() мора бити написано као CORE::dump()",
               "tr" => "Perl 5.30'dan itibaren dump(), CORE::dump() olarak yazılmalıdır",
-              "uk" => "Починаючи з Perl 5.30, dump() слід записувати як CORE::dump()"
+              "uk" => "Починаючи з Perl 5.30, dump() слід записувати як CORE::dump()",
+              "zh" => "自 Perl 5.30 起，dump() 必须写作 CORE::dump()"
             },
             "args" => []
           },
@@ -51279,7 +52319,8 @@ $CONF = {
               "ru" => "dump не поддерживается",
               "sr" => "dump није подржан",
               "tr" => "dump desteklenmiyor",
-              "uk" => "dump не підтримується"
+              "uk" => "dump не підтримується",
+              "zh" => "不支持 dump"
             },
             "args" => []
           },
@@ -51473,6 +52514,15 @@ $CONF = {
                 "find" => {
                   "dot_not_in_path" => "Неможливо знайти %{target} у PATH, '.' відсутня в PATH"
                 }
+              },
+              "zh" => {
+                "execute" => {
+                  "unavailable" => "无法执行 %{target}"
+                },
+                "find" => {
+                  "dot_not_in_path" => "无法在 PATH 中找到 %{target}，'.' 不在 PATH 中",
+                  "ordinary" => "无法在 PATH 中找到 %{target}"
+                }
               }
             },
             "args" => [
@@ -51544,7 +52594,8 @@ $CONF = {
               "ru" => "exec? Я не *такая* операционная система",
               "sr" => "exec? Нисам ја *такав* оперативни систем",
               "tr" => "exec mi? Ben öyle *bir* işletim sistemi değilim",
-              "uk" => "exec? Я не з *таких* операційних систем"
+              "uk" => "exec? Я не з *таких* операційних систем",
+              "zh" => "exec？我可不是那种操作系统"
             },
             "args" => []
           },
@@ -51586,7 +52637,8 @@ $CONF = {
               "ru" => "fork() недоступен",
               "sr" => "fork() није доступан",
               "tr" => "fork() kullanılamıyor",
-              "uk" => "fork() недоступна"
+              "uk" => "fork() недоступна",
+              "zh" => "fork() 不可用"
             },
             "args" => []
           },
@@ -51628,7 +52680,8 @@ $CONF = {
               "ru" => "POSIX getpgrp не принимает аргумент",
               "sr" => "POSIX getpgrp не прихвата аргумент",
               "tr" => "POSIX getpgrp bir bağımsız değişken alamaz",
-              "uk" => "POSIX getpgrp не приймає аргументів"
+              "uk" => "POSIX getpgrp не приймає аргументів",
+              "zh" => "POSIX getpgrp 不能接受参数"
             },
             "args" => []
           },
@@ -51670,7 +52723,8 @@ $CONF = {
               "ru" => "Не удалось выполнить fork: %{arg1}",
               "sr" => "Неуспело форковање: %{arg1}",
               "tr" => "Çatal oluşturulamıyor: %{arg1}",
-              "uk" => "Неможливо виконати fork: %{arg1}"
+              "uk" => "Неможливо виконати fork: %{arg1}",
+              "zh" => "无法 fork：%{arg1}"
             },
             "args" => [
               {
@@ -51718,7 +52772,8 @@ $CONF = {
               "ru" => "Не удалось установить \$0 с помощью prctl(): %{arg2}",
               "sr" => "Није могуће поставити \$0 помоћу prctl(): %{arg2}",
               "tr" => "prctl() ile \$0 ayarlanamıyor: %{arg2}",
-              "uk" => "Не вдалося встановити \$0 за допомогою prctl(): %{arg2}"
+              "uk" => "Не вдалося встановити \$0 за допомогою prctl(): %{arg2}",
+              "zh" => "无法通过 prctl() 设置 \$0：%{arg2}"
             },
             "args" => [
               {
@@ -51766,7 +52821,8 @@ $CONF = {
               "ru" => "setpgrp не принимает аргументы",
               "sr" => "setpgrp не прихвата аргументе",
               "tr" => "setpgrp bağımsız değişken alamaz",
-              "uk" => "setpgrp не може приймати аргументи"
+              "uk" => "setpgrp не може приймати аргументи",
+              "zh" => "setpgrp 不能接受参数"
             },
             "args" => []
           },
@@ -51808,7 +52864,8 @@ $CONF = {
               "ru" => "Не удалось выполнить exec для %{path}",
               "sr" => "Није могуће покренути %{path}",
               "tr" => "%{path} çalıştırılamıyor",
-              "uk" => "Неможливо виконати exec для %{path}"
+              "uk" => "Неможливо виконати exec для %{path}",
+              "zh" => "无法执行 %{path}"
             },
             "args" => [
               {
@@ -51856,7 +52913,8 @@ $CONF = {
               "ru" => "Нельзя выполнить waitpid с флагами",
               "sr" => "Не може се позвати waitpid са заставицама",
               "tr" => "waitpid, bayraklarla kullanılamıyor",
-              "uk" => "Неможливо виконати waitpid із прапорцями"
+              "uk" => "Неможливо виконати waitpid із прапорцями",
+              "zh" => "不能带标志调用 waitpid"
             },
             "args" => []
           },
@@ -51898,7 +52956,8 @@ $CONF = {
               "ru" => "Нельзя вызвать kill с нечисловым идентификатором процесса",
               "sr" => "Не може се позвати kill са ненумеричким ИД-ом процеса",
               "tr" => "Sayısal olmayan bir süreç kimliği sonlandırılamaz",
-              "uk" => "Неможливо виконати kill із нечисловим ідентифікатором процесу"
+              "uk" => "Неможливо виконати kill із нечисловим ідентифікатором процесу",
+              "zh" => "不能 kill 非数值进程 ID"
             },
             "args" => []
           },
@@ -51940,7 +52999,8 @@ $CONF = {
               "ru" => "Неизвестное имя сигнала \"%{arg1}\"",
               "sr" => "Непознато име сигнала „%{arg1}”",
               "tr" => "Tanınmayan sinyal adı \"%{arg1}\"",
-              "uk" => "Нерозпізнане ім'я сигналу \"%{arg1}\""
+              "uk" => "Нерозпізнане ім'я сигналу \"%{arg1}\"",
+              "zh" => "无法识别信号名称“%{arg1}”"
             },
             "args" => [
               {
@@ -51989,7 +53049,8 @@ $CONF = {
               "ru" => "Превышено максимальное количество ожидающих обработки сигналов (%{arg2})",
               "sr" => "Прекорачен је максималан број сигнала на чекању (%{arg2})",
               "tr" => "Bekleyen sinyallerin azami sayısı (%{arg2}) aşıldı",
-              "uk" => "Перевищено максимальну кількість сигналів, що очікують обробки (%{arg2})"
+              "uk" => "Перевищено максимальну кількість сигналів, що очікують обробки (%{arg2})",
+              "zh" => "待处理信号的最大数量（%{arg2}）已超出"
             },
             "args" => [
               {
@@ -52037,7 +53098,8 @@ $CONF = {
               "ru" => "Нет такого обработчика: %{hook}",
               "sr" => "Непозната кука: %{hook}",
               "tr" => "Böyle bir kanca yok: %{hook}",
-              "uk" => "Немає такого обробника: %{hook}"
+              "uk" => "Немає такого обробника: %{hook}",
+              "zh" => "没有名为 %{hook} 的钩子"
             },
             "args" => [
               {
@@ -52088,7 +53150,8 @@ $CONF = {
               "ru" => "Функция %{function} не реализована",
               "sr" => "Функција %{function} није имплементирана",
               "tr" => "%{function} işlevi uygulanmamış",
-              "uk" => "Функцію %{function} не реалізовано"
+              "uk" => "Функцію %{function} не реалізовано",
+              "zh" => "%{function} 函数尚未实现"
             },
             "args" => [
               {
@@ -52146,7 +53209,8 @@ $CONF = {
               "ru" => "Слишком мало аргументов для syscall",
               "sr" => "Премало аргумената за syscall",
               "tr" => "syscall için çok az bağımsız değişken",
-              "uk" => "Замало аргументів для syscall"
+              "uk" => "Замало аргументів для syscall",
+              "zh" => "传给 syscall 的参数过少"
             },
             "args" => []
           },
@@ -52188,7 +53252,8 @@ $CONF = {
               "ru" => "Слишком много аргументов для syscall",
               "sr" => "Превише аргумената за syscall",
               "tr" => "syscall için çok fazla bağımsız değişken",
-              "uk" => "Забагато аргументів для syscall"
+              "uk" => "Забагато аргументів для syscall",
+              "zh" => "传给 syscall 的参数过多"
             },
             "args" => []
           },
@@ -52318,6 +53383,12 @@ $CONF = {
                 "*" => "Небезпечна залежність у %{operation} під час виконання в режимі %{taint_context}",
                 "taint_mode" => "Небезпечна залежність у %{operation} під час виконання з параметром -T",
                 "taint_warning" => "Небезпечна залежність у %{operation} під час виконання з параметром -t"
+              },
+              "zh" => {
+                "setgid" => "以 setgid 身份运行时，%{operation} 中存在不安全依赖",
+                "setuid" => "以 setuid 身份运行时，%{operation} 中存在不安全依赖",
+                "taint_mode" => "使用 -T 开关运行时，%{operation} 中存在不安全依赖",
+                "taint_warning" => "使用 -t 开关运行时，%{operation} 中存在不安全依赖"
               }
             },
             "args" => [
@@ -52468,6 +53539,12 @@ $CONF = {
                 "setgid" => "Небезпечний каталог у %{operation} під час виконання з setgid",
                 "setuid" => "Небезпечний каталог у %{operation} під час виконання з setuid",
                 "taint_warning" => "Небезпечний каталог у %{operation} під час виконання з параметром -t"
+              },
+              "zh" => {
+                "setgid" => "以 setgid 运行时，%{operation}中的目录不安全",
+                "setuid" => "以 setuid 运行时，%{operation}中的目录不安全",
+                "taint_mode" => "使用 -T 开关运行时，%{operation}中的目录不安全",
+                "taint_warning" => "使用 -t 开关运行时，%{operation}中的目录不安全"
               }
             },
             "args" => [
@@ -52617,6 +53694,12 @@ $CONF = {
                 "*" => "%%ENV є псевдонімом %%%{operation} під час виконання в режимі %{taint_context}",
                 "taint_mode" => "%%ENV є псевдонімом %%%{operation} під час виконання з параметром -T",
                 "taint_warning" => "%%ENV є псевдонімом %%%{operation} під час виконання з параметром -t"
+              },
+              "zh" => {
+                "setgid" => "以 setgid 身份运行时，%%ENV 被别名为 %%%{operation}",
+                "setuid" => "以 setuid 身份运行时，%%ENV 被别名为 %%%{operation}",
+                "taint_mode" => "使用 -T 开关运行时，%%ENV 被别名为 %%%{operation}",
+                "taint_warning" => "使用 -t 开关运行时，%%ENV 被别名为 %%%{operation}"
               }
             },
             "args" => [
@@ -52972,6 +54055,24 @@ $CONF = {
                   "*" => "%%ENV є псевдонімом %{operation} під час виконання з параметром -t",
                   "generic" => "%%ENV є псевдонімом іншої змінної під час виконання з параметром -t"
                 }
+              },
+              "zh" => {
+                "setgid" => {
+                  "*" => "以 setgid 身份运行时，%%ENV 被别名为 %{operation}",
+                  "generic" => "以 setgid 身份运行时，%%ENV 被别名为另一个变量"
+                },
+                "setuid" => {
+                  "*" => "以 setuid 身份运行时，%%ENV 被别名为 %{operation}",
+                  "generic" => "以 setuid 身份运行时，%%ENV 被别名为另一个变量"
+                },
+                "taint_mode" => {
+                  "*" => "使用 -T 开关运行时，%%ENV 被别名为 %{operation}",
+                  "generic" => "使用 -T 开关运行时，%%ENV 被别名为另一个变量"
+                },
+                "taint_warning" => {
+                  "*" => "使用 -t 开关运行时，%%ENV 被别名为 %{operation}",
+                  "generic" => "使用 -t 开关运行时，%%ENV 被别名为另一个变量"
+                }
               }
             },
             "args" => [
@@ -53131,6 +54232,12 @@ $CONF = {
                 "*" => "Небезпечна змінна \$ENV{%{operation}} під час виконання в режимі %{taint_context}",
                 "taint_mode" => "Небезпечна змінна \$ENV{%{operation}} під час виконання з параметром -T",
                 "taint_warning" => "Небезпечна змінна \$ENV{%{operation}} під час виконання з параметром -t"
+              },
+              "zh" => {
+                "setgid" => "以 setgid 运行时，%{operation}对应的 \$ENV{%{operation}} 不安全",
+                "setuid" => "以 setuid 运行时，%{operation}对应的 \$ENV{%{operation}} 不安全",
+                "taint_mode" => "使用 -T 开关运行时，%{operation}对应的 \$ENV{%{operation}} 不安全",
+                "taint_warning" => "使用 -t 开关运行时，%{operation}对应的 \$ENV{%{operation}} 不安全"
               }
             },
             "args" => [
@@ -53281,6 +54388,12 @@ $CONF = {
                 "*" => "Небезпечна операція %{operation} під час виконання в режимі %{taint_context}",
                 "taint_mode" => "Небезпечна операція %{operation} під час виконання з параметром -T",
                 "taint_warning" => "Небезпечна операція %{operation} під час виконання з параметром -t"
+              },
+              "zh" => {
+                "setgid" => "以 setgid 运行时，%{operation}不安全",
+                "setuid" => "以 setuid 运行时，%{operation}不安全",
+                "taint_mode" => "使用 -T 开关运行时，%{operation}不安全",
+                "taint_warning" => "使用 -t 开关运行时，%{operation}不安全"
               }
             },
             "args" => [
@@ -53343,7 +54456,8 @@ $CONF = {
               "ru" => "Группа eval в небезопасном регулярном выражении",
               "sr" => "Eval група у небезбедном регуларном изразу",
               "tr" => "Güvenli olmayan düzenli ifadede eval grubu",
-              "uk" => "Група обчислення коду в небезпечному регулярному виразі"
+              "uk" => "Група обчислення коду в небезпечному регулярному виразі",
+              "zh" => "不安全的正则表达式中包含 eval 组"
             },
             "args" => []
           },
@@ -53421,7 +54535,8 @@ $CONF = {
               "ru" => "Невозможно преобразовать ссылку на %{arg1} в typeglob",
               "sr" => "Референца на %{arg1} не може се претворити у typeglob",
               "tr" => "%{arg1} başvurusunu typeglob türüne dönüştürmek mümkün değil",
-              "uk" => "Не можна перетворити посилання на %{arg1} на typeglob"
+              "uk" => "Не можна перетворити посилання на %{arg1} на typeglob",
+              "zh" => "不能将 %{arg1} 类型的引用转换为 typeglob"
             },
             "args" => [
               {
@@ -53470,7 +54585,8 @@ $CONF = {
               "ru" => "Значение не является ссылкой на подпрограмму",
               "sr" => "Референца није референца на потпрограм",
               "tr" => "Bir alt yordam başvurusu değil",
-              "uk" => "Це не посилання на підпрограму"
+              "uk" => "Це не посилання на підпрограму",
+              "zh" => "不是子程序引用"
             },
             "args" => []
           },
@@ -53513,7 +54629,8 @@ $CONF = {
               "ru" => "Это не ссылка на GLOB",
               "sr" => "Није референца на GLOB",
               "tr" => "Bir GLOB başvurusu değil",
-              "uk" => "Це не посилання на GLOB"
+              "uk" => "Це не посилання на GLOB",
+              "zh" => "不是 GLOB 引用"
             },
             "args" => []
           },
@@ -53674,6 +54791,9 @@ $CONF = {
               },
               "uk" => {
                 "*" => "Значення не є посиланням типу %{reference_type}"
+              },
+              "zh" => {
+                "*" => "不是 %{reference_type} 引用"
               }
             },
             "args" => [
@@ -53762,7 +54882,8 @@ $CONF = {
               "ru" => "Нельзя отменить ослабление значения, не являющегося ссылкой",
               "sr" => "Не може се уклонити слабљење вредности која није референца",
               "tr" => "Başvuru olmayan bir değerin zayıf başvuru niteliği kaldırılamaz",
-              "uk" => "Неможливо скасувати ослаблення значення, що не є посиланням"
+              "uk" => "Неможливо скасувати ослаблення значення, що не є посиланням",
+              "zh" => "不能对非引用执行 unweaken"
             },
             "args" => []
           },
@@ -53804,7 +54925,8 @@ $CONF = {
               "ru" => "Нельзя ослабить значение, не являющееся ссылкой",
               "sr" => "Не може се ослабити вредност која није референца",
               "tr" => "Başvuru olmayan bir değer zayıf başvuruya dönüştürülemez",
-              "uk" => "Неможливо послабити значення, що не є посиланням"
+              "uk" => "Неможливо послабити значення, що не є посиланням",
+              "zh" => "不能对非引用执行 weaken"
             },
             "args" => []
           },
@@ -53847,7 +54969,8 @@ $CONF = {
               "ru" => "Невозможно преобразовать %{arg2} в строку в %{arg3}",
               "sr" => "Није могуће претворити %{arg2} у ниску при %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} değeri dizgeye dönüştürülemez",
-              "uk" => "Неможливо привести %{arg2} до рядка у %{arg3}"
+              "uk" => "Неможливо привести %{arg2} до рядка у %{arg3}",
+              "zh" => "在 %{arg3} 中复制 %{arg2} 时出现异常"
             },
             "args" => [
               {
@@ -53890,7 +55013,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg3_operation"
             }
@@ -54063,6 +55187,14 @@ $CONF = {
                 "hash" => "Неможливо використати невизначене значення як посилання на хеш",
                 "scalar" => "Неможливо використати невизначене значення як посилання на скаляр",
                 "subroutine" => "Неможливо використати невизначене значення як посилання на підпрограму"
+              },
+              "zh" => {
+                "array" => "不能将未定义值用作 ARRAY 引用",
+                "filehandle" => "不能将未定义值用作文件句柄引用",
+                "hash" => "不能将未定义值用作 HASH 引用",
+                "scalar" => "不能将未定义值用作 SCALAR 引用",
+                "subroutine" => "不能将未定义值用作子程序引用",
+                "symbol" => "不能将未定义值用作符号引用"
               }
             },
             "args" => [
@@ -54129,7 +55261,8 @@ $CONF = {
               "ru" => "Невозможно применить chr к %{arg1}",
               "sr" => "Није могуће применити chr на %{arg1}",
               "tr" => "chr %{arg1} olarak değerlendirilemiyor",
-              "uk" => "Неможливо застосувати chr до %{arg1}"
+              "uk" => "Неможливо застосувати chr до %{arg1}",
+              "zh" => "无法对 %{arg1} 执行 chr"
             },
             "args" => [
               {
@@ -54177,7 +55310,8 @@ $CONF = {
               "ru" => "Использование кодовой точки 0x%{code_point} недопустимо; максимально допустимое значение — 0x%{maximum}",
               "sr" => "Употреба кодне тачке 0x%{code_point} није дозвољена; највећа дозвољена вредност је 0x%{maximum}",
               "tr" => "0x%{code_point} kod noktası kullanılamaz; izin verilen en yüksek değer 0x%{maximum}",
-              "uk" => "Використання кодової точки 0x%{code_point} не дозволено; максимально допустиме значення — 0x%{maximum}"
+              "uk" => "Використання кодової точки 0x%{code_point} не дозволено; максимально допустиме значення — 0x%{maximum}",
+              "zh" => "不允许使用码点 0x%{code_point}；允许的最大值为 0x%{maximum}"
             },
             "args" => [
               {
@@ -54240,7 +55374,8 @@ $CONF = {
               "ru" => "Недопустимый аргумент sv_cat_decode",
               "sr" => "Неважећи аргумент функције sv_cat_decode",
               "tr" => "sv_cat_decode için geçersiz bağımsız değişken",
-              "uk" => "Некоректний аргумент sv_cat_decode"
+              "uk" => "Некоректний аргумент sv_cat_decode",
+              "zh" => "传递给 sv_cat_decode 的参数无效"
             },
             "args" => []
           },
@@ -54282,7 +55417,8 @@ $CONF = {
               "ru" => "\${^ENCODING} больше не поддерживается",
               "sr" => "\${^ENCODING} више није подржан",
               "tr" => "\${^ENCODING} artık desteklenmiyor",
-              "uk" => "\${^ENCODING} більше не підтримується"
+              "uk" => "\${^ENCODING} більше не підтримується",
+              "zh" => "不再支持 \${^ENCODING}"
             },
             "args" => []
           },
@@ -54325,7 +55461,8 @@ $CONF = {
               "ru" => " при раскрытии %{name}",
               "sr" => " при проширењу %{name}",
               "tr" => " %{name} genişletmesinde",
-              "uk" => " під час розгортання %{name}"
+              "uk" => " під час розгортання %{name}",
+              "zh" => " 在 %{name} 的展开中"
             },
             "args" => [
               {
@@ -54381,7 +55518,8 @@ $CONF = {
               "ru" => " \"%{name}\"",
               "sr" => " „%{name}“",
               "tr" => " \"%{name}\"",
-              "uk" => " \"%{name}\""
+              "uk" => " \"%{name}\"",
+              "zh" => " “%{name}”"
             },
             "args" => [
               {
@@ -54437,7 +55575,8 @@ $CONF = {
               "ru" => " \\p{%{name}}",
               "sr" => " \\p{%{name}}",
               "tr" => " \\p{%{name}}",
-              "uk" => " \\p{%{name}}"
+              "uk" => " \\p{%{name}}",
+              "zh" => " \\p{%{name}}"
             },
             "args" => [
               {
@@ -54493,7 +55632,8 @@ $CONF = {
               "ru" => "Ошибка \"%{error}\"\n",
               "sr" => "Грешка „%{error}“\n",
               "tr" => "Hata: \"%{error}\"\n",
-              "uk" => "Помилка \"%{error}\"\n"
+              "uk" => "Помилка \"%{error}\"\n",
+              "zh" => "错误：\"%{error}\"\n"
             },
             "args" => [
               {
@@ -54548,7 +55688,8 @@ $CONF = {
               "ru" => "Слишком большое значение кодовой точки в \"%{contents}\"\n",
               "sr" => "Кодна тачка је превелика у „%{contents}“\n",
               "tr" => "\"%{contents}\" içinde kod noktası çok büyük\n",
-              "uk" => "Завелика кодова точка в \"%{contents}\"\n"
+              "uk" => "Завелика кодова точка в \"%{contents}\"\n",
+              "zh" => "“%{contents}”中的码点过大\n"
             },
             "args" => [
               {
@@ -54603,7 +55744,8 @@ $CONF = {
               "ru" => "Истекло время ожидания определения свойства другим потоком\n",
               "sr" => "Истекло је време чекања да друга нит дефинише својство\n",
               "tr" => "Başka bir iş parçacığının tanımlaması beklenirken zaman aşımı\n",
-              "uk" => "Вичерпано час очікування визначення іншим потоком\n"
+              "uk" => "Вичерпано час очікування визначення іншим потоком\n",
+              "zh" => "等待另一个线程定义时超时\n"
             },
             "args" => []
           },
@@ -54652,7 +55794,8 @@ $CONF = {
               "ru" => "Небезопасное переопределение для области частного использования\n",
               "sr" => "Небезбедно преклапање за приватну употребу\n",
               "tr" => "Güvenli olmayan özel kullanım geçersiz kılması\n",
-              "uk" => "Небезпечне перевизначення для області приватного використання\n"
+              "uk" => "Небезпечне перевизначення для області приватного використання\n",
+              "zh" => "不安全的私用区覆盖定义\n"
             },
             "args" => []
           },
@@ -54700,7 +55843,8 @@ $CONF = {
               "ru" => "Недопустимый диапазон в \"%{contents}\"\n",
               "sr" => "Недозвољен опсег у „%{contents}“\n",
               "tr" => "\"%{contents}\" içinde geçersiz aralık\n",
-              "uk" => "Недопустимий діапазон у \"%{contents}\"\n"
+              "uk" => "Недопустимий діапазон у \"%{contents}\"\n",
+              "zh" => "“%{contents}”中的范围非法\n"
             },
             "args" => [
               {
@@ -54756,7 +55900,8 @@ $CONF = {
               "ru" => "Небезопасное пользовательское свойство\n",
               "sr" => "Небезбедно кориснички дефинисано својство\n",
               "tr" => "Güvenli olmayan kullanıcı tanımlı özellik\n",
-              "uk" => "Небезпечна властивість, визначена користувачем\n"
+              "uk" => "Небезпечна властивість, визначена користувачем\n",
+              "zh" => "不安全的用户自定义属性\n"
             },
             "args" => []
           },
@@ -54804,7 +55949,8 @@ $CONF = {
               "ru" => "Не удалось найти определение свойства Unicode\n",
               "sr" => "Није могуће пронаћи дефиницију Уникод својства\n",
               "tr" => "Unicode özellik tanımı bulunamıyor\n",
-              "uk" => "Не вдалося знайти визначення властивості Unicode\n"
+              "uk" => "Не вдалося знайти визначення властивості Unicode\n",
+              "zh" => "找不到 Unicode 属性定义\n"
             },
             "args" => []
           },
@@ -54852,7 +55998,8 @@ $CONF = {
               "ru" => "Недопустимое имя пользовательского свойства\n",
               "sr" => "Недозвољено име кориснички дефинисаног својства\n",
               "tr" => "Geçersiz kullanıcı tanımlı özellik adı\n",
-              "uk" => "Недопустиме ім’я властивості, визначеної користувачем\n"
+              "uk" => "Недопустиме ім’я властивості, визначеної користувачем\n",
+              "zh" => "非法的用户自定义属性名称\n"
             },
             "args" => []
           },
@@ -54900,7 +56047,8 @@ $CONF = {
               "ru" => "Неизвестное имя пользовательского свойства\n",
               "sr" => "Непознато име кориснички дефинисаног својства\n",
               "tr" => "Bilinmeyen kullanıcı tanımlı özellik adı\n",
-              "uk" => "Невідома назва властивості, визначеної користувачем\n"
+              "uk" => "Невідома назва властивості, визначеної користувачем\n",
+              "zh" => "未知的用户自定义属性名称\n"
             },
             "args" => []
           },
@@ -54948,7 +56096,8 @@ $CONF = {
               "ru" => "Бесконечная рекурсия в пользовательском свойстве\n",
               "sr" => "Бесконачна рекурзија у кориснички дефинисаном својству\n",
               "tr" => "Kullanıcı tanımlı özellikte sonsuz özyineleme\n",
-              "uk" => "Нескінченна рекурсія у властивості, визначеній користувачем\n"
+              "uk" => "Нескінченна рекурсія у властивості, визначеній користувачем\n",
+              "zh" => "用户自定义属性中发生无限递归\n"
             },
             "args" => []
           },
@@ -54996,7 +56145,8 @@ $CONF = {
               "ru" => "Нет значений свойства Unicode, соответствующих шаблону:\n",
               "sr" => "Ниједна џокер вредност Уникод својства се не подудара:\n",
               "tr" => "Hiçbir Unicode özellik değeri joker karakteri eşleşmiyor:\n",
-              "uk" => "Жодне значення властивості Unicode не відповідає шаблону з підстановними символами:\n"
+              "uk" => "Жодне значення властивості Unicode не відповідає шаблону з підстановними символами:\n",
+              "zh" => "没有 Unicode 属性值与此通配符匹配：\n"
             },
             "args" => []
           },
@@ -55044,7 +56194,8 @@ $CONF = {
               "ru" => "Шаблон значения свойства Unicode не завершён\n",
               "sr" => "Незатворен џокер за Уникод својство\n",
               "tr" => "Unicode özellik joker karakterinin sonlandırıcısı eksik\n",
-              "uk" => "Незавершений шаблон пошуку властивості Unicode\n"
+              "uk" => "Незавершений шаблон пошуку властивості Unicode\n",
+              "zh" => "Unicode 属性通配符未终止\n"
             },
             "args" => []
           },
@@ -55093,7 +56244,8 @@ $CONF = {
               "ru" => "Неподдерживаемая кодировка скрипта: %{encoding}",
               "sr" => "Неподржано кодирање скрипте %{encoding}",
               "tr" => "Desteklenmeyen betik kodlaması %{encoding}",
-              "uk" => "Непідтримуване кодування сценарію %{encoding}"
+              "uk" => "Непідтримуване кодування сценарію %{encoding}",
+              "zh" => "不支持脚本编码 %{encoding}"
             },
             "args" => [
               {
@@ -55141,7 +56293,8 @@ $CONF = {
               "ru" => "Некорректный суррогат UTF-16",
               "sr" => "Неисправан сурогат у UTF-16",
               "tr" => "Bozuk UTF-16 vekil çifti",
-              "uk" => "Некоректний сурогат UTF-16"
+              "uk" => "Некоректний сурогат UTF-16",
+              "zh" => "UTF-16 代理项格式错误"
             },
             "args" => []
           },
@@ -55184,7 +56337,8 @@ $CONF = {
               "ru" => "Кодировка скрипта UTF-32BE не поддерживается",
               "sr" => "Кодирање скрипте UTF-32BE није подржано",
               "tr" => "Desteklenmeyen betik kodlaması UTF-32BE",
-              "uk" => "Непідтримуване кодування скрипту UTF-32BE"
+              "uk" => "Непідтримуване кодування скрипту UTF-32BE",
+              "zh" => "不支持 UTF-32BE 脚本编码"
             },
             "args" => []
           },
@@ -55227,7 +56381,8 @@ $CONF = {
               "ru" => "Кодировка скрипта UTF-32LE не поддерживается",
               "sr" => "Кодирање скрипте UTF-32LE није подржано",
               "tr" => "Desteklenmeyen betik kodlaması UTF-32LE",
-              "uk" => "Непідтримуване кодування скрипту UTF-32LE"
+              "uk" => "Непідтримуване кодування скрипту UTF-32LE",
+              "zh" => "不支持 UTF-32LE 脚本编码"
             },
             "args" => []
           },
@@ -55270,7 +56425,8 @@ $CONF = {
               "ru" => "Некорректный символ UTF-8 (фатальная ошибка)",
               "sr" => "Неисправан UTF-8 знак (фатално)",
               "tr" => "Bozuk UTF-8 karakteri (ölümcül)",
-              "uk" => "Некоректний символ UTF-8 (фатальна помилка)"
+              "uk" => "Некоректний символ UTF-8 (фатальна помилка)",
+              "zh" => "UTF-8 字符格式错误（致命）"
             },
             "args" => []
           },
@@ -55319,7 +56475,8 @@ $CONF = {
               "ru" => "Некорректная строка UTF-8 в pack",
               "sr" => "Неисправан UTF-8 стринг у pack",
               "tr" => "pack içinde bozuk UTF-8 dizgesi",
-              "uk" => "Некоректний рядок UTF-8 у pack"
+              "uk" => "Некоректний рядок UTF-8 у pack",
+              "zh" => "pack 中的 UTF-8 字符串格式错误"
             },
             "args" => []
           },
@@ -55362,7 +56519,8 @@ $CONF = {
               "ru" => "Некорректная строка UTF-8 для формата '%{arg1}' в unpack",
               "sr" => "Неисправан UTF-8 низ у формату „%{arg1}“ за unpack",
               "tr" => "unpack içindeki '%{arg1}' biçiminde bozuk UTF-8 dizgesi",
-              "uk" => "Некоректний рядок UTF-8 для формату '%{arg1}' в unpack"
+              "uk" => "Некоректний рядок UTF-8 для формату '%{arg1}' в unpack",
+              "zh" => "unpack 的 '%{arg1}' 格式中包含格式错误的 UTF-8 字符串"
             },
             "args" => [
               {
@@ -55411,7 +56569,8 @@ $CONF = {
               "ru" => "Некорректная строка UTF-8 в unpack",
               "sr" => "Неисправан UTF-8 стринг у unpack",
               "tr" => "unpack içinde bozuk UTF-8 dizgesi",
-              "uk" => "Некоректний рядок UTF-8 у unpack"
+              "uk" => "Некоректний рядок UTF-8 у unpack",
+              "zh" => "unpack 中的 UTF-8 字符串格式错误"
             },
             "args" => []
           },
@@ -55530,6 +56689,9 @@ $CONF = {
                 "complement" => "Використання рядків із кодовими точками понад 0xFF як аргументів оператора доповнення до одиниці (~) не дозволено",
                 "ncomplement" => "Використання рядків із кодовими точками понад 0xFF як аргументів числового оператора доповнення до одиниці (~) не дозволено",
                 "scomplement" => "Використання рядків із кодовими точками понад 0xFF як аргументів рядкового оператора доповнення до одиниці (~) не дозволено"
+              },
+              "zh" => {
+                "*" => "不允许将码点大于 0xFF 的字符串用作 %{operator} 运算符的参数"
               }
             },
             "args" => [
@@ -55599,7 +56761,8 @@ $CONF = {
               "ru" => "Широкий символ",
               "sr" => "Широки знак",
               "tr" => "Geniş karakter",
-              "uk" => "Широкий символ"
+              "uk" => "Широкий символ",
+              "zh" => "宽字符"
             },
             "args" => []
           },
@@ -55642,7 +56805,8 @@ $CONF = {
               "ru" => "Широкий символ в %{arg1}",
               "sr" => "Широки знак у операцији %{arg1}",
               "tr" => "%{arg1} bağlamında geniş karakter saptandı",
-              "uk" => "Широкий символ у %{arg1}"
+              "uk" => "Широкий символ у %{arg1}",
+              "zh" => "在 %{arg1} 操作中遇到宽字符"
             },
             "args" => [
               {
@@ -55680,7 +56844,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -55724,7 +56889,8 @@ $CONF = {
               "ru" => "Код лексического анализа попытался вставить символ вне Latin-1 во входные данные в Latin-1",
               "sr" => "Лексер је покушао да убаци знак који није Latin-1 у улазни текст кодирања Latin-1",
               "tr" => "Kod çözümleme sırasında Latin-1 girdisine Latin-1 dışı bir karakter eklenmeye çalışıldı",
-              "uk" => "Код лексичного аналізатора спробував вставити символ поза Latin-1 у вхідні дані Latin-1"
+              "uk" => "Код лексичного аналізатора спробував вставити символ поза Latin-1 у вхідні дані Latin-1",
+              "zh" => "词法分析代码试图将非 Latin-1 字符插入 Latin-1 输入"
             },
             "args" => []
           },
@@ -55767,7 +56933,8 @@ $CONF = {
               "ru" => "Широкий символ в \$/",
               "sr" => "Широки знак у \$/",
               "tr" => "\$/ içinde geniş karakter",
-              "uk" => "Широкий символ у \$/"
+              "uk" => "Широкий символ у \$/",
+              "zh" => "\$/ 中有宽字符"
             },
             "args" => []
           },
@@ -55809,7 +56976,8 @@ $CONF = {
               "ru" => "Использование строк с кодовыми точками выше 0xFF в качестве аргументов vec запрещено",
               "sr" => "Забрањено је коришћење стрингова са кодним тачкама већим од 0xFF као аргумената функције vec",
               "tr" => "0xFF üzerindeki kod noktalarını içeren dizelerin vec bağımsız değişkeni olarak kullanılması yasaktır",
-              "uk" => "Використання рядків із кодовими точками понад 0xFF як аргументів vec заборонено"
+              "uk" => "Використання рядків із кодовими точками понад 0xFF як аргументів vec заборонено",
+              "zh" => "禁止将包含超过 0xFF 的码点的字符串用作 vec 的参数"
             },
             "args" => []
           },
@@ -55856,7 +57024,8 @@ $CONF = {
               "ru" => "Следующая операция не реализована: %{operation}",
               "sr" => "Следећа операција није имплементирана: %{operation}",
               "tr" => "Şu işlem uygulanmamış: %{operation}",
-              "uk" => "Таку операцію не реалізовано: %{operation}"
+              "uk" => "Таку операцію не реалізовано: %{operation}",
+              "zh" => "以下操作尚未实现：%{operation}"
             },
             "args" => [
               {
@@ -56153,7 +57322,8 @@ $CONF = {
               "ru" => "%{arg2}",
               "sr" => "%{arg2}",
               "tr" => "%{arg2}",
-              "uk" => "%{arg2}"
+              "uk" => "%{arg2}",
+              "zh" => "%{arg2}"
             },
             "args" => [
               {
@@ -56262,7 +57432,8 @@ $CONF = {
               "ru" => "Эта сборка Perl не поддерживает обход ключей хеша в случайном порядке, однако был вызван Perl_hv_rand_set().",
               "sr" => "Овај Perl није изграђен са подршком за насумични редослед кључева хеша, али је нешто позвало Perl_hv_rand_set().",
               "tr" => "Bu Perl, karma anahtarlarının rastgele sırada dolaşımını destekleyecek şekilde derlenmemiş; buna rağmen Perl_hv_rand_set() çağrıldı.",
-              "uk" => "Цей Perl зібрано без підтримки випадкового порядку обходу ключів хешу, але щось викликало Perl_hv_rand_set()."
+              "uk" => "Цей Perl зібрано без підтримки випадкового порядку обходу ключів хешу, але щось викликало Perl_hv_rand_set().",
+              "zh" => "此 Perl 未编译随机化哈希键遍历支持，但某处调用了 Perl_hv_rand_set()。"
             },
             "args" => []
           },
@@ -56305,7 +57476,8 @@ $CONF = {
               "ru" => "К сожалению, длина ключей хеша должна быть меньше 2**31 байт",
               "sr" => "Нажалост, кључеви хеша морају бити мањи од 2**31 бајтова",
               "tr" => "Üzgünüz, karma anahtarları 2**31 bayttan kısa olmalıdır",
-              "uk" => "На жаль, розмір ключів хешу має бути меншим за 2**31 байтів"
+              "uk" => "На жаль, розмір ключів хешу має бути меншим за 2**31 байтів",
+              "zh" => "抱歉，哈希键必须小于 2**31 字节"
             },
             "args" => []
           },
@@ -56347,7 +57519,8 @@ $CONF = {
               "ru" => "Попытка доступа к недопустимому ключу '%{key}' в хеше с ограниченным набором ключей",
               "sr" => "Покушај приступа недозвољеном кључу „%{key}“ у ограниченом хешу",
               "tr" => "Kısıtlı bir karmada izin verilmeyen '%{key}' anahtarına erişilmeye çalışıldı",
-              "uk" => "Спроба доступу до недозволеного ключа '%{key}' у хеші з обмеженим набором ключів"
+              "uk" => "Спроба доступу до недозволеного ключа '%{key}' у хеші з обмеженим набором ключів",
+              "zh" => "尝试访问受限哈希中的禁止键 '%{key}'"
             },
             "args" => [
               {
@@ -56396,7 +57569,8 @@ $CONF = {
               "ru" => "Попытка удаления недопустимого ключа '%{key}' из хеша с ограниченным набором ключей",
               "sr" => "Покушај брисања недозвољеног кључа „%{key}“ из ограниченог хеша",
               "tr" => "Kısıtlı bir karmadan izin verilmeyen '%{key}' anahtarı silinmeye çalışıldı",
-              "uk" => "Спроба видалити недозволений ключ '%{key}' із хешу з обмеженим набором ключів"
+              "uk" => "Спроба видалити недозволений ключ '%{key}' із хешу з обмеженим набором ключів",
+              "zh" => "尝试从受限哈希中删除禁止键 '%{key}'"
             },
             "args" => [
               {
@@ -56733,6 +57907,23 @@ $CONF = {
                 "underscore_not_allowed" => "Некоректний формат версії (знаки підкреслення заборонено)",
                 "version_required" => "Некоректний формат версії (потрібно вказати версію)",
                 "zero_before_decimal" => "Некоректний формат версії (перед десятковою крапкою потрібен 0)"
+              },
+              "zh" => {
+                "alpha_without_decimal" => "版本格式无效（alpha 后缺少小数部分）",
+                "component_too_long" => "版本格式无效（小数点之间最多允许 3 位数字）",
+                "dotted_decimal_needs_v" => "版本格式无效（点分十进制版本必须以 'v' 开头）",
+                "dotted_decimal_parts" => "版本格式无效（点分十进制版本至少需要三部分）",
+                "fractional_part_required" => "版本格式无效（必须有小数部分）",
+                "leading_zero" => "版本格式无效（不能有前导零）",
+                "misplaced_underscore" => "版本格式无效（下划线位置错误）",
+                "multiple_underscores" => "版本格式无效（下划线过多）",
+                "negative_version" => "版本格式无效（版本号不能为负数）",
+                "non_numeric_data" => "版本格式无效（包含非数字数据）",
+                "trailing_decimal" => "版本格式无效（末尾有小数点）",
+                "underscore_before_decimal" => "版本格式无效（小数点前有下划线）",
+                "underscore_not_allowed" => "版本格式无效（不允许有下划线）",
+                "version_required" => "版本格式无效（需要版本号）",
+                "zero_before_decimal" => "版本格式无效（小数点前必须有 0）"
               }
             },
             "args" => [
@@ -56798,7 +57989,8 @@ $CONF = {
               "ru" => "Неверный формат версии (нечисловые данные)",
               "sr" => "Неважећи формат верзије (подаци нису бројчани)",
               "tr" => "Geçersiz sürüm biçimi (sayısal olmayan veri)",
-              "uk" => "Некоректний формат версії (нечислові дані)"
+              "uk" => "Некоректний формат версії (нечислові дані)",
+              "zh" => "版本格式无效（包含非数值数据）"
             },
             "args" => []
           },
@@ -56840,7 +58032,8 @@ $CONF = {
               "ru" => "Некорректный объект version",
               "sr" => "Неважећи објекат верзије",
               "tr" => "Geçersiz sürüm nesnesi",
-              "uk" => "Некоректний об'єкт версії"
+              "uk" => "Некоректний об'єкт версії",
+              "zh" => "版本对象无效"
             },
             "args" => []
           },
@@ -56882,7 +58075,8 @@ $CONF = {
               "ru" => "Нельзя использовать '%{arg1}' после -mname",
               "sr" => "Није могуће користити „%{arg1}“ после -mname",
               "tr" => "-mname ifadesinden sonra '%{arg1}' kullanılamaz",
-              "uk" => "Неможливо використовувати '%{arg1}' після -mname"
+              "uk" => "Неможливо використовувати '%{arg1}' після -mname",
+              "zh" => "-mname 后不能使用 '%{arg1}'"
             },
             "args" => [
               {
@@ -56932,7 +58126,8 @@ $CONF = {
               "ru" => " во время глобального уничтожения",
               "sr" => " током уништавања глобалних података",
               "tr" => " genel yok etme sırasında",
-              "uk" => " під час глобального знищення"
+              "uk" => " під час глобального знищення",
+              "zh" => " 在全局销毁期间"
             },
             "args" => []
           },
@@ -57030,6 +58225,10 @@ $CONF = {
               "uk" => {
                 "*" => ", <%{handle}> фрагмент %{line}",
                 "line" => ", <%{handle}> рядок %{line}"
+              },
+              "zh" => {
+                "*" => "，<%{handle}> 块 %{line}",
+                "line" => "，<%{handle}> 第 %{line} 行"
               }
             },
             "args" => [
@@ -57614,6 +58813,36 @@ $CONF = {
                 "within_string" => {
                   "parser" => " у файлі %{file}, рядок %{line}, усередині рядка\n"
                 }
+              },
+              "zh" => {
+                "*" => {
+                  "parser" => " 于 %{file} 第 %{line} 行。\n",
+                  "source" => " 于 %{file} 第 %{line} 行"
+                },
+                "empty_near" => {
+                  "parser" => " 于 %{file} 第 %{line} 行， \n"
+                },
+                "end_of_line" => {
+                  "parser" => " 于 %{file} 第 %{line} 行，行末\n"
+                },
+                "eof" => {
+                  "parser" => " 于 %{file} 第 %{line} 行，文件结尾处\n"
+                },
+                "near" => {
+                  "parser" => " 于 %{file} 第 %{line} 行，附近：“%{value}”\n"
+                },
+                "next_char" => {
+                  "parser" => " 于 %{file} 第 %{line} 行，下一个字符为 %{value}\n"
+                },
+                "next_token" => {
+                  "parser" => " 于 %{file} 第 %{line} 行，下一个词法单元为 ???\n"
+                },
+                "within_pattern" => {
+                  "parser" => " 于 %{file} 第 %{line} 行，位于模式中\n"
+                },
+                "within_string" => {
+                  "parser" => " 于 %{file} 第 %{line} 行，位于字符串中\n"
+                }
               }
             },
             "args" => [
@@ -57699,7 +58928,8 @@ $CONF = {
               "ru" => " (контекст недоступен)",
               "sr" => " (контекст није доступан)",
               "tr" => " (bağlam kullanılamıyor)",
-              "uk" => " (контекст недоступний)"
+              "uk" => " (контекст недоступний)",
+              "zh" => "（上下文不可用）"
             },
             "args" => []
           },
@@ -57797,6 +59027,10 @@ $CONF = {
               "uk" => {
                 "missing_operator" => " (Пропущено оператор перед \"%{value}\"?)",
                 "predeclare" => " (Можливо, потрібно попередньо оголосити \"%{value}\"?)"
+              },
+              "zh" => {
+                "missing_operator" => "（“%{value}”前缺少运算符？）",
+                "predeclare" => "（是否需要预先声明“%{value}”？）"
               }
             },
             "args" => [
@@ -57911,6 +59145,9 @@ $CONF = {
                 "*" => "Пропущено %{omitted_count} додаткових діагностичних повідомлень щодо іменованих параметрів",
                 "few" => "Пропущено %{omitted_count} додаткові діагностичні повідомлення щодо іменованих параметрів",
                 "one" => "Пропущено %{omitted_count} додаткове діагностичне повідомлення щодо іменованих параметрів"
+              },
+              "zh" => {
+                "*" => "省略了其他命名参数诊断"
               }
             },
             "args" => [
@@ -57975,7 +59212,8 @@ $CONF = {
               "ru" => "В качестве исключения выброшена ссылка",
               "sr" => "Референца је бачена као изузетак",
               "tr" => "Bir başvuru istisna olarak fırlatıldı",
-              "uk" => "Як виняток викинуто посилання"
+              "uk" => "Як виняток викинуто посилання",
+              "zh" => "有引用被抛出作为异常"
             },
             "args" => [
               {
@@ -58033,7 +59271,8 @@ $CONF = {
               "ru" => "%{text}",
               "sr" => "%{text}",
               "tr" => "%{text}",
-              "uk" => "%{text}"
+              "uk" => "%{text}",
+              "zh" => "%{text}"
             },
             "args" => [
               {
@@ -58095,7 +59334,8 @@ $CONF = {
               "ru" => "паника: отрицательное количество в av_extend_guts() (%{arg1})",
               "sr" => "паника: av_extend_guts() негативан број (%{arg1})",
               "tr" => "panic: av_extend_guts() negatif sayım (%{arg1})",
-              "uk" => "паніка: від'ємна кількість в av_extend_guts() (%{arg1})"
+              "uk" => "паніка: від'ємна кількість в av_extend_guts() (%{arg1})",
+              "zh" => "panic: av_extend_guts() 计数为负（%{arg1}）"
             },
             "args" => [
               {
@@ -58146,7 +59386,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неизвестный OA_*: %{arg1}",
               "sr" => "паника: непозната OA_* вредност: %{arg1}",
               "tr" => "panic: bilinmeyen OA_*: %{arg1}",
-              "uk" => "паніка: невідомий OA_*: %{arg1}"
+              "uk" => "паніка: невідомий OA_*: %{arg1}",
+              "zh" => "panic: 未知 OA_*：%{arg1}"
             },
             "args" => [
               {
@@ -58197,7 +59438,8 @@ $CONF = {
               "ru" => "паника: CV без прототипа в ck_entersub_args_proto, flags=%{arg2}",
               "sr" => "паника: ck_entersub_args_proto CV без прототипа, заставице=%{arg2}",
               "tr" => "panic: ck_entersub_args_proto, proto'suz CV, flags=%{arg2}",
-              "uk" => "паніка: CV без прототипу в ck_entersub_args_proto, flags=%{arg2}"
+              "uk" => "паніка: CV без прототипу в ck_entersub_args_proto, flags=%{arg2}",
+              "zh" => "panic: ck_entersub_args_proto 的 CV 没有原型，flags=%{arg2}"
             },
             "args" => [
               {
@@ -58247,7 +59489,8 @@ $CONF = {
               "ru" => "паника: rv2cv_op_cv: неверные флаги %{arg2}",
               "sr" => "паника: rv2cv_op_cv има неважеће заставице %{arg2}",
               "tr" => "panic: rv2cv_op_cv hatalı bayraklar %{arg2}",
-              "uk" => "паніка: rv2cv_op_cv, неправильні прапорці %{arg2}"
+              "uk" => "паніка: rv2cv_op_cv, неправильні прапорці %{arg2}",
+              "zh" => "panic: rv2cv_op_cv 的标志 %{arg2} 无效"
             },
             "args" => [
               {
@@ -58297,7 +59540,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: goto, тип=%{arg1}, ix=%{arg2}",
               "sr" => "паника: goto, type=%{arg1}, ix=%{arg2}",
               "tr" => "panic: goto, type=%{arg1}, ix=%{arg2}",
-              "uk" => "паніка: goto, type=%{arg1}, ix=%{arg2}"
+              "uk" => "паніка: goto, type=%{arg1}, ix=%{arg2}",
+              "zh" => "内部错误：goto，type=%{arg1}，ix=%{arg2}"
             },
             "args" => [
               {
@@ -58352,7 +59596,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: docatch: недопустимый ix=%{arg1}",
               "sr" => "паника: docatch: недозвољен ix=%{arg1}",
               "tr" => "panic: docatch: geçersiz ix=%{arg1}",
-              "uk" => "паніка: docatch: неприпустимий ix=%{arg1}"
+              "uk" => "паніка: docatch: неприпустимий ix=%{arg1}",
+              "zh" => "内部错误：docatch：ix=%{arg1} 非法"
             },
             "args" => [
               {
@@ -58402,7 +59647,8 @@ $CONF = {
               "ru" => "паника: restartop в call_list\n",
               "sr" => "паника: restartop in call_list\n",
               "tr" => "panic: call_list içinde restartop\n",
-              "uk" => "паніка: restartop у call_list\n"
+              "uk" => "паніка: restartop у call_list\n",
+              "zh" => "panic: call_list 中出现 restartop\n"
             },
             "args" => []
           },
@@ -58448,7 +59694,8 @@ $CONF = {
               "ru" => "паника: restartop\n",
               "sr" => "паника: недостаје циљ restartop\n",
               "tr" => "panic: restartop\n",
-              "uk" => "паніка: restartop\n"
+              "uk" => "паніка: restartop\n",
+              "zh" => "内部错误: restartop\n"
             },
             "args" => []
           },
@@ -58493,7 +59740,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: return, тип=%{arg1}",
               "sr" => "паника: return, type=%{arg1}",
               "tr" => "panic: return, type=%{arg1}",
-              "uk" => "паніка: return, type=%{arg1}"
+              "uk" => "паніка: return, type=%{arg1}",
+              "zh" => "内部错误：return，type=%{arg1}"
             },
             "args" => [
               {
@@ -58543,7 +59791,8 @@ $CONF = {
               "ru" => "паника: restartop в perl_run\n",
               "sr" => "паника: restartop in perl_run\n",
               "tr" => "panic: perl_run içinde restartop\n",
-              "uk" => "паніка: restartop у perl_run\n"
+              "uk" => "паніка: restartop у perl_run\n",
+              "zh" => "panic: perl_run 中出现 restartop\n"
             },
             "args" => []
           },
@@ -58589,7 +59838,8 @@ $CONF = {
               "ru" => "паника: magic_setdbline len=%{length}, ptr='%{pointer}'",
               "sr" => "паника: magic_setdbline len=%{length}, ptr='%{pointer}'",
               "tr" => "panic: magic_setdbline len=%{length}, ptr='%{pointer}'",
-              "uk" => "паніка: magic_setdbline len=%{length}, ptr='%{pointer}'"
+              "uk" => "паніка: magic_setdbline len=%{length}, ptr='%{pointer}'",
+              "zh" => "内部错误: magic_setdbline len=%{length}, ptr='%{pointer}'"
             },
             "args" => [
               {
@@ -58644,7 +59894,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: переполнение при согласовании интерфейсов",
               "sr" => "паника: прекорачење руковања",
               "tr" => "panic: el sıkışma arabelleği taştı",
-              "uk" => "паніка: переповнення під час узгодження"
+              "uk" => "паніка: переповнення під час узгодження",
+              "zh" => "panic: 握手溢出"
             },
             "args" => []
           },
@@ -58691,7 +59942,8 @@ $CONF = {
               "ru" => "паника: переполнение буфера %{api}",
               "sr" => "паника: преливање бафера функције %{api}",
               "tr" => "panic: %{api} arabellek taşması",
-              "uk" => "паніка: переповнення буфера %{api}"
+              "uk" => "паніка: переповнення буфера %{api}",
+              "zh" => "恐慌：%{api} 缓冲区溢出"
             },
             "args" => [
               {
@@ -58741,7 +59993,8 @@ $CONF = {
               "ru" => "panic: frexp: %{value}",
               "sr" => "паника: frexp: %{value}",
               "tr" => "panic: frexp: %{value}",
-              "uk" => "паніка: frexp: %{value}"
+              "uk" => "паніка: frexp: %{value}",
+              "zh" => "内部错误：frexp：%{value}"
             },
             "args" => [
               {
@@ -58793,7 +60046,8 @@ $CONF = {
               "ru" => "panic: сбой quadmath_snprintf, формат \"%{format}\"",
               "sr" => "паника: quadmath_snprintf није успео, формат \"%{format}\"",
               "tr" => "panic: quadmath_snprintf başarısız oldu, biçim \"%{format}\"",
-              "uk" => "паніка: збій quadmath_snprintf, формат \"%{format}\""
+              "uk" => "паніка: збій quadmath_snprintf, формат \"%{format}\"",
+              "zh" => "panic: quadmath_snprintf 失败，格式 \"%{format}\""
             },
             "args" => [
               {
@@ -58844,7 +60098,8 @@ $CONF = {
               "ru" => "panic: недопустимый формат quadmath \"%{format}\"",
               "sr" => "паника: неисправан quadmath формат \"%{format}\"",
               "tr" => "panic: quadmath geçersiz biçim \"%{format}\"",
-              "uk" => "паніка: некоректний формат quadmath \"%{format}\""
+              "uk" => "паніка: некоректний формат quadmath \"%{format}\"",
+              "zh" => "panic: quadmath 格式无效 \"%{format}\""
             },
             "args" => [
               {
@@ -58894,7 +60149,8 @@ $CONF = {
               "ru" => "паника: my_vsnprintf недоступен при использовании quadmath",
               "sr" => "паника: my_vsnprintf није доступан са quadmath",
               "tr" => "panic: quadmath ile my_vsnprintf kullanılamıyor",
-              "uk" => "паніка: my_vsnprintf недоступна з quadmath"
+              "uk" => "паніка: my_vsnprintf недоступна з quadmath",
+              "zh" => "panic: quadmath 模式下 my_vsnprintf 不可用"
             },
             "args" => []
           },
@@ -58939,7 +60195,8 @@ $CONF = {
               "ru" => "panic: переполнение буфера my_snprintf",
               "sr" => "паника: прекорачен капацитет бафера my_snprintf",
               "tr" => "panic: my_snprintf arabellek taşması",
-              "uk" => "паніка: переповнення буфера my_snprintf"
+              "uk" => "паніка: переповнення буфера my_snprintf",
+              "zh" => "panic: my_snprintf 缓冲区溢出"
             },
             "args" => []
           },
@@ -58984,7 +60241,8 @@ $CONF = {
               "ru" => "паника: переполнение буфера my_vsnprintf",
               "sr" => "паника: прекорачење бафера my_vsnprintf",
               "tr" => "panic: my_vsnprintf arabellek taşması",
-              "uk" => "паніка: переповнення буфера my_vsnprintf"
+              "uk" => "паніка: переповнення буфера my_vsnprintf",
+              "zh" => "panic: my_vsnprintf 缓冲区溢出"
             },
             "args" => []
           },
@@ -59029,7 +60287,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: avhv_delete больше не поддерживается",
               "sr" => "паника: avhv_delete више није подржан",
               "tr" => "panic: avhv_delete artık desteklenmiyor",
-              "uk" => "паніка: avhv_delete більше не підтримується"
+              "uk" => "паніка: avhv_delete більше не підтримується",
+              "zh" => "panic: 不再支持 avhv_delete"
             },
             "args" => []
           },
@@ -59074,7 +60333,8 @@ $CONF = {
               "ru" => "panic: hv_placeholders_set",
               "sr" => "паника: hv_placeholders_set",
               "tr" => "panic: hv_placeholders_set",
-              "uk" => "паніка: hv_placeholders_set"
+              "uk" => "паніка: hv_placeholders_set",
+              "zh" => "内部错误: hv_placeholders_set"
             },
             "args" => []
           },
@@ -59119,7 +60379,8 @@ $CONF = {
               "ru" => "panic: hv_placeholders_p",
               "sr" => "паника: hv_placeholders_p",
               "tr" => "panic: hv_placeholders_p",
-              "uk" => "panic: hv_placeholders_p"
+              "uk" => "panic: hv_placeholders_p",
+              "zh" => "内部错误: hv_placeholders_p"
             },
             "args" => []
           },
@@ -59164,7 +60425,8 @@ $CONF = {
               "ru" => "паника: недопустимые флаги %{arg1} в refcounted_he_chain_2hv",
               "sr" => "паника: refcounted_he_chain_2hv неисправне заставице %{arg1}",
               "tr" => "panic: refcounted_he_chain_2hv hatalı bayraklar %{arg1}",
-              "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_chain_2hv"
+              "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_chain_2hv",
+              "zh" => "panic: refcounted_he_chain_2hv 标志无效 %{arg1}"
             },
             "args" => [
               {
@@ -59215,7 +60477,8 @@ $CONF = {
               "ru" => "паника: недопустимые флаги %{arg1} в refcounted_he_new_sv",
               "sr" => "паника: refcounted_he_new_sv неисправне заставице %{arg1}",
               "tr" => "panic: refcounted_he_new_sv hatalı bayraklar %{arg1}",
-              "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_new_sv"
+              "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_new_sv",
+              "zh" => "panic: refcounted_he_new_sv 标志无效 %{arg1}"
             },
             "args" => [
               {
@@ -59266,7 +60529,8 @@ $CONF = {
               "ru" => "паника: недопустимые флаги %{arg1} в refcounted_he_fetch_pvn",
               "sr" => "паника: refcounted_he_fetch_pvn неисправне заставице %{arg1}",
               "tr" => "panic: refcounted_he_fetch_pvn hatalı bayraklar %{arg1}",
-              "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_fetch_pvn"
+              "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_fetch_pvn",
+              "zh" => "panic: refcounted_he_fetch_pvn 标志无效 %{arg1}"
             },
             "args" => [
               {
@@ -59317,7 +60581,8 @@ $CONF = {
               "ru" => "паника: недопустимые флаги %{arg1} в refcounted_he_fetch_sv",
               "sr" => "паника: refcounted_he_fetch_sv неисправне заставице %{arg1}",
               "tr" => "panic: refcounted_he_fetch_sv hatalı bayraklar %{arg1}",
-              "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_fetch_sv"
+              "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_fetch_sv",
+              "zh" => "panic: refcounted_he_fetch_sv 标志无效 %{arg1}"
             },
             "args" => [
               {
@@ -59368,7 +60633,8 @@ $CONF = {
               "ru" => "паника: недопустимые флаги %{arg1} в refcounted_he_value",
               "sr" => "паника: refcounted_he_value неисправне заставице %{arg1}",
               "tr" => "panic: refcounted_he_value hatalı bayraklar %{arg1}",
-              "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_value"
+              "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_value",
+              "zh" => "panic: refcounted_he_value 标志无效 %{arg1}"
             },
             "args" => [
               {
@@ -59419,7 +60685,8 @@ $CONF = {
               "ru" => "panic: непредвиденный сбой hv_store()",
               "sr" => "паника: hv_store() није успео, што није очекивано",
               "tr" => "panic: hv_store() beklenmedik biçimde başarısız oldu",
-              "uk" => "паніка: несподіваний збій hv_store()"
+              "uk" => "паніка: несподіваний збій hv_store()",
+              "zh" => "panic: hv_store() 意外失败"
             },
             "args" => []
           },
@@ -59463,7 +60730,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: попытка вызвать PERL_EFF_ACCESS в %{arg1}",
               "sr" => "паника: покушај позивања PERL_EFF_ACCESS у %{arg1}",
               "tr" => "panic: %{arg1} içinde PERL_EFF_ACCESS çağrılmaya çalışıldı",
-              "uk" => "паніка: спроба викликати PERL_EFF_ACCESS у %{arg1}"
+              "uk" => "паніка: спроба викликати PERL_EFF_ACCESS у %{arg1}",
+              "zh" => "panic: 尝试在 %{arg1} 中调用 PERL_EFF_ACCESS"
             },
             "args" => [
               {
@@ -59513,7 +60781,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: попытка вызвать access() в %{arg1}",
               "sr" => "паника: покушај позивања access() у %{arg1}",
               "tr" => "panic: %{arg1} içinde access() çağrılmaya çalışıldı",
-              "uk" => "паніка: спроба викликати access() у %{arg1}"
+              "uk" => "паніка: спроба викликати access() у %{arg1}",
+              "zh" => "panic: 尝试在 %{arg1} 中调用 access()"
             },
             "args" => [
               {
@@ -59563,7 +60832,8 @@ $CONF = {
               "ru" => "panic: Массив слоёв PerlIO повреждён",
               "sr" => "паника: низ PerlIO слојева је оштећен",
               "tr" => "panic: PerlIO katman dizisi bozuk",
-              "uk" => "паніка: масив шарів PerlIO пошкоджено"
+              "uk" => "паніка: масив шарів PerlIO пошкоджено",
+              "zh" => "panic: PerlIO 层数组损坏"
             },
             "args" => []
           },
@@ -59607,7 +60877,8 @@ $CONF = {
               "ru" => "паника: sysopen с несколькими аргументами, num_svs=%{arg2}",
               "sr" => "паника: sysopen са више аргумената, num_svs=%{arg2}",
               "tr" => "panic: birden fazla argümanlı sysopen, num_svs=%{arg2}",
-              "uk" => "паніка: sysopen із кількома аргументами, num_svs=%{arg2}"
+              "uk" => "паніка: sysopen із кількома аргументами, num_svs=%{arg2}",
+              "zh" => "panic: sysopen 收到多个参数，num_svs=%{arg2}"
             },
             "args" => [
               {
@@ -59658,7 +60929,8 @@ $CONF = {
               "ru" => "паника: ck_grep, type=%{arg1}",
               "sr" => "паника: ck_grep, type=%{arg1}",
               "tr" => "panic: ck_grep, type=%{arg1}",
-              "uk" => "паніка: ck_grep, тип=%{arg1}"
+              "uk" => "паніка: ck_grep, тип=%{arg1}",
+              "zh" => "panic: ck_grep，type=%{arg1}"
             },
             "args" => [
               {
@@ -59708,7 +60980,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: pp_iter, type=%{arg1}",
               "sr" => "паника: pp_iter, тип=%{arg1}",
               "tr" => "panic: pp_iter, type=%{arg1}",
-              "uk" => "паніка: pp_iter, тип=%{arg1}"
+              "uk" => "паніка: pp_iter, тип=%{arg1}",
+              "zh" => "内部错误：pp_iter，type=%{arg1}"
             },
             "args" => [
               {
@@ -59759,7 +61032,8 @@ $CONF = {
               "ru" => "паника: newFOROP, обнаружено %{arg2} в позиции %{arg3}, ожидалось padsv",
               "sr" => "паника: newFOROP, пронађен је %{arg2} на %{arg3}, очекиван је padsv",
               "tr" => "panic: newFOROP, %{arg2} bulundu (%{arg3}), padsv bekleniyordu",
-              "uk" => "паніка: newFOROP, знайдено %{arg2} на позиції %{arg3}, очікується padsv"
+              "uk" => "паніка: newFOROP, знайдено %{arg2} на позиції %{arg3}, очікується padsv",
+              "zh" => "panic: newFOROP 在 %{arg3} 处找到 %{arg2}，预期为 padsv"
             },
             "args" => [
               {
@@ -59815,7 +61089,8 @@ $CONF = {
               "ru" => "паника: newFOROP, обнаружено %{arg2}, ожидалось pushmark",
               "sr" => "паника: newFOROP, пронађен је %{arg2}, очекиван је pushmark",
               "tr" => "panic: newFOROP, %{arg2} bulundu, pushmark bekleniyordu",
-              "uk" => "паніка: newFOROP, знайдено %{arg2}, очікується pushmark"
+              "uk" => "паніка: newFOROP, знайдено %{arg2}, очікується pushmark",
+              "zh" => "panic: newFOROP 找到 %{arg2}，预期为 pushmark"
             },
             "args" => [
               {
@@ -59866,7 +61141,8 @@ $CONF = {
               "ru" => "паника: newFOROP, у padsv в позиции %{arg2} значение targ равно %{arg3}, а не %{arg4}",
               "sr" => "паника: newFOROP, padsv на %{arg2} има targ %{arg3}, а не %{arg4}",
               "tr" => "panic: newFOROP, padsv %{arg2} konumunda, targ %{arg3}; %{arg4} olmalı",
-              "uk" => "паніка: newFOROP, targ для padsv на позиції %{arg2} дорівнює %{arg3}, а не %{arg4}"
+              "uk" => "паніка: newFOROP, targ для padsv на позиції %{arg2} дорівнює %{arg3}, а не %{arg4}",
+              "zh" => "panic: newFOROP 的 padsv 在 %{arg2} 处，其 targ 为 %{arg3}，而非 %{arg4}"
             },
             "args" => [
               {
@@ -59927,7 +61203,8 @@ $CONF = {
               "ru" => "паника: newFOROP, обнаружено refgen(%{arg2}) в позиции %{arg3}, ожидалось refgen(padxv)",
               "sr" => "паника: newFOROP, пронађен је refgen(%{arg2}) на %{arg3}, очекиван је refgen(padxv)",
               "tr" => "panic: newFOROP, refgen(%{arg2}) %{arg3} konumunda bulundu, refgen(padxv) bekleniyordu",
-              "uk" => "паніка: newFOROP, знайдено refgen(%{arg2}) на позиції %{arg3}, очікується refgen(padxv)"
+              "uk" => "паніка: newFOROP, знайдено refgen(%{arg2}) на позиції %{arg3}, очікується refgen(padxv)",
+              "zh" => "panic: newFOROP 在 %{arg3} 处找到 refgen(%{arg2})，预期为 refgen(padxv)"
             },
             "args" => [
               {
@@ -59980,7 +61257,8 @@ $CONF = {
               "ru" => "Не удаётся найти разделитель в представлении ALT_DIGITS '%{digits}' для локали '%{locale}'",
               "sr" => "У приказу ALT_DIGITS „%{digits}“ за локал „%{locale}“ није пронађен сепаратор",
               "tr" => "'%{locale}' yerel ayarı için ALT_DIGITS gösterimi '%{digits}' içinde ayırıcı bulunamadı",
-              "uk" => "Не вдалося знайти роздільник у поданні ALT_DIGITS '%{digits}' для локалі '%{locale}'"
+              "uk" => "Не вдалося знайти роздільник у поданні ALT_DIGITS '%{digits}' для локалі '%{locale}'",
+              "zh" => "在区域设置“%{locale}”的 ALT_DIGITS 表示“%{digits}”中找不到分隔符"
             },
             "args" => [
               {
@@ -60039,7 +61317,8 @@ $CONF = {
               "ru" => "Неизвестный класс символов %{class}",
               "sr" => "Непозната класа знакова %{class}",
               "tr" => "Bilinmeyen karakter sınıfı %{class}",
-              "uk" => "Невідомий клас символів %{class}"
+              "uk" => "Невідомий клас символів %{class}",
+              "zh" => "未知的字符类 %{class}"
             },
             "args" => [
               {
@@ -60093,7 +61372,8 @@ $CONF = {
               "ru" => "В my_localeconv передан неожиданный элемент: %{item}",
               "sr" => "my_localeconv је добио неочекивану ставку: %{item}",
               "tr" => "my_localeconv'e beklenmedik öğe aktarıldı: %{item}",
-              "uk" => "До my_localeconv передано неочікуваний елемент: %{item}"
+              "uk" => "До my_localeconv передано неочікуваний елемент: %{item}",
+              "zh" => "传递给 my_localeconv 的项目意外：%{item}"
             },
             "args" => [
               {
@@ -60147,7 +61427,8 @@ $CONF = {
               "ru" => "my_localeconv() неожиданно не вернула значение для %{key}",
               "sr" => "my_localeconv() неочекивано није вратио вредност за %{key}",
               "tr" => "my_localeconv() %{key} için beklenmedik biçimde değer döndürmedi",
-              "uk" => "my_localeconv() неочікувано не повернула значення для %{key}"
+              "uk" => "my_localeconv() неочікувано не повернула значення для %{key}",
+              "zh" => "my_localeconv() 意外地未为 %{key} 返回值"
             },
             "args" => [
               {
@@ -60203,7 +61484,8 @@ $CONF = {
               "ru" => "паника: неожиданный элемент nl_langinfo() %{arg2}",
               "sr" => "паника: Неочекивана ставка nl_langinfo() %{arg2}",
               "tr" => "panic: beklenmedik nl_langinfo() öğesi %{arg2}",
-              "uk" => "паніка: неочікуваний елемент nl_langinfo() %{arg2}"
+              "uk" => "паніка: неочікуваний елемент nl_langinfo() %{arg2}",
+              "zh" => "panic: nl_langinfo() 出现意外的项目 %{arg2}"
             },
             "args" => [
               {
@@ -60251,7 +61533,8 @@ $CONF = {
               "ru" => "nl_langinfo вернула пустое значение для %{item} в предполагаемой локали \n'%{expected_locale}'; фактически это\n'%{actual_locale}'\n кодировка: '%{codeset}'; десятичный разделитель='%{radix}'; январь='%{january}'; strtod(1,5)=%{comma_number}, strtod(1.5)=%{dot_number}\n",
               "sr" => "nl_langinfo је вратио празну вредност за %{item} у наводном локалу \n„%{expected_locale}“; који је заправо\n„%{actual_locale}“\n кодни скуп је „%{codeset}“; радикс=„%{radix}“; јануар=„%{january}“; strtod(1,5)=%{comma_number}, strtod(1.5)=%{dot_number}\n",
               "tr" => "nl_langinfo, %{item} için boş değer döndürdü; varsayılan olarak '%{expected_locale}' olmalıydı, gerçekte '%{actual_locale}'\n kodlama '%{codeset}'; radix='%{radix}'; January='%{january}'; strtod(1,5)=%{comma_number}, strtod(1.5)=%{dot_number}\n",
-              "uk" => "nl_langinfo повернула порожнє значення для %{item} у локалі, що мала бути \n'%{expected_locale}'; але насправді є\n'%{actual_locale}'\n набір кодів — '%{codeset}'; десятковий роздільник='%{radix}'; січень='%{january}'; strtod(1,5)=%{comma_number}, strtod(1.5)=%{dot_number}\n"
+              "uk" => "nl_langinfo повернула порожнє значення для %{item} у локалі, що мала бути \n'%{expected_locale}'; але насправді є\n'%{actual_locale}'\n набір кодів — '%{codeset}'; десятковий роздільник='%{radix}'; січень='%{january}'; strtod(1,5)=%{comma_number}, strtod(1.5)=%{dot_number}\n",
+              "zh" => "nl_langinfo 对假定的区域设置 \n“%{expected_locale}”中的 %{item} 返回了空值；实际区域设置为\n“%{actual_locale}”\n代码集为“%{codeset}”；基数符号为“%{radix}”；一月为“%{january}”；strtod(1,5)=%{comma_number}，strtod(1.5)=%{dot_number}\n"
             },
             "args" => [
               {
@@ -60341,7 +61624,8 @@ $CONF = {
               "ru" => "Неожиданный REPLACEMENT_CHARACTER в '%{value}'\n%{locale}",
               "sr" => "Неочекиван REPLACEMENT_CHARACTER у „%{value}“\n%{locale}",
               "tr" => "'%{value}' içinde beklenmedik REPLACEMENT_CHARACTER\n%{locale}",
-              "uk" => "Неочікуваний REPLACEMENT_CHARACTER у '%{value}'\n%{locale}"
+              "uk" => "Неочікуваний REPLACEMENT_CHARACTER у '%{value}'\n%{locale}",
+              "zh" => "在“%{value}”中遇到意外的 REPLACEMENT_CHARACTER\n%{locale}"
             },
             "args" => [
               {
@@ -60401,7 +61685,8 @@ $CONF = {
               "ru" => "Неизвестная категория локали %{category}",
               "sr" => "Непозната категорија локализације %{category}",
               "tr" => "Bilinmeyen yerel ayar kategorisi %{category}",
-              "uk" => "Невідома категорія локалі %{category}"
+              "uk" => "Невідома категорія локалі %{category}",
+              "zh" => "未知的区域设置类别 %{category}"
             },
             "args" => [
               {
@@ -60455,7 +61740,8 @@ $CONF = {
               "ru" => "Ошибка внутреннего расчёта длины.\n\"%{entry}\" добавлено в \"%{constructed}\" не полностью; требовалось=%{needed}, имелось=%{capacity}",
               "sr" => "Погрешно израчунавање унутрашње дужине.\n„%{entry}“ није у целости додато у „%{constructed}“; потребно=%{needed}, било=%{capacity}",
               "tr" => "Dahili uzunluk hesabı yanlış.\n\"%{entry}\", \"%{constructed}\" içine tamamen eklenmedi; gereken=%{needed}, kapasite=%{capacity}",
-              "uk" => "Помилка внутрішнього обчислення довжини.\n\"%{entry}\" не повністю додано до \"%{constructed}\"; потрібно=%{needed}, доступно=%{capacity}"
+              "uk" => "Помилка внутрішнього обчислення довжини.\n\"%{entry}\" не повністю додано до \"%{constructed}\"; потрібно=%{needed}, доступно=%{capacity}",
+              "zh" => "内部长度计算错误。\n“%{entry}”未能完整添加到“%{constructed}”；需要=%{needed}，实际容量=%{capacity}"
             },
             "args" => [
               {
@@ -60642,6 +61928,13 @@ $CONF = {
                 "incomplete" => "'%{value}' містить не всі категорії локалі\n",
                 "no_equals" => "У '%{value}' потрібен знак '=' для розділення імені та значення у формі name=value\n",
                 "unknown_category" => "'%{value}' — невідома категорія\n"
+              },
+              "zh" => {
+                "*" => "无效的区域设置类别说明“%{value}”\n",
+                "contains_lc_all" => "“%{value}”包含 LC_ALL，此处不允许使用\n",
+                "incomplete" => "“%{value}”未列出所有区域设置类别\n",
+                "no_equals" => "“%{value}”需要一个“=”来分隔 name=value\n",
+                "unknown_category" => "“%{value}”包含未知类别\n"
               }
             },
             "args" => [
@@ -60717,7 +62010,8 @@ $CONF = {
               "ru" => "Не удалось определить текущую локаль для категории %{category}",
               "sr" => "Није могуће пронаћи тренутну локализацију за %{category}",
               "tr" => "Geçerli %{category} yerel ayarı bulunamadı",
-              "uk" => "Не вдалося знайти поточну локаль категорії %{category}"
+              "uk" => "Не вдалося знайти поточну локаль категорії %{category}",
+              "zh" => "找不到当前的 %{category} 区域设置"
             },
             "args" => [
               {
@@ -60771,7 +62065,8 @@ $CONF = {
               "ru" => "Ожидалось значение '%{expected}' для %{category}, получено '%{actual}'",
               "sr" => "За %{category} се очекивало „%{expected}“, али је „%{actual}“",
               "tr" => "%{category} için '%{expected}' bekleniyordu, ancak '%{actual}'",
-              "uk" => "Очікуване значення %{category} — '%{expected}', натомість отримано '%{actual}'"
+              "uk" => "Очікуване значення %{category} — '%{expected}', натомість отримано '%{actual}'",
+              "zh" => "%{category} 应为“%{expected}”，实际为“%{actual}”"
             },
             "args" => [
               {
@@ -60835,7 +62130,8 @@ $CONF = {
               "ru" => "Неожиданный результат возврата из parse_LC_ALL_string",
               "sr" => "Неочекиван повратак из parse_LC_ALL_string",
               "tr" => "parse_LC_ALL_string işlevinden beklenmeyen dönüş",
-              "uk" => "Неочікуваний результат повернення з parse_LC_ALL_string"
+              "uk" => "Неочікуваний результат повернення з parse_LC_ALL_string",
+              "zh" => "parse_LC_ALL_string 返回了意外结果"
             },
             "args" => []
           },
@@ -60884,7 +62180,8 @@ $CONF = {
               "ru" => "%{message}",
               "sr" => "%{message}",
               "tr" => "%{message}",
-              "uk" => "%{message}"
+              "uk" => "%{message}",
+              "zh" => "%{message}"
             },
             "args" => [
               {
@@ -61108,6 +62405,16 @@ $CONF = {
                   "*" => "%{file}: %{line}: паніка: %{message}; errno=%{errno}, \$^E=%{extended_errno}\n",
                   "present" => "%{file}: %{line}: паніка: %{message}; errno=%{errno}, \$^E=%{extended_errno}\nВикликано з %{caller_file}: %{caller_line}\n"
                 }
+              },
+              "zh" => {
+                "extended" => {
+                  "absent" => "%{file}: %{line}: 内部错误: %{message}; errno=%{errno}, \$^E=%{extended_errno}\n",
+                  "present" => "%{file}: %{line}: panic: %{message}; errno=%{errno}, \$^E=%{extended_errno}\n调用方：%{caller_file}: %{caller_line}\n"
+                },
+                "plain" => {
+                  "absent" => "%{file}: %{line}: 内部错误: %{message}; errno=%{errno}\n",
+                  "present" => "%{file}: %{line}: panic: %{message}; errno=%{errno}\n调用方：%{caller_file}: %{caller_line}\n"
+                }
               }
             },
             "args" => [
@@ -61294,6 +62601,12 @@ $CONF = {
                 "both" => "Не вдалося змінити локаль для %{category} (%{category_number}) з '%{current}' на '%{failed}' \nВикликано через %{file}: %{proxy_line}\nВикликано через %{file}: %{immediate_line}",
                 "immediate" => "Не вдалося змінити локаль для %{category} (%{category_number}) з '%{current}' на '%{failed}' \nВикликано через %{file}: %{immediate_line}",
                 "proxy" => "Не вдалося змінити локаль для %{category} (%{category_number}) з '%{current}' на '%{failed}' \nВикликано через %{file}: %{proxy_line}"
+              },
+              "zh" => {
+                "both" => "无法将 %{category}（%{category_number}）的区域设置从“%{current}”切换为“%{failed}” \n调用路径：%{file}: %{proxy_line}\n调用路径：%{file}: %{immediate_line}",
+                "immediate" => "无法将 %{category}（%{category_number}）的区域设置从“%{current}”切换为“%{failed}” \n调用路径：%{file}: %{immediate_line}",
+                "none" => "无法将 %{category}（%{category_number}）的区域设置从“%{current}”切换为“%{failed}” ",
+                "proxy" => "无法将 %{category}（%{category_number}）的区域设置从“%{current}”切换为“%{failed}” \n调用路径：%{file}: %{proxy_line}"
               }
             },
             "args" => [
@@ -61389,7 +62702,8 @@ $CONF = {
               "ru" => "Невозможно создать объект локали C по стандарту POSIX 2008",
               "sr" => "Није могуће креирати POSIX 2008 објекат локализације за C",
               "tr" => "POSIX 2008 C yerel ayar nesnesi oluşturulamıyor",
-              "uk" => "Неможливо створити об'єкт локалі C за POSIX 2008"
+              "uk" => "Неможливо створити об'єкт локалі C за POSIX 2008",
+              "zh" => "无法创建 POSIX 2008 C 区域设置对象"
             },
             "args" => []
           },
@@ -61439,7 +62753,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: невозможно восстановить локаль после fork",
               "sr" => "паника: није могуће вратити локализацију после раздвајања процеса",
               "tr" => "panic: fork sonrasında yerel ayar geri yüklenemiyor",
-              "uk" => "паніка: неможливо відновити локаль після fork"
+              "uk" => "паніка: неможливо відновити локаль після fork",
+              "zh" => "panic: fork 后无法恢复区域设置"
             },
             "args" => []
           },
@@ -61481,7 +62796,8 @@ $CONF = {
               "ru" => "Не удалось переключиться на глобальную локаль",
               "sr" => "Није могуће прећи на глобалне поставке локализације",
               "tr" => "Genel yerel ayara geçilemedi",
-              "uk" => "Не вдалося перейти до глобальної локалі"
+              "uk" => "Не вдалося перейти до глобальної локалі",
+              "zh" => "无法切换到全局区域设置"
             },
             "args" => []
           },
@@ -61529,7 +62845,8 @@ $CONF = {
               "ru" => "Неожиданно получено 'dummy_trial",
               "sr" => "Неочекивано је добијено 'dummy_trial",
               "tr" => "'dummy_trial beklenmedik şekilde alındı",
-              "uk" => "Неочікувано отримано 'dummy_trial"
+              "uk" => "Неочікувано отримано 'dummy_trial",
+              "zh" => "意外获得了 'dummy_trial"
             },
             "args" => []
           },
@@ -61577,7 +62894,8 @@ $CONF = {
               "ru" => "(вызвано из строки %{caller_line}): bool_setlocale_2008_i: не удалось переключиться на новую локаль",
               "sr" => "(позвано из %{caller_line}): bool_setlocale_2008_i: пребацивање на нови локал није успело",
               "tr" => "(çağıran satır: %{caller_line}): bool_setlocale_2008_i: yeni yerel ayara geçiş başarısız oldu",
-              "uk" => "(викликано з рядка %{caller_line}): bool_setlocale_2008_i: не вдалося перейти до нової локалі"
+              "uk" => "(викликано з рядка %{caller_line}): bool_setlocale_2008_i: не вдалося перейти до нової локалі",
+              "zh" => "（调用自 %{caller_line}）：bool_setlocale_2008_i：切换到新区域设置失败"
             },
             "args" => [
               {
@@ -61631,7 +62949,8 @@ $CONF = {
               "ru" => "не удалось уменьшить глубину переключения",
               "sr" => "неуспешно смањивање дубине укључивања",
               "tr" => "aşağı geçiş başarısız oldu",
-              "uk" => "Не вдалося зменшити рівень вкладеності перемикання"
+              "uk" => "Не вдалося зменшити рівень вкладеності перемикання",
+              "zh" => "切换关闭失败"
             },
             "args" => []
           },
@@ -61679,7 +62998,8 @@ $CONF = {
               "ru" => "Не удаётся выполнить uselocale(0x%{object}), ожидаемое значение LC_ALL — '%{locale}'",
               "sr" => "Не може да се користи uselocale(0x%{object}), LC_ALL треба да буде „%{locale}“",
               "tr" => "uselocale(0x%{object}) kullanılamıyor; LC_ALL değerinin '%{locale}' olması bekleniyor",
-              "uk" => "Не вдалося виконати uselocale(0x%{object}), очікуване значення LC_ALL — '%{locale}'"
+              "uk" => "Не вдалося виконати uselocale(0x%{object}), очікуване значення LC_ALL — '%{locale}'",
+              "zh" => "无法调用 uselocale(0x%{object})，LC_ALL 应为“%{locale}”"
             },
             "args" => [
               {
@@ -61738,7 +63058,8 @@ $CONF = {
               "ru" => "сбой duplocale",
               "sr" => "duplocale није успео",
               "tr" => "duplocale başarısız oldu",
-              "uk" => "Не вдалося виконати duplocale"
+              "uk" => "Не вдалося виконати duplocale",
+              "zh" => "duplocale 失败"
             },
             "args" => []
           },
@@ -61786,7 +63107,8 @@ $CONF = {
               "ru" => "Не удаётся выполнить setlocale(%{locale})",
               "sr" => "Не може да се постави setlocale(%{locale})",
               "tr" => "setlocale(%{locale}) ayarlanamıyor",
-              "uk" => "Не вдалося виконати setlocale(%{locale})"
+              "uk" => "Не вдалося виконати setlocale(%{locale})",
+              "zh" => "无法设置 setlocale(%{locale})"
             },
             "args" => [
               {
@@ -61840,7 +63162,8 @@ $CONF = {
               "ru" => "_configthreadlocale вернула ошибку",
               "sr" => "_configthreadlocale је вратио грешку",
               "tr" => "_configthreadlocale hata döndürdü",
-              "uk" => "_configthreadlocale повернула помилку"
+              "uk" => "_configthreadlocale повернула помилку",
+              "zh" => "_configthreadlocale 返回错误"
             },
             "args" => []
           },
@@ -61890,7 +63213,8 @@ $CONF = {
               "ru" => "panic: отсутствует strftime",
               "sr" => "паника: нема strftime",
               "tr" => "panic: strftime yok",
-              "uk" => "паніка: відсутня strftime"
+              "uk" => "паніка: відсутня strftime",
+              "zh" => "panic: 没有 strftime"
             },
             "args" => []
           },
@@ -61934,7 +63258,8 @@ $CONF = {
               "ru" => "Неверное выравнивание \$^M!\n",
               "sr" => "Неисправно поравнање \$^M!\n",
               "tr" => "\$^M hizalaması hatalı!\n",
-              "uk" => "Неправильне вирівнювання \$^M!\n"
+              "uk" => "Неправильне вирівнювання \$^M!\n",
+              "zh" => "\$^M 的对齐不正确！\n"
             },
             "args" => []
           },
@@ -61979,7 +63304,8 @@ $CONF = {
               "ru" => "Невыровненный указатель \"next\" в цепочке свободных блоков 0x%{next} по адресу 0x%{pointer}\n",
               "sr" => "Непоравнат показивач „next“ у ланцу слободних блокова 0x%{next} на 0x%{pointer}\n",
               "tr" => "Boş zincirde hizalanmamış \"next\" işaretçisi: 0x%{next}, 0x%{pointer} konumunda\n",
-              "uk" => "Невирівняний вказівник \"next\" у ланцюжку вільних блоків 0x%{next} за адресою 0x%{pointer}\n"
+              "uk" => "Невирівняний вказівник \"next\" у ланцюжку вільних блоків 0x%{next} за адресою 0x%{pointer}\n",
+              "zh" => "释放链中的“next”指针未对齐：0x%{next}（位于 0x%{pointer}）\n"
             },
             "args" => [
               {
@@ -62035,7 +63361,8 @@ $CONF = {
               "ru" => "Невыровненный указатель в цепочке свободных блоков 0x%{pointer}\n",
               "sr" => "Непоравнат показивач у ланцу слободних блокова 0x%{pointer}\n",
               "tr" => "Boş zincirde hizalanmamış işaretçi: 0x%{pointer}\n",
-              "uk" => "Невирівняний вказівник у ланцюжку вільних блоків 0x%{pointer}\n"
+              "uk" => "Невирівняний вказівник у ланцюжку вільних блоків 0x%{pointer}\n",
+              "zh" => "释放链中的指针未对齐：0x%{pointer}\n"
             },
             "args" => [
               {
@@ -62086,7 +63413,8 @@ $CONF = {
               "ru" => "Нарушено утверждение (%{reason}?): %{assertion} (%{file}:%{line})\n",
               "sr" => "тврдња није успела (%{reason}?): %{assertion} (%{file}:%{line})\n",
               "tr" => "assertion bozuldu (%{reason}?): %{assertion} (%{file}:%{line})\n",
-              "uk" => "порушено твердження (%{reason}?): %{assertion} (%{file}:%{line})\n"
+              "uk" => "порушено твердження (%{reason}?): %{assertion} (%{file}:%{line})\n",
+              "zh" => "断言失败（%{reason}?）：%{assertion}（%{file}:%{line}）\n"
             },
             "args" => [
               {
@@ -62153,7 +63481,8 @@ $CONF = {
               "ru" => "Нарушено утверждение (%{reason}?): %{assertion} %{file}:%{line}\n",
               "sr" => "assertion није успео (%{reason}?): %{assertion} %{file}:%{line}\n",
               "tr" => "assertion bozuldu (%{reason}?): %{assertion} %{file}:%{line}\n",
-              "uk" => "Порушення твердження (%{reason}?): %{assertion} %{file}:%{line}\n"
+              "uk" => "Порушення твердження (%{reason}?): %{assertion} %{file}:%{line}\n",
+              "zh" => "断言失败（%{reason}?）：%{assertion} %{file}:%{line}\n"
             },
             "args" => [
               {
@@ -62219,7 +63548,8 @@ $CONF = {
               "ru" => "паника: недопустимый размер страницы %{arg1}",
               "sr" => "паника: неисправна величина странице %{arg1}",
               "tr" => "panic: geçersiz sayfa boyutu %{arg1}",
-              "uk" => "паніка: неправильний розмір сторінки %{arg1}"
+              "uk" => "паніка: неправильний розмір сторінки %{arg1}",
+              "zh" => "panic: 页大小无效 %{arg1}"
             },
             "args" => [
               {
@@ -62269,7 +63599,8 @@ $CONF = {
               "ru" => "паника: sysconf: %{arg2}",
               "sr" => "паника: sysconf: %{arg2}",
               "tr" => "panic: sysconf: %{arg2}",
-              "uk" => "паніка: sysconf: %{arg2}"
+              "uk" => "паніка: sysconf: %{arg2}",
+              "zh" => "内部错误: sysconf: %{arg2}"
             },
             "args" => [
               {
@@ -62319,7 +63650,8 @@ $CONF = {
               "ru" => "паника: sysconf: размер страницы неизвестен",
               "sr" => "паника: sysconf: величина странице није позната",
               "tr" => "panic: sysconf: sayfa boyutu bilinmiyor",
-              "uk" => "паніка: sysconf: невідомий розмір сторінки"
+              "uk" => "паніка: sysconf: невідомий розмір сторінки",
+              "zh" => "致命错误：sysconf：未知页大小"
             },
             "args" => []
           },
@@ -62364,7 +63696,8 @@ $CONF = {
               "ru" => "panic: повторное освобождение памяти",
               "sr" => "паника: дуплирано ослобађање меморије",
               "tr" => "panic: yinelenen free",
-              "uk" => "паніка: повторне звільнення пам'яті"
+              "uk" => "паніка: повторне звільнення пам'яті",
+              "zh" => "panic: 重复释放"
             },
             "args" => []
           },
@@ -62408,7 +63741,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: некорректное освобождение %{arg2}, ->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}",
               "sr" => "паника: неисправан free за %{arg2}, ->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}",
               "tr" => "panic: %{arg2} için hatalı free, ->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}",
-              "uk" => "паніка: некоректне звільнення %{arg2}, ->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}"
+              "uk" => "паніка: некоректне звільнення %{arg2}, ->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}",
+              "zh" => "panic: 错误地释放 %{arg2}，->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}"
             },
             "args" => [
               {
@@ -62473,7 +63807,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: некорректное освобождение %{arg2}, header->next==NULL",
               "sr" => "паника: неисправан free за %{arg2}, header->next==NULL",
               "tr" => "panic: %{arg2} için hatalı free, header->next==NULL",
-              "uk" => "паніка: некоректне звільнення %{arg2}, header->next==NULL"
+              "uk" => "паніка: некоректне звільнення %{arg2}, header->next==NULL",
+              "zh" => "panic: 错误地释放 %{arg2}，header->next==NULL"
             },
             "args" => [
               {
@@ -62523,7 +63858,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: free для %{arg2} из неверного пула, %{arg3}!=%{arg4}",
               "sr" => "паника: free %{arg2} из погрешног скупа меморије, %{arg3}!=%{arg4}",
               "tr" => "panic: yanlış havuzdan %{arg2} free edildi, %{arg3}!=%{arg4}",
-              "uk" => "паніка: free для %{arg2} з неправильного пулу, %{arg3}!=%{arg4}"
+              "uk" => "паніка: free для %{arg2} з неправильного пулу, %{arg3}!=%{arg4}",
+              "zh" => "panic: 从错误的内存池释放 %{arg2}，%{arg3}!=%{arg4}"
             },
             "args" => [
               {
@@ -62583,7 +63919,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: realloc для %{arg2} из неверного пула, %{arg3}!=%{arg4}",
               "sr" => "паника: realloc %{arg2} из погрешног скупа меморије, %{arg3}!=%{arg4}",
               "tr" => "panic: yanlış havuzdan %{arg2} realloc edildi, %{arg3}!=%{arg4}",
-              "uk" => "паніка: realloc для %{arg2} з неправильного пулу, %{arg3}!=%{arg4}"
+              "uk" => "паніка: realloc для %{arg2} з неправильного пулу, %{arg3}!=%{arg4}",
+              "zh" => "panic: 从错误的内存池重新分配 %{arg2}，%{arg3}!=%{arg4}"
             },
             "args" => [
               {
@@ -62643,7 +63980,8 @@ $CONF = {
               "ru" => "паника: malloc",
               "sr" => "паника: malloc",
               "tr" => "panic: malloc",
-              "uk" => "паніка: malloc"
+              "uk" => "паніка: malloc",
+              "zh" => "恐慌：malloc"
             },
             "args" => []
           },
@@ -62687,7 +64025,8 @@ $CONF = {
               "ru" => "паника: realloc",
               "sr" => "паника: realloc",
               "tr" => "panic: realloc",
-              "uk" => "паніка: realloc"
+              "uk" => "паніка: realloc",
+              "zh" => "恐慌：realloc"
             },
             "args" => []
           },
@@ -62731,7 +64070,8 @@ $CONF = {
               "ru" => "паника: calloc, размер=%{arg1}, количество=%{arg2}",
               "sr" => "паника: calloc, величина=%{arg1}, број=%{arg2}",
               "tr" => "panic: calloc, boyut=%{arg1}, adet=%{arg2}",
-              "uk" => "паніка: calloc, розмір=%{arg1}, кількість=%{arg2}"
+              "uk" => "паніка: calloc, розмір=%{arg1}, кількість=%{arg2}",
+              "zh" => "panic: calloc，size=%{arg1}，count=%{arg2}"
             },
             "args" => [
               {
@@ -62786,7 +64126,8 @@ $CONF = {
               "ru" => "паника: malloc, размер=%{arg1}",
               "sr" => "паника: malloc, величина=%{arg1}",
               "tr" => "panic: malloc, boyut=%{arg1}",
-              "uk" => "паніка: malloc, розмір=%{arg1}"
+              "uk" => "паніка: malloc, розмір=%{arg1}",
+              "zh" => "panic: malloc，size=%{arg1}"
             },
             "args" => [
               {
@@ -62836,7 +64177,8 @@ $CONF = {
               "ru" => "паника: realloc %{pointer} , размер=%{size}",
               "sr" => "паника: realloc %{pointer} , величина=%{size}",
               "tr" => "panic: realloc %{pointer} , boyut=%{size}",
-              "uk" => "паніка: realloc %{pointer} , size=%{size}"
+              "uk" => "паніка: realloc %{pointer} , size=%{size}",
+              "zh" => "panic: realloc %{pointer}，size=%{size}"
             },
             "args" => [
               {
@@ -62892,7 +64234,8 @@ $CONF = {
               "ru" => "паника: aassign пропустил необходимое копирование общего элемента правой части %{arg1}",
               "sr" => "паника: aassign је прескочио неопходно копирање заједничког RH елемента %{arg1}",
               "tr" => "panic: aassign, ortak RH öğesi %{arg1} için gereken kopya atlandı",
-              "uk" => "паніка: aassign пропустив необхідне копіювання спільного елемента правої частини %{arg1}"
+              "uk" => "паніка: aassign пропустив необхідне копіювання спільного елемента правої частини %{arg1}",
+              "zh" => "panic: aassign 未复制需要复制的共有 RH 元素 %{arg1}"
             },
             "args" => [
               {
@@ -62942,7 +64285,8 @@ $CONF = {
               "ru" => "паника: неожиданные аргументы entersub в контексте lvalue: type/targ %{type}:%{targ}",
               "sr" => "паника: неочекивани аргументи лва вредности entersub: type/targ %{type}:%{targ}",
               "tr" => "panic: beklenmeyen lvalue entersub argümanları: type/targ %{type}:%{targ}",
-              "uk" => "паніка: неочікувані аргументи entersub у контексті lvalue: type/targ %{type}:%{targ}"
+              "uk" => "паніка: неочікувані аргументи entersub у контексті lvalue: type/targ %{type}:%{targ}",
+              "zh" => "panic: lvalue entersub 参数异常：type/targ %{type}:%{targ}"
             },
             "args" => [
               {
@@ -62997,7 +64341,8 @@ $CONF = {
               "ru" => "паника: неожиданный вход в entersub с константой в контексте lvalue через type/targ %{type}:%{targ}",
               "sr" => "паника: неочекиван улаз константне лва вредности entersub преко type/targ %{type}:%{targ}",
               "tr" => "panic: beklenmeyen sabit lvalue entersub girdisi, type/targ üzerinden %{type}:%{targ}",
-              "uk" => "паніка: неочікуваний вхід до entersub із константним lvalue через type/targ %{type}:%{targ}"
+              "uk" => "паніка: неочікуваний вхід до entersub із константним lvalue через type/targ %{type}:%{targ}",
+              "zh" => "panic: 通过 type/targ %{type}:%{targ} 进入了意外的常量 lvalue entersub"
             },
             "args" => [
               {
@@ -63052,7 +64397,8 @@ $CONF = {
               "ru" => "паника: нельзя использовать %{arg2}%{arg3}, поскольку %{arg4} не определяет _tie_it",
               "sr" => "паника: Није могуће користити %{arg2}%{arg3} јер %{arg4} не дефинише _tie_it",
               "tr" => "panic: %{arg4}, _tie_it tanımlamadığı için %{arg2}%{arg3} kullanılamaz",
-              "uk" => "паніка: неможливо використовувати %{arg2}%{arg3}, оскільки %{arg4} не визначає _tie_it"
+              "uk" => "паніка: неможливо використовувати %{arg2}%{arg3}, оскільки %{arg4} не визначає _tie_it",
+              "zh" => "panic: 由于 %{arg4} 未定义 _tie_it，无法使用 %{arg2}%{arg3}"
             },
             "args" => [
               {
@@ -63112,7 +64458,8 @@ $CONF = {
               "ru" => "паника: нельзя использовать %{arg2}%{arg3}, поскольку %{arg4} недоступен",
               "sr" => "паника: Није могуће користити %{arg2}%{arg3} јер %{arg4} није доступан",
               "tr" => "panic: %{arg4} mevcut olmadığı için %{arg2}%{arg3} kullanılamaz",
-              "uk" => "паніка: неможливо використовувати %{arg2}%{arg3}, оскільки %{arg4} недоступний"
+              "uk" => "паніка: неможливо використовувати %{arg2}%{arg3}, оскільки %{arg4} недоступний",
+              "zh" => "panic: 由于 %{arg4} 不可用，无法使用 %{arg2}%{arg3}"
             },
             "args" => [
               {
@@ -63172,7 +64519,8 @@ $CONF = {
               "ru" => "panic: неожиданное основание системы счисления %{base}",
               "sr" => "паника: неочекивана нумеричка основа %{base}",
               "tr" => "panic: Beklenmeyen sayısal taban: %{base}",
-              "uk" => "паніка: Неочікувана основа системи числення %{base}"
+              "uk" => "паніка: Неочікувана основа системи числення %{base}",
+              "zh" => "panic: 意外的数值进制 %{base}"
             },
             "args" => [
               {
@@ -63222,7 +64570,8 @@ $CONF = {
               "ru" => "panic: недопустимый MRO!",
               "sr" => "паника: неважећи MRO!",
               "tr" => "panic: geçersiz MRO!",
-              "uk" => "паніка: некоректний MRO!"
+              "uk" => "паніка: некоректний MRO!",
+              "zh" => "panic: 无效的 MRO！"
             },
             "args" => []
           },
@@ -63266,7 +64615,8 @@ $CONF = {
               "ru" => "паника: сбой hv_store() в set_mro_private_data() для '%{arg1}' %{arg2}",
               "sr" => "паника: hv_store() није успео у set_mro_private_data() за „%{arg1}“ %{arg2}",
               "tr" => "panic: '%{arg1}' için set_mro_private_data() içindeki hv_store() başarısız oldu: %{arg2}",
-              "uk" => "паніка: збій hv_store() у set_mro_private_data() для '%{arg1}' %{arg2}"
+              "uk" => "паніка: збій hv_store() у set_mro_private_data() для '%{arg1}' %{arg2}",
+              "zh" => "panic: set_mro_private_data() 中的 hv_store() 对“%{arg1}”执行失败 %{arg2}"
             },
             "args" => [
               {
@@ -63331,7 +64681,8 @@ $CONF = {
               "ru" => "паника: сбой hv_store() в mro_register() для '%{arg1}' %{arg2}",
               "sr" => "паника: hv_store() није успео у mro_register() за „%{arg1}“ %{arg2}",
               "tr" => "panic: '%{arg1}' için mro_register() içindeki hv_store() başarısız oldu: %{arg2}",
-              "uk" => "паніка: збій hv_store() у mro_register() для '%{arg1}' %{arg2}"
+              "uk" => "паніка: збій hv_store() у mro_register() для '%{arg1}' %{arg2}",
+              "zh" => "panic: mro_register() 中的 hv_store() 对“%{arg1}”执行失败 %{arg2}"
             },
             "args" => [
               {
@@ -63396,7 +64747,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: отсутствует схема размещения полей для роли %{rolestash}",
               "sr" => "паника: недостаје распоред поља за улогу %{rolestash}",
               "tr" => "panic: %{rolestash} rolü için alan düzeni yok",
-              "uk" => "паніка: відсутня схема розміщення полів для ролі %{rolestash}"
+              "uk" => "паніка: відсутня схема розміщення полів для ролі %{rolestash}",
+              "zh" => "panic：角色 %{rolestash} 没有字段布局"
             },
             "args" => [
               {
@@ -63447,7 +64799,8 @@ $CONF = {
               "ru" => "паника: у роли %{rolestash} нет протороли",
               "sr" => "паника: улога %{rolestash} нема прототип улоге",
               "tr" => "panic: %{rolestash} rolünün proto-role'u yok",
-              "uk" => "паніка: роль %{rolestash} не має проторолі"
+              "uk" => "паніка: роль %{rolestash} не має проторолі",
+              "zh" => "panic：角色 %{rolestash} 没有 proto-role"
             },
             "args" => [
               {
@@ -63498,7 +64851,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неизвестное значение builtin_const %{arg1}",
               "sr" => "паника: непрепозната вредност builtin_const: %{arg1}",
               "tr" => "panic: tanınmayan builtin_const değeri: %{arg1}",
-              "uk" => "паніка: нерозпізнане значення builtin_const %{arg1}"
+              "uk" => "паніка: нерозпізнане значення builtin_const %{arg1}",
+              "zh" => "panic: 未识别的 builtin_const 值 %{arg1}"
             },
             "args" => [
               {
@@ -63549,7 +64903,8 @@ $CONF = {
               "ru" => "panic: необработанный код операции %{arg1} для xs_builtin_func1_scalar()",
               "sr" => "паника: необрађени опкод %{arg1} за xs_builtin_func1_scalar()",
               "tr" => "panic: xs_builtin_func1_scalar() için işlenmeyen opcode: %{arg1}",
-              "uk" => "паніка: необроблений код операції %{arg1} для xs_builtin_func1_scalar()"
+              "uk" => "паніка: необроблений код операції %{arg1} для xs_builtin_func1_scalar()",
+              "zh" => "panic: xs_builtin_func1_scalar() 遇到未处理的操作码 %{arg1}"
             },
             "args" => [
               {
@@ -63600,7 +64955,8 @@ $CONF = {
               "ru" => "panic: необработанный код операции %{arg1} для xs_builtin_func1_void()",
               "sr" => "паника: необрађени опкод %{arg1} за xs_builtin_func1_void()",
               "tr" => "panic: xs_builtin_func1_void() için işlenmeyen opcode: %{arg1}",
-              "uk" => "panic: необроблений код операції %{arg1} для xs_builtin_func1_void()"
+              "uk" => "panic: необроблений код операції %{arg1} для xs_builtin_func1_void()",
+              "zh" => "panic: xs_builtin_func1_void() 遇到未处理的操作码 %{arg1}"
             },
             "args" => [
               {
@@ -63651,7 +65007,8 @@ $CONF = {
               "ru" => "паника: в gen_constant_list макрос JMPENV_PUSH вернул %{arg2}",
               "sr" => "паника: gen_constant_list JMPENV_PUSH је вратио %{arg2}",
               "tr" => "panic: gen_constant_list içindeki JMPENV_PUSH %{arg2} döndürdü",
-              "uk" => "паніка: у gen_constant_list JMPENV_PUSH повернув %{arg2}"
+              "uk" => "паніка: у gen_constant_list JMPENV_PUSH повернув %{arg2}",
+              "zh" => "panic: gen_constant_list 的 JMPENV_PUSH 返回了 %{arg2}"
             },
             "args" => [
               {
@@ -63702,7 +65059,8 @@ $CONF = {
               "ru" => "паника: в fold_constants макрос JMPENV_PUSH вернул %{arg1}",
               "sr" => "паника: fold_constants JMPENV_PUSH је вратио %{arg1}",
               "tr" => "panic: fold_constants içindeki JMPENV_PUSH %{arg1} döndürdü",
-              "uk" => "паніка: у fold_constants JMPENV_PUSH повернув %{arg1}"
+              "uk" => "паніка: у fold_constants JMPENV_PUSH повернув %{arg1}",
+              "zh" => "panic: fold_constants 的 JMPENV_PUSH 返回了 %{arg1}"
             },
             "args" => [
               {
@@ -63753,7 +65111,8 @@ $CONF = {
               "ru" => "паника: недопустимый контекст %{arg2} в op_contextualize",
               "sr" => "паника: op_contextualize, неисправан контекст %{arg2}",
               "tr" => "panic: op_contextualize geçersiz bağlam: %{arg2}",
-              "uk" => "паніка: неправильний контекст %{arg2} у op_contextualize"
+              "uk" => "паніка: неправильний контекст %{arg2} у op_contextualize",
+              "zh" => "panic: op_contextualize 收到无效上下文 %{arg2}"
             },
             "args" => [
               {
@@ -63803,7 +65162,8 @@ $CONF = {
               "ru" => "паника: custom_op_get_field(): недопустимое поле %{arg2}\n",
               "sr" => "паника: custom_op_get_field(): неважеће поље %{arg2}\n",
               "tr" => "panic: custom_op_get_field(): geçersiz alan %{arg2}\n",
-              "uk" => "паніка: custom_op_get_field(): неприпустиме поле %{arg2}\n"
+              "uk" => "паніка: custom_op_get_field(): неприпустиме поле %{arg2}\n",
+              "zh" => "panic: custom_op_get_field(): 字段 %{arg2} 无效\n"
             },
             "args" => [
               {
@@ -63853,7 +65213,8 @@ $CONF = {
               "ru" => "паника: не удалось зарегистрировать пользовательский OP %{arg2}",
               "sr" => "паника: није могуће регистровати прилагођени OP %{arg2}",
               "tr" => "panic: özel OP %{arg2} kaydedilemedi",
-              "uk" => "паніка: не вдалося зареєструвати користувацький OP %{arg2}"
+              "uk" => "паніка: не вдалося зареєструвати користувацький OP %{arg2}",
+              "zh" => "panic: 无法注册自定义 OP %{arg2}"
             },
             "args" => [
               {
@@ -63904,7 +65265,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: вызвана освобождённая операция 0x%{arg1}\n",
               "sr" => "паника: позван је ослобођени op 0x%{arg1}\n",
               "tr" => "panic: serbest bırakılmış op 0x%{arg1} çağrıldı\n",
-              "uk" => "паніка: викликано звільнений op 0x%{arg1}\n"
+              "uk" => "паніка: викликано звільнений op 0x%{arg1}\n",
+              "zh" => "panic: 调用了已释放的 op 0x%{arg1}\n"
             },
             "args" => [
               {
@@ -63954,7 +65316,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: вызвана нереализованная операция %{arg1} (#%{arg2})",
               "sr" => "паника: позвана је неимплементирана операција %{arg1} (#%{arg2})",
               "tr" => "panic: uygulanmamış op %{arg1} (#%{arg2}) çağrıldı",
-              "uk" => "паніка: викликано нереалізований op %{arg1} (#%{arg2})"
+              "uk" => "паніка: викликано нереалізований op %{arg1} (#%{arg2})",
+              "zh" => "panic: 调用了未实现的 op %{arg1} (#%{arg2})"
             },
             "args" => [
               {
@@ -64009,7 +65372,8 @@ $CONF = {
               "ru" => "паника: недопустимые биты флагов 0x%{arg1} в cop_store_label",
               "sr" => "паника: cop_store_label недозвољени битови заставица 0x%{arg1}",
               "tr" => "panic: cop_store_label için geçersiz bayrak bitleri: 0x%{arg1}",
-              "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у cop_store_label"
+              "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у cop_store_label",
+              "zh" => "panic: cop_store_label 标志位非法：0x%{arg1}"
             },
             "args" => [
               {
@@ -64059,7 +65423,8 @@ $CONF = {
               "ru" => "panic: op_sibling_splice(): родительский узел равен NULL",
               "sr" => "паника: op_sibling_splice(): недостаје родитељски чвор",
               "tr" => "panic: op_sibling_splice(): NULL üst düğüm",
-              "uk" => "паніка: op_sibling_splice(): батьківський вузол — NULL"
+              "uk" => "паніка: op_sibling_splice(): батьківський вузол — NULL",
+              "zh" => "panic: op_sibling_splice() 的 parent 为 NULL"
             },
             "args" => []
           },
@@ -64104,7 +65469,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: строка короче заявленной длины, aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}",
               "sr" => "паника: ниска је краћа од наведене дужине, aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}",
               "tr" => "panic: dize bildirilenden kısa, aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}",
-              "uk" => "паніка: рядок коротший за заявлену довжину, aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}"
+              "uk" => "паніка: рядок коротший за заявлену довжину, aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}",
+              "zh" => "panic: 字符串长度短于所声明的长度，aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}"
             },
             "args" => [
               {
@@ -64170,7 +65536,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: метки за концом строки, m=%{arg2}, marks=%{arg3}, level=%{arg4}",
               "sr" => "паника: marks beyond string end, m=%{arg2}, marks=%{arg3}, level=%{arg4}",
               "tr" => "panic: işaretler dizenin sonunu aşıyor, m=%{arg2}, marks=%{arg3}, level=%{arg4}",
-              "uk" => "паніка: marks за межами кінця рядка, m=%{arg2}, marks=%{arg3}, level=%{arg4}"
+              "uk" => "паніка: marks за межами кінця рядка, m=%{arg2}, marks=%{arg3}, level=%{arg4}",
+              "zh" => "panic: 标记超出字符串末尾，m=%{arg2}, marks=%{arg3}, level=%{arg4}"
             },
             "args" => [
               {
@@ -64231,7 +65598,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: для '%{arg2}' недоступен предсказанный объём данных utf8, aptr=%{arg3} end=%{arg4} cur=%{arg5}, fromlen=%{arg6}",
               "sr" => "паника: предвиђена UTF-8 дужина није доступна, за '%{arg2}', aptr=%{arg3} end=%{arg4} cur=%{arg5}, fromlen=%{arg6}",
               "tr" => "panic: tahmin edilen UTF-8 uzunluğu mevcut değil; '%{arg2}' için aptr=%{arg3}, end=%{arg4}, cur=%{arg5}, fromlen=%{arg6}",
-              "uk" => "паніка: недостатньо даних для передбаченої довжини utf8 для '%{arg2}', aptr=%{arg3} end=%{arg4} cur=%{arg5}, fromlen=%{arg6}"
+              "uk" => "паніка: недостатньо даних для передбаченої довжини utf8 для '%{arg2}', aptr=%{arg3} end=%{arg4} cur=%{arg5}, fromlen=%{arg6}",
+              "zh" => "panic: 无法获取预测的 utf8 长度，针对“%{arg2}”，aptr=%{arg3} end=%{arg4} cur=%{arg5}, fromlen=%{arg6}"
             },
             "args" => [
               {
@@ -64303,7 +65671,8 @@ $CONF = {
               "ru" => "panic: отсутствует pad в cv_clone",
               "sr" => "паника: нема pad-а у cv_clone",
               "tr" => "panic: cv_clone içinde pad yok",
-              "uk" => "паніка: відсутній pad у cv_clone"
+              "uk" => "паніка: відсутній pad у cv_clone",
+              "zh" => "panic: cv_clone 中没有 pad"
             },
             "args" => []
           },
@@ -64349,7 +65718,8 @@ $CONF = {
               "ru" => "паника: недопустимые биты флагов 0x%{arg1} в pad_add_name_pvn",
               "sr" => "паника: pad_add_name_pvn недозвољени битови заставица 0x%{arg1}",
               "tr" => "panic: pad_add_name_pvn için geçersiz bayrak bitleri: 0x%{arg1}",
-              "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у pad_add_name_pvn"
+              "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у pad_add_name_pvn",
+              "zh" => "panic: pad_add_name_pvn 标志位非法：0x%{arg1}"
             },
             "args" => [
               {
@@ -64401,7 +65771,8 @@ $CONF = {
               "ru" => "паника: недопустимые биты флагов 0x%{arg1} в pad_findmy_pvn",
               "sr" => "паника: pad_findmy_pvn недозвољени битови заставица 0x%{arg1}",
               "tr" => "panic: pad_findmy_pvn için geçersiz bayrak bitleri: 0x%{arg1}",
-              "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у pad_findmy_pvn"
+              "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у pad_findmy_pvn",
+              "zh" => "panic: pad_findmy_pvn 标志位非法：0x%{arg1}"
             },
             "args" => [
               {
@@ -64453,7 +65824,8 @@ $CONF = {
               "ru" => "паника: недопустимые биты флагов 0x%{arg1} в allocmy",
               "sr" => "паника: недозвољени битови заставица за allocmy: 0x%{arg1}",
               "tr" => "panic: allocmy için geçersiz bayrak bitleri: 0x%{arg1}",
-              "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у allocmy"
+              "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у allocmy",
+              "zh" => "panic: allocmy 标志位中含有非法位 0x%{arg1}"
             },
             "args" => [
               {
@@ -64505,7 +65877,8 @@ $CONF = {
               "ru" => "паника: недопустимые биты флагов 0x%{arg1} в pad_findlex",
               "sr" => "паника: pad_findlex недозвољени битови заставица 0x%{arg1}",
               "tr" => "panic: pad_findlex için geçersiz bayrak bitleri: 0x%{arg1}",
-              "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у pad_findlex"
+              "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у pad_findlex",
+              "zh" => "panic: pad_findlex 标志位非法：0x%{arg1}"
             },
             "args" => [
               {
@@ -64557,7 +65930,8 @@ $CONF = {
               "ru" => "паника: смещение в pad %{offset} вне диапазона (%{low}-%{high})",
               "sr" => "паника: померај pad-а %{offset} је ван опсега (%{low}-%{high})",
               "tr" => "panic: pad ofseti %{offset} aralık dışında (%{low}-%{high})",
-              "uk" => "паніка: зміщення %{offset} у pad поза допустимим діапазоном (%{low}-%{high})"
+              "uk" => "паніка: зміщення %{offset} у pad поза допустимим діапазоном (%{low}-%{high})",
+              "zh" => "panic: pad 偏移量 %{offset} 超出范围（%{low}-%{high}）"
             },
             "args" => [
               {
@@ -64619,7 +65993,8 @@ $CONF = {
               "ru" => "паника: pad_sv po",
               "sr" => "паника: pad_sv po",
               "tr" => "panic: pad_sv po",
-              "uk" => "паніка: pad_sv po"
+              "uk" => "паніка: pad_sv po",
+              "zh" => "恐慌：pad_sv 的偏移为零"
             },
             "args" => []
           },
@@ -64665,7 +66040,8 @@ $CONF = {
               "ru" => "паника: pad_free po",
               "sr" => "паника: pad_free po",
               "tr" => "panic: pad_free po",
-              "uk" => "паніка: pad_free po"
+              "uk" => "паніка: pad_free po",
+              "zh" => "恐慌：pad_free 的偏移为零"
             },
             "args" => []
           },
@@ -64711,7 +66087,8 @@ $CONF = {
               "ru" => "паника: pad_swipe po=%{arg2}, fill=%{arg3}",
               "sr" => "паника: pad_swipe po=%{arg2}, fill=%{arg3}",
               "tr" => "panic: pad_swipe po=%{arg2}, fill=%{arg3}",
-              "uk" => "паніка: pad_swipe po=%{arg2}, fill=%{arg3}"
+              "uk" => "паніка: pad_swipe po=%{arg2}, fill=%{arg3}",
+              "zh" => "panic: pad_swipe po=%{arg2}，fill=%{arg3}"
             },
             "args" => [
               {
@@ -64768,7 +66145,8 @@ $CONF = {
               "ru" => "паника: смещение в pad %{offset} вне диапазона",
               "sr" => "паника: померај pad-а %{offset} је ван опсега",
               "tr" => "panic: pad ofseti %{offset} aralık dışında",
-              "uk" => "паніка: зміщення %{offset} у pad поза допустимим діапазоном"
+              "uk" => "паніка: зміщення %{offset} у pad поза допустимим діапазоном",
+              "zh" => "panic: pad 偏移量 %{offset} 超出范围"
             },
             "args" => [
               {
@@ -64820,7 +66198,8 @@ $CONF = {
               "ru" => "паника: некорректный pad в %{arg1}: 0x%{arg2}[0x%{arg3}]",
               "sr" => "паника: неисправан pad у %{arg1}: 0x%{arg2}[0x%{arg3}]",
               "tr" => "panic: %{arg1} içinde geçersiz pad: 0x%{arg2}[0x%{arg3}]",
-              "uk" => "паніка: некоректний pad у %{arg1}: 0x%{arg2}[0x%{arg3}]"
+              "uk" => "паніка: некоректний pad у %{arg1}: 0x%{arg2}[0x%{arg3}]",
+              "zh" => "恐慌：%{arg1} 中的 pad 无效：0x%{arg2}[0x%{arg3}]"
             },
             "args" => [
               {
@@ -64882,7 +66261,8 @@ $CONF = {
               "ru" => "паника: pad_alloc, %{arg1}!=%{arg2}",
               "sr" => "паника: pad_alloc, %{arg1}!=%{arg2}",
               "tr" => "panic: pad_alloc, %{arg1}!=%{arg2}",
-              "uk" => "паніка: pad_alloc, %{arg1}!=%{arg2}"
+              "uk" => "паніка: pad_alloc, %{arg1}!=%{arg2}",
+              "zh" => "panic: pad_alloc，%{arg1}!=%{arg2}"
             },
             "args" => [
               {
@@ -64939,7 +66319,8 @@ $CONF = {
               "ru" => "паника: недопустимый pad в %{arg1}: 0x%{arg2}[0x%{arg3}]",
               "sr" => "паника: неисправан pad у %{arg1}: 0x%{arg2}[0x%{arg3}]",
               "tr" => "panic: %{arg1} içinde geçersiz pad: 0x%{arg2}[0x%{arg3}]",
-              "uk" => "паніка: неприпустимий pad у %{arg1}: 0x%{arg2}[0x%{arg3}]"
+              "uk" => "паніка: неприпустимий pad у %{arg1}: 0x%{arg2}[0x%{arg3}]",
+              "zh" => "恐慌：%{arg1} 中的 pad 非法：0x%{arg2}[0x%{arg3}]"
             },
             "args" => [
               {
@@ -65001,7 +66382,8 @@ $CONF = {
               "ru" => "паника: pad_free curpad, %{arg1}!=%{arg2}",
               "sr" => "паника: pad_free curpad, %{arg1}!=%{arg2}",
               "tr" => "panic: pad_free curpad, %{arg1}!=%{arg2}",
-              "uk" => "паніка: pad_free curpad, %{arg1}!=%{arg2}"
+              "uk" => "паніка: pad_free curpad, %{arg1}!=%{arg2}",
+              "zh" => "panic: pad_free curpad，%{arg1}!=%{arg2}"
             },
             "args" => [
               {
@@ -65058,7 +66440,8 @@ $CONF = {
               "ru" => "паника: pad_reset curpad, %{arg1}!=%{arg2}",
               "sr" => "паника: pad_reset curpad, %{arg1}!=%{arg2}",
               "tr" => "panic: pad_reset curpad, %{arg1}!=%{arg2}",
-              "uk" => "паніка: pad_reset curpad, %{arg1}!=%{arg2}"
+              "uk" => "паніка: pad_reset curpad, %{arg1}!=%{arg2}",
+              "zh" => "panic: pad_reset curpad，%{arg1}!=%{arg2}"
             },
             "args" => [
               {
@@ -65115,7 +66498,8 @@ $CONF = {
               "ru" => "паника: pad_swipe curpad, %{arg1}!=%{arg2}",
               "sr" => "паника: pad_swipe curpad, %{arg1}!=%{arg2}",
               "tr" => "panic: pad_swipe curpad, %{arg1}!=%{arg2}",
-              "uk" => "паніка: pad_swipe curpad, %{arg1}!=%{arg2}"
+              "uk" => "паніка: pad_swipe curpad, %{arg1}!=%{arg2}",
+              "zh" => "panic: pad_swipe curpad，%{arg1}!=%{arg2}"
             },
             "args" => [
               {
@@ -65169,7 +66553,8 @@ $CONF = {
               "ru" => "паника: regatom вернула признак неудачи, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
               "sr" => "паника: regatom је вратио неуспех, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regatom başarısız oldu, bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
-              "uk" => "паніка: regatom повернула ознаку невдачі, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
+              "uk" => "паніка: regatom повернула ознаку невдачі, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/",
+              "zh" => "panic: regatom 返回失败，标志：%{arg1}，位于正则表达式 m/%{arg2}%{arg3}/ 中"
             },
             "args" => [
               {
@@ -65244,7 +66629,8 @@ $CONF = {
               "ru" => "паника: regbranch вернула признак неудачи, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
               "sr" => "паника: regbranch је вратио неуспех, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regbranch başarısız oldu, bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
-              "uk" => "паніка: regbranch повернула ознаку невдачі, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
+              "uk" => "паніка: regbranch повернула ознаку невдачі, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/",
+              "zh" => "panic: regbranch 返回失败，标志：%{arg1}，位于正则表达式 m/%{arg2}%{arg3}/ 中"
             },
             "args" => [
               {
@@ -65319,7 +66705,8 @@ $CONF = {
               "ru" => "паника: regclass вернула признак неудачи в regatom, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
               "sr" => "паника: regclass је вратио неуспех функцији regatom, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regclass, regatom'a başarısızlık döndürdü; bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
-              "uk" => "паніка: regclass повернула ознаку невдачі до regatom, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
+              "uk" => "паніка: regclass повернула ознаку невдачі до regatom, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/",
+              "zh" => "panic: regclass 未能向 regatom 返回结果，标志：%{arg1}，位于正则表达式 m/%{arg2}%{arg3}/ 中"
             },
             "args" => [
               {
@@ -65394,7 +66781,8 @@ $CONF = {
               "ru" => "паника: regclass вернул признак сбоя в handle_sets, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
               "sr" => "паника: regclass није успео у функцији handle_sets, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regclass, handle_sets'i işleyemedi; bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
-              "uk" => "паніка: regclass повернула ознаку невдачі до handle_sets, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
+              "uk" => "паніка: regclass повернула ознаку невдачі до handle_sets, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/",
+              "zh" => "panic: regclass 未能在 handle_sets 处处理字符集，标志：%{arg1}，位于正则表达式 m/%{arg2}%{arg3}/ 中"
             },
             "args" => [
               {
@@ -65469,7 +66857,8 @@ $CONF = {
               "ru" => "паника: повреждённый код операции регулярного выражения %{arg1} > %{arg2} в регулярном выражении m/%{arg3}%{arg4}/",
               "sr" => "паника: оштећен опкод регуларног израза %{arg1} > %{arg2} у регуларном изразу m/%{arg3}%{arg4}/",
               "tr" => "panic: bozuk regexp opcode'u %{arg1} > %{arg2}, regex m/%{arg3}%{arg4}/",
-              "uk" => "паніка: пошкоджений код операції регулярного виразу %{arg1} > %{arg2} у регулярному виразі m/%{arg3}%{arg4}/"
+              "uk" => "паніка: пошкоджений код операції регулярного виразу %{arg1} > %{arg2} у регулярному виразі m/%{arg3}%{arg4}/",
+              "zh" => "panic: 正则表达式 m/%{arg3}%{arg4}/ 中的操作码 %{arg1} > %{arg2} 已损坏"
             },
             "args" => [
               {
@@ -65548,7 +66937,8 @@ $CONF = {
               "ru" => "паника: %{file}: %{line}: отрицательное смещение:  %{offset} при попытке вывести сообщение для  шаблона %{pattern}",
               "sr" => "паника: %{file}: %{line}: негативан помак:  %{offset} при покушају исписа поруке за  образац %{pattern}",
               "tr" => "panic: %{file}: %{line}: negatif ofset:  %{offset};  pattern %{pattern} için ileti oluşturulmaya çalışılıyor",
-              "uk" => "паніка: %{file}: %{line}: від'ємне зміщення:  %{offset} під час спроби вивести повідомлення для  шаблону %{pattern}"
+              "uk" => "паніка: %{file}: %{line}: від'ємне зміщення:  %{offset} під час спроби вивести повідомлення для  шаблону %{pattern}",
+              "zh" => "panic: %{file}: %{line}: 负偏移量：  %{offset}，尝试为  模式 %{pattern} 输出消息"
             },
             "args" => [
               {
@@ -65623,7 +67013,8 @@ $CONF = {
               "ru" => "паника! %{file}: %{line}: Попытка выдать предупреждение там, где оно не ожидалось: '%{location}'",
               "sr" => "паника! %{file}: %{line}: Покушај издавања упозорења иако се ниједно није очекивало на '%{location}'",
               "tr" => "panic! %{file}: %{line}: '%{location}' konumunda beklenmeyen bir uyarı üretilmeye çalışıldı",
-              "uk" => "паніка! %{file}: %{line}: Спроба видати попередження там, де жодного не очікувалося, у позиції '%{location}'"
+              "uk" => "паніка! %{file}: %{line}: Спроба видати попередження там, де жодного не очікувалося, у позиції '%{location}'",
+              "zh" => "panic! %{file}: %{line}: 在 '%{location}' 处尝试发出警告，但此处不应有警告"
             },
             "args" => [
               {
@@ -65682,7 +67073,8 @@ $CONF = {
               "ru" => "паника: grok_bslash_N установила NEED_UTF8 в регулярном выражении m/%{arg1}%{arg2}/",
               "sr" => "паника: grok_bslash_N је поставио NEED_UTF8 у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "panic: grok_bslash_N, regex m/%{arg1}%{arg2}/ içinde NEED_UTF8 ayarladı",
-              "uk" => "паніка: grok_bslash_N установила NEED_UTF8 у регулярному виразі m/%{arg1}%{arg2}/"
+              "uk" => "паніка: grok_bslash_N установила NEED_UTF8 у регулярному виразі m/%{arg1}%{arg2}/",
+              "zh" => "panic: grok_bslash_N 在正则表达式 m/%{arg1}%{arg2}/ 中设置了 NEED_UTF8"
             },
             "args" => [
               {
@@ -65751,7 +67143,8 @@ $CONF = {
               "ru" => "паника: reg вернула признак неудачи в grok_bslash_N, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
               "sr" => "паника: reg је вратио неуспех функцији grok_bslash_N, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: reg, grok_bslash_N'e başarısızlık döndürdü; bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
-              "uk" => "паніка: reg повернула ознаку невдачі до grok_bslash_N, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
+              "uk" => "паніка: reg повернула ознаку невдачі до grok_bslash_N, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/",
+              "zh" => "panic: reg 在 grok_bslash_N 处返回失败，标志：%{arg1}，位于正则表达式 m/%{arg2}%{arg3}/ 中"
             },
             "args" => [
               {
@@ -65826,7 +67219,8 @@ $CONF = {
               "ru" => "паника: последовательность (?{...}): блок кода не найден\n в регулярном выражении m/%{arg1}%{arg2}/",
               "sr" => "паника: Низ (?{...}): блок кода није пронађен\n у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "panic: Sıra (?{...}): kod bloğu bulunamadı\n regex m/%{arg1}%{arg2}/ içinde",
-              "uk" => "паніка: послідовність (?{...}): блок коду не знайдено\n у регулярному виразі m/%{arg1}%{arg2}/"
+              "uk" => "паніка: послідовність (?{...}): блок коду не знайдено\n у регулярному виразі m/%{arg1}%{arg2}/",
+              "zh" => "panic: 序列 (?{...})：未找到代码块\n 在正则表达式 m/%{arg1}%{arg2}/ 中"
             },
             "args" => [
               {
@@ -65895,7 +67289,8 @@ $CONF = {
               "ru" => "паника: reg вернула признак неудачи в regatom, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
               "sr" => "паника: reg је вратио неуспех функцији regatom, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: reg, regatom'a başarısızlık döndürdü; bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
-              "uk" => "паніка: reg повернула ознаку невдачі до regatom, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
+              "uk" => "паніка: reg повернула ознаку невдачі до regatom, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/",
+              "zh" => "panic: reg 未能向 regatom 返回结果，标志：%{arg1}，位于正则表达式 m/%{arg2}%{arg3}/ 中"
             },
             "args" => [
               {
@@ -65970,7 +67365,8 @@ $CONF = {
               "ru" => "паника: loc_correspondence[%{arg1}] равно 0 в регулярном выражении m/%{arg2}%{arg3}/",
               "sr" => "паника: loc_correspondence[%{arg1}] је 0 у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regex m/%{arg2}%{arg3}/ içinde loc_correspondence[%{arg1}] değeri 0",
-              "uk" => "паніка: loc_correspondence[%{arg1}] дорівнює 0 у регулярному виразі m/%{arg2}%{arg3}/"
+              "uk" => "паніка: loc_correspondence[%{arg1}] дорівнює 0 у регулярному виразі m/%{arg2}%{arg3}/",
+              "zh" => "panic: 正则表达式 m/%{arg2}%{arg3}/ 中的 loc_correspondence[%{arg1}] 为 0"
             },
             "args" => [
               {
@@ -66044,7 +67440,8 @@ $CONF = {
               "ru" => "panic: не удалось выделить память для элемента хеша paren_name",
               "sr" => "паника: није успела додела меморије за елемент хеша paren_name",
               "tr" => "panic: paren_name hash öğesi için bellek ayırma başarısız oldu",
-              "uk" => "паніка: не вдалося виділити пам'ять для елемента хешу paren_name"
+              "uk" => "паніка: не вдалося виділити пам'ять для елемента хешу paren_name",
+              "zh" => "panic: paren_name 哈希元素分配失败"
             },
             "args" => []
           },
@@ -66087,7 +67484,8 @@ $CONF = {
               "ru" => "panic: отсутствует svname в reg_scan_name",
               "sr" => "паника: нема svname у reg_scan_name",
               "tr" => "panic: reg_scan_name içinde svname yok",
-              "uk" => "паніка: відсутнє svname у reg_scan_name"
+              "uk" => "паніка: відсутнє svname у reg_scan_name",
+              "zh" => "panic: reg_scan_name 中没有 svname"
             },
             "args" => []
           },
@@ -66130,7 +67528,8 @@ $CONF = {
               "ru" => "паника: недопустимый флаг %{arg2} в reg_scan_name",
               "sr" => "паника: неисправна заставица %{arg2} у reg_scan_name",
               "tr" => "panic: reg_scan_name içinde hatalı bayrak %{arg2}",
-              "uk" => "паніка: неправильний прапорець %{arg2} у reg_scan_name"
+              "uk" => "паніка: неправильний прапорець %{arg2} у reg_scan_name",
+              "zh" => "panic: reg_scan_name 中的标志位 %{arg2} 无效"
             },
             "args" => [
               {
@@ -66179,7 +67578,8 @@ $CONF = {
               "ru" => "panic: reg_scan_name вернула NULL",
               "sr" => "паника: reg_scan_name је вратио NULL",
               "tr" => "panic: reg_scan_name NULL döndürdü",
-              "uk" => "паніка: reg_scan_name повернула NULL"
+              "uk" => "паніка: reg_scan_name повернула NULL",
+              "zh" => "panic: reg_scan_name 返回了 NULL"
             },
             "args" => []
           },
@@ -66222,7 +67622,8 @@ $CONF = {
               "ru" => "паника: regpiece вернула признак неудачи, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
               "sr" => "паника: regpiece је вратио неуспех, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regpiece başarısız oldu; flags: %{arg1}, regex m/%{arg2}%{arg3}/",
-              "uk" => "паніка: regpiece повернула ознаку невдачі, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
+              "uk" => "паніка: regpiece повернула ознаку невдачі, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/",
+              "zh" => "panic: regpiece 返回失败，标志：%{arg1}，位于正则表达式 m/%{arg2}%{arg3}/ 中"
             },
             "args" => [
               {
@@ -66297,7 +67698,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: %{arg2}: %{arg3}: неожиданная операция %{arg4}",
               "sr" => "паника: %{arg2}: %{arg3}: Неочекивана операција %{arg4}",
               "tr" => "panic: %{arg2}: %{arg3}: Beklenmeyen işlem %{arg4}",
-              "uk" => "паніка: %{arg2}: %{arg3}: Неочікувана операція %{arg4}"
+              "uk" => "паніка: %{arg2}: %{arg3}: Неочікувана операція %{arg4}",
+              "zh" => "panic: %{arg2}: %{arg3}: 意外的操作 %{arg4}"
             },
             "args" => [
               {
@@ -66356,7 +67758,8 @@ $CONF = {
               "ru" => "паника: reg вернула признак неудачи в re_op_compile, флаги: %{flags}",
               "sr" => "паника: reg је вратио неуспех функцији re_op_compile, flags: %{flags}",
               "tr" => "panic: reg, re_op_compile için başarısızlık döndürdü; flags: %{flags}",
-              "uk" => "паніка: reg повернула ознаку невдачі до re_op_compile, прапорці: %{flags}"
+              "uk" => "паніка: reg повернула ознаку невдачі до re_op_compile, прапорці: %{flags}",
+              "zh" => "panic: reg 向 re_op_compile 返回失败，flags: %{flags}"
             },
             "args" => [
               {
@@ -66405,7 +67808,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: узел regnode %{arg2} должен быть разрешён до оптимизации",
               "sr" => "паника: %{arg2} regnode мора бити разрешен пре оптимизације",
               "tr" => "panic: %{arg2} regnode'u optimizasyondan önce çözümlenmiş olmalı",
-              "uk" => "паніка: вузол regnode %{arg2} має бути розв'язаний до оптимізації"
+              "uk" => "паніка: вузол regnode %{arg2} має бути розв'язаний до оптимізації",
+              "zh" => "panic: %{arg2} regnode 在优化前应已解析"
             },
             "args" => [
               {
@@ -66454,7 +67858,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неожиданный код простой операции REx %{arg2}",
               "sr" => "паника: неочекиван једноставан REx опкод %{arg2}",
               "tr" => "panic: beklenmeyen basit REx opcode %{arg2}",
-              "uk" => "паніка: неочікуваний простий код операції REx %{arg2}"
+              "uk" => "паніка: неочікуваний простий код операції REx %{arg2}",
+              "zh" => "panic: 意外的简单 REx 操作码 %{arg2}"
             },
             "args" => [
               {
@@ -66503,7 +67908,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неожиданный код операции REx переменной длины %{arg2}",
               "sr" => "паника: неочекиван променљив REx опкод %{arg2}",
               "tr" => "panic: beklenmeyen değişken REx opcode %{arg2}",
-              "uk" => "паніка: неочікуваний код операції REx зі змінною довжиною %{arg2}"
+              "uk" => "паніка: неочікуваний код операції REx зі змінною довжиною %{arg2}",
+              "zh" => "panic: 意外的可变 REx 操作码 %{arg2}"
             },
             "args" => [
               {
@@ -66552,7 +67958,8 @@ $CONF = {
               "ru" => "паника! При построении префиксного дерева обнаружен неизвестный тип узла %{arg1} %{arg2}",
               "sr" => "panic! При конструкцији trie-а: непознат тип чвора %{arg1} %{arg2}",
               "tr" => "panic! Trie oluşturulurken bilinmeyen düğüm türü: %{arg1} %{arg2}",
-              "uk" => "паніка! Під час побудови префіксного дерева виявлено невідомий тип вузла %{arg1} %{arg2}"
+              "uk" => "паніка! Під час побудови префіксного дерева виявлено невідомий тип вузла %{arg1} %{arg2}",
+              "zh" => "panic! 构造 trie 时遇到未知节点类型 %{arg1} %{arg2}"
             },
             "args" => [
               {
@@ -66606,7 +68013,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неизвестный код данных '%{arg2}' в re_dup_guts",
               "sr" => "паника: re_dup_guts unknown data code '%{arg2}'",
               "tr" => "panic: re_dup_guts bilinmeyen veri kodu '%{arg2}'",
-              "uk" => "паніка: невідомий код даних '%{arg2}' у re_dup_guts"
+              "uk" => "паніка: невідомий код даних '%{arg2}' у re_dup_guts",
+              "zh" => "panic: re_dup_guts 中的未知数据代码“%{arg2}”"
             },
             "args" => [
               {
@@ -66655,7 +68063,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: повреждённый код операции регулярного выражения %{arg2} > %{arg3}",
               "sr" => "паника: corrupted regexp opcode %{arg2} > %{arg3}",
               "tr" => "panic: bozuk regexp opcode'u %{arg2} > %{arg3}",
-              "uk" => "паніка: пошкоджений код операції регулярного виразу %{arg2} > %{arg3}"
+              "uk" => "паніка: пошкоджений код операції регулярного виразу %{arg2} > %{arg3}",
+              "zh" => "panic: 正则表达式操作码 %{arg2} > %{arg3}，数据已损坏"
             },
             "args" => [
               {
@@ -66709,7 +68118,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: код данных regfree '%{arg2}'",
               "sr" => "паника: regfree data code '%{arg2}'",
               "tr" => "panic: regfree veri kodu '%{arg2}'",
-              "uk" => "паніка: код даних regfree '%{arg2}'"
+              "uk" => "паніка: код даних regfree '%{arg2}'",
+              "zh" => "panic: regfree 数据代码“%{arg2}”"
             },
             "args" => [
               {
@@ -66758,7 +68168,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неизвестные флаги %{arg2} в named_buff_iter",
               "sr" => "паника: Непознате заставице %{arg2} у named_buff_iter",
               "tr" => "panic: named_buff_iter içinde bilinmeyen bayraklar %{arg2}",
-              "uk" => "паніка: невідомі прапорці %{arg2} у named_buff_iter"
+              "uk" => "паніка: невідомі прапорці %{arg2} у named_buff_iter",
+              "zh" => "panic: named_buff_iter 中的未知标志 %{arg2}"
             },
             "args" => [
               {
@@ -66807,7 +68218,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неизвестные флаги %{arg2} в named_buff",
               "sr" => "паника: Непознате заставице %{arg2} у named_buff",
               "tr" => "panic: named_buff içinde bilinmeyen bayraklar %{arg2}",
-              "uk" => "паніка: невідомі прапорці %{arg2} у named_buff"
+              "uk" => "паніка: невідомі прапорці %{arg2} у named_buff",
+              "zh" => "panic: named_buff 中的未知标志 %{arg2}"
             },
             "args" => [
               {
@@ -66856,7 +68268,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неизвестные флаги %{arg2} в named_buff_scalar",
               "sr" => "паника: Непознате заставице %{arg2} у named_buff_scalar",
               "tr" => "panic: named_buff_scalar içinde bilinmeyen bayraklar %{arg2}",
-              "uk" => "паніка: невідомі прапорці %{arg2} у named_buff_scalar"
+              "uk" => "паніка: невідомі прапорці %{arg2} у named_buff_scalar",
+              "zh" => "panic: named_buff_scalar 中的未知标志 %{arg2}"
             },
             "args" => [
               {
@@ -66905,7 +68318,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: указатели начала/конца в pp_match, paren=%{arg1}, start=%{arg2}, end=%{arg3}, s=%{arg4}, strend=%{arg5}, len=%{arg6}",
               "sr" => "паника: pp_match почетни/крајњи показивачи, парен=%{arg1}, почетак=%{arg2}, крај=%{arg3}, s=%{arg4}, strend=%{arg5}, дужина=%{arg6}",
               "tr" => "panic: pp_match başlangıç/bitiş işaretçileri, paren=%{arg1}, start=%{arg2}, end=%{arg3}, s=%{arg4}, strend=%{arg5}, len=%{arg6}",
-              "uk" => "паніка: вказівники початку/кінця pp_match, paren=%{arg1}, start=%{arg2}, end=%{arg3}, s=%{arg4}, strend=%{arg5}, len=%{arg6}"
+              "uk" => "паніка: вказівники початку/кінця pp_match, paren=%{arg1}, start=%{arg2}, end=%{arg3}, s=%{arg4}, strend=%{arg5}, len=%{arg6}",
+              "zh" => "内部错误：pp_match 起始/结束指针，paren=%{arg1}，start=%{arg2}，end=%{arg3}，s=%{arg4}，strend=%{arg5}，len=%{arg6}"
             },
             "args" => [
               {
@@ -66979,7 +68393,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: paren_elems_to_push, %{arg2} < 0, maxopenparen: %{arg3} parenfloor: %{arg4}",
               "sr" => "паника: paren_elems_to_push, %{arg2} < 0, maxopenparen: %{arg3} parenfloor: %{arg4}",
               "tr" => "panic: paren_elems_to_push, %{arg2} < 0, maxopenparen: %{arg3} parenfloor: %{arg4}",
-              "uk" => "паніка: paren_elems_to_push, %{arg2} < 0, maxopenparen: %{arg3} parenfloor: %{arg4}"
+              "uk" => "паніка: paren_elems_to_push, %{arg2} < 0, maxopenparen: %{arg3} parenfloor: %{arg4}",
+              "zh" => "panic: paren_elems_to_push，%{arg2} < 0，maxopenparen: %{arg3} parenfloor: %{arg4}"
             },
             "args" => [
               {
@@ -67038,7 +68453,8 @@ $CONF = {
               "ru" => "паника: paren_elems_to_push: смещение %{offset} вне диапазона (%{open}-%{floor})",
               "sr" => "паника: померај paren_elems_to_push %{offset} је ван опсега (%{open}-%{floor})",
               "tr" => "panic: paren_elems_to_push offset %{offset} aralık dışında (%{open}-%{floor})",
-              "uk" => "паніка: paren_elems_to_push: зміщення %{offset} поза діапазоном (%{open}-%{floor})"
+              "uk" => "паніка: paren_elems_to_push: зміщення %{offset} поза діапазоном (%{open}-%{floor})",
+              "zh" => "panic: paren_elems_to_push 偏移 %{offset} 超出范围（%{open}-%{floor}）"
             },
             "args" => [
               {
@@ -67097,7 +68513,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неожиданный класс символов '%{arg2}' в isFOO_lc()",
               "sr" => "паника: isFOO_lc() има неочекивану класу знакова '%{arg2}'",
               "tr" => "panic: isFOO_lc() beklenmeyen bir karakter sınıfı '%{arg2}' aldı",
-              "uk" => "паніка: isFOO_lc() має неочікуваний клас символів '%{arg2}'"
+              "uk" => "паніка: isFOO_lc() має неочікуваний клас символів '%{arg2}'",
+              "zh" => "panic: isFOO_lc() 遇到意外的字符类“%{arg2}”"
             },
             "args" => [
               {
@@ -67146,7 +68563,8 @@ $CONF = {
               "ru" => "паника: end_shift: %{shift} шаблон:\n%{pattern}\n ",
               "sr" => "паника: end_shift: %{shift} образац:\n%{pattern}\n ",
               "tr" => "panic: end_shift: %{shift} örüntü:\n%{pattern}\n ",
-              "uk" => "паніка: end_shift: %{shift} шаблон:\n%{pattern}\n "
+              "uk" => "паніка: end_shift: %{shift} шаблон:\n%{pattern}\n ",
+              "zh" => "内部错误: end_shift: %{shift} 模式:\n%{pattern}\n "
             },
             "args" => [
               {
@@ -67200,7 +68618,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: pp_match",
               "sr" => "паника: pp_match",
               "tr" => "panic: pp_match",
-              "uk" => "паніка: pp_match"
+              "uk" => "паніка: pp_match",
+              "zh" => "内部错误：pp_match"
             },
             "args" => []
           },
@@ -67243,7 +68662,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: regrepeat() вызвана с нераспознанным типом узла %{arg2}='%{arg3}'",
               "sr" => "паника: regrepeat() called with unrecognized node type %{arg2}='%{arg3}'",
               "tr" => "panic: regrepeat() tanınmayan %{arg2}='%{arg3}' düğüm türüyle çağrıldı",
-              "uk" => "паніка: regrepeat() викликано з нерозпізнаним типом вузла %{arg2}='%{arg3}'"
+              "uk" => "паніка: regrepeat() викликано з нерозпізнаним типом вузла %{arg2}='%{arg3}'",
+              "zh" => "panic: regrepeat() 使用了无法识别的节点类型 %{arg2}='%{arg3}'"
             },
             "args" => [
               {
@@ -67297,7 +68717,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неизвестный regstclass %{arg2}",
               "sr" => "паника: unknown regstclass %{arg2}",
               "tr" => "panic: bilinmeyen regstclass %{arg2}",
-              "uk" => "паніка: невідомий regstclass %{arg2}"
+              "uk" => "паніка: невідомий regstclass %{arg2}",
+              "zh" => "panic: 未知的 regstclass %{arg2}"
             },
             "args" => [
               {
@@ -67346,7 +68767,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: pp_subst, pm=%{arg1}, orig=%{arg2}",
               "sr" => "паника: pp_subst, pm=%{arg1}, orig=%{arg2}",
               "tr" => "panic: pp_subst, pm=%{arg1}, orig=%{arg2}",
-              "uk" => "паніка: pp_subst, pm=%{arg1}, orig=%{arg2}"
+              "uk" => "паніка: pp_subst, pm=%{arg1}, orig=%{arg2}",
+              "zh" => "内部错误：pp_subst，pm=%{arg1}，orig=%{arg2}"
             },
             "args" => [
               {
@@ -67401,7 +68823,8 @@ $CONF = {
               "ru" => "паника: magic_killbackrefs (flags=%{arg1})",
               "sr" => "паника: magic_killbackrefs (заставице=%{arg1})",
               "tr" => "panic: magic_killbackrefs (flags=%{arg1})",
-              "uk" => "паніка: magic_killbackrefs (flags=%{arg1})"
+              "uk" => "паніка: magic_killbackrefs (flags=%{arg1})",
+              "zh" => "panic: magic_killbackrefs（flags=%{arg1}）"
             },
             "args" => [
               {
@@ -67451,7 +68874,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: del_backref, *svp=%{arg2}, sv=%{arg3}",
               "sr" => "паника: del_backref, *svp=%{arg2}, sv=%{arg3}",
               "tr" => "panic: del_backref, *svp=%{arg2}, sv=%{arg3}",
-              "uk" => "паніка: del_backref, *svp=%{arg2}, sv=%{arg3}"
+              "uk" => "паніка: del_backref, *svp=%{arg2}, sv=%{arg3}",
+              "zh" => "panic: del_backref，*svp=%{arg2}, sv=%{arg3}"
             },
             "args" => [
               {
@@ -67506,7 +68930,8 @@ $CONF = {
               "ru" => "panic: magic_killbackrefs (AV/SV обратных ссылок уже освобождён)",
               "sr" => "паника: magic_killbackrefs (ослобођени backref AV/SV)",
               "tr" => "panic: magic_killbackrefs (serbest bırakılmış backref AV/SV)",
-              "uk" => "паніка: magic_killbackrefs (звільнено AV/SV зворотних посилань)"
+              "uk" => "паніка: magic_killbackrefs (звільнено AV/SV зворотних посилань)",
+              "zh" => "panic: magic_killbackrefs（已释放的 backref AV/SV）"
             },
             "args" => []
           },
@@ -67550,7 +68975,8 @@ $CONF = {
               "ru" => "panic: del_backref, svp=0",
               "sr" => "паника: недостаје показивач svp у del_backref",
               "tr" => "panic: del_backref, svp=0",
-              "uk" => "паніка: del_backref, svp=0"
+              "uk" => "паніка: del_backref, svp=0",
+              "zh" => "panic: del_backref，svp=0"
             },
             "args" => []
           },
@@ -67594,7 +69020,8 @@ $CONF = {
               "ru" => "паника: del_backref, *svp=%{pointer} phase=%{phase} refcnt=%{count}",
               "sr" => "паника: del_backref, *svp=%{pointer} фаза=%{phase} refcnt=%{count}",
               "tr" => "panic: del_backref, *svp=%{pointer} phase=%{phase} refcnt=%{count}",
-              "uk" => "паніка: del_backref, *svp=%{pointer} phase=%{phase} refcnt=%{count}"
+              "uk" => "паніка: del_backref, *svp=%{pointer} phase=%{phase} refcnt=%{count}",
+              "zh" => "内部错误: del_backref, *svp=%{pointer} phase=%{phase} refcnt=%{count}"
             },
             "args" => [
               {
@@ -67654,7 +69081,8 @@ $CONF = {
               "ru" => "паника: попытка скопировать значение %{source} в освобождённый скаляр %{destination}",
               "sr" => "паника: покушај копирања вредности %{source} у ослобођену скаларну вредност %{destination}",
               "tr" => "panic: %{source} değeri serbest bırakılmış %{destination} skalerine kopyalanmaya çalışıldı",
-              "uk" => "паніка: спроба скопіювати значення %{source} у звільнений скаляр %{destination}"
+              "uk" => "паніка: спроба скопіювати значення %{source} у звільнений скаляр %{destination}",
+              "zh" => "panic: 尝试将值 %{source} 复制到已释放的标量 %{destination}"
             },
             "args" => [
               {
@@ -67710,7 +69138,8 @@ $CONF = {
               "ru" => "паника: неверный счётчик ссылок nsv в sv_replace() (%{arg1} != 1)",
               "sr" => "паника: погрешан број референци за nsv у sv_replace() (%{arg1} != 1)",
               "tr" => "panic: sv_replace() içindeki nsv için referans sayısı hatalı (%{arg1} != 1)",
-              "uk" => "паніка: неправильний лічильник посилань на nsv у sv_replace() (%{arg1} != 1)"
+              "uk" => "паніка: неправильний лічильник посилань на nsv у sv_replace() (%{arg1} != 1)",
+              "zh" => "panic: sv_replace() 中 nsv 的引用计数错误（%{arg1} != 1）"
             },
             "args" => [
               {
@@ -67760,7 +69189,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: попытка скопировать освобождённый скаляр %{arg2}",
               "sr" => "паника: attempt to copy freed scalar %{arg2}",
               "tr" => "panic: serbest bırakılmış %{arg2} skaleri kopyalanmaya çalışıldı",
-              "uk" => "паніка: спроба скопіювати звільнений скаляр %{arg2}"
+              "uk" => "паніка: спроба скопіювати звільнений скаляр %{arg2}",
+              "zh" => "panic: 尝试复制已释放的标量 %{arg2}"
             },
             "args" => [
               {
@@ -67810,7 +69240,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: попытка скопировать освобождённый скаляр %{arg2} в %{arg3}",
               "sr" => "паника: покушај копирања ослобођеног скалара %{arg2} у %{arg3}",
               "tr" => "panic: serbest bırakılmış %{arg2} skaleri %{arg3} konumuna kopyalanmaya çalışıldı",
-              "uk" => "паніка: спроба скопіювати звільнений скаляр %{arg2} до %{arg3}"
+              "uk" => "паніка: спроба скопіювати звільнений скаляр %{arg2} до %{arg3}",
+              "zh" => "panic: 尝试将已释放的标量 %{arg2} 复制到 %{arg3}"
             },
             "args" => [
               {
@@ -67865,7 +69296,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}",
               "sr" => "паника: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}",
               "tr" => "panic: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}",
-              "uk" => "паніка: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}"
+              "uk" => "паніка: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}",
+              "zh" => "内部错误: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}"
             },
             "args" => [
               {
@@ -67925,7 +69357,8 @@ $CONF = {
               "ru" => "паника: sv_setpvn_fresh вызвана с отрицательной длиной строки %{arg1}",
               "sr" => "паника: sv_setpvn_fresh је позван са негативном дужином низа знакова %{arg1}",
               "tr" => "panic: sv_setpvn_fresh negatif strlen %{arg1} ile çağrıldı",
-              "uk" => "паніка: sv_setpvn_fresh викликано з від'ємною довжиною рядка %{arg1}"
+              "uk" => "паніка: sv_setpvn_fresh викликано з від'ємною довжиною рядка %{arg1}",
+              "zh" => "panic: sv_setpvn_fresh 调用时 strlen 为负 %{arg1}"
             },
             "args" => [
               {
@@ -67975,7 +69408,8 @@ $CONF = {
               "ru" => "паника: sv_insert, midend=%{arg1}, bigend=%{arg2}",
               "sr" => "паника: sv_insert, midend=%{arg1}, bigend=%{arg2}",
               "tr" => "panic: sv_insert, midend=%{arg1}, bigend=%{arg2}",
-              "uk" => "паніка: sv_insert, midend=%{arg1}, bigend=%{arg2}"
+              "uk" => "паніка: sv_insert, midend=%{arg1}, bigend=%{arg2}",
+              "zh" => "panic: sv_insert，midend=%{arg1}，bigend=%{arg2}"
             },
             "args" => [
               {
@@ -68030,7 +69464,8 @@ $CONF = {
               "ru" => "паника: sv_setpvn вызвана с отрицательной длиной строки %{arg1}",
               "sr" => "паника: sv_setpvn је позван са негативном дужином низа знакова %{arg1}",
               "tr" => "panic: sv_setpvn negatif strlen %{arg1} ile çağrıldı",
-              "uk" => "паніка: sv_setpvn викликано з від'ємною довжиною рядка %{arg1}"
+              "uk" => "паніка: sv_setpvn викликано з від'ємною довжиною рядка %{arg1}",
+              "zh" => "panic: sv_setpvn 调用时 strlen 为负 %{arg1}"
             },
             "args" => [
               {
@@ -68081,7 +69516,8 @@ $CONF = {
               "ru" => "паника: неизвестный тип %{arg2} в newSV_type()",
               "sr" => "паника: newSV_type() непознат тип %{arg2}",
               "tr" => "panic: newSV_type() bilinmeyen tür %{arg2}",
-              "uk" => "паніка: невідомий тип %{arg2} у newSV_type()"
+              "uk" => "паніка: невідомий тип %{arg2} у newSV_type()",
+              "zh" => "panic: newSV_type() 的目标类型 %{arg2} 未知"
             },
             "args" => [
               {
@@ -68131,7 +69567,8 @@ $CONF = {
               "ru" => "паника: преобразование в неизвестный тип %{arg2} в sv_upgrade",
               "sr" => "паника: sv_upgrade на непознат тип %{arg2}",
               "tr" => "panic: sv_upgrade bilinmeyen %{arg2} türüne",
-              "uk" => "паніка: sv_upgrade до невідомого типу %{arg2}"
+              "uk" => "паніка: sv_upgrade до невідомого типу %{arg2}",
+              "zh" => "panic: sv_upgrade 的目标类型 %{arg2} 未知"
             },
             "args" => [
               {
@@ -68181,7 +69618,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: попытка сбросить значение освобождённого скаляра %{arg2} в undef",
               "sr" => "паника: attempt to undefine a freed scalar %{arg2}",
               "tr" => "panic: serbest bırakılmış %{arg2} skaleri undef yapılmaya çalışıldı",
-              "uk" => "паніка: спроба скинути значення вже звільненого скаляра %{arg2} до undef"
+              "uk" => "паніка: спроба скинути значення вже звільненого скаляра %{arg2} до undef",
+              "zh" => "panic: 尝试取消定义已释放的标量 %{arg2}"
             },
             "args" => [
               {
@@ -68232,7 +69670,8 @@ $CONF = {
               "ru" => "паника: отрицательное количество в stack_grow() (%{arg1})",
               "sr" => "паника: stack_grow() негативан број (%{arg1})",
               "tr" => "panic: stack_grow() negatif sayı (%{arg1})",
-              "uk" => "паніка: від'ємна кількість у stack_grow() (%{arg1})"
+              "uk" => "паніка: від'ємна кількість у stack_grow() (%{arg1})",
+              "zh" => "panic: stack_grow() 计数为负（%{arg1}）"
             },
             "args" => [
               {
@@ -68283,7 +69722,8 @@ $CONF = {
               "ru" => "паника: предыдущая операция не расширила стек аргументов: base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n",
               "sr" => "паника: претходни op није успео да прошири стек аргумената: base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n",
               "tr" => "panic: önceki op argüman yığınını genişletemedi: base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n",
-              "uk" => "паніка: попередня операція не розширила стек аргументів: base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n"
+              "uk" => "паніка: попередня операція не розширила стек аргументів: base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n",
+              "zh" => "panic: 上一个 op 未能扩展参数栈：base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n"
             },
             "args" => [
               {
@@ -68344,7 +69784,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: XSUB %{arg2}::%{arg3} (%{arg4}) не расширила стек аргументов: base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n",
               "sr" => "паника: XSUB %{arg2}::%{arg3} (%{arg4}) није успео да прошири стек аргумената: base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n",
               "tr" => "panic: XSUB %{arg2}::%{arg3} (%{arg4}) argüman yığınını genişletemedi: base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n",
-              "uk" => "паніка: XSUB %{arg2}::%{arg3} (%{arg4}) не розширила стек аргументів: base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n"
+              "uk" => "паніка: XSUB %{arg2}::%{arg3} (%{arg4}) не розширила стек аргументів: base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n",
+              "zh" => "panic: XSUB %{arg2}::%{arg3}（%{arg4}）未能扩展参数栈：base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n"
             },
             "args" => [
               {
@@ -68420,7 +69861,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неверное значение gimme: %{arg2}\n",
               "sr" => "паника: bad gimme: %{arg2}\n",
               "tr" => "panic: hatalı gimme: %{arg2}\n",
-              "uk" => "паніка: неправильне значення gimme: %{arg2}\n"
+              "uk" => "паніка: неправильне значення gimme: %{arg2}\n",
+              "zh" => "panic: gimme 无效：%{arg2}\n"
             },
             "args" => [
               {
@@ -68472,7 +69914,8 @@ $CONF = {
               "ru" => "паника: top_env\n",
               "sr" => "паника: top_env\n",
               "tr" => "panic: top_env\n",
-              "uk" => "паніка: top_env\n"
+              "uk" => "паніка: top_env\n",
+              "zh" => "内部错误: top_env\n"
             },
             "args" => []
           },
@@ -68519,7 +69962,8 @@ $CONF = {
               "ru" => "паника: top_env, v=%{value}\n",
               "sr" => "паника: недостаје top_env, v=%{value}\n",
               "tr" => "panic: top_env, v=%{value}\n",
-              "uk" => "паніка: top_env, v=%{value}\n"
+              "uk" => "паніка: top_env, v=%{value}\n",
+              "zh" => "panic: top_env，v=%{value}\n"
             },
             "args" => [
               {
@@ -68571,7 +70015,8 @@ $CONF = {
               "ru" => "паника: неожиданный результат setjmp()\n",
               "sr" => "паника: неочекиван резултат функције setjmp()\n",
               "tr" => "panic: beklenmeyen setjmp() sonucu\n",
-              "uk" => "паніка: неочікуваний результат setjmp()\n"
+              "uk" => "паніка: неочікуваний результат setjmp()\n",
+              "zh" => "恐慌：setjmp() 返回了意外结果\n"
             },
             "args" => []
           },
@@ -68617,7 +70062,8 @@ $CONF = {
               "ru" => "паника: POPSTACK\n",
               "sr" => "паника: POPSTACK\n",
               "tr" => "panic: POPSTACK\n",
-              "uk" => "паніка: POPSTACK\n"
+              "uk" => "паніка: POPSTACK\n",
+              "zh" => "内部错误: POPSTACK\n"
             },
             "args" => []
           },
@@ -68663,7 +70109,8 @@ $CONF = {
               "ru" => "паника: количество элементов %{arg1} в save_alloc вне диапазона (%{arg2}-%{arg3})",
               "sr" => "паника: save_alloc број елемената %{arg1} је ван опсега (%{arg2}–%{arg3})",
               "tr" => "panic: save_alloc elems %{arg1} aralık dışında (%{arg2}-%{arg3})",
-              "uk" => "паніка: кількість елементів %{arg1} у save_alloc поза діапазоном (%{arg2}-%{arg3})"
+              "uk" => "паніка: кількість елементів %{arg1} у save_alloc поза діапазоном (%{arg2}-%{arg3})",
+              "zh" => "panic: save_alloc 元素数 %{arg1} 超出范围（%{arg2}-%{arg3}）"
             },
             "args" => [
               {
@@ -68724,7 +70171,8 @@ $CONF = {
               "ru" => "panic: размер savestack превышает I32_MAX",
               "sr" => "паника: savestack прелази I32_MAX",
               "tr" => "panic: savestack I32_MAX değerini aşıyor",
-              "uk" => "паніка: savestack перевищує I32_MAX"
+              "uk" => "паніка: savestack перевищує I32_MAX",
+              "zh" => "panic: savestack 超出 I32_MAX"
             },
             "args" => []
           },
@@ -68769,7 +70217,8 @@ $CONF = {
               "ru" => "паника: несогласованность в ss_dup (%{arg1})",
               "sr" => "паника: недоследност ss_dup (%{arg1})",
               "tr" => "panic: ss_dup tutarsızlığı (%{arg1})",
-              "uk" => "паніка: неузгодженість у ss_dup (%{arg1})"
+              "uk" => "паніка: неузгодженість у ss_dup (%{arg1})",
+              "zh" => "panic: ss_dup 不一致（%{arg1}）"
             },
             "args" => [
               {
@@ -68820,7 +70269,8 @@ $CONF = {
               "ru" => "паника: несогласованность в leave_scope: %{arg1}",
               "sr" => "паника: недоследност у leave_scope %{arg1}",
               "tr" => "panic: leave_scope tutarsızlığı %{arg1}",
-              "uk" => "паніка: неузгодженість у leave_scope %{arg1}"
+              "uk" => "паніка: неузгодженість у leave_scope %{arg1}",
+              "zh" => "panic: leave_scope 不一致：%{arg1}"
             },
             "args" => [
               {
@@ -68871,7 +70321,8 @@ $CONF = {
               "ru" => "паника: повреждённый индекс стека сохранения %{arg1}",
               "sr" => "паника: оштећен индекс сачуваног стека %{arg1}",
               "tr" => "panic: bozuk kayıtlı yığın dizini %{arg1}",
-              "uk" => "паніка: пошкоджений індекс стека збереження %{arg1}"
+              "uk" => "паніка: пошкоджений індекс стека збереження %{arg1}",
+              "zh" => "panic: 保存栈索引 %{arg1} 已损坏"
             },
             "args" => [
               {
@@ -68922,7 +70373,8 @@ $CONF = {
               "ru" => "panic: gp_free не удалось освободить указатель на глоб - что-то постоянно создаёт записи заново",
               "sr" => "паника: gp_free није успео да ослободи показивач на глобални симбол — нешто непрестано поново прави уносе",
               "tr" => "panic: gp_free glob işaretçisini serbest bırakamadı; girdiler sürekli yeniden oluşturuluyor",
-              "uk" => "паніка: gp_free не вдалося звільнити вказівник glob - щось постійно створює записи заново"
+              "uk" => "паніка: gp_free не вдалося звільнити вказівник glob - щось постійно створює записи заново",
+              "zh" => "panic: gp_free 未能释放 glob 指针——某些条目正在被反复重新创建"
             },
             "args" => []
           },
@@ -68967,7 +70419,8 @@ $CONF = {
               "ru" => "паника: слишком длинное имя gv (%{arg1})",
               "sr" => "паника: име gv-а је предугачко (%{arg1})",
               "tr" => "panic: gv adı çok uzun (%{arg1})",
-              "uk" => "паніка: надто довге ім'я gv (%{arg1})"
+              "uk" => "паніка: надто довге ім'я gv (%{arg1})",
+              "zh" => "panic: gv 名称过长（%{arg1}）"
             },
             "args" => [
               {
@@ -69018,7 +70471,8 @@ $CONF = {
               "ru" => "паника: слишком длинное имя hv (%{length})",
               "sr" => "паника: име hv је предугачко (%{length})",
               "tr" => "panic: hv adı çok uzun (%{length})",
-              "uk" => "паніка: задовге ім'я hv (%{length})"
+              "uk" => "паніка: задовге ім'я hv (%{length})",
+              "zh" => "panic: hv 名称过长（%{length}）"
             },
             "args" => [
               {
@@ -69068,7 +70522,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: scan_num, *s=%{arg2}",
               "sr" => "паника: scan_num, *s=%{arg2}",
               "tr" => "panic: scan_num, *s=%{arg2}",
-              "uk" => "паніка: scan_num, *s=%{arg2}"
+              "uk" => "паніка: scan_num, *s=%{arg2}",
+              "zh" => "panic: scan_num，*s=%{arg2}"
             },
             "args" => [
               {
@@ -69119,7 +70574,8 @@ $CONF = {
               "ru" => "паника: константа вышла за пределы выделенной памяти, %{arg1} >= %{arg2}",
               "sr" => "паника: константа је премашила додељени простор, %{arg1} >= %{arg2}",
               "tr" => "panic: sabit ayrılan alanı taştı, %{arg1} >= %{arg2}",
-              "uk" => "паніка: константа перевищила виділений обсяг пам'яті, %{arg1} >= %{arg2}"
+              "uk" => "паніка: константа перевищила виділений обсяг пам'яті, %{arg1} >= %{arg2}",
+              "zh" => "panic: 常量超出已分配空间，%{arg1} >= %{arg2}"
             },
             "args" => [
               {
@@ -69174,7 +70630,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: yylex, *s=%{arg2}",
               "sr" => "паника: yylex, *s=%{arg2}",
               "tr" => "panic: yylex, *s=%{arg2}",
-              "uk" => "паніка: yylex, *s=%{arg2}"
+              "uk" => "паніка: yylex, *s=%{arg2}",
+              "zh" => "panic: yylex，*s=%{arg2}"
             },
             "args" => [
               {
@@ -69225,7 +70682,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}",
               "sr" => "паника: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}",
               "tr" => "panic: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}",
-              "uk" => "паніка: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}"
+              "uk" => "паніка: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}",
+              "zh" => "内部错误: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}"
             },
             "args" => [
               {
@@ -69285,7 +70743,8 @@ $CONF = {
               "ru" => "паника: INTERPCONCAT, lex_brackets=%{arg2}",
               "sr" => "паника: INTERPCONCAT, lex_brackets=%{arg2}",
               "tr" => "panic: INTERPCONCAT, lex_brackets=%{arg2}",
-              "uk" => "паніка: INTERPCONCAT, lex_brackets=%{arg2}"
+              "uk" => "паніка: INTERPCONCAT, lex_brackets=%{arg2}",
+              "zh" => "panic: INTERPCONCAT，lex_brackets=%{arg2}"
             },
             "args" => [
               {
@@ -69335,7 +70794,8 @@ $CONF = {
               "ru" => "паника: неожиданное значение case %{value} в switch в файле %{file}, строка %{line}",
               "sr" => "паника: Неочекивани случај %{value} у switch-у у %{file}, ред %{line}",
               "tr" => "panic: %{file} içindeki switch'te beklenmeyen %{value} durumu, satır %{line}",
-              "uk" => "паніка: неочікуване значення %{value} у switch у файлі %{file}, рядок %{line}"
+              "uk" => "паніка: неочікуване значення %{value} у switch у файлі %{file}, рядок %{line}",
+              "zh" => "panic: %{file} 第 %{line} 行的 switch 中出现意外的情况 %{value}"
             },
             "args" => [
               {
@@ -69395,7 +70855,8 @@ $CONF = {
               "ru" => "паника: неожиданное значение %{arg2} в [%{arg3}]",
               "sr" => "паника: Неочекивана вредност %{arg2} у [%{arg3}]",
               "tr" => "panic: [%{arg3}] içinde beklenmeyen %{arg2} değeri",
-              "uk" => "паніка: неочікуване значення %{arg2} у [%{arg3}]"
+              "uk" => "паніка: неочікуване значення %{arg2} у [%{arg3}]",
+              "zh" => "panic: [%{arg3}] 中出现意外值 %{arg2}"
             },
             "args" => [
               {
@@ -69450,7 +70911,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка queryaddr",
               "sr" => "паника queryaddr",
               "tr" => "panic queryaddr",
-              "uk" => "паніка queryaddr"
+              "uk" => "паніка queryaddr",
+              "zh" => "内部错误 queryaddr"
             },
             "args" => []
           },
@@ -69494,7 +70956,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка параметра OS2::extLibpath",
               "sr" => "паника: параметар OS2::extLibpath",
               "tr" => "panic OS2::extLibpath parametresi",
-              "uk" => "паніка параметра OS2::extLibpath"
+              "uk" => "паніка параметра OS2::extLibpath",
+              "zh" => "panic OS2::extLibpath 参数"
             },
             "args" => []
           },
@@ -69538,7 +71001,8 @@ $CONF = {
               "ru" => "паника: неверное расположение ExceptionHandler: не выполнено %{stack} <= %{handler} < %{limit}\n",
               "sr" => "паника: ExceptionHandler је погрешно постављен: није %{stack} <= %{handler} < %{limit}\n",
               "tr" => "panic: ExceptionHandler yanlış yerde: %{stack} <= %{handler} < %{limit} değil\n",
-              "uk" => "паніка: ExceptionHandler розташовано неправильно: умова %{stack} <= %{handler} < %{limit} не виконується\n"
+              "uk" => "паніка: ExceptionHandler розташовано неправильно: умова %{stack} <= %{handler} < %{limit} не виконується\n",
+              "zh" => "panic: ExceptionHandler 位置错误：%{handler} 不满足 %{stack} <= %{handler} < %{limit}\n"
             },
             "args" => [
               {
@@ -69598,7 +71062,8 @@ $CONF = {
               "ru" => "Неверное расположение ExceptionHandler: %{actual} != %{expected}\n",
               "sr" => "ExceptionHandler је погрешно постављен: %{actual} != %{expected}\n",
               "tr" => "ExceptionHandler yanlış yerde: %{actual} != %{expected}\n",
-              "uk" => "Неправильне розташування ExceptionHandler: %{actual} != %{expected}\n"
+              "uk" => "Неправильне розташування ExceptionHandler: %{actual} != %{expected}\n",
+              "zh" => "ExceptionHandler 位置错误：%{actual} != %{expected}\n"
             },
             "args" => [
               {
@@ -69654,7 +71119,8 @@ $CONF = {
               "ru" => "паника: инициализация обходного механизма EMX: ошибка DosRequestMutexSem: %{status}=%{status_hex}\n",
               "sr" => "паника: EMX backdoor init: DosRequestMutexSem error: %{status}=%{status_hex}\n",
               "tr" => "panic: EMX backdoor başlatması: DosRequestMutexSem hatası: %{status}=%{status_hex}\n",
-              "uk" => "паніка: ініціалізація обхідного механізму EMX: помилка DosRequestMutexSem: %{status}=%{status_hex}\n"
+              "uk" => "паніка: ініціалізація обхідного механізму EMX: помилка DosRequestMutexSem: %{status}=%{status_hex}\n",
+              "zh" => "panic: EMX backdoor 初始化：DosRequestMutexSem 错误：%{status}=%{status_hex}\n"
             },
             "args" => [
               {
@@ -69710,7 +71176,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неверный pid в sysinfo",
               "sr" => "паника: погрешан pid у sysinfo",
               "tr" => "panic: sysinfo'daki PID yanlış",
-              "uk" => "паніка: неправильний pid у sysinfo"
+              "uk" => "паніка: неправильний pid у sysinfo",
+              "zh" => "panic: sysinfo 中的 pid 错误"
             },
             "args" => []
           },
@@ -69754,7 +71221,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: COND_SIGNAL, rc=%{arg1}",
               "sr" => "паника: COND_SIGNAL, rc=%{arg1}",
               "tr" => "panic: COND_SIGNAL, rc=%{arg1}",
-              "uk" => "паніка: COND_SIGNAL, rc=%{arg1}"
+              "uk" => "паніка: COND_SIGNAL, rc=%{arg1}",
+              "zh" => "panic: COND_SIGNAL，rc=%{arg1}"
             },
             "args" => [
               {
@@ -69804,7 +71272,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: detach для потока со странным порядковым номером %{arg1}",
               "sr" => "паника: одвајање нити са необичним редним бројем %{arg1}",
               "tr" => "panic: sıra numarası %{arg1} tuhaf olan iş parçacığı ayrılıyor",
-              "uk" => "паніка: від'єднання потоку з дивним порядковим номером %{arg1}"
+              "uk" => "паніка: від'єднання потоку з дивним порядковим номером %{arg1}",
+              "zh" => "panic: 分离序号异常的线程 %{arg1}"
             },
             "args" => [
               {
@@ -69854,7 +71323,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: отсоединение потока, который не смог запуститься из-за попытки повторного использования tid (состояние='%{arg1}')",
               "sr" => "паника: одвајање нити која није могла да се покрене због покушаја поновне употребе tid-а (стање='%{arg1}')",
               "tr" => "panic: tid yeniden kullanma girişimi nedeniyle çalışamayan iş parçacığı ayrılıyor (durum='%{arg1}')",
-              "uk" => "паніка: від'єднання потоку, який не зміг запуститися через спробу повторного використання tid (стан='%{arg1}')"
+              "uk" => "паніка: від'єднання потоку, який не зміг запуститися через спробу повторного використання tid (стан='%{arg1}')",
+              "zh" => "panic: 由于尝试重用 tid，线程无法运行（state='%{arg1}'），无法分离该线程"
             },
             "args" => [
               {
@@ -69904,7 +71374,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: detach для потока в неизвестном состоянии: '%{arg1}'",
               "sr" => "паника: одвајање нити у непознатом стању нити: '%{arg1}'",
               "tr" => "panic: iş parçacığının bilinmeyen durumu nedeniyle ayırma yapılamıyor: '%{arg1}'",
-              "uk" => "паніка: detach для потоку з невідомим станом: '%{arg1}'"
+              "uk" => "паніка: detach для потоку з невідомим станом: '%{arg1}'",
+              "zh" => "panic: 分离处于未知线程状态的线程：'%{arg1}'"
             },
             "args" => [
               {
@@ -69954,7 +71425,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: неожиданное состояние потока при завершении: '%{arg1}'",
               "sr" => "паника: неочекивано стање нити при изласку: '%{arg1}'",
               "tr" => "panic: çıkışta beklenmeyen iş parçacığı durumu: '%{arg1}'",
-              "uk" => "паніка: неочікуваний стан потоку під час виходу: '%{arg1}'"
+              "uk" => "паніка: неочікуваний стан потоку під час виходу: '%{arg1}'",
+              "zh" => "panic: 线程退出时遇到意外状态：'%{arg1}'"
             },
             "args" => [
               {
@@ -70004,7 +71476,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: join для потока со странным порядковым номером %{arg1}",
               "sr" => "паника: спајање са нити са необичним редним бројем %{arg1}",
               "tr" => "panic: sıra numarası %{arg1} tuhaf olan bir iş parçacığına join çağrısı",
-              "uk" => "паніка: join із потоком із дивним порядковим номером %{arg1}"
+              "uk" => "паніка: join із потоком із дивним порядковим номером %{arg1}",
+              "zh" => "panic: 使用异常序号 %{arg1} 的线程执行 join"
             },
             "args" => [
               {
@@ -70054,7 +71527,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: join для потока, который не смог запуститься из-за попытки повторного использования tid (состояние='%{arg1}')",
               "sr" => "паника: спајање са нити која није могла да се покрене због покушаја поновне употребе tid-а (стање='%{arg1}')",
               "tr" => "panic: tid yeniden kullanma girişimi nedeniyle çalışamayan iş parçacığına join çağrısı (durum='%{arg1}')",
-              "uk" => "паніка: join із потоком, який не зміг запуститися через спробу повторного використання tid (state='%{arg1}')"
+              "uk" => "паніка: join із потоком, який не зміг запуститися через спробу повторного використання tid (state='%{arg1}')",
+              "zh" => "panic: 由于尝试重用 tid，线程无法运行（state='%{arg1}'），无法对其执行 join"
             },
             "args" => [
               {
@@ -70104,7 +71578,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: join для потока в неизвестном состоянии: '%{arg1}'",
               "sr" => "паника: спајање са нити у непознатом стању нити: '%{arg1}'",
               "tr" => "panic: bilinmeyen iş parçacığı durumundaki iş parçacığına join çağrısı: '%{arg1}'",
-              "uk" => "паніка: спроба join із потоком у невідомому стані: '%{arg1}'"
+              "uk" => "паніка: спроба join із потоком у невідомому стані: '%{arg1}'",
+              "zh" => "panic: 对处于未知线程状态的线程执行 join：'%{arg1}'"
             },
             "args" => [
               {
@@ -70154,7 +71629,8 @@ $CONF = {
               "ru" => "паника: попытка повторно использовать идентификатор потока %{thread} (состояние='%{state}')\n\r",
               "sr" => "паника: покушај поновне употребе ID-а нити %{thread} (стање=„%{state}“)\n\r",
               "tr" => "panic: %{thread} iş parçacığı kimliği yeniden kullanılmaya çalışılıyor (durum='%{state}')\n\r",
-              "uk" => "паніка: спроба повторно використати ідентифікатор потоку %{thread} (стан='%{state}')\n\r"
+              "uk" => "паніка: спроба повторно використати ідентифікатор потоку %{thread} (стан='%{state}')\n\r",
+              "zh" => "panic: 尝试重用线程 ID %{thread}（状态='%{state}'）\n\r"
             },
             "args" => [
               {
@@ -70210,7 +71686,8 @@ $CONF = {
               "ru" => "паника: создан поток с необычным порядковым номером %{thread}\n\r",
               "sr" => "паника: креирана нит са необичним редним бројем %{thread}\n\r",
               "tr" => "panic: sıra numarası %{thread} tuhaf olan iş parçacığı oluşturuldu\n\r",
-              "uk" => "паніка: створено потік із дивним порядковим номером %{thread}\n\r"
+              "uk" => "паніка: створено потік із дивним порядковим номером %{thread}\n\r",
+              "zh" => "panic: 创建了序号异常的线程 %{thread}\n\r"
             },
             "args" => [
               {
@@ -70260,7 +71737,8 @@ $CONF = {
               "ru" => "В функции %{function} обнаружен недопустимый параметр. Файл: %{file}, строка: %{line}\n",
               "sr" => "Откривен је неважећи параметар у функцији %{function}. Датотека: %{file}, ред: %{line}\n",
               "tr" => "%{function} işlevinde geçersiz parametre algılandı. Dosya: %{file}, satır: %{line}\n",
-              "uk" => "У функції %{function} виявлено неприпустимий параметр. Файл: %{file}, рядок: %{line}\n"
+              "uk" => "У функції %{function} виявлено неприпустимий параметр. Файл: %{file}, рядок: %{line}\n",
+              "zh" => "在函数 %{function} 中检测到无效参数。文件：%{file}，行：%{line}\n"
             },
             "args" => [
               {
@@ -70322,7 +71800,8 @@ $CONF = {
               "ru" => "паника: дочерний псевдопроцесс так и не получил процессорного времени",
               "sr" => "паника: подређени псеудопроцес никада није покренут",
               "tr" => "panic: alt sahte süreç hiçbir zaman zamanlanmadı",
-              "uk" => "паніка: дочірній псевдопроцес так і не отримав часу процесора"
+              "uk" => "паніка: дочірній псевдопроцес так і не отримав часу процесора",
+              "zh" => "恐慌：子伪进程从未被调度"
             },
             "args" => []
           },
@@ -70366,7 +71845,8 @@ $CONF = {
               "ru" => "паника: TlsAlloc",
               "sr" => "паника: TlsAlloc",
               "tr" => "panic: TlsAlloc",
-              "uk" => "паніка: TlsAlloc"
+              "uk" => "паніка: TlsAlloc",
+              "zh" => "内部错误: TlsAlloc"
             },
             "args" => []
           },
@@ -70411,7 +71891,8 @@ $CONF = {
               "ru" => "паника: невозможно преобразовать базовое системное время в filetime\n",
               "sr" => "паника: није могуће претворити основно системско време у filetime\n",
               "tr" => "panic: temel sistem zamanı filetime biçimine dönüştürülemiyor\n",
-              "uk" => "паніка: неможливо перетворити базовий системний час у filetime\n"
+              "uk" => "паніка: неможливо перетворити базовий системний час у filetime\n",
+              "zh" => "panic: 无法将基础系统时间转换为 filetime\n"
             },
             "args" => []
           },
@@ -70457,7 +71938,8 @@ $CONF = {
               "ru" => "panic: неполное чтение errno дочернего процесса popen, n=%{count}",
               "sr" => "паника: читање errno из дечјег процеса popen, n=%{count}",
               "tr" => "panic: kid popen errno okuması, n=%{count}",
-              "uk" => "паніка: читання errno дочірнього процесу через popen, n=%{count}"
+              "uk" => "паніка: читання errno дочірнього процесу через popen, n=%{count}",
+              "zh" => "panic: 子进程 popen errno 读取，n=%{count}"
             },
             "args" => [
               {
@@ -70514,7 +71996,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: %{operation}",
               "sr" => "паника: %{operation}",
               "tr" => "panic: %{operation}",
-              "uk" => "паніка: %{operation}"
+              "uk" => "паніка: %{operation}",
+              "zh" => "panic: %{operation}"
             },
             "args" => [
               {
@@ -70630,7 +72113,8 @@ $CONF = {
               "ru" => "паника: %{operation} (%{error}) [%{file}:%{line}]",
               "sr" => "паника: %{operation} (%{error}) [%{file}:%{line}]",
               "tr" => "panic: %{operation} (%{error}) [%{file}:%{line}]",
-              "uk" => "паніка: %{operation} (%{error}) [%{file}:%{line}]"
+              "uk" => "паніка: %{operation} (%{error}) [%{file}:%{line}]",
+              "zh" => "panic: %{operation}（%{error}）[%{file}:%{line}]"
             },
             "args" => [
               {
@@ -70805,7 +72289,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: %{operation}: rc=%{error}",
               "sr" => "паника: %{operation}: rc=%{error}",
               "tr" => "panic: %{operation}: rc=%{error}",
-              "uk" => "паніка: %{operation}: rc=%{error}"
+              "uk" => "паніка: %{operation}: rc=%{error}",
+              "zh" => "内部错误: %{operation}: rc=%{error}"
             },
             "args" => [
               {
@@ -70907,7 +72392,8 @@ $CONF = {
               "ru" => "паника: COND_INIT [%{arg1}:%{arg2}]",
               "sr" => "паника: COND_INIT [%{arg1}:%{arg2}]",
               "tr" => "panic: COND_INIT [%{arg1}:%{arg2}]",
-              "uk" => "паніка: COND_INIT [%{arg1}:%{arg2}]"
+              "uk" => "паніка: COND_INIT [%{arg1}:%{arg2}]",
+              "zh" => "内部错误: COND_INIT [%{arg1}:%{arg2}]"
             },
             "args" => [
               {
@@ -70962,7 +72448,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: %{operation}, rc=%{error}",
               "sr" => "паника: %{operation}, rc=%{error}",
               "tr" => "panic: %{operation}, rc=%{error}",
-              "uk" => "паніка: %{operation}, rc=%{error}"
+              "uk" => "паніка: %{operation}, rc=%{error}",
+              "zh" => "panic: %{operation}，rc=%{error}"
             },
             "args" => [
               {
@@ -71037,7 +72524,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: %{operation} (%{error})",
               "sr" => "паника: %{operation} (%{error})",
               "tr" => "panic: %{operation} (%{error})",
-              "uk" => "паніка: %{operation} (%{error})"
+              "uk" => "паніка: %{operation} (%{error})",
+              "zh" => "panic: %{operation}（%{error}）"
             },
             "args" => [
               {
@@ -71139,7 +72627,8 @@ $CONF = {
               "ru" => "паника: сбой pthread_key_create\n",
               "sr" => "паника: pthread_key_create није успео\n",
               "tr" => "panic: pthread_key_create başarısız oldu\n",
-              "uk" => "паніка: виклик pthread_key_create завершився невдало\n"
+              "uk" => "паніка: виклик pthread_key_create завершився невдало\n",
+              "zh" => "panic: pthread_key_create 失败\n"
             },
             "args" => []
           },
@@ -71184,7 +72673,8 @@ $CONF = {
               "ru" => "паника: pthread_getspecific, ошибка=%{arg1}",
               "sr" => "паника: pthread_getspecific, грешка=%{arg1}",
               "tr" => "panic: pthread_getspecific, hata=%{arg1}",
-              "uk" => "паніка: pthread_getspecific, помилка=%{arg1}"
+              "uk" => "паніка: pthread_getspecific, помилка=%{arg1}",
+              "zh" => "恐慌：pthread_getspecific，错误=%{arg1}"
             },
             "args" => [
               {
@@ -71234,7 +72724,8 @@ $CONF = {
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): Попытка разблокировать мьютекс, которым поток не владеет; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): Покушај откључавања mutex-а који није у власништву нити; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: İş parçacığı %{thread}: Mutex '%{name}' (%{mutex}): Sahip olunmayan mutex kilidi açılmaya çalışılıyor; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
-              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Спроба розблокувати м'ютекс, яким потік не володіє; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
+              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Спроба розблокувати м'ютекс, яким потік не володіє; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "zh" => "panic: %{file}: %{line}: 线程 %{thread}: 互斥锁 '%{name}' (%{mutex}): 尝试解锁未由本线程持有的互斥锁；%{reliable}%{readers} 个线程持有该锁的读锁，xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
             "args" => [
               {
@@ -71324,7 +72815,8 @@ $CONF = {
               "ru" => "паника: MUTEX_INIT [%{arg1}:%{arg2}]",
               "sr" => "паника: MUTEX_INIT [%{arg1}:%{arg2}]",
               "tr" => "panic: MUTEX_INIT [%{arg1}:%{arg2}]",
-              "uk" => "паніка: MUTEX_INIT [%{arg1}:%{arg2}]"
+              "uk" => "паніка: MUTEX_INIT [%{arg1}:%{arg2}]",
+              "zh" => "内部错误: MUTEX_INIT [%{arg1}:%{arg2}]"
             },
             "args" => [
               {
@@ -71379,7 +72871,8 @@ $CONF = {
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): Не удалось увеличить счётчик, поскольку условие %{condition} истинно; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): Увећање није успело јер је %{condition} тачно; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: İş parçacığı %{thread}: Mutex '%{name}' (%{mutex}): %{condition} doğru olduğu için artırma başarısız oldu; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
-              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Збільшення лічильника не вдалося, оскільки умова %{condition} істинна; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
+              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Збільшення лічильника не вдалося, оскільки умова %{condition} істинна; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "zh" => "panic: %{file}: %{line}: 线程 %{thread}: 互斥锁 '%{name}' (%{mutex})：由于 %{condition} 为真，递增失败；有 %{reliable}%{readers} 个线程持有该锁的读锁，xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
             "args" => [
               {
@@ -71474,7 +72967,8 @@ $CONF = {
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): У этого потока xcounter < 0; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): xcounter ове нити је < 0; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: İş parçacığı %{thread}: Mutex '%{name}' (%{mutex}): Bu iş parçacığının xcounter değeri < 0; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
-              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник xcounter цього потоку < 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
+              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник xcounter цього потоку < 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "zh" => "panic: %{file}: %{line}: 线程 %{thread}: 互斥锁 '%{name}' (%{mutex}): 本线程的 xcounter < 0；%{reliable}%{readers} 个线程持有该锁的读锁，xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
             "args" => [
               {
@@ -71564,7 +73058,8 @@ $CONF = {
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): Число блокировок на чтение у этого потока < 0; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): Бројач браве за читање ове нити је < 0; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: İş parçacığı %{thread}: Mutex '%{name}' (%{mutex}): Bu iş parçacığının okuma kilidi sayısı < 0; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
-              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник блокувань читання цього потоку < 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
+              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник блокувань читання цього потоку < 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "zh" => "panic: %{file}: %{line}: 线程 %{thread}: 互斥锁 '%{name}' (%{mutex})：此线程的读锁计数 < 0；有 %{reliable}%{readers} 个线程持有该锁的读锁，xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
             "args" => [
               {
@@ -71654,7 +73149,8 @@ $CONF = {
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): У этого потока rcounter <= 0; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): rcounter ове нити је <= 0; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: Thread %{thread}: Mutex '%{name}' (%{mutex}): Bu iş parçacığının rcounter değeri <= 0; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
-              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник rcounter цього потоку <= 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
+              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник rcounter цього потоку <= 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "zh" => "panic: %{file}: %{line}: 线程 %{thread}: 互斥锁 '%{name}' (%{mutex}): 本线程的 rcounter <= 0；%{reliable}%{readers} 个线程持有该锁的读锁，xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
             "args" => [
               {
@@ -71744,7 +73240,8 @@ $CONF = {
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): Попытка преобразовать неисключительную блокировку в исключительную; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): Покушај конверзије неексклузивне браве у ексклузивну; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panik: %{file}: %{line}: İş parçacığı %{thread}: Mutex '%{name}' (%{mutex}): Paylaşımlı kilit özel kilide dönüştürülmeye çalışılıyor; üzerinde %{reliable}%{readers} iş parçacığının okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
-              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Спроба перетворити невиключне блокування на виключне; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
+              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Спроба перетворити невиключне блокування на виключне; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "zh" => "panic: %{file}: %{line}: 线程 %{thread}: 互斥锁 '%{name}' (%{mutex})：尝试将非独占锁转换为独占锁；有 %{reliable}%{readers} 个线程持有该锁的读锁，xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
             "args" => [
               {
@@ -71834,7 +73331,8 @@ $CONF = {
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): Число блокировок на запись у этого потока < 0; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): Бројач браве за писање ове нити је < 0; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: Thread %{thread}: Mutex '%{name}' (%{mutex}): Bu iş parçacığının yazma kilidi sayısı < 0; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
-              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник блокувань запису цього потоку < 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
+              "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник блокувань запису цього потоку < 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "zh" => "panic: %{file}: %{line}: 线程 %{thread}: 互斥锁 '%{name}' (%{mutex})：此线程的写锁计数 < 0；有 %{reliable}%{readers} 个线程持有该锁的读锁，xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
             "args" => [
               {
@@ -71924,7 +73422,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: to_upper_title_latin1 не ожидала преобразования '%{arg2}' в '%{arg3}'",
               "sr" => "паника: to_upper_title_latin1 није очекивао да се '%{arg2}' преслика у '%{arg3}'",
               "tr" => "panic: to_upper_title_latin1, '%{arg2}' karakterinin '%{arg3}' karakterine eşlenmesini beklemiyordu",
-              "uk" => "паніка: to_upper_title_latin1 не очікувала відображення '%{arg2}' у '%{arg3}'"
+              "uk" => "паніка: to_upper_title_latin1 не очікувала відображення '%{arg2}' у '%{arg3}'",
+              "zh" => "panic: to_upper_title_latin1 不应将“%{arg2}”映射为“%{arg3}”"
             },
             "args" => [
               {
@@ -71980,7 +73479,8 @@ $CONF = {
               "ru" => "panic: Не удалось найти '_charnames::_loose_regcomp_lookup",
               "sr" => "паника: није пронађена функција '_charnames::_loose_regcomp_lookup'",
               "tr" => "panic: '_charnames::_loose_regcomp_lookup' bulunamadı",
-              "uk" => "паніка: не вдалося знайти '_charnames::_loose_regcomp_lookup"
+              "uk" => "паніка: не вдалося знайти '_charnames::_loose_regcomp_lookup",
+              "zh" => "panic: 找不到 '_charnames::_loose_regcomp_lookup'"
             },
             "args" => []
           },
@@ -72025,7 +73525,8 @@ $CONF = {
               "ru" => "panic: Не удалось найти '_charnames::_get_names_info",
               "sr" => "паника: није пронађена функција '_charnames::_get_names_info'",
               "tr" => "panic: '_charnames::_get_names_info' bulunamadı",
-              "uk" => "паніка: не вдалося знайти '_charnames::_get_names_info"
+              "uk" => "паніка: не вдалося знайти '_charnames::_get_names_info",
+              "zh" => "panic: 找不到 '_charnames::_get_names_info'"
             },
             "args" => []
           },
@@ -72069,7 +73570,8 @@ $CONF = {
               "ru" => "паника: попытка добавить элемент в конец списка инверсий, находясь не в конце списка, final = %{final}, start = %{start}, match = %{match}",
               "sr" => "паника: покушај додавања у инверзну листу, али није био на крају листе, final = %{final}, start = %{start}, match = %{match}",
               "tr" => "panic: bir tersleme listesine ekleme yapılmaya çalışıldı, ancak listenin sonunda değildi; final = %{final}, start = %{start}, match = %{match}",
-              "uk" => "паніка: спроба додати елемент до інверсійного списку поза кінцем списку, final = %{final}, start = %{start}, match = %{match}"
+              "uk" => "паніка: спроба додати елемент до інверсійного списку поза кінцем списку, final = %{final}, start = %{start}, match = %{match}",
+              "zh" => "panic: 尝试追加到反转列表，但当前位置不是列表末尾：final = %{final}, start = %{start}, match = %{match}"
             },
             "args" => [
               {
@@ -72129,7 +73631,8 @@ $CONF = {
               "ru" => "panic: Неверная версия ранее сгенерированного инверсионного списка",
               "sr" => "паника: погрешна верзија претходно генерисане инверзионе листе",
               "tr" => "panic: önceden oluşturulmuş tersleme listesinin sürümü yanlış",
-              "uk" => "паніка: неправильна версія раніше згенерованого списку інверсій"
+              "uk" => "паніка: неправильна версія раніше згенерованого списку інверсій",
+              "zh" => "panic: 先前生成的反转列表版本不正确"
             },
             "args" => []
           },
@@ -72173,7 +73676,8 @@ $CONF = {
               "ru" => "паника: utf16_to_utf8%{direction}: нечётная длина в байтах %{length}",
               "sr" => "паника: utf16_to_utf8%{direction}: непаран број бајтова %{length}",
               "tr" => "panic: utf16_to_utf8%{direction}: bayt uzunluğu tek sayı: %{length}",
-              "uk" => "паніка: utf16_to_utf8%{direction}: непарна довжина в байтах %{length}"
+              "uk" => "паніка: utf16_to_utf8%{direction}: непарна довжина в байтах %{length}",
+              "zh" => "panic: utf16_to_utf8%{direction}: 字节长度 %{length} 为奇数"
             },
             "args" => [
               {
@@ -72229,7 +73733,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: utf16_textfilter вызвана в блочном режиме (maxlen=%{arg2})",
               "sr" => "паника: utf16_textfilter је позван у режиму блока (maxlen=%{arg2})",
               "tr" => "panic: utf16_textfilter blok kipinde çağrıldı (maxlen=%{arg2})",
-              "uk" => "паніка: utf16_textfilter викликано в блоковому режимі (maxlen=%{arg2})"
+              "uk" => "паніка: utf16_textfilter викликано в блоковому режимі (maxlen=%{arg2})",
+              "zh" => "panic: utf16_textfilter 在块模式下被调用（maxlen=%{arg2}）"
             },
             "args" => [
               {
@@ -72280,7 +73785,8 @@ $CONF = {
               "ru" => "паника: utf16_textfilter вызвана после ошибки (status=%{arg1})",
               "sr" => "паника: utf16_textfilter је позван након грешке (status=%{arg1})",
               "tr" => "panic: utf16_textfilter bir hatadan sonra çağrıldı (status=%{arg1})",
-              "uk" => "паніка: utf16_textfilter викликано після помилки (status=%{arg1})"
+              "uk" => "паніка: utf16_textfilter викликано після помилки (status=%{arg1})",
+              "zh" => "panic: utf16_textfilter 在发生错误后被调用（status=%{arg1}）"
             },
             "args" => [
               {
@@ -72331,7 +73837,8 @@ $CONF = {
               "ru" => "паника: sv_pos_b2u: недопустимое байтовое смещение, blen=%{arg1}, byte=%{arg2}",
               "sr" => "паника: sv_pos_b2u: неисправан бајтни померај, blen=%{arg1}, byte=%{arg2}",
               "tr" => "panic: sv_pos_b2u: geçersiz bayt konumu, blen=%{arg1}, byte=%{arg2}",
-              "uk" => "паніка: sv_pos_b2u: неправильне байтове зміщення, blen=%{arg1}, byte=%{arg2}"
+              "uk" => "паніка: sv_pos_b2u: неправильне байтове зміщення, blen=%{arg1}, byte=%{arg2}",
+              "zh" => "panic: sv_pos_b2u：字节偏移无效，blen=%{arg1}，byte=%{arg2}"
             },
             "args" => [
               {
@@ -72387,7 +73894,8 @@ $CONF = {
               "ru" => "паника: %{function}: в кеше %{cached}, фактически %{real} для %{value}",
               "sr" => "паника: %{function} кеш %{cached}, стварно %{real} за %{value}",
               "tr" => "panic: %{function} önbellek %{cached}, gerçek %{real}; %{value} için",
-              "uk" => "паніка: %{function}: кешоване значення %{cached}, фактичне %{real} для %{value}"
+              "uk" => "паніка: %{function}: кешоване значення %{cached}, фактичне %{real} для %{value}",
+              "zh" => "panic: %{function} 缓存位置 %{cached}，实际位置 %{real}，对应值 %{value}"
             },
             "args" => [
               {
@@ -72453,7 +73961,8 @@ $CONF = {
               "ru" => "паника: неожиданное значение case в utf8_to_uv_msgs() %{problem}",
               "sr" => "паника: неочекивана вредност у случају у utf8_to_uv_msgs() %{problem}",
               "tr" => "panic: utf8_to_uv_msgs() içinde beklenmeyen durum değeri: %{problem}",
-              "uk" => "паніка: неочікуване значення гілки в utf8_to_uv_msgs() %{problem}"
+              "uk" => "паніка: неочікуване значення гілки в utf8_to_uv_msgs() %{problem}",
+              "zh" => "panic: utf8_to_uv_msgs() 中出现意外的情况值 %{problem}"
             },
             "args" => [
               {
@@ -72556,6 +74065,10 @@ $CONF = {
                 "*" => "паніка: початок переходу вперед (0x%{arg1}) виходить за допустиму кінцеву позицію (0x%{arg3}) на %{arg2} байтів",
                 "few" => "паніка: початок переходу вперед (0x%{arg1}) виходить за допустиму кінцеву позицію (0x%{arg3}) на %{arg2} байти",
                 "one" => "паніка: початок переходу вперед (0x%{arg1}) виходить за допустиму кінцеву позицію (0x%{arg3}) на %{arg2} байт"
+              },
+              "zh" => {
+                "*" => "恐慌：前向跳转起点 (0x%{arg1}) 超出合法结束位置 (0x%{arg3}) %{arg2} 字节",
+                "one" => "恐慌：前向跳转起点 (0x%{arg1}) 超出合法结束位置 (0x%{arg3}) 1 字节"
               }
             },
             "args" => [
@@ -72622,7 +74135,8 @@ $CONF = {
               "ru" => "паника: force_out_malformed_utf8_message_ следует вызывать только при обнаружении ошибок",
               "sr" => "паника: force_out_malformed_utf8_message_ треба позвати само када су пронађене грешке",
               "tr" => "panic: force_out_malformed_utf8_message_ yalnızca hata bulunduğunda çağrılmalıdır",
-              "uk" => "паніка: force_out_malformed_utf8_message_ слід викликати лише тоді, коли виявлено помилки"
+              "uk" => "паніка: force_out_malformed_utf8_message_ слід викликати лише тоді, коли виявлено помилки",
+              "zh" => "panic: 仅当发现错误时才应调用 force_out_malformed_utf8_message_"
             },
             "args" => []
           },
@@ -72667,7 +74181,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: в '%{arg1}' неожиданно не обнаружена точка — десятичный разделитель",
               "sr" => "паника: неочекивано није пронађен знак тачке за радикс у „%{arg1}“",
               "tr" => "panic: '%{arg1}' içinde nokta radix karakteri beklenmedik biçimde bulunamadı",
-              "uk" => "паніка: несподівано не знайдено крапку як десятковий роздільник у '%{arg1}'"
+              "uk" => "паніка: несподівано не знайдено крапку як десятковий роздільник у '%{arg1}'",
+              "zh" => "panic: 在“%{arg1}”中意外找不到点基数字符"
             },
             "args" => [
               {
@@ -72716,7 +74231,8 @@ $CONF = {
               "ru" => "Чёрт возьми, не удаётся выполнить fork\n",
               "sr" => "Не може проклето да се покрене fork\n",
               "tr" => "Lanet olsun, fork yapılamıyor\n",
-              "uk" => "Не вдається виконати клятий fork\n"
+              "uk" => "Не вдається виконати клятий fork\n",
+              "zh" => "无法 fork\n"
             },
             "args" => []
           },
@@ -72760,7 +74276,8 @@ $CONF = {
               "ru" => "Вызов pause не реализован\n",
               "sr" => "Пауза није имплементирана\n",
               "tr" => "Pause uygulanmamış\n",
-              "uk" => "pause не реалізовано\n"
+              "uk" => "pause не реалізовано\n",
+              "zh" => "尚未实现 Pause\n"
             },
             "args" => []
           },
@@ -72804,7 +74321,8 @@ $CONF = {
               "ru" => "wait недоступен, попробуйте вместо него waitpid\n",
               "sr" => "Нема wait; покушајте waitpid\n",
               "tr" => "wait kullanılamıyor, onun yerine waitpid deneyin\n",
-              "uk" => "wait недоступний, спробуйте натомість waitpid\n"
+              "uk" => "wait недоступний, спробуйте натомість waitpid\n",
+              "zh" => "没有 wait；请改用 waitpid\n"
             },
             "args" => []
           },
@@ -72848,7 +74366,8 @@ $CONF = {
               "ru" => "Неверный тип процедуры",
               "sr" => "Погрешан тип процедуре",
               "tr" => "Yanlış yordam türü",
-              "uk" => "Неправильний тип процедури"
+              "uk" => "Неправильний тип процедури",
+              "zh" => "过程类型错误"
             },
             "args" => []
           },
@@ -72892,7 +74411,8 @@ $CONF = {
               "ru" => "Ошибка установки BEGIN/ENDLIBPATH: %{error}\n",
               "sr" => "Грешка при подешавању BEGIN/ENDLIBPATH: %{error}\n",
               "tr" => "BEGIN/ENDLIBPATH ayarlanırken hata: %{error}\n",
-              "uk" => "Помилка встановлення BEGIN/ENDLIBPATH: %{error}\n"
+              "uk" => "Помилка встановлення BEGIN/ENDLIBPATH: %{error}\n",
+              "zh" => "设置 BEGIN/ENDLIBPATH 时出错：%{error}\n"
             },
             "args" => [
               {
@@ -72942,7 +74462,8 @@ $CONF = {
               "ru" => "После > или >> в командной строке не указан выходной файл",
               "sr" => "Нема излазне датотеке после > или >> у командној линији",
               "tr" => "Komut satırında > veya >> işaretinden sonra çıktı dosyası yok",
-              "uk" => "У командному рядку після > або >> не вказано вихідного файлу"
+              "uk" => "У командному рядку після > або >> не вказано вихідного файлу",
+              "zh" => "命令行中的 > 或 >> 后没有输出文件"
             },
             "args" => []
           },
@@ -72986,7 +74507,8 @@ $CONF = {
               "ru" => "После 2> или 2>> в командной строке не указан выходной файл",
               "sr" => "Нема излазне датотеке после 2> или 2>> у командној линији",
               "tr" => "Komut satırında 2> veya 2>> işaretinden sonra çıktı dosyası yok",
-              "uk" => "Після 2> або 2>> у командному рядку не вказано файл виведення"
+              "uk" => "Після 2> або 2>> у командному рядку не вказано файл виведення",
+              "zh" => "命令行中的 2> 或 2>> 后没有输出文件"
             },
             "args" => []
           },
@@ -73030,7 +74552,8 @@ $CONF = {
               "ru" => "Не удалось открыть файл для вывода ошибок %{path} как stderr",
               "sr" => "Није могуће отворити датотеку грешака %{path} као stderr",
               "tr" => "%{path} hata dosyası stderr olarak açılamıyor",
-              "uk" => "Не вдалося відкрити файл помилок %{path} як stderr"
+              "uk" => "Не вдалося відкрити файл помилок %{path} як stderr",
+              "zh" => "无法将错误文件 %{path} 打开为 stderr"
             },
             "args" => [
               {
@@ -73080,7 +74603,8 @@ $CONF = {
               "ru" => "После < в командной строке не указан входной файл",
               "sr" => "Нема улазне датотеке после < у командној линији",
               "tr" => "Komut satırında < işaretinden sonra girdi dosyası yok",
-              "uk" => "У командному рядку після < не вказано вхідного файлу"
+              "uk" => "У командному рядку після < не вказано вхідного файлу",
+              "zh" => "命令行中的 < 后没有输入文件"
             },
             "args" => []
           },
@@ -73124,7 +74648,8 @@ $CONF = {
               "ru" => "Не удалось открыть входной файл %{path} как stdin",
               "sr" => "Није могуће отворити улазну датотеку %{path} као stdin",
               "tr" => "%{path} girdi dosyası stdin olarak açılamıyor",
-              "uk" => "Не вдалося відкрити вхідний файл %{path} як stdin"
+              "uk" => "Не вдалося відкрити вхідний файл %{path} як stdin",
+              "zh" => "无法将输入文件 %{path} 打开为 stdin"
             },
             "args" => [
               {
@@ -73174,7 +74699,8 @@ $CONF = {
               "ru" => "Не удалось повторно открыть входной канал (имя: %{pipe}) в двоичном режиме",
               "sr" => "Није могуће поново отворити улазни цевовод (назив: %{pipe}) у бинарном режиму",
               "tr" => "Girdi pipe'ı (ad: %{pipe}) ikili kipte yeniden açılamıyor",
-              "uk" => "Не вдалося повторно відкрити вхідний канал (ім’я: %{pipe}) у двійковому режимі"
+              "uk" => "Не вдалося повторно відкрити вхідний канал (ім’я: %{pipe}) у двійковому режимі",
+              "zh" => "无法以二进制模式重新打开输入管道（名称：%{pipe}）"
             },
             "args" => [
               {
@@ -73224,7 +74750,8 @@ $CONF = {
               "ru" => "После > в командной строке не указан выходной файл",
               "sr" => "Нема излазне датотеке после > у командној линији",
               "tr" => "Komut satırında > işaretinden sonra çıktı dosyası yok",
-              "uk" => "Після > у командному рядку не вказано файл виведення"
+              "uk" => "Після > у командному рядку не вказано файл виведення",
+              "zh" => "命令行中的 > 后没有输出文件"
             },
             "args" => []
           },
@@ -73268,7 +74795,8 @@ $CONF = {
               "ru" => "Не удалось открыть выходной файл %{path} как stdout",
               "sr" => "Није могуће отворити излазну датотеку %{path} као stdout",
               "tr" => "%{path} çıktı dosyası stdout olarak açılamıyor",
-              "uk" => "Не вдалося відкрити вихідний файл %{path} як stdout"
+              "uk" => "Не вдалося відкрити вихідний файл %{path} як stdout",
+              "zh" => "无法将输出文件 %{path} 打开为 stdout"
             },
             "args" => [
               {
@@ -73318,7 +74846,8 @@ $CONF = {
               "ru" => "В командной строке не указана команда для передачи вывода через канал",
               "sr" => "Нема команде у коју би се проследио излаз у командној линији",
               "tr" => "Komut satırında pipe yapılacak komut yok",
-              "uk" => "У командному рядку не вказано команди, якій слід передати вивід через канал"
+              "uk" => "У командному рядку не вказано команди, якій слід передати вивід через канал",
+              "zh" => "命令行中没有要管道传入的命令"
             },
             "args" => []
           },
@@ -73362,7 +74891,8 @@ $CONF = {
               "ru" => "Нельзя одновременно указывать '|' и '>' в командной строке",
               "sr" => "„|“ и „>“ не могу оба бити наведена у командној линији",
               "tr" => "Komut satırında '|' ve '>' birlikte belirtilemez",
-              "uk" => "У командному рядку не можна одночасно вказувати '|' і '>'"
+              "uk" => "У командному рядку не можна одночасно вказувати '|' і '>'",
+              "zh" => "命令行中不能同时指定 '|' 和 '>'"
             },
             "args" => []
           },
@@ -73406,7 +74936,8 @@ $CONF = {
               "ru" => "vms_image_init: \$getjpiw не принимает длины RIGHTSLIST в байтах (требуется=%{rights_bytes}, буфер=%{buffer_bytes}).\nПроверьте базу данных прав доступа на наличие повреждений.\n",
               "sr" => "vms_image_init: \$getjpiw одбија дужине бајтова RIGHTSLIST (потребно=%{rights_bytes}, бафер=%{buffer_bytes}).\nПроверите да ли је база права оштећена.\n",
               "tr" => "vms_image_init: \$getjpiw RIGHTSLIST bayt uzunluklarını kabul etmiyor (gerekli=%{rights_bytes}, arabellek=%{buffer_bytes}).\nHaklar veritabanınızda bozulma olup olmadığını kontrol edin.\n",
-              "uk" => "vms_image_init: \$getjpiw відхиляє довжини RIGHTSLIST у байтах (потрібно=%{rights_bytes}, буфер=%{buffer_bytes}).\nПеревірте базу даних прав доступу на наявність пошкоджень.\n"
+              "uk" => "vms_image_init: \$getjpiw відхиляє довжини RIGHTSLIST у байтах (потрібно=%{rights_bytes}, буфер=%{buffer_bytes}).\nПеревірте базу даних прав доступу на наявність пошкоджень.\n",
+              "zh" => "vms_image_init：\$getjpiw 拒绝 RIGHTSLIST 字节长度（所需=%{rights_bytes}，缓冲区=%{buffer_bytes}）。\n请检查权限数据库是否损坏。\n"
             },
             "args" => [
               {
@@ -73461,7 +74992,8 @@ $CONF = {
               "ru" => "Не удалось преобразовать элемент \@INC \"%{path}\" в формат Unix\n",
               "sr" => "Неуспела конверзија елемента \@INC „%{path}“ у Unix формат\n",
               "tr" => "\@INC öğesi \"%{path}\" Unix biçimine dönüştürülemedi\n",
-              "uk" => "Не вдалося перетворити елемент \@INC \"%{path}\" у формат Unix\n"
+              "uk" => "Не вдалося перетворити елемент \@INC \"%{path}\" у формат Unix\n",
+              "zh" => "无法将 \@INC 元素 \"%{path}\" 转换为 Unix 路径\n"
             },
             "args" => [
               {
@@ -73512,7 +75044,8 @@ $CONF = {
               "ru" => "Получен сигнал SIG%{signal}, но обработчик сигнала не установлен.\n",
               "sr" => "Примљен је сигнал SIG%{signal}, али није постављен обрађивач сигнала.\n",
               "tr" => "SIG%{signal} sinyali alındı, ancak sinyal işleyicisi ayarlanmamış.\n",
-              "uk" => "Отримано сигнал SIG%{signal}, але обробник сигналу не встановлено.\n"
+              "uk" => "Отримано сигнал SIG%{signal}, але обробник сигналу не встановлено.\n",
+              "zh" => "收到信号 SIG%{signal}，但未设置信号处理程序。\n"
             },
             "args" => [
               {
@@ -73563,7 +75096,8 @@ $CONF = {
               "ru" => "%{name}%{separator}[Описание не найдено в OSO001.MSG]",
               "sr" => "%{name}%{separator}[У OSO001.MSG није пронађен опис]",
               "tr" => "%{name}%{separator}[OSO001.MSG içinde açıklama bulunamadı]",
-              "uk" => "%{name}%{separator}[Опис не знайдено в OSO001.MSG]"
+              "uk" => "%{name}%{separator}[Опис не знайдено в OSO001.MSG]",
+              "zh" => "%{name}%{separator}[在 OSO001.MSG 中找不到描述]"
             },
             "args" => [
               {
@@ -73620,7 +75154,8 @@ $CONF = {
               "ru" => "%{error}, возможно, проблема в модуле: '%{module}'",
               "sr" => "%{error}, могуће проблематичан модул: „%{module}’",
               "tr" => "%{error}, sorunlu olabilecek modül: '%{module}'",
-              "uk" => "%{error}, можливо, проблемний модуль: '%{module}'"
+              "uk" => "%{error}, можливо, проблемний модуль: '%{module}'",
+              "zh" => "%{error}，可能有问题的模块：'%{module}'"
             },
             "args" => [
               {
@@ -73676,7 +75211,8 @@ $CONF = {
               "ru" => "не удалось запустить",
               "sr" => "није могло да се покрене",
               "tr" => "başlatılamadı",
-              "uk" => "не вдалося запустити"
+              "uk" => "не вдалося запустити",
+              "zh" => "无法启动"
             },
             "args" => []
           },
@@ -73721,7 +75257,8 @@ $CONF = {
               "ru" => "отсоединён",
               "sr" => "одвојена",
               "tr" => "bağlantısı kesildi",
-              "uk" => "від’єднаний"
+              "uk" => "від’єднаний",
+              "zh" => "已分离"
             },
             "args" => []
           },
@@ -73766,7 +75303,8 @@ $CONF = {
               "ru" => "завершён",
               "sr" => "завршила",
               "tr" => "sonlandı",
-              "uk" => "завершився"
+              "uk" => "завершився",
+              "zh" => "已退出"
             },
             "args" => []
           },
@@ -73811,7 +75349,8 @@ $CONF = {
               "ru" => "завершён, затем выполнено ожидание завершения",
               "sr" => "завршила, па је сачекана",
               "tr" => "sonlandı, ardından beklendi",
-              "uk" => "завершився, потім дочекалися його завершення"
+              "uk" => "завершився, потім дочекалися його завершення",
+              "zh" => "已退出，随后等待"
             },
             "args" => []
           },
@@ -73856,7 +75395,8 @@ $CONF = {
               "ru" => "выполняется",
               "sr" => "ради",
               "tr" => "çalışıyor",
-              "uk" => "виконується"
+              "uk" => "виконується",
+              "zh" => "运行中"
             },
             "args" => []
           },
@@ -73901,7 +75441,8 @@ $CONF = {
               "ru" => "не инициализирован",
               "sr" => "неиницијализована",
               "tr" => "başlatılmadı",
-              "uk" => "неініціалізований"
+              "uk" => "неініціалізований",
+              "zh" => "未初始化"
             },
             "args" => []
           },
@@ -73946,7 +75487,8 @@ $CONF = {
               "ru" => "неизвестное состояние потока %{state}",
               "sr" => "непознато стање нити %{state}",
               "tr" => "bilinmeyen iş parçacığı durumu: %{state}",
-              "uk" => "невідомий стан потоку %{state}"
+              "uk" => "невідомий стан потоку %{state}",
+              "zh" => "未知线程状态 %{state}"
             },
             "args" => [
               {
@@ -73997,7 +75539,8 @@ $CONF = {
               "ru" => "ожидание завершения выполнено",
               "sr" => "сачекано",
               "tr" => "beklendi",
-              "uk" => "дочекалися його завершення"
+              "uk" => "дочекалися його завершення",
+              "zh" => "已等待"
             },
             "args" => []
           },
@@ -74042,7 +75585,8 @@ $CONF = {
               "ru" => "Выражение: %{expression}\n",
               "sr" => "Израз: %{expression}\n",
               "tr" => "İfade: %{expression}\n",
-              "uk" => "Вираз: %{expression}\n"
+              "uk" => "Вираз: %{expression}\n",
+              "zh" => "表达式：%{expression}\n"
             },
             "args" => [
               {
@@ -74093,7 +75637,8 @@ $CONF = {
               "ru" => "Предупреждение: не удалось корректно закрыть файловый дескриптор %{handle}.\n",
               "sr" => "Упозорење: није могуће правилно затворити руковалац датотеке %{handle}.\n",
               "tr" => "Uyarı: %{handle} dosya tanıtıcısı düzgün biçimde kapatılamadı.\n",
-              "uk" => "Попередження: не вдалося належним чином закрити файловий дескриптор %{handle}.\n"
+              "uk" => "Попередження: не вдалося належним чином закрити файловий дескриптор %{handle}.\n",
+              "zh" => "警告：无法正确关闭文件句柄 %{handle}。\n"
             },
             "args" => [
               {
@@ -74145,7 +75690,8 @@ $CONF = {
               "ru" => "Не удалось сбросить буфер stdout: %{error}\n",
               "sr" => "Није могуће испразнити stdout: %{error}\n",
               "tr" => "stdout boşaltılamadı: %{error}\n",
-              "uk" => "Не вдалося скинути буфер stdout: %{error}\n"
+              "uk" => "Не вдалося скинути буфер stdout: %{error}\n",
+              "zh" => "无法刷新 stdout：%{error}\n"
             },
             "args" => [
               {
@@ -74196,7 +75742,8 @@ $CONF = {
               "ru" => "предупреждение: DosSetExceptionHandler rc=%{status}=%{status_hex}\n",
               "sr" => "упозорење: DosSetExceptionHandler rc=%{status}=%{status_hex}\n",
               "tr" => "uyarı: DosSetExceptionHandler rc=%{status}=%{status_hex}\n",
-              "uk" => "попередження: DosSetExceptionHandler rc=%{status}=%{status_hex}\n"
+              "uk" => "попередження: DosSetExceptionHandler rc=%{status}=%{status_hex}\n",
+              "zh" => "警告: DosSetExceptionHandler rc=%{status}=%{status_hex}\n"
             },
             "args" => [
               {
@@ -74252,7 +75799,8 @@ $CONF = {
               "ru" => "предупреждение: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n",
               "sr" => "упозорење: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n",
               "tr" => "uyarı: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n",
-              "uk" => "попередження: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n"
+              "uk" => "попередження: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n",
+              "zh" => "警告: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n"
             },
             "args" => [
               {
@@ -74311,7 +75859,8 @@ $CONF = {
               "ru" => "Возможно, перед \"%{context}\" пропущен оператор.",
               "sr" => "Можда недостаје оператор испред „%{context}“.",
               "tr" => "\"%{context}\" öncesinde bir işleç eksik olabilir.",
-              "uk" => "Можливо, перед \"%{context}\" пропущено оператор."
+              "uk" => "Можливо, перед \"%{context}\" пропущено оператор.",
+              "zh" => "“%{context}”之前可能缺少运算符。"
             },
             "args" => [
               {
@@ -74383,7 +75932,8 @@ $CONF = {
               "ru" => "Возможно, в предыдущей строке пропущена точка с запятой.",
               "sr" => "Можда недостаје тачка-зарез у претходном реду.",
               "tr" => "Önceki satırda noktalı virgül eksik olabilir.",
-              "uk" => "Можливо, у попередньому рядку пропущено крапку з комою."
+              "uk" => "Можливо, у попередньому рядку пропущено крапку з комою.",
+              "zh" => "上一行可能缺少分号。"
             },
             "args" => []
           },
@@ -74435,7 +75985,8 @@ $CONF = {
               "ru" => "Возможно, необходимо предварительно объявить \"%{name}\".",
               "sr" => "Можда треба унапред декларисати „%{name}“.",
               "tr" => "\"%{name}\" için önceden bildirim yapmanız gerekebilir.",
-              "uk" => "Можливо, потрібно попередньо оголосити \"%{name}\"."
+              "uk" => "Можливо, потрібно попередньо оголосити \"%{name}\".",
+              "zh" => "可能需要预先声明“%{name}”。"
             },
             "args" => [
               {
@@ -74668,6 +76219,16 @@ $CONF = {
                 "bareword" => "Знайдено слово без лапок там, де очікувався оператор",
                 "number" => "Знайдено число там, де очікувався оператор",
                 "scalar" => "Знайдено скаляр там, де очікувався оператор"
+              },
+              "zh" => {
+                "array" => "此处应为运算符，却发现数组",
+                "array_length" => "此处应为运算符，却发现数组长度",
+                "backslash" => "此处应为运算符，却发现反斜杠",
+                "backticks" => "此处应为运算符，却发现反引号",
+                "bareword" => "此处应为运算符，却发现裸字",
+                "number" => "此处应为运算符，却发现数字",
+                "scalar" => "此处应为运算符，却发现标量",
+                "string" => "此处应为运算符，却发现字符串"
               }
             },
             "args" => [
@@ -74737,7 +76298,8 @@ $CONF = {
               "ru" => "  (Возможно, многострочная строка %{open}%{close}, начинающаяся в строке %{line}, не завершена)\n",
               "sr" => "  (Можда је у питању вишелинијски %{open}%{close} ниска-запис који се протеже од реда %{line})\n",
               "tr" => "  (Kaçak bir çok satırlı %{open}%{close} dizgesi olabilir; %{line}. satırda başlamış olabilir)\n",
-              "uk" => "  (Можливо, багаторядковий рядок %{open}%{close}, що починається в рядку %{line}, не закрито)\n"
+              "uk" => "  (Можливо, багаторядковий рядок %{open}%{close}, що починається в рядку %{line}, не закрито)\n",
+              "zh" => "  （可能是从第 %{line} 行开始的 %{open}%{close} 多行字符串未结束）\n"
             },
             "args" => [
               {
@@ -74863,6 +76425,10 @@ $CONF = {
               "uk" => {
                 "*" => "\t%{name} = (не задано)%{separator}\n",
                 "present" => "\t%{name} = \"%{value}\"%{separator}\n"
+              },
+              "zh" => {
+                "absent" => "\t%{name} =（未设置）%{separator}\n",
+                "present" => "\t%{name} = “%{value}”%{separator}\n"
               }
             },
             "args" => [
@@ -75004,6 +76570,11 @@ $CONF = {
                 "*" => "резервну локаль (\"%{name}\")\n",
                 "standard" => "стандартну локаль (\"%{name}\")\n",
                 "system" => "типову системну локаль (\"%{name}\")\n"
+              },
+              "zh" => {
+                "fallback" => "回退区域设置（“%{name}”）\n",
+                "standard" => "标准区域设置（“%{name}”）\n",
+                "system" => "系统默认区域设置（“%{name}”）\n"
               }
             },
             "args" => [
@@ -75063,7 +76634,8 @@ $CONF = {
               "ru" => "Раскрутка стека отложена",
               "sr" => "Одлагање одмотавања стека",
               "tr" => "Yığın geri sarma ertelendi",
-              "uk" => "Розкручування стека відкладено"
+              "uk" => "Розкручування стека відкладено",
+              "zh" => "栈展开已延迟"
             },
             "args" => []
           },
@@ -75111,7 +76683,8 @@ $CONF = {
               "ru" => "Невозможно вызвать деструктор для 0x%{arg2} во время глобального уничтожения\n",
               "sr" => "Не може се позвати деструктор за 0x%{arg2} током глобалног уништавања\n",
               "tr" => "Genel yıkım sırasında 0x%{arg2} için yıkıcı çağrılamıyor\n",
-              "uk" => "Неможливо викликати деструктор для 0x%{arg2} під час глобального знищення\n"
+              "uk" => "Неможливо викликати деструктор для 0x%{arg2} під час глобального знищення\n",
+              "zh" => "全局销毁期间无法为 0x%{arg2} 调用析构函数\n"
             },
             "args" => [
               {
@@ -75213,6 +76786,10 @@ $CONF = {
               "uk" => {
                 "*" => "Змінна \"%{name}\" недоступна",
                 "subroutine" => "Підпрограма \"%{name}\" недоступна"
+              },
+              "zh" => {
+                "subroutine" => "子程序 \"%{name}\" 当前不可用",
+                "variable" => "变量 \"%{name}\" 当前不可用"
               }
             },
             "args" => [
@@ -75326,6 +76903,10 @@ $CONF = {
               "uk" => {
                 "*" => "Підпрограма \"%{lexical_name}\" не залишатиметься спільною",
                 "variable" => "Змінна \"%{lexical_name}\" не залишатиметься спільною"
+              },
+              "zh" => {
+                "subroutine" => "子程序 \"%{lexical_name}\" 将无法继续共享",
+                "variable" => "变量 \"%{lexical_name}\" 将无法继续共享"
               }
             },
             "args" => [
@@ -75400,7 +76981,8 @@ $CONF = {
               "ru" => "%{err}",
               "sr" => "%{err}",
               "tr" => "%{err}",
-              "uk" => "%{err}"
+              "uk" => "%{err}",
+              "zh" => "%{err}"
             },
             "args" => [
               {
@@ -75449,7 +77031,8 @@ $CONF = {
               "ru" => "Предупреждение: не удалось загрузить языковой пакет диагностики «%{language}»: %{error}\n",
               "sr" => "Упозорење: није могуће учитати језички пакет за дијагностику „%{language}“: %{error}\n",
               "tr" => "Uyarı: tanılama dil paketi '%{language}' yüklenemedi: %{error}\n",
-              "uk" => "Попередження: не вдалося завантажити мовний пакет діагностики «%{language}»: %{error}\n"
+              "uk" => "Попередження: не вдалося завантажити мовний пакет діагностики «%{language}»: %{error}\n",
+              "zh" => "警告：无法加载诊断语言包“%{language}”：%{error}\n"
             },
             "args" => [
               {
@@ -75501,7 +77084,8 @@ $CONF = {
               "ru" => "Выход из %{arg1} с помощью %{arg2}",
               "sr" => "Излазак из %{arg1} преко %{arg2}",
               "tr" => "%{arg1} üzerinden %{arg2} ile çıkılıyor",
-              "uk" => "Вихід із %{arg1} через %{arg2}"
+              "uk" => "Вихід із %{arg1} через %{arg2}",
+              "zh" => "通过 %{arg2} 退出 %{arg1}"
             },
             "args" => [
               {
@@ -75556,7 +77140,8 @@ $CONF = {
               "ru" => "Использование \@_ при %{arg1} в подпрограмме с сигнатурой является экспериментальной возможностью",
               "sr" => "Употреба \@_ — %{arg1} — у потпрограму са потписом је експериментална",
               "tr" => "İmza kullanan bir alt yordamda %{arg1} bağlamında \@_ dizisinin kullanımı deneyseldir",
-              "uk" => "Використання \@_ у %{arg1} в підпрограмі з сигнатурою є експериментальним"
+              "uk" => "Використання \@_ у %{arg1} в підпрограмі з сигнатурою є експериментальним",
+              "zh" => "在使用签名的子程序中使用 \@_（涉及%{arg1}）属于实验性功能"
             },
             "args" => [
               {
@@ -75594,7 +77179,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -75639,7 +77225,8 @@ $CONF = {
               "ru" => "Неявное использование \@_ при %{arg1} в подпрограмме с сигнатурой является экспериментальной возможностью",
               "sr" => "Имплицитна употреба \@_ — %{arg1} — у потпрограму са потписом је експериментална",
               "tr" => "İmza kullanan bir alt yordamda %{arg1} bağlamında \@_ dizisinin örtük kullanımı deneyseldir",
-              "uk" => "Неявне використання \@_ при %{arg1} у підпрограмі із сигнатурою є експериментальним"
+              "uk" => "Неявне використання \@_ при %{arg1} у підпрограмі із сигнатурою є експериментальним",
+              "zh" => "在使用签名的子程序中隐式使用 \@_（涉及%{arg1}）属于实验性功能"
             },
             "args" => [
               {
@@ -75683,7 +77270,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -75727,7 +77315,8 @@ $CONF = {
               "ru" => "Встроенная функция 'builtin::%{arg1}' является экспериментальной",
               "sr" => "Уграђена функција 'builtin::%{arg1}' је експериментална",
               "tr" => "'builtin::%{arg1}' yerleşik işlevi deneyseldir",
-              "uk" => "Вбудована функція 'builtin::%{arg1}' є експериментальною"
+              "uk" => "Вбудована функція 'builtin::%{arg1}' є експериментальною",
+              "zh" => "内置函数“builtin::%{arg1}”是实验性的"
             },
             "args" => [
               {
@@ -75776,7 +77365,8 @@ $CONF = {
               "ru" => "Ключевое слово ADJUST является экспериментальным",
               "sr" => "ADJUST је експерименталан",
               "tr" => "ADJUST deneyseldir",
-              "uk" => "ADJUST є експериментальним"
+              "uk" => "ADJUST є експериментальним",
+              "zh" => "ADJUST 尚属实验性功能"
             },
             "args" => []
           },
@@ -75819,7 +77409,8 @@ $CONF = {
               "ru" => "Ключевое слово __CLASS__ является экспериментальным",
               "sr" => "__CLASS__ је експерименталан",
               "tr" => "__CLASS__ deneyseldir",
-              "uk" => "Ключове слово __CLASS__ є експериментальним"
+              "uk" => "Ключове слово __CLASS__ є експериментальним",
+              "zh" => "__CLASS__ 尚属实验性功能"
             },
             "args" => []
           },
@@ -75862,7 +77453,8 @@ $CONF = {
               "ru" => "Ключевое слово class является экспериментальным",
               "sr" => "class је експерименталан",
               "tr" => "class deneyseldir",
-              "uk" => "Ключове слово class є експериментальним"
+              "uk" => "Ключове слово class є експериментальним",
+              "zh" => "class 尚属实验性功能"
             },
             "args" => []
           },
@@ -75905,7 +77497,8 @@ $CONF = {
               "ru" => "Ключевое слово field является экспериментальным",
               "sr" => "field је експерименталан",
               "tr" => "field deneyseldir",
-              "uk" => "field є експериментальним"
+              "uk" => "field є експериментальним",
+              "zh" => "field 尚属实验性功能"
             },
             "args" => []
           },
@@ -75949,7 +77542,8 @@ $CONF = {
               "ru" => "Ключевое слово method является экспериментальным",
               "sr" => "Кључна реч method је експериментална",
               "tr" => "method deneyseldir",
-              "uk" => "method є експериментальним"
+              "uk" => "method є експериментальним",
+              "zh" => "method 尚属实验性功能"
             },
             "args" => []
           },
@@ -75992,7 +77586,8 @@ $CONF = {
               "ru" => "Ключевое слово role является экспериментальным",
               "sr" => "role је експерименталан",
               "tr" => "role deneyseldir",
-              "uk" => "Ключове слово role є експериментальним"
+              "uk" => "Ключове слово role є експериментальним",
+              "zh" => "role 尚属实验性功能"
             },
             "args" => []
           },
@@ -76037,7 +77632,8 @@ $CONF = {
               "ru" => "Объявление ссылок является экспериментальной возможностью",
               "sr" => "Декларисање референци је експериментално",
               "tr" => "Referans bildirimleri deneyseldir",
-              "uk" => "Оголошення посилань є експериментальним"
+              "uk" => "Оголошення посилань є експериментальним",
+              "zh" => "声明引用是实验性的"
             },
             "args" => []
           },
@@ -76080,7 +77676,8 @@ $CONF = {
               "ru" => "Модификатор блока defer является экспериментальным",
               "sr" => "defer је експерименталан",
               "tr" => "defer deneyseldir",
-              "uk" => "defer є експериментальним"
+              "uk" => "defer є експериментальним",
+              "zh" => "defer 尚属实验性功能"
             },
             "args" => []
           },
@@ -76123,7 +77720,8 @@ $CONF = {
               "ru" => "Возможность enhanced_xx является экспериментальной",
               "sr" => "enhanced_xx је експерименталан",
               "tr" => "enhanced_xx deneyseldir",
-              "uk" => "enhanced_xx є експериментальним"
+              "uk" => "enhanced_xx є експериментальним",
+              "zh" => "enhanced_xx 尚属实验性功能"
             },
             "args" => []
           },
@@ -76166,7 +77764,8 @@ $CONF = {
               "ru" => "Оператор '===' является экспериментальным",
               "sr" => "Оператор '===' је експерименталан",
               "tr" => "'===' işleci deneyseldir",
-              "uk" => "Оператор '===' є експериментальним"
+              "uk" => "Оператор '===' є експериментальним",
+              "zh" => "'===' 运算符尚属实验性功能"
             },
             "args" => []
           },
@@ -76209,7 +77808,8 @@ $CONF = {
               "ru" => "Оператор '!==' является экспериментальным",
               "sr" => "Оператор „!==“ је експерименталан",
               "tr" => "'!==' işleci deneyseldir",
-              "uk" => "Оператор '!==' є експериментальним"
+              "uk" => "Оператор '!==' є експериментальним",
+              "zh" => "'!==' 运算符尚属实验性功能"
             },
             "args" => []
           },
@@ -76252,7 +77852,8 @@ $CONF = {
               "ru" => "Оператор 'equ' является экспериментальным",
               "sr" => "Оператор „equ“ је експерименталан",
               "tr" => "'equ' işleci deneyseldir",
-              "uk" => "Оператор 'equ' є експериментальним"
+              "uk" => "Оператор 'equ' є експериментальним",
+              "zh" => "'equ' 运算符尚属实验性功能"
             },
             "args" => []
           },
@@ -76295,7 +77896,8 @@ $CONF = {
               "ru" => "Оператор 'neu' является экспериментальным",
               "sr" => "Оператор „neu“ је експерименталан",
               "tr" => "'neu' işleci deneyseldir",
-              "uk" => "Оператор 'neu' є експериментальним"
+              "uk" => "Оператор 'neu' є експериментальним",
+              "zh" => "'neu' 运算符尚属实验性功能"
             },
             "args" => []
           },
@@ -76338,7 +77940,8 @@ $CONF = {
               "ru" => "Использование '%{arg1}' в качестве разделителя строки является экспериментальным",
               "sr" => "Употреба „%{arg1}“ као граничника ниске је експериментална",
               "tr" => "'%{arg1}' sınırlayıcı olarak kullanımı deneyseldir",
-              "uk" => "Використання '%{arg1}' як роздільника рядка є експериментальним"
+              "uk" => "Використання '%{arg1}' як роздільника рядка є експериментальним",
+              "zh" => "将 '%{arg1}' 用作字符串分隔符属于实验性功能"
             },
             "args" => [
               {
@@ -76403,7 +78006,8 @@ $CONF = {
               "ru" => "Ключевое слово all является экспериментальным",
               "sr" => "all је експерименталан",
               "tr" => "all deneyseldir",
-              "uk" => "Ключове слово all є експериментальним"
+              "uk" => "Ключове слово all є експериментальним",
+              "zh" => "all 尚属实验性功能"
             },
             "args" => []
           },
@@ -76447,7 +78051,8 @@ $CONF = {
               "ru" => "Ключевое слово any является экспериментальным",
               "sr" => "any је експерименталан",
               "tr" => "any deneyseldir",
-              "uk" => "any є експериментальним"
+              "uk" => "any є експериментальним",
+              "zh" => "any 尚属实验性功能"
             },
             "args" => []
           },
@@ -76490,7 +78095,8 @@ $CONF = {
               "ru" => "Константа __NAMESPACE__ является экспериментальной",
               "sr" => "__NAMESPACE__ је експерименталан",
               "tr" => "__NAMESPACE__ deneyseldir",
-              "uk" => "__NAMESPACE__ є експериментальним"
+              "uk" => "__NAMESPACE__ є експериментальним",
+              "zh" => "__NAMESPACE__ 尚属实验性功能"
             },
             "args" => []
           },
@@ -76533,7 +78139,8 @@ $CONF = {
               "ru" => "Объявление namespace является экспериментальным",
               "sr" => "namespace је експерименталан",
               "tr" => "namespace deneyseldir",
-              "uk" => "namespace є експериментальним"
+              "uk" => "namespace є експериментальним",
+              "zh" => "namespace 尚属实验性功能"
             },
             "args" => []
           },
@@ -76576,7 +78183,8 @@ $CONF = {
               "ru" => "Возможность private_use является экспериментальной",
               "sr" => "Функција private_use је експериментална",
               "tr" => "private_use özelliği deneyseldir",
-              "uk" => "Можливість private_use є експериментальною"
+              "uk" => "Можливість private_use є експериментальною",
+              "zh" => "private_use 功能是实验性的"
             },
             "args" => []
           },
@@ -76619,7 +78227,8 @@ $CONF = {
               "ru" => "Создание псевдонимов через ссылки является экспериментальной возможностью",
               "sr" => "Алијасирање помоћу референце је експериментално",
               "tr" => "Referans üzerinden takma ad oluşturma deneyseldir",
-              "uk" => "Створення псевдонімів через посилання є експериментальним"
+              "uk" => "Створення псевдонімів через посилання є експериментальним",
+              "zh" => "通过引用进行别名操作是实验性的"
             },
             "args" => []
           },
@@ -76662,7 +78271,8 @@ $CONF = {
               "ru" => "Именованные параметры в сигнатурах являются экспериментальной возможностью",
               "sr" => "Именовани параметри у потписима су експериментални",
               "tr" => "İmzalardaki adlandırılmış parametreler deneyseldir",
-              "uk" => "Іменовані параметри в сигнатурах є експериментальними"
+              "uk" => "Іменовані параметри в сигнатурах є експериментальними",
+              "zh" => "签名中的命名参数功能仍属实验性"
             },
             "args" => []
           },
@@ -76705,7 +78315,8 @@ $CONF = {
               "ru" => "Конструкция try/catch/finally является экспериментальной",
               "sr" => "try/catch/finally је експерименталан",
               "tr" => "try/catch/finally deneyseldir",
-              "uk" => "Синтаксис try/catch/finally є експериментальним"
+              "uk" => "Синтаксис try/catch/finally є експериментальним",
+              "zh" => "try/catch/finally 尚属实验性功能"
             },
             "args" => []
           },
@@ -76748,7 +78359,8 @@ $CONF = {
               "ru" => "Использование шаблонов в значениях свойств Unicode является экспериментальной возможностью",
               "sr" => "Функција џокера у вредностима Unicode својстава је експериментална",
               "tr" => "Unicode özellik jokerleri özelliği deneyseldir",
-              "uk" => "Можливість використання шаблонів у властивостях Unicode є експериментальною"
+              "uk" => "Можливість використання шаблонів у властивостях Unicode є експериментальною",
+              "zh" => "Unicode 属性通配符功能是实验性的"
             },
             "args" => []
           },
@@ -76791,7 +78403,8 @@ $CONF = {
               "ru" => "Просмотр назад переменной длины с захватом (%{arg1}) является экспериментальным",
               "sr" => "Поглед уназад променљиве дужине %{arg1} са хватањем је експерименталан",
               "tr" => "Yakalama içeren değişken uzunluklu %{arg1} lookbehind deneyseldir",
-              "uk" => "Ретроспективна перевірка типу «%{arg1}» змінної довжини із захопленням є експериментальною"
+              "uk" => "Ретроспективна перевірка типу «%{arg1}» змінної довжини із захопленням є експериментальною",
+              "zh" => "带捕获组的可变长度 %{arg1} 后行断言是实验性功能"
             },
             "args" => [
               {
@@ -76905,6 +78518,10 @@ $CONF = {
               "uk" => {
                 "*" => "Помилка glob (дочірній процес завершився зі статусом %{status})",
                 "core_dumped" => "Помилка glob (дочірній процес завершився зі статусом %{status}, створено дамп пам'яті)"
+              },
+              "zh" => {
+                "core_dumped" => "glob 失败（子进程以状态 %{status} 退出，并生成了核心转储）",
+                "normal" => "glob 失败（子进程以状态 %{status} 退出）"
               }
             },
             "args" => [
@@ -76965,7 +78582,8 @@ $CONF = {
               "ru" => "Ошибка glob (не удалось запустить дочерний процесс: %{arg1})",
               "sr" => "glob није успео (није могуће покренути подређени процес: %{arg1})",
               "tr" => "glob başarısız oldu (alt süreç başlatılamıyor: %{arg1})",
-              "uk" => "Помилка glob (неможливо запустити дочірній процес: %{arg1})"
+              "uk" => "Помилка glob (неможливо запустити дочірній процес: %{arg1})",
+              "zh" => "glob 失败（无法启动子进程：%{arg1}）"
             },
             "args" => [
               {
@@ -77014,7 +78632,8 @@ $CONF = {
               "ru" => "Потеря точности при уменьшении %{arg1} на 1",
               "sr" => "Прецизност је изгубљена при умањивању %{arg1} за 1",
               "tr" => "%{arg1} değeri 1 azaltılırken duyarlık kaybı oluştu",
-              "uk" => "Втрачено точність під час зменшення %{arg1} на 1"
+              "uk" => "Втрачено точність під час зменшення %{arg1} на 1",
+              "zh" => "将 %{arg1} 减 1 时丢失精度"
             },
             "args" => [
               {
@@ -77063,7 +78682,8 @@ $CONF = {
               "ru" => "Потеря точности при увеличении %{arg1} на 1",
               "sr" => "Прецизност је изгубљена при увећавању %{arg1} за 1",
               "tr" => "%{arg1} değeri 1 artırılırken duyarlık kaybı oluştu",
-              "uk" => "Втрачено точність під час збільшення %{arg1} на 1"
+              "uk" => "Втрачено точність під час збільшення %{arg1} на 1",
+              "zh" => "将 %{arg1} 加 1 时丢失精度"
             },
             "args" => [
               {
@@ -77112,7 +78732,8 @@ $CONF = {
               "ru" => "Неожиданное завершение с кодом %{arg2}",
               "sr" => "Неочекивани излаз %{arg2}",
               "tr" => "Beklenmeyen çıkış %{arg2}",
-              "uk" => "Неочікуване завершення з кодом %{arg2}"
+              "uk" => "Неочікуване завершення з кодом %{arg2}",
+              "zh" => "意外退出 %{arg2}"
             },
             "args" => [
               {
@@ -77159,7 +78780,8 @@ $CONF = {
               "ru" => "Неожиданное завершение с ошибкой %{arg2}",
               "sr" => "Неочекивани неуспешан излаз %{arg2}",
               "tr" => "Beklenmeyen çıkış hatası %{arg2}",
-              "uk" => "Неочікуване завершення з помилкою %{arg2}"
+              "uk" => "Неочікуване завершення з помилкою %{arg2}",
+              "zh" => "意外退出失败 %{arg2}"
             },
             "args" => [
               {
@@ -77208,7 +78830,8 @@ $CONF = {
               "ru" => "Сбой mprotect для строки COW %{arg2} %{arg3} с кодом %{arg4}",
               "sr" => "mprotect за COW стринг %{arg2} %{arg3} није успео: %{arg4}",
               "tr" => "COW dizgesi %{arg2} için mprotect %{arg3} başarısız oldu: %{arg4}",
-              "uk" => "Збій mprotect для рядка COW %{arg2} %{arg3} з кодом %{arg4}"
+              "uk" => "Збій mprotect для рядка COW %{arg2} %{arg3} з кодом %{arg4}",
+              "zh" => "对 COW 字符串 %{arg2} %{arg3} 执行 mprotect 失败，错误为 %{arg4}"
             },
             "args" => [
               {
@@ -77267,7 +78890,8 @@ $CONF = {
               "ru" => "Сбой mprotect RW для строки COW %{arg2} %{arg3} с кодом %{arg4}",
               "sr" => "mprotect RW за COW стринг %{arg2} %{arg3} није успео: %{arg4}",
               "tr" => "COW dizgesi %{arg2} için RW mprotect %{arg3} başarısız oldu: %{arg4}",
-              "uk" => "Збій mprotect RW для рядка COW %{arg2} %{arg3} з кодом %{arg4}"
+              "uk" => "Збій mprotect RW для рядка COW %{arg2} %{arg3} з кодом %{arg4}",
+              "zh" => "对 COW 字符串 %{arg2} %{arg3} 执行 mprotect RW 失败，错误为 %{arg4}"
             },
             "args" => [
               {
@@ -77325,7 +78949,8 @@ $CONF = {
               "ru" => "Утечка блока памяти из cv %{arg1}",
               "sr" => "Цурење slab-а из cv %{arg1}",
               "tr" => "cv %{arg1} içinden slab sızdı",
-              "uk" => "Витік блоку пам'яті slab із cv %{arg1}"
+              "uk" => "Витік блоку пам'яті slab із cv %{arg1}",
+              "zh" => "cv %{arg1} 的 slab 泄漏"
             },
             "args" => [
               {
@@ -77373,7 +78998,8 @@ $CONF = {
               "ru" => "Сбой mprotect для %{arg2} %{arg3} с кодом %{arg4}",
               "sr" => "mprotect за %{arg2} %{arg3} није успео: %{arg4}",
               "tr" => "%{arg2} için mprotect %{arg3} başarısız oldu: %{arg4}",
-              "uk" => "Збій mprotect для %{arg2} %{arg3} з кодом %{arg4}"
+              "uk" => "Збій mprotect для %{arg2} %{arg3} з кодом %{arg4}",
+              "zh" => "对 %{arg2} %{arg3} 执行 mprotect 失败，错误为 %{arg4}"
             },
             "args" => [
               {
@@ -77431,7 +79057,8 @@ $CONF = {
               "ru" => "Сбой mprotect RW для %{arg2} %{arg3} с кодом %{arg4}",
               "sr" => "mprotect RW за %{arg2} %{arg3} није успео: %{arg4}",
               "tr" => "%{arg2} için RW mprotect %{arg3} başarısız oldu: %{arg4}",
-              "uk" => "Збій mprotect RW для %{arg2} %{arg3} з кодом %{arg4}"
+              "uk" => "Збій mprotect RW для %{arg2} %{arg3} з кодом %{arg4}",
+              "zh" => "对 %{arg2} %{arg3} 执行 mprotect RW 失败，错误为 %{arg4}"
             },
             "args" => [
               {
@@ -77490,7 +79117,8 @@ $CONF = {
               "ru" => "Освобождение памяти в неверный пул %{arg1} вместо %{arg2}",
               "sr" => "Ослобађање у погрешном скупу %{arg1}, уместо у %{arg2}",
               "tr" => "Yanlış havuza serbest bırakma: %{arg1}; olması gereken %{arg2}",
-              "uk" => "Звільнення до неправильного пулу %{arg1} замість %{arg2}"
+              "uk" => "Звільнення до неправильного пулу %{arg1} замість %{arg2}",
+              "zh" => "释放到错误的内存池：%{arg1}，而非 %{arg2}"
             },
             "args" => [
               {
@@ -77543,7 +79171,8 @@ $CONF = {
               "ru" => "Не удалось определить класс оператора %{arg2}, предполагается BASEOP\n",
               "sr" => "Није могуће одредити класу оператора %{arg2}; претпоставља се BASEOP\n",
               "tr" => "%{arg2} operatörünün sınıfı belirlenemiyor; BASEOP varsayılıyor\n",
-              "uk" => "Неможливо визначити клас оператора %{arg2}, припускається BASEOP\n"
+              "uk" => "Неможливо визначити клас оператора %{arg2}, припускається BASEOP\n",
+              "zh" => "无法确定运算符 %{arg2} 的类，假定为 BASEOP\n"
             },
             "args" => [
               {
@@ -77593,7 +79222,8 @@ $CONF = {
               "ru" => "panic: вызов join для потока, который не удалось запустить",
               "sr" => "паника: придруживање нити која није могла да се покрене",
               "tr" => "panic: başlatılamamış bir iş parçacığına join çağrısı",
-              "uk" => "паніка: join із потоком, який не зміг запуститися"
+              "uk" => "паніка: join із потоком, який не зміг запуститися",
+              "zh" => "panic：尝试 join 一个无法启动的线程"
             },
             "args" => []
           },
@@ -77635,7 +79265,8 @@ $CONF = {
               "ru" => "Внутренняя несогласованность при учёте вызовов vfork",
               "sr" => "Интерна недоследност у евиденцији позива vfork-а",
               "tr" => "vfork'ların izlenmesinde iç tutarsızlık",
-              "uk" => "Внутрішня неузгодженість в обліку викликів vfork"
+              "uk" => "Внутрішня неузгодженість в обліку викликів vfork",
+              "zh" => "跟踪 vfork 时出现内部不一致"
             },
             "args" => []
           },
@@ -77732,6 +79363,10 @@ $CONF = {
               "uk" => {
                 "*" => "Дочірній процес налагодження витоків скалярів завершився з помилкою errno %{errno}: %{error}",
                 "present" => "Дочірній процес налагодження витоків скалярів завершився з виводом %{output} та помилкою errno %{errno}: %{error}"
+              },
+              "zh" => {
+                "absent" => "调试泄漏标量的子进程失败，errno 为 %{errno}：%{error}",
+                "present" => "调试泄漏标量的子进程失败，输出为 %{output}，errno 为 %{errno}：%{error}"
               }
             },
             "args" => [
@@ -77809,7 +79444,8 @@ $CONF = {
               "ru" => "Попытка вызвать %{arg1}() для дескриптора %{arg2}, открытого с помощью open()",
               "sr" => "Покушај операције %{arg1}() над руковаоцем %{arg2}, отвореним помоћу open()",
               "tr" => "open() ile açılmış %{arg2} tanıtıcısında %{arg1}() çağrıldı",
-              "uk" => "Спроба викликати %{arg1}() для дескриптора %{arg2}, відкритого за допомогою open()"
+              "uk" => "Спроба викликати %{arg1}() для дескриптора %{arg2}, відкритого за допомогою open()",
+              "zh" => "对使用 open() 打开的句柄 %{arg2} 调用了 %{arg1}()"
             },
             "args" => [
               {
@@ -77865,7 +79501,8 @@ $CONF = {
               "ru" => "Попытка вызвать %{arg1}() для недействительного дескриптора каталога %{arg2}",
               "sr" => "Покушај операције %{arg1}() над неважећим руковаоцем директоријума %{arg2}",
               "tr" => "Geçersiz dizin tanıtıcısı %{arg2} üzerinde %{arg1}() çağrıldı",
-              "uk" => "Спроба викликати %{arg1}() для недійсного дескриптора каталогу %{arg2}"
+              "uk" => "Спроба викликати %{arg1}() для недійсного дескриптора каталогу %{arg2}",
+              "zh" => "对无效的目录句柄 %{arg2} 调用了 %{arg1}()"
             },
             "args" => [
               {
@@ -78079,6 +79716,16 @@ $CONF = {
                   "*" => "\t(Ви намагаєтеся викликати %{operation}() для дескриптора каталогу %{handle_name}?)\n",
                   "operator" => "\t(Ви намагаєтеся застосувати файлову перевірку %{operation} до дескриптора каталогу %{handle_name}?)\n"
                 }
+              },
+              "zh" => {
+                "named" => {
+                  "call" => "\t（是否要在目录句柄 %{handle_name} 上调用 %{operation}()？）\n",
+                  "operator" => "\t（是否要在目录句柄 %{handle_name} 上使用文件测试运算符 %{operation}？）\n"
+                },
+                "unnamed" => {
+                  "call" => "\t（是否要在目录句柄上调用 %{operation}()？）\n",
+                  "operator" => "\t（是否要在目录句柄上使用文件测试运算符 %{operation}？）\n"
+                }
               }
             },
             "args" => [
@@ -78158,7 +79805,8 @@ $CONF = {
               "ru" => "Не удалось выполнить exec для \"%{arg1}\": %{arg2}",
               "sr" => "Није могуће покренути „%{arg1}“: %{arg2}",
               "tr" => "\"%{arg1}\" çalıştırılamıyor: %{arg2}",
-              "uk" => "Не вдалося виконати \"%{arg1}\": %{arg2}"
+              "uk" => "Не вдалося виконати \"%{arg1}\": %{arg2}",
+              "zh" => "无法执行“%{arg1}”：%{arg2}"
             },
             "args" => [
               {
@@ -78214,7 +79862,8 @@ $CONF = {
               "ru" => "Не удалось выполнить операцию %{arg1} для `%{arg2}' при ARGV[0], равном `%{arg3}' (поиск выполнялся только среди исполняемых файлов; файл не найден)",
               "sr" => "Не могу да %{arg1} `%{arg2}' са вредношћу ARGV[0] `%{arg3}' (траже се само извршне датотеке, није пронађена)",
               "tr" => "ARGV[0] `%{arg3}' iken `%{arg2}' için %{arg1} yapılamıyor (yalnızca çalıştırılabilir dosyalar aranıyor; bulunamadı)",
-              "uk" => "Не вдалося виконати операцію %{arg1} для `%{arg2}' з ARGV[0] рівним `%{arg3}' (пошук лише виконуваних файлів, нічого не знайдено)"
+              "uk" => "Не вдалося виконати операцію %{arg1} для `%{arg2}' з ARGV[0] рівним `%{arg3}' (пошук лише виконуваних файлів, нічого не знайдено)",
+              "zh" => "无法以 ARGV[0] 为“%{arg3}”的方式 %{arg1}“%{arg2}”（仅查找可执行文件，但未找到）"
             },
             "args" => [
               {
@@ -78274,7 +79923,8 @@ $CONF = {
               "ru" => "Запуск полноэкранного процесса с flag=%{arg1}, mytype=%{arg2}",
               "sr" => "Покреће се Full Screen процес са заставицом=%{arg1}, mytype=%{arg2}",
               "tr" => "Tam ekran süreci başlatılıyor: flag=%{arg1}, mytype=%{arg2}",
-              "uk" => "Запуск повноекранного процесу з flag=%{arg1}, mytype=%{arg2}"
+              "uk" => "Запуск повноекранного процесу з flag=%{arg1}, mytype=%{arg2}",
+              "zh" => "正在启动全屏进程，flag=%{arg1}，mytype=%{arg2}"
             },
             "args" => [
               {
@@ -78330,7 +79980,8 @@ $CONF = {
               "ru" => "Слишком много аргументов в строке %{arg1} файла \"%{arg2}\"",
               "sr" => "Превише аргумената у реду %{arg1} датотеке „%{arg2}“",
               "tr" => "\"%{arg2}\" dosyasının %{arg1} satırında çok fazla argüman var",
-              "uk" => "Забагато аргументів у рядку %{arg1} файлу \"%{arg2}\""
+              "uk" => "Забагато аргументів у рядку %{arg1} файлу \"%{arg2}\"",
+              "zh" => "“%{arg2}”的 %{arg1} 行参数过多"
             },
             "args" => [
               {
@@ -78396,7 +80047,8 @@ $CONF = {
               "ru" => "Не удалось выполнить операцию %{arg1} для \"%{arg2}\": %{arg3}\n",
               "sr" => "Не могу да %{arg1} „%{arg2}“: %{arg3}\n",
               "tr" => "\"%{arg2}\" başlatılamıyor: %{arg3}\n",
-              "uk" => "Не вдалося виконати операцію %{arg1} для \"%{arg2}\": %{arg3}\n"
+              "uk" => "Не вдалося виконати операцію %{arg1} для \"%{arg2}\": %{arg3}\n",
+              "zh" => "无法 %{arg1}“%{arg2}”：%{arg3}\n"
             },
             "args" => [
               {
@@ -78456,7 +80108,8 @@ $CONF = {
               "ru" => "Запуск процесса PM с flag=%{arg1}, mytype=%{arg2}",
               "sr" => "Покреће се PM процес са заставицом=%{arg1}, mytype=%{arg2}",
               "tr" => "PM süreci başlatılıyor: flag=%{arg1}, mytype=%{arg2}",
-              "uk" => "Запуск процесу PM з flag=%{arg1}, mytype=%{arg2}"
+              "uk" => "Запуск процесу PM з flag=%{arg1}, mytype=%{arg2}",
+              "zh" => "正在启动 PM 进程，flag=%{arg1}，mytype=%{arg2}"
             },
             "args" => [
               {
@@ -78512,7 +80165,8 @@ $CONF = {
               "ru" => "Не удалось выполнить операцию %{arg1} для сценария `%{arg2}' при ARGV[0], равном `%{arg3}'",
               "sr" => "Не могу да %{arg1} скрипту `%{arg2}' са вредношћу ARGV[0] `%{arg3}'",
               "tr" => "ARGV[0] `%{arg3}' iken `%{arg2}' betiği için %{arg1} yapılamıyor",
-              "uk" => "Неможливо застосувати %{arg1} до скрипту `%{arg2}', коли ARGV[0] має значення `%{arg3}'"
+              "uk" => "Неможливо застосувати %{arg1} до скрипту `%{arg2}', коли ARGV[0] має значення `%{arg3}'",
+              "zh" => "无法以 ARGV[0] 为“%{arg3}”的方式 %{arg1} 脚本“%{arg2}”"
             },
             "args" => [
               {
@@ -78573,7 +80227,8 @@ $CONF = {
               "ru" => "Ошибка чтения \"%{arg1}\": %{arg2}",
               "sr" => "Грешка при читању „%{arg1}“: %{arg2}",
               "tr" => "\"%{arg1}\" okunurken hata: %{arg2}",
-              "uk" => "Помилка читання \"%{arg1}\": %{arg2}"
+              "uk" => "Помилка читання \"%{arg1}\": %{arg2}",
+              "zh" => "读取“%{arg1}”时出错：%{arg2}"
             },
             "args" => [
               {
@@ -78683,6 +80338,10 @@ $CONF = {
               "uk" => {
                 "*" => "Не вдалося виконати exec для \"%{target}\": %{error}",
                 "spawn" => "Не вдалося запустити новий процес \"%{target}\": %{error}"
+              },
+              "zh" => {
+                "exec" => "无法执行“%{target}”：%{error}",
+                "spawn" => "无法创建“%{target}”子进程：%{error}"
               }
             },
             "args" => [
@@ -78748,7 +80407,8 @@ $CONF = {
               "ru" => "Не удалось создать процесс для \"%{arg1}\": %{arg2}",
               "sr" => "Не могу да покренем „%{arg1}“: %{arg2}",
               "tr" => "\"%{arg1}\" spawn edilemiyor: %{arg2}",
-              "uk" => "Не вдалося запустити новий процес \"%{arg1}\": %{arg2}"
+              "uk" => "Не вдалося запустити новий процес \"%{arg1}\": %{arg2}",
+              "zh" => "无法创建“%{arg1}”子进程：%{arg2}"
             },
             "args" => [
               {
@@ -78803,7 +80463,8 @@ $CONF = {
               "ru" => "Выполнение вряд ли достигнет этого оператора",
               "sr" => "Наредба вероватно неће бити достигнута",
               "tr" => "Bu deyime muhtemelen hiç ulaşılamaz",
-              "uk" => "Виконання навряд чи дійде до цієї інструкції"
+              "uk" => "Виконання навряд чи дійде до цієї інструкції",
+              "zh" => "此语句不太可能执行"
             },
             "args" => []
           },
@@ -78847,7 +80508,8 @@ $CONF = {
               "ru" => "\t(Возможно, имелось в виду system() вместо exec()?)\n",
               "sr" => "\t(Можда сте мислили system() када сте навели exec()?)\n",
               "tr" => "\t(exec() yerine system() mı demek istediniz?)\n",
-              "uk" => "\t(Можливо, замість exec() малося на увазі system()?)\n"
+              "uk" => "\t(Можливо, замість exec() малося на увазі system()?)\n",
+              "zh" => "\t（你说 exec() 时，是否想用 system()？）\n"
             },
             "args" => []
           },
@@ -78892,7 +80554,8 @@ $CONF = {
               "ru" => "Не удалось выполнить exec для \"%{arg1}\": %{arg2}",
               "sr" => "Не могу да извршим „%{arg1}“: %{arg2}",
               "tr" => "\"%{arg1}\" çalıştırılamıyor: %{arg2}",
-              "uk" => "Не вдалося виконати exec для \"%{arg1}\": %{arg2}"
+              "uk" => "Не вдалося виконати exec для \"%{arg1}\": %{arg2}",
+              "zh" => "无法执行 \"%{arg1}\"：%{arg2}"
             },
             "args" => [
               {
@@ -78958,7 +80621,8 @@ $CONF = {
               "ru" => "Не удалось создать процесс: %{arg1}",
               "sr" => "Не могу да покренем: %{arg1}",
               "tr" => "spawn edilemiyor: %{arg1}",
-              "uk" => "Не вдалося запустити новий процес: %{arg1}"
+              "uk" => "Не вдалося запустити новий процес: %{arg1}",
+              "zh" => "无法启动进程：%{arg1}"
             },
             "args" => [
               {
@@ -79008,7 +80672,8 @@ $CONF = {
               "ru" => "waitpid: процесс %{arg1} не является дочерним по отношению к процессу %{arg2}",
               "sr" => "waitpid: процес %{arg1} није потомак процеса %{arg2}",
               "tr" => "waitpid: %{arg1} süreci, %{arg2} sürecinin alt süreci değil",
-              "uk" => "waitpid: процес %{arg1} не є дочірнім процесом процесу %{arg2}"
+              "uk" => "waitpid: процес %{arg1} не є дочірнім процесом процесу %{arg2}",
+              "zh" => "waitpid：进程 %{arg1} 不是进程 %{arg2} 的子进程"
             },
             "args" => [
               {
@@ -79063,7 +80728,8 @@ $CONF = {
               "ru" => "Предупреждение: не удалось корректно закрыть файловый дескриптор: %{arg1}",
               "sr" => "Упозорење: није могуће правилно затворити руковалац датотеке: %{arg1}",
               "tr" => "Uyarı: dosya tanıtıcısı düzgün kapatılamadı: %{arg1}",
-              "uk" => "Попередження: не вдалося належним чином закрити дескриптор файлу: %{arg1}"
+              "uk" => "Попередження: не вдалося належним чином закрити дескриптор файлу: %{arg1}",
+              "zh" => "警告：无法正确关闭文件句柄：%{arg1}"
             },
             "args" => [
               {
@@ -79114,7 +80780,8 @@ $CONF = {
               "ru" => "Предупреждение: не удалось корректно закрыть файловый дескриптор %{arg1}: %{arg2}",
               "sr" => "Упозорење: није могуће правилно затворити руковалац датотеке %{arg1}: %{arg2}",
               "tr" => "Uyarı: %{arg1} dosya tanıtıcısı düzgün kapatılamadı: %{arg2}",
-              "uk" => "Попередження: не вдалося належним чином закрити файловий дескриптор %{arg1}: %{arg2}"
+              "uk" => "Попередження: не вдалося належним чином закрити файловий дескриптор %{arg1}: %{arg2}",
+              "zh" => "警告：无法正确关闭文件句柄 %{arg1}：%{arg2}"
             },
             "args" => [
               {
@@ -79225,6 +80892,10 @@ $CONF = {
               "uk" => {
                 "*" => "Файловий дескриптор відкрито лише для введення",
                 "output" => "Файловий дескриптор відкрито лише для виведення"
+              },
+              "zh" => {
+                "input" => "文件句柄仅以输入方式打开",
+                "output" => "文件句柄仅以输出方式打开"
               }
             },
             "args" => [
@@ -79333,6 +81004,10 @@ $CONF = {
               "uk" => {
                 "*" => "Файловий дескриптор %{name} відкрито лише для введення",
                 "output" => "Файловий дескриптор %{name} відкрито лише для виведення"
+              },
+              "zh" => {
+                "input" => "文件句柄 %{name} 仅以输入方式打开",
+                "output" => "文件句柄 %{name} 仅以输出方式打开"
               }
             },
             "args" => [
@@ -79393,7 +81068,8 @@ $CONF = {
               "ru" => "Не закрыт список аргументов для слоя PerlIO \"%{arg1}\"",
               "sr" => "Листа аргумената није затворена за PerlIO слој „%{arg1}“",
               "tr" => "PerlIO katmanı \"%{arg1}\" için argüman listesi kapatılmamış",
-              "uk" => "Список аргументів шару PerlIO \"%{arg1}\" не закрито"
+              "uk" => "Список аргументів шару PerlIO \"%{arg1}\" не закрито",
+              "zh" => "PerlIO 层 \"%{arg1}\" 的参数列表未闭合"
             },
             "args" => [
               {
@@ -79453,7 +81129,8 @@ $CONF = {
               "ru" => "Неизвестный слой PerlIO \"%{arg1}\"",
               "sr" => "Непознат PerlIO слој „%{arg1}“",
               "tr" => "Bilinmeyen PerlIO katmanı \"%{arg1}\"",
-              "uk" => "Невідомий шар PerlIO \"%{arg1}\""
+              "uk" => "Невідомий шар PerlIO \"%{arg1}\"",
+              "zh" => "未知的 PerlIO 层 \"%{arg1}\""
             },
             "args" => [
               {
@@ -79514,7 +81191,8 @@ $CONF = {
               "ru" => "Попытка изменить значение, доступное только для чтения",
               "sr" => "Покушана је измена вредности само за читање",
               "tr" => "Salt okunur bir değeri değiştirmeye çalışıldı",
-              "uk" => "Спроба змінити значення, доступне лише для читання"
+              "uk" => "Спроба змінити значення, доступне лише для читання",
+              "zh" => "尝试修改只读值"
             },
             "args" => []
           },
@@ -79560,7 +81238,8 @@ $CONF = {
               "ru" => "Смещение за пределами строки",
               "sr" => "Померај је изван ниске",
               "tr" => "Ofset dizenin dışında",
-              "uk" => "Зміщення за межами рядка"
+              "uk" => "Зміщення за межами рядка",
+              "zh" => "偏移量超出字符串范围"
             },
             "args" => []
           },
@@ -79604,7 +81283,8 @@ $CONF = {
               "ru" => "Недопустимый символ разделителя %{arg1}%{arg2}%{arg3} в спецификации слоёв PerlIO %{arg4}",
               "sr" => "Неважећи знак-раздвајач %{arg1}%{arg2}%{arg3} у спецификацији PerlIO слоја %{arg4}",
               "tr" => "PerlIO katman belirtimi %{arg4} içinde geçersiz ayırıcı karakter: %{arg1}%{arg2}%{arg3}",
-              "uk" => "Недопустимий символ роздільника %{arg1}%{arg2}%{arg3} у специфікації шару PerlIO %{arg4}"
+              "uk" => "Недопустимий символ роздільника %{arg1}%{arg2}%{arg3} у специфікації шару PerlIO %{arg4}",
+              "zh" => "PerlIO 层规范 %{arg4} 中的分隔符字符 %{arg1}%{arg2}%{arg3} 无效"
             },
             "args" => [
               {
@@ -79723,6 +81403,10 @@ $CONF = {
               "uk" => {
                 "*" => "lstat() застосовано до дескриптора файлу",
                 "named" => "lstat() застосовано до дескриптора файлу %{handle_name}"
+              },
+              "zh" => {
+                "anonymous" => "对文件句柄调用 lstat()",
+                "named" => "对文件句柄 %{handle_name} 调用 lstat()"
               }
             },
             "args" => [
@@ -79783,7 +81467,8 @@ $CONF = {
               "ru" => "Операция %{arg1} завершилась неудачей для имени файла, содержащего символ новой строки",
               "sr" => "Неуспешна операција %{arg1} над именом датотеке које садржи нови ред",
               "tr" => "Yeni satır karakteri içeren dosya adı üzerinde %{arg1} başarısız oldu",
-              "uk" => "Невдала операція %{arg1} з іменем файлу, що містить символ нового рядка"
+              "uk" => "Невдала операція %{arg1} з іменем файлу, що містить символ нового рядка",
+              "zh" => "对包含换行符的文件名执行 %{arg1} 操作失败"
             },
             "args" => [
               {
@@ -79834,7 +81519,8 @@ $CONF = {
               "ru" => "Невозможно открыть ссылку",
               "sr" => "Не може се отворити референца",
               "tr" => "Bir başvuru açılamıyor",
-              "uk" => "Неможливо відкрити посилання"
+              "uk" => "Неможливо відкрити посилання",
+              "zh" => "无法打开引用"
             },
             "args" => []
           },
@@ -80650,6 +82336,52 @@ $CONF = {
                     }
                   }
                 }
+              },
+              "zh" => {
+                "closed" => {
+                  "filehandle" => {
+                    "named" => {
+                      "call" => "对已关闭的文件句柄 %{handle_name} 调用 %{operation}()",
+                      "operator" => "在已关闭的文件句柄 %{handle_name} 上使用 %{operation}"
+                    },
+                    "unnamed" => {
+                      "call" => "对已关闭的文件句柄调用 %{operation}()",
+                      "operator" => "在已关闭的文件句柄上使用 %{operation}"
+                    }
+                  },
+                  "socket" => {
+                    "named" => {
+                      "call" => "对已关闭的套接字 %{handle_name} 调用 %{operation}()",
+                      "operator" => "在已关闭的套接字 %{handle_name} 上使用 %{operation}"
+                    },
+                    "unnamed" => {
+                      "call" => "对已关闭的套接字调用 %{operation}()",
+                      "operator" => "在已关闭的套接字上使用 %{operation}"
+                    }
+                  }
+                },
+                "unopened" => {
+                  "filehandle" => {
+                    "named" => {
+                      "call" => "对未打开的文件句柄 %{handle_name} 调用 %{operation}()",
+                      "operator" => "在未打开的文件句柄 %{handle_name} 上使用 %{operation}"
+                    },
+                    "unnamed" => {
+                      "call" => "对未打开的文件句柄调用 %{operation}()",
+                      "operator" => "在未打开的文件句柄上使用 %{operation}"
+                    }
+                  },
+                  "socket" => {
+                    "named" => {
+                      "call" => "对未打开的套接字 %{handle_name} 调用 %{operation}()",
+                      "operator" => "在未打开的套接字 %{handle_name} 上使用 %{operation}"
+                    },
+                    "unnamed" => {
+                      "call" => "对未打开的套接字调用 %{operation}()",
+                      "operator" => "在未打开的套接字上使用 %{operation}"
+                    }
+                  }
+                }
               }
             },
             "args" => [
@@ -80746,7 +82478,8 @@ $CONF = {
               "ru" => "Невозможно открыть двунаправленный канал",
               "sr" => "Не може се отворити двосмерна цев",
               "tr" => "Çift yönlü boru açılamıyor",
-              "uk" => "Неможливо відкрити двонапрямний канал"
+              "uk" => "Неможливо відкрити двонапрямний канал",
+              "zh" => "无法打开双向管道"
             },
             "args" => []
           },
@@ -80791,7 +82524,8 @@ $CONF = {
               "ru" => "Не удалось выполнить fork; повторная попытка через 5 секунд",
               "sr" => "Није могуће форковати процес; покушај поново за 5 секунди",
               "tr" => "Çatal oluşturulamıyor, 5 saniye sonra yeniden denenecek",
-              "uk" => "Не вдалося виконати fork, повторна спроба через 5 секунд"
+              "uk" => "Не вдалося виконати fork, повторна спроба через 5 секунд",
+              "zh" => "无法创建子进程，5 秒后重试"
             },
             "args" => []
           },
@@ -80835,7 +82569,8 @@ $CONF = {
               "ru" => "Не указана команда при открытии канала через open",
               "sr" => "Недостаје команда у отварању цеви",
               "tr" => "Boru açma işleminde komut eksik",
-              "uk" => "Відсутня команда у виклику open з каналом"
+              "uk" => "Відсутня команда у виклику open з каналом",
+              "zh" => "管道打开时缺少命令"
             },
             "args" => []
           },
@@ -80881,7 +82616,8 @@ $CONF = {
               "ru" => "Не удалось запустить \"%{arg1}\" с вводом-выводом через канал: %{arg2}",
               "sr" => "Не могу да успоставим цев за „%{arg1}“: %{arg2}",
               "tr" => "\"%{arg1}\" için boru açılamıyor: %{arg2}",
-              "uk" => "Не вдалося запустити \"%{arg1}\" через канал: %{arg2}"
+              "uk" => "Не вдалося запустити \"%{arg1}\" через канал: %{arg2}",
+              "zh" => "无法为 \"%{arg1}\" 建立管道：%{arg2}"
             },
             "args" => [
               {
@@ -80947,7 +82683,8 @@ $CONF = {
               "ru" => "не удалось найти VMSPIPE.COM для ввода-вывода через каналы",
               "sr" => "није могуће пронаћи VMSPIPE.COM за улазно-излазно преусмеравање",
               "tr" => "G/Ç borulaması için VMSPIPE.COM bulunamıyor",
-              "uk" => "не вдалося знайти VMSPIPE.COM для передавання введення-виведення через канали"
+              "uk" => "не вдалося знайти VMSPIPE.COM для передавання введення-виведення через канали",
+              "zh" => "找不到用于 I/O 管道的 VMSPIPE.COM"
             },
             "args" => []
           },
@@ -80991,7 +82728,8 @@ $CONF = {
               "ru" => "переполнение страницы",
               "sr" => "прекорачење странице",
               "tr" => "sayfa taşması",
-              "uk" => "переповнення сторінки"
+              "uk" => "переповнення сторінки",
+              "zh" => "页面溢出"
             },
             "args" => []
           },
@@ -81035,7 +82773,8 @@ $CONF = {
               "ru" => "Адрес сокета усечён в %{arg1}()",
               "sr" => "Адреса сокета је скраћена у %{arg1}()",
               "tr" => "%{arg1}() içinde soket adresi kesildi",
-              "uk" => "Адресу сокета обрізано у %{arg1}()"
+              "uk" => "Адресу сокета обрізано у %{arg1}()",
+              "zh" => "%{arg1}() 中的套接字地址已截断"
             },
             "args" => [
               {
@@ -81085,7 +82824,8 @@ $CONF = {
               "ru" => "Файловый дескриптор STD%{arg1} повторно открыт как %{arg2} только для ввода",
               "sr" => "Ручка датотеке STD%{arg1} поново је отворена као %{arg2} само за читање",
               "tr" => "STD%{arg1} dosya tanıtıcısı yalnızca girdi için %{arg2} olarak yeniden açıldı",
-              "uk" => "Дескриптор файлу STD%{arg1} повторно відкрито як %{arg2} лише для читання"
+              "uk" => "Дескриптор файлу STD%{arg1} повторно відкрито як %{arg2} лише для читання",
+              "zh" => "文件句柄 STD%{arg1} 重新打开为 %{arg2}，仅用于输入"
             },
             "args" => [
               {
@@ -81141,7 +82881,8 @@ $CONF = {
               "ru" => "Файловый дескриптор STDIN повторно открыт как %{arg1} только для вывода",
               "sr" => "Руковалац датотеке STDIN поново је отворен као %{arg1} само за писање",
               "tr" => "STDIN dosya tanıtıcısı yalnızca çıktı için %{arg1} olarak yeniden açıldı",
-              "uk" => "Файловий дескриптор STDIN повторно відкрито як %{arg1} лише для виведення"
+              "uk" => "Файловий дескриптор STDIN повторно відкрито як %{arg1} лише для виведення",
+              "zh" => "文件句柄 STDIN 重新打开为 %{arg1}，仅用于输出"
             },
             "args" => [
               {
@@ -81192,7 +82933,8 @@ $CONF = {
               "ru" => "Использование -l для файлового дескриптора",
               "sr" => "Употреба -l над руковаоцем датотеке",
               "tr" => "Dosya tanıtıcısı üzerinde -l kullanımı",
-              "uk" => "Використання -l з файловим дескриптором"
+              "uk" => "Використання -l з файловим дескриптором",
+              "zh" => "对文件句柄使用了 -l"
             },
             "args" => []
           },
@@ -81236,7 +82978,8 @@ $CONF = {
               "ru" => "Использование -l для файлового дескриптора %{arg1}",
               "sr" => "Употреба -l над руковаоцем датотеке %{arg1}",
               "tr" => "%{arg1} dosya tanıtıcısı üzerinde -l kullanımı",
-              "uk" => "Використання -l для дескриптора файлу %{arg1}"
+              "uk" => "Використання -l для дескриптора файлу %{arg1}",
+              "zh" => "对文件句柄 %{arg1} 使用了 -l"
             },
             "args" => [
               {
@@ -81294,7 +83037,8 @@ $CONF = {
               "ru" => "Недопустимый символ \\0 в %{arg1} для %{arg2}: %{arg3}\\0%{arg4}",
               "sr" => "Неважећи знак \\0 у %{arg1} за %{arg2}: %{arg3}\\0%{arg4}",
               "tr" => "%{arg1} içinde geçersiz \\0 karakteri (%{arg2} için): %{arg3}\\0%{arg4}",
-              "uk" => "Неприпустимий символ \\0 у %{arg1} для %{arg2}: %{arg3}\\0%{arg4}"
+              "uk" => "Неприпустимий символ \\0 у %{arg1} для %{arg2}: %{arg3}\\0%{arg4}",
+              "zh" => "%{arg1} 中存在无效的 \\0 字符，用于 %{arg2}：%{arg3}\\0%{arg4}"
             },
             "args" => [
               {
@@ -81359,7 +83103,8 @@ $CONF = {
               "ru" => "Вызов chdir() для неоткрытого файлового дескриптора %{arg1}",
               "sr" => "chdir() над неотвореним руковаоцем датотеке %{arg1}",
               "tr" => "Açılmamış %{arg1} dosya tanıtıcısı üzerinde chdir()",
-              "uk" => "Виклик chdir() для невідкритого файлового дескриптора %{arg1}"
+              "uk" => "Виклик chdir() для невідкритого файлового дескриптора %{arg1}",
+              "zh" => "对未打开的文件句柄 %{arg1} 调用 chdir()"
             },
             "args" => [
               {
@@ -81413,7 +83158,8 @@ $CONF = {
               "ru" => "На этой платформе нельзя сделать загруженные символы глобальными при загрузке %{arg1}",
               "sr" => "На овој платформи није могуће учинити учитане симболе глобалним приликом учитавања %{arg1}",
               "tr" => "%{arg1} yüklenirken bu platformda yüklenen semboller global yapılamıyor",
-              "uk" => "Неможливо зробити завантажені символи глобальними на цій платформі під час завантаження %{arg1}"
+              "uk" => "Неможливо зробити завантажені символи глобальними на цій платформі під час завантаження %{arg1}",
+              "zh" => "在此平台加载 %{arg1} 时，无法将已加载的符号设为全局可见"
             },
             "args" => [
               {
@@ -81461,7 +83207,8 @@ $CONF = {
               "ru" => "Невозможно выполнить fc(\"\\x{1E9E}\") в локали без UTF-8; вместо этого получено \"\\x{17F}\\x{17F}\".",
               "sr" => "Није могуће применити fc(\"\\x{1E9E}\") у локали који није UTF-8; разрешено је као \"\\x{17F}\\x{17F}\".",
               "tr" => "UTF-8 olmayan yerel ayarda fc(\"\\x{1E9E}\") yapılamıyor; \"\\x{17F}\\x{17F}\" olarak çözümlendi.",
-              "uk" => "Неможливо виконати fc(\"\\x{1E9E}\") у локалі без UTF-8; результат замінено на \"\\x{17F}\\x{17F}\"."
+              "uk" => "Неможливо виконати fc(\"\\x{1E9E}\") у локалі без UTF-8; результат замінено на \"\\x{17F}\\x{17F}\".",
+              "zh" => "在非 UTF-8 区域设置中，无法对 fc（“\\x{1E9E}”）执行操作；结果已解析为“\\x{17F}\\x{17F}”。"
             },
             "args" => []
           },
@@ -81505,7 +83252,8 @@ $CONF = {
               "ru" => "Невозможно выполнить операцию \"%{arg1}\" для \"\\x{%{arg2}}\" в локали без UTF-8; вместо этого получено \"\\x{%{arg3}}\".",
               "sr" => "Није могуће применити %{arg1}(\"\\x{%{arg2}}\") у локали који није UTF-8; разрешено је као \"\\x{%{arg3}}\".",
               "tr" => "UTF-8 olmayan yerel ayarda %{arg1}(\"\\x{%{arg2}}\") uygulanamaz; sonuç \"\\x{%{arg3}}\" olarak belirlendi.",
-              "uk" => "Неможливо виконати %{arg1}(\"\\x{%{arg2}}\") у локалі без UTF-8; результат замінено на \"\\x{%{arg3}}\"."
+              "uk" => "Неможливо виконати %{arg1}(\"\\x{%{arg2}}\") у локалі без UTF-8; результат замінено на \"\\x{%{arg3}}\".",
+              "zh" => "在非 UTF-8 区域设置中，无法对 %{arg1}（“\\x{%{arg2}}”）执行操作；结果已解析为“\\x{%{arg3}}”。"
             },
             "args" => [
               {
@@ -81553,7 +83301,8 @@ $CONF = {
                 "ru" => "nominative",
                 "sr" => "nominative",
                 "tr" => "operation",
-                "uk" => "nominative"
+                "uk" => "nominative",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -81652,6 +83401,10 @@ $CONF = {
               "uk" => {
                 "*" => "Невідома категорія локалі %{category}",
                 "specified" => "Невідома категорія локалі %{category}, неможливо встановити для неї %{locale}"
+              },
+              "zh" => {
+                "specified" => "未知的区域设置类别 %{category}，无法将其设置为 %{locale}",
+                "unspecified" => "未知的区域设置类别 %{category}"
               }
             },
             "args" => [
@@ -81879,6 +83632,16 @@ $CONF = {
                   "*" => "Локаль '%{locale}' містить символи з неочікуваними значеннями: %{characters}. Perl використовуватиме очікувані значення.\n",
                   "present" => "Локаль '%{locale}' містить символи з неочікуваними значеннями: %{characters}. Perl використовуватиме очікувані значення. Кодування: %{codeset}.\n"
                 }
+              },
+              "zh" => {
+                "single_byte" => {
+                  "absent" => "以下字符的含义可能与 Perl 预期不同：%{characters}。\n",
+                  "present" => "以下字符的含义可能与 Perl 预期不同：%{characters}。代码集：%{codeset}。\n"
+                },
+                "utf8" => {
+                  "absent" => "区域设置“%{locale}”中的字符含义与预期不同：%{characters}。Perl 将使用预期的含义。\n",
+                  "present" => "区域设置“%{locale}”中的字符含义与预期不同：%{characters}。Perl 将使用预期的含义。代码集：%{codeset}。\n"
+                }
               }
             },
             "args" => [
@@ -81970,7 +83733,8 @@ $CONF = {
               "ru" => "Локаль LC_CTYPE '%{locale}' не поддерживается и может привести к зависанию или аварийному завершению интерпретатора.\n",
               "sr" => "Језик LC_CTYPE „%{locale}“ није подржан и може да доведе до застоја или пада интерпретатора.\n",
               "tr" => "LC_CTYPE '%{locale}' yerel ayarı desteklenmiyor; yorumlayıcının takılmasına veya çökmesine yol açabilir.\n",
-              "uk" => "Локаль LC_CTYPE '%{locale}' не підтримується й може спричинити зависання або аварійне завершення інтерпретатора.\n"
+              "uk" => "Локаль LC_CTYPE '%{locale}' не підтримується й може спричинити зависання або аварійне завершення інтерпретатора.\n",
+              "zh" => "LC_CTYPE 区域设置 '%{locale}' 不受支持，可能导致解释器挂起或崩溃。\n"
             },
             "args" => [
               {
@@ -82026,7 +83790,8 @@ $CONF = {
               "ru" => "Невозможно выполнить fc(\"\\x{1DF95}\") в локали без UTF-8; вместо этого получено \"\\x{17F}\\x{17F}\".",
               "sr" => "Није могуће применити fc(\"\\x{1DF95}\") у локали који није UTF-8; разрешено је као \"\\x{17F}\\x{17F}\".",
               "tr" => "UTF-8 olmayan yerel ayarda fc(\"\\x{1DF95}\") yapılamıyor; \"\\x{17F}\\x{17F}\" olarak çözümlendi.",
-              "uk" => "Неможливо виконати fc(\"\\x{1DF95}\") у локалі без UTF-8; результат замінено на \"\\x{17F}\\x{17F}\"."
+              "uk" => "Неможливо виконати fc(\"\\x{1DF95}\") у локалі без UTF-8; результат замінено на \"\\x{17F}\\x{17F}\".",
+              "zh" => "在非 UTF-8 区域设置中，无法对 fc（“\\x{1DF95}”）执行操作；结果已解析为“\\x{17F}\\x{17F}”。"
             },
             "args" => []
           },
@@ -82070,7 +83835,8 @@ $CONF = {
               "ru" => "Невозможно выполнить fc(\"\\x{0130}\") в локали без UTF-8; вместо этого получено \"\\x{0131}\".",
               "sr" => "Није могуће применити fc(\"\\x{0130}\") у локали који није UTF-8; разрешено је као \"\\x{0131}\".",
               "tr" => "UTF-8 olmayan yerel ayarda fc(\"\\x{0130}\") yapılamıyor; \"\\x{0131}\" olarak çözümlendi.",
-              "uk" => "Неможливо виконати fc(\"\\x{0130}\") у локалі без UTF-8; результат замінено на \"\\x{0131}\"."
+              "uk" => "Неможливо виконати fc(\"\\x{0130}\") у локалі без UTF-8; результат замінено на \"\\x{0131}\".",
+              "zh" => "在非 UTF-8 区域设置中，无法对 fc（“\\x{0130}”）执行操作；结果已解析为“\\x{0131}”。"
             },
             "args" => []
           },
@@ -82114,7 +83880,8 @@ $CONF = {
               "ru" => "Невозможно выполнить fc(\"\\x{FB05}\") в локали без UTF-8; вместо этого получено \"\\x{FB06}\".",
               "sr" => "Није могуће применити fc(\"\\x{FB05}\") у локали који није UTF-8; разрешено је као \"\\x{FB06}\".",
               "tr" => "UTF-8 olmayan yerel ayarda fc(\"\\x{FB05}\") yapılamıyor; \"\\x{FB06}\" olarak çözümlendi.",
-              "uk" => "Неможливо виконати fc(\"\\x{FB05}\") у локалі без UTF-8; результат замінено на \"\\x{FB06}\"."
+              "uk" => "Неможливо виконати fc(\"\\x{FB05}\") у локалі без UTF-8; результат замінено на \"\\x{FB06}\".",
+              "zh" => "在非 UTF-8 区域设置中，无法对 fc（“\\x{FB05}”）执行操作；结果已解析为“\\x{FB06}”。"
             },
             "args" => []
           },
@@ -82158,7 +83925,8 @@ $CONF = {
               "ru" => "Использование \\b{} или \\B{} в локали без UTF-8 некорректно.  Предполагается локаль UTF-8",
               "sr" => "Употреба \\b{} или \\B{} са локалитетом који није UTF-8 није исправна. Претпоставља се UTF-8 локалитет",
               "tr" => "UTF-8 olmayan yerel ayarda \\b{} veya \\B{} kullanımı hatalı. UTF-8 yerel ayarı varsayılıyor",
-              "uk" => "Використання \\b{} або \\B{} для локалі без UTF-8 є неправильним.  Припускається локаль UTF-8"
+              "uk" => "Використання \\b{} або \\B{} для локалі без UTF-8 є неправильним.  Припускається локаль UTF-8",
+              "zh" => "在非 UTF-8 区域设置中使用 \\b{} 或 \\B{} 是错误的。假定使用 UTF-8 区域设置"
             },
             "args" => []
           },
@@ -82203,7 +83971,8 @@ $CONF = {
               "ru" => "Использование (?[ ]) в локали без UTF-8 некорректно.  Предполагается локаль UTF-8",
               "sr" => "Употреба (?[ ]) са локалитетом који није UTF-8 није исправна. Претпоставља се UTF-8 локалитет",
               "tr" => "UTF-8 olmayan yerel ayarda (?[ ]) kullanımı hatalı. UTF-8 yerel ayarı varsayılıyor",
-              "uk" => "Використання (?[ ]) у локалі без UTF-8 є некоректним.  Припускається локаль UTF-8"
+              "uk" => "Використання (?[ ]) у локалі без UTF-8 є некоректним.  Припускається локаль UTF-8",
+              "zh" => "在非 UTF-8 区域设置中使用 (?[ ]) 是错误的。假定使用 UTF-8 区域设置"
             },
             "args" => []
           },
@@ -82248,7 +84017,8 @@ $CONF = {
               "ru" => "perl: предупреждение: Убедитесь, что указанные в настройках локали:\n%{settings}    поддерживаются и установлены в вашей системе.\n",
               "sr" => "perl: упозорење: Проверите да ли су поставке локала:\n%{settings}    подржане и инсталиране на вашем систему.\n",
               "tr" => "perl: uyarı: Lütfen yerel ayar değerlerinizin desteklenip sisteminizde kurulu olduğunu denetleyin:\n%{settings}    \n",
-              "uk" => "perl: попередження: Перевірте, чи налаштування локалі:\n%{settings}    підтримуються та встановлені у вашій системі.\n"
+              "uk" => "perl: попередження: Перевірте, чи налаштування локалі:\n%{settings}    підтримуються та встановлені у вашій системі.\n",
+              "zh" => "perl: 警告：请检查您的区域设置：\n%{settings}    您的系统是否支持并已安装这些设置。\n"
             },
             "args" => [
               {
@@ -82351,6 +84121,10 @@ $CONF = {
               "uk" => {
                 "*" => "perl: попередження: Не вдалося перейти до жодної з резервних локалей:\n%{locales}",
                 "1" => "perl: попередження: Не вдалося перейти до резервної локалі %{locales}"
+              },
+              "zh" => {
+                "*" => "perl: 警告：无法回退到以下任何区域设置：\n%{locales}",
+                "one" => "perl: 警告：无法回退到 %{locales}"
               }
             },
             "args" => [
@@ -82498,6 +84272,12 @@ $CONF = {
                 "standard" => "perl: попередження: Перехід на стандартну локаль (\"%{name}\").\n",
                 "system" => "perl: попередження: Перехід на типову системну локаль (\"%{name}\").\n",
                 "unknown" => "perl: попередження: Перехід на резервну локаль (\"назву локалі неможливо визначити\").\n"
+              },
+              "zh" => {
+                "fallback" => "perl: 警告：正在回退到回退区域设置（“%{name}”）。\n",
+                "standard" => "perl: 警告：正在回退到标准区域设置（“%{name}”）。\n",
+                "system" => "perl: 警告：正在回退到系统默认区域设置（“%{name}”）。\n",
+                "unknown" => "perl: 警告：正在回退到回退区域设置（“无法确定区域设置名称”）。\n"
               }
             },
             "args" => [
@@ -82559,7 +84339,8 @@ $CONF = {
               "ru" => "perl: предупреждение: Не удалось установить локаль.\n",
               "sr" => "perl: упозорење: Подешавање локала није успело.\n",
               "tr" => "perl: uyarı: Yerel ayar belirlenemedi.\n",
-              "uk" => "perl: попередження: Не вдалося встановити локаль.\n"
+              "uk" => "perl: попередження: Не вдалося встановити локаль.\n",
+              "zh" => "perl: 警告：设置区域设置失败。\n"
             },
             "args" => []
           },
@@ -82601,7 +84382,8 @@ $CONF = {
               "ru" => "Широкий символ (U+%{arg1}) в %{arg2} при локали, отличной от UTF-8",
               "sr" => "Широки знак (U+%{arg1}) у контексту: %{arg2}, под локалом који није UTF-8",
               "tr" => "UTF-8 olmayan yerel ayarda %{arg2} bağlamında geniş karakter (U+%{arg1}) saptandı",
-              "uk" => "Широкий символ (U+%{arg1}) у %{arg2} за використання локалі без UTF-8"
+              "uk" => "Широкий символ (U+%{arg1}) у %{arg2} за використання локалі без UTF-8",
+              "zh" => "在非 UTF-8 区域设置下，操作 %{arg2} 中出现宽字符（U+%{arg1}）"
             },
             "args" => [
               {
@@ -82644,7 +84426,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg2_operation"
             }
@@ -82747,6 +84530,13 @@ $CONF = {
                 "subst" => "Застосування підстановки (s///) до %{arg2} діятиме на scalar(%{arg3})",
                 "trans" => "Застосування транслітерації (tr///) до %{arg2} діятиме на scalar(%{arg3})",
                 "transr" => "Застосування транслітерації (tr///) до %{arg2} діятиме на scalar(%{arg3})"
+              },
+              "zh" => {
+                "*" => "对 %{arg2} 应用 %{arg1} 会作用于标量值（%{arg3}）",
+                "match" => "对 %{arg2} 应用模式匹配（m//）会作用于标量值（%{arg3}）",
+                "subst" => "对 %{arg2} 应用替换（s///）会作用于标量值（%{arg3}）",
+                "trans" => "对 %{arg2} 应用字符转换（tr///）会作用于标量值（%{arg3}）",
+                "transr" => "对 %{arg2} 应用字符转换（tr///）会作用于标量值（%{arg3}）"
               }
             },
             "args" => [
@@ -82882,6 +84672,13 @@ $CONF = {
                 "*" => "Застосування транслітерації (tr///) до %{arg2} діятиме на scalar(%{arg3})",
                 "match" => "Застосування зіставлення з шаблоном (m//) до %{arg2} діятиме на scalar(%{arg3})",
                 "subst" => "Застосування підстановки (s///) до %{arg2} діятиме на scalar(%{arg3})"
+              },
+              "zh" => {
+                "*" => "对 %{arg2} 应用 %{arg1} 会作用于其标量化结果 scalar(%{arg3})",
+                "match" => "对 %{arg2} 应用模式匹配（m//）会作用于其标量化结果 scalar(%{arg3})",
+                "subst" => "对 %{arg2} 应用替换（s///）会作用于其标量化结果 scalar(%{arg3})",
+                "trans" => "对 %{arg2} 应用字符转换（tr///）会作用于其标量化结果 scalar(%{arg3})",
+                "transr" => "对 %{arg2} 应用字符转换（tr///）会作用于其标量化结果 scalar(%{arg3})"
               }
             },
             "args" => [
@@ -82963,7 +84760,8 @@ $CONF = {
               "ru" => "Вызов alarm() с отрицательным аргументом",
               "sr" => "alarm() са негативним аргументом",
               "tr" => "Negatif bağımsız değişkenle alarm()",
-              "uk" => "Виклик alarm() з від'ємним аргументом"
+              "uk" => "Виклик alarm() з від'ємним аргументом",
+              "zh" => "alarm() 的参数为负数"
             },
             "args" => []
           },
@@ -83007,7 +84805,8 @@ $CONF = {
               "ru" => "Нечётное число элементов в анонимном хеше",
               "sr" => "Непаран број елемената у анонимском хешу",
               "tr" => "Anonim hash içinde tek sayıda öğe",
-              "uk" => "Непарна кількість елементів в анонімному хеші"
+              "uk" => "Непарна кількість елементів в анонімному хеші",
+              "zh" => "匿名哈希中的元素个数为奇数"
             },
             "args" => []
           },
@@ -83051,7 +84850,8 @@ $CONF = {
               "ru" => "Использование ссылки \"%{arg1}\" в качестве индекса массива",
               "sr" => "Употреба референце „%{arg1}” као индекса низа",
               "tr" => "Dizi indeksi olarak \"%{arg1}\" başvurusunun kullanılması",
-              "uk" => "Використання посилання \"%{arg1}\" як індексу масиву"
+              "uk" => "Використання посилання \"%{arg1}\" як індексу масиву",
+              "zh" => "将引用 \"%{arg1}\" 用作数组索引"
             },
             "args" => [
               {
@@ -83108,7 +84908,8 @@ $CONF = {
               "ru" => "Попытка задать длину освобождённого массива",
               "sr" => "Покушај постављања дужине ослобођеног низа",
               "tr" => "Serbest bırakılmış dizinin uzunluğu ayarlanmaya çalışılıyor",
-              "uk" => "Спроба встановити довжину масиву, пам'ять якого вже звільнено"
+              "uk" => "Спроба встановити довжину масиву, пам'ять якого вже звільнено",
+              "zh" => "尝试设置已释放数组的长度"
             },
             "args" => []
           },
@@ -83152,7 +84953,8 @@ $CONF = {
               "ru" => "Бесполезное присваивание временному значению",
               "sr" => "Бескорисна додела привременој вредности",
               "tr" => "Geçici bir değere etkisiz atama",
-              "uk" => "Марне присвоєння тимчасовому значенню"
+              "uk" => "Марне присвоєння тимчасовому значенню",
+              "zh" => "对临时值进行赋值没有作用"
             },
             "args" => []
           },
@@ -83196,7 +84998,8 @@ $CONF = {
               "ru" => "Определение константной подпрограммы %{arg1} удалено",
               "sr" => "Константни потпрограм %{arg1} није дефинисан",
               "tr" => "Sabit alt yordam %{arg1} tanımsız",
-              "uk" => "Визначення константної підпрограми %{arg1} скасовано"
+              "uk" => "Визначення константної підпрограми %{arg1} скасовано",
+              "zh" => "常量子程序 %{arg1} 未定义"
             },
             "args" => [
               {
@@ -83247,7 +85050,8 @@ $CONF = {
               "ru" => "\t(при очистке) %{arg1}",
               "sr" => "\t(током чишћења) %{arg1}",
               "tr" => "\t(temizleme sırasında) %{arg1}",
-              "uk" => "\t(під час очищення) %{arg1}"
+              "uk" => "\t(під час очищення) %{arg1}",
+              "zh" => "\t（清理期间）%{arg1}"
             },
             "args" => [
               {
@@ -83300,7 +85104,8 @@ $CONF = {
               "ru" => "Обнаружена ссылка там, где ожидался список с чётным числом элементов",
               "sr" => "Пронађена је референца тамо где се очекивала листа парног броја елемената",
               "tr" => "Çift sayıda öğe beklenirken başvuru bulundu",
-              "uk" => "Знайдено посилання там, де очікувався список із парною кількістю елементів"
+              "uk" => "Знайдено посилання там, де очікувався список із парною кількістю елементів",
+              "zh" => "需要偶数个元素的列表中却出现了引用"
             },
             "args" => []
           },
@@ -83352,7 +85157,8 @@ $CONF = {
               "ru" => "Нечётное число элементов при присваивании хешу",
               "sr" => "Непаран број елемената у додели хешу",
               "tr" => "Hash atamasında tek sayıda öğe",
-              "uk" => "Непарна кількість елементів у присвоєнні хешу"
+              "uk" => "Непарна кількість елементів у присвоєнні хешу",
+              "zh" => "散列赋值中的元素个数为奇数"
             },
             "args" => []
           },
@@ -83404,7 +85210,8 @@ $CONF = {
               "ru" => "Нечётное число элементов при инициализации поля-хеша",
               "sr" => "Непаран број елемената при иницијализацији поља хеша",
               "tr" => "Hash alanı başlatılırken tek sayıda öğe",
-              "uk" => "Непарна кількість елементів під час ініціалізації хеш-поля"
+              "uk" => "Непарна кількість елементів під час ініціалізації хеш-поля",
+              "zh" => "哈希字段初始化中的元素个数为奇数"
             },
             "args" => []
           },
@@ -83449,7 +85256,8 @@ $CONF = {
               "ru" => "В качестве битовой маски передано нестроковое значение",
               "sr" => "Маска није ниска",
               "tr" => "Bit maskesi olarak dize olmayan değer geçirildi",
-              "uk" => "Як бітову маску передано значення, що не є рядком"
+              "uk" => "Як бітову маску передано значення, що не є рядком",
+              "zh" => "传递给 select() 的位掩码不是字符串"
             },
             "args" => []
           },
@@ -83493,7 +85301,8 @@ $CONF = {
               "ru" => "Явное назначение класса '' с помощью bless (предполагается пакет main)",
               "sr" => "Експлицитно додељивање пакету '' (претпоставља се пакет main)",
               "tr" => "'' için açıkça bless çağrıldı (main paketi varsayılıyor)",
-              "uk" => "Явне застосування bless із класом '' (використовується пакет main)"
+              "uk" => "Явне застосування bless із класом '' (використовується пакет main)",
+              "zh" => "显式祝福到 ''（假定为 main 包）"
             },
             "args" => []
           },
@@ -83536,7 +85345,8 @@ $CONF = {
               "ru" => "Ссылки legacy переживают существование нативного объекта; с референта legacy снят статус blessed\n",
               "sr" => "Наслеђене референце надживљавају свој нативни објекат; наслеђеном референту је уклоњен благослов",
               "tr" => "Legacy başvurular native nesnelerinden daha uzun süre yaşar; legacy referent'in bless durumu kaldırıldı",
-              "uk" => "Посилання legacy переживають свій нативний об’єкт; із референта legacy знято благословення"
+              "uk" => "Посилання legacy переживають свій нативний об’єкт; із референта legacy знято благословення",
+              "zh" => "Legacy 引用的生命周期超过其原生对象；该 legacy referent 已取消祝福"
             },
             "args" => []
           },
@@ -83580,7 +85390,8 @@ $CONF = {
               "ru" => "Аргумент srand() является ссылкой без перегрузки строкового преобразования",
               "sr" => "Аргумент функције srand() је референца без преоптерећења за ниске",
               "tr" => "srand() argümanı, dize aşırı yüklemesi olmayan bir başvurudur",
-              "uk" => "Аргумент srand() є посиланням без перевантаження перетворення на рядок"
+              "uk" => "Аргумент srand() є посиланням без перевантаження перетворення на рядок",
+              "zh" => "srand() 的参数是未提供字符串重载的引用"
             },
             "args" => []
           },
@@ -83624,7 +85435,8 @@ $CONF = {
               "ru" => "Вызов sleep() с отрицательным аргументом",
               "sr" => "sleep() са негативним аргументом",
               "tr" => "Negatif argümanla sleep() çağrıldı",
-              "uk" => "sleep() з від'ємним аргументом"
+              "uk" => "sleep() з від'ємним аргументом",
+              "zh" => "sleep() 的参数为负数"
             },
             "args" => []
           },
@@ -83668,7 +85480,8 @@ $CONF = {
               "ru" => "Смещение в splice() выходит за конец массива",
               "sr" => "померај splice() иза краја низа",
               "tr" => "splice() ofseti dizinin sonunu aşıyor",
-              "uk" => "Зміщення splice() виходить за кінець масиву"
+              "uk" => "Зміщення splice() виходить за кінець масиву",
+              "zh" => "splice() 的偏移量超出数组末尾"
             },
             "args" => []
           },
@@ -83712,7 +85525,8 @@ $CONF = {
               "ru" => "Бесполезное использование \\E",
               "sr" => "Бескорисна употреба \\E",
               "tr" => "\\E kullanımı etkisiz",
-              "uk" => "Беззмістовне використання \\E"
+              "uk" => "Беззмістовне використання \\E",
+              "zh" => "无用的 \\E"
             },
             "args" => []
           },
@@ -83756,7 +85570,8 @@ $CONF = {
               "ru" => "Нераспознанная escape-последовательность \\%{arg1}: символ интерпретирован буквально",
               "sr" => "Непрепознат escape \\%{arg1} је прослеђен без измене",
               "tr" => "Tanınmayan kaçış \\%{arg1} olduğu gibi geçirildi",
-              "uk" => "Нерозпізнана екранувальна послідовність \\%{arg1}: символ передано буквально"
+              "uk" => "Нерозпізнана екранувальна послідовність \\%{arg1}: символ передано буквально",
+              "zh" => "无法识别的转义序列 \\%{arg1} 已原样传递"
             },
             "args" => [
               {
@@ -83807,7 +85622,8 @@ $CONF = {
               "ru" => "Атрибут lvalue игнорируется после определения подпрограммы",
               "sr" => "Атрибут lvalue је занемарен јер је потпрограм већ дефинисан",
               "tr" => "Alt yordam tanımlandıktan sonra lvalue özniteliği yok sayıldı",
-              "uk" => "Атрибут lvalue проігноровано, оскільки підпрограму вже визначено"
+              "uk" => "Атрибут lvalue проігноровано, оскільки підпрограму вже визначено",
+              "zh" => "子程序定义后添加的 lvalue 属性已被忽略"
             },
             "args" => []
           },
@@ -83851,7 +85667,8 @@ $CONF = {
               "ru" => "Атрибут prototype(%{arg1}) отменяет ранее заданный атрибут prototype в той же подпрограмме",
               "sr" => "Атрибут prototype(%{arg1}) одбацује претходни атрибут prototype у истом потпрограму",
               "tr" => "prototype(%{arg1}) özniteliği, aynı alt yordamın önceki prototype özniteliğini geçersiz kılıyor",
-              "uk" => "Атрибут prototype(%{arg1}) скасовує попередній атрибут prototype у тій самій підпрограмі"
+              "uk" => "Атрибут prototype(%{arg1}) скасовує попередній атрибут prototype у тій самій підпрограмі",
+              "zh" => "属性 prototype(%{arg1}) 丢弃了同一子程序中较早声明的原型属性"
             },
             "args" => [
               {
@@ -83916,7 +85733,8 @@ $CONF = {
               "ru" => "Бесполезное использование модификатора /d в операторе транслитерации",
               "sr" => "Бескорисна употреба модификатора /d у оператору транслитерације",
               "tr" => "Çevirme işlemcisinde /d değiştiricisinin etkisiz kullanımı",
-              "uk" => "Марне використання модифікатора /d в операторі транслітерації"
+              "uk" => "Марне використання модифікатора /d в операторі транслітерації",
+              "zh" => "在转写运算符中使用 /d 修饰符没有作用"
             },
             "args" => []
           },
@@ -83960,7 +85778,8 @@ $CONF = {
               "ru" => "Список замены длиннее списка поиска",
               "sr" => "Листа замена је дужа од листе за претрагу",
               "tr" => "Değiştirme listesi arama listesinden daha uzun",
-              "uk" => "Список заміни довший за список пошуку"
+              "uk" => "Список заміни довший за список пошуку",
+              "zh" => "替换列表比搜索列表长"
             },
             "args" => []
           },
@@ -84036,6 +85855,10 @@ $CONF = {
               "uk" => {
                 "*" => "Значення, повернуте %{operation}, може дорівнювати \"0\" і водночас бути визначеним; перевіряйте за допомогою defined()",
                 "aeach" => "Значення, повернуте each для масиву, може дорівнювати \"0\" і водночас бути визначеним; перевіряйте за допомогою defined()"
+              },
+              "zh" => {
+                "*" => "%{operation} 返回的值可能是 \"0\"，但仍然已定义；请使用 defined() 进行测试",
+                "aeach" => "数组上的 each 返回的值可能是 \"0\"，但仍然已定义；请使用 defined() 进行测试"
               }
             },
             "args" => [
@@ -84106,7 +85929,8 @@ $CONF = {
               "ru" => "Глобу присвоено неопределённое значение",
               "sr" => "Недефинисана вредност додељена је typeglob-у",
               "tr" => "Tür glob'una tanımsız değer atandı",
-              "uk" => "Об'єкту typeglob присвоєно невизначене значення"
+              "uk" => "Об'єкту typeglob присвоєно невизначене значення",
+              "zh" => "未定义值被赋给了 typeglob"
             },
             "args" => []
           },
@@ -84150,7 +85974,8 @@ $CONF = {
               "ru" => "Ссылка уже является слабой",
               "sr" => "Референца је већ слаба",
               "tr" => "Başvuru zaten zayıf",
-              "uk" => "Посилання вже є слабким"
+              "uk" => "Посилання вже є слабким",
+              "zh" => "引用已经是弱引用"
             },
             "args" => []
           },
@@ -84194,7 +86019,8 @@ $CONF = {
               "ru" => "Ссылка не является слабой",
               "sr" => "Референца није слаба",
               "tr" => "Başvuru zayıf değil",
-              "uk" => "Посилання не є слабким"
+              "uk" => "Посилання не є слабким",
+              "zh" => "引用不是弱引用"
             },
             "args" => []
           },
@@ -84238,7 +86064,8 @@ $CONF = {
               "ru" => "Переменная \"%{var_name}\" не импортирована",
               "sr" => "Променљива „%{var_name}“ није увезена",
               "tr" => "\"%{var_name}\" değişkeni içe aktarılmadı",
-              "uk" => "Змінну \"%{var_name}\" не імпортовано"
+              "uk" => "Змінну \"%{var_name}\" не імпортовано",
+              "zh" => "变量 \"%{var_name}\" 未导入"
             },
             "args" => [
               {
@@ -84309,7 +86136,8 @@ $CONF = {
               "ru" => "\t(Возможно, вы имели в виду &%{arg1}?)\n",
               "sr" => "\t(Да ли сте мислили &%{arg1}?)\n",
               "tr" => "\t(Bunun yerine &%{arg1} mi demek istediniz?)\n",
-              "uk" => "\t(Можливо, ви мали на увазі &%{arg1}?)\n"
+              "uk" => "\t(Можливо, ви мали на увазі &%{arg1}?)\n",
+              "zh" => "\t（你是想写 &%{arg1} 吗？）\n"
             },
             "args" => [
               {
@@ -84374,7 +86202,8 @@ $CONF = {
               "ru" => "Строка версии '%{arg1}' содержит недопустимые данные; игнорируется: '%{arg2}'",
               "sr" => "Ниска верзије „%{arg1}“ садржи неважеће податке; занемарује се: „%{arg2}“",
               "tr" => "Sürüm dizesi '%{arg1}' geçersiz veri içeriyor; yok sayılıyor: '%{arg2}'",
-              "uk" => "Рядок версії '%{arg1}' містить некоректні дані; ігнорується: '%{arg2}'"
+              "uk" => "Рядок версії '%{arg1}' містить некоректні дані; ігнорується: '%{arg2}'",
+              "zh" => "版本字符串 '%{arg1}' 包含无效数据；忽略：'%{arg2}'"
             },
             "args" => [
               {
@@ -84429,7 +86258,8 @@ $CONF = {
               "ru" => "Слишком длинное значение символа CLI \"%{arg1}\"",
               "sr" => "Вредност CLI симбола „%{arg1}“ је предугачка",
               "tr" => "CLI simgesi \"%{arg1}\" değeri çok uzun",
-              "uk" => "Значення символу CLI \"%{arg1}\" задовге"
+              "uk" => "Значення символу CLI \"%{arg1}\" задовге",
+              "zh" => "CLI 符号“%{arg1}”的值过长"
             },
             "args" => [
               {
@@ -84480,7 +86310,8 @@ $CONF = {
               "ru" => "Значение логического имени \"%{arg1}\" слишком длинное. Оно усекается до предела в байтах: %{arg2}",
               "sr" => "Вредност логичког имена „%{arg1}“ је предугачка. Скраћује се на ограничење од %{arg2} бајтова",
               "tr" => "Mantıksal \"%{arg1}\" değeri çok uzun. %{arg2} bayt sınırında kesiliyor",
-              "uk" => "Значення логічного імені \"%{arg1}\" задовге. Обрізання до межі в байтах: %{arg2}"
+              "uk" => "Значення логічного імені \"%{arg1}\" задовге. Обрізання до межі в байтах: %{arg2}",
+              "zh" => "逻辑名 \"%{arg1}\" 的值过长。将在字节数限制 %{arg2} 处截断"
             },
             "args" => [
               {
@@ -84589,6 +86420,10 @@ $CONF = {
               "uk" => {
                 "*" => "Спроба викликати відсутній метод %{method_name} з аргументами (%{argument_preview}) через пакет %{package_name} (Можливо, ви забули завантажити пакет?)",
                 "truncated" => "Спроба викликати відсутній метод %{method_name} з аргументами (%{argument_preview} ...) через пакет %{package_name} (Можливо, ви забули завантажити пакет?)"
+              },
+              "zh" => {
+                "complete" => "通过包 %{package_name} 调用缺失的 %{method_name} 方法并传入参数（%{argument_preview}）（或许忘记加载该包了？）",
+                "truncated" => "通过包 %{package_name} 调用缺失的 %{method_name} 方法并传入参数（%{argument_preview} ...）（或许忘记加载该包了？）"
               }
             },
             "args" => [
@@ -84660,7 +86495,8 @@ $CONF = {
               "ru" => "Отсутствует аргумент в %{arg1}",
               "sr" => "Недостаје аргумент у операцији %{arg1}",
               "tr" => "%{arg1} için bağımsız değişken eksik",
-              "uk" => "Бракує аргументу в %{arg1}"
+              "uk" => "Бракує аргументу в %{arg1}",
+              "zh" => "%{arg1} 中缺少参数"
             },
             "args" => [
               {
@@ -84698,7 +86534,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -84742,7 +86579,8 @@ $CONF = {
               "ru" => "Аргумент \"%{arg1}\" интерпретируется как 0 при инкременте (++)",
               "sr" => "Аргумент „%{arg1}” третиран је као 0 при увећавању (++)",
               "tr" => "\"%{arg1}\" argümanı artırma (++) işleminde 0 olarak değerlendirildi",
-              "uk" => "Аргумент \"%{arg1}\" трактується як 0 під час інкременту (++)"
+              "uk" => "Аргумент \"%{arg1}\" трактується як 0 під час інкременту (++)",
+              "zh" => "递增运算符 (++) 将参数 \"%{arg1}\" 视为 0"
             },
             "args" => [
               {
@@ -84792,7 +86630,8 @@ $CONF = {
               "ru" => "При отрицательном числе повторений операция не выполняется",
               "sr" => "Негативан број понављања нема дејства",
               "tr" => "Negatif yineleme sayısının etkisi yok",
-              "uk" => "Від'ємна кількість повторень не спричиняє жодних дій"
+              "uk" => "Від'ємна кількість повторень не спричиняє жодних дій",
+              "zh" => "重复次数为负数，不执行任何操作"
             },
             "args" => []
           },
@@ -84836,7 +86675,8 @@ $CONF = {
               "ru" => "При неконечном числе повторений операция не выполняется",
               "sr" => "Број понављања није коначан, нема дејства",
               "tr" => "Sonlu olmayan yineleme sayısının etkisi yok",
-              "uk" => "Нескінченна або невизначена кількість повторень не спричиняє жодної дії"
+              "uk" => "Нескінченна або невизначена кількість повторень не спричиняє жодної дії",
+              "zh" => "重复次数不是有限值，不执行任何操作"
             },
             "args" => []
           },
@@ -84879,7 +86719,8 @@ $CONF = {
               "ru" => "Аргумент \"%{arg1}\" не является числом в %{arg2}",
               "sr" => "Аргумент „%{arg1}” није нумерички у операцији %{arg2}",
               "tr" => "%{arg2} bağlamında \"%{arg1}\" bağımsız değişkeni sayısal değildir",
-              "uk" => "Аргумент \"%{arg1}\" не є числом у %{arg2}"
+              "uk" => "Аргумент \"%{arg1}\" не є числом у %{arg2}",
+              "zh" => "参数 \"%{arg1}\" 在 %{arg2} 中不是数值"
             },
             "args" => [
               {
@@ -84922,7 +86763,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg2_operation"
             }
@@ -84966,7 +86808,8 @@ $CONF = {
               "ru" => "Аргумент \"%{arg1}\" не является числом",
               "sr" => "Аргумент „%{arg1}” није нумерички",
               "tr" => "\"%{arg1}\" argümanı sayısal değil",
-              "uk" => "Аргумент \"%{arg1}\" не є числовим"
+              "uk" => "Аргумент \"%{arg1}\" не є числовим",
+              "zh" => "参数 \"%{arg1}\" 不是数值"
             },
             "args" => [
               {
@@ -85016,7 +86859,8 @@ $CONF = {
               "ru" => "alpha->numify() приводит к потере информации",
               "sr" => "alpha->numify() доводи до губитка података",
               "tr" => "alpha->numify() bilgi kaybına yol açar",
-              "uk" => "alpha->numify() призводить до втрати інформації"
+              "uk" => "alpha->numify() призводить до втрати інформації",
+              "zh" => "alpha->numify() 会造成信息丢失"
             },
             "args" => []
           },
@@ -85061,7 +86905,8 @@ $CONF = {
               "ru" => "Конструктору %{stash} передано нечётное количество аргументов",
               "sr" => "Прослеђен је непаран број аргумената конструктору %{stash}",
               "tr" => "%{stash} yapıcısına tek sayıda argüman geçirildi",
-              "uk" => "До конструктора %{stash} передано непарну кількість аргументів"
+              "uk" => "До конструктора %{stash} передано непарну кількість аргументів",
+              "zh" => "传递给 %{stash} 构造函数的参数数量为奇数"
             },
             "args" => [
               {
@@ -85109,7 +86954,8 @@ $CONF = {
               "ru" => "Имя \"%{arg1}::%{arg2}\" использовано только один раз: возможна опечатка",
               "sr" => "Име „%{arg1}::%{arg2}“ употребљено је само једном: могућа је грешка у куцању",
               "tr" => "\"%{arg1}::%{arg2}\" adı yalnızca bir kez kullanıldı: olası yazım hatası",
-              "uk" => "Ім'я \"%{arg1}::%{arg2}\" використано лише один раз: можлива друкарська помилка"
+              "uk" => "Ім'я \"%{arg1}::%{arg2}\" використано лише один раз: можлива друкарська помилка",
+              "zh" => "名称 \"%{arg1}::%{arg2}\" 只使用了一次：可能是拼写错误"
             },
             "args" => [
               {
@@ -85172,7 +87018,8 @@ $CONF = {
               "ru" => "Шестнадцатеричное число с плавающей точкой: порядок выше допустимого диапазона",
               "sr" => "Хексадецимални број са покретним зарезом: прекорачење експонента",
               "tr" => "Onaltılık kayan noktalı sayı: üs taşması",
-              "uk" => "Шістнадцяткове число з рухомою комою: переповнення показника степеня"
+              "uk" => "Шістнадцяткове число з рухомою комою: переповнення показника степеня",
+              "zh" => "十六进制浮点数：指数溢出"
             },
             "args" => []
           },
@@ -85216,7 +87063,8 @@ $CONF = {
               "ru" => "Шестнадцатеричное число с плавающей точкой: порядок ниже допустимого диапазона",
               "sr" => "Хексадецимални број са покретним зарезом: недовољан експонент",
               "tr" => "Onaltılık kayan noktalı sayı: üs alt taşması",
-              "uk" => "Шістнадцяткове число з рухомою комою: експонента нижча за допустиму межу"
+              "uk" => "Шістнадцяткове число з рухомою комою: експонента нижча за допустиму межу",
+              "zh" => "十六进制浮点数：指数下溢"
             },
             "args" => []
           },
@@ -85260,7 +87108,8 @@ $CONF = {
               "ru" => "Шестнадцатеричное число с плавающей точкой: переполнение мантиссы",
               "sr" => "Хексадецимални број са покретним зарезом: прекорачен опсег мантисе",
               "tr" => "Onaltılık kayan noktalı sayı: anlamlı kısım taşması",
-              "uk" => "Шістнадцяткове число з рухомою комою: переповнення мантиси"
+              "uk" => "Шістнадцяткове число з рухомою комою: переповнення мантиси",
+              "zh" => "十六进制浮点数：尾数溢出"
             },
             "args" => []
           },
@@ -85377,6 +87226,11 @@ $CONF = {
                 "binary" => "Переповнення цілого числа у двійковому числі",
                 "hexadecimal" => "Переповнення цілого числа у шістнадцятковому числі",
                 "octal" => "Переповнення цілого числа у вісімковому числі"
+              },
+              "zh" => {
+                "binary" => "二进制数发生整数溢出",
+                "hexadecimal" => "十六进制数发生整数溢出",
+                "octal" => "八进制数发生整数溢出"
               }
             },
             "args" => [
@@ -85434,7 +87288,8 @@ $CONF = {
               "ru" => "Переполнение целого числа в srand(): используются только младшие 32 бита",
               "sr" => "Прекорачење целобројне вредности у srand(): користе се само нижих 32 бита",
               "tr" => "srand() içinde tamsayı taşması: yalnızca düşük 32 bit kullanılıyor",
-              "uk" => "Цілочисельне переповнення у srand(): використовуються лише молодші 32 біти"
+              "uk" => "Цілочисельне переповнення у srand(): використовуються лише молодші 32 біти",
+              "zh" => "srand() 的整数种子溢出；仅使用低 32 位"
             },
             "args" => []
           },
@@ -85478,7 +87333,8 @@ $CONF = {
               "ru" => "Не удалось выполнить %{arg1}(%{arg2})",
               "sr" => "%{arg1}(%{arg2}) није успео",
               "tr" => "%{arg1}(%{arg2}) başarısız oldu",
-              "uk" => "Не вдалося виконати %{arg1}(%{arg2})"
+              "uk" => "Не вдалося виконати %{arg1}(%{arg2})",
+              "zh" => "%{arg1}(%{arg2}) 失败"
             },
             "args" => [
               {
@@ -85534,7 +87390,8 @@ $CONF = {
               "ru" => "Слишком малое значение аргумента в %{arg1}(%{arg2})",
               "sr" => "%{arg1}(%{arg2}) је премало",
               "tr" => "%{arg1}(%{arg2}) çok küçük",
-              "uk" => "Замале значення аргументу у %{arg1}(%{arg2})"
+              "uk" => "Замале значення аргументу у %{arg1}(%{arg2})",
+              "zh" => "%{arg1}(%{arg2}) 太小"
             },
             "args" => [
               {
@@ -85590,7 +87447,8 @@ $CONF = {
               "ru" => "Слишком большое значение аргумента в %{arg1}(%{arg2})",
               "sr" => "%{arg1}(%{arg2}) је превелико",
               "tr" => "%{arg1}(%{arg2}) çok büyük",
-              "uk" => "Значення аргументу у %{arg1}(%{arg2}) завелике"
+              "uk" => "Значення аргументу у %{arg1}(%{arg2}) завелике",
+              "zh" => "%{arg1}(%{arg2}) 太大"
             },
             "args" => [
               {
@@ -85647,7 +87505,8 @@ $CONF = {
               "ru" => "Целочисленное переполнение в версии",
               "sr" => "Прекорачење целобројног опсега у верзији",
               "tr" => "Sürümde tamsayı taşması",
-              "uk" => "Цілочисельне переповнення у версії"
+              "uk" => "Цілочисельне переповнення у версії",
+              "zh" => "版本中发生整数溢出"
             },
             "args" => []
           },
@@ -85692,7 +87551,8 @@ $CONF = {
               "ru" => "Целочисленное переполнение в версии %{arg1}",
               "sr" => "Прекорачење целобројног опсега у верзији %{arg1}",
               "tr" => "Sürüm %{arg1} içinde tamsayı taşması",
-              "uk" => "Цілочисельне переповнення у версії %{arg1}"
+              "uk" => "Цілочисельне переповнення у версії %{arg1}",
+              "zh" => "版本 %{arg1} 中发生整数溢出"
             },
             "args" => [
               {
@@ -85743,7 +87603,8 @@ $CONF = {
               "ru" => "Целочисленное переполнение в десятичном числе",
               "sr" => "Прекорачење целог броја у децималном броју",
               "tr" => "Ondalık sayıda tamsayı taşması",
-              "uk" => "Цілочисельне переповнення в десятковому числі"
+              "uk" => "Цілочисельне переповнення в десятковому числі",
+              "zh" => "十进制数中的整数溢出"
             },
             "args" => []
           },
@@ -85788,7 +87649,8 @@ $CONF = {
               "ru" => "Слишком большое значение аргумента в sleep(%{arg1})",
               "sr" => "sleep(%{arg1}) је превелик",
               "tr" => "sleep(%{arg1}) çok büyük",
-              "uk" => "Завелике значення аргументу у sleep(%{arg1})"
+              "uk" => "Завелике значення аргументу у sleep(%{arg1})",
+              "zh" => "sleep(%{arg1}) 参数过大"
             },
             "args" => [
               {
@@ -85838,7 +87700,8 @@ $CONF = {
               "ru" => "Попытка упаковать указатель на временное значение",
               "sr" => "Покушај паковања показивача на привремену вредност",
               "tr" => "Geçici bir değerin işaretçisini pack ile paketlemeye çalışıldı",
-              "uk" => "Спроба упакувати вказівник на тимчасове значення"
+              "uk" => "Спроба упакувати вказівник на тимчасове значення",
+              "zh" => "尝试将指向临时值的指针打包"
             },
             "args" => []
           },
@@ -85882,7 +87745,8 @@ $CONF = {
               "ru" => "Значение символа в формате 'c' усечено до байта в pack",
               "sr" => "Знак у формату „c” је сведен при pack",
               "tr" => "'c' biçimindeki karakter pack içinde sarıldı",
-              "uk" => "Значення символу у форматі 'c' зведено за модулем 256 у pack"
+              "uk" => "Значення символу у форматі 'c' зведено за модулем 256 у pack",
+              "zh" => "pack 中 'c' 格式的字符被截取为单字节"
             },
             "args" => []
           },
@@ -85926,7 +87790,8 @@ $CONF = {
               "ru" => "Значения символов в формате '%{arg1}' приведены по модулю 256 в %{arg2}",
               "sr" => "Знак(ови) у формату „%{arg1}” су сведени при %{arg2}",
               "tr" => "' %{arg1}' biçimindeki karakter(ler) %{arg2} içinde sarıldı",
-              "uk" => "Значення символів у форматі '%{arg1}' зведено за модулем 256 у %{arg2}"
+              "uk" => "Значення символів у форматі '%{arg1}' зведено за модулем 256 у %{arg2}",
+              "zh" => "%{arg2} 中 '%{arg1}' 格式的字符被截取为单字节"
             },
             "args" => [
               {
@@ -85986,7 +87851,8 @@ $CONF = {
               "ru" => "Значение символа в формате 'C' усечено до байта в pack",
               "sr" => "Знак у формату „C” је сведен при pack",
               "tr" => "pack içinde 'C' biçimindeki karakter sarıldı",
-              "uk" => "Значення символу у форматі 'C' зведено за модулем 256 у pack"
+              "uk" => "Значення символу у форматі 'C' зведено за модулем 256 у pack",
+              "zh" => "pack 的 'C' 格式中的字符已回绕"
             },
             "args" => []
           },
@@ -86030,7 +87896,8 @@ $CONF = {
               "ru" => "Слишком широкое поле в формате 'u' в pack",
               "sr" => "Поље је прешироко у формату „u” при pack",
               "tr" => "pack içinde 'u' biçiminde alan çok geniş",
-              "uk" => "Завелика ширина поля у форматі 'u' у pack"
+              "uk" => "Завелика ширина поля у форматі 'u' у pack",
+              "zh" => "pack 的 'u' 格式字段过宽"
             },
             "args" => []
           },
@@ -86075,7 +87942,8 @@ $CONF = {
               "ru" => "Значение символа в формате 'W' усечено до байта в pack",
               "sr" => "Знак у формату „W” је сведен при pack",
               "tr" => "pack içinde 'W' biçimindeki karakter sarıldı",
-              "uk" => "Значення символу у форматі 'W' зведено за модулем 256 у pack"
+              "uk" => "Значення символу у форматі 'W' зведено за модулем 256 у pack",
+              "zh" => "pack 的 'W' 格式中的字符已回绕"
             },
             "args" => []
           },
@@ -86118,7 +87986,8 @@ $CONF = {
               "ru" => "В качестве обходного решения блок %{arg1}::INIT обрабатывается как блок BEGIN",
               "sr" => "Из заобилазног решења, %{arg1}::INIT блок се третира као BEGIN блок",
               "tr" => "Geçici çözüm olarak %{arg1}::INIT bloğu BEGIN bloğu olarak ele alınıyor",
-              "uk" => "Блок %{arg1}::INIT обробляється як блок BEGIN для обходу проблеми"
+              "uk" => "Блок %{arg1}::INIT обробляється як блок BEGIN для обходу проблеми",
+              "zh" => "作为变通处理，将 %{arg1}::INIT 块视为 BEGIN 块"
             },
             "args" => [
               {
@@ -86166,7 +88035,8 @@ $CONF = {
               "ru" => "%{arg1}: переносимость не гарантируется",
               "sr" => "%{arg1} није преносиво",
               "tr" => "%{arg1} taşınabilir değil",
-              "uk" => "Не забезпечено переносність: %{arg1}"
+              "uk" => "Не забезпечено переносність: %{arg1}",
+              "zh" => "%{arg1} 不可移植"
             },
             "args" => [
               {
@@ -86216,7 +88086,8 @@ $CONF = {
               "ru" => "Кодовая точка 0x%{arg1} не входит в Unicode, требует расширения Perl и потому непереносима",
               "sr" => "Кодна тачка 0x%{arg1} није Unicode, захтева Perl проширење и зато није преносива",
               "tr" => "Kod noktası 0x%{arg1} Unicode değildir, bir Perl uzantısı gerektirir ve bu nedenle taşınabilir değildir",
-              "uk" => "Кодова точка 0x%{arg1} не належить до Unicode, потребує розширення Perl і тому є непереносною"
+              "uk" => "Кодова точка 0x%{arg1} не належить до Unicode, потребує розширення Perl і тому є непереносною",
+              "zh" => "代码点 0x%{arg1} 不是 Unicode 字符，需要 Perl 扩展，因此不可移植"
             },
             "args" => [
               {
@@ -86274,7 +88145,8 @@ $CONF = {
               "ru" => "Размер битового вектора > 32 не обеспечивает переносимости",
               "sr" => "Величина битског вектора > 32 није преносива",
               "tr" => "32'den büyük bit vektörü boyutu taşınabilir değil",
-              "uk" => "Розмір бітового вектора > 32 порушує переносність"
+              "uk" => "Розмір бітового вектора > 32 порушує переносність",
+              "zh" => "位向量大小 > 32，不具可移植性"
             },
             "args" => []
           },
@@ -86317,7 +88189,8 @@ $CONF = {
               "ru" => "%{text}\t...исключение перехвачено в файле %{file}, строка %{line}.\n",
               "sr" => "%{text}\t...ухваћено у %{file} у реду %{line}.\n",
               "tr" => "%{text}\t...%{file} dosyasının %{line}. satırında yakalandı.\n",
-              "uk" => "%{text}\t...перехоплено у %{file}, рядок %{line}.\n"
+              "uk" => "%{text}\t...перехоплено у %{file}, рядок %{line}.\n",
+              "zh" => "%{text}\t...在 %{file} 第 %{line} 行捕获。\n"
             },
             "args" => [
               {
@@ -86382,7 +88255,8 @@ $CONF = {
               "ru" => "Глубокая рекурсия в анонимной подпрограмме",
               "sr" => "Дубока рекурзија у анонимном потпрограму",
               "tr" => "Anonim alt yordamda derin özyineleme",
-              "uk" => "Глибока рекурсія в анонімній підпрограмі"
+              "uk" => "Глибока рекурсія в анонімній підпрограмі",
+              "zh" => "匿名子程序发生深度递归"
             },
             "args" => []
           },
@@ -86426,7 +88300,8 @@ $CONF = {
               "ru" => "Глубокая рекурсия в подпрограмме \"%{arg1}\"",
               "sr" => "Дубока рекурзија у потпрограму „%{arg1}”",
               "tr" => "\"%{arg1}\" alt yordamında derin özyineleme",
-              "uk" => "Глибока рекурсія в підпрограмі \"%{arg1}\""
+              "uk" => "Глибока рекурсія в підпрограмі \"%{arg1}\"",
+              "zh" => "子程序 \"%{arg1}\" 发生深度递归"
             },
             "args" => [
               {
@@ -86477,7 +88352,8 @@ $CONF = {
               "ru" => "Константная подпрограмма %{arg1} переопределена",
               "sr" => "Константни потпрограм %{arg1} је поново дефинисан",
               "tr" => "Sabit alt yordam %{arg1} yeniden tanımlandı",
-              "uk" => "Константну підпрограму %{arg1} перевизначено"
+              "uk" => "Константну підпрограму %{arg1} перевизначено",
+              "zh" => "常量子程序 %{arg1} 已重新定义"
             },
             "args" => [
               {
@@ -86528,7 +88404,8 @@ $CONF = {
               "ru" => "Формат STDOUT переопределён",
               "sr" => "Формат STDOUT је поново дефинисан",
               "tr" => "STDOUT biçimi yeniden tanımlandı",
-              "uk" => "Формат STDOUT перевизначено"
+              "uk" => "Формат STDOUT перевизначено",
+              "zh" => "STDOUT 格式已重新定义"
             },
             "args" => []
           },
@@ -86572,7 +88449,8 @@ $CONF = {
               "ru" => "Метод %{arg1} переопределён",
               "sr" => "Метода %{arg1} је поново дефинисана",
               "tr" => "%{arg1} yöntemi yeniden tanımlandı",
-              "uk" => "Метод %{arg1} перевизначено"
+              "uk" => "Метод %{arg1} перевизначено",
+              "zh" => "方法 %{arg1} 已重新定义"
             },
             "args" => [
               {
@@ -86623,7 +88501,8 @@ $CONF = {
               "ru" => "Формат %{arg1} переопределён",
               "sr" => "Формат %{arg1} је поново дефинисан",
               "tr" => "%{arg1} biçimi yeniden tanımlandı",
-              "uk" => "Формат %{arg1} перевизначено"
+              "uk" => "Формат %{arg1} перевизначено",
+              "zh" => "格式 %{arg1} 已重新定义"
             },
             "args" => [
               {
@@ -86674,7 +88553,8 @@ $CONF = {
               "ru" => "Подпрограмма %{arg1} переопределена",
               "sr" => "Потпрограм %{arg1} је поново дефинисан",
               "tr" => "%{arg1} alt yordamı yeniden tanımlandı",
-              "uk" => "Підпрограму %{arg1} перевизначено"
+              "uk" => "Підпрограму %{arg1} перевизначено",
+              "zh" => "子程序 %{arg1} 已重新定义"
             },
             "args" => [
               {
@@ -86724,7 +88604,8 @@ $CONF = {
               "ru" => "Лишний аргумент в %{arg1}",
               "sr" => "Сувишан аргумент у операцији %{arg1}",
               "tr" => "%{arg1} için gereksiz bir bağımsız değişken verildi",
-              "uk" => "Зайвий аргумент у %{arg1}"
+              "uk" => "Зайвий аргумент у %{arg1}",
+              "zh" => "%{arg1} 中有多余参数"
             },
             "args" => [
               {
@@ -86762,7 +88643,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -86808,7 +88690,8 @@ $CONF = {
               "ru" => "Правила свёртки регистра в Perl устарели для 0x%{arg1}; сообщите об этом с помощью утилиты perlbug;",
               "sr" => "Perl правила пресликавања великих и малих слова нису ажурирана за 0x%{arg1}; пријавите ово помоћу алатке perlbug;",
               "tr" => "0x%{arg1} için Perl büyük/küçük harf eşleme kuralları güncel değil; bildirmek için perlbug aracını kullanın;",
-              "uk" => "Правила зведення регістру Perl для 0x%{arg1} застарілі; повідомте про це за допомогою утиліти perlbug;"
+              "uk" => "Правила зведення регістру Perl для 0x%{arg1} застарілі; повідомте про це за допомогою утиліти perlbug;",
+              "zh" => "0x%{arg1} 的 Perl 大小写折叠规则尚未更新；请使用 perlbug 工具报告；"
             },
             "args" => [
               {
@@ -86868,7 +88751,8 @@ $CONF = {
               "ru" => "Игнорируется \\N{} нулевой длины в символьном классе",
               "sr" => "Занемарује се празно \\N{} нулте дужине у класи знакова",
               "tr" => "Karakter sınıfındaki sıfır uzunluklu \\N{} yok sayılıyor",
-              "uk" => "\\N{} нульової довжини у класі символів ігнорується"
+              "uk" => "\\N{} нульової довжини у класі символів ігнорується",
+              "zh" => "忽略字符类中的零长度 \\N{}"
             },
             "args" => []
           },
@@ -86921,7 +88805,8 @@ $CONF = {
               "ru" => "Вместо \"%{arg1}\" понятнее написать просто \"%{arg2}\"",
               "sr" => "\"%{arg1}\" је јасније записати једноставно као \"%{arg2}\"",
               "tr" => "\"%{arg1}\" daha açık biçimde yalnızca \"%{arg2}\" olarak yazılabilir",
-              "uk" => "\"%{arg1}\" зрозуміліше записати просто як \"%{arg2}\""
+              "uk" => "\"%{arg1}\" зрозуміліше записати просто як \"%{arg2}\"",
+              "zh" => "\"%{arg1}\" 更清晰的写法是 \"%{arg2}\""
             },
             "args" => [
               {
@@ -86995,7 +88880,8 @@ $CONF = {
               "ru" => "Нераспознанная escape-последовательность \\%{arg1} в символьном классе обработана буквально",
               "sr" => "Непрепознато избегавање \\%{arg1} у класи знакова прослеђено је даље",
               "tr" => "Karakter sınıfındaki tanınmayan \\%{arg1} kaçışı olduğu gibi geçirildi",
-              "uk" => "Нерозпізнану послідовність екранування \\%{arg1} у класі символів передано без обробки"
+              "uk" => "Нерозпізнану послідовність екранування \\%{arg1} у класі символів передано без обробки",
+              "zh" => "字符类中无法识别的转义 \\%{arg1} 原样传递"
             },
             "args" => [
               {
@@ -87056,7 +88942,8 @@ $CONF = {
               "ru" => "В (?[...]) используются только односимвольные результаты, возвращённые \\p{}",
               "sr" => "У (?[...]) се користе само резултати који садрже по један знак, а које врати \\p{}",
               "tr" => "(?[...]) içinde \\p{} tarafından döndürülen yalnızca tek karakterli sonuçlar kullanılıyor",
-              "uk" => "У (?[...]) використовуються лише односимвольні результати, повернуті \\p{}"
+              "uk" => "У (?[...]) використовуються лише односимвольні результати, повернуті \\p{}",
+              "zh" => "在 (?[...]) 中，仅使用 \\p{} 返回的单个字符结果"
             },
             "args" => []
           },
@@ -87110,7 +88997,8 @@ $CONF = {
               "ru" => "В символьном классе используется только первый символ, возвращённый \\N{}",
               "sr" => "У класи знакова користи се само први знак који врати \\N{}",
               "tr" => "Karakter sınıfında \\N{} tarafından döndürülen yalnızca ilk karakter kullanılıyor",
-              "uk" => "У класі символів використовується лише перший символ, повернутий \\N{}"
+              "uk" => "У класі символів використовується лише перший символ, повернутий \\N{}",
+              "zh" => "字符类中的 \\N{} 仅使用返回的第一个字符"
             },
             "args" => []
           },
@@ -87235,6 +89123,11 @@ $CONF = {
                 "*" => "Синтаксис POSIX [%{arg1} %{arg2}] слід використовувати всередині класів символів",
                 "invalid" => "Синтаксис POSIX [%{arg1} %{arg2}] слід використовувати всередині класів символів (але цей варіант не цілком коректний)",
                 "unimplemented" => "Синтаксис POSIX [%{arg1} %{arg2}] слід використовувати всередині класів символів (але цей варіант не реалізовано)"
+              },
+              "zh" => {
+                "invalid" => "POSIX 语法 [%{arg1} %{arg2}] 应放在字符类中（但此处语法并非完全有效）",
+                "recognized" => "POSIX 语法 [%{arg1} %{arg2}] 应放在字符类中",
+                "unimplemented" => "POSIX 语法 [%{arg1} %{arg2}] 应放在字符类中（但尚未实现）"
               }
             },
             "args" => [
@@ -87474,6 +89367,16 @@ $CONF = {
                 "name_not_lowercase" => "Вважається, що це НЕ клас POSIX, оскільки ім'я має складатися лише з малих літер",
                 "no_blanks" => "Вважається, що це НЕ клас POSIX, оскільки в ньому заборонено пробіли",
                 "semicolon_for_colon" => "Вважається, що це НЕ клас POSIX, оскільки замість двокрапки знайдено крапку з комою"
+              },
+              "zh" => {
+                "caret_before_colon" => "假定这不是 POSIX 类，因为 '^' 必须位于冒号之后",
+                "missing_opening_bracket" => "假定这不是 POSIX 类，因为它不是以 '[' 开头",
+                "missing_opening_colon" => "假定这不是 POSIX 类，因为开头必须有 ':'",
+                "missing_terminating_bracket" => "假定这不是 POSIX 类，因为缺少结尾的 ']' ",
+                "missing_terminating_colon" => "假定这不是 POSIX 类，因为缺少结尾的 ':'",
+                "name_not_lowercase" => "假定这不是 POSIX 类，因为名称必须全部由小写字母组成",
+                "no_blanks" => "假定这不是 POSIX 类，因为其中不允许有空格",
+                "semicolon_for_colon" => "假定这不是 POSIX 类，因为发现了分号，而不是冒号"
               }
             },
             "args" => [
@@ -87536,7 +89439,8 @@ $CONF = {
               "ru" => "Диапазоны печатных символов ASCII должны быть подмножествами \"0-9\", \"A-Z\" или \"a-z\"",
               "sr" => "Опсези штампајућих ASCII знакова треба да буду неки подскуп од \"0-9\", \"A-Z\" или \"a-z\"",
               "tr" => "ASCII yazdırılabilir karakter aralıkları \"0-9\", \"A-Z\" veya \"a-z\" kümelerinden birinin alt kümesi olmalıdır",
-              "uk" => "Діапазони друкованих символів ASCII мають бути підмножинами \"0-9\", \"A-Z\" або \"a-z\""
+              "uk" => "Діапазони друкованих символів ASCII мають бути підмножинами \"0-9\", \"A-Z\" або \"a-z\"",
+              "zh" => "ASCII 可打印字符的范围应是 \"0-9\"、\"A-Z\" 或 \"a-z\" 的子集"
             },
             "args" => []
           },
@@ -87590,7 +89494,8 @@ $CONF = {
               "ru" => "Цифры в диапазоне должны принадлежать одной группе из 10 цифр",
               "sr" => "Опсези цифара треба да буду из исте групе од 10",
               "tr" => "Rakam aralıkları aynı 10'lu gruptan olmalı",
-              "uk" => "Цифри в діапазоні мають належати до однієї групи з 10 цифр"
+              "uk" => "Цифри в діапазоні мають належати до однієї групи з 10 цифр",
+              "zh" => "数字范围的两端应属于同一个十进制组"
             },
             "args" => []
           },
@@ -87643,7 +89548,8 @@ $CONF = {
               "ru" => "Некорректный диапазон \"%{arg1}\" в []",
               "sr" => "Неисправан опсег [] \"%{arg1}\"",
               "tr" => "Yanlış [] aralığı \"%{arg1}\"",
-              "uk" => "Некоректний діапазон \"%{arg1}\" у []"
+              "uk" => "Некоректний діапазон \"%{arg1}\" у []",
+              "zh" => "错误的 [] 范围 \"%{arg1}\""
             },
             "args" => [
               {
@@ -87717,7 +89623,8 @@ $CONF = {
               "ru" => "Некорректный диапазон \"%{arg1}\" в []",
               "sr" => "Неисправан опсег [] \"%{arg1}\"",
               "tr" => "Yanlış [] aralığı \"%{arg1}\"",
-              "uk" => "Некоректний діапазон [] \"%{arg1}\""
+              "uk" => "Некоректний діапазон [] \"%{arg1}\"",
+              "zh" => "错误的 [] 范围 \"%{arg1}\""
             },
             "args" => [
               {
@@ -87791,7 +89698,8 @@ $CONF = {
               "ru" => "Обе границы диапазона должны использовать обозначения Unicode, либо ни одна из них",
               "sr" => "Оба краја опсега треба да буду или Уникод или да не буду Уникод",
               "tr" => "Aralığın ya her iki ucu da Unicode olmalı ya da hiçbir ucu Unicode olmamalı",
-              "uk" => "Обидві межі діапазону мають бути записані в нотації Unicode або жодна з них"
+              "uk" => "Обидві межі діапазону мають бути записані в нотації Unicode або жодна з них",
+              "zh" => "范围的两端必须同时是 Unicode 字符，或都不是"
             },
             "args" => []
           },
@@ -87845,7 +89753,8 @@ $CONF = {
               "ru" => "Вы намеренно добавили ']' в комментарий?\nЕсли да, экранируйте его с помощью '\\' или заключите в кавычки \" или ', чтобы убрать это сообщение\n",
               "sr" => "Да ли сте хтели да имате ']' у коментару?\nАко јесте, ескејпујте га са '\\' или ставите под \" или ' да бисте утишали ову поруку\n",
               "tr" => "Yorumunuzda ']' kullanmak mı istediniz?\nBu iletiyi susturmak için '\\' ile kaçışlayın veya \" ya da ' ile alıntılayın\n",
-              "uk" => "Ви хотіли використати ']' у коментарі?\nЯкщо так, екрануйте цей символ за допомогою '\\' або візьміть його в лапки \" чи ', щоб це повідомлення більше не з'являлося\n"
+              "uk" => "Ви хотіли використати ']' у коментарі?\nЯкщо так, екрануйте цей символ за допомогою '\\' або візьміть його в лапки \" чи ', щоб це повідомлення більше не з'являлося\n",
+              "zh" => "你是想在注释中写一个 ']' 吗？\n如果是，请用 '\\' 转义，或用 \" 或 ' 引起来，以消除此消息\n"
             },
             "args" => []
           },
@@ -87899,7 +89808,8 @@ $CONF = {
               "ru" => "Вы хотели сделать это комментарием?\nЕсли да, добавьте пробелы следующим образом, чтобы убрать это сообщение: \" # \"\n",
               "sr" => "Да ли је ово требало да буде коментар?\nАко јесте, да бисте утишали ову поруку додајте размаке овако: \" # \"\n",
               "tr" => "Bunu yorum olarak mı yazmak istediniz?\nBu iletiyi susturmak için şu şekilde boşluk ekleyin: \" # \"\n",
-              "uk" => "Ви хотіли зробити це коментарем?\nЯкщо так, додайте пробіли ось так: \" # \", щоб це повідомлення більше не з'являлося\n"
+              "uk" => "Ви хотіли зробити це коментарем?\nЯкщо так, додайте пробіли ось так: \" # \", щоб це повідомлення більше не з'являлося\n",
+              "zh" => "你是想把这段写成注释吗？\n如果是，请像这样添加空格以消除此消息：\" # \"\n"
             },
             "args" => []
           },
@@ -87953,7 +89863,8 @@ $CONF = {
               "ru" => "Вы намеренно добавили второй '#' в комментарий?\nЕсли да, экранируйте его с помощью '\\' или заключите в кавычки \" или ', чтобы убрать это сообщение\n",
               "sr" => "Да ли сте хтели да имате други '#' у коментару?\nАко јесте, ескејпујте га са '\\' или ставите под \" или ' да бисте утишали ову поруку\n",
               "tr" => "Yorumunuzda ikinci bir '#' kullanmak mı istediniz?\nBu iletiyi susturmak için '\\' ile kaçışlayın veya \" ya da ' ile alıntılayın\n",
-              "uk" => "Ви справді хотіли додати другий '#' у коментар?\nЯкщо так, екрануйте його за допомогою '\\' або візьміть у лапки \" чи ', щоб це повідомлення більше не з’являлося\n"
+              "uk" => "Ви справді хотіли додати другий '#' у коментар?\nЯкщо так, екрануйте його за допомогою '\\' або візьміть у лапки \" чи ', щоб це повідомлення більше не з’являлося\n",
+              "zh" => "你是想在注释中再写一个 '#' 吗？\n如果是，请用 '\\' 转义，或用 \" 或 ' 引起来，以消除此消息\n"
             },
             "args" => []
           },
@@ -88044,6 +89955,9 @@ $CONF = {
               },
               "uk" => {
                 "*" => "Невісімковий символ %{character} передчасно завершує %{escape}.  Витлумачено як \"%{resolved}\""
+              },
+              "zh" => {
+                "octal" => "非八进制字符 %{character} 提前终止了 %{escape}。解析结果为 \"%{resolved}\""
               }
             },
             "args" => [
@@ -88144,7 +90058,8 @@ $CONF = {
               "ru" => "Неэкранированный литеральный символ '%{arg1}'",
               "sr" => "Неескејпован дословни знак „%{arg1}“",
               "tr" => "Kaçışlanmamış düz '%{arg1}'",
-              "uk" => "Неекранований літеральний символ '%{arg1}'"
+              "uk" => "Неекранований літеральний символ '%{arg1}'",
+              "zh" => "未转义的字面量 '%{arg1}'"
             },
             "args" => [
               {
@@ -88203,7 +90118,8 @@ $CONF = {
               "ru" => "Неэкранированная открывающая фигурная скобка в регулярном выражении обработана буквально; место отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
               "sr" => "Неескејпована лева витичаста заграда у регуларном изразу прослеђена је даље; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede kaçışlanmamış sol küme ayraç olduğu gibi geçiriliyor; m/%{before} <-- HERE %{after}/ ifadesinde <-- HERE ile işaretlendi",
-              "uk" => "Неекранована ліва фігурна дужка в регулярному виразі трактується як звичайний символ; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              "uk" => "Неекранована ліва фігурна дужка в регулярному виразі трактується як звичайний символ; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
+              "zh" => "正则表达式中的未转义左花括号会在正则表达式中原样传递；位置标记：m/%{before} <-- HERE %{after}/"
             },
             "args" => [
               {
@@ -88298,7 +90214,8 @@ $CONF = {
               "ru" => "Нераспознанная escape-последовательность \\%{arg1} обработана буквально",
               "sr" => "Непрепознато управљачко значење \\%{arg1} прослеђено је даље",
               "tr" => "Tanınmayan \\%{arg1} kaçışı olduğu gibi geçirildi",
-              "uk" => "Нерозпізнану escape-послідовність \\%{arg1} передано без змін"
+              "uk" => "Нерозпізнану escape-послідовність \\%{arg1} передано без змін",
+              "zh" => "无法识别的转义 \\%{arg1} 原样传递"
             },
             "args" => [
               {
@@ -88358,7 +90275,8 @@ $CONF = {
               "ru" => "Для '%{arg1}' используется /u вместо /%{arg2}",
               "sr" => "Користи се /u за „%{arg1}“ уместо /%{arg2}",
               "tr" => "'%{arg1}' için /%{arg2} yerine /u kullanılıyor",
-              "uk" => "Для '%{arg1}' використовується /u замість /%{arg2}"
+              "uk" => "Для '%{arg1}' використовується /u замість /%{arg2}",
+              "zh" => "对 '%{arg1}' 使用 /u，而不是 /%{arg2}"
             },
             "args" => [
               {
@@ -88432,7 +90350,8 @@ $CONF = {
               "ru" => "Пустая конструкция (?) без модификаторов",
               "sr" => "Празна група (?) без иједног модификатора",
               "tr" => "Değiştirici içermeyen boş (?) grubu",
-              "uk" => "Порожня група (?) без жодних модифікаторів"
+              "uk" => "Порожня група (?) без жодних модифікаторів",
+              "zh" => "空的 (?) 组中没有任何修饰符"
             },
             "args" => []
           },
@@ -88539,6 +90458,10 @@ $CONF = {
               "uk" => {
                 "*" => "Беззмістовне (%{modifier_prefix}c) - використовуйте модифікатор /gc у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
                 "disabled" => "Беззмістовне (%{modifier_prefix}c) - не використовуйте модифікатор /gc у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
+              "zh" => {
+                "disabled" => "无用的（%{modifier_prefix}c）——正则表达式中不要使用 /gc 修饰符；位置标记：m/%{before} <-- HERE %{after}/",
+                "enabled" => "无用的（%{modifier_prefix}c）——正则表达式中请使用 /gc 修饰符；位置标记：m/%{before} <-- HERE %{after}/"
               }
             },
             "args" => [
@@ -88702,6 +90625,10 @@ $CONF = {
               "uk" => {
                 "*" => "Марне використання (%{modifier_prefix}%{modifier}) - використовуйте модифікатор /%{modifier} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/",
                 "disabled" => "Марне використання (%{modifier_prefix}%{modifier}) - не використовуйте модифікатор /%{modifier} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
+              "zh" => {
+                "disabled" => "无用的（%{modifier_prefix}%{modifier}）——正则表达式中不要使用 /%{modifier} 修饰符；位置标记：m/%{before} <-- HERE %{after}/",
+                "enabled" => "无用的（%{modifier_prefix}%{modifier}）——正则表达式中请使用 /%{modifier} 修饰符；位置标记：m/%{before} <-- HERE %{after}/"
               }
             },
             "args" => [
@@ -88816,7 +90743,8 @@ $CONF = {
               "ru" => "Бесполезное использование (?-p)",
               "sr" => "Бескорисна употреба (?-p)",
               "tr" => "(?-p) kullanımı gereksiz",
-              "uk" => "Марне використання (?-p)"
+              "uk" => "Марне використання (?-p)",
+              "zh" => "无用的 (?-p)"
             },
             "args" => []
           },
@@ -88869,7 +90797,8 @@ $CONF = {
               "ru" => "Использование модификатора /c без /g не имеет смысла",
               "sr" => "Употреба модификатора /c нема значење без /g",
               "tr" => "/g olmadan /c değiştiricisinin kullanımı anlamsızdır",
-              "uk" => "Використання модифікатора /c без /g не має сенсу"
+              "uk" => "Використання модифікатора /c без /g не має сенсу",
+              "zh" => "没有使用 /g 时，/c 修饰符没有意义"
             },
             "args" => []
           },
@@ -88914,7 +90843,8 @@ $CONF = {
               "ru" => "Использование модификатора /g в split не имеет смысла",
               "sr" => "Употреба модификатора /g нема смисла у оператору split",
               "tr" => "split içinde /g değiştiricisinin kullanılması anlamsızdır",
-              "uk" => "Використання модифікатора /g у split не має сенсу"
+              "uk" => "Використання модифікатора /g у split не має сенсу",
+              "zh" => "在 split 中使用 /g 修饰符没有意义"
             },
             "args" => []
           },
@@ -88959,7 +90889,8 @@ $CONF = {
               "ru" => "Использование модификатора /c в s/// не имеет смысла",
               "sr" => "Употреба модификатора /c нема значење у s///",
               "tr" => "s/// içinde /c değiştiricisinin kullanılması anlamsızdır",
-              "uk" => "Використання модифікатора /c у s/// не має сенсу"
+              "uk" => "Використання модифікатора /c у s/// не має сенсу",
+              "zh" => "在 s/// 中使用 /c 修饰符没有意义"
             },
             "args" => []
           },
@@ -89004,7 +90935,8 @@ $CONF = {
               "ru" => "%{arg1} многократно совпадает с пустой строкой",
               "sr" => "%{arg1} се много пута поклапа са празним низом",
               "tr" => "%{arg1} boş dizeyle birçok kez eşleşiyor",
-              "uk" => "%{arg1} багаторазово збігається з порожнім рядком"
+              "uk" => "%{arg1} багаторазово збігається з порожнім рядком",
+              "zh" => "%{arg1} 多次匹配空字符串"
             },
             "args" => [
               {
@@ -89078,7 +91010,8 @@ $CONF = {
               "ru" => "Бесполезное использование модификатора жадности '%{arg1}'",
               "sr" => "Бескорисна употреба модификатора похлепности „%{arg1}“",
               "tr" => "Açgözlülük değiştiricisi '%{arg1}' gereksiz yere kullanılmış",
-              "uk" => "Беззмістовне використання модифікатора жадібності '%{arg1}'"
+              "uk" => "Беззмістовне використання модифікатора жадібності '%{arg1}'",
+              "zh" => "无用的贪婪度修饰符 '%{arg1}'"
             },
             "args" => [
               {
@@ -89137,7 +91070,8 @@ $CONF = {
               "ru" => "Квантификатор {n,m} при n > m не может дать совпадение",
               "sr" => "Квантификатор {n,m} са n > m не може да се поклопи",
               "tr" => "n > m olan {n,m} niceleyicisi eşleşemez",
-              "uk" => "Квантифікатор {n,m}, де n > m, не може дати збіг"
+              "uk" => "Квантифікатор {n,m}, де n > m, не може дати збіг",
+              "zh" => "量词 {n,m} 中 n > m，无法匹配"
             },
             "args" => []
           },
@@ -89190,7 +91124,8 @@ $CONF = {
               "ru" => "Неожиданный квантификатор у выражения нулевой длины в регулярном выражении m/%{arg1}/",
               "sr" => "Квантификатор је неочекиван над изразом нулте ширине у регуларном изразу m/%{arg1}/",
               "tr" => "Regex m/%{arg1}/ içinde sıfır uzunluklu ifadeye beklenmedik niceleyici",
-              "uk" => "Неочікуваний квантифікатор для виразу нульової довжини в регулярному виразі m/%{arg1}/"
+              "uk" => "Неочікуваний квантифікатор для виразу нульової довжини в регулярному виразі m/%{arg1}/",
+              "zh" => "正则表达式 m/%{arg1}/ 中的零长度表达式不应使用量词"
             },
             "args" => [
               {
@@ -89256,7 +91191,8 @@ $CONF = {
               "ru" => "perl: предупреждение: странное значение в '\$ENV{PERL_PERTURB_KEYS}': '%{arg2}'\n",
               "sr" => "perl: упозорење: необична вредност у '\$ENV{PERL_PERTURB_KEYS}': '%{arg2}'\n",
               "tr" => "perl: uyarı: '\$ENV{PERL_PERTURB_KEYS}' içinde beklenmeyen ayar: '%{arg2}'\n",
-              "uk" => "perl: попередження: дивне значення в '\$ENV{PERL_PERTURB_KEYS}': '%{arg2}'\n"
+              "uk" => "perl: попередження: дивне значення в '\$ENV{PERL_PERTURB_KEYS}': '%{arg2}'\n",
+              "zh" => "perl: warning: '\$ENV{PERL_PERTURB_KEYS}' 的设置异常：'%{arg2}'\n"
             },
             "args" => [
               {
@@ -89304,7 +91240,8 @@ $CONF = {
               "ru" => "perl: предупреждение: Нешестнадцатеричный символ в '\$ENV{PERL_HASH_SEED}', начальное значение хеширования задано лишь частично\n",
               "sr" => "perl: упозорење: Нехексадекаднаки знак у '\$ENV{PERL_HASH_SEED}', семе је постављено само делимично\n",
               "tr" => "perl: uyarı: '\$ENV{PERL_HASH_SEED}' içinde onaltılık olmayan karakter var; seed yalnızca kısmen ayarlandı\n",
-              "uk" => "perl: попередження: символ, що не є шістнадцятковою цифрою, у '\$ENV{PERL_HASH_SEED}', початкове значення хешування встановлено лише частково\n"
+              "uk" => "perl: попередження: символ, що не є шістнадцятковою цифрою, у '\$ENV{PERL_HASH_SEED}', початкове значення хешування встановлено лише частково\n",
+              "zh" => "perl：警告：'\$ENV{PERL_HASH_SEED}' 中含有非十六进制字符，种子仅部分设置\n"
             },
             "args" => []
           },
@@ -89346,7 +91283,8 @@ $CONF = {
               "ru" => "Бесполезное использование %{arg1} в скалярном контексте",
               "sr" => "Бескорисна употреба %{arg1} у скаларном контексту",
               "tr" => "Skaler bağlamda %{arg1} kullanımı gereksiz",
-              "uk" => "Марне використання %{arg1} у скалярному контексті"
+              "uk" => "Марне використання %{arg1} у скалярному контексті",
+              "zh" => "在标量上下文中无用地使用了 %{arg1}"
             },
             "args" => [
               {
@@ -89396,7 +91334,8 @@ $CONF = {
               "ru" => "Попытка очистить удалённый массив",
               "sr" => "Покушај брисања обрисаног низа",
               "tr" => "Silinmiş diziyi temizleme girişimi",
-              "uk" => "Спроба очистити видалений масив"
+              "uk" => "Спроба очистити видалений масив",
+              "zh" => "尝试清空已删除的数组"
             },
             "args" => []
           },
@@ -89440,7 +91379,8 @@ $CONF = {
               "ru" => "УКАЗАТЕЛЬ OP РАВЕН NULL В RUN",
               "sr" => "NULL показивач OP у RUN",
               "tr" => "ÇALIŞTIRMADA NULL OP",
-              "uk" => "ВКАЗІВНИК OP ЗІ ЗНАЧЕННЯМ NULL У RUN"
+              "uk" => "ВКАЗІВНИК OP ЗІ ЗНАЧЕННЯМ NULL У RUN",
+              "zh" => "运行循环入口收到空操作码指针"
             },
             "args" => []
           },
@@ -89484,7 +91424,8 @@ $CONF = {
               "ru" => "Перекомпилируйте perl с -DDEBUGGING, чтобы использовать опцию -D (возможно, имелось в виду -d ?)\n",
               "sr" => "Поново компајлирајте perl са -DDEBUGGING да бисте користили прекидач -D (да ли сте мислили -d ?)\n",
               "tr" => "-D anahtarını kullanmak için perl'i -DDEBUGGING ile yeniden derleyin (-d mi demek istediniz?)\n",
-              "uk" => "Перекомпілюйте perl з -DDEBUGGING, щоб використовувати параметр -D (можливо, малося на увазі -d ?)\n"
+              "uk" => "Перекомпілюйте perl з -DDEBUGGING, щоб використовувати параметр -D (можливо, малося на увазі -d ?)\n",
+              "zh" => "要使用 -D 开关，请使用 -DDEBUGGING 重新编译 perl（你是想用 -d 吗？）\n"
             },
             "args" => []
           },
@@ -89528,7 +91469,8 @@ $CONF = {
               "ru" => "недопустимая опция -D%{arg1}, используйте -D'' для просмотра допустимых значений\n",
               "sr" => "Неважећа опција -D%{arg1}; употребите -D'' да бисте видели могућности\n",
               "tr" => "geçersiz -D%{arg1} seçeneği; seçenekleri görmek için -D'' kullanın\n",
-              "uk" => "неприпустимий параметр -D%{arg1}, скористайтеся -D'', щоб переглянути доступні варіанти\n"
+              "uk" => "неприпустимий параметр -D%{arg1}, скористайтеся -D'', щоб переглянути доступні варіанти\n",
+              "zh" => "无效选项 -D%{arg1}；使用 -D'' 查看可选项\n"
             },
             "args" => [
               {
@@ -89578,7 +91520,8 @@ $CONF = {
               "ru" => "Попытка преждевременно освободить временное значение: SV 0x%{arg1}",
               "sr" => "Покушај превременог ослобађања привременог SV-а: SV 0x%{arg1}",
               "tr" => "Geçici SV'yi zamanından önce serbest bırakma girişimi: 0x%{arg1}",
-              "uk" => "Спроба передчасно звільнити тимчасовий скаляр: SV 0x%{arg1}"
+              "uk" => "Спроба передчасно звільнити тимчасовий скаляр: SV 0x%{arg1}",
+              "zh" => "尝试过早释放临时值：SV 0x%{arg1}"
             },
             "args" => [
               {
@@ -89630,7 +91573,8 @@ $CONF = {
               "ru" => "av_reify вызвана для массива, связанного через tie",
               "sr" => "av_reify је позван над везаним низом",
               "tr" => "av_reify bağlı bir dizi üzerinde çağrıldı",
-              "uk" => "av_reify викликано для масиву, прив'язаного через tie"
+              "uk" => "av_reify викликано для масиву, прив'язаного через tie",
+              "zh" => "在 tied 数组上调用了 av_reify"
             },
             "args" => []
           },
@@ -89675,7 +91619,8 @@ $CONF = {
               "ru" => "Открытие '%{arg1}' с созданием дочернего процесса не имеет смысла в <>",
               "sr" => "Отварање рачвањем „%{arg1}“ нема смисла у <>",
               "tr" => "Çatallı açma '%{arg1}', <> içinde anlamlı değil",
-              "uk" => "Відкриття '%{arg1}' зі створенням дочірнього процесу не має сенсу в <>"
+              "uk" => "Відкриття '%{arg1}' зі створенням дочірнього процесу не має сенсу в <>",
+              "zh" => "在 <> 中，派生进程打开“%{arg1}”没有意义"
             },
             "args" => [
               {
@@ -89725,7 +91670,8 @@ $CONF = {
               "ru" => "Не удалось открыть %{arg1}: %{arg2}",
               "sr" => "Није могуће отворити %{arg1}: %{arg2}",
               "tr" => "%{arg1} açılamıyor: %{arg2}",
-              "uk" => "Не вдалося відкрити %{arg1}: %{arg2}"
+              "uk" => "Не вдалося відкрити %{arg1}: %{arg2}",
+              "zh" => "无法打开 %{arg1}：%{arg2}"
             },
             "args" => [
               {
@@ -89780,7 +91726,8 @@ $CONF = {
               "ru" => "Невозможно редактировать файл на месте: имя %{arg1} не было бы уникальным",
               "sr" => "Није могуће уређивати на месту: %{arg1} не би било јединствено име",
               "tr" => "Yerinde düzenleme yapılamıyor: %{arg1} benzersiz olmayacak",
-              "uk" => "Неможливо виконати редагування на місці: ім'я %{arg1} не було б унікальним"
+              "uk" => "Неможливо виконати редагування на місці: ім'я %{arg1} не було б унікальним",
+              "zh" => "无法进行原地编辑：%{arg1} 不会是唯一的"
             },
             "args" => [
               {
@@ -89832,7 +91779,8 @@ $CONF = {
               "ru" => "Опция -i использована без имён файлов в командной строке; выполняется чтение из STDIN",
               "sr" => "Опција -i је наведена без имена датотека у командној линији; чита се са STDIN-а",
               "tr" => "Komut satırında dosya adı olmadan -i kullanıldı; STDIN'den okunuyor",
-              "uk" => "-i використано без імен файлів у командному рядку, читання зі STDIN"
+              "uk" => "-i використано без імен файлів у командному рядку, читання зі STDIN",
+              "zh" => "命令行使用了 -i，但未指定文件名；正在从 STDIN 读取"
             },
             "args" => []
           },
@@ -89876,7 +91824,8 @@ $CONF = {
               "ru" => "Невозможно редактировать файл на месте: %{arg1} не является обычным файлом",
               "sr" => "Није могуће уређивати на месту: %{arg1} није обична датотека",
               "tr" => "Yerinde düzenleme yapılamıyor: %{arg1} normal bir dosya değil",
-              "uk" => "Неможливо виконати редагування на місці: %{arg1} не є звичайним файлом"
+              "uk" => "Неможливо виконати редагування на місці: %{arg1} не є звичайним файлом",
+              "zh" => "无法进行原地编辑：%{arg1} 不是普通文件"
             },
             "args" => [
               {
@@ -89932,7 +91881,8 @@ $CONF = {
               "ru" => "Невозможно редактировать %{arg1} на месте: не удалось создать временное имя: %{arg2}",
               "sr" => "Није могуће уређивати на месту %{arg1}: није могуће направити привремено име: %{arg2}",
               "tr" => "%{arg1} üzerinde yerinde düzenleme yapılamıyor: Geçici ad oluşturulamıyor: %{arg2}",
-              "uk" => "Неможливо виконати редагування %{arg1} на місці: неможливо створити тимчасове ім'я: %{arg2}"
+              "uk" => "Неможливо виконати редагування %{arg1} на місці: неможливо створити тимчасове ім'я: %{arg2}",
+              "zh" => "无法对 %{arg1} 进行原地编辑：无法生成临时名称：%{arg2}"
             },
             "args" => [
               {
@@ -89987,7 +91937,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: oopsAV",
               "sr" => "упс: oopsAV",
               "tr" => "hata: oopsAV",
-              "uk" => "халепа: oopsAV"
+              "uk" => "халепа: oopsAV",
+              "zh" => "哎呀：哎呀AV"
             },
             "args" => []
           },
@@ -90085,6 +92036,10 @@ $CONF = {
               "uk" => {
                 "*" => "Незбалансований стек контекстів (операцій PUSH більше, ніж операцій POP): %{magnitude}\n",
                 "negative" => "Незбалансований стек контекстів (операцій POP більше, ніж операцій PUSH): %{magnitude}\n"
+              },
+              "zh" => {
+                "negative" => "上下文栈不平衡（POP 多于 PUSH）：%{magnitude}\n",
+                "positive" => "上下文栈不平衡（PUSH 多于 POP）：%{magnitude}\n"
               }
             },
             "args" => [
@@ -90198,6 +92153,10 @@ $CONF = {
               "uk" => {
                 "*" => "Незбалансований стек збережень (збережень більше, ніж відновлень): %{magnitude}\n",
                 "negative" => "Незбалансований стек збережень (відновлень більше, ніж збережень): %{magnitude}\n"
+              },
+              "zh" => {
+                "negative" => "保存栈不平衡（恢复次数多于保存次数）：%{magnitude}\n",
+                "positive" => "保存栈不平衡（保存次数多于恢复次数）：%{magnitude}\n"
               }
             },
             "args" => [
@@ -90257,7 +92216,8 @@ $CONF = {
               "ru" => "Счётчик выделений SV при завершении работы: %{arg1}\n",
               "sr" => "Бројач алокација SV при гашењу: %{arg1}\n",
               "tr" => "Kapanışta SV tahsis sayacı: %{arg1}\n",
-              "uk" => "Лічильник виділених SV під час завершення роботи: %{arg1}\n"
+              "uk" => "Лічильник виділених SV під час завершення роботи: %{arg1}\n",
+              "zh" => "关闭时 SV 分配计数器的值：%{arg1}\n"
             },
             "args" => [
               {
@@ -90361,6 +92321,10 @@ $CONF = {
               "uk" => {
                 "negative" => "Незбалансовані області видимості (кількість LEAVE перевищує кількість ENTER): %{magnitude}\n",
                 "positive" => "Незбалансовані області видимості (кількість ENTER перевищує кількість LEAVE): %{magnitude}\n"
+              },
+              "zh" => {
+                "negative" => "作用域不平衡（LEAVE 多于 ENTER）：%{magnitude}\n",
+                "positive" => "作用域不平衡（ENTER 多于 LEAVE）：%{magnitude}\n"
               }
             },
             "args" => [
@@ -90421,7 +92385,8 @@ $CONF = {
               "ru" => "Несбалансированный счётчик ссылок в таблице строк: (%{arg1}) для \"%{arg2}\"",
               "sr" => "Неуравнотежен број референци у табели дељених ниски: (%{arg1}) за „%{arg2}“",
               "tr" => "Dengesiz dize tablosu başvuru sayısı: (%{arg1}) \"%{arg2}\" için",
-              "uk" => "Незбалансований лічильник посилань у таблиці рядків: (%{arg1}) для \"%{arg2}\""
+              "uk" => "Незбалансований лічильник посилань у таблиці рядків: (%{arg1}) для \"%{arg2}\"",
+              "zh" => "字符串表引用计数不平衡：(\"%{arg2}\" 的计数为 %{arg1})"
             },
             "args" => [
               {
@@ -90476,7 +92441,8 @@ $CONF = {
               "ru" => "Нарушен баланс смещения нижней границы стека временных значений: %{arg1}\n",
               "sr" => "Неуравнотежен померај доње границе стека привремених вредности: %{arg1}\n",
               "tr" => "Dengesiz geçici yığın tabanı uzaklığı: %{arg1}\n",
-              "uk" => "Незбалансоване зміщення нижньої межі стека тимчасових значень: %{arg1}\n"
+              "uk" => "Незбалансоване зміщення нижньої межі стека тимчасових значень: %{arg1}\n",
+              "zh" => "临时值栈底偏移不平衡：%{arg1}\n"
             },
             "args" => [
               {
@@ -90527,7 +92493,8 @@ $CONF = {
               "ru" => "полупаника: попытка скопировать освобождённую строку",
               "sr" => "полу-паника: покушај дуплирања ослобођене ниске",
               "tr" => "yarı panik: serbest bırakılmış dizgeyi kopyalama girişimi",
-              "uk" => "напівпаніка: спроба скопіювати звільнений рядок"
+              "uk" => "напівпаніка: спроба скопіювати звільнений рядок",
+              "zh" => "半致命错误：尝试复制已释放的字符串"
             },
             "args" => []
           },
@@ -90571,7 +92538,8 @@ $CONF = {
               "ru" => "Внутренняя ошибка: oopsHV",
               "sr" => "упс: oopsHV",
               "tr" => "hata: oopsHV",
-              "uk" => "ой: oopsHV"
+              "uk" => "ой: oopsHV",
+              "zh" => "哎呀：哎呀HV"
             },
             "args" => []
           },
@@ -90615,7 +92583,8 @@ $CONF = {
               "ru" => "Использование each() для хеша после вставки без сброса итератора хеша приводит к неопределённому поведению",
               "sr" => "Употреба each() над хешом после уметања, без ресетовања итератора хеша, доводи до недефинисаног понашања",
               "tr" => "Hash yineleyicisi sıfırlanmadan ekleme sonrasında hash üzerinde each() kullanımı tanımsız davranışa yol açar",
-              "uk" => "Використання each() для хешу після вставлення без скидання ітератора хешу призводить до невизначеної поведінки"
+              "uk" => "Використання each() для хешу після вставлення без скидання ітератора хешу призводить до невизначеної поведінки",
+              "zh" => "在插入后未重置哈希迭代器就对哈希使用 each()，会导致未定义行为"
             },
             "args" => []
           },
@@ -90660,7 +92629,8 @@ $CONF = {
               "ru" => "Объявление %{arg1} так и не вступило в силу",
               "sr" => "%{arg1} никада није уведен",
               "tr" => "%{arg1} hiç tanıtılmadı",
-              "uk" => "%{arg1} так і не введено в область видимості"
+              "uk" => "%{arg1} так і не введено в область видимості",
+              "zh" => "%{arg1} 从未引入"
             },
             "args" => [
               {
@@ -90710,7 +92680,8 @@ $CONF = {
               "ru" => "Внутренний формат %%<num>p может конфликтовать с будущими расширениями printf",
               "sr" => "интерно %%<num>p може бити у сукобу са будућим printf проширењима",
               "tr" => "Dahili %%<num>p, gelecekteki printf uzantılarıyla çakışabilir",
-              "uk" => "Внутрішній формат %%<num>p може конфліктувати з майбутніми розширеннями printf"
+              "uk" => "Внутрішній формат %%<num>p може конфліктувати з майбутніми розширеннями printf",
+              "zh" => "内部的 %%<num>p 可能与未来的 printf 扩展冲突"
             },
             "args" => []
           },
@@ -90754,7 +92725,8 @@ $CONF = {
               "ru" => "Попытка освободить SV вне арены: 0x%{arg1}",
               "sr" => "Покушај ослобађања SV-а који није у арени: 0x%{arg1}",
               "tr" => "Arena dışındaki SV'yi serbest bırakma girişimi: 0x%{arg1}",
-              "uk" => "Спроба звільнити SV поза аренами: 0x%{arg1}"
+              "uk" => "Спроба звільнити SV поза аренами: 0x%{arg1}",
+              "zh" => "尝试释放非 arena SV：0x%{arg1}"
             },
             "args" => [
               {
@@ -90860,6 +92832,10 @@ $CONF = {
               "uk" => {
                 "*" => "Спроба звільнити неіснуючий спільний рядок '%{key}'",
                 "present" => "Спроба звільнити неіснуючий спільний рядок '%{key}' (utf8)"
+              },
+              "zh" => {
+                "absent" => "尝试释放不存在的共享字符串 '%{key}'",
+                "present" => "尝试释放不存在的共享字符串 '%{key}'（utf8）"
               }
             },
             "args" => [
@@ -90920,7 +92896,8 @@ $CONF = {
               "ru" => "Неожиданно потребовалось создать %{arg1}",
               "sr" => "Неочекивано је морао да се направи симбол %{arg1}",
               "tr" => "%{arg1} beklenmedik biçimde oluşturulmak zorunda kaldı",
-              "uk" => "Неочікувано довелося створити %{arg1}"
+              "uk" => "Неочікувано довелося створити %{arg1}",
+              "zh" => "意外地创建了 %{arg1}"
             },
             "args" => [
               {
@@ -90986,7 +92963,8 @@ $CONF = {
               "ru" => "Попытка освободить указатели глобов, на которые нет ссылок",
               "sr" => "Покушај ослобађања нереференцираних показивача глоба",
               "tr" => "Başvurulmayan glob işaretçilerini serbest bırakma girişimi",
-              "uk" => "Спроба звільнити вказівники глоба з нульовим лічильником посилань"
+              "uk" => "Спроба звільнити вказівники глоба з нульовим лічильником посилань",
+              "zh" => "尝试释放未引用的 glob 指针"
             },
             "args" => []
           },
@@ -91032,7 +93010,8 @@ $CONF = {
               "ru" => "Некорректное значение \"%{arg1}\" в environ библиотеки CRTL\n",
               "sr" => "Неисправна CRTL environ вредност „%{arg1}“\n",
               "tr" => "Hatalı CRTL environ değeri \"%{arg1}\"\n",
-              "uk" => "Некоректне значення environ у CRTL \"%{arg1}\"\n"
+              "uk" => "Некоректне значення environ у CRTL \"%{arg1}\"\n",
+              "zh" => "CRTL environ 值格式错误：“%{arg1}”\n"
             },
             "args" => [
               {
@@ -91083,7 +93062,8 @@ $CONF = {
               "ru" => "Переполнение буфера в prime_env_iter: %{arg1}",
               "sr" => "Прекорачење бафера у prime_env_iter: %{arg1}",
               "tr" => "prime_env_iter içinde arabellek taşması: %{arg1}",
-              "uk" => "Переповнення буфера у prime_env_iter: %{arg1}"
+              "uk" => "Переповнення буфера у prime_env_iter: %{arg1}",
+              "zh" => "prime_env_iter 中缓冲区溢出：%{arg1}"
             },
             "args" => [
               {
@@ -91134,7 +93114,8 @@ $CONF = {
               "ru" => "Некорректное сообщение в prime_env_iter: |%{arg1}|",
               "sr" => "Неисправна порука у prime_env_iter: |%{arg1}|",
               "tr" => "prime_env_iter içinde hatalı ileti: |%{arg1}|",
-              "uk" => "Некоректне повідомлення в prime_env_iter: |%{arg1}|"
+              "uk" => "Некоректне повідомлення в prime_env_iter: |%{arg1}|",
+              "zh" => "prime_env_iter 中的消息格式错误：|%{arg1}|"
             },
             "args" => [
               {
@@ -91184,7 +93165,8 @@ $CONF = {
               "ru" => "Попытка освободить скаляр с нулевым счётчиком ссылок: SV 0x%{arg1}",
               "sr" => "Покушај ослобађања скалара без референци: SV 0x%{arg1}",
               "tr" => "Başvurulmayan skaları serbest bırakma girişimi: SV 0x%{arg1}",
-              "uk" => "Спроба звільнити скаляр із нульовим лічильником посилань: SV 0x%{arg1}"
+              "uk" => "Спроба звільнити скаляр із нульовим лічильником посилань: SV 0x%{arg1}",
+              "zh" => "尝试释放未引用的标量：SV 0x%{arg1}"
             },
             "args" => [
               {
@@ -91236,7 +93218,8 @@ $CONF = {
               "ru" => "Повторный вызов free() проигнорирован",
               "sr" => "Занемарен је вишеструки free()",
               "tr" => "Yinelenen free() çağrısı yok sayıldı",
-              "uk" => "Повторний виклик free() проігноровано"
+              "uk" => "Повторний виклик free() проігноровано",
+              "zh" => "忽略重复的 free()"
             },
             "args" => []
           },
@@ -91280,7 +93263,8 @@ $CONF = {
               "ru" => "Вызов realloc() для освобождённой памяти проигнорирован",
               "sr" => "Занемарен је realloc() над ослобођеном меморијом",
               "tr" => "Serbest bırakılmış bellek üzerinde realloc() çağrısı yok sayıldı",
-              "uk" => "Виклик realloc() для вже звільненої пам'яті проігноровано"
+              "uk" => "Виклик realloc() для вже звільненої пам'яті проігноровано",
+              "zh" => "忽略对已释放内存调用的 realloc()"
             },
             "args" => []
           },
@@ -91324,7 +93308,8 @@ $CONF = {
               "ru" => "Некорректный вызов free() проигнорирован",
               "sr" => "Занемарен је неисправан free()",
               "tr" => "Geçersiz free() çağrısı yok sayıldı",
-              "uk" => "Некоректний виклик free() проігноровано"
+              "uk" => "Некоректний виклик free() проігноровано",
+              "zh" => "忽略错误的 free()"
             },
             "args" => []
           },
@@ -91368,7 +93353,8 @@ $CONF = {
               "ru" => "Некорректный вызов realloc() проигнорирован",
               "sr" => "Занемарен је неисправан realloc()",
               "tr" => "Geçersiz realloc() çağrısı yok sayıldı",
-              "uk" => "Некоректний виклик realloc() проігноровано"
+              "uk" => "Некоректний виклик realloc() проігноровано",
+              "zh" => "忽略错误的 realloc()"
             },
             "args" => []
           },
@@ -91569,6 +93555,16 @@ $CONF = {
                   "*" => "Змінна %{prior_name}, оголошена через \"%{declaration}\", затінює попереднє оголошення в тій самій області видимості",
                   "statement" => "Змінна %{prior_name}, оголошена через \"%{declaration}\", затінює попереднє оголошення в тій самій інструкції"
                 }
+              },
+              "zh" => {
+                "subroutine" => {
+                  "scope" => "\"%{declaration}\" 子程序 %{prior_name} 遮蔽了同一作用域中的先前声明",
+                  "statement" => "\"%{declaration}\" 子程序 %{prior_name} 遮蔽了同一语句中的先前声明"
+                },
+                "variable" => {
+                  "scope" => "\"%{declaration}\" 变量 %{prior_name} 遮蔽了同一作用域中的先前声明",
+                  "statement" => "\"%{declaration}\" 变量 %{prior_name} 遮蔽了同一语句中的先前声明"
+                }
               }
             },
             "args" => [
@@ -91643,7 +93639,8 @@ $CONF = {
               "ru" => "\t(Возможно, имелось в виду \"local\" вместо \"our\"?)\n",
               "sr" => "\t(Да ли сте мислили „local“ уместо „our“?)\n",
               "tr" => "\t(\"our\" yerine \"local\" mı demek istediniz?)\n",
-              "uk" => "\t(Можливо, ви мали на увазі \"local\" замість \"our\"?)\n"
+              "uk" => "\t(Можливо, ви мали на увазі \"local\" замість \"our\"?)\n",
+              "zh" => "\t（你是想用 \"local\" 代替 \"our\" 吗？）\n"
             },
             "args" => []
           },
@@ -91687,7 +93684,8 @@ $CONF = {
               "ru" => "Переменная %{arg1} повторно объявлена через \"our\"",
               "sr" => "Променљива „our“ %{arg1} поново је декларисана",
               "tr" => "\"our\" değişkeni %{arg1} yeniden bildirildi",
-              "uk" => "Змінну \"our\" %{arg1} оголошено повторно"
+              "uk" => "Змінну \"our\" %{arg1} оголошено повторно",
+              "zh" => "\"our\" 变量 %{arg1} 被重新声明"
             },
             "args" => [
               {
@@ -91739,7 +93737,8 @@ $CONF = {
               "ru" => "Обработчик \"__ANON__\" сигнала SIG%{arg1} не определён.\n",
               "sr" => "Обрађивач сигнала SIG%{arg1} „__ANON__“ није дефинисан.\n",
               "tr" => "SIG%{arg1} işleyicisi \"__ANON__\" tanımlı değil.\n",
-              "uk" => "Обробник \"__ANON__\" для SIG%{arg1} не визначено.\n"
+              "uk" => "Обробник \"__ANON__\" для SIG%{arg1} не визначено.\n",
+              "zh" => "SIG%{arg1} 处理程序 \"__ANON__\" 未定义。\n"
             },
             "args" => [
               {
@@ -91789,7 +93788,8 @@ $CONF = {
               "ru" => "Нельзя игнорировать сигнал CHLD; принудительно установлена обработка по умолчанию",
               "sr" => "Није могуће игнорисати сигнал CHLD; враћам га на подразумевану вредност",
               "tr" => "CHLD sinyali yok sayılamaz; varsayılan değere zorlanıyor",
-              "uk" => "Неможливо ігнорувати сигнал CHLD, примусово відновлено типову обробку"
+              "uk" => "Неможливо ігнорувати сигнал CHLD, примусово відновлено типову обробку",
+              "zh" => "无法忽略 CHLD 信号，正在强制恢复为默认处理方式"
             },
             "args" => []
           },
@@ -91834,7 +93834,8 @@ $CONF = {
               "ru" => "Обработчик \"%{arg2}\" сигнала SIG%{arg1} не определён.\n",
               "sr" => "Обрађивач сигнала SIG%{arg1} „%{arg2}“ није дефинисан.\n",
               "tr" => "SIG%{arg1} işleyicisi \"%{arg2}\" tanımlı değil.\n",
-              "uk" => "Обробник \"%{arg2}\" сигналу SIG%{arg1} не визначено.\n"
+              "uk" => "Обробник \"%{arg2}\" сигналу SIG%{arg1} не визначено.\n",
+              "zh" => "SIG%{arg1} 处理程序 \"%{arg2}\" 未定义。\n"
             },
             "args" => [
               {
@@ -91890,7 +93891,8 @@ $CONF = {
               "ru" => "Нет такого сигнала: SIG%{arg1}",
               "sr" => "Нема таквог сигнала: SIG%{arg1}",
               "tr" => "Böyle bir sinyal yok: SIG%{arg1}",
-              "uk" => "Немає такого сигналу: SIG%{arg1}"
+              "uk" => "Немає такого сигналу: SIG%{arg1}",
+              "zh" => "没有这样的信号：SIG%{arg1}"
             },
             "args" => [
               {
@@ -91942,7 +93944,8 @@ $CONF = {
               "ru" => "Попытка использовать ссылку как lvalue в substr",
               "sr" => "Покушај употребе референце као леве вредности у substr",
               "tr" => "substr içinde başvuru lvalue olarak kullanılmaya çalışıldı",
-              "uk" => "Спроба використати посилання як lvalue у substr"
+              "uk" => "Спроба використати посилання як lvalue у substr",
+              "zh" => "尝试在 substr 中将引用用作左值"
             },
             "args" => []
           },
@@ -91987,7 +93990,8 @@ $CONF = {
               "ru" => "substr выходит за границы строки",
               "sr" => "substr изван низа",
               "tr" => "substr dizenin dışında",
-              "uk" => "substr виходить за межі рядка"
+              "uk" => "substr виходить за межі рядка",
+              "zh" => "substr 超出字符串范围"
             },
             "args" => []
           },
@@ -92031,7 +94035,8 @@ $CONF = {
               "ru" => "Неоднозначная конструкция %{arg1}{%{arg2}} интерпретируется как %{arg3}%{arg4}",
               "sr" => "Двосмислена употреба %{arg1}{%{arg2}} разрешена је као %{arg3}%{arg4}",
               "tr" => "%{arg1}{%{arg2}} ifadesinin belirsiz kullanımı %{arg3}%{arg4} olarak çözümlendi",
-              "uk" => "Неоднозначне використання %{arg1}{%{arg2}} витлумачено як %{arg3}%{arg4}"
+              "uk" => "Неоднозначне використання %{arg1}{%{arg2}} витлумачено як %{arg3}%{arg4}",
+              "zh" => "对 %{arg1}{%{arg2}} 的含糊用法被解析为 %{arg3}%{arg4}"
             },
             "args" => [
               {
@@ -92098,7 +94103,8 @@ $CONF = {
               "ru" => "Неоднозначная конструкция %{arg1}{%{arg2}%{arg3}} интерпретируется как %{arg4}%{arg5}%{arg6}",
               "sr" => "Двосмислена употреба %{arg1}{%{arg2}%{arg3}} разрешена је као %{arg4}%{arg5}%{arg6}",
               "tr" => "%{arg1}{%{arg2}%{arg3}} ifadesinin belirsiz kullanımı %{arg4}%{arg5}%{arg6} olarak çözümlendi",
-              "uk" => "Неоднозначне використання %{arg1}{%{arg2}%{arg3}} витлумачено як %{arg4}%{arg5}%{arg6}"
+              "uk" => "Неоднозначне використання %{arg1}{%{arg2}%{arg3}} витлумачено як %{arg4}%{arg5}%{arg6}",
+              "zh" => "对 %{arg1}{%{arg2}%{arg3}} 的含糊用法被解析为 %{arg4}%{arg5}%{arg6}"
             },
             "args" => [
               {
@@ -92173,7 +94179,8 @@ $CONF = {
               "ru" => "Неоднозначный вызов интерпретирован как CORE::%{arg1}(); укажите этот префикс явно или используйте &",
               "sr" => "Двосмислен позив разрешен као CORE::%{arg1}(); наведите квалификатор или употребите &",
               "tr" => "Belirsiz çağrı CORE::%{arg1}() olarak çözümlendi; bu şekilde niteleyin veya & kullanın",
-              "uk" => "Неоднозначний виклик витлумачено як CORE::%{arg1}(), укажіть це явно або використайте &"
+              "uk" => "Неоднозначний виклик витлумачено як CORE::%{arg1}(), укажіть це явно або використайте &",
+              "zh" => "存在歧义的调用被解析为 CORE::%{arg1}()；请明确限定该调用，或使用 &"
             },
             "args" => [
               {
@@ -92224,7 +94231,8 @@ $CONF = {
               "ru" => "Возможна непреднамеренная интерполяция \$\\ в регулярном выражении",
               "sr" => "Могућа ненамерна интерполација \$\\ у регуларном изразу",
               "tr" => "Düzenli ifadede \$\\ karakterinin istenmeden enterpole edilmiş olması olası",
-              "uk" => "Можлива ненавмисна інтерполяція \$\\ у регулярному виразі"
+              "uk" => "Можлива ненавмисна інтерполяція \$\\ у регулярному виразі",
+              "zh" => "正则表达式中可能意外插入了 \$\\ "
             },
             "args" => []
           },
@@ -92269,7 +94277,8 @@ $CONF = {
               "ru" => "Перед %{arg1}%{arg2} отсутствует оператор или точка с запятой",
               "sr" => "Недостаје оператор или тачка-зарез пре %{arg1}%{arg2}",
               "tr" => "%{arg1}%{arg2} öncesinde işleç veya noktalı virgül eksik",
-              "uk" => "Перед %{arg1}%{arg2} бракує оператора або крапки з комою"
+              "uk" => "Перед %{arg1}%{arg2} бракує оператора або крапки з комою",
+              "zh" => "%{arg1}%{arg2} 前缺少运算符或分号"
             },
             "args" => [
               {
@@ -92338,7 +94347,8 @@ $CONF = {
               "ru" => "Неоднозначное использование %{arg1} интерпретировано как оператор %{arg2}",
               "sr" => "Двосмислена употреба %{arg1} разрешена је као оператор %{arg2}",
               "tr" => "%{arg1} belirsiz kullanımı %{arg2} işleci olarak çözümlendi",
-              "uk" => "Неоднозначне використання %{arg1} витлумачено як оператор %{arg2}"
+              "uk" => "Неоднозначне використання %{arg1} витлумачено як оператор %{arg2}",
+              "zh" => "对 %{arg1} 的含糊用法被解析为运算符 %{arg2}"
             },
             "args" => [
               {
@@ -92393,7 +94403,8 @@ $CONF = {
               "ru" => "Предупреждение: использование \"%{arg1}\" без скобок неоднозначно",
               "sr" => "Упозорење: употреба „%{arg1}“ без заграда је двосмислена",
               "tr" => "\"%{arg1}\" ifadesinin parantezsiz kullanımı belirsiz",
-              "uk" => "Попередження: використання \"%{arg1}\" без дужок є неоднозначним"
+              "uk" => "Попередження: використання \"%{arg1}\" без дужок є неоднозначним",
+              "zh" => "不加括号使用 \"%{arg1}\" 有歧义"
             },
             "args" => [
               {
@@ -92458,7 +94469,8 @@ $CONF = {
               "ru" => "Возможна непреднамеренная интерполяция %{arg1} в строке",
               "sr" => "Могуће је ненамерно интерполирање %{arg1} у ниски",
               "tr" => "Dizgede %{arg1} ifadesinin istenmeden enterpole edilmiş olması olası",
-              "uk" => "Можлива ненавмисна інтерполяція %{arg1} у рядку"
+              "uk" => "Можлива ненавмисна інтерполяція %{arg1} у рядку",
+              "zh" => "字符串中可能意外插入了 %{arg1}"
             },
             "args" => [
               {
@@ -92523,7 +94535,8 @@ $CONF = {
               "ru" => "\$[ используется при %{arg1} (возможно, имелось в виду \$] ?)",
               "sr" => "\$[ употребљен у оператору %{arg1} (да ли сте мислили на \$]?)",
               "tr" => "%{arg1} bağlamında \$[ kullanıldı (\$] mi demek istediniz ?)",
-              "uk" => "\$[ використано у %{arg1} (можливо, малося на увазі \$] ?)"
+              "uk" => "\$[ використано у %{arg1} (можливо, малося на увазі \$] ?)",
+              "zh" => "在 %{arg1} 中使用了 \$[（你是想写 \$] 吗？）"
             },
             "args" => [
               {
@@ -92575,7 +94588,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -92620,7 +94634,8 @@ $CONF = {
               "ru" => "Бесполезное использование %{arg1} без значений",
               "sr" => "Бескорисна употреба функције %{arg1} без вредности",
               "tr" => "Değer olmadan %{arg1} kullanmak işe yaramaz",
-              "uk" => "Марне використання %{arg1} без значень"
+              "uk" => "Марне використання %{arg1} без значень",
+              "zh" => "没有值却使用了 %{arg1}，没有作用"
             },
             "args" => [
               {
@@ -92670,7 +94685,8 @@ $CONF = {
               "ru" => "Обратный порядок символов в операторе %{arg1}=",
               "sr" => "Оператор %{arg1}= је обрнут",
               "tr" => "Ters yazılmış %{arg1}= işleci",
-              "uk" => "Оператор %{arg1}= записано навпаки"
+              "uk" => "Оператор %{arg1}= записано навпаки",
+              "zh" => "反向书写的 %{arg1}= 运算符"
             },
             "args" => [
               {
@@ -92719,7 +94735,8 @@ $CONF = {
               "ru" => "В условном выражении обнаружено слово без кавычек",
               "sr" => "Пронађена је реч без наводника у услову",
               "tr" => "Koşullu ifadede yalın sözcük bulundu",
-              "uk" => "В умові знайдено слово без лапок"
+              "uk" => "В умові знайдено слово без лапок",
+              "zh" => "条件中发现裸字"
             },
             "args" => []
           },
@@ -92764,7 +94781,8 @@ $CONF = {
               "ru" => "Слово \"%{arg1}\" без кавычек ссылается на несуществующий пакет",
               "sr" => "Ненаведени ниски знак „%{arg1}“ односи се на непостојећи пакет",
               "tr" => "Yalın sözcük \"%{arg1}\" var olmayan bir pakete başvuruyor",
-              "uk" => "Слово без лапок \"%{arg1}\" позначає неіснуючий пакет"
+              "uk" => "Слово без лапок \"%{arg1}\" позначає неіснуючий пакет",
+              "zh" => "裸字 \"%{arg1}\" 指向不存在的包"
             },
             "args" => [
               {
@@ -92829,7 +94847,8 @@ $CONF = {
               "ru" => "Атрибут блока BEGIN игнорируется",
               "sr" => "Атрибут у блоку BEGIN је занемарен",
               "tr" => "BEGIN bloğundaki öznitelik yok sayıldı",
-              "uk" => "Атрибут блоку BEGIN проігноровано"
+              "uk" => "Атрибут блоку BEGIN проігноровано",
+              "zh" => "BEGIN 块上的属性已忽略"
             },
             "args" => []
           },
@@ -92874,7 +94893,8 @@ $CONF = {
               "ru" => "Прототип блока BEGIN игнорируется",
               "sr" => "Прототип у блоку BEGIN је занемарен",
               "tr" => "BEGIN bloğundaki prototip yok sayıldı",
-              "uk" => "Прототип блоку BEGIN проігноровано"
+              "uk" => "Прототип блоку BEGIN проігноровано",
+              "zh" => "BEGIN 块中的原型已忽略"
             },
             "args" => []
           },
@@ -92918,7 +94938,8 @@ $CONF = {
               "ru" => "В условии обнаружено =, должно быть ==",
               "sr" => "Пронађен је = у услову; требало би да буде ==",
               "tr" => "Koşullu ifadede = bulundu; == olmalı",
-              "uk" => "В умові знайдено =, має бути =="
+              "uk" => "В умові знайдено =, має бути ==",
+              "zh" => "在条件表达式中发现 =，应为 =="
             },
             "args" => []
           },
@@ -92963,7 +94984,8 @@ $CONF = {
               "ru" => "Вместо \"\\c%{arg1}\" понятнее написать просто \"%{arg2}\"",
               "sr" => "„\\c%{arg1}“ је јасније написати једноставно као „%{arg2}“",
               "tr" => "\"\\c%{arg1}\" daha açık biçimde yalnızca \"%{arg2}\" olarak yazılır",
-              "uk" => "\"\\c%{arg1}\" зрозуміліше записати просто як \"%{arg2}\""
+              "uk" => "\"\\c%{arg1}\" зрозуміліше записати просто як \"%{arg2}\"",
+              "zh" => "\"\\c%{arg1}\" 写成 \"%{arg2}\" 会更清楚"
             },
             "args" => [
               {
@@ -93023,7 +95045,8 @@ $CONF = {
               "ru" => "Возможна проблема с приоритетом оператора управления потоком выполнения (%{arg1})",
               "sr" => "Могући проблем с првенством оператора за управљање током извршавања (%{arg1})",
               "tr" => "Denetim akışı işleciyle (%{arg1}) ilgili olası öncelik sorunu",
-              "uk" => "Можлива проблема з пріоритетом оператора керування потоком виконання (%{arg1})"
+              "uk" => "Можлива проблема з пріоритетом оператора керування потоком виконання (%{arg1})",
+              "zh" => "控制流运算符（%{arg1}）的优先级可能存在问题"
             },
             "args" => [
               {
@@ -93128,6 +95151,10 @@ $CONF = {
               "uk" => {
                 "hex" => "Символ %{character}, що не є шістнадцятковою цифрою, передчасно завершує %{escape}.  Інтерпретовано як \"%{resolved}\"",
                 "octal" => "Символ %{character}, що не є вісімковою цифрою, передчасно завершує %{escape}.  Інтерпретовано як \"%{resolved}\""
+              },
+              "zh" => {
+                "hex" => "非十六进制字符 %{character} 提前终止了 %{escape}。解析结果为“%{resolved}”",
+                "octal" => "非八进制字符 %{character} 提前终止了 %{escape}。解析结果为“%{resolved}”"
               }
             },
             "args" => [
@@ -93300,6 +95327,11 @@ $CONF = {
                 "binary" => "Недопустиму двійкову цифру '%{digit}' проігноровано",
                 "hexadecimal" => "Недопустиму шістнадцяткову цифру '%{digit}' проігноровано",
                 "octal" => "Недопустиму вісімкову цифру '%{digit}' проігноровано"
+              },
+              "zh" => {
+                "binary" => "忽略非法二进制数字 '%{digit}'",
+                "hexadecimal" => "忽略非法十六进制数字 '%{digit}'",
+                "octal" => "忽略非法八进制数字 '%{digit}'"
               }
             },
             "args" => [
@@ -93356,7 +95388,8 @@ $CONF = {
               "ru" => "Повторяющаяся константа %{constant} в образце dispatch никогда не даст совпадения; повтор находится в %{duplicate_file}, строка %{duplicate_line}, первое вхождение — в %{first_file}, строка %{first_line}",
               "sr" => "Дупликат константе шаблона dispatch %{constant} никада се неће подударити; дупликат у %{duplicate_file}, линија %{duplicate_line}, прво појављивање у %{first_file}, линија %{first_line}",
               "tr" => "yinelenen dağıtım deseni sabiti %{constant} hiçbir zaman eşleşmeyecek; yinelenen: %{duplicate_file} dosyasında %{duplicate_line}. İlk tanım: %{first_file} dosyasında %{first_line}",
-              "uk" => "повторна константа %{constant} у шаблоні dispatch ніколи не збігатиметься; повторення у файлі %{duplicate_file}, рядок %{duplicate_line}, перше входження у файлі %{first_file}, рядок %{first_line}"
+              "uk" => "повторна константа %{constant} у шаблоні dispatch ніколи не збігатиметься; повторення у файлі %{duplicate_file}, рядок %{duplicate_line}, перше входження у файлі %{first_file}, рядок %{first_line}",
+              "zh" => "重复的 dispatch 模式常量 %{constant} 永远不会匹配；重复项位于 %{duplicate_file} 第 %{duplicate_line} 行，首次出现于 %{first_file} 第 %{first_line} 行"
             },
             "args" => [
               {
@@ -93428,7 +95461,8 @@ $CONF = {
               "ru" => "Именованная группа захвата '%{arg1}' встречается в нескольких регулярных выражениях ветви dispatch-on; её лексическая переменная связана только с первым регулярным выражением; результаты последующих захватов через эту переменную недоступны",
               "sr" => "Именовани захват „%{arg1}” појављује се у више регуларних израза у клаузи dispatch-on; само први регуларни израз се повезује са његовом лексичком променљивом; каснији захвати нису доступни преко те променљиве",
               "tr" => "Adlandırılmış yakalama '%{arg1}' bir dispatch-on deyimindeki birden fazla düzenli ifadede bulunuyor; yalnızca ilk düzenli ifade kendi leksik değişkenine eşleniyor; sonraki yakalamalar bu değişken üzerinden görünür değil",
-              "uk" => "Іменоване захоплення '%{arg1}' трапляється в кількох регулярних виразах у гілці dispatch-on; лише перший регулярний вираз відображається на його лексичну змінну; наступні захоплення недоступні через цю змінну"
+              "uk" => "Іменоване захоплення '%{arg1}' трапляється в кількох регулярних виразах у гілці dispatch-on; лише перший регулярний вираз відображається на його лексичну змінну; наступні захоплення недоступні через цю змінну",
+              "zh" => "命名捕获 '%{arg1}' 出现在 dispatch-on 子句的多个正则表达式中；只有第一个正则表达式会将其映射到词法变量，后续捕获无法通过该变量访问"
             },
             "args" => [
               {
@@ -93480,7 +95514,8 @@ $CONF = {
               "ru" => "each для анонимного массива всегда будет начинать перебор с начала",
               "sr" => "each на анонимском низу увек почиње испочетка",
               "tr" => "Anonim dizi üzerinde each her zaman baştan başlar",
-              "uk" => "each для анонімного масиву завжди починатиме з початку"
+              "uk" => "each для анонімного масиву завжди починатиме з початку",
+              "zh" => "对匿名数组调用 each 总是会从头开始"
             },
             "args" => []
           },
@@ -93524,7 +95559,8 @@ $CONF = {
               "ru" => "each для анонимного хеша всегда будет начинать перебор с начала",
               "sr" => "each на анонимском хешу увек почиње испочетка",
               "tr" => "Anonim karma üzerinde each her zaman baştan başlar",
-              "uk" => "each для анонімного хешу завжди починатиме обхід спочатку"
+              "uk" => "each для анонімного хешу завжди починатиме обхід спочатку",
+              "zh" => "对匿名哈希调用 each 总是会从头开始"
             },
             "args" => []
           },
@@ -93568,7 +95604,8 @@ $CONF = {
               "ru" => "Вместо elseif следует использовать elsif",
               "sr" => "Треба да пише elsif, а не elseif",
               "tr" => "elseif yerine elsif kullanılmalı",
-              "uk" => "Замість elseif має бути elsif"
+              "uk" => "Замість elseif має бути elsif",
+              "zh" => "elseif 应写作 elsif"
             },
             "args" => []
           },
@@ -93612,7 +95649,8 @@ $CONF = {
               "ru" => "Массив, переданный в stat, будет преобразован в скаляр",
               "sr" => "Низ прослеђен функцији stat биће претворен у скаларну вредност",
               "tr" => "stat işlevine geçirilen dizi bir skaler değere dönüştürülecek",
-              "uk" => "Масив, переданий stat, буде приведено до скаляра"
+              "uk" => "Масив, переданий stat, буде приведено до скаляра",
+              "zh" => "传递给 stat 的数组将被转换为标量"
             },
             "args" => []
           },
@@ -93657,7 +95695,8 @@ $CONF = {
               "ru" => "Массив, переданный в stat, будет преобразован в скаляр (возможно, имелось в виду stat %{name}?)",
               "sr" => "Низ прослеђен функцији stat биће претворен у скаларну вредност (да ли сте хтели stat %{name}?)",
               "tr" => "stat işlevine geçirilen dizi bir skaler değere dönüştürülecek (stat %{name} mi demek istediniz?)",
-              "uk" => "Масив, переданий до stat, буде перетворено на скаляр (можливо, ви мали на увазі stat %{name}?)"
+              "uk" => "Масив, переданий до stat, буде перетворено на скаляр (можливо, ви мали на увазі stat %{name}?)",
+              "zh" => "传递给 stat 的数组将被转换为标量（你想写成 stat %{name} 吗？）"
             },
             "args" => [
               {
@@ -93708,7 +95747,8 @@ $CONF = {
               "ru" => "В скалярном контексте вместо %%%{arg1}%{arg2}%{arg3}%{arg4} лучше написать \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "sr" => "%%%{arg1}%{arg2}%{arg3}%{arg4} у скаларном контексту боље је написати као \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "tr" => "Skaler bağlamda %%%{arg1}%{arg2}%{arg3}%{arg4} yerine \$%{arg5}%{arg6}%{arg7}%{arg8} yazmak daha doğru",
-              "uk" => "%%%{arg1}%{arg2}%{arg3}%{arg4} у скалярному контексті краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}"
+              "uk" => "%%%{arg1}%{arg2}%{arg3}%{arg4} у скалярному контексті краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}",
+              "zh" => "在标量上下文中，%%%{arg1}%{arg2}%{arg3}%{arg4} 最好写成 \$%{arg5}%{arg6}%{arg7}%{arg8}"
             },
             "args" => [
               {
@@ -93796,7 +95836,8 @@ $CONF = {
               "ru" => "В скалярном контексте вместо %%%{arg1}%{arg2}%{arg3}%{arg4} лучше написать \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "sr" => "%%%{arg1}%{arg2}%{arg3}%{arg4} у скаларном контексту боље је написати као \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "tr" => "Skaler bağlamda %%%{arg1}%{arg2}%{arg3}%{arg4} yerine \$%{arg5}%{arg6}%{arg7}%{arg8} yazmak daha doğru",
-              "uk" => "%%%{arg1}%{arg2}%{arg3}%{arg4} у скалярному контексті краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}"
+              "uk" => "%%%{arg1}%{arg2}%{arg3}%{arg4} у скалярному контексті краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}",
+              "zh" => "在标量上下文中，%%%{arg1}%{arg2}%{arg3}%{arg4} 最好写成 \$%{arg5}%{arg6}%{arg7}%{arg8}"
             },
             "args" => [
               {
@@ -93884,7 +95925,8 @@ $CONF = {
               "ru" => "Отсутствует ']' в прототипе для %{arg1} : %{arg2}",
               "sr" => "Недостаје „]“ у прототипу за %{arg1} : %{arg2}",
               "tr" => "%{arg1} için prototipte ']' eksik: %{arg2}",
-              "uk" => "Бракує ']' у прототипі для %{arg1} : %{arg2}"
+              "uk" => "Бракує ']' у прототипі для %{arg1} : %{arg2}",
+              "zh" => "%{arg1} 的原型中缺少 ']'：%{arg2}"
             },
             "args" => [
               {
@@ -93940,7 +95982,8 @@ $CONF = {
               "ru" => "Продолжение прототипа после '%{arg1}' для %{arg2} : %{arg3}",
               "sr" => "Прототип после „%{arg1}“ за %{arg2} : %{arg3}",
               "tr" => "%{arg1} karakterinden sonra prototip: %{arg2} : %{arg3}",
-              "uk" => "Прототип після '%{arg1}' для %{arg2} : %{arg3}"
+              "uk" => "Прототип після '%{arg1}' для %{arg2} : %{arg3}",
+              "zh" => "原型中 '%{arg1}' 之后的字符，对应于 %{arg2}：%{arg3}"
             },
             "args" => [
               {
@@ -94001,7 +96044,8 @@ $CONF = {
               "ru" => "Недопустимый символ после '_' в прототипе для %{arg1} : %{arg2}",
               "sr" => "Недозвољен знак после „_“ у прототипу за %{arg1} : %{arg2}",
               "tr" => "%{arg1} için prototipte '_' sonrasında geçersiz karakter: %{arg2}",
-              "uk" => "Недопустимий символ після '_' у прототипі для %{arg1} : %{arg2}"
+              "uk" => "Недопустимий символ після '_' у прототипі для %{arg1} : %{arg2}",
+              "zh" => "%{arg1} 的原型中 '_' 后有非法字符：%{arg2}"
             },
             "args" => [
               {
@@ -94057,7 +96101,8 @@ $CONF = {
               "ru" => "Недопустимый символ в прототипе для %{arg1} : %{arg2}",
               "sr" => "Недозвољен знак у прототипу за %{arg1} : %{arg2}",
               "tr" => "%{arg1} için prototipte geçersiz karakter: %{arg2}",
-              "uk" => "Неприпустимий символ у прототипі для %{arg1} : %{arg2}"
+              "uk" => "Неприпустимий символ у прототипі для %{arg1} : %{arg2}",
+              "zh" => "%{arg1} 的原型中有非法字符：%{arg2}"
             },
             "args" => [
               {
@@ -94113,7 +96158,8 @@ $CONF = {
               "ru" => "Не удалось найти пакет %{arg1} для \@%{arg2}::ISA",
               "sr" => "Није могуће пронаћи пакет %{arg1} за \@%{arg2}::ISA",
               "tr" => "\@%{arg2}::ISA için %{arg1} paketi bulunamıyor",
-              "uk" => "Не вдалося знайти пакет %{arg1} для \@%{arg2}::ISA"
+              "uk" => "Не вдалося знайти пакет %{arg1} для \@%{arg2}::ISA",
+              "zh" => "无法为 \@%{arg2}::ISA 定位包 %{arg1}"
             },
             "args" => [
               {
@@ -94171,7 +96217,8 @@ $CONF = {
               "ru" => "/%{arg1}/, вероятно, следует записать как \"%{arg2}\"",
               "sr" => "/%{arg1}/ вероватно треба написати као „%{arg2}“",
               "tr" => "/%{arg1}/ yerine \"%{arg2}\" yazmak daha doğru olabilir",
-              "uk" => "/%{arg1}/, імовірно, слід записати як \"%{arg2}\""
+              "uk" => "/%{arg1}/, імовірно, слід записати як \"%{arg2}\"",
+              "zh" => "/%{arg1}/ 可能应写为 \"%{arg2}\""
             },
             "args" => [
               {
@@ -94227,7 +96274,8 @@ $CONF = {
               "ru" => "Функция length() применена к \@array (возможно, имелось в виду \"scalar(\@array)\"?)",
               "sr" => "length() употребљен над \@array (да ли сте мислили „scalar(\@array)“?)",
               "tr" => "length() \@array üzerinde kullanıldı (\"scalar(\@array)\" mı demek istediniz?)",
-              "uk" => "length() застосовано до \@array (можливо, ви мали на увазі \"scalar(\@array)\"?)"
+              "uk" => "length() застосовано до \@array (можливо, ви мали на увазі \"scalar(\@array)\"?)",
+              "zh" => "对 \@array 使用了 length()（你是想写 \"scalar(\@array)\" 吗？）"
             },
             "args" => []
           },
@@ -94270,7 +96318,8 @@ $CONF = {
               "ru" => "Функция length() применена к %%hash (возможно, имелось в виду \"scalar(keys %%hash)\"?)",
               "sr" => "length() употребљен над %%hash (да ли сте мислили „scalar(keys %%hash)“?)",
               "tr" => "length() %%hash üzerinde kullanıldı (\"scalar(keys %%hash)\" mı demek istediniz?)",
-              "uk" => "length() застосовано до %%hash (можливо, малося на увазі \"scalar(keys %%hash)\"?)"
+              "uk" => "length() застосовано до %%hash (можливо, малося на увазі \"scalar(keys %%hash)\"?)",
+              "zh" => "对 %%hash 使用了 length()（你是想写 \"scalar(keys %%hash)\" 吗？）"
             },
             "args" => []
           },
@@ -94367,6 +96416,10 @@ $CONF = {
               "uk" => {
                 "*" => "length() застосовано до %{aggregate_name} (можливо, ви мали на увазі \"scalar(%{aggregate_name})\"?)",
                 "hash" => "length() застосовано до %{aggregate_name} (можливо, ви мали на увазі \"scalar(keys %{aggregate_name})\"?)"
+              },
+              "zh" => {
+                "array" => "对 %{aggregate_name} 使用了 length()（你是想写 \"scalar(%{aggregate_name})\" 吗？）",
+                "hash" => "对 %{aggregate_name} 使用了 length()（你是想写 \"scalar(keys %{aggregate_name})\" 吗？）"
               }
             },
             "args" => [
@@ -94427,7 +96480,8 @@ $CONF = {
               "ru" => "Бесполезная локализация %{arg1}",
               "sr" => "Локализација операције %{arg1} нема ефекта",
               "tr" => "%{arg1} için local ile yerelleştirmenin etkisi yoktur",
-              "uk" => "Марна локалізація %{arg1}"
+              "uk" => "Марна локалізація %{arg1}",
+              "zh" => "对 %{arg1} 的本地化无效"
             },
             "args" => [
               {
@@ -94465,7 +96519,8 @@ $CONF = {
                 "ru" => "genitive",
                 "sr" => "genitive",
                 "tr" => "operation",
-                "uk" => "genitive"
+                "uk" => "genitive",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -94510,7 +96565,8 @@ $CONF = {
               "ru" => "При попытке разрешить вызов метода %{arg1}->%{arg2}() не удалось найти пакет %{arg3}, хотя он указан в \@%{arg4}::ISA (возможно, вы забыли загрузить %{arg5}?)",
               "sr" => "При покушају разрешавања позива методе %{arg1}->%{arg2}(), није могуће пронаћи пакет %{arg3}, иако се помиње у \@%{arg4}::ISA (можда сте заборавили да учитате %{arg5}?)",
               "tr" => "%{arg1}->%{arg2}() yöntem çağrısı çözümlenirken, \@%{arg4}::ISA içinde belirtilen %{arg3} paketi bulunamadı (belki %{arg5} yüklenmemiştir?)",
-              "uk" => "Під час спроби розв'язати виклик методу %{arg1}->%{arg2}() не вдалося знайти пакет %{arg3}, хоча його зазначено в \@%{arg4}::ISA (можливо, ви забули завантажити %{arg5}?)"
+              "uk" => "Під час спроби розв'язати виклик методу %{arg1}->%{arg2}() не вдалося знайти пакет %{arg3}, хоча його зазначено в \@%{arg4}::ISA (можливо, ви забули завантажити %{arg5}?)",
+              "zh" => "尝试解析方法调用 %{arg1}->%{arg2}() 时，无法定位包 %{arg3}，但它出现在 \@%{arg4}::ISA 中（也许你忘了加载 %{arg5}？）"
             },
             "args" => [
               {
@@ -94613,7 +96669,8 @@ $CONF = {
               "ru" => "Синтаксис многомерной индексации %{arg1} не поддерживается",
               "sr" => "Вишедимензионална синтакса %{arg1} није подржана",
               "tr" => "Çok boyutlu %{arg1} sözdizimi desteklenmiyor",
-              "uk" => "Багатовимірний синтаксис %{arg1} не підтримується"
+              "uk" => "Багатовимірний синтаксис %{arg1} не підтримується",
+              "zh" => "不支持多维语法 %{arg1}"
             },
             "args" => [
               {
@@ -94679,7 +96736,8 @@ $CONF = {
               "ru" => "Вместо !=~ следует использовать !~",
               "sr" => "!=~ треба да буде !~",
               "tr" => "!=~ yerine !~ kullanılmalı",
-              "uk" => "Замість !=~ має бути !~"
+              "uk" => "Замість !=~ має бути !~",
+              "zh" => "!=~ 应改为 !~"
             },
             "args" => []
           },
@@ -94724,7 +96782,8 @@ $CONF = {
               "ru" => "Неверное расположение _ в числе",
               "sr" => "Погрешно постављена доња црта _ у броју",
               "tr" => "Sayıda _ yanlış yerde",
-              "uk" => "Неправильне розташування _ у числі"
+              "uk" => "Неправильне розташування _ у числі",
+              "zh" => "数字中的 _ 位置不正确"
             },
             "args" => []
           },
@@ -94768,7 +96827,8 @@ $CONF = {
               "ru" => "Отсутствуют скобки вокруг списка \"%{arg1}\"",
               "sr" => "Недостају заграде око листе „%{arg1}“",
               "tr" => "\"%{arg1}\" listesinde parantezler eksik",
-              "uk" => "Навколо списку \"%{arg1}\" бракує дужок"
+              "uk" => "Навколо списку \"%{arg1}\" бракує дужок",
+              "zh" => "\"%{arg1}\" 列表缺少括号"
             },
             "args" => [
               {
@@ -94817,7 +96877,8 @@ $CONF = {
               "ru" => "%{arg1} (...) интерпретируется как функция",
               "sr" => "%{arg1} (...) протумачено као функција",
               "tr" => "%{arg1} (...) işlev olarak yorumlandı",
-              "uk" => "%{arg1} (...) витлумачено як функцію"
+              "uk" => "%{arg1} (...) витлумачено як функцію",
+              "zh" => "%{arg1} (...) 被解释为函数"
             },
             "args" => [
               {
@@ -94867,7 +96928,8 @@ $CONF = {
               "ru" => "Возможна проблема с приоритетом побитового оператора %{arg1}",
               "sr" => "Могући проблем с првенством битовског оператора %{arg1}",
               "tr" => "Bitsel %{arg1} işleciyle ilgili olası öncelik sorunu",
-              "uk" => "Можлива проблема з пріоритетом побітового оператора %{arg1}"
+              "uk" => "Можлива проблема з пріоритетом побітового оператора %{arg1}",
+              "zh" => "位运算 %{arg1} 运算符的优先级可能存在问题"
             },
             "args" => [
               {
@@ -94934,7 +96996,10 @@ $CONF = {
               "tr" => {
                 "*" => "! ile %{arg1} arasında öncelik sorunu olabilir"
               },
-              "uk" => "Можлива проблема з пріоритетом між ! та %{arg1}"
+              "uk" => "Можлива проблема з пріоритетом між ! та %{arg1}",
+              "zh" => {
+                "*" => "! 与 %{arg1} 之间可能存在优先级问题"
+              }
             },
             "args" => [
               {
@@ -95006,7 +97071,8 @@ $CONF = {
                 "ru" => "instrumental",
                 "sr" => "instrumental",
                 "tr" => "operation",
-                "uk" => "instrumental"
+                "uk" => "instrumental",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -95051,7 +97117,8 @@ $CONF = {
               "ru" => "Проблема с приоритетом операторов: вместо open %{arg1} следует использовать open(%{arg2})",
               "sr" => "Проблем са приоритетом: open %{arg1} треба да буде open(%{arg2})",
               "tr" => "Öncelik sorunu: open %{arg1}, open(%{arg2}) olarak yazılmalı",
-              "uk" => "Проблема з пріоритетом операторів: замість open %{arg1} слід писати open(%{arg2})"
+              "uk" => "Проблема з пріоритетом операторів: замість open %{arg1} слід писати open(%{arg2})",
+              "zh" => "优先级问题：open %{arg1} 应写为 open(%{arg2})"
             },
             "args" => [
               {
@@ -95190,6 +97257,10 @@ $CONF = {
               "uk" => {
                 "*" => "Неприпустиме перетворення у %{operation}: \"%{conversion}\"",
                 "end_of_format" => "Неприпустиме перетворення у %{operation}: кінець рядка"
+              },
+              "zh" => {
+                "conversion" => "%{operation} 中的转换无效：\"%{conversion}\"",
+                "end_of_format" => "%{operation} 中的转换无效：字符串末尾"
               }
             },
             "args" => [
@@ -95257,7 +97328,8 @@ $CONF = {
               "ru" => "Векторный аргумент не поддерживается для альфа-версий",
               "sr" => "векторски аргумент није подржан уз алфа верзије",
               "tr" => "Alfa sürümlerinde vektör bağımsız değişkeni desteklenmiyor",
-              "uk" => "Векторний аргумент не підтримується для альфа-версій"
+              "uk" => "Векторний аргумент не підтримується для альфа-версій",
+              "zh" => "带 alpha 版本的向量参数不受支持"
             },
             "args" => []
           },
@@ -95301,7 +97373,8 @@ $CONF = {
               "ru" => "%{arg1}() вызвана слишком рано для проверки прототипа",
               "sr" => "Позив %{arg1}() је био преран да би се проверило да ли одговара прототипу",
               "tr" => "%{arg1}(), işlev prototipi denetlenemeden önce çağrıldı",
-              "uk" => "%{arg1}() викликано надто рано для перевірки прототипу"
+              "uk" => "%{arg1}() викликано надто рано для перевірки прототипу",
+              "zh" => "过早调用 %{arg1}()，无法检查其原型"
             },
             "args" => [
               {
@@ -95353,7 +97426,8 @@ $CONF = {
               "ru" => "Несоответствие прототипов:%{function}%{current} и %{proposed}",
               "sr" => "Прототипи се не подударају: %{function}%{current} наспрам %{proposed}",
               "tr" => "Prototip uyuşmazlığı:%{function}%{current} ve %{proposed}",
-              "uk" => "Невідповідність прототипів:%{function}%{current} проти %{proposed}"
+              "uk" => "Невідповідність прототипів:%{function}%{current} проти %{proposed}",
+              "zh" => "原型不匹配：%{function}%{current} 与 %{proposed}"
             },
             "args" => [
               {
@@ -95416,7 +97490,8 @@ $CONF = {
               "ru" => "Прототип '%{arg1}' заменён атрибутом 'prototype(%{arg2})' в %{arg3}",
               "sr" => "Прототип „%{arg1}“ је замењен атрибутом „prototype(%{arg2})“ у потпрограму %{arg3}",
               "tr" => "%{arg3} içinde '%{arg1}' prototipinin yerini 'prototype(%{arg2})' özniteliği aldı",
-              "uk" => "Прототип '%{arg1}' перевизначено атрибутом 'prototype(%{arg2})' у %{arg3}"
+              "uk" => "Прототип '%{arg1}' перевизначено атрибутом 'prototype(%{arg2})' у %{arg3}",
+              "zh" => "声明的原型 '%{arg1}' 被 %{arg3} 中的属性 'prototype(%{arg2})' 覆盖"
             },
             "args" => [
               {
@@ -95506,7 +97581,8 @@ $CONF = {
               "ru" => "Возможна попытка разделить слова запятыми",
               "sr" => "Могући покушај раздвајања речи зарезима",
               "tr" => "Sözcükleri virgülle ayırma girişimi olabilir",
-              "uk" => "Можлива спроба розділити слова комами"
+              "uk" => "Можлива спроба розділити слова комами",
+              "zh" => "可能试图用逗号分隔单词"
             },
             "args" => []
           },
@@ -95549,7 +97625,8 @@ $CONF = {
               "ru" => "Возможна попытка поместить комментарии в список qw()",
               "sr" => "Могући покушај уметања коментара у qw() листу",
               "tr" => "qw() listesine açıklama ekleme girişimi olabilir",
-              "uk" => "Можлива спроба розмістити коментарі у списку qw()"
+              "uk" => "Можлива спроба розмістити коментарі у списку qw()",
+              "zh" => "可能试图在 qw() 列表中加入注释"
             },
             "args" => []
           },
@@ -95592,7 +97669,8 @@ $CONF = {
               "ru" => "Возможна попытка экранировать пробельные символы в списке qw()",
               "sr" => "Могући покушај заштите размака у qw() листи",
               "tr" => "qw() listesinde boşluğu kaçış karakteriyle koruma girişimi olabilir",
-              "uk" => "Можлива спроба екранувати пробільні символи у списку qw()"
+              "uk" => "Можлива спроба екранувати пробільні символи у списку qw()",
+              "zh" => "可能试图在 qw() 列表中转义空白"
             },
             "args" => []
           },
@@ -95636,7 +97714,8 @@ $CONF = {
               "ru" => "Недостаточно аргументов для формата",
               "sr" => "Нема довољно аргумената за формат",
               "tr" => "Biçim için yeterli bağımsız değişken yok",
-              "uk" => "Недостатньо аргументів формату"
+              "uk" => "Недостатньо аргументів формату",
+              "zh" => "格式参数不足"
             },
             "args" => []
           },
@@ -95679,7 +97758,8 @@ $CONF = {
               "ru" => "Строка \"%{arg1}\" без кавычек может совпасть с будущим зарезервированным словом",
               "sr" => "Ненаведени ниски знак „%{arg1}“ може се сукобити са будућом резервисаном речи",
               "tr" => "Tırnak içine alınmamış \"%{arg1}\" dizgesi gelecekte ayrılmış bir sözcükle çakışabilir",
-              "uk" => "Рядок \"%{arg1}\" без лапок може конфліктувати з майбутнім зарезервованим словом"
+              "uk" => "Рядок \"%{arg1}\" без лапок може конфліктувати з майбутнім зарезервованим словом",
+              "zh" => "未加引号的字符串 \"%{arg1}\" 可能与将来的保留字冲突"
             },
             "args" => [
               {
@@ -95729,7 +97809,8 @@ $CONF = {
               "ru" => "По-видимому, отсутствует точка с запятой",
               "sr" => "Изгледа да недостаје тачка-зарез",
               "tr" => "Noktalı virgül eksik görünüyor",
-              "uk" => "Схоже, бракує крапки з комою"
+              "uk" => "Схоже, бракує крапки з комою",
+              "zh" => "似乎缺少分号"
             },
             "args" => []
           },
@@ -95774,7 +97855,8 @@ $CONF = {
               "ru" => "Необходимо заключить \"%{arg1}\" в кавычки",
               "sr" => "Морате ставити наводнике око „%{arg1}“",
               "tr" => "\"%{arg1}\" tırnak içine alınmalı",
-              "uk" => "Потрібно взяти \"%{arg1}\" у лапки"
+              "uk" => "Потрібно взяти \"%{arg1}\" у лапки",
+              "zh" => "应为 \"%{arg1}\" 加上引号"
             },
             "args" => [
               {
@@ -95838,7 +97920,8 @@ $CONF = {
               "ru" => "Скалярное значение \@%{arg1}%{arg2}%{arg3}%{arg4} лучше записать как \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "sr" => "Скаларну вредност \@%{arg1}%{arg2}%{arg3}%{arg4} боље је написати као \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "tr" => "Skaler bağlamdaki \@%{arg1}%{arg2}%{arg3}%{arg4} değeri, \$%{arg5}%{arg6}%{arg7}%{arg8} olarak yazılsa daha iyi olur",
-              "uk" => "Скалярне значення \@%{arg1}%{arg2}%{arg3}%{arg4} краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}"
+              "uk" => "Скалярне значення \@%{arg1}%{arg2}%{arg3}%{arg4} краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}",
+              "zh" => "标量值 \@%{arg1}%{arg2}%{arg3}%{arg4} 最好写成 \$%{arg5}%{arg6}%{arg7}%{arg8}"
             },
             "args" => [
               {
@@ -95926,7 +98009,8 @@ $CONF = {
               "ru" => "Скалярное значение \@%{arg1}%{arg2}%{arg3}%{arg4} лучше записать как \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "sr" => "Скаларну вредност \@%{arg1}%{arg2}%{arg3}%{arg4} боље је написати као \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "tr" => "Skaler bağlamdaki \@%{arg1}%{arg2}%{arg3}%{arg4} değeri, \$%{arg5}%{arg6}%{arg7}%{arg8} olarak yazılsa daha iyi olur",
-              "uk" => "Скалярне значення \@%{arg1}%{arg2}%{arg3}%{arg4} краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}"
+              "uk" => "Скалярне значення \@%{arg1}%{arg2}%{arg3}%{arg4} краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}",
+              "zh" => "标量值 \@%{arg1}%{arg2}%{arg3}%{arg4} 最好写成 \$%{arg5}%{arg6}%{arg7}%{arg8}"
             },
             "args" => [
               {
@@ -96013,7 +98097,8 @@ $CONF = {
               "ru" => "\"%{arg1} %{arg2}\" используется в сравнении для sort",
               "sr" => "„%{arg1} %{arg2}“ употребљено у поређењу за sort",
               "tr" => "Sıralama karşılaştırmasında \"%{arg1} %{arg2}\" kullanıldı",
-              "uk" => "\"%{arg1} %{arg2}\" використано в порівнянні для sort"
+              "uk" => "\"%{arg1} %{arg2}\" використано в порівнянні для sort",
+              "zh" => "在 sort 比较中使用了 \"%{arg1} %{arg2}\""
             },
             "args" => [
               {
@@ -96069,7 +98154,8 @@ $CONF = {
               "ru" => "\\%{arg1} лучше записать как \$%{arg2}",
               "sr" => "\\%{arg1} је боље записати као \$%{arg2}",
               "tr" => "\\%{arg1} yerine \$%{arg2} kullanılsa daha iyi olur",
-              "uk" => "\\%{arg1} краще записати як \$%{arg2}"
+              "uk" => "\\%{arg1} краще записати як \$%{arg2}",
+              "zh" => "\\%{arg1} 最好改写为 \$%{arg2}"
             },
             "args" => [
               {
@@ -96125,7 +98211,8 @@ $CONF = {
               "ru" => "Нельзя использовать \\%{arg1} в значении \$%{arg2} в выражении",
               "sr" => "У изразу се \\%{arg1} не може користити у значењу \$%{arg2}",
               "tr" => "Bir ifade içinde \$%{arg2} anlamında \\%{arg1} kullanılamaz",
-              "uk" => "Не можна використовувати \\%{arg1} у значенні \$%{arg2} у виразі"
+              "uk" => "Не можна використовувати \\%{arg1} у значенні \$%{arg2} у виразі",
+              "zh" => "在表达式中，不能用 \\%{arg1} 表示 \$%{arg2}"
             },
             "args" => [
               {
@@ -96180,7 +98267,8 @@ $CONF = {
               "ru" => "Вызов detach для потока, который не удалось запустить",
               "sr" => "раздвајање нити која није могла да се покрене",
               "tr" => "Başlatılamamış bir iş parçacığını ayırma",
-              "uk" => "Від'єднання потоку, який не вдалося запустити"
+              "uk" => "Від'єднання потоку, який не вдалося запустити",
+              "zh" => "尝试 detach 一个无法启动的线程"
             },
             "args" => []
           },
@@ -96222,7 +98310,8 @@ $CONF = {
               "ru" => "Ошибка DevCloseDC(): %{arg1}",
               "sr" => "DevCloseDC() није успео: %{arg1}",
               "tr" => "DevCloseDC() başarısız oldu: %{arg1}",
-              "uk" => "Не вдалося виконати DevCloseDC(): %{arg1}"
+              "uk" => "Не вдалося виконати DevCloseDC(): %{arg1}",
+              "zh" => "DevCloseDC() 失败：%{arg1}"
             },
             "args" => [
               {
@@ -96271,7 +98360,8 @@ $CONF = {
               "ru" => "Не удалось найти имя DLL для модуля `%{arg1}' по дескриптору %{arg2}, rc=%{arg3}=%{arg4}",
               "sr" => "Није могуће пронаћи име DLL-а за модул `%{arg1}' помоћу ручке %{arg2}, rc=%{arg3}=%{arg4}",
               "tr" => "%{arg1} modülünün DLL adı, %{arg2} tanıtıcısı kullanılarak bulunamıyor; rc=%{arg3}=%{arg4}",
-              "uk" => "Не вдалося знайти ім'я DLL для модуля `%{arg1}' за дескриптором %{arg2}, rc=%{arg3}=%{arg4}"
+              "uk" => "Не вдалося знайти ім'я DLL для модуля `%{arg1}' за дескриптором %{arg2}, rc=%{arg3}=%{arg4}",
+              "zh" => "无法通过句柄 %{arg2} 查找模块 `%{arg1}' 的 DLL 名称，rc=%{arg3}=%{arg4}"
             },
             "args" => [
               {
@@ -96335,7 +98425,8 @@ $CONF = {
               "ru" => "Не удалось загрузить DLL `%{arg1}', возможный проблемный модуль `%{arg2}'",
               "sr" => "Није могуће учитати DLL `%{arg1}', могући проблематични модул `%{arg2}'",
               "tr" => "%{arg1} DLL'si yüklenemiyor; sorunlu modül %{arg2} olabilir",
-              "uk" => "Не вдалося завантажити DLL `%{arg1}', можливий проблемний модуль `%{arg2}'"
+              "uk" => "Не вдалося завантажити DLL `%{arg1}', можливий проблемний модуль `%{arg2}'",
+              "zh" => "无法加载 DLL `%{arg1}'，可能有问题的模块：`%{arg2}'"
             },
             "args" => [
               {
@@ -96388,7 +98479,8 @@ $CONF = {
               "ru" => "Неожиданный режим программы %{arg1} при обратном переходе из PM",
               "sr" => "Неочекивани режим програма %{arg1} при повратку из PM режима",
               "tr" => "PM'den geri dönülürken beklenmeyen %{arg1} program kipi",
-              "uk" => "Неочікуваний режим програми %{arg1} під час повернення з режиму PM"
+              "uk" => "Неочікуваний режим програми %{arg1} під час повернення з режиму PM",
+              "zh" => "从 PM 返回时，程序模式 %{arg1} 出乎预期"
             },
             "args" => [
               {
@@ -96436,7 +98528,8 @@ $CONF = {
               "ru" => "Вызов detach для уже отсоединённого потока",
               "sr" => "раздвајање већ раздвојене нити",
               "tr" => "Zaten ayrılmış bir iş parçacığında detach çağrısı",
-              "uk" => "detach для вже від'єднаного потоку"
+              "uk" => "detach для вже від'єднаного потоку",
+              "zh" => "尝试对已分离的线程执行 detach"
             },
             "args" => []
           },
@@ -96479,7 +98572,8 @@ $CONF = {
               "ru" => "Не удалось прочитать environ библиотеки CRTL\n",
               "sr" => "Не могу да прочитам CRTL environ\n",
               "tr" => "CRTL environ okunamıyor\n",
-              "uk" => "Не вдалося прочитати environ бібліотеки CRTL\n"
+              "uk" => "Не вдалося прочитати environ бібліотеки CRTL\n",
+              "zh" => "无法读取 CRTL environ\n"
             },
             "args" => []
           },
@@ -96522,7 +98616,8 @@ $CONF = {
               "ru" => "getpwnam вернула недопустимый UIC %{uic} для пользователя \"%{name}\"",
               "sr" => "getpwnam је вратио неважећи UIC %{uic} за корисника „%{name}”",
               "tr" => "getpwnam, \"%{name}\" kullanıcısı için geçersiz UIC %{uic} döndürdü",
-              "uk" => "getpwnam повернула некоректний UIC %{uic} для користувача \"%{name}\""
+              "uk" => "getpwnam повернула некоректний UIC %{uic} для користувача \"%{name}\"",
+              "zh" => "getpwnam 为用户 \"%{name}\" 返回了无效的 UIC %{uic}"
             },
             "args" => [
               {
@@ -96575,7 +98670,8 @@ $CONF = {
               "ru" => "нет информации о смещении относительно UTC; предполагается, что местное время совпадает с UTC",
               "sr" => "нема података о UTC помаку; претпоставља се да је локално време UTC",
               "tr" => "UTC farkı bilgisi yok; yerel saat UTC kabul ediliyor",
-              "uk" => "немає даних про зсув від UTC; вважається, що місцевий час відповідає UTC"
+              "uk" => "немає даних про зсув від UTC; вважається, що місцевий час відповідає UTC",
+              "zh" => "没有 UTC 偏移信息；假定本地时间为 UTC"
             },
             "args" => []
           },
@@ -96617,7 +98713,8 @@ $CONF = {
               "ru" => "Завершение по сигналу SIG%{arg2}(%{arg3})\n",
               "sr" => "Прекида се рад услед сигнала SIG%{arg2}(%{arg3})\n",
               "tr" => "SIG%{arg2}(%{arg3}) sinyali nedeniyle sonlandırılıyor\n",
-              "uk" => "Завершення через сигнал SIG%{arg2}(%{arg3})\n"
+              "uk" => "Завершення через сигнал SIG%{arg2}(%{arg3})\n",
+              "zh" => "因信号 SIG%{arg2}(%{arg3}) 而终止\n"
             },
             "args" => [
               {
@@ -96670,7 +98767,8 @@ $CONF = {
               "ru" => "Использование неинициализированного значения",
               "sr" => "Употреба неиницијализоване вредности",
               "tr" => "Başlatılmamış değer kullanımı",
-              "uk" => "Використання неініціалізованого значення"
+              "uk" => "Використання неініціалізованого значення",
+              "zh" => "使用了未初始化的值"
             },
             "args" => []
           },
@@ -96769,6 +98867,10 @@ $CONF = {
               "uk" => {
                 "*" => "Використання неініціалізованого значення у %{operation}",
                 "named" => "Використання неініціалізованого значення %{name} у %{operation}"
+              },
+              "zh" => {
+                "named" => "在 %{operation} 中使用未初始化的值 %{name}",
+                "unnamed" => "在 %{operation} 中使用未初始化的值"
               }
             },
             "args" => [
@@ -96829,7 +98931,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -96875,7 +98978,8 @@ $CONF = {
               "ru" => "Значение символа в формате '%{arg1}' приведено по модулю 256 в unpack",
               "sr" => "Знак у формату „%{arg1}” је сведен на бајт при unpack",
               "tr" => "unpack içinde '%{arg1}' biçimindeki karakter bayta sarıldı",
-              "uk" => "Значення символу у форматі '%{arg1}' зведено за модулем 256 у unpack"
+              "uk" => "Значення символу у форматі '%{arg1}' зведено за модулем 256 у unpack",
+              "zh" => "unpack 中 '%{arg1}' 格式的字符被截取为单字节"
             },
             "args" => [
               {
@@ -96925,7 +99029,8 @@ $CONF = {
               "ru" => "Недопустимый тип ',' в %{arg1}",
               "sr" => "Неважећа врста „,” у %{arg1}",
               "tr" => "%{arg1} içinde geçersiz ',' türü",
-              "uk" => "Недопустимий тип ',' у %{arg1}"
+              "uk" => "Недопустимий тип ',' у %{arg1}",
+              "zh" => "%{arg1} 中的无效类型 ','"
             },
             "args" => [
               {
@@ -96975,7 +99080,8 @@ $CONF = {
               "ru" => "Повторный модификатор '%{arg1}' после '%{arg2}' в %{arg3}",
               "sr" => "Дуплирани модификатор „%{arg1}” после „%{arg2}” у %{arg3}",
               "tr" => "%{arg3} içinde '%{arg2}' sonrasında yinelenen '%{arg1}' değiştiricisi",
-              "uk" => "Повторний модифікатор '%{arg1}' після '%{arg2}' у %{arg3}"
+              "uk" => "Повторний модифікатор '%{arg1}' після '%{arg2}' у %{arg3}",
+              "zh" => "在 '%{arg2}' 后重复使用修饰符 '%{arg1}'，格式为 %{arg3}"
             },
             "args" => [
               {
@@ -97075,6 +99181,9 @@ $CONF = {
                 "*" => "Спроба виконати untie, коли ще існує %{arg1} внутрішніх посилань",
                 "few" => "Спроба виконати untie, коли ще існують %{arg1} внутрішні посилання",
                 "one" => "Спроба виконати untie, коли ще існує %{arg1} внутрішнє посилання"
+              },
+              "zh" => {
+                "*" => "调用 untie 时仍有 %{arg1} 个内部引用"
               }
             },
             "args" => [
@@ -97132,7 +99241,8 @@ $CONF = {
               "ru" => "%{exsv}",
               "sr" => "%{exsv}",
               "tr" => "%{exsv}",
-              "uk" => "%{exsv}"
+              "uk" => "%{exsv}",
+              "zh" => "%{exsv}"
             },
             "args" => [
               {
@@ -97182,7 +99292,8 @@ $CONF = {
               "ru" => "Недопустимое отрицательное число (%{arg1}) в chr",
               "sr" => "Неважећи негативан број (%{arg1}) у chr",
               "tr" => "chr içinde geçersiz negatif sayı (%{arg1})",
-              "uk" => "Неприпустиме від'ємне число (%{arg1}) у chr"
+              "uk" => "Неприпустиме від'ємне число (%{arg1}) у chr",
+              "zh" => "chr 中的负数 (%{arg1}) 无效"
             },
             "args" => [
               {
@@ -97287,6 +99398,10 @@ $CONF = {
               "uk" => {
                 "*" => "Некоректно закодований символ UTF-8: %{bytes} (неочікуваний байт продовження 0x%{byte} без попереднього початкового байта)",
                 "operation" => "Некоректно закодований символ UTF-8: %{bytes} (неочікуваний байт продовження 0x%{byte} без попереднього початкового байта) у %{operation}"
+              },
+              "zh" => {
+                "none" => "格式错误的 UTF-8 字符：%{bytes}（出现意外的续接字节 0x%{byte}，前面没有起始字节）",
+                "operation" => "格式错误的 UTF-8 字符：%{bytes}（出现意外的续接字节 0x%{byte}，前面没有起始字节）——发生于 %{operation}"
               }
             },
             "args" => [
@@ -97344,7 +99459,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -97449,6 +99565,10 @@ $CONF = {
               "uk" => {
                 "*" => "Некоректно сформований символ UTF-8: (порожній рядок)",
                 "operation" => "Некоректно сформований символ UTF-8: (порожній рядок) у %{operation}"
+              },
+              "zh" => {
+                "none" => "格式错误的 UTF-8 字符：（空字符串）",
+                "operation" => "格式错误的 UTF-8 字符：（空字符串）——发生于 %{operation}"
               }
             },
             "args" => [
@@ -97496,7 +99616,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -97600,6 +99721,10 @@ $CONF = {
               "uk" => {
                 "*" => "Несимвол Unicode U+%{arg1} не рекомендовано використовувати для відкритого обміну даними",
                 "operation" => "Несимвол Unicode U+%{arg1} не рекомендовано використовувати для відкритого обміну даними у %{operation}"
+              },
+              "zh" => {
+                "none" => "Unicode 非字符 U+%{arg1} 不建议用于开放式信息交换",
+                "operation" => "Unicode 非字符 U+%{arg1} 不建议在 %{operation} 中用于开放式信息交换"
               }
             },
             "args" => [
@@ -97653,7 +99778,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -97703,7 +99829,8 @@ $CONF = {
               "ru" => "Несимвол Unicode U+%{arg1} не рекомендуется использовать для открытого обмена данными",
               "sr" => "Unicode некарактер U+%{arg1} се не препоручује за отворену размену",
               "tr" => "Unicode U+%{arg1} karakter olmayan değeri açık alışveriş için önerilmez",
-              "uk" => "Несимвол Unicode U+%{arg1} не рекомендовано використовувати для відкритого обміну даними"
+              "uk" => "Несимвол Unicode U+%{arg1} не рекомендовано використовувати для відкритого обміну даними",
+              "zh" => "代码点 0x%{arg1} 不是 Unicode，需要 Perl 扩展支持，因此不可移植"
             },
             "args" => [
               {
@@ -97809,6 +99936,10 @@ $CONF = {
               "uk" => {
                 "*" => "Будь-яка послідовність UTF-8, що починається з \"%{prefix}\", позначає кодову точку поза Unicode; її використання може бути непереносним",
                 "operation" => "Будь-яка послідовність UTF-8, що починається з \"%{prefix}\", позначає кодову точку поза Unicode; її використання у %{operation} може бути непереносним"
+              },
+              "zh" => {
+                "none" => "任何以“%{prefix}”开头的 UTF-8 序列都表示非 Unicode 码点，可能不可移植",
+                "operation" => "任何以“%{prefix}”开头的 UTF-8 序列都表示非 Unicode 码点，在 %{operation} 中可能不可移植"
               }
             },
             "args" => [
@@ -97861,7 +99992,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -97911,7 +100043,8 @@ $CONF = {
               "ru" => "Операция \"%{arg1}\" возвращает свой аргумент без изменений для кодовой точки 0x%{arg2}, не входящей в Unicode",
               "sr" => "Операција „%{arg1}“ враћа свој аргумент за кодну тачку изван Уникода 0x%{arg2}",
               "tr" => "\"%{arg1}\" işlemi, Unicode dışı kod noktası 0x%{arg2} için bağımsız değişkenini değiştirmeden döndürür",
-              "uk" => "Операція \"%{arg1}\" повертає свій аргумент без змін для кодової точки поза Unicode 0x%{arg2}"
+              "uk" => "Операція \"%{arg1}\" повертає свій аргумент без змін для кодової точки поза Unicode 0x%{arg2}",
+              "zh" => "操作“%{arg1}”对非 Unicode 码位 0x%{arg2} 返回其参数"
             },
             "args" => [
               {
@@ -97955,7 +100088,8 @@ $CONF = {
                 "ru" => "nominative",
                 "sr" => "nominative",
                 "tr" => "operation",
-                "uk" => "nominative"
+                "uk" => "nominative",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -98053,6 +100187,10 @@ $CONF = {
               "uk" => {
                 "*" => "Кодова точка 0x%{arg1} не належить до Unicode, її використання може бути непереносним",
                 "operation" => "Кодова точка 0x%{arg1} не належить до Unicode, її використання у %{operation} може бути непереносним"
+              },
+              "zh" => {
+                "none" => "码点 0x%{arg1} 不是 Unicode，可能不可移植",
+                "operation" => "码点 0x%{arg1} 不是 Unicode，在 %{operation} 中可能不可移植"
               }
             },
             "args" => [
@@ -98105,7 +100243,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -98209,6 +100348,10 @@ $CONF = {
               "uk" => {
                 "*" => "Кодова точка 0x%{arg1} не належить до Unicode, потребує розширення Perl і тому є непереносною",
                 "operation" => "Кодова точка 0x%{arg1} не належить до Unicode, потребує розширення Perl і тому є непереносною в %{operation}"
+              },
+              "zh" => {
+                "none" => "码点 0x%{arg1} 不是 Unicode，需要 Perl 扩展，因此不可移植",
+                "operation" => "码点 0x%{arg1} 不是 Unicode，需要 Perl 扩展，因此在 %{operation} 中不可移植"
               }
             },
             "args" => [
@@ -98261,7 +100404,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -98365,6 +100509,10 @@ $CONF = {
               "uk" => {
                 "*" => "Будь-яка послідовність UTF-8, що починається з \"%{prefix}\", є розширенням Perl, тому не є переносимою",
                 "operation" => "Будь-яка послідовність UTF-8, що починається з \"%{prefix}\", є розширенням Perl, тому не є переносимою у %{operation}"
+              },
+              "zh" => {
+                "none" => "任何以“%{prefix}”开头的 UTF-8 序列都是 Perl 扩展，因此不可移植",
+                "operation" => "任何以“%{prefix}”开头的 UTF-8 序列都是 Perl 扩展，因此在 %{operation} 中不可移植"
               }
             },
             "args" => [
@@ -98417,7 +100565,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -98468,7 +100617,8 @@ $CONF = {
               "ru" => "Кодовая точка 0x%{arg1}, не входящая в Unicode, сопоставлена со свойством Unicode; результат может быть непереносимым",
               "sr" => "Поклопљена је не-Уникодна кодна тачка 0x%{arg1} са Unicode својством; можда није преносиво",
               "tr" => "Unicode dışı %{arg1} kod noktası Unicode özelliğiyle eşleşti; taşınabilir olmayabilir",
-              "uk" => "Кодову точку поза Unicode 0x%{arg1} зіставлено з властивістю Unicode; це може бути непереносним"
+              "uk" => "Кодову точку поза Unicode 0x%{arg1} зіставлено з властивістю Unicode; це може бути непереносним",
+              "zh" => "将非 Unicode 码位 0x%{arg1} 与 Unicode 属性匹配；可能不具可移植性"
             },
             "args" => [
               {
@@ -98573,6 +100723,10 @@ $CONF = {
               "uk" => {
                 "*" => "Некоректно закодований символ UTF-8: %{bytes} (переповнення)",
                 "operation" => "Некоректно закодований символ UTF-8: %{bytes} (переповнення) у %{operation}"
+              },
+              "zh" => {
+                "none" => "格式错误的 UTF-8 字符：%{bytes}（溢出）",
+                "operation" => "格式错误的 UTF-8 字符：%{bytes}（溢出）——发生于 %{operation}"
               }
             },
             "args" => [
@@ -98625,7 +100779,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -98730,6 +100885,10 @@ $CONF = {
               "uk" => {
                 "*" => "Некоректно закодований символ UTF-8: %{bytes} (будь-яка послідовність UTF-8, що починається з \"%{prefix}\", є надмірно довгою й може та має бути подана іншою, коротшою послідовністю)",
                 "operation" => "Некоректно закодований символ UTF-8: %{bytes} (будь-яка послідовність UTF-8, що починається з \"%{prefix}\", є надмірно довгою й може та має бути подана іншою, коротшою послідовністю) у %{operation}"
+              },
+              "zh" => {
+                "none" => "格式错误的 UTF-8 字符：%{bytes}（任何以“%{prefix}”开头的 UTF-8 序列都是过长编码，应当也可以用更短的其他序列表示）",
+                "operation" => "格式错误的 UTF-8 字符：%{bytes}（任何以“%{prefix}”开头的 UTF-8 序列都是过长编码，应当也可以用更短的其他序列表示）——发生于 %{operation}"
               }
             },
             "args" => [
@@ -98787,7 +100946,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -98892,6 +101052,10 @@ $CONF = {
               "uk" => {
                 "*" => "Некоректно сформований символ UTF-8: %{bytes} (надмірно довге кодування; натомість використовуйте %{canonical_bytes} для подання %{codepoint})",
                 "operation" => "Некоректно сформований символ UTF-8: %{bytes} (надмірно довге кодування; натомість використовуйте %{canonical_bytes} для подання %{codepoint}) у %{operation}"
+              },
+              "zh" => {
+                "none" => "格式错误的 UTF-8 字符：%{bytes}（过长编码；应使用 %{canonical_bytes} 表示 %{codepoint}）",
+                "operation" => "格式错误的 UTF-8 字符：%{bytes}（过长编码；应使用 %{canonical_bytes} 表示 %{codepoint}）——发生于 %{operation}"
               }
             },
             "args" => [
@@ -98954,7 +101118,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -99006,7 +101171,8 @@ $CONF = {
               "ru" => "utf8 \"\\x%{arg1}\" не соответствует символу Unicode",
               "sr" => "utf8 „\\x%{arg1}” се не пресликава у Unicode",
               "tr" => "utf8 \"\\x%{arg1}\" Unicode karşılığı değildir",
-              "uk" => "utf8 \"\\x%{arg1}\" не відповідає символу Unicode"
+              "uk" => "utf8 \"\\x%{arg1}\" не відповідає символу Unicode",
+              "zh" => "utf8 \"\\x%{arg1}\" 无法映射到 Unicode"
             },
             "args" => [
               {
@@ -99056,7 +101222,8 @@ $CONF = {
               "ru" => "Строки с кодовыми точками выше 0xFF нельзя использовать в качестве содержимого файлов в памяти\n",
               "sr" => "Низови са кодним тачкама већим од 0xFF не могу се пресликати у ручке датотека у меморији\n",
               "tr" => "0xFF üzerindeki kod noktalarına sahip dizgeler bellek içi dosya tutamaçlarına eşlenemez\n",
-              "uk" => "Рядки з кодовими точками понад 0xFF не можна відображати на файлові дескриптори в пам'яті\n"
+              "uk" => "Рядки з кодовими точками понад 0xFF не можна відображати на файлові дескриптори в пам'яті\n",
+              "zh" => "代码点超过 0xFF 的字符串不能映射到内存文件句柄中\n"
             },
             "args" => []
           },
@@ -99265,6 +101432,16 @@ $CONF = {
                   "*" => "Некоректно сформований символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, що не є байтом продовження; одразу після початкового байта 0x%{start_byte}; потрібна довжина послідовності в байтах: %{expected_bytes}; довжина коректного префікса: %{available_bytes})",
                   "operation" => "Некоректно сформований символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, що не є байтом продовження; одразу після початкового байта 0x%{start_byte}; потрібна довжина послідовності в байтах: %{expected_bytes}; довжина коректного префікса: %{available_bytes}) у %{operation}"
                 }
+              },
+              "zh" => {
+                "after_bytes" => {
+                  "none" => "格式错误的 UTF-8 字符：%{bytes}（出现意外的非续接字节 0x%{unexpected_byte}；此前有一个有效前缀，长度为 %{available_bytes} 个字节，起始字节为 0x%{start_byte}；所需序列长度为 %{expected_bytes} 个字节；有效前缀长度为 %{available_bytes} 个字节）",
+                  "operation" => "格式错误的 UTF-8 字符：%{bytes}（出现意外的非续接字节 0x%{unexpected_byte}；此前有一个有效前缀，长度为 %{available_bytes} 个字节，起始字节为 0x%{start_byte}；所需序列长度为 %{expected_bytes} 个字节；有效前缀长度为 %{available_bytes} 个字节）——发生于 %{operation}"
+                },
+                "immediate" => {
+                  "none" => "格式错误的 UTF-8 字符：%{bytes}（起始字节 0x%{start_byte} 后立即出现意外的非续接字节 0x%{unexpected_byte}；所需序列长度为 %{expected_bytes} 个字节；有效前缀长度为 %{available_bytes} 个字节）",
+                  "operation" => "格式错误的 UTF-8 字符：%{bytes}（起始字节 0x%{start_byte} 后立即出现意外的非续接字节 0x%{unexpected_byte}；所需序列长度为 %{expected_bytes} 个字节；有效前缀长度为 %{available_bytes} 个字节）——发生于 %{operation}"
+                }
               }
             },
             "args" => [
@@ -99346,7 +101523,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -99534,6 +101712,12 @@ $CONF = {
                   "*" => "Некоректно сформований символ UTF-8: %{bytes} (надто коротка послідовність; кількість доступних байтів: %{available_bytes}, потрібно: %{expected_bytes})",
                   "operation" => "Некоректно сформований символ UTF-8: %{bytes} (надто коротка послідовність; кількість доступних байтів: %{available_bytes}, потрібно: %{expected_bytes}) у %{operation}"
                 }
+              },
+              "zh" => {
+                "*" => {
+                  "none" => "格式错误的 UTF-8 字符：%{bytes}（序列过短；有 %{available_bytes} 个字节可用，需要 %{expected_bytes} 个）",
+                  "operation" => "格式错误的 UTF-8 字符：%{bytes}（序列过短；有 %{available_bytes} 个字节可用，需要 %{expected_bytes} 个）——发生于 %{operation}"
+                }
               }
             },
             "args" => [
@@ -99602,7 +101786,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -99652,7 +101837,8 @@ $CONF = {
               "ru" => "Операция \"%{arg1}\" возвращает свой аргумент без изменений для суррогата UTF-16 U+%{arg2}",
               "sr" => "Операција „%{arg1}“ враћа свој аргумент за UTF-16 сурогат U+%{arg2}",
               "tr" => "\"%{arg1}\" işlemi, UTF-16 vekil kod noktası U+%{arg2} için bağımsız değişkenini değiştirmeden döndürür",
-              "uk" => "Операція \"%{arg1}\" повертає свій аргумент для сурогата UTF-16 U+%{arg2}"
+              "uk" => "Операція \"%{arg1}\" повертає свій аргумент для сурогата UTF-16 U+%{arg2}",
+              "zh" => "操作“%{arg1}”对 UTF-16 代理码位 U+%{arg2} 返回其参数"
             },
             "args" => [
               {
@@ -99696,7 +101882,8 @@ $CONF = {
                 "ru" => "nominative",
                 "sr" => "nominative",
                 "tr" => "operation",
-                "uk" => "nominative"
+                "uk" => "nominative",
+                "zh" => "default"
               },
               "source" => "arg1_operation"
             }
@@ -99794,6 +101981,10 @@ $CONF = {
               "uk" => {
                 "*" => "Сурогат UTF-16 U+%{arg1}",
                 "operation" => "Сурогат UTF-16 U+%{arg1} у %{operation}"
+              },
+              "zh" => {
+                "none" => "UTF-16 代理项 U+%{arg1}",
+                "operation" => "UTF-16 代理项 U+%{arg1}，发生于 %{operation}"
               }
             },
             "args" => [
@@ -99847,7 +102038,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -99897,7 +102089,8 @@ $CONF = {
               "ru" => "Суррогат UTF-16 U+%{arg1}",
               "sr" => "UTF-16 сурогат U+%{arg1}",
               "tr" => "UTF-16 vekil kod noktası U+%{arg1}",
-              "uk" => "Сурогат UTF-16 U+%{arg1}"
+              "uk" => "Сурогат UTF-16 U+%{arg1}",
+              "zh" => "UTF-16 代理项 U+%{arg1}"
             },
             "args" => [
               {
@@ -99950,7 +102143,8 @@ $CONF = {
               "ru" => "Суррогат Unicode U+%{arg1} недопустим в UTF-8",
               "sr" => "Уникод сурогат U+%{arg1} није дозвољен у UTF-8",
               "tr" => "Unicode vekil kod noktası U+%{arg1}, UTF-8'de geçersizdir",
-              "uk" => "Сурогат Unicode U+%{arg1} є недопустимим у UTF-8"
+              "uk" => "Сурогат Unicode U+%{arg1} є недопустимим у UTF-8",
+              "zh" => "UTF-8 中不能使用 Unicode 代理码位 U+%{arg1}"
             },
             "args" => [
               {
@@ -100054,6 +102248,10 @@ $CONF = {
               "uk" => {
                 "*" => "Сурогат UTF-16 (будь-яка послідовність UTF-8, що починається з \"%{prefix}\", кодує сурогат)",
                 "operation" => "Сурогат UTF-16 (будь-яка послідовність UTF-8, що починається з \"%{prefix}\", кодує сурогат) у %{operation}"
+              },
+              "zh" => {
+                "none" => "UTF-16 代理项（任何以“%{prefix}”开头的 UTF-8 序列都表示代理项）",
+                "operation" => "UTF-16 代理项（任何以“%{prefix}”开头的 UTF-8 序列都表示代理项），发生于 %{operation}"
               }
             },
             "args" => [
@@ -100106,7 +102304,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -100157,7 +102356,8 @@ $CONF = {
               "ru" => "Некорректный символ UTF-8 (неожиданный конец строки) в %{operation}",
               "sr" => "Неисправан UTF-8 знак (неочекивани крај ниске) у %{operation}",
               "tr" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı (dizge beklenmedik biçimde sona erdi)",
-              "uk" => "Некоректний символ UTF-8 (неочікуваний кінець рядка) у %{operation}"
+              "uk" => "Некоректний символ UTF-8 (неочікуваний кінець рядка) у %{operation}",
+              "zh" => "UTF-8 字符格式错误（字符串意外结束），发生于 %{operation} 操作中"
             },
             "args" => [
               {
@@ -100195,7 +102395,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -100241,7 +102442,8 @@ $CONF = {
               "ru" => "Некорректный символ UTF-8 (неожиданный конец строки)",
               "sr" => "Неисправан UTF-8 знак (неочекивани крај ниске)",
               "tr" => "Biçimsiz UTF-8 karakteri (dizgenin beklenmedik biçimde sonu)",
-              "uk" => "Некоректно сформований символ UTF-8 (неочікуваний кінець рядка)"
+              "uk" => "Некоректно сформований символ UTF-8 (неочікуваний кінець рядка)",
+              "zh" => "UTF-8 字符格式错误（字符串意外结束）"
             },
             "args" => []
           },
@@ -100340,6 +102542,10 @@ $CONF = {
               "uk" => {
                 "*" => "Некоректний символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, що не є байтом продовження, одразу після початкового байта 0x%{start_byte}; потрібно 2 байти, отримано 1)",
                 "operation" => "Некоректний символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, що не є байтом продовження, одразу після початкового байта 0x%{start_byte}; потрібно 2 байти, отримано 1) у %{operation}"
+              },
+              "zh" => {
+                "none" => "UTF-8 字符格式错误：%{bytes}（意外遇到非续接字节 0x%{unexpected_byte}，紧跟在起始字节 0x%{start_byte} 之后；需要 2 个字节，实际得到 1 个）",
+                "operation" => "UTF-8 字符格式错误：%{bytes}（意外遇到非续接字节 0x%{unexpected_byte}，紧跟在起始字节 0x%{start_byte} 之后；需要 2 个字节，实际得到 1 个），发生于 %{operation} 操作中"
               }
             },
             "args" => [
@@ -100408,7 +102614,8 @@ $CONF = {
                 "ru" => "prepositional",
                 "sr" => "locative",
                 "tr" => "operation",
-                "uk" => "locative"
+                "uk" => "locative",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -100549,6 +102756,13 @@ $CONF = {
                 "*" => "Широкий символ у %{operation}",
                 "program_name" => "Широкий символ у \$0",
                 "setenv_key_encoding" => "Широкий символ у ключі setenv (кодування в utf8)"
+              },
+              "zh" => {
+                "print" => "print 中出现宽字符",
+                "program_name" => "\$0 中出现宽字符",
+                "setenv" => "setenv 中出现宽字符",
+                "setenv_key_encoding" => "setenv 键（编码为 utf8）中出现宽字符",
+                "warn" => "warn 中出现宽字符"
               }
             },
             "args" => [
@@ -100605,7 +102819,8 @@ $CONF = {
               "ru" => "Слишком поздно выполнять блок CHECK",
               "sr" => "Прекасно је за покретање блока CHECK",
               "tr" => "CHECK bloğunu çalıştırmak için çok geç",
-              "uk" => "Запізно виконувати блок CHECK"
+              "uk" => "Запізно виконувати блок CHECK",
+              "zh" => "现在运行 CHECK 块为时已晚"
             },
             "args" => []
           },
@@ -100648,7 +102863,8 @@ $CONF = {
               "ru" => "Слишком поздно выполнять блок INIT",
               "sr" => "Прeкасно је за покретање блока INIT",
               "tr" => "INIT bloğunu çalıştırmak için çok geç",
-              "uk" => "Запізно виконувати блок INIT"
+              "uk" => "Запізно виконувати блок INIT",
+              "zh" => "现在运行 INIT 块为时已晚"
             },
             "args" => []
           },
@@ -100873,6 +103089,17 @@ $CONF = {
                 "non_destructive_substitution" => "Марне використання підстановки без зміни оригіналу (s///r) у порожньому контексті",
                 "non_destructive_transliteration" => "Марне використання транслітерації без зміни оригіналу (tr///r) у порожньому контексті",
                 "variable" => "Марне використання змінної у порожньому контексті"
+              },
+              "zh" => {
+                "*" => "在 void 上下文中无用地使用了 %{arg1}",
+                "anonymous_array" => "在 void 上下文中无用地使用了匿名数组（[]）",
+                "anonymous_hash" => "在 void 上下文中无用地使用了匿名哈希（{}）",
+                "constant" => "在 void 上下文中无用地使用了常量（%{arg1}）",
+                "constant_undef" => "在 void 上下文中无用地使用了常量（undef）",
+                "negative_pattern_binding" => "在 void 上下文中无用地使用了否定模式绑定（!~）",
+                "non_destructive_substitution" => "在 void 上下文中无用地使用了非破坏性替换（s///r）",
+                "non_destructive_transliteration" => "在 void 上下文中无用地使用了非破坏性转写（tr///r）",
+                "variable" => "在 void 上下文中无用地使用了变量"
               }
             },
             "args" => [
@@ -100919,7 +103146,8 @@ $CONF = {
                 "ru" => "void_expression_genitive",
                 "sr" => "void_expression_genitive",
                 "tr" => "void_expression",
-                "uk" => "void_expression_genitive"
+                "uk" => "void_expression_genitive",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -101137,6 +103365,18 @@ $CONF = {
                 "non_destructive_substitution" => "Марне використання підстановки без зміни оригіналу (s///r) у порожньому контексті",
                 "non_destructive_transliteration" => "Марне використання транслітерації без зміни оригіналу (tr///r) у порожньому контексті",
                 "variable" => "Марне використання змінної у порожньому контексті"
+              },
+              "zh" => {
+                "*" => "在无效上下文中无用地使用了 %{arg1}",
+                "anonymous_array" => "在无效上下文中无用地使用了匿名数组（[]）",
+                "anonymous_hash" => "在无效上下文中无用地使用了匿名哈希（{}）",
+                "constant" => "在无效上下文中无用地使用了常量（%{arg1}）",
+                "constant_undef" => "在无效上下文中无用地使用了常量（undef）",
+                "literal" => "在无效上下文中无用地使用了字面量",
+                "negative_pattern_binding" => "在无效上下文中无用地使用了负向模式绑定（!~）",
+                "non_destructive_substitution" => "在无效上下文中无用地使用了非破坏性替换（s///r）",
+                "non_destructive_transliteration" => "在无效上下文中无用地使用了非破坏性字符转换（tr///r）",
+                "time" => "在无效上下文中无用地使用了 time"
               }
             },
             "args" => [
@@ -101184,7 +103424,8 @@ $CONF = {
                 "ru" => "void_expression_genitive",
                 "sr" => "void_expression_genitive",
                 "tr" => "void_expression",
-                "uk" => "void_expression_genitive"
+                "uk" => "void_expression_genitive",
+                "zh" => "default"
               },
               "source" => "operation_identity"
             }
@@ -101232,7 +103473,8 @@ $CONF = {
               "ru" => "%{text}",
               "sr" => "%{text}",
               "tr" => "%{text}",
-              "uk" => "%{text}"
+              "uk" => "%{text}",
+              "zh" => "%{text}"
             },
             "args" => [
               {
@@ -109855,6 +112097,10 @@ $CONF = {
     "uk" => {
       "cardinal" => "cardinal_rule_5",
       "ordinal" => "ordinal_rule_1"
+    },
+    "zh" => {
+      "cardinal" => "cardinal_rule_11",
+      "ordinal" => "ordinal_rule_1"
     }
   },
   "plural_rules" => {
@@ -109870,6 +112116,12 @@ $CONF = {
       "forms" => [
         "few",
         "one",
+        "other"
+      ]
+    },
+    "cardinal_rule_11" => {
+      "expression" => "\"other\"",
+      "forms" => [
         "other"
       ]
     },

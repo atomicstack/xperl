@@ -27,7 +27,7 @@ if ( $Config{usecrosscompile} ) {
   skip_all( "Not all files are available during cross-compilation" );
 }
 
-my $tests = 108;    # Diagnostic packs add 68 files, integer plural rules one.
+my $tests = 112;    # Diagnostic packs add 72 files, integer plural rules one.
 
 my %skip = ("regen_perly.pl"    => [qw(perly.act perly.h perly.tab)],
             "regen/keywords.pl" => [qw(keywords.c keywords.h)],
