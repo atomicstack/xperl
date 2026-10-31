@@ -34217,30 +34217,6 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Composition::Inheritance"
         },
-        "ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED" => {
-          "number" => 2746,
-          "severity" => "FATAL_ERROR",
-          "kind" => "CORE_RUNTIME",
-          "code" => "ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED",
-          "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED",
-          "source_files" => [
-            "class.c"
-          ],
-          "tags" => [
-            "subject:object_role_field"
-          ],
-          "message" => {
-            "templates" => {
-              "en" => "The :legacy_isa parent must be a conventional package"
-            },
-            "args" => []
-          },
-          "counts_as_error" => 1,
-          "emit" => {
-            "api" => "CROAK"
-          },
-          "class" => "XPerl::Diagnostic::Error::Object::Composition::Inheritance"
-        },
         "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_ANONYMOUS_STASH" => {
           "number" => 1045,
           "severity" => "FATAL_ERROR",
@@ -35543,7 +35519,7 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "A :legacy_isa class requires a :legacy_self field"
+              "en" => "A class with a conventional superclass requires a :blessed_self field"
             },
             "args" => []
           },
@@ -35918,7 +35894,7 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Class already has a declared or inherited :legacy_self field"
+              "en" => "Class already has a declared or inherited :blessed_self field"
             },
             "args" => []
           },
@@ -35942,7 +35918,7 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "The :legacy_self attribute requires one scalar field in a :legacy_isa class, without a value, initializer or :param"
+              "en" => "The :blessed_self attribute requires one scalar field in a class with a conventional superclass and takes no attribute value"
             },
             "args" => []
           },
@@ -107730,7 +107706,8 @@ $CONF = {
     2313,
     2391,
     2506,
-    2635
+    2635,
+    2746
   ],
   "severities" => {
     "ALIEN_ERROR" => "A",

@@ -64,8 +64,13 @@ next_test(); # account for is() inside thread
     sub new { my ($class, %args) = @_; bless \%args, $class }
     sub describe { my ($self) = @_; "$self->{x}:" . $self->colour }
 }
-class NativeThreadPoint :legacy_isa(LegacyThreadPoint) {
-    field $legacy :legacy_self;
+class NativeThreadPoint :isa(LegacyThreadPoint) {
+    field $legacy :blessed_self :param;
+    sub new ($class, %args) {
+        my $colour = delete $args{colour};
+        my $parent = $class->SUPER::new(%args);
+        return $class->CONSTRUCT(legacy => $parent, colour => $colour);
+    }
     field $colour :param;
     method colour { $colour }
 }
@@ -81,6 +86,21 @@ class NativeThreadPoint :legacy_isa(LegacyThreadPoint) {
         'cloned and newly constructed legacy associations work in a thread');
     is(join('', @{$result->[2]}), '', 'thread method calls leave no escaped references');
     is($obj->describe, '17:red', 'thread destruction leaves the parent association intact');
+}
+
+class ThreadSignatureConstructor {
+    field $value :param :reader;
+    sub new ($class, $value) { return $class->CONSTRUCT(value => $value) }
+}
+{
+    my $result = threads->create(sub {
+        return [
+            Testcase1->can('new') == Testcase1->can('CONSTRUCT'),
+            Testcase1->CONSTRUCT(x => 21)->x,
+            ThreadSignatureConstructor->new(22)->value,
+        ];
+    })->join;
+    is(join(',', @$result), '1,21,22', 'thread clones constructor aliases and signed constructors');
 }
 
 done_testing;

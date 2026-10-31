@@ -78,8 +78,9 @@ C<package> keyword. It can also optionally have attributes. If both are
 specified, the version number must come first, before the attributes.
 
 C<class> and C<package> declarations are similar, but classes automatically get
-a constructor named C<new> - you don't have to (and should not) write one.
-Additionally, in the class BLOCK you are allowed to declare fields and methods.
+a constructor named C<CONSTRUCT>. If the class does not declare its own C<new>,
+C<new> is an alias for C<CONSTRUCT>. Additionally, in the class BLOCK you are allowed
+to declare fields and methods.
 
 =head2 role
 
@@ -271,10 +272,11 @@ compilation will fail.
 The C<:isa> attribute will attempt to C<require> the named module if it is not
 already loaded.
 
-=head3 :legacy_isa
+=head4 Conventional superclasses
 
-A class may inherit from one conventional package with C<:legacy_isa>.
-The class must declare one scalar field marked C<:legacy_self>:
+C<:isa> accepts either a native class or a conventional package. When the
+superclass is conventional, the class must declare one scalar field marked
+C<:blessed_self>. The class author constructs that object explicitly:
 
     package Point {
         sub new {
@@ -288,26 +290,38 @@ The class must declare one scalar field marked C<:legacy_self>:
         }
     }
 
-    class RGBPoint :legacy_isa(Point) {
-        field $legacy :legacy_self;
+    class RGBPoint :isa(Point) {
+        field $legacy :blessed_self :param;
         field $red :param;
         field $green :param;
         field $blue :param;
 
+        sub new ($class, $x, $y, $red, $green, $blue) {
+            my $parent = $class->SUPER::new(x => $x, y => $y);
+            return $class->CONSTRUCT(
+                legacy => $parent, red => $red,
+                green => $green, blue => $blue,
+            );
+        }
+
         method kind { "rgb($red, $green, $blue)" }
     }
 
-    my $point = RGBPoint->new(
-        x => 10, y => 20, red => 200, green => 100, blue => 50,
-    );
+    my $point = RGBPoint->new(10, 20, 200, 100, 50);
     say $point->describe;  # (10, 20): rgb(200, 100, 50)
 
-The generated constructor sends native C<:param> arguments to the native
-fields and the remaining argument pairs to the parent's C<new>. The parent
-receives the subclass name and must return a non-native reference blessed
-into that subclass. Hash, array, scalar, and code references are supported.
-The parent constructor runs before native field initializers and C<ADJUST>.
-It cannot invoke native methods on its result before returning it.
+The generated C<CONSTRUCT> never calls a conventional parent constructor.
+A custom C<new> can call C<SUPER::new>, use a factory, or create a blessed
+reference itself. Supply the result through a C<:param> field, as above, or
+through a field initializer. The value must be a non-native reference blessed
+into the exact requested subclass. Hash, array, scalar, and code references
+are supported.
+
+The association is established when the marked field is initialized. Declare
+it before fields whose initializers call conventional methods. Calls before
+attachment fail. After attachment, later field initializers and C<ADJUST>
+blocks can use both native and conventional methods. A conventional parent
+constructor cannot call native methods on its result before attachment.
 
 Method lookup follows the subclass's inheritance normally. A selected
 conventional sub receives the legacy reference. A selected native method
@@ -320,13 +334,13 @@ The native object owns the legacy reference. A weak link on the legacy
 referent identifies its native owner. One legacy referent can belong to
 only one live native object. Further native subclasses use C<:isa> and
 inherit this association by field slot, independently of the lexical field
-name. A subclass cannot declare another C<:legacy_self> field, even under a
+name. A subclass cannot declare another C<:blessed_self> field, even under a
 different name. Use an inherited accessor if subclass methods need access to
-the legacy reference. C<:isa> and C<:legacy_isa> cannot both specify a
-parent on the same class. Roles cannot declare C<:legacy_isa>.
+the blessed reference. A class may specify only one superclass. Roles cannot
+declare C<:isa>.
 
 Field-hash restoration bypasses constructors as usual. It establishes the
-association using the restored C<:legacy_self> field, and rejects a referent
+association using the restored C<:blessed_self> field, and rejects a referent
 that already belongs to another live native object.
 
 =head3 :implements
@@ -365,12 +379,15 @@ as ordinary inheritance relationships.
 
 =head2 Field attributes
 
-=head3 :legacy_self
+=head3 :blessed_self
 
 This attribute marks the scalar field that holds the conventional parent's
-object in a C<:legacy_isa> class. It takes no attribute value, initializer,
-or C<:param>. The constructor fills the field and makes it read-only.
-The referenced object's contents remain mutable.
+object. It is available on a class that inherits from a conventional package
+via C<:isa>, and takes no attribute value. Use C<:param> or a field initializer
+to provide the blessed reference. The field initializer validates and attaches
+the object, then makes the field read-only. The referenced object's contents
+remain mutable. Exactly one such field is allowed, including inherited
+fields. It does not replace the native method's lexical C<$self>.
 
 =head3 :param
 
@@ -469,13 +486,48 @@ None yet.
 
 =head2 Construction
 
-Each object begins its life with a constructor call. The constructor is always
-named C<new> and is invoked like a method call on the class name:
+Each class has a generated C<CONSTRUCT> constructor accepting a flat list of named
+argument pairs. It allocates an instance, initializes its fields, and runs
+its C<ADJUST> blocks. If the class does not declare a local C<new>, that name
+is an alias for the same constructor:
 
     my $object = My::Class->new(%arguments);
+    my $other  = My::Class->CONSTRUCT(%arguments);
 
 During object construction, class fields are looked up in the C<%arguments>
 hash and populated where possible.
+
+A class may declare an ordinary C<sub new> with any signature. It can process
+arguments, call parent subs, and perform work before or after delegating to
+C<CONSTRUCT>:
+
+    class Point {
+        field $x :param :reader;
+        field $y :param :reader;
+
+        sub new ($class, $x, $y = 0) {
+            return $class->CONSTRUCT(x => $x, y => $y);
+        }
+    }
+
+    my $point = Point->new(10, 20);
+
+This is a C<sub>, not a C<method>: its first argument can be a class name.
+Its body and return value have normal subroutine semantics. If it does not
+call C<CONSTRUCT> or another operation that creates an instance, the framework does
+not allocate or initialize an object automatically. Calling C<CONSTRUCT> directly
+bypasses the custom C<new>.
+
+The default alias is installed when the class definition is finalized. Each
+class without a local C<new> receives its own alias, including subclasses of
+classes with a custom C<new>. To reuse a parent's custom constructor, declare
+an explicit forwarding sub or alias. A parent sub can call C<< $class->CONSTRUCT >>
+to select the requested subclass's generated constructor and field layout.
+C<SUPER::new> follows ordinary method lookup and calls the actual parent sub;
+it is not a separate argument-processing hook.
+
+C<CONSTRUCT> keeps the named-pair interface. A single hash reference is not treated
+as an alternative argument form.
 
 =head2 Adjustment
 
@@ -519,7 +571,7 @@ C<'OBJECT'>.
 An object is destroyed when the last reference to it goes away, just as with
 other data structures in Perl.
 
-For C<:legacy_isa> objects, the native object owns destruction. A native
+For objects with a C<:blessed_self> field, the native object owns destruction. A native
 C<DESTROY> override receives the native object and can explicitly call
 C<SUPER::DESTROY>. Otherwise, an inherited conventional destructor receives
 the legacy reference. Once native destruction is committed, Perl unblesses

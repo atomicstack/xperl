@@ -61,8 +61,19 @@ our (@dispatch, @constructors);
 }
 
 my $compiled = eval q{
-    class LegacyRGBPoint :legacy_isa(LegacyPoint) {
-        field $legacy_self :legacy_self;
+    class LegacyRGBPoint :isa(LegacyPoint) {
+        field $legacy_self :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my %args = @_;
+            my %native;
+            for my $name (qw(red green blue)) {
+                $native{$name} = delete $args{$name} if exists $args{$name};
+            }
+            my $parent = $class->SUPER::new(%args);
+            return $class->CONSTRUCT(legacy_self => $parent, %native);
+        }
+
         field $red :param;
         field $green :param;
         field $blue :param;
@@ -75,15 +86,26 @@ my $compiled = eval q{
 
         method legacy_object { $legacy_self }
     }
-    class SharedRGBPoint :legacy_isa(SharedLegacyPoint) {
-        field $legacy_self :legacy_self;
+    class SharedRGBPoint :isa(SharedLegacyPoint) {
+        field $legacy_self :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my %args = @_;
+            my %native;
+            for my $name (qw(tag)) {
+                $native{$name} = delete $args{$name} if exists $args{$name};
+            }
+            my $parent = $class->SUPER::new(%args);
+            return $class->CONSTRUCT(legacy_self => $parent, %native);
+        }
+
         field $tag :param;
         method kind { "shared $tag" }
     }
     1;
 };
 
-ok($compiled, 'class can declare a legacy superclass and legacy_self field');
+ok($compiled, 'class can declare a conventional superclass and blessed_self field');
 unless ($compiled) {
     diag($@);
     done_testing;
@@ -196,34 +218,89 @@ our (@destroyed, $resurrected);
 }
 
 my $more = eval q{
-    class InheritedDestroy :legacy_isa(DestructiblePoint) {
-        field $legacy :legacy_self;
+    class InheritedDestroy :isa(DestructiblePoint) {
+        field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+
     }
-    class NativeDestroy :legacy_isa(DestructiblePoint) {
-        field $legacy :legacy_self;
+    class NativeDestroy :isa(DestructiblePoint) {
+        field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+
         method DESTROY { push @main::destroyed, 'native:' . builtin::reftype($self) }
     }
-    class ChainedDestroy :legacy_isa(DestructiblePoint) {
-        field $legacy :legacy_self;
+    class ChainedDestroy :isa(DestructiblePoint) {
+        field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+
         method DESTROY {
             push @main::destroyed, 'native:' . builtin::reftype($self);
             $self->SUPER::DESTROY;
         }
     }
-    class ResurrectPoint :legacy_isa(DestructiblePoint) {
-        field $legacy :legacy_self;
+    class ResurrectPoint :isa(DestructiblePoint) {
+        field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+
         method DESTROY { $main::resurrected = $self unless $main::resurrected }
         method legacy_object { $legacy }
     }
-    class ArrayChild :legacy_isa(ArrayPoint) { field $legacy :legacy_self; }
-    class ScalarChild :legacy_isa(ScalarPoint) { field $legacy :legacy_self; }
-    class CodeChild :legacy_isa(CodePoint) { field $legacy :legacy_self; }
+    class ArrayChild :isa(ArrayPoint) { field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+ }
+    class ScalarChild :isa(ScalarPoint) { field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+ }
+    class CodeChild :isa(CodePoint) { field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+ }
     class NativeGrandchild :isa(LegacyRGBPoint) {
+        sub new {
+            my $class = shift;
+            my %args = @_;
+            my $extra = delete $args{extra};
+            my $parent = $class->LegacyPoint::new(x => delete $args{x}, y => delete $args{y});
+            return $class->CONSTRUCT(legacy_self => $parent, extra => $extra, %args);
+        }
         field $extra :param;
         method extra { $extra }
     }
-    class RebindPoint :legacy_isa(LegacyPoint) {
-        field $legacy :legacy_self;
+    class RebindPoint :isa(LegacyPoint) {
+        field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+
         method replace { $legacy = {} }
     }
     1;
@@ -286,15 +363,14 @@ if($more) {
 }
 
 for my $case (
-    ['MissingLegacyField', ':legacy_isa(LegacyPoint)', '', qr/requires a :legacy_self field/],
-    ['ArrayLegacyField', ':legacy_isa(LegacyPoint)', 'field @legacy :legacy_self;', qr/requires one scalar/],
-    ['DuplicateLegacyField', ':legacy_isa(LegacyPoint)', 'field $a :legacy_self; field $b :legacy_self;', qr/already has/],
-    ['RepeatedLegacyAttribute', ':legacy_isa(LegacyPoint)', 'field $a :legacy_self :legacy_self;', qr/already has/],
-    ['InheritedLegacyField', ':isa(LegacyRGBPoint)', 'field $different_name :legacy_self;', qr/already has/],
-    ['GrandchildLegacyField', ':isa(NativeGrandchild)', 'field $different_name :legacy_self;', qr/already has/],
-    ['ParameterLegacyField', ':legacy_isa(LegacyPoint)', 'field $a :legacy_self :param;', qr/requires one scalar/],
-    ['InitializedLegacyField', ':legacy_isa(LegacyPoint)', 'field $a :legacy_self = {};', qr/requires one scalar/],
-    ['NoLegacyParent', '', 'field $a :legacy_self;', qr/requires one scalar/],
+    ['MissingLegacyField', ':isa(LegacyPoint)', '', qr/requires a :blessed_self field/],
+    ['ArrayLegacyField', ':isa(LegacyPoint)', 'field @legacy :blessed_self;', qr/requires one scalar/],
+    ['DuplicateLegacyField', ':isa(LegacyPoint)', 'field $a :blessed_self; field $b :blessed_self;', qr/already has/],
+    ['RepeatedLegacyAttribute', ':isa(LegacyPoint)', 'field $a :blessed_self :blessed_self;', qr/already has/],
+    ['InheritedLegacyField', ':isa(LegacyRGBPoint)', 'field $different_name :blessed_self;', qr/already has/],
+    ['GrandchildLegacyField', ':isa(NativeGrandchild)', 'field $different_name :blessed_self;', qr/already has/],
+    ['ValuedLegacyField', ':isa(LegacyPoint)', 'field $a :blessed_self(new);', qr/requires one scalar/],
+    ['NoLegacyParent', '', 'field $a :blessed_self;', qr/requires one scalar/],
 ) {
     eval "class $case->[0] $case->[1] { $case->[2] }";
     like($@, $case->[3], "$case->[0] rejected");
@@ -327,19 +403,54 @@ for my $case (
     sub new { {} }
 }
 my $last = eval q{
-    class NativeOverloaded :legacy_isa(OverloadedPoint) {
-        field $legacy :legacy_self;
+    class NativeOverloaded :isa(OverloadedPoint) {
+        field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+
         method kind { 'overloaded' }
     }
-    class NativeStrict :legacy_isa(StrictPoint) {
-        field $legacy :legacy_self;
+    class NativeStrict :isa(StrictPoint) {
+        field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my %args = @_;
+            my %native;
+            for my $name (qw(colour)) {
+                $native{$name} = delete $args{$name} if exists $args{$name};
+            }
+            my $parent = $class->SUPER::new(%args);
+            return $class->CONSTRUCT(legacy => $parent, %native);
+        }
+
         field $colour :param;
         method colour { $colour }
     }
-    class NativeFailing :legacy_isa(FailingPoint) { field $legacy :legacy_self; }
-    class NativeInvalid :legacy_isa(InvalidPoint) { field $legacy :legacy_self; }
-    class FailingAdjust :legacy_isa(DestructiblePoint) {
-        field $legacy :legacy_self;
+    class NativeFailing :isa(FailingPoint) { field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+ }
+    class NativeInvalid :isa(InvalidPoint) { field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+ }
+    class FailingAdjust :isa(DestructiblePoint) {
+        field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+
         ADJUST { die "adjust failed\n" }
     }
     1;
@@ -372,8 +483,19 @@ if($last) {
     *LegacyPoint::xs_reftype = \&builtin::reftype;
 }
 my $signatures = eval q{
-    class SignaturePoint :legacy_isa(LegacyPoint) {
-        field $legacy :legacy_self;
+    class SignaturePoint :isa(LegacyPoint) {
+        field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my %args = @_;
+            my %native;
+            for my $name (qw(name)) {
+                $native{$name} = delete $args{$name} if exists $args{$name};
+            }
+            my $parent = $class->SUPER::new(%args);
+            return $class->CONSTRUCT(legacy => $parent, %native);
+        }
+
         field $name :param;
         method label($suffix) { "$name:$suffix" }
         method legacy_object { $legacy }
@@ -396,8 +518,19 @@ my $roles = eval q{
         field $tag :param;
         method tag { $tag }
     }
-    class RoleLegacyPoint :legacy_isa(LegacyPoint) :implements(LegacyLabelRole) {
-        field $legacy :legacy_self;
+    class RoleLegacyPoint :isa(LegacyPoint) :implements(LegacyLabelRole) {
+        field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my %args = @_;
+            my %native;
+            for my $name (qw(tag name)) {
+                $native{$name} = delete $args{$name} if exists $args{$name};
+            }
+            my $parent = $class->SUPER::new(%args);
+            return $class->CONSTRUCT(legacy => $parent, %native);
+        }
+
         field $name :param;
         method kind { "$name:" . $self->tag }
     }
@@ -434,7 +567,6 @@ if($roles) {
 
 
 for my $case (
-    ['ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED', 'Composition::Inheritance'],
     ['ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID', 'Field::Attribute'],
     ['ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_ALREADY_ASSIGNED', 'Field::Attribute'],
     ['ERROR_OBJECT_DEFINITION_LEGACY_SELF_REQUIRED', 'Definition'],
@@ -462,16 +594,31 @@ SKIP: {
 }
 
 my $renamed = eval q{
-    class NamedLegacyStorage :legacy_isa(LegacyPoint) {
-        field $coordinates_storage :legacy_self;
+    class NamedLegacyStorage :isa(LegacyPoint) {
+        field $coordinates_storage :blessed_self :param(legacy_base);
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy_base => $parent);
+        }
+
         method kind { 'named storage' }
         method legacy_object { $coordinates_storage }
     }
     class ShadowLegacyStorage :isa(NamedLegacyStorage) {
+        sub new {
+            my $class = shift;
+            my %args = @_;
+            my $own = delete $args{coordinates_storage};
+            my $parent = $class->LegacyPoint::new(%args);
+            return $class->CONSTRUCT(legacy_base => $parent, coordinates_storage => $own);
+        }
         field $coordinates_storage :param;
         method own_storage { $coordinates_storage }
     }
-    class InheritedNamedStorage :isa(ShadowLegacyStorage) { }
+    class InheritedNamedStorage :isa(ShadowLegacyStorage) {
+        sub new { my $class = shift; return $class->SUPER::new(@_) }
+    }
     1;
 };
 ok($renamed, 'legacy self may use a different lexical field name') or diag($@);
@@ -481,7 +628,7 @@ if($renamed) {
     is($obj->own_storage, 'ordinary field', 'same-named ordinary field remains distinct');
     is(reftype($obj->legacy_object), 'HASH', 'base accessor reads the original legacy slot');
     eval q{ class RenamedDuplicateStorage :isa(InheritedNamedStorage) {
-        field $renamed_again :legacy_self;
+        field $renamed_again :blessed_self;
     } };
     like($@, qr/already has/, 'renaming cannot introduce a second inherited legacy self');
 }
@@ -500,6 +647,99 @@ if($renamed) {
     like($error, qr/Legacy references outlive/, 'escaped-reference warning can be fatalized');
     ok(!defined($weak), 'fatal warning finishes native destruction');
     ok(!blessed($escaped), 'fatal warning leaves the legacy referent unblessed');
+}
+
+{
+    package TiedLegacyValue;
+    sub TIESCALAR { bless [42], shift }
+    sub FETCH { $_[0][0] }
+    sub STORE { $_[0][0] = $_[1] }
+}
+{
+    package MagicalScalarParent;
+    sub new {
+        my $class = shift;
+        tie my $value, 'TiedLegacyValue';
+        return bless \$value, $class;
+    }
+    sub callback { $_[0]->kind }
+    sub value { ${$_[0]} }
+}
+class MagicalScalarChild :isa(MagicalScalarParent) {
+    field $legacy :blessed_self :param;
+        sub new {
+            my $class = shift;
+            my $parent = $class->SUPER::new(@_);
+            return $class->CONSTRUCT(legacy => $parent);
+        }
+
+    method kind { 'native callback' }
+    method legacy { $legacy }
+}
+{
+    my $obj = MagicalScalarChild->new;
+    is($obj->value, 42, 'legacy scalar retains its existing get magic');
+    is($obj->callback, 'native callback', 'existing magic permits native callback');
+    my $legacy = $obj->legacy;
+    $$legacy = 73;
+    is($obj->value, 73, 'legacy scalar retains its existing set magic');
+    my $method = MagicalScalarChild->can('kind');
+    is($method->($legacy), 'native callback', 'direct native CV accepts magical legacy scalar');
+    undef $legacy;
+}
+
+{
+    package OrdinaryArray;
+    sub first { $_[0][0] }
+    my $array = bless [123], __PACKAGE__;
+    main::is($array->first, 123, 'ordinary array flag does not identify a native legacy owner');
+}
+
+{
+    package ConstructorlessParent;
+    sub value { $_[0]{value} }
+    sub callback { $_[0]->kind }
+}
+class ExplicitBlessedSelf :isa(ConstructorlessParent) {
+    field $representation :blessed_self :param;
+    field $extra :param :reader;
+    sub new ($class, $value, $extra) {
+        my $parent = bless { value => $value }, $class;
+        return $class->CONSTRUCT(representation => $parent, extra => $extra);
+    }
+    method kind { 'explicit native' }
+}
+{
+    my $obj = ExplicitBlessedSelf->new(71, 72);
+    is($obj->value, 71, 'a conventional superclass need not have any constructor');
+    is($obj->extra, 72, 'explicit representation works with native parameters');
+    is($obj->callback, 'explicit native', 'explicit representation supports reverse dispatch');
+    eval { ExplicitBlessedSelf->CONSTRUCT(extra => 1) };
+    like($@, qr/Required parameter 'representation'/, 'missing representation uses normal parameter validation');
+    eval { ExplicitBlessedSelf->CONSTRUCT(representation => {}, extra => 1) };
+    like($@, qr/blessed non.native reference/, 'unblessed representation is rejected');
+    eval { ExplicitBlessedSelf->CONSTRUCT(representation => bless({}, 'ConstructorlessParent'), extra => 1) };
+    like($@, qr/blessed non.native reference/, 'representation must be blessed into the requested class');
+}
+class InitializedBlessedSelf :isa(ConstructorlessParent) {
+    field $representation :blessed_self = bless { value => 73 }, __CLASS__;
+    field $doubled :reader = $representation->value * 2;
+    method kind { 'initialized native' }
+}
+{
+    my $obj = InitializedBlessedSelf->new;
+    is($obj->value, 73, 'a field initializer can supply the representation');
+    is($obj->doubled, 146, 'later field initializers can call conventional methods');
+    is($obj->callback, 'initialized native', 'initializer-supplied representation has a backlink');
+}
+{
+    my $calls = @constructors;
+    my $obj = LegacyRGBPoint->CONSTRUCT(
+        legacy_self => bless({x => 74, y => 75}, 'LegacyRGBPoint'),
+        red => 1, green => 2, blue => 3,
+    );
+    is(scalar @constructors, $calls, 'CONSTRUCT never invokes the parent constructor');
+    is($obj->describe, 'Point(74, 75): rgb(1, 2, 3)', 'CONSTRUCT consumes the supplied representation');
 }
 
 done_testing;

@@ -520,6 +520,8 @@ These guys don't need the curly blocks
 
 /* scalar SVs with SVp_POK */
 #define SVppv_STATIC    0x40000000 /* PV is pointer to static const; must be set with SVf_IsCOW */
+/* PVOBJ */
+#define SVpobj_LEGACY  0x40000000 /* class has a legacy-self field */
 /* PVAV */
 #define SVpav_REAL	0x40000000  /* free old entries */
 /* PVHV */
@@ -721,6 +723,13 @@ struct xobject {
     SSize_t     xobject_maxfield;
     SSize_t     xobject_iter_sv_at; /* this is only used by Perl_sv_clear() */
 };
+
+/* Include the type in this test: other SV types reuse this flag bit. */
+#define ObjectHASLEGACY(inst) \
+    ((SvFLAGS(inst) & (SVTYPEMASK|SVpobj_LEGACY)) \
+        == (SVt_PVOBJ|SVpobj_LEGACY))
+#define ObjectHASLEGACY_on(inst) \
+    (assert(SvTYPE(inst) == SVt_PVOBJ), SvFLAGS(inst) |= SVpobj_LEGACY)
 
 #define ObjectFIELDS(inst)    ((inst)->sv_u.svu_fields)
 #define ObjectMAXFIELD(inst)  ((XPVOBJ *)SvANY(inst))->xobject_maxfield
