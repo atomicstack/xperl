@@ -87,6 +87,8 @@
 #   undef NETDB_R_OBSOLETE
 #   undef new_XPV
 #   undef new_XPVIV
+#   undef ObjectHASLEGACY
+#   undef ObjectHASLEGACY_on
 #   undef origin_is_conflicted
 #   undef origin_is_required
 #   undef origin_map_init
@@ -100,6 +102,7 @@
 #   undef SHY_NATIVE
 #   undef sv_2num
 #   undef sv_has_valuemagic
+#   undef SVpobj_LEGACY
 #   undef SvRVx
 #   undef SvVMAGICAL
 #   undef SvVMAGICAL_off

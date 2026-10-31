@@ -2548,6 +2548,10 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
     /* process type-specific SV flags */
 
     switch (type) {
+    case SVt_PVOBJ:
+        if(ObjectHASLEGACY(sv))
+            sv_catpvs(d, "LEGACY,");
+        break;
     case SVt_PVCV:
     case SVt_PVFM:
         append_flags(d, CvFLAGS(sv), cv_flags_names);

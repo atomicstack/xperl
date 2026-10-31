@@ -2848,7 +2848,6 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_PARENT_CONFLICT_CONTEXT",           2517,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 722,   1,  771,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_ATTRIBUTE_TRAILING_TEXT",          1218,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_CHANGE_ANONYMOUS_STASH",           1041,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED",           2746,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_ANONYMOUS_STASH",        1045,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_DEPTH_EXCEEDED",         1590,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  700,   1,  744,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_ANONYMOUS_STASH",        1042,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -12094,11 +12093,6 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2745 = {
     perl_diagpack_param_schema_ids + 681, 2
 };
 
-static const perl_diagpack_schema_t perl_diagpack_schema_2746 = {
-    2746, "ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED",
-    perl_diagpack_param_schema_ids + 0, 0
-};
-
 static const perl_diagpack_schema_t perl_diagpack_schema_2747 = {
     2747, "ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID",
     perl_diagpack_param_schema_ids + 0, 0
@@ -12310,7 +12304,7 @@ static const char perl_diag_template_text_d184e797[] = "\\x{%1$s} is a \\w char 
 static const char perl_diag_template_text_76332904[] = "__CLASS__ is experimental";
 static const char perl_diag_template_text_eb034c42[] = "__NAMESPACE__ is experimental";
 static const char perl_diag_template_text_9533863e[] = "_configthreadlocale returned an error";
-static const char perl_diag_template_text_6abc590c[] = "A :legacy_isa class requires a :legacy_self field";
+static const char perl_diag_template_text_2efeb58a[] = "A class with a conventional superclass requires a :blessed_self field";
 static const char perl_diag_template_text_7d893ee4[] = "a constant array element";
 static const char perl_diag_template_text_8122bfbe[] = "a constant lexical array element";
 static const char perl_diag_template_text_1a61255b[] = "a fallback locale (\"%1$s\")\n";
@@ -12694,7 +12688,7 @@ static const char perl_diag_template_text_f979a816[] = "charnames alias definiti
 static const char perl_diag_template_text_0c6a6084[] = "chdir() on unopened filehandle %1$s";
 static const char perl_diag_template_text_7bf7c779[] = "check subroutine arguments";
 static const char perl_diag_template_text_a7a4e5bf[] = "Class :isa attribute requires a class but %1$s is not one";
-static const char perl_diag_template_text_9101cd31[] = "Class already has a declared or inherited :legacy_self field";
+static const char perl_diag_template_text_eb103293[] = "Class already has a declared or inherited :blessed_self field";
 static const char perl_diag_template_text_59087c3a[] = "Class already has a superclass, cannot add another";
 static const char perl_diag_template_text_72cab597[] = "Class attribute %1$s requires a value";
 static const char perl_diag_template_text_4de22735[] = "class is experimental";
@@ -13861,8 +13855,7 @@ static const char perl_diag_template_text_e83f5891[] = "The '!==' operator is ex
 static const char perl_diag_template_text_8032d0a6[] = "The '===' operator is experimental";
 static const char perl_diag_template_text_22be097a[] = "The 'equ' operator is experimental";
 static const char perl_diag_template_text_7c7b8f05[] = "The 'neu' operator is experimental";
-static const char perl_diag_template_text_306adc58[] = "The :legacy_isa parent must be a conventional package";
-static const char perl_diag_template_text_122ccdbe[] = "The :legacy_self attribute requires one scalar field in a :legacy_isa class, without a value, initializer or :param";
+static const char perl_diag_template_text_2da14e36[] = "The :blessed_self attribute requires one scalar field in a class with a conventional superclass and takes no attribute value";
 static const char perl_diag_template_text_223b28e1[] = "The crypt() function is unimplemented due to excessive paranoia.";
 static const char perl_diag_template_text_9f283dd1[] = "the defined operator";
 static const char perl_diag_template_text_892bbc52[] = "The experimental declared_refs feature is not enabled";
@@ -17202,7 +17195,6 @@ enum {
     perl_diag_template_start_en_2743,
     perl_diag_template_start_en_2744,
     perl_diag_template_start_en_2745,
-    perl_diag_template_start_en_2746,
     perl_diag_template_start_en_2747,
     perl_diag_template_start_en_2748,
     perl_diag_template_start_en_2749,
@@ -19083,14 +19075,13 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_diagnostic_api_render_input_invalid_number,                                 UINT64_C(         0), perl_diag_template_text_edb6576d,  0,   0 },
     { perl_diag_error_diagnostic_api_render_parameter_invalid_number,                             UINT64_C(         0), perl_diag_template_text_209912aa,  0,   0 },
     { perl_diag_warning_diagnostic_language_pack_load_failed_number,                              UINT64_C(         0), perl_diag_template_text_fc4dbe78,  2,   1 },
-    { perl_diag_error_object_composition_inheritance_legacy_superclass_required_number,           UINT64_C(         0), perl_diag_template_text_306adc58,  0,   0 },
-    { perl_diag_error_object_field_attribute_legacy_self_invalid_number,                          UINT64_C(         0), perl_diag_template_text_122ccdbe,  0,   0 },
-    { perl_diag_error_object_definition_legacy_self_required_number,                              UINT64_C(         0), perl_diag_template_text_6abc590c,  0,   0 },
+    { perl_diag_error_object_field_attribute_legacy_self_invalid_number,                          UINT64_C(         0), perl_diag_template_text_2da14e36,  0,   0 },
+    { perl_diag_error_object_definition_legacy_self_required_number,                              UINT64_C(         0), perl_diag_template_text_2efeb58a,  0,   0 },
     { perl_diag_error_object_legacy_reference_invalid_number,                                     UINT64_C(         0), perl_diag_template_text_158fc4da,  0,   0 },
     { perl_diag_error_object_legacy_already_attached_number,                                      UINT64_C(         0), perl_diag_template_text_170986d3,  0,   0 },
     { perl_diag_error_object_method_call_legacy_self_unavailable_number,                          UINT64_C(         0), perl_diag_template_text_ed6ba4a4,  0,   0 },
     { perl_diag_warning_misc_object_legacy_reference_survives_number,                             UINT64_C(         0), perl_diag_template_text_2b43b461,  0,   0 },
-    { perl_diag_error_object_field_attribute_legacy_self_already_assigned_number,                 UINT64_C(         0), perl_diag_template_text_9101cd31,  0,   0 },
+    { perl_diag_error_object_field_attribute_legacy_self_already_assigned_number,                 UINT64_C(         0), perl_diag_template_text_eb103293,  0,   0 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -20646,7 +20637,6 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2743, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2744, NULL                        },
     { 0,   2,  perl_diag_word_group_none, perl_diag_template_start_en_2745, NULL                        },
-    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2746, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2747, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2748, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2749, NULL                        },
@@ -21174,9 +21164,9 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     &perl_diagpack_schema_2736, &perl_diagpack_schema_2737, &perl_diagpack_schema_2738,
     &perl_diagpack_schema_2739, &perl_diagpack_schema_2740, &perl_diagpack_schema_2741,
     &perl_diagpack_schema_2742, &perl_diagpack_schema_2743, &perl_diagpack_schema_2744,
-    &perl_diagpack_schema_2745, &perl_diagpack_schema_2746, &perl_diagpack_schema_2747,
-    &perl_diagpack_schema_2748, &perl_diagpack_schema_2749, &perl_diagpack_schema_2750,
-    &perl_diagpack_schema_2751, &perl_diagpack_schema_2752, &perl_diagpack_schema_2753,
+    &perl_diagpack_schema_2745, &perl_diagpack_schema_2747, &perl_diagpack_schema_2748,
+    &perl_diagpack_schema_2749, &perl_diagpack_schema_2750, &perl_diagpack_schema_2751,
+    &perl_diagpack_schema_2752, &perl_diagpack_schema_2753,
 };
 
 static const perl_diagpack_catalog perl_diagpack_builtin_catalog_en = {
@@ -21305,7 +21295,7 @@ static const perl_diagpack_engine * const perl_diagpack_builtin_engines[] = {
 
 
 /* Generated from:
- * 5bb2fd552b5c2bc43e6dfbaaf753f6335c807081d58ac9d76b6d0dde430a0269 diag_conf.pl
+ * 7c00ea032756eda01e88755c4306264a186eb9142467c809826a0d18b2b3519e diag_conf.pl
  * 4d5ea2c68c07d8b67a01411f57a355fd47b545ebcbbda8b14355c3d7154213fa diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

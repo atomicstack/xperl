@@ -6507,7 +6507,11 @@ PP(pp_entersub)
 
     if(UNLIKELY(PL_op->op_flags & OPf_REF)) {
         SV **slot = PL_stack_base + TOPMARK + 1;
-        if(slot < PL_stack_sp && *slot && SvROK(*slot)) {
+        if(slot < PL_stack_sp && *slot && SvROK(*slot) &&
+                UNLIKELY(CvIsMETHOD(cv)
+                    ? (SvTYPE(SvRV(*slot)) != SVt_PVOBJ &&
+                        SvMAGICAL(SvRV(*slot)))
+                    : ObjectHASLEGACY(SvRV(*slot)))) {
             SV *mapped = class_method_invocant(*slot, cv);
             if(mapped != *slot) {
                 /* Retain the owner through argument cleanup. The private

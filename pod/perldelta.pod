@@ -27,13 +27,24 @@ here, but most should go in the L</Performance Enhancements> section.
 
 [ List each enhancement as a =head2 entry ]
 
+=head2 Custom constructors for native classes
+
+Native classes expose their generated constructor as C<CONSTRUCT>. A class without
+its own C<new> receives an alias to C<CONSTRUCT>, preserving default construction.
+A class can instead declare an ordinary C<sub new>, including a signature,
+and delegate to C<CONSTRUCT> after processing its arguments. See
+L<perlclass/Construction>.
+
 =head2 Experimental inheritance from conventional packages
 
-Native classes can use C<:legacy_isa(Parent)> and a C<:legacy_self> scalar
-field to inherit from conventional blessed-reference classes. Method calls
+Native classes can use C<:isa(Parent)> and a C<:blessed_self> scalar
+field to inherit from conventional blessed-reference classes. The class author
+constructs the conventional representation explicitly and supplies it through
+a field parameter or initializer. The generated C<CONSTRUCT> never calls the
+parent's constructor. Method calls
 select the native or legacy representation according to the target method,
 including callbacks from conventional parent methods to native overrides.
-See L<perlclass/:legacy_isa> for construction and destruction rules.
+See L<perlclass/:isa> for construction and destruction rules.
 
 =head2 Experimental diagnostic catalog lookup
 

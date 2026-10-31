@@ -592,7 +592,6 @@ enum perl_diag_index {
     perl_diag_error_object_composition_inheritance_c3_parent_conflict_context_idx,
     perl_diag_error_object_composition_inheritance_isa_attribute_trailing_text_idx,
     perl_diag_error_object_composition_inheritance_isa_change_anonymous_stash_idx,
-    perl_diag_error_object_composition_inheritance_legacy_superclass_required_idx,
     perl_diag_error_object_composition_inheritance_linearization_anonymous_stash_idx,
     perl_diag_error_object_composition_inheritance_linearization_depth_exceeded_idx,
     perl_diag_error_object_composition_inheritance_method_change_anonymous_stash_idx,
@@ -2157,7 +2156,6 @@ enum perl_diag_number {
     perl_diag_error_object_composition_inheritance_c3_parent_conflict_context_number           = 2517,
     perl_diag_error_object_composition_inheritance_isa_attribute_trailing_text_number          = 1218,
     perl_diag_error_object_composition_inheritance_isa_change_anonymous_stash_number           = 1041,
-    perl_diag_error_object_composition_inheritance_legacy_superclass_required_number           = 2746,
     perl_diag_error_object_composition_inheritance_linearization_anonymous_stash_number        = 1045,
     perl_diag_error_object_composition_inheritance_linearization_depth_exceeded_number         = 1590,
     perl_diag_error_object_composition_inheritance_method_change_anonymous_stash_number        = 1042,
@@ -4781,7 +4779,7 @@ enum perl_diag_selector_domain_id {
 
 
 #if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)
-#define PERL_DIAG_METADATA_COUNT 1561
+#define PERL_DIAG_METADATA_COUNT 1560
 
 #endif
 
@@ -17047,11 +17045,6 @@ enum perl_diag_selector_domain_id {
 #define PERL_FORMAT_WARNING_DIAGNOSTIC_LANGUAGE_PACK_LOAD_FAILED(language, values) \
     Perl_diag_render_format(aTHX_ perl_diag_warning_diagnostic_language_pack_load_failed_idx, (values), (language))
 
-#define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LEGACY_SUPERCLASS_REQUIRED() \
-    Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_composition_inheritance_legacy_superclass_required_idx \
-    )
-
 #define PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID() \
     Perl_throw_croak_0_1006( \
         aTHX_ perl_diag_error_object_field_attribute_legacy_self_invalid_idx \
@@ -17508,7 +17501,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * 5bb2fd552b5c2bc43e6dfbaaf753f6335c807081d58ac9d76b6d0dde430a0269 diag_conf.pl
+ * 7c00ea032756eda01e88755c4306264a186eb9142467c809826a0d18b2b3519e diag_conf.pl
  * 4d5ea2c68c07d8b67a01411f57a355fd47b545ebcbbda8b14355c3d7154213fa diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */
