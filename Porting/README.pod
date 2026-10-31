@@ -20,6 +20,13 @@ F<lib/> and F<t/> directories.  Now thought to be largely superseded.
 
 Program to facilitate addition of new F<.pod> files to F<pod/>.
 
+=head2 F<bench-class-value.py> and F<bench-class-value.pl>
+
+Compare core class, Moo, and blessed hash construction, field access, and
+resident memory. The Python driver runs isolated Perl workers in randomized
+order and saves raw samples, generated classes, build details, and CSV
+summaries. See the worker's POD for the cases and comparison limits.
+
 =head2 F<bench.pl>
 
 Do performance analysis on the code snippets in F<t/perf/benchmarks>.
