@@ -6601,6 +6601,8 @@ Porting/acknowledgements.pl			Generate perldelta acknowledgements text
 Porting/add-package.pl				Add/Update CPAN modules that are part of Core
 Porting/add-pod-file				Utility to add new pod/*.pod file to core distribution
 Porting/bench.pl				Run benchmarks against t/perf/benchmarks
+Porting/bench-class-value.pl			Class, Moo, and bless benchmark worker
+Porting/bench-class-value.py			Run isolated object performance comparisons
 Porting/bench-trie.pl				Compare trie corpus scans across Perl builds
 Porting/bisect.pl				A tool to make bisecting easy
 Porting/bisect-example.sh			Example script to use with git bisect run
