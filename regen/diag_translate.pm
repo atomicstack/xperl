@@ -902,6 +902,7 @@ sub watch_codex {
     my $pending     = '';
     my $started     = time;
     my $last_notice = $started;
+    my $poll_delay  = 0.01;
     my $status;
     while (1) {
         my $finished = waitpid( $pid, WNOHANG );
@@ -926,7 +927,11 @@ sub watch_codex {
             print "Codex still running: " . duration_text($elapsed) . " elapsed, $remaining; log: $path\n";
             $last_notice = time;
         }
-        select undef, undef, undef, 0.25;
+        # Short waits notice quick local jobs promptly. Back off to 0.25 seconds
+        # to limit polling while longer model requests are running.
+        select undef, undef, undef, $poll_delay;
+        $poll_delay *= 2;
+        $poll_delay = 0.25 if $poll_delay > 0.25;
     }
     report_codex_line($pending) if length $pending;
     close $log or die "Cannot close progress log: $!\n";
@@ -1019,9 +1024,17 @@ sub accept_response {
           };
     }
     die "Missing Codex results: " . join( ', ', sort keys %expected ) . "\n" if %expected;
-    my $copy = json()->decode( json()->encode($diagnostics) );
-    Diag::Migration::apply_translation_sets( $copy, { target_language => $language, template_sets => \@sets } );
-    my %copy_by_code = map { $_->{code} => $_ } @$copy;
+    my @copy;
+    if (@sets) {
+        my %diagnostic_by_code = map { $_->{code} => $_ } @$diagnostics;
+        for my $set (@sets) {
+            my $source = $diagnostic_by_code{ $set->{code} }
+              or die "Unknown translation diagnostic $set->{code}\n";
+            push @copy, json()->decode( json()->encode($source) );
+        }
+    }
+    Diag::Migration::apply_translation_sets( \@copy, { target_language => $language, template_sets => \@sets } );
+    my %copy_by_code = map { $_->{code} => $_ } @copy;
     my %provenance_fingerprints =
       map { $_->{code} => source_fingerprint( $conf, $copy_by_code{ $_->{code} }, $language ) } @sets;
     return ( \@sets, \@requests, \@reviews, \%provenance_fingerprints );

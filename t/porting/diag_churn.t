@@ -233,6 +233,106 @@ SKIP: {
         },
     };
     my $fake_diagnostics = Diag::Migration::diagnostics($fake_conf);
+    my ($selected_source) = grep { $_->{code} eq $code } @$fake_diagnostics;
+    my $accept_context = Diag::Translation::diagnostic_context(
+        $fake_conf, $selected_source, 'fr', Diag::Translation::documentation_index($fake_conf)
+    );
+    my $source_before_accept = Diag::Translation::json()->encode($selected_source);
+    my @encoded_diagnostic_codes;
+    my $json_encode = \&JSON::PP::encode;
+    my $accept_with_encode_trace = sub {
+        local *JSON::PP::encode = sub {
+            my ($json, $value, @rest) = @_;
+            if (ref($value) eq 'HASH'
+                && exists $value->{code} && exists $value->{severity} && exists $value->{message_template})
+            {
+                push @encoded_diagnostic_codes, $value->{code};
+            }
+            elsif (ref($value) eq 'ARRAY') {
+                push @encoded_diagnostic_codes,
+                  map { $_->{code} }
+                  grep {
+                      ref($_) eq 'HASH'
+                        && exists $_->{code} && exists $_->{severity} && exists $_->{message_template}
+                  } @$value;
+            }
+            return $json_encode->(@_);
+        };
+        return Diag::Translation::accept_response(@_);
+    };
+    my $single_response = {
+        results => [{
+            code => $code,
+            cases => [{ selectors => [], template => 'Valeur %{value}' }],
+            requests => [],
+            review_notes => '',
+        }],
+    };
+    my @accepted = $accept_with_encode_trace->(
+        [$accept_context], $single_response, $fake_diagnostics, $fake_conf, 'fr'
+    );
+    is( join( ',', @encoded_diagnostic_codes ), $code,
+        'batch acceptance clones only the selected diagnostic' );
+    is( Diag::Translation::json()->encode($selected_source), $source_before_accept,
+        'successful batch acceptance leaves the source diagnostic unchanged' );
+
+    @encoded_diagnostic_codes = ();
+    my $request_response = {
+        results => [{
+            code => $code,
+            cases => [],
+            requests => [{
+                kind => 'selector', name => 'opcode', proposed_value => 'new_value',
+                justification => 'a distinct case is required', example => 'operation for new_value',
+            }],
+            review_notes => '',
+        }],
+    };
+    my ( $request_sets, $request_updates ) = $accept_with_encode_trace->(
+        [$accept_context], $request_response, $fake_diagnostics, $fake_conf, 'fr'
+    );
+    is( scalar @$request_sets, 0, 'selector request does not produce a translation set' );
+    is( scalar @$request_updates, 1, 'selector request is returned for manual review' );
+    is( join( ',', @encoded_diagnostic_codes ), '',
+        'selector request does not clone any source diagnostic' );
+    is( Diag::Translation::json()->encode($selected_source), $source_before_accept,
+        'selector request leaves the source diagnostic unchanged' );
+
+    @encoded_diagnostic_codes = ();
+    my $invalid_response = { results => [{ code => 'UNEXPECTED_CODE' }] };
+    my $invalid_accept = eval {
+        $accept_with_encode_trace->(
+            [$accept_context], $invalid_response, $fake_diagnostics, $fake_conf, 'fr'
+        );
+        1;
+    };
+    ok( !$invalid_accept && $@ =~ /Unexpected or duplicate result/,
+        'invalid batch result is rejected before source cloning' );
+    is( join( ',', @encoded_diagnostic_codes ), '',
+        'invalid batch result does not clone any source diagnostic' );
+    is( Diag::Translation::json()->encode($selected_source), $source_before_accept,
+        'failed batch acceptance leaves the source diagnostic unchanged' );
+
+    @encoded_diagnostic_codes = ();
+    my $invalid_template = {
+        results => [{
+            %{ $single_response->{results}[0] },
+            cases => [{ selectors => [], template => 'Valeur %{unknown_parameter}' }],
+        }],
+    };
+    my $valid_template = eval {
+        $accept_with_encode_trace->(
+            [$accept_context], $invalid_template, $fake_diagnostics, $fake_conf, 'fr'
+        );
+        1;
+    };
+    ok( !$valid_template && $@ =~ /invalid translation/,
+        'batch acceptance validates the cloned translation template' );
+    is( join( ',', @encoded_diagnostic_codes ), $code,
+        'invalid template is checked against only its selected diagnostic' );
+    is( Diag::Translation::json()->encode($selected_source), $source_before_accept,
+        'template validation failure leaves the source diagnostic unchanged' );
+
     my $selected_code = 'FAKE_TRANSLATION_SELECTOR';
     my $selected_definition = churn_diagnostic( $selected_code, 65002, 'value' );
     unshift @{ $selected_definition->{message}{args} }, {
@@ -688,12 +788,19 @@ FAKE_MODEL
     my $publication_provenance = "$directory/publication-error-provenance.json";
     Diag::Translation::write_json( $publication_provenance, $command_original );
     my $generated_attempts = 0;
+    my $publication_prepare_count = 0;
+    my $publication_after_prepare = 0;
     my $publication_error;
     {
         no warnings qw(redefine once);
         no warnings 'once';
+        local *main::prepare_generation = sub {
+            ++$publication_prepare_count;
+            return { documentation_path => 'pod/perldiag.pod' };
+        };
         local *main::write_plain_output = sub { };
         local *main::write_generated_output = sub {
+            $publication_after_prepare = $publication_prepare_count == 1;
             die "injected generated publication failure\n" if ++$generated_attempts == 2;
         };
         local @ARGV = (
@@ -705,6 +812,10 @@ FAKE_MODEL
     }
     like( $publication_error, qr/injected generated publication failure/,
         'command-level generated publication failure is reported' );
+    is( $publication_prepare_count, 1,
+        'publication failure prepares generated output exactly once' );
+    ok( $publication_after_prepare,
+        'generated publication starts after generation preparation' );
     is( Diag::Translation::json()->encode( Diag::Translation::read_json($publication_provenance) ),
         Diag::Translation::json()->encode($command_original),
         'generated publication failure does not publish new provenance' );
