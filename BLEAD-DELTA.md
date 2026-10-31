@@ -136,6 +136,109 @@ The class and role behavior, conflict handling, field composition, required
 methods, implementation membership, parser support, diagnostics, and threaded
 metadata are documented in `pod/perlclass.pod` and covered by the role tests.
 
+#### Custom constructors
+
+Every native class exposes its generated constructor as `CONSTRUCT`. It
+accepts named argument pairs, allocates the object, initializes fields, and
+runs `ADJUST` blocks. A class without a local `new` receives an alias to
+`CONSTRUCT`, preserving the usual construction interface.
+
+A class can declare an ordinary `sub new` with its own signature and
+delegate to `CONSTRUCT` after processing its arguments:
+
+```perl
+use v5.36;
+use feature 'class';
+
+class Point {
+    field $x :param :reader;
+    field $y :param :reader;
+
+    sub new ($class, $x, $y = 0) {
+        return $class->CONSTRUCT(x => $x, y => $y);
+    }
+}
+
+my $point = Point->new(10, 20);
+```
+
+The custom sub controls its return value and any work around construction.
+Calling `CONSTRUCT` directly bypasses it. Each subclass without a local
+`new` gets its own generated alias, so reusing a parent's custom constructor
+requires explicit forwarding.
+
+#### Inheritance from conventional packages
+
+The `:isa` attribute accepts a conventional blessed-reference package as
+well as a native class. A native class with a conventional parent declares
+one scalar field marked `:blessed_self`. Its author supplies the blessed
+representation through a field parameter or initializer:
+
+```perl
+use v5.36;
+use feature 'class';
+
+package BlessedPoint {
+    sub new {
+        my ($class, %args) = @_;
+        return bless \%args, $class;
+    }
+
+    sub x { $_[0]{x} }
+}
+
+class RGBPoint :isa(BlessedPoint) {
+    field $legacy :blessed_self :param;
+    field $red :param :reader;
+
+    sub new ($class, $x, $red) {
+        my $parent = $class->SUPER::new(x => $x);
+        return $class->CONSTRUCT(legacy => $parent, red => $red);
+    }
+}
+
+my $point = RGBPoint->new(10, 200);
+say $point->x;    # conventional method receives the blessed hash
+say $point->red;  # native method receives the native object
+```
+
+`CONSTRUCT` never calls the conventional parent's constructor automatically.
+The association is established when the marked field initializes. Later
+field initializers and `ADJUST` blocks can then call both kinds of methods,
+and conventional methods can call native overrides. The field becomes
+read-only after attachment, while the referenced contents remain mutable.
+
+The native object owns the blessed representation and its destruction.
+One blessed referent can belong to only one live native object. Native
+subclasses inherit the association and cannot declare a second marked
+field. Construction, method dispatch, restoration, and destruction rules
+are documented in [perlclass](pod/perlclass.pod).
+
+### Structured exceptions and translated diagnostics
+
+Core errors and warnings now use structured exceptions with stable
+diagnostic identifiers, typed arguments, source locations, and ordered
+context. Default rendering preserves familiar Perl text. Applications can
+inspect the diagnostic objects or select annotated text, JSON, or Dumper
+output. A structured exception hook runs before the existing warning and
+die hooks, and a two-variable `catch` can retain both the compatibility
+value and the structured exception.
+
+Loadable language packs provide translated diagnostics, with English
+fallback and lexical or runtime language selection. Alongside English,
+translations are available in Arabic, Chinese (Simplified), Dutch,
+Finnish, French, German, Hebrew, Hungarian, Icelandic, Italian, Persian,
+Portuguese, Russian, Serbian, Spanish, Turkish, Ukrainian, and Welsh.
+These languages were chosen to challenge the translation machinery in
+different ways. Together they help establish the capabilities needed to
+support any language, including plural rules, grammatical forms, word
+order, and writing systems. More languages are expected to be added over
+time. The translations are machine drafts awaiting native linguistic
+review. See
+[XPerl::Exception](lib/XPerl/Exception.pm),
+[XPerl::Diagnostic](lib/XPerl/Diagnostic.pm), and
+[diagpack](lib/diagpack.pm) for the interfaces.
+
 ## Bundled distribution changes
 
 ### Tensor-XS and p5-matrix-utils
