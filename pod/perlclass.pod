@@ -276,9 +276,11 @@ already loaded.
 
 C<:isa> accepts either a native class or a conventional package. When the
 superclass is conventional, the class must declare one scalar field marked
-C<:blessed_self>. The class author constructs that object explicitly:
+C<:blessed_self>. In this example, C<BlessedPoint> is a conventional package
+whose constructor blesses a hash reference. The native C<RGBPoint> class
+constructs that object explicitly:
 
-    package Point {
+    package BlessedPoint {
         sub new {
             my ($class, %args) = @_;
             return bless { x => $args{x}, y => $args{y} }, $class;
@@ -290,7 +292,7 @@ C<:blessed_self>. The class author constructs that object explicitly:
         }
     }
 
-    class RGBPoint :isa(Point) {
+    class RGBPoint :isa(BlessedPoint) {
         field $legacy :blessed_self :param;
         field $red :param;
         field $green :param;
