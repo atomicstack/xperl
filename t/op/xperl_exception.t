@@ -4416,7 +4416,7 @@ is_diagnostic_text( $@->contents->[0],
     'syntax error', 'the diagnostic renders its catalog template' );
 like(
     $@->render_as_modern('en'),
-qr/#1164 FATAL_ERROR\.CORE_COMPILE\.ERROR_SYNTAX_INVALID \(eval \d+\):1\nsyntax error at \(eval \d+\) line 1\./,
+qr/#1164 FATAL_ERROR\.CORE_COMPILE\.ERROR_SYNTAX_INVALID \(eval \d+\):1\nSyntax error at \(eval \d+\) line 1, at EOF/,
     'modern exception rendering prefixes the diagnostic location'
 );
 
@@ -7827,11 +7827,12 @@ ok(
 );
 is( join( ',', @{ $operator_warning_messages->[0]->warning_categories } ),
     'WARN_SYNTAX', 'the primary diagnostic retains its warning category' );
-is( join( ',', @{ $operator_hint->warning_categories } ),
-    'WARN_SYNTAX', 'the hint diagnostic retains its warning category' );
+is( $operator_hint->warning_categories, undef,
+    'the hint uses its parent warning policy' );
+is( $operator_hint->severity, 'NOTE', 'the operator hint has NOTE severity' );
 like(
     $operator_warning_exception->render_as_modern('en'),
-qr{\n\x20\x20\#2514[^\n]*\n\x20\x20An operator may be missing before "\$\{"\.},
+qr{\n\x20\x20An operator may be missing before "\$\{"\.},
     'modern rendering groups an operator hint under its primary diagnostic'
 );
 like(
@@ -7864,7 +7865,7 @@ my $predeclare_hint = XPerl::Diagnostic->_new(
         code     => 'NOTE_HINT_OPERATOR_EXPECTED_PREDECLARE',
         number   => 2513,
         kind     => 'CORE_COMPILE',
-        severity => 'WARNING',
+        severity => 'NOTE',
         params   => [ { name => 'name', type => 'text', value => 'foo' } ],
         location => $operator_warning_messages->[0]->location,
     }

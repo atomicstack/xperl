@@ -1182,6 +1182,7 @@ enum perl_diag_index {
     perl_diag_note_context_locale_environment_row_idx,
     perl_diag_note_context_locale_fallback_row_idx,
     perl_diag_note_context_location_idx,
+    perl_diag_note_context_near_source_annotated_idx,
     perl_diag_note_context_os2_error_description_missing_idx,
     perl_diag_note_context_os2_module_load_detail_idx,
     perl_diag_note_context_os2_thread_state_could_not_start_idx,
@@ -1192,6 +1193,7 @@ enum perl_diag_index {
     perl_diag_note_context_os2_thread_state_uninitialized_idx,
     perl_diag_note_context_os2_thread_state_unknown_idx,
     perl_diag_note_context_os2_thread_state_waited_idx,
+    perl_diag_note_context_syntax_error_annotated_idx,
     perl_diag_note_context_unavailable_idx,
     perl_diag_note_context_windows_invalid_parameter_expression_idx,
     perl_diag_note_hint_operator_expected_idx,
@@ -2746,6 +2748,7 @@ enum perl_diag_number {
     perl_diag_note_context_locale_environment_row_number                                       = 2661,
     perl_diag_note_context_locale_fallback_row_number                                          = 2663,
     perl_diag_note_context_location_number                                                     = 2631,
+    perl_diag_note_context_near_source_annotated_number                                        = 2755,
     perl_diag_note_context_os2_error_description_missing_number                                = 2681,
     perl_diag_note_context_os2_module_load_detail_number                                       = 2677,
     perl_diag_note_context_os2_thread_state_could_not_start_number                             = 2716,
@@ -2756,6 +2759,7 @@ enum perl_diag_number {
     perl_diag_note_context_os2_thread_state_uninitialized_number                               = 2711,
     perl_diag_note_context_os2_thread_state_unknown_number                                     = 2678,
     perl_diag_note_context_os2_thread_state_waited_number                                      = 2715,
+    perl_diag_note_context_syntax_error_annotated_number                                       = 2754,
     perl_diag_note_context_unavailable_number                                                  = 2632,
     perl_diag_note_context_windows_invalid_parameter_expression_number                         = 2706,
     perl_diag_note_hint_operator_expected_number                                               = 2636,
@@ -4779,7 +4783,7 @@ enum perl_diag_selector_domain_id {
 
 
 #if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)
-#define PERL_DIAG_METADATA_COUNT 1560
+#define PERL_DIAG_METADATA_COUNT 1562
 
 #endif
 
@@ -14876,10 +14880,9 @@ enum perl_diag_selector_domain_id {
     )
 
 #define PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_MISSING_SEMICOLON(exception_slot) \
-    Perl_throw_append_exception_0_2512( \
+    Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_note_hint_operator_expected_missing_semicolon_idx, \
-        (SV **)(exception_slot), \
-        packWARN(WARN_SYNTAX) \
+        (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_PREDECLARE(exception_slot, ma_name_utf8, ma_name_length, ma_name_text) \
@@ -14888,8 +14891,7 @@ enum perl_diag_selector_domain_id {
         (SV **)(exception_slot), \
         ma_name_utf8, \
         ma_name_length, \
-        (const char *)(ma_name_text), \
-        packWARN(WARN_SYNTAX) \
+        (const char *)(ma_name_text) \
     )
 
 #define PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_MISSING_OPERATOR(exception_slot, ma_context_utf8, ma_context_length, ma_context_text) \
@@ -14898,8 +14900,7 @@ enum perl_diag_selector_domain_id {
         (SV **)(exception_slot), \
         ma_context_utf8, \
         ma_context_length, \
-        (const char *)(ma_context_text), \
-        packWARN(WARN_SYNTAX) \
+        (const char *)(ma_context_text) \
     )
 
 #define PERL_APPEND_ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_HIERARCHY_INCONSISTENT(exception_slot, ma_class) \
@@ -17081,6 +17082,12 @@ enum perl_diag_selector_domain_id {
         aTHX_ perl_diag_error_object_field_attribute_legacy_self_already_assigned_idx \
     )
 
+#define PERL_FORMAT_NOTE_CONTEXT_SYNTAX_ERROR_ANNOTATED(language, values) \
+    Perl_diag_render_format(aTHX_ perl_diag_note_context_syntax_error_annotated_idx, (values), (language))
+
+#define PERL_FORMAT_NOTE_CONTEXT_NEAR_SOURCE_ANNOTATED(language, values) \
+    Perl_diag_render_format(aTHX_ perl_diag_note_context_near_source_annotated_idx, (values), (language))
+
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_ABORT() \
     STMT_START { \
         PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID(); \
@@ -17501,7 +17508,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * c4a27bdd64f5536a09764f6d9b7355a663fb7387b45aa7d2056b7a8704f637b4 diag_conf.pl
+ * cbf5bd9e1cf8e93e94e5e4d6f1314b247f6566b58dab88e9fbae2852adf20214 diag_conf.pl
  * 6510e6553ea58cc2c5404bc3524e14de99d6b39d5bf4cb3fc3271ba678cf283b diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

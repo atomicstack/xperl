@@ -80,7 +80,12 @@ implicit rendering.
 C<render_as_annotated($language)> is the descriptive name for the metadata
 format. C<render_as_modern($language)> remains an alias. It
 renders the whole exception from catalog templates and diagnostic data for
-the requested language. Diagnostic objects do not retain rendered C<text>
+the requested language. Consecutive identical headers are shown once, and
+contained hints appear on their own indented lines under the parent's
+header. Parser context, including nearby source text, is retained.
+English annotated syntax errors use sentence capitalization and put nearby
+source before the file and line. Legacy wording and ordering are preserved.
+Diagnostic objects do not retain rendered C<text>
 fields or copies of templates. The class methods are compiled into Perl and
 miniperl, so they work before this file is loaded. Parser compile
 failures, catalogued C<croak> and C<DIE> failures, and

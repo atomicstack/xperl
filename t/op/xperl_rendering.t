@@ -328,6 +328,14 @@ for my $case (
         like( $exception->render_as_legacy('fr'),
             qr/\Q$case->[2]\E/,
             "French parser context $case->[0] uses its complete case" );
+        like( $exception->render_as_annotated('en'),
+            ($case->[0] eq 'near'
+                ? qr/ near "token" at context\.pl line 7\.\n\z/
+                : qr/\Q$case->[1]\E\n\z/),
+            "annotated English preserves parser context $case->[0]" );
+        like( $exception->render_as_annotated('fr'),
+            qr/\Q$case->[2]\E/,
+            "annotated French preserves parser context $case->[0]" );
     }
 
     for my $case (
@@ -632,6 +640,101 @@ for my $case (
     my $file = $exception->contents->[0]->location->{file};
     unlike( $exception->render_as_annotated('en'), qr/\Q$file\E/,
         'a final newline also suppresses annotated user-error locations' );
+}
+
+{
+    eval q{use strict; $header_missing = 1};
+    my $original = $@->contents->[0];
+    my $exception = XPerl::Exception->_new();
+    for my $line (7, 7, 8, 7) {
+        my $diagnostic = bless {
+            %$original, location => { file => 'headers.pl', line => $line },
+        }, ref $original;
+        $exception->append($diagnostic);
+    }
+    my $before = $exception->as_json;
+    my $rendered = $exception->render_as_annotated('en');
+    is( scalar(() = $rendered =~ /^#2440 /mg), 3,
+        'annotated rendering shares only consecutive identical headers' );
+    is( scalar(() = $rendered =~ /^Global symbol /mg), 4,
+        'sharing headers retains every diagnostic body' );
+    like( $rendered, qr/headers\.pl:7\n.*\n.*\n#2440 .*headers\.pl:8\n/s,
+        'a changed location starts another header' );
+    is( $exception->render_as_annotated('en'), $rendered,
+        'a new render starts with a fresh header' );
+    is( $exception->as_json, $before,
+        'sharing headers does not merge or modify diagnostic records' );
+}
+
+{
+    local $ENV{PERL_DIAG_RENDER} = 'en:modern';
+    my $output = runperl(
+        prog => q{use strict; $x = $y + 1 1; $foo->$bar()}, stderr => 1,
+    );
+    is( scalar(() = $output =~ /^#2440 /mg), 1,
+        'automatic output shares headers across delivery groups' );
+    is( scalar(() = $output =~ /near "1 1"/g), 2,
+        'the warning and syntax error both retain the nearby source' );
+    like( $output, qr/^Syntax error near "1 1" at -e line 1\.\n/m,
+        'annotated syntax errors use sentence case and context before location' );
+    like( $output, qr/^  An operator may be missing before "1"\.\n/m,
+        'a contained hint gets its own indented line' );
+    unlike( $output, qr/#2514|NOTE_HINT_OPERATOR_EXPECTED_MISSING_OPERATOR/,
+        'the container supplies the header for its hint' );
+    unlike( $output, qr/\. at -e line|\n at -e line/,
+        'annotated locations do not follow a terminated message' );
+    like( $output, qr/Execution of -e aborted due to compilation errors\.\n\z/,
+        'compilation-aborted text has no trailing location line' );
+
+    local $SIG{__WARN__} = sub { };
+    eval q{my $value = 1 1};
+    my $exception = $@;
+    my ($warning) = grep { $_->code eq 'WARNING_SYNTAX_OPERATOR_EXPECTED' }
+        @{ $exception->contents };
+    ok( $warning, 'the parser retains the operator-expected warning' );
+    my $hint = $warning->contents->[0];
+    isa_ok( $hint, 'XPerl::Diagnostic::Note::Hint' );
+    is( $hint->severity, 'NOTE', 'the explanatory child has NOTE severity' );
+    ok( !exists $hint->{warning_categories},
+        'the hint does not carry an independent warning policy' );
+    local $ENV{PERL_DIAG_RENDER} = 'en:legacy';
+    my $legacy = runperl(
+        prog => q{use strict; $x = $y + 1 1; $foo->$bar()}, stderr => 1,
+    );
+    like( $legacy, qr/Number found where operator expected \(Missing operator before "1"\?\) at -e line 1, near "1 1"/,
+        'legacy rendering retains its inline hint and parser context' );
+
+    local $ENV{PERL_DIAG_RENDER} = 'en:annotated:JSON';
+    my $records = runperl(
+        prog => q{use strict; $x = $y + 1 1;}, stderr => 1,
+    );
+    require JSON::PP;
+    my @strict_records = grep {
+        $_->{contents}[0]{code}
+            eq 'ERROR_STRICT_VARS_GLOBAL_SYMBOL_REQUIRES_EXPLICIT_PACKAGE_NAME'
+    } map { JSON::PP::decode_json($_) } split /\n/, $records;
+    is( scalar @strict_records, 2, 'JSON retains both strict-variable groups' );
+    for my $record (@strict_records) {
+        like( $record->{message}, qr/^#2440 /,
+            'each JSON group keeps a complete annotated header' );
+    }
+
+    local $ENV{PERL_DIAG_RENDER} = 'en:annotated';
+    my $hooks = runperl(
+        prog => q{BEGIN { $SIG{__DIE__} = sub {
+            print STDERR "hook=", ($_[0] =~ /^#2440 / ? 1 : 0), "\n";
+        } } use strict; $x = $y + 1 1;}, stderr => 1,
+    );
+    is( scalar(() = $hooks =~ /^hook=1$/mg), 2,
+        'separate die-hook arguments retain complete headers' );
+    is( scalar(() = $hooks =~ /^#2440 /mg), 2,
+        'output after a hook starts with a fresh header' );
+
+    my $quiet = runperl(
+        prog => q{no warnings 'syntax'; my $x = 1 1;}, stderr => 1,
+    );
+    unlike( $quiet, qr/operator expected|An operator may be missing/,
+        'disabling syntax warnings suppresses the parent and its hint' );
 }
 
 done_testing();

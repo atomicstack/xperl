@@ -238,7 +238,7 @@ sub classification_row {
         $status        = 'broad internal family';
         $rationale     = 'The catalog marks this as an interpreter internal error.';
     }
-    elsif ( $is_warning && $diag->{is_hint} ) {
+    elsif ( ( $is_warning || $diag->{severity} eq 'NOTE' ) && $diag->{is_hint} ) {
         $class         = 'XPerl::Diagnostic::Note::Hint';
         $allowed_class = $class;
         $leaf          = 'yes';
@@ -277,8 +277,9 @@ sub classification_row {
           'The catalog explicitly marks this record as a hint; preserve its warning policy during migration.';
         if ( $diag->{code} =~ /^NOTE_HINT_OPERATOR_EXPECTED_(?:MISSING_SEMICOLON|PREDECLARE|MISSING_OPERATOR)\z/ ) {
             $allowed_class = $class;
-            $rationale     = 'toke.c appends this WARN_SYNTAX detail to the WARNING_SYNTAX_OPERATOR_EXPECTED '
-              . 'diagnostic, whose metadata declares a following hint.';
+            $category_policy = 'parent controls warning policy';
+            $rationale     = 'toke.c appends this Note to WARNING_SYNTAX_OPERATOR_EXPECTED, '
+              . 'whose WARN_SYNTAX policy controls the complete group.';
         }
         elsif ( $diag->{code} eq 'NOTE_HINT_STACK_UNWIND_DEFERRED' ) {
             $rationale = 'The delivery planner adds this Note to a temporary action view '

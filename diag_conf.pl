@@ -75824,11 +75824,11 @@ $CONF = {
         }
       }
     },
-    "WARNING" => {
+    "NOTE" => {
       "CORE_COMPILE" => {
         "NOTE_HINT_OPERATOR_EXPECTED_MISSING_OPERATOR" => {
           "number" => 2514,
-          "severity" => "WARNING",
+          "severity" => "NOTE",
           "kind" => "CORE_COMPILE",
           "code" => "NOTE_HINT_OPERATOR_EXPECTED_MISSING_OPERATOR",
           "macro" => "PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_MISSING_OPERATOR",
@@ -75893,16 +75893,14 @@ $CONF = {
                 "name" => "exception_slot",
                 "type" => "ptr"
               }
-            ],
-            "warning_categories" => [
-              "WARN_SYNTAX"
             ]
           },
+          "class" => "XPerl::Diagnostic::Note::Hint",
           "is_hint" => 1
         },
         "NOTE_HINT_OPERATOR_EXPECTED_MISSING_SEMICOLON" => {
           "number" => 2512,
-          "severity" => "WARNING",
+          "severity" => "NOTE",
           "kind" => "CORE_COMPILE",
           "code" => "NOTE_HINT_OPERATOR_EXPECTED_MISSING_SEMICOLON",
           "macro" => "PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_MISSING_SEMICOLON",
@@ -75945,16 +75943,14 @@ $CONF = {
                 "name" => "exception_slot",
                 "type" => "ptr"
               }
-            ],
-            "warning_categories" => [
-              "WARN_SYNTAX"
             ]
           },
+          "class" => "XPerl::Diagnostic::Note::Hint",
           "is_hint" => 1
         },
         "NOTE_HINT_OPERATOR_EXPECTED_PREDECLARE" => {
           "number" => 2513,
-          "severity" => "WARNING",
+          "severity" => "NOTE",
           "kind" => "CORE_COMPILE",
           "code" => "NOTE_HINT_OPERATOR_EXPECTED_PREDECLARE",
           "macro" => "PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_PREDECLARE",
@@ -76019,13 +76015,113 @@ $CONF = {
                 "name" => "exception_slot",
                 "type" => "ptr"
               }
-            ],
-            "warning_categories" => [
-              "WARN_SYNTAX"
             ]
           },
+          "class" => "XPerl::Diagnostic::Note::Hint",
           "is_hint" => 1
+        }
+      },
+      "CORE_RUNTIME" => {
+        "NOTE_CONTEXT_NEAR_SOURCE_ANNOTATED" => {
+          "number" => 2755,
+          "severity" => "NOTE",
+          "kind" => "CORE_RUNTIME",
+          "code" => "NOTE_CONTEXT_NEAR_SOURCE_ANNOTATED",
+          "macro" => "PERL_FORMAT_NOTE_CONTEXT_NEAR_SOURCE_ANNOTATED",
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
+          "is_render" => 1,
+          "message" => {
+            "templates" => {
+              "ar" => " في %{file} عند السطر %{line}، قرب \"%{value}\"\n",
+              "cy" => " yn %{file} ar linell %{line}, ger \"%{value}\"\n",
+              "de" => " in %{file}, Zeile %{line}, nahe \"%{value}\"\n",
+              "en" => " near \"%{value}\" at %{file} line %{line}.\n",
+              "es" => " en %{file}, línea %{line}, cerca de \"%{value}\"\n",
+              "fa" => " در %{file}، خط %{line}، نزدیک «%{value}»\n",
+              "fi" => " tiedostossa %{file} rivillä %{line}, lähellä kohtaa \"%{value}\"\n",
+              "fr" => " à %{file} ligne %{line}, près de \"%{value}\"\n",
+              "he" => " בקובץ %{file} בשורה %{line}, ליד \"%{value}\"\n",
+              "hu" => " a(z) %{file} fájl %{line}. sorában, a következő közelében: „%{value}”\n",
+              "is" => " í %{file} línu %{line}, nálægt „%{value}“\n",
+              "it" => " in %{file} alla riga %{line}, vicino a \"%{value}\"\n",
+              "nl" => " in %{file} op regel %{line}, nabij \"%{value}\"\n",
+              "pt" => " em %{file}, linha %{line}, perto de \"%{value}\"\n",
+              "ru" => " в файле %{file}, строка %{line}, рядом с \"%{value}\"\n",
+              "sr" => " у %{file}, линија %{line}, близу „%{value}“\n",
+              "tr" => " %{file} dosyasının %{line}. satırında, \"%{value}\" yakınında\n",
+              "uk" => " у файлі %{file}, рядок %{line}, біля \"%{value}\"\n",
+              "zh" => " 于 %{file} 第 %{line} 行，附近：“%{value}”\n"
+            },
+            "args" => [
+              {
+                "name" => "file",
+                "type" => "text",
+                "format_str" => "s"
+              },
+              {
+                "name" => "line",
+                "type" => "iv",
+                "format_str" => "IVdf"
+              },
+              {
+                "name" => "value",
+                "type" => "text",
+                "format_str" => "s"
+              }
+            ]
+          },
+          "counts_as_error" => 0,
+          "emit" => {
+            "api" => "RENDER"
+          },
+          "class" => "XPerl::Diagnostic::Note::Context"
         },
+        "NOTE_CONTEXT_SYNTAX_ERROR_ANNOTATED" => {
+          "number" => 2754,
+          "severity" => "NOTE",
+          "kind" => "CORE_RUNTIME",
+          "code" => "NOTE_CONTEXT_SYNTAX_ERROR_ANNOTATED",
+          "macro" => "PERL_FORMAT_NOTE_CONTEXT_SYNTAX_ERROR_ANNOTATED",
+          "source_files" => [
+            "xperl_exception.inc"
+          ],
+          "is_render" => 1,
+          "message" => {
+            "templates" => {
+              "ar" => "خطأ في الصياغة",
+              "cy" => "gwall cystrawen",
+              "de" => "Syntaxfehler",
+              "en" => "Syntax error",
+              "es" => "Error de sintaxis",
+              "fa" => "خطای نحوی",
+              "fi" => "Syntaksivirhe",
+              "fr" => "Erreur de syntaxe",
+              "he" => "שגיאת תחביר",
+              "hu" => "Szintaktikai hiba",
+              "is" => "málfræðivilla",
+              "it" => "errore di sintassi",
+              "nl" => "Syntaxisfout",
+              "pt" => "Erro de sintaxe",
+              "ru" => "синтаксическая ошибка",
+              "sr" => "Грешка у синтакси",
+              "tr" => "Sözdizimi hatası",
+              "uk" => "синтаксична помилка",
+              "zh" => "语法错误"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 0,
+          "emit" => {
+            "api" => "RENDER"
+          },
+          "class" => "XPerl::Diagnostic::Note::Context"
+        }
+      }
+    },
+    "WARNING" => {
+      "CORE_COMPILE" => {
         "WARNING_SYNTAX_OPERATOR_EXPECTED" => {
           "number" => 2511,
           "severity" => "WARNING",
@@ -112409,6 +112505,7 @@ $CONF = {
     "DEPRECATION" => "D",
     "FATAL_ERROR" => "F",
     "INTERNAL_ERROR" => "P",
+    "NOTE" => "N",
     "SEVERE_WARNING" => "S",
     "UNTRAPPABLE_ERROR" => "X",
     "WARNING" => "W"

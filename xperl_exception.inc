@@ -174,7 +174,7 @@ static SV *Perl_xperl_render_diagnostic_legacy(pTHX_ HV *fields,
                                              HV *context);
 static SV *Perl_xperl_render_diagnostic_modern(pTHX_ HV *fields,
                                              const char *language,
-                                             HV *context);
+                                             HV *context, bool contents);
 static SV *Perl_xperl_render_diagnostic_template(pTHX_ HV *fields,
                                                 const char *language,
                                                 const perl_diagpack_engine *engine);
@@ -435,7 +435,7 @@ Perl_xperl_append_diagnostic_contents(pTHX_ SV *output, HV *fields,
         }
         child_text = modern
             ? Perl_xperl_render_diagnostic_modern(aTHX_ child_fields,
-                                                   language, context)
+                                                   language, context, TRUE)
             : Perl_xperl_render_diagnostic_legacy(aTHX_ child_fields,
                                                    language, context);
         if (!child_text || SvROK(child_text)) {
@@ -443,7 +443,12 @@ Perl_xperl_append_diagnostic_contents(pTHX_ SV *output, HV *fields,
                 SvREFCNT_dec_NN(child_text);
             continue;
         }
-        if (modern) {
+        if (modern && SvTRUE(Perl_xperl_field(aTHX_ child_fields, "is_hint"))) {
+            if (SvCUR(output) && SvEND(output)[-1] != '\n')
+                sv_catpvs(output, "\n");
+            Perl_xperl_append_indented_text(aTHX_ output, child_text);
+        }
+        else if (modern) {
             SV *number = Perl_xperl_field(aTHX_ child_fields, "number");
             SV *severity = Perl_xperl_field(aTHX_ child_fields, "severity");
             SV *kind = Perl_xperl_field(aTHX_ child_fields, "kind");
@@ -2844,6 +2849,15 @@ Perl_xperl_render_diagnostic_modern_body(pTHX_ HV *fields, const char *language,
         return rendered ? newSVsv(rendered) : NULL;
     }
 
+    if (SvOK(code) && !SvROK(code)
+        && strEQ(SvPV_nolen(code), "ERROR_SYNTAX_INVALID")) {
+        return engine
+            ? Perl_xperl_render_format_engine(aTHX_ engine,
+                perl_diag_note_context_syntax_error_annotated_idx, 0)
+            : Perl_xperl_render_format(aTHX_
+                perl_diag_note_context_syntax_error_annotated_idx, language, 0);
+    }
+
     {
         SV *rendered = Perl_xperl_render_diagnostic_template(aTHX_ fields,
                                                          language, engine);
@@ -2854,7 +2868,7 @@ Perl_xperl_render_diagnostic_modern_body(pTHX_ HV *fields, const char *language,
 
 static SV *
 Perl_xperl_render_diagnostic_modern(pTHX_ HV *fields, const char *language,
-                                 HV *context)
+                                 HV *context, bool contents)
 {
     SV *context_ref = NULL;
     SV *text;
@@ -2873,7 +2887,7 @@ Perl_xperl_render_diagnostic_modern(pTHX_ HV *fields, const char *language,
     engine = Perl_xperl_render_engine(aTHX_ fields, context);
     text = Perl_xperl_render_diagnostic_modern_body(aTHX_ fields,
         language, context, engine);
-    if (text && !SvROK(text))
+    if (contents && text && !SvROK(text))
         Perl_xperl_append_diagnostic_contents(aTHX_ text, fields, language,
                                                TRUE, context);
     LEAVE;
@@ -2995,6 +3009,11 @@ Perl_xperl_render_exception_annotated(pTHX_ SV *object, const char *language,
         SV *context_ref = sv_2mortal(newRV_noinc(MUTABLE_SV(newHV())));
         HV *context = MUTABLE_HV(SvRV(context_ref));
         SSize_t i = 0;
+        SV *shared_header = Perl_xperl_field(aTHX_ MUTABLE_HV(SvRV(object)),
+                                            "_annotated_previous_header");
+        SV *previous_header = SvROK(shared_header)
+            && SvTYPE(SvRV(shared_header)) < SVt_PVAV
+            ? SvRV(shared_header) : sv_2mortal(newSVpvs(""));
 
         Perl_xperl_render_context_set_explicit(aTHX_ context, explicit_language);
 
@@ -3065,7 +3084,7 @@ Perl_xperl_render_exception_annotated(pTHX_ SV *object, const char *language,
              * which mutates the diagnostics array.  Recheck the tail link
              * after rendering so a removed or replaced tail is not hidden. */
             text = Perl_xperl_render_diagnostic_modern(aTHX_ diagnostic,
-                                                    language, context);
+                                                    language, context, FALSE);
             grouped_context =
                 Perl_xperl_diagnostic_has_context_followup(aTHX_ diagnostic,
                                                         context);
@@ -3104,16 +3123,53 @@ Perl_xperl_render_exception_annotated(pTHX_ SV *object, const char *language,
                     sv_catpvs(prefix, ":");
                     sv_catsv(prefix, line);
 
-                    text_location = Perl_xperl_source_location_engine(aTHX_
-                        Perl_xperl_render_engine(aTHX_ diagnostic, context),
-                        file, line, language);
-                    sv_catpvs(text_location, ".");
+                    if (!grouped_hint && !SvROK(text)
+                        && (!SvCUR(text) || SvEND(text)[-1] != '\n')) {
+                        const perl_diagpack_engine *engine =
+                            Perl_xperl_render_engine(aTHX_ diagnostic, context);
+                        SV *parser_context = Perl_xperl_field(aTHX_ location_hv,
+                                                              "parser_context");
+                        if (SvOK(parser_context) && !SvROK(parser_context)) {
+                            SV *value = Perl_xperl_field(aTHX_ location_hv,
+                                                        "parser_context_value");
+                            if (strEQ(SvPV_nolen(parser_context), "near")) {
+                                text_location = engine
+                                    ? Perl_xperl_render_format_engine(aTHX_ engine,
+                                        perl_diag_note_context_near_source_annotated_idx,
+                                        3, file, line, value)
+                                    : Perl_xperl_render_format(aTHX_
+                                        perl_diag_note_context_near_source_annotated_idx,
+                                        language, 3, file, line, value);
+                            }
+                            else {
+                                text_location = engine
+                                    ? Perl_xperl_render_format_engine(aTHX_ engine,
+                                        perl_diag_note_context_location_idx, 5,
+                                        file, line, value, parser_context,
+                                        sv_2mortal(newSVpvs("parser")))
+                                    : Perl_xperl_render_format(aTHX_
+                                        perl_diag_note_context_location_idx,
+                                        language, 5, file, line, value,
+                                        parser_context,
+                                        sv_2mortal(newSVpvs("parser")));
+                            }
+                        }
+                        else {
+                            text_location = Perl_xperl_source_location_engine(
+                                aTHX_ engine, file, line, language);
+                            sv_catpvs(text_location, ".");
+                        }
+                    }
                 }
             }
             if (SvCUR(result) && SvEND(result)[-1] != '\n')
                 sv_catpvs(result, "\n");
-            sv_catsv(result, prefix);
-            sv_catpvs(result, "\n");
+            if (!grouped_hint && !sv_eq(previous_header, prefix)) {
+                sv_catsv(result, prefix);
+                sv_catpvs(result, "\n");
+            }
+            if (!grouped_hint)
+                sv_setsv(previous_header, prefix);
             if (SvUTF8(text))
                 SvUTF8_on(result);
 
@@ -3131,8 +3187,32 @@ Perl_xperl_render_exception_annotated(pTHX_ SV *object, const char *language,
             }
             if (text_location && !grouped_context)
                 sv_catsv(result, text_location);
+            ENTER;
+            if (!SvROK(text)
+                && Perl_xperl_render_guard_enter(aTHX_ context, diagnostic))
+                Perl_xperl_append_diagnostic_contents(aTHX_ result, diagnostic,
+                                                       language, TRUE, context);
+            LEAVE;
             if (!SvCUR(result) || SvEND(result)[-1] != '\n')
                 sv_catpvs(result, "\n");
+
+            /* A non-hint child has printed a different header. */
+            SV *children = Perl_xperl_field(aTHX_ diagnostic, "contents");
+            if (SvROK(children) && SvTYPE(SvRV(children)) == SVt_PVAV) {
+                AV *array = MUTABLE_AV(SvRV(children));
+                SSize_t child_index;
+                for (child_index = 0; child_index <= av_top_index(array);
+                     child_index++) {
+                    SV **child = av_fetch(array, child_index, FALSE);
+                    if (child && SvROK(*child)
+                        && SvTYPE(SvRV(*child)) == SVt_PVHV
+                        && !SvTRUE(Perl_xperl_field(aTHX_
+                            MUTABLE_HV(SvRV(*child)), "is_hint"))) {
+                        sv_setpvs(previous_header, "");
+                        break;
+                    }
+                }
+            }
 
             SvREFCNT_dec_NN(prefix);
             if (text_location)
@@ -3322,6 +3402,7 @@ Perl_xperl_render_exception_records(pTHX_ SV *object, HV *fields,
         SV *view = sv_2mortal(newRV_noinc(MUTABLE_SV(newHVhv(fields))));
         sv_bless(view, SvSTASH(SvRV(object)));
         HV *view_fields = MUTABLE_HV(SvRV(view));
+        (void)hv_deletes(view_fields, "_annotated_previous_header", G_DISCARD);
         (void)hv_stores(view_fields, "contents", newRV_inc(MUTABLE_SV(group)));
         bool light_group = SvTRUE(Perl_xperl_field(aTHX_ diagnostic, "light"));
         SV *type = sv_mortalcopy(Perl_xperl_field(aTHX_ diagnostic, "severity"));
@@ -3417,6 +3498,12 @@ Perl_xperl_render_exception(pTHX_ SV *object, HV *fields, const char *setting,
         format = "legacy";
     }
     bool annotated = strEQ(format, "annotated") || strEQ(format, "modern");
+    if (!annotated || envelope) {
+        SV *shared_header = Perl_xperl_field(aTHX_ fields,
+                                             "_annotated_previous_header");
+        if (SvROK(shared_header) && SvTYPE(SvRV(shared_header)) < SVt_PVAV)
+            sv_setpvs(SvRV(shared_header), "");
+    }
     if (!annotated && !strEQ(format, "legacy"))
         language = "en";
     if (envelope && (strEQ(envelope, "JSON") || strEQ(envelope, "json")
