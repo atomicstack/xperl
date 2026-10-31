@@ -76,6 +76,11 @@ category is always C<other>.
 Translations are machine-generated drafts and have not had native linguistic
 review. For example, C<PERL_DIAG_RENDER=fa:legacy> selects Persian text.
 
+The Serbian (C<sr>) pack uses Cyrillic text and shared operation vocabulary.
+Its cardinal categories are C<one>, C<few> and C<other>; its ordinal
+category is always C<other>. Like the other packs, its translations are
+machine-generated drafts awaiting native linguistic review.
+
 Missing translations in the existing German, Spanish, French, Icelandic,
 Italian, Dutch and Portuguese catalogs have also been filled in. Stale French
 UTF-8 sequence-length wording has been updated. Translation repair records

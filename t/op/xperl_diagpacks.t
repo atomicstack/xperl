@@ -25,7 +25,7 @@ use B ();
 use builtin qw(cardinal_plural_form get_diagnostic_data ordinal_plural_form);
 no warnings 'experimental::builtin';
 
-my @languages              = qw(ar cy de en es fa fi fr he hu is it nl pt ru tr uk);
+my @languages              = qw(ar cy de en es fa fi fr he hu is it nl pt ru sr tr uk);
 my $initial_render_default = ${^DIAG_RENDER};
 my %packs;
 my %load_default;
@@ -168,6 +168,33 @@ ok( $foreign_exact_case,
     'inspection decodes translated exact-count cases using each language domain' );
 
 is( ${^DIAG_RENDER}, $initial_render_default, 'loading all available packs leaves the selected language unchanged' );
+
+SKIP: {
+    skip 'Serbian diagnostic pack is unavailable', 8 unless $packs{sr};
+
+    my $runtime = eval q{
+        use diagpack 'sr';
+        my $zero = 0;
+        eval { my $result = 1 / $zero };
+        $@;
+    };
+    ok( $runtime && ref $runtime, 'a runtime error captures the Serbian pack lexically' );
+    my $legacy = $runtime->render_as_legacy('sr');
+    like( $legacy, qr/[\x{0400}-\x{04FF}]/, 'Serbian errors use Cyrillic' );
+    {
+        local ${^DIAG_RENDER} = 'en:legacy';
+        is( $runtime->render, $legacy, 'implicit rendering retains the captured Serbian pack' );
+        isnt( $legacy, $runtime->render_as_legacy('en'), 'Serbian rendering differs from English' );
+    }
+    require JSON::PP;
+    my $record = JSON::PP->new->decode( $runtime->render('sr:legacy:JSON') );
+    is( $record->{message}, $legacy, 'structured output retains the Serbian message' );
+    ok( utf8::is_utf8($legacy), 'Serbian text retains decoded Unicode characters' );
+    is( join(',', map { cardinal_plural_form('sr', $_) } (0, 1, 2, 11, 12, 21, 22)),
+        'other,one,few,other,other,one,few', 'Serbian cardinal rules handle teen exceptions' );
+    is( join(',', map { ordinal_plural_form('sr', $_) } (1, 2, 21)),
+        'other,other,other', 'Serbian ordinal counts use other' );
+}
 
 SKIP: {
     skip 'Persian diagnostic pack is unavailable', 8 unless $packs{fa};

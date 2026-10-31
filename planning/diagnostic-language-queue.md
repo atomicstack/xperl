@@ -1,6 +1,6 @@
 # Diagnostic translation language queue
 
-The registered packs are `ar cy de en es fa fi fr he hu is it nl pt ru tr uk`.
+The registered packs are `ar cy de en es fa fi fr he hu is it nl pt ru sr tr uk`.
 They have been imported and tested; native linguistic review is separate.
 The builtin integer cardinal and ordinal functions cover the retained CLDR
 languages independently of installed packs. Adding a pack requires translated
@@ -8,14 +8,16 @@ sentences, vocabulary and grammatical forms, not just plural categories.
 
 ## Queue
 
-This provisional order reflects expected grammar, script and rendering work.
-Refine it when real translation contexts expose different requirements.
+Serbian (`sr`) uses Cyrillic. The next priorities are Mandarin Chinese
+(Simplified Chinese), Swedish, then Hindi. Refine the remaining order when
+real translation contexts expose different requirements.
 
 | Language | Code | Main question |
 |---|---|---|
+| Mandarin Chinese | `zh` | Simplified Chinese technical vocabulary |
+| Swedish | `sv` | Phrase agreement and independent ordinal rules |
 | Hindi | `hi` | Devanagari text and agreement |
 | Polish | `pl` | Case, agreement and phrase forms |
-| Serbian | `sr` | Case forms and initial script choice |
 | Czech | `cs` | Independent Slavic phrase forms |
 | Irish | `ga` | Five cardinal categories and contextual forms |
 | Scottish Gaelic | `gd` | Four cardinal categories; independent from Irish |
@@ -23,12 +25,11 @@ Refine it when real translation contexts expose different requirements.
 | Japanese | `ja` | Whole-sentence reordering and phrase forms |
 | Thai | `th` | Technical wording and layout |
 | Cantonese | `yue` | Independent wording and support for a three-letter code |
-| Mandarin Chinese | `zh` | Technical vocabulary and script/region choices |
-| Swedish | `sv` | Phrase agreement and independent ordinal rules |
 
-Choose Chinese and Serbian script/region variants explicitly. The current
-pack interface uses two-letter codes; Cantonese requires an interface
-decision, not an invented alias or substitution of Mandarin wording.
+The initial Serbian pack uses Cyrillic and the initial Mandarin pack will
+use Simplified Chinese. The current pack interface uses two-letter codes;
+Cantonese requires an interface decision, not an invented alias or
+substitution of Mandarin wording.
 
 ## Workflow for each language
 

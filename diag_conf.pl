@@ -3240,6 +3240,7 @@ $CONF = {
               "nl" => "%{message} is verouderd en wordt een fatale fout in Perl %{when}",
               "pt" => "%{message} está obsoleto e passará a ser um erro fatal no Perl %{when}",
               "ru" => "Устаревшая возможность: %{message}; в Perl %{when} её использование будет приводить к фатальной ошибке",
+              "sr" => "%{message} је застарео и постаће фатална грешка у Перлу %{when}",
               "tr" => "%{message} kullanımdan kaldırılmıştır ve Perl %{when} sürümünde ölümcül hata haline gelecektir",
               "uk" => "Використання %{message} визнано застарілим, а в Perl %{when} воно спричинятиме фатальну помилку"
             },
@@ -3298,6 +3299,7 @@ $CONF = {
               "nl" => "%{message} is verouderd en verdwijnt in Perl %{when}",
               "pt" => "%{message} está obsoleto e será removido no Perl %{when}",
               "ru" => "Устаревшая возможность: %{message}; будет удалена в Perl %{when}",
+              "sr" => "%{message} је застарео и биће уклоњен у Перлу %{when}",
               "tr" => "%{message} kullanımdan kaldırılmıştır ve Perl %{when} sürümünde ortadan kalkacaktır",
               "uk" => "%{message}: застаріло, буде вилучено в Perl %{when}"
             },
@@ -3356,6 +3358,7 @@ $CONF = {
               "nl" => "%{message} is verouderd",
               "pt" => "%{message} está obsoleto",
               "ru" => "Устаревшая возможность: %{message}",
+              "sr" => "%{message} је застарео",
               "tr" => "%{message} kullanımdan kaldırılmıştır",
               "uk" => "Використання %{message} визнано застарілим"
             },
@@ -3409,6 +3412,7 @@ $CONF = {
               "nl" => "Gebruik van '%{arg1}' als scheidingsteken voor tekenreeksen is verouderd",
               "pt" => "O uso de '%{arg1}' como delimitador de string está obsoleto",
               "ru" => "Использование '%{arg1}' в качестве разделителя строки является устаревшим",
+              "sr" => "Употреба „%{arg1}“ као граничника ниске је застарела",
               "tr" => "'%{arg1}' karakterinin dize ayıracı olarak kullanımı kullanımdan kaldırılmıştır",
               "uk" => "Використання '%{arg1}' як роздільника рядка є застарілим"
             },
@@ -3473,6 +3477,7 @@ $CONF = {
               "nl" => "do \"%{arg1}\" mislukt: '.' staat niet meer in \@INC; bedoelde u do \"./%{arg2}\"?",
               "pt" => "do \"%{arg1}\" falhou; '.' já não está em \@INC. Queria dizer do \"./%{arg2}\"?",
               "ru" => "Не удалось выполнить do \"%{arg1}\": '.' больше не входит в \@INC; возможно, имелось в виду do \"./%{arg2}\"?",
+              "sr" => "do \"%{arg1}\" није успео, '.' више није у \@INC; да ли сте мислили do \"./%{arg2}\"?",
               "tr" => "do \"%{arg1}\" başarısız oldu; '.' artık \@INC içinde değil. do \"./%{arg2}\" demek mi istediniz?",
               "uk" => "Не вдалося виконати do \"%{arg1}\", '.' більше немає в \@INC; можливо, ви мали на увазі do \"./%{arg2}\"?"
             },
@@ -3526,6 +3531,7 @@ $CONF = {
               "nl" => "Gebruik van letterlijk verticaal witruimteteken in [] is verouderd onder /xx",
               "pt" => "O uso de espaço vertical literal em [] está obsoleto com /xx",
               "ru" => "Использование неэкранированных символов вертикального пробела в [] при /xx устарело",
+              "sr" => "Употреба дословног вертикалног размака у [] је застарела под /xx",
               "tr" => " /xx altında [] içinde gerçek dikey boşluk karakteri kullanımı kullanımdan kaldırılmıştır",
               "uk" => "Використання літеральних вертикальних пробільних символів у [] з модифікатором /xx визнано застарілим"
             },
@@ -3576,6 +3582,7 @@ $CONF = {
               "nl" => "Gebruik van niet-geëscapete '#' in [] is verouderd onder /xx",
               "pt" => "O uso de '#' não escapado em [] está obsoleto com /xx",
               "ru" => "Использование неэкранированного '#' в [] при /xx устарело",
+              "sr" => "Употреба неескејпованог '#' у [] је застарела под /xx",
               "tr" => " /xx altında [] içinde kaçışlanmamış '#' kullanımı kullanımdan kaldırılmıştır",
               "uk" => "Використання неекранованого '#' у [] з модифікатором /xx вважається застарілим"
             },
@@ -3684,6 +3691,11 @@ $CONF = {
                 "line_break_values" => "Использование '%{property}' в \\p{} или \\P{} устарело по следующей причине: вместо него используются значения свойства Line_Break; см. www.unicode.org/reports/tr14",
                 "surrogate_line_break" => "Использование '%{property}' в \\p{} или \\P{} устарело по следующей причине: суррогаты никогда не должны встречаться в корректном тексте и потому не должны служить основанием для разбиения на строки"
               },
+              "sr" => {
+                "*" => "Употреба својства „%{property}” у \\p{} или \\P{} је застарела јер: %{detail}",
+                "line_break_values" => "Употреба својства „%{property}” у \\p{} или \\P{} је застарела јер су га замениле вредности својства Line_Break; погледајте www.unicode.org/reports/tr14",
+                "surrogate_line_break" => "Употреба својства „%{property}” у \\p{} или \\P{} је застарела јер сурогати не би требало да се појављују у исправно формираном тексту и зато не би требало да буду основа за прелом реда"
+              },
               "tr" => {
                 "*" => "\\p{} veya \\P{} içinde '%{property}' kullanımı şu nedenle kullanımdan kaldırılmıştır: %{detail}",
                 "line_break_values" => "\\p{} veya \\P{} içinde '%{property}' kullanımı şu nedenle kullanımdan kaldırılmıştır: Line_Break özellik değerlerinin yerini almıştır; bkz. www.unicode.org/reports/tr14",
@@ -3771,6 +3783,7 @@ $CONF = {
               "nl" => "Te weinig argumenten voor %{name}",
               "pt" => "Argumentos insuficientes para %{name}",
               "ru" => "Недостаточно аргументов для %{name}",
+              "sr" => "Нема довољно аргумената за %{name}",
               "tr" => "%{name} için yeterli bağımsız değişken verilmedi",
               "uk" => "Недостатньо аргументів для %{name}"
             },
@@ -3808,6 +3821,7 @@ $CONF = {
                 "nl" => "operation",
                 "pt" => "operation",
                 "ru" => "genitive",
+                "sr" => "genitive",
                 "tr" => "operation",
                 "uk" => "genitive"
               },
@@ -3857,6 +3871,7 @@ $CONF = {
               "nl" => "Te veel argumenten voor %{name}",
               "pt" => "Demasiados argumentos para %{name}",
               "ru" => "Слишком много аргументов для %{name}",
+              "sr" => "Превише аргумената за %{name}",
               "tr" => "%{name} için fazla bağımsız değişken verildi",
               "uk" => "Забагато аргументів для %{name}"
             },
@@ -3894,6 +3909,7 @@ $CONF = {
                 "nl" => "operation",
                 "pt" => "operation",
                 "ru" => "genitive",
+                "sr" => "genitive",
                 "tr" => "operation",
                 "uk" => "genitive"
               },
@@ -4109,6 +4125,18 @@ $CONF = {
                 "subroutine" => "Аргумент %{number} для %{function} должен быть подпрограммой (получено: %{actual})",
                 "symbol" => "Аргумент %{number} для %{function} должен быть символом (получено: %{actual})"
               },
+              "sr" => {
+                "array_ref" => "Тип аргумента %{number} функције %{function} мора бити низ (а не %{actual})",
+                "block_or_sub" => "Тип аргумента %{number} функције %{function} мора бити блок или потпрограм {} (а не %{actual})",
+                "filehandle" => "Тип аргумента %{number} функције %{function} мора бити HANDLE (а не %{actual})",
+                "hash_or_array_ref" => "Тип аргумента %{number} функције %{function} мора бити хеш или низ (а не %{actual})",
+                "hash_ref" => "Тип аргумента %{number} функције %{function} мора бити хеш (а не %{actual})",
+                "scalar" => "Тип аргумента %{number} функције %{function} мора бити скалар (а не %{actual})",
+                "sigil_set" => "Тип аргумента %{number} функције %{function} мора бити један од %{sigils} (а не %{actual})",
+                "sub" => "Тип аргумента %{number} функције %{function} мора бити потпрограм {} (а не %{actual})",
+                "subroutine" => "Тип аргумента %{number} функције %{function} мора бити потпрограм (а не %{actual})",
+                "symbol" => "Тип аргумента %{number} функције %{function} мора бити симбол (а не %{actual})"
+              },
               "tr" => {
                 "array_ref" => "%{function} için %{number}. bağımsız değişkenin türü dizi olmalıdır (%{actual} değil)",
                 "block_or_sub" => "%{function} için %{number}. bağımsız değişkenin türü blok veya sub {} olmalıdır (%{actual} değil)",
@@ -4197,6 +4225,7 @@ $CONF = {
                 "nl" => "operation",
                 "pt" => "operation",
                 "ru" => "nominative",
+                "sr" => "nominative",
                 "tr" => "operation",
                 "uk" => "nominative"
               },
@@ -4221,6 +4250,7 @@ $CONF = {
                 "nl" => "operation",
                 "pt" => "operation",
                 "ru" => "genitive",
+                "sr" => "genitive",
                 "tr" => "operation",
                 "uk" => "genitive"
               },
@@ -4271,6 +4301,7 @@ $CONF = {
               "nl" => "Experimentele %{feature} op een scalair is nu verboden",
               "pt" => "A funcionalidade experimental %{feature} num escalar é agora proibida",
               "ru" => "Экспериментальное применение %{feature} к скаляру теперь запрещено",
+              "sr" => "Експериментална функција %{feature} над скаларом сада није дозвољена",
               "tr" => "Skaler üzerinde deneysel %{feature} kullanımına artık izin verilmiyor",
               "uk" => "Експериментальне застосування %{feature} до скаляра тепер заборонено"
             },
@@ -4327,6 +4358,7 @@ $CONF = {
               "nl" => "Compilatiefout",
               "pt" => "Erro de compilação",
               "ru" => "Ошибка компиляции",
+              "sr" => "Грешка при компилацији",
               "tr" => "Derleme hatası",
               "uk" => "Помилка компіляції"
             },
@@ -4374,6 +4406,7 @@ $CONF = {
               "nl" => "%{text}",
               "pt" => "%{text}",
               "ru" => "%{text}",
+              "sr" => "%{text}",
               "tr" => "%{text}",
               "uk" => "%{text}"
             },
@@ -4549,6 +4582,15 @@ $CONF = {
                 "within_pattern" => "%{message} в файле %{file}, строка %{line}, внутри шаблона\n",
                 "within_string" => "%{message} в файле %{file}, строка %{line}, внутри строки\n"
               },
+              "sr" => {
+                "end_of_line" => "%{message} у %{file}, ред %{line}, на крају реда\n",
+                "eof" => "%{message} у %{file}, ред %{line}, на крају датотеке\n",
+                "near" => "%{message} у %{file}, ред %{line}, близу „%{context_value}“\n",
+                "next_char" => "%{message} у %{file}, ред %{line}, следећи знак %{context_value}\n",
+                "next_token" => "%{message} у %{file}, ред %{line}, следећи токен ???\n",
+                "within_pattern" => "%{message} у %{file}, ред %{line}, унутар обрасца\n",
+                "within_string" => "%{message} у %{file}, ред %{line}, унутар ниске-записа\n"
+              },
               "tr" => {
                 "end_of_line" => "%{message}, %{file} dosyasının %{line}. satırında, satır sonunda\n",
                 "eof" => "%{message}, %{file} dosyasının %{line}. satırında, dosya sonunda\n",
@@ -4644,6 +4686,7 @@ $CONF = {
               "nl" => "%{message}",
               "pt" => "%{message}",
               "ru" => "%{message}",
+              "sr" => "%{message}",
               "tr" => "%{message}",
               "uk" => "%{message}"
             },
@@ -4693,6 +4736,7 @@ $CONF = {
               "nl" => "Interne urp in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Falha interna na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Внутренний сбой в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Унутрашњи урп у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede dahili urp; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Внутрішній збій urp у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -4775,6 +4819,7 @@ $CONF = {
               "nl" => "Interne fout in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Desastre interno na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Внутренняя катастрофа в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Унутрашњи квар у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede dahili hata; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Внутрішня катастрофа в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -4858,6 +4903,7 @@ $CONF = {
               "nl" => "Los woord als filehandle \"%{filehandle}\" niet toegestaan onder 'no feature \"bareword_filehandles\"'",
               "pt" => "O identificador de ficheiro \"%{filehandle}\" usado como palavra sem aspas não é permitido com 'no feature \"bareword_filehandles\"'",
               "ru" => "Дескриптор файла с именем без кавычек \"%{filehandle}\" недопустим при 'no feature \"bareword_filehandles\"'",
+              "sr" => "Ручка датотеке наведена голом речју „%{filehandle}“ није дозвољена уз 'no feature \"bareword_filehandles\"'",
               "tr" => "'bareword_filehandles' özelliği devre dışıyken çıplak sözcük dosya tanıtıcısı \"%{filehandle}\" kullanılamaz",
               "uk" => "Файловий дескриптор \"%{filehandle}\" у вигляді слова без лапок заборонено за 'no feature \"bareword_filehandles\"'"
             },
@@ -4909,6 +4955,7 @@ $CONF = {
               "nl" => "yield buiten een generator",
               "pt" => "yield fora de um gerador",
               "ru" => "yield вне gen",
+              "sr" => "yield ван gen-а",
               "tr" => "gen dışında yield",
               "uk" => "yield поза gen"
             },
@@ -4952,6 +4999,7 @@ $CONF = {
               "nl" => "Toewijzing aan zowel een lijst als een scalair",
               "pt" => "Atribuição simultânea a uma lista e a um escalar",
               "ru" => "Присваивание одновременно списку и скаляру",
+              "sr" => "Додела истовремено листи и скалару",
               "tr" => "Hem listeye hem skalere atama",
               "uk" => "Присвоєння одночасно списку та скаляру"
             },
@@ -4995,6 +5043,7 @@ $CONF = {
               "nl" => "Kan aanroep van niet-lvalue-subroutine &%{subroutine} niet wijzigen in %{context}",
               "pt" => "Não é possível modificar uma chamada de sub-rotina que não é lvalue, &%{subroutine}, em %{context}",
               "ru" => "Нельзя изменить результат вызова подпрограммы &%{subroutine}, не возвращающей lvalue, при %{context}",
+              "sr" => "Није могуће мењати позив потпрограма %{subroutine} који не враћа л-вредност у %{context}",
               "tr" => "%{context} bağlamında &%{subroutine} alt yordamına yapılan çağrı, lvalue olmadığı için değiştirilemez",
               "uk" => "Не можна змінювати результат виклику підпрограми &%{subroutine}, яка не є lvalue-підпрограмою, у %{context}"
             },
@@ -5037,6 +5086,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -5086,6 +5136,7 @@ $CONF = {
               "nl" => "Kan %{target} niet wijzigen in %{context}",
               "pt" => "Não é possível modificar %{target} em %{context}",
               "ru" => "Нельзя изменить %{target} при %{context}",
+              "sr" => "Не може се мењати %{target} у %{context}",
               "tr" => "%{context} bağlamında %{target} değiştirilemez",
               "uk" => "Не можна змінювати %{target} у %{context}"
             },
@@ -5134,6 +5185,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -5158,6 +5210,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "accusative",
+                "sr" => "accusative",
                 "tr" => "operation",
                 "uk" => "accusative"
               },
@@ -5203,6 +5256,7 @@ $CONF = {
               "nl" => "Kan de referentie naar een gelokaliseerde array tussen haakjes niet wijzigen in een lijsttoewijzing",
               "pt" => "Não é possível modificar uma referência a um array localizado entre parênteses numa atribuição de lista",
               "ru" => "Нельзя изменить ссылку на локализованный массив в скобках при списковом присваивании",
+              "sr" => "Није могуће изменити референцу на локализовани низ у заградама у додели листе",
               "tr" => "Liste atamasında yerelleştirilmiş parantezli diziye başvuru değiştirilemiyor",
               "uk" => "Не можна змінювати посилання на локалізований масив у дужках у списковому присвоєнні"
             },
@@ -5247,6 +5301,7 @@ $CONF = {
               "nl" => "Kan de referentie naar een hash tussen haakjes niet wijzigen in een lijsttoewijzing",
               "pt" => "Não é possível modificar uma referência a um hash entre parênteses numa atribuição de lista",
               "ru" => "Нельзя изменить ссылку на хеш в скобках при списковом присваивании",
+              "sr" => "Није могуће изменити референцу на хеш у заградама у додели листе",
               "tr" => "Liste atamasında parantezli hash'e başvuru değiştirilemiyor",
               "uk" => "Не можна змінювати посилання на хеш у дужках у списковому присвоєнні"
             },
@@ -5290,6 +5345,7 @@ $CONF = {
               "nl" => "Kan de referentie naar %{target} niet wijzigen in een scalaire toewijzing",
               "pt" => "Não é possível modificar a referência a %{target} numa atribuição escalar",
               "ru" => "Нельзя изменить ссылку на значение %{target} при скалярном присваивании",
+              "sr" => "Није могуће мењати референцу на %{target} у додели скалара",
               "tr" => "Skaler atamada \"%{target}\" hedefine yapılan başvuru değiştirilemez",
               "uk" => "Не можна змінювати посилання до %{target} у скалярному присвоєнні"
             },
@@ -5327,6 +5383,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "genitive",
+                "sr" => "genitive",
                 "tr" => "operation",
                 "uk" => "genitive"
               },
@@ -5371,6 +5428,7 @@ $CONF = {
               "nl" => "Kan de referentie naar %{target} niet wijzigen in %{context}",
               "pt" => "Não é possível modificar a referência a %{target} em %{context}",
               "ru" => "Нельзя изменить ссылку на значение %{target} при %{context}",
+              "sr" => "Није могуће мењати референцу на %{target} у %{context}",
               "tr" => "%{context} bağlamında \"%{target}\" hedefine yapılan başvuru değiştirilemez",
               "uk" => "Не можна змінювати посилання до %{target} у %{context}"
             },
@@ -5424,6 +5482,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -5448,6 +5507,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "genitive",
+                "sr" => "genitive",
                 "tr" => "operation",
                 "uk" => "genitive"
               },
@@ -5552,6 +5612,11 @@ $CONF = {
                 "overload_type_not_defined" => "Константа(%{constant}): \$^H{%{overload_type}} не определено",
                 "unknown" => "Константа(%{constant}) неизвестна"
               },
+              "sr" => {
+                "handler_returned_undefined" => "Константа(%{constant}): Позив функције &{\$^H{%{overload_type}}} није вратио дефинисану вредност",
+                "overload_type_not_defined" => "Константа(%{constant}): \$^H{%{overload_type}} није дефинисан",
+                "unknown" => "Константа(%{constant}): непознато"
+              },
               "tr" => {
                 "handler_returned_undefined" => "Sabit(%{constant}): &{\$^H{%{overload_type}}} çağrısı tanımlı bir değer döndürmedi",
                 "overload_type_not_defined" => "Sabit(%{constant}): \$^H{%{overload_type}} tanımlı değil",
@@ -5645,6 +5710,7 @@ $CONF = {
               "nl" => "Doorgegeven",
               "pt" => "Propagado",
               "ru" => "Исключение передано далее",
+              "sr" => "Пренето",
               "tr" => "Aktarıldı",
               "uk" => "Передано далі"
             },
@@ -5733,6 +5799,7 @@ $CONF = {
               "nl" => "Niet-herkende escape \\%{escape_char} in tekenklasse in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Sequência de escape \\%{escape_char} não reconhecida numa classe de carateres na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Неизвестная escape-последовательность \\%{escape_char} в классе символов в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Непрепознато заштићено слово \\%{escape_char} у класи знакова у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede karakter sınıfında tanınmayan \\%{escape_char} kaçışı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Нерозпізнана escape-послідовність \\%{escape_char} у класі символів у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -5821,6 +5888,7 @@ $CONF = {
               "nl" => "Onverwachte binaire operator '%{operator}' zonder voorafgaande operand in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Operador binário inesperado '%{operator}' sem operando precedente na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Неожиданный бинарный оператор '%{operator}' без предшествующего операнда в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неочекивани бинарни оператор „%{operator}“ без претходног операнда у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede öncesinde işlenen bulunmayan beklenmedik ikili işleç '%{operator}'; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretli",
               "uk" => "Неочікуваний бінарний оператор '%{operator}' без попереднього операнда в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -5909,6 +5977,7 @@ $CONF = {
               "nl" => "Onverwacht teken in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Caractere inesperado na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Неожиданный символ в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неочекивани знак у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede beklenmeyen karakter; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Неочікуваний символ у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -5992,6 +6061,7 @@ $CONF = {
               "nl" => "Onverwachte ']' zonder bijbehorende ')' in (?[... in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "']' inesperado sem ')' a seguir em (?[... na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Неожиданный символ ']', за которым не следует ')', в конструкции (?[... в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неочекивано „]“ без наредне заграде „)“ у (?[... у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede (?[... ifadesinde ardından ')' gelmeyen beklenmedik ']'; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Неочікувана ']', після якої немає ')', у (?[... у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6075,6 +6145,7 @@ $CONF = {
               "nl" => "Onverwachte ')' in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "')' inesperado na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Неожиданный символ ')' в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неочекивана заграда „)“ у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede beklenmeyen ')'; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Неочікувана ')' у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6158,6 +6229,7 @@ $CONF = {
               "nl" => "Onvolledige expressie binnen '(?[ ])' in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Expressão incompleta dentro de '(?[ ])' na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Незавершённое выражение внутри '(?[ ])' в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Непотпун израз унутар „(?[ ])“ у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede '(?[ ])' içinde tamamlanmamış ifade; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretli",
               "uk" => "Незавершений вираз усередині '(?[ ])' у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6241,6 +6313,7 @@ $CONF = {
               "nl" => "Geïnterpoleerde uitgebreide tekenklasse verwacht in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Esperava-se uma classe de caracteres estendida interpolada na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Ожидается интерполированный расширенный класс символов в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Очекује се интерполирана проширена класа знакова у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede enterpole edilmiş genişletilmiş karakter sınıfı bekleniyor; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Очікується інтерпольований розширений клас символів у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6324,6 +6397,7 @@ $CONF = {
               "nl" => "Onverwachte '(' zonder voorafgaande operator in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "'(' inesperado sem operador precedente na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Неожиданный символ '(' без предшествующего оператора в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неочекивана заграда „(“ без претходног оператора у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede öncesinde operatör bulunmayan beklenmedik '('; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Неочікувана '(' без попереднього оператора в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6407,6 +6481,7 @@ $CONF = {
               "nl" => "Operand zonder voorafgaande operator in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Operando sem operador precedente na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Операнд без предшествующего оператора в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Операнд нема претходни оператор у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede öncesinde operatör bulunmayan işlenen; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Перед операндом немає оператора в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6490,6 +6565,7 @@ $CONF = {
               "nl" => "Unicode-tekenreekseigenschappen zijn niet geïmplementeerd in (?[...]) in reguliere expressies; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "As propriedades Unicode de cadeias não estão implementadas em (?[...]) na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Строковые свойства Unicode не реализованы в (?[...]) в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Unicode својства ниски нису имплементирана у (?[...]) у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede (?[...]) içinde Unicode dize özellikleri uygulanmamıştır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Властивості рядків Unicode не реалізовано в (?[...]) у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6573,6 +6649,7 @@ $CONF = {
               "nl" => "Syntaxfout in (?[...]) in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Erro de sintaxe em (?[...]) na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Синтаксическая ошибка в (?[...]) в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Синтаксна грешка у (?[...]) у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede (?[...]) içinde sözdizimi hatası; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Синтаксична помилка в (?[...]) у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6655,6 +6732,7 @@ $CONF = {
               "nl" => "Het omkeren van een tekenklasse die een reeks van meerdere tekens bevat, is verboden in reguliere expressies; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Não é permitido inverter uma classe de carateres que contém uma sequência de vários carateres na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Инверсия класса символов, содержащего последовательность из нескольких символов, недопустима в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Инвертовање класе знакова која садржи низ од више знакова није дозвољено у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede birden çok karakterli dizi içeren karakter sınıfını tersine çevirmek yasa dışıdır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Інвертування класу символів, що містить послідовність із кількох символів, заборонено в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6737,6 +6815,7 @@ $CONF = {
               "nl" => "Letterlijke verticale witruimte in [] is verboden, behalve onder /x, in reguliere expressies; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Espaço vertical literal em [] não é permitido exceto com /x na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Неэкранированные вертикальные пробельные символы в [] допустимы только при использовании /x в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Дословни вертикални размак у [] није дозвољен осим уз /x у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede /x altında değilken [] içinde gerçek dikey boşluk karakteri yasa dışıdır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Літеральний вертикальний пробільний символ у [] заборонено, крім режиму /x, у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6819,6 +6898,7 @@ $CONF = {
               "nl" => "\\N in een tekenklasse moet een benoemd teken zijn: \\N{...} in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "\\N em uma classe de caracteres deve ser um caractere nomeado: \\N{...} na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "\\N в классе символов должно обозначать именованный символ: \\N{...} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "\\N у класи знакова мора да означава именовани знак: \\N{...} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede bir karakter sınıfı içindeki \\N, adlandırılmış bir karakter olmalı: \\N{...}; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretli",
               "uk" => "\\N у класі символів має позначати іменований символ: \\N{...} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6901,6 +6981,7 @@ $CONF = {
               "nl" => "\\N{} mag hier alleen naar één teken verwijzen in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Aqui, \\N{} está limitado a um único carácter na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "\\N{} здесь может обозначать только один символ в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "\\N{} је овде ограничено на један знак у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede \\N{} yalnızca tek karakter için kullanılabilir; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "\\N{} тут обмежено одним символом у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -6983,6 +7064,7 @@ $CONF = {
               "nl" => "Precies 3 octale cijfers vereist in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "São necessários exatamente 3 algarismos octais na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Требуются ровно 3 восьмеричные цифры в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Потребне су тачно 3 окталне цифре у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede tam olarak 3 sekizlik basamak gerekiyor; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Потрібні рівно 3 вісімкові цифри в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -7110,6 +7192,10 @@ $CONF = {
                 "*" => "Неизвестный класс POSIX [:%{class_name}:] в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
                 "complemented" => "Неизвестный класс POSIX [:^%{class_name}:] в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/"
               },
+              "sr" => {
+                "complemented" => "Непозната POSIX класа [:^%{class_name}:] у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
+                "positive" => "Непозната POSIX класа [:%{class_name}:] у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
               "tr" => {
                 "complemented" => "Düzenli ifadede POSIX sınıfı [:^%{class_name}:] bilinmiyor; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
                 "positive" => "Düzenli ifadede POSIX sınıfı [:%{class_name}:] bilinmiyor; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi"
@@ -7227,6 +7313,7 @@ $CONF = {
               "nl" => "POSIX-syntaxis [%{delimiter} %{delimiter}] is gereserveerd voor toekomstige uitbreidingen in reguliere expressies; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "A sintaxe POSIX [%{delimiter} %{delimiter}] está reservada para extensões futuras na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Синтаксис POSIX [%{delimiter} %{delimiter}] зарезервирован для будущих расширений в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "POSIX синтакса [%{delimiter} %{delimiter}] резервисана је за будућа проширења у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede POSIX sözdizimi [%{delimiter} %{delimiter}] gelecekteki genişletmeler için ayrılmıştır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretli",
               "uk" => "Синтаксис POSIX [%{delimiter} %{delimiter}] зарезервовано для майбутніх розширень у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -7314,6 +7401,7 @@ $CONF = {
               "nl" => "Onjuist []-bereik \"%{range}\" in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Falso intervalo [] \"%{range}\" na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Одна из границ диапазона \"%{range}\" в [] не является отдельным символом в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Опсег [] „%{range}“ има крајњу тачку која није знак у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede geçersiz [] aralığı \"%{range}\"; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretli",
               "uk" => "Хибний діапазон [] \"%{range}\" у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -7416,6 +7504,7 @@ $CONF = {
               "nl" => "Ongeldig []-bereik \"%{range}\" in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Intervalo [] \"%{range}\" inválido na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Недопустимый диапазон \"%{range}\" в [] в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неважећи опсег [] „%{range}“ у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede geçersiz [] aralığı \"%{range}\"; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Некоректний діапазон [] \"%{range}\" у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -7518,6 +7607,7 @@ $CONF = {
               "nl" => "Unmatched [ in regex; gemarkeerd met <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Unmatched [ na expressão regular; assinalado por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Непарная скобка [ в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Незатворена класа знакова [ у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede eşleşmeyen '['; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Незакрита [ у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -7600,6 +7690,7 @@ $CONF = {
               "nl" => "Schakelaar (?(condition)... bevat te veel alternatieve takken in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "A construção condicional (?(condition)... contém demasiadas ramificações na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Условная конструкция (?(condition)... содержит слишком много ветвей в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Пребацивање (?(condition)... садржи превише грана у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede switch (?(condition)... çok fazla dal içeriyor; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Умовна конструкція (?(condition)... містить забагато гілок у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -7682,6 +7773,7 @@ $CONF = {
               "nl" => "(?(DEFINE)....) staat geen alternatieve takken toe in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "(?(DEFINE)....) não permite ramificações na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "В конструкции (?(DEFINE)....) не допускаются ветви альтернативы в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "(?(DEFINE)....) не дозвољава гране у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (?(DEFINE)....) dallara izin vermez; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "(?(DEFINE)....) не допускає гілок у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -7764,6 +7856,7 @@ $CONF = {
               "nl" => "Reeks (?(%{condition_opener}... niet afgesloten in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Sequência (?(%{condition_opener}... não terminada na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Последовательность (?(%{condition_opener}... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Низ (?(%{condition_opener}... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te Sequence (?(%{condition_opener}... sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Послідовність (?(%{condition_opener}... не завершено в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -7851,6 +7944,7 @@ $CONF = {
               "nl" => "Schakelvoorwaarde niet herkend in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Condição da construção condicional não reconhecida na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Условие условной конструкции не распознано в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Услов пребацивања није препознат у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te Switch condition tanınmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Не розпізнано умову умовної конструкції у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -7933,6 +8027,7 @@ $CONF = {
               "nl" => "Onbekende schakelvoorwaarde (?(...)) in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Condição desconhecida na construção condicional (?(...)) da expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Неизвестное условие в конструкции (?(...)) в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Непознат услов пребацивања (?(...)) у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te bilinmeyen switch koşulu (?(...)); m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Невідома умова умовної конструкції (?(...)) у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -8015,6 +8110,7 @@ $CONF = {
               "nl" => "Schakelaar (?(condition)... niet afgesloten in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Construção condicional (?(condition)... não terminada na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Условная конструкция (?(condition)... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Пребацивање (?(condition)... није завршено у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te Switch (?(condition)... sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Незавершена умовна конструкція (?(condition)... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -8097,6 +8193,7 @@ $CONF = {
               "nl" => "' %{bound_type}' is een onbekend type grens in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "'%{bound_type}' é um tipo de limite desconhecido na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "'%{bound_type}' — неизвестный тип границы в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "„%{bound_type}“ је непозната врста границе у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "'%{bound_type}' regex'te bilinmeyen bir sınır türüdür; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "'%{bound_type}' — невідомий тип межі в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -8199,6 +8296,7 @@ $CONF = {
               "nl" => "Lege \\%{escape}{} in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "\\%{escape}{} vazio na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Пустое содержимое \\%{escape}{} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Празан садржај у \\%{escape}{} у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te boş \\%{escape}{}; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Порожня конструкція \\%{escape}{} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -8286,6 +8384,7 @@ $CONF = {
               "nl" => "Accolades ontbreken bij \\N{} in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Faltam chaves em \\N{} na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Отсутствуют фигурные скобки в \\N{} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Недостају витичасте заграде у \\N{} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\N{} için küme parantezleri eksik; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Відсутні фігурні дужки в \\N{} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -8368,6 +8467,7 @@ $CONF = {
               "nl" => "\\N{} met lengte nul in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "\\N{} de comprimento zero na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "\\N{} обозначает последовательность нулевой длины в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Нулта дужина \\N{} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te sıfır uzunluklu \\N{}; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "\\N{} нульової довжини у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -8450,6 +8550,7 @@ $CONF = {
               "nl" => "Ongeldig hexadecimaal getal in \\N{U+...} in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Número hexadecimal inválido em \\N{U+...} na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Недопустимое шестнадцатеричное число в \\N{U+...} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неважећи хексадекадни број у \\N{U+...} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\N{U+...} içinde geçersiz onaltılık sayı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Некоректне шістнадцяткове число в \\N{U+...} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -8532,6 +8633,7 @@ $CONF = {
               "nl" => "Rechteraccolade ontbreekt bij \\N{} of er staat een niet-geëscapete linkeraccolade na \\N",
               "pt" => "Falta a chaveta de fecho em \\N{} ou existe uma chaveta de abertura não escapada após \\N",
               "ru" => "Отсутствует закрывающая фигурная скобка в \\N{} или не экранирована открывающая фигурная скобка после \\N",
+              "sr" => "Недостаје десна витичаста заграда у \\N{} или знак за екранизацију испред леве витичасте заграде после \\N",
               "tr" => "\\N{} için sağ küme parantezi eksik veya \\N sonrasında kaçışlanmamış sol küme parantezi var",
               "uk" => "Відсутня закривальна фігурна дужка в \\N{} або неекранована відкривальна фігурна дужка після \\N"
             },
@@ -8574,6 +8676,7 @@ $CONF = {
               "nl" => "Ongeldig hexadecimaal getal in \\N{U+...}",
               "pt" => "Número hexadecimal inválido em \\N{U+...}",
               "ru" => "Недопустимое шестнадцатеричное число в \\N{U+...}",
+              "sr" => "Неважећи хексадекадни број у \\N{U+...}",
               "tr" => "\\N{U+...} içinde geçersiz onaltılık sayı",
               "uk" => "Некоректне шістнадцяткове число в \\N{U+...}"
             },
@@ -8616,6 +8719,7 @@ $CONF = {
               "nl" => "Sluitaccolade ontbreekt bij \\%{escape}{} in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Falta a chave de fechamento em \\%{escape}{} na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Отсутствует закрывающая фигурная скобка в \\%{escape}{} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Недостаје десна витичаста заграда у \\%{escape}{} у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\%{escape}{} için sağ küme parantezi eksik; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Відсутня закривальна фігурна дужка в \\%{escape}{} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -8763,6 +8867,11 @@ $CONF = {
                 "brace_control" => "Используйте \"%{control}\" вместо \"\\c{\" в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
                 "brace_invalid" => "Последовательность \"\\c{\" недопустима в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/"
               },
+              "sr" => {
+                "brace_control" => "У регуларном изразу употребите „%{control}“ уместо „\\c{“; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
+                "brace_invalid" => "Низ „\\c{“ није исправан у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
+                "non_printable" => "Знак после „\\c“ мора бити исписиви ASCII знак у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
               "tr" => {
                 "brace_control" => "Regex'te \"\\c{\" yerine \"%{control}\" kullanın; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
                 "brace_invalid" => "Regex'te \"\\c{\" dizisi geçersiz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
@@ -8868,6 +8977,7 @@ $CONF = {
               "nl" => "\\C wordt niet langer ondersteund in reguliere expressies; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "\\C já não é suportado na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "\\C больше не поддерживается в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "\\C више није подржано у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\C artık desteklenmiyor; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "\\C більше не підтримується в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -8950,6 +9060,7 @@ $CONF = {
               "nl" => "Gebruik van '%{operation}' is niet toegestaan in jokerpatronen voor Unicode-eigenschappen in reguliere expressies; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "O uso de '%{operation}' não é permitido em subpadrões com carateres universais de propriedades Unicode na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Использование '%{operation}' запрещено в подшаблонах с подстановочными знаками для свойств Unicode в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Употреба „%{operation}“ није дозвољена у подобразцима џокера Unicode својства у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te Unicode özellik joker alt desenlerinde '%{operation}' kullanılamaz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Використання '%{operation}' заборонено в підшаблонах із символами узагальнення для властивостей Unicode в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9037,6 +9148,7 @@ $CONF = {
               "nl" => "Ongeëscapete accolade openen is hier niet toegestaan in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Uma chave de abertura sem escape não é permitida aqui na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Неэкранированная открывающая фигурная скобка недопустима в этом месте регулярного выражения; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Незаштићена лева витичаста заграда овде није дозвољена у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te burada kaçışlanmamış sol küme parantezi kullanılamaz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Неекранована ліва фігурна дужка тут заборонена в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9119,6 +9231,7 @@ $CONF = {
               "nl" => "Lege \\%{escape} in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "\\%{escape} vazio na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Не указано имя свойства после \\%{escape} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Празан \\%{escape} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te boş \\%{escape}; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Порожня \\%{escape} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9206,6 +9319,7 @@ $CONF = {
               "nl" => "Het teken na \\%{escape} moet '{' zijn of de naam van een Unicode-eigenschap van één teken in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "O caractere após \\%{escape} deve ser '{' ou um nome de propriedade Unicode de um único caractere na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "После \\%{escape} должен следовать символ '{' или односимвольное имя свойства Unicode в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Знак после \\%{escape} мора бити „{“ или једнознаковно име Unicode својства у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\%{escape} sonrasındaki karakter '{' veya tek karakterli bir Unicode özellik adı olmalıdır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Після \\%{escape} має бути '{' або односивольна назва властивості Unicode в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9293,6 +9407,7 @@ $CONF = {
               "nl" => "Gebruik van '\\%{escape_char}%{following_char}' is niet toegestaan in jokerpatronen voor Unicode-eigenschappen in reguliere expressies; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "O uso de '\\%{escape_char}%{following_char}' não é permitido em subpadrões com carateres universais de propriedades Unicode na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Использование '\\%{escape_char}%{following_char}' запрещено в подшаблонах с подстановочными знаками для свойств Unicode в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Употреба „\\%{escape_char}%{following_char}“ није дозвољена у подобразцима џокера Unicode својства у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te Unicode özellik joker alt desenlerinde '\\%{escape_char}%{following_char}' kullanılamaz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Використання '\\%{escape_char}%{following_char}' заборонено в підшаблонах із символами узагальнення для властивостей Unicode в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9385,6 +9500,7 @@ $CONF = {
               "nl" => "Niet-afgesloten \\g{...}-patroon in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Padrão \\g{...} não terminado na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Незавершённая конструкция \\g{...} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Незавршен образац \\g{...} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te sonlandırılmamış \\g{...} kalıbı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Незавершений шаблон \\g{...} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9467,6 +9583,7 @@ $CONF = {
               "nl" => "Reeks %{sequence}... niet afgesloten in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Sequência %{sequence}... não terminada na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Последовательность %{sequence}... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Низ %{sequence}... није завршен у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te %{sequence} dizisi sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Послідовність %{sequence}... не завершено в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9564,6 +9681,7 @@ $CONF = {
               "nl" => "Verwijzing naar ongeldige groep 0 in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Referência ao grupo inválido 0 na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Ссылка на недопустимую группу 0 в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Упућивање на неважећу групу 0 у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te geçersiz grup 0'a başvuru; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Посилання на недопустиму групу 0 у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9646,6 +9764,7 @@ $CONF = {
               "nl" => "Verwijzing naar een niet-bestaande of niet-afgesloten groep in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Referência a um grupo inexistente ou não fechado na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Ссылка на несуществующую или незакрытую группу в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Упућивање на непостојећу или незатворену групу у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te var olmayan veya kapatılmamış gruba başvuru; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Посилання на неіснуючу або незакриту групу в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9728,6 +9847,7 @@ $CONF = {
               "nl" => "Niet-afgesloten \\g...-patroon in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Padrão \\g... não terminado na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Незавершённая конструкция \\g... в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Незавршен образац \\g... у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te sonlandırılmamış \\g... kalıbı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Незавершений шаблон \\g... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9810,6 +9930,7 @@ $CONF = {
               "nl" => "Unmatched ) in regex; gemarkeerd met <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Unmatched ) na expressão regular; assinalado por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Непарная скобка ) в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неупарена заграда ) у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te eşleşmeyen ) parantezi; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Непарна ) у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9892,6 +10013,7 @@ $CONF = {
               "nl" => "Onvolledige sequentie (? in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Sequência (? incompleta na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Последовательность (? не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Непотпун низ (? у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (? dizisi tamamlanmamış; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Незавершена послідовність (? у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -9974,6 +10096,7 @@ $CONF = {
               "nl" => "\\K is niet toegestaan in lookahead/lookbehind in reguliere expressies; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "\\K não é permitido em lookahead/lookbehind na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "\\K запрещено в проверках с просмотром вперёд или назад в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "\\K није дозвољено у позитивном или негативном lookahead/lookbehind-у у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te \\K lookahead/lookbehind içinde kullanılamaz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "\\K заборонено в перевірках із переглядом уперед/назад у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -10056,6 +10179,7 @@ $CONF = {
               "nl" => "Reeks (%{lookaround}... niet afgesloten in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Sequência (%{lookaround}... não terminada na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Последовательность (%{lookaround}... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Низ (%{lookaround}... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (%{lookaround} dizisi sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Послідовність (%{lookaround}... не завершено в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -10143,6 +10267,7 @@ $CONF = {
               "nl" => "Reeks (?%{sequence_opener}... niet afgesloten in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Sequência (?%{sequence_opener}... não terminada na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Последовательность (?%{sequence_opener}... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Низ (?%{sequence_opener}... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (?%{sequence_opener} dizisi sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Незавершена послідовність (?%{sequence_opener}... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -10274,6 +10399,10 @@ $CONF = {
               "ru" => {
                 "*" => "Слишком длинный идентификатор в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
                 "invalid_character" => "\\x{%{codepoint}} — символ класса \\w, недопустимый в имени; позиция отмечена <-- HERE после %{identifier_before}<-- HERE %{identifier_after} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/"
+              },
+              "sr" => {
+                "invalid_character" => "\\x{%{codepoint}} је знак класе \\w који није дозвољен у имену; означено са <-- HERE после %{identifier_before}<-- HERE %{identifier_after} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
+                "too_long" => "Идентификатор је предугачак у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/"
               },
               "tr" => {
                 "invalid_character" => "\\x{%{codepoint}}, bir ad içinde geçersiz olan \\w karakteridir; regex'te %{identifier_before}<-- HERE %{identifier_after} sonrasında işaretlendi; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
@@ -10417,6 +10546,7 @@ $CONF = {
               "nl" => "De groepsnaam moet in regex beginnen met een niet-cijferig woordteken; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "O nome do grupo deve começar com um caractere de palavra que não seja um dígito na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Имя группы должно начинаться с символа класса \\w, не являющегося цифрой, в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Име групе у регуларном изразу мора да почиње знаком речи који није цифра; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te grup adı, rakam olmayan bir sözcük karakteriyle başlamalıdır; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Назва групи в регулярному виразі має починатися із символу слова, який не є цифрою; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -10544,6 +10674,10 @@ $CONF = {
                 "*" => "Последовательность (?P<... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
                 "named_recursion" => "Последовательность (?P>... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/"
               },
+              "sr" => {
+                "named_capture" => "Низ (?P<... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
+                "named_recursion" => "Низ (?P>... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
               "tr" => {
                 "named_capture" => "Regex'te (?P<... dizisi sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
                 "named_recursion" => "Regex'te (?P>... dizisi sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi"
@@ -10641,6 +10775,7 @@ $CONF = {
               "nl" => "Verwijzing naar een niet-bestaande benoemde groep in regex; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Referência a um grupo nomeado inexistente na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Ссылка на несуществующую именованную группу в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Упућивање на непостојећу именовану групу у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te var olmayan adlı gruba başvuru; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Посилання на неіснуючу іменовану групу в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -10723,6 +10858,7 @@ $CONF = {
               "nl" => "Unmatched ( in regex; gemarkeerd met <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Unmatched ( na expressão regular; assinalado por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Непарная скобка ( в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неупарена заграда ( у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te eşleşmeyen ( parantezi; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Непарна ( у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -10805,6 +10941,7 @@ $CONF = {
               "nl" => "In '(?...)' moeten '(' en '?' direct naast elkaar staan in regex; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Em '(?...)', '(' e '?' devem ser adjacentes na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "В конструкции '(?...)' символы '(' и '?' должны стоять непосредственно друг за другом в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "У „(?...)“ заграде „(“ и „?“ морају да буду суседне у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "'(?...') içinde '(' ve '?' bitişik olmalıdır; regex'te m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "У '(?...)' символи '(' і '?' мають стояти поруч у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -10887,6 +11024,7 @@ $CONF = {
               "nl" => "Ongeldige verwijzing naar een groep in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Referência inválida a um grupo na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Недопустимая ссылка на группу в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неисправно упућивање на групу у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te gruba başvuru geçersiz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Некоректне посилання на групу в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -10969,6 +11107,7 @@ $CONF = {
               "nl" => "Verwijzing naar een niet-bestaande groep in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Referência a um grupo inexistente na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Ссылка на несуществующую группу в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Упућивање на непостојећу групу у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te var olmayan gruba başvuru; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Посилання на неіснуючу групу в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -11051,6 +11190,7 @@ $CONF = {
               "nl" => "Sequentie (?%{sequence_char}...) niet geïmplementeerd in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Sequência (?%{sequence_char}...) não implementada na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Последовательность (?%{sequence_char}...) не реализована в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Низ (?%{sequence_char}...) није имплементиран у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (?%{sequence_char}...) dizisi uygulanmamış; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Послідовність (?%{sequence_char}...) не реалізовано в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -11138,6 +11278,7 @@ $CONF = {
               "nl" => "Reeks (%{sequence}...) wordt niet herkend in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Sequência (%{sequence}...) não reconhecida na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Последовательность (%{sequence}...) не распознана в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Непознат низ (%{sequence}...) у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (%{sequence}...) dizisi tanınmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Послідовність (%{sequence}...) не розпізнано в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -11240,6 +11381,7 @@ $CONF = {
               "nl" => "Sluitende rechte haak verwacht in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Esperava-se um parêntese de fecho na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Ожидается закрывающая скобка в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Очекује се затворена угласта заграда у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te kapatma parantezi bekleniyordu; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Очікується закривальна дужка в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -11322,6 +11464,7 @@ $CONF = {
               "nl" => "Reeks (?&... niet afgesloten in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Sequência (?&... não terminada na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Последовательность (?&... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Низ (?&... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te (?&... dizisi sonlandırılmadı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Послідовність (?&... не завершено в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -11404,6 +11547,7 @@ $CONF = {
               "nl" => "Ongeldig patroon in reguliere expressie; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Padrão inválido na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Недопустимый шаблон в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Недозвољен образац у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te kalıp geçersiz; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Недопустимий шаблон у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -11486,6 +11630,7 @@ $CONF = {
               "nl" => "Te veel geneste open haakjes in regex; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Excesso de parênteses de abertura aninhados na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Слишком много вложенных открывающих скобок в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Превише угнежђених отворених заграда у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te iç içe çok fazla açılış parantezi var; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Забагато вкладених відкривальних дужок у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -11568,6 +11713,7 @@ $CONF = {
               "nl" => "Kwantor in {,} groter dan %{limit} in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Quantificador em {,} maior que %{limit} na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Значение квантификатора в {,} превышает %{limit} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Квантификатор у {,} је већи од %{limit} у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Regex'te {,} niceleyicisi %{limit} değerinden büyük; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Квантифікатор у {,} перевищує %{limit} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -11655,6 +11801,7 @@ $CONF = {
               "nl" => "%{message} in regex; gemarkeerd met <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "%{message} na expressão regular; assinalado por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "%{message} в регулярном выражении; место отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "%{message} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "%{message} regex'te; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "%{message} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -11742,6 +11889,7 @@ $CONF = {
               "nl" => "Regexp-modificator \"%{modifier}\" mag maximaal twee keer voorkomen in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "O modificador \"%{modifier}\" pode aparecer no máximo duas vezes na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Модификатор \"%{modifier}\" может встречаться не более двух раз в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Модификатор регуларног израза „%{modifier}“ сме да се појави највише два пута у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifade değiştiricisi \"%{modifier}\", düzenli ifadede en fazla iki kez kullanılabilir; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "Модифікатор регулярного виразу \"%{modifier}\" може з’являтися щонайбільше двічі в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -11829,6 +11977,7 @@ $CONF = {
               "nl" => "Regexp-modificatoren \"%{first}\" en \"%{second}\" sluiten elkaar uit in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Os modificadores \"%{first}\" e \"%{second}\" são mutuamente exclusivos na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Модификаторы \"%{first}\" и \"%{second}\" взаимно исключают друг друга в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Модификатори регуларног израза „%{first}“ и „%{second}“ међусобно се искључују у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifade değiştiricileri \"%{first}\" ve \"%{second}\", düzenli ifadede birbirini dışlar; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "Модифікатори \"%{first}\" і \"%{second}\" взаємовиключні в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -11921,6 +12070,7 @@ $CONF = {
               "nl" => "Regexp-modificator \"%{modifier}\" mag niet na de \"-\" in regex voorkomen; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "O modificador \"%{modifier}\" não pode aparecer após o \"-\" na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Модификатор \"%{modifier}\" не может стоять после \"-\" в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Модификатор регуларног израза „%{modifier}“ не сме да се појави после знака „-“ у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifade değiştiricisi \"%{modifier}\", düzenli ifadede \"-\" işaretinden sonra kullanılamaz; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "Модифікатор регулярного виразу \"%{modifier}\" не може з'являтися після \"-\" у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -12008,6 +12158,7 @@ $CONF = {
               "nl" => "Regexp-modificator \"%{modifier}\" mag niet twee keer voorkomen in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "O modificador \"%{modifier}\" não pode aparecer duas vezes na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Модификатор \"%{modifier}\" не может встречаться дважды в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Модификатор регуларног израза „%{modifier}“ не сме да се појави двапут у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifade değiştiricisi \"%{modifier}\", düzenli ifadede iki kez kullanılamaz; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "Модифікатор регулярного виразу \"%{modifier}\" не може з'являтися двічі в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -12095,6 +12246,7 @@ $CONF = {
               "nl" => "Reeks (?... niet afgesloten in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Sequência (?... não terminada na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Последовательность (?... не завершена в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Низ (?... није завршен у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede (?... dizisi sonlandırılmamış; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "Незавершена послідовність (?... у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -12177,6 +12329,7 @@ $CONF = {
               "nl" => "Regexp-modificator \"/a\" mag maximaal twee keer voorkomen",
               "pt" => "O modificador de expressão regular \"/a\" pode aparecer, no máximo, duas vezes",
               "ru" => "Модификатор регулярного выражения \"/a\" может встречаться не более двух раз",
+              "sr" => "Модификатор регуларног израза „/a“ може да се појави највише два пута",
               "tr" => "Düzenli ifade değiştiricisi \"/a\" en fazla iki kez kullanılabilir",
               "uk" => "Модифікатор регулярного виразу \"/a\" може з'являтися щонайбільше двічі"
             },
@@ -12219,6 +12372,7 @@ $CONF = {
               "nl" => "Regexp-modificatoren \"/%{first}\" en \"/%{second}\" sluiten elkaar uit",
               "pt" => "Os modificadores de expressão regular \"/%{first}\" e \"/%{second}\" são mutuamente exclusivos",
               "ru" => "Модификаторы регулярного выражения \"/%{first}\" и \"/%{second}\" являются взаимоисключающими",
+              "sr" => "Модификатори регуларног израза „/%{first}“ и „/%{second}“ међусобно се искључују",
               "tr" => "Düzenli ifade değiştiricileri \"/%{first}\" ve \"/%{second}\" birbirini dışlar",
               "uk" => "Модифікатори регулярного виразу \"/%{first}\" і \"/%{second}\" є взаємовиключними"
             },
@@ -12272,6 +12426,7 @@ $CONF = {
               "nl" => "Regexp-modificator \"/%{modifier}\" mag niet twee keer voorkomen",
               "pt" => "O modificador de expressão regular \"/%{modifier}\" não pode aparecer duas vezes",
               "ru" => "Модификатор регулярного выражения \"/%{modifier}\" не может встречаться дважды",
+              "sr" => "Модификатор регуларног израза „/%{modifier}“ не може да се појави двапут",
               "tr" => "Düzenli ifade değiştiricisi \"/%{modifier}\" iki kez kullanılamaz",
               "uk" => "Модифікатор регулярного виразу \"/%{modifier}\" не може з'являтися двічі"
             },
@@ -12320,6 +12475,7 @@ $CONF = {
               "nl" => "Onbekende regexp-modificator \"/%{modifier}\"",
               "pt" => "Modificador de expressão regular desconhecido \"/%{modifier}\"",
               "ru" => "Неизвестный модификатор регулярного выражения \"/%{modifier}\"",
+              "sr" => "Непозната модификација регуларног израза „/%{modifier}“",
               "tr" => "Bilinmeyen düzenli ifade değiştiricisi \"/%{modifier}\"",
               "uk" => "Невідомий модифікатор регулярного виразу \"/%{modifier}\""
             },
@@ -12384,6 +12540,7 @@ $CONF = {
               "nl" => "Gebruik van modificator '%{modifier}' is niet toegestaan in subpatronen met Unicode-eigenschapsjokertekens in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "O uso do modificador '%{modifier}' não é permitido em subpadrões com curingas de propriedades Unicode na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Использование модификатора '%{modifier}' запрещено в подшаблонах с подстановочными знаками для свойств Unicode в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Употреба модификатора „%{modifier}“ није дозвољена у подобразцима џокера Unicode својства у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Unicode özellik joker alt kalıplarında '%{modifier}' değiştiricisinin düzenli ifadede kullanılması yasaktır; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "Використання модифікатора '%{modifier}' заборонено в підшаблонах із підстановними символами для властивостей Unicode у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -12482,6 +12639,7 @@ $CONF = {
               "nl" => "Ongeldige kwantor in {,} in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Quantificador inválido em {,} na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Недопустимое значение квантификатора в {,} в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неисправан квантификатор у {,} у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede {,} içinde geçersiz niceleyici; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "Некоректний квантифікатор у {,} у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -12564,6 +12722,7 @@ $CONF = {
               "nl" => "Geneste kwantoren in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Quantificadores aninhados na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Вложенные квантификаторы в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Угнежђени квантификатори у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede iç içe niceleyiciler; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "Вкладені квантифікатори в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -12646,6 +12805,7 @@ $CONF = {
               "nl" => "Kwantor volgt op niets in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Quantificador sem elemento precedente na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Отсутствует элемент, к которому применяется квантификатор, в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Квантификатору у регуларном изразу не претходи ништа; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede niceleyiciden önce eşleştirilecek bir ifade yok; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "Перед квантифікатором нічого немає в регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -12728,6 +12888,7 @@ $CONF = {
               "nl" => "Gebruik van kwantor '*' is niet toegestaan in jokerpatronen voor Unicode-eigenschappen in reguliere expressies; gemarkeerd door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "O uso do quantificador '*' não é permitido em subpadrões com carateres universais de propriedades Unicode na expressão regular; posição assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Использование квантификатора '*' запрещено в подшаблонах с подстановочными знаками для свойств Unicode в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Употреба квантификатора „*“ није дозвољена у подобразцима џокера Unicode својства у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Unicode özellik joker alt kalıplarında '*' niceleyicisinin düzenli ifadede kullanılması yasaktır; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "Використання квантифікатора '*' заборонено в підшаблонах зі знаками підстановки для властивостей Unicode у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -12810,6 +12971,7 @@ $CONF = {
               "nl" => "Verb-patroon '%{verb}' vereist een argument in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "O padrão de verbo '%{verb}' exige um argumento na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Глагол '%{verb}' требует обязательного аргумента в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Образац команде „%{verb}“ захтева обавезан аргумент у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede '%{verb}' fiil kalıbı zorunlu bir bağımsız değişken gerektirir; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "Шаблон дієслова '%{verb}' потребує обов'язкового аргументу в регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -12907,6 +13069,7 @@ $CONF = {
               "nl" => "'(*%{verb}' vereist een afsluitende ':' in regex; aangegeven door <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "'(*%{verb}' exige um ':' no final na expressão regular; posição indicada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Для '(*%{verb}' требуется завершающий символ ':' в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "„(*%{verb}“ захтева завршну двотачку у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede '(*%{verb}' için sonlandırıcı ':' gerekir; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
               "uk" => "'(*%{verb}' потребує завершального ':' у регулярному виразі; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -13144,6 +13307,16 @@ $CONF = {
                   "argument" => "Незавершённый аргумент конструкции '(*...' в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/"
                 }
               },
+              "sr" => {
+                "generic_construct" => {
+                  "argument" => "Незавршен аргумент „(*...“ у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
+                  "construct" => "Незавршена конструкција „(*...“ у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/"
+                },
+                "named_verb" => {
+                  "argument" => "Незавршен аргумент обрасца глагола у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
+                  "construct" => "Незавршен образац глагола у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/"
+                }
+              },
               "tr" => {
                 "generic_construct" => {
                   "argument" => "Düzenli ifadede '(*...' bağımsız değişkeni sonlandırılmamış; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
@@ -13307,6 +13480,10 @@ $CONF = {
                 "*" => "Неизвестная конструкция '(*...)' ('%{verb}') в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
                 "named_verb" => "Неизвестный глагол '%{verb}' в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/"
               },
+              "sr" => {
+                "generic_construct" => "Непозната конструкција „(*...)“ „%{verb}“ у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
+                "named_verb" => "Непознат образац команде „%{verb}“ у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
               "tr" => {
                 "generic_construct" => "Düzenli ifadede bilinmeyen '(*...)' yapısı '%{verb}'; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
                 "named_verb" => "Düzenli ifadede bilinmeyen fiil kalıbı '%{verb}'; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir"
@@ -13469,6 +13646,10 @@ $CONF = {
                 "*" => "В конструкции '(*...)' символы '(' и '*' должны стоять непосредственно друг за другом в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/",
                 "named_verb" => "В конструкции '(*VERB...)' символы '(' и '*' должны стоять непосредственно друг за другом в регулярном выражении; позиция отмечена <-- HERE в m/%{before} <-- HERE %{after}/"
               },
+              "sr" => {
+                "generic_construct" => "У „(*...)“ заграде „(“ и „*“ морају да буду суседне у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
+                "named_verb" => "У „(*VERB...)“ заграде „(“ и „*“ морају да буду суседне у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
               "tr" => {
                 "generic_construct" => "Düzenli ifadede '(*...)' içinde '(' ve '*' karakterleri bitişik olmalıdır; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir",
                 "named_verb" => "Düzenli ifadede '(*VERB...)' içinde '(' ve '*' karakterleri bitişik olmalıdır; <-- HERE ile m/%{before} <-- HERE %{after}/ içinde işaretlenmiştir"
@@ -13566,6 +13747,7 @@ $CONF = {
               "nl" => "Los woord \"%{word}\" niet toegestaan bij gebruik van \"strict subs\"",
               "pt" => "A palavra sem aspas \"%{word}\" não é permitida com \"strict subs\" em uso",
               "ru" => "Слово без кавычек \"%{word}\" недопустимо при использовании \"strict subs\"",
+              "sr" => "Гола реч „%{word}“ није дозвољена док је „strict subs“ активан",
               "tr" => "\"strict subs\" kullanımdayken \"%{word}\" çıplak sözcüğüne izin verilmez",
               "uk" => "Слово без лапок \"%{word}\" заборонено, коли діє \"strict subs\""
             },
@@ -13617,6 +13799,7 @@ $CONF = {
               "nl" => "Globaal symbool \"%{var_name}\" vereist expliciete pakketnaam (bent u vergeten \"my %{var_name}\" te declareren?)",
               "pt" => "O símbolo global \"%{var_name}\" requer um nome de pacote explícito (esqueceu-se de declarar \"my %{var_name}\"?)",
               "ru" => "Глобальный символ \"%{var_name}\" требует явного указания имени пакета (вы не забыли объявить \"my %{var_name}\"?)",
+              "sr" => "Глобални симбол „%{var_name}“ захтева изричито име пакета (да ли сте заборавили да декларишете „my %{var_name}“?)",
               "tr" => "\"%{var_name}\" genel simgesi için paket adı açıkça belirtilmeli (\"my %{var_name}\" bildirimini yapmayı mı unuttunuz?)",
               "uk" => "Глобальний символ \"%{var_name}\" потребує явно вказаного імені пакета (можливо, ви забули оголосити \"my %{var_name}\"?)"
             },
@@ -13685,6 +13868,7 @@ $CONF = {
               "nl" => "Komma ontbreekt na het eerste argument van de functie %{function}",
               "pt" => "Falta uma vírgula após o primeiro argumento da função %{function}",
               "ru" => "Отсутствует запятая после первого аргумента %{function}",
+              "sr" => "Недостаје зарез после првог аргумента функције %{function}",
               "tr" => "%{function} işlevine verilen ilk bağımsız değişkenden sonra virgül eksik",
               "uk" => "Пропущено кому після першого аргументу %{function}"
             },
@@ -13723,6 +13907,7 @@ $CONF = {
                 "nl" => "operation",
                 "pt" => "operation",
                 "ru" => "genitive",
+                "sr" => "genitive",
                 "tr" => "operation",
                 "uk" => "genitive"
               },
@@ -13766,6 +13951,7 @@ $CONF = {
               "nl" => "Komma ontbreekt na het eerste argument van return",
               "pt" => "Falta uma vírgula após o primeiro argumento de return",
               "ru" => "Отсутствует запятая после первого аргумента return",
+              "sr" => "Недостаје зарез после првог аргумента за return",
               "tr" => "return işlevine ilk bağımsız değişkenden sonra virgül eksik",
               "uk" => "Пропущено кому після першого аргументу return"
             },
@@ -13808,6 +13994,7 @@ $CONF = {
               "nl" => "Multidimensionaal opzoeken in hashes is uitgeschakeld",
               "pt" => "A pesquisa multidimensional em hash está desativada",
               "ru" => "Многомерный поиск в хеше отключён",
+              "sr" => "Вишедимензионално претраживање у хешу је искључено",
               "tr" => "Çok boyutlu karma tablosu araması devre dışı",
               "uk" => "Багатовимірний пошук у хеші вимкнено"
             },
@@ -13895,6 +14082,10 @@ $CONF = {
                 "invalid_separator" => "Недопустимый разделитель списка атрибутов: %{separator}",
                 "unterminated" => "Незавершённый список атрибутов"
               },
+              "sr" => {
+                "invalid_separator" => "Неважећи раздвајач списка атрибута: %{separator}",
+                "unterminated" => "Незавршен списак атрибута"
+              },
               "tr" => {
                 "invalid_separator" => "Öznitelik listesinde geçersiz ayırıcı: %{separator}",
                 "unterminated" => "Sonlandırılmamış öznitelik listesi"
@@ -13958,6 +14149,7 @@ $CONF = {
               "nl" => "Kan catch-variabele niet opnieuw declareren als \"%{name}\"",
               "pt" => "Não é possível redeclarar a variável de catch como \"%{name}\"",
               "ru" => "Нельзя повторно объявлять переменную catch с помощью \"%{name}\"",
+              "sr" => "Променљива catch блока не може поново да се декларише као „%{name}“",
               "tr" => "catch değişkeni \"%{name}\" olarak yeniden tanımlanamaz",
               "uk" => "Не можна повторно оголосити змінну catch як \"%{name}\""
             },
@@ -14006,6 +14198,7 @@ $CONF = {
               "nl" => "catch-blok vereist een (VAR)",
               "pt" => "O bloco catch exige uma variável em (VAR)",
               "ru" => "Для блока catch требуется (VAR)",
+              "sr" => "Блок catch захтева променљиву у заградама",
               "tr" => "catch bloğu bir (VAR) gerektirir",
               "uk" => "Блок catch потребує (VAR)"
             },
@@ -14048,6 +14241,7 @@ $CONF = {
               "nl" => "Kan \"%{name}\" niet opnieuw declareren in \"%{scope}\"",
               "pt" => "Não é possível redeclarar \"%{name}\" em \"%{scope}\"",
               "ru" => "Нельзя повторно использовать объявление \"%{name}\" внутри \"%{scope}\"",
+              "sr" => "„%{name}“ не може поново да се декларише у „%{scope}“",
               "tr" => "\"%{name}\" değişkeni \"%{scope}\" içinde yeniden tanımlanamaz",
               "uk" => "Не можна повторно оголосити \"%{name}\" у \"%{scope}\""
             },
@@ -14273,6 +14467,20 @@ $CONF = {
                   "subroutine" => "Подпрограмма %{name}, объявленная с помощью \"%{scope}\", не может принадлежать пакету"
                 }
               },
+              "sr" => {
+                "field" => {
+                  "subroutine" => "Подпрограм „field“ %{name} не може припадати пакету",
+                  "variable" => "Променљива „field“ %{name} не може припадати пакету"
+                },
+                "my" => {
+                  "subroutine" => "Подпрограм „my“ %{name} не може припадати пакету",
+                  "variable" => "Променљива „my“ %{name} не може припадати пакету"
+                },
+                "state" => {
+                  "subroutine" => "Подпрограм „state“ %{name} не може припадати пакету",
+                  "variable" => "Променљива „state“ %{name} не може припадати пакету"
+                }
+              },
               "tr" => {
                 "field" => {
                   "subroutine" => "\"field\" kapsamında %{name} alt yordamı bir pakette olamaz",
@@ -14365,6 +14573,7 @@ $CONF = {
               "nl" => "Pakketaliassen zijn alleen toegestaan bij use",
               "pt" => "Os aliases de pacote só são permitidos com use",
               "ru" => "Псевдонимы пакетов разрешены только в объявлениях use",
+              "sr" => "Алијаси пакета дозвољени су само уз use",
               "tr" => "Paket takma adlarına yalnızca use ile izin verilir",
               "uk" => "Псевдоніми пакетів дозволено лише з use"
             },
@@ -14452,6 +14661,10 @@ $CONF = {
               "ru" => {
                 "subroutine" => "В \"our\" имя подпрограммы %{name} не должно содержать имя пакета",
                 "variable" => "В \"our\" имя переменной %{name} не должно содержать имя пакета"
+              },
+              "sr" => {
+                "subroutine" => "У „our“ није дозвољено име потпрограма %{name} са именом пакета",
+                "variable" => "У „our“ није дозвољено име променљиве %{name} са именом пакета"
               },
               "tr" => {
                 "subroutine" => "\"our\" içinde %{name} alt yordamı için paket adı kullanılamaz",
@@ -14624,6 +14837,15 @@ $CONF = {
                 "*" => "Нельзя использовать глобальную переменную %{var_name} в \"%{context}\"",
                 "subroutine_signature" => "Нельзя использовать глобальную переменную %{var_name} в сигнатуре подпрограммы",
                 "unknown" => "Нельзя использовать глобальную переменную %{var_name} в ???"
+              },
+              "sr" => {
+                "catch" => "Није дозвољена употреба глобалне променљиве %{var_name} у „catch“",
+                "field" => "Није дозвољена употреба глобалне променљиве %{var_name} у пољу",
+                "my" => "Није дозвољена употреба глобалне променљиве %{var_name} у „my“",
+                "our" => "Није дозвољена употреба глобалне променљиве %{var_name} у „our“",
+                "state" => "Није дозвољена употреба глобалне променљиве %{var_name} у „state“",
+                "subroutine_signature" => "Није дозвољена употреба глобалне променљиве %{var_name} у потпису потпрограма",
+                "unknown" => "Није дозвољена употреба глобалне променљиве %{var_name} у ???"
               },
               "tr" => {
                 "catch" => "\"catch\" içinde global %{var_name} kullanılamaz",
@@ -14816,6 +15038,15 @@ $CONF = {
                 "subroutine_signature" => "Нельзя использовать глобальную переменную %{var_name} в сигнатуре подпрограммы",
                 "unknown" => "Нельзя использовать глобальную переменную %{var_name} в ???"
               },
+              "sr" => {
+                "catch" => "Глобална променљива %{var_name} не може се користити у „catch“",
+                "field" => "Глобална променљива %{var_name} не може се користити у „field“",
+                "my" => "Глобална променљива %{var_name} не може се користити у „my“",
+                "our" => "Глобална променљива %{var_name} не може се користити у „our“",
+                "state" => "Глобална променљива %{var_name} не може се користити у „state“",
+                "subroutine_signature" => "Глобална променљива %{var_name} не може се користити у потпису потпрограма",
+                "unknown" => "Глобална променљива %{var_name} не може се користити у ???"
+              },
               "tr" => {
                 "*" => "%{var_name} genel değişkeni \"catch\" içinde kullanılamaz."
               },
@@ -14900,6 +15131,7 @@ $CONF = {
               "nl" => "Ongeldige declaratie van anonieme subroutine",
               "pt" => "Declaração inválida de sub-rotina anónima",
               "ru" => "Недопустимое объявление анонимной подпрограммы",
+              "sr" => "Недозвољена декларација анонимног потпрограма",
               "tr" => "Anonim alt yordam bildirimi geçersiz",
               "uk" => "Недопустиме оголошення анонімної підпрограми"
             },
@@ -14942,6 +15174,7 @@ $CONF = {
               "nl" => ":const is niet toegestaan op benoemde subroutines",
               "pt" => ":const não é permitido em sub-rotinas com nome",
               "ru" => ":const не допускается для именованных подпрограмм",
+              "sr" => ":const није дозвољен за именоване потпрограме",
               "tr" => ":const niteliği adlandırılmış alt yordamlarda kullanılamaz",
               "uk" => ":const не дозволено для іменованих підпрограм"
             },
@@ -14984,6 +15217,7 @@ $CONF = {
               "nl" => "Kan %{target} niet declareren in \"%{scope}\"",
               "pt" => "Não é possível declarar %{target} em \"%{scope}\"",
               "ru" => "Нельзя объявить %{target} в \"%{scope}\"",
+              "sr" => "Није могуће декларисати %{target} у „%{scope}“",
               "tr" => "\"%{scope}\" bildiriminde %{target} kullanılamaz",
               "uk" => "Не можна оголосити %{target} у \"%{scope}\""
             },
@@ -15026,6 +15260,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "accusative",
+                "sr" => "accusative",
                 "tr" => "operation",
                 "uk" => "accusative"
               },
@@ -15070,6 +15305,7 @@ $CONF = {
               "nl" => "\"%{keyword}\" is niet toegestaan in een expressie",
               "pt" => "\"%{keyword}\" não é permitido numa expressão",
               "ru" => "\"%{keyword}\" недопустимо в выражении",
+              "sr" => "„%{keyword}“ није дозвољен у изразу",
               "tr" => "\"%{keyword}\" ifadede kullanılamaz",
               "uk" => "\"%{keyword}\" не дозволено у виразі"
             },
@@ -15118,6 +15354,7 @@ $CONF = {
               "nl" => "Initialisatie van state-variabelen in een lijst is momenteel verboden",
               "pt" => "Atualmente é proibido inicializar variáveis state numa lista",
               "ru" => "Инициализация переменных state в списке в настоящее время запрещена",
+              "sr" => "Иницијализација променљивих state у листи тренутно није дозвољена",
               "tr" => "state değişkenlerinin listede başlatılmasına şu anda izin verilmiyor",
               "uk" => "Ініціалізацію змінних state у списку наразі заборонено"
             },
@@ -15161,6 +15398,7 @@ $CONF = {
               "nl" => "Klasse %{name} bestaat niet",
               "pt" => "A classe %{name} não existe",
               "ru" => "Класс %{name} не существует",
+              "sr" => "Не постоји класа %{name}",
               "tr" => "Böyle bir sınıf yok: %{name}",
               "uk" => "Немає такого класу %{name}"
             },
@@ -15231,6 +15469,7 @@ $CONF = {
               "nl" => "Een niet-toegewezen codepunt of niet-zelfstandig grafeem als scheidingsteken gebruiken is niet toegestaan",
               "pt" => "Não é permitido utilizar como delimitador um ponto de código não atribuído ou um grafema não autónomo",
               "ru" => "Нельзя использовать в качестве разделителя неназначенную кодовую точку или символ, не образующий самостоятельную графему",
+              "sr" => "Није дозвољена употреба недодељене тачке кода или графеме која не стоји самостално као граничник",
               "tr" => "Bir ayraç olarak atanmamış kod noktalarının veya tek başına birer grafem oluşturmayan karakterlerin kullanılmasına izin verilmez",
               "uk" => "Не дозволено використовувати непризначену кодову точку або несамостійну графему як роздільник"
             },
@@ -15273,6 +15512,7 @@ $CONF = {
               "nl" => "Rechteraccolade zonder bijbehorende linkeraccolade",
               "pt" => "Chaveta de fecho sem correspondência",
               "ru" => "Закрывающая фигурная скобка без пары",
+              "sr" => "Непарна десна витичаста заграда",
               "tr" => "Eşleşmeyen sağ küme parantezi",
               "uk" => "Непарна закривальна фігурна дужка"
             },
@@ -15315,6 +15555,7 @@ $CONF = {
               "nl" => "Rechterblokhaak zonder bijbehorende linkerblokhaak",
               "pt" => "Parêntese reto de fecho sem correspondência",
               "ru" => "Закрывающая квадратная скобка без пары",
+              "sr" => "Непарна десна угласта заграда",
               "tr" => "Eşleşmeyen sağ köşeli parantez",
               "uk" => "Непарна закривальна квадратна дужка"
             },
@@ -15402,6 +15643,10 @@ $CONF = {
                 "format_not_terminated" => "Формат не завершён",
                 "missing_right_bracket" => "Отсутствует закрывающая фигурная или квадратная скобка"
               },
+              "sr" => {
+                "format_not_terminated" => "Формат није завршен",
+                "missing_right_bracket" => "Недостаје десна витичаста или угласта заграда"
+              },
               "tr" => {
                 "*" => "Biçim sonlandırılmamış"
               },
@@ -15459,6 +15704,7 @@ $CONF = {
               "nl" => "Binnen een dispatch zijn rechtstreeks alleen dispatch-on-clausules toegestaan",
               "pt" => "Só são permitidas cláusulas dispatch-on diretamente dentro de um dispatch",
               "ru" => "Непосредственно в блоке dispatch разрешены только ветви dispatch-on",
+              "sr" => "Непосредно унутар dispatch блока дозвољене су само клаузе dispatch-on",
               "tr" => "Bir dispatch içinde doğrudan yalnızca dispatch-on yan tümcelerine izin verilir",
               "uk" => "Безпосередньо в dispatch дозволено лише гілки dispatch-on"
             },
@@ -15501,6 +15747,7 @@ $CONF = {
               "nl" => "dispatch-on-clausules zijn alleen rechtstreeks binnen een dispatch toegestaan",
               "pt" => "As cláusulas dispatch-on só são permitidas diretamente dentro de um dispatch",
               "ru" => "Ветви dispatch-on разрешены только непосредственно в блоке dispatch",
+              "sr" => "Клаузе dispatch-on су дозвољене само непосредно унутар dispatch блока",
               "tr" => "dispatch-on yan tümcelerine yalnızca doğrudan bir dispatch içinde izin verilir",
               "uk" => "Гілки dispatch-on дозволено лише безпосередньо в dispatch"
             },
@@ -15543,6 +15790,7 @@ $CONF = {
               "nl" => "Ontbrekende accolades bij \\N{}",
               "pt" => "Faltam as chavetas em \\N{}",
               "ru" => "Отсутствуют фигурные скобки в \\N{}",
+              "sr" => "Недостају витичасте заграде у \\N{}",
               "tr" => "\\N{} için küme parantezleri eksik",
               "uk" => "Відсутні фігурні дужки в \\N{}"
             },
@@ -15585,6 +15833,7 @@ $CONF = {
               "nl" => "Rechteraccolade ontbreekt bij \\N{}",
               "pt" => "Falta a chaveta de fecho em \\N{}",
               "ru" => "Отсутствует закрывающая фигурная скобка в \\N{}",
+              "sr" => "Недостаје десна витичаста заграда у \\N{}",
               "tr" => "\\N{} için sağ küme parantezi eksik",
               "uk" => "Відсутня закривальна фігурна дужка в \\N{}"
             },
@@ -15627,6 +15876,7 @@ $CONF = {
               "nl" => "Naam van controleteken ontbreekt bij \\c",
               "pt" => "Falta o nome do caráter de controlo em \\c",
               "ru" => "Отсутствует имя управляющего символа в \\c",
+              "sr" => "Недостаје име контролисног знака после \\c",
               "tr" => "\\c içinde kontrol karakterinin adı eksik",
               "uk" => "Відсутнє ім'я керувального символу в \\c"
             },
@@ -15670,6 +15920,7 @@ $CONF = {
               "nl" => "Teken na \"\\c\" moet een afdrukbaar ASCII-teken zijn",
               "pt" => "O carácter após \"\\c\" deve ser ASCII imprimível",
               "ru" => "Символ после \"\\c\" должен быть печатным символом ASCII",
+              "sr" => "Знак после „\\c“ мора бити исписиви ASCII знак",
               "tr" => "\"\\c\" karakterinden sonra yazdırılabilir bir ASCII karakteri gelmelidir",
               "uk" => "Після \"\\c\" має йти друкований символ ASCII"
             },
@@ -15719,6 +15970,7 @@ $CONF = {
               "nl" => "Sequentie \"\\c{\" is ongeldig",
               "pt" => "Sequência \"\\c{\" inválida",
               "ru" => "Последовательность \"\\c{\" недопустима",
+              "sr" => "Низ „\\c{“ није исправан",
               "tr" => "\"\\c{\" dizisi geçersiz",
               "uk" => "Послідовність \"\\c{\" недопустима"
             },
@@ -15768,6 +16020,7 @@ $CONF = {
               "nl" => "Gebruik \"%{control}\" in plaats van \"\\c{\"",
               "pt" => "Utilize \"%{control}\" em vez de \"\\c{\"",
               "ru" => "Используйте \"%{control}\" вместо \"\\c{\"",
+              "sr" => "Употребите „%{control}“ уместо „\\c{“",
               "tr" => "\"\\c{\" yerine \"%{control}\" kullanın",
               "uk" => "Використовуйте \"%{control}\" замість \"\\c{\""
             },
@@ -15822,6 +16075,7 @@ $CONF = {
               "nl" => "Lege \\x{}",
               "pt" => "\\x{} vazio",
               "ru" => "Пустая последовательность \\x{}",
+              "sr" => "Празан \\x{}",
               "tr" => "\\x{} boş",
               "uk" => "Порожня послідовність \\x{}"
             },
@@ -15870,6 +16124,7 @@ $CONF = {
               "nl" => "Niet-hexadecimaal teken",
               "pt" => "Carácter não hexadecimal",
               "ru" => "Символ, не являющийся шестнадцатеричной цифрой",
+              "sr" => "Знак није хексадецимални",
               "tr" => "Onaltılık olmayan karakter",
               "uk" => "Символ не є шістнадцятковою цифрою"
             },
@@ -15918,6 +16173,7 @@ $CONF = {
               "nl" => "Afsluitende accolade ontbreekt bij \\x{}",
               "pt" => "Falta a chaveta de fecho em \\x{}",
               "ru" => "Отсутствует закрывающая фигурная скобка в \\x{}",
+              "sr" => "Недостаје десна витичаста заграда у \\x{}",
               "tr" => "\\x{} için sağ küme parantezi eksik",
               "uk" => "Відсутня закривальна фігурна дужка в \\x{}"
             },
@@ -15966,6 +16222,7 @@ $CONF = {
               "nl" => "Lege \\x",
               "pt" => "\\x vazio",
               "ru" => "Пустая последовательность \\x",
+              "sr" => "Празан \\x",
               "tr" => "\\x boş",
               "uk" => "Порожня послідовність \\x"
             },
@@ -16014,6 +16271,7 @@ $CONF = {
               "nl" => "Gebruik \\x{...} voor meer dan twee hexadecimale tekens",
               "pt" => "Utilize \\x{...} para mais de dois caracteres hexadecimais",
               "ru" => "Для более чем двух шестнадцатеричных цифр используйте \\x{...}",
+              "sr" => "За више од два хексадецимална знака употребите \\x{...}",
               "tr" => "İkiden fazla onaltılık basamak için \\x{...} kullanın",
               "uk" => "Для більш ніж двох шістнадцяткових цифр використовуйте \\x{...}"
             },
@@ -16062,6 +16320,7 @@ $CONF = {
               "nl" => "Niet-hexadecimaal teken",
               "pt" => "Carácter não hexadecimal",
               "ru" => "Символ, не являющийся шестнадцатеричной цифрой",
+              "sr" => "Знак није хексадецимални",
               "tr" => "Onaltılık olmayan karakter",
               "uk" => "Символ не є шістнадцятковою цифрою"
             },
@@ -16110,6 +16369,7 @@ $CONF = {
               "nl" => "Accolades ontbreken bij \\o{}",
               "pt" => "Faltam chavetas em \\o{}",
               "ru" => "Отсутствуют фигурные скобки в \\o{}",
+              "sr" => "Недостају витичасте заграде у \\o{}",
               "tr" => "\\o{} biçiminde küme parantezleri eksik",
               "uk" => "Відсутні фігурні дужки у \\o{}"
             },
@@ -16158,6 +16418,7 @@ $CONF = {
               "nl" => "Afsluitende accolade ontbreekt bij \\o{}",
               "pt" => "Falta a chaveta de fecho em \\o{}",
               "ru" => "Отсутствует закрывающая фигурная скобка в \\o{}",
+              "sr" => "Недостаје десна витичаста заграда у \\o{}",
               "tr" => "\\o{} için sağ küme parantezi eksik",
               "uk" => "Відсутня закривальна фігурна дужка в \\o{}"
             },
@@ -16206,6 +16467,7 @@ $CONF = {
               "nl" => "Lege \\o{}",
               "pt" => "\\o{} vazio",
               "ru" => "Пустая последовательность \\o{}",
+              "sr" => "Празан \\o{}",
               "tr" => "\\o{} boş",
               "uk" => "Порожня послідовність \\o{}"
             },
@@ -16254,6 +16516,7 @@ $CONF = {
               "nl" => "Niet-octaal teken",
               "pt" => "Carácter não octal",
               "ru" => "Символ, не являющийся восьмеричной цифрой",
+              "sr" => "Знак није октални",
               "tr" => "Sekizlik olmayan karakter",
               "uk" => "Символ не є вісімковою цифрою"
             },
@@ -16302,6 +16565,7 @@ $CONF = {
               "nl" => "\\x{%{codepoint}} is een \\w-teken dat niet geldig is in een naam; gemarkeerd door <-- HERE na %{identifier_before}<-- HERE %{identifier_after}",
               "pt" => "\\x{%{codepoint}} é um carácter \\w que não é válido num nome; posição assinalada por <-- HERE após %{identifier_before}<-- HERE %{identifier_after}",
               "ru" => "\\x{%{codepoint}} — символ класса \\w, недопустимый в имени; позиция отмечена <-- HERE после %{identifier_before}<-- HERE %{identifier_after}",
+              "sr" => "\\x{%{codepoint}} је знак класе \\w који није дозвољен у имену; означено са <-- HERE после %{identifier_before}<-- HERE %{identifier_after}",
               "tr" => "\\x{%{codepoint}}, bir \\w karakteridir ancak ad içinde geçerli değildir; <-- HERE %{identifier_before}<-- HERE %{identifier_after} sonrasında işaretlenmiştir",
               "uk" => "\\x{%{codepoint}} є символом \\w, неприпустимим в імені; позначено <-- HERE після %{identifier_before}<-- HERE %{identifier_after}"
             },
@@ -16390,6 +16654,7 @@ $CONF = {
               "nl" => "Numerieke variabelen met meer dan één cijfer mogen niet met '0' beginnen",
               "pt" => "As variáveis numéricas com mais de um algarismo não podem começar por '0'",
               "ru" => "Числовые имена переменных, состоящие более чем из одной цифры, не могут начинаться с '0'",
+              "sr" => "Нумеричке променљиве са више од једне цифре не смеју да почињу са '0'",
               "tr" => "Birden fazla basamaklı sayısal değişken adları '0' ile başlayamaz",
               "uk" => "Змінні з числовими іменами, що містять більше однієї цифри, не можуть починатися з '0'"
             },
@@ -16432,6 +16697,7 @@ $CONF = {
               "nl" => "Ongeldige naam na %{arg1}%{arg2}",
               "pt" => "Nome inválido após %{arg1}%{arg2}",
               "ru" => "Недопустимое имя после %{arg1}%{arg2}",
+              "sr" => "Неисправно име после %{arg1}%{arg2}",
               "tr" => "%{arg1}%{arg2} sonrasında geçersiz ad",
               "uk" => "Некоректне ім'я після %{arg1}%{arg2}"
             },
@@ -16500,6 +16766,7 @@ $CONF = {
               "nl" => "Een afsluitende \$ moet \\\$ of \$name zijn",
               "pt" => "Um \$ final deve ser \\\$ ou \$name",
               "ru" => "Завершающий \$ следует записать как \\\$ или \$name",
+              "sr" => "Завршни \$ мора бити \\\$ или \$name",
               "tr" => "Sondaki \$ işareti \\\$ ya da \$name olmalıdır",
               "uk" => "Кінцевий \$ слід записати як \\\$ або \$name"
             },
@@ -16545,6 +16812,7 @@ $CONF = {
               "nl" => "Syntaxisfout",
               "pt" => "Erro de sintaxe",
               "ru" => "синтаксическая ошибка",
+              "sr" => "Грешка у синтакси",
               "tr" => "Sözdizimi hatası",
               "uk" => "синтаксична помилка"
             },
@@ -16603,6 +16871,7 @@ $CONF = {
               "nl" => "Geen cijfers gevonden voor letterlijk getal met grondtal %{base}",
               "pt" => "Não foram encontrados dígitos para o literal de base %{base}",
               "ru" => "Не найдены цифры в литерале типа «%{base}»",
+              "sr" => "Нема цифара у литералу основе %{base}",
               "tr" => "%{base} tabanlı sabit için basamak bulunamadı",
               "uk" => "Не знайдено цифр у числовому літералі (%{base})"
             },
@@ -16651,6 +16920,7 @@ $CONF = {
               "nl" => "Ongeldig binair cijfer '%{digit}'",
               "pt" => "Dígito binário inválido '%{digit}'",
               "ru" => "Недопустимая двоичная цифра '%{digit}'",
+              "sr" => "Недозвољена бинарна цифра „%{digit}“",
               "tr" => "Geçersiz ikili basamak '%{digit}'",
               "uk" => "Недопустима двійкова цифра '%{digit}'"
             },
@@ -16699,6 +16969,7 @@ $CONF = {
               "nl" => "Ongeldig octaal cijfer '%{digit}'",
               "pt" => "Dígito octal inválido '%{digit}'",
               "ru" => "Недопустимая восьмеричная цифра '%{digit}'",
+              "sr" => "Недозвољена октална цифра „%{digit}“",
               "tr" => "Geçersiz sekizlik basamak '%{digit}'",
               "uk" => "Недопустима вісімкова цифра '%{digit}'"
             },
@@ -16748,6 +17019,7 @@ $CONF = {
               "nl" => "Getal is te lang",
               "pt" => "Número demasiado longo",
               "ru" => "Слишком длинная запись числа",
+              "sr" => "Број је предугачак",
               "tr" => "Sayı çok uzun",
               "uk" => "Задовгий запис числа"
             },
@@ -16789,6 +17061,7 @@ $CONF = {
               "nl" => "Parseerfout",
               "pt" => "Erro de análise sintática",
               "ru" => "Ошибка синтаксического разбора",
+              "sr" => "Грешка при рашчлањивању",
               "tr" => "Ayrıştırma hatası",
               "uk" => "Помилка синтаксичного аналізу"
             },
@@ -16833,6 +17106,7 @@ $CONF = {
               "nl" => "!~ gebruiken met s///r is niet zinvol",
               "pt" => "Não faz sentido utilizar !~ com s///r",
               "ru" => "Использование !~ с s///r не имеет смысла",
+              "sr" => "Употреба оператора !~ са s///r нема смисла",
               "tr" => "s///r ile !~ kullanmak anlamlı değil",
               "uk" => "Використання !~ із s///r не має сенсу"
             },
@@ -16875,6 +17149,7 @@ $CONF = {
               "nl" => "%{sequence} mag geen benoemde sequentie zijn in een transliteratieoperator",
               "pt" => "%{sequence} não pode ser uma sequência nomeada num operador de transliteração",
               "ru" => "%{sequence} не может быть именованной последовательностью в операторе транслитерации",
+              "sr" => "У оператору транслитерације не сме се користити %{sequence}, јер је то именовани низ",
               "tr" => "%{sequence}, transliterasyon işleci içinde adlandırılmış bir dizi olmamalıdır",
               "uk" => "%{sequence} не може бути іменованою послідовністю в операторі транслітерації"
             },
@@ -16933,6 +17208,7 @@ $CONF = {
               "nl" => "!~ gebruiken met tr///r is niet zinvol",
               "pt" => "Não faz sentido utilizar !~ com tr///r",
               "ru" => "Использование !~ с tr///r не имеет смысла",
+              "sr" => "Употреба оператора !~ са tr///r нема смисла",
               "tr" => "tr///r ile !~ kullanmak anlamlı değil",
               "uk" => "Використання !~ із tr///r не має сенсу"
             },
@@ -16975,6 +17251,7 @@ $CONF = {
               "nl" => "Gebruik aanhalingstekens in plaats van <> bij een require-statement",
               "pt" => "<> numa instrução require deve ser substituído por aspas",
               "ru" => "В операторе require вместо <> следует использовать кавычки",
+              "sr" => "<> у наредби require мора бити замењено наводницима",
               "tr" => "require deyimindeki <> tırnak içine alınmalıdır",
               "uk" => "Замість <> в інструкції require слід використовувати лапки"
             },
@@ -17018,6 +17295,7 @@ $CONF = {
               "nl" => "'#' is niet toegestaan direct na een sigil in een subroutinesignatuur",
               "pt" => "'#' não é permitido imediatamente após um sigilo numa assinatura de sub-rotina",
               "ru" => "'#' недопустим непосредственно после сигила в сигнатуре подпрограммы",
+              "sr" => "Знак '#' не сме непосредно да следи после сигила у потпису потпрограма",
               "tr" => "Alt yordam imzasında bir sigilin hemen ardından '#' gelemez",
               "uk" => "'#' не дозволено безпосередньо після сигіла в сигнатурі підпрограми"
             },
@@ -17061,6 +17339,7 @@ $CONF = {
               "nl" => "Verplichte parameter volgt op een optionele parameter",
               "pt" => "Um parâmetro obrigatório aparece depois de um parâmetro opcional",
               "ru" => "Обязательный параметр следует за необязательным",
+              "sr" => "Обавезни параметар следи после опционог параметра",
               "tr" => "İsteğe bağlı parametreden sonra zorunlu parametre geliyor",
               "uk" => "Обов’язковий параметр іде після необов’язкового"
             },
@@ -17104,6 +17383,7 @@ $CONF = {
               "nl" => "Dubbele naam van subroutineparameter",
               "pt" => "Nome de parâmetro de sub-rotina duplicado",
               "ru" => "Повторяющееся имя параметра подпрограммы",
+              "sr" => "Дуплирано име параметра потпрограма",
               "tr" => "Alt yordam parametre adı yinelenmiş",
               "uk" => "Повторне використання імені параметра підпрограми"
             },
@@ -17147,6 +17427,7 @@ $CONF = {
               "nl" => "Benoemde parameters moeten een naam hebben",
               "pt" => "Os parâmetros nomeados têm de ter um nome",
               "ru" => "Именованные параметры должны иметь имя",
+              "sr" => "Именовани параметри морају имати име",
               "tr" => "Adlandırılmış parametrelerin mutlaka bir adı olmalıdır",
               "uk" => "Іменовані параметри обов'язково повинні мати ім'я"
             },
@@ -17190,6 +17471,7 @@ $CONF = {
               "nl" => "Een benoemde signatuurparameter moet beginnen met '\$'",
               "pt" => "Um parâmetro nomeado na assinatura tem de começar por '\$'",
               "ru" => "Именованный параметр сигнатуры должен начинаться с '\$'",
+              "sr" => "Именовани параметар потписа мора да почиње знаком '\$'",
               "tr" => "Adlandırılmış imza parametresi '\$' ile başlamalıdır",
               "uk" => "Іменований параметр сигнатури має починатися з '\$'"
             },
@@ -17233,6 +17515,7 @@ $CONF = {
               "nl" => "Optionele parameter heeft geen standaardexpressie",
               "pt" => "Um parâmetro opcional não tem uma expressão predefinida",
               "ru" => "У необязательного параметра отсутствует выражение значения по умолчанию",
+              "sr" => "Опционом параметру недостаје подразумевани израз",
               "tr" => "İsteğe bağlı parametrenin varsayılan ifadesi eksik",
               "uk" => "Для необов'язкового параметра не задано виразу значення за замовчуванням"
             },
@@ -17276,6 +17559,7 @@ $CONF = {
               "nl" => "Slurpy-parameter staat niet als laatste",
               "pt" => "O parâmetro que recebe vários argumentos tem de ser o último",
               "ru" => "Параметр, поглощающий все оставшиеся аргументы, должен быть последним",
+              "sr" => "Параметар који прихвата све аргументе мора бити последњи",
               "tr" => "Slurpy parametreden sonra başka parametre gelemez",
               "uk" => "Параметр, що поглинає решту аргументів, не є останнім"
             },
@@ -17319,6 +17603,7 @@ $CONF = {
               "nl" => "Een signatuurparameter moet beginnen met '\$', '\@' of '%%'",
               "pt" => "Um parâmetro de assinatura tem de começar por '\$', '\@' ou '%%'",
               "ru" => "Параметр сигнатуры должен начинаться с '\$', '\@' или '%%'",
+              "sr" => "Параметар потписа мора да почне са '\$', '\@' или '%%'",
               "tr" => "İmza parametresi '\$', '\@' veya '%%' ile başlamalıdır",
               "uk" => "Параметр сигнатури має починатися з '\$', '\@' або '%%'"
             },
@@ -17362,6 +17647,7 @@ $CONF = {
               "nl" => "Ongeldige operator na parameter in een subroutinesignatuur",
               "pt" => "Operador inválido após um parâmetro numa assinatura de sub-rotina",
               "ru" => "Недопустимый оператор после параметра в сигнатуре подпрограммы",
+              "sr" => "Недозвољен оператор после параметра у потпису потпрограма",
               "tr" => "Alt yordam imzasındaki parametreden sonra geçersiz işleç",
               "uk" => "Недопустимий оператор після параметра в сигнатурі підпрограми"
             },
@@ -17405,6 +17691,7 @@ $CONF = {
               "nl" => "Positionele parameter volgt op een benoemde parameter",
               "pt" => "Um parâmetro posicional aparece após um parâmetro nomeado",
               "ru" => "Позиционный параметр следует за именованным",
+              "sr" => "Позициони параметар следи после именованог параметра",
               "tr" => "Konumsal parametre, adlandırılmış parametreden sonra geliyor",
               "uk" => "Позиційний параметр іде після іменованого параметра"
             },
@@ -17448,6 +17735,7 @@ $CONF = {
               "nl" => "Ongeldig teken na sigil in een subroutinesignatuur",
               "pt" => "Caráter inválido após o sigilo numa assinatura de sub-rotina",
               "ru" => "Недопустимый символ после сигила в сигнатуре подпрограммы",
+              "sr" => "Недозвољен знак после сигила у потпису потпрограма",
               "tr" => "Alt yordam imzasında sigilden sonra geçersiz karakter",
               "uk" => "Недопустимий символ після сигіла в сигнатурі підпрограми"
             },
@@ -17491,6 +17779,7 @@ $CONF = {
               "nl" => "Een slurpy-parameter mag geen standaardwaarde hebben",
               "pt" => "Um parâmetro que recebe vários argumentos não pode ter um valor predefinido",
               "ru" => "Параметр, собирающий оставшиеся аргументы, не может иметь значение по умолчанию",
+              "sr" => "Параметар који прима остатак аргумената не може имати подразумевану вредност",
               "tr" => "Slurpy parametrenin varsayılan değeri olamaz",
               "uk" => "Параметр, що поглинає решту аргументів, не може мати значення за замовчуванням"
             },
@@ -17534,6 +17823,7 @@ $CONF = {
               "nl" => "Meerdere slurpy-parameters zijn niet toegestaan",
               "pt" => "Não são permitidos vários parâmetros que recebem vários argumentos",
               "ru" => "Не допускается несколько параметров, поглощающих оставшиеся аргументы",
+              "sr" => "Више slurpy параметара није дозвољено",
               "tr" => "Birden fazla slurpy parametreye izin verilmez",
               "uk" => "Не дозволено мати кілька параметрів, що поглинають решту аргументів"
             },
@@ -17577,6 +17867,7 @@ $CONF = {
               "nl" => "Niet-ASCII-teken 0x%{character} is niet toegestaan wanneer 'use source::encoding \"ascii\"' van kracht is",
               "pt" => "É proibido utilizar o carácter não ASCII 0x%{character} quando 'use source::encoding \"ascii\"' está ativo",
               "ru" => "Использование символа 0x%{character}, не входящего в ASCII, запрещено при действии 'use source::encoding \"ascii\"'",
+              "sr" => "Употреба не-АСКИ знака 0x%{character} није дозвољена када је на снази 'use source::encoding \"ascii\"'",
               "tr" => "'use source::encoding \"ascii\"' etkinken ASCII dışı 0x%{character} karakterinin kullanılması yasa dışıdır",
               "uk" => "Використання символу 0x%{character} поза ASCII заборонено, коли діє 'use source::encoding \"ascii\"'"
             },
@@ -17631,6 +17922,7 @@ $CONF = {
               "nl" => "Markering van versiebeheerconflict",
               "pt" => "Marcador de conflito de controlo de versões",
               "ru" => "Маркер конфликта системы управления версиями",
+              "sr" => "Ознака сукоба у систему за контролу верзија",
               "tr" => "Sürüm kontrolü çakışma işaretçisi",
               "uk" => "Маркер конфлікту системи керування версіями"
             },
@@ -17899,6 +18191,23 @@ $CONF = {
                 "version_required" => "Недопустимый формат версии (требуется версия)",
                 "zero_before_decimal" => "Недопустимый формат версии (перед десятичной точкой требуется 0)"
               },
+              "sr" => {
+                "alpha_without_decimal" => "Неисправан формат верзије (слово без децималне тачке)",
+                "component_too_long" => "Неисправан формат верзије (највише 3 цифре између децималних тачака)",
+                "dotted_decimal_needs_v" => "Неисправан формат верзије (верзије са тачкама морају почињати са 'v')",
+                "dotted_decimal_parts" => "Неисправан формат верзије (верзије са тачкама морају имати најмање три дела)",
+                "fractional_part_required" => "Неисправан формат верзије (обавезан је разломљени део)",
+                "leading_zero" => "Неисправан формат верзије (почетне нуле нису дозвољене)",
+                "misplaced_underscore" => "Неисправан формат верзије (доња црта је на погрешном месту)",
+                "multiple_underscores" => "Неисправан формат верзије (више доњих црта)",
+                "negative_version" => "Неисправан формат верзије (негативан број верзије)",
+                "non_numeric_data" => "Неисправан формат верзије (ненумерички подаци)",
+                "trailing_decimal" => "Неисправан формат верзије (завршна децимална тачка)",
+                "underscore_before_decimal" => "Неисправан формат верзије (доње црте пре децималне тачке)",
+                "underscore_not_allowed" => "Неисправан формат верзије (доње црте нису дозвољене)",
+                "version_required" => "Неисправан формат верзије (обавезна је верзија)",
+                "zero_before_decimal" => "Неисправан формат верзије (потребна је нула пре децималне тачке)"
+              },
               "tr" => {
                 "alpha_without_decimal" => "Geçersiz sürüm biçimi (ondalık noktasız alfa bölümü)",
                 "component_too_long" => "Geçersiz sürüm biçimi (ondalık ayraçları arasında en fazla 3 basamak olabilir)",
@@ -17996,6 +18305,7 @@ $CONF = {
               "nl" => "Ongeldig teken in \\N{...}; gemarkeerd met <-- HERE in %{context}",
               "pt" => "Carácter inválido em \\N{...}; assinalado por <-- HERE em %{context}",
               "ru" => "Недопустимый символ в \\N{...}; место ошибки отмечено <-- HERE в %{context}",
+              "sr" => "Неисправан знак у \\N{...}; означено са <-- HERE у %{context}",
               "tr" => "\\N{...} içinde geçersiz karakter; %{context} içinde <-- HERE ile işaretli",
               "uk" => "Недопустимий символ у \\N{...}; позначено маркером <-- HERE у %{context}"
             },
@@ -18053,6 +18363,7 @@ $CONF = {
               "nl" => "in reguliere expressie; gemarkeerd met <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "na expressão regular; assinalado por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "düzenli ifadede; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -18141,6 +18452,7 @@ $CONF = {
               "nl" => "Onbekende constante (charnames)",
               "pt" => "Constante(charnames) desconhecida",
               "ru" => "Константа(charnames) неизвестна",
+              "sr" => "Константа(charnames): непознато",
               "tr" => "Constant(charnames) bilinmiyor",
               "uk" => "Константа(charnames) невідома"
             },
@@ -18188,6 +18500,7 @@ $CONF = {
               "nl" => "charnames-aliasdefinities mogen geen opeenvolgende spaties bevatten; gemarkeerd met <-- HERE in %{context}",
               "pt" => "As definições de aliases de charnames não podem conter sequências de vários espaços; assinaladas por <-- HERE em %{context}",
               "ru" => "Определения псевдонимов charnames не могут содержать несколько пробелов подряд; место ошибки отмечено <-- HERE в %{context}",
+              "sr" => "Дефиниције псеудонима charnames не смеју садржати низ узастопних размака; означено са <-- HERE у %{context}",
               "tr" => "charnames takma ad tanımları art arda birden fazla boşluk içeremez; %{context} içinde <-- HERE ile işaretli",
               "uk" => "Визначення псевдонімів charnames не можуть містити кількох пробілів поспіль; позначено <-- HERE у %{context}"
             },
@@ -18242,6 +18555,7 @@ $CONF = {
               "nl" => "Onbekende tekennaam '%{name}'",
               "pt" => "Nome de carácter desconhecido '%{name}'",
               "ru" => "Неизвестное имя символа '%{name}'",
+              "sr" => "Непознато име знака „%{name}“",
               "tr" => "Bilinmeyen karakter adı '%{name}'",
               "uk" => "Невідома назва символу '%{name}'"
             },
@@ -18298,6 +18612,7 @@ $CONF = {
               "nl" => "Gebruik van codepunt 0x%{code_point} is niet toegestaan; het toegestane maximum is 0x%{maximum}",
               "pt" => "Não é permitido utilizar o ponto de código 0x%{code_point}; o máximo permitido é 0x%{maximum}",
               "ru" => "Использование кодовой точки 0x%{code_point} запрещено; максимально допустимое значение — 0x%{maximum}",
+              "sr" => "Употреба тачке кода 0x%{code_point} није дозвољена; највећа дозвољена вредност је 0x%{maximum}",
               "tr" => "0x%{code_point} kod noktasının kullanımına izin verilmiyor; izin verilen en yüksek değer 0x%{maximum}",
               "uk" => "Використання кодової точки 0x%{code_point} не дозволено; допустимий максимум — 0x%{maximum}"
             },
@@ -18367,6 +18682,7 @@ $CONF = {
               "nl" => "Gebruik van codepunt 0%{code_point} is niet toegestaan; het toegestane maximum is 0%{maximum}",
               "pt" => "Não é permitido utilizar o ponto de código 0%{code_point}; o máximo permitido é 0%{maximum}",
               "ru" => "Использование кодовой точки 0%{code_point} недопустимо; максимально допустимое значение — 0%{maximum}",
+              "sr" => "Употреба кодне тачке 0%{code_point} није дозвољена; највећа дозвољена вредност је 0%{maximum}",
               "tr" => "0%{code_point} kod noktasının kullanımına izin verilmiyor; izin verilen en yüksek değer 0%{maximum}",
               "uk" => "Використання кодової точки 0%{code_point} не дозволено; максимально допустиме значення — 0%{maximum}"
             },
@@ -18436,6 +18752,7 @@ $CONF = {
               "nl" => "Gebruik van codepunt 0x%{code_point} is niet toegestaan; het toegestane maximum is 0x%{maximum} in reguliere expressie; gemarkeerd met <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Não é permitido utilizar o ponto de código 0x%{code_point}; o máximo permitido é 0x%{maximum} na expressão regular; assinalado por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Использование кодовой точки 0x%{code_point} недопустимо; максимально допустимое значение — 0x%{maximum} в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Употреба кодне тачке 0x%{code_point} није дозвољена; највећа дозвољена вредност је 0x%{maximum} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "0x%{code_point} kod noktasının kullanımına izin verilmiyor; izin verilen en yüksek değer 0x%{maximum}; düzenli ifadede m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Використання кодової точки 0x%{code_point} заборонено; максимально допустиме значення — 0x%{maximum} у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -18541,6 +18858,7 @@ $CONF = {
               "nl" => "Ongeldige Unicode-eigenschapsdefinitie in reguliere expressie; gemarkeerd met <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Definição de propriedade Unicode inválida na expressão regular; assinalada por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Недопустимое определение свойства Unicode в регулярном выражении; место ошибки отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неважећа дефиниција Уникод својства у регуларном изразу; место је означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede geçersiz Unicode özellik tanımı; m/%{before} <-- HERE %{after}/ içinde <-- HERE ile işaretlendi",
               "uk" => "Некоректне визначення властивості Unicode у регулярному виразі; позначено маркером <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -18629,6 +18947,7 @@ $CONF = {
               "nl" => "Ongeldige UTF-8 geretourneerd door %{escape} direct na '%{value_prefix}'",
               "pt" => "UTF-8 malformado devolvido por %{escape} imediatamente após '%{value_prefix}'",
               "ru" => "Некорректная последовательность UTF-8 в результате %{escape} сразу после '%{value_prefix}'",
+              "sr" => "Неисправан UTF-8 који је вратио %{escape}, одмах после „%{value_prefix}“",
               "tr" => "%{escape} tarafından döndürülen UTF-8, '%{value_prefix}' bölümünün hemen ardından bozuk",
               "uk" => "%{escape} повернула некоректну послідовність UTF-8 безпосередньо після '%{value_prefix}'"
             },
@@ -18736,6 +19055,10 @@ $CONF = {
                 "too_few" => "Недостаточно аргументов для %{function}",
                 "too_many" => "Слишком много аргументов для %{function}"
               },
+              "sr" => {
+                "too_few" => "Недовољно аргумената за %{function}",
+                "too_many" => "Превише аргумената за %{function}"
+              },
               "tr" => {
                 "*" => "%{function} için yeterli bağımsız değişken yok",
                 "too_many" => "%{function} için çok fazla bağımsız değişken var"
@@ -18795,6 +19118,7 @@ $CONF = {
               "nl" => "Oneven aantal naam/waarde-argumenten voor subroutine '%{arg1}'",
               "pt" => "Número ímpar de argumentos nome/valor para a sub-rotina '%{arg1}'",
               "ru" => "Нечётное число аргументов «имя/значение» для подпрограммы '%{arg1}'",
+              "sr" => "Непаран број аргумената име/вредност за потпрограму '%{arg1}'",
               "tr" => "'%{arg1}' alt yordamına tek sayıda ad/değer argümanı verildi",
               "uk" => "Непарна кількість аргументів ім’я/значення для підпрограми '%{arg1}'"
             },
@@ -18847,6 +19171,7 @@ $CONF = {
               "nl" => "Gebruik: %{signature}",
               "pt" => "Utilização: %{signature}",
               "ru" => "Использование: %{signature}",
+              "sr" => "Употреба: %{signature}",
               "tr" => "Kullanım: %{signature}",
               "uk" => "Використання: %{signature}"
             },
@@ -19686,6 +20011,16 @@ $CONF = {
                   "*" => "Слишком много аргументов для подпрограммы '%{name}' (получено: %{actual_count}; ожидалось: %{expected_count})"
                 }
               },
+              "sr" => {
+                "too_few" => {
+                  "exact" => "Премало аргумената за потпрограму '%{name}' (прослеђено %{actual_count}; очекивано %{expected_count})",
+                  "minimum" => "Премало аргумената за потпрограму '%{name}' (прослеђено %{actual_count}; очекивано најмање %{expected_count})"
+                },
+                "too_many" => {
+                  "exact" => "Превише аргумената за потпрограму '%{name}' (прослеђено %{actual_count}; очекивано %{expected_count})",
+                  "maximum" => "Превише аргумената за потпрограму '%{name}' (прослеђено %{actual_count}; очекивано највише %{expected_count})"
+                }
+              },
               "tr" => {
                 "*" => {
                   "*" => "'%{name}' alt yordamı için çok az bağımsız değişken var (alınan: %{actual_count}; beklenen: %{expected_count})",
@@ -19785,6 +20120,7 @@ $CONF = {
               "nl" => "Gebruik: CODE(0x%{arg1})(%{arg2})",
               "pt" => "Utilização: CODE(0x%{arg1})(%{arg2})",
               "ru" => "Использование: CODE(0x%{arg1})(%{arg2})",
+              "sr" => "Употреба: CODE(0x%{arg1})(%{arg2})",
               "tr" => "Kullanım: CODE(0x%{arg1})(%{arg2})",
               "uk" => "Використання: CODE(0x%{arg1})(%{arg2})"
             },
@@ -19836,6 +20172,7 @@ $CONF = {
               "nl" => "Gebruik: %{arg1}::%{arg2}(%{arg3})",
               "pt" => "Utilização: %{arg1}::%{arg2}(%{arg3})",
               "ru" => "Использование: %{arg1}::%{arg2}(%{arg3})",
+              "sr" => "Употреба: %{arg1}::%{arg2}(%{arg3})",
               "tr" => "Kullanım: %{arg1}::%{arg2}(%{arg3})",
               "uk" => "Використання: %{arg1}::%{arg2}(%{arg3})"
             },
@@ -19894,6 +20231,7 @@ $CONF = {
               "nl" => "Gebruik: %{arg1}(%{arg2})",
               "pt" => "Utilização: %{arg1}(%{arg2})",
               "ru" => "Использование: %{arg1}(%{arg2})",
+              "sr" => "Употреба: %{arg1}(%{arg2})",
               "tr" => "Kullanım: %{arg1}(%{arg2})",
               "uk" => "Використання: %{arg1}(%{arg2})"
             },
@@ -19948,6 +20286,7 @@ $CONF = {
               "nl" => "Vereiste benoemde parameter '%{parameter}' ontbreekt voor subroutine '%{function}'",
               "pt" => "Falta o parâmetro nomeado obrigatório '%{parameter}' para a sub-rotina '%{function}'",
               "ru" => "Не указан обязательный именованный параметр '%{parameter}' для подпрограммы '%{function}'",
+              "sr" => "Недостаје обавезни именовани параметар '%{parameter}' за потпрограму '%{function}'",
               "tr" => "'%{function}' alt yordamı için zorunlu adlandırılmış parametre '%{parameter}' eksik",
               "uk" => "Відсутній обов’язковий іменований параметр '%{parameter}' для підпрограми '%{function}'"
             },
@@ -20145,6 +20484,16 @@ $CONF = {
                   "missing" => "Не указан обязательный именованный параметр %{names} подпрограммы '%{function}'"
                 }
               },
+              "sr" => {
+                "*" => {
+                  "missing" => "Недостају обавезни именовани параметри %{names} потпрограма „%{function}“",
+                  "unknown" => "Непрепознати именовани параметри %{names} потпрограма „%{function}“"
+                },
+                "one" => {
+                  "missing" => "Недостаје обавезни именовани параметар %{names} потпрограма „%{function}“",
+                  "unknown" => "Непрепознат именовани параметар %{names} потпрограма „%{function}“"
+                }
+              },
               "tr" => {
                 "*" => {
                   "*" => "'%{function}' alt yordamı için tanınmayan %{count} adlandırılmış parametre: %{names}",
@@ -20232,6 +20581,7 @@ $CONF = {
               "nl" => "Onbekende benoemde parameter '%{parameter}' voor subroutine '%{function}'",
               "pt" => "Parâmetro nomeado '%{parameter}' não reconhecido para a sub-rotina '%{function}'",
               "ru" => "Неизвестный именованный параметр '%{parameter}' для подпрограммы '%{function}'",
+              "sr" => "Непрепознат именовани параметар '%{parameter}' за потпрограму '%{function}'",
               "tr" => "'%{function}' alt yordamı için tanınmayan adlandırılmış parametre '%{parameter}'",
               "uk" => "Нерозпізнаний іменований параметр '%{parameter}' для підпрограми '%{function}'"
             },
@@ -20293,6 +20643,7 @@ $CONF = {
               "nl" => "Argument %{arg1} van &CORE::%{arg2} moet een arrayreferentie zijn",
               "pt" => "O argumento %{arg1} de &CORE::%{arg2} tem de ser uma referência a um array",
               "ru" => "Аргумент %{arg1} функции &CORE::%{arg2} должен быть ссылкой на массив",
+              "sr" => "Тип аргумента %{arg1} функције &CORE::%{arg2} мора бити референца на низ",
               "tr" => "&CORE::%{arg2} işlevine verilen argüman %{arg1} bir dizi başvurusu olmalıdır",
               "uk" => "Аргумент %{arg1} для &CORE::%{arg2} має бути посиланням на масив"
             },
@@ -20390,6 +20741,10 @@ $CONF = {
               "ru" => {
                 "*" => "Аргумент %{argument_number} функции &CORE::%{operation_description} должен быть ссылкой на хеш",
                 "hash_or_array" => "Аргумент %{argument_number} функции &CORE::%{operation_description} должен быть ссылкой на хеш или массив"
+              },
+              "sr" => {
+                "hash_only" => "Тип аргумента %{argument_number} функције &CORE::%{operation_description} мора бити референца на хеш",
+                "hash_or_array" => "Тип аргумента %{argument_number} функције &CORE::%{operation_description} мора бити референца на хеш или низ"
               },
               "tr" => {
                 "hash_only" => "&CORE::%{operation_description} işlevine verilen argüman %{argument_number} bir hash başvurusu olmalıdır",
@@ -20519,6 +20874,11 @@ $CONF = {
                 "reference_without_code" => "Аргумент %{argument_number} функции &CORE::%{operation_name} должен быть ссылкой на один из типов [\$\@%%*]",
                 "scalar_reference" => "Аргумент %{argument_number} функции &CORE::%{operation_name} должен быть ссылкой на скаляр"
               },
+              "sr" => {
+                "reference_with_code" => "Тип аргумента %{argument_number} функције &CORE::%{operation_name} мора бити референца на један од [\$\@%%&*]",
+                "reference_without_code" => "Тип аргумента %{argument_number} функције &CORE::%{operation_name} мора бити референца на један од [\$\@%%*]",
+                "scalar_reference" => "Тип аргумента %{argument_number} функције &CORE::%{operation_name} мора бити скаларна референца"
+              },
               "tr" => {
                 "reference_with_code" => "&CORE::%{operation_name} işlevine verilen argüman %{argument_number}, [\$\@%%&*] türlerinden birine başvuru olmalıdır",
                 "reference_without_code" => "&CORE::%{operation_name} işlevine verilen argüman %{argument_number}, [\$\@%%*] türlerinden birine başvuru olmalıdır",
@@ -20589,6 +20949,7 @@ $CONF = {
               "nl" => "Prototype van een closure aangeroepen",
               "pt" => "Foi chamado o protótipo de uma closure",
               "ru" => "Вызван прототип замыкания",
+              "sr" => "Позван је прототип затворене функције",
               "tr" => "Kapanış prototipi çağrıldı",
               "uk" => "Викликано прототип замикання"
             },
@@ -20631,6 +20992,7 @@ $CONF = {
               "nl" => "&CORE::%{arg1} kan niet rechtstreeks worden aangeroepen",
               "pt" => "&CORE::%{arg1} não pode ser chamado diretamente",
               "ru" => "&CORE::%{arg1} нельзя вызывать напрямую",
+              "sr" => "&CORE::%{arg1} не може се непосредно позвати",
               "tr" => "&CORE::%{arg1} doğrudan çağrılamaz",
               "uk" => "&CORE::%{arg1} неможливо викликати безпосередньо"
             },
@@ -20678,6 +21040,7 @@ $CONF = {
               "nl" => "Overgeërfde AUTOLOAD gebruiken voor niet-methode %{arg1}::%{arg2}() is niet langer toegestaan",
               "pt" => "A utilização de AUTOLOAD herdado para a chamada que não é um método %{arg1}::%{arg2}() já não é permitida",
               "ru" => "Использование унаследованного AUTOLOAD для %{arg1}::%{arg2}(), вызываемой не как метод, больше не разрешено",
+              "sr" => "Употреба наслеђеног AUTOLOAD-а за %{arg1}::%{arg2}() који није метод више није дозвољена",
               "tr" => "Yöntem olmayan %{arg1}::%{arg2}() için devralınan AUTOLOAD kullanımı artık izinli değil",
               "uk" => "Використання успадкованого AUTOLOAD для підпрограми %{arg1}::%{arg2}(), викликаної не як метод, більше не дозволено"
             },
@@ -20746,6 +21109,7 @@ $CONF = {
               "nl" => "Ongedefinieerde sorteersubroutine \"%{arg1}\" aangeroepen",
               "pt" => "Foi chamada a sub-rotina de ordenação indefinida \"%{arg1}\"",
               "ru" => "Вызвана неопределённая подпрограмма сортировки \"%{arg1}\"",
+              "sr" => "Позван је недефинисан потпрограм за сортирање „%{arg1}“",
               "tr" => "Tanımsız sıralama alt yordamı \"%{arg1}\" çağrıldı",
               "uk" => "Викликано невизначену підпрограму сортування \"%{arg1}\""
             },
@@ -20794,6 +21158,7 @@ $CONF = {
               "nl" => "Niet-gedefinieerde subroutine &%{name} aangeroepen",
               "pt" => "Foi chamada a sub-rotina indefinida &%{name}",
               "ru" => "Вызвана неопределённая подпрограмма &%{name}",
+              "sr" => "Позвана је недефинисана потпрограма &%{name}",
               "tr" => "Tanımsız alt yordam &%{name} çağrıldı",
               "uk" => "Викликано невизначену підпрограму &%{name}"
             },
@@ -20842,6 +21207,7 @@ $CONF = {
               "nl" => "Ongedefinieerde subroutine aangeroepen tijdens sorteren",
               "pt" => "Sub-rotina de ordenação indefinida",
               "ru" => "Неопределённая подпрограмма в sort",
+              "sr" => "Недефинисан потпрограм у сортирању",
               "tr" => "Sıralamada tanımsız alt yordam",
               "uk" => "Невизначена підпрограма в sort"
             },
@@ -20883,6 +21249,7 @@ $CONF = {
               "nl" => "Niet-gedefinieerde subroutine aangeroepen",
               "pt" => "Foi chamada uma sub-rotina indefinida",
               "ru" => "Вызвана неопределённая подпрограмма",
+              "sr" => "Позвана је недефинисана потпрограма",
               "tr" => "Tanımsız alt yordam çağrıldı",
               "uk" => "Викликано невизначену підпрограму"
             },
@@ -20924,6 +21291,7 @@ $CONF = {
               "nl" => "Niet-gedefinieerde subroutine &%{name} aangeroepen, vlak bij label '%{label}'",
               "pt" => "Foi chamada a sub-rotina indefinida &%{name}, perto do rótulo '%{label}'",
               "ru" => "Вызвана неопределённая подпрограмма &%{name}, рядом с меткой '%{label}'",
+              "sr" => "Позвана је недефинисана потпрограма &%{name}, близу ознаке „%{label}“",
               "tr" => "&%{name} adlı tanımsız alt yordam, '%{label}' etiketinin yakınında çağrıldı",
               "uk" => "Викликано невизначену підпрограму &%{name}, поблизу мітки '%{label}'"
             },
@@ -20978,6 +21346,7 @@ $CONF = {
               "nl" => "Kan geen opnummer vinden voor \"%{arg1}\"",
               "pt" => "Não foi possível encontrar um número de operação para \"%{arg1}\"",
               "ru" => "Не удалось найти номер операции для \"%{arg1}\"",
+              "sr" => "Није могуће пронаћи број операције за \"%{arg1}\"",
               "tr" => "\"%{arg1}\" için işlem numarası bulunamıyor",
               "uk" => "Неможливо знайти номер операції для \"%{arg1}\""
             },
@@ -21042,6 +21411,7 @@ $CONF = {
               "nl" => "Uitvoering van %{arg2} afgebroken wegens compilatiefouten.\n",
               "pt" => "A execução de %{arg2} foi interrompida devido a erros de compilação.\n",
               "ru" => "Выполнение %{arg2} прервано из-за ошибок компиляции.\n",
+              "sr" => "Извршавање %{arg2} је прекинуто због грешака при компилацији.\n",
               "tr" => "Derleme hataları nedeniyle %{arg2} yürütmesi durduruldu.\n",
               "uk" => "Виконання %{arg2} перервано через помилки компіляції.\n"
             },
@@ -21096,6 +21466,7 @@ $CONF = {
               "nl" => "%{arg2} bevat compilatiefouten.\n",
               "pt" => "Ocorreram erros de compilação em %{arg2}.\n",
               "ru" => "При компиляции %{arg2} обнаружены ошибки.\n",
+              "sr" => "У %{arg2} су откривене грешке при компилацији.\n",
               "tr" => "%{arg2} derleme hataları içeriyor.\n",
               "uk" => "У %{arg2} виявлено помилки компіляції.\n"
             },
@@ -21151,6 +21522,7 @@ $CONF = {
               "nl" => "%{arg2} bevat te veel fouten.\n",
               "pt" => "%{arg2} tem demasiados erros.\n",
               "ru" => "Слишком много ошибок в %{arg2}.\n",
+              "sr" => "%{arg2} има превише грешака.\n",
               "tr" => "%{arg2} çok fazla hata içeriyor.\n",
               "uk" => "У %{arg2} забагато помилок.\n"
             },
@@ -21198,6 +21570,7 @@ $CONF = {
               "nl" => "Met \"goto\" naar binnen in een constructie springen is niet meer toegestaan",
               "pt" => "Já não é permitido usar \"goto\" para saltar para dentro de uma estrutura",
               "ru" => "Использование \"goto\" для перехода внутрь конструкции больше не допускается",
+              "sr" => "Употреба наредбе \"goto\" за скок унутар конструкције више није дозвољена",
               "tr" => "Bir yapının içine atlamak için \"goto\" kullanılamaz",
               "uk" => "Використання \"goto\" для переходу всередину конструкції більше не дозволено"
             },
@@ -21239,6 +21612,7 @@ $CONF = {
               "nl" => "Kan met \"goto\" niet naar binnen in een \"defer\"-blok springen",
               "pt" => "Não é possível usar \"goto\" para entrar num bloco \"defer\"",
               "ru" => "Нельзя выполнить переход \"goto\" внутрь блока \"defer\"",
+              "sr" => "Не може се извршити „goto“ унутар блока „defer“",
               "tr" => "\"goto\" ile bir \"defer\" bloğunun içine girilemez",
               "uk" => "Неможливо виконати \"goto\" всередину блока \"defer\""
             },
@@ -21280,6 +21654,7 @@ $CONF = {
               "nl" => "Kan met \"goto\" niet in een binaire expressie of lijstexpressie springen",
               "pt" => "Não é possível usar \"goto\" para entrar numa expressão binária ou de lista",
               "ru" => "Нельзя перейти с помощью \"goto\" внутрь бинарного или списочного выражения",
+              "sr" => "Није могуће извршити \"goto\" унутар бинарног израза или израза са листом",
               "tr" => "\"goto\" ile ikili veya liste ifadesinin içine girilemez",
               "uk" => "Не можна перейти за допомогою \"goto\" всередину бінарного або спискового виразу"
             },
@@ -21321,6 +21696,7 @@ $CONF = {
               "nl" => "Kan met \"goto\" niet midden in een foreach-lus springen",
               "pt" => "Não é possível usar \"goto\" para entrar a meio de um ciclo foreach",
               "ru" => "Нельзя перейти с помощью \"goto\" в середину цикла foreach",
+              "sr" => "Није могуће извршити \"goto\" у средину петље foreach",
               "tr" => "\"goto\" ile bir foreach döngüsünün ortasına girilemez",
               "uk" => "Не можна перейти за допомогою \"goto\" всередину циклу foreach"
             },
@@ -21362,6 +21738,7 @@ $CONF = {
               "nl" => "Kan met \"goto\" niet in een \"given\"-blok springen",
               "pt" => "Não é possível usar \"goto\" para entrar num bloco \"given\"",
               "ru" => "Нельзя перейти с помощью \"goto\" внутрь блока \"given\"",
+              "sr" => "Није могуће извршити \"goto\" унутар блока \"given\"",
               "tr" => "\"goto\" ile bir \"given\" bloğunun içine girilemez",
               "uk" => "Не можна перейти за допомогою \"goto\" всередину блоку \"given\""
             },
@@ -21403,6 +21780,7 @@ $CONF = {
               "nl" => "Kan niet met \"goto\" uit een pseudoblok springen",
               "pt" => "Não é possível sair de um pseudobloco com \"goto\"",
               "ru" => "Невозможно выйти из псевдоблока с помощью \"goto\"",
+              "sr" => "Није могуће извршити \"goto\" из псеудоблока",
               "tr" => "\"goto\" ile sözde bir bloğun dışına çıkılamaz",
               "uk" => "Не можна вийти з псевдоблоку за допомогою \"goto\""
             },
@@ -21444,6 +21822,7 @@ $CONF = {
               "nl" => "Kan label %{arg1} niet vinden",
               "pt" => "Não foi possível encontrar o rótulo %{arg1}",
               "ru" => "Не удалось найти метку %{arg1}",
+              "sr" => "Није могуће пронаћи ознаку %{arg1}",
               "tr" => "%{arg1} etiketi bulunamıyor",
               "uk" => "Не вдалося знайти мітку %{arg1}"
             },
@@ -21506,6 +21885,7 @@ $CONF = {
               "nl" => "goto moet een label hebben",
               "pt" => "goto requer um rótulo",
               "ru" => "Для goto требуется метка",
+              "sr" => "goto мора да има ознаку",
               "tr" => "goto için bir etiket belirtilmelidir",
               "uk" => "Для goto потрібна мітка"
             },
@@ -21549,6 +21929,7 @@ $CONF = {
               "nl" => "Kan geen goto naar een subroutine uitvoeren vanuit een sort-subroutine (of vergelijkbare callback)",
               "pt" => "Não é possível usar goto para uma sub-rotina a partir de uma sub-rotina de sort (ou callback semelhante)",
               "ru" => "Невозможно выполнить goto к подпрограмме из подпрограммы сравнения sort (или аналогичной функции обратного вызова)",
+              "sr" => "Није могуће извршити goto потпрограме из sort потпрограма (или сличног повратног позива)",
               "tr" => "Bir sort alt yordamından (veya benzer bir geri çağrıdan) alt yordam çağrısına goto yapılamaz",
               "uk" => "Неможливо виконати goto до підпрограми з підпрограми sort (або подібної функції зворотного виклику)"
             },
@@ -21591,6 +21972,7 @@ $CONF = {
               "nl" => "Kan geen goto naar een subroutine uitvoeren vanuit een eval-blok",
               "pt" => "Não é possível usar goto para uma sub-rotina a partir de um bloco eval",
               "ru" => "Невозможно выполнить goto к подпрограмме из блока eval",
+              "sr" => "Није могуће извршити goto потпрограме из eval-блока",
               "tr" => "Bir eval bloğundan alt yordam çağrısına goto yapılamaz",
               "uk" => "Не можна виконати goto до підпрограми з блоку eval"
             },
@@ -21633,6 +22015,7 @@ $CONF = {
               "nl" => "Kan geen goto naar een subroutine uitvoeren vanuit een eval-tekenreeks",
               "pt" => "Não é possível usar goto para uma sub-rotina a partir de uma string de eval",
               "ru" => "Невозможно выполнить goto к подпрограмме из строки eval",
+              "sr" => "Није могуће извршити goto потпрограме из eval-стринга",
               "tr" => "Bir eval dizgesinden alt yordam çağrısına goto yapılamaz",
               "uk" => "Неможливо виконати goto до підпрограми з рядкового eval"
             },
@@ -21675,6 +22058,7 @@ $CONF = {
               "nl" => "Kan geen goto naar een subroutine uitvoeren buiten een subroutine",
               "pt" => "Não é possível usar goto para uma sub-rotina fora de uma sub-rotina",
               "ru" => "Невозможно выполнить goto к подпрограмме вне подпрограммы",
+              "sr" => "Није могуће извршити goto потпрограме ван потпрограме",
               "tr" => "Bir alt yordamın dışından alt yordam çağrısına goto yapılamaz",
               "uk" => "Не можна виконати goto до підпрограми поза підпрограмою"
             },
@@ -21717,6 +22101,7 @@ $CONF = {
               "nl" => "Goto naar ongedefinieerde subroutine &%{arg1}",
               "pt" => "Goto para a sub-rotina indefinida &%{arg1}",
               "ru" => "Переход goto к неопределённой подпрограмме &%{arg1}",
+              "sr" => "Goto: недефинисана потпрограма &%{arg1}",
               "tr" => "Tanımsız alt yordam &%{arg1} için goto",
               "uk" => "Перехід goto до невизначеної підпрограми &%{arg1}"
             },
@@ -21766,6 +22151,7 @@ $CONF = {
               "nl" => "Goto naar ongedefinieerde subroutine",
               "pt" => "Goto para uma sub-rotina indefinida",
               "ru" => "Переход goto к неопределённой подпрограмме",
+              "sr" => "Goto: недефинисана потпрограма",
               "tr" => "Tanımsız alt yordam için goto",
               "uk" => "Перехід goto до невизначеної підпрограми"
             },
@@ -21807,6 +22193,7 @@ $CONF = {
               "nl" => "Doel van goto is te diep genest",
               "pt" => "O destino de goto está aninhado a demasiados níveis",
               "ru" => "Цель goto находится на слишком глубоком уровне вложенности",
+              "sr" => "Циљ команде goto је превише дубоко угнежђен",
               "tr" => "goto hedefi çok derin iç içe",
               "uk" => "Ціль goto має надто глибокий рівень вкладеності"
             },
@@ -21848,6 +22235,7 @@ $CONF = {
               "nl" => "Label niet gevonden voor \"%{op} %{label}\"",
               "pt" => "Etiqueta não encontrada para \"%{op} %{label}\"",
               "ru" => "Метка для \"%{op} %{label}\" не найдена",
+              "sr" => "Ознака није пронађена за „%{op} %{label}”",
               "tr" => "\"%{op} %{label}\" için etiket bulunamadı",
               "uk" => "Не знайдено мітку для \"%{op} %{label}\""
             },
@@ -21901,6 +22289,7 @@ $CONF = {
               "nl" => "Kan \"%{arg2}\" niet buiten een lusblok uitvoeren",
               "pt" => "Não é possível executar \"%{arg2}\" fora de um bloco de ciclo",
               "ru" => "Невозможно выполнить \"%{arg2}\" вне блока цикла",
+              "sr" => "Не може се употребити „%{arg2}“ изван блока петље",
               "tr" => "Bir döngü bloğunun dışında \"%{arg2}\" kullanılamaz",
               "uk" => "Не можна виконати \"%{arg2}\" поза блоком циклу"
             },
@@ -21949,6 +22338,7 @@ $CONF = {
               "nl" => "Kan return niet buiten een subroutine gebruiken",
               "pt" => "Não é possível executar return fora de uma sub-rotina",
               "ru" => "Нельзя выполнить return вне подпрограммы",
+              "sr" => "Не може се извршити return изван потпрограма",
               "tr" => "Bir alt yordamın dışında return kullanılamaz",
               "uk" => "Неможливо виконати return поза підпрограмою"
             },
@@ -21990,6 +22380,7 @@ $CONF = {
               "nl" => "Kan \"%{operation}\" niet uitvoeren vanuit een \"%{block}\"-blok",
               "pt" => "Não é possível executar \"%{operation}\" para sair de um bloco \"%{block}\"",
               "ru" => "Нельзя выйти из блока \"%{block}\" с помощью \"%{operation}\"",
+              "sr" => "Није могуће изаћи из блока „%{block}“ помоћу „%{operation}“",
               "tr" => "\"%{block}\" bloğunun dışına \"%{operation}\" ile çıkılamaz",
               "uk" => "Не можна вийти з блоку \"%{block}\" за допомогою \"%{operation}\""
             },
@@ -22048,6 +22439,7 @@ $CONF = {
               "nl" => "Kan \"%{arg2}\" niet uitvoeren vanuit %{arg3}",
               "pt" => "Não é possível executar \"%{arg2}\" para sair de %{arg3}",
               "ru" => "Нельзя выполнить \"%{arg2}\" для выхода за пределы %{arg3}",
+              "sr" => "Није могуће изаћи из %{arg3} помоћу „%{arg2}“",
               "tr" => "%{arg3} dışına \"%{arg2}\" ile çıkılamaz",
               "uk" => "Не можна вийти за межі %{arg3} за допомогою \"%{arg2}\""
             },
@@ -22100,6 +22492,7 @@ $CONF = {
               "nl" => "\"break\" is niet toegestaan in een loop-topicalizer",
               "pt" => "Não é possível usar \"break\" num topicalizador de ciclo",
               "ru" => "Нельзя использовать \"break\" в цикле, задающем текущую тему",
+              "sr" => "Не можете да користите „break“ у топикализатору петље",
               "tr" => "Bir döngü topicalizer'ında \"break\" kullanılamaz",
               "uk" => "Не можна виконати \"break\" у циклічному топікалізаторі"
             },
@@ -22141,6 +22534,7 @@ $CONF = {
               "nl" => "\"break\" is niet toegestaan buiten een given-blok",
               "pt" => "Não é possível usar \"break\" fora de um bloco given",
               "ru" => "Нельзя использовать \"break\" вне блока given",
+              "sr" => "Не можете да користите „break“ изван блока given",
               "tr" => "Bir given bloğunun dışında \"break\" kullanılamaz",
               "uk" => "Неможливо виконати \"break\" поза блоком given"
             },
@@ -22182,6 +22576,7 @@ $CONF = {
               "nl" => "\"continue\" is niet toegestaan buiten een when-blok",
               "pt" => "Não é possível usar \"continue\" fora de um bloco when",
               "ru" => "Нельзя использовать \"continue\" вне блока when",
+              "sr" => "Није могуће употребити \"continue\" ван when блока",
               "tr" => "Bir when bloğunun dışında \"continue\" kullanılamaz",
               "uk" => "Не можна виконати \"continue\" поза блоком when"
             },
@@ -22224,6 +22619,7 @@ $CONF = {
               "nl" => "dispatch-on-clausule buiten een dispatch",
               "pt" => "Cláusula dispatch-on fora de um dispatch",
               "ru" => "Ветвь dispatch-on вне блока dispatch",
+              "sr" => "Клаузула dispatch-on ван dispatch блока",
               "tr" => "dispatch dışında dispatch-on clause",
               "uk" => "гілка dispatch-on поза блоком dispatch"
             },
@@ -22265,6 +22661,7 @@ $CONF = {
               "nl" => "\"%{arg1}\" is niet toegestaan buiten een topicalizer",
               "pt" => "Não é possível usar \"%{arg1}\" fora de um topicalizador",
               "ru" => "Нельзя использовать \"%{arg1}\" вне конструкции, задающей текущую тему",
+              "sr" => "Није могуће употребити \"%{arg1}\" ван topicalizer-а",
               "tr" => "Bir topicalizer dışında \"%{arg1}\" kullanılamaz",
               "uk" => "Не можна виконати \"%{arg1}\" поза топікалізатором"
             },
@@ -22313,6 +22710,7 @@ $CONF = {
               "nl" => "Geen DB::DB-routine gedefinieerd",
               "pt" => "Não existe nenhuma rotina DB::DB definida",
               "ru" => "Подпрограмма DB::DB не определена",
+              "sr" => "Није дефинисана рутина DB::DB",
               "tr" => "DB::DB yordamı tanımlı değil",
               "uk" => "Підпрограму DB::DB не визначено"
             },
@@ -22355,6 +22753,7 @@ $CONF = {
               "nl" => "Geen DB::sub-routine gedefinieerd",
               "pt" => "Não existe nenhuma rotina DB::sub definida",
               "ru" => "Подпрограмма DB::sub не определена",
+              "sr" => "Није дефинисана рутина DB::sub",
               "tr" => "DB::sub yordamı tanımlı değil",
               "uk" => "Підпрограму DB::sub не визначено"
             },
@@ -22397,6 +22796,7 @@ $CONF = {
               "nl" => "Kan gekoppelde \@DB::args niet instellen",
               "pt" => "Não é possível alterar \@DB::args associado com tie",
               "ru" => "Нельзя присвоить значения массиву \@DB::args, связанному через tie",
+              "sr" => "Није могуће поставити везани низ \@DB::args",
               "tr" => "Bağlanmış \@DB::args ayarlanamaz",
               "uk" => "Не можна встановити значення \@DB::args, прив'язаного через tie"
             },
@@ -22438,6 +22838,7 @@ $CONF = {
               "nl" => "Een onderliggend object van een diagnostische groep moet een diagnostisch object zijn\n",
               "pt" => "O filho do grupo de diagnósticos deve ser um diagnóstico\n",
               "ru" => "Дочерний элемент группы диагностических сообщений должен быть диагностическим объектом\n",
+              "sr" => "Дете групе дијагностике мора бити дијагностика\n",
               "tr" => "Tanı grubu çocuğu bir tanı olmalıdır\n",
               "uk" => "Дочірній елемент групи діагностик має бути діагностичним об’єктом\n"
             },
@@ -22479,6 +22880,7 @@ $CONF = {
               "nl" => "Toevoegen aan een diagnostische groep zou een cyclus veroorzaken\n",
               "pt" => "A adição ao grupo de diagnósticos criaria um ciclo\n",
               "ru" => "Добавление в группу диагностических сообщений привело бы к образованию цикла\n",
+              "sr" => "Додавање детета групи дијагностике направило би циклус\n",
               "tr" => "Tanı grubuna ekleme işlemi bir döngü oluştururdu\n",
               "uk" => "Додавання до групи діагностичних об’єктів призвело б до циклу\n"
             },
@@ -22520,6 +22922,7 @@ $CONF = {
               "nl" => "De onderliggende objecten van een afgeleid diagnostisch object moeten als een arrayreferentie worden opgegeven\n",
               "pt" => "A lista de filhos do diagnóstico derivado deve ser uma referência a um array\n",
               "ru" => "Список дочерних элементов производного диагностического объекта должен быть ссылкой на массив\n",
+              "sr" => "Изведена деца дијагностике морају бити референца на низ\n",
               "tr" => "Türetilmiş tanı çocukları bir dizi başvurusu olmalıdır\n",
               "uk" => "Дочірні елементи похідного діагностичного об’єкта мають бути задані посиланням на масив\n"
             },
@@ -22561,6 +22964,7 @@ $CONF = {
               "nl" => "Onderliggende objecten van een afgeleid diagnostisch object moeten diagnostische objecten zijn\n",
               "pt" => "Os filhos do diagnóstico derivado devem ser objetos de diagnóstico\n",
               "ru" => "Дочерние элементы производного диагностического объекта должны быть диагностическими объектами\n",
+              "sr" => "Изведена деца дијагностике морају бити дијагностички објекти\n",
               "tr" => "Türetilmiş tanı çocukları tanı nesneleri olmalıdır\n",
               "uk" => "Похідні дочірні елементи діагностики мають бути діагностичними об’єктами\n"
             },
@@ -22602,6 +23006,7 @@ $CONF = {
               "nl" => "Het afleiden van een diagnostisch object zou een cyclus veroorzaken\n",
               "pt" => "A derivação do diagnóstico criaria um ciclo\n",
               "ru" => "Вызов derive для диагностического объекта привёл бы к образованию цикла\n",
+              "sr" => "Извођење дијагностике би направило циклус\n",
               "tr" => "Tanı türetme işlemi bir döngü oluşturur\n",
               "uk" => "Створення похідного діагностичного об’єкта призвело б до циклу\n"
             },
@@ -22643,6 +23048,7 @@ $CONF = {
               "nl" => "De melding van een uitzondering moet een diagnostisch object zijn\n",
               "pt" => "A mensagem da exceção deve ser um diagnóstico\n",
               "ru" => "Сообщение исключения должно быть диагностическим объектом\n",
+              "sr" => "Порука изузетка мора бити дијагностика\n",
               "tr" => "İstisna iletisi bir tanı olmalıdır\n",
               "uk" => "Повідомлення винятку має бути діагностичним об’єктом\n"
             },
@@ -22684,6 +23090,7 @@ $CONF = {
               "nl" => "Diagnostic::Note-objecten mogen geen onderliggende objecten bevatten\n",
               "pt" => "Os objetos Diagnostic::Note não podem conter filhos\n",
               "ru" => "Объекты Diagnostic::Note не могут содержать дочерние элементы\n",
+              "sr" => "Објекти Diagnostic::Note не могу имати децу\n",
               "tr" => "Diagnostic::Note nesneleri çocuk içeremez\n",
               "uk" => "Об’єкти Diagnostic::Note не можуть містити дочірніх елементів\n"
             },
@@ -22725,6 +23132,7 @@ $CONF = {
               "nl" => "De onderliggende objecten van een diagnostisch object moeten als een arrayreferentie worden opgegeven\n",
               "pt" => "A lista de filhos do diagnóstico deve ser uma referência a um array\n",
               "ru" => "Список дочерних элементов диагностического объекта должен быть ссылкой на массив\n",
+              "sr" => "Деца дијагностике морају бити референца на низ\n",
               "tr" => "Tanı çocukları bir dizi başvurusu olmalıdır\n",
               "uk" => "Дочірні елементи діагностики мають бути задані посиланням на масив\n"
             },
@@ -22766,6 +23174,7 @@ $CONF = {
               "nl" => "Onderliggende objecten van een diagnostisch object moeten diagnostische objecten zijn\n",
               "pt" => "Os filhos do diagnóstico devem ser objetos de diagnóstico\n",
               "ru" => "Дочерние элементы диагностического объекта должны быть диагностическими объектами\n",
+              "sr" => "Деца дијагностике морају бити дијагностички објекти\n",
               "tr" => "Tanı çocukları tanı nesneleri olmalıdır\n",
               "uk" => "Дочірні елементи діагностичного об’єкта мають бути діагностичними об’єктами\n"
             },
@@ -22807,6 +23216,7 @@ $CONF = {
               "nl" => "De onderliggende objecten van een diagnostische groep moeten als een arrayreferentie worden opgegeven\n",
               "pt" => "A lista de filhos do grupo de diagnósticos deve ser uma referência a um array\n",
               "ru" => "Список дочерних элементов группы диагностических сообщений должен быть ссылкой на массив\n",
+              "sr" => "Деца групе дијагностике морају бити референца на низ\n",
               "tr" => "Tanı grubu çocukları bir dizi başvurusu olmalıdır\n",
               "uk" => "Дочірні елементи групи діагностик мають бути задані посиланням на масив\n"
             },
@@ -22848,6 +23258,7 @@ $CONF = {
               "nl" => "Een diagnostisch object vereist een code\n",
               "pt" => "O diagnóstico requer um código\n",
               "ru" => "Для диагностического объекта требуется код\n",
+              "sr" => "Дијагностици је потребан код\n",
               "tr" => "Tanı için bir kod gereklidir\n",
               "uk" => "Діагностичному об’єкту потрібен код\n"
             },
@@ -22889,6 +23300,7 @@ $CONF = {
               "nl" => "De index voor contextvervolgmeldingen van een diagnostisch object moet een niet-negatief geheel getal zijn\n",
               "pt" => "O índice de acompanhamento do contexto do diagnóstico deve ser um inteiro não negativo\n",
               "ru" => "Индекс последующего контекстного сообщения диагностического объекта должен быть неотрицательным целым числом\n",
+              "sr" => "Индекс за накнадни корак контекста дијагностике мора бити ненегативан цео број\n",
               "tr" => "Tanı bağlamı izleyen öğe dizini negatif olmayan bir tamsayı olmalıdır\n",
               "uk" => "Індекс додаткового контекстного повідомлення діагностики має бути невід’ємним цілим числом\n"
             },
@@ -22930,6 +23342,7 @@ $CONF = {
               "nl" => "De velden van een diagnostisch object moeten als een hashreferentie worden opgegeven\n",
               "pt" => "Os campos do diagnóstico devem ser uma referência a um hash\n",
               "ru" => "Поля диагностического объекта должны быть заданы ссылкой на хеш\n",
+              "sr" => "Поља дијагностике морају бити референца на хеш\n",
               "tr" => "Tanı alanları bir hash başvurusu olmalıdır\n",
               "uk" => "Поля діагностики мають бути задані посиланням на хеш\n"
             },
@@ -22971,6 +23384,7 @@ $CONF = {
               "nl" => "De light-vlag van een diagnostisch object moet een scalaire waarde zijn\n",
               "pt" => "O sinalizador light do diagnóstico deve ser um escalar\n",
               "ru" => "Флаг light диагностического объекта должен быть скаляром\n",
+              "sr" => "Заставица за светлу дијагностику мора бити скалар\n",
               "tr" => "Tanı light bayrağı bir skaler olmalıdır\n",
               "uk" => "Прапорець light діагностичного об’єкта має бути скаляром\n"
             },
@@ -23012,6 +23426,7 @@ $CONF = {
               "nl" => "De locatie van een diagnostisch object moet een hashreferentie zijn\n",
               "pt" => "A localização do diagnóstico deve ser uma referência a um hash\n",
               "ru" => "Местоположение диагностического сообщения должно быть задано ссылкой на хеш\n",
+              "sr" => "Локација дијагностике мора бити референца на хеш\n",
               "tr" => "Tanılama konumu bir hash başvurusu olmalıdır\n",
               "uk" => "Розташування діагностичного об’єкта має бути задане посиланням на хеш\n"
             },
@@ -23054,6 +23469,7 @@ $CONF = {
               "nl" => "De parameters van een diagnostisch object moeten als een arrayreferentie worden opgegeven\n",
               "pt" => "Os parâmetros do diagnóstico devem ser uma referência a um array\n",
               "ru" => "Параметры диагностического объекта должны быть заданы ссылкой на массив\n",
+              "sr" => "Параметри дијагностике морају бити референца на низ\n",
               "tr" => "Tanılama parametreleri bir dizi başvurusu olmalıdır\n",
               "uk" => "Параметри діагностики мають бути задані посиланням на масив\n"
             },
@@ -23095,6 +23511,7 @@ $CONF = {
               "nl" => "De waarschuwingscategorieën van een diagnostisch object moeten als een arrayreferentie worden opgegeven\n",
               "pt" => "As categorias de aviso do diagnóstico devem ser uma referência a um array\n",
               "ru" => "Категории предупреждений диагностического объекта должны быть заданы ссылкой на массив\n",
+              "sr" => "Категорије упозорења за дијагностику морају бити референца на низ\n",
               "tr" => "Tanılama uyarı kategorileri bir dizi başvurusu olmalıdır\n",
               "uk" => "Категорії попереджень діагностики мають бути задані посиланням на масив\n"
             },
@@ -23137,6 +23554,7 @@ $CONF = {
               "nl" => "Een object van klasse %{class_name} verwacht",
               "pt" => "Esperava-se um objeto da classe %{class_name}",
               "ru" => "Ожидался объект класса %{class_name}",
+              "sr" => "Очекиван је објекат класе %{class_name}",
               "tr" => "%{class_name} sınıfından bir nesne bekleniyordu",
               "uk" => "Очікувався об’єкт класу %{class_name}"
             },
@@ -23184,6 +23602,7 @@ $CONF = {
               "nl" => "De weergavecontext van een diagnostisch object moet een hashreferentie zijn\n",
               "pt" => "O contexto de apresentação do diagnóstico deve ser uma referência a um hash\n",
               "ru" => "Контекст отображения диагностического сообщения должен быть ссылкой на хеш\n",
+              "sr" => "Контекст приказа дијагностике мора бити референца на хеш\n",
               "tr" => "Tanılama oluşturma bağlamı bir hash başvurusu olmalıdır\n",
               "uk" => "Контекст відображення діагностичного об’єкта має бути посиланням на хеш\n"
             },
@@ -23225,6 +23644,7 @@ $CONF = {
               "nl" => "Onbekend weergaveformaat voor diagnostische objecten '%{format}'\n",
               "pt" => "Formato de renderização de diagnóstico desconhecido '%{format}'\n",
               "ru" => "Неизвестный формат отображения диагностического сообщения '%{format}'\n",
+              "sr" => "Непознат формат приказа дијагностике „%{format}“\n",
               "tr" => "Bilinmeyen tanılama oluşturma biçimi '%{format}'\n",
               "uk" => "Невідомий формат відображення діагностики '%{format}'\n"
             },
@@ -23258,8 +23678,24 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "إدخال غير صالح لعرض التشخيص مباشرة\n",
+              "cy" => "Mewnbwn annilys ar gyfer rendro uniongyrchol diagnostig\n",
+              "de" => "Ungültige Diagnoseeingabe für direktes Rendern\n",
               "en" => "Invalid diagnostic input for direct rendering\n",
-              "fa" => "ورودی تشخیص برای رندر مستقیم نامعتبر است\n"
+              "es" => "Entrada de diagnóstico no válida para renderizado directo\n",
+              "fa" => "ورودی تشخیص برای رندر مستقیم نامعتبر است\n",
+              "fi" => "Virheellinen diagnostiikkasyöte suoraa renderöintiä varten\n",
+              "fr" => "Entrée de diagnostic invalide pour le rendu direct\n",
+              "he" => "קלט לא תקין לעיבוד ישיר של אבחון\n",
+              "hu" => "Érvénytelen bemenet a diagnosztika közvetlen megjelenítéséhez\n",
+              "is" => "Ógilt greiningarinntak fyrir beina birtingu\n",
+              "it" => "Input non valido per il rendering diretto della diagnostica\n",
+              "nl" => "Ongeldige diagnostische invoer voor directe weergave\n",
+              "pt" => "Entrada de diagnóstico inválida para renderização direta\n",
+              "ru" => "Недопустимые входные данные для прямого формирования диагностики\n",
+              "sr" => "Неважећи улазни подаци за непосредно приказивање дијагностике\n",
+              "tr" => "Doğrudan işleme için geçersiz tanılama girdisi\n",
+              "uk" => "Неприпустимі вхідні дані для безпосереднього формування діагностики\n"
             },
             "args" => []
           },
@@ -23284,8 +23720,24 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "سجل معلمات غير صالح لعرض التشخيص مباشرة\n",
+              "cy" => "Cofnod paramedr diagnostig annilys ar gyfer rendro uniongyrchol\n",
+              "de" => "Ungültiger Diagnoseparameterdatensatz für direktes Rendern\n",
               "en" => "Invalid diagnostic parameter record for direct rendering\n",
-              "fa" => "رکورد پارامتر تشخیص برای رندر مستقیم نامعتبر است\n"
+              "es" => "Registro de parámetro de diagnóstico no válido para renderizado directo\n",
+              "fa" => "رکورد پارامتر تشخیص برای رندر مستقیم نامعتبر است\n",
+              "fi" => "Virheellinen diagnostiikkaparametritietue suoraa renderöintiä varten\n",
+              "fr" => "Enregistrement de paramètre de diagnostic invalide pour le rendu direct\n",
+              "he" => "רשומת פרמטר אבחון לא תקינה לעיבוד ישיר\n",
+              "hu" => "Érvénytelen diagnosztikai paraméterrekord a közvetlen megjelenítéshez\n",
+              "is" => "Ógild færsluskrá fyrir greiningarfæribreytu í beinni birtingu\n",
+              "it" => "Record di parametro della diagnostica non valido per il rendering diretto\n",
+              "nl" => "Ongeldig diagnostisch parameterrecord voor directe weergave\n",
+              "pt" => "Registro de parâmetro de diagnóstico inválido para renderização direta\n",
+              "ru" => "Недопустимая запись параметров диагностики для прямого формирования\n",
+              "sr" => "Неважећи запис параметара дијагностике за непосредно приказивање\n",
+              "tr" => "Doğrudan işleme için geçersiz tanılama parametre kaydı\n",
+              "uk" => "Неприпустимий запис параметра діагностики для безпосереднього формування\n"
             },
             "args" => []
           },
@@ -23325,6 +23777,7 @@ $CONF = {
               "nl" => "De gebeurtenis voor het opwerpen van een uitzondering moet een hashreferentie zijn\n",
               "pt" => "O evento de lançamento de exceção deve ser uma referência a um hash\n",
               "ru" => "Событие выброса исключения должно быть ссылкой на хеш\n",
+              "sr" => "Догађај бацања изузетка мора бити референца на хеш\n",
               "tr" => "İstisna fırlatma olayı bir hash başvurusu olmalıdır\n",
               "uk" => "Подія викидання винятку має бути посиланням на хеш\n"
             },
@@ -23366,6 +23819,7 @@ $CONF = {
               "nl" => "De gebeurtenis voor het opwerpen van een uitzondering mag message_index niet instellen\n",
               "pt" => "O evento de lançamento de exceção não pode definir message_index\n",
               "ru" => "Событие выброса исключения не может задавать message_index\n",
+              "sr" => "Догађај бацања изузетка не може да постави message_index\n",
               "tr" => "İstisna fırlatma olayı message_index değerini ayarlayamaz\n",
               "uk" => "Подія викидання винятку не може встановлювати message_index\n"
             },
@@ -23407,6 +23861,7 @@ $CONF = {
               "nl" => "Het expliciet opnieuw opwerpen van een uitzondering vereist een diagnostisch object\n",
               "pt" => "O relançamento explícito requer um diagnóstico\n",
               "ru" => "Для явного повторного выброса исключения требуется диагностический объект\n",
+              "sr" => "Експлицитно поновно бацање захтева дијагностику\n",
               "tr" => "Açıkça yeniden fırlatmak için bir tanılama gerekir\n",
               "uk" => "Для явного повторного викидання потрібен діагностичний об’єкт\n"
             },
@@ -23449,6 +23904,7 @@ $CONF = {
               "nl" => "Aanroep in dispatch-patroon is geen predicaat",
               "pt" => "A chamada de padrão dispatch não é um predicado",
               "ru" => "Вызов в образце dispatch не является предикатом",
+              "sr" => "позив у обрасцу диспечирања није предикат",
               "tr" => "dispatch kalıbındaki çağrı bir koşul işlevi değil",
               "uk" => "Виклик у шаблоні dispatch не є предикатом"
             },
@@ -23491,6 +23947,7 @@ $CONF = {
               "nl" => "Een aanroep in een dispatch-patroon heeft geen aanroepbaar doel",
               "pt" => "A chamada num padrão dispatch não tem um destino invocável",
               "ru" => "для вызова в шаблоне dispatch нет вызываемой функции или метода",
+              "sr" => "позив у шаблону диспечирања нема позивљиву мету",
               "tr" => "dispatch kalıbındaki çağrının çağrılabilir bir hedefi yok",
               "uk" => "виклик у шаблоні dispatch не має цільової функції чи методу, які можна викликати"
             },
@@ -23532,6 +23989,7 @@ $CONF = {
               "nl" => "Te veel captures in dispatch",
               "pt" => "Demasiadas capturas em dispatch",
               "ru" => "Слишком много захватов в dispatch",
+              "sr" => "Превише dispatch хватања",
               "tr" => "Çok fazla dispatch yakalaması",
               "uk" => "Забагато захоплень dispatch"
             },
@@ -23574,6 +24032,7 @@ $CONF = {
               "nl" => "Waarschuwing behandeld als een fout",
               "pt" => "Aviso tratado como erro",
               "ru" => "Предупреждение трактуется как ошибка",
+              "sr" => "Упозорење је третирано као грешка",
               "tr" => "Uyarı hata olarak ele alındı",
               "uk" => "Попередження розглядається як помилка"
             },
@@ -23621,6 +24080,7 @@ $CONF = {
               "nl" => "Kan %{value} niet met '%{format}' formatteren via printf",
               "pt" => "Não é possível formatar %{value} com printf usando '%{format}'",
               "ru" => "Нельзя вывести %{value} с помощью printf с форматом '%{format}'",
+              "sr" => "Није могуће применити printf на %{value} помоћу „%{format}”",
               "tr" => "%{value} değeri '%{format}' biçimiyle printf edilemez",
               "uk" => "Неможливо вивести %{value} за допомогою printf із форматом '%{format}'"
             },
@@ -23703,6 +24163,11 @@ $CONF = {
               "ru" => {
                 "*" => "Отсутствует аргумент для %%n в %{arg1}"
               },
+              "sr" => {
+                "*" => "Недостаје аргумент за %%n у %{arg1}",
+                "printf" => "Недостаје аргумент за %%n у printf",
+                "sprintf" => "Недостаје аргумент за %%n у sprintf"
+              },
               "tr" => {
                 "*" => "%{arg1} içinde %%n için bağımsız değişken eksik",
                 "printf" => "printf içinde %%n için bağımsız değişken eksik",
@@ -23766,6 +24231,7 @@ $CONF = {
               "nl" => "Geheelgetaloverloop in opmaakreeks voor %{arg1}",
               "pt" => "Excesso de inteiro na cadeia de formatação de %{arg1}",
               "ru" => "Целочисленное переполнение в строке формата для %{arg1}",
+              "sr" => "Прекорачење целобројног опсега у формату за %{arg1}",
               "tr" => "%{arg1} için biçim dizgesinde tamsayı taşması oluştu",
               "uk" => "Цілочисельне переповнення в рядку формату для %{arg1}"
             },
@@ -23803,6 +24269,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "genitive",
+                "sr" => "genitive",
                 "tr" => "operation",
                 "uk" => "genitive"
               },
@@ -23845,6 +24312,7 @@ $CONF = {
               "nl" => "Resultaat van numerieke opmaak is te groot",
               "pt" => "Resultado da formatação numérica demasiado grande",
               "ru" => "Слишком большой результат форматирования числа",
+              "sr" => "Резултат нумеричког формата је превелик",
               "tr" => "Sayısal biçim sonucu çok büyük",
               "uk" => "Результат числового форматування надто великий"
             },
@@ -23886,6 +24354,7 @@ $CONF = {
               "nl" => "Argumenten van sv_vcatpvfn() uit va_list kunnen nog niet worden herschikt",
               "pt" => "Ainda não é possível reordenar os argumentos de sv_vcatpvfn() provenientes de va_list",
               "ru" => "Изменение порядка аргументов sv_vcatpvfn() из va_list пока не поддерживается",
+              "sr" => "За сада није могуће преуредити аргументе функције sv_vcatpvfn() из листе va_list",
               "tr" => "sv_vcatpvfn() bağımsız değişkenleri va_list içinden henüz yeniden sıralanamıyor",
               "uk" => "Зміна порядку аргументів sv_vcatpvfn() із va_list поки що не підтримується"
             },
@@ -23927,6 +24396,7 @@ $CONF = {
               "nl" => "Ongedefinieerd formaat \"%{arg1}\" aangeroepen",
               "pt" => "Foi chamado o formato indefinido \"%{arg1}\"",
               "ru" => "Вызван неопределённый формат \"%{arg1}\"",
+              "sr" => "Позван је недефинисан формат „%{arg1}“",
               "tr" => "Tanımlanmamış \"%{arg1}\" biçimi çağrıldı",
               "uk" => "Викликано невизначений формат \"%{arg1}\""
             },
@@ -23975,6 +24445,7 @@ $CONF = {
               "nl" => "Lege opmaakstring in formline",
               "pt" => "Modelo de formatação nulo em formline",
               "ru" => "Пустой шаблон формата в formline",
+              "sr" => "Празна слика формата у formline",
               "tr" => "formline içinde boş biçim resmi",
               "uk" => "Порожній шаблон формату в formline"
             },
@@ -24016,6 +24487,7 @@ $CONF = {
               "nl" => "Ongedefinieerd kopformaat \"%{arg1}\" aangeroepen",
               "pt" => "Foi chamado o formato de cabeçalho indefinido \"%{arg1}\"",
               "ru" => "Вызван неопределённый формат заголовка \"%{arg1}\"",
+              "sr" => "Позван је недефинисан горњи формат „%{arg1}“",
               "tr" => "Tanımlanmamış üst düzey \"%{arg1}\" biçimi çağrıldı",
               "uk" => "Викликано невизначений формат заголовка \"%{arg1}\""
             },
@@ -24064,6 +24536,7 @@ $CONF = {
               "nl" => "Herhaalde formatregel zal nooit eindigen (~~ en \@#)",
               "pt" => "A linha de formato repetida nunca terminará (~~ e \@#)",
               "ru" => "Повторение строки формата никогда не завершится (~~ и \@#)",
+              "sr" => "Поновљени ред формата никада се неће завршити (~~ и \@#)",
               "tr" => "Tekrarlanan biçim satırı hiç sonlanmayacak (~~ ve \@#)",
               "uk" => "Повторення рядка формату ніколи не завершиться (~~ і \@#)"
             },
@@ -24105,6 +24578,7 @@ $CONF = {
               "nl" => "Assertie %{condition} mislukt: bestand \"%{file}\", regel %{line}",
               "pt" => "Falhou a asserção %{condition}: ficheiro \"%{file}\", linha %{line}",
               "ru" => "Нарушено проверяемое условие %{condition}: файл \"%{file}\", строка %{line}",
+              "sr" => "Провера %{condition} није успела: датотека \"%{file}\", ред %{line}",
               "tr" => "Assertion %{condition} başarısız oldu: dosya \"%{file}\", satır %{line}",
               "uk" => "Перевірка твердження %{condition} завершилася невдачею: файл \"%{file}\", рядок %{line}"
             },
@@ -24162,6 +24636,7 @@ $CONF = {
               "nl" => "Gecompileerd dispatch-patroon ontbreekt",
               "pt" => "Falta o padrão dispatch compilado",
               "ru" => "отсутствует скомпилированный шаблон dispatch",
+              "sr" => "недостаје компајлирани шаблон диспечирања",
               "tr" => "Derlenmiş dispatch kalıbı eksik",
               "uk" => "відсутній скомпільований шаблон dispatch"
             },
@@ -24203,6 +24678,7 @@ $CONF = {
               "nl" => "Benoemd subject van dispatch is geen scalaire toewijzing",
               "pt" => "O sujeito nomeado de dispatch não é uma atribuição a escalar",
               "ru" => "именованный субъект dispatch не является скалярным присваиванием",
+              "sr" => "именовани subject у dispatch-у није скаларно додељивање",
               "tr" => "dispatch adlı konu bir skaler ataması değil",
               "uk" => "іменований об'єкт зіставлення dispatch не є скалярним присвоєнням"
             },
@@ -24244,6 +24720,7 @@ $CONF = {
               "nl" => "Subject van dispatch moet een lexicale scalar zijn",
               "pt" => "O sujeito de dispatch tem de ser um escalar lexical",
               "ru" => "субъект dispatch должен быть скалярной лексической переменной",
+              "sr" => "subject у dispatch-у мора бити скаларна лексичка променљива",
               "tr" => "dispatch konusu skaler bir sözcüksel değişken olmalıdır",
               "uk" => "предмет зіставлення dispatch має бути лексичною скалярною змінною"
             },
@@ -24285,6 +24762,7 @@ $CONF = {
               "nl" => "Hexadecimaal drijvendekommagetal: interne fout (overloop)",
               "pt" => "Número de vírgula flutuante hexadecimal: erro interno (excesso)",
               "ru" => "Шестнадцатеричное число с плавающей точкой: внутренняя ошибка (переполнение)",
+              "sr" => "Хексадецимални број са покретним зарезом: унутрашња грешка (прекорачење опсега)",
               "tr" => "Onaltılık kayan nokta: iç hata (taşma)",
               "uk" => "Шістнадцяткове число з рухомою комою: внутрішня помилка (переповнення)"
             },
@@ -24326,6 +24804,7 @@ $CONF = {
               "nl" => "Hexadecimaal drijvendekommagetal: interne fout (invoer)",
               "pt" => "Número de vírgula flutuante hexadecimal: erro interno (entrada)",
               "ru" => "Шестнадцатеричное число с плавающей точкой: внутренняя ошибка (при входе)",
+              "sr" => "Хексадецимални покретни зарез: интерна грешка (улаз)",
               "tr" => "Onaltılık kayan nokta: iç hata (giriş)",
               "uk" => "Шістнадцяткове число з рухомою комою: внутрішня помилка (вхід)"
             },
@@ -24368,6 +24847,7 @@ $CONF = {
               "nl" => "Argument van OP_HELEMEXISTSOR is geen HASH-element",
               "pt" => "O argumento de OP_HELEMEXISTSOR não é um elemento HASH",
               "ru" => "Аргумент OP_HELEMEXISTSOR не является элементом HASH",
+              "sr" => "Аргумент OP_HELEMEXISTSOR није елемент HASH",
               "tr" => "OP_HELEMEXISTSOR bağımsız değişkeni bir HASH öğesi değil",
               "uk" => "Аргумент OP_HELEMEXISTSOR не є елементом HASH"
             },
@@ -24410,6 +24890,7 @@ $CONF = {
               "nl" => "Kan de gedeelde tekenreekstabel niet wijzigen in hv_%{operation}",
               "pt" => "Não é possível modificar a tabela partilhada de cadeias em hv_%{operation}",
               "ru" => "Нельзя изменять общую таблицу строк в hv_%{operation}",
+              "sr" => "Није могуће изменити заједничку табелу низова у hv_%{operation}",
               "tr" => "hv_%{operation} içinde paylaşılan dize tablosu değiştirilemez",
               "uk" => "Неможливо змінити спільну таблицю рядків у hv_%{operation}"
             },
@@ -24457,6 +24938,7 @@ $CONF = {
               "nl" => "refcnt_dec: fd %{arg2}: %{arg3} <= 0\n",
               "pt" => "refcnt_dec: fd %{arg2}: %{arg3} <= 0\n",
               "ru" => "refcnt_dec: fd %{arg2}: %{arg3} <= 0\n",
+              "sr" => "refcnt_dec: fd %{arg2}: %{arg3} <= 0\n",
               "tr" => "refcnt_dec: fd %{arg2}: %{arg3} <= 0\n",
               "uk" => "refcnt_dec: fd %{arg2}: %{arg3} <= 0\n"
             },
@@ -24509,6 +24991,7 @@ $CONF = {
               "nl" => "refcnt_dec: fd %{arg2} < 0\n",
               "pt" => "refcnt_dec: fd %{arg2} < 0\n",
               "ru" => "refcnt_dec: fd %{arg2} < 0\n",
+              "sr" => "refcnt_dec: fd %{arg2} < 0\n",
               "tr" => "refcnt_dec: fd %{arg2} < 0\n",
               "uk" => "refcnt_dec: fd %{arg2} < 0\n"
             },
@@ -24556,6 +25039,7 @@ $CONF = {
               "nl" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n",
               "pt" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n",
               "ru" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n",
+              "sr" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n",
               "tr" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n",
               "uk" => "refcnt_dec: fd %{arg2} >= refcnt_size %{arg3}\n"
             },
@@ -24608,6 +25092,7 @@ $CONF = {
               "nl" => "refcnt_inc: fd %{arg2} < 0\n",
               "pt" => "refcnt_inc: fd %{arg2} < 0\n",
               "ru" => "refcnt_inc: fd %{arg2} < 0\n",
+              "sr" => "refcnt_inc: fd %{arg2} < 0\n",
               "tr" => "refcnt_inc: fd %{arg2} < 0\n",
               "uk" => "refcnt_inc: fd %{arg2} < 0\n"
             },
@@ -24655,6 +25140,7 @@ $CONF = {
               "nl" => "refcnt_inc: fd %{arg2}: %{arg3} <= 0\n",
               "pt" => "refcnt_inc: fd %{arg2}: %{arg3} <= 0\n",
               "ru" => "refcnt_inc: fd %{arg2}: %{arg3} <= 0\n",
+              "sr" => "refcnt_inc: fd %{arg2}: %{arg3} <= 0\n",
               "tr" => "refcnt_inc: fd %{arg2}: %{arg3} <= 0\n",
               "uk" => "refcnt_inc: fd %{arg2}: %{arg3} <= 0\n"
             },
@@ -24707,6 +25193,7 @@ $CONF = {
               "nl" => "refcnt: fd %{arg2}: %{arg3} <= 0\n",
               "pt" => "refcnt: fd %{arg2}: %{arg3} <= 0\n",
               "ru" => "refcnt: fd %{arg2}: %{arg3} <= 0\n",
+              "sr" => "refcnt: fd %{arg2}: %{arg3} <= 0\n",
               "tr" => "refcnt: fd %{arg2}: %{arg3} <= 0\n",
               "uk" => "refcnt: fd %{arg2}: %{arg3} <= 0\n"
             },
@@ -24759,6 +25246,7 @@ $CONF = {
               "nl" => "refcnt: fd %{arg2} < 0\n",
               "pt" => "refcnt: fd %{arg2} < 0\n",
               "ru" => "refcnt: fd %{arg2} < 0\n",
+              "sr" => "refcnt: fd %{arg2} < 0\n",
               "tr" => "refcnt: fd %{arg2} < 0\n",
               "uk" => "refcnt: fd %{arg2} < 0\n"
             },
@@ -24806,6 +25294,7 @@ $CONF = {
               "nl" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n",
               "pt" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n",
               "ru" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n",
+              "sr" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n",
               "tr" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n",
               "uk" => "refcnt: fd %{arg2} >= refcnt_size %{arg3}\n"
             },
@@ -24859,6 +25348,7 @@ $CONF = {
               "nl" => "Gebruik van vrijgegeven waarde tijdens iteratie",
               "pt" => "Utilização de um valor libertado durante a iteração",
               "ru" => "Использование освобождённого значения при итерации",
+              "sr" => "Употреба ослобођене вредности током итерације",
               "tr" => "Yineleme sırasında serbest bırakılmış değer kullanıldı",
               "uk" => "Використання звільненого значення під час ітерації"
             },
@@ -24900,6 +25390,7 @@ $CONF = {
               "nl" => "Onjuiste uitlijning in free()",
               "pt" => "Alinhamento incorreto em free()",
               "ru" => "неправильное выравнивание в free()",
+              "sr" => "погрешно поравнање у free()",
               "tr" => "free() işleminde hizalama yanlış",
               "uk" => "неправильне вирівнювання у free()"
             },
@@ -24943,6 +25434,7 @@ $CONF = {
               "nl" => "Kan geheel getal niet comprimeren in pack",
               "pt" => "Não é possível comprimir o inteiro em pack",
               "ru" => "Невозможно сжать целое число в pack",
+              "sr" => "Не може се компресовати цео број у pack-у",
               "tr" => "pack içinde tamsayı sıkıştırılamıyor",
               "uk" => "Неможливо стиснути ціле число в pack"
             },
@@ -24984,6 +25476,7 @@ $CONF = {
               "nl" => "Overbodige tekens aan het einde van de reguliere expressie in regex m/%{arg1}%{arg2}/",
               "pt" => "Conteúdo inesperado no fim da expressão regular m/%{arg1}%{arg2}/",
               "ru" => "Лишние данные в конце регулярного выражения m/%{arg1}%{arg2}/",
+              "sr" => "Сувишан текст на крају регуларног израза m/%{arg1}%{arg2}/",
               "tr" => "regex m/%{arg1}%{arg2}/ ifadesinin sonunda gereksiz içerik var",
               "uk" => "Зайві символи наприкінці регулярного виразу m/%{arg1}%{arg2}/"
             },
@@ -25051,6 +25544,7 @@ $CONF = {
               "nl" => "NULL-arrayelement in re::regnames()",
               "pt" => "Elemento NULL de array em re::regnames()",
               "ru" => "Элемент массива равен NULL в re::regnames()",
+              "sr" => "NULL елемент низа у функцији re::regnames()",
               "tr" => "re::regnames() içinde NULL dizi öğesi",
               "uk" => "Елемент масиву дорівнює NULL у re::regnames()"
             },
@@ -25092,6 +25586,7 @@ $CONF = {
               "nl" => "Beschadigde regexp-opcode %{arg1} > %{arg2}",
               "pt" => "Código de operação de expressão regular corrompido %{arg1} > %{arg2}",
               "ru" => "Повреждённый код операции регулярного выражения: %{arg1} > %{arg2}",
+              "sr" => "Оштећен опкод регуларног израза: %{arg1} > %{arg2}",
               "tr" => "Bozuk regexp işlem kodu %{arg1} > %{arg2}",
               "uk" => "Пошкоджений код операції регулярного виразу: %{arg1} > %{arg2}"
             },
@@ -25144,6 +25639,7 @@ $CONF = {
               "nl" => "Geheugenbeschadiging in regexp",
               "pt" => "Corrupção de memória da expressão regular",
               "ru" => "повреждение памяти регулярного выражения",
+              "sr" => "оштећење меморије регуларног израза",
               "tr" => "regexp belleği bozulması",
               "uk" => "пошкодження пам'яті регулярного виразу"
             },
@@ -25185,6 +25681,7 @@ $CONF = {
               "nl" => "Beschadigd regexp-programma",
               "pt" => "Programa de expressão regular corrompido",
               "ru" => "повреждена программа регулярного выражения",
+              "sr" => "оштећен програм регуларног израза",
               "tr" => "bozuk regexp programı",
               "uk" => "пошкоджена програма регулярного виразу"
             },
@@ -25227,6 +25724,7 @@ $CONF = {
               "nl" => "NULL-parameter voor regexp",
               "pt" => "Parâmetro de expressão regular NULL",
               "ru" => "Параметр regexp равен NULL",
+              "sr" => "Параметар регуларног израза је NULL",
               "tr" => "NULL regexp parametresi",
               "uk" => "Параметр регулярного виразу дорівнює NULL"
             },
@@ -25268,6 +25766,7 @@ $CONF = {
               "nl" => "Beschadigde regexp-pointers",
               "pt" => "Ponteiros de expressão regular corrompidos",
               "ru" => "повреждены указатели регулярного выражения",
+              "sr" => "оштећени показивачи регуларног израза",
               "tr" => "bozuk regexp işaretçileri",
               "uk" => "пошкоджені вказівники регулярного виразу"
             },
@@ -25309,6 +25808,7 @@ $CONF = {
               "nl" => "Oneindige lus in split",
               "pt" => "Ciclo infinito em split",
               "ru" => "Зацикливание split",
+              "sr" => "Петља у split-у",
               "tr" => "Split döngüsü",
               "uk" => "Зациклення split"
             },
@@ -25351,6 +25851,7 @@ $CONF = {
               "nl" => "Oneindige lus in substitutie",
               "pt" => "Ciclo infinito na substituição",
               "ru" => "Зацикливание подстановки",
+              "sr" => "Петља у замени",
               "tr" => "Substitution döngüsü",
               "uk" => "Зациклення підстановки"
             },
@@ -25393,6 +25894,7 @@ $CONF = {
               "nl" => "Ongebruikelijke kopie van %{arg1}",
               "pt" => "Cópia anómala de %{arg1}",
               "ru" => "Аномальное копирование %{arg1}",
+              "sr" => "Необично копирање вредности %{arg1}",
               "tr" => "%{arg1} öğesinin tuhaf kopyası",
               "uk" => "Дивне копіювання %{arg1}"
             },
@@ -25441,6 +25943,7 @@ $CONF = {
               "nl" => "Merkwaardige kopie van %{arg2} in %{arg3}",
               "pt" => "Cópia anómala de %{arg2} em %{arg3}",
               "ru" => "Некорректное копирование %{arg2} в %{arg3}",
+              "sr" => "Неисправно копирање вредности %{arg2} у операцији %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} değeri için olağandışı bir kopyalama işlemi saptandı",
               "uk" => "Дивне копіювання %{arg2} у %{arg3}"
             },
@@ -25483,6 +25986,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -25526,6 +26030,7 @@ $CONF = {
               "nl" => "Kan niet kopiëren naar %{arg1}",
               "pt" => "Não é possível copiar para %{arg1}",
               "ru" => "Невозможно скопировать значение в %{arg1}",
+              "sr" => "Није могуће копирати у %{arg1}",
               "tr" => "%{arg1} hedefine kopyalanamaz",
               "uk" => "Не можна скопіювати значення до %{arg1}"
             },
@@ -25574,6 +26079,7 @@ $CONF = {
               "nl" => "Kan niet kopiëren naar %{arg2} in %{arg3}",
               "pt" => "Não é possível copiar para %{arg2} em %{arg3}",
               "ru" => "Невозможно скопировать в %{arg2} в %{arg3}",
+              "sr" => "Није могуће копирати у %{arg2} у операцији %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} hedefine kopyalama yapılamaz",
               "uk" => "Неможливо скопіювати до %{arg2} у %{arg3}"
             },
@@ -25616,6 +26122,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -25658,6 +26165,7 @@ $CONF = {
               "nl" => "Kan magicfuncs-vorm %{arg1} niet toepassen op SV-type %{arg2}",
               "pt" => "Não é possível aplicar a estrutura magicfuncs %{arg1} ao tipo SV %{arg2}",
               "ru" => "Невозможно применить magicfuncs с формой %{arg1} к SV типа %{arg2}",
+              "sr" => "Облик магије %{arg1} не може се применити на SV типа %{arg2}",
               "tr" => "magicfuncs şekil %{arg1}, SV türüne (%{arg2}) uygulanamaz",
               "uk" => "Не можна застосувати magicfuncs із формою %{arg1} до SV типу %{arg2}"
             },
@@ -25710,6 +26218,7 @@ $CONF = {
               "nl" => "Onbekende waarde %{arg1} voor magicfuncs->shape",
               "pt" => "Valor magicfuncs->shape não reconhecido: %{arg1}",
               "ru" => "Нераспознанное значение magicfuncs->shape: %{arg1}",
+              "sr" => "Непрепозната вредност magicfuncs->shape: %{arg1}",
               "tr" => "Tanınmayan magicfuncs->shape değeri: %{arg1}",
               "uk" => "Нерозпізнане значення magicfuncs->shape: %{arg1}"
             },
@@ -25757,6 +26266,7 @@ $CONF = {
               "nl" => "Onbekend hoe magic van type \\%{arg1} moet worden verwerkt",
               "pt" => "Não se sabe como processar a magia do tipo \\%{arg1}",
               "ru" => "Неизвестно, как обрабатывать магию типа \\%{arg1}",
+              "sr" => "Није познато како да се обради магија типа \\%{arg1}",
               "tr" => "%{arg1} türündeki magic işlenemiyor",
               "uk" => "Невідомо, як обробляти магію типу \\%{arg1}"
             },
@@ -25805,6 +26315,7 @@ $CONF = {
               "nl" => "Niet-ondersteunde waarde %{arg1} voor MagicFunctions->ver",
               "pt" => "Valor MagicFunctions->ver não suportado: %{arg1}",
               "ru" => "Неподдерживаемое значение MagicFunctions->ver: %{arg1}",
+              "sr" => "Неподржана вредност MagicFunctions->ver: %{arg1}",
               "tr" => "Desteklenmeyen MagicFunctions->ver değeri: %{arg1}",
               "uk" => "Непідтримуване значення MagicFunctions->ver: %{arg1}"
             },
@@ -25852,6 +26363,7 @@ $CONF = {
               "nl" => "Onverwacht SvTYPE [%{type}]",
               "pt" => "SvTYPE inesperado [%{type}]",
               "ru" => "Странный SvTYPE [%{type}]",
+              "sr" => "Неисправан тип SvTYPE [%{type}]",
               "tr" => "Tuhaf SvTYPE [%{type}]",
               "uk" => "Дивний SvTYPE [%{type}]"
             },
@@ -25906,6 +26418,7 @@ $CONF = {
               "nl" => "sv_upgrade van type %{arg1} naar lager type %{arg2}",
               "pt" => "sv_upgrade de tipo %{arg1} para o tipo inferior %{arg2}",
               "ru" => "sv_upgrade: понижение типа с %{arg1} до %{arg2}",
+              "sr" => "sv_upgrade: прелазак са типа %{arg1} на нижи тип %{arg2}",
               "tr" => "sv_upgrade, %{arg1} türünden daha alt bir tür olan %{arg2} türüne geçmeye çalıştı",
               "uk" => "sv_upgrade з типу %{arg1} до нижчого типу %{arg2}"
             },
@@ -25959,6 +26472,7 @@ $CONF = {
               "nl" => "Kan %{type} (%{old}) niet upgraden naar %{new}",
               "pt" => "Não é possível promover %{type} (%{old}) para %{new}",
               "ru" => "Нельзя преобразовать %{type} (%{old}) в %{new}",
+              "sr" => "Није могуће надоградити %{type} (%{old}) у %{new}",
               "tr" => "%{type} (%{old}) türü %{new} türüne yükseltilemiyor",
               "uk" => "Неможливо перетворити %{type} (%{old}) на %{new}"
             },
@@ -26017,6 +26531,7 @@ $CONF = {
               "nl" => "Interne fout bij lexicale analyse van code (%{operation})",
               "pt" => "Erro interno na análise lexical de código (%{operation})",
               "ru" => "Внутренняя ошибка кода лексического анализа (%{operation})",
+              "sr" => "Интерна грешка при лексичкој анализи кода (%{operation})",
               "tr" => "Sözdizimi çözümleme kodunda iç hata (%{operation})",
               "uk" => "Внутрішня помилка коду лексичного аналізу (%{operation})"
             },
@@ -26065,6 +26580,7 @@ $CONF = {
               "nl" => "Interne fout bij het parsen van code (%{operation})",
               "pt" => "Erro interno na análise sintática de código (%{operation})",
               "ru" => "Внутренняя ошибка кода синтаксического анализа (%{operation})",
+              "sr" => "Интерна грешка при рашчлањивању кода (%{operation})",
               "tr" => "Ayrıştırma kodunda iç hata (%{operation})",
               "uk" => "Внутрішня помилка коду синтаксичного аналізу (%{operation})"
             },
@@ -26113,6 +26629,7 @@ $CONF = {
               "nl" => "Ongeldig resultaat van infix-plug-in (%{arg2}): identifier <%{arg3}> is niet volledig verwerkt\n",
               "pt" => "Resultado inválido do plugin de operador infixo (%{arg2}): não consumiu todo o identificador <%{arg3}>\n",
               "ru" => "Неверный результат инфиксного плагина (%{arg2}) - идентификатор <%{arg3}> разобран не полностью\n",
+              "sr" => "Неисправан резултат инфиксног додатка (%{arg2}) — није потрошено цело име идентификатора <%{arg3}>\n",
               "tr" => "Hatalı infix eklentisi sonucu (%{arg2}) - %{arg3} tanımlayıcısının tamamı tüketilmedi\n",
               "uk" => "Некоректний результат плагіна інфіксних операторів (%{arg2}) - ідентифікатор <%{arg3}> спожито не повністю\n"
             },
@@ -26165,6 +26682,7 @@ $CONF = {
               "nl" => "Ongeldige plug-in die het sleutelwoord '%{arg1}' beïnvloedt",
               "pt" => "Plugin inválido que afeta a palavra-chave '%{arg1}'",
               "ru" => "Некорректный плагин, обрабатывающий ключевое слово '%{arg1}'",
+              "sr" => "Неисправан додатак који утиче на кључну реч „%{arg1}“",
               "tr" => "'%{arg1}' anahtar sözcüğünü etkileyen hatalı eklenti",
               "uk" => "Некоректний плагін, що впливає на ключове слово '%{arg1}'"
             },
@@ -26214,6 +26732,7 @@ $CONF = {
               "nl" => "Onjuiste grootte van loadOrdinals-array: verwacht %{arg1}, werkelijk %{arg2}",
               "pt" => "Tamanho incorreto do array loadOrdinals: esperado %{arg1}, obtido %{arg2}",
               "ru" => "Неверный размер массива loadOrdinals: ожидается %{arg1}, фактический размер %{arg2}",
+              "sr" => "Погрешна величина низа loadOrdinals: очекивано %{arg1}, стварно %{arg2}",
               "tr" => "loadOrdinals dizisinin boyutu yanlış: beklenen %{arg1}, gerçek %{arg2}",
               "uk" => "Неправильний розмір масиву loadOrdinals: очікуваний %{arg1}, фактичний %{arg2}"
             },
@@ -26266,6 +26785,7 @@ $CONF = {
               "nl" => "Onverwacht aantal processors: %{arg2}",
               "pt" => "Número inesperado de processadores: %{arg2}",
               "ru" => "Неожиданное количество процессоров: %{arg2}",
+              "sr" => "Неочекиван број процесора: %{arg2}",
               "tr" => "Beklenmeyen işlemci sayısı: %{arg2}",
               "uk" => "Неочікувана кількість процесорів: %{arg2}"
             },
@@ -26313,6 +26833,7 @@ $CONF = {
               "nl" => "Negatieve lengte",
               "pt" => "Comprimento negativo",
               "ru" => "Отрицательная длина",
+              "sr" => "Негативна дужина",
               "tr" => "Negatif uzunluk",
               "uk" => "Від’ємна довжина"
             },
@@ -26354,6 +26875,7 @@ $CONF = {
               "nl" => "Offset valt buiten de tekenreeks",
               "pt" => "Deslocamento fora da cadeia de caracteres",
               "ru" => "Смещение за пределами строки",
+              "sr" => "Померај је изван стринга",
               "tr" => "Ofset dizenin dışında",
               "uk" => "Зсув за межі рядка"
             },
@@ -26395,6 +26917,7 @@ $CONF = {
               "nl" => "Mogelijke geheugenbeschadiging: %{arg1} heeft het derde argument overschreden",
               "pt" => "Possível corrupção de memória: %{arg1} excedeu a capacidade do terceiro argumento",
               "ru" => "Возможно повреждение памяти: вызов %{arg1} привёл к переполнению буфера третьего аргумента",
+              "sr" => "Могуће оштећење меморије: %{arg1} је прекорачио трећи аргумент",
               "tr" => "Olası bellek bozulması: %{arg1}, 3. argümanı taşırdı",
               "uk" => "Можливе пошкодження пам'яті: %{arg1} спричинив переповнення буфера 3-го аргументу"
             },
@@ -26443,6 +26966,7 @@ $CONF = {
               "nl" => "ioctl is alleen geïmplementeerd voor sockets",
               "pt" => "ioctl só está implementado para sockets",
               "ru" => "ioctl реализована только для сокетов",
+              "sr" => "ioctl је имплементиран само за сокете",
               "tr" => "ioctl yalnızca soketlerde uygulanır",
               "uk" => "ioctl реалізовано лише для сокетів"
             },
@@ -26484,6 +27008,7 @@ $CONF = {
               "nl" => "Geen dbm beschikbaar op deze machine",
               "pt" => "Este sistema não dispõe de dbm",
               "ru" => "На этой машине отсутствует dbm",
+              "sr" => "На овој машини нема DBM-а",
               "tr" => "Bu makinede dbm yok",
               "uk" => "На цій машині немає dbm"
             },
@@ -26526,6 +27051,7 @@ $CONF = {
               "nl" => "Recursie gedetecteerd in %{arg2}",
               "pt" => "Recursão detetada em %{arg2}",
               "ru" => "Обнаружена рекурсия в %{arg2}",
+              "sr" => "Откривена рекурзија у %{arg2}",
               "tr" => "%{arg2} içinde özyineleme algılandı",
               "uk" => "виявлено рекурсію у %{arg2}"
             },
@@ -26573,6 +27099,7 @@ $CONF = {
               "nl" => "Instabiel directorypad: huidige directory is onverwacht veranderd",
               "pt" => "Caminho de diretório instável; o diretório atual mudou inesperadamente",
               "ru" => "Нестабильный путь к каталогу, текущий каталог неожиданно изменился",
+              "sr" => "Нестабилна путања директоријума, тренутни директоријум се неочекивано променио",
               "tr" => "Kararsız dizin yolu: geçerli dizin beklenmedik biçimde değişti",
               "uk" => "Нестабільний шлях до каталогу, поточний каталог несподівано змінився"
             },
@@ -26614,6 +27141,7 @@ $CONF = {
               "nl" => "Kan niet naar map %{directory} gaan",
               "pt" => "Não é possível mudar para a diretoria %{directory}",
               "ru" => "Не удалось сменить текущий каталог на %{directory}",
+              "sr" => "Није могуће променити директоријум у %{directory}",
               "tr" => "%{directory} dizinine geçilemiyor",
               "uk" => "Неможливо перейти до каталогу %{directory}"
             },
@@ -26661,6 +27189,7 @@ $CONF = {
               "nl" => "Niet-ondersteunde mapfunctie \"%{arg1}\" aangeroepen",
               "pt" => "Foi chamada a função de diretório não suportada \"%{arg1}\"",
               "ru" => "Вызвана неподдерживаемая функция работы с каталогами \"%{arg1}\"",
+              "sr" => "Позвана је неподржана функција за директоријум „%{arg1}“",
               "tr" => "Desteklenmeyen dizin işlevi \"%{arg1}\" çağrıldı",
               "uk" => "Викликано непідтримувану функцію роботи з каталогами \"%{arg1}\""
             },
@@ -26709,6 +27238,7 @@ $CONF = {
               "nl" => "Kan leeg pad niet converteren",
               "pt" => "Não é possível converter um caminho vazio",
               "ru" => "невозможно преобразовать пустой путь",
+              "sr" => "није могуће претворити празну путању",
               "tr" => "Boş yol dönüştürülemez",
               "uk" => "неможливо перетворити порожній шлях"
             },
@@ -26751,6 +27281,7 @@ $CONF = {
               "nl" => "Gebruik: Cygwin::%{arg2}(pathname, [absolute])",
               "pt" => "Utilização: Cygwin::%{arg2}(pathname, [absolute])",
               "ru" => "Использование: Cygwin::%{arg2}(pathname, [absolute])",
+              "sr" => "Употреба: Cygwin::%{arg2}(pathname, [absolute])",
               "tr" => "Kullanım: Cygwin::%{arg2}(yoladı, [absolute])",
               "uk" => "Використання: Cygwin::%{arg2}(pathname, [absolute])"
             },
@@ -26798,6 +27329,7 @@ $CONF = {
               "nl" => "De stat-aanroep vóór lstat() was geen lstat-aanroep",
               "pt" => "O stat anterior a lstat() não foi um lstat",
               "ru" => "Вызов stat, предшествовавший lstat(), не был вызовом lstat",
+              "sr" => "stat пре lstat() није био lstat",
               "tr" => "lstat() öncesindeki stat bir lstat değildi",
               "uk" => "Виклик stat перед lstat() не був викликом lstat"
             },
@@ -26839,6 +27371,7 @@ $CONF = {
               "nl" => "De stat voorafgaand aan -l _ was geen lstat",
               "pt" => "O stat anterior a -l _ não foi um lstat",
               "ru" => "Вызов stat, предшествовавший -l _, не был вызовом lstat",
+              "sr" => "stat пре -l _ није био lstat",
               "tr" => "-l _ öncesindeki stat bir lstat değildi",
               "uk" => "Виклик stat перед -l _ не був викликом lstat"
             },
@@ -26880,6 +27413,7 @@ $CONF = {
               "nl" => "-T en -B zijn niet geïmplementeerd voor bestandshandles",
               "pt" => "-T e -B não estão implementados para identificadores de ficheiro",
               "ru" => "-T и -B не реализованы для файловых дескрипторов",
+              "sr" => "-T и -B нису имплементирани за ручке датотека",
               "tr" => "-T ve -B, dosya tutamaçlarında uygulanmıyor",
               "uk" => "-T і -B не реалізовано для файлових дескрипторів"
             },
@@ -26920,6 +27454,7 @@ $CONF = {
               "nl" => "Kan %{arg1} niet als filehandle openen: deze is al geopend als dirhandle",
               "pt" => "Não é possível abrir %{arg1} como identificador de ficheiro: já está aberto como identificador de diretório",
               "ru" => "Нельзя открыть %{arg1} как файловый дескриптор: он уже открыт как дескриптор каталога",
+              "sr" => "Није могуће отворити %{arg1} као датотечку ручицу: већ је отворена као ручица директоријума",
               "tr" => "%{arg1} bir dosya tutamacı olarak açılamıyor: zaten bir dizin tutamacı olarak açık",
               "uk" => "Неможливо відкрити %{arg1} як файловий дескриптор: його вже відкрито як дескриптор каталогу"
             },
@@ -26967,6 +27502,7 @@ $CONF = {
               "nl" => "Kan %{arg1} niet als dirhandle openen: deze is al geopend als filehandle",
               "pt" => "Não é possível abrir %{arg1} como identificador de diretório: já está aberto como identificador de ficheiro",
               "ru" => "Нельзя открыть %{arg1} как дескриптор каталога: он уже открыт как файловый дескриптор",
+              "sr" => "Није могуће отворити %{arg1} као ручицу директоријума: већ је отворена као датотечка ручица",
               "tr" => "%{arg1} bir dizin tutamacı olarak açılamıyor: zaten bir dosya tutamacı olarak açık",
               "uk" => "Неможливо відкрити %{arg1} як дескриптор каталогу: його вже відкрито як файловий дескриптор"
             },
@@ -27015,6 +27551,7 @@ $CONF = {
               "nl" => "Kan de bestandsnaam niet bepalen",
               "pt" => "Não foi possível determinar o nome do ficheiro",
               "ru" => "Неизвестно, как получить имя файла",
+              "sr" => "Није познат начин за добијање имена датотеке",
               "tr" => "Dosya adı nasıl alınır bilinmiyor",
               "uk" => "Невідомо, як отримати назву файла"
             },
@@ -27056,6 +27593,7 @@ $CONF = {
               "nl" => "Ongeldige filehandle: %{arg1}",
               "pt" => "Identificador de ficheiro inválido: %{arg1}",
               "ru" => "Недопустимый файловый дескриптор: %{arg1}",
+              "sr" => "Неисправна датотечка ручица: %{arg1}",
               "tr" => "Geçersiz dosya tutamacı: %{arg1}",
               "uk" => "Некоректний файловий дескриптор: %{arg1}"
             },
@@ -27104,6 +27642,7 @@ $CONF = {
               "nl" => "Ongeldige filehandle: %{newsv}",
               "pt" => "Identificador de ficheiro inválido: %{newsv}",
               "ru" => "Недопустимый файловый дескриптор: %{newsv}",
+              "sr" => "Неисправан руковалац датотеком: %{newsv}",
               "tr" => "Geçersiz dosya tutamacı: %{newsv}",
               "uk" => "Некоректний файловий дескриптор: %{newsv}"
             },
@@ -27152,6 +27691,7 @@ $CONF = {
               "nl" => "Kan werkbestand %{arg1} voor bewerking ter plaatse niet sluiten: %{arg2}",
               "pt" => "Falha ao fechar o ficheiro de trabalho da edição no local %{arg1}: %{arg2}",
               "ru" => "Не удалось закрыть рабочий файл %{arg1}, используемый при редактировании на месте: %{arg2}",
+              "sr" => "Затварање радне датотеке за измену на месту %{arg1} није успело: %{arg2}",
               "tr" => "Yerinde düzenleme için kullanılan %{arg1} çalışma dosyası kapatılamadı: %{arg2}",
               "uk" => "Не вдалося закрити робочий файл %{arg1} для редагування на місці: %{arg2}"
             },
@@ -27204,6 +27744,7 @@ $CONF = {
               "nl" => "Kan %{original} niet hernoemen naar %{backup}: %{error}; bestand wordt overgeslagen",
               "pt" => "Não é possível mudar o nome de %{original} para %{backup}: %{error}; ficheiro ignorado",
               "ru" => "Не удалось переименовать %{original} в %{backup}: %{error}, файл пропускается",
+              "sr" => "Није могуће преименовати %{original} у %{backup}: %{error}; датотека се прескаче",
               "tr" => "%{original} dosyasının adı %{backup} olarak değiştirilemiyor: %{error}, dosya atlanıyor",
               "uk" => "Неможливо перейменувати %{original} на %{backup}: %{error}, файл пропускається"
             },
@@ -27261,6 +27802,7 @@ $CONF = {
               "nl" => "Kan het bestand %{arg2} niet ter plaatse bewerken: hernoemen van werkbestand '%{arg3}' naar '%{arg4}' is mislukt: %{arg5}",
               "pt" => "Não é possível concluir a edição no local de %{arg2}: falha ao mudar o nome do ficheiro '%{arg3}' para '%{arg4}': %{arg5}",
               "ru" => "Невозможно завершить редактирование файла %{arg2} на месте: не удалось переименовать рабочий файл '%{arg3}' в '%{arg4}': %{arg5}",
+              "sr" => "Није могуће завршити измену датотеке на месту %{arg2}: преименовање радне датотеке „%{arg3}“ у „%{arg4}“ није успело: %{arg5}",
               "tr" => "%{arg2} dosyasının yerinde düzenlenmesi tamamlanamıyor: '%{arg3}' çalışma dosyasının adı '%{arg4}' olarak değiştirilemedi: %{arg5}",
               "uk" => "Неможливо завершити редагування %{arg2} на місці: не вдалося перейменувати робочий файл '%{arg3}' на '%{arg4}': %{arg5}"
             },
@@ -27368,6 +27910,10 @@ $CONF = {
                 "cwd_changed" => "Невозможно завершить редактирование файла %{path} на месте: текущий каталог изменился",
                 "work_file_missing" => "Невозможно завершить редактирование файла %{path} на месте: рабочий файл отсутствует — не меняли ли вы текущий каталог?"
               },
+              "sr" => {
+                "cwd_changed" => "Није могуће довршити измену датотеке на месту %{path}: тренутни директоријум је промењен",
+                "work_file_missing" => "Није могуће довршити измену датотеке на месту %{path}: недостаје радна датотека — да ли сте променили директоријум?"
+              },
               "tr" => {
                 "*" => "%{path} dosyasının yerinde düzenlenmesi tamamlanamıyor: Geçerli dizin değişti",
                 "work_file_missing" => "%{path} dosyasının yerinde düzenlenmesi tamamlanamıyor: Çalışma dosyası bulunamıyor - dizin mi değiştirdiniz?"
@@ -27431,6 +27977,7 @@ $CONF = {
               "nl" => "Grootte van PerlIO-laagfunctietabel (%{arg1}) komt niet overeen met wat deze Perl verwacht (%{arg2})",
               "pt" => "O tamanho da tabela de funções da camada PerlIO (%{arg1}) não corresponde ao esperado por este Perl (%{arg2})",
               "ru" => "Размер таблицы функций слоя PerlIO (%{arg1}) не совпадает с размером, ожидаемым этой версией perl (%{arg2})",
+              "sr" => "Величина табеле функција PerlIO слоја (%{arg1}) не одговара величини коју очекује овај perl (%{arg2})",
               "tr" => "PerlIO katman işlev tablosunun boyutu (%{arg1}), bu perl için beklenen boyutla (%{arg2}) eşleşmiyor",
               "uk" => "Розмір таблиці функцій шару PerlIO (%{arg1}) не відповідає розміру, очікуваному цією версією perl (%{arg2})"
             },
@@ -27484,6 +28031,7 @@ $CONF = {
               "nl" => "Grootte van PerlIO-laaginstantie (%{arg1}) is kleiner dan wat deze Perl verwacht (%{arg2})",
               "pt" => "O tamanho da instância da camada PerlIO (%{arg1}) é inferior ao esperado por este Perl (%{arg2})",
               "ru" => "Размер экземпляра слоя PerlIO (%{arg1}) меньше размера, ожидаемого этой версией perl (%{arg2})",
+              "sr" => "Величина инстанце PerlIO слоја (%{arg1}) мања је од величине коју очекује овај perl (%{arg2})",
               "tr" => "PerlIO katmanı örnek boyutu (%{arg1}), bu perl için beklenen boyuttan (%{arg2}) küçük",
               "uk" => "Розмір екземпляра шару PerlIO (%{arg1}) менший за розмір, очікуваний цією версією perl (%{arg2})"
             },
@@ -27536,6 +28084,7 @@ $CONF = {
               "nl" => "Kan \"%{arg2}\" niet toepassen in een Perl zonder PerlIO",
               "pt" => "Não é possível aplicar \"%{arg2}\" num Perl sem PerlIO",
               "ru" => "Невозможно применить \"%{arg2}\" в perl без поддержки PerlIO",
+              "sr" => "Није могуће применити „%{arg2}“ у Perl-у без PerlIO",
               "tr" => "PerlIO kullanmayan perl'de \"%{arg2}\" uygulanamıyor",
               "uk" => "Неможливо застосувати \"%{arg2}\" у perl без підтримки PerlIO"
             },
@@ -27583,6 +28132,7 @@ $CONF = {
               "nl" => "%{arg1}() is niet toegestaan op :utf8-handles",
               "pt" => "%{arg1}() não é permitido em identificadores :utf8",
               "ru" => "%{arg1}() нельзя использовать с дескрипторами со слоем :utf8",
+              "sr" => "Оператор %{arg1}() није дозвољен над :utf8 руковаоцима датотека",
               "tr" => "%{arg1}() :utf8 katmanlı tutamaçlarda kullanılamaz",
               "uk" => "%{arg1}() не дозволено для дескрипторів із шаром :utf8"
             },
@@ -27630,6 +28180,7 @@ $CONF = {
               "nl" => "Gebruik: class->find(name[,load])",
               "pt" => "Utilização: class->find(name[,load])",
               "ru" => "Использование: class->find(name[,load])",
+              "sr" => "Употреба: class->find(name[,load])",
               "tr" => "Kullanım: class->find(name[,load])",
               "uk" => "Використання: class->find(name[,load])"
             },
@@ -27672,6 +28223,7 @@ $CONF = {
               "nl" => "Recursieve aanroep van Perl_load_module in PerlIO_find_layer",
               "pt" => "Chamada recursiva a Perl_load_module em PerlIO_find_layer",
               "ru" => "Рекурсивный вызов Perl_load_module в PerlIO_find_layer",
+              "sr" => "Рекурзивни позив функције Perl_load_module у функцији PerlIO_find_layer",
               "tr" => "PerlIO_find_layer içinde Perl_load_module için özyinelemeli çağrı",
               "uk" => "Рекурсивний виклик Perl_load_module у PerlIO_find_layer"
             },
@@ -27713,6 +28265,7 @@ $CONF = {
               "nl" => "IO-lagen (zoals '%{arg1}') zijn niet beschikbaar",
               "pt" => "Camadas de E/S (como '%{arg1}') indisponíveis",
               "ru" => "Слои ввода-вывода (такие как '%{arg1}') недоступны",
+              "sr" => "IO слојеви (као што је „%{arg1}“) нису доступни",
               "tr" => "IO katmanları ('%{arg1}' gibi) kullanılamıyor",
               "uk" => "Шари введення-виведення (як-от '%{arg1}') недоступні"
             },
@@ -27769,6 +28322,7 @@ $CONF = {
               "nl" => "Te veel argumenten voor open(,':%{arg2}')",
               "pt" => "Demasiados argumentos para open(,':%{arg2}')",
               "ru" => "Более одного аргумента в open(,':%{arg2}')",
+              "sr" => "Више од једног аргумента за open(,':%{arg2}')",
               "tr" => "open(,':%{arg2}') için birden fazla argüman",
               "uk" => "Більше одного аргументу для open(,':%{arg2}')"
             },
@@ -27816,6 +28370,7 @@ $CONF = {
               "nl" => "get_layers: onbekend argument '%{arg1}'",
               "pt" => "get_layers: argumento desconhecido '%{arg1}'",
               "ru" => "get_layers: неизвестный аргумент '%{arg1}'",
+              "sr" => "get_layers: непознат аргумент „%{arg1}“",
               "tr" => "get_layers: bilinmeyen '%{arg1}' argümanı",
               "uk" => "get_layers: невідомий аргумент '%{arg1}'"
             },
@@ -27863,6 +28418,7 @@ $CONF = {
               "nl" => "Te veel argumenten voor open met '%{arg2}&'",
               "pt" => "Demasiados argumentos para open com '%{arg2}&'",
               "ru" => "Более одного аргумента для open в режиме '%{arg2}&'",
+              "sr" => "Више од једног аргумента за open „%{arg2}&“",
               "tr" => "'%{arg2}&' open için birden fazla argüman",
               "uk" => "Більше одного аргументу для open у режимі '%{arg2}&'"
             },
@@ -27910,6 +28466,7 @@ $CONF = {
               "nl" => "Kan Perl-script \"%{file}\" niet openen: %{error}\n",
               "pt" => "Não é possível abrir o script Perl \"%{file}\": %{error}\n",
               "ru" => "Не удалось открыть скрипт perl \"%{file}\": %{error}\n",
+              "sr" => "Није могуће отворити Perl скрипту „%{file}“: %{error}\n",
               "tr" => "Perl betiği \"%{file}\" açılamıyor: %{error}\n",
               "uk" => "Не вдалося відкрити скрипт perl \"%{file}\": %{error}\n"
             },
@@ -27962,6 +28519,7 @@ $CONF = {
               "nl" => "Kon geen tijdelijke afvoer voor gegevens aanmaken",
               "pt" => "Não foi possível criar um dispositivo de descarte fictício",
               "ru" => "Не удалось создать имитацию /dev/null",
+              "sr" => "Није успело стварање привидне празне датотеке",
               "tr" => "Sahte çöp kutusu oluşturulamadı",
               "uk" => "Не вдалося створити імітацію нульового пристрою"
             },
@@ -28003,6 +28561,7 @@ $CONF = {
               "nl" => "Kan %{bucket} niet openen: %{error}\n",
               "pt" => "Não é possível abrir %{bucket}: %{error}\n",
               "ru" => "Не удалось открыть %{bucket}: %{error}\n",
+              "sr" => "Не могу да отворим %{bucket}: %{error}\n",
               "tr" => "%{bucket} açılamıyor: %{error}\n",
               "uk" => "Неможливо відкрити %{bucket}: %{error}\n"
             },
@@ -28055,6 +28614,7 @@ $CONF = {
               "nl" => "Te veel argumenten voor open met '<%{arg2}'",
               "pt" => "Demasiados argumentos para open com '<%{arg2}'",
               "ru" => "Более одного аргумента для open в режиме '<%{arg2}'",
+              "sr" => "Више од једног аргумента за open „<%{arg2}“",
               "tr" => "'<%{arg2}' open için birden fazla argüman",
               "uk" => "Більше одного аргументу для open у режимі '<%{arg2}'"
             },
@@ -28102,6 +28662,7 @@ $CONF = {
               "nl" => "Te veel argumenten voor open met '>%{arg2}'",
               "pt" => "Demasiados argumentos para open com '>%{arg2}'",
               "ru" => "Более одного аргумента для open в режиме '>%{arg2}'",
+              "sr" => "Више од једног аргумента за open „>%{arg2}“",
               "tr" => "'>%{arg2}' open için birden fazla argüman",
               "uk" => "Більше одного аргументу для open у режимі '>%{arg2}'"
             },
@@ -28149,6 +28710,7 @@ $CONF = {
               "nl" => "Te veel argumenten voor open",
               "pt" => "Demasiados argumentos para open",
               "ru" => "В open передано более одного аргумента",
+              "sr" => "Више од једног аргумента функцији open",
               "tr" => "open için birden fazla argüman",
               "uk" => "Більше одного аргументу для open"
             },
@@ -28190,6 +28752,7 @@ $CONF = {
               "nl" => "Onbekende open()-modus '%{arg1}'",
               "pt" => "Modo de open() desconhecido: '%{arg1}'",
               "ru" => "Неизвестный режим open() '%{arg1}'",
+              "sr" => "Непознат режим open() „%{arg1}“",
               "tr" => "Bilinmeyen open() modu: '%{arg1}'",
               "uk" => "Невідомий режим open() '%{arg1}'"
             },
@@ -28293,6 +28856,10 @@ $CONF = {
                 "negative_integer" => "Присваивать \$/ ссылку на отрицательное целое число запрещено",
                 "zero" => "Присваивать \$/ ссылку на ноль запрещено"
               },
+              "sr" => {
+                "negative_integer" => "Забрањено је поставити \$/ на референцу на негативан цео број",
+                "zero" => "Забрањено је поставити \$/ на референцу на нулу"
+              },
               "tr" => {
                 "negative_integer" => "\$/ öğesinin negatif bir tam sayıya referans olarak ayarlanması yasaktır",
                 "zero" => "\$/ öğesinin sıfıra referans olarak ayarlanması yasaktır"
@@ -28352,6 +28919,7 @@ $CONF = {
               "nl" => "\$/ instellen op een referentie van het type %{ref_type} is verboden",
               "pt" => "É proibido atribuir a \$/ uma referência do tipo %{ref_type}",
               "ru" => "Присваивание \$/ ссылки типа %{ref_type} запрещено",
+              "sr" => "Забрањено је постављање \$/ на референцу типа %{ref_type}",
               "tr" => "\$/ öğesinin %{ref_type} türünde bir referansa ayarlanması yasaktır",
               "uk" => "Заборонено надавати \$/ значення посилання типу %{ref_type}"
             },
@@ -28401,6 +28969,7 @@ $CONF = {
               "nl" => "Niet-ondersteunde socketfunctie \"%{name}\" aangeroepen",
               "pt" => "Foi chamada a função de socket não suportada \"%{name}\"",
               "ru" => "Вызвана неподдерживаемая функция работы с сокетами \"%{name}\"",
+              "sr" => "Позвана је неподржана socket функција \"%{name}\"",
               "tr" => "Desteklenmeyen soket işlevi \"%{name}\" çağrıldı",
               "uk" => "Викликано непідтримувану сокетну функцію \"%{name}\""
             },
@@ -28449,6 +29018,7 @@ $CONF = {
               "nl" => "iterator->new verwacht een codereferentie",
               "pt" => "iterator->new espera uma referência de código",
               "ru" => "iterator->new ожидает ссылку на подпрограмму",
+              "sr" => "iterator->new очекује референцу на код",
               "tr" => "iterator->new bir kod referansı bekliyor",
               "uk" => "iterator->new очікує посилання на код"
             },
@@ -28491,6 +29061,7 @@ $CONF = {
               "nl" => "Een foreach-lus kan niet meer dan 256 iteratorvariabelen hebben als er gedeclareerde referenties tussen zitten",
               "pt" => "Não é possível utilizar mais de 256 variáveis de iteração num ciclo foreach se alguma estiver declarada como referência",
               "ru" => "В цикле foreach нельзя использовать более 256 переменных итератора, если хотя бы одна из них объявлена как ссылка",
+              "sr" => "У петљи foreach није могуће користити више од 256 променљивих ако су неке од њих декларисане као референце",
               "tr" => "foreach döngüsünde, herhangi biri bildirilmiş referanssa 256'dan fazla yineleyici değişkeni kullanılamaz",
               "uk" => "У циклі foreach не можна використовувати понад 256 змінних ітератора, якщо хоч одну з них оголошено як посилання"
             },
@@ -28533,6 +29104,7 @@ $CONF = {
               "nl" => "Na de 24e variabele kunnen geen gedeclareerde referentie-iteratorvariabelen worden gebruikt in een foreach-lus",
               "pt" => "Não é possível utilizar variáveis de iteração declaradas como referências num ciclo foreach após a 24.ª variável",
               "ru" => "В цикле foreach нельзя использовать переменные итератора, объявленные как ссылки, после 24-й переменной",
+              "sr" => "У петљи foreach није могуће користити декларисане референтне променљиве после 24. променљиве",
               "tr" => "foreach döngüsünde 24. değişkenden sonra bildirilmiş referans yineleyici değişkenleri kullanılamaz",
               "uk" => "У циклі foreach не можна використовувати змінні ітератора, оголошені як посилання, після 24-ї змінної"
             },
@@ -28575,6 +29147,7 @@ $CONF = {
               "nl" => "Generator is al aangeroepen",
               "pt" => "O gerador já foi invocado",
               "ru" => "Генератор уже был вызван",
+              "sr" => "Генератор је већ позван",
               "tr" => "Üreteç zaten çağrıldı",
               "uk" => "Генератор уже викликано"
             },
@@ -28617,6 +29190,7 @@ $CONF = {
               "nl" => "Kan een mislukte generator niet hervatten",
               "pt" => "Não é possível retomar um gerador que falhou",
               "ru" => "Нельзя возобновить работу генератора, завершившегося с ошибкой",
+              "sr" => "Не може се наставити неуспели генератор",
               "tr" => "Başarısız olmuş bir üreteç devam ettirilemez",
               "uk" => "Неможливо відновити виконання генератора, що завершився з помилкою"
             },
@@ -28659,6 +29233,7 @@ $CONF = {
               "nl" => "Generatorvoortzetting is niet beschikbaar",
               "pt" => "A continuação do gerador não está disponível",
               "ru" => "продолжение генератора недоступно",
+              "sr" => "наставак генератора није доступан",
               "tr" => "Üreteç devamı kullanılamıyor",
               "uk" => "продовження генератора недоступне"
             },
@@ -28701,6 +29276,7 @@ $CONF = {
               "nl" => "Ongeldige generator",
               "pt" => "Gerador inválido",
               "ru" => "недопустимый генератор",
+              "sr" => "неисправан генератор",
               "tr" => "Geçersiz üreteç",
               "uk" => "некоректний генератор"
             },
@@ -28743,6 +29319,7 @@ $CONF = {
               "nl" => "Generator heeft geen onderbroken voortzetting",
               "pt" => "O gerador não tem uma continuação suspensa",
               "ru" => "У генератора нет приостановленного продолжения",
+              "sr" => "Генератор нема суспендовани наставак",
               "tr" => "Üretecin askıya alınmış bir devamı yok",
               "uk" => "Генератор не має призупиненого продовження"
             },
@@ -28786,6 +29363,7 @@ $CONF = {
               "nl" => "generator::running verwacht generatorargumenten",
               "pt" => "generator::running espera argumentos de gerador",
               "ru" => "generator::running ожидает генераторы в качестве аргументов",
+              "sr" => "generator::running очекује аргументе који су генератори",
               "tr" => "generator::running üreteç bağımsız değişkenleri bekliyor",
               "uk" => "generator::running очікує генератори як аргументи"
             },
@@ -28828,6 +29406,7 @@ $CONF = {
               "nl" => "Kan de toestand van een generator niet instellen",
               "pt" => "Não é possível definir o estado de um gerador",
               "ru" => "нельзя устанавливать состояние генератора",
+              "sr" => "није могуће поставити стање генератора",
               "tr" => "Bir üretecin durumu ayarlanamaz",
               "uk" => "неможливо встановити стан генератора"
             },
@@ -28870,6 +29449,7 @@ $CONF = {
               "nl" => "yield buiten een actieve generator",
               "pt" => "yield fora de um gerador em execução",
               "ru" => "yield вне выполняющегося gen",
+              "sr" => "yield ван активног gen-а",
               "tr" => "çalışan bir gen dışında yield çağrıldı",
               "uk" => "yield поза gen, що виконується"
             },
@@ -28912,6 +29492,7 @@ $CONF = {
               "nl" => "Kan %{arg1} niet als lusvariabele gebruiken",
               "pt" => "Não é possível utilizar %{arg1} como variável de ciclo",
               "ru" => "Нельзя использовать %{arg1} в качестве переменной цикла",
+              "sr" => "Није могуће користити %{arg1} као променљиву петље",
               "tr" => "%{arg1} döngü değişkeni olarak kullanılamaz",
               "uk" => "Неможливо використати %{arg1} як змінну циклу"
             },
@@ -28949,6 +29530,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "accusative",
+                "sr" => "accusative",
                 "tr" => "operation",
                 "uk" => "accusative"
               },
@@ -28991,6 +29573,7 @@ $CONF = {
               "nl" => "Ongeldige iteratortoestand",
               "pt" => "Estado de iterador inválido",
               "ru" => "недопустимое состояние итератора",
+              "sr" => "неисправно стање итератора",
               "tr" => "Geçersiz yineleyici durumu",
               "uk" => "некоректний стан ітератора"
             },
@@ -29033,6 +29616,7 @@ $CONF = {
               "nl" => "Bereikiterator valt buiten het gehele-getallenbereik",
               "pt" => "Iterador de intervalo fora do intervalo de inteiros",
               "ru" => "Итератор диапазона выходит за пределы представимых целых чисел",
+              "sr" => "Итератор опсега је изван целобројног опсега",
               "tr" => "Aralık yineleyicisi tam sayı aralığının dışında",
               "uk" => "Ітератор діапазону виходить за межі діапазону цілих чисел"
             },
@@ -29074,6 +29658,7 @@ $CONF = {
               "nl" => "Oneven aantal elementen in export_lexically",
               "pt" => "Número ímpar de elementos em export_lexically",
               "ru" => "Нечётное число элементов в export_lexically",
+              "sr" => "Непаран број елемената у export_lexically",
               "tr" => "export_lexically için çift sayıda olmayan bağımsız değişken",
               "uk" => "Непарна кількість елементів у export_lexically"
             },
@@ -29115,6 +29700,7 @@ $CONF = {
               "nl" => "export_lexically mag alleen tijdens het compileren worden aangeroepen",
               "pt" => "export_lexically só pode ser chamado durante a compilação",
               "ru" => "export_lexically можно вызывать только во время компиляции",
+              "sr" => "export_lexically може да се позове само у време компајлирања",
               "tr" => "export_lexically yalnızca derleme zamanında çağrılabilir",
               "uk" => "export_lexically можна викликати лише під час компіляції"
             },
@@ -29157,6 +29743,7 @@ $CONF = {
               "nl" => "Referentie verwacht in export_lexically",
               "pt" => "Era esperada uma referência em export_lexically",
               "ru" => "В export_lexically ожидалась ссылка",
+              "sr" => "У функцији export_lexically очекивана је референца",
               "tr" => "export_lexically içinde bir referans bekleniyordu",
               "uk" => "У export_lexically очікувалося посилання"
             },
@@ -29286,6 +29873,9 @@ $CONF = {
               "ru" => {
                 "*" => "В export_lexically ожидалась ссылка типа %{reference_type}"
               },
+              "sr" => {
+                "*" => "У export_lexically се очекивала референца типа %{reference_type}"
+              },
               "tr" => {
                 "*" => "export_lexically içinde %{reference_type} türünde bir referans bekleniyordu"
               },
@@ -29341,6 +29931,7 @@ $CONF = {
               "nl" => "Ongeldige versiebundel %{sym}",
               "pt" => "Conjunto de versões inválido: %{sym}",
               "ru" => "Недопустимый набор для версии %{sym}",
+              "sr" => "Неисправан пакет верзије %{sym}",
               "tr" => "Geçersiz sürüm paketi %{sym}",
               "uk" => "Недопустимий набір для версії %{sym}"
             },
@@ -29390,6 +29981,7 @@ $CONF = {
               "nl" => "builtin::import mag alleen tijdens het compileren worden aangeroepen",
               "pt" => "builtin::import só pode ser chamado durante a compilação",
               "ru" => "builtin::import можно вызывать только во время компиляции",
+              "sr" => "builtin::import може да се позове само у време компајлирања",
               "tr" => "builtin::import yalnızca derleme zamanında çağrılabilir",
               "uk" => "builtin::import можна викликати лише під час компіляції"
             },
@@ -29432,6 +30024,7 @@ $CONF = {
               "nl" => "%{name} wordt niet herkend als ingebouwde functie",
               "pt" => "%{name} não é reconhecido como uma função incorporada",
               "ru" => "%{name} не распознано как встроенная функция",
+              "sr" => "%{name} није препознато као уграђена функција",
               "tr" => "%{name} yerleşik bir işlev olarak tanınmıyor",
               "uk" => "%{name} не розпізнано як вбудовану функцію"
             },
@@ -29482,6 +30075,7 @@ $CONF = {
               "nl" => "Ingebouwde versiebundel \"%{bundle}\" wordt niet ondersteund door Perl %{version}",
               "pt" => "O conjunto de versões de funções incorporadas \"%{bundle}\" não é suportado pelo Perl %{version}",
               "ru" => "Набор встроенных функций для версии \"%{bundle}\" не поддерживается в Perl %{version}",
+              "sr" => "Уграђени пакет верзије „%{bundle}” није подржан у Перлу %{version}",
               "tr" => "Yerleşik sürüm paketi \"%{bundle}\", Perl %{version} tarafından desteklenmiyor",
               "uk" => "Набір вбудованих функцій для версії \"%{bundle}\" не підтримується Perl %{version}"
             },
@@ -29534,6 +30128,7 @@ $CONF = {
               "nl" => "De interpreterpointer komt niet overeen met de verwachte libperl-interpreterpointer",
               "pt" => "O ponteiro do interpretador não corresponde ao esperado em libperl",
               "ru" => "Указатель на интерпретатор из libperl не совпадает с ожидаемым",
+              "sr" => "Неусклађен показивач на интерпретатор између очекиваног и libperl",
               "tr" => "Beklenen ve libperl'deki yorumlayıcı işaretçisi eşleşmiyor",
               "uk" => "Невідповідність між очікуваним вказівником на інтерпретатор і вказівником із libperl"
             },
@@ -29575,6 +30170,7 @@ $CONF = {
               "nl" => "De verwachte grootte van de libperl-interpreterstructuur (%{arg2}) komt niet overeen met de werkelijke grootte (%{arg3})",
               "pt" => "O tamanho esperado da estrutura do interpretador difere do de libperl: %{arg2} contra %{arg3}",
               "ru" => "Несоответствие ожидаемого размера структуры интерпретатора размеру в libperl: %{arg2} и %{arg3}",
+              "sr" => "Неслагање између очекиване величине структуре интерпретатора и величине у libperl: %{arg2} наспрам %{arg3}",
               "tr" => "Beklenen ve libperl'deki yorumlayıcı yapısının boyutu eşleşmiyor: %{arg2} ve %{arg3}",
               "uk" => "Невідповідність між очікуваним розміром структури інтерпретатора та розміром у libperl: %{arg2} проти %{arg3}"
             },
@@ -29627,6 +30223,7 @@ $CONF = {
               "nl" => "%{arg1}: laadbare bibliotheek en Perl-uitvoerbare bestanden komen niet overeen (%{arg2} handshake-sleutel %{arg3} ontvangen, %{arg4} vereist)\n",
               "pt" => "%{arg1}: a biblioteca carregável e os binários Perl não correspondem (chave de negociação %{arg2} %{arg3} obtida; necessária %{arg4})\n",
               "ru" => "%{arg1}: загружаемая библиотека и исполняемые файлы perl несовместимы (получен ключ согласования %{arg3} для %{arg2}, требовался %{arg4})\n",
+              "sr" => "%{arg1}: библиотека која се може учитати и извршне датотеке Перла нису усклађене (добијен је кључ руковања %{arg2} %{arg3}, потребан је %{arg4})\n",
               "tr" => "%{arg1}: yüklenebilir kitaplık ile perl ikilileri eşleşmiyor (alınan %{arg2} el sıkışma anahtarı %{arg3}, gereken %{arg4})\n",
               "uk" => "%{arg1}: завантажувана бібліотека та виконувані файли perl несумісні (отримано ключ узгодження %{arg2} %{arg3}, потрібен %{arg4})\n"
             },
@@ -29689,6 +30286,7 @@ $CONF = {
               "nl" => "Perl-API-versie %{arg1} van %{arg2} komt niet overeen met %{arg3}",
               "pt" => "A versão %{arg1} da API Perl de %{arg2} não corresponde a %{arg3}",
               "ru" => "Версия API Perl %{arg1} модуля %{arg2} не соответствует %{arg3}",
+              "sr" => "Верзија Perl API-ја %{arg1} за %{arg2} не одговара верзији %{arg3}",
               "tr" => "%{arg2} içindeki %{arg1} Perl API sürümü, %{arg3} ile eşleşmiyor",
               "uk" => "Версія API Perl %{arg1} для %{arg2} не відповідає %{arg3}"
             },
@@ -29752,6 +30350,7 @@ $CONF = {
               "nl" => "De verwachte libperl-API-versie (%{arg2}) komt niet overeen met de werkelijke versie (%{arg3})",
               "pt" => "As versões esperadas da API e da API de libperl não coincidem: %{arg2} contra %{arg3}",
               "ru" => "Несоответствие ожидаемой версии API версии в libperl: %{arg2} и %{arg3}",
+              "sr" => "Неслагање између очекиване и libperl API верзије: %{arg2} наспрам %{arg3}",
               "tr" => "Beklenen ve libperl'deki Perl API sürümleri eşleşmiyor: %{arg2} ve %{arg3}",
               "uk" => "Невідповідність між очікуваною версією API та версією API libperl: %{arg2} проти %{arg3}"
             },
@@ -29804,6 +30403,7 @@ $CONF = {
               "nl" => " (hebt u h2ph uitgevoerd?)",
               "pt" => " (executou h2ph?)",
               "ru" => " (вы запускали h2ph?)",
+              "sr" => " (да ли сте покренули h2ph?)",
               "tr" => " (h2ph çalıştırdınız mı?)",
               "uk" => " (ви запускали h2ph?)"
             },
@@ -29851,6 +30451,7 @@ $CONF = {
               "nl" => " (moet .h misschien .ph worden?)",
               "pt" => " (talvez seja necessário alterar .h para .ph?)",
               "ru" => " (возможно, следует заменить .h на .ph?)",
+              "sr" => " (можда треба променити .h у .ph?)",
               "tr" => " (.h uzantısını belki .ph olarak değiştirin?)",
               "uk" => " (можливо, слід замінити .h на .ph?)"
             },
@@ -29898,6 +30499,7 @@ $CONF = {
               "nl" => " (gecontroleerde \@INC-vermeldingen:%{entries})",
               "pt" => " (entradas de \@INC verificadas:%{entries})",
               "ru" => " (проверены элементы \@INC:%{entries})",
+              "sr" => " (проверени уноси \@INC:%{entries})",
               "tr" => " (\@INC girdileri denetlendi:%{entries})",
               "uk" => " (перевірені елементи \@INC:%{entries})"
             },
@@ -29952,6 +30554,7 @@ $CONF = {
               "nl" => " (mogelijk moet u module %{module} installeren)",
               "pt" => " (poderá ser necessário instalar o módulo %{module})",
               "ru" => " (возможно, необходимо установить модуль %{module})",
+              "sr" => " (можда треба да инсталирате модул %{module})",
               "tr" => " (%{module} modülünü yüklemeniz gerekebilir)",
               "uk" => " (можливо, потрібно встановити модуль %{module})"
             },
@@ -30006,6 +30609,7 @@ $CONF = {
               "nl" => "Kan %{arg1} niet vinden:   %{arg2}",
               "pt" => "Não foi possível localizar %{arg1}:   %{arg2}",
               "ru" => "Не удалось найти %{arg1}:   %{arg2}",
+              "sr" => "Није могуће пронаћи %{arg1}:   %{arg2}",
               "tr" => "%{arg1} bulunamıyor:   %{arg2}",
               "uk" => "Неможливо знайти %{arg1}:   %{arg2}"
             },
@@ -30058,6 +30662,7 @@ $CONF = {
               "nl" => "Argument voor %{arg1} ontbreekt of is ongedefinieerd",
               "pt" => "Argumento em falta ou indefinido para %{arg1}",
               "ru" => "Аргумент %{arg1} отсутствует или не определён",
+              "sr" => "Недостаје или је недефинисан аргумент за %{arg1}",
               "tr" => "%{arg1} için eksik veya tanımsız bağımsız değişken",
               "uk" => "Аргумент для %{arg1} відсутній або має невизначене значення"
             },
@@ -30105,6 +30710,7 @@ $CONF = {
               "nl" => "Kan %{arg1} niet vinden:   %{arg2}: %{arg3}",
               "pt" => "Não foi possível localizar %{arg1}:   %{arg2}: %{arg3}",
               "ru" => "Не удалось найти %{arg1}:   %{arg2}: %{arg3}",
+              "sr" => "Није могуће пронаћи %{arg1}:   %{arg2}: %{arg3}",
               "tr" => "%{arg1} bulunamıyor:   %{arg2}: %{arg3}",
               "uk" => "Неможливо знайти %{arg1}:   %{arg2}: %{arg3}"
             },
@@ -30163,6 +30769,7 @@ $CONF = {
               "nl" => "Kan geladen symbolen op dit platform niet globaal maken bij het laden van %{arg1}",
               "pt" => "Não é possível tornar globais os símbolos carregados nesta plataforma ao carregar %{arg1}",
               "ru" => "Невозможно сделать загруженные символы глобальными на этой платформе при загрузке %{arg1}",
+              "sr" => "Није могуће учинити учитане симболе глобалним на овој платформи приликом учитавања %{arg1}",
               "tr" => "%{arg1} yüklenirken bu platformda yüklenen semboller genel kullanıma açılamıyor",
               "uk" => "Неможливо зробити завантажені символи глобальними на цій платформі під час завантаження %{arg1}"
             },
@@ -30210,6 +30817,7 @@ $CONF = {
               "nl" => "Argument voor %{arg1} ontbreekt of is ongedefinieerd via %%{^HOOK}{require__before}",
               "pt" => "Argumento em falta ou indefinido para %{arg1} através de %%{^HOOK}{require__before}",
               "ru" => "Аргумент %{arg1}, переданный через %%{^HOOK}{require__before}, отсутствует или не определён",
+              "sr" => "Недостаје или је недефинисан аргумент за %{arg1} преко %%{^HOOK}{require__before}",
               "tr" => "%%{^HOOK}{require__before} aracılığıyla %{arg1} için eksik veya tanımsız bağımsız değişken",
               "uk" => "Відсутній або невизначений аргумент для %{arg1} через %%{^HOOK}{require__before}"
             },
@@ -30301,6 +30909,10 @@ $CONF = {
               "ru" => {
                 "*" => "Обработчик %{hook}, вызванный как подпрограмма, завершился с исключением--поиск в \@INC остановлен\n",
                 "method" => "Обработчик %{hook}, вызванный как метод, завершился с исключением--поиск в \@INC остановлен\n"
+              },
+              "sr" => {
+                "method" => "Закачена метода %{hook} није успела — претрага \@INC се прекида\n",
+                "sub" => "Закачена подрутина %{hook} није успела — претрага \@INC се прекида\n"
               },
               "tr" => {
                 "method" => "%{hook} yöntem kancası başarısız oldu--\@INC araması durduruluyor\n",
@@ -30415,6 +31027,10 @@ $CONF = {
                 "array_object_hook" => "Не удалось найти ни метод объекта \"INC\", ни \"INCDIR\", ни перегрузку строкового преобразования через пакет %{package} для объекта в обработчике типа ARRAY в \@INC",
                 "object_hook" => "Не удалось найти ни метод объекта \"INC\", ни \"INCDIR\", ни перегрузку строкового преобразования через пакет %{package} для объекта-обработчика в \@INC"
               },
+              "sr" => {
+                "array_object_hook" => "Не могу да пронађем метод објекта \"INC\", нити \"INCDIR\", нити преоптерећење стринга преко пакета %{package} у објекту у ARRAY куки у \@INC",
+                "object_hook" => "Не могу да пронађем метод објекта \"INC\", нити \"INCDIR\", нити преоптерећење стринга преко пакета %{package} у куки објекта у \@INC"
+              },
               "tr" => {
                 "array_object_hook" => "\@INC içindeki ARRAY kancasında nesnede, %{package} paketi üzerinden \"INC\", \"INCDIR\" yöntemleri veya dize aşırı yüklemesi bulunamıyor",
                 "object_hook" => "\@INC içindeki nesne kancasında, %{package} paketi üzerinden \"INC\", \"INCDIR\" yöntemleri veya dize aşırı yüklemesi bulunamıyor"
@@ -30478,6 +31094,7 @@ $CONF = {
               "nl" => "Poging om onbekende hook '%{arg1}' in %%{^HOOK} in te stellen",
               "pt" => "Tentativa de definir um gancho desconhecido '%{arg1}' em %%{^HOOK}",
               "ru" => "Попытка установить неизвестный обработчик '%{arg1}' в %%{^HOOK}",
+              "sr" => "Покушај постављања непознате куке „%{arg1}“ у %%{^HOOK}",
               "tr" => "%%{^HOOK} içinde bilinmeyen '%{arg1}' kancası ayarlanmaya çalışıldı",
               "uk" => "Спроба встановити невідомий обробник '%{arg1}' у %%{^HOOK}"
             },
@@ -30525,6 +31142,7 @@ $CONF = {
               "nl" => "\${^HOOK}{%{arg1}} mag alleen een CODE-referentie of undef zijn",
               "pt" => "\${^HOOK}{%{arg1}} só pode ser uma referência CODE ou undef",
               "ru" => "\${^HOOK}{%{arg1}} может быть только ссылкой типа CODE или значением undef",
+              "sr" => "\${^HOOK}{%{arg1}} може бити само CODE референца или undef",
               "tr" => "\${^HOOK}{%{arg1}} yalnızca bir CODE referansı veya undef olabilir",
               "uk" => "\${^HOOK}{%{arg1}} може бути лише посиланням CODE або undef"
             },
@@ -30582,6 +31200,7 @@ $CONF = {
               "nl" => "UNIVERSAL exporteert niets",
               "pt" => "UNIVERSAL não exporta nada",
               "ru" => "UNIVERSAL ничего не экспортирует",
+              "sr" => "UNIVERSAL не извози ништа",
               "tr" => "UNIVERSAL hiçbir şeyi dışa aktarmıyor",
               "uk" => "UNIVERSAL нічого не експортує"
             },
@@ -30623,6 +31242,7 @@ $CONF = {
               "nl" => "Kan %{arg1} niet vinden",
               "pt" => "Não foi possível localizar %{arg1}",
               "ru" => "Не удалось найти %{arg1}",
+              "sr" => "Није могуће пронаћи %{arg1}",
               "tr" => "%{arg1} bulunamıyor",
               "uk" => "Неможливо знайти %{arg1}"
             },
@@ -30670,6 +31290,7 @@ $CONF = {
               "nl" => "Kan %{arg1} niet vinden in \@INC",
               "pt" => "Não foi possível localizar %{arg1} em \@INC",
               "ru" => "Не удалось найти %{arg1} в \@INC",
+              "sr" => "Није могуће пронаћи %{arg1} у \@INC",
               "tr" => "%{arg1}, \@INC içinde bulunamıyor",
               "uk" => "Не вдалося знайти %{arg1} у \@INC"
             },
@@ -30723,6 +31344,7 @@ $CONF = {
               "nl" => "Perl %{arg1} vereist (bedoelde u %{arg2}?): dit is slechts %{arg3}; gestopt",
               "pt" => "É necessário Perl %{arg1} (queria dizer %{arg2}?); esta versão é apenas %{arg3}. Execução interrompida",
               "ru" => "Требуется Perl %{arg1} (возможно, имелась в виду версия %{arg2}?) — используется лишь %{arg3}, выполнение остановлено",
+              "sr" => "Потребан је Perl %{arg1} (да ли сте мислили %{arg2}?) — доступан је само %{arg3}; извршавање је заустављено",
               "tr" => "Perl %{arg1} gerekiyor ( %{arg2} demek mi istediniz?)—bu yalnızca %{arg3}, durduruldu",
               "uk" => "Потрібен Perl %{arg1} (можливо, ви мали на увазі %{arg2}?) — поточна версія лише %{arg3}, виконання зупинено"
             },
@@ -30783,6 +31405,7 @@ $CONF = {
               "nl" => "Perl-versies vanaf %{arg1} zijn te modern: dit is %{arg2}; gestopt",
               "pt" => "É necessária uma versão de Perl anterior a %{arg1}; esta é %{arg2}. Execução interrompida",
               "ru" => "Версии Perl начиная с %{arg1} слишком новые — используется %{arg2}, выполнение остановлено",
+              "sr" => "Perl је превише нов од %{arg1} — ово је %{arg2}; извршавање је заустављено",
               "tr" => "%{arg1} ve sonraki Perl sürümleri çok yeni—bu %{arg2}, durduruldu",
               "uk" => "Версії Perl, починаючи з %{arg1}, занадто нові — поточна версія %{arg2}, виконання зупинено"
             },
@@ -30837,6 +31460,7 @@ $CONF = {
               "nl" => "Perl %{arg1} vereist: dit is slechts %{arg2}; gestopt",
               "pt" => "É necessário Perl %{arg1}; esta versão é apenas %{arg2}. Execução interrompida",
               "ru" => "Требуется Perl %{arg1} — используется лишь %{arg2}, выполнение остановлено",
+              "sr" => "Потребан је Perl %{arg1} — доступан је само %{arg2}; извршавање је заустављено",
               "tr" => "Perl %{arg1} gerekiyor; bu yalnızca %{arg2}, durduruldu",
               "uk" => "Потрібен Perl %{arg1} — поточна версія лише %{arg2}, виконання зупинено"
             },
@@ -30892,6 +31516,7 @@ $CONF = {
               "nl" => "%{error}Compilatie in require mislukt",
               "pt" => "%{error}A compilação falhou em require",
               "ru" => "%{error}Ошибка компиляции в require",
+              "sr" => "%{error}Компајлирање у require није успело",
               "tr" => "%{error}require sırasında derleme başarısız oldu",
               "uk" => "%{error}Помилка компіляції в require"
             },
@@ -30941,6 +31566,7 @@ $CONF = {
               "nl" => "Bareword in require bevat \"\\.\"",
               "pt" => "Uma palavra não delimitada em require contém \"\\.\"",
               "ru" => "Слово без кавычек в require содержит \"\\.\"",
+              "sr" => "Bareword у require садржи \"\\.\"",
               "tr" => "require içindeki yalın sözcük \"\\.\" içeriyor",
               "uk" => "Слово без лапок у require містить \"\\.\""
             },
@@ -30983,6 +31609,7 @@ $CONF = {
               "nl" => "Bareword in require resulteert in niet-toegestane bestandsnaam \"%{arg1}\"",
               "pt" => "Uma palavra não delimitada em require corresponde a um nome de ficheiro não permitido: \"%{arg1}\"",
               "ru" => "Слово без кавычек в require преобразуется в недопустимое имя файла \"%{arg1}\"",
+              "sr" => "Bareword у require одговара недозвољеном имену датотеке \"%{arg1}\"",
               "tr" => "require içindeki yalın sözcük, izin verilmeyen \"%{arg1}\" dosya adına karşılık geliyor",
               "uk" => "Слово без лапок у require відповідає недозволеному імені файлу \"%{arg1}\""
             },
@@ -31032,6 +31659,7 @@ $CONF = {
               "nl" => "Bareword in require bevat \"\\0\"",
               "pt" => "Uma palavra não delimitada em require contém \"\\0\"",
               "ru" => "Слово без кавычек в require содержит \"\\0\"",
+              "sr" => "Bareword у require садржи \"\\0\"",
               "tr" => "require içindeki yalın sözcük \"\\0\" içeriyor",
               "uk" => "Слово без лапок у require містить \"\\0\""
             },
@@ -31074,6 +31702,7 @@ $CONF = {
               "nl" => "Bareword in require bevat \"/.\"",
               "pt" => "Uma palavra não delimitada em require contém \"/.\"",
               "ru" => "Слово без кавычек в require содержит \"/.\"",
+              "sr" => "Bareword у require садржи \"/.\"",
               "tr" => "require içindeki yalın sözcük \"/.\" içeriyor",
               "uk" => "Слово без лапок у require містить \"/.\""
             },
@@ -31116,6 +31745,7 @@ $CONF = {
               "nl" => "Bareword in require resulteert in een lege bestandsnaam",
               "pt" => "Uma palavra não delimitada em require corresponde a um nome de ficheiro vazio",
               "ru" => "Слово без кавычек в require преобразуется в пустое имя файла",
+              "sr" => "Bareword у require одговара празном имену датотеке",
               "tr" => "require içindeki yalın sözcük boş bir dosya adına karşılık geliyor",
               "uk" => "Слово без лапок у require перетворюється на порожнє ім'я файлу"
             },
@@ -31158,6 +31788,7 @@ $CONF = {
               "nl" => "Bareword in require mag niet met een dubbele dubbelepunt beginnen: \"%{arg1}\"\n",
               "pt" => "Uma palavra não delimitada em require não pode começar por dois dois-pontos: \"%{arg1}\"\n",
               "ru" => "Слово без кавычек в require не должно начинаться с двойного двоеточия: \"%{arg1}\"\n",
+              "sr" => "Bareword у require не сме да почиње са двоструким двотачјем: \"%{arg1}\"\n",
               "tr" => "require içindeki yalın sözcük çift iki noktayla başlayamaz: \"%{arg1}\"\n",
               "uk" => "Слово без лапок у require не повинно починатися з подвійної двокрапки: \"%{arg1}\"\n"
             },
@@ -31205,6 +31836,7 @@ $CONF = {
               "nl" => "Opnieuw laden van %{arg1} afgebroken.\nCompilatie in require mislukt",
               "pt" => "A tentativa de voltar a carregar %{arg1} foi interrompida.\nA compilação falhou em require",
               "ru" => "Попытка повторной загрузки %{arg1} прервана.\nОшибка компиляции в require",
+              "sr" => "Поновно учитавање %{arg1} је прекинуто.\nКомпилација није успела у require",
               "tr" => "%{arg1} yeniden yüklenmeye çalışıldı; işlem iptal edildi.\nrequire sırasında derleme başarısız oldu",
               "uk" => "Спробу повторного завантаження %{arg1} перервано.\nПомилка компіляції в require"
             },
@@ -31252,6 +31884,7 @@ $CONF = {
               "nl" => "%{name} gaf geen ware waarde terug",
               "pt" => "%{name} não devolveu um valor verdadeiro",
               "ru" => "Файл %{name} не вернул истинное значение",
+              "sr" => "%{name} није вратио истиниту вредност",
               "tr" => "%{name} doğru (true) bir değer döndürmedi",
               "uk" => "%{name} не повернув істинного значення"
             },
@@ -31300,6 +31933,7 @@ $CONF = {
               "nl" => "Bronfilters zijn alleen van toepassing op bytestromen",
               "pt" => "Os filtros de código-fonte só se aplicam a fluxos de bytes",
               "ru" => "Фильтры исходного кода применимы только к байтовым потокам",
+              "sr" => "Филтери извора се примењују само на бајтне токове",
               "tr" => "Kaynak filtreleri yalnızca bayt akışlarına uygulanır",
               "uk" => "Фільтри вихідного коду застосовуються лише до байтових потоків"
             },
@@ -31342,6 +31976,7 @@ $CONF = {
               "nl" => "filter_del kan momenteel alleen in omgekeerde volgorde verwijderen",
               "pt" => "filter_del só pode eliminar pela ordem inversa (atualmente)",
               "ru" => "filter_del может удалять фильтры только в обратном порядке (на данный момент)",
+              "sr" => "filter_del може да брише само обрнутим редоследом (тренутно)",
               "tr" => "filter_del yalnızca ters sırada silme yapabilir (şu anda)",
               "uk" => "filter_del може видаляти лише у зворотному порядку (наразі)"
             },
@@ -31383,6 +32018,7 @@ $CONF = {
               "nl" => "Objectversie %{object_version} van %{module} komt niet overeen met bootstrapparameter %{perl_version}",
               "pt" => "A versão %{object_version} do objeto %{module} não corresponde ao parâmetro de inicialização %{perl_version}",
               "ru" => "Версия объектного кода модуля %{module} (%{object_version}) не совпадает с параметром bootstrap %{perl_version}",
+              "sr" => "Верзија објекта модула %{module} (%{object_version}) не одговара параметру за покретање %{perl_version}",
               "tr" => "%{module} nesne sürümü %{object_version}, bootstrap parametresi %{perl_version} ile eşleşmiyor",
               "uk" => "Версія об'єктного коду %{module} %{object_version} не відповідає параметру bootstrap %{perl_version}"
             },
@@ -31443,6 +32079,7 @@ $CONF = {
               "nl" => "Objectversie %{object_version} van %{module} komt niet overeen met \$%{module}::%{version_name} %{perl_version}",
               "pt" => "A versão %{object_version} do objeto %{module} não corresponde a \$%{module}::%{version_name} %{perl_version}",
               "ru" => "Версия объектного кода модуля %{module} (%{object_version}) не совпадает с \$%{module}::%{version_name} %{perl_version}",
+              "sr" => "Верзија објекта модула %{module} (%{object_version}) не одговара вредности \$%{module}::%{version_name} %{perl_version}",
               "tr" => "%{module} nesne sürümü, %{module}::%{version_name} %{perl_version} ile eşleşmiyor",
               "uk" => "Версія об’єктного коду %{module} %{object_version} не збігається з \$%{module}::%{version_name} %{perl_version}"
             },
@@ -31508,6 +32145,7 @@ $CONF = {
               "nl" => "Onvoldoende geheugen in perl:???",
               "pt" => "Memória esgotada no Perl:???",
               "ru" => "Недостаточно памяти в perl:???",
+              "sr" => "Недостатак меморије у perl:???",
               "tr" => "perl içinde bellek yetersiz:???",
               "uk" => "Недостатньо пам’яті в perl:???"
             },
@@ -31549,6 +32187,7 @@ $CONF = {
               "nl" => "Onvoldoende geheugen voor een buitensporig groot verzoek",
               "pt" => "Memória insuficiente durante um pedido excessivamente grande",
               "ru" => "Недостаточно памяти при запросе нелепо большого объёма",
+              "sr" => "Недостатак меморије током неразумно великог захтева",
               "tr" => "Aşırı büyük bir bellek isteği sırasında bellek yetersiz",
               "uk" => "Брак пам'яті під час обробки безглуздо великого запиту"
             },
@@ -31592,6 +32231,7 @@ $CONF = {
               "nl" => "Onvoldoende geheugen tijdens uitbreiden van array",
               "pt" => "Memória insuficiente ao expandir o array",
               "ru" => "Недостаточно памяти при расширении массива",
+              "sr" => "Нема довољно меморије током проширивања низа",
               "tr" => "Dizi genişletilirken bellek yetersiz",
               "uk" => "Брак пам'яті під час розширення масиву"
             },
@@ -31634,6 +32274,7 @@ $CONF = {
               "nl" => "Onvoldoende geheugen bij uitbreiden van lijst",
               "pt" => "Memória esgotada ao aumentar a lista",
               "ru" => "Недостаточно памяти при расширении списка",
+              "sr" => "Нема довољно меморије при проширењу листе",
               "tr" => "Liste genişletilirken bellek yetersiz",
               "uk" => "Брак пам'яті під час розширення списку"
             },
@@ -31676,6 +32317,7 @@ $CONF = {
               "nl" => "Onvoldoende geheugen tijdens pack()",
               "pt" => "Memória esgotada durante pack()",
               "ru" => "Недостаточно памяти при выполнении pack()",
+              "sr" => "Недовољно меморије током pack()",
               "tr" => "pack() sırasında bellek yetersiz",
               "uk" => "Недостатньо пам’яті під час виконання pack()"
             },
@@ -31717,6 +32359,7 @@ $CONF = {
               "nl" => "Onvoldoende geheugen om de stack uit te breiden",
               "pt" => "Memória esgotada ao aumentar a pilha",
               "ru" => "Недостаточно памяти при расширении стека",
+              "sr" => "Нема довољно меморије приликом проширивања стека",
               "tr" => "Yığın genişletilirken bellek yetersiz",
               "uk" => "Брак пам'яті під час розширення стека"
             },
@@ -31759,6 +32402,7 @@ $CONF = {
               "nl" => "Onvoldoende geheugen om de tekenreeks uit te breiden",
               "pt" => "Memória esgotada ao aumentar a cadeia de caracteres",
               "ru" => "Недостаточно памяти при расширении строки",
+              "sr" => "Нема довољно меморије приликом проширивања ниске",
               "tr" => "Dizge genişletilirken bellek yetersiz",
               "uk" => "Брак пам'яті під час розширення рядка"
             },
@@ -31801,6 +32445,7 @@ $CONF = {
               "nl" => "Onvoldoende geheugen tijdens vec in lvalue-context",
               "pt" => "Memória esgotada durante vec em contexto de atribuição",
               "ru" => "Недостаточно памяти при выполнении vec в контексте lvalue",
+              "sr" => "Недостатак меморије током vec у контексту леве вредности",
               "tr" => "lvalue bağlamındaki vec sırasında bellek yetersiz",
               "uk" => "Недостатньо пам’яті під час виконання vec у контексті lvalue"
             },
@@ -31843,6 +32488,7 @@ $CONF = {
               "nl" => "Een andere waarde dan nul toewijzen aan \$[ is niet meer mogelijk",
               "pt" => "Já não é possível atribuir um valor diferente de zero a \$[",
               "ru" => "Присваивать ненулевое значение переменной \$[ больше нельзя",
+              "sr" => "Више није могуће доделити ненулту вредност променљивој \$[",
               "tr" => "\$[ değişkenine sıfırdan farklı bir değer atanamaz",
               "uk" => "Присвоєння ненульового значення змінній \$[ більше неможливе"
             },
@@ -31885,6 +32531,7 @@ $CONF = {
               "nl" => "Kan een referentie naar %{arg1} niet aan een GLOB toewijzen",
               "pt" => "Não é possível atribuir uma referência a %{arg1} a um GLOB",
               "ru" => "Нельзя присвоить ссылку на %{arg1} глобу GLOB",
+              "sr" => "Није могуће доделити референцу на %{arg1} у GLOB",
               "tr" => "Bir GLOB içine %{arg1} öğesine başvuru atanamaz",
               "uk" => "Неможливо присвоїти посилання на %{arg1} глобу GLOB"
             },
@@ -31935,6 +32582,7 @@ $CONF = {
               "nl" => "Poging om niet-aanmaakbare arraywaarde te wijzigen, index %{index}",
               "pt" => "Tentativa de modificar um valor de array que não pode ser criado, índice %{index}",
               "ru" => "Попытка изменить значение элемента массива, который невозможно создать, индекс %{index}",
+              "sr" => "Покушана је измена вредности низа која не може да се креира, индекс %{index}",
               "tr" => "Oluşturulamayan dizi değerini değiştirme girişimi; alt indis %{index}",
               "uk" => "Спроба змінити значення елемента масиву, який неможливо створити, індекс %{index}"
             },
@@ -31991,6 +32639,7 @@ $CONF = {
               "nl" => "Poging om niet-aanmaakbare hashwaarde te wijzigen, sleutel \"%{key}\"",
               "pt" => "Tentativa de modificar um valor de hash que não pode ser criado, chave \"%{key}\"",
               "ru" => "Попытка изменить значение элемента хеша, который невозможно создать, ключ \"%{key}\"",
+              "sr" => "Покушана је измена вредности хеша која не може да се креира, индекс „%{key}”",
               "tr" => "Oluşturulamayan karma değerini değiştirme girişimi; alt indis \"%{key}\"",
               "uk" => "Спроба змінити значення елемента хешу, який неможливо створити, ключ \"%{key}\""
             },
@@ -32047,6 +32696,7 @@ $CONF = {
               "nl" => "Kan lexicale variabele %{arg1} niet lokaliseren",
               "pt" => "Não é possível localizar a variável lexical %{arg1} com local",
               "ru" => "Нельзя локализовать лексическую переменную %{arg1}",
+              "sr" => "Није могуће локализовати лексичку променљиву %{arg1}",
               "tr" => "Sözlüksel değişken %{arg1} yerelleştirilemiyor",
               "uk" => "Неможливо локалізувати лексичну змінну %{arg1}"
             },
@@ -32098,6 +32748,7 @@ $CONF = {
               "nl" => "Kan niet via een referentie lokaliseren",
               "pt" => "Não é possível aplicar local através de uma referência",
               "ru" => "Нельзя выполнить локализацию через ссылку",
+              "sr" => "Није могуће локализовати кроз референцу",
               "tr" => "Bir başvuru üzerinden yerelleştirme yapılamıyor",
               "uk" => "Неможливо виконати локалізацію через посилання"
             },
@@ -32140,6 +32791,7 @@ $CONF = {
               "nl" => "Kan aanroep van subroutine &%{arg1}, die geen lvalue oplevert, niet wijzigen",
               "pt" => "Não é possível modificar uma chamada a sub-rotina sem lvalue de &%{arg1}",
               "ru" => "Нельзя изменять результат вызова подпрограммы &%{arg1}, не объявленной как lvalue",
+              "sr" => "Не можете да мењате позив потпрограма &%{arg1} који није левовредност",
               "tr" => "Lvalue olmayan &%{arg1} alt yordam çağrısı değiştirilemiyor",
               "uk" => "Не можна змінювати результат виклику підпрограми &%{arg1}, не оголошеної як lvalue"
             },
@@ -32234,6 +32886,10 @@ $CONF = {
                 "array" => "Нельзя вернуть массив в скалярном контексте lvalue",
                 "hash" => "Нельзя вернуть хеш в скалярном контексте lvalue"
               },
+              "sr" => {
+                "array" => "Потпрограму са л-вредношћу није могуће вратити низ у скаларном контексту",
+                "hash" => "Потпрограму са л-вредношћу није могуће вратити хеш у скаларном контексту"
+              },
               "tr" => {
                 "array" => "Lvalue skaler bağlamına dizi döndürülemez",
                 "hash" => "Lvalue skaler bağlamına karma döndürülemez"
@@ -32293,6 +32949,7 @@ $CONF = {
               "nl" => "Kan array-slice met indices en waarden niet wijzigen in lijsttoewijzing",
               "pt" => "Não é possível modificar uma fatia de índices/valores de array numa atribuição de lista",
               "ru" => "Нельзя изменять срез массива из пар индекс/значение при списочном присваивании",
+              "sr" => "Није могуће мењати исечак низа индекса/вредности у додели листе",
               "tr" => "Liste atamasında dizinin indis/değer dilimi değiştirilemiyor",
               "uk" => "Не можна змінювати зріз пар індекс/значення масиву в списковому присвоєнні"
             },
@@ -32336,6 +32993,7 @@ $CONF = {
               "nl" => "Kan sleutels van een array niet wijzigen in lijsttoewijzing",
               "pt" => "Não é possível modificar chaves de um array numa atribuição de lista",
               "ru" => "Нельзя изменять результат keys для массива при списочном присваивании",
+              "sr" => "Није могуће мењати кључеве низа у додели листе",
               "tr" => "Liste atamasında dizinin anahtarları değiştirilemiyor",
               "uk" => "Не можна змінювати результат keys для масиву в списковому присвоєнні"
             },
@@ -32379,6 +33037,7 @@ $CONF = {
               "nl" => "Kan sleutels niet wijzigen in lijsttoewijzing",
               "pt" => "Não é possível modificar chaves numa atribuição de lista",
               "ru" => "Нельзя изменять результат keys при списочном присваивании",
+              "sr" => "Није могуће мењати кључеве у додели листе",
               "tr" => "Liste atamasında anahtarlar değiştirilemiyor",
               "uk" => "Не можна змінювати keys у списковому присвоєнні"
             },
@@ -32422,6 +33081,7 @@ $CONF = {
               "nl" => "Kan een hash-slice met sleutels en waarden niet wijzigen in %{arg2}-toewijzing",
               "pt" => "Não é possível modificar uma fatia de chaves/valores de hash numa atribuição %{arg2}",
               "ru" => "Невозможно изменить срез пар ключ/значение хеша при присваивании %{arg2}",
+              "sr" => "Не може се мењати исечак кључа/вредности хеша у додели %{arg2}",
               "tr" => "%{arg2} atamasında karma anahtar/değer dilimi değiştirilemiyor",
               "uk" => "Неможливо змінити зріз пар ключ/значення хешу під час присвоєння %{arg2}"
             },
@@ -32471,6 +33131,7 @@ $CONF = {
               "nl" => "Kan geen array teruggeven in scalaire lvalue-context",
               "pt" => "Não é possível devolver um array num contexto escalar lvalue",
               "ru" => "Нельзя возвращать массив в скалярном контексте, требующем lvalue",
+              "sr" => "Није могуће вратити низ у скаларни контекст леве вредности",
               "tr" => "Lvalue skaler bağlamına dizi döndürülemez",
               "uk" => "Не можна повертати масив у скалярному контексті lvalue"
             },
@@ -32514,6 +33175,7 @@ $CONF = {
               "nl" => "Kan geen hash teruggeven in scalaire lvalue-context",
               "pt" => "Não é possível devolver um hash num contexto escalar lvalue",
               "ru" => "Нельзя возвращать хеш в скалярном контексте, требующем lvalue",
+              "sr" => "Није могуће вратити хеш у скаларни контекст леве вредности",
               "tr" => "Lvalue skaler bağlamına karma döndürülemez",
               "uk" => "Не можна повертати хеш у скалярному контексті lvalue"
             },
@@ -32615,6 +33277,11 @@ $CONF = {
                 "temporary" => "Нельзя вернуть временное значение из подпрограммы, возвращающей lvalue",
                 "undef" => "Нельзя вернуть undef из подпрограммы, возвращающей lvalue"
               },
+              "sr" => {
+                "readonly" => "Потпрограму са л-вредношћу није могуће вратити вредност само за читање",
+                "temporary" => "Потпрограму са л-вредношћу није могуће вратити привремену вредност",
+                "undef" => "Потпрограму са л-вредношћу није могуће вратити undef"
+              },
               "tr" => {
                 "readonly" => "Lvalue alt yordamından salt okunur bir değer döndürülemez",
                 "temporary" => "Lvalue alt yordamından geçici bir değer döndürülemez",
@@ -32676,6 +33343,7 @@ $CONF = {
               "nl" => "Poging om alleen-lezen sleutel '%{key}' uit een beperkte hash te verwijderen",
               "pt" => "Tentativa de eliminar a chave só de leitura '%{key}' de um hash restrito",
               "ru" => "Попытка удалить ключ '%{key}' со значением, доступным только для чтения, из хеша с ограниченным набором ключей",
+              "sr" => "Покушај брисања кључа „%{key}”, означеног само за читање, из ограниченог хеша",
               "tr" => "Kısıtlı bir karmadan salt okunur '%{key}' anahtarı silinmeye çalışıldı",
               "uk" => "Спроба видалити з хешу з обмеженим набором ключів ключ '%{key}', значення якого доступне лише для читання"
             },
@@ -32724,6 +33392,7 @@ $CONF = {
               "nl" => "Poging om een alleen-lezenwaarde te wijzigen",
               "pt" => "Tentativa de modificar um valor só de leitura",
               "ru" => "Попытка изменения значения, доступного только для чтения",
+              "sr" => "Покушана је измена вредности која је само за читање",
               "tr" => "Salt okunur bir değeri değiştirme girişimi",
               "uk" => "Спроба змінити значення, доступне лише для читання"
             },
@@ -32766,6 +33435,7 @@ $CONF = {
               "nl" => "Experimentele aliasing via referentie is niet ingeschakeld",
               "pt" => "A funcionalidade experimental de alias por referência não está ativada",
               "ru" => "Экспериментальное создание псевдонимов через ссылки не включено",
+              "sr" => "Експериментално алијасирање преко референце није омогућено",
               "tr" => "Başvuru yoluyla deneysel takma ad verme özelliği etkin değil",
               "uk" => "Експериментальне створення псевдонімів через посилання не ввімкнено"
             },
@@ -32907,6 +33577,9 @@ $CONF = {
               "ru" => {
                 "*" => "Присваиваемое значение не является ссылкой типа %{reference_type}"
               },
+              "sr" => {
+                "*" => "Додељена вредност није референца типа %{reference_type}"
+              },
               "tr" => {
                 "*" => "Atanan değer bir %{reference_type} başvurusu değil",
                 "ARRAY" => "Atanan değer bir %{reference_type} başvurusu değil",
@@ -32989,6 +33662,7 @@ $CONF = {
               "nl" => "Toegewezen waarde is geen referentie",
               "pt" => "O valor atribuído não é uma referência",
               "ru" => "Присваиваемое значение не является ссылкой",
+              "sr" => "Додељена вредност није референца",
               "tr" => "Atanan değer bir başvuru değil",
               "uk" => "Присвоєне значення не є посиланням"
             },
@@ -33037,6 +33711,7 @@ $CONF = {
               "nl" => "Kan een actieve subroutine niet met undef verwijderen",
               "pt" => "Não é possível tornar indefinida uma sub-rotina ativa",
               "ru" => "Нельзя применить undef к выполняющейся подпрограмме",
+              "sr" => "Не може се уклонити дефиниција активног потпрограма",
               "tr" => "Etkin alt yordam tanımsız hâle getirilemez",
               "uk" => "Неможливо застосувати undef до підпрограми, що виконується"
             },
@@ -33078,6 +33753,7 @@ $CONF = {
               "nl" => "Arrays en hashes aan zichzelf koppelen met tie wordt niet ondersteund",
               "pt" => "Não é suportado associar um array ou hash a si próprio com tie",
               "ru" => "Привязка массивов и хешей к самим себе через tie не поддерживается",
+              "sr" => "Самовезивање низова и хешева није подржано",
               "tr" => "Dizilerin ve hash'lerin kendilerine bağlanması desteklenmiyor",
               "uk" => "Прив'язування масивів і хешів до самих себе через tie не підтримується"
             },
@@ -33121,6 +33797,7 @@ $CONF = {
               "nl" => "Kan tie niet toepassen op een array die niet gematerialiseerd kan worden",
               "pt" => "Não é possível associar com tie um array que não pode ser materializado",
               "ru" => "Нельзя применить tie к массиву, который невозможно перевести в режим подсчёта ссылок на его элементы",
+              "sr" => "Не може се извршити tie над низом који не може да задржи бројач референци",
               "tr" => "Yeniden oluşturulamayan diziye tie uygulanamaz",
               "uk" => "Неможливо застосувати tie до масиву, для якого неможливо ввімкнути підрахунок посилань на елементи"
             },
@@ -33162,6 +33839,7 @@ $CONF = {
               "nl" => "FETCHSIZE heeft een negatieve waarde teruggegeven",
               "pt" => "FETCHSIZE devolveu um valor negativo",
               "ru" => "FETCHSIZE вернул отрицательное значение",
+              "sr" => "FETCHSIZE је вратио негативну вредност",
               "tr" => "FETCHSIZE negatif bir değer döndürdü",
               "uk" => "FETCHSIZE повернув від’ємне значення"
             },
@@ -33203,6 +33881,7 @@ $CONF = {
               "nl" => "Kan %{arg2} niet omzetten naar een geheel getal in %{arg3}",
               "pt" => "Não é possível converter %{arg2} em inteiro em %{arg3}",
               "ru" => "Невозможно преобразовать %{arg2} в целое число в %{arg3}",
+              "sr" => "Није могуће претворити %{arg2} у цео број при %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} değeri tamsayıya dönüştürülemez",
               "uk" => "Неможливо привести %{arg2} до цілого числа у %{arg3}"
             },
@@ -33245,6 +33924,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -33287,6 +33967,7 @@ $CONF = {
               "nl" => "Kan %{arg2} niet omzetten naar een getal in %{arg3}",
               "pt" => "Não é possível converter %{arg2} em número em %{arg3}",
               "ru" => "Невозможно преобразовать %{arg2} в число в %{arg3}",
+              "sr" => "Није могуће претворити %{arg2} у број при %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} değeri sayıya dönüştürülemez",
               "uk" => "Неможливо привести %{arg2} до числа у %{arg3}"
             },
@@ -33329,6 +34010,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -33372,6 +34054,7 @@ $CONF = {
               "nl" => "Delen door nul is niet toegestaan",
               "pt" => "Divisão por zero não permitida",
               "ru" => "Недопустимое деление на ноль",
+              "sr" => "Недозвољено дељење нулом",
               "tr" => "Sıfıra bölme geçersiz",
               "uk" => "Неприпустиме ділення на нуль"
             },
@@ -33456,6 +34139,10 @@ $CONF = {
               "ru" => {
                 "*" => "Невозможно вычислить %{operation} для значения %{value}"
               },
+              "sr" => {
+                "log" => "Не може да се израчуна %{operation} од %{value}",
+                "sqrt" => "Не може да се израчуна %{operation} од %{value}"
+              },
               "tr" => {
                 "log" => "%{value} değerinin %{operation} değeri alınamaz",
                 "sqrt" => "%{value} değerinin %{operation} değeri alınamaz"
@@ -33524,6 +34211,7 @@ $CONF = {
               "nl" => "Modulo met nul is niet toegestaan",
               "pt" => "Módulo por zero não permitido",
               "ru" => "Недопустимое вычисление остатка от деления на ноль",
+              "sr" => "Недозвољен модуло нулом",
               "tr" => "Sıfır modülü geçersiz",
               "uk" => "Неприпустиме обчислення остачі від ділення на нуль"
             },
@@ -33566,6 +34254,7 @@ $CONF = {
               "nl" => "Poging om met bless een vrijgegeven pakket toe te wijzen",
               "pt" => "Tentativa de aplicar bless a um pacote libertado",
               "ru" => "Попытка использовать bless для привязки к освобождённому пакету",
+              "sr" => "Покушај bless-а у ослобођени пакет",
               "tr" => "Serbest bırakılmış bir pakete bless uygulama girişimi",
               "uk" => "Спроба застосувати bless для надання належності до звільненого пакета"
             },
@@ -33608,6 +34297,7 @@ $CONF = {
               "nl" => "Poging om met bless een referentie toe te wijzen",
               "pt" => "Tentativa de aplicar bless a uma referência",
               "ru" => "Попытка передать ссылку вместо имени пакета в bless",
+              "sr" => "Покушај bless-а у референцу",
               "tr" => "Bir başvuruya bless uygulama girişimi",
               "uk" => "Спроба застосувати bless із посиланням замість назви класу"
             },
@@ -33649,6 +34339,7 @@ $CONF = {
               "nl" => "Poging om met bless een klasse toe te wijzen",
               "pt" => "Tentativa de aplicar bless a uma classe",
               "ru" => "Попытка использовать bless для привязки к классу, объявленному через class",
+              "sr" => "Покушај bless-а у класу",
               "tr" => "Bir sınıfa bless uygulama girişimi",
               "uk" => "Спроба застосувати bless для надання належності до класу"
             },
@@ -33691,6 +34382,7 @@ $CONF = {
               "nl" => "Kan bless niet op een objectreferentie toepassen",
               "pt" => "Não é possível aplicar bless a uma referência de objeto",
               "ru" => "Нельзя применить bless к ссылке на объект",
+              "sr" => "Не може се извршити bless над референцом на објекат",
               "tr" => "Bir nesne başvurusuna bless uygulanamaz",
               "uk" => "Неможливо застосувати bless до посилання на об’єкт"
             },
@@ -33733,6 +34425,7 @@ $CONF = {
               "nl" => "Kan bless niet op een waarde toepassen die geen referentie is",
               "pt" => "Não é possível aplicar bless a um valor que não é uma referência",
               "ru" => "Нельзя применить bless к значению, не являющемуся ссылкой",
+              "sr" => "Не може се извршити bless над вредношћу која није референца",
               "tr" => "Başvuru olmayan bir değere bless uygulanamaz",
               "uk" => "Неможливо застосувати bless до значення, що не є посиланням"
             },
@@ -33774,6 +34467,7 @@ $CONF = {
               "nl" => "Te veel rollen in één samenstelling (maximaal %{arg1})",
               "pt" => "Demasiados papéis numa única composição (máximo %{arg1})",
               "ru" => "Слишком много ролей в одной композиции (максимум %{arg1})",
+              "sr" => "Није дозвољено више од %{arg1} улога у једној композицији",
               "tr" => "Tek bir bileşimde çok fazla rol var (en fazla %{arg1})",
               "uk" => "Забагато ролей в одній композиції (максимум %{arg1})"
             },
@@ -33823,6 +34517,7 @@ $CONF = {
               "nl" => "De rolcompositie voor '%{class}' kon niet worden voltooid:\n",
               "pt" => "Não foi possível concluir a composição do role '%{class}':\n",
               "ru" => "Не удалось завершить композицию ролей для '%{class}':\n",
+              "sr" => "Састављање улоге није могло да се доврши за „%{class}“:\n",
               "tr" => "'%{class}' için rol bileşimi tamamlanamadı:\n",
               "uk" => "Не вдалося завершити композицію ролей для '%{class}':\n"
             },
@@ -33883,6 +34578,7 @@ $CONF = {
               "nl" => "Veld '%{field}' conflicteert tussen '%{role1}' en '%{role2}'\n",
               "pt" => "O campo '%{field}' apresenta um conflito entre '%{role1}' e '%{role2}'\n",
               "ru" => "Конфликт поля '%{field}' между ролями '%{role1}' и '%{role2}'\n",
+              "sr" => "Поље „%{field}“ је у сукобу између „%{role1}“ и „%{role2}“\n",
               "tr" => "'%{field}' alanı '%{role1}' ile '%{role2}' arasında çakışıyor\n",
               "uk" => "Конфлікт поля '%{field}' між '%{role1}' і '%{role2}'\n"
             },
@@ -33949,6 +34645,7 @@ $CONF = {
               "nl" => "Onverwachte tekens bij verwerken van attribuut :implements: %{arg1}",
               "pt" => "Caracteres inesperados ao analisar o atributo :implements: %{arg1}",
               "ru" => "Неожиданные символы при разборе атрибута :implements: %{arg1}",
+              "sr" => "Неочекивани знакови при рашчлањивању атрибута :implements: %{arg1}",
               "tr" => ":implements niteliği ayrıştırılırken beklenmeyen karakterler: %{arg1}",
               "uk" => "Неочікувані символи під час розбору атрибута :implements: %{arg1}"
             },
@@ -33996,6 +34693,7 @@ $CONF = {
               "nl" => "Inconsistente hiërarchie tijdens C3-samenvoeging van klasse '%{class}'.",
               "pt" => "Hierarquia inconsistente durante a combinação C3 da classe '%{class}'.",
               "ru" => "Несогласованная иерархия при слиянии C3 для класса '%{class}'.",
+              "sr" => "Недоследна хијерархија током C3 спајања класе „%{class}“.",
               "tr" => "'%{class}' sınıfının C3 birleştirmesi sırasında hiyerarşi tutarsız.",
               "uk" => "Неузгоджена ієрархія під час злиття C3 для класу '%{class}'."
             },
@@ -34050,6 +34748,7 @@ $CONF = {
               "nl" => "Het huidige samenvoegresultaat bevat '%{class}'.",
               "pt" => "O resultado atual da combinação inclui '%{class}'.",
               "ru" => "Текущий результат слияния включает '%{class}'.",
+              "sr" => "Тренутни резултат спајања садржи „%{class}“.",
               "tr" => "Geçerli birleştirme sonucu '%{class}' içeriyor.",
               "uk" => "Поточний результат злиття містить '%{class}'."
             },
@@ -34105,6 +34804,7 @@ $CONF = {
               "nl" => "Samenvoeging mislukt bij bovenliggende klasse '%{parent}'.",
               "pt" => "A combinação falhou no progenitor '%{parent}'.",
               "ru" => "Слияние не удалось на родительском классе '%{parent}'.",
+              "sr" => "Спајање није успело на родитељу „%{parent}“.",
               "tr" => "Birleştirme '%{parent}' üst sınıfında başarısız oldu.",
               "uk" => "Злиття не вдалося виконати через батьківський клас '%{parent}'."
             },
@@ -34159,6 +34859,7 @@ $CONF = {
               "nl" => "Onverwachte tekens bij verwerken van klasseattribuut :isa: %{arg1}",
               "pt" => "Caracteres inesperados ao analisar o atributo :isa da classe: %{arg1}",
               "ru" => "Неожиданные символы при разборе атрибута :isa класса: %{arg1}",
+              "sr" => "Неочекивани знакови при рашчлањивању атрибута :isa класе: %{arg1}",
               "tr" => "Sınıf :isa niteliği ayrıştırılırken beklenmeyen karakterler: %{arg1}",
               "uk" => "Неочікувані символи під час розбору атрибута класу :isa: %{arg1}"
             },
@@ -34206,6 +34907,7 @@ $CONF = {
               "nl" => "Kan mro_isa_changed_in() niet aanroepen op een anonieme symbooltabel",
               "pt" => "Não é possível chamar mro_isa_changed_in() numa tabela de símbolos anónima",
               "ru" => "Нельзя вызвать mro_isa_changed_in() для анонимной таблицы символов",
+              "sr" => "Не може се позвати mro_isa_changed_in() над анонимном табелом симбола",
               "tr" => "Anonim simge tablosunda mro_isa_changed_in() çağrılamaz",
               "uk" => "Неможливо викликати mro_isa_changed_in() для анонімної таблиці символів"
             },
@@ -34248,6 +34950,7 @@ $CONF = {
               "nl" => "Kan een anonieme symbooltabel niet lineariseren",
               "pt" => "Não é possível linearizar uma tabela de símbolos anónima",
               "ru" => "Нельзя линеаризовать анонимную таблицу символов",
+              "sr" => "Не може се одредити редослед разрешавања метода за анонимну табелу симбола",
               "tr" => "Anonim simge tablosunun doğrusal sıralaması oluşturulamaz",
               "uk" => "Неможливо лінеаризувати анонімну таблицю символів"
             },
@@ -34290,6 +34993,7 @@ $CONF = {
               "nl" => "Recursieve overerving gedetecteerd in package '%{stashhek}'",
               "pt" => "Herança recursiva detetada no pacote '%{stashhek}'",
               "ru" => "Обнаружено рекурсивное наследование в пакете '%{stashhek}'",
+              "sr" => "Откривено рекурзивно наслеђивање у пакету „%{stashhek}“",
               "tr" => "'%{stashhek}' paketinde özyinelemeli kalıtım algılandı",
               "uk" => "У пакеті '%{stashhek}' виявлено рекурсивне успадкування"
             },
@@ -34338,6 +35042,7 @@ $CONF = {
               "nl" => "Kan mro_method_changed_in() niet aanroepen op een anonieme symbooltabel",
               "pt" => "Não é possível chamar mro_method_changed_in() numa tabela de símbolos anónima",
               "ru" => "Нельзя вызвать mro_method_changed_in() для анонимной таблицы символов",
+              "sr" => "Не може се позвати mro_method_changed_in() над анонимном табелом симбола",
               "tr" => "Anonim simge tablosunda mro_method_changed_in() çağrılamaz",
               "uk" => "Неможливо викликати mro_method_changed_in() для анонімної таблиці символів"
             },
@@ -34379,6 +35084,7 @@ $CONF = {
               "nl" => "Klasse '%{classname}' bestaat niet!",
               "pt" => "A classe '%{classname}' não existe!",
               "ru" => "Нет такого класса: '%{classname}'!",
+              "sr" => "Не постоји класа: „%{classname}“!",
               "tr" => "Böyle bir sınıf yok: '%{classname}'!",
               "uk" => "Немає такого класу: '%{classname}'!"
             },
@@ -34428,6 +35134,7 @@ $CONF = {
               "nl" => "Ongeldige MRO-naam: '%{name}'",
               "pt" => "Nome de mro inválido: '%{name}'",
               "ru" => "Недопустимое имя mro: '%{name}'",
+              "sr" => "Неисправно име MRO-а: „%{name}“",
               "tr" => "Geçersiz mro adı: '%{name}'",
               "uk" => "Недопустима назва mro: '%{name}'"
             },
@@ -34476,6 +35183,7 @@ $CONF = {
               "nl" => "Klasseattribuut :isa vereist een klasse, maar %{superclassname} is geen klasse",
               "pt" => "O atributo :isa da classe exige uma classe, mas %{superclassname} não é uma classe",
               "ru" => "Атрибут класса :isa требует указать класс, но %{superclassname} классом не является",
+              "sr" => "Атрибут :isa класе захтева класу, али %{superclassname} то није",
               "tr" => ":isa niteliği bir sınıf gerektiriyor, ancak %{superclassname} bir sınıf değil",
               "uk" => "Атрибут класу :isa вимагає класу, але %{superclassname} ним не є"
             },
@@ -34524,6 +35232,7 @@ $CONF = {
               "nl" => "Kan klasse '%{class}' niet maken!",
               "pt" => "Não é possível criar a classe: '%{class}'!",
               "ru" => "Не удалось создать класс: '%{class}'!",
+              "sr" => "Не може да се креира класа: „%{class}“!",
               "tr" => "Sınıf oluşturulamıyor: '%{class}'!",
               "uk" => "Не вдалося створити клас: '%{class}'!"
             },
@@ -34572,6 +35281,7 @@ $CONF = {
               "nl" => "Rollen mogen :isa niet gebruiken",
               "pt" => "Os papéis não podem utilizar :isa",
               "ru" => "Роли не могут использовать :isa",
+              "sr" => "Улоге не могу да користе :isa",
               "tr" => "Roller :isa kullanamaz",
               "uk" => "Ролі не можуть використовувати :isa"
             },
@@ -34613,6 +35323,7 @@ $CONF = {
               "nl" => "Klasse heeft al een superklasse; er kan geen andere worden toegevoegd",
               "pt" => "A classe já tem uma superclasse; não é possível adicionar outra",
               "ru" => "У класса уже есть суперкласс, добавить ещё один нельзя",
+              "sr" => "Класа већ има суперкласу; не може да јој се дода друга",
               "tr" => "Sınıfın zaten bir üst sınıfı var; başka bir üst sınıf eklenemez",
               "uk" => "Клас уже має суперклас, неможливо додати ще один"
             },
@@ -34654,6 +35365,7 @@ $CONF = {
               "nl" => "Methode '%{method}' is vereist maar wordt niet geleverd door '%{class}'\n",
               "pt" => "O método '%{method}' é obrigatório, mas não é fornecido por '%{class}'\n",
               "ru" => "Требуется метод '%{method}', но класс '%{class}' его не предоставляет\n",
+              "sr" => "Метода „%{method}“ је обавезна, али је не обезбеђује „%{class}“\n",
               "tr" => "'%{method}' yöntemi gerekli, ancak '%{class}' tarafından sağlanmıyor\n",
               "uk" => "Метод '%{method}' є обов’язковим, але '%{class}' його не надає\n"
             },
@@ -34714,6 +35426,7 @@ $CONF = {
               "nl" => "Methode '%{arg1}' conflicteert tussen '%{arg2}' en '%{arg3}'\n",
               "pt" => "Conflito do método '%{arg1}' entre '%{arg2}' e '%{arg3}'\n",
               "ru" => "Конфликт метода '%{arg1}' между '%{arg2}' и '%{arg3}'\n",
+              "sr" => "Метода „%{arg1}” је у сукобу између „%{arg2}” и „%{arg3}”\n",
               "tr" => "'%{arg1}' yöntemi '%{arg2}' ile '%{arg3}' arasında çakışıyor\n",
               "uk" => "Конфлікт методу '%{arg1}' між '%{arg2}' та '%{arg3}'\n"
             },
@@ -34780,6 +35493,7 @@ $CONF = {
               "nl" => "Attribuut :implements vereist een rol, maar %{role} is geen rol",
               "pt" => "O atributo :implements exige um papel, mas %{role} não é um papel",
               "ru" => "Атрибут :implements требует роль, но %{role} ролью не является",
+              "sr" => "Атрибут :implements захтева улогу, али %{role} није улога",
               "tr" => ":implements niteliği bir rol gerektiriyor, ancak %{role} bir rol değil",
               "uk" => "Атрибут :implements вимагає ролі, але %{role} не є роллю"
             },
@@ -34829,6 +35543,7 @@ $CONF = {
               "nl" => "Kan geen object maken van onvolledige klasse %{stash}",
               "pt" => "Não é possível criar um objeto da classe incompleta %{stash}",
               "ru" => "Невозможно создать объект незавершённого класса %{stash}",
+              "sr" => "Није могуће направити објекат непотпуне класе %{stash}",
               "tr" => "Tamamlanmamış %{stash} sınıfının bir nesnesi oluşturulamaz",
               "uk" => "Неможливо створити об'єкт незавершеного класу %{stash}"
             },
@@ -34877,6 +35592,7 @@ $CONF = {
               "nl" => "Verplichte parameter '%{parameter}' ontbreekt voor de constructor van %{class_name}",
               "pt" => "Falta o parâmetro obrigatório '%{parameter}' no construtor de %{class_name}",
               "ru" => "Для конструктора класса %{class_name} не указан обязательный параметр '%{parameter}'",
+              "sr" => "Недостаје обавезни параметар '%{parameter}' за конструктор класе %{class_name}",
               "tr" => "%{class_name} kurucusu için gerekli '%{parameter}' parametresi eksik",
               "uk" => "Відсутній обов'язковий параметр '%{parameter}' для конструктора класу %{class_name}"
             },
@@ -34932,6 +35648,7 @@ $CONF = {
               "nl" => "Onbekende parameters voor constructor van %{stash}: %{paramnames}",
               "pt" => "Parâmetros não reconhecidos pelo construtor de %{stash}: %{paramnames}",
               "ru" => "Нераспознанные параметры конструктора %{stash}: %{paramnames}",
+              "sr" => "Непознати параметри за конструктор %{stash}: %{paramnames}",
               "tr" => "%{stash} kurucusu için tanınmayan parametreler: %{paramnames}",
               "uk" => "Нерозпізнані параметри конструктора %{stash}: %{paramnames}"
             },
@@ -34993,6 +35710,7 @@ $CONF = {
               "nl" => "Waarde voor veld %{field} moet een referentie zijn",
               "pt" => "O valor do campo %{field} tem de ser uma referência",
               "ru" => "значение поля %{field} должно быть ссылкой",
+              "sr" => "вредност поља %{field} мора бити референца",
               "tr" => "%{field} alanının değeri bir başvuru olmalıdır",
               "uk" => "значення поля %{field} має бути посиланням"
             },
@@ -35041,6 +35759,7 @@ $CONF = {
               "nl" => "Waarde voor veld %{field} heeft het verkeerde referentietype",
               "pt" => "O valor do campo %{field} tem um tipo de referência incorreto",
               "ru" => "значение поля %{field} имеет неверный тип ссылки",
+              "sr" => "вредност поља %{field} има погрешан тип референце",
               "tr" => "%{field} alanının değeri yanlış başvuru türünde",
               "uk" => "значення поля %{field} має неправильний тип посилання"
             },
@@ -35090,6 +35809,7 @@ $CONF = {
               "nl" => "class_object_from_hash verwacht een hashreferentie",
               "pt" => "class_object_from_hash espera uma referência de hash",
               "ru" => "class_object_from_hash ожидает ссылку на хеш",
+              "sr" => "class_object_from_hash очекује референцу на хеш",
               "tr" => "class_object_from_hash bir hash başvurusu bekliyor",
               "uk" => "class_object_from_hash очікує посилання на хеш"
             },
@@ -35131,6 +35851,7 @@ $CONF = {
               "nl" => "class_object_from_hash verwacht de naam van een klasse",
               "pt" => "class_object_from_hash espera o nome de uma classe",
               "ru" => "class_object_from_hash ожидает имя класса",
+              "sr" => "class_object_from_hash очекује име класе",
               "tr" => "class_object_from_hash bir sınıfın adını bekliyor",
               "uk" => "class_object_from_hash очікує ім'я класу"
             },
@@ -35173,6 +35894,7 @@ $CONF = {
               "nl" => "class_object_to_hash verwacht een klasseobject",
               "pt" => "class_object_to_hash espera um objeto de classe",
               "ru" => "class_object_to_hash ожидает объект класса",
+              "sr" => "class_object_to_hash очекује објекат класе",
               "tr" => "class_object_to_hash bir sınıf nesnesi bekliyor",
               "uk" => "class_object_to_hash очікує об'єкт класу"
             },
@@ -35214,6 +35936,7 @@ $CONF = {
               "nl" => "Onbekend klasseattribuut %{name}",
               "pt" => "Atributo de classe não reconhecido: %{name}",
               "ru" => "Нераспознанный атрибут класса %{name}",
+              "sr" => "Непознат атрибут класе %{name}",
               "tr" => "Tanınmayan sınıf niteliği: %{name}",
               "uk" => "Нерозпізнаний атрибут класу %{name}"
             },
@@ -35262,6 +35985,7 @@ $CONF = {
               "nl" => "Klasseattribuut %{name} vereist een waarde",
               "pt" => "O atributo de classe %{name} exige um valor",
               "ru" => "Атрибут класса %{name} требует значения",
+              "sr" => "Атрибут класе %{name} захтева вредност",
               "tr" => "Sınıf niteliği %{name} bir değer gerektiriyor",
               "uk" => "Атрибут класу %{name} вимагає значення"
             },
@@ -35310,6 +36034,7 @@ $CONF = {
               "nl" => "Ongeldige attribuuttekst",
               "pt" => "Cadeia de atributos malformada",
               "ru" => "Некорректная строка атрибута",
+              "sr" => "Неправилно завршен нискасти атрибут",
               "tr" => "Bozuk öznitelik dizgesi",
               "uk" => "Некоректний рядок атрибута"
             },
@@ -35351,6 +36076,7 @@ $CONF = {
               "nl" => "Kan klasse %{stash} niet maken omdat deze al een niet-lege \@ISA heeft",
               "pt" => "Não é possível criar a classe %{stash}: já possui uma \@ISA não vazia",
               "ru" => "Невозможно создать класс %{stash}, поскольку у него уже есть непустой массив \@ISA",
+              "sr" => "Није могуће направити класу %{stash} јер већ има непразан \@ISA",
               "tr" => "%{stash} sınıfı oluşturulamıyor; çünkü sınıfın boş olmayan bir \@ISA dizisi zaten var",
               "uk" => "Неможливо створити клас %{stash}, оскільки він уже має непорожній масив \@ISA"
             },
@@ -35399,6 +36125,7 @@ $CONF = {
               "nl" => "Kan __CLASS__ niet buiten een methode of veldinitialisatie-expressie gebruiken",
               "pt" => "Não é possível utilizar __CLASS__ fora de um método ou de uma expressão de inicialização de campo",
               "ru" => "Нельзя использовать __CLASS__ вне метода или выражения инициализации поля",
+              "sr" => "Не можете користити __CLASS__ изван метода или израза за иницијализацију поља",
               "tr" => "__CLASS__, bir yöntem veya alan başlatma ifadesi dışında kullanılamaz",
               "uk" => "Неможливо використовувати __CLASS__ поза методом або виразом ініціалізації поля"
             },
@@ -35440,6 +36167,7 @@ $CONF = {
               "nl" => "'%{arg1}' is alleen toegestaan binnen een 'class' of 'role'",
               "pt" => "Não é possível usar '%{arg1}' fora de uma 'class' ou 'role'",
               "ru" => "Нельзя использовать '%{arg1}' вне 'class' или 'role'",
+              "sr" => "Не може се користити „%{arg1}“ изван „class“ или „role“ контекста",
               "tr" => "'class' veya 'role' dışında '%{arg1}' kullanılamaz",
               "uk" => "Не можна використовувати '%{arg1}' поза 'class' або 'role'"
             },
@@ -35487,6 +36215,7 @@ $CONF = {
               "nl" => "Kan bestaande klasse %{stash} niet opnieuw openen",
               "pt" => "Não é possível reabrir a classe existente %{stash}",
               "ru" => "Невозможно повторно открыть определение существующего класса %{stash}",
+              "sr" => "Није могуће поново отворити постојећу класу %{stash}",
               "tr" => "Mevcut %{stash} sınıfı yeniden açılamaz",
               "uk" => "Неможливо повторно відкрити наявний клас %{stash}"
             },
@@ -35519,7 +36248,24 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "A class with a conventional superclass requires a :blessed_self field"
+              "ar" => "تتطلب الفئة التي لها فئة أساسية تقليدية حقلًا :blessed_self",
+              "cy" => "Mae angen maes :blessed_self ar ddosbarth ag uwchddosbarth confensiynol",
+              "de" => "Eine Klasse mit einer konventionellen Oberklasse erfordert ein :blessed_self-Feld",
+              "en" => "A class with a conventional superclass requires a :blessed_self field",
+              "es" => "Una clase con una superclase convencional requiere un campo :blessed_self",
+              "fa" => "کلاسی با اَبَرکلاس متعارف به یک فیلد :blessed_self نیاز دارد",
+              "fi" => "Luokka, jolla on tavanomainen yläluokka, edellyttää :blessed_self-kenttää",
+              "fr" => "Une classe ayant une superclasse conventionnelle exige un champ :blessed_self",
+              "he" => "מחלקה עם מחלקת־על מקובלת מחייבת שדה :blessed_self",
+              "hu" => "A hagyományos szülőosztállyal rendelkező osztálynak :blessed_self mezővel kell rendelkeznie",
+              "is" => "Klasi með hefðbundnum yfirklasa krefst :blessed_self-sviðs",
+              "it" => "Una classe con una superclasse convenzionale richiede un campo :blessed_self",
+              "nl" => "Een klasse met een conventionele superklasse vereist een veld :blessed_self",
+              "pt" => "Uma classe com uma superclasse convencional requer um campo :blessed_self",
+              "ru" => "Классу с обычным суперклассом требуется поле :blessed_self\n",
+              "sr" => "Класа са уобичајеном суперкласом захтева поље :blessed_self",
+              "tr" => "Geleneksel bir üst sınıfa sahip sınıfta :blessed_self alanı bulunmalıdır",
+              "uk" => "Клас зі звичайним суперкласом повинен містити поле :blessed_self"
             },
             "args" => []
           },
@@ -35559,6 +36305,7 @@ $CONF = {
               "nl" => "Kan rol %{stash} niet maken omdat deze al een niet-lege \@ISA heeft",
               "pt" => "Não é possível criar o papel %{stash}: já possui uma \@ISA não vazia",
               "ru" => "Невозможно создать роль %{stash}, поскольку у неё уже есть непустой массив \@ISA",
+              "sr" => "Није могуће направити улогу %{stash} јер већ има непразан \@ISA",
               "tr" => "%{stash} rolü oluşturulamıyor; çünkü rolün boş olmayan bir \@ISA dizisi zaten var",
               "uk" => "Неможливо створити роль %{stash}, оскільки вона вже має непорожній масив \@ISA"
             },
@@ -35607,6 +36354,7 @@ $CONF = {
               "nl" => "Kan rol %{stash} niet definiëren omdat het al een klasse is",
               "pt" => "Não é possível definir %{stash} como papel, pois já é uma classe",
               "ru" => "Невозможно определить роль %{stash}, поскольку это уже класс",
+              "sr" => "Није могуће дефинисати улогу %{stash} јер је већ класа",
               "tr" => "%{stash} rolü tanımlanamıyor; çünkü zaten bir sınıf",
               "uk" => "Неможливо визначити роль %{stash}, оскільки це вже клас"
             },
@@ -35655,6 +36403,7 @@ $CONF = {
               "nl" => "Kan bestaande rol %{stash} niet opnieuw openen",
               "pt" => "Não é possível reabrir o papel existente %{stash}",
               "ru" => "Невозможно повторно открыть существующую роль %{stash}",
+              "sr" => "Није могуће поново отворити постојећу улогу %{stash}",
               "tr" => "Mevcut %{stash} rolü yeniden açılamaz",
               "uk" => "Неможливо повторно відкрити наявну роль %{stash}"
             },
@@ -35705,6 +36454,7 @@ $CONF = {
               "nl" => "DESTROY heeft een nieuwe referentie gemaakt naar dood object '%{arg1}'",
               "pt" => "DESTROY criou uma nova referência ao objeto destruído '%{arg1}'",
               "ru" => "DESTROY создал новую ссылку на уничтоженный объект '%{arg1}'",
+              "sr" => "DESTROY је створио нову референцу на уништени објекат „%{arg1}”",
               "tr" => "DESTROY, artık geçerli olmayan '%{arg1}' nesnesine yeni bir başvuru oluşturdu",
               "uk" => "DESTROY створив нове посилання на знищений об'єкт '%{arg1}'"
             },
@@ -35753,6 +36503,7 @@ $CONF = {
               "nl" => "Veld %{arg1} van %{fieldstash} is niet toegankelijk in een methode van %{PL_curstash}",
               "pt" => "O campo %{arg1} de %{fieldstash} não está acessível num método de %{PL_curstash}",
               "ru" => "Поле %{arg1} класса %{fieldstash} недоступно в методе класса %{PL_curstash}",
+              "sr" => "Пољу %{arg1} класе %{fieldstash} није могуће приступити у методи класе %{PL_curstash}",
               "tr" => "%{fieldstash} alanı, %{PL_curstash} yönteminde erişilebilir değil",
               "uk" => "Поле %{arg1} класу %{fieldstash} недоступне в методі класу %{PL_curstash}"
             },
@@ -35813,6 +36564,7 @@ $CONF = {
               "nl" => "Veld %{arg1} is niet toegankelijk buiten een methode",
               "pt" => "O campo %{arg1} não está acessível fora de um método",
               "ru" => "Поле %{arg1} недоступно вне метода",
+              "sr" => "Пољу %{arg1} није могуће приступити ван методе",
               "tr" => "%{arg1} alanına bir yöntem dışında erişilemez",
               "uk" => "Поле %{arg1} недоступне поза методом"
             },
@@ -35861,6 +36613,7 @@ $CONF = {
               "nl" => "%{value} is geen geldige naam voor een gegenereerde methode",
               "pt" => "%{value} não é um nome válido para um método gerado",
               "ru" => "%{value} не является допустимым именем для генерируемого метода",
+              "sr" => "%{value} није важеће име генерисаног метода",
               "tr" => "%{value}, oluşturulan bir yöntem için geçerli bir ad değil",
               "uk" => "%{value} не є допустимим ім'ям для згенерованого методу"
             },
@@ -35894,7 +36647,24 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Class already has a declared or inherited :blessed_self field"
+              "ar" => "للفئة بالفعل حقل :blessed_self مصرّح به أو موروث",
+              "cy" => "Mae gan y dosbarth faes :blessed_self datganedig neu etifeddol eisoes",
+              "de" => "Die Klasse hat bereits ein deklariertes oder geerbtes :blessed_self-Feld",
+              "en" => "Class already has a declared or inherited :blessed_self field",
+              "es" => "La clase ya tiene un campo :blessed_self declarado o heredado",
+              "fa" => "کلاس از پیش فیلد :blessed_self اعلام\N{ZERO WIDTH NON-JOINER}شده یا به\N{ZERO WIDTH NON-JOINER}ارث\N{ZERO WIDTH NON-JOINER}رسیده دارد",
+              "fi" => "Luokassa on jo määritelty tai peritty :blessed_self-kenttä",
+              "fr" => "La classe possède déjà un champ :blessed_self déclaré ou hérité",
+              "he" => "למחלקה כבר יש שדה :blessed_self שהוצהר או הועבר בירושה",
+              "hu" => "Az osztályban már van deklarált vagy örökölt :blessed_self mező",
+              "is" => "Klasinn hefur nú þegar yfirlýst eða erft :blessed_self-svið",
+              "it" => "La classe ha già un campo :blessed_self dichiarato o ereditato",
+              "nl" => "De klasse heeft al een gedeclareerd of overgeërfd veld :blessed_self",
+              "pt" => "A classe já tem um campo :blessed_self declarado ou herdado",
+              "ru" => "В классе уже объявлено поле :blessed_self либо оно унаследовано\n",
+              "sr" => "Класа већ има декларисано или наслеђено поље :blessed_self",
+              "tr" => "Sınıfta zaten bildirilmiş veya miras alınmış bir :blessed_self alanı var",
+              "uk" => "Клас уже має оголошене або успадковане поле :blessed_self"
             },
             "args" => []
           },
@@ -35918,7 +36688,24 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "The :blessed_self attribute requires one scalar field in a class with a conventional superclass and takes no attribute value"
+              "ar" => "تتطلب السمة :blessed_self حقلًا قياسيًا واحدًا في فئة لها فئة أساسية تقليدية، ولا تقبل قيمة للسمة",
+              "cy" => "Mae'r briodwedd :blessed_self yn gofyn am un maes sgalar mewn dosbarth ag uwchddosbarth confensiynol, ac nid yw'n cymryd gwerth priodwedd",
+              "de" => "Das Attribut :blessed_self erfordert ein einzelnes skalares Feld in einer Klasse mit einer konventionellen Oberklasse und darf keinen Attributwert annehmen",
+              "en" => "The :blessed_self attribute requires one scalar field in a class with a conventional superclass and takes no attribute value",
+              "es" => "El atributo :blessed_self requiere un único campo escalar en una clase con una superclase convencional y no acepta ningún valor de atributo",
+              "fa" => "ویژگی :blessed_self به یک فیلد اسکالر در کلاسی با اَبَرکلاس متعارف نیاز دارد و هیچ مقداری برای ویژگی نمی\N{ZERO WIDTH NON-JOINER}پذیرد",
+              "fi" => "Attribuutti :blessed_self edellyttää yhtä skalaarikenttää luokassa, jolla on tavanomainen yläluokka, eikä sille voi antaa arvoa",
+              "fr" => "L’attribut :blessed_self exige un champ scalaire unique dans une classe ayant une superclasse conventionnelle et ne prend aucune valeur d’attribut",
+              "he" => "התכונה :blessed_self דורשת שדה סקלרי יחיד במחלקה עם מחלקת־על מקובלת, ואינה מקבלת ערך תכונה",
+              "hu" => "A :blessed_self attribútumhoz egyetlen skalármező szükséges egy hagyományos szülőosztállyal rendelkező osztályban, és nem adható meg attribútumérték",
+              "is" => "Eiginleikinn :blessed_self krefst eins skalarsviðs í klasa með hefðbundnum yfirklasa og tekur ekkert eigindisgildi",
+              "it" => "L'attributo :blessed_self richiede un singolo campo scalare in una classe con una superclasse convenzionale e non accetta un valore di attributo",
+              "nl" => "Het attribuut :blessed_self vereist één scalair veld in een klasse met een conventionele superklasse en accepteert geen attribuutwaarde",
+              "pt" => "O atributo :blessed_self requer um campo escalar em uma classe com uma superclasse convencional e não aceita valor de atributo",
+              "ru" => "Атрибут :blessed_self требует ровно одно скалярное поле в классе с обычным суперклассом и не принимает значения\n",
+              "sr" => "Атрибут :blessed_self захтева једно скаларно поље у класи са уобичајеном суперкласом и не прихвата вредност атрибута",
+              "tr" => ":blessed_self özniteliği, geleneksel bir üst sınıfa sahip bir sınıfta tek bir skaler alan gerektirir ve öznitelik değeri almaz",
+              "uk" => "Атрибут :blessed_self вимагає одного скалярного поля в класі зі звичайним суперкласом і не приймає значення атрибута"
             },
             "args" => []
           },
@@ -35958,6 +36745,7 @@ $CONF = {
               "nl" => "Veld heeft al een parameternaam; er kan geen andere worden toegevoegd",
               "pt" => "O campo já tem um nome de parâmetro; não é possível adicionar outro",
               "ru" => "У поля уже есть имя параметра, добавить ещё одно нельзя",
+              "sr" => "Поље већ има име параметра; не може да му се дода друго",
               "tr" => "Alana zaten bir parametre adı atanmış; başka bir ad eklenemez",
               "uk" => "Поле вже має ім’я параметра, неможливо додати ще одне"
             },
@@ -35999,6 +36787,7 @@ $CONF = {
               "nl" => "Kan :param(%{value}) niet toewijzen aan veld %{arg2} omdat de naam al in gebruik is",
               "pt" => "Não é possível atribuir :param(%{value}) ao campo %{arg2}, pois esse nome já está a ser utilizado",
               "ru" => "Нельзя назначить :param(%{value}) полю %{arg2}, поскольку это имя уже используется",
+              "sr" => "Није могуће доделити :param(%{value}) пољу %{arg2} јер је то име већ у употреби",
               "tr" => "%{value} :param değeri %{arg2} alanına atanamıyor; bu ad zaten kullanımda",
               "uk" => "Неможливо призначити :param(%{value}) полю %{arg2}, оскільки це ім'я вже використовується"
             },
@@ -36053,6 +36842,7 @@ $CONF = {
               "nl" => "Alleen scalaire velden mogen een :param-attribuut hebben",
               "pt" => "Só os campos escalares podem ter o atributo :param",
               "ru" => "Атрибут :param можно применять только к скалярным полям",
+              "sr" => "Само поља скаларног типа могу имати атрибут :param",
               "tr" => ":param özniteliği yalnızca skaler alanlara uygulanabilir",
               "uk" => "Лише скалярні поля можуть мати атрибут :param"
             },
@@ -36094,6 +36884,7 @@ $CONF = {
               "nl" => "Onbekend veldattribuut %{name}",
               "pt" => "Atributo de campo não reconhecido: %{name}",
               "ru" => "Неизвестный атрибут поля %{name}",
+              "sr" => "Непознат атрибут поља %{name}",
               "tr" => "Tanınmayan alan özniteliği: %{name}",
               "uk" => "Нерозпізнаний атрибут поля %{name}"
             },
@@ -36142,6 +36933,7 @@ $CONF = {
               "nl" => "Kan het attribuut :writer niet toepassen op een niet-scalair veld",
               "pt" => "Não é possível aplicar o atributo :writer a um campo não escalar",
               "ru" => "Нельзя применить атрибут :writer к нескалярному полю",
+              "sr" => "Атрибут :writer се не може применити на поље које није скаларно",
               "tr" => ":writer özniteliği skaler olmayan bir alana uygulanamaz",
               "uk" => "Неможливо застосувати атрибут :writer до нескалярного поля"
             },
@@ -36183,6 +36975,7 @@ $CONF = {
               "nl" => "Klasseveld \"%{arg1}\" bestaat niet in variabele %{lexname} van type %{arg3}",
               "pt" => "O campo de classe \"%{arg1}\" não existe na variável %{lexname} do tipo %{arg3}",
               "ru" => "Нет поля класса \"%{arg1}\" в переменной %{lexname} типа %{arg3}",
+              "sr" => "Нема поља класе „%{arg1}” у променљивој %{lexname} типа %{arg3}",
               "tr" => "%{arg3} türündeki %{lexname} değişkeninde \"%{arg1}\" adlı sınıf alanı yok",
               "uk" => "Немає такого поля класу \"%{arg1}\" у змінній %{lexname} типу %{arg3}"
             },
@@ -36227,7 +37020,24 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "The legacy referent already belongs to a live native object"
+              "ar" => "ينتمي المرجع القديم بالفعل إلى كائن أصلي حي",
+              "cy" => "Mae'r cyfeirnod legacy eisoes yn perthyn i wrthrych brodorol byw",
+              "de" => "Der Legacy-Referent gehört bereits zu einem aktiven nativen Objekt",
+              "en" => "The legacy referent already belongs to a live native object",
+              "es" => "El referente heredado ya pertenece a un objeto nativo activo",
+              "fa" => "ارجاع\N{ZERO WIDTH NON-JOINER}شوندهٔ قدیمی از پیش به یک شیء native زنده تعلق دارد",
+              "fi" => "Legacy-viitteen kohde kuuluu jo aktiiviseen natiiviolioon",
+              "fr" => "Le référent hérité appartient déjà à un objet natif actif",
+              "he" => "האובייקט שאליו ההפניה מדור קודם מצביעה כבר שייך לאובייקט native חי",
+              "hu" => "A régi hivatkozott objektum már egy élő natív objektumhoz tartozik",
+              "is" => "Eldri tilvísunin tilheyrir nú þegar lifandi innfæddum hlut",
+              "it" => "Il referente legacy appartiene già a un oggetto nativo attivo",
+              "nl" => "De legacy-referent behoort al toe aan een levend native object",
+              "pt" => "O referente legado já pertence a um objeto nativo ativo",
+              "ru" => "Референт legacy уже принадлежит существующему нативному объекту\n",
+              "sr" => "Наслеђени референт већ припада живом нативном објекту",
+              "tr" => "Legacy referent zaten yaşayan bir native nesneye aittir",
+              "uk" => "Референт legacy уже належить активному нативному об’єкту"
             },
             "args" => []
           },
@@ -36251,7 +37061,24 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Legacy self must be a blessed non-native reference in the native object's class"
+              "ar" => "يجب أن يكون self القديم مرجعًا مباركًا غير أصلي ضمن فئة الكائن الأصلي",
+              "cy" => "Rhaid i legacy self fod yn gyfeirnod blessed nad yw'n frodorol yn nosbarth y gwrthrych brodorol",
+              "de" => "Das Legacy-Self muss eine gesegnete, nicht native Referenz in der Klasse des nativen Objekts sein",
+              "en" => "Legacy self must be a blessed non-native reference in the native object's class",
+              "es" => "El self heredado debe ser una referencia bendecida no nativa en la clase del objeto nativo",
+              "fa" => "self قدیمی باید ارجاعی blessed و غیر native در کلاس شیء native باشد",
+              "fi" => "Legacy self -arvon on oltava siunattu, ei-natiivi viite natiiviolion luokassa",
+              "fr" => "Self hérité doit être une référence bénie non native dans la classe de l’objet natif",
+              "he" => "self מדור קודם חייב להיות הפניה מבורכת שאינה native, במחלקה של האובייקט ה־native",
+              "hu" => "A régi selfnek az eredeti objektum osztályában megáldott, nem natív referenciának kell lennie",
+              "is" => "Eldra self verður að vera blessed, ekki-native tilvísun í klasa innfædda hlutarins",
+              "it" => "Il legacy self deve essere un riferimento benedetto non nativo nella classe dell'oggetto nativo",
+              "nl" => "Legacy self moet een blessed, niet-native referentie zijn in de klasse van het native object",
+              "pt" => "O self legado deve ser uma referência abençoada não nativa na classe do objeto nativo",
+              "ru" => "Legacy self должен быть благословлённой ссылкой на объект не на нативном языке в классе нативного объекта\n",
+              "sr" => "Наслеђени self мора бити благословена референца која није нативна, у класи нативног објекта",
+              "tr" => "Legacy self, native nesnenin sınıfında blessed edilmiş, native olmayan bir başvuru olmalıdır",
+              "uk" => "Legacy self має бути благословленим посиланням не на нативний об’єкт, що належить до класу нативного об’єкта"
             },
             "args" => []
           },
@@ -36291,6 +37118,7 @@ $CONF = {
               "nl" => "Kan geen methode aanroepen op iets dat geen instantie is",
               "pt" => "Não é possível invocar um método num valor que não é uma instância",
               "ru" => "Нельзя вызвать метод для значения, не являющегося экземпляром класса",
+              "sr" => "Није могуће позвати методу над објектом који није инстанца",
               "tr" => "Bir örnek olmayan değer üzerinde yöntem çağrılamaz",
               "uk" => "Неможливо викликати метод для значення, яке не є екземпляром класу"
             },
@@ -36333,6 +37161,7 @@ $CONF = {
               "nl" => "Kan geen methode van %{arg1} aanroepen op een instantie van %{arg2}",
               "pt" => "Não é possível invocar um método de %{arg1} numa instância de %{arg2}",
               "ru" => "Нельзя вызвать метод класса %{arg1} для экземпляра класса %{arg2}",
+              "sr" => "Није могуће позвати методу класе %{arg1} над инстанцом класе %{arg2}",
               "tr" => "%{arg2} örneği üzerinde %{arg1} sınıfının yöntemi çağrılamaz",
               "uk" => "Неможливо викликати метод класу %{arg1} для екземпляра класу %{arg2}"
             },
@@ -36388,6 +37217,7 @@ $CONF = {
               "nl" => "Kan methode \"%{meth}\" niet aanroepen zonder package of objectreferentie",
               "pt" => "Não é possível chamar o método \"%{meth}\" sem um pacote ou uma referência a objeto",
               "ru" => "Невозможно вызвать метод \"%{meth}\" без имени пакета или ссылки на объект",
+              "sr" => "Не може се позвати метод „%{meth}“ без имена пакета или референце на објекат",
               "tr" => "Bir paket veya nesne başvurusu olmadan \"%{meth}\" yöntemi çağrılamaz",
               "uk" => "Неможливо викликати метод \"%{meth}\" без імені пакета або посилання на об'єкт"
             },
@@ -36421,7 +37251,24 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "The native object has no initialized legacy self"
+              "ar" => "ليس للكائن الأصلي self قديم مهيأ",
+              "cy" => "Nid oes gan y gwrthrych brodorol legacy self wedi'i ymgychwyn",
+              "de" => "Das native Objekt hat kein initialisiertes Legacy-Self",
+              "en" => "The native object has no initialized legacy self",
+              "es" => "El objeto nativo no tiene un self heredado inicializado",
+              "fa" => "شیء native فاقد self قدیمیِ مقداردهی\N{ZERO WIDTH NON-JOINER}شده است",
+              "fi" => "Natiivilla oliolla ei ole alustettua legacy self -arvoa",
+              "fr" => "L’objet natif n’a pas de self hérité initialisé",
+              "he" => "לאובייקט ה־native אין self מדור קודם מאותחל",
+              "hu" => "A natív objektumnak nincs inicializált régi selfje",
+              "is" => "Native-hluturinn hefur ekkert frumstillt eldra self",
+              "it" => "L'oggetto nativo non ha un legacy self inizializzato",
+              "nl" => "Het native object heeft geen geïnitialiseerde legacy self",
+              "pt" => "O objeto nativo não tem um self legado inicializado",
+              "ru" => "У нативного объекта нет инициализированного legacy self\n",
+              "sr" => "Нативни објекат нема иницијализовани наслеђени self",
+              "tr" => "Native nesnenin başlatılmış bir legacy self'i yok",
+              "uk" => "Нативний об’єкт не має ініціалізованого legacy self"
             },
             "args" => []
           },
@@ -36461,6 +37308,7 @@ $CONF = {
               "nl" => "Kan methode %{name} niet aanroepen op iets dat geen instantie is",
               "pt" => "Não é possível invocar o método %{name} num valor que não é uma instância",
               "ru" => "Нельзя вызвать метод %{name} для значения, не являющегося экземпляром класса",
+              "sr" => "Није могуће позвати методу %{name} над објектом који није инстанца",
               "tr" => "Bir örnek olmayan değer üzerinde %{name} yöntemi çağrılamaz",
               "uk" => "Неможливо викликати метод %{name} для значення, яке не є екземпляром класу"
             },
@@ -36512,6 +37360,7 @@ $CONF = {
               "nl" => "Kan methode \"%{method}\" niet aanroepen op een niet-gebleste referentie",
               "pt" => "Não é possível chamar o método \"%{method}\" numa referência não abençoada",
               "ru" => "Нельзя вызвать метод \"%{method}\" для ссылки, к которой не применена bless",
+              "sr" => "Није могуће позвати методу „%{method}” над нереференцом која није благословена",
               "tr" => "Bless edilmemiş bir başvuru üzerinde \"%{method}\" yöntemi çağrılamaz",
               "uk" => "Неможливо викликати метод \"%{method}\" для посилання, до якого не застосовано bless"
             },
@@ -36561,6 +37410,7 @@ $CONF = {
               "nl" => "Kan methode \"%{meth}\" niet aanroepen op een ongedefinieerde waarde",
               "pt" => "Não é possível chamar o método \"%{meth}\" sobre um valor indefinido",
               "ru" => "Невозможно вызвать метод \"%{meth}\" для неопределённого значения",
+              "sr" => "Не може се позвати метод „%{meth}“ над недефинисаном вредношћу",
               "tr" => "Tanımsız bir değer üzerinde \"%{meth}\" yöntemi çağrılamaz",
               "uk" => "Неможливо викликати метод \"%{meth}\" для невизначеного значення"
             },
@@ -36610,6 +37460,7 @@ $CONF = {
               "nl" => "Kan geen anonieme symbooltabel gebruiken om een methode op te zoeken",
               "pt" => "Não é possível utilizar uma tabela de símbolos anónima para procurar métodos",
               "ru" => "Нельзя использовать анонимную таблицу символов для поиска методов",
+              "sr" => "Не може се користити анонимна табела симбола за претрагу метода",
               "tr" => "Yöntem araması için anonim simge tablosu kullanılamaz",
               "uk" => "Неможливо використовувати анонімну таблицю символів для пошуку методів"
             },
@@ -36652,6 +37503,7 @@ $CONF = {
               "nl" => "next::method/next::can/maybe::next::method kunnen geen omsluitende methode vinden",
               "pt" => "next::method/next::can/maybe::next::method não consegue encontrar o método envolvente",
               "ru" => "next::method/next::can/maybe::next::method не могут найти метод, из которого они вызваны",
+              "sr" => "next::method/next::can/maybe::next::method не може да пронађе обухватајућу методу",
               "tr" => "next::method/next::can/maybe::next::method için çevreleyen yöntem bulunamıyor",
               "uk" => "Для next::method/next::can/maybe::next::method не вдалося знайти метод, у якому здійснено виклик"
             },
@@ -36694,6 +37546,7 @@ $CONF = {
               "nl" => "next::method/next::can/maybe::next::method moeten binnen een methode worden gebruikt",
               "pt" => "next::method/next::can/maybe::next::method tem de ser utilizado no contexto de um método",
               "ru" => "next::method/next::can/maybe::next::method должны использоваться в контексте метода",
+              "sr" => "next::method/next::can/maybe::next::method мора да се користи у контексту методе",
               "tr" => "next::method/next::can/maybe::next::method, yöntem bağlamında kullanılmalıdır",
               "uk" => "next::method/next::can/maybe::next::method слід використовувати в контексті методу"
             },
@@ -36736,6 +37589,7 @@ $CONF = {
               "nl" => "Geen volgende next::method '%{method}' gevonden voor %{class}",
               "pt" => "Não foi encontrado nenhum next::method '%{method}' para %{class}",
               "ru" => "Не найден next::method '%{method}' для %{class}",
+              "sr" => "Није пронађена следећа метода „%{method}“ за класу %{class}",
               "tr" => "%{class} için '%{method}' adlı next::method bulunamadı",
               "uk" => "Не знайдено next::method '%{method}' для %{class}"
             },
@@ -36805,6 +37659,7 @@ $CONF = {
               "nl" => "Kan objectmethode %{arg1} niet vinden via pakket %{arg2}",
               "pt" => "Não foi possível encontrar o método de objeto %{arg1} através do pacote %{arg2}",
               "ru" => "Не удалось найти метод объекта %{arg1} через пакет %{arg2}",
+              "sr" => "Не могу да пронађем метод објекта %{arg1} преко пакета %{arg2}",
               "tr" => "%{arg2} paketi üzerinden %{arg1} nesne yöntemi bulunamıyor",
               "uk" => "Неможливо знайти метод об'єкта %{arg1} через пакет %{arg2}"
             },
@@ -36880,6 +37735,7 @@ $CONF = {
               "nl" => "Kan objectmethode %{arg1} niet vinden via pakket %{arg2} (bent u misschien vergeten %{arg3} te laden?)",
               "pt" => "Não foi possível encontrar o método de objeto %{arg1} através do pacote %{arg2} (talvez se tenha esquecido de carregar %{arg3}?)",
               "ru" => "Не удалось найти метод объекта %{arg1} через пакет %{arg2} (возможно, вы забыли загрузить %{arg3}?)",
+              "sr" => "Не могу да пронађем метод објекта %{arg1} преко пакета %{arg2} (можда сте заборавили да учитате %{arg3}?)",
               "tr" => "%{arg2} paketi üzerinden %{arg1} nesne yöntemi bulunamıyor (belki %{arg3} yüklemeyi unuttunuz?)",
               "uk" => "Неможливо знайти метод об'єкта %{arg1} через пакет %{arg2} (можливо, ви забули завантажити %{arg3}?)"
             },
@@ -37005,6 +37861,10 @@ $CONF = {
               "ru" => {
                 "method_not_found" => "Не удалось найти метод \"%{method_name}\", перегружающий \"%{operator}\", в пакете \"%{package}\"",
                 "stub_found" => "При поиске метода \"%{method_name}\", перегружающего \"%{operator}\", в пакете \"%{package}\" найдена заглушка"
+              },
+              "sr" => {
+                "method_not_found" => "Не могу да разрешим метод \"%{method_name}\" за преоптерећење \"%{operator}\" у пакету \"%{package}\"",
+                "stub_found" => "Пронађена је заглушка при разрешавању метода \"%{method_name}\" за преоптерећење \"%{operator}\" у пакету \"%{package}\""
               },
               "tr" => {
                 "method_not_found" => "\"%{method_name}\" yöntemiyle \"%{operator}\" işleci için \"%{package}\" paketindeki aşırı yük çözümlemesi başarısız: yöntem bulunamadı",
@@ -37382,6 +38242,26 @@ $CONF = {
                   }
                 }
               },
+              "sr" => {
+                "binary" => {
+                  "no_overloaded_magic" => {
+                    "no_overloaded_magic" => "Операција „%{operation}“: метод није пронађен,\n\tлеви аргумент нема преоптерећену магију,\n\tдесни аргумент нема преоптерећену магију",
+                    "overloaded" => "Операција „%{operation}“: метод није пронађен,\n\tлеви аргумент нема преоптерећену магију,\n\tдесни аргумент је у преоптерећеном пакету %{right_package}"
+                  },
+                  "overloaded" => {
+                    "no_overloaded_magic" => "Операција „%{operation}“: метод није пронађен,\n\tлеви аргумент је у преоптерећеном пакету %{left_package},\n\tдесни аргумент нема преоптерећену магију",
+                    "overloaded" => "Операција „%{operation}“: метод није пронађен,\n\tлеви аргумент је у преоптерећеном пакету %{left_package},\n\tдесни аргумент је у преоптерећеном пакету %{right_package}"
+                  }
+                },
+                "unary" => {
+                  "no_overloaded_magic" => {
+                    "*" => "Операција „%{operation}“: метод није пронађен, аргумент нема преоптерећену магију"
+                  },
+                  "overloaded" => {
+                    "*" => "Операција „%{operation}“: метод није пронађен, аргумент је у преоптерећеном пакету %{left_package}"
+                  }
+                }
+              },
               "tr" => {
                 "*" => {
                   "*" => {
@@ -37516,6 +38396,7 @@ $CONF = {
               "nl" => "Kopieermethode heeft geen referentie teruggegeven",
               "pt" => "O método de cópia não devolveu uma referência",
               "ru" => "Метод копирования не вернул ссылку",
+              "sr" => "Метода копирања није вратила референцу",
               "tr" => "Kopyalama yöntemi bir başvuru döndürmedi",
               "uk" => "Метод копіювання не повернув посилання"
             },
@@ -37559,6 +38440,7 @@ $CONF = {
               "nl" => "Overbelaste dereferentie heeft geen referentie teruggegeven",
               "pt" => "A desreferenciação sobrecarregada não devolveu uma referência",
               "ru" => "Перегруженная операция разыменования не вернула ссылку",
+              "sr" => "Оператор за преусмеравање није вратио референцу",
               "tr" => "Aşırı yüklenmiş başvuru çözümleme işlemi bir başvuru döndürmedi",
               "uk" => "Перевантажена операція розіменування не повернула посилання"
             },
@@ -37601,6 +38483,7 @@ $CONF = {
               "nl" => "Overbelaste qr heeft geen REGEXP teruggegeven",
               "pt" => "A operação qr sobrecarregada não devolveu uma REGEXP",
               "ru" => "Перегруженная операция qr не вернула REGEXP",
+              "sr" => "Преоптерећени qr није вратио REGEXP",
               "tr" => "Aşırı yüklenmiş qr, bir REGEXP döndürmedi",
               "uk" => "Перевантажена операція qr не повернула REGEXP"
             },
@@ -37643,6 +38526,7 @@ $CONF = {
               "nl" => "'%{character}' valt buiten de tekenreeks in pack",
               "pt" => "'%{character}' fora da cadeia de caracteres em pack",
               "ru" => "'%{character}' выходит за границы строки в pack",
+              "sr" => "„%{character}“ је ван стринга у pack",
               "tr" => "pack içinde dizenin dışında '%{character}'",
               "uk" => "'%{character}' поза межами рядка в pack"
             },
@@ -37691,6 +38575,7 @@ $CONF = {
               "nl" => "'X' valt buiten de tekenreeks in unpack",
               "pt" => "'X' fora da cadeia de caracteres em unpack",
               "ru" => "'X' выходит за границы строки в unpack",
+              "sr" => "'X' је изван стринга у функцији unpack",
               "tr" => "unpack içinde dizenin dışında 'X'",
               "uk" => "'X' виходить за межі рядка в unpack"
             },
@@ -37733,6 +38618,7 @@ $CONF = {
               "nl" => "'\@' valt buiten de tekenreeks in unpack",
               "pt" => "'\@' fora da cadeia de caracteres em unpack",
               "ru" => "'\@' указывает за пределы строки в unpack",
+              "sr" => "'\@' је изван стринга у unpack",
               "tr" => "unpack içinde dizenin dışında '\@'",
               "uk" => "'\@' виходить за межі рядка в unpack"
             },
@@ -37775,6 +38661,7 @@ $CONF = {
               "nl" => "'x' valt buiten de tekenreeks in unpack",
               "pt" => "'x' fora da cadeia de caracteres em unpack",
               "ru" => "'x' указывает за пределы строки в unpack",
+              "sr" => "'x' је изван стринга у unpack",
               "tr" => "unpack içinde dizenin dışında 'x'",
               "uk" => "'x' виходить за межі рядка в unpack"
             },
@@ -37816,6 +38703,7 @@ $CONF = {
               "nl" => "'%%' mag niet worden gebruikt in pack",
               "pt" => "Não é permitido utilizar '%%' em pack",
               "ru" => "'%%' нельзя использовать в pack",
+              "sr" => "'%%' се не може користити у функцији pack",
               "tr" => "pack içinde '%%' kullanılamaz",
               "uk" => "'%%' не можна використовувати в pack"
             },
@@ -37857,6 +38745,7 @@ $CONF = {
               "nl" => "Kan '<' en '>' niet allebei gebruiken na type '%{arg1}' in %{arg2}",
               "pt" => "Não é possível utilizar '<' e '>' após o tipo '%{arg1}' em %{arg2}",
               "ru" => "Нельзя одновременно использовать '<' и '>' после типа '%{arg1}' в %{arg2}",
+              "sr" => "Није могуће истовремено користити модификаторе „<“ и „>“ после типа „%{arg1}“ у формату %{arg2}",
               "tr" => "%{arg2} içinde '%{arg1}' türünden sonra hem '<' hem '>' kullanılamaz",
               "uk" => "Не можна одночасно використовувати '<' і '>' після типу '%{arg1}' у %{arg2}"
             },
@@ -37909,6 +38798,7 @@ $CONF = {
               "nl" => "Aantal na lengte/code in unpack",
               "pt" => "Contagem após comprimento/código em unpack",
               "ru" => "В unpack указан счётчик после длины/кода",
+              "sr" => "Бројање после дужине/кода у операцији unpack",
               "tr" => "unpack içinde uzunluk/koddan sonra sayı belirtilemez",
               "uk" => "Кількість повторень після довжини/коду в unpack"
             },
@@ -37950,6 +38840,7 @@ $CONF = {
               "nl" => "()-groepen te diep genest in %{arg2}",
               "pt" => "Grupos () aninhados a demasiados níveis em %{arg2}",
               "ru" => "Слишком глубокая вложенность групп () в %{arg2}",
+              "sr" => "Групе () су предубоко угнежђене у %{arg2}",
               "tr" => "%{arg2} içindeki () grupları fazla derin iç içe geçmiş",
               "uk" => "Надто глибока вкладеність груп () у %{arg2}"
             },
@@ -37997,6 +38888,7 @@ $CONF = {
               "nl" => "()-groep begint met een aantal in %{arg2}",
               "pt" => "O grupo () começa com uma contagem em %{arg2}",
               "ru" => "Группа () начинается со счётчика в %{arg2}",
+              "sr" => "Група () почиње бројем у %{arg2}",
               "tr" => "%{arg2} içindeki () grubu bir sayıyla başlıyor",
               "uk" => "Група () починається з числа повторень у %{arg2}"
             },
@@ -38044,6 +38936,7 @@ $CONF = {
               "nl" => "Kan '%{arg1}' niet gebruiken in een groep met een andere bytevolgorde in %{arg2}",
               "pt" => "Não é possível utilizar '%{arg1}' num grupo com uma ordem de bytes diferente em %{arg2}",
               "ru" => "Нельзя использовать '%{arg1}' в группе с другим порядком байтов в %{arg2}",
+              "sr" => "Није могуће користити „%{arg1}“ у групи са другачијим редоследом бајтова у %{arg2}",
               "tr" => "%{arg2} içinde farklı bayt sırasına sahip bir grupta '%{arg1}' kullanılamaz",
               "uk" => "Неможливо використовувати '%{arg1}' у групі з іншим порядком байтів у %{arg2}"
             },
@@ -38096,6 +38989,7 @@ $CONF = {
               "nl" => "Ongeldig type '%{arg2}' in %{arg3}",
               "pt" => "Tipo inválido '%{arg2}' em %{arg3}",
               "ru" => "Недопустимый тип '%{arg2}' в %{arg3}",
+              "sr" => "Неважећи тип „%{arg2}“ у %{arg3}",
               "tr" => "%{arg3} içinde geçersiz '%{arg2}' türü",
               "uk" => "Неприпустимий тип '%{arg2}' у %{arg3}"
             },
@@ -38149,6 +39043,7 @@ $CONF = {
               "nl" => "Binnen []-lengte is '%{arg2}' niet toegestaan in %{arg3}",
               "pt" => "Não é permitido '%{arg2}' num comprimento entre [] em %{arg3}",
               "ru" => "Символ '%{arg2}' запрещён в длине, заданной в [], в %{arg3}",
+              "sr" => "Унутар дужине [] знак „%{arg2}“ није дозвољен у %{arg3}",
               "tr" => "%{arg3} içinde [] uzunluk belirtecinde '%{arg2}' kullanılamaz",
               "uk" => "У довжині, заданій у [], '%{arg2}' не дозволено в %{arg3}"
             },
@@ -38202,6 +39097,7 @@ $CONF = {
               "nl" => "'%{arg1}' is in %{arg3} alleen toegestaan na typen %{arg2}",
               "pt" => "'%{arg1}' só é permitido após os tipos %{arg2} em %{arg3}",
               "ru" => "'%{arg1}' разрешён только после типов %{arg2} в %{arg3}",
+              "sr" => "„%{arg1}“ је дозвољен само после типова %{arg2} у %{arg3}",
               "tr" => "%{arg3} içinde '%{arg1}' yalnızca şu türlerden sonra kullanılabilir: %{arg2}",
               "uk" => "'%{arg1}' дозволено лише після типів %{arg2} у %{arg3}"
             },
@@ -38259,6 +39155,7 @@ $CONF = {
               "nl" => "Ongeldig type '%{arg2}' in pack",
               "pt" => "Tipo inválido '%{arg2}' em pack",
               "ru" => "Недопустимый тип '%{arg2}' в pack",
+              "sr" => "Неважећи тип „%{arg2}“ у pack",
               "tr" => "pack içinde geçersiz '%{arg2}' türü",
               "uk" => "Недопустимий тип '%{arg2}' у pack"
             },
@@ -38306,6 +39203,7 @@ $CONF = {
               "nl" => "Ongeldig type '%{arg2}' in unpack",
               "pt" => "Tipo inválido '%{arg2}' em unpack",
               "ru" => "Недопустимый тип '%{arg2}' в unpack",
+              "sr" => "Неважећи тип „%{arg2}“ у unpack",
               "tr" => "unpack içinde geçersiz '%{arg2}' türü",
               "uk" => "Недопустимий тип '%{arg2}' у unpack"
             },
@@ -38353,6 +39251,7 @@ $CONF = {
               "nl" => "'/' moet in unpack op een numeriek type volgen",
               "pt" => "'/' tem de aparecer após um tipo numérico em unpack",
               "ru" => "В unpack символ '/' должен следовать за числовым типом",
+              "sr" => "'/' мора да следи после нумеричког типа у unpack",
               "tr" => "unpack içinde '/' işaretinden önce sayısal bir tür gelmelidir",
               "uk" => "У unpack '/' має йти після числового типу"
             },
@@ -38396,6 +39295,7 @@ $CONF = {
               "nl" => "Ongeldig geheel getal tussen [] in %{arg2}",
               "pt" => "Inteiro malformado dentro de [] em %{arg2}",
               "ru" => "Неверная запись целого числа в [] в %{arg2}",
+              "sr" => "Неисправан цео број у [] у %{arg2}",
               "tr" => "%{arg2} içinde bozuk tamsayı",
               "uk" => "Неправильно записане ціле число в [] у %{arg2}"
             },
@@ -38444,6 +39344,7 @@ $CONF = {
               "nl" => "Niet-overeenkomende haakjes in sjabloon",
               "pt" => "Parênteses ou colchetes não correspondentes no modelo",
               "ru" => "Несогласованные скобки в шаблоне",
+              "sr" => "Неусклађене заграде у шаблону",
               "tr" => "Şablondaki köşeli ayraçlar eşleşmiyor",
               "uk" => "Невідповідні дужки в шаблоні"
             },
@@ -38485,6 +39386,7 @@ $CONF = {
               "nl" => "Afsluitteken '%{arg1}' van de groep ontbreekt in de sjabloon",
               "pt" => "Não foi encontrado o carácter de fecho de grupo '%{arg1}' no modelo",
               "ru" => "В шаблоне не найден символ '%{arg1}', завершающий группу",
+              "sr" => "У шаблону није пронађен завршни знак групе „%{arg1}“",
               "tr" => "Şablonda '%{arg1}' eşleşen grup kapatma karakteri bulunamadı",
               "uk" => "У шаблоні не знайдено символу завершення групи '%{arg1}'"
             },
@@ -38533,6 +39435,7 @@ $CONF = {
               "nl" => "Code ontbreekt na '/' in pack",
               "pt" => "Falta o código após '/' em pack",
               "ru" => "После '/' в pack отсутствует код формата",
+              "sr" => "Недостаје код после знака '/' у pack",
               "tr" => "pack içinde '/' işaretinden sonra kod eksik",
               "uk" => "Після '/' у pack відсутній код формату"
             },
@@ -38575,6 +39478,7 @@ $CONF = {
               "nl" => "Code ontbreekt na '/' in unpack",
               "pt" => "Falta o código após '/' em unpack",
               "ru" => "После '/' в unpack отсутствует код формата",
+              "sr" => "Недостаје код после знака '/' у unpack",
               "tr" => "unpack içinde '/' işaretinden sonra kod eksik",
               "uk" => "Після '/' в unpack відсутній код формату"
             },
@@ -38616,6 +39520,7 @@ $CONF = {
               "nl" => "'P' moet een expliciete grootte hebben in unpack",
               "pt" => "'P' tem de ter um tamanho explícito em unpack",
               "ru" => "Для 'P' в unpack необходимо явно указать размер",
+              "sr" => "'P' мора имати експлицитну величину у unpack",
               "tr" => "unpack içinde 'P' için açık bir boyut belirtilmelidir",
               "uk" => "Для 'P' у unpack потрібно явно вказати розмір"
             },
@@ -38657,6 +39562,7 @@ $CONF = {
               "nl" => "'X' valt buiten de tekenreeks in %{arg2}",
               "pt" => "'X' fora da cadeia de caracteres em %{arg2}",
               "ru" => "'X' выходит за границы строки в %{arg2}",
+              "sr" => "„X“ изван ниске у %{arg2}",
               "tr" => "%{arg2} içinde 'X' dize başlangıcının dışında",
               "uk" => "'X' виходить за межі рядка у %{arg2}"
             },
@@ -38705,6 +39611,7 @@ $CONF = {
               "nl" => "Overloop van herhalingsaantal in pack/unpack",
               "pt" => "Excesso da contagem de repetições em pack/unpack",
               "ru" => "переполнение счётчика повторений в pack/unpack",
+              "sr" => "прекорачење броја понављања у pack/unpack",
               "tr" => "pack/unpack tekrar sayısı taştı",
               "uk" => "переповнення лічильника повторень у pack/unpack"
             },
@@ -38746,6 +39653,7 @@ $CONF = {
               "nl" => "'/' accepteert geen herhalingsaantal in %{arg1}",
               "pt" => "'/' não aceita contagem de repetições em %{arg1}",
               "ru" => "После '/' нельзя указывать число повторений в %{arg1}",
+              "sr" => "„/“ не прихвата број понављања у %{arg1}",
               "tr" => "%{arg1} içinde '/' işarefinden sonra tekrar sayısı kullanılamaz",
               "uk" => "'/' не приймає кількість повторень у %{arg1}"
             },
@@ -38793,6 +39701,7 @@ $CONF = {
               "nl" => "Binnen []-lengte is '*' niet toegestaan in %{arg2}",
               "pt" => "Não é permitido '*' num comprimento entre [] em %{arg2}",
               "ru" => "Символ '*' запрещён в длине, заданной в [], в %{arg2}",
+              "sr" => "Унутар дужине [] знак '*' није дозвољен у %{arg2}",
               "tr" => "%{arg2} içinde [] uzunluğu kapsamında '*' kullanılamaz",
               "uk" => "У довжині, заданій у [], '*' не дозволено в %{arg2}"
             },
@@ -38840,6 +39749,7 @@ $CONF = {
               "nl" => "Structuurgrootte van pack-sjabloon is te groot",
               "pt" => "O tamanho da estrutura do modelo de pack é demasiado grande",
               "ru" => "Слишком большой размер структуры в шаблоне pack",
+              "sr" => "Структура шаблона pack је превелика",
               "tr" => "Pack şablonunun yapı boyutu çok büyük",
               "uk" => "Розмір структури в шаблоні pack надто великий"
             },
@@ -38882,6 +39792,7 @@ $CONF = {
               "nl" => "Lengte/code na einde van tekenreeks in unpack",
               "pt" => "Comprimento/código após o fim da cadeia de caracteres em unpack",
               "ru" => "длина/код после конца строки в unpack",
+              "sr" => "дужина/код после краја ниске у unpack",
               "tr" => "unpack işleminde dize sonundan sonra uzunluk/kod",
               "uk" => "довжина/код після кінця рядка в unpack"
             },
@@ -38925,6 +39836,7 @@ $CONF = {
               "nl" => "Kan negatieve getallen niet comprimeren in pack",
               "pt" => "Não é possível comprimir números negativos em pack",
               "ru" => "Нельзя сжимать отрицательные числа в pack",
+              "sr" => "У pack-у се не могу компресовати негативни бројеви",
               "tr" => "pack içinde negatif sayılar sıkıştırılamaz",
               "uk" => "Неможливо стискати від’ємні числа в pack"
             },
@@ -38966,6 +39878,7 @@ $CONF = {
               "nl" => "Negatief aantal voor '/' in unpack",
               "pt" => "Contagem negativa de '/' em unpack",
               "ru" => "Отрицательный счётчик '/' в unpack",
+              "sr" => "Негативно бројање „/“ у операцији unpack",
               "tr" => "unpack işleminde negatif '/' sayısı",
               "uk" => "Від’ємний лічильник '/' у unpack"
             },
@@ -39007,6 +39920,7 @@ $CONF = {
               "nl" => "Kan %{arg1} niet comprimeren in pack",
               "pt" => "Não é possível comprimir %{arg1} em pack",
               "ru" => "Невозможно сжать %{arg1} в pack",
+              "sr" => "Није могуће компресовати %{arg1} у функцији pack",
               "tr" => "pack içinde %{arg1} sıkıştırılamaz",
               "uk" => "Неможливо стиснути %{arg1} у pack"
             },
@@ -39054,6 +39968,7 @@ $CONF = {
               "nl" => "Kan %{value} niet met '%{format}' verpakken via pack",
               "pt" => "Não é possível empacotar %{value} com '%{format}'",
               "ru" => "Нельзя упаковать %{value} с помощью pack с форматом '%{format}'",
+              "sr" => "Није могуће упаковати %{value} помоћу „%{format}”",
               "tr" => "%{value}, '%{format}' ile pack edilemez",
               "uk" => "Неможливо упакувати %{value} за допомогою pack із форматом '%{format}'"
             },
@@ -39106,6 +40021,7 @@ $CONF = {
               "nl" => "In pack kunnen alleen gehele getallen zonder teken worden gecomprimeerd",
               "pt" => "Em pack, só é possível comprimir inteiros sem sinal",
               "ru" => "В pack можно сжимать только беззнаковые целые числа",
+              "sr" => "У pack-у се могу компресовати само ненегативни цели бројеви",
               "tr" => "pack içinde yalnızca işaretsiz tamsayılar sıkıştırılabilir",
               "uk" => "У pack можна стискати лише беззнакові цілі числа"
             },
@@ -39147,6 +40063,7 @@ $CONF = {
               "nl" => "U0-modus toegepast op een byte-tekenreeks",
               "pt" => "Modo U0 numa cadeia de bytes",
               "ru" => "Режим U0 применён к байтовой строке",
+              "sr" => "Режим U0 над бајтним ниском",
               "tr" => "Bir bayt dizgesinde U0 modu",
               "uk" => "Режим U0 для байтового рядка"
             },
@@ -39190,6 +40107,7 @@ $CONF = {
               "nl" => "Niet-afgesloten gecomprimeerd geheel getal in unpack",
               "pt" => "Inteiro comprimido não terminado em unpack",
               "ru" => "Незавершённое сжатое целое число в unpack",
+              "sr" => "Недовршен компримовани цео број у unpack",
               "tr" => "unpack işleminde sonlandırılmamış sıkıştırılmış tamsayı",
               "uk" => "Незавершене стиснене ціле число в unpack"
             },
@@ -39233,6 +40151,7 @@ $CONF = {
               "nl" => "BEGIN mislukt; compilatie afgebroken",
               "pt" => "Falha em BEGIN — compilação interrompida",
               "ru" => "Ошибка в BEGIN--компиляция прервана",
+              "sr" => "BEGIN није успео — компилација је прекинута",
               "tr" => "BEGIN başarısız oldu—derleme iptal edildi",
               "uk" => "Помилка виконання BEGIN--компіляцію перервано"
             },
@@ -39280,6 +40199,7 @@ $CONF = {
               "nl" => "Te veel geneste BEGIN-blokken, maximaal %{arg1} toegestaan",
               "pt" => "Demasiados blocos BEGIN aninhados; máximo permitido: %{arg1}",
               "ru" => "Слишком много вложенных блоков BEGIN, допустимый максимум — %{arg1}",
+              "sr" => "Превише угнежђених BEGIN блокова; дозвољено је највише %{arg1}",
               "tr" => "İç içe çok fazla BEGIN bloğu var; en fazla %{arg1} bloğa izin verilir",
               "uk" => "Забагато вкладених блоків BEGIN, максимальна дозволена кількість — %{arg1}"
             },
@@ -39329,6 +40249,7 @@ $CONF = {
               "nl" => "BEGIN kan niet veilig worden uitgevoerd na fouten; compilatie afgebroken",
               "pt" => "BEGIN não é seguro após erros — compilação interrompida",
               "ru" => "Выполнение BEGIN после ошибок небезопасно--компиляция прервана",
+              "sr" => "BEGIN није безбедан након грешака — компилација је прекинута",
               "tr" => "Hatalardan sonra BEGIN güvenli değil—derleme iptal edildi",
               "uk" => "BEGIN небезпечний після помилок--компіляцію перервано"
             },
@@ -39372,6 +40293,7 @@ $CONF = {
               "nl" => "%{phase} mislukt; aanroepwachtrij afgebroken",
               "pt" => "Falha em %{phase} — fila de chamadas interrompida",
               "ru" => "Ошибка при выполнении %{phase}--обработка очереди вызовов прервана",
+              "sr" => "%{phase} није успео — ред позива је прекинут",
               "tr" => "%{phase} başarısız oldu—çağrı kuyruğu iptal edildi",
               "uk" => "%{phase}: помилка--обробку черги викликів перервано"
             },
@@ -39425,6 +40347,7 @@ $CONF = {
               "nl" => "Fout tijdens unitcontrole",
               "pt" => "Erro na verificação da unidade",
               "ru" => "Ошибка UNITCHECK",
+              "sr" => "Грешка при провери јединице",
               "tr" => "Unit check hatası",
               "uk" => "Помилка UNITCHECK"
             },
@@ -39474,6 +40397,7 @@ $CONF = {
               "nl" => "%{errsv}",
               "pt" => "%{errsv}",
               "ru" => "%{errsv}",
+              "sr" => "%{errsv}",
               "tr" => "%{errsv}",
               "uk" => "%{errsv}"
             },
@@ -39523,6 +40447,7 @@ $CONF = {
               "nl" => "\t...doorgegeven bij %{file} op regel %{line}.\n",
               "pt" => "\t...propagado em %{file}, linha %{line}.\n",
               "ru" => "\t...исключение передано далее в файле %{file}, строка %{line}.\n",
+              "sr" => "\t...пренето из %{file} у реду %{line}.\n",
               "tr" => "\t...%{file} dosyasının %{line}. satırında yayıldı.\n",
               "uk" => "\t...передано далі у %{file}, рядок %{line}.\n"
             },
@@ -39581,6 +40506,7 @@ $CONF = {
               "nl" => "Afsluitende \\ in regex m/%{arg1}%{arg2}/",
               "pt" => "Barra invertida \\ no fim da expressão regular m/%{arg1}%{arg2}/",
               "ru" => "Обратная косая черта \\ в конце регулярного выражения m/%{arg1}%{arg2}/",
+              "sr" => "Завршна \\ у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "Düzenli ifadede sondaki \\: m/%{arg1}%{arg2}/",
               "uk" => "Зворотна скісна риска \\ наприкінці регулярного виразу m/%{arg1}%{arg2}/"
             },
@@ -39648,6 +40574,7 @@ $CONF = {
               "nl" => "Sequentie (?{...}) is niet afgesloten met ')'",
               "pt" => "A sequência (?{...}) não termina com ')'",
               "ru" => "Последовательность (?{...}) не завершена символом ')'",
+              "sr" => "Низ (?{...}) није затворен са „)“",
               "tr" => "(?{...}) dizisi ')' ile sonlandırılmadı",
               "uk" => "Послідовність (?{...}) не завершено символом ')'"
             },
@@ -39689,6 +40616,7 @@ $CONF = {
               "nl" => "Eval-groep niet toegestaan tijdens uitvoering; gebruik re 'eval' in regex m/%{arg1}%{arg2}/",
               "pt" => "Grupo de avaliação não permitido em tempo de execução; use re 'eval' na expressão regular m/%{arg1}%{arg2}/",
               "ru" => "Группа eval запрещена во время выполнения, используйте use re 'eval' в регулярном выражении m/%{arg1}%{arg2}/",
+              "sr" => "Група Eval није дозвољена током извршавања; користите re 'eval' у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "Düzenli ifade m/%{arg1}%{arg2}/ içinde çalışma zamanında Eval grubu kullanılamaz; re 'eval' kullanın",
               "uk" => "Група eval не дозволена під час виконання; скористайтеся use re 'eval' для регулярного виразу m/%{arg1}%{arg2}/"
             },
@@ -39756,6 +40684,7 @@ $CONF = {
               "nl" => "Reeks (?#... niet afgesloten in regex m/%{arg1}%{arg2}/",
               "pt" => "Sequência (?#... não terminada na expressão regular m/%{arg1}%{arg2}/",
               "ru" => "Последовательность (?#... не завершена в регулярном выражении m/%{arg1}%{arg2}/",
+              "sr" => "Низ (?#... није завршен у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "Düzenli ifade m/%{arg1}%{arg2}/ içinde (?#... dizisi sonlandırılmadı",
               "uk" => "Незавершена послідовність (?#... у регулярному виразі m/%{arg1}%{arg2}/"
             },
@@ -39823,6 +40752,7 @@ $CONF = {
               "nl" => "Reeks (?R) niet afgesloten in regex m/%{arg1}%{arg2}/",
               "pt" => "Sequência (?R) não terminada na expressão regular m/%{arg1}%{arg2}/",
               "ru" => "Незавершённая последовательность (?R) в регулярном выражении m/%{arg1}%{arg2}/",
+              "sr" => "Низ (?R) није завршен у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "Düzenli ifade m/%{arg1}%{arg2}/ içinde (?R) dizisi sonlandırılmadı",
               "uk" => "Незавершена послідовність (?R) у регулярному виразі m/%{arg1}%{arg2}/"
             },
@@ -39890,6 +40820,7 @@ $CONF = {
               "nl" => "Te veel capturegroepen (limiet is %{arg1}) in regex m/%{arg2}%{arg3}/",
               "pt" => "Demasiados grupos de captura (limite: %{arg1}) na expressão regular m/%{arg2}%{arg3}/",
               "ru" => "Слишком много захватывающих групп (предел: %{arg1}) в регулярном выражении m/%{arg2}%{arg3}/",
+              "sr" => "Превише група за хватање (ограничење је %{arg1}) у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "Düzenli ifade m/%{arg2}%{arg3}/ içinde çok fazla yakalama grubu var (sınır %{arg1})",
               "uk" => "Забагато груп захоплення (обмеження: %{arg1}) у регулярному виразі m/%{arg2}%{arg3}/"
             },
@@ -39962,6 +40893,7 @@ $CONF = {
               "nl" => "Lookbehind langer dan %{arg1} is niet geïmplementeerd in regex m/%{arg2}%{arg3}/",
               "pt" => "Lookbehind superior a %{arg1} não implementado na expressão regular m/%{arg2}%{arg3}/",
               "ru" => "Ретроспективная проверка длиной более %{arg1} не реализована в регулярном выражении m/%{arg2}%{arg3}/",
+              "sr" => "Поглед уназад дужи од %{arg1} није имплементиран у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "Düzenli ifade m/%{arg2}%{arg3}/ içinde %{arg1} karakterden uzun lookbehind uygulanmıyor",
               "uk" => "Ретроспективну перевірку довжиною понад %{arg1} не реалізовано в регулярному виразі m/%{arg2}%{arg3}/"
             },
@@ -40035,6 +40967,7 @@ $CONF = {
               "nl" => "Onvoldoende ruimte voor reguliere expressie in regex m/%{arg1}%{arg2}/",
               "pt" => "Espaço insuficiente para a expressão regular m/%{arg1}%{arg2}/",
               "ru" => "Недостаточно места для регулярного выражения m/%{arg1}%{arg2}/",
+              "sr" => "Нема довољно простора за регуларни израз m/%{arg1}%{arg2}/",
               "tr" => "Düzenli ifade m/%{arg1}%{arg2}/ için alan yetersiz",
               "uk" => "Недостатньо пам'яті для регулярного виразу m/%{arg1}%{arg2}/"
             },
@@ -40103,6 +41036,7 @@ $CONF = {
               "nl" => "Oneindige recursie door een leeg patroon",
               "pt" => "Recursão infinita devido a um padrão vazio",
               "ru" => "Бесконечная рекурсия из-за пустого шаблона",
+              "sr" => "Бесконачна рекурзија преко празног обрасца",
               "tr" => "Boş desen nedeniyle sonsuz özyineleme",
               "uk" => "Нескінченна рекурсія через порожній шаблон"
             },
@@ -40144,6 +41078,7 @@ $CONF = {
               "nl" => "Limiet overschreden voor EVAL zonder positiewijziging in regex",
               "pt" => "Foi ultrapassado o limite de EVAL sem alteração da posição na expressão regular",
               "ru" => "Превышен предел числа EVAL без изменения pos в регулярном выражении",
+              "sr" => "EVAL без промене позиције прекорачио је ограничење у регуларном изразу",
               "tr" => "Düzenli ifadede EVAL, pos değişikliği olmadan sınırı aştı",
               "uk" => "Перевищено ліміт EVAL без зміни pos у регулярному виразі"
             },
@@ -40185,6 +41120,7 @@ $CONF = {
               "nl" => "Oneindige recursie in regex",
               "pt" => "Recursão infinita na expressão regular",
               "ru" => "Бесконечная рекурсия в регулярном выражении",
+              "sr" => "Бесконачна рекурзија у регуларном изразу",
               "tr" => "Düzenli ifadede sonsuz özyineleme",
               "uk" => "Нескінченна рекурсія в регулярному виразі"
             },
@@ -40226,6 +41162,7 @@ $CONF = {
               "nl" => "Limiet overschreden voor geneste patroon-subroutines zonder wijziging van de positie in regex",
               "pt" => "O aninhamento de sub-rotinas de padrões sem alteração de posição excedeu o limite na expressão regular",
               "ru" => "В регулярном выражении превышен предел вложенности вызовов подшаблонов без изменения pos",
+              "sr" => "Угнежђивање потпрограма шаблона без промене pos премашило је ограничење у регуларном изразу",
               "tr" => "Düzenli ifadede, pos değişikliği olmadan desen yordamının iç içe çağrı sınırı aşıldı",
               "uk" => "У регулярному виразі перевищено межу вкладеності викликів підпрограм шаблону без зміни pos"
             },
@@ -40267,6 +41204,7 @@ $CONF = {
               "nl" => "Het klonen van een vervangingscontext is niet geïmplementeerd",
               "pt" => "A clonagem do contexto de substituição não está implementada",
               "ru" => "Клонирование контекста подстановки не реализовано",
+              "sr" => "Клонирање контекста замене није имплементирано",
               "tr" => "Değiştirme bağlamının kopyalanması uygulanmadı",
               "uk" => "Клонування контексту підстановки не реалізовано"
             },
@@ -40309,6 +41247,7 @@ $CONF = {
               "nl" => "Aantal voor builtin::rand_bytes() moet een niet-negatief geheel getal zijn",
               "pt" => "A contagem de builtin::rand_bytes() tem de ser um inteiro não negativo",
               "ru" => "Количество байтов для builtin::rand_bytes() должно быть неотрицательным целым числом",
+              "sr" => "Број бајтова у builtin::rand_bytes() мора бити ненегативан цео број",
               "tr" => "builtin::rand_bytes() sayısı negatif olmayan bir tamsayı olmalıdır",
               "uk" => "Кількість байтів для builtin::rand_bytes() має бути невід'ємним цілим числом"
             },
@@ -40351,6 +41290,7 @@ $CONF = {
               "nl" => "Aantal voor builtin::rand_bytes() is te groot",
               "pt" => "A contagem de builtin::rand_bytes() é demasiado grande",
               "ru" => "Слишком большое количество байтов для builtin::rand_bytes()",
+              "sr" => "Број бајтова у builtin::rand_bytes() је превелик",
               "tr" => "builtin::rand_bytes() sayısı çok büyük",
               "uk" => "Кількість байтів для builtin::rand_bytes() надто велика"
             },
@@ -40392,6 +41332,7 @@ $CONF = {
               "nl" => "RNG-provider rand_bytes() heeft niet het gevraagde aantal bytes teruggegeven",
               "pt" => "O método rand_bytes() do fornecedor de RNG não devolveu o número de bytes solicitado",
               "ru" => "Метод rand_bytes() поставщика генератора случайных чисел не вернул запрошенное количество байтов",
+              "sr" => "Метода rand_bytes() RNG провајдера није вратила тражени број бајтова",
               "tr" => "RNG sağlayıcısının rand_bytes() yöntemi istenen bayt sayısını döndürmedi",
               "uk" => "Метод rand_bytes() постачальника генератора випадкових чисел не повернув запитану кількість байтів"
             },
@@ -40433,6 +41374,7 @@ $CONF = {
               "nl" => "RNG-provider rand_bytes() heeft geen byte-tekenreeks teruggegeven",
               "pt" => "O método rand_bytes() do fornecedor de RNG não devolveu uma cadeia de bytes",
               "ru" => "Метод rand_bytes() поставщика генератора случайных чисел не вернул байтовую строку",
+              "sr" => "Метода rand_bytes() RNG провајдера није вратила низ бајтова",
               "tr" => "RNG sağlayıcısının rand_bytes() yöntemi bir bayt dizgesi döndürmedi",
               "uk" => "Метод rand_bytes() постачальника генератора випадкових чисел не повернув байтовий рядок"
             },
@@ -40474,6 +41416,7 @@ $CONF = {
               "nl" => "Adres van snelle RNG-provider moet een geheel getal zijn",
               "pt" => "O endereço do fornecedor rápido de RNG tem de ser um inteiro",
               "ru" => "Адрес быстрого поставщика генератора случайных чисел должен быть целым числом",
+              "sr" => "Адреса брзог RNG провајдера мора бити цео број",
               "tr" => "RNG hızlı sağlayıcı adresi tamsayı olmalıdır",
               "uk" => "Адреса швидкого постачальника генератора випадкових чисел має бути цілим числом"
             },
@@ -40515,6 +41458,7 @@ $CONF = {
               "nl" => "\${^RNG} moet een RNG::Provider-object of undef zijn",
               "pt" => "\${^RNG} tem de ser um objeto RNG::Provider ou undef",
               "ru" => "\${^RNG} должна содержать объект RNG::Provider или undef",
+              "sr" => "\${^RNG} мора бити објекат RNG::Provider или undef",
               "tr" => "\${^RNG}, bir RNG::Provider nesnesi veya undef olmalıdır",
               "uk" => "\${^RNG} має бути об’єктом RNG::Provider або undef"
             },
@@ -40556,6 +41500,7 @@ $CONF = {
               "nl" => "RNG::SeedBase::bytes() heeft geen seed-octetten teruggegeven",
               "pt" => "RNG::SeedBase::bytes() não devolveu octetos de semente",
               "ru" => "RNG::SeedBase::bytes() не вернул октеты начальных данных",
+              "sr" => "RNG::SeedBase::bytes() није вратио октете семена",
               "tr" => "RNG::SeedBase::bytes(), tohum baytlarını döndürmedi",
               "uk" => "RNG::SeedBase::bytes() не повернув октети початкового значення генератора"
             },
@@ -40597,6 +41542,7 @@ $CONF = {
               "nl" => "RNG::Seed voor ingebouwde Drand48 moet precies 4 octetten bevatten",
               "pt" => "RNG::Seed para o Drand48 integrado tem de conter exatamente 4 octetos",
               "ru" => "RNG::Seed для встроенного генератора Drand48 должен содержать ровно 4 октета",
+              "sr" => "RNG::Seed за уграђени Drand48 мора да садржи тачно 4 октета",
               "tr" => "Yerleşik Drand48 için RNG::Seed tam olarak 4 bayt içermelidir",
               "uk" => "RNG::Seed для вбудованого Drand48 має містити рівно 4 октети"
             },
@@ -40638,6 +41584,7 @@ $CONF = {
               "nl" => "Kan een afgeschermde RNG-seed niet gebruiken",
               "pt" => "Não é possível utilizar uma semente de RNG ocultada",
               "ru" => "Нельзя использовать начальные данные генератора случайных чисел, из которых удалено содержимое",
+              "sr" => "Не можете користити редиговано семе генератора случајних бројева",
               "tr" => "Üzeri maskelenmiş bir RNG tohumu kullanılamaz",
               "uk" => "Неможливо використовувати початкове значення генератора випадкових чисел із вилученими даними"
             },
@@ -40679,6 +41626,7 @@ $CONF = {
               "nl" => "Ongeldige optie in PERL5OPT: -%{option}",
               "pt" => "Opção inválida em PERL5OPT: -%{option}",
               "ru" => "Недопустимый параметр в PERL5OPT: -%{option}",
+              "sr" => "Недозвољена опција у променљивој PERL5OPT: -%{option}",
               "tr" => "PERL5OPT içinde geçersiz anahtar: -%{option}",
               "uk" => "Недопустимий параметр у PERL5OPT: -%{option}"
             },
@@ -40726,6 +41674,7 @@ $CONF = {
               "nl" => "Ongeldige PERL_SIGNALS-waarde: \"%{arg1}\"",
               "pt" => "PERL_SIGNALS inválido: \"%{arg1}\"",
               "ru" => "Недопустимое значение PERL_SIGNALS: \"%{arg1}\"",
+              "sr" => "Недозвољена вредност PERL_SIGNALS: „%{arg1}“",
               "tr" => "PERL_SIGNALS geçersiz: \"%{arg1}\"",
               "uk" => "Недопустиме значення PERL_SIGNALS: \"%{arg1}\""
             },
@@ -40773,6 +41722,7 @@ $CONF = {
               "nl" => "Geen map opgegeven voor -I",
               "pt" => "Nenhuma diretoria especificada para -I",
               "ru" => "Для -I не указан каталог",
+              "sr" => "За -I није наведен директоријум",
               "tr" => "-I için dizin belirtilmedi",
               "uk" => "Не вказано каталог для -I"
             },
@@ -40814,6 +41764,7 @@ $CONF = {
               "nl" => "Bij optie -%{option} is een modulenaam vereist",
               "pt" => "É necessário indicar o nome do módulo com a opção -%{option}",
               "ru" => "Для параметра -%{option} требуется имя модуля",
+              "sr" => "Уз опцију -%{option} потребно је име модула",
               "tr" => "-%{option} seçeneğiyle modül adı gerekli",
               "uk" => "Для параметра -%{option} потрібне ім'я модуля"
             },
@@ -40861,6 +41812,7 @@ $CONF = {
               "nl" => "Ongeldige modulenaam %{arg1} bij optie -%{arg2}: bevat een enkele ':'",
               "pt" => "Nome de módulo inválido %{arg1} com a opção -%{arg2}: contém um ':' isolado",
               "ru" => "Недопустимое имя модуля %{arg1} в параметре -%{arg2}: содержит одиночное ':'",
+              "sr" => "Неисправно име модула %{arg1} уз опцију -%{arg2}: садржи самосталну ':'",
               "tr" => "-%{arg2} seçeneğiyle geçersiz modül adı %{arg1}: tek ':' içeriyor",
               "uk" => "Неприпустиме ім'я модуля %{arg1} для параметра -%{arg2}: містить одинарну ':'"
             },
@@ -40923,6 +41875,7 @@ $CONF = {
               "nl" => "Geen code opgegeven voor -%{option}",
               "pt" => "Não foi especificado código para -%{option}",
               "ru" => "Для -%{option} не указан код",
+              "sr" => "За -%{option} није наведен код",
               "tr" => "-%{option} için kod belirtilmedi",
               "uk" => "Не вказано код для -%{option}"
             },
@@ -40970,6 +41923,7 @@ $CONF = {
               "nl" => "Kan -%{arg2} niet emuleren op een #!-regel",
               "pt" => "Não é possível emular -%{arg2} numa linha #!",
               "ru" => "Невозможно эмулировать -%{arg2} в строке #!",
+              "sr" => "Није могуће емулирати -%{arg2} у #! линији",
               "tr" => "#! satırında -%{arg2} taklit edilemiyor",
               "uk" => "Неможливо емулювати -%{arg2} у рядку #!"
             },
@@ -41017,6 +41971,7 @@ $CONF = {
               "nl" => "Te laat voor optie \"-%{option}\"",
               "pt" => "Demasiado tarde para utilizar a opção \"-%{option}\"",
               "ru" => "Слишком поздно для параметра \"-%{option}\"",
+              "sr" => "Прекасно је за опцију „-%{option}“",
               "tr" => "\"-%{option}\" seçeneği için çok geç",
               "uk" => "Запізно для параметра \"-%{option}\""
             },
@@ -41119,6 +42074,10 @@ $CONF = {
                 "*" => "\"-%{switch}\" указан в строке #!; его необходимо также указать в командной строке",
                 "malloc_options" => "\"-%{switch}\" указан в строке #!; его необходимо также указать в командной строке при использовании \$ENV{PERL_MALLOC_OPT}"
               },
+              "sr" => {
+                "malloc_options" => "Прекидач „-%{switch}“ је наведен у линији #!, мора бити наведен и у командној линији уз \$ENV{PERL_MALLOC_OPT}",
+                "other" => "Прекидач „-%{switch}“ је наведен у линији #!, мора бити наведен и у командној линији"
+              },
               "tr" => {
                 "malloc_options" => "\"-%{switch}\" #! satırında; PERL_MALLOC_OPT ile komut satırında da kullanılmalı",
                 "other" => "\"-%{switch}\" #! satırında; komut satırında da kullanılmalı"
@@ -41182,6 +42141,7 @@ $CONF = {
               "nl" => "Deze Perl is gecompileerd zonder taint-ondersteuning. Uitvoering met de vlaggen -t of -T wordt geweigerd",
               "pt" => "Este Perl foi compilado sem suporte para taint. Recusa-se a executar com as opções -t ou -T",
               "ru" => "Этот perl скомпилирован без поддержки проверки taint. Из осторожности отказываюсь запускаться с флагами -t или -T",
+              "sr" => "Овај perl је преведен без подршке за taint. Из безбедносних разлога одбија се покретање са опцијом -t или -T",
               "tr" => "Bu perl taint desteği olmadan derlenmiş. -t veya -T bayraklarıyla çalıştırmayı korkakça reddediyor",
               "uk" => "Цей perl скомпільовано без підтримки перевірки забруднених даних. Боягузливо відмовляюся запускатися з прапорцями -t або -T"
             },
@@ -41224,6 +42184,7 @@ $CONF = {
               "nl" => "Ongeldig getal '%{arg2}' voor optie -C.\n",
               "pt" => "Número inválido '%{arg2}' para a opção -C.\n",
               "ru" => "Недопустимое число '%{arg2}' для параметра -C.\n",
+              "sr" => "Неисправан број „%{arg2}“ за опцију -C.\n",
               "tr" => "-C seçeneği için geçersiz sayı '%{arg2}'.\n",
               "uk" => "Недопустиме число '%{arg2}' для параметра -C.\n"
             },
@@ -41272,6 +42233,7 @@ $CONF = {
               "nl" => "Onbekende waarde %{arg1} voor Unicode-optie",
               "pt" => "Valor desconhecido da opção Unicode: %{arg1}",
               "ru" => "Неизвестное значение параметра Unicode %{arg1}",
+              "sr" => "Непозната вредност Unicode опције %{arg1}",
               "tr" => "Bilinmeyen Unicode seçeneği değeri %{arg1}",
               "uk" => "Невідоме значення параметра Unicode %{arg1}"
             },
@@ -41320,6 +42282,7 @@ $CONF = {
               "nl" => "Onbekende Unicode-optieletter '%{arg1}'",
               "pt" => "Opção Unicode desconhecida '%{arg1}'",
               "ru" => "Неизвестная буква параметра Unicode: '%{arg1}'",
+              "sr" => "Непознато слово у Уникод опцији „%{arg1}“",
               "tr" => "Bilinmeyen Unicode seçeneği harfi '%{arg1}'",
               "uk" => "Невідома літера параметра Unicode '%{arg1}'"
             },
@@ -41367,6 +42330,7 @@ $CONF = {
               "nl" => "Onbekende optie: -%{arg1} (-h toont geldige opties).",
               "pt" => "Opção não reconhecida: -%{arg1} (use -h para ver as opções válidas).",
               "ru" => "Нераспознанный ключ: -%{arg1}  (-h покажет допустимые параметры).",
+              "sr" => "Непрепозната опција: -%{arg1}  (са -h можете видети важеће опције).",
               "tr" => "Tanınmayan anahtar: -%{arg1}  (-h geçerli seçenekleri gösterir).",
               "uk" => "Нерозпізнаний параметр: -%{arg1}  (-h покаже допустимі параметри)."
             },
@@ -41414,6 +42378,7 @@ $CONF = {
               "nl" => "Onbekende optie: -%{arg2} (-h toont geldige opties)",
               "pt" => "Opção não reconhecida: -%{arg2} (use -h para ver as opções válidas)",
               "ru" => "Неизвестный ключ: -%{arg2}  (-h покажет допустимые параметры)",
+              "sr" => "Непозната опција: -%{arg2}  (-h приказује важеће опције)",
               "tr" => "Tanınmayan anahtar: -%{arg2}  (-h geçerli seçenekleri gösterir)",
               "uk" => "Нерозпізнаний параметр: -%{arg2}  (-h покаже допустимі параметри)"
             },
@@ -41461,6 +42426,7 @@ $CONF = {
               "nl" => "Ontbrekend argument voor -%{option}",
               "pt" => "Falta o argumento de -%{option}",
               "ru" => "Отсутствует аргумент для -%{option}",
+              "sr" => "Недостаје аргумент за -%{option}",
               "tr" => "-%{option} seçeneği için bağımsız değişken eksik",
               "uk" => "Відсутній аргумент для -%{option}"
             },
@@ -41508,6 +42474,7 @@ $CONF = {
               "nl" => "Geen Perl-script gevonden in de invoer\n",
               "pt" => "Não foi encontrado nenhum script Perl na entrada\n",
               "ru" => "Во входных данных не найден скрипт Perl\n",
+              "sr" => "У улазу није пронађена Perl скрипта\n",
               "tr" => "Girdide Perl betiği bulunamadı\n",
               "uk" => "У вхідних даних не знайдено сценарію Perl\n"
             },
@@ -41549,6 +42516,7 @@ $CONF = {
               "nl" => "'%{arg1}' wordt geblokkeerd door het operatiemasker",
               "pt" => "'%{arg1}' foi bloqueado pela máscara de operações",
               "ru" => "Маска операций запрещает следующую операцию: '%{arg1}'",
+              "sr" => "Оператор „%{arg1}“ је ухваћен маском оператора",
               "tr" => "'%{arg1}' işlem maskesi tarafından engellendi",
               "uk" => "Операцію заблоковано маскою операцій: '%{arg1}'"
             },
@@ -41586,6 +42554,7 @@ $CONF = {
                 "nl" => "operation",
                 "pt" => "operation",
                 "ru" => "nominative",
+                "sr" => "nominative",
                 "tr" => "operation",
                 "uk" => "nominative"
               },
@@ -41674,6 +42643,10 @@ $CONF = {
                 "*" => "Параметр -%{switch} запрещён для скрипта (suid), переданного через файловый дескриптор",
                 "stdin" => "Ввод программы из stdin запрещён для скрипта (suid), переданного через файловый дескриптор"
               },
+              "sr" => {
+                "command_line_switch" => "Опција -%{switch} није дозвољена уз (suid) fdscript",
+                "stdin" => "Унос програма са stdin-а није дозвољен уз (suid) fdscript"
+              },
               "tr" => {
                 "command_line_switch" => "(suid) fdscript ile -%{switch} kullanılamaz",
                 "stdin" => "(suid) fdscript ile stdin'den program girdisine izin verilmez"
@@ -41736,6 +42709,7 @@ $CONF = {
               "nl" => "Naam van (suid)-fd-script ontbreekt\n",
               "pt" => "Falta o nome do script (suid) fd\n",
               "ru" => "Отсутствует имя скрипта (suid), заданного файловым дескриптором\n",
+              "sr" => "Недостаје име fd скрипте (suid)\n",
               "tr" => "(suid) fd betik adı eksik\n",
               "uk" => "Відсутнє ім'я сценарію (suid), переданого через fd\n"
             },
@@ -41777,6 +42751,7 @@ $CONF = {
               "nl" => "Onjuiste syntaxis voor (suid)-fd-scriptnaam \"%{arg2}\"\n",
               "pt" => "Sintaxe incorreta do nome de script (suid) fd \"%{arg2}\"\n",
               "ru" => "Неверный синтаксис имени скрипта (suid), переданного через файловый дескриптор: \"%{arg2}\"\n",
+              "sr" => "Погрешна синтакса (suid) fd скрипте „%{arg2}“\n",
               "tr" => "(suid) fd betik adı \"%{arg2}\" yanlış sözdiziminde\n",
               "uk" => "Неправильний синтаксис імені скрипту через файловий дескриптор (suid) \"%{arg2}\"\n"
             },
@@ -41824,6 +42799,7 @@ $CONF = {
               "nl" => "U HEBT SET-ID-SCRIPTS NOG NIET UITGESCHAKELD IN DE KERNEL!\nPAS UW KERNEL AAN, ZET EEN C-WRAPPER OM DIT SCRIPT OF GEBRUIK -u EN UNDUMP!\n",
               "pt" => "AINDA NÃO DESATIVOU OS SCRIPTS SET-ID NO KERNEL!\nCORRIJA O KERNEL, USE UM WRAPPER EM C PARA ESTE SCRIPT OU UTILIZE -u E UNDUMP!\n",
               "ru" => "ВЫ ЕЩЁ НЕ ОТКЛЮЧИЛИ СКРИПТЫ С SET-ID В ЯДРЕ!\nИСПРАВЬТЕ ЯДРО, СОЗДАЙТЕ ДЛЯ ЭТОГО СКРИПТА ОБЁРТКУ НА C ИЛИ ИСПОЛЬЗУЙТЕ -u И UNDUMP!\n",
+              "sr" => "ЈОШ НИСТЕ ИСКЉУЧИЛИ SET-ID СКРИПТЕ У ЈЕЗГРУ ОПЕРАТИВНОГ СИСТЕМА!\nПОПРАВИТЕ ЈЕЗГРО, НАПРАВИТЕ C-ОМОТАЧ ОКО ОВЕ СКРИПТЕ ИЛИ КОРИСТИТЕ -u И UNDUMP!\n",
               "tr" => "ÇEKİRDEKTE SET-ID BETİKLERİNİ HENÜZ DEVRE DIŞI BIRAKMADINIZ!\nÇEKİRDEĞİNİZİ DÜZELTİN, BU BETİĞİ BİR C SARICIYLA ÇALIŞTIRIN YA DA -u KULLANIP UN-DUMP EDİN!\n",
               "uk" => "ВИ ЩЕ НЕ ВИМКНУЛИ СКРИПТИ SET-ID У ЯДРІ!\nВИПРАВТЕ ЯДРО, СТВОРІТЬ ОБГОРТКУ МОВОЮ C ДЛЯ ЦЬОГО СКРИПТУ АБО ВИКОРИСТАЙТЕ -u ТА UNDUMP!\n"
             },
@@ -41865,6 +42841,7 @@ $CONF = {
               "nl" => "Ongeldig suid-script",
               "pt" => "Script setuid inválido",
               "ru" => "Недопустимый suid-скрипт",
+              "sr" => "Недозвољена суид скрипта",
               "tr" => "Geçersiz suidscript",
               "uk" => "Недопустимий сценарій suid"
             },
@@ -41950,6 +42927,10 @@ $CONF = {
               "ru" => {
                 "*" => "Параметр -%{switch} запрещён при выполнении с setgid",
                 "stdin" => "Ввод программы из stdin запрещён при выполнении с setgid"
+              },
+              "sr" => {
+                "command_line_switch" => "Опција -%{switch} није дозвољена при покретању са setgid привилегијама",
+                "stdin" => "Унос програма са stdin-а није дозвољен при покретању са setgid привилегијама"
               },
               "tr" => {
                 "command_line_switch" => "setgid olarak çalışırken -%{switch} kullanılamaz",
@@ -42058,6 +43039,10 @@ $CONF = {
                 "command_line_switch" => "Ключ -%{switch} запрещён при запуске с setuid",
                 "stdin" => "Чтение программы из stdin запрещено при запуске с setuid"
               },
+              "sr" => {
+                "command_line_switch" => "Опција -%{switch} није дозвољена при покретању са setuid привилегијама",
+                "stdin" => "Унос програма са stdin-а није дозвољен при покретању са setuid привилегијама"
+              },
               "tr" => {
                 "command_line_switch" => "setuid olarak çalışırken -%{switch} kullanılamaz",
                 "stdin" => "setuid olarak çalışırken stdin'den program girdisine izin verilmez"
@@ -42121,6 +43106,7 @@ $CONF = {
               "nl" => "Smartmatch op een niet-overbelast object doorbreekt de encapsulatie",
               "pt" => "A comparação inteligente de um objeto sem sobrecarga viola o encapsulamento",
               "ru" => "Умное сопоставление объекта без перегрузки этой операции нарушает инкапсуляцию",
+              "sr" => "Паметно поређење објекта без преоптерећења нарушава енкапсулацију",
               "tr" => "Aşırı yüklenmemiş bir nesneyle akıllı eşleştirme yapmak kapsüllemeyi bozar",
               "uk" => "Розумне зіставлення об’єкта без перевантаження порушує інкапсуляцію"
             },
@@ -42221,6 +43207,11 @@ $CONF = {
                 "array" => "Нельзя использовать слово без кавычек (\"%{word}\") как ссылку на массив при включённом режиме \"strict refs\"",
                 "hash" => "Нельзя использовать слово без кавычек (\"%{word}\") как ссылку на хеш при включённом режиме \"strict refs\"",
                 "scalar" => "Нельзя использовать слово без кавычек (\"%{word}\") как ссылку на скаляр при включённом режиме \"strict refs\""
+              },
+              "sr" => {
+                "array" => "Није могуће користити голу реч („%{word}”) као референцу на ARRAY док је „strict refs” активан",
+                "hash" => "Није могуће користити голу реч („%{word}”) као референцу на HASH док је „strict refs” активан",
+                "scalar" => "Није могуће користити голу реч („%{word}”) као референцу на SCALAR док је „strict refs” активан"
               },
               "tr" => {
                 "array" => "\"strict refs\" etkinken çıplak sözcük (\"%{word}\") ARRAY başvurusu olarak kullanılamaz",
@@ -42532,6 +43523,24 @@ $CONF = {
                   "truncated" => "Нельзя использовать строку (\"%{value}\"...) как ссылку типа SCALAR при включённом \"strict refs\""
                 }
               },
+              "sr" => {
+                "array" => {
+                  "complete" => "Није могуће користити стринг (\"%{value}\") као референцу на ARRAY док је \"strict refs\" укључен",
+                  "truncated" => "Није могуће користити стринг (\"%{value}\"...) као референцу на ARRAY док је \"strict refs\" укључен"
+                },
+                "hash" => {
+                  "complete" => "Није могуће користити стринг (\"%{value}\") као референцу на HASH док је \"strict refs\" укључен",
+                  "truncated" => "Није могуће користити стринг (\"%{value}\"...) као референцу на HASH док је \"strict refs\" укључен"
+                },
+                "scalar" => {
+                  "complete" => "Није могуће користити стринг (\"%{value}\") као референцу на SCALAR док је \"strict refs\" укључен",
+                  "truncated" => "Није могуће користити стринг (\"%{value}\"...) као референцу на SCALAR док је \"strict refs\" укључен"
+                },
+                "symbol" => {
+                  "complete" => "Није могуће користити стринг (\"%{value}\") као референцу на симбол док је \"strict refs\" укључен",
+                  "truncated" => "Није могуће користити стринг (\"%{value}\"...) као референцу на симбол док је \"strict refs\" укључен"
+                }
+              },
               "tr" => {
                 "array" => {
                   "complete" => "\"strict refs\" etkinken dizge (\"%{value}\") ARRAY başvurusu olarak kullanılamaz",
@@ -42679,6 +43688,10 @@ $CONF = {
                 "*" => "Нельзя использовать строку (\"%{value}\") как ссылку на подпрограмму при включённом \"strict refs\"",
                 "truncated" => "Нельзя использовать строку (\"%{value}\"...) как ссылку на подпрограмму при включённом \"strict refs\""
               },
+              "sr" => {
+                "complete" => "Не можете да користите ниску („%{value}“) као референцу на потпрограм док је „strict refs“ укључен",
+                "truncated" => "Не можете да користите ниску („%{value}“...) као референцу на потпрограм док је „strict refs“ укључен"
+              },
               "tr" => {
                 "complete" => "\"strict refs\" etkinken dizge (\"%{value}\") alt yordam başvurusu olarak kullanılamaz",
                 "truncated" => "\"strict refs\" etkinken dizge (\"%{value}\"...) alt yordam başvurusu olarak kullanılamaz"
@@ -42743,6 +43756,7 @@ $CONF = {
               "nl" => "substr valt buiten de tekenreeks",
               "pt" => "substr fora da cadeia de caracteres",
               "ru" => "substr за пределами строки",
+              "sr" => "substr ван ниске",
               "tr" => "substr dizenin dışında",
               "uk" => "substr за межами рядка"
             },
@@ -42784,6 +43798,7 @@ $CONF = {
               "nl" => "Ongeldig aantal bits in vec",
               "pt" => "Número de bits inválido em vec",
               "ru" => "Недопустимое число битов в vec",
+              "sr" => "Недозвољен број битова у vec",
               "tr" => "vec içindeki bit sayısı geçersiz",
               "uk" => "Неприпустима кількість бітів у vec"
             },
@@ -42825,6 +43840,7 @@ $CONF = {
               "nl" => "Negatieve offset voor vec in lvalue-context",
               "pt" => "Deslocamento negativo para vec em contexto de atribuição",
               "ru" => "Отрицательное смещение в vec в контексте lvalue",
+              "sr" => "Негативан померај за vec у контексту леве вредности",
               "tr" => "lvalue bağlamında vec için negatif konum",
               "uk" => "Від’ємний зсув для vec у контексті lvalue"
             },
@@ -42866,6 +43882,7 @@ $CONF = {
               "nl" => "\$%{arg2} wordt sinds Perl 5.30 niet meer ondersteund",
               "pt" => "\$%{arg2} deixou de ser suportado a partir do Perl 5.30",
               "ru" => "\$%{arg2} больше не поддерживается начиная с Perl 5.30",
+              "sr" => "\$%{arg2} више није подржан од Perl-а 5.30",
               "tr" => "\$%{arg2}, Perl 5.30 itibarıyla artık desteklenmiyor",
               "uk" => "\$%{arg2} більше не підтримується, починаючи з Perl 5.30"
             },
@@ -43003,6 +44020,13 @@ $CONF = {
                 "hash" => "Недопустимый символ для хеша",
                 "scalar" => "Недопустимый символ для скаляра"
               },
+              "sr" => {
+                "array" => "Неисправан симбол за низ",
+                "dirhandle" => "Неисправан симбол за руковалац директоријумом",
+                "filehandle" => "Неисправан симбол за руковалац датотеком",
+                "hash" => "Неисправан симбол за хеш",
+                "scalar" => "Неисправан симбол за скалар"
+              },
               "tr" => {
                 "array" => "Dizi için geçersiz simge",
                 "dirhandle" => "Dizin tanıtıcısı için geçersiz simge",
@@ -43114,6 +44138,10 @@ $CONF = {
                 "filehandle" => "Запятая после файлового дескриптора недопустима",
                 "subroutine" => "Запятая после имени подпрограммы недопустима"
               },
+              "sr" => {
+                "filehandle" => "Зарез није дозвољен после назива датотечног дескриптора",
+                "subroutine" => "Зарез није дозвољен после назива потпрограма"
+              },
               "tr" => {
                 "filehandle" => "filehandle'dan sonra virgül kullanılamaz",
                 "subroutine" => "alt yordam adından sonra virgül kullanılamaz"
@@ -43171,6 +44199,7 @@ $CONF = {
               "nl" => "Kan 'defined(\@array)' niet gebruiken (misschien kunt u defined() gewoon weglaten?)",
               "pt" => "Não é possível utilizar 'defined(\@array)' (talvez baste omitir defined()?)",
               "ru" => "Нельзя использовать 'defined(\@array)' (Возможно, следует просто убрать defined()?)",
+              "sr" => "Није могуће користити 'defined(\@array)' (Можда треба само да изоставите defined()?)",
               "tr" => "'defined(\@array)' kullanılamaz (Belki defined() işlevini tamamen kaldırmalısınız?)",
               "uk" => "Не можна використовувати 'defined(\@array)' (Можливо, варто просто прибрати defined()?)"
             },
@@ -43212,6 +44241,7 @@ $CONF = {
               "nl" => "Kan 'defined(%%hash)' niet gebruiken (misschien kunt u defined() gewoon weglaten?)",
               "pt" => "Não é possível utilizar 'defined(%%hash)' (talvez baste omitir defined()?)",
               "ru" => "Нельзя использовать 'defined(%%hash)' (Возможно, следует просто убрать defined()?)",
+              "sr" => "Није могуће користити 'defined(%%hash)' (Можда треба само да изоставите defined()?)",
               "tr" => "'defined(%%hash)' kullanılamaz (Belki defined() işlevini tamamen kaldırmalısınız?)",
               "uk" => "Не можна використовувати 'defined(%%hash)' (Можливо, варто просто прибрати defined()?)"
             },
@@ -43253,6 +44283,7 @@ $CONF = {
               "nl" => "Argument van delete is geen HASH- of ARRAY-element of -slice",
               "pt" => "O argumento de delete não é um elemento nem uma fatia de HASH ou ARRAY",
               "ru" => "Аргумент delete не является элементом или срезом HASH или ARRAY",
+              "sr" => "Аргумент функције delete није елемент или исечак HASH-а или ARRAY-а",
               "tr" => "delete argümanı bir HASH veya ARRAY elemanı ya da dilimi değil",
               "uk" => "Аргумент delete не є елементом або зрізом HASH чи ARRAY"
             },
@@ -43294,6 +44325,7 @@ $CONF = {
               "nl" => "Argument van exists is geen HASH- of ARRAY-element en ook geen subroutine",
               "pt" => "O argumento de exists não é um elemento de HASH ou ARRAY nem uma sub-rotina",
               "ru" => "Аргумент exists не является элементом HASH или ARRAY либо подпрограммой",
+              "sr" => "Аргумент функције exists није елемент HASH-а или ARRAY-а нити потпрограм",
               "tr" => "exists argümanı bir HASH veya ARRAY elemanı ya da alt yordam değil",
               "uk" => "Аргумент exists не є елементом HASH чи ARRAY або підпрограмою"
             },
@@ -43335,6 +44367,7 @@ $CONF = {
               "nl" => "Argument van exists is geen subroutinenaam",
               "pt" => "O argumento de exists não é o nome de uma sub-rotina",
               "ru" => "Аргумент exists не является именем подпрограммы",
+              "sr" => "Аргумент exists није име потпрограма",
               "tr" => "exists argümanı bir alt yordam adı değil",
               "uk" => "Аргумент exists не є іменем підпрограми"
             },
@@ -43376,6 +44409,7 @@ $CONF = {
               "nl" => "Gebruik van := voor een lege attributenlijst is niet toegestaan",
               "pt" => "Não é permitido utilizar := para uma lista de atributos vazia",
               "ru" => "Использование := для пустого списка атрибутов не допускается",
+              "sr" => "Употреба := за празну листу атрибута није дозвољена",
               "tr" => "Boş bir öznitelik listesi için := kullanılamaz",
               "uk" => "Використання := для порожнього списку атрибутів не дозволено"
             },
@@ -43418,6 +44452,7 @@ $CONF = {
               "nl" => "Niet-afgesloten attribuutparameter in attributenlijst",
               "pt" => "Parâmetro de atributo não terminado na lista de atributos",
               "ru" => "Незавершённый параметр атрибута в списке атрибутов",
+              "sr" => "Незавршен параметар атрибута у списку атрибута",
               "tr" => "Öznitelik listesindeki öznitelik parametresi sonlandırılmamış",
               "uk" => "Незавершений параметр атрибута в списку атрибутів"
             },
@@ -43460,6 +44495,7 @@ $CONF = {
               "nl" => "Dubbele pakketalias '%{arg1}'",
               "pt" => "Alias de pacote duplicado '%{arg1}'",
               "ru" => "Повторное объявление псевдонима пакета '%{arg1}'",
+              "sr" => "Дуплирани псеудоним пакета „%{arg1}“",
               "tr" => "Yinelenen paket takma adı '%{arg1}'",
               "uk" => "Повторне оголошення псевдоніма пакета '%{arg1}'"
             },
@@ -43508,6 +44544,7 @@ $CONF = {
               "nl" => "Aliasnaam moet een niet-leeg onderdeel van een pakketnaam zijn",
               "pt" => "O nome do alias tem de ser um componente de pacote não vazio",
               "ru" => "Имя псевдонима должно быть непустым компонентом имени пакета",
+              "sr" => "Име алијаса мора бити непразна компонента пакета",
               "tr" => "Takma ad adı boş olmayan bir paket bileşeni olmalıdır",
               "uk" => "Ім'я псевдоніма має бути непорожнім компонентом імені пакета"
             },
@@ -43550,6 +44587,7 @@ $CONF = {
               "nl" => "Ongeldige naamruimtescheiding in pakketnaam",
               "pt" => "Separador de espaço de nomes malformado no nome do pacote",
               "ru" => "Некорректный разделитель пространств имён в имени пакета",
+              "sr" => "Неисправан раздвајач простора имена у имену пакета",
               "tr" => "Paket adındaki ad alanı ayırıcı biçimi bozuk",
               "uk" => "Некоректний роздільник простору імен у назві пакета"
             },
@@ -43591,6 +44629,7 @@ $CONF = {
               "nl" => "Constanten uit lexicale variabelen die elders gewijzigd kunnen worden, zijn niet meer toegestaan",
               "pt" => "Já não são permitidas constantes provenientes de variáveis lexicais que possam ser modificadas noutro local",
               "ru" => "Константы из лексических переменных, которые могут изменяться в другом месте, больше не допускаются",
+              "sr" => "Константе из лексичких променљивих које се потенцијално мењају на другом месту више нису дозвољене",
               "tr" => "Başka yerde değiştirilebilecek sözcüksel değişkenlerden sabit oluşturulmasına artık izin verilmiyor",
               "uk" => "Константи з лексичних змінних, які можуть змінюватися деінде, більше не дозволені"
             },
@@ -43632,6 +44671,7 @@ $CONF = {
               "nl" => "Magische lijstconstanten worden niet ondersteund",
               "pt" => "Não são suportadas constantes de lista com magia",
               "ru" => "Списковые константы с магией не поддерживаются",
+              "sr" => "Магичке константе листе нису подржане",
               "tr" => "Sihirli liste sabitleri desteklenmiyor",
               "uk" => "Магічні спискові константи не підтримуються"
             },
@@ -43673,6 +44713,7 @@ $CONF = {
               "nl" => "Naam ontbreekt in \"%{arg2}\"",
               "pt" => "Falta um nome em \"%{arg2}\"",
               "ru" => "Отсутствует имя в \"%{arg2}\"",
+              "sr" => "Недостаје име у „%{arg2}“",
               "tr" => "\"%{arg2}\" içinde ad eksik",
               "uk" => "Відсутнє ім'я в \"%{arg2}\""
             },
@@ -43720,6 +44761,7 @@ $CONF = {
               "nl" => "Ongeldige declaratie van subroutine %{PL_subname}",
               "pt" => "Declaração ilegal da sub-rotina %{PL_subname}",
               "ru" => "Недопустимое объявление подпрограммы %{PL_subname}",
+              "sr" => "Недозвољена декларација потпрограма %{PL_subname}",
               "tr" => "%{PL_subname} alt yordamının bildirimi geçersiz",
               "uk" => "Недопустиме оголошення підпрограми %{PL_subname}"
             },
@@ -43768,6 +44810,7 @@ $CONF = {
               "nl" => "Modulenaam moet een constante zijn",
               "pt" => "O nome do módulo tem de ser constante",
               "ru" => "Имя модуля должно быть константой",
+              "sr" => "Име модула мора бити константно",
               "tr" => "Modül adı sabit olmalıdır",
               "uk" => "Ім'я модуля має бути константою"
             },
@@ -43809,6 +44852,7 @@ $CONF = {
               "nl" => "\$ ontbreekt bij lusvariabele",
               "pt" => "Falta o símbolo \$ na variável do ciclo",
               "ru" => "Перед переменной цикла отсутствует \$",
+              "sr" => "Недостаје \$ испред променљиве у петљи",
               "tr" => "Döngü değişkeninde \$ eksik",
               "uk" => "Відсутній \$ перед змінною циклу"
             },
@@ -43850,6 +44894,7 @@ $CONF = {
               "nl" => "Dit gebruik van my() in een onware voorwaarde is niet langer toegestaan",
               "pt" => "Esta utilização de my() numa condição falsa já não é permitida",
               "ru" => "Такое использование my() с ложным условием больше не допускается",
+              "sr" => "Ова употреба my() у услову који није испуњен више није дозвољена",
               "tr" => "Yanlış bir koşul içindeki my() kullanımı artık izinli değil",
               "uk" => "Таке використання my() з хибною умовою більше не дозволено"
             },
@@ -43892,6 +44937,7 @@ $CONF = {
               "nl" => "De experimentele functie declared_refs is niet ingeschakeld",
               "pt" => "A funcionalidade experimental declared_refs não está ativada",
               "ru" => "Экспериментальная возможность declared_refs не включена",
+              "sr" => "Експериментална функција declared_refs није омогућена",
               "tr" => "Deneysel declared_refs özelliği etkin değil",
               "uk" => "Експериментальну можливість declared_refs не ввімкнено"
             },
@@ -43940,6 +44986,7 @@ $CONF = {
               "nl" => "Kan een array niet als referentie gebruiken",
               "pt" => "Não é possível utilizar um array como referência",
               "ru" => "Нельзя использовать массив как ссылку",
+              "sr" => "Низ се не може користити као референца",
               "tr" => "Dizi başvuru olarak kullanılamaz",
               "uk" => "Не можна використовувати масив як посилання"
             },
@@ -43982,6 +45029,7 @@ $CONF = {
               "nl" => "Kan een hash niet als referentie gebruiken",
               "pt" => "Não é possível utilizar um hash como referência",
               "ru" => "Нельзя использовать хеш как ссылку",
+              "sr" => "Хеш се не може користити као референца",
               "tr" => "Hash başvuru olarak kullanılamaz",
               "uk" => "Не можна використовувати хеш як посилання"
             },
@@ -44024,6 +45072,7 @@ $CONF = {
               "nl" => "Niet-ondersteunde aanroep in dispatch-patroon",
               "pt" => "Chamada num padrão dispatch não suportada",
               "ru" => "неподдерживаемый вызов в шаблоне dispatch",
+              "sr" => "неподржан позив у шаблону диспечирања",
               "tr" => "Desteklenmeyen dispatch kalıbı çağrısı",
               "uk" => "непідтримуваний виклик у шаблоні dispatch"
             },
@@ -44066,6 +45115,7 @@ $CONF = {
               "nl" => "Niet-ondersteunde methodeaanroep in dispatch-patroon",
               "pt" => "Chamada de método num padrão dispatch não suportada",
               "ru" => "неподдерживаемый вызов метода в шаблоне dispatch",
+              "sr" => "неподржан облик позива методе у шаблону диспечирања",
               "tr" => "Desteklenmeyen dispatch kalıbı yöntem çağrısı",
               "uk" => "непідтримуваний виклик методу в шаблоні dispatch"
             },
@@ -44108,6 +45158,7 @@ $CONF = {
               "nl" => "Ongeldig argument in dispatch-predicaat",
               "pt" => "Argumento inválido no predicado dispatch",
               "ru" => "Недопустимый аргумент в предикате dispatch",
+              "sr" => "неважећи аргумент у предикату диспечирања",
               "tr" => "Dispatch koşulunda geçersiz argüman",
               "uk" => "некоректний аргумент у предикаті dispatch"
             },
@@ -44150,6 +45201,7 @@ $CONF = {
               "nl" => "Niet-ondersteund argument in dispatch-predicaat",
               "pt" => "Argumento não suportado no predicado dispatch",
               "ru" => "Неподдерживаемый аргумент в предикате dispatch",
+              "sr" => "неподржан аргумент у предикату диспечирања",
               "tr" => "Dispatch koşulundaki desteklenmeyen argüman",
               "uk" => "Непідтримуваний аргумент у предикаті dispatch"
             },
@@ -44192,6 +45244,7 @@ $CONF = {
               "nl" => "Argumenten van dispatch-predicaat moeten constanten of vastgepinde waarden zijn",
               "pt" => "Os argumentos do predicado dispatch devem ser constantes ou valores fixados",
               "ru" => "Аргументы предиката dispatch должны быть константами или закреплёнными значениями",
+              "sr" => "аргументи предиката диспечирања морају бити константе или закачене вредности",
               "tr" => "Dispatch koşulu argümanları sabit veya sabitlenmiş değer olmalıdır",
               "uk" => "аргументи предиката dispatch мають бути константами або закріпленими значеннями"
             },
@@ -44234,6 +45287,7 @@ $CONF = {
               "nl" => "Dispatch-predicaat heeft het verkeerde aantal argumenten",
               "pt" => "O predicado dispatch tem um número incorreto de argumentos",
               "ru" => "Неверное число аргументов у предиката dispatch",
+              "sr" => "предикат диспечирања има погрешан број аргумената",
               "tr" => "Dispatch koşuluna yanlış sayıda argüman verildi",
               "uk" => "Предикату dispatch передано неправильну кількість аргументів"
             },
@@ -44276,6 +45330,7 @@ $CONF = {
               "nl" => "Aanroepen in dispatch-patronen mogen geen argumenten hebben",
               "pt" => "As chamadas em padrões dispatch não podem ter argumentos",
               "ru" => "вызовы в шаблоне dispatch не должны иметь аргументов",
+              "sr" => "позиви у шаблону диспечирања не смеју имати аргументе",
               "tr" => "Dispatch kalıbı çağrıları argümansız olmalıdır",
               "uk" => "виклики в шаблоні dispatch не повинні мати аргументів"
             },
@@ -44317,6 +45372,7 @@ $CONF = {
               "nl" => "Dubbele capture %{arg1} in een dispatch-on-clausule",
               "pt" => "Captura duplicada %{arg1} numa cláusula dispatch-on",
               "ru" => "повторяющийся захват %{arg1} в ветви dispatch-on",
+              "sr" => "дупликат хватања %{arg1} у клаузули диспечирања",
               "tr" => "Dispatch-on yan tümcesinde yinelenen yakalama adı: %{arg1}",
               "uk" => "повторне захоплення %{arg1} у гілці dispatch-on"
             },
@@ -44379,6 +45435,7 @@ $CONF = {
               "nl" => "Ongeldige plaatsing van de ellips in arraypatroon",
               "pt" => "Posição inválida das reticências num padrão de array",
               "ru" => "недопустимое расположение многоточий в шаблоне массива",
+              "sr" => "неисправан положај тројтачке у шаблону низа",
               "tr" => "Dizi kalıbındaki üç noktanın yeri geçersiz",
               "uk" => "некоректне розташування трикрапок у шаблоні масиву"
             },
@@ -44420,6 +45477,7 @@ $CONF = {
               "nl" => "De ellips in een arraypatroon moet aan een uiteinde staan",
               "pt" => "As reticências de um padrão de array têm de estar numa das extremidades",
               "ru" => "многоточие в шаблоне массива должно находиться в начале или в конце",
+              "sr" => "тројтачка у шаблону низа мора бити на једном од крајева",
               "tr" => "Dizi kalıbındaki üç nokta bir uçta olmalıdır",
               "uk" => "трикрапка в шаблоні масиву має бути на початку або в кінці"
             },
@@ -44461,6 +45519,7 @@ $CONF = {
               "nl" => "Een arraypatroon mag slechts één slurp bevatten",
               "pt" => "Um padrão de array só pode conter uma captura do restante conteúdo",
               "ru" => "шаблон массива может содержать только один захват остатка",
+              "sr" => "шаблон низа може да садржи само једно захватање остатка",
               "tr" => "Dizi kalıbında yalnızca bir toplama hedefi bulunabilir",
               "uk" => "шаблон масиву може містити лише одне захоплення решти"
             },
@@ -44502,6 +45561,7 @@ $CONF = {
               "nl" => "Een array-slurp moet het laatste patroonelement zijn en mag geen ellips gebruiken",
               "pt" => "A captura do restante array tem de ser o último elemento do padrão e não pode usar reticências",
               "ru" => "захват остатка массива должен быть последним элементом шаблона и не может сочетаться с многоточием",
+              "sr" => "захватање остатка низа мора бити последњи елемент шаблона и не може се користити са тројтачком",
               "tr" => "Dizi kalıbındaki toplama hedefi son öğe olmalı ve üç noktayla birlikte kullanılamaz",
               "uk" => "захоплення решти масиву має бути останнім елементом шаблону й не може поєднуватися з трикрапкою"
             },
@@ -44543,6 +45603,7 @@ $CONF = {
               "nl" => "Patroontoewijzing vereist een scalaire capturebestemming",
               "pt" => "A atribuição num padrão exige um destino de captura escalar",
               "ru" => "присваивание в шаблоне требует скалярной переменной захвата в качестве цели",
+              "sr" => "за доделу у шаблону потребна је скаларна мета хватања",
               "tr" => "Kalıp ataması için skaler bir yakalama hedefi gerekir",
               "uk" => "присвоєння в шаблоні потребує скалярної цілі захоплення"
             },
@@ -44584,6 +45645,7 @@ $CONF = {
               "nl" => "Aangrenzende captures zijn niet toegestaan in aaneenschakking van dispatch-patronen",
               "pt" => "Não são permitidas capturas adjacentes numa concatenação de padrões dispatch",
               "ru" => "соседние захваты недопустимы в конкатенации шаблона dispatch",
+              "sr" => "суседна хватања нису дозвољена у спајању шаблона диспечирања",
               "tr" => "Dispatch kalıbı birleştirmesinde bitişik yakalamalara izin verilmez",
               "uk" => "суміжні захоплення не дозволені в конкатенації шаблону dispatch"
             },
@@ -44625,6 +45687,7 @@ $CONF = {
               "nl" => "Captures in dispatch-patronen moeten worden gescheiden door niet-lege constante tekst",
               "pt" => "As capturas num padrão dispatch têm de estar separadas por texto constante não vazio",
               "ru" => "захваты в шаблоне dispatch должны быть разделены непустым постоянным текстом",
+              "sr" => "хватања у шаблону диспечирања морају бити раздвојена непразним константним текстом",
               "tr" => "Dispatch kalıbındaki yakalamalar boş olmayan sabit metinle ayrılmalıdır",
               "uk" => "захоплення в шаблоні dispatch мають бути розділені непорожнім сталим текстом"
             },
@@ -44666,6 +45729,7 @@ $CONF = {
               "nl" => "Niet-ondersteund onderdeel van aaneenschakking in dispatch-patroon",
               "pt" => "Componente de concatenação de padrões dispatch não suportada",
               "ru" => "неподдерживаемый компонент конкатенации в шаблоне dispatch",
+              "sr" => "неподржана компонента спајања у шаблону диспечирања",
               "tr" => "Desteklenmeyen dispatch kalıbı birleştirme bileşeni",
               "uk" => "непідтримуваний компонент конкатенації в шаблоні dispatch"
             },
@@ -44707,6 +45771,7 @@ $CONF = {
               "nl" => "Herhaalde capturenamen zijn niet toegestaan in aaneenschakking van dispatch-patronen",
               "pt" => "Não são permitidos nomes de captura repetidos numa concatenação de padrões dispatch",
               "ru" => "повторяющиеся имена захватов недопустимы в конкатенации шаблона dispatch",
+              "sr" => "поновљена имена хватања нису дозвољена у спајању шаблона диспечирања",
               "tr" => "Dispatch kalıbı birleştirmesinde yinelenen yakalama adlarına izin verilmez",
               "uk" => "у конкатенації шаблону dispatch не дозволено повторювати імена захоплень"
             },
@@ -44748,6 +45813,7 @@ $CONF = {
               "nl" => "Niet-ondersteunde aaneenschakkingsexpressie in dispatch-patroon",
               "pt" => "Expressão de concatenação de padrões dispatch não suportada",
               "ru" => "неподдерживаемое выражение конкатенации в шаблоне dispatch",
+              "sr" => "неподржан израз спајања у шаблону диспечирања",
               "tr" => "Desteklenmeyen dispatch kalıbı birleştirme ifadesi",
               "uk" => "непідтримуваний вираз конкатенації в шаблоні dispatch"
             },
@@ -44789,6 +45855,7 @@ $CONF = {
               "nl" => "Niet-ondersteunde dispatch-patroonexpressie",
               "pt" => "Expressão de padrão dispatch não suportada",
               "ru" => "неподдерживаемое выражение в шаблоне dispatch",
+              "sr" => "неподржан израз у шаблону диспечирања",
               "tr" => "Desteklenmeyen dispatch kalıbı ifadesi",
               "uk" => "непідтримуваний вираз у шаблоні dispatch"
             },
@@ -44830,6 +45897,7 @@ $CONF = {
               "nl" => "Dubbele sleutel \"%{arg1}\" in een dispatch-hashpatroon",
               "pt" => "Chave duplicada \"%{arg1}\" num padrão hash de dispatch",
               "ru" => "повторяющийся ключ \"%{arg1}\" в шаблоне хеша dispatch",
+              "sr" => "дупликат кључа „%{arg1}“ у хеш шаблону диспечирања",
               "tr" => "Dispatch hash kalıbında yinelenen anahtar: \"%{arg1}\"",
               "uk" => "повторний ключ \"%{arg1}\" у шаблоні хешу dispatch"
             },
@@ -44878,6 +45946,7 @@ $CONF = {
               "nl" => "De ellips in een hashpatroon moet als laatste staan",
               "pt" => "As reticências de um padrão de hash têm de aparecer no fim",
               "ru" => "многоточие в шаблоне хеша должно стоять в конце",
+              "sr" => "тројтачка у хеш шаблону мора бити последња",
               "tr" => "Hash kalıbındaki üç nokta son öğe olmalıdır",
               "uk" => "трикрапка в шаблоні хешу має бути останньою"
             },
@@ -44919,6 +45988,7 @@ $CONF = {
               "nl" => "Sleutels van hashpatronen moeten constanten, pins of aanroepen zonder argumenten zijn",
               "pt" => "As chaves de um padrão de hash têm de ser constantes, valores fixados ou chamadas sem argumentos",
               "ru" => "ключи шаблона хеша должны быть константами, закреплёнными значениями или вызовами без аргументов",
+              "sr" => "кључеви хеш шаблона морају бити константе, фиксиране вредности или позиви без аргумената",
               "tr" => "Hash kalıbı anahtarları sabit, sabitlenmiş değer veya sıfır argümanlı çağrı olmalıdır",
               "uk" => "ключі в шаблоні хешу мають бути константами, закріпленими значеннями або викликами без аргументів"
             },
@@ -44960,6 +46030,7 @@ $CONF = {
               "nl" => "Een hashpatroon vereist sleutel-waardeparen",
               "pt" => "Um padrão de hash exige pares chave/valor",
               "ru" => "шаблон хеша требует пар ключ/значение",
+              "sr" => "хеш шаблон захтева парове кључ/вредност",
               "tr" => "Hash kalıbında anahtar/değer çiftleri gerekir",
               "uk" => "шаблон хешу потребує пар ключ/значення"
             },
@@ -45001,6 +46072,7 @@ $CONF = {
               "nl" => "Een hashpatroon mag slechts één ellips bevatten",
               "pt" => "Um padrão de hash só pode conter umas reticências",
               "ru" => "шаблон хеша может содержать только одно многоточие",
+              "sr" => "хеш шаблон може да садржи само једну тројтачку",
               "tr" => "Hash kalıbında yalnızca bir üç nokta bulunabilir",
               "uk" => "шаблон хешу може містити лише одну трикрапку"
             },
@@ -45042,6 +46114,7 @@ $CONF = {
               "nl" => "Een hashpatroon mag slechts één slurp bevatten",
               "pt" => "Um padrão de hash só pode conter uma captura do restante conteúdo",
               "ru" => "шаблон хеша может содержать только один захват остатка",
+              "sr" => "хеш шаблон може да садржи само једно захватање остатка",
               "tr" => "Hash kalıbında yalnızca bir toplama hedefi bulunabilir",
               "uk" => "шаблон хешу може містити лише одне захоплення решти"
             },
@@ -45083,6 +46156,7 @@ $CONF = {
               "nl" => "Een hash-slurp moet het laatste patroonelement zijn en mag geen ellips gebruiken",
               "pt" => "A captura do restante hash tem de ser o último elemento do padrão e não pode usar reticências",
               "ru" => "захват остатка хеша должен быть последним элементом шаблона и не может сочетаться с многоточием",
+              "sr" => "захватање остатка хеша мора бити последњи елемент шаблона и не може се користити са тројтачком",
               "tr" => "Hash kalıbındaki toplama hedefi son öğe olmalı ve üç noktayla birlikte kullanılamaz",
               "uk" => "захоплення решти хешу має бути останнім елементом шаблону й не може поєднуватися з трикрапкою"
             },
@@ -45125,6 +46199,7 @@ $CONF = {
               "nl" => "NumEq() vereist een letterlijk argument in een dispatch-on-patroon",
               "pt" => "NumEq() exige um argumento literal num padrão dispatch-on",
               "ru" => "NumEq() требует литерального аргумента в шаблоне dispatch-on",
+              "sr" => "NumEq() у шаблону диспечирања захтева литерални аргумент",
               "tr" => "Dispatch-on kalıbında NumEq() için değişmez bir bağımsız değişken gerekir",
               "uk" => "NumEq() потребує літерального аргументу в шаблоні dispatch-on"
             },
@@ -45167,6 +46242,7 @@ $CONF = {
               "nl" => "Ongeldige numerieke conversie in dispatch-patroon",
               "pt" => "Conversão numérica inválida num padrão dispatch",
               "ru" => "некорректное приведение к числу в шаблоне dispatch",
+              "sr" => "неисправна нумеричка конверзија у шаблону диспечирања",
               "tr" => "Dispatch kalıbında geçersiz sayısal dönüştürme",
               "uk" => "некоректне приведення до числа в шаблоні dispatch"
             },
@@ -45208,6 +46284,7 @@ $CONF = {
               "nl" => "Ongeldig objectpatroon",
               "pt" => "Padrão de objeto inválido",
               "ru" => "некорректный шаблон объекта",
+              "sr" => "неисправан шаблон објекта",
               "tr" => "Geçersiz nesne kalıbı",
               "uk" => "некоректний шаблон об'єкта"
             },
@@ -45249,6 +46326,7 @@ $CONF = {
               "nl" => "Een ellips in een objectpatroon moet na de veldparen staan",
               "pt" => "As reticências de objeto têm de aparecer depois dos pares de campos",
               "ru" => "многоточие в шаблоне объекта должно следовать после пар имя/значение полей",
+              "sr" => "тројтачка у објекту мора да следи после парова поља",
               "tr" => "Nesne üç noktası, alan çiftlerinden sonra gelmelidir",
               "uk" => "трикрапка в шаблоні об'єкта має йти після пар полів"
             },
@@ -45290,6 +46368,7 @@ $CONF = {
               "nl" => "Objectvelden mogen niet na een ellips staan",
               "pt" => "Não podem existir campos de objeto após reticências",
               "ru" => "поля объекта не могут следовать после многоточия",
+              "sr" => "поља објекта не могу следити после тројтачке",
               "tr" => "Üç noktadan sonra nesne alanları gelemez",
               "uk" => "поля об’єкта не можуть стояти після трикрапки"
             },
@@ -45331,6 +46410,7 @@ $CONF = {
               "nl" => "Ongeldig objectveldpatroon",
               "pt" => "Padrão de campo de objeto inválido",
               "ru" => "некорректный шаблон полей объекта",
+              "sr" => "неисправан шаблон поља објекта",
               "tr" => "Geçersiz nesne alanı kalıbı",
               "uk" => "некоректний шаблон полів об’єкта"
             },
@@ -45372,6 +46452,7 @@ $CONF = {
               "nl" => "Objectveldnamen moeten constanten zijn",
               "pt" => "Os nomes dos campos de objeto têm de ser constantes",
               "ru" => "имена полей объекта должны быть константами",
+              "sr" => "имена поља објекта морају бити константе",
               "tr" => "Nesne alan adları sabit olmalıdır",
               "uk" => "імена полів об'єкта мають бути константами"
             },
@@ -45413,6 +46494,7 @@ $CONF = {
               "nl" => "Een objectveldpatroon vereist sleutel-waardeparen",
               "pt" => "O padrão de campos de objeto exige pares chave/valor",
               "ru" => "шаблон полей объекта требует пар ключ/значение",
+              "sr" => "шаблон поља објекта захтева парове кључ/вредност",
               "tr" => "Nesne alanı kalıbı anahtar/değer çiftleri gerektirir",
               "uk" => "шаблон полів об’єкта потребує пар ключ/значення"
             },
@@ -45454,6 +46536,7 @@ $CONF = {
               "nl" => "Een hash-slurp in een objectpatroon moet het laatste patroonelement zijn en mag geen ellips gebruiken",
               "pt" => "A captura do restante hash do objeto tem de ser o último elemento do padrão e não pode usar reticências",
               "ru" => "захват остатка хеша в шаблоне объекта должен быть последним элементом шаблона и не может сочетаться с многоточием",
+              "sr" => "хватање остатка хеша у објекту мора бити последњи елемент шаблона и не може се комбиновати са тројтачком",
               "tr" => "Nesne karma artığının son kalıp öğesi olması gerekir ve üç noktayla birlikte kullanılamaz",
               "uk" => "захоплення решти хешу об’єкта має бути останнім елементом шаблону й не може поєднуватися з трикрапкою"
             },
@@ -45495,6 +46578,7 @@ $CONF = {
               "nl" => "Een hash-slurp in een objectpatroon moet het laatste patroonelement zijn",
               "pt" => "A captura do restante hash do objeto tem de ser o último elemento do padrão",
               "ru" => "захват остатка хеша в шаблоне объекта должен быть последним элементом шаблона",
+              "sr" => "хватање остатка хеша у објекту мора бити последњи елемент шаблона",
               "tr" => "Nesne karma artığının son kalıp öğesi olması gerekir",
               "uk" => "захоплення решти хешу об'єкта має бути останнім елементом шаблону"
             },
@@ -45537,6 +46621,7 @@ $CONF = {
               "nl" => "Vastgepinde patroonwaarde moet een bestaande lexicale scalar zijn",
               "pt" => "O valor de um padrão fixado tem de ser um escalar lexical existente",
               "ru" => "закреплённое значение в шаблоне должно быть существующей скалярной лексической переменной",
+              "sr" => "вредност закаченог обрасца мора бити постојећа скаларна лексичка променљива",
               "tr" => "Sabitlenmiş kalıp değeri, mevcut bir skaler sözcüksel değişken olmalıdır",
               "uk" => "закріплене значення шаблону має бути наявною лексичною скалярною змінною"
             },
@@ -45579,6 +46664,7 @@ $CONF = {
               "nl" => "Regex-codeblokken worden niet ondersteund in dispatch-patronen",
               "pt" => "Blocos de código de expressões regulares não são suportados em padrões dispatch",
               "ru" => "блоки кода в регулярных выражениях не поддерживаются в шаблонах dispatch",
+              "sr" => "блокови кода регуларних израза нису подржани у шаблонима диспечирања",
               "tr" => "Sevk kalıplarında düzenli ifade kod blokları desteklenmez",
               "uk" => "блоки коду в регулярних виразах не підтримуються в шаблонах dispatch"
             },
@@ -45621,6 +46707,7 @@ $CONF = {
               "nl" => "Dynamische reguliere expressies zijn alleen toegestaan als guardvoorwaarde",
               "pt" => "As expressões regulares dinâmicas só são permitidas como condição de guarda",
               "ru" => "динамические регулярные выражения допустимы только в качестве защитного условия",
+              "sr" => "динамички регуларни изрази дозвољени су само као услов страже",
               "tr" => "Dinamik düzenli ifadelere yalnızca korul koşulunda izin verilir",
               "uk" => "динамічні регулярні вирази дозволено лише в умові перевірки"
             },
@@ -45662,6 +46749,7 @@ $CONF = {
               "nl" => "Geïnterpoleerde variabelen zijn niet toegestaan in dispatch-patronen tussen dubbele aanhalingstekens",
               "pt" => "Não são permitidas variáveis interpoladas em padrões dispatch entre aspas duplas",
               "ru" => "интерполяция переменных недопустима в шаблонах dispatch в двойных кавычках",
+              "sr" => "променљиве са интерполацијом нису дозвољене у двоструко наводниченим шаблонима диспечирања",
               "tr" => "Çift tırnaklı sevk kalıplarında değişken interpolasyonuna izin verilmez",
               "uk" => "інтерполяція змінних у шаблонах dispatch у подвійних лапках не дозволена"
             },
@@ -45703,6 +46791,7 @@ $CONF = {
               "nl" => "De interface %{api} is verouderd en kan niet worden aangeroepen",
               "pt" => "A interface %{api} está obsoleta e não pode ser chamada",
               "ru" => "Интерфейс %{api} устарел; его вызов невозможен",
+              "sr" => "Интерфејс %{api} је застарео и не може се позвати",
               "tr" => "%{api} arayüzü kullanımdan kaldırılmıştır ve çağrılamaz",
               "uk" => "Інтерфейс %{api} застарів, і його не можна викликати"
             },
@@ -45751,6 +46840,7 @@ $CONF = {
               "nl" => "CORE::%{arg1} is geen sleutelwoord",
               "pt" => "CORE::%{arg1} não é uma palavra-chave",
               "ru" => "CORE::%{arg1} не является ключевым словом",
+              "sr" => "CORE::%{arg1} није кључна реч",
               "tr" => "CORE::%{arg1} bir anahtar sözcük değil",
               "uk" => "CORE::%{arg1} не є ключовим словом"
             },
@@ -45814,6 +46904,7 @@ $CONF = {
               "nl" => "Identifier is te lang",
               "pt" => "Identificador demasiado longo",
               "ru" => "Слишком длинный идентификатор",
+              "sr" => "Идентификатор је предугачак",
               "tr" => "Tanımlayıcı çok uzun",
               "uk" => "Ідентифікатор надто довгий"
             },
@@ -45856,6 +46947,7 @@ $CONF = {
               "nl" => "Naamruimtenaam is te lang",
               "pt" => "Nome do espaço de nomes demasiado longo",
               "ru" => "Слишком длинное имя пространства имён",
+              "sr" => "Име именског простора је предугачко",
               "tr" => "Ad alanı adı çok uzun",
               "uk" => "Назва простору імен надто довга"
             },
@@ -45898,6 +46990,7 @@ $CONF = {
               "nl" => "Variabelenaam is te lang",
               "pt" => "Nome da variável demasiado longo",
               "ru" => "Слишком длинное имя переменной",
+              "sr" => "Име променљиве је предугачко",
               "tr" => "Değişken adı çok uzun",
               "uk" => "Ім'я змінної надто довге"
             },
@@ -45940,6 +47033,7 @@ $CONF = {
               "nl" => "Ongeldig prototype voor %{arg1}: %{protosv}",
               "pt" => "Protótipo malformado para %{arg1}: %{protosv}",
               "ru" => "Некорректный прототип для %{arg1}: %{protosv}",
+              "sr" => "Неисправан прототип за %{arg1}: %{protosv}",
               "tr" => "%{arg1} için bozuk prototip: %{protosv}",
               "uk" => "Некоректний прототип для %{arg1}: %{protosv}"
             },
@@ -45995,6 +47089,7 @@ $CONF = {
               "nl" => "Prototype is niet afgesloten",
               "pt" => "Protótipo não terminado",
               "ru" => "Отсутствует завершающая скобка прототипа",
+              "sr" => "Прототип није затворен",
               "tr" => "Prototip sonlandırılmadı",
               "uk" => "Прототип не завершено"
             },
@@ -46036,6 +47131,7 @@ $CONF = {
               "nl" => "Glob is niet afgesloten",
               "pt" => "Padrão glob não terminado",
               "ru" => "Отсутствует завершающий разделитель glob",
+              "sr" => "Глоб образац није затворен",
               "tr" => "Glob sonlandırılmadı",
               "uk" => "Конструкцію glob не завершено"
             },
@@ -46077,6 +47173,7 @@ $CONF = {
               "nl" => "Buitensporig lange <>-operator",
               "pt" => "Operador <> excessivamente longo",
               "ru" => "Слишком длинный оператор <>",
+              "sr" => "Оператор <> је предугачак",
               "tr" => "<> işleci aşırı uzun",
               "uk" => "Надмірно довгий оператор <>"
             },
@@ -46118,6 +47215,7 @@ $CONF = {
               "nl" => "<>-operator is niet afgesloten",
               "pt" => "Operador <> não terminado",
               "ru" => "Незавершённый оператор <>",
+              "sr" => "Незавршен оператор <>",
               "tr" => "<> işleci sonlandırılmadı",
               "uk" => "Незавершений оператор <>"
             },
@@ -46159,6 +47257,7 @@ $CONF = {
               "nl" => "Scheidingsteken voor here-document is te lang",
               "pt" => "O delimitador do here-document é demasiado longo",
               "ru" => "Слишком длинный разделитель here-документа",
+              "sr" => "Разграничивач here-doc документа је предугачак",
               "tr" => "Here-doc ayırıcısı çok uzun",
               "uk" => "Роздільник вбудованого документа надто довгий"
             },
@@ -46200,6 +47299,7 @@ $CONF = {
               "nl" => "Inspringing op regel %{arg1} van het here-document komt niet overeen met het scheidingsteken",
               "pt" => "A indentação da linha %{arg1} do here-document não corresponde ao delimitador",
               "ru" => "Отступ в строке %{arg1} here-doc не совпадает с отступом разделителя",
+              "sr" => "Увлачење у реду %{arg1} here-doc документа не одговара граничнику",
               "tr" => "Here-doc'un %{arg1} numaralı satırındaki girinti ayırıcıyla eşleşmiyor",
               "uk" => "Відступ у рядку %{arg1} here-doc не відповідає відступу роздільника"
             },
@@ -46247,6 +47347,7 @@ $CONF = {
               "nl" => "Niet-afgesloten scheidingsteken voor here-document",
               "pt" => "Delimitador do here-document não terminado",
               "ru" => "Незавершённый разделитель here-документа",
+              "sr" => "Незавршен разделник овог документа",
               "tr" => "Here-doc ayırıcısı sonlandırılmadı",
               "uk" => "Незавершений роздільник here-документа"
             },
@@ -46288,6 +47389,7 @@ $CONF = {
               "nl" => "Een losse << gebruiken in de betekenis van <<\"\" is verboden",
               "pt" => "É proibido utilizar << isoladamente com o significado de <<\"\"",
               "ru" => "Использование << без разделителя в значении <<\"\" запрещено",
+              "sr" => "Забрањена је употреба голе ознаке << у значењу <<\"\"",
               "tr" => "Bare << kullanımının <<\"\" anlamına gelmesi yasaktır",
               "uk" => "Використовувати окреме << у значенні <<\"\" заборонено"
             },
@@ -46330,6 +47432,7 @@ $CONF = {
               "nl" => "Zoekpatroon is niet afgesloten",
               "pt" => "Padrão de pesquisa não terminado",
               "ru" => "Отсутствует завершающий разделитель шаблона поиска",
+              "sr" => "Образац претраге није затворен",
               "tr" => "Arama kalıbı sonlandırılmadı",
               "uk" => "Шаблон пошуку не завершено"
             },
@@ -46371,6 +47474,7 @@ $CONF = {
               "nl" => "Ongeldig geëvalueerd vervangingspatroon",
               "pt" => "Padrão de substituição avaliado inválido",
               "ru" => "Некорректный шаблон подстановки с вычисляемой заменой",
+              "sr" => "Неисправан образац замене са eval",
               "tr" => "Değiştirme işleci için değerlendirilen kodda sözdizimi hatası",
               "uk" => "Некоректний шаблон підстановки з обчисленням заміни"
             },
@@ -46413,6 +47517,7 @@ $CONF = {
               "nl" => "Vervangingspatroon is niet afgesloten",
               "pt" => "Padrão de substituição não terminado",
               "ru" => "Отсутствует завершающий разделитель шаблона подстановки",
+              "sr" => "Образац замене није затворен",
               "tr" => "Değiştirme kalıbı sonlandırılmadı",
               "uk" => "Шаблон підстановки не завершено"
             },
@@ -46454,6 +47559,7 @@ $CONF = {
               "nl" => "Vervanging in substitutie is niet afgesloten",
               "pt" => "Texto de substituição não terminado",
               "ru" => "Отсутствует завершающий разделитель строки замены в подстановке",
+              "sr" => "Замена није затворена",
               "tr" => "Değiştirme metni sonlandırılmadı",
               "uk" => "Рядок заміни в підстановці не завершено"
             },
@@ -46496,6 +47602,7 @@ $CONF = {
               "nl" => "Kan nergens vóór het einde van het bestand de afsluiter %{arg1}%{arg2}%{arg3} van de tekenreeks vinden",
               "pt" => "Não foi encontrado o terminador de cadeia %{arg1}%{arg2}%{arg3} antes do fim do ficheiro",
               "ru" => "До конца файла (EOF) не найден завершающий разделитель строки %{arg1}%{arg2}%{arg3}",
+              "sr" => "Не могу да пронађем завршетак ниске %{arg1}%{arg2}%{arg3} нигде пре EOF-а",
               "tr" => "EOF'dan önce %{arg1}%{arg2}%{arg3} dize sonlandırıcısı bulunamadı",
               "uk" => "Неможливо знайти завершувач рядка %{arg1}%{arg2}%{arg3} до кінця файлу (EOF)"
             },
@@ -46568,6 +47675,7 @@ $CONF = {
               "nl" => "Dubbelzinnig bereik in transliteratieoperator",
               "pt" => "Intervalo ambíguo no operador de transliteração",
               "ru" => "Неоднозначный диапазон в операторе транслитерации",
+              "sr" => "Двосмислен опсег у оператору транслитерације",
               "tr" => "Çeviri işleci aralığı belirsiz",
               "uk" => "Неоднозначний діапазон в операторі транслітерації"
             },
@@ -46609,6 +47717,7 @@ $CONF = {
               "nl" => "Ongeldig bereik \"\\x{%{min}}-\\x{%{max}}\" in transliteratieoperator",
               "pt" => "Intervalo inválido \"\\x{%{min}}-\\x{%{max}}\" no operador de transliteração",
               "ru" => "Недопустимый диапазон \"\\x{%{min}}-\\x{%{max}}\" в операторе транслитерации",
+              "sr" => "Неважећи опсег „\\x{%{min}}-\\x{%{max}}“ у оператору transliteration",
               "tr" => "Çeviri işleci içinde geçersiz \"\\x{%{min}}-\\x{%{max}}\" aralığı",
               "uk" => "Некоректний діапазон \"\\x{%{min}}-\\x{%{max}}\" в операторі транслітерації"
             },
@@ -46663,6 +47772,7 @@ $CONF = {
               "nl" => "Ongeldig bereik \"\\N{U+%{min}}-\\N{U+%{max}}\" in transliteratieoperator",
               "pt" => "Intervalo inválido \"\\N{U+%{min}}-\\N{U+%{max}}\" no operador de transliteração",
               "ru" => "Недопустимый диапазон \"\\N{U+%{min}}-\\N{U+%{max}}\" в операторе транслитерации",
+              "sr" => "Неважећи опсег „\\N{U+%{min}}-\\N{U+%{max}}“ у оператору transliteration",
               "tr" => "Çeviri işleci içinde geçersiz \"\\N{U+%{min}}-\\N{U+%{max}}\" aralığı",
               "uk" => "Некоректний діапазон \"\\N{U+%{min}}-\\N{U+%{max}}\" в операторі транслітерації"
             },
@@ -46717,6 +47827,7 @@ $CONF = {
               "nl" => "Ongeldig bereik \"%{arg2}-%{arg3}\" in transliteratieoperator",
               "pt" => "Intervalo inválido \"%{arg2}-%{arg3}\" no operador de transliteração",
               "ru" => "Недопустимый диапазон \"%{arg2}-%{arg3}\" в операторе транслитерации",
+              "sr" => "Неисправан опсег „%{arg2}-%{arg3}“ у оператору транслитерације",
               "tr" => "Çeviri işleci içinde geçersiz \"%{arg2}-%{arg3}\" aralığı",
               "uk" => "Недопустимий діапазон \"%{arg2}-%{arg3}\" в операторі транслітерації"
             },
@@ -46769,6 +47880,7 @@ $CONF = {
               "nl" => "Transliteratievervanging is niet afgesloten",
               "pt" => "Texto de substituição da transliteração não terminado",
               "ru" => "Не завершена часть замены в транслитерации",
+              "sr" => "Није завршен други разделник транслитерације",
               "tr" => "Çeviri işleci değiştirme bölümü sonlandırılmadı",
               "uk" => "Незавершений список заміни в транслітерації"
             },
@@ -46810,6 +47922,7 @@ $CONF = {
               "nl" => "Transliteratiepatroon is niet afgesloten",
               "pt" => "Padrão de transliteração não terminado",
               "ru" => "Отсутствует завершающий разделитель шаблона транслитерации",
+              "sr" => "Образац транслитерације није затворен",
               "tr" => "Çeviri işleci kalıbı sonlandırılmadı",
               "uk" => "Шаблон транслітерації не завершено"
             },
@@ -46852,6 +47965,7 @@ $CONF = {
               "nl" => "Subroutineattributen moeten vóór de signatuur staan",
               "pt" => "Os atributos da sub-rotina devem preceder a assinatura",
               "ru" => "Атрибуты подпрограммы должны предшествовать сигнатуре",
+              "sr" => "Атрибути потпрограма морају да стоје пре потписа",
               "tr" => "Alt yordam öznitelikleri imzadan önce gelmelidir",
               "uk" => "Атрибути підпрограми мають передувати сигнатурі"
             },
@@ -46893,6 +48007,7 @@ $CONF = {
               "nl" => "Experimentele subroutinesignaturen zijn niet ingeschakeld",
               "pt" => "Assinaturas experimentais de sub-rotinas não ativadas",
               "ru" => "Экспериментальные сигнатуры подпрограмм не включены",
+              "sr" => "Експериментални потписи потпрограма нису омогућени",
               "tr" => "Deneysel alt yordam imzaları etkin değil",
               "uk" => "Експериментальні сигнатури підпрограм не ввімкнено"
             },
@@ -46934,6 +48049,7 @@ $CONF = {
               "nl" => "Onbekend teken %{arg1}; gemarkeerd met <-- HERE na %{arg2}<-- HERE rond kolom %{arg3}",
               "pt" => "Carácter não reconhecido %{arg1}; assinalado por <-- HERE após %{arg2}<-- HERE, perto da coluna %{arg3}",
               "ru" => "Нераспознанный символ %{arg1}; отмечен указателем <-- HERE после %{arg2}<-- HERE около столбца %{arg3}",
+              "sr" => "Непрепознат знак %{arg1}; означен са <-- HERE после %{arg2}<-- HERE близу колоне %{arg3}",
               "tr" => "Tanınmayan karakter %{arg1}; %{arg2} sonrasında <-- HERE ile, %{arg3} sütunu yakınında işaretlendi",
               "uk" => "Нерозпізнаний символ %{arg1}; позначено маркером <-- HERE після %{arg2}<-- HERE поблизу стовпця %{arg3}"
             },
@@ -47006,6 +48122,7 @@ $CONF = {
               "nl" => "use VERSION wijzigen terwijl een andere use VERSION van kracht is, is niet toegestaan",
               "pt" => "Não é permitido alterar use VERSION enquanto outro use VERSION estiver em vigor",
               "ru" => "Изменение use VERSION в области действия другого объявления use VERSION не допускается",
+              "sr" => "Није дозвољено мењати use VERSION док је друга декларација use VERSION у опсегу важења",
               "tr" => "Başka bir use VERSION kapsam içindeyken use VERSION değiştirilmesine izin verilmez",
               "uk" => "Змінювати use VERSION, поки інше use VERSION перебуває в області видимості, заборонено"
             },
@@ -47047,6 +48164,7 @@ $CONF = {
               "nl" => "Versienummer moet een constant getal zijn",
               "pt" => "O número de versão tem de ser uma constante numérica",
               "ru" => "Номер версии должен быть числовой константой",
+              "sr" => "Број верзије мора бити константан број",
               "tr" => "Sürüm numarası sabit bir sayı olmalıdır",
               "uk" => "Номер версії має бути числовою константою"
             },
@@ -47088,6 +48206,7 @@ $CONF = {
               "nl" => "Een use VERSION-declaratie verlagen tot onder v5.11 is niet toegestaan",
               "pt" => "Não é permitido reduzir uma declaração use VERSION para uma versão anterior a v5.11",
               "ru" => "Понижение версии в объявлении use VERSION до версии ниже v5.11 не допускается",
+              "sr" => "Није дозвољено снизити декларацију use VERSION испод v5.11",
               "tr" => "use VERSION bildirimini v5.11'in altına düşürmeye izin verilmez",
               "uk" => "Знижувати версію в оголошенні use VERSION до версії нижче v5.11 заборонено"
             },
@@ -47129,6 +48248,7 @@ $CONF = {
               "nl" => "use VERSION is niet toegestaan zolang een andere use VERSION van 5.39 of hoger binnen bereik is",
               "pt" => "use VERSION não é permitido enquanto estiver em vigor outro use VERSION de 5.39 ou superior",
               "ru" => "use VERSION не допускается, пока в области видимости действует другое объявление use VERSION для версии 5.39 или выше",
+              "sr" => "use VERSION није дозвољен док је у опсегу друга декларација use VERSION за верзију 5.39 или новију",
               "tr" => "5.39 veya üzeri bir use VERSION kapsam içindeyken başka bir use VERSION bildirimine izin verilmez",
               "uk" => "use VERSION не дозволено, доки в області видимості діє інше оголошення use VERSION для версії 5.39 або новішої"
             },
@@ -47170,6 +48290,7 @@ $CONF = {
               "nl" => "use VERSION van 5.39 of hoger is niet toegestaan zolang een andere use VERSION binnen bereik is",
               "pt" => "use VERSION de 5.39 ou superior não é permitido enquanto estiver em vigor outro use VERSION",
               "ru" => "use VERSION для версии 5.39 или выше не допускается, пока в области видимости действует другое объявление use VERSION",
+              "sr" => "use VERSION за верзију 5.39 или новију није дозвољен док је у опсегу друга декларација use VERSION",
               "tr" => "Başka bir use VERSION kapsam içindeyken 5.39 veya üzeri bir use VERSION bildirimine izin verilmez",
               "uk" => "use VERSION для версії 5.39 або новішої не дозволено, доки в області видимості діє інше оголошення use VERSION"
             },
@@ -47211,6 +48332,7 @@ $CONF = {
               "nl" => "Functie crypt() is niet geïmplementeerd vanwege buitensporige voorzichtigheid.",
               "pt" => "A função crypt() não está implementada por excesso de precaução.",
               "ru" => "Функция crypt() не реализована из-за чрезмерной паранойи.",
+              "sr" => "Функција crypt() није имплементирана због претеране параноје.",
               "tr" => "Aşırı paranoya nedeniyle crypt() işlevi uygulanmamıştır.",
               "uk" => "Функцію crypt() не реалізовано через надмірну параною."
             },
@@ -47253,6 +48375,7 @@ $CONF = {
               "nl" => "setregid is niet beschikbaar",
               "pt" => "setregid não está disponível",
               "ru" => "setregid недоступен",
+              "sr" => "setregid није доступан",
               "tr" => "setregid kullanılamıyor",
               "uk" => "setregid недоступний"
             },
@@ -47295,6 +48418,7 @@ $CONF = {
               "nl" => "setreuid is niet beschikbaar",
               "pt" => "setreuid não está disponível",
               "ru" => "setreuid недоступен",
+              "sr" => "setreuid није доступан",
               "tr" => "setreuid kullanılamıyor",
               "uk" => "setreuid недоступний"
             },
@@ -47336,6 +48460,7 @@ $CONF = {
               "nl" => "Omschakelen naar effectieve gid is mislukt",
               "pt" => "Falha ao assumir o gid efetivo",
               "ru" => "не удалось перейти к эффективному gid",
+              "sr" => "улазак у ефективни gid није успео",
               "tr" => "Etkin gid'ye geçilemedi",
               "uk" => "не вдалося перейти до ефективного gid"
             },
@@ -47377,6 +48502,7 @@ $CONF = {
               "nl" => "Verlaten van effectieve gid is mislukt",
               "pt" => "Falha ao abandonar o gid efetivo",
               "ru" => "не удалось восстановить gid после перехода к эффективному gid",
+              "sr" => "напуштање ефективног gid-а није успело",
               "tr" => "Etkin gid'den çıkılamadı",
               "uk" => "не вдалося вийти з режиму ефективного gid"
             },
@@ -47418,6 +48544,7 @@ $CONF = {
               "nl" => "Omschakelen naar effectieve uid is mislukt",
               "pt" => "Falha ao assumir o uid efetivo",
               "ru" => "не удалось перейти к эффективному uid",
+              "sr" => "улазак у ефективни uid није успео",
               "tr" => "etkin uid'ye geçilemedi",
               "uk" => "не вдалося перейти до ефективного uid"
             },
@@ -47459,6 +48586,7 @@ $CONF = {
               "nl" => "Verlaten van effectieve uid is mislukt",
               "pt" => "Falha ao abandonar o uid efetivo",
               "ru" => "не удалось восстановить uid после перехода к эффективному uid",
+              "sr" => "напуштање ефективног uid-а није успело",
               "tr" => "etkin uid'den çıkılamadı",
               "uk" => "не вдалося вийти з режиму ефективного uid"
             },
@@ -47500,6 +48628,7 @@ $CONF = {
               "nl" => "Ongeldige argumentlengte voor %{arg2}: %{arg3}, verwacht %{arg4}",
               "pt" => "Comprimento inválido do argumento de %{arg2}: %{arg3}, deveria ser %{arg4}",
               "ru" => "Неверная длина аргумента для %{arg2}: %{arg3}, должна быть %{arg4}",
+              "sr" => "Погрешна дужина аргумента за %{arg2}, износи %{arg3}, а требало би да буде %{arg4}",
               "tr" => "%{arg2} için bağımsız değişken uzunluğu hatalı: %{arg3}; olması gereken: %{arg4}",
               "uk" => "Неправильна довжина аргументу для %{arg2}: %{arg3}, має бути %{arg4}"
             },
@@ -47557,6 +48686,7 @@ $CONF = {
               "nl" => "Argument te kort voor msgsnd",
               "pt" => "Argumento demasiado curto para msgsnd",
               "ru" => "Аргумент слишком короткий для msgsnd",
+              "sr" => "Аргумент је прекратак за msgsnd",
               "tr" => "msgsnd için bağımsız değişken çok kısa",
               "uk" => "Аргумент закороткий для msgsnd"
             },
@@ -47598,6 +48728,7 @@ $CONF = {
               "nl" => "System V IPC is niet geïmplementeerd op deze machine",
               "pt" => "IPC do System V não está implementado nesta máquina",
               "ru" => "Межпроцессное взаимодействие System V IPC не реализовано на этой машине",
+              "sr" => "System V IPC није имплементиран на овој машини",
               "tr" => "System V IPC bu makinede uygulanmamış",
               "uk" => "IPC System V не реалізовано на цій машині"
             },
@@ -47639,6 +48770,7 @@ $CONF = {
               "nl" => "Gebruik: Haiku::debugger(\$format,...)",
               "pt" => "Utilização: Haiku::debugger(\$format,...)",
               "ru" => "Использование: Haiku::debugger(\$format,...)",
+              "sr" => "употреба: Haiku::debugger(\$format,...)",
               "tr" => "kullanım: Haiku::debugger(\$format,...)",
               "uk" => "використання: Haiku::debugger(\$format,...)"
             },
@@ -47680,6 +48812,7 @@ $CONF = {
               "nl" => "Gebruik: Haiku::debug_printf(\$format,...)",
               "pt" => "Utilização: Haiku::debug_printf(\$format,...)",
               "ru" => "Использование: Haiku::debug_printf(\$format,...)",
+              "sr" => "употреба: Haiku::debug_printf(\$format,...)",
               "tr" => "kullanım: Haiku::debug_printf(\$format,...)",
               "uk" => "використання: Haiku::debug_printf(\$format,...)"
             },
@@ -47721,6 +48854,7 @@ $CONF = {
               "nl" => "%{arg1}: %{arg2}",
               "pt" => "%{arg1}: %{arg2}",
               "ru" => "%{arg1}: %{arg2}",
+              "sr" => "%{arg1}: %{arg2}",
               "tr" => "%{arg1}: %{arg2}",
               "uk" => "%{arg1}: %{arg2}"
             },
@@ -47774,6 +48908,7 @@ $CONF = {
               "nl" => "file_type is niet geïmplementeerd op DOS",
               "pt" => "file_type não está implementado em DOS",
               "ru" => "file_type не реализована в DOS",
+              "sr" => "file_type није имплементиран на DOS-у",
               "tr" => "file_type DOS'ta uygulanmamış",
               "uk" => "file_type не реалізовано в DOS"
             },
@@ -47815,6 +48950,7 @@ $CONF = {
               "nl" => "DosError(%{arg1}) mislukt: %{arg2}",
               "pt" => "DosError(%{arg1}) falhou: %{arg2}",
               "ru" => "Ошибка вызова DosError(%{arg1}): %{arg2}",
+              "sr" => "DosError(%{arg1}) није успео: %{arg2}",
               "tr" => "DosError(%{arg1}) başarısız oldu: %{arg2}",
               "uk" => "Помилка DosError(%{arg1}): %{arg2}"
             },
@@ -47867,6 +49003,7 @@ $CONF = {
               "nl" => "Argument '%{arg1}' voor OS2::Errors2Drive() is geen teken",
               "pt" => "Argumento '%{arg1}' não é um carácter válido para OS2::Errors2Drive()",
               "ru" => "Аргумент '%{arg1}' функции OS2::Errors2Drive() не является буквой",
+              "sr" => "Аргумент '%{arg1}' за OS2::Errors2Drive() није знак",
               "tr" => "OS2::Errors2Drive() için karakter olmayan bağımsız değişken: '%{arg1}'",
               "uk" => "Аргумент '%{arg1}' для OS2::Errors2Drive() не є літерою"
             },
@@ -47914,6 +49051,7 @@ $CONF = {
               "nl" => "DosSuppressPopUps(%{arg1}) mislukt: %{arg2}",
               "pt" => "DosSuppressPopUps(%{arg1}) falhou: %{arg2}",
               "ru" => "Ошибка вызова DosSuppressPopUps(%{arg1}): %{arg2}",
+              "sr" => "DosSuppressPopUps(%{arg1}) није успео: %{arg2}",
               "tr" => "DosSuppressPopUps(%{arg1}) başarısız oldu: %{arg2}",
               "uk" => "Виклик DosSuppressPopUps(%{arg1}) завершився помилкою: %{arg2}"
             },
@@ -47966,6 +49104,7 @@ $CONF = {
               "nl" => "Fout van DosAllocMem ontvangen: %{arg1}",
               "pt" => "DosAllocMem devolveu um erro: %{arg1}",
               "ru" => "DosAllocMem вернула ошибку: %{arg1}",
+              "sr" => "DosAllocMem је пријавио грешку: %{arg1}",
               "tr" => "DosAllocMem'den hata alındı: %{arg1}",
               "uk" => "Отримано помилку від DosAllocMem: %{arg1}"
             },
@@ -48013,6 +49152,7 @@ $CONF = {
               "nl" => "Kan teller niet omzetten naar IV",
               "pt" => "Não é possível converter o contador para IV",
               "ru" => "Невозможно преобразовать счётчик в IV",
+              "sr" => "Није могуће проширити бројач до IV",
               "tr" => "Sayı IV türüne yükseltilemiyor",
               "uk" => "Не вдалося підвищити тип лічильника до IV"
             },
@@ -48054,6 +49194,7 @@ $CONF = {
               "nl" => "Deze versie van OS/2 ondersteunt %{arg1}.%{arg2} niet",
               "pt" => "Esta versão do OS/2 não suporta %{arg1}.%{arg2}",
               "ru" => "Эта версия OS/2 не поддерживает %{arg1}.%{arg2}",
+              "sr" => "Ова верзија OS/2 не подржава %{arg1}.%{arg2}",
               "tr" => "Bu OS/2 sürümü %{arg1}.%{arg2} desteği sunmuyor",
               "uk" => "Ця версія OS/2 не підтримує %{arg1}.%{arg2}"
             },
@@ -48106,6 +49247,7 @@ $CONF = {
               "nl" => "OS2::_headerInfo(): onverwachte grootte: %{arg2}",
               "pt" => "OS2::_headerInfo(): tamanho inesperado: %{arg2}",
               "ru" => "OS2::_headerInfo(): неожиданный размер: %{arg2}",
+              "sr" => "OS2::_headerInfo(): неочекивана величина: %{arg2}",
               "tr" => "OS2::_headerInfo(): beklenmeyen boyut: %{arg2}",
               "uk" => "OS2::_headerInfo(): неочікуваний розмір: %{arg2}"
             },
@@ -48153,6 +49295,7 @@ $CONF = {
               "nl" => "OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}) fout: %{arg6}",
               "pt" => "Erro em OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}): %{arg6}",
               "ru" => "Ошибка OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}): %{arg6}",
+              "sr" => "Грешка у OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}): %{arg6}",
               "tr" => "OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}) hatası: %{arg6}",
               "uk" => "Помилка OS2::_headerInfo(%{arg2},%{arg3},%{arg4},%{arg5}): %{arg6}"
             },
@@ -48221,6 +49364,7 @@ $CONF = {
               "nl" => "Fout bij het laden van module '%{arg1}': %{arg2}",
               "pt" => "Erro ao carregar o módulo '%{arg1}': %{arg2}",
               "ru" => "Ошибка загрузки модуля '%{arg1}': %{arg2}",
+              "sr" => "Грешка при учитавању модула „%{arg1}“: %{arg2}",
               "tr" => "'%{arg1}' modülü yüklenirken hata oluştu: %{arg2}",
               "uk" => "Помилка завантаження модуля '%{arg1}': %{arg2}"
             },
@@ -48273,6 +49417,7 @@ $CONF = {
               "nl" => "Lege arrayreferentie doorgegeven aan mod2fname",
               "pt" => "Foi passada uma referência a array vazia a mod2fname",
               "ru" => "В mod2fname передана ссылка на пустой массив",
+              "sr" => "Функцији mod2fname прослеђена је референца на празан низ",
               "tr" => "mod2fname'e boş dizi başvurusu verildi",
               "uk" => "До mod2fname передано посилання на порожній масив"
             },
@@ -48315,6 +49460,7 @@ $CONF = {
               "nl" => "Geen arrayreferentie doorgegeven aan mod2fname",
               "pt" => "Não foi passada uma referência a array a mod2fname",
               "ru" => "В mod2fname передано значение, не являющееся ссылкой на массив",
+              "sr" => "Функцији mod2fname није прослеђена референца на низ",
               "tr" => "mod2fname'e dizi başvurusu verilmedi",
               "uk" => "До mod2fname передано значення, яке не є посиланням на масив"
             },
@@ -48357,6 +49503,7 @@ $CONF = {
               "nl" => "Geen referentie doorgegeven aan mod2fname",
               "pt" => "Não foi passada uma referência a mod2fname",
               "ru" => "В mod2fname передано значение, не являющееся ссылкой",
+              "sr" => "Функцији mod2fname није прослеђена референца",
               "tr" => "mod2fname'e başvuru verilmedi",
               "uk" => "До mod2fname передано значення, яке не є посиланням"
             },
@@ -48398,6 +49545,7 @@ $CONF = {
               "nl" => "Er lijkt geen PM beschikbaar; DLL %{arg1} wordt niet geladen zonder \$ENV{PERL_ASIF_PM}",
               "pt" => "Parece não existir PM; a DLL %{arg1} não será carregada sem \$ENV{PERL_ASIF_PM}",
               "ru" => "По-видимому, PM отсутствует; DLL %{arg1} не будет загружена без \$ENV{PERL_ASIF_PM}",
+              "sr" => "Изгледа да немамо PM; DLL %{arg1} неће бити учитан без \$ENV{PERL_ASIF_PM}",
               "tr" => "Görünüşe göre PM yok; \$ENV{PERL_ASIF_PM} olmadan %{arg1} DLL'si yüklenmeyecek",
               "uk" => "Схоже, PM відсутній; DLL %{arg1} не буде завантажено без \$ENV{PERL_ASIF_PM}"
             },
@@ -48445,6 +49593,7 @@ $CONF = {
               "nl" => "Kan korte modulenaam niet uit een handle halen",
               "pt" => "Não é possível obter o nome abreviado do módulo a partir de um identificador",
               "ru" => "Невозможно получить короткое имя модуля по дескриптору",
+              "sr" => "Није могуће добити кратко име модула из ручке",
               "tr" => "Bir tanıtıcıdan kısa modül adı alınamıyor",
               "uk" => "Не можна отримати коротке ім'я модуля за дескриптором"
             },
@@ -48488,6 +49637,7 @@ $CONF = {
               "nl" => "Geen XSUB-referentie",
               "pt" => "Não é uma referência XSUB",
               "ru" => "Это не ссылка на XSUB",
+              "sr" => "Није референца на XSUB",
               "tr" => "Bir XSUB başvurusu değil",
               "uk" => "Не є посиланням на XSUB"
             },
@@ -48529,6 +49679,7 @@ $CONF = {
               "nl" => "%{arg1}: kan EXE/DLL-naam niet verwerken: '%{arg2}'",
               "pt" => "%{arg1}: não foi possível analisar o nome EXE/DLL: '%{arg2}'",
               "ru" => "%{arg1}: не удалось разобрать имя EXE/DLL: '%{arg2}'",
+              "sr" => "%{arg1}: Није могуће обрадити име EXE/DLL-а: '%{arg2}'",
               "tr" => "%{arg1}: EXE/DLL adı ayrıştırılamıyor: '%{arg2}'",
               "uk" => "%{arg1}: Неможливо розібрати ім’я EXE/DLL: '%{arg2}'"
             },
@@ -48581,6 +49732,7 @@ $CONF = {
               "nl" => "INSTALL_PREFIX is te lang: `%{arg1}'",
               "pt" => "INSTALL_PREFIX demasiado longo: `%{arg1}'",
               "ru" => "Слишком длинное значение INSTALL_PREFIX: `%{arg1}'",
+              "sr" => "INSTALL_PREFIX је предугачак: `%{arg1}'",
               "tr" => "INSTALL_PREFIX çok uzun: `%{arg1}'",
               "uk" => "INSTALL_PREFIX задовгий: `%{arg1}'"
             },
@@ -48628,6 +49780,7 @@ $CONF = {
               "nl" => "%{arg1}: fout bij verwijderen van directorynamen uit EXE/DLL/INSTALLDIR-naam",
               "pt" => "%{arg1}: erro ao remover diretórios do nome EXE/DLL/INSTALLDIR",
               "ru" => "%{arg1}: ошибка удаления каталогов из пути EXE/DLL/INSTALLDIR",
+              "sr" => "%{arg1}: Грешка при уклањању директоријума из имена EXE/DLL/INSTALLDIR",
               "tr" => "%{arg1}: EXE/DLL/INSTALLDIR adından dizinler çıkarılamadı",
               "uk" => "%{arg1}: помилка вилучення каталогів з імені EXE/DLL/INSTALLDIR"
             },
@@ -48675,6 +49828,7 @@ $CONF = {
               "nl" => "Ongeldige %{arg1}",
               "pt" => "%{arg1} malformado",
               "ru" => "Некорректное значение %{arg1}",
+              "sr" => "Неисправан %{arg1}",
               "tr" => "Hatalı biçim: %{arg1}",
               "uk" => "Некоректний формат: %{arg1}"
             },
@@ -48722,6 +49876,7 @@ $CONF = {
               "nl" => "Ongeldige PERLLIB_PREFIX",
               "pt" => "PERLLIB_PREFIX malformado",
               "ru" => "Некорректное значение PERLLIB_PREFIX",
+              "sr" => "Неисправан PERLLIB_PREFIX",
               "tr" => "Hatalı PERLLIB_PREFIX",
               "uk" => "Неправильний формат PERLLIB_PREFIX"
             },
@@ -48764,6 +49919,7 @@ $CONF = {
               "nl" => "%{arg1}: naam `%{arg2}%{arg3}' is te lang",
               "pt" => "%{arg1}: nome `%{arg2}%{arg3}' demasiado longo",
               "ru" => "%{arg1}: имя `%{arg2}%{arg3}' слишком длинное",
+              "sr" => "%{arg1}: име `%{arg2}%{arg3}' је предугачко",
               "tr" => "%{arg1}: `%{arg2}%{arg3}' adı çok uzun",
               "uk" => "%{arg1}: ім’я `%{arg2}%{arg3}' задовге"
             },
@@ -48821,6 +49977,7 @@ $CONF = {
               "nl" => "Gebruik: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])",
               "pt" => "utilização: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])",
               "ru" => "использование: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])",
+              "sr" => "употреба: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])",
               "tr" => "kullanım: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])",
               "uk" => "використання: OS2::pipe(pszName, 'call', write [, timeout= 0xFFFFFFFF, buffsize = 8192])"
             },
@@ -48862,6 +50019,7 @@ $CONF = {
               "nl" => "OS2::pipe(): onbekend connect-argument: `%{arg2}'",
               "pt" => "OS2::pipe(): argumento de ligação desconhecido: `%{arg2}'",
               "ru" => "OS2::pipe(): неизвестный аргумент connect: `%{arg2}'",
+              "sr" => "OS2::pipe(): непознат аргумент connect: `%{arg2}'",
               "tr" => "OS2::pipe(): bilinmeyen bağlantı bağımsız değişkeni: `%{arg2}'",
               "uk" => "OS2::pipe(): невідомий аргумент connect: `%{arg2}'"
             },
@@ -48909,6 +50067,7 @@ $CONF = {
               "nl" => "OS2::pipeCntl(): onbekend argument: `%{arg2}'",
               "pt" => "OS2::pipeCntl(): argumento desconhecido: `%{arg2}'",
               "ru" => "OS2::pipeCntl(): неизвестный аргумент: `%{arg2}'",
+              "sr" => "OS2::pipeCntl(): непознат аргумент: `%{arg2}'",
               "tr" => "OS2::pipeCntl(): bilinmeyen bağımsız değişken: `%{arg2}'",
               "uk" => "OS2::pipeCntl(): невідомий аргумент: `%{arg2}'"
             },
@@ -48956,6 +50115,7 @@ $CONF = {
               "nl" => "OS2::pipeCntl(): geen pipe",
               "pt" => "OS2::pipeCntl(): não é um pipe",
               "ru" => "OS2::pipeCntl(): это не канал",
+              "sr" => "OS2::pipeCntl(): није цев",
               "tr" => "OS2::pipeCntl(): bir pipe değil",
               "uk" => "OS2::pipeCntl(): не є каналом"
             },
@@ -48997,6 +50157,7 @@ $CONF = {
               "nl" => "OS2::pipe(): aantal moet -1 zijn of tussen 1 en 254 liggen: %{arg2}",
               "pt" => "OS2::pipe(): a contagem deve ser -1 ou estar entre 1 e 254: %{arg2}",
               "ru" => "OS2::pipe(): количество должно быть равно -1 или находиться в диапазоне от 1 до 254: %{arg2}",
+              "sr" => "OS2::pipe(): број мора бити -1 или између 1 и 254: %{arg2}",
               "tr" => "OS2::pipe(): sayı -1 ya da 1 ile 254 arasında olmalı: %{arg2}",
               "uk" => "OS2::pipe(): кількість має бути -1 або в межах від 1 до 254: %{arg2}"
             },
@@ -49044,6 +50205,7 @@ $CONF = {
               "nl" => "OS2::pipe(): berichtleesmodus is niet mogelijk voor pipes die geen berichten ondersteunen",
               "pt" => "OS2::pipe(): não é possível utilizar o modo de leitura de mensagens em pipes que não sejam de mensagens",
               "ru" => "OS2::pipe(): режим чтения сообщений недопустим для каналов, не работающих в режиме сообщений",
+              "sr" => "OS2::pipe(): режим читања порука не може се користити за цеви које нису порукасте",
               "tr" => "OS2::pipe(): ileti okuma modu ileti türünde olmayan pipe'lar için kullanılamaz",
               "uk" => "OS2::pipe(): режим читання повідомлень недоступний для каналів, що не передають повідомлень"
             },
@@ -49085,6 +50247,7 @@ $CONF = {
               "nl" => "OS2::pipe(): lege pipenaam",
               "pt" => "OS2::pipe(): nome do pipe vazio",
               "ru" => "OS2::pipe(): пустое имя канала",
+              "sr" => "OS2::pipe(): празно име цеви",
               "tr" => "OS2::pipe(): pipe adı boş",
               "uk" => "OS2::pipe(): порожнє ім'я каналу"
             },
@@ -49126,6 +50289,7 @@ $CONF = {
               "nl" => "OS2::pipe(): onbekend OpenMode-argument: `%{arg2}'",
               "pt" => "OS2::pipe(): argumento OpenMode desconhecido: `%{arg2}'",
               "ru" => "OS2::pipe(): неизвестный аргумент OpenMode: `%{arg2}'",
+              "sr" => "OS2::pipe(): непознат аргумент OpenMode: `%{arg2}'",
               "tr" => "OS2::pipe(): bilinmeyen OpenMode bağımsız değişkeni: `%{arg2}'",
               "uk" => "OS2::pipe(): невідомий аргумент OpenMode: `%{arg2}'"
             },
@@ -49173,6 +50337,7 @@ $CONF = {
               "nl" => "OS2::pipe(): te veel argumenten voor wait-for-connect: %{arg2}",
               "pt" => "OS2::pipe(): demasiados argumentos para wait-for-connect: %{arg2}",
               "ru" => "OS2::pipe(): слишком много аргументов для ожидания подключения: %{arg2}",
+              "sr" => "OS2::pipe(): превише аргумената за чекање на везу: %{arg2}",
               "tr" => "OS2::pipe(): bağlantı bekleme için çok fazla bağımsız değişken: %{arg2}",
               "uk" => "OS2::pipe(): забагато аргументів для wait-for-connect: %{arg2}"
             },
@@ -49220,6 +50385,7 @@ $CONF = {
               "nl" => "OS2::pipeCntl(): geen wait-argument voor `%{arg2}'",
               "pt" => "OS2::pipeCntl(): falta o argumento de espera para `%{arg2}'",
               "ru" => "OS2::pipeCntl(): аргумент wait недопустим для `%{arg2}'",
+              "sr" => "OS2::pipeCntl(): нема аргумента wait за `%{arg2}'",
               "tr" => "OS2::pipeCntl(): `%{arg2}' için wait bağımsız değişkeni yok",
               "uk" => "OS2::pipeCntl(): аргумент wait не допускається для `%{arg2}'"
             },
@@ -49268,6 +50434,7 @@ $CONF = {
               "nl" => "Kan type niet instellen op DOS",
               "pt" => "Não é possível definir o tipo em DOS",
               "ru" => "Невозможно задать тип процесса в DOS",
+              "sr" => "Није могуће поставити тип на DOS",
               "tr" => "DOS'ta tür ayarlanamıyor",
               "uk" => "Неможливо встановити тип у DOS"
             },
@@ -49309,6 +50476,7 @@ $CONF = {
               "nl" => "OS2::mytype(which): onbekende which=%{arg2}",
               "pt" => "OS2::mytype(which): valor de which desconhecido=%{arg2}",
               "ru" => "OS2::mytype(which): неизвестное значение which=%{arg2}",
+              "sr" => "OS2::mytype(which): непознато which=%{arg2}",
               "tr" => "OS2::mytype(which): bilinmeyen which=%{arg2}",
               "uk" => "OS2::mytype(which): невідоме значення which=%{arg2}"
             },
@@ -49356,6 +50524,7 @@ $CONF = {
               "nl" => "Onverwacht aantal %{arg2} voor OS2::SysInfoFor()",
               "pt" => "Contagem inesperada %{arg2} para OS2::SysInfoFor()",
               "ru" => "Неожиданное значение счётчика %{arg2} для OS2::SysInfoFor()",
+              "sr" => "неочекивани број %{arg2} за OS2::SysInfoFor()",
               "tr" => "OS2::SysInfoFor() için beklenmeyen sayı: %{arg2}",
               "uk" => "неочікувана кількість %{arg2} для OS2::SysInfoFor()"
             },
@@ -49404,6 +50573,7 @@ $CONF = {
               "nl" => "detach van een thread waarop al iemand wacht",
               "pt" => "detach numa thread que tem um processo à espera",
               "ru" => "detach для потока, завершения которого уже ожидают",
+              "sr" => "одвајање нити која има чекаоца",
               "tr" => "bekleyeni olan bir iş parçacığında detach",
               "uk" => "detach для потоку, завершення якого вже очікує інший потік"
             },
@@ -49446,6 +50616,7 @@ $CONF = {
               "nl" => "join met een thread waarop al iemand wacht",
               "pt" => "join com uma thread que tem um processo à espera",
               "ru" => "join для потока, завершения которого уже ожидают",
+              "sr" => "спајање са нити која има чекаоца",
               "tr" => "bekleyeni olan bir iş parçacığıyla join",
               "uk" => "спроба join із потоком, на який уже чекає інший потік"
             },
@@ -49487,6 +50658,7 @@ $CONF = {
               "nl" => "Onvoldoende geheugen in perl:os2:pthread_key_create",
               "pt" => "Memória insuficiente em perl:os2:pthread_key_create",
               "ru" => "Недостаточно памяти в perl:os2:pthread_key_create",
+              "sr" => "Нема довољно меморије у perl:os2:pthread_key_create",
               "tr" => "perl:os2:pthread_key_create içinde bellek yetersiz",
               "uk" => "Недостатньо пам’яті в perl:os2:pthread_key_create"
             },
@@ -49528,6 +50700,7 @@ $CONF = {
               "nl" => "Een apparaatcontext van een venster ophalen zonder berichtenwachtrij zou PM blokkeren",
               "pt" => "Obter o contexto de dispositivo de uma janela sem uma fila de mensagens bloquearia o PM",
               "ru" => "Получение контекста устройства окна без очереди сообщений привело бы к блокировке PM",
+              "sr" => "Преузимање контекста уређаја прозора без реда порука закључало би PM",
               "tr" => "İleti kuyruğu olmadan bir pencerenin aygıt bağlamını almak PM'yi kilitler",
               "uk" => "Отримання контексту пристрою вікна без черги повідомлень призвело б до блокування PM"
             },
@@ -49569,6 +50742,7 @@ $CONF = {
               "nl" => "Geen berichtenwachtrij",
               "pt" => "Não existe fila de mensagens",
               "ru" => "Нет очереди сообщений",
+              "sr" => "Нема реда порука",
               "tr" => "İleti kuyruğu yok",
               "uk" => "Немає черги повідомлень"
             },
@@ -49610,6 +50784,7 @@ $CONF = {
               "nl" => "Bezig met afsluiten...",
               "pt" => "A terminar...",
               "ru" => "Завершение по QUIT...",
+              "sr" => "Захтев за излаз...",
               "tr" => "Çıkılıyor...",
               "uk" => "Завершення за запитом QUIT..."
             },
@@ -49652,6 +50827,7 @@ $CONF = {
               "nl" => "Functie \"%{function}\" is niet geïmplementeerd in deze versie van Perl.",
               "pt" => "A função \"%{function}\" não está implementada nesta versão do Perl.",
               "ru" => "Функция \"%{function}\" не реализована в этой версии perl.",
+              "sr" => "Функција \"%{function}\" није имплементирана у овој верзији перла.",
               "tr" => "\"%{function}\" işlevi perl'in bu sürümünde uygulanmamış.",
               "uk" => "Функцію \"%{function}\" не реалізовано в цій версії perl."
             },
@@ -49854,6 +51030,7 @@ $CONF = {
               "nl" => "Onbekend proces %{process} stuurde een bericht naar prime_env_iter: %{message}",
               "pt" => "O processo desconhecido %{process} enviou uma mensagem a prime_env_iter: %{message}",
               "ru" => "Неизвестный процесс %{process} отправил сообщение в prime_env_iter: %{message}",
+              "sr" => "Непознат процес %{process} послао је поруку функцији prime_env_iter: %{message}",
               "tr" => "Bilinmeyen %{process} süreci prime_env_iter'a ileti gönderdi: %{message}",
               "uk" => "Невідомий процес %{process} надіслав повідомлення до prime_env_iter: %{message}"
             },
@@ -49907,6 +51084,7 @@ $CONF = {
               "nl" => "Kan op dit systeem geen lijsttoewijzing aan %%ENV doen",
               "pt" => "Não é possível atribuir uma lista a %%ENV neste sistema",
               "ru" => "На этой системе нельзя выполнить списковое присваивание в %%ENV",
+              "sr" => "На овом систему није могуће доделити листу променљивој %%ENV",
               "tr" => "Bu sistemde %%ENV'ye liste ataması yapılamaz",
               "uk" => "У цій системі неможливо виконати спискове присвоєння до %%ENV"
             },
@@ -49949,6 +51127,7 @@ $CONF = {
               "nl" => "Fatale VMS-fout (status=%{arg1}) in %{arg2}, regel %{arg3}",
               "pt" => "Erro fatal do VMS (estado=%{arg1}) em %{arg2}, linha %{arg3}",
               "ru" => "Неустранимая ошибка VMS (статус=%{arg1}) в %{arg2}, строка %{arg3}",
+              "sr" => "Кобна VMS грешка (статус=%{arg1}) у %{arg2}, ред %{arg3}",
               "tr" => "Ölümcül VMS hatası (durum=%{arg1}), %{arg2} konumunda, %{arg3}. satırda",
               "uk" => "Фатальна помилка VMS (стан=%{arg1}) у %{arg2}, рядок %{arg3}"
             },
@@ -50008,6 +51187,7 @@ $CONF = {
               "nl" => "%{arg1} is niet geïmplementeerd!\n",
               "pt" => "%{arg1} não está implementado!\n",
               "ru" => "%{arg1}: реализация отсутствует!\n",
+              "sr" => "%{arg1} није имплементиран!\n",
               "tr" => "%{arg1} uygulanmamış!\n",
               "uk" => "%{arg1} не реалізовано!\n"
             },
@@ -50055,6 +51235,7 @@ $CONF = {
               "nl" => "Vanaf Perl 5.30 moet dump() worden geschreven als CORE::dump()",
               "pt" => "A partir do Perl 5.30, dump() tem de ser escrito como CORE::dump()",
               "ru" => "Начиная с Perl 5.30, dump() следует записывать как CORE::dump()",
+              "sr" => "Од Perl-а 5.30, dump() мора бити написано као CORE::dump()",
               "tr" => "Perl 5.30'dan itibaren dump(), CORE::dump() olarak yazılmalıdır",
               "uk" => "Починаючи з Perl 5.30, dump() слід записувати як CORE::dump()"
             },
@@ -50096,6 +51277,7 @@ $CONF = {
               "nl" => "dump wordt niet ondersteund",
               "pt" => "dump não é suportado",
               "ru" => "dump не поддерживается",
+              "sr" => "dump није подржан",
               "tr" => "dump desteklenmiyor",
               "uk" => "dump не підтримується"
             },
@@ -50263,6 +51445,15 @@ $CONF = {
                   "dot_not_in_path" => "Не удаётся найти %{target} в PATH, '.' отсутствует в PATH"
                 }
               },
+              "sr" => {
+                "execute" => {
+                  "unavailable" => "Није могуће извршити %{target}"
+                },
+                "find" => {
+                  "dot_not_in_path" => "Није могуће пронаћи %{target} у PATH-у; '.' није у PATH-у",
+                  "ordinary" => "Није могуће пронаћи %{target} у PATH-у"
+                }
+              },
               "tr" => {
                 "execute" => {
                   "*" => "%{target} çalıştırılamıyor"
@@ -50351,6 +51542,7 @@ $CONF = {
               "nl" => "exec? Ik ben niet *zo'n* besturingssysteem",
               "pt" => "exec? Não sou *esse* tipo de sistema operativo",
               "ru" => "exec? Я не *такая* операционная система",
+              "sr" => "exec? Нисам ја *такав* оперативни систем",
               "tr" => "exec mi? Ben öyle *bir* işletim sistemi değilim",
               "uk" => "exec? Я не з *таких* операційних систем"
             },
@@ -50392,6 +51584,7 @@ $CONF = {
               "nl" => "fork() is niet beschikbaar",
               "pt" => "fork() não está disponível",
               "ru" => "fork() недоступен",
+              "sr" => "fork() није доступан",
               "tr" => "fork() kullanılamıyor",
               "uk" => "fork() недоступна"
             },
@@ -50433,6 +51626,7 @@ $CONF = {
               "nl" => "POSIX getpgrp accepteert geen argument",
               "pt" => "POSIX getpgrp não aceita argumentos",
               "ru" => "POSIX getpgrp не принимает аргумент",
+              "sr" => "POSIX getpgrp не прихвата аргумент",
               "tr" => "POSIX getpgrp bir bağımsız değişken alamaz",
               "uk" => "POSIX getpgrp не приймає аргументів"
             },
@@ -50474,6 +51668,7 @@ $CONF = {
               "nl" => "Kan geen fork uitvoeren: %{arg1}",
               "pt" => "Não é possível criar um processo filho: %{arg1}",
               "ru" => "Не удалось выполнить fork: %{arg1}",
+              "sr" => "Неуспело форковање: %{arg1}",
               "tr" => "Çatal oluşturulamıyor: %{arg1}",
               "uk" => "Неможливо виконати fork: %{arg1}"
             },
@@ -50521,6 +51716,7 @@ $CONF = {
               "nl" => "Kan \$0 niet instellen met prctl(): %{arg2}",
               "pt" => "Não é possível definir \$0 com prctl(): %{arg2}",
               "ru" => "Не удалось установить \$0 с помощью prctl(): %{arg2}",
+              "sr" => "Није могуће поставити \$0 помоћу prctl(): %{arg2}",
               "tr" => "prctl() ile \$0 ayarlanamıyor: %{arg2}",
               "uk" => "Не вдалося встановити \$0 за допомогою prctl(): %{arg2}"
             },
@@ -50568,6 +51764,7 @@ $CONF = {
               "nl" => "setpgrp accepteert geen argumenten",
               "pt" => "setpgrp não aceita argumentos",
               "ru" => "setpgrp не принимает аргументы",
+              "sr" => "setpgrp не прихвата аргументе",
               "tr" => "setpgrp bağımsız değişken alamaz",
               "uk" => "setpgrp не може приймати аргументи"
             },
@@ -50609,6 +51806,7 @@ $CONF = {
               "nl" => "Kan %{path} niet uitvoeren",
               "pt" => "Não é possível executar %{path}",
               "ru" => "Не удалось выполнить exec для %{path}",
+              "sr" => "Није могуће покренути %{path}",
               "tr" => "%{path} çalıştırılamıyor",
               "uk" => "Неможливо виконати exec для %{path}"
             },
@@ -50656,6 +51854,7 @@ $CONF = {
               "nl" => "Kan waitpid niet met vlaggen uitvoeren",
               "pt" => "Não é possível executar waitpid com opções",
               "ru" => "Нельзя выполнить waitpid с флагами",
+              "sr" => "Не може се позвати waitpid са заставицама",
               "tr" => "waitpid, bayraklarla kullanılamıyor",
               "uk" => "Неможливо виконати waitpid із прапорцями"
             },
@@ -50697,6 +51896,7 @@ $CONF = {
               "nl" => "Kan geen niet-numerieke proces-ID beëindigen",
               "pt" => "Não é possível enviar um sinal a um ID de processo não numérico",
               "ru" => "Нельзя вызвать kill с нечисловым идентификатором процесса",
+              "sr" => "Не може се позвати kill са ненумеричким ИД-ом процеса",
               "tr" => "Sayısal olmayan bir süreç kimliği sonlandırılamaz",
               "uk" => "Неможливо виконати kill із нечисловим ідентифікатором процесу"
             },
@@ -50738,6 +51938,7 @@ $CONF = {
               "nl" => "Onbekende signaalnaam \"%{arg1}\"",
               "pt" => "Nome de sinal não reconhecido: \"%{arg1}\"",
               "ru" => "Неизвестное имя сигнала \"%{arg1}\"",
+              "sr" => "Непознато име сигнала „%{arg1}”",
               "tr" => "Tanınmayan sinyal adı \"%{arg1}\"",
               "uk" => "Нерозпізнане ім'я сигналу \"%{arg1}\""
             },
@@ -50786,6 +51987,7 @@ $CONF = {
               "nl" => "Maximumaantal wachtende signalen (%{arg2}) overschreden",
               "pt" => "Excedido o número máximo de sinais pendentes (%{arg2})",
               "ru" => "Превышено максимальное количество ожидающих обработки сигналов (%{arg2})",
+              "sr" => "Прекорачен је максималан број сигнала на чекању (%{arg2})",
               "tr" => "Bekleyen sinyallerin azami sayısı (%{arg2}) aşıldı",
               "uk" => "Перевищено максимальну кількість сигналів, що очікують обробки (%{arg2})"
             },
@@ -50833,6 +52035,7 @@ $CONF = {
               "nl" => "Onbekende hook: %{hook}",
               "pt" => "Hook inexistente: %{hook}",
               "ru" => "Нет такого обработчика: %{hook}",
+              "sr" => "Непозната кука: %{hook}",
               "tr" => "Böyle bir kanca yok: %{hook}",
               "uk" => "Немає такого обробника: %{hook}"
             },
@@ -50883,6 +52086,7 @@ $CONF = {
               "nl" => "Functie %{function} is niet geïmplementeerd",
               "pt" => "A função %{function} não está implementada",
               "ru" => "Функция %{function} не реализована",
+              "sr" => "Функција %{function} није имплементирана",
               "tr" => "%{function} işlevi uygulanmamış",
               "uk" => "Функцію %{function} не реалізовано"
             },
@@ -50940,6 +52144,7 @@ $CONF = {
               "nl" => "Te weinig argumenten voor syscall",
               "pt" => "Argumentos insuficientes para syscall",
               "ru" => "Слишком мало аргументов для syscall",
+              "sr" => "Премало аргумената за syscall",
               "tr" => "syscall için çok az bağımsız değişken",
               "uk" => "Замало аргументів для syscall"
             },
@@ -50981,6 +52186,7 @@ $CONF = {
               "nl" => "Te veel argumenten voor syscall",
               "pt" => "Demasiados argumentos para syscall",
               "ru" => "Слишком много аргументов для syscall",
+              "sr" => "Превише аргумената за syscall",
               "tr" => "syscall için çok fazla bağımsız değişken",
               "uk" => "Забагато аргументів для syscall"
             },
@@ -51095,6 +52301,12 @@ $CONF = {
                 "setgid" => "Небезопасная зависимость в %{operation} при запуске с setgid",
                 "setuid" => "Небезопасная зависимость в %{operation} при запуске с setuid",
                 "taint_mode" => "Небезопасная зависимость в %{operation} при запуске с ключом -T"
+              },
+              "sr" => {
+                "setgid" => "Небезбедна зависност у операцији %{operation} при покретању са setgid",
+                "setuid" => "Небезбедна зависност у операцији %{operation} при покретању са setuid",
+                "taint_mode" => "Небезбедна зависност у операцији %{operation} при покретању са прекидачем -T",
+                "taint_warning" => "Небезбедна зависност у операцији %{operation} при покретању са прекидачем -t"
               },
               "tr" => {
                 "setgid" => "setgid ile çalışırken %{operation} içinde güvenli olmayan bağımlılık",
@@ -51239,6 +52451,12 @@ $CONF = {
                 "setuid" => "Небезопасный каталог в %{operation} при запуске с setuid",
                 "taint_mode" => "Небезопасный каталог в %{operation} при запуске с ключом -T"
               },
+              "sr" => {
+                "setgid" => "Небезбедан директоријум у операцији %{operation} при покретању са setgid",
+                "setuid" => "Небезбедан директоријум у операцији %{operation} при покретању са setuid",
+                "taint_mode" => "Небезбедан директоријум у операцији %{operation} при покретању са прекидачем -T",
+                "taint_warning" => "Небезбедан директоријум у операцији %{operation} при покретању са прекидачем -t"
+              },
               "tr" => {
                 "setgid" => "setgid ile çalışırken %{operation} içindeki dizin güvenli değil",
                 "setuid" => "setuid ile çalışırken %{operation} içindeki dizin güvenli değil",
@@ -51382,6 +52600,12 @@ $CONF = {
                 "setgid" => "%%ENV является псевдонимом %%%{operation} при запуске с setgid",
                 "setuid" => "%%ENV является псевдонимом %%%{operation} при запуске с setuid",
                 "taint_mode" => "%%ENV является псевдонимом %%%{operation} при запуске с ключом -T"
+              },
+              "sr" => {
+                "setgid" => "%%ENV је алијас за %%%{operation} при покретању са setgid",
+                "setuid" => "%%ENV је алијас за %%%{operation} при покретању са setuid",
+                "taint_mode" => "%%ENV је алијас за %%%{operation} при покретању са прекидачем -T",
+                "taint_warning" => "%%ENV је алијас за %%%{operation} при покретању са прекидачем -t"
               },
               "tr" => {
                 "setgid" => "setgid ile çalışırken %%ENV, %%%{operation} için diğer ad olarak kullanılıyor",
@@ -51699,6 +52923,24 @@ $CONF = {
                   "generic" => "%%ENV является псевдонимом другой переменной при запуске с ключом -T"
                 }
               },
+              "sr" => {
+                "setgid" => {
+                  "*" => "%%ENV је алијас за %{operation} при покретању са setgid",
+                  "generic" => "%%ENV је алијас за другу променљиву при покретању са setgid"
+                },
+                "setuid" => {
+                  "*" => "%%ENV је алијас за %{operation} при покретању са setuid",
+                  "generic" => "%%ENV је алијас за другу променљиву при покретању са setuid"
+                },
+                "taint_mode" => {
+                  "*" => "%%ENV је алијас за %{operation} при покретању са прекидачем -T",
+                  "generic" => "%%ENV је алијас за другу променљиву при покретању са прекидачем -T"
+                },
+                "taint_warning" => {
+                  "*" => "%%ENV је алијас за %{operation} при покретању са прекидачем -t",
+                  "generic" => "%%ENV је алијас за другу променљиву при покретању са прекидачем -t"
+                }
+              },
               "tr" => {
                 "setgid" => {
                   "*" => "setgid ile çalışırken %%ENV, %{operation} için diğer ad olarak kullanılıyor",
@@ -51873,6 +53115,12 @@ $CONF = {
                 "setuid" => "Небезопасное значение \$ENV{%{operation}} при запуске с setuid",
                 "taint_mode" => "Небезопасное значение \$ENV{%{operation}} при запуске с ключом -T"
               },
+              "sr" => {
+                "setgid" => "Небезбедна променљива \$ENV{%{operation}} при покретању са setgid",
+                "setuid" => "Небезбедна променљива \$ENV{%{operation}} при покретању са setuid",
+                "taint_mode" => "Небезбедна променљива \$ENV{%{operation}} при покретању са прекидачем -T",
+                "taint_warning" => "Небезбедна променљива \$ENV{%{operation}} при покретању са прекидачем -t"
+              },
               "tr" => {
                 "setgid" => "setgid ile çalışırken \$ENV{%{operation}} güvenli değil",
                 "setuid" => "setuid ile çalışırken \$ENV{%{operation}} güvenli değil",
@@ -52017,6 +53265,12 @@ $CONF = {
                 "setuid" => "Небезопасная операция %{operation} при запуске с setuid",
                 "taint_mode" => "Небезопасная операция %{operation} при запуске с ключом -T"
               },
+              "sr" => {
+                "setgid" => "Небезбедна операција %{operation} при покретању са setgid",
+                "setuid" => "Небезбедна операција %{operation} при покретању са setuid",
+                "taint_mode" => "Небезбедна операција %{operation} при покретању са прекидачем -T",
+                "taint_warning" => "Небезбедна операција %{operation} при покретању са прекидачем -t"
+              },
               "tr" => {
                 "setgid" => "setgid ile çalışırken güvenli olmayan %{operation}",
                 "setuid" => "setuid ile çalışırken güvenli olmayan %{operation}",
@@ -52087,6 +53341,7 @@ $CONF = {
               "nl" => "Eval-groep in onveilige reguliere expressie",
               "pt" => "Grupo de avaliação numa expressão regular insegura",
               "ru" => "Группа eval в небезопасном регулярном выражении",
+              "sr" => "Eval група у небезбедном регуларном изразу",
               "tr" => "Güvenli olmayan düzenli ifadede eval grubu",
               "uk" => "Група обчислення коду в небезпечному регулярному виразі"
             },
@@ -52164,6 +53419,7 @@ $CONF = {
               "nl" => "Kan een referentie naar %{arg1} niet omzetten naar een typeglob",
               "pt" => "Não é possível converter uma referência a %{arg1} num typeglob",
               "ru" => "Невозможно преобразовать ссылку на %{arg1} в typeglob",
+              "sr" => "Референца на %{arg1} не може се претворити у typeglob",
               "tr" => "%{arg1} başvurusunu typeglob türüne dönüştürmek mümkün değil",
               "uk" => "Не можна перетворити посилання на %{arg1} на typeglob"
             },
@@ -52212,6 +53468,7 @@ $CONF = {
               "nl" => "Geen subroutinereferentie",
               "pt" => "Não é uma referência de sub-rotina",
               "ru" => "Значение не является ссылкой на подпрограмму",
+              "sr" => "Референца није референца на потпрограм",
               "tr" => "Bir alt yordam başvurusu değil",
               "uk" => "Це не посилання на підпрограму"
             },
@@ -52254,6 +53511,7 @@ $CONF = {
               "nl" => "Geen GLOB-referentie",
               "pt" => "Não é uma referência GLOB",
               "ru" => "Это не ссылка на GLOB",
+              "sr" => "Није референца на GLOB",
               "tr" => "Bir GLOB başvurusu değil",
               "uk" => "Це не посилання на GLOB"
             },
@@ -52403,6 +53661,14 @@ $CONF = {
               "ru" => {
                 "*" => "Значение не является ссылкой на %{reference_type}"
               },
+              "sr" => {
+                "*" => "Није референца типа %{reference_type}",
+                "ARRAY" => "Није референца типа %{reference_type}",
+                "INVLIST" => "Није референца типа %{reference_type}",
+                "IO" => "Није референца типа %{reference_type}",
+                "OBJECT" => "Није референца типа %{reference_type}",
+                "UNKNOWN" => "Није референца типа %{reference_type}"
+              },
               "tr" => {
                 "*" => "Bir %{reference_type} başvurusu değil"
               },
@@ -52494,6 +53760,7 @@ $CONF = {
               "nl" => "Kan unweaken niet op iets toepassen dat geen referentie is",
               "pt" => "Não é possível remover o enfraquecimento de algo que não é uma referência",
               "ru" => "Нельзя отменить ослабление значения, не являющегося ссылкой",
+              "sr" => "Не може се уклонити слабљење вредности која није референца",
               "tr" => "Başvuru olmayan bir değerin zayıf başvuru niteliği kaldırılamaz",
               "uk" => "Неможливо скасувати ослаблення значення, що не є посиланням"
             },
@@ -52535,6 +53802,7 @@ $CONF = {
               "nl" => "Kan weaken niet op iets toepassen dat geen referentie is",
               "pt" => "Não é possível enfraquecer algo que não é uma referência",
               "ru" => "Нельзя ослабить значение, не являющееся ссылкой",
+              "sr" => "Не може се ослабити вредност која није референца",
               "tr" => "Başvuru olmayan bir değer zayıf başvuruya dönüştürülemez",
               "uk" => "Неможливо послабити значення, що не є посиланням"
             },
@@ -52577,6 +53845,7 @@ $CONF = {
               "nl" => "Kan %{arg2} niet omzetten naar een tekenreeks in %{arg3}",
               "pt" => "Não é possível converter %{arg2} em cadeia de caracteres em %{arg3}",
               "ru" => "Невозможно преобразовать %{arg2} в строку в %{arg3}",
+              "sr" => "Није могуће претворити %{arg2} у ниску при %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} değeri dizgeye dönüştürülemez",
               "uk" => "Неможливо привести %{arg2} до рядка у %{arg3}"
             },
@@ -52619,6 +53888,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -52769,6 +54039,14 @@ $CONF = {
                 "subroutine" => "Нельзя использовать неопределённое значение как ссылку на подпрограмму",
                 "symbol" => "Нельзя использовать неопределённое значение как ссылку на символ"
               },
+              "sr" => {
+                "array" => "Не може се користити недефинисана вредност као ARRAY референца",
+                "filehandle" => "Не може се користити недефинисана вредност као референца на руковалац датотеком",
+                "hash" => "Не може се користити недефинисана вредност као HASH референца",
+                "scalar" => "Не може се користити недефинисана вредност као SCALAR референца",
+                "subroutine" => "Не може се користити недефинисана вредност као референца на потпрограм",
+                "symbol" => "Не може се користити недефинисана вредност као референца на симбол"
+              },
               "tr" => {
                 "*" => "Tanımsız bir değer başvuru olarak kullanılamaz",
                 "array" => "Tanımsız bir değer ARRAY başvurusu olarak kullanılamaz",
@@ -52849,6 +54127,7 @@ $CONF = {
               "nl" => "Kan chr niet toepassen op %{arg1}",
               "pt" => "Não é possível executar chr com %{arg1}",
               "ru" => "Невозможно применить chr к %{arg1}",
+              "sr" => "Није могуће применити chr на %{arg1}",
               "tr" => "chr %{arg1} olarak değerlendirilemiyor",
               "uk" => "Неможливо застосувати chr до %{arg1}"
             },
@@ -52896,6 +54175,7 @@ $CONF = {
               "nl" => "Gebruik van codepunt 0x%{code_point} is niet toegestaan; het toegestane maximum is 0x%{maximum}",
               "pt" => "Não é permitido utilizar o ponto de código 0x%{code_point}; o máximo permitido é 0x%{maximum}",
               "ru" => "Использование кодовой точки 0x%{code_point} недопустимо; максимально допустимое значение — 0x%{maximum}",
+              "sr" => "Употреба кодне тачке 0x%{code_point} није дозвољена; највећа дозвољена вредност је 0x%{maximum}",
               "tr" => "0x%{code_point} kod noktası kullanılamaz; izin verilen en yüksek değer 0x%{maximum}",
               "uk" => "Використання кодової точки 0x%{code_point} не дозволено; максимально допустиме значення — 0x%{maximum}"
             },
@@ -52958,6 +54238,7 @@ $CONF = {
               "nl" => "Ongeldig argument voor sv_cat_decode",
               "pt" => "Argumento inválido para sv_cat_decode",
               "ru" => "Недопустимый аргумент sv_cat_decode",
+              "sr" => "Неважећи аргумент функције sv_cat_decode",
               "tr" => "sv_cat_decode için geçersiz bağımsız değişken",
               "uk" => "Некоректний аргумент sv_cat_decode"
             },
@@ -52999,6 +54280,7 @@ $CONF = {
               "nl" => "\${^ENCODING} wordt niet meer ondersteund",
               "pt" => "\${^ENCODING} já não é suportado",
               "ru" => "\${^ENCODING} больше не поддерживается",
+              "sr" => "\${^ENCODING} више није подржан",
               "tr" => "\${^ENCODING} artık desteklenmiyor",
               "uk" => "\${^ENCODING} більше не підтримується"
             },
@@ -53041,6 +54323,7 @@ $CONF = {
               "nl" => " bij expansie van %{name}",
               "pt" => " na expansão de %{name}",
               "ru" => " при раскрытии %{name}",
+              "sr" => " при проширењу %{name}",
               "tr" => " %{name} genişletmesinde",
               "uk" => " під час розгортання %{name}"
             },
@@ -53096,6 +54379,7 @@ $CONF = {
               "nl" => " \"%{name}\"",
               "pt" => " \"%{name}\"",
               "ru" => " \"%{name}\"",
+              "sr" => " „%{name}“",
               "tr" => " \"%{name}\"",
               "uk" => " \"%{name}\""
             },
@@ -53151,6 +54435,7 @@ $CONF = {
               "nl" => " \\p{%{name}}",
               "pt" => " \\p{%{name}}",
               "ru" => " \\p{%{name}}",
+              "sr" => " \\p{%{name}}",
               "tr" => " \\p{%{name}}",
               "uk" => " \\p{%{name}}"
             },
@@ -53206,6 +54491,7 @@ $CONF = {
               "nl" => "Fout \"%{error}\"\n",
               "pt" => "Erro \"%{error}\"\n",
               "ru" => "Ошибка \"%{error}\"\n",
+              "sr" => "Грешка „%{error}“\n",
               "tr" => "Hata: \"%{error}\"\n",
               "uk" => "Помилка \"%{error}\"\n"
             },
@@ -53260,6 +54546,7 @@ $CONF = {
               "nl" => "Codepunt te groot in \"%{contents}\"\n",
               "pt" => "Ponto de código demasiado grande em \"%{contents}\"\n",
               "ru" => "Слишком большое значение кодовой точки в \"%{contents}\"\n",
+              "sr" => "Кодна тачка је превелика у „%{contents}“\n",
               "tr" => "\"%{contents}\" içinde kod noktası çok büyük\n",
               "uk" => "Завелика кодова точка в \"%{contents}\"\n"
             },
@@ -53314,6 +54601,7 @@ $CONF = {
               "nl" => "Time-out bij wachten tot een andere thread een definitie geeft\n",
               "pt" => "Tempo de espera excedido enquanto outra thread definia a propriedade\n",
               "ru" => "Истекло время ожидания определения свойства другим потоком\n",
+              "sr" => "Истекло је време чекања да друга нит дефинише својство\n",
               "tr" => "Başka bir iş parçacığının tanımlaması beklenirken zaman aşımı\n",
               "uk" => "Вичерпано час очікування визначення іншим потоком\n"
             },
@@ -53362,6 +54650,7 @@ $CONF = {
               "nl" => "Onveilige overschrijving van privégebruikgebied\n",
               "pt" => "Substituição insegura de uso privado\n",
               "ru" => "Небезопасное переопределение для области частного использования\n",
+              "sr" => "Небезбедно преклапање за приватну употребу\n",
               "tr" => "Güvenli olmayan özel kullanım geçersiz kılması\n",
               "uk" => "Небезпечне перевизначення для області приватного використання\n"
             },
@@ -53409,6 +54698,7 @@ $CONF = {
               "nl" => "Ongeldig bereik in \"%{contents}\"\n",
               "pt" => "Intervalo inválido em \"%{contents}\"\n",
               "ru" => "Недопустимый диапазон в \"%{contents}\"\n",
+              "sr" => "Недозвољен опсег у „%{contents}“\n",
               "tr" => "\"%{contents}\" içinde geçersiz aralık\n",
               "uk" => "Недопустимий діапазон у \"%{contents}\"\n"
             },
@@ -53464,6 +54754,7 @@ $CONF = {
               "nl" => "Onveilige gebruikersgedefinieerde eigenschap\n",
               "pt" => "Propriedade definida pelo utilizador insegura\n",
               "ru" => "Небезопасное пользовательское свойство\n",
+              "sr" => "Небезбедно кориснички дефинисано својство\n",
               "tr" => "Güvenli olmayan kullanıcı tanımlı özellik\n",
               "uk" => "Небезпечна властивість, визначена користувачем\n"
             },
@@ -53511,6 +54802,7 @@ $CONF = {
               "nl" => "Kan definitie van Unicode-eigenschap niet vinden\n",
               "pt" => "Não foi possível encontrar a definição da propriedade Unicode\n",
               "ru" => "Не удалось найти определение свойства Unicode\n",
+              "sr" => "Није могуће пронаћи дефиницију Уникод својства\n",
               "tr" => "Unicode özellik tanımı bulunamıyor\n",
               "uk" => "Не вдалося знайти визначення властивості Unicode\n"
             },
@@ -53558,6 +54850,7 @@ $CONF = {
               "nl" => "Ongeldige naam voor gebruikersgedefinieerde eigenschap\n",
               "pt" => "Nome de propriedade definido pelo utilizador inválido\n",
               "ru" => "Недопустимое имя пользовательского свойства\n",
+              "sr" => "Недозвољено име кориснички дефинисаног својства\n",
               "tr" => "Geçersiz kullanıcı tanımlı özellik adı\n",
               "uk" => "Недопустиме ім’я властивості, визначеної користувачем\n"
             },
@@ -53605,6 +54898,7 @@ $CONF = {
               "nl" => "Onbekende naam voor gebruikersgedefinieerde eigenschap\n",
               "pt" => "Nome de propriedade definida pelo utilizador desconhecido\n",
               "ru" => "Неизвестное имя пользовательского свойства\n",
+              "sr" => "Непознато име кориснички дефинисаног својства\n",
               "tr" => "Bilinmeyen kullanıcı tanımlı özellik adı\n",
               "uk" => "Невідома назва властивості, визначеної користувачем\n"
             },
@@ -53652,6 +54946,7 @@ $CONF = {
               "nl" => "Oneindige recursie in gebruikersgedefinieerde eigenschap\n",
               "pt" => "Recursão infinita na propriedade definida pelo utilizador\n",
               "ru" => "Бесконечная рекурсия в пользовательском свойстве\n",
+              "sr" => "Бесконачна рекурзија у кориснички дефинисаном својству\n",
               "tr" => "Kullanıcı tanımlı özellikte sonsuz özyineleme\n",
               "uk" => "Нескінченна рекурсія у властивості, визначеній користувачем\n"
             },
@@ -53699,6 +54994,7 @@ $CONF = {
               "nl" => "Geen overeenkomsten met jokerteken voor Unicode-eigenschapswaarde:\n",
               "pt" => "Nenhuma correspondência para o padrão de propriedade Unicode:\n",
               "ru" => "Нет значений свойства Unicode, соответствующих шаблону:\n",
+              "sr" => "Ниједна џокер вредност Уникод својства се не подудара:\n",
               "tr" => "Hiçbir Unicode özellik değeri joker karakteri eşleşmiyor:\n",
               "uk" => "Жодне значення властивості Unicode не відповідає шаблону з підстановними символами:\n"
             },
@@ -53746,6 +55042,7 @@ $CONF = {
               "nl" => "Jokerteken voor Unicode-eigenschap is niet afgesloten\n",
               "pt" => "Padrão de propriedade Unicode não terminado\n",
               "ru" => "Шаблон значения свойства Unicode не завершён\n",
+              "sr" => "Незатворен џокер за Уникод својство\n",
               "tr" => "Unicode özellik joker karakterinin sonlandırıcısı eksik\n",
               "uk" => "Незавершений шаблон пошуку властивості Unicode\n"
             },
@@ -53794,6 +55091,7 @@ $CONF = {
               "nl" => "Niet-ondersteunde scriptcodering %{encoding}",
               "pt" => "Codificação de script não suportada: %{encoding}",
               "ru" => "Неподдерживаемая кодировка скрипта: %{encoding}",
+              "sr" => "Неподржано кодирање скрипте %{encoding}",
               "tr" => "Desteklenmeyen betik kodlaması %{encoding}",
               "uk" => "Непідтримуване кодування сценарію %{encoding}"
             },
@@ -53841,6 +55139,7 @@ $CONF = {
               "nl" => "Ongeldige UTF-16-surrogaatcode",
               "pt" => "Par substituto UTF-16 malformado",
               "ru" => "Некорректный суррогат UTF-16",
+              "sr" => "Неисправан сурогат у UTF-16",
               "tr" => "Bozuk UTF-16 vekil çifti",
               "uk" => "Некоректний сурогат UTF-16"
             },
@@ -53883,6 +55182,7 @@ $CONF = {
               "nl" => "Niet-ondersteunde scriptcodering UTF-32BE",
               "pt" => "Codificação de script UTF-32BE não suportada",
               "ru" => "Кодировка скрипта UTF-32BE не поддерживается",
+              "sr" => "Кодирање скрипте UTF-32BE није подржано",
               "tr" => "Desteklenmeyen betik kodlaması UTF-32BE",
               "uk" => "Непідтримуване кодування скрипту UTF-32BE"
             },
@@ -53925,6 +55225,7 @@ $CONF = {
               "nl" => "Niet-ondersteunde scriptcodering UTF-32LE",
               "pt" => "Codificação de script UTF-32LE não suportada",
               "ru" => "Кодировка скрипта UTF-32LE не поддерживается",
+              "sr" => "Кодирање скрипте UTF-32LE није подржано",
               "tr" => "Desteklenmeyen betik kodlaması UTF-32LE",
               "uk" => "Непідтримуване кодування скрипту UTF-32LE"
             },
@@ -53967,6 +55268,7 @@ $CONF = {
               "nl" => "Ongeldig UTF-8-teken (fatale fout)",
               "pt" => "Carácter UTF-8 malformado (erro fatal)",
               "ru" => "Некорректный символ UTF-8 (фатальная ошибка)",
+              "sr" => "Неисправан UTF-8 знак (фатално)",
               "tr" => "Bozuk UTF-8 karakteri (ölümcül)",
               "uk" => "Некоректний символ UTF-8 (фатальна помилка)"
             },
@@ -54015,6 +55317,7 @@ $CONF = {
               "nl" => "Ongeldige UTF-8-tekenreeks in pack",
               "pt" => "Cadeia UTF-8 malformada em pack",
               "ru" => "Некорректная строка UTF-8 в pack",
+              "sr" => "Неисправан UTF-8 стринг у pack",
               "tr" => "pack içinde bozuk UTF-8 dizgesi",
               "uk" => "Некоректний рядок UTF-8 у pack"
             },
@@ -54057,6 +55360,7 @@ $CONF = {
               "nl" => "Ongeldige UTF-8-tekenreeks in formaat '%{arg1}' bij unpack",
               "pt" => "Cadeia UTF-8 malformada no formato '%{arg1}' em unpack",
               "ru" => "Некорректная строка UTF-8 для формата '%{arg1}' в unpack",
+              "sr" => "Неисправан UTF-8 низ у формату „%{arg1}“ за unpack",
               "tr" => "unpack içindeki '%{arg1}' biçiminde bozuk UTF-8 dizgesi",
               "uk" => "Некоректний рядок UTF-8 для формату '%{arg1}' в unpack"
             },
@@ -54105,6 +55409,7 @@ $CONF = {
               "nl" => "Ongeldige UTF-8-tekenreeks in unpack",
               "pt" => "Cadeia UTF-8 malformada em unpack",
               "ru" => "Некорректная строка UTF-8 в unpack",
+              "sr" => "Неисправан UTF-8 стринг у unpack",
               "tr" => "unpack içinde bozuk UTF-8 dizgesi",
               "uk" => "Некоректний рядок UTF-8 у unpack"
             },
@@ -54205,6 +55510,9 @@ $CONF = {
                 "ncomplement" => "Использование строк с кодовыми точками выше 0xFF в качестве аргументов оператора числового побитового дополнения (~) запрещено",
                 "scomplement" => "Использование строк с кодовыми точками выше 0xFF в качестве аргументов оператора строкового побитового дополнения (~) запрещено"
               },
+              "sr" => {
+                "*" => "Употреба низова са кодним тачкама изнад 0xFF као аргумената оператору %{operator} није дозвољена"
+              },
               "tr" => {
                 "*" => "0xFF üzerindeki kod noktalarını içeren dizelerin %{operator} işleci için bağımsız değişken olarak kullanılması yasaktır",
                 "bit_and" => "0xFF üzerindeki kod noktalarını içeren dizelerin bit düzeyinde VE (&) işleci için bağımsız değişken olarak kullanılması yasaktır",
@@ -54289,6 +55597,7 @@ $CONF = {
               "nl" => "Teken buiten het bytebereik",
               "pt" => "Carácter largo",
               "ru" => "Широкий символ",
+              "sr" => "Широки знак",
               "tr" => "Geniş karakter",
               "uk" => "Широкий символ"
             },
@@ -54331,6 +55640,7 @@ $CONF = {
               "nl" => "Breed teken in %{arg1}",
               "pt" => "Carácter largo em %{arg1}",
               "ru" => "Широкий символ в %{arg1}",
+              "sr" => "Широки знак у операцији %{arg1}",
               "tr" => "%{arg1} bağlamında geniş karakter saptandı",
               "uk" => "Широкий символ у %{arg1}"
             },
@@ -54368,6 +55678,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -54411,6 +55722,7 @@ $CONF = {
               "nl" => "Lexer probeerde een teken buiten Latin-1 in Latin-1-invoer te plaatsen",
               "pt" => "O analisador léxico tentou inserir um carácter não Latin-1 numa entrada Latin-1",
               "ru" => "Код лексического анализа попытался вставить символ вне Latin-1 во входные данные в Latin-1",
+              "sr" => "Лексер је покушао да убаци знак који није Latin-1 у улазни текст кодирања Latin-1",
               "tr" => "Kod çözümleme sırasında Latin-1 girdisine Latin-1 dışı bir karakter eklenmeye çalışıldı",
               "uk" => "Код лексичного аналізатора спробував вставити символ поза Latin-1 у вхідні дані Latin-1"
             },
@@ -54453,6 +55765,7 @@ $CONF = {
               "nl" => "Teken buiten het bytebereik in \$/",
               "pt" => "Carácter largo em \$/",
               "ru" => "Широкий символ в \$/",
+              "sr" => "Широки знак у \$/",
               "tr" => "\$/ içinde geniş karakter",
               "uk" => "Широкий символ у \$/"
             },
@@ -54494,6 +55807,7 @@ $CONF = {
               "nl" => "Tekenreeksen met codepunten boven 0xFF zijn niet toegestaan als argument voor vec",
               "pt" => "É proibido passar a vec cadeias com pontos de código superiores a 0xFF",
               "ru" => "Использование строк с кодовыми точками выше 0xFF в качестве аргументов vec запрещено",
+              "sr" => "Забрањено је коришћење стрингова са кодним тачкама већим од 0xFF као аргумената функције vec",
               "tr" => "0xFF üzerindeki kod noktalarını içeren dizelerin vec bağımsız değişkeni olarak kullanılması yasaktır",
               "uk" => "Використання рядків із кодовими точками понад 0xFF як аргументів vec заборонено"
             },
@@ -54540,6 +55854,7 @@ $CONF = {
               "nl" => "De volgende bewerking is niet geïmplementeerd: %{operation}",
               "pt" => "A seguinte operação não está implementada: %{operation}",
               "ru" => "Следующая операция не реализована: %{operation}",
+              "sr" => "Следећа операција није имплементирана: %{operation}",
               "tr" => "Şu işlem uygulanmamış: %{operation}",
               "uk" => "Таку операцію не реалізовано: %{operation}"
             },
@@ -54836,6 +56151,7 @@ $CONF = {
               "nl" => "%{arg2}",
               "pt" => "%{arg2}",
               "ru" => "%{arg2}",
+              "sr" => "%{arg2}",
               "tr" => "%{arg2}",
               "uk" => "%{arg2}"
             },
@@ -54944,6 +56260,7 @@ $CONF = {
               "nl" => "Deze Perl is niet gebouwd met ondersteuning voor willekeurige doorloopvolgorde van hashsleutels, maar toch heeft iets Perl_hv_rand_set() aangeroepen.",
               "pt" => "Esta versão do Perl foi compilada sem suporte para percorrer aleatoriamente as chaves de hash, mas houve uma chamada a Perl_hv_rand_set().",
               "ru" => "Эта сборка Perl не поддерживает обход ключей хеша в случайном порядке, однако был вызван Perl_hv_rand_set().",
+              "sr" => "Овај Perl није изграђен са подршком за насумични редослед кључева хеша, али је нешто позвало Perl_hv_rand_set().",
               "tr" => "Bu Perl, karma anahtarlarının rastgele sırada dolaşımını destekleyecek şekilde derlenmemiş; buna rağmen Perl_hv_rand_set() çağrıldı.",
               "uk" => "Цей Perl зібрано без підтримки випадкового порядку обходу ключів хешу, але щось викликало Perl_hv_rand_set()."
             },
@@ -54986,6 +56303,7 @@ $CONF = {
               "nl" => "Hashsleutels moeten kleiner zijn dan 2**31 bytes",
               "pt" => "As chaves de hash têm de ter menos de 2**31 bytes",
               "ru" => "К сожалению, длина ключей хеша должна быть меньше 2**31 байт",
+              "sr" => "Нажалост, кључеви хеша морају бити мањи од 2**31 бајтова",
               "tr" => "Üzgünüz, karma anahtarları 2**31 bayttan kısa olmalıdır",
               "uk" => "На жаль, розмір ключів хешу має бути меншим за 2**31 байтів"
             },
@@ -55027,6 +56345,7 @@ $CONF = {
               "nl" => "Poging om niet-toegestane sleutel '%{key}' in een beperkte hash te benaderen",
               "pt" => "Tentativa de aceder à chave não permitida '%{key}' num hash restrito",
               "ru" => "Попытка доступа к недопустимому ключу '%{key}' в хеше с ограниченным набором ключей",
+              "sr" => "Покушај приступа недозвољеном кључу „%{key}“ у ограниченом хешу",
               "tr" => "Kısıtlı bir karmada izin verilmeyen '%{key}' anahtarına erişilmeye çalışıldı",
               "uk" => "Спроба доступу до недозволеного ключа '%{key}' у хеші з обмеженим набором ключів"
             },
@@ -55075,6 +56394,7 @@ $CONF = {
               "nl" => "Poging om niet-toegestane sleutel '%{key}' uit een beperkte hash te verwijderen",
               "pt" => "Tentativa de eliminar a chave não permitida '%{key}' de um hash restrito",
               "ru" => "Попытка удаления недопустимого ключа '%{key}' из хеша с ограниченным набором ключей",
+              "sr" => "Покушај брисања недозвољеног кључа „%{key}“ из ограниченог хеша",
               "tr" => "Kısıtlı bir karmadan izin verilmeyen '%{key}' anahtarı silinmeye çalışıldı",
               "uk" => "Спроба видалити недозволений ключ '%{key}' із хешу з обмеженим набором ключів"
             },
@@ -55363,6 +56683,23 @@ $CONF = {
                 "version_required" => "Недопустимый формат версии (требуется версия)",
                 "zero_before_decimal" => "Недопустимый формат версии (перед десятичной точкой требуется 0)"
               },
+              "sr" => {
+                "alpha_without_decimal" => "Неисправан формат верзије (слово без децималног дела)",
+                "component_too_long" => "Неисправан формат верзије (највише 3 цифре између децималних тачака)",
+                "dotted_decimal_needs_v" => "Неисправан формат верзије (верзије са тачкама морају да почињу са 'v')",
+                "dotted_decimal_parts" => "Неисправан формат верзије (верзије са тачкама морају да имају најмање три дела)",
+                "fractional_part_required" => "Неисправан формат верзије (обавезан је децимални део)",
+                "leading_zero" => "Неисправан формат верзије (почетне нуле нису дозвољене)",
+                "misplaced_underscore" => "Неисправан формат верзије (доња црта је на погрешном месту)",
+                "multiple_underscores" => "Неисправан формат верзије (више доњих црта)",
+                "negative_version" => "Неисправан формат верзије (негативан број верзије)",
+                "non_numeric_data" => "Неисправан формат верзије (ненумерички подаци)",
+                "trailing_decimal" => "Неисправан формат верзије (завршна децимална тачка)",
+                "underscore_before_decimal" => "Неисправан формат верзије (доње црте пре децималне тачке)",
+                "underscore_not_allowed" => "Неисправан формат верзије (доње црте нису дозвољене)",
+                "version_required" => "Неисправан формат верзије (потребна је верзија)",
+                "zero_before_decimal" => "Неисправан формат верзије (потребна је 0 пре децималне тачке)"
+              },
               "tr" => {
                 "*" => "Geçersiz sürüm biçimi (ondalık sayı içermeyen alfa eki)",
                 "component_too_long" => "Geçersiz sürüm biçimi (ondalık ayraçlar arasında en fazla 3 basamak olabilir)",
@@ -55459,6 +56796,7 @@ $CONF = {
               "nl" => "Ongeldig versieformaat (niet-numerieke gegevens)",
               "pt" => "Formato de versão inválido (dados não numéricos)",
               "ru" => "Неверный формат версии (нечисловые данные)",
+              "sr" => "Неважећи формат верзије (подаци нису бројчани)",
               "tr" => "Geçersiz sürüm biçimi (sayısal olmayan veri)",
               "uk" => "Некоректний формат версії (нечислові дані)"
             },
@@ -55500,6 +56838,7 @@ $CONF = {
               "nl" => "Ongeldig versieobject",
               "pt" => "Objeto de versão inválido",
               "ru" => "Некорректный объект version",
+              "sr" => "Неважећи објекат верзије",
               "tr" => "Geçersiz sürüm nesnesi",
               "uk" => "Некоректний об'єкт версії"
             },
@@ -55541,6 +56880,7 @@ $CONF = {
               "nl" => "Kan '%{arg1}' niet na -mname gebruiken",
               "pt" => "Não é possível utilizar '%{arg1}' após -mname",
               "ru" => "Нельзя использовать '%{arg1}' после -mname",
+              "sr" => "Није могуће користити „%{arg1}“ после -mname",
               "tr" => "-mname ifadesinden sonra '%{arg1}' kullanılamaz",
               "uk" => "Неможливо використовувати '%{arg1}' після -mname"
             },
@@ -55590,6 +56930,7 @@ $CONF = {
               "nl" => " tijdens de globale destructie",
               "pt" => " durante a destruição global",
               "ru" => " во время глобального уничтожения",
+              "sr" => " током уништавања глобалних података",
               "tr" => " genel yok etme sırasında",
               "uk" => " під час глобального знищення"
             },
@@ -55677,6 +57018,10 @@ $CONF = {
               "ru" => {
                 "*" => ", <%{handle}> блок %{line}",
                 "line" => ", <%{handle}> строка %{line}"
+              },
+              "sr" => {
+                "*" => ", <%{handle}> блок %{line}",
+                "line" => ", <%{handle}> ред %{line}"
               },
               "tr" => {
                 "*" => ", <%{handle}> %{line}. parça",
@@ -56180,6 +57525,36 @@ $CONF = {
                   "parser" => " в файле %{file}, строка %{line}, внутри строки\n"
                 }
               },
+              "sr" => {
+                "*" => {
+                  "parser" => " у %{file}, линија %{line}.\n",
+                  "source" => " у %{file}, линија %{line}"
+                },
+                "empty_near" => {
+                  "parser" => " у %{file}, линија %{line}, \n"
+                },
+                "end_of_line" => {
+                  "parser" => " у %{file}, линија %{line}, на крају реда\n"
+                },
+                "eof" => {
+                  "parser" => " у %{file}, линија %{line}, на крају датотеке\n"
+                },
+                "near" => {
+                  "parser" => " у %{file}, линија %{line}, близу „%{value}“\n"
+                },
+                "next_char" => {
+                  "parser" => " у %{file}, линија %{line}, следећи знак %{value}\n"
+                },
+                "next_token" => {
+                  "parser" => " у %{file}, линија %{line}, следећи токен ???\n"
+                },
+                "within_pattern" => {
+                  "parser" => " у %{file}, линија %{line}, унутар шаблона\n"
+                },
+                "within_string" => {
+                  "parser" => " у %{file}, линија %{line}, унутар ниске\n"
+                }
+              },
               "tr" => {
                 "*" => {
                   "parser" => " %{file} dosyasının %{line}. satırında.\n",
@@ -56322,6 +57697,7 @@ $CONF = {
               "nl" => " (context niet beschikbaar)",
               "pt" => " (contexto indisponível)",
               "ru" => " (контекст недоступен)",
+              "sr" => " (контекст није доступан)",
               "tr" => " (bağlam kullanılamıyor)",
               "uk" => " (контекст недоступний)"
             },
@@ -56409,6 +57785,10 @@ $CONF = {
               "ru" => {
                 "*" => " (Пропущен оператор перед \"%{value}\"?)",
                 "predeclare" => " (Нужно предварительно объявить \"%{value}\"?)"
+              },
+              "sr" => {
+                "missing_operator" => " (Недостаје оператор испред „%{value}“?)",
+                "predeclare" => " (Да ли треба унапред да декларишете „%{value}“?)"
               },
               "tr" => {
                 "missing_operator" => " \"%{value}\" öğesinden önce operatör mü eksik?",
@@ -56520,6 +57900,10 @@ $CONF = {
                 "few" => "Пропущено ещё %{omitted_count} диагностических сообщения об именованных параметрах",
                 "one" => "Пропущено ещё %{omitted_count} диагностическое сообщение об именованных параметрах"
               },
+              "sr" => {
+                "*" => "Изостављена је додатна дијагностика именованих параметара",
+                "one" => "Изостављена је још једна дијагностика именованог параметра"
+              },
               "tr" => {
                 "*" => "Adlandırılmış parametrelerle ilgili %{omitted_count} ek tanı iletisi gösterilmedi"
               },
@@ -56589,6 +57973,7 @@ $CONF = {
               "nl" => "Een referentie is als uitzondering opgegooid",
               "pt" => "Foi lançada uma referência como exceção",
               "ru" => "В качестве исключения выброшена ссылка",
+              "sr" => "Референца је бачена као изузетак",
               "tr" => "Bir başvuru istisna olarak fırlatıldı",
               "uk" => "Як виняток викинуто посилання"
             },
@@ -56646,6 +58031,7 @@ $CONF = {
               "nl" => "%{text}",
               "pt" => "%{text}",
               "ru" => "%{text}",
+              "sr" => "%{text}",
               "tr" => "%{text}",
               "uk" => "%{text}"
             },
@@ -56707,6 +58093,7 @@ $CONF = {
               "nl" => "panic: av_extend_guts() negatief aantal (%{arg1})",
               "pt" => "panic: contagem negativa em av_extend_guts() (%{arg1})",
               "ru" => "паника: отрицательное количество в av_extend_guts() (%{arg1})",
+              "sr" => "паника: av_extend_guts() негативан број (%{arg1})",
               "tr" => "panic: av_extend_guts() negatif sayım (%{arg1})",
               "uk" => "паніка: від'ємна кількість в av_extend_guts() (%{arg1})"
             },
@@ -56757,6 +58144,7 @@ $CONF = {
               "nl" => "panic: onbekende OA_*: %{arg1}",
               "pt" => "panic: OA_* desconhecido: %{arg1}",
               "ru" => "Внутренняя ошибка: неизвестный OA_*: %{arg1}",
+              "sr" => "паника: непозната OA_* вредност: %{arg1}",
               "tr" => "panic: bilinmeyen OA_*: %{arg1}",
               "uk" => "паніка: невідомий OA_*: %{arg1}"
             },
@@ -56807,6 +58195,7 @@ $CONF = {
               "nl" => "panic: ck_entersub_args_proto CV zonder prototype, flags=%{arg2}",
               "pt" => "panic: ck_entersub_args_proto recebeu CV sem protótipo, flags=%{arg2}",
               "ru" => "паника: CV без прототипа в ck_entersub_args_proto, flags=%{arg2}",
+              "sr" => "паника: ck_entersub_args_proto CV без прототипа, заставице=%{arg2}",
               "tr" => "panic: ck_entersub_args_proto, proto'suz CV, flags=%{arg2}",
               "uk" => "паніка: CV без прототипу в ck_entersub_args_proto, flags=%{arg2}"
             },
@@ -56856,6 +58245,7 @@ $CONF = {
               "nl" => "panic: rv2cv_op_cv ongeldige flags %{arg2}",
               "pt" => "pânico: flags inválidas %{arg2} em rv2cv_op_cv",
               "ru" => "паника: rv2cv_op_cv: неверные флаги %{arg2}",
+              "sr" => "паника: rv2cv_op_cv има неважеће заставице %{arg2}",
               "tr" => "panic: rv2cv_op_cv hatalı bayraklar %{arg2}",
               "uk" => "паніка: rv2cv_op_cv, неправильні прапорці %{arg2}"
             },
@@ -56905,6 +58295,7 @@ $CONF = {
               "nl" => "interne fout: goto, type=%{arg1}, ix=%{arg2}",
               "pt" => "panic: goto, tipo=%{arg1}, ix=%{arg2}",
               "ru" => "Внутренняя ошибка: goto, тип=%{arg1}, ix=%{arg2}",
+              "sr" => "паника: goto, type=%{arg1}, ix=%{arg2}",
               "tr" => "panic: goto, type=%{arg1}, ix=%{arg2}",
               "uk" => "паніка: goto, type=%{arg1}, ix=%{arg2}"
             },
@@ -56959,6 +58350,7 @@ $CONF = {
               "nl" => "panic: docatch: ongeldige ix=%{arg1}",
               "pt" => "panic: docatch: ix inválido=%{arg1}",
               "ru" => "Внутренняя ошибка: docatch: недопустимый ix=%{arg1}",
+              "sr" => "паника: docatch: недозвољен ix=%{arg1}",
               "tr" => "panic: docatch: geçersiz ix=%{arg1}",
               "uk" => "паніка: docatch: неприпустимий ix=%{arg1}"
             },
@@ -57008,6 +58400,7 @@ $CONF = {
               "nl" => "paniek: restartop in call_list\n",
               "pt" => "pânico: restartop em call_list\n",
               "ru" => "паника: restartop в call_list\n",
+              "sr" => "паника: restartop in call_list\n",
               "tr" => "panic: call_list içinde restartop\n",
               "uk" => "паніка: restartop у call_list\n"
             },
@@ -57053,6 +58446,7 @@ $CONF = {
               "nl" => "paniek: restartop\n",
               "pt" => "pânico: restartop\n",
               "ru" => "паника: restartop\n",
+              "sr" => "паника: недостаје циљ restartop\n",
               "tr" => "panic: restartop\n",
               "uk" => "паніка: restartop\n"
             },
@@ -57097,6 +58491,7 @@ $CONF = {
               "nl" => "interne fout: return, type=%{arg1}",
               "pt" => "panic: return, tipo=%{arg1}",
               "ru" => "Внутренняя ошибка: return, тип=%{arg1}",
+              "sr" => "паника: return, type=%{arg1}",
               "tr" => "panic: return, type=%{arg1}",
               "uk" => "паніка: return, type=%{arg1}"
             },
@@ -57146,6 +58541,7 @@ $CONF = {
               "nl" => "paniek: restartop in perl_run\n",
               "pt" => "pânico: restartop em perl_run\n",
               "ru" => "паника: restartop в perl_run\n",
+              "sr" => "паника: restartop in perl_run\n",
               "tr" => "panic: perl_run içinde restartop\n",
               "uk" => "паніка: restartop у perl_run\n"
             },
@@ -57191,6 +58587,7 @@ $CONF = {
               "nl" => "paniek: magic_setdbline len=%{length}, ptr='%{pointer}'",
               "pt" => "pânico: magic_setdbline len=%{length}, ptr='%{pointer}'",
               "ru" => "паника: magic_setdbline len=%{length}, ptr='%{pointer}'",
+              "sr" => "паника: magic_setdbline len=%{length}, ptr='%{pointer}'",
               "tr" => "panic: magic_setdbline len=%{length}, ptr='%{pointer}'",
               "uk" => "паніка: magic_setdbline len=%{length}, ptr='%{pointer}'"
             },
@@ -57245,6 +58642,7 @@ $CONF = {
               "nl" => "panic: handshake-overloop",
               "pt" => "panic: transbordo do handshake",
               "ru" => "Внутренняя ошибка: переполнение при согласовании интерфейсов",
+              "sr" => "паника: прекорачење руковања",
               "tr" => "panic: el sıkışma arabelleği taştı",
               "uk" => "паніка: переповнення під час узгодження"
             },
@@ -57291,6 +58689,7 @@ $CONF = {
               "nl" => "panic: bufferoverloop in %{api}",
               "pt" => "panic: transbordo do buffer %{api}",
               "ru" => "паника: переполнение буфера %{api}",
+              "sr" => "паника: преливање бафера функције %{api}",
               "tr" => "panic: %{api} arabellek taşması",
               "uk" => "паніка: переповнення буфера %{api}"
             },
@@ -57340,6 +58739,7 @@ $CONF = {
               "nl" => "interne fout: frexp: %{value}",
               "pt" => "pânico: frexp: %{value}",
               "ru" => "panic: frexp: %{value}",
+              "sr" => "паника: frexp: %{value}",
               "tr" => "panic: frexp: %{value}",
               "uk" => "паніка: frexp: %{value}"
             },
@@ -57391,6 +58791,7 @@ $CONF = {
               "nl" => "panic: quadmath_snprintf mislukt, formaat \"%{format}\"",
               "pt" => "pânico: quadmath_snprintf falhou, formato \"%{format}\"",
               "ru" => "panic: сбой quadmath_snprintf, формат \"%{format}\"",
+              "sr" => "паника: quadmath_snprintf није успео, формат \"%{format}\"",
               "tr" => "panic: quadmath_snprintf başarısız oldu, biçim \"%{format}\"",
               "uk" => "паніка: збій quadmath_snprintf, формат \"%{format}\""
             },
@@ -57441,6 +58842,7 @@ $CONF = {
               "nl" => "panic: ongeldig quadmath-formaat \"%{format}\"",
               "pt" => "pânico: formato inválido de quadmath \"%{format}\"",
               "ru" => "panic: недопустимый формат quadmath \"%{format}\"",
+              "sr" => "паника: неисправан quadmath формат \"%{format}\"",
               "tr" => "panic: quadmath geçersiz biçim \"%{format}\"",
               "uk" => "паніка: некоректний формат quadmath \"%{format}\""
             },
@@ -57490,6 +58892,7 @@ $CONF = {
               "nl" => "panic: my_vsnprintf niet beschikbaar met quadmath",
               "pt" => "panic: my_vsnprintf não está disponível com quadmath",
               "ru" => "паника: my_vsnprintf недоступен при использовании quadmath",
+              "sr" => "паника: my_vsnprintf није доступан са quadmath",
               "tr" => "panic: quadmath ile my_vsnprintf kullanılamıyor",
               "uk" => "паніка: my_vsnprintf недоступна з quadmath"
             },
@@ -57534,6 +58937,7 @@ $CONF = {
               "nl" => "panic: bufferoverloop in my_snprintf",
               "pt" => "pânico: excesso de capacidade no buffer de my_snprintf",
               "ru" => "panic: переполнение буфера my_snprintf",
+              "sr" => "паника: прекорачен капацитет бафера my_snprintf",
               "tr" => "panic: my_snprintf arabellek taşması",
               "uk" => "паніка: переповнення буфера my_snprintf"
             },
@@ -57578,6 +58982,7 @@ $CONF = {
               "nl" => "panic: bufferoverloop in my_vsnprintf",
               "pt" => "panic: transbordo do buffer de my_vsnprintf",
               "ru" => "паника: переполнение буфера my_vsnprintf",
+              "sr" => "паника: прекорачење бафера my_vsnprintf",
               "tr" => "panic: my_vsnprintf arabellek taşması",
               "uk" => "паніка: переповнення буфера my_vsnprintf"
             },
@@ -57622,6 +59027,7 @@ $CONF = {
               "nl" => "panic: avhv_delete wordt niet langer ondersteund",
               "pt" => "panic: avhv_delete deixou de ser suportado",
               "ru" => "Внутренняя ошибка: avhv_delete больше не поддерживается",
+              "sr" => "паника: avhv_delete више није подржан",
               "tr" => "panic: avhv_delete artık desteklenmiyor",
               "uk" => "паніка: avhv_delete більше не підтримується"
             },
@@ -57666,6 +59072,7 @@ $CONF = {
               "nl" => "interne fout: hv_placeholders_set",
               "pt" => "pânico: hv_placeholders_set",
               "ru" => "panic: hv_placeholders_set",
+              "sr" => "паника: hv_placeholders_set",
               "tr" => "panic: hv_placeholders_set",
               "uk" => "паніка: hv_placeholders_set"
             },
@@ -57710,6 +59117,7 @@ $CONF = {
               "nl" => "interne fout: hv_placeholders_p",
               "pt" => "pânico: hv_placeholders_p",
               "ru" => "panic: hv_placeholders_p",
+              "sr" => "паника: hv_placeholders_p",
               "tr" => "panic: hv_placeholders_p",
               "uk" => "panic: hv_placeholders_p"
             },
@@ -57754,6 +59162,7 @@ $CONF = {
               "nl" => "panic: ongeldige flags %{arg1} in refcounted_he_chain_2hv",
               "pt" => "panic: sinalizadores inválidos em refcounted_he_chain_2hv: %{arg1}",
               "ru" => "паника: недопустимые флаги %{arg1} в refcounted_he_chain_2hv",
+              "sr" => "паника: refcounted_he_chain_2hv неисправне заставице %{arg1}",
               "tr" => "panic: refcounted_he_chain_2hv hatalı bayraklar %{arg1}",
               "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_chain_2hv"
             },
@@ -57804,6 +59213,7 @@ $CONF = {
               "nl" => "panic: ongeldige flags %{arg1} in refcounted_he_new_sv",
               "pt" => "panic: sinalizadores inválidos em refcounted_he_new_sv: %{arg1}",
               "ru" => "паника: недопустимые флаги %{arg1} в refcounted_he_new_sv",
+              "sr" => "паника: refcounted_he_new_sv неисправне заставице %{arg1}",
               "tr" => "panic: refcounted_he_new_sv hatalı bayraklar %{arg1}",
               "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_new_sv"
             },
@@ -57854,6 +59264,7 @@ $CONF = {
               "nl" => "panic: ongeldige flags %{arg1} in refcounted_he_fetch_pvn",
               "pt" => "panic: sinalizadores inválidos em refcounted_he_fetch_pvn: %{arg1}",
               "ru" => "паника: недопустимые флаги %{arg1} в refcounted_he_fetch_pvn",
+              "sr" => "паника: refcounted_he_fetch_pvn неисправне заставице %{arg1}",
               "tr" => "panic: refcounted_he_fetch_pvn hatalı bayraklar %{arg1}",
               "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_fetch_pvn"
             },
@@ -57904,6 +59315,7 @@ $CONF = {
               "nl" => "panic: ongeldige flags %{arg1} in refcounted_he_fetch_sv",
               "pt" => "panic: sinalizadores inválidos em refcounted_he_fetch_sv: %{arg1}",
               "ru" => "паника: недопустимые флаги %{arg1} в refcounted_he_fetch_sv",
+              "sr" => "паника: refcounted_he_fetch_sv неисправне заставице %{arg1}",
               "tr" => "panic: refcounted_he_fetch_sv hatalı bayraklar %{arg1}",
               "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_fetch_sv"
             },
@@ -57954,6 +59366,7 @@ $CONF = {
               "nl" => "panic: ongeldige flags %{arg1} in refcounted_he_value",
               "pt" => "panic: sinalizadores inválidos em refcounted_he_value: %{arg1}",
               "ru" => "паника: недопустимые флаги %{arg1} в refcounted_he_value",
+              "sr" => "паника: refcounted_he_value неисправне заставице %{arg1}",
               "tr" => "panic: refcounted_he_value hatalı bayraklar %{arg1}",
               "uk" => "паніка: неправильні прапорці %{arg1} у refcounted_he_value"
             },
@@ -58004,6 +59417,7 @@ $CONF = {
               "nl" => "panic: hv_store() is onverwacht mislukt",
               "pt" => "pânico: hv_store() falhou inesperadamente",
               "ru" => "panic: непредвиденный сбой hv_store()",
+              "sr" => "паника: hv_store() није успео, што није очекивано",
               "tr" => "panic: hv_store() beklenmedik biçimde başarısız oldu",
               "uk" => "паніка: несподіваний збій hv_store()"
             },
@@ -58047,6 +59461,7 @@ $CONF = {
               "nl" => "panic: poging tot aanroep van PERL_EFF_ACCESS in %{arg1}",
               "pt" => "panic: tentativa de chamar PERL_EFF_ACCESS em %{arg1}",
               "ru" => "Внутренняя ошибка: попытка вызвать PERL_EFF_ACCESS в %{arg1}",
+              "sr" => "паника: покушај позивања PERL_EFF_ACCESS у %{arg1}",
               "tr" => "panic: %{arg1} içinde PERL_EFF_ACCESS çağrılmaya çalışıldı",
               "uk" => "паніка: спроба викликати PERL_EFF_ACCESS у %{arg1}"
             },
@@ -58096,6 +59511,7 @@ $CONF = {
               "nl" => "panic: poging tot aanroep van access() in %{arg1}",
               "pt" => "panic: tentativa de chamar access() em %{arg1}",
               "ru" => "Внутренняя ошибка: попытка вызвать access() в %{arg1}",
+              "sr" => "паника: покушај позивања access() у %{arg1}",
               "tr" => "panic: %{arg1} içinde access() çağrılmaya çalışıldı",
               "uk" => "паніка: спроба викликати access() у %{arg1}"
             },
@@ -58145,6 +59561,7 @@ $CONF = {
               "nl" => "panic: PerlIO-laagarray is beschadigd",
               "pt" => "pânico: array de camadas PerlIO corrompido",
               "ru" => "panic: Массив слоёв PerlIO повреждён",
+              "sr" => "паника: низ PerlIO слојева је оштећен",
               "tr" => "panic: PerlIO katman dizisi bozuk",
               "uk" => "паніка: масив шарів PerlIO пошкоджено"
             },
@@ -58188,6 +59605,7 @@ $CONF = {
               "nl" => "panic: sysopen met meerdere argumenten, num_svs=%{arg2}",
               "pt" => "panic: sysopen com vários argumentos, num_svs=%{arg2}",
               "ru" => "паника: sysopen с несколькими аргументами, num_svs=%{arg2}",
+              "sr" => "паника: sysopen са више аргумената, num_svs=%{arg2}",
               "tr" => "panic: birden fazla argümanlı sysopen, num_svs=%{arg2}",
               "uk" => "паніка: sysopen із кількома аргументами, num_svs=%{arg2}"
             },
@@ -58238,6 +59656,7 @@ $CONF = {
               "nl" => "interne fout: ck_grep, type=%{arg1}",
               "pt" => "pânico: ck_grep, tipo=%{arg1}",
               "ru" => "паника: ck_grep, type=%{arg1}",
+              "sr" => "паника: ck_grep, type=%{arg1}",
               "tr" => "panic: ck_grep, type=%{arg1}",
               "uk" => "паніка: ck_grep, тип=%{arg1}"
             },
@@ -58287,6 +59706,7 @@ $CONF = {
               "nl" => "interne fout: pp_iter, type=%{arg1}",
               "pt" => "panic: pp_iter, tipo=%{arg1}",
               "ru" => "Внутренняя ошибка: pp_iter, type=%{arg1}",
+              "sr" => "паника: pp_iter, тип=%{arg1}",
               "tr" => "panic: pp_iter, type=%{arg1}",
               "uk" => "паніка: pp_iter, тип=%{arg1}"
             },
@@ -58337,6 +59757,7 @@ $CONF = {
               "nl" => "panic: newFOROP vond %{arg2} op %{arg3}, verwachtte padsv",
               "pt" => "pânico: newFOROP, encontrado %{arg2} em %{arg3}, esperado padsv",
               "ru" => "паника: newFOROP, обнаружено %{arg2} в позиции %{arg3}, ожидалось padsv",
+              "sr" => "паника: newFOROP, пронађен је %{arg2} на %{arg3}, очекиван је padsv",
               "tr" => "panic: newFOROP, %{arg2} bulundu (%{arg3}), padsv bekleniyordu",
               "uk" => "паніка: newFOROP, знайдено %{arg2} на позиції %{arg3}, очікується padsv"
             },
@@ -58392,6 +59813,7 @@ $CONF = {
               "nl" => "panic: newFOROP vond %{arg2}, verwachtte pushmark",
               "pt" => "pânico: newFOROP, encontrado %{arg2}, esperado pushmark",
               "ru" => "паника: newFOROP, обнаружено %{arg2}, ожидалось pushmark",
+              "sr" => "паника: newFOROP, пронађен је %{arg2}, очекиван је pushmark",
               "tr" => "panic: newFOROP, %{arg2} bulundu, pushmark bekleniyordu",
               "uk" => "паніка: newFOROP, знайдено %{arg2}, очікується pushmark"
             },
@@ -58442,6 +59864,7 @@ $CONF = {
               "nl" => "panic: newFOROP, padsv op %{arg2} heeft targ %{arg3}, niet %{arg4}",
               "pt" => "pânico: newFOROP, padsv em %{arg2} tem targ %{arg3}, não %{arg4}",
               "ru" => "паника: newFOROP, у padsv в позиции %{arg2} значение targ равно %{arg3}, а не %{arg4}",
+              "sr" => "паника: newFOROP, padsv на %{arg2} има targ %{arg3}, а не %{arg4}",
               "tr" => "panic: newFOROP, padsv %{arg2} konumunda, targ %{arg3}; %{arg4} olmalı",
               "uk" => "паніка: newFOROP, targ для padsv на позиції %{arg2} дорівнює %{arg3}, а не %{arg4}"
             },
@@ -58502,6 +59925,7 @@ $CONF = {
               "nl" => "panic: newFOROP vond refgen(%{arg2}) op %{arg3}, verwachtte refgen(padxv)",
               "pt" => "pânico: newFOROP, encontrado refgen(%{arg2}) em %{arg3}, esperado refgen(padxv)",
               "ru" => "паника: newFOROP, обнаружено refgen(%{arg2}) в позиции %{arg3}, ожидалось refgen(padxv)",
+              "sr" => "паника: newFOROP, пронађен је refgen(%{arg2}) на %{arg3}, очекиван је refgen(padxv)",
               "tr" => "panic: newFOROP, refgen(%{arg2}) %{arg3} konumunda bulundu, refgen(padxv) bekleniyordu",
               "uk" => "паніка: newFOROP, знайдено refgen(%{arg2}) на позиції %{arg3}, очікується refgen(padxv)"
             },
@@ -58554,6 +59978,7 @@ $CONF = {
               "nl" => "Kan geen scheidingsteken vinden in ALT_DIGITS-weergave '%{digits}' voor locale '%{locale}'",
               "pt" => "Não é possível encontrar um separador na representação ALT_DIGITS '%{digits}' para a configuração regional '%{locale}'",
               "ru" => "Не удаётся найти разделитель в представлении ALT_DIGITS '%{digits}' для локали '%{locale}'",
+              "sr" => "У приказу ALT_DIGITS „%{digits}“ за локал „%{locale}“ није пронађен сепаратор",
               "tr" => "'%{locale}' yerel ayarı için ALT_DIGITS gösterimi '%{digits}' içinde ayırıcı bulunamadı",
               "uk" => "Не вдалося знайти роздільник у поданні ALT_DIGITS '%{digits}' для локалі '%{locale}'"
             },
@@ -58612,6 +60037,7 @@ $CONF = {
               "nl" => "Onbekende charclass %{class}",
               "pt" => "Classe de caracteres desconhecida: %{class}",
               "ru" => "Неизвестный класс символов %{class}",
+              "sr" => "Непозната класа знакова %{class}",
               "tr" => "Bilinmeyen karakter sınıfı %{class}",
               "uk" => "Невідомий клас символів %{class}"
             },
@@ -58665,6 +60091,7 @@ $CONF = {
               "nl" => "Onverwacht item doorgegeven aan my_localeconv: %{item}",
               "pt" => "Item inesperado passado a my_localeconv: %{item}",
               "ru" => "В my_localeconv передан неожиданный элемент: %{item}",
+              "sr" => "my_localeconv је добио неочекивану ставку: %{item}",
               "tr" => "my_localeconv'e beklenmedik öğe aktarıldı: %{item}",
               "uk" => "До my_localeconv передано неочікуваний елемент: %{item}"
             },
@@ -58718,6 +60145,7 @@ $CONF = {
               "nl" => "my_localeconv() heeft onverwacht geen waarde voor %{key} geretourneerd",
               "pt" => "my_localeconv() inesperadamente não devolveu um valor para %{key}",
               "ru" => "my_localeconv() неожиданно не вернула значение для %{key}",
+              "sr" => "my_localeconv() неочекивано није вратио вредност за %{key}",
               "tr" => "my_localeconv() %{key} için beklenmedik biçimde değer döndürmedi",
               "uk" => "my_localeconv() неочікувано не повернула значення для %{key}"
             },
@@ -58773,6 +60201,7 @@ $CONF = {
               "nl" => "panic: onverwacht nl_langinfo()-item %{arg2}",
               "pt" => "pânico: item nl_langinfo() inesperado %{arg2}",
               "ru" => "паника: неожиданный элемент nl_langinfo() %{arg2}",
+              "sr" => "паника: Неочекивана ставка nl_langinfo() %{arg2}",
               "tr" => "panic: beklenmedik nl_langinfo() öğesi %{arg2}",
               "uk" => "паніка: неочікуваний елемент nl_langinfo() %{arg2}"
             },
@@ -58820,6 +60249,7 @@ $CONF = {
               "nl" => "nl_langinfo gaf een lege waarde terug voor %{item} in de veronderstelde locale \n'%{expected_locale}'; in werkelijkheid is dit\n'%{actual_locale}'\n codeset is '%{codeset}'; radix='%{radix}'; januari='%{january}'; strtod(1,5)=%{comma_number}, strtod(1.5)=%{dot_number}\n",
               "pt" => "nl_langinfo devolveu um valor vazio para %{item} na configuração regional supostamente \n'%{expected_locale}'; que na realidade é\n'%{actual_locale}'\n conjunto de caracteres='%{codeset}'; separador decimal='%{radix}'; janeiro='%{january}'; strtod(1,5)=%{comma_number}, strtod(1.5)=%{dot_number}\n",
               "ru" => "nl_langinfo вернула пустое значение для %{item} в предполагаемой локали \n'%{expected_locale}'; фактически это\n'%{actual_locale}'\n кодировка: '%{codeset}'; десятичный разделитель='%{radix}'; январь='%{january}'; strtod(1,5)=%{comma_number}, strtod(1.5)=%{dot_number}\n",
+              "sr" => "nl_langinfo је вратио празну вредност за %{item} у наводном локалу \n„%{expected_locale}“; који је заправо\n„%{actual_locale}“\n кодни скуп је „%{codeset}“; радикс=„%{radix}“; јануар=„%{january}“; strtod(1,5)=%{comma_number}, strtod(1.5)=%{dot_number}\n",
               "tr" => "nl_langinfo, %{item} için boş değer döndürdü; varsayılan olarak '%{expected_locale}' olmalıydı, gerçekte '%{actual_locale}'\n kodlama '%{codeset}'; radix='%{radix}'; January='%{january}'; strtod(1,5)=%{comma_number}, strtod(1.5)=%{dot_number}\n",
               "uk" => "nl_langinfo повернула порожнє значення для %{item} у локалі, що мала бути \n'%{expected_locale}'; але насправді є\n'%{actual_locale}'\n набір кодів — '%{codeset}'; десятковий роздільник='%{radix}'; січень='%{january}'; strtod(1,5)=%{comma_number}, strtod(1.5)=%{dot_number}\n"
             },
@@ -58909,6 +60339,7 @@ $CONF = {
               "nl" => "Onverwacht REPLACEMENT_CHARACTER in '%{value}'\n%{locale}",
               "pt" => "REPLACEMENT_CHARACTER inesperado em '%{value}'\n%{locale}",
               "ru" => "Неожиданный REPLACEMENT_CHARACTER в '%{value}'\n%{locale}",
+              "sr" => "Неочекиван REPLACEMENT_CHARACTER у „%{value}“\n%{locale}",
               "tr" => "'%{value}' içinde beklenmedik REPLACEMENT_CHARACTER\n%{locale}",
               "uk" => "Неочікуваний REPLACEMENT_CHARACTER у '%{value}'\n%{locale}"
             },
@@ -58968,6 +60399,7 @@ $CONF = {
               "nl" => "Onbekende localecategorie %{category}",
               "pt" => "Categoria de configuração regional desconhecida: %{category}",
               "ru" => "Неизвестная категория локали %{category}",
+              "sr" => "Непозната категорија локализације %{category}",
               "tr" => "Bilinmeyen yerel ayar kategorisi %{category}",
               "uk" => "Невідома категорія локалі %{category}"
             },
@@ -59021,6 +60453,7 @@ $CONF = {
               "nl" => "Interne lengt berekening onjuist.\n\"%{entry}\" is niet volledig toegevoegd aan \"%{constructed}\"; nodig=%{needed}, beschikbaar=%{capacity}",
               "pt" => "Cálculo interno do comprimento incorreto.\n\"%{entry}\" não foi adicionado na totalidade a \"%{constructed}\"; necessário=%{needed}, disponível=%{capacity}",
               "ru" => "Ошибка внутреннего расчёта длины.\n\"%{entry}\" добавлено в \"%{constructed}\" не полностью; требовалось=%{needed}, имелось=%{capacity}",
+              "sr" => "Погрешно израчунавање унутрашње дужине.\n„%{entry}“ није у целости додато у „%{constructed}“; потребно=%{needed}, било=%{capacity}",
               "tr" => "Dahili uzunluk hesabı yanlış.\n\"%{entry}\", \"%{constructed}\" içine tamamen eklenmedi; gereken=%{needed}, kapasite=%{capacity}",
               "uk" => "Помилка внутрішнього обчислення довжини.\n\"%{entry}\" не повністю додано до \"%{constructed}\"; потрібно=%{needed}, доступно=%{capacity}"
             },
@@ -59189,6 +60622,13 @@ $CONF = {
                 "no_equals" => "В '%{value}' требуется '=' для разделения имени и значения в записи name=value\n",
                 "unknown_category" => "'%{value}' — неизвестная категория\n"
               },
+              "sr" => {
+                "*" => "Неисправна спецификација категорија локала „%{value}“\n",
+                "contains_lc_all" => "„%{value}“ садржи LC_ALL, што овде није дозвољено\n",
+                "incomplete" => "„%{value}“ не наводи све категорије локала\n",
+                "no_equals" => "У „%{value}“ недостаје знак „=“ за раздвајање имена и вредности\n",
+                "unknown_category" => "„%{value}“ је непозната категорија\n"
+              },
               "tr" => {
                 "*" => "Geçersiz yerel ayar kategorisi belirtimi '%{value}'\n",
                 "contains_lc_all" => "'%{value}' burada kullanılması yasak olan LC_ALL öğesini içeriyor\n",
@@ -59275,6 +60715,7 @@ $CONF = {
               "nl" => "Huidige %{category}-locale niet gevonden",
               "pt" => "Não foi possível encontrar a configuração regional atual de %{category}",
               "ru" => "Не удалось определить текущую локаль для категории %{category}",
+              "sr" => "Није могуће пронаћи тренутну локализацију за %{category}",
               "tr" => "Geçerli %{category} yerel ayarı bulunamadı",
               "uk" => "Не вдалося знайти поточну локаль категорії %{category}"
             },
@@ -59328,6 +60769,7 @@ $CONF = {
               "nl" => "Voor %{category} werd '%{expected}' verwacht, maar de waarde is '%{actual}'",
               "pt" => "Esperava-se que %{category} fosse '%{expected}', mas é '%{actual}'",
               "ru" => "Ожидалось значение '%{expected}' для %{category}, получено '%{actual}'",
+              "sr" => "За %{category} се очекивало „%{expected}“, али је „%{actual}“",
               "tr" => "%{category} için '%{expected}' bekleniyordu, ancak '%{actual}'",
               "uk" => "Очікуване значення %{category} — '%{expected}', натомість отримано '%{actual}'"
             },
@@ -59391,6 +60833,7 @@ $CONF = {
               "nl" => "Onverwachte retourwaarde van parse_LC_ALL_string",
               "pt" => "Retorno inesperado de parse_LC_ALL_string",
               "ru" => "Неожиданный результат возврата из parse_LC_ALL_string",
+              "sr" => "Неочекиван повратак из parse_LC_ALL_string",
               "tr" => "parse_LC_ALL_string işlevinden beklenmeyen dönüş",
               "uk" => "Неочікуваний результат повернення з parse_LC_ALL_string"
             },
@@ -59439,6 +60882,7 @@ $CONF = {
               "nl" => "%{message}",
               "pt" => "%{message}",
               "ru" => "%{message}",
+              "sr" => "%{message}",
               "tr" => "%{message}",
               "uk" => "%{message}"
             },
@@ -59635,6 +61079,16 @@ $CONF = {
                   "present" => "%{file}: %{line}: паника: %{message}; errno=%{errno}\nВызвано из %{caller_file}: %{caller_line}\n"
                 }
               },
+              "sr" => {
+                "extended" => {
+                  "absent" => "%{file}: %{line}: фатална интерна грешка: %{message}; errno=%{errno}, \$^E=%{extended_errno}\n",
+                  "present" => "%{file}: %{line}: фатална интерна грешка: %{message}; errno=%{errno}, \$^E=%{extended_errno}\nПозвао из %{caller_file}: %{caller_line}\n"
+                },
+                "plain" => {
+                  "absent" => "%{file}: %{line}: фатална интерна грешка: %{message}; errno=%{errno}\n",
+                  "present" => "%{file}: %{line}: фатална интерна грешка: %{message}; errno=%{errno}\nПозвао из %{caller_file}: %{caller_line}\n"
+                }
+              },
               "tr" => {
                 "extended" => {
                   "absent" => "%{file}: %{line}: panic: %{message}; errno=%{errno}, \$^E=%{extended_errno}\n",
@@ -59823,6 +61277,12 @@ $CONF = {
                 "immediate" => "Не удалось изменить локаль для %{category} (%{category_number}) с '%{current}' на '%{failed}' \nВызов через %{file}: %{immediate_line}",
                 "proxy" => "Не удалось изменить локаль для %{category} (%{category_number}) с '%{current}' на '%{failed}' \nВызов через %{file}: %{proxy_line}"
               },
+              "sr" => {
+                "both" => "Не може да се промени локал категорије %{category} (%{category_number}) са „%{current}“ на „%{failed}“ \nПозвано преко %{file}: %{proxy_line}\nПозвано преко %{file}: %{immediate_line}",
+                "immediate" => "Не може да се промени локал категорије %{category} (%{category_number}) са „%{current}“ на „%{failed}“ \nПозвано преко %{file}: %{immediate_line}",
+                "none" => "Не може да се промени локал категорије %{category} (%{category_number}) са „%{current}“ на „%{failed}“ ",
+                "proxy" => "Не може да се промени локал категорије %{category} (%{category_number}) са „%{current}“ на „%{failed}“ \nПозвано преко %{file}: %{proxy_line}"
+              },
               "tr" => {
                 "both" => "%{category} yerel ayarı (%{category_number}) '%{current}' değerinden '%{failed}' değerine değiştirilemiyor \nÇağrıldığı yer: %{file}: %{proxy_line}\nÇağrıldığı yer: %{file}: %{immediate_line}",
                 "immediate" => "%{category} yerel ayarı (%{category_number}) '%{current}' değerinden '%{failed}' değerine değiştirilemiyor \nÇağrıldığı yer: %{file}: %{immediate_line}",
@@ -59927,6 +61387,7 @@ $CONF = {
               "nl" => "Kan geen POSIX 2008 C-localeobject maken",
               "pt" => "Não é possível criar o objeto da configuração regional C de POSIX 2008",
               "ru" => "Невозможно создать объект локали C по стандарту POSIX 2008",
+              "sr" => "Није могуће креирати POSIX 2008 објекат локализације за C",
               "tr" => "POSIX 2008 C yerel ayar nesnesi oluşturulamıyor",
               "uk" => "Неможливо створити об'єкт локалі C за POSIX 2008"
             },
@@ -59976,6 +61437,7 @@ $CONF = {
               "nl" => "panic: kan locale na fork niet herstellen",
               "pt" => "panic: não foi possível restaurar a configuração regional após fork",
               "ru" => "Внутренняя ошибка: невозможно восстановить локаль после fork",
+              "sr" => "паника: није могуће вратити локализацију после раздвајања процеса",
               "tr" => "panic: fork sonrasında yerel ayar geri yüklenemiyor",
               "uk" => "паніка: неможливо відновити локаль після fork"
             },
@@ -60017,6 +61479,7 @@ $CONF = {
               "nl" => "Overschakelen naar de globale locale is mislukt",
               "pt" => "Não foi possível mudar para a configuração regional global",
               "ru" => "Не удалось переключиться на глобальную локаль",
+              "sr" => "Није могуће прећи на глобалне поставке локализације",
               "tr" => "Genel yerel ayara geçilemedi",
               "uk" => "Не вдалося перейти до глобальної локалі"
             },
@@ -60064,6 +61527,7 @@ $CONF = {
               "nl" => "Onverwacht 'dummy_trial ontvangen",
               "pt" => "Obtido inesperadamente 'dummy_trial",
               "ru" => "Неожиданно получено 'dummy_trial",
+              "sr" => "Неочекивано је добијено 'dummy_trial",
               "tr" => "'dummy_trial beklenmedik şekilde alındı",
               "uk" => "Неочікувано отримано 'dummy_trial"
             },
@@ -60111,6 +61575,7 @@ $CONF = {
               "nl" => "(aangeroepen vanuit %{caller_line}): bool_setlocale_2008_i: overschakelen naar de nieuwe locale is mislukt",
               "pt" => "(chamada a partir da linha %{caller_line}): bool_setlocale_2008_i: falha ao mudar para a nova configuração regional",
               "ru" => "(вызвано из строки %{caller_line}): bool_setlocale_2008_i: не удалось переключиться на новую локаль",
+              "sr" => "(позвано из %{caller_line}): bool_setlocale_2008_i: пребацивање на нови локал није успело",
               "tr" => "(çağıran satır: %{caller_line}): bool_setlocale_2008_i: yeni yerel ayara geçiş başarısız oldu",
               "uk" => "(викликано з рядка %{caller_line}): bool_setlocale_2008_i: не вдалося перейти до нової локалі"
             },
@@ -60164,6 +61629,7 @@ $CONF = {
               "nl" => "omschakelen naar beneden mislukt",
               "pt" => "Falha ao reduzir o nível de alternância",
               "ru" => "не удалось уменьшить глубину переключения",
+              "sr" => "неуспешно смањивање дубине укључивања",
               "tr" => "aşağı geçiş başarısız oldu",
               "uk" => "Не вдалося зменшити рівень вкладеності перемикання"
             },
@@ -60211,6 +61677,7 @@ $CONF = {
               "nl" => "Kan uselocale(0x%{object}) niet instellen; LC_ALL hoort '%{locale}' te zijn",
               "pt" => "Não é possível executar uselocale(0x%{object}), LC_ALL deveria ser '%{locale}'",
               "ru" => "Не удаётся выполнить uselocale(0x%{object}), ожидаемое значение LC_ALL — '%{locale}'",
+              "sr" => "Не може да се користи uselocale(0x%{object}), LC_ALL треба да буде „%{locale}“",
               "tr" => "uselocale(0x%{object}) kullanılamıyor; LC_ALL değerinin '%{locale}' olması bekleniyor",
               "uk" => "Не вдалося виконати uselocale(0x%{object}), очікуване значення LC_ALL — '%{locale}'"
             },
@@ -60269,6 +61736,7 @@ $CONF = {
               "nl" => "duplocale mislukt",
               "pt" => "duplocale falhou",
               "ru" => "сбой duplocale",
+              "sr" => "duplocale није успео",
               "tr" => "duplocale başarısız oldu",
               "uk" => "Не вдалося виконати duplocale"
             },
@@ -60316,6 +61784,7 @@ $CONF = {
               "nl" => "Kan setlocale(%{locale}) niet instellen",
               "pt" => "Não é possível executar setlocale(%{locale})",
               "ru" => "Не удаётся выполнить setlocale(%{locale})",
+              "sr" => "Не може да се постави setlocale(%{locale})",
               "tr" => "setlocale(%{locale}) ayarlanamıyor",
               "uk" => "Не вдалося виконати setlocale(%{locale})"
             },
@@ -60369,6 +61838,7 @@ $CONF = {
               "nl" => "_configthreadlocale heeft een fout geretourneerd",
               "pt" => "_configthreadlocale devolveu um erro",
               "ru" => "_configthreadlocale вернула ошибку",
+              "sr" => "_configthreadlocale је вратио грешку",
               "tr" => "_configthreadlocale hata döndürdü",
               "uk" => "_configthreadlocale повернула помилку"
             },
@@ -60418,6 +61888,7 @@ $CONF = {
               "nl" => "panic: geen strftime",
               "pt" => "pânico: strftime indisponível",
               "ru" => "panic: отсутствует strftime",
+              "sr" => "паника: нема strftime",
               "tr" => "panic: strftime yok",
               "uk" => "паніка: відсутня strftime"
             },
@@ -60461,6 +61932,7 @@ $CONF = {
               "nl" => "Onjuiste uitlijning van \$^M!\n",
               "pt" => "Alinhamento incorreto de \$^M!\n",
               "ru" => "Неверное выравнивание \$^M!\n",
+              "sr" => "Неисправно поравнање \$^M!\n",
               "tr" => "\$^M hizalaması hatalı!\n",
               "uk" => "Неправильне вирівнювання \$^M!\n"
             },
@@ -60505,6 +61977,7 @@ $CONF = {
               "nl" => "Niet-uitgelijnde \"next\"-pointer in de vrijeketen 0x%{next} op 0x%{pointer}\n",
               "pt" => "Ponteiro \"next\" desalinhado na cadeia de blocos livres: 0x%{next} em 0x%{pointer}\n",
               "ru" => "Невыровненный указатель \"next\" в цепочке свободных блоков 0x%{next} по адресу 0x%{pointer}\n",
+              "sr" => "Непоравнат показивач „next“ у ланцу слободних блокова 0x%{next} на 0x%{pointer}\n",
               "tr" => "Boş zincirde hizalanmamış \"next\" işaretçisi: 0x%{next}, 0x%{pointer} konumunda\n",
               "uk" => "Невирівняний вказівник \"next\" у ланцюжку вільних блоків 0x%{next} за адресою 0x%{pointer}\n"
             },
@@ -60560,6 +62033,7 @@ $CONF = {
               "nl" => "Niet-uitgelijnde pointer in de vrijeketen 0x%{pointer}\n",
               "pt" => "Ponteiro desalinhado na cadeia de blocos livres: 0x%{pointer}\n",
               "ru" => "Невыровненный указатель в цепочке свободных блоков 0x%{pointer}\n",
+              "sr" => "Непоравнат показивач у ланцу слободних блокова 0x%{pointer}\n",
               "tr" => "Boş zincirde hizalanmamış işaretçi: 0x%{pointer}\n",
               "uk" => "Невирівняний вказівник у ланцюжку вільних блоків 0x%{pointer}\n"
             },
@@ -60610,6 +62084,7 @@ $CONF = {
               "nl" => "assertie mislukt (%{reason}?): %{assertion} (%{file}:%{line})\n",
               "pt" => "Falha na asserção (%{reason}?): %{assertion} (%{file}:%{line})\n",
               "ru" => "Нарушено утверждение (%{reason}?): %{assertion} (%{file}:%{line})\n",
+              "sr" => "тврдња није успела (%{reason}?): %{assertion} (%{file}:%{line})\n",
               "tr" => "assertion bozuldu (%{reason}?): %{assertion} (%{file}:%{line})\n",
               "uk" => "порушено твердження (%{reason}?): %{assertion} (%{file}:%{line})\n"
             },
@@ -60676,6 +62151,7 @@ $CONF = {
               "nl" => "assertion mislukt (%{reason}?): %{assertion} %{file}:%{line}\n",
               "pt" => "Falha na asserção (%{reason}?): %{assertion} %{file}:%{line}\n",
               "ru" => "Нарушено утверждение (%{reason}?): %{assertion} %{file}:%{line}\n",
+              "sr" => "assertion није успео (%{reason}?): %{assertion} %{file}:%{line}\n",
               "tr" => "assertion bozuldu (%{reason}?): %{assertion} %{file}:%{line}\n",
               "uk" => "Порушення твердження (%{reason}?): %{assertion} %{file}:%{line}\n"
             },
@@ -60741,6 +62217,7 @@ $CONF = {
               "nl" => "panic: ongeldige paginagrootte %{arg1}",
               "pt" => "panic: tamanho de página inválido: %{arg1}",
               "ru" => "паника: недопустимый размер страницы %{arg1}",
+              "sr" => "паника: неисправна величина странице %{arg1}",
               "tr" => "panic: geçersiz sayfa boyutu %{arg1}",
               "uk" => "паніка: неправильний розмір сторінки %{arg1}"
             },
@@ -60790,6 +62267,7 @@ $CONF = {
               "nl" => "paniek: sysconf: %{arg2}",
               "pt" => "pânico: sysconf: %{arg2}",
               "ru" => "паника: sysconf: %{arg2}",
+              "sr" => "паника: sysconf: %{arg2}",
               "tr" => "panic: sysconf: %{arg2}",
               "uk" => "паніка: sysconf: %{arg2}"
             },
@@ -60839,6 +62317,7 @@ $CONF = {
               "nl" => "panic: sysconf: paginagrootte onbekend",
               "pt" => "pânico: sysconf: tamanho de página desconhecido",
               "ru" => "паника: sysconf: размер страницы неизвестен",
+              "sr" => "паника: sysconf: величина странице није позната",
               "tr" => "panic: sysconf: sayfa boyutu bilinmiyor",
               "uk" => "паніка: sysconf: невідомий розмір сторінки"
             },
@@ -60883,6 +62362,7 @@ $CONF = {
               "nl" => "panic: dubbel vrijgeven van geheugen",
               "pt" => "pânico: libertação duplicada",
               "ru" => "panic: повторное освобождение памяти",
+              "sr" => "паника: дуплирано ослобађање меморије",
               "tr" => "panic: yinelenen free",
               "uk" => "паніка: повторне звільнення пам'яті"
             },
@@ -60926,6 +62406,7 @@ $CONF = {
               "nl" => "panic: ongeldige free van %{arg2}, ->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}",
               "pt" => "panic: libertação inválida de %{arg2}, ->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}",
               "ru" => "Внутренняя ошибка: некорректное освобождение %{arg2}, ->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}",
+              "sr" => "паника: неисправан free за %{arg2}, ->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}",
               "tr" => "panic: %{arg2} için hatalı free, ->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}",
               "uk" => "паніка: некоректне звільнення %{arg2}, ->next->prev=%{arg3}, header=%{arg4}, ->prev->next=%{arg5}"
             },
@@ -60990,6 +62471,7 @@ $CONF = {
               "nl" => "panic: ongeldige free van %{arg2}, header->next==NULL",
               "pt" => "panic: libertação inválida de %{arg2}, header->next==NULL",
               "ru" => "Внутренняя ошибка: некорректное освобождение %{arg2}, header->next==NULL",
+              "sr" => "паника: неисправан free за %{arg2}, header->next==NULL",
               "tr" => "panic: %{arg2} için hatalı free, header->next==NULL",
               "uk" => "паніка: некоректне звільнення %{arg2}, header->next==NULL"
             },
@@ -61039,6 +62521,7 @@ $CONF = {
               "nl" => "panic: free %{arg2} uit verkeerde pool, %{arg3}!=%{arg4}",
               "pt" => "panic: libertação de %{arg2} a partir do grupo de memória errado, %{arg3}!=%{arg4}",
               "ru" => "Внутренняя ошибка: free для %{arg2} из неверного пула, %{arg3}!=%{arg4}",
+              "sr" => "паника: free %{arg2} из погрешног скупа меморије, %{arg3}!=%{arg4}",
               "tr" => "panic: yanlış havuzdan %{arg2} free edildi, %{arg3}!=%{arg4}",
               "uk" => "паніка: free для %{arg2} з неправильного пулу, %{arg3}!=%{arg4}"
             },
@@ -61098,6 +62581,7 @@ $CONF = {
               "nl" => "panic: realloc %{arg2} uit verkeerde pool, %{arg3}!=%{arg4}",
               "pt" => "panic: realloc de %{arg2} a partir do grupo de memória errado, %{arg3}!=%{arg4}",
               "ru" => "Внутренняя ошибка: realloc для %{arg2} из неверного пула, %{arg3}!=%{arg4}",
+              "sr" => "паника: realloc %{arg2} из погрешног скупа меморије, %{arg3}!=%{arg4}",
               "tr" => "panic: yanlış havuzdan %{arg2} realloc edildi, %{arg3}!=%{arg4}",
               "uk" => "паніка: realloc для %{arg2} з неправильного пулу, %{arg3}!=%{arg4}"
             },
@@ -61157,6 +62641,7 @@ $CONF = {
               "nl" => "interne fout: malloc",
               "pt" => "pânico: malloc",
               "ru" => "паника: malloc",
+              "sr" => "паника: malloc",
               "tr" => "panic: malloc",
               "uk" => "паніка: malloc"
             },
@@ -61200,6 +62685,7 @@ $CONF = {
               "nl" => "interne fout: realloc",
               "pt" => "pânico: realloc",
               "ru" => "паника: realloc",
+              "sr" => "паника: realloc",
               "tr" => "panic: realloc",
               "uk" => "паніка: realloc"
             },
@@ -61243,6 +62729,7 @@ $CONF = {
               "nl" => "panic: calloc, grootte=%{arg1}, aantal=%{arg2}",
               "pt" => "panic: calloc, tamanho=%{arg1}, contagem=%{arg2}",
               "ru" => "паника: calloc, размер=%{arg1}, количество=%{arg2}",
+              "sr" => "паника: calloc, величина=%{arg1}, број=%{arg2}",
               "tr" => "panic: calloc, boyut=%{arg1}, adet=%{arg2}",
               "uk" => "паніка: calloc, розмір=%{arg1}, кількість=%{arg2}"
             },
@@ -61297,6 +62784,7 @@ $CONF = {
               "nl" => "panic: malloc, grootte=%{arg1}",
               "pt" => "panic: malloc, tamanho=%{arg1}",
               "ru" => "паника: malloc, размер=%{arg1}",
+              "sr" => "паника: malloc, величина=%{arg1}",
               "tr" => "panic: malloc, boyut=%{arg1}",
               "uk" => "паніка: malloc, розмір=%{arg1}"
             },
@@ -61346,6 +62834,7 @@ $CONF = {
               "nl" => "panic: realloc %{pointer}, grootte=%{size}",
               "pt" => "panic: realloc %{pointer}, tamanho=%{size}",
               "ru" => "паника: realloc %{pointer} , размер=%{size}",
+              "sr" => "паника: realloc %{pointer} , величина=%{size}",
               "tr" => "panic: realloc %{pointer} , boyut=%{size}",
               "uk" => "паніка: realloc %{pointer} , size=%{size}"
             },
@@ -61401,6 +62890,7 @@ $CONF = {
               "nl" => "panic: aassign sloeg een noodzakelijke kopie van gemeenschappelijk rechterelement %{arg1} over",
               "pt" => "panic: aassign omitiu a cópia necessária de um elemento comum do lado direito %{arg1}",
               "ru" => "паника: aassign пропустил необходимое копирование общего элемента правой части %{arg1}",
+              "sr" => "паника: aassign је прескочио неопходно копирање заједничког RH елемента %{arg1}",
               "tr" => "panic: aassign, ortak RH öğesi %{arg1} için gereken kopya atlandı",
               "uk" => "паніка: aassign пропустив необхідне копіювання спільного елемента правої частини %{arg1}"
             },
@@ -61450,6 +62940,7 @@ $CONF = {
               "nl" => "panic: onverwachte lvalue-argumenten bij entersub: type/targ %{type}:%{targ}",
               "pt" => "panic: argumentos lvalue inesperados em entersub: tipo/alvo %{type}:%{targ}",
               "ru" => "паника: неожиданные аргументы entersub в контексте lvalue: type/targ %{type}:%{targ}",
+              "sr" => "паника: неочекивани аргументи лва вредности entersub: type/targ %{type}:%{targ}",
               "tr" => "panic: beklenmeyen lvalue entersub argümanları: type/targ %{type}:%{targ}",
               "uk" => "паніка: неочікувані аргументи entersub у контексті lvalue: type/targ %{type}:%{targ}"
             },
@@ -61504,6 +62995,7 @@ $CONF = {
               "nl" => "panic: onverwachte constante lvalue bij entersub via type/targ %{type}:%{targ}",
               "pt" => "panic: entrada lvalue constante inesperada em entersub via tipo/alvo %{type}:%{targ}",
               "ru" => "паника: неожиданный вход в entersub с константой в контексте lvalue через type/targ %{type}:%{targ}",
+              "sr" => "паника: неочекиван улаз константне лва вредности entersub преко type/targ %{type}:%{targ}",
               "tr" => "panic: beklenmeyen sabit lvalue entersub girdisi, type/targ üzerinden %{type}:%{targ}",
               "uk" => "паніка: неочікуваний вхід до entersub із константним lvalue через type/targ %{type}:%{targ}"
             },
@@ -61558,6 +63050,7 @@ $CONF = {
               "nl" => "panic: kan %{arg2}%{arg3} niet gebruiken omdat %{arg4} geen _tie_it definieert",
               "pt" => "pânico: não é possível utilizar %{arg2}%{arg3} porque %{arg4} não define _tie_it",
               "ru" => "паника: нельзя использовать %{arg2}%{arg3}, поскольку %{arg4} не определяет _tie_it",
+              "sr" => "паника: Није могуће користити %{arg2}%{arg3} јер %{arg4} не дефинише _tie_it",
               "tr" => "panic: %{arg4}, _tie_it tanımlamadığı için %{arg2}%{arg3} kullanılamaz",
               "uk" => "паніка: неможливо використовувати %{arg2}%{arg3}, оскільки %{arg4} не визначає _tie_it"
             },
@@ -61617,6 +63110,7 @@ $CONF = {
               "nl" => "panic: kan %{arg2}%{arg3} niet gebruiken omdat %{arg4} niet beschikbaar is",
               "pt" => "pânico: não é possível utilizar %{arg2}%{arg3} porque %{arg4} não está disponível",
               "ru" => "паника: нельзя использовать %{arg2}%{arg3}, поскольку %{arg4} недоступен",
+              "sr" => "паника: Није могуће користити %{arg2}%{arg3} јер %{arg4} није доступан",
               "tr" => "panic: %{arg4} mevcut olmadığı için %{arg2}%{arg3} kullanılamaz",
               "uk" => "паніка: неможливо використовувати %{arg2}%{arg3}, оскільки %{arg4} недоступний"
             },
@@ -61676,6 +63170,7 @@ $CONF = {
               "nl" => "panic: onverwacht numeriek grondtal %{base}",
               "pt" => "pânico: base numérica inesperada %{base}",
               "ru" => "panic: неожиданное основание системы счисления %{base}",
+              "sr" => "паника: неочекивана нумеричка основа %{base}",
               "tr" => "panic: Beklenmeyen sayısal taban: %{base}",
               "uk" => "паніка: Неочікувана основа системи числення %{base}"
             },
@@ -61725,6 +63220,7 @@ $CONF = {
               "nl" => "panic: ongeldige MRO!",
               "pt" => "pânico: MRO inválido!",
               "ru" => "panic: недопустимый MRO!",
+              "sr" => "паника: неважећи MRO!",
               "tr" => "panic: geçersiz MRO!",
               "uk" => "паніка: некоректний MRO!"
             },
@@ -61768,6 +63264,7 @@ $CONF = {
               "nl" => "panic: hv_store() mislukt in set_mro_private_data() voor '%{arg1}' %{arg2}",
               "pt" => "panic: hv_store() falhou em set_mro_private_data() para '%{arg1}': %{arg2}",
               "ru" => "паника: сбой hv_store() в set_mro_private_data() для '%{arg1}' %{arg2}",
+              "sr" => "паника: hv_store() није успео у set_mro_private_data() за „%{arg1}“ %{arg2}",
               "tr" => "panic: '%{arg1}' için set_mro_private_data() içindeki hv_store() başarısız oldu: %{arg2}",
               "uk" => "паніка: збій hv_store() у set_mro_private_data() для '%{arg1}' %{arg2}"
             },
@@ -61832,6 +63329,7 @@ $CONF = {
               "nl" => "panic: hv_store() mislukt in mro_register() voor '%{arg1}' %{arg2}",
               "pt" => "panic: hv_store() falhou em mro_register() para '%{arg1}': %{arg2}",
               "ru" => "паника: сбой hv_store() в mro_register() для '%{arg1}' %{arg2}",
+              "sr" => "паника: hv_store() није успео у mro_register() за „%{arg1}“ %{arg2}",
               "tr" => "panic: '%{arg1}' için mro_register() içindeki hv_store() başarısız oldu: %{arg2}",
               "uk" => "паніка: збій hv_store() у mro_register() для '%{arg1}' %{arg2}"
             },
@@ -61896,6 +63394,7 @@ $CONF = {
               "nl" => "panic: geen veldindeling voor rol %{rolestash}",
               "pt" => "panic: não existe disposição dos campos para o papel %{rolestash}",
               "ru" => "Внутренняя ошибка: отсутствует схема размещения полей для роли %{rolestash}",
+              "sr" => "паника: недостаје распоред поља за улогу %{rolestash}",
               "tr" => "panic: %{rolestash} rolü için alan düzeni yok",
               "uk" => "паніка: відсутня схема розміщення полів для ролі %{rolestash}"
             },
@@ -61946,6 +63445,7 @@ $CONF = {
               "nl" => "panic: rol %{rolestash} heeft geen proto-rol",
               "pt" => "panic: o papel %{rolestash} não tem um proto-papel",
               "ru" => "паника: у роли %{rolestash} нет протороли",
+              "sr" => "паника: улога %{rolestash} нема прототип улоге",
               "tr" => "panic: %{rolestash} rolünün proto-role'u yok",
               "uk" => "паніка: роль %{rolestash} не має проторолі"
             },
@@ -61996,6 +63496,7 @@ $CONF = {
               "nl" => "panic: onbekende builtin_const-waarde %{arg1}",
               "pt" => "panic: valor builtin_const não reconhecido: %{arg1}",
               "ru" => "Внутренняя ошибка: неизвестное значение builtin_const %{arg1}",
+              "sr" => "паника: непрепозната вредност builtin_const: %{arg1}",
               "tr" => "panic: tanınmayan builtin_const değeri: %{arg1}",
               "uk" => "паніка: нерозпізнане значення builtin_const %{arg1}"
             },
@@ -62046,6 +63547,7 @@ $CONF = {
               "nl" => "panic: niet-afgehandelde opcode %{arg1} voor xs_builtin_func1_scalar()",
               "pt" => "pânico: opcode %{arg1} não tratado em xs_builtin_func1_scalar()",
               "ru" => "panic: необработанный код операции %{arg1} для xs_builtin_func1_scalar()",
+              "sr" => "паника: необрађени опкод %{arg1} за xs_builtin_func1_scalar()",
               "tr" => "panic: xs_builtin_func1_scalar() için işlenmeyen opcode: %{arg1}",
               "uk" => "паніка: необроблений код операції %{arg1} для xs_builtin_func1_scalar()"
             },
@@ -62096,6 +63598,7 @@ $CONF = {
               "nl" => "panic: niet-afgehandelde opcode %{arg1} voor xs_builtin_func1_void()",
               "pt" => "pânico: opcode %{arg1} não tratado em xs_builtin_func1_void()",
               "ru" => "panic: необработанный код операции %{arg1} для xs_builtin_func1_void()",
+              "sr" => "паника: необрађени опкод %{arg1} за xs_builtin_func1_void()",
               "tr" => "panic: xs_builtin_func1_void() için işlenmeyen opcode: %{arg1}",
               "uk" => "panic: необроблений код операції %{arg1} для xs_builtin_func1_void()"
             },
@@ -62146,6 +63649,7 @@ $CONF = {
               "nl" => "panic: gen_constant_list JMPENV_PUSH gaf %{arg2} terug",
               "pt" => "pânico: gen_constant_list JMPENV_PUSH devolveu %{arg2}",
               "ru" => "паника: в gen_constant_list макрос JMPENV_PUSH вернул %{arg2}",
+              "sr" => "паника: gen_constant_list JMPENV_PUSH је вратио %{arg2}",
               "tr" => "panic: gen_constant_list içindeki JMPENV_PUSH %{arg2} döndürdü",
               "uk" => "паніка: у gen_constant_list JMPENV_PUSH повернув %{arg2}"
             },
@@ -62196,6 +63700,7 @@ $CONF = {
               "nl" => "panic: fold_constants JMPENV_PUSH gaf %{arg1} terug",
               "pt" => "pânico: fold_constants JMPENV_PUSH devolveu %{arg1}",
               "ru" => "паника: в fold_constants макрос JMPENV_PUSH вернул %{arg1}",
+              "sr" => "паника: fold_constants JMPENV_PUSH је вратио %{arg1}",
               "tr" => "panic: fold_constants içindeki JMPENV_PUSH %{arg1} döndürdü",
               "uk" => "паніка: у fold_constants JMPENV_PUSH повернув %{arg1}"
             },
@@ -62246,6 +63751,7 @@ $CONF = {
               "nl" => "panic: op_contextualize ongeldige context %{arg2}",
               "pt" => "panic: contexto inválido em op_contextualize: %{arg2}",
               "ru" => "паника: недопустимый контекст %{arg2} в op_contextualize",
+              "sr" => "паника: op_contextualize, неисправан контекст %{arg2}",
               "tr" => "panic: op_contextualize geçersiz bağlam: %{arg2}",
               "uk" => "паніка: неправильний контекст %{arg2} у op_contextualize"
             },
@@ -62295,6 +63801,7 @@ $CONF = {
               "nl" => "panic: custom_op_get_field(): ongeldig veld %{arg2}\n",
               "pt" => "pânico: custom_op_get_field(): campo inválido %{arg2}\n",
               "ru" => "паника: custom_op_get_field(): недопустимое поле %{arg2}\n",
+              "sr" => "паника: custom_op_get_field(): неважеће поље %{arg2}\n",
               "tr" => "panic: custom_op_get_field(): geçersiz alan %{arg2}\n",
               "uk" => "паніка: custom_op_get_field(): неприпустиме поле %{arg2}\n"
             },
@@ -62344,6 +63851,7 @@ $CONF = {
               "nl" => "panic: kan aangepaste OP %{arg2} niet registreren",
               "pt" => "pânico: não foi possível registar o OP personalizado %{arg2}",
               "ru" => "паника: не удалось зарегистрировать пользовательский OP %{arg2}",
+              "sr" => "паника: није могуће регистровати прилагођени OP %{arg2}",
               "tr" => "panic: özel OP %{arg2} kaydedilemedi",
               "uk" => "паніка: не вдалося зареєструвати користувацький OP %{arg2}"
             },
@@ -62394,6 +63902,7 @@ $CONF = {
               "nl" => "panic: vrijgegeven op 0x%{arg1} aangeroepen\n",
               "pt" => "panic: operação libertada 0x%{arg1} foi executada\n",
               "ru" => "Внутренняя ошибка: вызвана освобождённая операция 0x%{arg1}\n",
+              "sr" => "паника: позван је ослобођени op 0x%{arg1}\n",
               "tr" => "panic: serbest bırakılmış op 0x%{arg1} çağrıldı\n",
               "uk" => "паніка: викликано звільнений op 0x%{arg1}\n"
             },
@@ -62443,6 +63952,7 @@ $CONF = {
               "nl" => "panic: niet-geïmplementeerde op %{arg1} (#%{arg2}) aangeroepen",
               "pt" => "panic: foi chamada a operação não implementada %{arg1} (n.º %{arg2})",
               "ru" => "Внутренняя ошибка: вызвана нереализованная операция %{arg1} (#%{arg2})",
+              "sr" => "паника: позвана је неимплементирана операција %{arg1} (#%{arg2})",
               "tr" => "panic: uygulanmamış op %{arg1} (#%{arg2}) çağrıldı",
               "uk" => "паніка: викликано нереалізований op %{arg1} (#%{arg2})"
             },
@@ -62497,6 +64007,7 @@ $CONF = {
               "nl" => "panic: ongeldige flagbits 0x%{arg1} in cop_store_label",
               "pt" => "panic: bits de sinalização inválidos em cop_store_label: 0x%{arg1}",
               "ru" => "паника: недопустимые биты флагов 0x%{arg1} в cop_store_label",
+              "sr" => "паника: cop_store_label недозвољени битови заставица 0x%{arg1}",
               "tr" => "panic: cop_store_label için geçersiz bayrak bitleri: 0x%{arg1}",
               "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у cop_store_label"
             },
@@ -62546,6 +64057,7 @@ $CONF = {
               "nl" => "panic: op_sibling_splice(): NULL-parent",
               "pt" => "pânico: op_sibling_splice(): pai NULL",
               "ru" => "panic: op_sibling_splice(): родительский узел равен NULL",
+              "sr" => "паника: op_sibling_splice(): недостаје родитељски чвор",
               "tr" => "panic: op_sibling_splice(): NULL üst düğüm",
               "uk" => "паніка: op_sibling_splice(): батьківський вузол — NULL"
             },
@@ -62590,6 +64102,7 @@ $CONF = {
               "nl" => "panic: tekenreeks is korter dan opgegeven, aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}",
               "pt" => "pânico: cadeia mais curta do que o indicado, aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}",
               "ru" => "Внутренняя ошибка: строка короче заявленной длины, aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}",
+              "sr" => "паника: ниска је краћа од наведене дужине, aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}",
               "tr" => "panic: dize bildirilenden kısa, aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}",
               "uk" => "паніка: рядок коротший за заявлену довжину, aptr=%{arg2}, aend=%{arg3}, buffer=%{arg4}, todo=%{arg5}"
             },
@@ -62655,6 +64168,7 @@ $CONF = {
               "nl" => "panic: markeringen voorbij het einde van de tekenreeks, m=%{arg2}, marks=%{arg3}, level=%{arg4}",
               "pt" => "pânico: marcas para além do fim da cadeia, m=%{arg2}, marks=%{arg3}, level=%{arg4}",
               "ru" => "Внутренняя ошибка: метки за концом строки, m=%{arg2}, marks=%{arg3}, level=%{arg4}",
+              "sr" => "паника: marks beyond string end, m=%{arg2}, marks=%{arg3}, level=%{arg4}",
               "tr" => "panic: işaretler dizenin sonunu aşıyor, m=%{arg2}, marks=%{arg3}, level=%{arg4}",
               "uk" => "паніка: marks за межами кінця рядка, m=%{arg2}, marks=%{arg3}, level=%{arg4}"
             },
@@ -62715,6 +64229,7 @@ $CONF = {
               "nl" => "panic: voorspelde UTF-8-lengte niet beschikbaar voor '%{arg2}', aptr=%{arg3} end=%{arg4} cur=%{arg5}, fromlen=%{arg6}",
               "pt" => "pânico: comprimento UTF-8 previsto indisponível para '%{arg2}', aptr=%{arg3} end=%{arg4} cur=%{arg5}, fromlen=%{arg6}",
               "ru" => "Внутренняя ошибка: для '%{arg2}' недоступен предсказанный объём данных utf8, aptr=%{arg3} end=%{arg4} cur=%{arg5}, fromlen=%{arg6}",
+              "sr" => "паника: предвиђена UTF-8 дужина није доступна, за '%{arg2}', aptr=%{arg3} end=%{arg4} cur=%{arg5}, fromlen=%{arg6}",
               "tr" => "panic: tahmin edilen UTF-8 uzunluğu mevcut değil; '%{arg2}' için aptr=%{arg3}, end=%{arg4}, cur=%{arg5}, fromlen=%{arg6}",
               "uk" => "паніка: недостатньо даних для передбаченої довжини utf8 для '%{arg2}', aptr=%{arg3} end=%{arg4} cur=%{arg5}, fromlen=%{arg6}"
             },
@@ -62786,6 +64301,7 @@ $CONF = {
               "nl" => "panic: geen pad in cv_clone",
               "pt" => "pânico: ausência de pad em cv_clone",
               "ru" => "panic: отсутствует pad в cv_clone",
+              "sr" => "паника: нема pad-а у cv_clone",
               "tr" => "panic: cv_clone içinde pad yok",
               "uk" => "паніка: відсутній pad у cv_clone"
             },
@@ -62831,6 +64347,7 @@ $CONF = {
               "nl" => "panic: ongeldige flagbits 0x%{arg1} in pad_add_name_pvn",
               "pt" => "panic: bits de sinalização inválidos em pad_add_name_pvn: 0x%{arg1}",
               "ru" => "паника: недопустимые биты флагов 0x%{arg1} в pad_add_name_pvn",
+              "sr" => "паника: pad_add_name_pvn недозвољени битови заставица 0x%{arg1}",
               "tr" => "panic: pad_add_name_pvn için geçersiz bayrak bitleri: 0x%{arg1}",
               "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у pad_add_name_pvn"
             },
@@ -62882,6 +64399,7 @@ $CONF = {
               "nl" => "panic: ongeldige flagbits 0x%{arg1} in pad_findmy_pvn",
               "pt" => "panic: bits de sinalização inválidos em pad_findmy_pvn: 0x%{arg1}",
               "ru" => "паника: недопустимые биты флагов 0x%{arg1} в pad_findmy_pvn",
+              "sr" => "паника: pad_findmy_pvn недозвољени битови заставица 0x%{arg1}",
               "tr" => "panic: pad_findmy_pvn için geçersiz bayrak bitleri: 0x%{arg1}",
               "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у pad_findmy_pvn"
             },
@@ -62933,6 +64451,7 @@ $CONF = {
               "nl" => "panic: allocmy ongeldige flagbits 0x%{arg1}",
               "pt" => "panic: bits de sinalização inválidos em allocmy: 0x%{arg1}",
               "ru" => "паника: недопустимые биты флагов 0x%{arg1} в allocmy",
+              "sr" => "паника: недозвољени битови заставица за allocmy: 0x%{arg1}",
               "tr" => "panic: allocmy için geçersiz bayrak bitleri: 0x%{arg1}",
               "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у allocmy"
             },
@@ -62984,6 +64503,7 @@ $CONF = {
               "nl" => "panic: ongeldige flagbits 0x%{arg1} in pad_findlex",
               "pt" => "panic: bits de sinalização inválidos em pad_findlex: 0x%{arg1}",
               "ru" => "паника: недопустимые биты флагов 0x%{arg1} в pad_findlex",
+              "sr" => "паника: pad_findlex недозвољени битови заставица 0x%{arg1}",
               "tr" => "panic: pad_findlex için geçersiz bayrak bitleri: 0x%{arg1}",
               "uk" => "паніка: недопустимі біти прапорців 0x%{arg1} у pad_findlex"
             },
@@ -63035,6 +64555,7 @@ $CONF = {
               "nl" => "panic: pad-offset %{offset} buiten bereik (%{low}-%{high})",
               "pt" => "pânico: deslocamento de pad %{offset} fora do intervalo (%{low}-%{high})",
               "ru" => "паника: смещение в pad %{offset} вне диапазона (%{low}-%{high})",
+              "sr" => "паника: померај pad-а %{offset} је ван опсега (%{low}-%{high})",
               "tr" => "panic: pad ofseti %{offset} aralık dışında (%{low}-%{high})",
               "uk" => "паніка: зміщення %{offset} у pad поза допустимим діапазоном (%{low}-%{high})"
             },
@@ -63096,6 +64617,7 @@ $CONF = {
               "nl" => "paniek: pad_sv po",
               "pt" => "pânico: pad_sv po",
               "ru" => "паника: pad_sv po",
+              "sr" => "паника: pad_sv po",
               "tr" => "panic: pad_sv po",
               "uk" => "паніка: pad_sv po"
             },
@@ -63141,6 +64663,7 @@ $CONF = {
               "nl" => "paniek: pad_free po",
               "pt" => "pânico: pad_free po",
               "ru" => "паника: pad_free po",
+              "sr" => "паника: pad_free po",
               "tr" => "panic: pad_free po",
               "uk" => "паніка: pad_free po"
             },
@@ -63186,6 +64709,7 @@ $CONF = {
               "nl" => "paniek: pad_swipe po=%{arg2}, fill=%{arg3}",
               "pt" => "pânico: pad_swipe po=%{arg2}, fill=%{arg3}",
               "ru" => "паника: pad_swipe po=%{arg2}, fill=%{arg3}",
+              "sr" => "паника: pad_swipe po=%{arg2}, fill=%{arg3}",
               "tr" => "panic: pad_swipe po=%{arg2}, fill=%{arg3}",
               "uk" => "паніка: pad_swipe po=%{arg2}, fill=%{arg3}"
             },
@@ -63242,6 +64766,7 @@ $CONF = {
               "nl" => "panic: pad-offset %{offset} buiten bereik",
               "pt" => "pânico: deslocamento de pad %{offset} fora do intervalo",
               "ru" => "паника: смещение в pad %{offset} вне диапазона",
+              "sr" => "паника: померај pad-а %{offset} је ван опсега",
               "tr" => "panic: pad ofseti %{offset} aralık dışında",
               "uk" => "паніка: зміщення %{offset} у pad поза допустимим діапазоном"
             },
@@ -63293,6 +64818,7 @@ $CONF = {
               "nl" => "panic: ongeldige pad in %{arg1}: 0x%{arg2}[0x%{arg3}]",
               "pt" => "panic: pad inválido em %{arg1}: 0x%{arg2}[0x%{arg3}]",
               "ru" => "паника: некорректный pad в %{arg1}: 0x%{arg2}[0x%{arg3}]",
+              "sr" => "паника: неисправан pad у %{arg1}: 0x%{arg2}[0x%{arg3}]",
               "tr" => "panic: %{arg1} içinde geçersiz pad: 0x%{arg2}[0x%{arg3}]",
               "uk" => "паніка: некоректний pad у %{arg1}: 0x%{arg2}[0x%{arg3}]"
             },
@@ -63354,6 +64880,7 @@ $CONF = {
               "nl" => "interne fout: pad_alloc, %{arg1}!=%{arg2}",
               "pt" => "pânico: pad_alloc, %{arg1}!=%{arg2}",
               "ru" => "паника: pad_alloc, %{arg1}!=%{arg2}",
+              "sr" => "паника: pad_alloc, %{arg1}!=%{arg2}",
               "tr" => "panic: pad_alloc, %{arg1}!=%{arg2}",
               "uk" => "паніка: pad_alloc, %{arg1}!=%{arg2}"
             },
@@ -63410,6 +64937,7 @@ $CONF = {
               "nl" => "panic: ongeldige pad in %{arg1}: 0x%{arg2}[0x%{arg3}]",
               "pt" => "panic: pad ilegal em %{arg1}: 0x%{arg2}[0x%{arg3}]",
               "ru" => "паника: недопустимый pad в %{arg1}: 0x%{arg2}[0x%{arg3}]",
+              "sr" => "паника: неисправан pad у %{arg1}: 0x%{arg2}[0x%{arg3}]",
               "tr" => "panic: %{arg1} içinde geçersiz pad: 0x%{arg2}[0x%{arg3}]",
               "uk" => "паніка: неприпустимий pad у %{arg1}: 0x%{arg2}[0x%{arg3}]"
             },
@@ -63471,6 +64999,7 @@ $CONF = {
               "nl" => "interne fout: pad_free curpad, %{arg1}!=%{arg2}",
               "pt" => "pânico: pad_free curpad, %{arg1}!=%{arg2}",
               "ru" => "паника: pad_free curpad, %{arg1}!=%{arg2}",
+              "sr" => "паника: pad_free curpad, %{arg1}!=%{arg2}",
               "tr" => "panic: pad_free curpad, %{arg1}!=%{arg2}",
               "uk" => "паніка: pad_free curpad, %{arg1}!=%{arg2}"
             },
@@ -63527,6 +65056,7 @@ $CONF = {
               "nl" => "interne fout: pad_reset curpad, %{arg1}!=%{arg2}",
               "pt" => "pânico: pad_reset curpad, %{arg1}!=%{arg2}",
               "ru" => "паника: pad_reset curpad, %{arg1}!=%{arg2}",
+              "sr" => "паника: pad_reset curpad, %{arg1}!=%{arg2}",
               "tr" => "panic: pad_reset curpad, %{arg1}!=%{arg2}",
               "uk" => "паніка: pad_reset curpad, %{arg1}!=%{arg2}"
             },
@@ -63583,6 +65113,7 @@ $CONF = {
               "nl" => "interne fout: pad_swipe curpad, %{arg1}!=%{arg2}",
               "pt" => "pânico: pad_swipe curpad, %{arg1}!=%{arg2}",
               "ru" => "паника: pad_swipe curpad, %{arg1}!=%{arg2}",
+              "sr" => "паника: pad_swipe curpad, %{arg1}!=%{arg2}",
               "tr" => "panic: pad_swipe curpad, %{arg1}!=%{arg2}",
               "uk" => "паніка: pad_swipe curpad, %{arg1}!=%{arg2}"
             },
@@ -63636,6 +65167,7 @@ $CONF = {
               "nl" => "panic: regatom gaf een fout terug, vlaggen: %{arg1} in regex m/%{arg2}%{arg3}/",
               "pt" => "panic: regatom devolveu uma falha, sinalizadores: %{arg1}, na expressão regular m/%{arg2}%{arg3}/",
               "ru" => "паника: regatom вернула признак неудачи, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
+              "sr" => "паника: regatom је вратио неуспех, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regatom başarısız oldu, bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
               "uk" => "паніка: regatom повернула ознаку невдачі, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
             },
@@ -63710,6 +65242,7 @@ $CONF = {
               "nl" => "panic: regbranch gaf een fout terug, vlaggen: %{arg1} in regex m/%{arg2}%{arg3}/",
               "pt" => "panic: regbranch devolveu uma falha, sinalizadores: %{arg1}, na expressão regular m/%{arg2}%{arg3}/",
               "ru" => "паника: regbranch вернула признак неудачи, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
+              "sr" => "паника: regbranch је вратио неуспех, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regbranch başarısız oldu, bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
               "uk" => "паніка: regbranch повернула ознаку невдачі, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
             },
@@ -63784,6 +65317,7 @@ $CONF = {
               "nl" => "panic: regclass gaf een fout terug aan regatom, vlaggen: %{arg1} in regex m/%{arg2}%{arg3}/",
               "pt" => "panic: regclass devolveu uma falha a regatom, sinalizadores: %{arg1}, na expressão regular m/%{arg2}%{arg3}/",
               "ru" => "паника: regclass вернула признак неудачи в regatom, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
+              "sr" => "паника: regclass је вратио неуспех функцији regatom, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regclass, regatom'a başarısızlık döndürdü; bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
               "uk" => "паніка: regclass повернула ознаку невдачі до regatom, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
             },
@@ -63858,6 +65392,7 @@ $CONF = {
               "nl" => "panic: regclass gaf een fout terug aan handle_sets, vlaggen: %{arg1} in regex m/%{arg2}%{arg3}/",
               "pt" => "panic: regclass devolveu uma falha a handle_sets, sinalizadores: %{arg1}, na expressão regular m/%{arg2}%{arg3}/",
               "ru" => "паника: regclass вернул признак сбоя в handle_sets, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
+              "sr" => "паника: regclass није успео у функцији handle_sets, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regclass, handle_sets'i işleyemedi; bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
               "uk" => "паніка: regclass повернула ознаку невдачі до handle_sets, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
             },
@@ -63932,6 +65467,7 @@ $CONF = {
               "nl" => "panic: beschadigde regexp-opcode %{arg1} > %{arg2} in regex m/%{arg3}%{arg4}/",
               "pt" => "panic: opcode de expressão regular corrompido %{arg1} > %{arg2} na expressão regular m/%{arg3}%{arg4}/",
               "ru" => "паника: повреждённый код операции регулярного выражения %{arg1} > %{arg2} в регулярном выражении m/%{arg3}%{arg4}/",
+              "sr" => "паника: оштећен опкод регуларног израза %{arg1} > %{arg2} у регуларном изразу m/%{arg3}%{arg4}/",
               "tr" => "panic: bozuk regexp opcode'u %{arg1} > %{arg2}, regex m/%{arg3}%{arg4}/",
               "uk" => "паніка: пошкоджений код операції регулярного виразу %{arg1} > %{arg2} у регулярному виразі m/%{arg3}%{arg4}/"
             },
@@ -64010,6 +65546,7 @@ $CONF = {
               "nl" => "panic: %{file}: %{line}: negatieve offset: %{offset} bij uitvoer van melding voor patroon %{pattern}",
               "pt" => "panic: %{file}: %{line}: deslocamento negativo %{offset} ao tentar apresentar a mensagem para o padrão %{pattern}",
               "ru" => "паника: %{file}: %{line}: отрицательное смещение:  %{offset} при попытке вывести сообщение для  шаблона %{pattern}",
+              "sr" => "паника: %{file}: %{line}: негативан помак:  %{offset} при покушају исписа поруке за  образац %{pattern}",
               "tr" => "panic: %{file}: %{line}: negatif ofset:  %{offset};  pattern %{pattern} için ileti oluşturulmaya çalışılıyor",
               "uk" => "паніка: %{file}: %{line}: від'ємне зміщення:  %{offset} під час спроби вивести повідомлення для  шаблону %{pattern}"
             },
@@ -64084,6 +65621,7 @@ $CONF = {
               "nl" => "panic! %{file}: %{line}: geprobeerd een waarschuwing te geven terwijl die niet werd verwacht op '%{location}'",
               "pt" => "panic! %{file}: %{line}: tentativa de emitir um aviso inesperado em '%{location}'",
               "ru" => "паника! %{file}: %{line}: Попытка выдать предупреждение там, где оно не ожидалось: '%{location}'",
+              "sr" => "паника! %{file}: %{line}: Покушај издавања упозорења иако се ниједно није очекивало на '%{location}'",
               "tr" => "panic! %{file}: %{line}: '%{location}' konumunda beklenmeyen bir uyarı üretilmeye çalışıldı",
               "uk" => "паніка! %{file}: %{line}: Спроба видати попередження там, де жодного не очікувалося, у позиції '%{location}'"
             },
@@ -64142,6 +65680,7 @@ $CONF = {
               "nl" => "panic: grok_bslash_N zette NEED_UTF8 in regex m/%{arg1}%{arg2}/",
               "pt" => "panic: grok_bslash_N definiu NEED_UTF8 na expressão regular m/%{arg1}%{arg2}/",
               "ru" => "паника: grok_bslash_N установила NEED_UTF8 в регулярном выражении m/%{arg1}%{arg2}/",
+              "sr" => "паника: grok_bslash_N је поставио NEED_UTF8 у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "panic: grok_bslash_N, regex m/%{arg1}%{arg2}/ içinde NEED_UTF8 ayarladı",
               "uk" => "паніка: grok_bslash_N установила NEED_UTF8 у регулярному виразі m/%{arg1}%{arg2}/"
             },
@@ -64210,6 +65749,7 @@ $CONF = {
               "nl" => "panic: reg gaf een fout terug aan grok_bslash_N, vlaggen: %{arg1} in regex m/%{arg2}%{arg3}/",
               "pt" => "panic: reg devolveu uma falha a grok_bslash_N, sinalizadores: %{arg1}, na expressão regular m/%{arg2}%{arg3}/",
               "ru" => "паника: reg вернула признак неудачи в grok_bslash_N, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
+              "sr" => "паника: reg је вратио неуспех функцији grok_bslash_N, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: reg, grok_bslash_N'e başarısızlık döndürdü; bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
               "uk" => "паніка: reg повернула ознаку невдачі до grok_bslash_N, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
             },
@@ -64284,6 +65824,7 @@ $CONF = {
               "nl" => "panic: reeks (?{...}): geen codeblok gevonden\n in regex m/%{arg1}%{arg2}/",
               "pt" => "panic: sequência (?{...}): nenhum bloco de código encontrado\n na expressão regular m/%{arg1}%{arg2}/",
               "ru" => "паника: последовательность (?{...}): блок кода не найден\n в регулярном выражении m/%{arg1}%{arg2}/",
+              "sr" => "паника: Низ (?{...}): блок кода није пронађен\n у регуларном изразу m/%{arg1}%{arg2}/",
               "tr" => "panic: Sıra (?{...}): kod bloğu bulunamadı\n regex m/%{arg1}%{arg2}/ içinde",
               "uk" => "паніка: послідовність (?{...}): блок коду не знайдено\n у регулярному виразі m/%{arg1}%{arg2}/"
             },
@@ -64352,6 +65893,7 @@ $CONF = {
               "nl" => "panic: reg gaf een fout terug aan regatom, vlaggen: %{arg1} in regex m/%{arg2}%{arg3}/",
               "pt" => "panic: reg devolveu uma falha a regatom, sinalizadores: %{arg1}, na expressão regular m/%{arg2}%{arg3}/",
               "ru" => "паника: reg вернула признак неудачи в regatom, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
+              "sr" => "паника: reg је вратио неуспех функцији regatom, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: reg, regatom'a başarısızlık döndürdü; bayraklar: %{arg1}, regex m/%{arg2}%{arg3}/",
               "uk" => "паніка: reg повернула ознаку невдачі до regatom, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
             },
@@ -64426,6 +65968,7 @@ $CONF = {
               "nl" => "panic: loc_correspondence[%{arg1}] is 0 in reguliere expressie m/%{arg2}%{arg3}/",
               "pt" => "panic: loc_correspondence[%{arg1}] é 0 na expressão regular m/%{arg2}%{arg3}/",
               "ru" => "паника: loc_correspondence[%{arg1}] равно 0 в регулярном выражении m/%{arg2}%{arg3}/",
+              "sr" => "паника: loc_correspondence[%{arg1}] је 0 у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regex m/%{arg2}%{arg3}/ içinde loc_correspondence[%{arg1}] değeri 0",
               "uk" => "паніка: loc_correspondence[%{arg1}] дорівнює 0 у регулярному виразі m/%{arg2}%{arg3}/"
             },
@@ -64499,6 +66042,7 @@ $CONF = {
               "nl" => "panic: geheugentoewijzing voor paren_name-hashelement mislukt",
               "pt" => "pânico: falha ao alocar elemento de hash paren_name",
               "ru" => "panic: не удалось выделить память для элемента хеша paren_name",
+              "sr" => "паника: није успела додела меморије за елемент хеша paren_name",
               "tr" => "panic: paren_name hash öğesi için bellek ayırma başarısız oldu",
               "uk" => "паніка: не вдалося виділити пам'ять для елемента хешу paren_name"
             },
@@ -64541,6 +66085,7 @@ $CONF = {
               "nl" => "panic: geen svname in reg_scan_name",
               "pt" => "pânico: ausência de svname em reg_scan_name",
               "ru" => "panic: отсутствует svname в reg_scan_name",
+              "sr" => "паника: нема svname у reg_scan_name",
               "tr" => "panic: reg_scan_name içinde svname yok",
               "uk" => "паніка: відсутнє svname у reg_scan_name"
             },
@@ -64583,6 +66128,7 @@ $CONF = {
               "nl" => "panic: ongeldige flag %{arg2} in reg_scan_name",
               "pt" => "panic: sinalizador inválido %{arg2} em reg_scan_name",
               "ru" => "паника: недопустимый флаг %{arg2} в reg_scan_name",
+              "sr" => "паника: неисправна заставица %{arg2} у reg_scan_name",
               "tr" => "panic: reg_scan_name içinde hatalı bayrak %{arg2}",
               "uk" => "паніка: неправильний прапорець %{arg2} у reg_scan_name"
             },
@@ -64631,6 +66177,7 @@ $CONF = {
               "nl" => "panic: reg_scan_name gaf NULL terug",
               "pt" => "pânico: reg_scan_name devolveu NULL",
               "ru" => "panic: reg_scan_name вернула NULL",
+              "sr" => "паника: reg_scan_name је вратио NULL",
               "tr" => "panic: reg_scan_name NULL döndürdü",
               "uk" => "паніка: reg_scan_name повернула NULL"
             },
@@ -64673,6 +66220,7 @@ $CONF = {
               "nl" => "panic: regpiece gaf een fout terug, vlaggen: %{arg1} in regex m/%{arg2}%{arg3}/",
               "pt" => "panic: regpiece devolveu uma falha, sinalizadores: %{arg1}, na expressão regular m/%{arg2}%{arg3}/",
               "ru" => "паника: regpiece вернула признак неудачи, флаги: %{arg1} в регулярном выражении m/%{arg2}%{arg3}/",
+              "sr" => "паника: regpiece је вратио неуспех, заставице: %{arg1} у регуларном изразу m/%{arg2}%{arg3}/",
               "tr" => "panic: regpiece başarısız oldu; flags: %{arg1}, regex m/%{arg2}%{arg3}/",
               "uk" => "паніка: regpiece повернула ознаку невдачі, прапорці: %{arg1} у регулярному виразі m/%{arg2}%{arg3}/"
             },
@@ -64747,6 +66295,7 @@ $CONF = {
               "nl" => "panic: %{arg2}: %{arg3}: onverwachte bewerking %{arg4}",
               "pt" => "pânico: %{arg2}: %{arg3}: operação inesperada %{arg4}",
               "ru" => "Внутренняя ошибка: %{arg2}: %{arg3}: неожиданная операция %{arg4}",
+              "sr" => "паника: %{arg2}: %{arg3}: Неочекивана операција %{arg4}",
               "tr" => "panic: %{arg2}: %{arg3}: Beklenmeyen işlem %{arg4}",
               "uk" => "паніка: %{arg2}: %{arg3}: Неочікувана операція %{arg4}"
             },
@@ -64805,6 +66354,7 @@ $CONF = {
               "nl" => "panic: reg gaf mislukking terug aan re_op_compile, flags: %{flags}",
               "pt" => "panic: reg devolveu uma falha a re_op_compile, sinalizadores: %{flags}",
               "ru" => "паника: reg вернула признак неудачи в re_op_compile, флаги: %{flags}",
+              "sr" => "паника: reg је вратио неуспех функцији re_op_compile, flags: %{flags}",
               "tr" => "panic: reg, re_op_compile için başarısızlık döndürdü; flags: %{flags}",
               "uk" => "паніка: reg повернула ознаку невдачі до re_op_compile, прапорці: %{flags}"
             },
@@ -64853,6 +66403,7 @@ $CONF = {
               "nl" => "panic: regnode %{arg2} had vóór optimalisatie opgelost moeten zijn",
               "pt" => "pânico: o nó de expressão regular %{arg2} devia ser resolvido antes da otimização",
               "ru" => "Внутренняя ошибка: узел regnode %{arg2} должен быть разрешён до оптимизации",
+              "sr" => "паника: %{arg2} regnode мора бити разрешен пре оптимизације",
               "tr" => "panic: %{arg2} regnode'u optimizasyondan önce çözümlenmiş olmalı",
               "uk" => "паніка: вузол regnode %{arg2} має бути розв'язаний до оптимізації"
             },
@@ -64901,6 +66452,7 @@ $CONF = {
               "nl" => "panic: onverwachte eenvoudige REx-opcode %{arg2}",
               "pt" => "pânico: código de operação REx simples inesperado %{arg2}",
               "ru" => "Внутренняя ошибка: неожиданный код простой операции REx %{arg2}",
+              "sr" => "паника: неочекиван једноставан REx опкод %{arg2}",
               "tr" => "panic: beklenmeyen basit REx opcode %{arg2}",
               "uk" => "паніка: неочікуваний простий код операції REx %{arg2}"
             },
@@ -64949,6 +66501,7 @@ $CONF = {
               "nl" => "panic: onverwachte variabele REx-opcode %{arg2}",
               "pt" => "pânico: código de operação REx variável inesperado %{arg2}",
               "ru" => "Внутренняя ошибка: неожиданный код операции REx переменной длины %{arg2}",
+              "sr" => "паника: неочекиван променљив REx опкод %{arg2}",
               "tr" => "panic: beklenmeyen değişken REx opcode %{arg2}",
               "uk" => "паніка: неочікуваний код операції REx зі змінною довжиною %{arg2}"
             },
@@ -64997,6 +66550,7 @@ $CONF = {
               "nl" => "panic! Bij opbouwen van trie: onbekend knooptype %{arg1} %{arg2}",
               "pt" => "pânico! Tipo de nó desconhecido ao construir a trie: %{arg1} %{arg2}",
               "ru" => "паника! При построении префиксного дерева обнаружен неизвестный тип узла %{arg1} %{arg2}",
+              "sr" => "panic! При конструкцији trie-а: непознат тип чвора %{arg1} %{arg2}",
               "tr" => "panic! Trie oluşturulurken bilinmeyen düğüm türü: %{arg1} %{arg2}",
               "uk" => "паніка! Під час побудови префіксного дерева виявлено невідомий тип вузла %{arg1} %{arg2}"
             },
@@ -65050,6 +66604,7 @@ $CONF = {
               "nl" => "panic: re_dup_guts onbekende datacode '%{arg2}'",
               "pt" => "pânico: código de dados desconhecido '%{arg2}' em re_dup_guts",
               "ru" => "Внутренняя ошибка: неизвестный код данных '%{arg2}' в re_dup_guts",
+              "sr" => "паника: re_dup_guts unknown data code '%{arg2}'",
               "tr" => "panic: re_dup_guts bilinmeyen veri kodu '%{arg2}'",
               "uk" => "паніка: невідомий код даних '%{arg2}' у re_dup_guts"
             },
@@ -65098,6 +66653,7 @@ $CONF = {
               "nl" => "panic: beschadigde regexp-opcode %{arg2} > %{arg3}",
               "pt" => "pânico: código de operação de expressão regular corrompido %{arg2} > %{arg3}",
               "ru" => "Внутренняя ошибка: повреждённый код операции регулярного выражения %{arg2} > %{arg3}",
+              "sr" => "паника: corrupted regexp opcode %{arg2} > %{arg3}",
               "tr" => "panic: bozuk regexp opcode'u %{arg2} > %{arg3}",
               "uk" => "паніка: пошкоджений код операції регулярного виразу %{arg2} > %{arg3}"
             },
@@ -65151,6 +66707,7 @@ $CONF = {
               "nl" => "panic: regfree onbekende datacode '%{arg2}'",
               "pt" => "pânico: código de dados '%{arg2}' em regfree",
               "ru" => "Внутренняя ошибка: код данных regfree '%{arg2}'",
+              "sr" => "паника: regfree data code '%{arg2}'",
               "tr" => "panic: regfree veri kodu '%{arg2}'",
               "uk" => "паніка: код даних regfree '%{arg2}'"
             },
@@ -65199,6 +66756,7 @@ $CONF = {
               "nl" => "panic: onbekende flags %{arg2} in named_buff_iter",
               "pt" => "pânico: flags desconhecidas %{arg2} em named_buff_iter",
               "ru" => "Внутренняя ошибка: неизвестные флаги %{arg2} в named_buff_iter",
+              "sr" => "паника: Непознате заставице %{arg2} у named_buff_iter",
               "tr" => "panic: named_buff_iter içinde bilinmeyen bayraklar %{arg2}",
               "uk" => "паніка: невідомі прапорці %{arg2} у named_buff_iter"
             },
@@ -65247,6 +66805,7 @@ $CONF = {
               "nl" => "panic: onbekende flags %{arg2} in named_buff",
               "pt" => "pânico: flags desconhecidas %{arg2} em named_buff",
               "ru" => "Внутренняя ошибка: неизвестные флаги %{arg2} в named_buff",
+              "sr" => "паника: Непознате заставице %{arg2} у named_buff",
               "tr" => "panic: named_buff içinde bilinmeyen bayraklar %{arg2}",
               "uk" => "паніка: невідомі прапорці %{arg2} у named_buff"
             },
@@ -65295,6 +66854,7 @@ $CONF = {
               "nl" => "panic: onbekende flags %{arg2} in named_buff_scalar",
               "pt" => "pânico: flags desconhecidas %{arg2} em named_buff_scalar",
               "ru" => "Внутренняя ошибка: неизвестные флаги %{arg2} в named_buff_scalar",
+              "sr" => "паника: Непознате заставице %{arg2} у named_buff_scalar",
               "tr" => "panic: named_buff_scalar içinde bilinmeyen bayraklar %{arg2}",
               "uk" => "паніка: невідомі прапорці %{arg2} у named_buff_scalar"
             },
@@ -65343,6 +66903,7 @@ $CONF = {
               "nl" => "panic: pp_match begin-/eindpointers, paren=%{arg1}, start=%{arg2}, end=%{arg3}, s=%{arg4}, strend=%{arg5}, len=%{arg6}",
               "pt" => "panic: ponteiros de início/fim de pp_match, paren=%{arg1}, start=%{arg2}, end=%{arg3}, s=%{arg4}, strend=%{arg5}, len=%{arg6}",
               "ru" => "Внутренняя ошибка: указатели начала/конца в pp_match, paren=%{arg1}, start=%{arg2}, end=%{arg3}, s=%{arg4}, strend=%{arg5}, len=%{arg6}",
+              "sr" => "паника: pp_match почетни/крајњи показивачи, парен=%{arg1}, почетак=%{arg2}, крај=%{arg3}, s=%{arg4}, strend=%{arg5}, дужина=%{arg6}",
               "tr" => "panic: pp_match başlangıç/bitiş işaretçileri, paren=%{arg1}, start=%{arg2}, end=%{arg3}, s=%{arg4}, strend=%{arg5}, len=%{arg6}",
               "uk" => "паніка: вказівники початку/кінця pp_match, paren=%{arg1}, start=%{arg2}, end=%{arg3}, s=%{arg4}, strend=%{arg5}, len=%{arg6}"
             },
@@ -65416,6 +66977,7 @@ $CONF = {
               "nl" => "paniek: paren_elems_to_push, %{arg2} < 0, maxopenparen: %{arg3} parenfloor: %{arg4}",
               "pt" => "pânico: paren_elems_to_push, %{arg2} < 0, maxopenparen: %{arg3} parenfloor: %{arg4}",
               "ru" => "Внутренняя ошибка: paren_elems_to_push, %{arg2} < 0, maxopenparen: %{arg3} parenfloor: %{arg4}",
+              "sr" => "паника: paren_elems_to_push, %{arg2} < 0, maxopenparen: %{arg3} parenfloor: %{arg4}",
               "tr" => "panic: paren_elems_to_push, %{arg2} < 0, maxopenparen: %{arg3} parenfloor: %{arg4}",
               "uk" => "паніка: paren_elems_to_push, %{arg2} < 0, maxopenparen: %{arg3} parenfloor: %{arg4}"
             },
@@ -65474,6 +67036,7 @@ $CONF = {
               "nl" => "panic: paren_elems_to_push offset %{offset} buiten bereik (%{open}-%{floor})",
               "pt" => "panic: deslocamento %{offset} de paren_elems_to_push fora do intervalo (%{open}-%{floor})",
               "ru" => "паника: paren_elems_to_push: смещение %{offset} вне диапазона (%{open}-%{floor})",
+              "sr" => "паника: померај paren_elems_to_push %{offset} је ван опсега (%{open}-%{floor})",
               "tr" => "panic: paren_elems_to_push offset %{offset} aralık dışında (%{open}-%{floor})",
               "uk" => "паніка: paren_elems_to_push: зміщення %{offset} поза діапазоном (%{open}-%{floor})"
             },
@@ -65532,6 +67095,7 @@ $CONF = {
               "nl" => "panic: isFOO_lc() heeft onverwachte tekenklasse '%{arg2}'",
               "pt" => "pânico: isFOO_lc() recebeu uma classe de caracteres inesperada '%{arg2}'",
               "ru" => "Внутренняя ошибка: неожиданный класс символов '%{arg2}' в isFOO_lc()",
+              "sr" => "паника: isFOO_lc() има неочекивану класу знакова '%{arg2}'",
               "tr" => "panic: isFOO_lc() beklenmeyen bir karakter sınıfı '%{arg2}' aldı",
               "uk" => "паніка: isFOO_lc() має неочікуваний клас символів '%{arg2}'"
             },
@@ -65580,6 +67144,7 @@ $CONF = {
               "nl" => "panic: end_shift: %{shift}-patroon:\n%{pattern}\n ",
               "pt" => "panic: end_shift: %{shift} padrão:\n%{pattern}\n ",
               "ru" => "паника: end_shift: %{shift} шаблон:\n%{pattern}\n ",
+              "sr" => "паника: end_shift: %{shift} образац:\n%{pattern}\n ",
               "tr" => "panic: end_shift: %{shift} örüntü:\n%{pattern}\n ",
               "uk" => "паніка: end_shift: %{shift} шаблон:\n%{pattern}\n "
             },
@@ -65633,6 +67198,7 @@ $CONF = {
               "nl" => "interne fout: pp_match",
               "pt" => "pânico: pp_match",
               "ru" => "Внутренняя ошибка: pp_match",
+              "sr" => "паника: pp_match",
               "tr" => "panic: pp_match",
               "uk" => "паніка: pp_match"
             },
@@ -65675,6 +67241,7 @@ $CONF = {
               "nl" => "panic: regrepeat() aangeroepen met onbekend knooptype %{arg2}='%{arg3}'",
               "pt" => "pânico: regrepeat() chamado com tipo de nó não reconhecido %{arg2}='%{arg3}'",
               "ru" => "Внутренняя ошибка: regrepeat() вызвана с нераспознанным типом узла %{arg2}='%{arg3}'",
+              "sr" => "паника: regrepeat() called with unrecognized node type %{arg2}='%{arg3}'",
               "tr" => "panic: regrepeat() tanınmayan %{arg2}='%{arg3}' düğüm türüyle çağrıldı",
               "uk" => "паніка: regrepeat() викликано з нерозпізнаним типом вузла %{arg2}='%{arg3}'"
             },
@@ -65728,6 +67295,7 @@ $CONF = {
               "nl" => "panic: onbekende regstclass %{arg2}",
               "pt" => "pânico: regstclass desconhecido %{arg2}",
               "ru" => "Внутренняя ошибка: неизвестный regstclass %{arg2}",
+              "sr" => "паника: unknown regstclass %{arg2}",
               "tr" => "panic: bilinmeyen regstclass %{arg2}",
               "uk" => "паніка: невідомий regstclass %{arg2}"
             },
@@ -65776,6 +67344,7 @@ $CONF = {
               "nl" => "interne fout: pp_subst, pm=%{arg1}, orig=%{arg2}",
               "pt" => "pânico: pp_subst, pm=%{arg1}, orig=%{arg2}",
               "ru" => "Внутренняя ошибка: pp_subst, pm=%{arg1}, orig=%{arg2}",
+              "sr" => "паника: pp_subst, pm=%{arg1}, orig=%{arg2}",
               "tr" => "panic: pp_subst, pm=%{arg1}, orig=%{arg2}",
               "uk" => "паніка: pp_subst, pm=%{arg1}, orig=%{arg2}"
             },
@@ -65830,6 +67399,7 @@ $CONF = {
               "nl" => "paniek: magic_killbackrefs (flags=%{arg1})",
               "pt" => "pânico: magic_killbackrefs (flags=%{arg1})",
               "ru" => "паника: magic_killbackrefs (flags=%{arg1})",
+              "sr" => "паника: magic_killbackrefs (заставице=%{arg1})",
               "tr" => "panic: magic_killbackrefs (flags=%{arg1})",
               "uk" => "паніка: magic_killbackrefs (flags=%{arg1})"
             },
@@ -65879,6 +67449,7 @@ $CONF = {
               "nl" => "interne fout: del_backref, *svp=%{arg2}, sv=%{arg3}",
               "pt" => "pânico: del_backref, *svp=%{arg2}, sv=%{arg3}",
               "ru" => "Внутренняя ошибка: del_backref, *svp=%{arg2}, sv=%{arg3}",
+              "sr" => "паника: del_backref, *svp=%{arg2}, sv=%{arg3}",
               "tr" => "panic: del_backref, *svp=%{arg2}, sv=%{arg3}",
               "uk" => "паніка: del_backref, *svp=%{arg2}, sv=%{arg3}"
             },
@@ -65933,6 +67504,7 @@ $CONF = {
               "nl" => "panic: magic_killbackrefs (vrijgegeven backref AV/SV)",
               "pt" => "pânico: magic_killbackrefs (AV/SV de referência inversa libertado)",
               "ru" => "panic: magic_killbackrefs (AV/SV обратных ссылок уже освобождён)",
+              "sr" => "паника: magic_killbackrefs (ослобођени backref AV/SV)",
               "tr" => "panic: magic_killbackrefs (serbest bırakılmış backref AV/SV)",
               "uk" => "паніка: magic_killbackrefs (звільнено AV/SV зворотних посилань)"
             },
@@ -65976,6 +67548,7 @@ $CONF = {
               "nl" => "paniek: del_backref, svp=0",
               "pt" => "pânico: del_backref, svp=0",
               "ru" => "panic: del_backref, svp=0",
+              "sr" => "паника: недостаје показивач svp у del_backref",
               "tr" => "panic: del_backref, svp=0",
               "uk" => "паніка: del_backref, svp=0"
             },
@@ -66019,6 +67592,7 @@ $CONF = {
               "nl" => "paniek: del_backref, *svp=%{pointer} phase=%{phase} refcnt=%{count}",
               "pt" => "pânico: del_backref, *svp=%{pointer} phase=%{phase} refcnt=%{count}",
               "ru" => "паника: del_backref, *svp=%{pointer} phase=%{phase} refcnt=%{count}",
+              "sr" => "паника: del_backref, *svp=%{pointer} фаза=%{phase} refcnt=%{count}",
               "tr" => "panic: del_backref, *svp=%{pointer} phase=%{phase} refcnt=%{count}",
               "uk" => "паніка: del_backref, *svp=%{pointer} phase=%{phase} refcnt=%{count}"
             },
@@ -66078,6 +67652,7 @@ $CONF = {
               "nl" => "panic: poging om waarde %{source} naar vrijgegeven scalar %{destination} te kopiëren",
               "pt" => "panic: tentativa de copiar o valor %{source} para um escalar libertado %{destination}",
               "ru" => "паника: попытка скопировать значение %{source} в освобождённый скаляр %{destination}",
+              "sr" => "паника: покушај копирања вредности %{source} у ослобођену скаларну вредност %{destination}",
               "tr" => "panic: %{source} değeri serbest bırakılmış %{destination} skalerine kopyalanmaya çalışıldı",
               "uk" => "паніка: спроба скопіювати значення %{source} у звільнений скаляр %{destination}"
             },
@@ -66133,6 +67708,7 @@ $CONF = {
               "nl" => "panic: onjuist referentieaantal voor nsv in sv_replace() (%{arg1} != 1)",
               "pt" => "panic: contagem incorreta de referências a nsv em sv_replace() (%{arg1} != 1)",
               "ru" => "паника: неверный счётчик ссылок nsv в sv_replace() (%{arg1} != 1)",
+              "sr" => "паника: погрешан број референци за nsv у sv_replace() (%{arg1} != 1)",
               "tr" => "panic: sv_replace() içindeki nsv için referans sayısı hatalı (%{arg1} != 1)",
               "uk" => "паніка: неправильний лічильник посилань на nsv у sv_replace() (%{arg1} != 1)"
             },
@@ -66182,6 +67758,7 @@ $CONF = {
               "nl" => "panic: poging om vrijgegeven scalar %{arg2} te kopiëren",
               "pt" => "pânico: tentativa de copiar o escalar libertado %{arg2}",
               "ru" => "Внутренняя ошибка: попытка скопировать освобождённый скаляр %{arg2}",
+              "sr" => "паника: attempt to copy freed scalar %{arg2}",
               "tr" => "panic: serbest bırakılmış %{arg2} skaleri kopyalanmaya çalışıldı",
               "uk" => "паніка: спроба скопіювати звільнений скаляр %{arg2}"
             },
@@ -66231,6 +67808,7 @@ $CONF = {
               "nl" => "panic: poging om vrijgegeven scalar %{arg2} naar %{arg3} te kopiëren",
               "pt" => "pânico: tentativa de copiar o escalar libertado %{arg2} para %{arg3}",
               "ru" => "Внутренняя ошибка: попытка скопировать освобождённый скаляр %{arg2} в %{arg3}",
+              "sr" => "паника: покушај копирања ослобођеног скалара %{arg2} у %{arg3}",
               "tr" => "panic: serbest bırakılmış %{arg2} skaleri %{arg3} konumuna kopyalanmaya çalışıldı",
               "uk" => "паніка: спроба скопіювати звільнений скаляр %{arg2} до %{arg3}"
             },
@@ -66285,6 +67863,7 @@ $CONF = {
               "nl" => "interne fout: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}",
               "pt" => "pânico: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}",
               "ru" => "Внутренняя ошибка: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}",
+              "sr" => "паника: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}",
               "tr" => "panic: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}",
               "uk" => "паніка: sv_chop ptr=%{arg2}, start=%{arg3}, end=%{arg4}"
             },
@@ -66344,6 +67923,7 @@ $CONF = {
               "nl" => "panic: sv_setpvn_fresh aangeroepen met negatieve strlen %{arg1}",
               "pt" => "panic: sv_setpvn_fresh chamado com strlen negativo %{arg1}",
               "ru" => "паника: sv_setpvn_fresh вызвана с отрицательной длиной строки %{arg1}",
+              "sr" => "паника: sv_setpvn_fresh је позван са негативном дужином низа знакова %{arg1}",
               "tr" => "panic: sv_setpvn_fresh negatif strlen %{arg1} ile çağrıldı",
               "uk" => "паніка: sv_setpvn_fresh викликано з від'ємною довжиною рядка %{arg1}"
             },
@@ -66393,6 +67973,7 @@ $CONF = {
               "nl" => "interne fout: sv_insert, midend=%{arg1}, bigend=%{arg2}",
               "pt" => "pânico: sv_insert, midend=%{arg1}, bigend=%{arg2}",
               "ru" => "паника: sv_insert, midend=%{arg1}, bigend=%{arg2}",
+              "sr" => "паника: sv_insert, midend=%{arg1}, bigend=%{arg2}",
               "tr" => "panic: sv_insert, midend=%{arg1}, bigend=%{arg2}",
               "uk" => "паніка: sv_insert, midend=%{arg1}, bigend=%{arg2}"
             },
@@ -66447,6 +68028,7 @@ $CONF = {
               "nl" => "panic: sv_setpvn aangeroepen met negatieve strlen %{arg1}",
               "pt" => "panic: sv_setpvn chamado com strlen negativo %{arg1}",
               "ru" => "паника: sv_setpvn вызвана с отрицательной длиной строки %{arg1}",
+              "sr" => "паника: sv_setpvn је позван са негативном дужином низа знакова %{arg1}",
               "tr" => "panic: sv_setpvn negatif strlen %{arg1} ile çağrıldı",
               "uk" => "паніка: sv_setpvn викликано з від'ємною довжиною рядка %{arg1}"
             },
@@ -66497,6 +68079,7 @@ $CONF = {
               "nl" => "panic: newSV_type() onbekend type %{arg2}",
               "pt" => "panic: tipo desconhecido em newSV_type(): %{arg2}",
               "ru" => "паника: неизвестный тип %{arg2} в newSV_type()",
+              "sr" => "паника: newSV_type() непознат тип %{arg2}",
               "tr" => "panic: newSV_type() bilinmeyen tür %{arg2}",
               "uk" => "паніка: невідомий тип %{arg2} у newSV_type()"
             },
@@ -66546,6 +68129,7 @@ $CONF = {
               "nl" => "panic: sv_upgrade naar onbekend type %{arg2}",
               "pt" => "panic: sv_upgrade para tipo desconhecido %{arg2}",
               "ru" => "паника: преобразование в неизвестный тип %{arg2} в sv_upgrade",
+              "sr" => "паника: sv_upgrade на непознат тип %{arg2}",
               "tr" => "panic: sv_upgrade bilinmeyen %{arg2} türüne",
               "uk" => "паніка: sv_upgrade до невідомого типу %{arg2}"
             },
@@ -66595,6 +68179,7 @@ $CONF = {
               "nl" => "panic: poging om vrijgegeven scalar %{arg2} op undef te zetten",
               "pt" => "pânico: tentativa de tornar indefinido um escalar libertado %{arg2}",
               "ru" => "Внутренняя ошибка: попытка сбросить значение освобождённого скаляра %{arg2} в undef",
+              "sr" => "паника: attempt to undefine a freed scalar %{arg2}",
               "tr" => "panic: serbest bırakılmış %{arg2} skaleri undef yapılmaya çalışıldı",
               "uk" => "паніка: спроба скинути значення вже звільненого скаляра %{arg2} до undef"
             },
@@ -66645,6 +68230,7 @@ $CONF = {
               "nl" => "panic: stack_grow() negatief aantal (%{arg1})",
               "pt" => "panic: contagem negativa em stack_grow() (%{arg1})",
               "ru" => "паника: отрицательное количество в stack_grow() (%{arg1})",
+              "sr" => "паника: stack_grow() негативан број (%{arg1})",
               "tr" => "panic: stack_grow() negatif sayı (%{arg1})",
               "uk" => "паніка: від'ємна кількість у stack_grow() (%{arg1})"
             },
@@ -66695,6 +68281,7 @@ $CONF = {
               "nl" => "panic: vorige op kon argumentenstack niet uitbreiden: base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n",
               "pt" => "pânico: a operação anterior não expandiu a pilha de argumentos: base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n",
               "ru" => "паника: предыдущая операция не расширила стек аргументов: base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n",
+              "sr" => "паника: претходни op није успео да прошири стек аргумената: base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n",
               "tr" => "panic: önceki op argüman yığınını genişletemedi: base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n",
               "uk" => "паніка: попередня операція не розширила стек аргументів: base=%{arg2}, sp=%{arg3}, hwm=%{arg4}\n"
             },
@@ -66755,6 +68342,7 @@ $CONF = {
               "nl" => "panic: XSUB %{arg2}::%{arg3} (%{arg4}) kon argumentenstack niet uitbreiden: base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n",
               "pt" => "pânico: XSUB %{arg2}::%{arg3} (%{arg4}) não expandiu a pilha de argumentos: base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n",
               "ru" => "Внутренняя ошибка: XSUB %{arg2}::%{arg3} (%{arg4}) не расширила стек аргументов: base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n",
+              "sr" => "паника: XSUB %{arg2}::%{arg3} (%{arg4}) није успео да прошири стек аргумената: base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n",
               "tr" => "panic: XSUB %{arg2}::%{arg3} (%{arg4}) argüman yığınını genişletemedi: base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n",
               "uk" => "паніка: XSUB %{arg2}::%{arg3} (%{arg4}) не розширила стек аргументів: base=%{arg5}, sp=%{arg6}, hwm=%{arg7}\n"
             },
@@ -66830,6 +68418,7 @@ $CONF = {
               "nl" => "panic: ongeldige gimme: %{arg2}\n",
               "pt" => "pânico: valor gimme inválido: %{arg2}\n",
               "ru" => "Внутренняя ошибка: неверное значение gimme: %{arg2}\n",
+              "sr" => "паника: bad gimme: %{arg2}\n",
               "tr" => "panic: hatalı gimme: %{arg2}\n",
               "uk" => "паніка: неправильне значення gimme: %{arg2}\n"
             },
@@ -66881,6 +68470,7 @@ $CONF = {
               "nl" => "paniek: top_env\n",
               "pt" => "pânico: top_env\n",
               "ru" => "паника: top_env\n",
+              "sr" => "паника: top_env\n",
               "tr" => "panic: top_env\n",
               "uk" => "паніка: top_env\n"
             },
@@ -66927,6 +68517,7 @@ $CONF = {
               "nl" => "paniek: top_env, v=%{value}\n",
               "pt" => "pânico: top_env, v=%{value}\n",
               "ru" => "паника: top_env, v=%{value}\n",
+              "sr" => "паника: недостаје top_env, v=%{value}\n",
               "tr" => "panic: top_env, v=%{value}\n",
               "uk" => "паніка: top_env, v=%{value}\n"
             },
@@ -66978,6 +68569,7 @@ $CONF = {
               "nl" => "panic: onverwacht resultaat van setjmp()\n",
               "pt" => "panic: resultado inesperado de setjmp()\n",
               "ru" => "паника: неожиданный результат setjmp()\n",
+              "sr" => "паника: неочекиван резултат функције setjmp()\n",
               "tr" => "panic: beklenmeyen setjmp() sonucu\n",
               "uk" => "паніка: неочікуваний результат setjmp()\n"
             },
@@ -67023,6 +68615,7 @@ $CONF = {
               "nl" => "paniek: POPSTACK\n",
               "pt" => "pânico: POPSTACK\n",
               "ru" => "паника: POPSTACK\n",
+              "sr" => "паника: POPSTACK\n",
               "tr" => "panic: POPSTACK\n",
               "uk" => "паніка: POPSTACK\n"
             },
@@ -67068,6 +68661,7 @@ $CONF = {
               "nl" => "panic: save_alloc aantal elementen %{arg1} buiten bereik (%{arg2}-%{arg3})",
               "pt" => "panic: elementos de save_alloc %{arg1} fora do intervalo (%{arg2}-%{arg3})",
               "ru" => "паника: количество элементов %{arg1} в save_alloc вне диапазона (%{arg2}-%{arg3})",
+              "sr" => "паника: save_alloc број елемената %{arg1} је ван опсега (%{arg2}–%{arg3})",
               "tr" => "panic: save_alloc elems %{arg1} aralık dışında (%{arg2}-%{arg3})",
               "uk" => "паніка: кількість елементів %{arg1} у save_alloc поза діапазоном (%{arg2}-%{arg3})"
             },
@@ -67128,6 +68722,7 @@ $CONF = {
               "nl" => "panic: savestack overschrijdt I32_MAX",
               "pt" => "pânico: savestack excede I32_MAX",
               "ru" => "panic: размер savestack превышает I32_MAX",
+              "sr" => "паника: savestack прелази I32_MAX",
               "tr" => "panic: savestack I32_MAX değerini aşıyor",
               "uk" => "паніка: savestack перевищує I32_MAX"
             },
@@ -67172,6 +68767,7 @@ $CONF = {
               "nl" => "panic: inconsistentie in ss_dup (%{arg1})",
               "pt" => "panic: inconsistência em ss_dup (%{arg1})",
               "ru" => "паника: несогласованность в ss_dup (%{arg1})",
+              "sr" => "паника: недоследност ss_dup (%{arg1})",
               "tr" => "panic: ss_dup tutarsızlığı (%{arg1})",
               "uk" => "паніка: неузгодженість у ss_dup (%{arg1})"
             },
@@ -67222,6 +68818,7 @@ $CONF = {
               "nl" => "panic: inconsistentie in leave_scope %{arg1}",
               "pt" => "pânico: inconsistência em leave_scope %{arg1}",
               "ru" => "паника: несогласованность в leave_scope: %{arg1}",
+              "sr" => "паника: недоследност у leave_scope %{arg1}",
               "tr" => "panic: leave_scope tutarsızlığı %{arg1}",
               "uk" => "паніка: неузгодженість у leave_scope %{arg1}"
             },
@@ -67272,6 +68869,7 @@ $CONF = {
               "nl" => "panic: beschadigde opgeslagen stapelindex %{arg1}",
               "pt" => "pânico: índice da pilha guardado corrompido %{arg1}",
               "ru" => "паника: повреждённый индекс стека сохранения %{arg1}",
+              "sr" => "паника: оштећен индекс сачуваног стека %{arg1}",
               "tr" => "panic: bozuk kayıtlı yığın dizini %{arg1}",
               "uk" => "паніка: пошкоджений індекс стека збереження %{arg1}"
             },
@@ -67322,6 +68920,7 @@ $CONF = {
               "nl" => "panic: gp_free kon glob-pointer niet vrijgeven; iets maakt herhaaldelijk opnieuw vermeldingen aan",
               "pt" => "pânico: gp_free não conseguiu libertar o ponteiro glob — algo está continuamente a recriar entradas",
               "ru" => "panic: gp_free не удалось освободить указатель на глоб - что-то постоянно создаёт записи заново",
+              "sr" => "паника: gp_free није успео да ослободи показивач на глобални симбол — нешто непрестано поново прави уносе",
               "tr" => "panic: gp_free glob işaretçisini serbest bırakamadı; girdiler sürekli yeniden oluşturuluyor",
               "uk" => "паніка: gp_free не вдалося звільнити вказівник glob - щось постійно створює записи заново"
             },
@@ -67366,6 +68965,7 @@ $CONF = {
               "nl" => "panic: gv-naam te lang (%{arg1})",
               "pt" => "panic: nome de gv demasiado longo (%{arg1})",
               "ru" => "паника: слишком длинное имя gv (%{arg1})",
+              "sr" => "паника: име gv-а је предугачко (%{arg1})",
               "tr" => "panic: gv adı çok uzun (%{arg1})",
               "uk" => "паніка: надто довге ім'я gv (%{arg1})"
             },
@@ -67416,6 +69016,7 @@ $CONF = {
               "nl" => "panic: hv-naam te lang (%{length})",
               "pt" => "pânico: nome de hash demasiado longo (%{length})",
               "ru" => "паника: слишком длинное имя hv (%{length})",
+              "sr" => "паника: име hv је предугачко (%{length})",
               "tr" => "panic: hv adı çok uzun (%{length})",
               "uk" => "паніка: задовге ім'я hv (%{length})"
             },
@@ -67465,6 +69066,7 @@ $CONF = {
               "nl" => "interne fout: scan_num, *s=%{arg2}",
               "pt" => "pânico: scan_num, *s=%{arg2}",
               "ru" => "Внутренняя ошибка: scan_num, *s=%{arg2}",
+              "sr" => "паника: scan_num, *s=%{arg2}",
               "tr" => "panic: scan_num, *s=%{arg2}",
               "uk" => "паніка: scan_num, *s=%{arg2}"
             },
@@ -67515,6 +69117,7 @@ $CONF = {
               "nl" => "panic: constante overschrijdt toegewezen ruimte, %{arg1} >= %{arg2}",
               "pt" => "panic: a constante excedeu o espaço atribuído, %{arg1} >= %{arg2}",
               "ru" => "паника: константа вышла за пределы выделенной памяти, %{arg1} >= %{arg2}",
+              "sr" => "паника: константа је премашила додељени простор, %{arg1} >= %{arg2}",
               "tr" => "panic: sabit ayrılan alanı taştı, %{arg1} >= %{arg2}",
               "uk" => "паніка: константа перевищила виділений обсяг пам'яті, %{arg1} >= %{arg2}"
             },
@@ -67569,6 +69172,7 @@ $CONF = {
               "nl" => "interne fout: yylex, *s=%{arg2}",
               "pt" => "pânico: yylex, *s=%{arg2}",
               "ru" => "Внутренняя ошибка: yylex, *s=%{arg2}",
+              "sr" => "паника: yylex, *s=%{arg2}",
               "tr" => "panic: yylex, *s=%{arg2}",
               "uk" => "паніка: yylex, *s=%{arg2}"
             },
@@ -67619,6 +69223,7 @@ $CONF = {
               "nl" => "interne fout: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}",
               "pt" => "pânico: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}",
               "ru" => "Внутренняя ошибка: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}",
+              "sr" => "паника: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}",
               "tr" => "panic: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}",
               "uk" => "паніка: INTERPCASEMOD bufptr=%{arg2}, bufend=%{arg3}, *bufptr=%{arg4}"
             },
@@ -67678,6 +69283,7 @@ $CONF = {
               "nl" => "paniek: INTERPCONCAT, lex_brackets=%{arg2}",
               "pt" => "pânico: INTERPCONCAT, lex_brackets=%{arg2}",
               "ru" => "паника: INTERPCONCAT, lex_brackets=%{arg2}",
+              "sr" => "паника: INTERPCONCAT, lex_brackets=%{arg2}",
               "tr" => "panic: INTERPCONCAT, lex_brackets=%{arg2}",
               "uk" => "паніка: INTERPCONCAT, lex_brackets=%{arg2}"
             },
@@ -67727,6 +69333,7 @@ $CONF = {
               "nl" => "panic: onverwachte case %{value} in switch in %{file}, regel %{line}",
               "pt" => "panic: caso inesperado %{value} em switch, ficheiro %{file}, linha %{line}",
               "ru" => "паника: неожиданное значение case %{value} в switch в файле %{file}, строка %{line}",
+              "sr" => "паника: Неочекивани случај %{value} у switch-у у %{file}, ред %{line}",
               "tr" => "panic: %{file} içindeki switch'te beklenmeyen %{value} durumu, satır %{line}",
               "uk" => "паніка: неочікуване значення %{value} у switch у файлі %{file}, рядок %{line}"
             },
@@ -67786,6 +69393,7 @@ $CONF = {
               "nl" => "panic: onverwachte waarde %{arg2} in [%{arg3}]",
               "pt" => "pânico: valor inesperado %{arg2} em [%{arg3}]",
               "ru" => "паника: неожиданное значение %{arg2} в [%{arg3}]",
+              "sr" => "паника: Неочекивана вредност %{arg2} у [%{arg3}]",
               "tr" => "panic: [%{arg3}] içinde beklenmeyen %{arg2} değeri",
               "uk" => "паніка: неочікуване значення %{arg2} у [%{arg3}]"
             },
@@ -67840,6 +69448,7 @@ $CONF = {
               "nl" => "panic: queryaddr",
               "pt" => "panic: queryaddr",
               "ru" => "Внутренняя ошибка queryaddr",
+              "sr" => "паника queryaddr",
               "tr" => "panic queryaddr",
               "uk" => "паніка queryaddr"
             },
@@ -67883,6 +69492,7 @@ $CONF = {
               "nl" => "panic: OS2::extLibpath-parameter",
               "pt" => "panic: parâmetro de OS2::extLibpath",
               "ru" => "Внутренняя ошибка параметра OS2::extLibpath",
+              "sr" => "паника: параметар OS2::extLibpath",
               "tr" => "panic OS2::extLibpath parametresi",
               "uk" => "паніка параметра OS2::extLibpath"
             },
@@ -67926,6 +69536,7 @@ $CONF = {
               "nl" => "panic: ExceptionHandler verkeerd geplaatst: niet %{stack} <= %{handler} < %{limit}\n",
               "pt" => "pânico: ExceptionHandler mal posicionado: não se verifica %{stack} <= %{handler} < %{limit}\n",
               "ru" => "паника: неверное расположение ExceptionHandler: не выполнено %{stack} <= %{handler} < %{limit}\n",
+              "sr" => "паника: ExceptionHandler је погрешно постављен: није %{stack} <= %{handler} < %{limit}\n",
               "tr" => "panic: ExceptionHandler yanlış yerde: %{stack} <= %{handler} < %{limit} değil\n",
               "uk" => "паніка: ExceptionHandler розташовано неправильно: умова %{stack} <= %{handler} < %{limit} не виконується\n"
             },
@@ -67985,6 +69596,7 @@ $CONF = {
               "nl" => "ExceptionHandler verkeerd geplaatst: %{actual} != %{expected}\n",
               "pt" => "ExceptionHandler mal posicionado: %{actual} != %{expected}\n",
               "ru" => "Неверное расположение ExceptionHandler: %{actual} != %{expected}\n",
+              "sr" => "ExceptionHandler је погрешно постављен: %{actual} != %{expected}\n",
               "tr" => "ExceptionHandler yanlış yerde: %{actual} != %{expected}\n",
               "uk" => "Неправильне розташування ExceptionHandler: %{actual} != %{expected}\n"
             },
@@ -68040,6 +69652,7 @@ $CONF = {
               "nl" => "paniek: initialisatie van EMX-backdoor: fout bij DosRequestMutexSem: %{status}=%{status_hex}\n",
               "pt" => "pânico: inicialização da via de acesso alternativa do EMX: erro em DosRequestMutexSem: %{status}=%{status_hex}\n",
               "ru" => "паника: инициализация обходного механизма EMX: ошибка DosRequestMutexSem: %{status}=%{status_hex}\n",
+              "sr" => "паника: EMX backdoor init: DosRequestMutexSem error: %{status}=%{status_hex}\n",
               "tr" => "panic: EMX backdoor başlatması: DosRequestMutexSem hatası: %{status}=%{status_hex}\n",
               "uk" => "паніка: ініціалізація обхідного механізму EMX: помилка DosRequestMutexSem: %{status}=%{status_hex}\n"
             },
@@ -68095,6 +69708,7 @@ $CONF = {
               "nl" => "panic: onjuiste pid in sysinfo",
               "pt" => "panic: pid incorreto em sysinfo",
               "ru" => "Внутренняя ошибка: неверный pid в sysinfo",
+              "sr" => "паника: погрешан pid у sysinfo",
               "tr" => "panic: sysinfo'daki PID yanlış",
               "uk" => "паніка: неправильний pid у sysinfo"
             },
@@ -68138,6 +69752,7 @@ $CONF = {
               "nl" => "interne fout: COND_SIGNAL, rc=%{arg1}",
               "pt" => "pânico: COND_SIGNAL, rc=%{arg1}",
               "ru" => "Внутренняя ошибка: COND_SIGNAL, rc=%{arg1}",
+              "sr" => "паника: COND_SIGNAL, rc=%{arg1}",
               "tr" => "panic: COND_SIGNAL, rc=%{arg1}",
               "uk" => "паніка: COND_SIGNAL, rc=%{arg1}"
             },
@@ -68187,6 +69802,7 @@ $CONF = {
               "nl" => "panic: detach van een thread met onverwacht volgnummer %{arg1}",
               "pt" => "panic: detach de uma thread com número ordinal estranho %{arg1}",
               "ru" => "Внутренняя ошибка: detach для потока со странным порядковым номером %{arg1}",
+              "sr" => "паника: одвајање нити са необичним редним бројем %{arg1}",
               "tr" => "panic: sıra numarası %{arg1} tuhaf olan iş parçacığı ayrılıyor",
               "uk" => "паніка: від'єднання потоку з дивним порядковим номером %{arg1}"
             },
@@ -68236,6 +69852,7 @@ $CONF = {
               "nl" => "panic: detach van een thread die niet kon draaien vanwege hergebruik van een thread-ID (status='%{arg1}')",
               "pt" => "panic: detach de uma thread que não pôde executar devido à tentativa de reutilização do tid (estado='%{arg1}')",
               "ru" => "Внутренняя ошибка: отсоединение потока, который не смог запуститься из-за попытки повторного использования tid (состояние='%{arg1}')",
+              "sr" => "паника: одвајање нити која није могла да се покрене због покушаја поновне употребе tid-а (стање='%{arg1}')",
               "tr" => "panic: tid yeniden kullanma girişimi nedeniyle çalışamayan iş parçacığı ayrılıyor (durum='%{arg1}')",
               "uk" => "паніка: від'єднання потоку, який не зміг запуститися через спробу повторного використання tid (стан='%{arg1}')"
             },
@@ -68285,6 +69902,7 @@ $CONF = {
               "nl" => "panic: detach van een thread met onbekende threadstatus: '%{arg1}'",
               "pt" => "panic: detach de uma thread com estado desconhecido: '%{arg1}'",
               "ru" => "Внутренняя ошибка: detach для потока в неизвестном состоянии: '%{arg1}'",
+              "sr" => "паника: одвајање нити у непознатом стању нити: '%{arg1}'",
               "tr" => "panic: iş parçacığının bilinmeyen durumu nedeniyle ayırma yapılamıyor: '%{arg1}'",
               "uk" => "паніка: detach для потоку з невідомим станом: '%{arg1}'"
             },
@@ -68334,6 +69952,7 @@ $CONF = {
               "nl" => "panic: onverwachte threadstatus bij afsluiten: '%{arg1}'",
               "pt" => "panic: estado inesperado da thread ao sair: '%{arg1}'",
               "ru" => "Внутренняя ошибка: неожиданное состояние потока при завершении: '%{arg1}'",
+              "sr" => "паника: неочекивано стање нити при изласку: '%{arg1}'",
               "tr" => "panic: çıkışta beklenmeyen iş parçacığı durumu: '%{arg1}'",
               "uk" => "паніка: неочікуваний стан потоку під час виходу: '%{arg1}'"
             },
@@ -68383,6 +70002,7 @@ $CONF = {
               "nl" => "panic: join met een thread met onverwacht volgnummer %{arg1}",
               "pt" => "panic: join com thread de número ordinal estranho %{arg1}",
               "ru" => "Внутренняя ошибка: join для потока со странным порядковым номером %{arg1}",
+              "sr" => "паника: спајање са нити са необичним редним бројем %{arg1}",
               "tr" => "panic: sıra numarası %{arg1} tuhaf olan bir iş parçacığına join çağrısı",
               "uk" => "паніка: join із потоком із дивним порядковим номером %{arg1}"
             },
@@ -68432,6 +70052,7 @@ $CONF = {
               "nl" => "panic: join met een thread die niet kon draaien vanwege hergebruik van een thread-ID (status='%{arg1}')",
               "pt" => "panic: join com uma thread que não pôde executar devido à tentativa de reutilização do tid (estado='%{arg1}')",
               "ru" => "Внутренняя ошибка: join для потока, который не смог запуститься из-за попытки повторного использования tid (состояние='%{arg1}')",
+              "sr" => "паника: спајање са нити која није могла да се покрене због покушаја поновне употребе tid-а (стање='%{arg1}')",
               "tr" => "panic: tid yeniden kullanma girişimi nedeniyle çalışamayan iş parçacığına join çağrısı (durum='%{arg1}')",
               "uk" => "паніка: join із потоком, який не зміг запуститися через спробу повторного використання tid (state='%{arg1}')"
             },
@@ -68481,6 +70102,7 @@ $CONF = {
               "nl" => "panic: join met een thread met onbekende threadstatus: '%{arg1}'",
               "pt" => "panic: join com thread em estado desconhecido: '%{arg1}'",
               "ru" => "Внутренняя ошибка: join для потока в неизвестном состоянии: '%{arg1}'",
+              "sr" => "паника: спајање са нити у непознатом стању нити: '%{arg1}'",
               "tr" => "panic: bilinmeyen iş parçacığı durumundaki iş parçacığına join çağrısı: '%{arg1}'",
               "uk" => "паніка: спроба join із потоком у невідомому стані: '%{arg1}'"
             },
@@ -68530,6 +70152,7 @@ $CONF = {
               "nl" => "panic: poging om thread-id %{thread} opnieuw te gebruiken (status='%{state}')\n\r",
               "pt" => "pânico: tentativa de reutilizar o identificador de thread %{thread} (estado='%{state}')\n\r",
               "ru" => "паника: попытка повторно использовать идентификатор потока %{thread} (состояние='%{state}')\n\r",
+              "sr" => "паника: покушај поновне употребе ID-а нити %{thread} (стање=„%{state}“)\n\r",
               "tr" => "panic: %{thread} iş parçacığı kimliği yeniden kullanılmaya çalışılıyor (durum='%{state}')\n\r",
               "uk" => "паніка: спроба повторно використати ідентифікатор потоку %{thread} (стан='%{state}')\n\r"
             },
@@ -68585,6 +70208,7 @@ $CONF = {
               "nl" => "panic: thread met vreemd volgnummer %{thread} aangemaakt\n\r",
               "pt" => "pânico: criada uma thread com número ordinal estranho: %{thread}\n\r",
               "ru" => "паника: создан поток с необычным порядковым номером %{thread}\n\r",
+              "sr" => "паника: креирана нит са необичним редним бројем %{thread}\n\r",
               "tr" => "panic: sıra numarası %{thread} tuhaf olan iş parçacığı oluşturuldu\n\r",
               "uk" => "паніка: створено потік із дивним порядковим номером %{thread}\n\r"
             },
@@ -68634,6 +70258,7 @@ $CONF = {
               "nl" => "Ongeldige parameter gedetecteerd in functie %{function}. Bestand: %{file}, regel: %{line}\n",
               "pt" => "Parâmetro inválido detetado na função %{function}. Ficheiro: %{file}, linha: %{line}\n",
               "ru" => "В функции %{function} обнаружен недопустимый параметр. Файл: %{file}, строка: %{line}\n",
+              "sr" => "Откривен је неважећи параметар у функцији %{function}. Датотека: %{file}, ред: %{line}\n",
               "tr" => "%{function} işlevinde geçersiz parametre algılandı. Dosya: %{file}, satır: %{line}\n",
               "uk" => "У функції %{function} виявлено неприпустимий параметр. Файл: %{file}, рядок: %{line}\n"
             },
@@ -68695,6 +70320,7 @@ $CONF = {
               "nl" => "panic: onderliggend pseudoproces is nooit ingepland",
               "pt" => "pânico: o pseudoprocesso filho nunca foi agendado",
               "ru" => "паника: дочерний псевдопроцесс так и не получил процессорного времени",
+              "sr" => "паника: подређени псеудопроцес никада није покренут",
               "tr" => "panic: alt sahte süreç hiçbir zaman zamanlanmadı",
               "uk" => "паніка: дочірній псевдопроцес так і не отримав часу процесора"
             },
@@ -68738,6 +70364,7 @@ $CONF = {
               "nl" => "paniek: TlsAlloc",
               "pt" => "pânico: TlsAlloc",
               "ru" => "паника: TlsAlloc",
+              "sr" => "паника: TlsAlloc",
               "tr" => "panic: TlsAlloc",
               "uk" => "паніка: TlsAlloc"
             },
@@ -68782,6 +70409,7 @@ $CONF = {
               "nl" => "paniek: kan de basissysteemtijd niet omzetten naar filetime\n",
               "pt" => "pânico: não é possível converter o tempo de base do sistema para filetime\n",
               "ru" => "паника: невозможно преобразовать базовое системное время в filetime\n",
+              "sr" => "паника: није могуће претворити основно системско време у filetime\n",
               "tr" => "panic: temel sistem zamanı filetime biçimine dönüştürülemiyor\n",
               "uk" => "паніка: неможливо перетворити базовий системний час у filetime\n"
             },
@@ -68827,6 +70455,7 @@ $CONF = {
               "nl" => "panic: fout bij lezen van errno via popen van kindproces, n=%{count}",
               "pt" => "pânico: leitura de errno em kid popen, n=%{count}",
               "ru" => "panic: неполное чтение errno дочернего процесса popen, n=%{count}",
+              "sr" => "паника: читање errno из дечјег процеса popen, n=%{count}",
               "tr" => "panic: kid popen errno okuması, n=%{count}",
               "uk" => "паніка: читання errno дочірнього процесу через popen, n=%{count}"
             },
@@ -68883,6 +70512,7 @@ $CONF = {
               "nl" => "interne fout: %{operation}",
               "pt" => "panic: %{operation}",
               "ru" => "Внутренняя ошибка: %{operation}",
+              "sr" => "паника: %{operation}",
               "tr" => "panic: %{operation}",
               "uk" => "паніка: %{operation}"
             },
@@ -68998,6 +70628,7 @@ $CONF = {
               "nl" => "interne fout: %{operation} (%{error}) [%{file}:%{line}]",
               "pt" => "panic: %{operation} (%{error}) [%{file}:%{line}]",
               "ru" => "паника: %{operation} (%{error}) [%{file}:%{line}]",
+              "sr" => "паника: %{operation} (%{error}) [%{file}:%{line}]",
               "tr" => "panic: %{operation} (%{error}) [%{file}:%{line}]",
               "uk" => "паніка: %{operation} (%{error}) [%{file}:%{line}]"
             },
@@ -69172,6 +70803,7 @@ $CONF = {
               "nl" => "interne fout: %{operation}: rc=%{error}",
               "pt" => "pânico: %{operation}: rc=%{error}",
               "ru" => "Внутренняя ошибка: %{operation}: rc=%{error}",
+              "sr" => "паника: %{operation}: rc=%{error}",
               "tr" => "panic: %{operation}: rc=%{error}",
               "uk" => "паніка: %{operation}: rc=%{error}"
             },
@@ -69273,6 +70905,7 @@ $CONF = {
               "nl" => "interne fout: COND_INIT [%{arg1}:%{arg2}]",
               "pt" => "pânico: COND_INIT [%{arg1}:%{arg2}]",
               "ru" => "паника: COND_INIT [%{arg1}:%{arg2}]",
+              "sr" => "паника: COND_INIT [%{arg1}:%{arg2}]",
               "tr" => "panic: COND_INIT [%{arg1}:%{arg2}]",
               "uk" => "паніка: COND_INIT [%{arg1}:%{arg2}]"
             },
@@ -69327,6 +70960,7 @@ $CONF = {
               "nl" => "interne fout: %{operation}, rc=%{error}",
               "pt" => "pânico: %{operation}, rc=%{error}",
               "ru" => "Внутренняя ошибка: %{operation}, rc=%{error}",
+              "sr" => "паника: %{operation}, rc=%{error}",
               "tr" => "panic: %{operation}, rc=%{error}",
               "uk" => "паніка: %{operation}, rc=%{error}"
             },
@@ -69401,6 +71035,7 @@ $CONF = {
               "nl" => "interne fout: %{operation} (%{error})",
               "pt" => "panic: %{operation} (%{error})",
               "ru" => "Внутренняя ошибка: %{operation} (%{error})",
+              "sr" => "паника: %{operation} (%{error})",
               "tr" => "panic: %{operation} (%{error})",
               "uk" => "паніка: %{operation} (%{error})"
             },
@@ -69502,6 +71137,7 @@ $CONF = {
               "nl" => "paniek: pthread_key_create mislukt\n",
               "pt" => "pânico: falha em pthread_key_create\n",
               "ru" => "паника: сбой pthread_key_create\n",
+              "sr" => "паника: pthread_key_create није успео\n",
               "tr" => "panic: pthread_key_create başarısız oldu\n",
               "uk" => "паніка: виклик pthread_key_create завершився невдало\n"
             },
@@ -69546,6 +71182,7 @@ $CONF = {
               "nl" => "panic: pthread_getspecific, fout=%{arg1}",
               "pt" => "panic: pthread_getspecific, erro=%{arg1}",
               "ru" => "паника: pthread_getspecific, ошибка=%{arg1}",
+              "sr" => "паника: pthread_getspecific, грешка=%{arg1}",
               "tr" => "panic: pthread_getspecific, hata=%{arg1}",
               "uk" => "паніка: pthread_getspecific, помилка=%{arg1}"
             },
@@ -69595,6 +71232,7 @@ $CONF = {
               "nl" => "panic: %{file}: %{line}: thread %{thread}: mutex '%{name}' (%{mutex}): poging om een mutex te ontgrendelen waarvan deze thread geen eigenaar is; %{reliable}%{readers} threads hebben leesvergrendelingen, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "pt" => "pânico: %{file}: %{line}: Thread %{thread}: Mutex '%{name}' (%{mutex}): tentativa de desbloquear um mutex que não pertence a esta thread; %{reliable}%{readers} threads têm bloqueios de leitura, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): Попытка разблокировать мьютекс, которым поток не владеет; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): Покушај откључавања mutex-а који није у власништву нити; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: İş parçacığı %{thread}: Mutex '%{name}' (%{mutex}): Sahip olunmayan mutex kilidi açılmaya çalışılıyor; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Спроба розблокувати м'ютекс, яким потік не володіє; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
@@ -69684,6 +71322,7 @@ $CONF = {
               "nl" => "interne fout: MUTEX_INIT [%{arg1}:%{arg2}]",
               "pt" => "pânico: MUTEX_INIT [%{arg1}:%{arg2}]",
               "ru" => "паника: MUTEX_INIT [%{arg1}:%{arg2}]",
+              "sr" => "паника: MUTEX_INIT [%{arg1}:%{arg2}]",
               "tr" => "panic: MUTEX_INIT [%{arg1}:%{arg2}]",
               "uk" => "паніка: MUTEX_INIT [%{arg1}:%{arg2}]"
             },
@@ -69738,6 +71377,7 @@ $CONF = {
               "nl" => "panic: %{file}: %{line}: thread %{thread}: mutex '%{name}' (%{mutex}): verhogen mislukt omdat %{condition} waar is; %{reliable}%{readers} threads hebben leesvergrendelingen, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "pt" => "pânico: %{file}: %{line}: Thread %{thread}: Mutex '%{name}' (%{mutex}): falha ao incrementar porque %{condition} é verdadeiro; %{reliable}%{readers} threads têm bloqueios de leitura, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): Не удалось увеличить счётчик, поскольку условие %{condition} истинно; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): Увећање није успело јер је %{condition} тачно; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: İş parçacığı %{thread}: Mutex '%{name}' (%{mutex}): %{condition} doğru olduğu için artırma başarısız oldu; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Збільшення лічильника не вдалося, оскільки умова %{condition} істинна; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
@@ -69832,6 +71472,7 @@ $CONF = {
               "nl" => "panic: %{file}: %{line}: thread %{thread}: mutex '%{name}' (%{mutex}): xcounter van deze thread < 0; %{reliable}%{readers} threads hebben leesvergrendelingen, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "pt" => "pânico: %{file}: %{line}: Thread %{thread}: Mutex '%{name}' (%{mutex}): xcounter desta thread inferior a 0; %{reliable}%{readers} threads têm bloqueios de leitura, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): У этого потока xcounter < 0; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): xcounter ове нити је < 0; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: İş parçacığı %{thread}: Mutex '%{name}' (%{mutex}): Bu iş parçacığının xcounter değeri < 0; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник xcounter цього потоку < 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
@@ -69921,6 +71562,7 @@ $CONF = {
               "nl" => "panic: %{file}: %{line}: thread %{thread}: mutex '%{name}' (%{mutex}): aantal leesvergrendelingen van deze thread < 0; %{reliable}%{readers} threads hebben leesvergrendelingen, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "pt" => "pânico: %{file}: %{line}: Thread %{thread}: Mutex '%{name}' (%{mutex}): contador de bloqueios de leitura desta thread inferior a 0; %{reliable}%{readers} threads têm bloqueios de leitura, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): Число блокировок на чтение у этого потока < 0; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): Бројач браве за читање ове нити је < 0; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: İş parçacığı %{thread}: Mutex '%{name}' (%{mutex}): Bu iş parçacığının okuma kilidi sayısı < 0; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник блокувань читання цього потоку < 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
@@ -70010,6 +71652,7 @@ $CONF = {
               "nl" => "panic: %{file}: %{line}: thread %{thread}: mutex '%{name}' (%{mutex}): rcounter van deze thread <= 0; %{reliable}%{readers} threads hebben leesvergrendelingen, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "pt" => "pânico: %{file}: %{line}: Thread %{thread}: Mutex '%{name}' (%{mutex}): rcounter desta thread inferior ou igual a 0; %{reliable}%{readers} threads têm bloqueios de leitura, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): У этого потока rcounter <= 0; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): rcounter ове нити је <= 0; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: Thread %{thread}: Mutex '%{name}' (%{mutex}): Bu iş parçacığının rcounter değeri <= 0; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник rcounter цього потоку <= 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
@@ -70099,6 +71742,7 @@ $CONF = {
               "nl" => "panic: %{file}: %{line}: thread %{thread}: mutex '%{name}' (%{mutex}): poging om een niet-exclusieve vergrendeling om te zetten naar een exclusieve; %{reliable}%{readers} threads hebben leesvergrendelingen, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "pt" => "pânico: %{file}: %{line}: Thread %{thread}: Mutex '%{name}' (%{mutex}): tentativa de converter um bloqueio não exclusivo em exclusivo; %{reliable}%{readers} threads têm bloqueios de leitura, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): Попытка преобразовать неисключительную блокировку в исключительную; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): Покушај конверзије неексклузивне браве у ексклузивну; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panik: %{file}: %{line}: İş parçacığı %{thread}: Mutex '%{name}' (%{mutex}): Paylaşımlı kilit özel kilide dönüştürülmeye çalışılıyor; üzerinde %{reliable}%{readers} iş parçacığının okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Спроба перетворити невиключне блокування на виключне; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
@@ -70188,6 +71832,7 @@ $CONF = {
               "nl" => "panic: %{file}: %{line}: thread %{thread}: mutex '%{name}' (%{mutex}): aantal schrijfvergrendelingen van deze thread < 0; %{reliable}%{readers} threads hebben leesvergrendelingen, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "pt" => "pânico: %{file}: %{line}: Thread %{thread}: Mutex '%{name}' (%{mutex}): contador de bloqueios de escrita desta thread inferior a 0; %{reliable}%{readers} threads têm bloqueios de leitura, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "ru" => "паника: %{file}: %{line}: Поток %{thread}: Мьютекс '%{name}' (%{mutex}): Число блокировок на запись у этого потока < 0; число потоков с блокировкой на чтение: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
+              "sr" => "паника: %{file}: %{line}: нит %{thread}: Mutex '%{name}' (%{mutex}): Бројач браве за писање ове нити је < 0; %{reliable}%{readers} нити имају браве за читање на њој, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "tr" => "panic: %{file}: %{line}: Thread %{thread}: Mutex '%{name}' (%{mutex}): Bu iş parçacığının yazma kilidi sayısı < 0; %{reliable}%{readers} iş parçacığının bu mutex üzerinde okuma kilidi var, xcounter=%{xcounter}, rcounter=%{rcounter}\n",
               "uk" => "паніка: %{file}: %{line}: Потік %{thread}: М'ютекс '%{name}' (%{mutex}): Лічильник блокувань запису цього потоку < 0; кількість потоків із блокуваннями читання цього м'ютекса: %{reliable}%{readers}, xcounter=%{xcounter}, rcounter=%{rcounter}\n"
             },
@@ -70277,6 +71922,7 @@ $CONF = {
               "nl" => "panic: to_upper_title_latin1 verwachtte niet dat '%{arg2}' naar '%{arg3}' werd omgezet",
               "pt" => "panic: to_upper_title_latin1 não esperava que '%{arg2}' fosse convertido em '%{arg3}'",
               "ru" => "Внутренняя ошибка: to_upper_title_latin1 не ожидала преобразования '%{arg2}' в '%{arg3}'",
+              "sr" => "паника: to_upper_title_latin1 није очекивао да се '%{arg2}' преслика у '%{arg3}'",
               "tr" => "panic: to_upper_title_latin1, '%{arg2}' karakterinin '%{arg3}' karakterine eşlenmesini beklemiyordu",
               "uk" => "паніка: to_upper_title_latin1 не очікувала відображення '%{arg2}' у '%{arg3}'"
             },
@@ -70332,6 +71978,7 @@ $CONF = {
               "nl" => "panic: '_charnames::_loose_regcomp_lookup' niet gevonden",
               "pt" => "pânico: não foi possível encontrar '_charnames::_loose_regcomp_lookup",
               "ru" => "panic: Не удалось найти '_charnames::_loose_regcomp_lookup",
+              "sr" => "паника: није пронађена функција '_charnames::_loose_regcomp_lookup'",
               "tr" => "panic: '_charnames::_loose_regcomp_lookup' bulunamadı",
               "uk" => "паніка: не вдалося знайти '_charnames::_loose_regcomp_lookup"
             },
@@ -70376,6 +72023,7 @@ $CONF = {
               "nl" => "panic: '_charnames::_get_names_info' niet gevonden",
               "pt" => "pânico: não foi possível encontrar '_charnames::_get_names_info",
               "ru" => "panic: Не удалось найти '_charnames::_get_names_info",
+              "sr" => "паника: није пронађена функција '_charnames::_get_names_info'",
               "tr" => "panic: '_charnames::_get_names_info' bulunamadı",
               "uk" => "паніка: не вдалося знайти '_charnames::_get_names_info"
             },
@@ -70419,6 +72067,7 @@ $CONF = {
               "nl" => "panic: poging om aan inversielijst toe te voegen zonder aan het einde te staan, final=%{final}, start=%{start}, match=%{match}",
               "pt" => "panic: tentativa de acrescentar a uma lista de inversão sem estar no fim da lista, final = %{final}, início = %{start}, correspondência = %{match}",
               "ru" => "паника: попытка добавить элемент в конец списка инверсий, находясь не в конце списка, final = %{final}, start = %{start}, match = %{match}",
+              "sr" => "паника: покушај додавања у инверзну листу, али није био на крају листе, final = %{final}, start = %{start}, match = %{match}",
               "tr" => "panic: bir tersleme listesine ekleme yapılmaya çalışıldı, ancak listenin sonunda değildi; final = %{final}, start = %{start}, match = %{match}",
               "uk" => "паніка: спроба додати елемент до інверсійного списку поза кінцем списку, final = %{final}, start = %{start}, match = %{match}"
             },
@@ -70478,6 +72127,7 @@ $CONF = {
               "nl" => "panic: onjuiste versie van eerder gegenereerde inversielijst",
               "pt" => "pânico: versão incorreta de uma lista de inversão gerada anteriormente",
               "ru" => "panic: Неверная версия ранее сгенерированного инверсионного списка",
+              "sr" => "паника: погрешна верзија претходно генерисане инверзионе листе",
               "tr" => "panic: önceden oluşturulmuş tersleme listesinin sürümü yanlış",
               "uk" => "паніка: неправильна версія раніше згенерованого списку інверсій"
             },
@@ -70521,6 +72171,7 @@ $CONF = {
               "nl" => "panic: utf16_to_utf8%{direction}: oneven bytelengte %{length}",
               "pt" => "panic: utf16_to_utf8%{direction}: comprimento em bytes ímpar %{length}",
               "ru" => "паника: utf16_to_utf8%{direction}: нечётная длина в байтах %{length}",
+              "sr" => "паника: utf16_to_utf8%{direction}: непаран број бајтова %{length}",
               "tr" => "panic: utf16_to_utf8%{direction}: bayt uzunluğu tek sayı: %{length}",
               "uk" => "паніка: utf16_to_utf8%{direction}: непарна довжина в байтах %{length}"
             },
@@ -70576,6 +72227,7 @@ $CONF = {
               "nl" => "panic: utf16_textfilter aangeroepen in blokmodus (maxlen=%{arg2})",
               "pt" => "panic: utf16_textfilter chamado em modo de bloco (maxlen=%{arg2})",
               "ru" => "Внутренняя ошибка: utf16_textfilter вызвана в блочном режиме (maxlen=%{arg2})",
+              "sr" => "паника: utf16_textfilter је позван у режиму блока (maxlen=%{arg2})",
               "tr" => "panic: utf16_textfilter blok kipinde çağrıldı (maxlen=%{arg2})",
               "uk" => "паніка: utf16_textfilter викликано в блоковому режимі (maxlen=%{arg2})"
             },
@@ -70626,6 +72278,7 @@ $CONF = {
               "nl" => "panic: utf16_textfilter aangeroepen na fout (status=%{arg1})",
               "pt" => "panic: utf16_textfilter chamado após um erro (status=%{arg1})",
               "ru" => "паника: utf16_textfilter вызвана после ошибки (status=%{arg1})",
+              "sr" => "паника: utf16_textfilter је позван након грешке (status=%{arg1})",
               "tr" => "panic: utf16_textfilter bir hatadan sonra çağrıldı (status=%{arg1})",
               "uk" => "паніка: utf16_textfilter викликано після помилки (status=%{arg1})"
             },
@@ -70676,6 +72329,7 @@ $CONF = {
               "nl" => "panic: sv_pos_b2u: ongeldige byte-offset, blen=%{arg1}, byte=%{arg2}",
               "pt" => "panic: sv_pos_b2u: deslocamento de bytes inválido, blen=%{arg1}, byte=%{arg2}",
               "ru" => "паника: sv_pos_b2u: недопустимое байтовое смещение, blen=%{arg1}, byte=%{arg2}",
+              "sr" => "паника: sv_pos_b2u: неисправан бајтни померај, blen=%{arg1}, byte=%{arg2}",
               "tr" => "panic: sv_pos_b2u: geçersiz bayt konumu, blen=%{arg1}, byte=%{arg2}",
               "uk" => "паніка: sv_pos_b2u: неправильне байтове зміщення, blen=%{arg1}, byte=%{arg2}"
             },
@@ -70731,6 +72385,7 @@ $CONF = {
               "nl" => "panic: %{function} cache %{cached} werkelijk %{real} voor %{value}",
               "pt" => "panic: cache %{function} %{cached}, real %{real}, para %{value}",
               "ru" => "паника: %{function}: в кеше %{cached}, фактически %{real} для %{value}",
+              "sr" => "паника: %{function} кеш %{cached}, стварно %{real} за %{value}",
               "tr" => "panic: %{function} önbellek %{cached}, gerçek %{real}; %{value} için",
               "uk" => "паніка: %{function}: кешоване значення %{cached}, фактичне %{real} для %{value}"
             },
@@ -70796,6 +72451,7 @@ $CONF = {
               "nl" => "panic: onverwachte case-waarde in utf8_to_uv_msgs() %{problem}",
               "pt" => "panic: valor de caso inesperado em utf8_to_uv_msgs(): %{problem}",
               "ru" => "паника: неожиданное значение case в utf8_to_uv_msgs() %{problem}",
+              "sr" => "паника: неочекивана вредност у случају у utf8_to_uv_msgs() %{problem}",
               "tr" => "panic: utf8_to_uv_msgs() içinde beklenmeyen durum değeri: %{problem}",
               "uk" => "паніка: неочікуване значення гілки в utf8_to_uv_msgs() %{problem}"
             },
@@ -70889,6 +72545,10 @@ $CONF = {
                 "few" => "паника: начало перехода вперёд (0x%{arg1}) находится на %{arg2} байта за допустимой конечной позицией (0x%{arg3})",
                 "one" => "паника: начало перехода вперёд (0x%{arg1}) находится на %{arg2} байт за допустимой конечной позицией (0x%{arg3})"
               },
+              "sr" => {
+                "*" => "паника: почетак унапредног скока (0x%{arg1}) је %{arg2} бајтова иза дозвољеног крајњег положаја (0x%{arg3})",
+                "one" => "паника: почетак унапредног скока (0x%{arg1}) је 1 бајт иза дозвољеног крајњег положаја (0x%{arg3})"
+              },
               "tr" => {
                 "*" => "panik: İleri sıçramanın başlangıcı (0x%{arg1}), geçerli son konumun (0x%{arg3}) %{arg2} bayt ötesinde"
               },
@@ -70960,6 +72620,7 @@ $CONF = {
               "nl" => "panic: force_out_malformed_utf8_message_ mag alleen worden aangeroepen als fouten zijn gevonden",
               "pt" => "panic: force_out_malformed_utf8_message_ só deve ser chamado quando forem detetados erros",
               "ru" => "паника: force_out_malformed_utf8_message_ следует вызывать только при обнаружении ошибок",
+              "sr" => "паника: force_out_malformed_utf8_message_ треба позвати само када су пронађене грешке",
               "tr" => "panic: force_out_malformed_utf8_message_ yalnızca hata bulunduğunda çağrılmalıdır",
               "uk" => "паніка: force_out_malformed_utf8_message_ слід викликати лише тоді, коли виявлено помилки"
             },
@@ -71004,6 +72665,7 @@ $CONF = {
               "nl" => "panic: onverwacht geen decimaal scheidingsteken gevonden in '%{arg1}'",
               "pt" => "panic: não foi encontrado o separador decimal esperado em '%{arg1}'",
               "ru" => "Внутренняя ошибка: в '%{arg1}' неожиданно не обнаружена точка — десятичный разделитель",
+              "sr" => "паника: неочекивано није пронађен знак тачке за радикс у „%{arg1}“",
               "tr" => "panic: '%{arg1}' içinde nokta radix karakteri beklenmedik biçimde bulunamadı",
               "uk" => "паніка: несподівано не знайдено крапку як десятковий роздільник у '%{arg1}'"
             },
@@ -71052,6 +72714,7 @@ $CONF = {
               "nl" => "Kan verdomme niet forken\n",
               "pt" => "Não é possível executar fork, raios\n",
               "ru" => "Чёрт возьми, не удаётся выполнить fork\n",
+              "sr" => "Не може проклето да се покрене fork\n",
               "tr" => "Lanet olsun, fork yapılamıyor\n",
               "uk" => "Не вдається виконати клятий fork\n"
             },
@@ -71095,6 +72758,7 @@ $CONF = {
               "nl" => "Pauzeren niet geïmplementeerd\n",
               "pt" => "pause não está implementada\n",
               "ru" => "Вызов pause не реализован\n",
+              "sr" => "Пауза није имплементирана\n",
               "tr" => "Pause uygulanmamış\n",
               "uk" => "pause не реалізовано\n"
             },
@@ -71138,6 +72802,7 @@ $CONF = {
               "nl" => "Geen wait; probeer in plaats daarvan waitpid\n",
               "pt" => "wait não está disponível, tente usar waitpid\n",
               "ru" => "wait недоступен, попробуйте вместо него waitpid\n",
+              "sr" => "Нема wait; покушајте waitpid\n",
               "tr" => "wait kullanılamıyor, onun yerine waitpid deneyin\n",
               "uk" => "wait недоступний, спробуйте натомість waitpid\n"
             },
@@ -71181,6 +72846,7 @@ $CONF = {
               "nl" => "Onjuist proceduretype",
               "pt" => "Tipo de procedimento incorreto",
               "ru" => "Неверный тип процедуры",
+              "sr" => "Погрешан тип процедуре",
               "tr" => "Yanlış yordam türü",
               "uk" => "Неправильний тип процедури"
             },
@@ -71224,6 +72890,7 @@ $CONF = {
               "nl" => "Fout bij het instellen van BEGIN/ENDLIBPATH: %{error}\n",
               "pt" => "Erro ao definir BEGIN/ENDLIBPATH: %{error}\n",
               "ru" => "Ошибка установки BEGIN/ENDLIBPATH: %{error}\n",
+              "sr" => "Грешка при подешавању BEGIN/ENDLIBPATH: %{error}\n",
               "tr" => "BEGIN/ENDLIBPATH ayarlanırken hata: %{error}\n",
               "uk" => "Помилка встановлення BEGIN/ENDLIBPATH: %{error}\n"
             },
@@ -71273,6 +72940,7 @@ $CONF = {
               "nl" => "Geen uitvoerbestand na > of >> op de opdrachtregel",
               "pt" => "Falta o ficheiro de saída após > ou >> na linha de comandos",
               "ru" => "После > или >> в командной строке не указан выходной файл",
+              "sr" => "Нема излазне датотеке после > или >> у командној линији",
               "tr" => "Komut satırında > veya >> işaretinden sonra çıktı dosyası yok",
               "uk" => "У командному рядку після > або >> не вказано вихідного файлу"
             },
@@ -71316,6 +72984,7 @@ $CONF = {
               "nl" => "Geen uitvoerbestand na 2> of 2>> op de opdrachtregel",
               "pt" => "Falta o ficheiro de saída após 2> ou 2>> na linha de comandos",
               "ru" => "После 2> или 2>> в командной строке не указан выходной файл",
+              "sr" => "Нема излазне датотеке после 2> или 2>> у командној линији",
               "tr" => "Komut satırında 2> veya 2>> işaretinden sonra çıktı dosyası yok",
               "uk" => "Після 2> або 2>> у командному рядку не вказано файл виведення"
             },
@@ -71359,6 +73028,7 @@ $CONF = {
               "nl" => "Kan foutuitvoerbestand %{path} niet openen als stderr",
               "pt" => "Não é possível abrir o ficheiro de erros %{path} como stderr",
               "ru" => "Не удалось открыть файл для вывода ошибок %{path} как stderr",
+              "sr" => "Није могуће отворити датотеку грешака %{path} као stderr",
               "tr" => "%{path} hata dosyası stderr olarak açılamıyor",
               "uk" => "Не вдалося відкрити файл помилок %{path} як stderr"
             },
@@ -71408,6 +73078,7 @@ $CONF = {
               "nl" => "Geen invoerbestand na < op de opdrachtregel",
               "pt" => "Falta o ficheiro de entrada após < na linha de comandos",
               "ru" => "После < в командной строке не указан входной файл",
+              "sr" => "Нема улазне датотеке после < у командној линији",
               "tr" => "Komut satırında < işaretinden sonra girdi dosyası yok",
               "uk" => "У командному рядку після < не вказано вхідного файлу"
             },
@@ -71451,6 +73122,7 @@ $CONF = {
               "nl" => "Kan invoerbestand %{path} niet openen als stdin",
               "pt" => "Não é possível abrir o ficheiro de entrada %{path} como stdin",
               "ru" => "Не удалось открыть входной файл %{path} как stdin",
+              "sr" => "Није могуће отворити улазну датотеку %{path} као stdin",
               "tr" => "%{path} girdi dosyası stdin olarak açılamıyor",
               "uk" => "Не вдалося відкрити вхідний файл %{path} як stdin"
             },
@@ -71500,6 +73172,7 @@ $CONF = {
               "nl" => "Kan invoerpipe (naam: %{pipe}) niet opnieuw openen in binaire modus",
               "pt" => "Não é possível reabrir o pipe de entrada (nome: %{pipe}) em modo binário",
               "ru" => "Не удалось повторно открыть входной канал (имя: %{pipe}) в двоичном режиме",
+              "sr" => "Није могуће поново отворити улазни цевовод (назив: %{pipe}) у бинарном режиму",
               "tr" => "Girdi pipe'ı (ad: %{pipe}) ikili kipte yeniden açılamıyor",
               "uk" => "Не вдалося повторно відкрити вхідний канал (ім’я: %{pipe}) у двійковому режимі"
             },
@@ -71549,6 +73222,7 @@ $CONF = {
               "nl" => "Geen uitvoerbestand na > op de opdrachtregel",
               "pt" => "Falta o ficheiro de saída após > na linha de comandos",
               "ru" => "После > в командной строке не указан выходной файл",
+              "sr" => "Нема излазне датотеке после > у командној линији",
               "tr" => "Komut satırında > işaretinden sonra çıktı dosyası yok",
               "uk" => "Після > у командному рядку не вказано файл виведення"
             },
@@ -71592,6 +73266,7 @@ $CONF = {
               "nl" => "Kan uitvoerbestand %{path} niet openen als stdout",
               "pt" => "Não é possível abrir o ficheiro de saída %{path} como stdout",
               "ru" => "Не удалось открыть выходной файл %{path} как stdout",
+              "sr" => "Није могуће отворити излазну датотеку %{path} као stdout",
               "tr" => "%{path} çıktı dosyası stdout olarak açılamıyor",
               "uk" => "Не вдалося відкрити вихідний файл %{path} як stdout"
             },
@@ -71641,6 +73316,7 @@ $CONF = {
               "nl" => "Geen opdracht op de opdrachtregel om de uitvoer via een pipe naartoe te sturen",
               "pt" => "Falta na linha de comandos o comando para o qual encaminhar a saída através de um pipe",
               "ru" => "В командной строке не указана команда для передачи вывода через канал",
+              "sr" => "Нема команде у коју би се проследио излаз у командној линији",
               "tr" => "Komut satırında pipe yapılacak komut yok",
               "uk" => "У командному рядку не вказано команди, якій слід передати вивід через канал"
             },
@@ -71684,6 +73360,7 @@ $CONF = {
               "nl" => "'|' en '>' mogen niet allebei op de opdrachtregel worden opgegeven",
               "pt" => "'|' e '>' não podem ser especificados simultaneamente na linha de comandos",
               "ru" => "Нельзя одновременно указывать '|' и '>' в командной строке",
+              "sr" => "„|“ и „>“ не могу оба бити наведена у командној линији",
               "tr" => "Komut satırında '|' ve '>' birlikte belirtilemez",
               "uk" => "У командному рядку не можна одночасно вказувати '|' і '>'"
             },
@@ -71727,6 +73404,7 @@ $CONF = {
               "nl" => "vms_image_init: \$getjpiw weigert de bytelengtes van RIGHTSLIST (vereist=%{rights_bytes}, buffer=%{buffer_bytes}).\nControleer uw rechtendatabase op beschadiging.\n",
               "pt" => "vms_image_init: \$getjpiw recusa os comprimentos em bytes de RIGHTSLIST (necessário=%{rights_bytes}, buffer=%{buffer_bytes}).\nVerifique se a sua base de dados de direitos está corrompida.\n",
               "ru" => "vms_image_init: \$getjpiw не принимает длины RIGHTSLIST в байтах (требуется=%{rights_bytes}, буфер=%{buffer_bytes}).\nПроверьте базу данных прав доступа на наличие повреждений.\n",
+              "sr" => "vms_image_init: \$getjpiw одбија дужине бајтова RIGHTSLIST (потребно=%{rights_bytes}, бафер=%{buffer_bytes}).\nПроверите да ли је база права оштећена.\n",
               "tr" => "vms_image_init: \$getjpiw RIGHTSLIST bayt uzunluklarını kabul etmiyor (gerekli=%{rights_bytes}, arabellek=%{buffer_bytes}).\nHaklar veritabanınızda bozulma olup olmadığını kontrol edin.\n",
               "uk" => "vms_image_init: \$getjpiw відхиляє довжини RIGHTSLIST у байтах (потрібно=%{rights_bytes}, буфер=%{buffer_bytes}).\nПеревірте базу даних прав доступу на наявність пошкоджень.\n"
             },
@@ -71781,6 +73459,7 @@ $CONF = {
               "nl" => "Kan \@INC-element \"%{path}\" niet naar Unix-notatie omzetten\n",
               "pt" => "Falha ao converter o elemento \"%{path}\" de \@INC para o formato Unix\n",
               "ru" => "Не удалось преобразовать элемент \@INC \"%{path}\" в формат Unix\n",
+              "sr" => "Неуспела конверзија елемента \@INC „%{path}“ у Unix формат\n",
               "tr" => "\@INC öğesi \"%{path}\" Unix biçimine dönüştürülemedi\n",
               "uk" => "Не вдалося перетворити елемент \@INC \"%{path}\" у формат Unix\n"
             },
@@ -71831,6 +73510,7 @@ $CONF = {
               "nl" => "Signaal SIG%{signal} ontvangen, maar er is geen signaalhandler ingesteld.\n",
               "pt" => "Sinal SIG%{signal} recebido, mas não há nenhum tratador de sinais definido.\n",
               "ru" => "Получен сигнал SIG%{signal}, но обработчик сигнала не установлен.\n",
+              "sr" => "Примљен је сигнал SIG%{signal}, али није постављен обрађивач сигнала.\n",
               "tr" => "SIG%{signal} sinyali alındı, ancak sinyal işleyicisi ayarlanmamış.\n",
               "uk" => "Отримано сигнал SIG%{signal}, але обробник сигналу не встановлено.\n"
             },
@@ -71881,6 +73561,7 @@ $CONF = {
               "nl" => "%{name}%{separator}[Geen beschrijving gevonden in OSO001.MSG]",
               "pt" => "%{name}%{separator}[Nenhuma descrição encontrada em OSO001.MSG]",
               "ru" => "%{name}%{separator}[Описание не найдено в OSO001.MSG]",
+              "sr" => "%{name}%{separator}[У OSO001.MSG није пронађен опис]",
               "tr" => "%{name}%{separator}[OSO001.MSG içinde açıklama bulunamadı]",
               "uk" => "%{name}%{separator}[Опис не знайдено в OSO001.MSG]"
             },
@@ -71937,6 +73618,7 @@ $CONF = {
               "nl" => "%{error}, mogelijk problematische module: '%{module}'",
               "pt" => "%{error}, módulo possivelmente problemático: '%{module}'",
               "ru" => "%{error}, возможно, проблема в модуле: '%{module}'",
+              "sr" => "%{error}, могуће проблематичан модул: „%{module}’",
               "tr" => "%{error}, sorunlu olabilecek modül: '%{module}'",
               "uk" => "%{error}, можливо, проблемний модуль: '%{module}'"
             },
@@ -71992,6 +73674,7 @@ $CONF = {
               "nl" => "kon niet starten",
               "pt" => "não foi possível iniciar",
               "ru" => "не удалось запустить",
+              "sr" => "није могло да се покрене",
               "tr" => "başlatılamadı",
               "uk" => "не вдалося запустити"
             },
@@ -72036,6 +73719,7 @@ $CONF = {
               "nl" => "losgekoppeld",
               "pt" => "desassociada",
               "ru" => "отсоединён",
+              "sr" => "одвојена",
               "tr" => "bağlantısı kesildi",
               "uk" => "від’єднаний"
             },
@@ -72080,6 +73764,7 @@ $CONF = {
               "nl" => "beëindigd",
               "pt" => "terminada",
               "ru" => "завершён",
+              "sr" => "завршила",
               "tr" => "sonlandı",
               "uk" => "завершився"
             },
@@ -72124,6 +73809,7 @@ $CONF = {
               "nl" => "beëindigd, daarna op gewacht",
               "pt" => "terminada, depois aguardada",
               "ru" => "завершён, затем выполнено ожидание завершения",
+              "sr" => "завршила, па је сачекана",
               "tr" => "sonlandı, ardından beklendi",
               "uk" => "завершився, потім дочекалися його завершення"
             },
@@ -72168,6 +73854,7 @@ $CONF = {
               "nl" => "actief",
               "pt" => "em execução",
               "ru" => "выполняется",
+              "sr" => "ради",
               "tr" => "çalışıyor",
               "uk" => "виконується"
             },
@@ -72212,6 +73899,7 @@ $CONF = {
               "nl" => "niet geïnitialiseerd",
               "pt" => "não inicializada",
               "ru" => "не инициализирован",
+              "sr" => "неиницијализована",
               "tr" => "başlatılmadı",
               "uk" => "неініціалізований"
             },
@@ -72256,6 +73944,7 @@ $CONF = {
               "nl" => "onbekende threadstatus %{state}",
               "pt" => "estado de thread desconhecido: %{state}",
               "ru" => "неизвестное состояние потока %{state}",
+              "sr" => "непознато стање нити %{state}",
               "tr" => "bilinmeyen iş parçacığı durumu: %{state}",
               "uk" => "невідомий стан потоку %{state}"
             },
@@ -72306,6 +73995,7 @@ $CONF = {
               "nl" => "op gewacht",
               "pt" => "aguardada",
               "ru" => "ожидание завершения выполнено",
+              "sr" => "сачекано",
               "tr" => "beklendi",
               "uk" => "дочекалися його завершення"
             },
@@ -72350,6 +74040,7 @@ $CONF = {
               "nl" => "Expressie: %{expression}\n",
               "pt" => "Expressão: %{expression}\n",
               "ru" => "Выражение: %{expression}\n",
+              "sr" => "Израз: %{expression}\n",
               "tr" => "İfade: %{expression}\n",
               "uk" => "Вираз: %{expression}\n"
             },
@@ -72400,6 +74091,7 @@ $CONF = {
               "nl" => "Waarschuwing: kan bestandshandle %{handle} niet correct sluiten.\n",
               "pt" => "Aviso: não foi possível fechar corretamente o identificador de ficheiro %{handle}.\n",
               "ru" => "Предупреждение: не удалось корректно закрыть файловый дескриптор %{handle}.\n",
+              "sr" => "Упозорење: није могуће правилно затворити руковалац датотеке %{handle}.\n",
               "tr" => "Uyarı: %{handle} dosya tanıtıcısı düzgün biçimde kapatılamadı.\n",
               "uk" => "Попередження: не вдалося належним чином закрити файловий дескриптор %{handle}.\n"
             },
@@ -72451,6 +74143,7 @@ $CONF = {
               "nl" => "Kan de buffer van stdout niet leegschrijven: %{error}\n",
               "pt" => "Não foi possível descarregar o buffer de stdout: %{error}\n",
               "ru" => "Не удалось сбросить буфер stdout: %{error}\n",
+              "sr" => "Није могуће испразнити stdout: %{error}\n",
               "tr" => "stdout boşaltılamadı: %{error}\n",
               "uk" => "Не вдалося скинути буфер stdout: %{error}\n"
             },
@@ -72501,6 +74194,7 @@ $CONF = {
               "nl" => "waarschuwing: DosSetExceptionHandler rc=%{status}=%{status_hex}\n",
               "pt" => "aviso: DosSetExceptionHandler rc=%{status}=%{status_hex}\n",
               "ru" => "предупреждение: DosSetExceptionHandler rc=%{status}=%{status_hex}\n",
+              "sr" => "упозорење: DosSetExceptionHandler rc=%{status}=%{status_hex}\n",
               "tr" => "uyarı: DosSetExceptionHandler rc=%{status}=%{status_hex}\n",
               "uk" => "попередження: DosSetExceptionHandler rc=%{status}=%{status_hex}\n"
             },
@@ -72556,6 +74250,7 @@ $CONF = {
               "nl" => "waarschuwing: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n",
               "pt" => "aviso: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n",
               "ru" => "предупреждение: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n",
+              "sr" => "упозорење: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n",
               "tr" => "uyarı: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n",
               "uk" => "попередження: DosUnsetExceptionHandler rc=%{status}=%{status_hex}\n"
             },
@@ -72614,6 +74309,7 @@ $CONF = {
               "nl" => "Mogelijk ontbreekt een operator vóór \"%{context}\".",
               "pt" => "Pode faltar um operador antes de \"%{context}\".",
               "ru" => "Возможно, перед \"%{context}\" пропущен оператор.",
+              "sr" => "Можда недостаје оператор испред „%{context}“.",
               "tr" => "\"%{context}\" öncesinde bir işleç eksik olabilir.",
               "uk" => "Можливо, перед \"%{context}\" пропущено оператор."
             },
@@ -72685,6 +74381,7 @@ $CONF = {
               "nl" => "Mogelijk ontbreekt er een puntkomma op de vorige regel.",
               "pt" => "Pode faltar um ponto e vírgula na linha anterior.",
               "ru" => "Возможно, в предыдущей строке пропущена точка с запятой.",
+              "sr" => "Можда недостаје тачка-зарез у претходном реду.",
               "tr" => "Önceki satırda noktalı virgül eksik olabilir.",
               "uk" => "Можливо, у попередньому рядку пропущено крапку з комою."
             },
@@ -72736,6 +74433,7 @@ $CONF = {
               "nl" => "Mogelijk moet u \"%{name}\" vooraf declareren.",
               "pt" => "Poderá ser necessário declarar \"%{name}\" antecipadamente.",
               "ru" => "Возможно, необходимо предварительно объявить \"%{name}\".",
+              "sr" => "Можда треба унапред декларисати „%{name}“.",
               "tr" => "\"%{name}\" için önceden bildirim yapmanız gerekebilir.",
               "uk" => "Можливо, потрібно попередньо оголосити \"%{name}\"."
             },
@@ -72941,6 +74639,16 @@ $CONF = {
                 "number" => "Обнаружено число там, где ожидался оператор",
                 "scalar" => "Обнаружен скаляр там, где ожидался оператор"
               },
+              "sr" => {
+                "array" => "Низ је пронађен тамо где се очекује оператор",
+                "array_length" => "Дужина низа је пронађена тамо где се очекује оператор",
+                "backslash" => "Обрнута коса црта је пронађена тамо где се очекује оператор",
+                "backticks" => "Грависи су пронађени тамо где се очекује оператор",
+                "bareword" => "Гола реч је пронађена тамо где се очекује оператор",
+                "number" => "Број је пронађен тамо где се очекује оператор",
+                "scalar" => "Скалар је пронађен тамо где се очекује оператор",
+                "string" => "Ниска је пронађена тамо где се очекује оператор"
+              },
               "tr" => {
                 "array" => "İşlemci beklendiği yerde dizi bulundu",
                 "array_length" => "İşlemci beklendiği yerde dizi uzunluğu bulundu",
@@ -73027,6 +74735,7 @@ $CONF = {
               "nl" => "  (Mogelijk is een meerregelige %{open}%{close}-tekenreeks niet afgesloten, begonnen op regel %{line})\n",
               "pt" => "  (Poderá tratar-se de uma string %{open}%{close} multilinha não terminada, iniciada na linha %{line})\n",
               "ru" => "  (Возможно, многострочная строка %{open}%{close}, начинающаяся в строке %{line}, не завершена)\n",
+              "sr" => "  (Можда је у питању вишелинијски %{open}%{close} ниска-запис који се протеже од реда %{line})\n",
               "tr" => "  (Kaçak bir çok satırlı %{open}%{close} dizgesi olabilir; %{line}. satırda başlamış olabilir)\n",
               "uk" => "  (Можливо, багаторядковий рядок %{open}%{close}, що починається в рядку %{line}, не закрито)\n"
             },
@@ -73142,6 +74851,10 @@ $CONF = {
               "ru" => {
                 "*" => "\t%{name} = \"%{value}\"%{separator}\n",
                 "absent" => "\t%{name} = (не задано)%{separator}\n"
+              },
+              "sr" => {
+                "absent" => "\t%{name} = (није постављено)%{separator}\n",
+                "present" => "\t%{name} = „%{value}“%{separator}\n"
               },
               "tr" => {
                 "absent" => "\t%{name} = (ayarlanmamış)%{separator}\n",
@@ -73277,6 +74990,11 @@ $CONF = {
                 "standard" => "стандартную локаль (\"%{name}\")\n",
                 "system" => "системную локаль по умолчанию (\"%{name}\")\n"
               },
+              "sr" => {
+                "fallback" => "резервни локал („%{name}“)\n",
+                "standard" => "стандардни локал („%{name}“)\n",
+                "system" => "подразумевани системски локал („%{name}“)\n"
+              },
               "tr" => {
                 "fallback" => "yedek yerel ayar (\"%{name}\")\n",
                 "standard" => "standart yerel ayar (\"%{name}\")\n",
@@ -73343,6 +75061,7 @@ $CONF = {
               "nl" => "Stackafwikkeling uitgesteld",
               "pt" => "Desenrolamento da pilha adiado",
               "ru" => "Раскрутка стека отложена",
+              "sr" => "Одлагање одмотавања стека",
               "tr" => "Yığın geri sarma ertelendi",
               "uk" => "Розкручування стека відкладено"
             },
@@ -73390,6 +75109,7 @@ $CONF = {
               "nl" => "Kan destructor voor 0x%{arg2} niet aanroepen tijdens globale vernietiging\n",
               "pt" => "Não é possível chamar o destrutor de 0x%{arg2} durante a destruição global\n",
               "ru" => "Невозможно вызвать деструктор для 0x%{arg2} во время глобального уничтожения\n",
+              "sr" => "Не може се позвати деструктор за 0x%{arg2} током глобалног уништавања\n",
               "tr" => "Genel yıkım sırasında 0x%{arg2} için yıkıcı çağrılamıyor\n",
               "uk" => "Неможливо викликати деструктор для 0x%{arg2} під час глобального знищення\n"
             },
@@ -73481,6 +75201,10 @@ $CONF = {
               "ru" => {
                 "subroutine" => "Подпрограмма \"%{name}\" недоступна",
                 "variable" => "Переменная \"%{name}\" недоступна"
+              },
+              "sr" => {
+                "subroutine" => "Потпрограм „%{name}“ није доступан",
+                "variable" => "Променљива „%{name}“ није доступна"
               },
               "tr" => {
                 "subroutine" => "\"%{name}\" alt yordamı kullanılamıyor",
@@ -73591,6 +75315,10 @@ $CONF = {
                 "subroutine" => "Подпрограмма \"%{lexical_name}\" перестанет быть общей",
                 "variable" => "Переменная \"%{lexical_name}\" перестанет быть общей"
               },
+              "sr" => {
+                "subroutine" => "Потпрограм „%{lexical_name}“ неће остати дељен",
+                "variable" => "Променљива „%{lexical_name}“ неће остати дељена"
+              },
               "tr" => {
                 "subroutine" => "\"%{lexical_name}\" alt yordamı paylaşılan durumda kalmayacak",
                 "variable" => "\"%{lexical_name}\" değişkeni paylaşılan durumda kalmayacak"
@@ -73670,6 +75398,7 @@ $CONF = {
               "nl" => "%{err}",
               "pt" => "%{err}",
               "ru" => "%{err}",
+              "sr" => "%{err}",
               "tr" => "%{err}",
               "uk" => "%{err}"
             },
@@ -73703,8 +75432,24 @@ $CONF = {
           "is_render" => 1,
           "message" => {
             "templates" => {
+              "ar" => "تحذير: تعذّر تحميل حزمة لغة التشخيص '%{language}': %{error}\n",
+              "cy" => "Rhybudd: methu llwytho pecyn iaith diagnostig '%{language}': %{error}\n",
+              "de" => "Warnung: Diagnosesprachenpaket '%{language}' konnte nicht geladen werden: %{error}\n",
               "en" => "Warning: unable to load diagnostic language pack '%{language}': %{error}\n",
-              "fa" => "هشدار: بارگذاری بستهٔ زبان تشخیصی «%{language}» ممکن نشد: %{error}\n"
+              "es" => "Advertencia: no se pudo cargar el paquete de idioma de diagnóstico «%{language}»: %{error}\n",
+              "fa" => "هشدار: بارگذاری بستهٔ زبان تشخیصی «%{language}» ممکن نشد: %{error}\n",
+              "fi" => "Varoitus: diagnostiikkakielipaketin ”%{language}” lataaminen epäonnistui: %{error}\n",
+              "fr" => "Avertissement : impossible de charger le pack de langue de diagnostic « %{language} » : %{error}\n",
+              "he" => "אזהרה: טעינת חבילת השפה '%{language}' נכשלה: %{error}\n",
+              "hu" => "Figyelmeztetés: a(z) „%{language}” diagnosztikai nyelvi csomag betöltése nem sikerült: %{error}\n",
+              "is" => "Aðvörun: ekki tókst að hlaða inn greiningarmálapakkanum '%{language}': %{error}\n",
+              "it" => "Avviso: impossibile caricare il pacchetto linguistico della diagnostica '%{language}': %{error}\n",
+              "nl" => "Waarschuwing: laden van het diagnostische taalpakket '%{language}' is mislukt: %{error}\n",
+              "pt" => "Aviso: não foi possível carregar o pacote de idioma de diagnóstico '%{language}': %{error}\n",
+              "ru" => "Предупреждение: не удалось загрузить языковой пакет диагностики «%{language}»: %{error}\n",
+              "sr" => "Упозорење: није могуће учитати језички пакет за дијагностику „%{language}“: %{error}\n",
+              "tr" => "Uyarı: tanılama dil paketi '%{language}' yüklenemedi: %{error}\n",
+              "uk" => "Попередження: не вдалося завантажити мовний пакет діагностики «%{language}»: %{error}\n"
             },
             "args" => [
               {
@@ -73754,6 +75499,7 @@ $CONF = {
               "nl" => "%{arg1} verlaten via %{arg2}",
               "pt" => "A sair de %{arg1} através de %{arg2}",
               "ru" => "Выход из %{arg1} с помощью %{arg2}",
+              "sr" => "Излазак из %{arg1} преко %{arg2}",
               "tr" => "%{arg1} üzerinden %{arg2} ile çıkılıyor",
               "uk" => "Вихід із %{arg1} через %{arg2}"
             },
@@ -73808,6 +75554,7 @@ $CONF = {
               "nl" => "Gebruik van \@_ in %{arg1} met een subroutinesignatuur is experimenteel",
               "pt" => "A utilização de \@_ em %{arg1}, numa sub-rotina com assinatura, é experimental",
               "ru" => "Использование \@_ при %{arg1} в подпрограмме с сигнатурой является экспериментальной возможностью",
+              "sr" => "Употреба \@_ — %{arg1} — у потпрограму са потписом је експериментална",
               "tr" => "İmza kullanan bir alt yordamda %{arg1} bağlamında \@_ dizisinin kullanımı deneyseldir",
               "uk" => "Використання \@_ у %{arg1} в підпрограмі з сигнатурою є експериментальним"
             },
@@ -73845,6 +75592,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -73889,6 +75637,7 @@ $CONF = {
               "nl" => "Impliciet gebruik van \@_ in %{arg1} met een subroutinesignatuur is experimenteel",
               "pt" => "A utilização implícita de \@_ em %{arg1}, numa sub-rotina com assinatura, é experimental",
               "ru" => "Неявное использование \@_ при %{arg1} в подпрограмме с сигнатурой является экспериментальной возможностью",
+              "sr" => "Имплицитна употреба \@_ — %{arg1} — у потпрограму са потписом је експериментална",
               "tr" => "İmza kullanan bir alt yordamda %{arg1} bağlamında \@_ dizisinin örtük kullanımı deneyseldir",
               "uk" => "Неявне використання \@_ при %{arg1} у підпрограмі із сигнатурою є експериментальним"
             },
@@ -73932,6 +75681,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -73975,6 +75725,7 @@ $CONF = {
               "nl" => "Ingebouwde functie 'builtin::%{arg1}' is experimenteel",
               "pt" => "A função integrada 'builtin::%{arg1}' é experimental",
               "ru" => "Встроенная функция 'builtin::%{arg1}' является экспериментальной",
+              "sr" => "Уграђена функција 'builtin::%{arg1}' је експериментална",
               "tr" => "'builtin::%{arg1}' yerleşik işlevi deneyseldir",
               "uk" => "Вбудована функція 'builtin::%{arg1}' є експериментальною"
             },
@@ -74023,6 +75774,7 @@ $CONF = {
               "nl" => "ADJUST is experimenteel",
               "pt" => "ADJUST é experimental",
               "ru" => "Ключевое слово ADJUST является экспериментальным",
+              "sr" => "ADJUST је експерименталан",
               "tr" => "ADJUST deneyseldir",
               "uk" => "ADJUST є експериментальним"
             },
@@ -74065,6 +75817,7 @@ $CONF = {
               "nl" => "__CLASS__ is experimenteel",
               "pt" => "__CLASS__ é experimental",
               "ru" => "Ключевое слово __CLASS__ является экспериментальным",
+              "sr" => "__CLASS__ је експерименталан",
               "tr" => "__CLASS__ deneyseldir",
               "uk" => "Ключове слово __CLASS__ є експериментальним"
             },
@@ -74107,6 +75860,7 @@ $CONF = {
               "nl" => "class is experimenteel",
               "pt" => "class é experimental",
               "ru" => "Ключевое слово class является экспериментальным",
+              "sr" => "class је експерименталан",
               "tr" => "class deneyseldir",
               "uk" => "Ключове слово class є експериментальним"
             },
@@ -74149,6 +75903,7 @@ $CONF = {
               "nl" => "field is experimenteel",
               "pt" => "O uso de field é experimental",
               "ru" => "Ключевое слово field является экспериментальным",
+              "sr" => "field је експерименталан",
               "tr" => "field deneyseldir",
               "uk" => "field є експериментальним"
             },
@@ -74192,6 +75947,7 @@ $CONF = {
               "nl" => "method is experimenteel",
               "pt" => "O uso de method é experimental",
               "ru" => "Ключевое слово method является экспериментальным",
+              "sr" => "Кључна реч method је експериментална",
               "tr" => "method deneyseldir",
               "uk" => "method є експериментальним"
             },
@@ -74234,6 +75990,7 @@ $CONF = {
               "nl" => "role is experimenteel",
               "pt" => "O uso de role é experimental",
               "ru" => "Ключевое слово role является экспериментальным",
+              "sr" => "role је експерименталан",
               "tr" => "role deneyseldir",
               "uk" => "Ключове слово role є експериментальним"
             },
@@ -74278,6 +76035,7 @@ $CONF = {
               "nl" => "Het declareren van referenties is experimenteel",
               "pt" => "A declaração de referências é experimental",
               "ru" => "Объявление ссылок является экспериментальной возможностью",
+              "sr" => "Декларисање референци је експериментално",
               "tr" => "Referans bildirimleri deneyseldir",
               "uk" => "Оголошення посилань є експериментальним"
             },
@@ -74320,6 +76078,7 @@ $CONF = {
               "nl" => "defer is experimenteel",
               "pt" => "defer é experimental",
               "ru" => "Модификатор блока defer является экспериментальным",
+              "sr" => "defer је експерименталан",
               "tr" => "defer deneyseldir",
               "uk" => "defer є експериментальним"
             },
@@ -74362,6 +76121,7 @@ $CONF = {
               "nl" => "enhanced_xx is experimenteel",
               "pt" => "enhanced_xx é experimental",
               "ru" => "Возможность enhanced_xx является экспериментальной",
+              "sr" => "enhanced_xx је експерименталан",
               "tr" => "enhanced_xx deneyseldir",
               "uk" => "enhanced_xx є експериментальним"
             },
@@ -74404,6 +76164,7 @@ $CONF = {
               "nl" => "De operator '===' is experimenteel",
               "pt" => "O operador '===' é experimental",
               "ru" => "Оператор '===' является экспериментальным",
+              "sr" => "Оператор '===' је експерименталан",
               "tr" => "'===' işleci deneyseldir",
               "uk" => "Оператор '===' є експериментальним"
             },
@@ -74446,6 +76207,7 @@ $CONF = {
               "nl" => "De operator '!==' is experimenteel",
               "pt" => "O operador '!==' é experimental",
               "ru" => "Оператор '!==' является экспериментальным",
+              "sr" => "Оператор „!==“ је експерименталан",
               "tr" => "'!==' işleci deneyseldir",
               "uk" => "Оператор '!==' є експериментальним"
             },
@@ -74488,6 +76250,7 @@ $CONF = {
               "nl" => "De operator 'equ' is experimenteel",
               "pt" => "O operador 'equ' é experimental",
               "ru" => "Оператор 'equ' является экспериментальным",
+              "sr" => "Оператор „equ“ је експерименталан",
               "tr" => "'equ' işleci deneyseldir",
               "uk" => "Оператор 'equ' є експериментальним"
             },
@@ -74530,6 +76293,7 @@ $CONF = {
               "nl" => "De operator 'neu' is experimenteel",
               "pt" => "O operador 'neu' é experimental",
               "ru" => "Оператор 'neu' является экспериментальным",
+              "sr" => "Оператор „neu“ је експерименталан",
               "tr" => "'neu' işleci deneyseldir",
               "uk" => "Оператор 'neu' є експериментальним"
             },
@@ -74572,6 +76336,7 @@ $CONF = {
               "nl" => "Gebruik van '%{arg1}' als scheidingsteken voor tekenreeksen is experimenteel",
               "pt" => "O uso de '%{arg1}' como delimitador de string é experimental",
               "ru" => "Использование '%{arg1}' в качестве разделителя строки является экспериментальным",
+              "sr" => "Употреба „%{arg1}“ као граничника ниске је експериментална",
               "tr" => "'%{arg1}' sınırlayıcı olarak kullanımı deneyseldir",
               "uk" => "Використання '%{arg1}' як роздільника рядка є експериментальним"
             },
@@ -74636,6 +76401,7 @@ $CONF = {
               "nl" => "all is experimenteel",
               "pt" => "all é experimental",
               "ru" => "Ключевое слово all является экспериментальным",
+              "sr" => "all је експерименталан",
               "tr" => "all deneyseldir",
               "uk" => "Ключове слово all є експериментальним"
             },
@@ -74679,6 +76445,7 @@ $CONF = {
               "nl" => "any is experimenteel",
               "pt" => "any é experimental",
               "ru" => "Ключевое слово any является экспериментальным",
+              "sr" => "any је експерименталан",
               "tr" => "any deneyseldir",
               "uk" => "any є експериментальним"
             },
@@ -74721,6 +76488,7 @@ $CONF = {
               "nl" => "__NAMESPACE__ is experimenteel",
               "pt" => "__NAMESPACE__ é experimental",
               "ru" => "Константа __NAMESPACE__ является экспериментальной",
+              "sr" => "__NAMESPACE__ је експерименталан",
               "tr" => "__NAMESPACE__ deneyseldir",
               "uk" => "__NAMESPACE__ є експериментальним"
             },
@@ -74763,6 +76531,7 @@ $CONF = {
               "nl" => "namespace is experimenteel",
               "pt" => "O uso de namespace é experimental",
               "ru" => "Объявление namespace является экспериментальным",
+              "sr" => "namespace је експерименталан",
               "tr" => "namespace deneyseldir",
               "uk" => "namespace є експериментальним"
             },
@@ -74805,6 +76574,7 @@ $CONF = {
               "nl" => "De functie private_use is experimenteel",
               "pt" => "A funcionalidade private_use é experimental",
               "ru" => "Возможность private_use является экспериментальной",
+              "sr" => "Функција private_use је експериментална",
               "tr" => "private_use özelliği deneyseldir",
               "uk" => "Можливість private_use є експериментальною"
             },
@@ -74847,6 +76617,7 @@ $CONF = {
               "nl" => "Aliasing via een referentie is experimenteel",
               "pt" => "A criação de aliases através de referências é experimental",
               "ru" => "Создание псевдонимов через ссылки является экспериментальной возможностью",
+              "sr" => "Алијасирање помоћу референце је експериментално",
               "tr" => "Referans üzerinden takma ad oluşturma deneyseldir",
               "uk" => "Створення псевдонімів через посилання є експериментальним"
             },
@@ -74889,6 +76660,7 @@ $CONF = {
               "nl" => "Benoemde parameters in signaturen zijn experimenteel",
               "pt" => "Os parâmetros nomeados nas assinaturas são experimentais",
               "ru" => "Именованные параметры в сигнатурах являются экспериментальной возможностью",
+              "sr" => "Именовани параметри у потписима су експериментални",
               "tr" => "İmzalardaki adlandırılmış parametreler deneyseldir",
               "uk" => "Іменовані параметри в сигнатурах є експериментальними"
             },
@@ -74931,6 +76703,7 @@ $CONF = {
               "nl" => "try/catch/finally is experimenteel",
               "pt" => "try/catch/finally é experimental",
               "ru" => "Конструкция try/catch/finally является экспериментальной",
+              "sr" => "try/catch/finally је експерименталан",
               "tr" => "try/catch/finally deneyseldir",
               "uk" => "Синтаксис try/catch/finally є експериментальним"
             },
@@ -74973,6 +76746,7 @@ $CONF = {
               "nl" => "De functie voor jokertekens in Unicode-eigenschappen is experimenteel",
               "pt" => "A funcionalidade de caracteres universais nas propriedades Unicode é experimental",
               "ru" => "Использование шаблонов в значениях свойств Unicode является экспериментальной возможностью",
+              "sr" => "Функција џокера у вредностима Unicode својстава је експериментална",
               "tr" => "Unicode özellik jokerleri özelliği deneyseldir",
               "uk" => "Можливість використання шаблонів у властивостях Unicode є експериментальною"
             },
@@ -75015,6 +76789,7 @@ $CONF = {
               "nl" => "Lookbehind met variabele lengte %{arg1} en captures is experimenteel",
               "pt" => "A retrospetiva %{arg1} de comprimento variável com captura é experimental",
               "ru" => "Просмотр назад переменной длины с захватом (%{arg1}) является экспериментальным",
+              "sr" => "Поглед уназад променљиве дужине %{arg1} са хватањем је експерименталан",
               "tr" => "Yakalama içeren değişken uzunluklu %{arg1} lookbehind deneyseldir",
               "uk" => "Ретроспективна перевірка типу «%{arg1}» змінної довжини із захопленням є експериментальною"
             },
@@ -75119,6 +76894,10 @@ $CONF = {
                 "*" => "Ошибка glob (дочерний процесс завершился с кодом %{status})",
                 "core_dumped" => "Ошибка glob (дочерний процесс завершился с кодом %{status}, создан дамп памяти)"
               },
+              "sr" => {
+                "core_dumped" => "glob није успео (подређени процес је завршио са статусом %{status}, уз испис меморије)",
+                "normal" => "glob није успео (подређени процес је завршио са статусом %{status})"
+              },
               "tr" => {
                 "core_dumped" => "glob başarısız oldu (alt süreç %{status} durumuyla çıktı, çekirdek dökümü oluşturdu)",
                 "normal" => "glob başarısız oldu (alt süreç %{status} durumuyla çıktı)"
@@ -75184,6 +76963,7 @@ $CONF = {
               "nl" => "glob mislukt (kan kindproces niet starten: %{arg1})",
               "pt" => "glob falhou (não foi possível iniciar o processo filho: %{arg1})",
               "ru" => "Ошибка glob (не удалось запустить дочерний процесс: %{arg1})",
+              "sr" => "glob није успео (није могуће покренути подређени процес: %{arg1})",
               "tr" => "glob başarısız oldu (alt süreç başlatılamıyor: %{arg1})",
               "uk" => "Помилка glob (неможливо запустити дочірній процес: %{arg1})"
             },
@@ -75232,6 +77012,7 @@ $CONF = {
               "nl" => "Precisieverlies bij het verlagen van %{arg1} met 1",
               "pt" => "Perda de precisão ao decrementar %{arg1} em 1",
               "ru" => "Потеря точности при уменьшении %{arg1} на 1",
+              "sr" => "Прецизност је изгубљена при умањивању %{arg1} за 1",
               "tr" => "%{arg1} değeri 1 azaltılırken duyarlık kaybı oluştu",
               "uk" => "Втрачено точність під час зменшення %{arg1} на 1"
             },
@@ -75280,6 +77061,7 @@ $CONF = {
               "nl" => "Precisieverlies bij het verhogen van %{arg1} met 1",
               "pt" => "Perda de precisão ao incrementar %{arg1} em 1",
               "ru" => "Потеря точности при увеличении %{arg1} на 1",
+              "sr" => "Прецизност је изгубљена при увећавању %{arg1} за 1",
               "tr" => "%{arg1} değeri 1 artırılırken duyarlık kaybı oluştu",
               "uk" => "Втрачено точність під час збільшення %{arg1} на 1"
             },
@@ -75328,6 +77110,7 @@ $CONF = {
               "nl" => "Onverwachte exit %{arg2}",
               "pt" => "Saída inesperada %{arg2}",
               "ru" => "Неожиданное завершение с кодом %{arg2}",
+              "sr" => "Неочекивани излаз %{arg2}",
               "tr" => "Beklenmeyen çıkış %{arg2}",
               "uk" => "Неочікуване завершення з кодом %{arg2}"
             },
@@ -75374,6 +77157,7 @@ $CONF = {
               "nl" => "Onverwachte mislukte exit %{arg2}",
               "pt" => "Falha de saída inesperada %{arg2}",
               "ru" => "Неожиданное завершение с ошибкой %{arg2}",
+              "sr" => "Неочекивани неуспешан излаз %{arg2}",
               "tr" => "Beklenmeyen çıkış hatası %{arg2}",
               "uk" => "Неочікуване завершення з помилкою %{arg2}"
             },
@@ -75422,6 +77206,7 @@ $CONF = {
               "nl" => "mprotect voor COW-tekenreeks %{arg2} %{arg3} mislukt met %{arg4}",
               "pt" => "mprotect para a cadeia COW %{arg2} %{arg3} falhou: %{arg4}",
               "ru" => "Сбой mprotect для строки COW %{arg2} %{arg3} с кодом %{arg4}",
+              "sr" => "mprotect за COW стринг %{arg2} %{arg3} није успео: %{arg4}",
               "tr" => "COW dizgesi %{arg2} için mprotect %{arg3} başarısız oldu: %{arg4}",
               "uk" => "Збій mprotect для рядка COW %{arg2} %{arg3} з кодом %{arg4}"
             },
@@ -75480,6 +77265,7 @@ $CONF = {
               "nl" => "mprotect RW voor COW-tekenreeks %{arg2} %{arg3} mislukt met %{arg4}",
               "pt" => "mprotect RW para a cadeia COW %{arg2} %{arg3} falhou: %{arg4}",
               "ru" => "Сбой mprotect RW для строки COW %{arg2} %{arg3} с кодом %{arg4}",
+              "sr" => "mprotect RW за COW стринг %{arg2} %{arg3} није успео: %{arg4}",
               "tr" => "COW dizgesi %{arg2} için RW mprotect %{arg3} başarısız oldu: %{arg4}",
               "uk" => "Збій mprotect RW для рядка COW %{arg2} %{arg3} з кодом %{arg4}"
             },
@@ -75537,6 +77323,7 @@ $CONF = {
               "nl" => "Geheugenslab gelekt vanuit cv %{arg1}",
               "pt" => "Bloco de memória não libertado de cv %{arg1}",
               "ru" => "Утечка блока памяти из cv %{arg1}",
+              "sr" => "Цурење slab-а из cv %{arg1}",
               "tr" => "cv %{arg1} içinden slab sızdı",
               "uk" => "Витік блоку пам'яті slab із cv %{arg1}"
             },
@@ -75584,6 +77371,7 @@ $CONF = {
               "nl" => "mprotect voor %{arg2} %{arg3} mislukt met %{arg4}",
               "pt" => "mprotect para %{arg2} %{arg3} falhou: %{arg4}",
               "ru" => "Сбой mprotect для %{arg2} %{arg3} с кодом %{arg4}",
+              "sr" => "mprotect за %{arg2} %{arg3} није успео: %{arg4}",
               "tr" => "%{arg2} için mprotect %{arg3} başarısız oldu: %{arg4}",
               "uk" => "Збій mprotect для %{arg2} %{arg3} з кодом %{arg4}"
             },
@@ -75641,6 +77429,7 @@ $CONF = {
               "nl" => "mprotect RW voor %{arg2} %{arg3} mislukt met %{arg4}",
               "pt" => "mprotect RW para %{arg2} %{arg3} falhou: %{arg4}",
               "ru" => "Сбой mprotect RW для %{arg2} %{arg3} с кодом %{arg4}",
+              "sr" => "mprotect RW за %{arg2} %{arg3} није успео: %{arg4}",
               "tr" => "%{arg2} için RW mprotect %{arg3} başarısız oldu: %{arg4}",
               "uk" => "Збій mprotect RW для %{arg2} %{arg3} з кодом %{arg4}"
             },
@@ -75699,6 +77488,7 @@ $CONF = {
               "nl" => "Vrijgave aan verkeerde pool %{arg1} in plaats van %{arg2}",
               "pt" => "Libertação para a pool errada %{arg1}, em vez de %{arg2}",
               "ru" => "Освобождение памяти в неверный пул %{arg1} вместо %{arg2}",
+              "sr" => "Ослобађање у погрешном скупу %{arg1}, уместо у %{arg2}",
               "tr" => "Yanlış havuza serbest bırakma: %{arg1}; olması gereken %{arg2}",
               "uk" => "Звільнення до неправильного пулу %{arg1} замість %{arg2}"
             },
@@ -75751,6 +77541,7 @@ $CONF = {
               "nl" => "Kan de klasse van operator %{arg2} niet bepalen, BASEOP wordt aangenomen\n",
               "pt" => "Não é possível determinar a classe do operador %{arg2}; será assumido BASEOP\n",
               "ru" => "Не удалось определить класс оператора %{arg2}, предполагается BASEOP\n",
+              "sr" => "Није могуће одредити класу оператора %{arg2}; претпоставља се BASEOP\n",
               "tr" => "%{arg2} operatörünün sınıfı belirlenemiyor; BASEOP varsayılıyor\n",
               "uk" => "Неможливо визначити клас оператора %{arg2}, припускається BASEOP\n"
             },
@@ -75800,6 +77591,7 @@ $CONF = {
               "nl" => "panic: join met een thread die niet kon starten",
               "pt" => "pânico: tentativa de join com uma thread que não conseguiu iniciar",
               "ru" => "panic: вызов join для потока, который не удалось запустить",
+              "sr" => "паника: придруживање нити која није могла да се покрене",
               "tr" => "panic: başlatılamamış bir iş parçacığına join çağrısı",
               "uk" => "паніка: join із потоком, який не зміг запуститися"
             },
@@ -75841,6 +77633,7 @@ $CONF = {
               "nl" => "Interne inconsistentie bij het bijhouden van vforks",
               "pt" => "Inconsistência interna no acompanhamento de vforks",
               "ru" => "Внутренняя несогласованность при учёте вызовов vfork",
+              "sr" => "Интерна недоследност у евиденцији позива vfork-а",
               "tr" => "vfork'ların izlenmesinde iç tutarsızlık",
               "uk" => "Внутрішня неузгодженість в обліку викликів vfork"
             },
@@ -75928,6 +77721,10 @@ $CONF = {
                 "*" => "Дочерний процесс отладки утечек скаляров завершился с ошибкой errno %{errno}: %{error}",
                 "present" => "Дочерний процесс отладки утечек скаляров завершился с выводом %{output} и ошибкой errno %{errno}: %{error}"
               },
+              "sr" => {
+                "absent" => "Неуспешно покретање детета за откривање цурења скалара, errno %{errno}: %{error}",
+                "present" => "Неуспешно покретање детета за откривање цурења скалара, излаз %{output} и errno %{errno}: %{error}"
+              },
               "tr" => {
                 "absent" => "Skaler sızıntılarını ayıklayan alt süreç başarısız oldu; errno %{errno}: %{error}",
                 "present" => "Skaler sızıntılarını ayıklayan alt süreç şu çıktıyla başarısız oldu: %{output}; errno %{errno}: %{error}"
@@ -76010,6 +77807,7 @@ $CONF = {
               "nl" => "Poging om %{arg1}() uit te voeren op handle %{arg2} die met open() is geopend",
               "pt" => "Tentativa de %{arg1}() no identificador %{arg2} aberto com open()",
               "ru" => "Попытка вызвать %{arg1}() для дескриптора %{arg2}, открытого с помощью open()",
+              "sr" => "Покушај операције %{arg1}() над руковаоцем %{arg2}, отвореним помоћу open()",
               "tr" => "open() ile açılmış %{arg2} tanıtıcısında %{arg1}() çağrıldı",
               "uk" => "Спроба викликати %{arg1}() для дескриптора %{arg2}, відкритого за допомогою open()"
             },
@@ -76065,6 +77863,7 @@ $CONF = {
               "nl" => "Poging om %{arg1}() uit te voeren op ongeldige maphandle %{arg2}",
               "pt" => "Tentativa de %{arg1}() no identificador de diretório inválido %{arg2}",
               "ru" => "Попытка вызвать %{arg1}() для недействительного дескриптора каталога %{arg2}",
+              "sr" => "Покушај операције %{arg1}() над неважећим руковаоцем директоријума %{arg2}",
               "tr" => "Geçersiz dizin tanıtıcısı %{arg2} üzerinde %{arg1}() çağrıldı",
               "uk" => "Спроба викликати %{arg1}() для недійсного дескриптора каталогу %{arg2}"
             },
@@ -76251,6 +78050,16 @@ $CONF = {
                   "operator" => "\t(Вы пытаетесь применить проверку файла %{operation} к дескриптору каталога %{handle_name}?)\n"
                 }
               },
+              "sr" => {
+                "named" => {
+                  "call" => "\t(Да ли покушавате да позовете %{operation}() над дирхендлом %{handle_name}?)\n",
+                  "operator" => "\t(Да ли покушавате да употребите тест фајла %{operation} над дирхендлом %{handle_name}?)\n"
+                },
+                "unnamed" => {
+                  "call" => "\t(Да ли покушавате да позовете %{operation}() над дирхендлом?)\n",
+                  "operator" => "\t(Да ли покушавате да употребите тест фајла %{operation} над дирхендлом?)\n"
+                }
+              },
               "tr" => {
                 "named" => {
                   "call" => "\t%{handle_name} dizin tanıtıcısında %{operation}() çağırmaya mı çalışıyorsunuz?\n",
@@ -76347,6 +78156,7 @@ $CONF = {
               "nl" => "Kan \"%{arg1}\" niet uitvoeren: %{arg2}",
               "pt" => "Não foi possível executar \"%{arg1}\": %{arg2}",
               "ru" => "Не удалось выполнить exec для \"%{arg1}\": %{arg2}",
+              "sr" => "Није могуће покренути „%{arg1}“: %{arg2}",
               "tr" => "\"%{arg1}\" çalıştırılamıyor: %{arg2}",
               "uk" => "Не вдалося виконати \"%{arg1}\": %{arg2}"
             },
@@ -76402,6 +78212,7 @@ $CONF = {
               "nl" => "Kan `%{arg2}' niet %{arg1} met ARGV[0] gelijk aan `%{arg3}' (alleen naar uitvoerbare bestanden gezocht; niets gevonden)",
               "pt" => "Não foi possível %{arg1} `%{arg2}' com ARGV[0] igual a `%{arg3}' (apenas foram procurados executáveis, não encontrados)",
               "ru" => "Не удалось выполнить операцию %{arg1} для `%{arg2}' при ARGV[0], равном `%{arg3}' (поиск выполнялся только среди исполняемых файлов; файл не найден)",
+              "sr" => "Не могу да %{arg1} `%{arg2}' са вредношћу ARGV[0] `%{arg3}' (траже се само извршне датотеке, није пронађена)",
               "tr" => "ARGV[0] `%{arg3}' iken `%{arg2}' için %{arg1} yapılamıyor (yalnızca çalıştırılabilir dosyalar aranıyor; bulunamadı)",
               "uk" => "Не вдалося виконати операцію %{arg1} для `%{arg2}' з ARGV[0] рівним `%{arg3}' (пошук лише виконуваних файлів, нічого не знайдено)"
             },
@@ -76461,6 +78272,7 @@ $CONF = {
               "nl" => "Proces op volledig scherm wordt gestart met flag=%{arg1}, mytype=%{arg2}",
               "pt" => "A iniciar o processo de ecrã inteiro com flag=%{arg1}, mytype=%{arg2}",
               "ru" => "Запуск полноэкранного процесса с flag=%{arg1}, mytype=%{arg2}",
+              "sr" => "Покреће се Full Screen процес са заставицом=%{arg1}, mytype=%{arg2}",
               "tr" => "Tam ekran süreci başlatılıyor: flag=%{arg1}, mytype=%{arg2}",
               "uk" => "Запуск повноекранного процесу з flag=%{arg1}, mytype=%{arg2}"
             },
@@ -76516,6 +78328,7 @@ $CONF = {
               "nl" => "Te veel argumenten op %{arg1}-regel van \"%{arg2}\"",
               "pt" => "Demasiados argumentos na linha %{arg1} de \"%{arg2}\"",
               "ru" => "Слишком много аргументов в строке %{arg1} файла \"%{arg2}\"",
+              "sr" => "Превише аргумената у реду %{arg1} датотеке „%{arg2}“",
               "tr" => "\"%{arg2}\" dosyasının %{arg1} satırında çok fazla argüman var",
               "uk" => "Забагато аргументів у рядку %{arg1} файлу \"%{arg2}\""
             },
@@ -76581,6 +78394,7 @@ $CONF = {
               "nl" => "Kan \"%{arg2}\" niet %{arg1}: %{arg3}\n",
               "pt" => "Não foi possível %{arg1} \"%{arg2}\": %{arg3}\n",
               "ru" => "Не удалось выполнить операцию %{arg1} для \"%{arg2}\": %{arg3}\n",
+              "sr" => "Не могу да %{arg1} „%{arg2}“: %{arg3}\n",
               "tr" => "\"%{arg2}\" başlatılamıyor: %{arg3}\n",
               "uk" => "Не вдалося виконати операцію %{arg1} для \"%{arg2}\": %{arg3}\n"
             },
@@ -76640,6 +78454,7 @@ $CONF = {
               "nl" => "PM-proces wordt gestart met flag=%{arg1}, mytype=%{arg2}",
               "pt" => "A iniciar o processo PM com flag=%{arg1}, mytype=%{arg2}",
               "ru" => "Запуск процесса PM с flag=%{arg1}, mytype=%{arg2}",
+              "sr" => "Покреће се PM процес са заставицом=%{arg1}, mytype=%{arg2}",
               "tr" => "PM süreci başlatılıyor: flag=%{arg1}, mytype=%{arg2}",
               "uk" => "Запуск процесу PM з flag=%{arg1}, mytype=%{arg2}"
             },
@@ -76695,6 +78510,7 @@ $CONF = {
               "nl" => "Kan script `%{arg2}' niet %{arg1} met ARGV[0] gelijk aan `%{arg3}'",
               "pt" => "Não foi possível %{arg1} o script `%{arg2}' com ARGV[0] igual a `%{arg3}'",
               "ru" => "Не удалось выполнить операцию %{arg1} для сценария `%{arg2}' при ARGV[0], равном `%{arg3}'",
+              "sr" => "Не могу да %{arg1} скрипту `%{arg2}' са вредношћу ARGV[0] `%{arg3}'",
               "tr" => "ARGV[0] `%{arg3}' iken `%{arg2}' betiği için %{arg1} yapılamıyor",
               "uk" => "Неможливо застосувати %{arg1} до скрипту `%{arg2}', коли ARGV[0] має значення `%{arg3}'"
             },
@@ -76755,6 +78571,7 @@ $CONF = {
               "nl" => "Fout bij lezen van \"%{arg1}\": %{arg2}",
               "pt" => "Erro ao ler \"%{arg1}\": %{arg2}",
               "ru" => "Ошибка чтения \"%{arg1}\": %{arg2}",
+              "sr" => "Грешка при читању „%{arg1}“: %{arg2}",
               "tr" => "\"%{arg1}\" okunurken hata: %{arg2}",
               "uk" => "Помилка читання \"%{arg1}\": %{arg2}"
             },
@@ -76855,6 +78672,10 @@ $CONF = {
                 "*" => "Не удалось выполнить exec для \"%{target}\": %{error}",
                 "spawn" => "Не удалось создать процесс для \"%{target}\": %{error}"
               },
+              "sr" => {
+                "exec" => "Не могу да извршим „%{target}“: %{error}",
+                "spawn" => "Не могу да покренем „%{target}“: %{error}"
+              },
               "tr" => {
                 "exec" => "\"%{target}\" exec edilemiyor: %{error}",
                 "spawn" => "\"%{target}\" spawn edilemiyor: %{error}"
@@ -76925,6 +78746,7 @@ $CONF = {
               "nl" => "Kan \"%{arg1}\" niet starten: %{arg2}",
               "pt" => "Não foi possível iniciar \"%{arg1}\": %{arg2}",
               "ru" => "Не удалось создать процесс для \"%{arg1}\": %{arg2}",
+              "sr" => "Не могу да покренем „%{arg1}“: %{arg2}",
               "tr" => "\"%{arg1}\" spawn edilemiyor: %{arg2}",
               "uk" => "Не вдалося запустити новий процес \"%{arg1}\": %{arg2}"
             },
@@ -76979,6 +78801,7 @@ $CONF = {
               "nl" => "Deze instructie zal waarschijnlijk niet worden bereikt",
               "pt" => "É pouco provável que esta instrução seja executada",
               "ru" => "Выполнение вряд ли достигнет этого оператора",
+              "sr" => "Наредба вероватно неће бити достигнута",
               "tr" => "Bu deyime muhtemelen hiç ulaşılamaz",
               "uk" => "Виконання навряд чи дійде до цієї інструкції"
             },
@@ -77022,6 +78845,7 @@ $CONF = {
               "nl" => "\t(Bedoelde u misschien system() toen u exec() schreef?)\n",
               "pt" => "\t(Talvez quisesse usar system() em vez de exec()?)\n",
               "ru" => "\t(Возможно, имелось в виду system() вместо exec()?)\n",
+              "sr" => "\t(Можда сте мислили system() када сте навели exec()?)\n",
               "tr" => "\t(exec() yerine system() mı demek istediniz?)\n",
               "uk" => "\t(Можливо, замість exec() малося на увазі system()?)\n"
             },
@@ -77066,6 +78890,7 @@ $CONF = {
               "nl" => "Kan \"%{arg1}\" niet uitvoeren: %{arg2}",
               "pt" => "Não foi possível executar \"%{arg1}\": %{arg2}",
               "ru" => "Не удалось выполнить exec для \"%{arg1}\": %{arg2}",
+              "sr" => "Не могу да извршим „%{arg1}“: %{arg2}",
               "tr" => "\"%{arg1}\" çalıştırılamıyor: %{arg2}",
               "uk" => "Не вдалося виконати exec для \"%{arg1}\": %{arg2}"
             },
@@ -77131,6 +78956,7 @@ $CONF = {
               "nl" => "Kan geen proces starten: %{arg1}",
               "pt" => "Não foi possível iniciar o processo: %{arg1}",
               "ru" => "Не удалось создать процесс: %{arg1}",
+              "sr" => "Не могу да покренем: %{arg1}",
               "tr" => "spawn edilemiyor: %{arg1}",
               "uk" => "Не вдалося запустити новий процес: %{arg1}"
             },
@@ -77180,6 +79006,7 @@ $CONF = {
               "nl" => "waitpid: proces %{arg1} is geen kindproces van proces %{arg2}",
               "pt" => "waitpid: o processo %{arg1} não é filho do processo %{arg2}",
               "ru" => "waitpid: процесс %{arg1} не является дочерним по отношению к процессу %{arg2}",
+              "sr" => "waitpid: процес %{arg1} није потомак процеса %{arg2}",
               "tr" => "waitpid: %{arg1} süreci, %{arg2} sürecinin alt süreci değil",
               "uk" => "waitpid: процес %{arg1} не є дочірнім процесом процесу %{arg2}"
             },
@@ -77234,6 +79061,7 @@ $CONF = {
               "nl" => "Waarschuwing: kan bestandshandle niet correct sluiten: %{arg1}",
               "pt" => "Aviso: não foi possível fechar corretamente o identificador de ficheiro: %{arg1}",
               "ru" => "Предупреждение: не удалось корректно закрыть файловый дескриптор: %{arg1}",
+              "sr" => "Упозорење: није могуће правилно затворити руковалац датотеке: %{arg1}",
               "tr" => "Uyarı: dosya tanıtıcısı düzgün kapatılamadı: %{arg1}",
               "uk" => "Попередження: не вдалося належним чином закрити дескриптор файлу: %{arg1}"
             },
@@ -77284,6 +79112,7 @@ $CONF = {
               "nl" => "Waarschuwing: kan bestandshandle %{arg1} niet correct sluiten: %{arg2}",
               "pt" => "Aviso: não foi possível fechar corretamente o identificador de ficheiro %{arg1}: %{arg2}",
               "ru" => "Предупреждение: не удалось корректно закрыть файловый дескриптор %{arg1}: %{arg2}",
+              "sr" => "Упозорење: није могуће правилно затворити руковалац датотеке %{arg1}: %{arg2}",
               "tr" => "Uyarı: %{arg1} dosya tanıtıcısı düzgün kapatılamadı: %{arg2}",
               "uk" => "Попередження: не вдалося належним чином закрити файловий дескриптор %{arg1}: %{arg2}"
             },
@@ -77384,6 +79213,10 @@ $CONF = {
               "ru" => {
                 "*" => "Файловый дескриптор открыт только для ввода",
                 "output" => "Файловый дескриптор открыт только для вывода"
+              },
+              "sr" => {
+                "input" => "Дескриптор датотеке отворен је само за читање",
+                "output" => "Дескриптор датотеке отворен је само за писање"
               },
               "tr" => {
                 "input" => "Dosya tanıtıcısı yalnızca girdi için açılmış",
@@ -77489,6 +79322,10 @@ $CONF = {
                 "*" => "Файловый дескриптор %{name} открыт только для ввода",
                 "output" => "Файловый дескриптор %{name} открыт только для вывода"
               },
+              "sr" => {
+                "input" => "Дескриптор датотеке %{name} отворен је само за читање",
+                "output" => "Дескриптор датотеке %{name} отворен је само за писање"
+              },
               "tr" => {
                 "input" => "%{name} dosya tanıtıcısı yalnızca girdi için açılmış",
                 "output" => "%{name} dosya tanıtıcısı yalnızca çıktı için açılmış"
@@ -77554,6 +79391,7 @@ $CONF = {
               "nl" => "Argumentenlijst voor PerlIO-laag \"%{arg1}\" is niet afgesloten",
               "pt" => "Lista de argumentos não terminada para a camada PerlIO \"%{arg1}\"",
               "ru" => "Не закрыт список аргументов для слоя PerlIO \"%{arg1}\"",
+              "sr" => "Листа аргумената није затворена за PerlIO слој „%{arg1}“",
               "tr" => "PerlIO katmanı \"%{arg1}\" için argüman listesi kapatılmamış",
               "uk" => "Список аргументів шару PerlIO \"%{arg1}\" не закрито"
             },
@@ -77613,6 +79451,7 @@ $CONF = {
               "nl" => "Onbekende PerlIO-laag \"%{arg1}\"",
               "pt" => "Camada PerlIO desconhecida \"%{arg1}\"",
               "ru" => "Неизвестный слой PerlIO \"%{arg1}\"",
+              "sr" => "Непознат PerlIO слој „%{arg1}“",
               "tr" => "Bilinmeyen PerlIO katmanı \"%{arg1}\"",
               "uk" => "Невідомий шар PerlIO \"%{arg1}\""
             },
@@ -77673,6 +79512,7 @@ $CONF = {
               "nl" => "Poging om een alleen-lezen waarde te wijzigen",
               "pt" => "Tentativa de modificar um valor somente de leitura",
               "ru" => "Попытка изменить значение, доступное только для чтения",
+              "sr" => "Покушана је измена вредности само за читање",
               "tr" => "Salt okunur bir değeri değiştirmeye çalışıldı",
               "uk" => "Спроба змінити значення, доступне лише для читання"
             },
@@ -77718,6 +79558,7 @@ $CONF = {
               "nl" => "Offset valt buiten de tekenreeks",
               "pt" => "Deslocamento fora dos limites da string",
               "ru" => "Смещение за пределами строки",
+              "sr" => "Померај је изван ниске",
               "tr" => "Ofset dizenin dışında",
               "uk" => "Зміщення за межами рядка"
             },
@@ -77761,6 +79602,7 @@ $CONF = {
               "nl" => "Ongeldig scheidingsteken %{arg1}%{arg2}%{arg3} in PerlIO-laagspecificatie %{arg4}",
               "pt" => "Carácter separador inválido %{arg1}%{arg2}%{arg3} na especificação da camada PerlIO %{arg4}",
               "ru" => "Недопустимый символ разделителя %{arg1}%{arg2}%{arg3} в спецификации слоёв PerlIO %{arg4}",
+              "sr" => "Неважећи знак-раздвајач %{arg1}%{arg2}%{arg3} у спецификацији PerlIO слоја %{arg4}",
               "tr" => "PerlIO katman belirtimi %{arg4} içinde geçersiz ayırıcı karakter: %{arg1}%{arg2}%{arg3}",
               "uk" => "Недопустимий символ роздільника %{arg1}%{arg2}%{arg3} у специфікації шару PerlIO %{arg4}"
             },
@@ -77870,6 +79712,10 @@ $CONF = {
                 "*" => "Вызов lstat() для файлового дескриптора",
                 "named" => "Вызов lstat() для файлового дескриптора %{handle_name}"
               },
+              "sr" => {
+                "anonymous" => "lstat() над руковаоцем датотеке",
+                "named" => "lstat() над руковаоцем датотеке %{handle_name}"
+              },
               "tr" => {
                 "anonymous" => "Dosya tanıtıcısında lstat()",
                 "named" => "%{handle_name} dosya tanıtıcısında lstat()"
@@ -77935,6 +79781,7 @@ $CONF = {
               "nl" => "%{arg1} mislukt voor bestandsnaam met een regeleinde",
               "pt" => "Operação %{arg1} falhou num nome de ficheiro que contém uma mudança de linha",
               "ru" => "Операция %{arg1} завершилась неудачей для имени файла, содержащего символ новой строки",
+              "sr" => "Неуспешна операција %{arg1} над именом датотеке које садржи нови ред",
               "tr" => "Yeni satır karakteri içeren dosya adı üzerinde %{arg1} başarısız oldu",
               "uk" => "Невдала операція %{arg1} з іменем файлу, що містить символ нового рядка"
             },
@@ -77985,6 +79832,7 @@ $CONF = {
               "nl" => "Kan een referentie niet openen",
               "pt" => "Não é possível abrir uma referência",
               "ru" => "Невозможно открыть ссылку",
+              "sr" => "Не може се отворити референца",
               "tr" => "Bir başvuru açılamıyor",
               "uk" => "Неможливо відкрити посилання"
             },
@@ -78673,6 +80521,52 @@ $CONF = {
                   }
                 }
               },
+              "sr" => {
+                "closed" => {
+                  "filehandle" => {
+                    "named" => {
+                      "call" => "Позив %{operation}() над затвореним фајлхендлом %{handle_name}",
+                      "operator" => "Оператор %{operation} над затвореним фајлхендлом %{handle_name}"
+                    },
+                    "unnamed" => {
+                      "call" => "Позив %{operation}() над затвореним фајлхендлом",
+                      "operator" => "Оператор %{operation} над затвореним фајлхендлом"
+                    }
+                  },
+                  "socket" => {
+                    "named" => {
+                      "call" => "Позив %{operation}() над затвореним сокетом %{handle_name}",
+                      "operator" => "Оператор %{operation} над затвореним сокетом %{handle_name}"
+                    },
+                    "unnamed" => {
+                      "call" => "Позив %{operation}() над затвореним сокетом",
+                      "operator" => "Оператор %{operation} над затвореним сокетом"
+                    }
+                  }
+                },
+                "unopened" => {
+                  "filehandle" => {
+                    "named" => {
+                      "call" => "Позив %{operation}() над неотвореним фајлхендлом %{handle_name}",
+                      "operator" => "Оператор %{operation} над неотвореним фајлхендлом %{handle_name}"
+                    },
+                    "unnamed" => {
+                      "call" => "Позив %{operation}() над неотвореним фајлхендлом",
+                      "operator" => "Оператор %{operation} над неотвореним фајлхендлом"
+                    }
+                  },
+                  "socket" => {
+                    "named" => {
+                      "call" => "Позив %{operation}() над неотвореним сокетом %{handle_name}",
+                      "operator" => "Оператор %{operation} над неотвореним сокетом %{handle_name}"
+                    },
+                    "unnamed" => {
+                      "call" => "Позив %{operation}() над неотвореним сокетом",
+                      "operator" => "Оператор %{operation} над неотвореним сокетом"
+                    }
+                  }
+                }
+              },
               "tr" => {
                 "*" => {
                   "*" => {
@@ -78850,6 +80744,7 @@ $CONF = {
               "nl" => "Kan geen bidirectionele pipe openen",
               "pt" => "Não é possível abrir um pipe bidirecional",
               "ru" => "Невозможно открыть двунаправленный канал",
+              "sr" => "Не може се отворити двосмерна цев",
               "tr" => "Çift yönlü boru açılamıyor",
               "uk" => "Неможливо відкрити двонапрямний канал"
             },
@@ -78894,6 +80789,7 @@ $CONF = {
               "nl" => "Kan geen fork uitvoeren; over 5 seconden opnieuw proberen",
               "pt" => "Não foi possível executar fork; nova tentativa dentro de 5 segundos",
               "ru" => "Не удалось выполнить fork; повторная попытка через 5 секунд",
+              "sr" => "Није могуће форковати процес; покушај поново за 5 секунди",
               "tr" => "Çatal oluşturulamıyor, 5 saniye sonra yeniden denenecek",
               "uk" => "Не вдалося виконати fork, повторна спроба через 5 секунд"
             },
@@ -78937,6 +80833,7 @@ $CONF = {
               "nl" => "Opdracht ontbreekt bij het openen van een pipe",
               "pt" => "Falta o comando na abertura de um pipe",
               "ru" => "Не указана команда при открытии канала через open",
+              "sr" => "Недостаје команда у отварању цеви",
               "tr" => "Boru açma işleminde komut eksik",
               "uk" => "Відсутня команда у виклику open з каналом"
             },
@@ -78982,6 +80879,7 @@ $CONF = {
               "nl" => "Kan \"%{arg1}\" niet via een pipe verbinden: %{arg2}",
               "pt" => "Não foi possível criar um pipe para \"%{arg1}\": %{arg2}",
               "ru" => "Не удалось запустить \"%{arg1}\" с вводом-выводом через канал: %{arg2}",
+              "sr" => "Не могу да успоставим цев за „%{arg1}“: %{arg2}",
               "tr" => "\"%{arg1}\" için boru açılamıyor: %{arg2}",
               "uk" => "Не вдалося запустити \"%{arg1}\" через канал: %{arg2}"
             },
@@ -79047,6 +80945,7 @@ $CONF = {
               "nl" => "Kan VMSPIPE.COM niet vinden voor I/O via pipes",
               "pt" => "Não foi possível encontrar VMSPIPE.COM para canalização de E/S",
               "ru" => "не удалось найти VMSPIPE.COM для ввода-вывода через каналы",
+              "sr" => "није могуће пронаћи VMSPIPE.COM за улазно-излазно преусмеравање",
               "tr" => "G/Ç borulaması için VMSPIPE.COM bulunamıyor",
               "uk" => "не вдалося знайти VMSPIPE.COM для передавання введення-виведення через канали"
             },
@@ -79090,6 +80989,7 @@ $CONF = {
               "nl" => "Pagina-overloop",
               "pt" => "Capacidade da página excedida",
               "ru" => "переполнение страницы",
+              "sr" => "прекорачење странице",
               "tr" => "sayfa taşması",
               "uk" => "переповнення сторінки"
             },
@@ -79133,6 +81033,7 @@ $CONF = {
               "nl" => "Socketadres afgekapt in %{arg1}()",
               "pt" => "Endereço de socket truncado em %{arg1}()",
               "ru" => "Адрес сокета усечён в %{arg1}()",
+              "sr" => "Адреса сокета је скраћена у %{arg1}()",
               "tr" => "%{arg1}() içinde soket adresi kesildi",
               "uk" => "Адресу сокета обрізано у %{arg1}()"
             },
@@ -79182,6 +81083,7 @@ $CONF = {
               "nl" => "Bestandshandle STD%{arg1} opnieuw geopend als %{arg2}, uitsluitend voor invoer",
               "pt" => "O identificador de ficheiro STD%{arg1} foi reaberto como %{arg2} apenas para leitura",
               "ru" => "Файловый дескриптор STD%{arg1} повторно открыт как %{arg2} только для ввода",
+              "sr" => "Ручка датотеке STD%{arg1} поново је отворена као %{arg2} само за читање",
               "tr" => "STD%{arg1} dosya tanıtıcısı yalnızca girdi için %{arg2} olarak yeniden açıldı",
               "uk" => "Дескриптор файлу STD%{arg1} повторно відкрито як %{arg2} лише для читання"
             },
@@ -79237,6 +81139,7 @@ $CONF = {
               "nl" => "Bestandshandle STDIN opnieuw geopend als %{arg1}, uitsluitend voor uitvoer",
               "pt" => "O identificador de ficheiro STDIN foi reaberto como %{arg1} apenas para escrita",
               "ru" => "Файловый дескриптор STDIN повторно открыт как %{arg1} только для вывода",
+              "sr" => "Руковалац датотеке STDIN поново је отворен као %{arg1} само за писање",
               "tr" => "STDIN dosya tanıtıcısı yalnızca çıktı için %{arg1} olarak yeniden açıldı",
               "uk" => "Файловий дескриптор STDIN повторно відкрито як %{arg1} лише для виведення"
             },
@@ -79287,6 +81190,7 @@ $CONF = {
               "nl" => "Gebruik van -l op een bestandshandle",
               "pt" => "Utilização de -l num identificador de ficheiro",
               "ru" => "Использование -l для файлового дескриптора",
+              "sr" => "Употреба -l над руковаоцем датотеке",
               "tr" => "Dosya tanıtıcısı üzerinde -l kullanımı",
               "uk" => "Використання -l з файловим дескриптором"
             },
@@ -79330,6 +81234,7 @@ $CONF = {
               "nl" => "Gebruik van -l op bestandshandle %{arg1}",
               "pt" => "Utilização de -l no identificador de ficheiro %{arg1}",
               "ru" => "Использование -l для файлового дескриптора %{arg1}",
+              "sr" => "Употреба -l над руковаоцем датотеке %{arg1}",
               "tr" => "%{arg1} dosya tanıtıcısı üzerinde -l kullanımı",
               "uk" => "Використання -l для дескриптора файлу %{arg1}"
             },
@@ -79387,6 +81292,7 @@ $CONF = {
               "nl" => "Ongeldig \\0-teken in %{arg1} voor %{arg2}: %{arg3}\\0%{arg4}",
               "pt" => "Carácter \\0 inválido em %{arg1} para %{arg2}: %{arg3}\\0%{arg4}",
               "ru" => "Недопустимый символ \\0 в %{arg1} для %{arg2}: %{arg3}\\0%{arg4}",
+              "sr" => "Неважећи знак \\0 у %{arg1} за %{arg2}: %{arg3}\\0%{arg4}",
               "tr" => "%{arg1} içinde geçersiz \\0 karakteri (%{arg2} için): %{arg3}\\0%{arg4}",
               "uk" => "Неприпустимий символ \\0 у %{arg1} для %{arg2}: %{arg3}\\0%{arg4}"
             },
@@ -79451,6 +81357,7 @@ $CONF = {
               "nl" => "chdir() op niet-geopende bestandshandle %{arg1}",
               "pt" => "chdir() num identificador de ficheiro %{arg1} que não está aberto",
               "ru" => "Вызов chdir() для неоткрытого файлового дескриптора %{arg1}",
+              "sr" => "chdir() над неотвореним руковаоцем датотеке %{arg1}",
               "tr" => "Açılmamış %{arg1} dosya tanıtıcısı üzerinde chdir()",
               "uk" => "Виклик chdir() для невідкритого файлового дескриптора %{arg1}"
             },
@@ -79504,6 +81411,7 @@ $CONF = {
               "nl" => "Kan geladen symbolen op dit platform niet globaal maken bij laden van %{arg1}",
               "pt" => "Não é possível tornar globais os símbolos carregados nesta plataforma ao carregar %{arg1}",
               "ru" => "На этой платформе нельзя сделать загруженные символы глобальными при загрузке %{arg1}",
+              "sr" => "На овој платформи није могуће учинити учитане симболе глобалним приликом учитавања %{arg1}",
               "tr" => "%{arg1} yüklenirken bu platformda yüklenen semboller global yapılamıyor",
               "uk" => "Неможливо зробити завантажені символи глобальними на цій платформі під час завантаження %{arg1}"
             },
@@ -79551,6 +81459,7 @@ $CONF = {
               "nl" => "Kan fc(\"\\x{1E9E}\") niet uitvoeren in een niet-UTF-8-locale; geïnterpreteerd als \"\\x{17F}\\x{17F}\".",
               "pt" => "Não é possível executar fc(\"\\x{1E9E}\") numa locale não UTF-8; foi substituído por \"\\x{17F}\\x{17F}\".",
               "ru" => "Невозможно выполнить fc(\"\\x{1E9E}\") в локали без UTF-8; вместо этого получено \"\\x{17F}\\x{17F}\".",
+              "sr" => "Није могуће применити fc(\"\\x{1E9E}\") у локали који није UTF-8; разрешено је као \"\\x{17F}\\x{17F}\".",
               "tr" => "UTF-8 olmayan yerel ayarda fc(\"\\x{1E9E}\") yapılamıyor; \"\\x{17F}\\x{17F}\" olarak çözümlendi.",
               "uk" => "Неможливо виконати fc(\"\\x{1E9E}\") у локалі без UTF-8; результат замінено на \"\\x{17F}\\x{17F}\"."
             },
@@ -79594,6 +81503,7 @@ $CONF = {
               "nl" => "Kan %{arg1}(\"\\x{%{arg2}}\") niet uitvoeren in een niet-UTF-8-locale; geïnterpreteerd als \"\\x{%{arg3}}\".",
               "pt" => "Não é possível executar %{arg1}(\"\\x{%{arg2}}\") numa locale não UTF-8; foi substituído por \"\\x{%{arg3}}\".",
               "ru" => "Невозможно выполнить операцию \"%{arg1}\" для \"\\x{%{arg2}}\" в локали без UTF-8; вместо этого получено \"\\x{%{arg3}}\".",
+              "sr" => "Није могуће применити %{arg1}(\"\\x{%{arg2}}\") у локали који није UTF-8; разрешено је као \"\\x{%{arg3}}\".",
               "tr" => "UTF-8 olmayan yerel ayarda %{arg1}(\"\\x{%{arg2}}\") uygulanamaz; sonuç \"\\x{%{arg3}}\" olarak belirlendi.",
               "uk" => "Неможливо виконати %{arg1}(\"\\x{%{arg2}}\") у локалі без UTF-8; результат замінено на \"\\x{%{arg3}}\"."
             },
@@ -79641,6 +81551,7 @@ $CONF = {
                 "nl" => "operation",
                 "pt" => "operation",
                 "ru" => "nominative",
+                "sr" => "nominative",
                 "tr" => "operation",
                 "uk" => "nominative"
               },
@@ -79729,6 +81640,10 @@ $CONF = {
               "ru" => {
                 "*" => "Неизвестная категория локали %{category}",
                 "specified" => "Неизвестная категория локали %{category}, невозможно установить для неё значение %{locale}"
+              },
+              "sr" => {
+                "specified" => "Непозната категорија локализације %{category}; није могуће поставити је на %{locale}",
+                "unspecified" => "Непозната категорија локализације %{category}"
               },
               "tr" => {
                 "specified" => "Bilinmeyen yerel ayar kategorisi %{category}; %{locale} olarak ayarlanamıyor",
@@ -79935,6 +81850,16 @@ $CONF = {
                   "present" => "Локаль '%{locale}' содержит символы с неожиданной интерпретацией: %{characters}. Perl будет использовать ожидаемую интерпретацию. Кодировка: %{codeset}.\n"
                 }
               },
+              "sr" => {
+                "single_byte" => {
+                  "absent" => "Следећи знакови можда немају значења која Perl очекује: %{characters}.\n",
+                  "present" => "Следећи знакови можда немају значења која Perl очекује: %{characters}. Кодни скуп: %{codeset}.\n"
+                },
+                "utf8" => {
+                  "absent" => "Локал %{locale} садржи знакове са неочекиваним значењима: %{characters}. Perl ће користити очекивана значења.\n",
+                  "present" => "Локал %{locale} садржи знакове са неочекиваним значењима: %{characters}. Perl ће користити очекивана значења. Кодни скуп: %{codeset}.\n"
+                }
+              },
               "tr" => {
                 "single_byte" => {
                   "absent" => "Perl'in beklediği anlamlara sahip olmayabilecek karakterler: %{characters}.\n",
@@ -80043,6 +81968,7 @@ $CONF = {
               "nl" => "LC_CTYPE-locale '%{locale}' wordt niet ondersteund en kan de interpreter laten vastlopen of crashen.\n",
               "pt" => "A configuração regional LC_CTYPE '%{locale}' não é suportada e pode bloquear ou provocar uma falha do interpretador.\n",
               "ru" => "Локаль LC_CTYPE '%{locale}' не поддерживается и может привести к зависанию или аварийному завершению интерпретатора.\n",
+              "sr" => "Језик LC_CTYPE „%{locale}“ није подржан и може да доведе до застоја или пада интерпретатора.\n",
               "tr" => "LC_CTYPE '%{locale}' yerel ayarı desteklenmiyor; yorumlayıcının takılmasına veya çökmesine yol açabilir.\n",
               "uk" => "Локаль LC_CTYPE '%{locale}' не підтримується й може спричинити зависання або аварійне завершення інтерпретатора.\n"
             },
@@ -80098,6 +82024,7 @@ $CONF = {
               "nl" => "Kan fc(\"\\x{1DF95}\") niet uitvoeren in een niet-UTF-8-locale; geïnterpreteerd als \"\\x{17F}\\x{17F}\".",
               "pt" => "Não é possível executar fc(\"\\x{1DF95}\") numa locale não UTF-8; foi substituído por \"\\x{17F}\\x{17F}\".",
               "ru" => "Невозможно выполнить fc(\"\\x{1DF95}\") в локали без UTF-8; вместо этого получено \"\\x{17F}\\x{17F}\".",
+              "sr" => "Није могуће применити fc(\"\\x{1DF95}\") у локали који није UTF-8; разрешено је као \"\\x{17F}\\x{17F}\".",
               "tr" => "UTF-8 olmayan yerel ayarda fc(\"\\x{1DF95}\") yapılamıyor; \"\\x{17F}\\x{17F}\" olarak çözümlendi.",
               "uk" => "Неможливо виконати fc(\"\\x{1DF95}\") у локалі без UTF-8; результат замінено на \"\\x{17F}\\x{17F}\"."
             },
@@ -80141,6 +82068,7 @@ $CONF = {
               "nl" => "Kan fc(\"\\x{0130}\") niet uitvoeren in een niet-UTF-8-locale; geïnterpreteerd als \"\\x{0131}\".",
               "pt" => "Não é possível executar fc(\"\\x{0130}\") numa locale não UTF-8; foi substituído por \"\\x{0131}\".",
               "ru" => "Невозможно выполнить fc(\"\\x{0130}\") в локали без UTF-8; вместо этого получено \"\\x{0131}\".",
+              "sr" => "Није могуће применити fc(\"\\x{0130}\") у локали који није UTF-8; разрешено је као \"\\x{0131}\".",
               "tr" => "UTF-8 olmayan yerel ayarda fc(\"\\x{0130}\") yapılamıyor; \"\\x{0131}\" olarak çözümlendi.",
               "uk" => "Неможливо виконати fc(\"\\x{0130}\") у локалі без UTF-8; результат замінено на \"\\x{0131}\"."
             },
@@ -80184,6 +82112,7 @@ $CONF = {
               "nl" => "Kan fc(\"\\x{FB05}\") niet uitvoeren in een niet-UTF-8-locale; geïnterpreteerd als \"\\x{FB06}\".",
               "pt" => "Não é possível executar fc(\"\\x{FB05}\") numa locale não UTF-8; foi substituído por \"\\x{FB06}\".",
               "ru" => "Невозможно выполнить fc(\"\\x{FB05}\") в локали без UTF-8; вместо этого получено \"\\x{FB06}\".",
+              "sr" => "Није могуће применити fc(\"\\x{FB05}\") у локали који није UTF-8; разрешено је као \"\\x{FB06}\".",
               "tr" => "UTF-8 olmayan yerel ayarda fc(\"\\x{FB05}\") yapılamıyor; \"\\x{FB06}\" olarak çözümlendi.",
               "uk" => "Неможливо виконати fc(\"\\x{FB05}\") у локалі без UTF-8; результат замінено на \"\\x{FB06}\"."
             },
@@ -80227,6 +82156,7 @@ $CONF = {
               "nl" => "Gebruik van \\b{} of \\B{} in een niet-UTF-8-locale is onjuist; UTF-8-locale wordt verondersteld",
               "pt" => "A utilização de \\b{} ou \\B{} numa locale não UTF-8 é incorreta. Assume-se uma locale UTF-8",
               "ru" => "Использование \\b{} или \\B{} в локали без UTF-8 некорректно.  Предполагается локаль UTF-8",
+              "sr" => "Употреба \\b{} или \\B{} са локалитетом који није UTF-8 није исправна. Претпоставља се UTF-8 локалитет",
               "tr" => "UTF-8 olmayan yerel ayarda \\b{} veya \\B{} kullanımı hatalı. UTF-8 yerel ayarı varsayılıyor",
               "uk" => "Використання \\b{} або \\B{} для локалі без UTF-8 є неправильним.  Припускається локаль UTF-8"
             },
@@ -80271,6 +82201,7 @@ $CONF = {
               "nl" => "Gebruik van (?[ ]) in een niet-UTF-8-locale is onjuist; UTF-8-locale wordt verondersteld",
               "pt" => "A utilização de (?[ ]) numa locale não UTF-8 é incorreta. Assume-se uma locale UTF-8",
               "ru" => "Использование (?[ ]) в локали без UTF-8 некорректно.  Предполагается локаль UTF-8",
+              "sr" => "Употреба (?[ ]) са локалитетом који није UTF-8 није исправна. Претпоставља се UTF-8 локалитет",
               "tr" => "UTF-8 olmayan yerel ayarda (?[ ]) kullanımı hatalı. UTF-8 yerel ayarı varsayılıyor",
               "uk" => "Використання (?[ ]) у локалі без UTF-8 є некоректним.  Припускається локаль UTF-8"
             },
@@ -80315,6 +82246,7 @@ $CONF = {
               "nl" => "perl: waarschuwing: Controleer of uw locale-instellingen:\n%{settings}    door uw systeem worden ondersteund en erop zijn geïnstalleerd.\n",
               "pt" => "perl: aviso: Verifique se as suas configurações regionais:\n%{settings}    são suportadas e estão instaladas no seu sistema.\n",
               "ru" => "perl: предупреждение: Убедитесь, что указанные в настройках локали:\n%{settings}    поддерживаются и установлены в вашей системе.\n",
+              "sr" => "perl: упозорење: Проверите да ли су поставке локала:\n%{settings}    подржане и инсталиране на вашем систему.\n",
               "tr" => "perl: uyarı: Lütfen yerel ayar değerlerinizin desteklenip sisteminizde kurulu olduğunu denetleyin:\n%{settings}    \n",
               "uk" => "perl: попередження: Перевірте, чи налаштування локалі:\n%{settings}    підтримуються та встановлені у вашій системі.\n"
             },
@@ -80407,6 +82339,10 @@ $CONF = {
               "ru" => {
                 "*" => "perl: предупреждение: Не удалось перейти ни на одну из следующих локалей:\n%{locales}",
                 "1" => "perl: предупреждение: Не удалось перейти на %{locales}"
+              },
+              "sr" => {
+                "*" => "perl: упозорење: Није успело прелазак на ниједан од следећих локала:\n%{locales}",
+                "one" => "perl: упозорење: Није успело прелазак на %{locales}"
               },
               "tr" => {
                 "*" => "perl: uyarı: Aşağıdakilerin hiçbirine geri dönülemedi:\n%{locales}",
@@ -80545,6 +82481,12 @@ $CONF = {
                 "system" => "perl: предупреждение: Переход на системную локаль по умолчанию (\"%{name}\").\n",
                 "unknown" => "perl: предупреждение: Переход на резервную локаль (\"имя локали невозможно определить\").\n"
               },
+              "sr" => {
+                "fallback" => "perl: упозорење: Прелази се на резервни локал („%{name}“).\n",
+                "standard" => "perl: упозорење: Прелази се на стандардни локал („%{name}“).\n",
+                "system" => "perl: упозорење: Прелази се на подразумевани системски локал („%{name}“).\n",
+                "unknown" => "perl: упозорење: Прелази се на резервни локал („име локала није могуће утврдити“).\n"
+              },
               "tr" => {
                 "fallback" => "perl: uyarı: Yedek yerel ayara (\"%{name}\") geçiliyor.\n",
                 "standard" => "perl: uyarı: Standart yerel ayara (\"%{name}\") geçiliyor.\n",
@@ -80615,6 +82557,7 @@ $CONF = {
               "nl" => "perl: waarschuwing: Instellen van de locale is mislukt.\n",
               "pt" => "perl: aviso: Falha ao definir a configuração regional.\n",
               "ru" => "perl: предупреждение: Не удалось установить локаль.\n",
+              "sr" => "perl: упозорење: Подешавање локала није успело.\n",
               "tr" => "perl: uyarı: Yerel ayar belirlenemedi.\n",
               "uk" => "perl: попередження: Не вдалося встановити локаль.\n"
             },
@@ -80656,6 +82599,7 @@ $CONF = {
               "nl" => "Breed teken (U+%{arg1}) in %{arg2} onder een niet-UTF-8-locale",
               "pt" => "Carácter largo (U+%{arg1}) em %{arg2} numa locale não UTF-8",
               "ru" => "Широкий символ (U+%{arg1}) в %{arg2} при локали, отличной от UTF-8",
+              "sr" => "Широки знак (U+%{arg1}) у контексту: %{arg2}, под локалом који није UTF-8",
               "tr" => "UTF-8 olmayan yerel ayarda %{arg2} bağlamında geniş karakter (U+%{arg1}) saptandı",
               "uk" => "Широкий символ (U+%{arg1}) у %{arg2} за використання локалі без UTF-8"
             },
@@ -80698,6 +82642,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -80781,6 +82726,13 @@ $CONF = {
                 "*" => "При применении транслитерации (tr///) к %{arg2} операция будет выполнена над scalar(%{arg3})",
                 "match" => "При применении сопоставления с шаблоном (m//) к %{arg2} операция будет выполнена над scalar(%{arg3})",
                 "subst" => "При применении подстановки (s///) к %{arg2} операция будет выполнена над scalar(%{arg3})"
+              },
+              "sr" => {
+                "*" => "Примењивање оператора %{arg1} на %{arg2} делује на скаларну вредност (%{arg3})",
+                "match" => "Примењивање поклапања са шаблоном (m//) на %{arg2} делује на скаларну вредност (%{arg3})",
+                "subst" => "Примењивање замене (s///) на %{arg2} делује на скаларну вредност (%{arg3})",
+                "trans" => "Примењивање транслитерације (tr///) на %{arg2} делује на скаларну вредност (%{arg3})",
+                "transr" => "Примењивање транслитерације (tr///) на %{arg2} делује на скаларну вредност (%{arg3})"
               },
               "tr" => {
                 "*" => "%{arg1} işlemi %{arg2} üzerinde uygulanırsa scalar(%{arg3}) üzerinde çalışır",
@@ -80912,6 +82864,13 @@ $CONF = {
                 "match" => "При применении сопоставления с шаблоном (m//) к %{arg2} операция будет выполнена над scalar(%{arg3})",
                 "subst" => "При применении подстановки (s///) к %{arg2} операция будет выполнена над scalar(%{arg3})"
               },
+              "sr" => {
+                "*" => "Примењивање оператора %{arg1} на %{arg2} делује на скаларну вредност (%{arg3})",
+                "match" => "Примењивање поклапања са шаблоном (m//) на %{arg2} делује на скаларну вредност (%{arg3})",
+                "subst" => "Примењивање замене (s///) на %{arg2} делује на скаларну вредност (%{arg3})",
+                "trans" => "Примењивање транслитерације (tr///) на %{arg2} делује на скаларну вредност (%{arg3})",
+                "transr" => "Примењивање транслитерације (tr///) на %{arg2} делује на скаларну вредност (%{arg3})"
+              },
               "tr" => {
                 "*" => "%{arg1} işlemi %{arg2} üzerinde uygulanırsa scalar(%{arg3}) üzerinde çalışır",
                 "match" => "Desen eşleştirme (m//) işlemi %{arg2} üzerinde uygulanırsa scalar(%{arg3}) üzerinde çalışır",
@@ -81002,6 +82961,7 @@ $CONF = {
               "nl" => "alarm() met negatief argument",
               "pt" => "alarm() com argumento negativo",
               "ru" => "Вызов alarm() с отрицательным аргументом",
+              "sr" => "alarm() са негативним аргументом",
               "tr" => "Negatif bağımsız değişkenle alarm()",
               "uk" => "Виклик alarm() з від'ємним аргументом"
             },
@@ -81045,6 +83005,7 @@ $CONF = {
               "nl" => "Oneven aantal elementen in anonieme hash",
               "pt" => "Número ímpar de elementos num hash anónimo",
               "ru" => "Нечётное число элементов в анонимном хеше",
+              "sr" => "Непаран број елемената у анонимском хешу",
               "tr" => "Anonim hash içinde tek sayıda öğe",
               "uk" => "Непарна кількість елементів в анонімному хеші"
             },
@@ -81088,6 +83049,7 @@ $CONF = {
               "nl" => "Referentie \"%{arg1}\" gebruikt als array-index",
               "pt" => "Utilização da referência \"%{arg1}\" como índice de array",
               "ru" => "Использование ссылки \"%{arg1}\" в качестве индекса массива",
+              "sr" => "Употреба референце „%{arg1}” као индекса низа",
               "tr" => "Dizi indeksi olarak \"%{arg1}\" başvurusunun kullanılması",
               "uk" => "Використання посилання \"%{arg1}\" як індексу масиву"
             },
@@ -81144,6 +83106,7 @@ $CONF = {
               "nl" => "Poging om de lengte van een vrijgegeven array in te stellen",
               "pt" => "Tentativa de definir o comprimento de um array libertado",
               "ru" => "Попытка задать длину освобождённого массива",
+              "sr" => "Покушај постављања дужине ослобођеног низа",
               "tr" => "Serbest bırakılmış dizinin uzunluğu ayarlanmaya çalışılıyor",
               "uk" => "Спроба встановити довжину масиву, пам'ять якого вже звільнено"
             },
@@ -81187,6 +83150,7 @@ $CONF = {
               "nl" => "Nutteloze toewijzing aan een tijdelijke waarde",
               "pt" => "Atribuição inútil a um valor temporário",
               "ru" => "Бесполезное присваивание временному значению",
+              "sr" => "Бескорисна додела привременој вредности",
               "tr" => "Geçici bir değere etkisiz atama",
               "uk" => "Марне присвоєння тимчасовому значенню"
             },
@@ -81230,6 +83194,7 @@ $CONF = {
               "nl" => "Constante subroutine %{arg1} ongedefinieerd",
               "pt" => "Sub-rotina constante %{arg1} indefinida",
               "ru" => "Определение константной подпрограммы %{arg1} удалено",
+              "sr" => "Константни потпрограм %{arg1} није дефинисан",
               "tr" => "Sabit alt yordam %{arg1} tanımsız",
               "uk" => "Визначення константної підпрограми %{arg1} скасовано"
             },
@@ -81280,6 +83245,7 @@ $CONF = {
               "nl" => "\t(tijdens opruimen) %{arg1}",
               "pt" => "\t(durante a limpeza) %{arg1}",
               "ru" => "\t(при очистке) %{arg1}",
+              "sr" => "\t(током чишћења) %{arg1}",
               "tr" => "\t(temizleme sırasında) %{arg1}",
               "uk" => "\t(під час очищення) %{arg1}"
             },
@@ -81332,6 +83298,7 @@ $CONF = {
               "nl" => "Referentie aangetroffen waar een lijst met een even aantal elementen werd verwacht",
               "pt" => "Foi encontrada uma referência onde se esperava uma lista com um número par de elementos",
               "ru" => "Обнаружена ссылка там, где ожидался список с чётным числом элементов",
+              "sr" => "Пронађена је референца тамо где се очекивала листа парног броја елемената",
               "tr" => "Çift sayıda öğe beklenirken başvuru bulundu",
               "uk" => "Знайдено посилання там, де очікувався список із парною кількістю елементів"
             },
@@ -81383,6 +83350,7 @@ $CONF = {
               "nl" => "Oneven aantal elementen in hash-toewijzing",
               "pt" => "Número ímpar de elementos na atribuição a um hash",
               "ru" => "Нечётное число элементов при присваивании хешу",
+              "sr" => "Непаран број елемената у додели хешу",
               "tr" => "Hash atamasında tek sayıda öğe",
               "uk" => "Непарна кількість елементів у присвоєнні хешу"
             },
@@ -81434,6 +83402,7 @@ $CONF = {
               "nl" => "Oneven aantal elementen bij het initialiseren van een hashveld",
               "pt" => "Número ímpar de elementos na inicialização de um campo hash",
               "ru" => "Нечётное число элементов при инициализации поля-хеша",
+              "sr" => "Непаран број елемената при иницијализацији поља хеша",
               "tr" => "Hash alanı başlatılırken tek sayıda öğe",
               "uk" => "Непарна кількість елементів під час ініціалізації хеш-поля"
             },
@@ -81478,6 +83447,7 @@ $CONF = {
               "nl" => "Niet-tekenreeks doorgegeven als bitmasker",
               "pt" => "Valor não textual passado como máscara de bits",
               "ru" => "В качестве битовой маски передано нестроковое значение",
+              "sr" => "Маска није ниска",
               "tr" => "Bit maskesi olarak dize olmayan değer geçirildi",
               "uk" => "Як бітову маску передано значення, що не є рядком"
             },
@@ -81521,6 +83491,7 @@ $CONF = {
               "nl" => "Expliciete bless naar '' (pakket main wordt aangenomen)",
               "pt" => "Bless explícito para '' (a assumir o pacote main)",
               "ru" => "Явное назначение класса '' с помощью bless (предполагается пакет main)",
+              "sr" => "Експлицитно додељивање пакету '' (претпоставља се пакет main)",
               "tr" => "'' için açıkça bless çağrıldı (main paketi varsayılıyor)",
               "uk" => "Явне застосування bless із класом '' (використовується пакет main)"
             },
@@ -81548,7 +83519,24 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Legacy references outlive their native object; the legacy referent has been unblessed"
+              "ar" => "تظل المراجع القديمة موجودة بعد انتهاء عمر كائنها الأصلي؛ وقد أُزيلت البركة عن المرجع القديم",
+              "cy" => "Mae cyfeirnodau legacy yn goroesi eu gwrthrych brodorol; mae'r cyfeirnod legacy wedi'i ddad-blessu",
+              "de" => "Legacy-Referenzen überdauern ihr natives Objekt; beim Legacy-Referenten wurde die Segnung aufgehoben",
+              "en" => "Legacy references outlive their native object; the legacy referent has been unblessed",
+              "es" => "Las referencias heredadas sobreviven a su objeto nativo; se ha quitado la bendición al referente heredado",
+              "fa" => "ارجاع\N{ZERO WIDTH NON-JOINER}های قدیمی پس از پایان عمر شیء native باقی می\N{ZERO WIDTH NON-JOINER}مانند؛ ارجاع\N{ZERO WIDTH NON-JOINER}شوندهٔ قدیمی از حالت blessed خارج شده است",
+              "fi" => "Legacy-viitteet säilyvät natiivin olion elinkaaren päätyttyä; legacy-viitteen kohteelta on poistettu siunaus",
+              "fr" => "Les références héritées survivent à leur objet natif ; le référent hérité a été dépourvu de son blessing",
+              "he" => "הפניות מדור קודם שורדות את אובייקט ה־native שלהן; ההפניה אל האובייקט שאליו הן מצביעות הוסרה ממנה הברכה",
+              "hu" => "A régi referenciák túlélik natív objektumukat; a régi hivatkozott objektumról eltávolítottuk a bless állapotot",
+              "is" => "Eldri tilvísanir lifa native-hlut sinn; eldra tilvísunargildið hefur verið tekið af blessed-stöðu",
+              "it" => "I riferimenti legacy sopravvivono al loro oggetto nativo; al referente legacy è stata rimossa la benedizione",
+              "nl" => "Legacy-referenties blijven bestaan nadat hun native object is verdwenen; de legacy-referent is unblessed",
+              "pt" => "As referências legadas sobrevivem ao objeto nativo; o referente legado teve seu abençoamento removido",
+              "ru" => "Ссылки legacy переживают существование нативного объекта; с референта legacy снят статус blessed\n",
+              "sr" => "Наслеђене референце надживљавају свој нативни објекат; наслеђеном референту је уклоњен благослов",
+              "tr" => "Legacy başvurular native nesnelerinden daha uzun süre yaşar; legacy referent'in bless durumu kaldırıldı",
+              "uk" => "Посилання legacy переживають свій нативний об’єкт; із референта legacy знято благословення"
             },
             "args" => []
           },
@@ -81590,6 +83578,7 @@ $CONF = {
               "nl" => "Argument van srand() is een referentie zonder string-overloading",
               "pt" => "O argumento de srand() é uma referência sem sobrecarga de conversão para string",
               "ru" => "Аргумент srand() является ссылкой без перегрузки строкового преобразования",
+              "sr" => "Аргумент функције srand() је референца без преоптерећења за ниске",
               "tr" => "srand() argümanı, dize aşırı yüklemesi olmayan bir başvurudur",
               "uk" => "Аргумент srand() є посиланням без перевантаження перетворення на рядок"
             },
@@ -81633,6 +83622,7 @@ $CONF = {
               "nl" => "sleep() met negatief argument",
               "pt" => "sleep() com argumento negativo",
               "ru" => "Вызов sleep() с отрицательным аргументом",
+              "sr" => "sleep() са негативним аргументом",
               "tr" => "Negatif argümanla sleep() çağrıldı",
               "uk" => "sleep() з від'ємним аргументом"
             },
@@ -81676,6 +83666,7 @@ $CONF = {
               "nl" => "Offset van splice() ligt voorbij het einde van de array",
               "pt" => "Deslocamento de splice() para além do fim do array",
               "ru" => "Смещение в splice() выходит за конец массива",
+              "sr" => "померај splice() иза краја низа",
               "tr" => "splice() ofseti dizinin sonunu aşıyor",
               "uk" => "Зміщення splice() виходить за кінець масиву"
             },
@@ -81719,6 +83710,7 @@ $CONF = {
               "nl" => "Nutteloos gebruik van \\E",
               "pt" => "Utilização inútil de \\E",
               "ru" => "Бесполезное использование \\E",
+              "sr" => "Бескорисна употреба \\E",
               "tr" => "\\E kullanımı etkisiz",
               "uk" => "Беззмістовне використання \\E"
             },
@@ -81762,6 +83754,7 @@ $CONF = {
               "nl" => "Onbekende escape \\%{arg1} wordt ongewijzigd doorgegeven",
               "pt" => "Sequência de escape não reconhecida \\%{arg1} mantida sem alteração",
               "ru" => "Нераспознанная escape-последовательность \\%{arg1}: символ интерпретирован буквально",
+              "sr" => "Непрепознат escape \\%{arg1} је прослеђен без измене",
               "tr" => "Tanınmayan kaçış \\%{arg1} olduğu gibi geçirildi",
               "uk" => "Нерозпізнана екранувальна послідовність \\%{arg1}: символ передано буквально"
             },
@@ -81812,6 +83805,7 @@ $CONF = {
               "nl" => "lvalue-attribuut genegeerd omdat de subroutine al is gedefinieerd",
               "pt" => "Atributo lvalue ignorado após a definição da sub-rotina",
               "ru" => "Атрибут lvalue игнорируется после определения подпрограммы",
+              "sr" => "Атрибут lvalue је занемарен јер је потпрограм већ дефинисан",
               "tr" => "Alt yordam tanımlandıktan sonra lvalue özniteliği yok sayıldı",
               "uk" => "Атрибут lvalue проігноровано, оскільки підпрограму вже визначено"
             },
@@ -81855,6 +83849,7 @@ $CONF = {
               "nl" => "Attribuut prototype(%{arg1}) overschrijft een eerder prototype-attribuut in dezelfde subroutine",
               "pt" => "O atributo prototype(%{arg1}) substitui um atributo de protótipo anterior na mesma sub-rotina",
               "ru" => "Атрибут prototype(%{arg1}) отменяет ранее заданный атрибут prototype в той же подпрограмме",
+              "sr" => "Атрибут prototype(%{arg1}) одбацује претходни атрибут prototype у истом потпрограму",
               "tr" => "prototype(%{arg1}) özniteliği, aynı alt yordamın önceki prototype özniteliğini geçersiz kılıyor",
               "uk" => "Атрибут prototype(%{arg1}) скасовує попередній атрибут prototype у тій самій підпрограмі"
             },
@@ -81919,6 +83914,7 @@ $CONF = {
               "nl" => "Nutteloos gebruik van de /d-modifier in de transliteratieoperator",
               "pt" => "Utilização inútil do modificador /d no operador de transliteração",
               "ru" => "Бесполезное использование модификатора /d в операторе транслитерации",
+              "sr" => "Бескорисна употреба модификатора /d у оператору транслитерације",
               "tr" => "Çevirme işlemcisinde /d değiştiricisinin etkisiz kullanımı",
               "uk" => "Марне використання модифікатора /d в операторі транслітерації"
             },
@@ -81962,6 +83958,7 @@ $CONF = {
               "nl" => "De vervangingslijst is langer dan de zoeklijst",
               "pt" => "A lista de substituição é mais longa do que a lista de procura",
               "ru" => "Список замены длиннее списка поиска",
+              "sr" => "Листа замена је дужа од листе за претрагу",
               "tr" => "Değiştirme listesi arama listesinden daha uzun",
               "uk" => "Список заміни довший за список пошуку"
             },
@@ -82027,6 +84024,10 @@ $CONF = {
               "ru" => {
                 "*" => "Значение, возвращаемое %{operation}, может быть \"0\" и при этом оставаться определённым; проверяйте его с помощью defined()",
                 "aeach" => "Значение, возвращаемое each для массива, может быть \"0\" и при этом оставаться определённым; проверяйте его с помощью defined()"
+              },
+              "sr" => {
+                "*" => "Вредност коју враћа %{operation} може бити „0“ и ипак дефинисана; проверите је помоћу defined()",
+                "aeach" => "Вредност коју враћа операција each над низом може бити „0“ и ипак дефинисана; проверите је помоћу defined()"
               },
               "tr" => {
                 "*" => "%{operation} tarafından döndürülen değer \"0\" olabilir ve yine de tanımlı olabilir; defined() ile sınayın",
@@ -82103,6 +84104,7 @@ $CONF = {
               "nl" => "Ongedefinieerde waarde toegewezen aan typeglob",
               "pt" => "Valor indefinido atribuído a um typeglob",
               "ru" => "Глобу присвоено неопределённое значение",
+              "sr" => "Недефинисана вредност додељена је typeglob-у",
               "tr" => "Tür glob'una tanımsız değer atandı",
               "uk" => "Об'єкту typeglob присвоєно невизначене значення"
             },
@@ -82146,6 +84148,7 @@ $CONF = {
               "nl" => "Referentie is al zwak",
               "pt" => "A referência já é fraca",
               "ru" => "Ссылка уже является слабой",
+              "sr" => "Референца је већ слаба",
               "tr" => "Başvuru zaten zayıf",
               "uk" => "Посилання вже є слабким"
             },
@@ -82189,6 +84192,7 @@ $CONF = {
               "nl" => "Referentie is niet zwak",
               "pt" => "A referência não é fraca",
               "ru" => "Ссылка не является слабой",
+              "sr" => "Референца није слаба",
               "tr" => "Başvuru zayıf değil",
               "uk" => "Посилання не є слабким"
             },
@@ -82232,6 +84236,7 @@ $CONF = {
               "nl" => "Variabele \"%{var_name}\" is niet geïmporteerd",
               "pt" => "A variável \"%{var_name}\" não foi importada",
               "ru" => "Переменная \"%{var_name}\" не импортирована",
+              "sr" => "Променљива „%{var_name}“ није увезена",
               "tr" => "\"%{var_name}\" değişkeni içe aktarılmadı",
               "uk" => "Змінну \"%{var_name}\" не імпортовано"
             },
@@ -82302,6 +84307,7 @@ $CONF = {
               "nl" => "\t(Bedoelde u misschien &%{arg1}?)\n",
               "pt" => "\t(Queria dizer &%{arg1}?)\n",
               "ru" => "\t(Возможно, вы имели в виду &%{arg1}?)\n",
+              "sr" => "\t(Да ли сте мислили &%{arg1}?)\n",
               "tr" => "\t(Bunun yerine &%{arg1} mi demek istediniz?)\n",
               "uk" => "\t(Можливо, ви мали на увазі &%{arg1}?)\n"
             },
@@ -82366,6 +84372,7 @@ $CONF = {
               "nl" => "Versietekenreeks '%{arg1}' bevat ongeldige gegevens; genegeerd: '%{arg2}'",
               "pt" => "A string de versão '%{arg1}' contém dados inválidos; a ignorar: '%{arg2}'",
               "ru" => "Строка версии '%{arg1}' содержит недопустимые данные; игнорируется: '%{arg2}'",
+              "sr" => "Ниска верзије „%{arg1}“ садржи неважеће податке; занемарује се: „%{arg2}“",
               "tr" => "Sürüm dizesi '%{arg1}' geçersiz veri içeriyor; yok sayılıyor: '%{arg2}'",
               "uk" => "Рядок версії '%{arg1}' містить некоректні дані; ігнорується: '%{arg2}'"
             },
@@ -82420,6 +84427,7 @@ $CONF = {
               "nl" => "Waarde van CLI-symbool \"%{arg1}\" is te lang",
               "pt" => "O valor do símbolo CLI \"%{arg1}\" é demasiado longo",
               "ru" => "Слишком длинное значение символа CLI \"%{arg1}\"",
+              "sr" => "Вредност CLI симбола „%{arg1}“ је предугачка",
               "tr" => "CLI simgesi \"%{arg1}\" değeri çok uzun",
               "uk" => "Значення символу CLI \"%{arg1}\" задовге"
             },
@@ -82470,6 +84478,7 @@ $CONF = {
               "nl" => "Waarde van logical \"%{arg1}\" is te lang; afgekapt bij bytegrens %{arg2}",
               "pt" => "O valor do símbolo lógico \"%{arg1}\" é demasiado longo. Truncamento no limite de bytes %{arg2}",
               "ru" => "Значение логического имени \"%{arg1}\" слишком длинное. Оно усекается до предела в байтах: %{arg2}",
+              "sr" => "Вредност логичког имена „%{arg1}“ је предугачка. Скраћује се на ограничење од %{arg2} бајтова",
               "tr" => "Mantıksal \"%{arg1}\" değeri çok uzun. %{arg2} bayt sınırında kesiliyor",
               "uk" => "Значення логічного імені \"%{arg1}\" задовге. Обрізання до межі в байтах: %{arg2}"
             },
@@ -82569,6 +84578,10 @@ $CONF = {
                 "*" => "Попытка вызвать отсутствующий метод %{method_name} с аргументами (%{argument_preview}) через пакет %{package_name} (Возможно, вы забыли загрузить пакет?)",
                 "truncated" => "Попытка вызвать отсутствующий метод %{method_name} с аргументами (%{argument_preview} ...) через пакет %{package_name} (Возможно, вы забыли загрузить пакет?)"
               },
+              "sr" => {
+                "complete" => "Покушај позива непостојеће методе %{method_name} са аргументима (%{argument_preview}) преко пакета %{package_name} (Можда сте заборавили да учитате пакет?)",
+                "truncated" => "Покушај позива непостојеће методе %{method_name} са аргументима (%{argument_preview} ...) преко пакета %{package_name} (Можда сте заборавили да учитате пакет?)"
+              },
               "tr" => {
                 "complete" => "%{package_name} paketi üzerinden %{method_name} yöntemi eksik olduğu hâlde argümanlarla (%{argument_preview}) çağrılmaya çalışıldı (Paketi yüklemeyi mi unuttunuz?)",
                 "truncated" => "%{package_name} paketi üzerinden %{method_name} yöntemi eksik olduğu hâlde argümanlarla (%{argument_preview} ...) çağrılmaya çalışıldı (Paketi yüklemeyi mi unuttunuz?)"
@@ -82645,6 +84658,7 @@ $CONF = {
               "nl" => "Argument ontbreekt in %{arg1}",
               "pt" => "Falta um argumento em %{arg1}",
               "ru" => "Отсутствует аргумент в %{arg1}",
+              "sr" => "Недостаје аргумент у операцији %{arg1}",
               "tr" => "%{arg1} için bağımsız değişken eksik",
               "uk" => "Бракує аргументу в %{arg1}"
             },
@@ -82682,6 +84696,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -82725,6 +84740,7 @@ $CONF = {
               "nl" => "Argument \"%{arg1}\" behandeld als 0 bij ophogen (++)",
               "pt" => "O argumento \"%{arg1}\" é tratado como 0 no incremento (++)",
               "ru" => "Аргумент \"%{arg1}\" интерпретируется как 0 при инкременте (++)",
+              "sr" => "Аргумент „%{arg1}” третиран је као 0 при увећавању (++)",
               "tr" => "\"%{arg1}\" argümanı artırma (++) işleminde 0 olarak değerlendirildi",
               "uk" => "Аргумент \"%{arg1}\" трактується як 0 під час інкременту (++)"
             },
@@ -82774,6 +84790,7 @@ $CONF = {
               "nl" => "Negatief herhalingsaantal heeft geen effect",
               "pt" => "Uma contagem de repetição negativa não tem efeito",
               "ru" => "При отрицательном числе повторений операция не выполняется",
+              "sr" => "Негативан број понављања нема дејства",
               "tr" => "Negatif yineleme sayısının etkisi yok",
               "uk" => "Від'ємна кількість повторень не спричиняє жодних дій"
             },
@@ -82817,6 +84834,7 @@ $CONF = {
               "nl" => "Niet-eindig herhalingsaantal heeft geen effect",
               "pt" => "Uma contagem de repetição não finita não tem efeito",
               "ru" => "При неконечном числе повторений операция не выполняется",
+              "sr" => "Број понављања није коначан, нема дејства",
               "tr" => "Sonlu olmayan yineleme sayısının etkisi yok",
               "uk" => "Нескінченна або невизначена кількість повторень не спричиняє жодної дії"
             },
@@ -82859,6 +84877,7 @@ $CONF = {
               "nl" => "Argument \"%{arg1}\" is niet numeriek in %{arg2}",
               "pt" => "O argumento \"%{arg1}\" não é numérico em %{arg2}",
               "ru" => "Аргумент \"%{arg1}\" не является числом в %{arg2}",
+              "sr" => "Аргумент „%{arg1}” није нумерички у операцији %{arg2}",
               "tr" => "%{arg2} bağlamında \"%{arg1}\" bağımsız değişkeni sayısal değildir",
               "uk" => "Аргумент \"%{arg1}\" не є числом у %{arg2}"
             },
@@ -82901,6 +84920,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -82944,6 +84964,7 @@ $CONF = {
               "nl" => "Argument \"%{arg1}\" is niet numeriek",
               "pt" => "O argumento \"%{arg1}\" não é numérico",
               "ru" => "Аргумент \"%{arg1}\" не является числом",
+              "sr" => "Аргумент „%{arg1}” није нумерички",
               "tr" => "\"%{arg1}\" argümanı sayısal değil",
               "uk" => "Аргумент \"%{arg1}\" не є числовим"
             },
@@ -82993,6 +85014,7 @@ $CONF = {
               "nl" => "alpha->numify() verliest informatie",
               "pt" => "alpha->numify() provoca perda de informação",
               "ru" => "alpha->numify() приводит к потере информации",
+              "sr" => "alpha->numify() доводи до губитка података",
               "tr" => "alpha->numify() bilgi kaybına yol açar",
               "uk" => "alpha->numify() призводить до втрати інформації"
             },
@@ -83037,6 +85059,7 @@ $CONF = {
               "nl" => "Oneven aantal argumenten doorgegeven aan constructor van %{stash}",
               "pt" => "Número ímpar de argumentos passado ao construtor de %{stash}",
               "ru" => "Конструктору %{stash} передано нечётное количество аргументов",
+              "sr" => "Прослеђен је непаран број аргумената конструктору %{stash}",
               "tr" => "%{stash} yapıcısına tek sayıda argüman geçirildi",
               "uk" => "До конструктора %{stash} передано непарну кількість аргументів"
             },
@@ -83084,6 +85107,7 @@ $CONF = {
               "nl" => "Naam \"%{arg1}::%{arg2}\" slechts één keer gebruikt: mogelijk een typefout",
               "pt" => "O nome \"%{arg1}::%{arg2}\" só foi utilizado uma vez: possível erro de escrita",
               "ru" => "Имя \"%{arg1}::%{arg2}\" использовано только один раз: возможна опечатка",
+              "sr" => "Име „%{arg1}::%{arg2}“ употребљено је само једном: могућа је грешка у куцању",
               "tr" => "\"%{arg1}::%{arg2}\" adı yalnızca bir kez kullanıldı: olası yazım hatası",
               "uk" => "Ім'я \"%{arg1}::%{arg2}\" використано лише один раз: можлива друкарська помилка"
             },
@@ -83146,6 +85170,7 @@ $CONF = {
               "nl" => "Hexadecimaal kommagetal: exponent te groot",
               "pt" => "Número de vírgula flutuante hexadecimal: expoente demasiado grande",
               "ru" => "Шестнадцатеричное число с плавающей точкой: порядок выше допустимого диапазона",
+              "sr" => "Хексадецимални број са покретним зарезом: прекорачење експонента",
               "tr" => "Onaltılık kayan noktalı sayı: üs taşması",
               "uk" => "Шістнадцяткове число з рухомою комою: переповнення показника степеня"
             },
@@ -83189,6 +85214,7 @@ $CONF = {
               "nl" => "Hexadecimaal kommagetal: exponent te klein",
               "pt" => "Número de vírgula flutuante hexadecimal: expoente demasiado pequeno",
               "ru" => "Шестнадцатеричное число с плавающей точкой: порядок ниже допустимого диапазона",
+              "sr" => "Хексадецимални број са покретним зарезом: недовољан експонент",
               "tr" => "Onaltılık kayan noktalı sayı: üs alt taşması",
               "uk" => "Шістнадцяткове число з рухомою комою: експонента нижча за допустиму межу"
             },
@@ -83232,6 +85258,7 @@ $CONF = {
               "nl" => "Hexadecimaal kommagetal: mantisse-overloop",
               "pt" => "Número de vírgula flutuante hexadecimal: mantissa demasiado grande",
               "ru" => "Шестнадцатеричное число с плавающей точкой: переполнение мантиссы",
+              "sr" => "Хексадецимални број са покретним зарезом: прекорачен опсег мантисе",
               "tr" => "Onaltılık kayan noktalı sayı: anlamlı kısım taşması",
               "uk" => "Шістнадцяткове число з рухомою комою: переповнення мантиси"
             },
@@ -83336,6 +85363,11 @@ $CONF = {
                 "hexadecimal" => "Целочисленное переполнение в шестнадцатеричном числе",
                 "octal" => "Целочисленное переполнение в восьмеричном числе"
               },
+              "sr" => {
+                "binary" => "Прекорачење целобројног опсега у бинарном броју",
+                "hexadecimal" => "Прекорачење целобројног опсега у хексадекадном броју",
+                "octal" => "Прекорачење целобројног опсега у окталном броју"
+              },
               "tr" => {
                 "binary" => "İkilik sayıda tamsayı taşması",
                 "hexadecimal" => "Onaltılık sayıda tamsayı taşması",
@@ -83400,6 +85432,7 @@ $CONF = {
               "nl" => "Geheelgetaloverloop in srand(): alleen de laagste 32 bits worden gebruikt",
               "pt" => "Excedida a capacidade do inteiro em srand(): só serão utilizados os 32 bits menos significativos",
               "ru" => "Переполнение целого числа в srand(): используются только младшие 32 бита",
+              "sr" => "Прекорачење целобројне вредности у srand(): користе се само нижих 32 бита",
               "tr" => "srand() içinde tamsayı taşması: yalnızca düşük 32 bit kullanılıyor",
               "uk" => "Цілочисельне переповнення у srand(): використовуються лише молодші 32 біти"
             },
@@ -83443,6 +85476,7 @@ $CONF = {
               "nl" => "%{arg1}(%{arg2}) is mislukt",
               "pt" => "%{arg1}(%{arg2}) falhou",
               "ru" => "Не удалось выполнить %{arg1}(%{arg2})",
+              "sr" => "%{arg1}(%{arg2}) није успео",
               "tr" => "%{arg1}(%{arg2}) başarısız oldu",
               "uk" => "Не вдалося виконати %{arg1}(%{arg2})"
             },
@@ -83498,6 +85532,7 @@ $CONF = {
               "nl" => "%{arg1}(%{arg2}) is te klein",
               "pt" => "%{arg1}(%{arg2}) é demasiado pequeno",
               "ru" => "Слишком малое значение аргумента в %{arg1}(%{arg2})",
+              "sr" => "%{arg1}(%{arg2}) је премало",
               "tr" => "%{arg1}(%{arg2}) çok küçük",
               "uk" => "Замале значення аргументу у %{arg1}(%{arg2})"
             },
@@ -83553,6 +85588,7 @@ $CONF = {
               "nl" => "%{arg1}(%{arg2}) is te groot",
               "pt" => "%{arg1}(%{arg2}) é demasiado grande",
               "ru" => "Слишком большое значение аргумента в %{arg1}(%{arg2})",
+              "sr" => "%{arg1}(%{arg2}) је превелико",
               "tr" => "%{arg1}(%{arg2}) çok büyük",
               "uk" => "Значення аргументу у %{arg1}(%{arg2}) завелике"
             },
@@ -83609,6 +85645,7 @@ $CONF = {
               "nl" => "Geheelgetaloverloop in versie",
               "pt" => "Excesso de capacidade de inteiro na versão",
               "ru" => "Целочисленное переполнение в версии",
+              "sr" => "Прекорачење целобројног опсега у верзији",
               "tr" => "Sürümde tamsayı taşması",
               "uk" => "Цілочисельне переповнення у версії"
             },
@@ -83653,6 +85690,7 @@ $CONF = {
               "nl" => "Geheelgetaloverloop in versie %{arg1}",
               "pt" => "Excesso de capacidade de inteiro na versão %{arg1}",
               "ru" => "Целочисленное переполнение в версии %{arg1}",
+              "sr" => "Прекорачење целобројног опсега у верзији %{arg1}",
               "tr" => "Sürüm %{arg1} içinde tamsayı taşması",
               "uk" => "Цілочисельне переповнення у версії %{arg1}"
             },
@@ -83703,6 +85741,7 @@ $CONF = {
               "nl" => "Geheelgetaloverloop in decimaal getal",
               "pt" => "Excesso de capacidade de inteiro num número decimal",
               "ru" => "Целочисленное переполнение в десятичном числе",
+              "sr" => "Прекорачење целог броја у децималном броју",
               "tr" => "Ondalık sayıda tamsayı taşması",
               "uk" => "Цілочисельне переповнення в десятковому числі"
             },
@@ -83747,6 +85786,7 @@ $CONF = {
               "nl" => "sleep(%{arg1}) is te groot",
               "pt" => "sleep(%{arg1}) é demasiado grande",
               "ru" => "Слишком большое значение аргумента в sleep(%{arg1})",
+              "sr" => "sleep(%{arg1}) је превелик",
               "tr" => "sleep(%{arg1}) çok büyük",
               "uk" => "Завелике значення аргументу у sleep(%{arg1})"
             },
@@ -83796,6 +85836,7 @@ $CONF = {
               "nl" => "Poging om een pointer naar een tijdelijke waarde te packen",
               "pt" => "Tentativa de empacotar um ponteiro para um valor temporário",
               "ru" => "Попытка упаковать указатель на временное значение",
+              "sr" => "Покушај паковања показивача на привремену вредност",
               "tr" => "Geçici bir değerin işaretçisini pack ile paketlemeye çalışıldı",
               "uk" => "Спроба упакувати вказівник на тимчасове значення"
             },
@@ -83839,6 +85880,7 @@ $CONF = {
               "nl" => "Teken in 'c'-formaat loopt over bij pack",
               "pt" => "Carácter fora do intervalo no formato 'c' em pack; valor ajustado por módulo",
               "ru" => "Значение символа в формате 'c' усечено до байта в pack",
+              "sr" => "Знак у формату „c” је сведен при pack",
               "tr" => "'c' biçimindeki karakter pack içinde sarıldı",
               "uk" => "Значення символу у форматі 'c' зведено за модулем 256 у pack"
             },
@@ -83882,6 +85924,7 @@ $CONF = {
               "nl" => "Tekens in '%{arg1}'-formaat lopen over bij %{arg2}",
               "pt" => "Caracteres fora do intervalo no formato '%{arg1}' em %{arg2}; valores ajustados por módulo",
               "ru" => "Значения символов в формате '%{arg1}' приведены по модулю 256 в %{arg2}",
+              "sr" => "Знак(ови) у формату „%{arg1}” су сведени при %{arg2}",
               "tr" => "' %{arg1}' biçimindeki karakter(ler) %{arg2} içinde sarıldı",
               "uk" => "Значення символів у форматі '%{arg1}' зведено за модулем 256 у %{arg2}"
             },
@@ -83941,6 +85984,7 @@ $CONF = {
               "nl" => "Teken in 'C'-formaat loopt over bij pack",
               "pt" => "Carácter fora do intervalo no formato 'C' em pack; valor ajustado por módulo",
               "ru" => "Значение символа в формате 'C' усечено до байта в pack",
+              "sr" => "Знак у формату „C” је сведен при pack",
               "tr" => "pack içinde 'C' biçimindeki karakter sarıldı",
               "uk" => "Значення символу у форматі 'C' зведено за модулем 256 у pack"
             },
@@ -83984,6 +86028,7 @@ $CONF = {
               "nl" => "Veld te breed voor 'u'-formaat in pack",
               "pt" => "Campo demasiado largo no formato 'u' em pack",
               "ru" => "Слишком широкое поле в формате 'u' в pack",
+              "sr" => "Поље је прешироко у формату „u” при pack",
               "tr" => "pack içinde 'u' biçiminde alan çok geniş",
               "uk" => "Завелика ширина поля у форматі 'u' у pack"
             },
@@ -84028,6 +86073,7 @@ $CONF = {
               "nl" => "Teken in 'W'-formaat loopt over bij pack",
               "pt" => "Carácter fora do intervalo no formato 'W' em pack; valor ajustado por módulo",
               "ru" => "Значение символа в формате 'W' усечено до байта в pack",
+              "sr" => "Знак у формату „W” је сведен при pack",
               "tr" => "pack içinde 'W' biçimindeki karakter sarıldı",
               "uk" => "Значення символу у форматі 'W' зведено за модулем 256 у pack"
             },
@@ -84070,6 +86116,7 @@ $CONF = {
               "nl" => "%{arg1}::INIT-blok wordt als BEGIN-blok behandeld als tijdelijke oplossing",
               "pt" => "O bloco %{arg1}::INIT será tratado como um bloco BEGIN como solução de contorno",
               "ru" => "В качестве обходного решения блок %{arg1}::INIT обрабатывается как блок BEGIN",
+              "sr" => "Из заобилазног решења, %{arg1}::INIT блок се третира као BEGIN блок",
               "tr" => "Geçici çözüm olarak %{arg1}::INIT bloğu BEGIN bloğu olarak ele alınıyor",
               "uk" => "Блок %{arg1}::INIT обробляється як блок BEGIN для обходу проблеми"
             },
@@ -84117,6 +86164,7 @@ $CONF = {
               "nl" => "%{arg1} is niet portabel",
               "pt" => "%{arg1} não é portável",
               "ru" => "%{arg1}: переносимость не гарантируется",
+              "sr" => "%{arg1} није преносиво",
               "tr" => "%{arg1} taşınabilir değil",
               "uk" => "Не забезпечено переносність: %{arg1}"
             },
@@ -84166,6 +86214,7 @@ $CONF = {
               "nl" => "Codepunt 0x%{arg1} behoort niet tot Unicode, vereist een Perl-uitbreiding en is daarom niet overdraagbaar",
               "pt" => "O ponto de código 0x%{arg1} não é Unicode, requer uma extensão do Perl e não é portável",
               "ru" => "Кодовая точка 0x%{arg1} не входит в Unicode, требует расширения Perl и потому непереносима",
+              "sr" => "Кодна тачка 0x%{arg1} није Unicode, захтева Perl проширење и зато није преносива",
               "tr" => "Kod noktası 0x%{arg1} Unicode değildir, bir Perl uzantısı gerektirir ve bu nedenle taşınabilir değildir",
               "uk" => "Кодова точка 0x%{arg1} не належить до Unicode, потребує розширення Perl і тому є непереносною"
             },
@@ -84223,6 +86272,7 @@ $CONF = {
               "nl" => "Bitvectors groter dan 32 bits zijn niet portabel",
               "pt" => "Tamanho de vetor de bits superior a 32 não é portável",
               "ru" => "Размер битового вектора > 32 не обеспечивает переносимости",
+              "sr" => "Величина битског вектора > 32 није преносива",
               "tr" => "32'den büyük bit vektörü boyutu taşınabilir değil",
               "uk" => "Розмір бітового вектора > 32 порушує переносність"
             },
@@ -84265,6 +86315,7 @@ $CONF = {
               "nl" => "%{text}\t...opgevangen bij %{file} op regel %{line}.\n",
               "pt" => "%{text}\t...capturado em %{file}, linha %{line}.\n",
               "ru" => "%{text}\t...исключение перехвачено в файле %{file}, строка %{line}.\n",
+              "sr" => "%{text}\t...ухваћено у %{file} у реду %{line}.\n",
               "tr" => "%{text}\t...%{file} dosyasının %{line}. satırında yakalandı.\n",
               "uk" => "%{text}\t...перехоплено у %{file}, рядок %{line}.\n"
             },
@@ -84329,6 +86380,7 @@ $CONF = {
               "nl" => "Diepe recursie in anonieme subroutine",
               "pt" => "Recursão profunda numa sub-rotina anónima",
               "ru" => "Глубокая рекурсия в анонимной подпрограмме",
+              "sr" => "Дубока рекурзија у анонимном потпрограму",
               "tr" => "Anonim alt yordamda derin özyineleme",
               "uk" => "Глибока рекурсія в анонімній підпрограмі"
             },
@@ -84372,6 +86424,7 @@ $CONF = {
               "nl" => "Diepe recursie in subroutine \"%{arg1}\"",
               "pt" => "Recursão profunda na sub-rotina \"%{arg1}\"",
               "ru" => "Глубокая рекурсия в подпрограмме \"%{arg1}\"",
+              "sr" => "Дубока рекурзија у потпрограму „%{arg1}”",
               "tr" => "\"%{arg1}\" alt yordamında derin özyineleme",
               "uk" => "Глибока рекурсія в підпрограмі \"%{arg1}\""
             },
@@ -84422,6 +86475,7 @@ $CONF = {
               "nl" => "Constante subroutine %{arg1} opnieuw gedefinieerd",
               "pt" => "Sub-rotina constante %{arg1} redefinida",
               "ru" => "Константная подпрограмма %{arg1} переопределена",
+              "sr" => "Константни потпрограм %{arg1} је поново дефинисан",
               "tr" => "Sabit alt yordam %{arg1} yeniden tanımlandı",
               "uk" => "Константну підпрограму %{arg1} перевизначено"
             },
@@ -84472,6 +86526,7 @@ $CONF = {
               "nl" => "Formaat STDOUT opnieuw gedefinieerd",
               "pt" => "Formato STDOUT redefinido",
               "ru" => "Формат STDOUT переопределён",
+              "sr" => "Формат STDOUT је поново дефинисан",
               "tr" => "STDOUT biçimi yeniden tanımlandı",
               "uk" => "Формат STDOUT перевизначено"
             },
@@ -84515,6 +86570,7 @@ $CONF = {
               "nl" => "Methode %{arg1} opnieuw gedefinieerd",
               "pt" => "Método %{arg1} redefinido",
               "ru" => "Метод %{arg1} переопределён",
+              "sr" => "Метода %{arg1} је поново дефинисана",
               "tr" => "%{arg1} yöntemi yeniden tanımlandı",
               "uk" => "Метод %{arg1} перевизначено"
             },
@@ -84565,6 +86621,7 @@ $CONF = {
               "nl" => "Formaat %{arg1} opnieuw gedefinieerd",
               "pt" => "Formato %{arg1} redefinido",
               "ru" => "Формат %{arg1} переопределён",
+              "sr" => "Формат %{arg1} је поново дефинисан",
               "tr" => "%{arg1} biçimi yeniden tanımlandı",
               "uk" => "Формат %{arg1} перевизначено"
             },
@@ -84615,6 +86672,7 @@ $CONF = {
               "nl" => "Subroutine %{arg1} opnieuw gedefinieerd",
               "pt" => "Sub-rotina %{arg1} redefinida",
               "ru" => "Подпрограмма %{arg1} переопределена",
+              "sr" => "Потпрограм %{arg1} је поново дефинисан",
               "tr" => "%{arg1} alt yordamı yeniden tanımlandı",
               "uk" => "Підпрограму %{arg1} перевизначено"
             },
@@ -84664,6 +86722,7 @@ $CONF = {
               "nl" => "Overbodig argument in %{arg1}",
               "pt" => "Argumento redundante em %{arg1}",
               "ru" => "Лишний аргумент в %{arg1}",
+              "sr" => "Сувишан аргумент у операцији %{arg1}",
               "tr" => "%{arg1} için gereksiz bir bağımsız değişken verildi",
               "uk" => "Зайвий аргумент у %{arg1}"
             },
@@ -84701,6 +86760,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -84746,6 +86806,7 @@ $CONF = {
               "nl" => "Perls regels voor hoofdletteromzetting zijn niet bijgewerkt voor 0x%{arg1}; meld dit met het hulpprogramma perlbug;",
               "pt" => "As regras de equivalência de maiúsculas e minúsculas do Perl estão desatualizadas para 0x%{arg1}; comunique o problema através de perlbug;",
               "ru" => "Правила свёртки регистра в Perl устарели для 0x%{arg1}; сообщите об этом с помощью утилиты perlbug;",
+              "sr" => "Perl правила пресликавања великих и малих слова нису ажурирана за 0x%{arg1}; пријавите ово помоћу алатке perlbug;",
               "tr" => "0x%{arg1} için Perl büyük/küçük harf eşleme kuralları güncel değil; bildirmek için perlbug aracını kullanın;",
               "uk" => "Правила зведення регістру Perl для 0x%{arg1} застарілі; повідомте про це за допомогою утиліти perlbug;"
             },
@@ -84805,6 +86866,7 @@ $CONF = {
               "nl" => "Lege \\N{} in tekenklasse wordt genegeerd",
               "pt" => "\\N{} com comprimento zero ignorado na classe de caracteres",
               "ru" => "Игнорируется \\N{} нулевой длины в символьном классе",
+              "sr" => "Занемарује се празно \\N{} нулте дужине у класи знакова",
               "tr" => "Karakter sınıfındaki sıfır uzunluklu \\N{} yok sayılıyor",
               "uk" => "\\N{} нульової довжини у класі символів ігнорується"
             },
@@ -84857,6 +86919,7 @@ $CONF = {
               "nl" => "\"%{arg1}\" kan duidelijker worden geschreven als \"%{arg2}\"",
               "pt" => "\"%{arg1}\" escreve-se mais claramente como \"%{arg2}\"",
               "ru" => "Вместо \"%{arg1}\" понятнее написать просто \"%{arg2}\"",
+              "sr" => "\"%{arg1}\" је јасније записати једноставно као \"%{arg2}\"",
               "tr" => "\"%{arg1}\" daha açık biçimde yalnızca \"%{arg2}\" olarak yazılabilir",
               "uk" => "\"%{arg1}\" зрозуміліше записати просто як \"%{arg2}\""
             },
@@ -84930,6 +86993,7 @@ $CONF = {
               "nl" => "Onbekende escape \\%{arg1} in tekenklasse wordt ongewijzigd doorgegeven",
               "pt" => "Sequência de escape não reconhecida \\%{arg1} numa classe de caracteres, mantida literalmente",
               "ru" => "Нераспознанная escape-последовательность \\%{arg1} в символьном классе обработана буквально",
+              "sr" => "Непрепознато избегавање \\%{arg1} у класи знакова прослеђено је даље",
               "tr" => "Karakter sınıfındaki tanınmayan \\%{arg1} kaçışı olduğu gibi geçirildi",
               "uk" => "Нерозпізнану послідовність екранування \\%{arg1} у класі символів передано без обробки"
             },
@@ -84990,6 +87054,7 @@ $CONF = {
               "nl" => "Alleen resultaten van \\p{} met één teken worden gebruikt in (?[...])",
               "pt" => "A utilizar apenas os resultados de um único carácter devolvidos por \\p{} em (?[...])",
               "ru" => "В (?[...]) используются только односимвольные результаты, возвращённые \\p{}",
+              "sr" => "У (?[...]) се користе само резултати који садрже по један знак, а које врати \\p{}",
               "tr" => "(?[...]) içinde \\p{} tarafından döndürülen yalnızca tek karakterli sonuçlar kullanılıyor",
               "uk" => "У (?[...]) використовуються лише односимвольні результати, повернуті \\p{}"
             },
@@ -85043,6 +87108,7 @@ $CONF = {
               "nl" => "Alleen het eerste door \\N{} geretourneerde teken in de tekenklasse wordt gebruikt",
               "pt" => "A utilizar apenas o primeiro carácter devolvido por \\N{} na classe de caracteres",
               "ru" => "В символьном классе используется только первый символ, возвращённый \\N{}",
+              "sr" => "У класи знакова користи се само први знак који врати \\N{}",
               "tr" => "Karakter sınıfında \\N{} tarafından döndürülen yalnızca ilk karakter kullanılıyor",
               "uk" => "У класі символів використовується лише перший символ, повернутий \\N{}"
             },
@@ -85154,6 +87220,11 @@ $CONF = {
                 "*" => "Конструкция POSIX [%{arg1} %{arg2}] должна находиться внутри символьного класса",
                 "invalid" => "Конструкция POSIX [%{arg1} %{arg2}] должна находиться внутри символьного класса (но эта конструкция не вполне корректна)",
                 "unimplemented" => "Конструкция POSIX [%{arg1} %{arg2}] должна находиться внутри символьного класса (но эта конструкция не реализована)"
+              },
+              "sr" => {
+                "invalid" => "Синтакса POSIX [%{arg1} %{arg2}] припада унутар класа знакова (али овај није потпуно исправан)",
+                "recognized" => "Синтакса POSIX [%{arg1} %{arg2}] припада унутар класа знакова",
+                "unimplemented" => "Синтакса POSIX [%{arg1} %{arg2}] припада унутар класа знакова (али није имплементирана)"
               },
               "tr" => {
                 "invalid" => "POSIX sözdizimi [%{arg1} %{arg2}] karakter sınıflarının içinde olmalıdır (ancak bu ifade bütünüyle geçerli değil)",
@@ -85374,6 +87445,16 @@ $CONF = {
                 "name_not_lowercase" => "Предполагается, что это НЕ класс POSIX, поскольку имя должно состоять только из строчных букв",
                 "semicolon_for_colon" => "Предполагается, что это НЕ класс POSIX, поскольку вместо двоеточия обнаружена точка с запятой"
               },
+              "sr" => {
+                "caret_before_colon" => "Претпоставља се да НИЈЕ POSIX класа јер знак '^' мора да стоји после двотачке",
+                "missing_opening_bracket" => "Претпоставља се да НИЈЕ POSIX класа јер не почиње знаком '['",
+                "missing_opening_colon" => "Претпоставља се да НИЈЕ POSIX класа јер мора да има почетну ':'",
+                "missing_terminating_bracket" => "Претпоставља се да НИЈЕ POSIX класа јер нема завршни ']'",
+                "missing_terminating_colon" => "Претпоставља се да НИЈЕ POSIX класа јер нема завршну ':'",
+                "name_not_lowercase" => "Претпоставља се да НИЈЕ POSIX класа јер име мора да се састоји само од малих слова",
+                "no_blanks" => "Претпоставља се да НИЈЕ POSIX класа јер у њој нису дозвољени размаци",
+                "semicolon_for_colon" => "Претпоставља се да НИЈЕ POSIX класа јер је уместо двотачке пронађена тачка и зарез"
+              },
               "tr" => {
                 "caret_before_colon" => "POSIX sınıfı olmadığı varsayılıyor; çünkü '^' iki nokta üst üste işaretinden sonra gelmelidir",
                 "missing_opening_bracket" => "POSIX sınıfı olmadığı varsayılıyor; çünkü '[' ile başlamıyor",
@@ -85453,6 +87534,7 @@ $CONF = {
               "nl" => "Bereiken van afdrukbare ASCII-tekens moeten deelbereiken zijn van \"0-9\", \"A-Z\" of \"a-z\"",
               "pt" => "Os intervalos de caracteres ASCII imprimíveis devem ser subconjuntos de \"0-9\", \"A-Z\" ou \"a-z\"",
               "ru" => "Диапазоны печатных символов ASCII должны быть подмножествами \"0-9\", \"A-Z\" или \"a-z\"",
+              "sr" => "Опсези штампајућих ASCII знакова треба да буду неки подскуп од \"0-9\", \"A-Z\" или \"a-z\"",
               "tr" => "ASCII yazdırılabilir karakter aralıkları \"0-9\", \"A-Z\" veya \"a-z\" kümelerinden birinin alt kümesi olmalıdır",
               "uk" => "Діапазони друкованих символів ASCII мають бути підмножинами \"0-9\", \"A-Z\" або \"a-z\""
             },
@@ -85506,6 +87588,7 @@ $CONF = {
               "nl" => "Cijferbereiken moeten uit dezelfde groep van tien komen",
               "pt" => "Os intervalos de dígitos devem pertencer ao mesmo grupo de 10",
               "ru" => "Цифры в диапазоне должны принадлежать одной группе из 10 цифр",
+              "sr" => "Опсези цифара треба да буду из исте групе од 10",
               "tr" => "Rakam aralıkları aynı 10'lu gruptan olmalı",
               "uk" => "Цифри в діапазоні мають належати до однієї групи з 10 цифр"
             },
@@ -85558,6 +87641,7 @@ $CONF = {
               "nl" => "Ongeldig []-bereik \"%{arg1}\"",
               "pt" => "Intervalo [] inválido \"%{arg1}\"",
               "ru" => "Некорректный диапазон \"%{arg1}\" в []",
+              "sr" => "Неисправан опсег [] \"%{arg1}\"",
               "tr" => "Yanlış [] aralığı \"%{arg1}\"",
               "uk" => "Некоректний діапазон \"%{arg1}\" у []"
             },
@@ -85631,6 +87715,7 @@ $CONF = {
               "nl" => "Ongeldig []-bereik \"%{arg1}\"",
               "pt" => "Intervalo [] inválido \"%{arg1}\"",
               "ru" => "Некорректный диапазон \"%{arg1}\" в []",
+              "sr" => "Неисправан опсег [] \"%{arg1}\"",
               "tr" => "Yanlış [] aralığı \"%{arg1}\"",
               "uk" => "Некоректний діапазон [] \"%{arg1}\""
             },
@@ -85704,6 +87789,7 @@ $CONF = {
               "nl" => "Beide of geen van beide eindpunten van het bereik moeten Unicode zijn",
               "pt" => "Ambos os extremos do intervalo devem ser Unicode, ou nenhum deles",
               "ru" => "Обе границы диапазона должны использовать обозначения Unicode, либо ни одна из них",
+              "sr" => "Оба краја опсега треба да буду или Уникод или да не буду Уникод",
               "tr" => "Aralığın ya her iki ucu da Unicode olmalı ya da hiçbir ucu Unicode olmamalı",
               "uk" => "Обидві межі діапазону мають бути записані в нотації Unicode або жодна з них"
             },
@@ -85757,6 +87843,7 @@ $CONF = {
               "nl" => "Bedoelde u een ']' in uw commentaar?\nEscape deze dan met '\\' of plaats deze tussen \" of ' om deze melding te onderdrukken\n",
               "pt" => "Pretendia ter um ']' no comentário?\nSe sim, escape-o com '\\' ou coloque-o entre aspas \" ou ' para suprimir esta mensagem\n",
               "ru" => "Вы намеренно добавили ']' в комментарий?\nЕсли да, экранируйте его с помощью '\\' или заключите в кавычки \" или ', чтобы убрать это сообщение\n",
+              "sr" => "Да ли сте хтели да имате ']' у коментару?\nАко јесте, ескејпујте га са '\\' или ставите под \" или ' да бисте утишали ову поруку\n",
               "tr" => "Yorumunuzda ']' kullanmak mı istediniz?\nBu iletiyi susturmak için '\\' ile kaçışlayın veya \" ya da ' ile alıntılayın\n",
               "uk" => "Ви хотіли використати ']' у коментарі?\nЯкщо так, екрануйте цей символ за допомогою '\\' або візьміть його в лапки \" чи ', щоб це повідомлення більше не з'являлося\n"
             },
@@ -85810,6 +87897,7 @@ $CONF = {
               "nl" => "Bedoelde u dit als commentaar?\nVoeg dan spaties toe zoals \" # \" om deze melding te onderdrukken\n",
               "pt" => "Pretendia que isto fosse um comentário?\nSe sim, para suprimir esta mensagem, acrescente espaços desta forma: \" # \"\n",
               "ru" => "Вы хотели сделать это комментарием?\nЕсли да, добавьте пробелы следующим образом, чтобы убрать это сообщение: \" # \"\n",
+              "sr" => "Да ли је ово требало да буде коментар?\nАко јесте, да бисте утишали ову поруку додајте размаке овако: \" # \"\n",
               "tr" => "Bunu yorum olarak mı yazmak istediniz?\nBu iletiyi susturmak için şu şekilde boşluk ekleyin: \" # \"\n",
               "uk" => "Ви хотіли зробити це коментарем?\nЯкщо так, додайте пробіли ось так: \" # \", щоб це повідомлення більше не з'являлося\n"
             },
@@ -85863,6 +87951,7 @@ $CONF = {
               "nl" => "Bedoelde u een tweede '#' in uw commentaar?\nEscape deze dan met '\\' of plaats deze tussen \" of ' om deze melding te onderdrukken\n",
               "pt" => "Pretendia ter um segundo '#' no comentário?\nSe sim, escape-o com '\\' ou coloque-o entre aspas \" ou ' para suprimir esta mensagem\n",
               "ru" => "Вы намеренно добавили второй '#' в комментарий?\nЕсли да, экранируйте его с помощью '\\' или заключите в кавычки \" или ', чтобы убрать это сообщение\n",
+              "sr" => "Да ли сте хтели да имате други '#' у коментару?\nАко јесте, ескејпујте га са '\\' или ставите под \" или ' да бисте утишали ову поруку\n",
               "tr" => "Yorumunuzda ikinci bir '#' kullanmak mı istediniz?\nBu iletiyi susturmak için '\\' ile kaçışlayın veya \" ya da ' ile alıntılayın\n",
               "uk" => "Ви справді хотіли додати другий '#' у коментар?\nЯкщо так, екрануйте його за допомогою '\\' або візьміть у лапки \" чи ', щоб це повідомлення більше не з’являлося\n"
             },
@@ -85946,6 +88035,9 @@ $CONF = {
               },
               "ru" => {
                 "*" => "Символ %{character}, не являющийся восьмеричной цифрой, преждевременно завершает %{escape}.  Результат интерпретации: \"%{resolved}\""
+              },
+              "sr" => {
+                "octal" => "Неоктални знак %{character} рано завршава %{escape}. Разрешено као „%{resolved}“"
               },
               "tr" => {
                 "octal" => "Sekizlik olmayan %{character} karakteri %{escape} ifadesini erken sonlandırıyor. \"%{resolved}\" olarak çözümlendi"
@@ -86050,6 +88142,7 @@ $CONF = {
               "nl" => "Niet-geëscapet letterlijk teken '%{arg1}'",
               "pt" => "Literal '%{arg1}' não escapado",
               "ru" => "Неэкранированный литеральный символ '%{arg1}'",
+              "sr" => "Неескејпован дословни знак „%{arg1}“",
               "tr" => "Kaçışlanmamış düz '%{arg1}'",
               "uk" => "Неекранований літеральний символ '%{arg1}'"
             },
@@ -86108,6 +88201,7 @@ $CONF = {
               "nl" => "Niet-geëscapete openende accolade in reguliere expressie wordt ongewijzigd doorgegeven; gemarkeerd met <-- HERE in m/%{before} <-- HERE %{after}/",
               "pt" => "Chaveta de abertura não escapada na expressão regular, mantida literalmente; marcado por <-- HERE em m/%{before} <-- HERE %{after}/",
               "ru" => "Неэкранированная открывающая фигурная скобка в регулярном выражении обработана буквально; место отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
+              "sr" => "Неескејпована лева витичаста заграда у регуларном изразу прослеђена је даље; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
               "tr" => "Düzenli ifadede kaçışlanmamış sol küme ayraç olduğu gibi geçiriliyor; m/%{before} <-- HERE %{after}/ ifadesinde <-- HERE ile işaretlendi",
               "uk" => "Неекранована ліва фігурна дужка в регулярному виразі трактується як звичайний символ; позначено <-- HERE у m/%{before} <-- HERE %{after}/"
             },
@@ -86202,6 +88296,7 @@ $CONF = {
               "nl" => "Onbekende escape \\%{arg1} wordt ongewijzigd doorgegeven",
               "pt" => "Sequência de escape não reconhecida \\%{arg1}, mantida literalmente",
               "ru" => "Нераспознанная escape-последовательность \\%{arg1} обработана буквально",
+              "sr" => "Непрепознато управљачко значење \\%{arg1} прослеђено је даље",
               "tr" => "Tanınmayan \\%{arg1} kaçışı olduğu gibi geçirildi",
               "uk" => "Нерозпізнану escape-послідовність \\%{arg1} передано без змін"
             },
@@ -86261,6 +88356,7 @@ $CONF = {
               "nl" => "Gebruik /u voor '%{arg1}' in plaats van /%{arg2}",
               "pt" => "A utilizar /u para '%{arg1}' em vez de /%{arg2}",
               "ru" => "Для '%{arg1}' используется /u вместо /%{arg2}",
+              "sr" => "Користи се /u за „%{arg1}“ уместо /%{arg2}",
               "tr" => "'%{arg1}' için /%{arg2} yerine /u kullanılıyor",
               "uk" => "Для '%{arg1}' використовується /u замість /%{arg2}"
             },
@@ -86334,6 +88430,7 @@ $CONF = {
               "nl" => "Lege (?) zonder modifiers",
               "pt" => "(?) vazio, sem modificadores",
               "ru" => "Пустая конструкция (?) без модификаторов",
+              "sr" => "Празна група (?) без иједног модификатора",
               "tr" => "Değiştirici içermeyen boş (?) grubu",
               "uk" => "Порожня група (?) без жодних модифікаторів"
             },
@@ -86430,6 +88527,10 @@ $CONF = {
               "ru" => {
                 "*" => "Бесполезная конструкция (%{modifier_prefix}c) - используйте модификатор /gc регулярного выражения; место отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
                 "disabled" => "Бесполезная конструкция (%{modifier_prefix}c) - не используйте модификатор /gc регулярного выражения; место отмечено <-- HERE в m/%{before} <-- HERE %{after}/"
+              },
+              "sr" => {
+                "disabled" => "Бескорисно (%{modifier_prefix}c) — не користите модификатор /gc у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
+                "enabled" => "Бескорисно (%{modifier_prefix}c) — користите модификатор /gc у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/"
               },
               "tr" => {
                 "disabled" => "Gereksiz (%{modifier_prefix}c) — düzenli ifadede /gc değiştiricisini kullanmayın; m/%{before} <-- HERE %{after}/ ifadesinde <-- HERE ile işaretlendi",
@@ -86590,6 +88691,10 @@ $CONF = {
                 "*" => "Бесполезная конструкция (%{modifier_prefix}%{modifier}) - используйте модификатор /%{modifier} регулярного выражения; место отмечено <-- HERE в m/%{before} <-- HERE %{after}/",
                 "disabled" => "Бесполезная конструкция (%{modifier_prefix}%{modifier}) - не используйте модификатор /%{modifier} регулярного выражения; место отмечено <-- HERE в m/%{before} <-- HERE %{after}/"
               },
+              "sr" => {
+                "disabled" => "Бескорисно (%{modifier_prefix}%{modifier}) — не користите модификатор /%{modifier} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/",
+                "enabled" => "Бескорисно (%{modifier_prefix}%{modifier}) — користите модификатор /%{modifier} у регуларном изразу; означено са <-- HERE у m/%{before} <-- HERE %{after}/"
+              },
               "tr" => {
                 "disabled" => "Gereksiz (%{modifier_prefix}%{modifier}) — düzenli ifadede /%{modifier} değiştiricisini kullanmayın; m/%{before} <-- HERE %{after}/ ifadesinde <-- HERE ile işaretlendi",
                 "enabled" => "Gereksiz (%{modifier_prefix}%{modifier}) — düzenli ifadede /%{modifier} değiştiricisini kullanın; m/%{before} <-- HERE %{after}/ ifadesinde <-- HERE ile işaretlendi"
@@ -86709,6 +88814,7 @@ $CONF = {
               "nl" => "Nutteloos gebruik van (?-p)",
               "pt" => "Utilização inútil de (?-p)",
               "ru" => "Бесполезное использование (?-p)",
+              "sr" => "Бескорисна употреба (?-p)",
               "tr" => "(?-p) kullanımı gereksiz",
               "uk" => "Марне використання (?-p)"
             },
@@ -86761,6 +88867,7 @@ $CONF = {
               "nl" => "De modifier /c heeft geen betekenis zonder /g",
               "pt" => "O modificador /c não tem efeito sem /g",
               "ru" => "Использование модификатора /c без /g не имеет смысла",
+              "sr" => "Употреба модификатора /c нема значење без /g",
               "tr" => "/g olmadan /c değiştiricisinin kullanımı anlamsızdır",
               "uk" => "Використання модифікатора /c без /g не має сенсу"
             },
@@ -86805,6 +88912,7 @@ $CONF = {
               "nl" => "Gebruik van modifier /g heeft geen betekenis in split",
               "pt" => "O modificador /g não tem efeito em split",
               "ru" => "Использование модификатора /g в split не имеет смысла",
+              "sr" => "Употреба модификатора /g нема смисла у оператору split",
               "tr" => "split içinde /g değiştiricisinin kullanılması anlamsızdır",
               "uk" => "Використання модифікатора /g у split не має сенсу"
             },
@@ -86849,6 +88957,7 @@ $CONF = {
               "nl" => "De modifier /c heeft geen betekenis in s///",
               "pt" => "O modificador /c não tem efeito em s///",
               "ru" => "Использование модификатора /c в s/// не имеет смысла",
+              "sr" => "Употреба модификатора /c нема значење у s///",
               "tr" => "s/// içinde /c değiştiricisinin kullanılması anlamsızdır",
               "uk" => "Використання модифікатора /c у s/// не має сенсу"
             },
@@ -86893,6 +89002,7 @@ $CONF = {
               "nl" => "%{arg1} komt vele malen overeen met een lege tekenreeks",
               "pt" => "%{arg1} corresponde repetidamente à string vazia",
               "ru" => "%{arg1} многократно совпадает с пустой строкой",
+              "sr" => "%{arg1} се много пута поклапа са празним низом",
               "tr" => "%{arg1} boş dizeyle birçok kez eşleşiyor",
               "uk" => "%{arg1} багаторазово збігається з порожнім рядком"
             },
@@ -86966,6 +89076,7 @@ $CONF = {
               "nl" => "Nutteloos gebruik van greediness-modifier '%{arg1}'",
               "pt" => "Utilização inútil do modificador de avidez '%{arg1}'",
               "ru" => "Бесполезное использование модификатора жадности '%{arg1}'",
+              "sr" => "Бескорисна употреба модификатора похлепности „%{arg1}“",
               "tr" => "Açgözlülük değiştiricisi '%{arg1}' gereksiz yere kullanılmış",
               "uk" => "Беззмістовне використання модифікатора жадібності '%{arg1}'"
             },
@@ -87024,6 +89135,7 @@ $CONF = {
               "nl" => "Kwantor {n,m} met n > m kan nooit overeenkomen",
               "pt" => "O quantificador {n,m} com n > m nunca corresponde",
               "ru" => "Квантификатор {n,m} при n > m не может дать совпадение",
+              "sr" => "Квантификатор {n,m} са n > m не може да се поклопи",
               "tr" => "n > m olan {n,m} niceleyicisi eşleşemez",
               "uk" => "Квантифікатор {n,m}, де n > m, не може дати збіг"
             },
@@ -87076,6 +89188,7 @@ $CONF = {
               "nl" => "Onverwachte kwantor op een expressie van lengte nul in regex m/%{arg1}/",
               "pt" => "Quantificador inesperado sobre uma expressão de comprimento zero na expressão regular m/%{arg1}/",
               "ru" => "Неожиданный квантификатор у выражения нулевой длины в регулярном выражении m/%{arg1}/",
+              "sr" => "Квантификатор је неочекиван над изразом нулте ширине у регуларном изразу m/%{arg1}/",
               "tr" => "Regex m/%{arg1}/ içinde sıfır uzunluklu ifadeye beklenmedik niceleyici",
               "uk" => "Неочікуваний квантифікатор для виразу нульової довжини в регулярному виразі m/%{arg1}/"
             },
@@ -87141,6 +89254,7 @@ $CONF = {
               "nl" => "perl: waarschuwing: vreemde instelling in '\$ENV{PERL_PERTURB_KEYS}': '%{arg2}'\n",
               "pt" => "perl: aviso: configuração estranha em '\$ENV{PERL_PERTURB_KEYS}': '%{arg2}'\n",
               "ru" => "perl: предупреждение: странное значение в '\$ENV{PERL_PERTURB_KEYS}': '%{arg2}'\n",
+              "sr" => "perl: упозорење: необична вредност у '\$ENV{PERL_PERTURB_KEYS}': '%{arg2}'\n",
               "tr" => "perl: uyarı: '\$ENV{PERL_PERTURB_KEYS}' içinde beklenmeyen ayar: '%{arg2}'\n",
               "uk" => "perl: попередження: дивне значення в '\$ENV{PERL_PERTURB_KEYS}': '%{arg2}'\n"
             },
@@ -87188,6 +89302,7 @@ $CONF = {
               "nl" => "perl: waarschuwing: niet-hexadecimaal teken in '\$ENV{PERL_HASH_SEED}', seed slechts gedeeltelijk ingesteld\n",
               "pt" => "perl: aviso: carácter não hexadecimal em '\$ENV{PERL_HASH_SEED}'; a semente foi definida apenas parcialmente\n",
               "ru" => "perl: предупреждение: Нешестнадцатеричный символ в '\$ENV{PERL_HASH_SEED}', начальное значение хеширования задано лишь частично\n",
+              "sr" => "perl: упозорење: Нехексадекаднаки знак у '\$ENV{PERL_HASH_SEED}', семе је постављено само делимично\n",
               "tr" => "perl: uyarı: '\$ENV{PERL_HASH_SEED}' içinde onaltılık olmayan karakter var; seed yalnızca kısmen ayarlandı\n",
               "uk" => "perl: попередження: символ, що не є шістнадцятковою цифрою, у '\$ENV{PERL_HASH_SEED}', початкове значення хешування встановлено лише частково\n"
             },
@@ -87229,6 +89344,7 @@ $CONF = {
               "nl" => "Nutteloos gebruik van %{arg1} in scalaire context",
               "pt" => "Utilização inútil de %{arg1} em contexto escalar",
               "ru" => "Бесполезное использование %{arg1} в скалярном контексте",
+              "sr" => "Бескорисна употреба %{arg1} у скаларном контексту",
               "tr" => "Skaler bağlamda %{arg1} kullanımı gereksiz",
               "uk" => "Марне використання %{arg1} у скалярному контексті"
             },
@@ -87278,6 +89394,7 @@ $CONF = {
               "nl" => "Poging om een verwijderde array leeg te maken",
               "pt" => "Tentativa de limpar um array eliminado",
               "ru" => "Попытка очистить удалённый массив",
+              "sr" => "Покушај брисања обрисаног низа",
               "tr" => "Silinmiş diziyi temizleme girişimi",
               "uk" => "Спроба очистити видалений масив"
             },
@@ -87321,6 +89438,7 @@ $CONF = {
               "nl" => "NULL OP TIJDENS UITVOERING",
               "pt" => "OP nula durante a execução",
               "ru" => "УКАЗАТЕЛЬ OP РАВЕН NULL В RUN",
+              "sr" => "NULL показивач OP у RUN",
               "tr" => "ÇALIŞTIRMADA NULL OP",
               "uk" => "ВКАЗІВНИК OP ЗІ ЗНАЧЕННЯМ NULL У RUN"
             },
@@ -87364,6 +89482,7 @@ $CONF = {
               "nl" => "Compileer perl opnieuw met -DDEBUGGING om de -D-optie te gebruiken (bedoelde u misschien -d?)\n",
               "pt" => "Recompile Perl com -DDEBUGGING para usar a opção -D (queria dizer -d?)\n",
               "ru" => "Перекомпилируйте perl с -DDEBUGGING, чтобы использовать опцию -D (возможно, имелось в виду -d ?)\n",
+              "sr" => "Поново компајлирајте perl са -DDEBUGGING да бисте користили прекидач -D (да ли сте мислили -d ?)\n",
               "tr" => "-D anahtarını kullanmak için perl'i -DDEBUGGING ile yeniden derleyin (-d mi demek istediniz?)\n",
               "uk" => "Перекомпілюйте perl з -DDEBUGGING, щоб використовувати параметр -D (можливо, малося на увазі -d ?)\n"
             },
@@ -87407,6 +89526,7 @@ $CONF = {
               "nl" => "Ongeldige optie -D%{arg1}; gebruik -D'' om de mogelijkheden te zien\n",
               "pt" => "Opção -D%{arg1} inválida; use -D'' para ver as opções\n",
               "ru" => "недопустимая опция -D%{arg1}, используйте -D'' для просмотра допустимых значений\n",
+              "sr" => "Неважећа опција -D%{arg1}; употребите -D'' да бисте видели могућности\n",
               "tr" => "geçersiz -D%{arg1} seçeneği; seçenekleri görmek için -D'' kullanın\n",
               "uk" => "неприпустимий параметр -D%{arg1}, скористайтеся -D'', щоб переглянути доступні варіанти\n"
             },
@@ -87456,6 +89576,7 @@ $CONF = {
               "nl" => "Poging om tijdelijk object te vroeg vrij te geven: SV 0x%{arg1}",
               "pt" => "Tentativa de libertar temporário prematuramente: SV 0x%{arg1}",
               "ru" => "Попытка преждевременно освободить временное значение: SV 0x%{arg1}",
+              "sr" => "Покушај превременог ослобађања привременог SV-а: SV 0x%{arg1}",
               "tr" => "Geçici SV'yi zamanından önce serbest bırakma girişimi: 0x%{arg1}",
               "uk" => "Спроба передчасно звільнити тимчасовий скаляр: SV 0x%{arg1}"
             },
@@ -87507,6 +89628,7 @@ $CONF = {
               "nl" => "av_reify aangeroepen op een gekoppelde array",
               "pt" => "av_reify foi chamado num array associado com tie",
               "ru" => "av_reify вызвана для массива, связанного через tie",
+              "sr" => "av_reify је позван над везаним низом",
               "tr" => "av_reify bağlı bir dizi üzerinde çağrıldı",
               "uk" => "av_reify викликано для масиву, прив'язаного через tie"
             },
@@ -87551,6 +89673,7 @@ $CONF = {
               "nl" => "Openen via fork '%{arg1}' is niet zinvol binnen <>",
               "pt" => "A abertura com fork '%{arg1}' não faz sentido em <>",
               "ru" => "Открытие '%{arg1}' с созданием дочернего процесса не имеет смысла в <>",
+              "sr" => "Отварање рачвањем „%{arg1}“ нема смисла у <>",
               "tr" => "Çatallı açma '%{arg1}', <> içinde anlamlı değil",
               "uk" => "Відкриття '%{arg1}' зі створенням дочірнього процесу не має сенсу в <>"
             },
@@ -87600,6 +89723,7 @@ $CONF = {
               "nl" => "Kan %{arg1} niet openen: %{arg2}",
               "pt" => "Não foi possível abrir %{arg1}: %{arg2}",
               "ru" => "Не удалось открыть %{arg1}: %{arg2}",
+              "sr" => "Није могуће отворити %{arg1}: %{arg2}",
               "tr" => "%{arg1} açılamıyor: %{arg2}",
               "uk" => "Не вдалося відкрити %{arg1}: %{arg2}"
             },
@@ -87654,6 +89778,7 @@ $CONF = {
               "nl" => "Kan bestand niet ter plekke bewerken: %{arg1} zou niet uniek zijn",
               "pt" => "Não é possível editar no próprio ficheiro: %{arg1} não seria único",
               "ru" => "Невозможно редактировать файл на месте: имя %{arg1} не было бы уникальным",
+              "sr" => "Није могуће уређивати на месту: %{arg1} не би било јединствено име",
               "tr" => "Yerinde düzenleme yapılamıyor: %{arg1} benzersiz olmayacak",
               "uk" => "Неможливо виконати редагування на місці: ім'я %{arg1} не було б унікальним"
             },
@@ -87705,6 +89830,7 @@ $CONF = {
               "nl" => "-i gebruikt zonder bestandsnamen op de opdrachtregel; er wordt van STDIN gelezen",
               "pt" => "-i utilizado sem nomes de ficheiros na linha de comandos; a ler de STDIN",
               "ru" => "Опция -i использована без имён файлов в командной строке; выполняется чтение из STDIN",
+              "sr" => "Опција -i је наведена без имена датотека у командној линији; чита се са STDIN-а",
               "tr" => "Komut satırında dosya adı olmadan -i kullanıldı; STDIN'den okunuyor",
               "uk" => "-i використано без імен файлів у командному рядку, читання зі STDIN"
             },
@@ -87748,6 +89874,7 @@ $CONF = {
               "nl" => "Kan bestand niet ter plekke bewerken: %{arg1} is geen regulier bestand",
               "pt" => "Não é possível editar no próprio ficheiro: %{arg1} não é um ficheiro normal",
               "ru" => "Невозможно редактировать файл на месте: %{arg1} не является обычным файлом",
+              "sr" => "Није могуће уређивати на месту: %{arg1} није обична датотека",
               "tr" => "Yerinde düzenleme yapılamıyor: %{arg1} normal bir dosya değil",
               "uk" => "Неможливо виконати редагування на місці: %{arg1} не є звичайним файлом"
             },
@@ -87803,6 +89930,7 @@ $CONF = {
               "nl" => "Kan %{arg1} niet ter plekke bewerken: kan geen tijdelijke naam aanmaken: %{arg2}",
               "pt" => "Não é possível editar %{arg1} no próprio ficheiro: falha ao criar nome temporário: %{arg2}",
               "ru" => "Невозможно редактировать %{arg1} на месте: не удалось создать временное имя: %{arg2}",
+              "sr" => "Није могуће уређивати на месту %{arg1}: није могуће направити привремено име: %{arg2}",
               "tr" => "%{arg1} üzerinde yerinde düzenleme yapılamıyor: Geçici ad oluşturulamıyor: %{arg2}",
               "uk" => "Неможливо виконати редагування %{arg1} на місці: неможливо створити тимчасове ім'я: %{arg2}"
             },
@@ -87857,6 +89985,7 @@ $CONF = {
               "nl" => "oeps: oopsAV",
               "pt" => "ops: oopsAV",
               "ru" => "Внутренняя ошибка: oopsAV",
+              "sr" => "упс: oopsAV",
               "tr" => "hata: oopsAV",
               "uk" => "халепа: oopsAV"
             },
@@ -87944,6 +90073,10 @@ $CONF = {
               "ru" => {
                 "negative" => "Нарушен баланс стека контекстов (число POP превышает число PUSH): %{magnitude}\n",
                 "positive" => "Нарушен баланс стека контекстов (число PUSH превышает число POP): %{magnitude}\n"
+              },
+              "sr" => {
+                "negative" => "Неуравнотежен стек контекста (POP-ова има више него PUSH-ева): %{magnitude}\n",
+                "positive" => "Неуравнотежен стек контекста (PUSH-ева има више него POP-ова): %{magnitude}\n"
               },
               "tr" => {
                 "negative" => "Dengesiz bağlam yığını (POP sayısı PUSH sayısını aşıyor): %{magnitude}\n",
@@ -88054,6 +90187,10 @@ $CONF = {
                 "negative" => "Нарушен баланс стека сохранений (восстановлений больше, чем сохранений): %{magnitude}\n",
                 "positive" => "Нарушен баланс стека сохранений (сохранений больше, чем восстановлений): %{magnitude}\n"
               },
+              "sr" => {
+                "negative" => "Неуравнотежен стек чувања (више враћања него чувања): %{magnitude}\n",
+                "positive" => "Неуравнотежен стек чувања (више чувања него враћања): %{magnitude}\n"
+              },
               "tr" => {
                 "negative" => "Dengesiz kaydetme yığını (geri yüklemeler kaydetmeleri aşıyor): %{magnitude}\n",
                 "positive" => "Dengesiz kaydetme yığını (kaydetmeler geri yüklemeleri aşıyor): %{magnitude}\n"
@@ -88118,6 +90255,7 @@ $CONF = {
               "nl" => "SV-toewijzingsteller bij afsluiten: %{arg1}\n",
               "pt" => "Contador de alocações SV ao encerrar: %{arg1}\n",
               "ru" => "Счётчик выделений SV при завершении работы: %{arg1}\n",
+              "sr" => "Бројач алокација SV при гашењу: %{arg1}\n",
               "tr" => "Kapanışta SV tahsis sayacı: %{arg1}\n",
               "uk" => "Лічильник виділених SV під час завершення роботи: %{arg1}\n"
             },
@@ -88212,6 +90350,10 @@ $CONF = {
                 "negative" => "Нарушен баланс областей видимости (число LEAVE превышает число ENTER): %{magnitude}\n",
                 "positive" => "Нарушен баланс областей видимости (число ENTER превышает число LEAVE): %{magnitude}\n"
               },
+              "sr" => {
+                "negative" => "Неуравнотежени опсези (LEAVE-ова има више него ENTER-а): %{magnitude}\n",
+                "positive" => "Неуравнотежени опсези (ENTER-а има више него LEAVE-ова): %{magnitude}\n"
+              },
               "tr" => {
                 "*" => "Dengesiz kapsamlar (LEAVE sayısı ENTER sayısından fazla): %{magnitude}\n",
                 "positive" => "Dengesiz kapsamlar (ENTER sayısı LEAVE sayısından fazla): %{magnitude}\n"
@@ -88277,6 +90419,7 @@ $CONF = {
               "nl" => "Ongebalanceerde referentieteller van de tekenreekstabel: (%{arg1}) voor \"%{arg2}\"",
               "pt" => "Contagem de referências desequilibrada na tabela de strings: (%{arg1}) para \"%{arg2}\"",
               "ru" => "Несбалансированный счётчик ссылок в таблице строк: (%{arg1}) для \"%{arg2}\"",
+              "sr" => "Неуравнотежен број референци у табели дељених ниски: (%{arg1}) за „%{arg2}“",
               "tr" => "Dengesiz dize tablosu başvuru sayısı: (%{arg1}) \"%{arg2}\" için",
               "uk" => "Незбалансований лічильник посилань у таблиці рядків: (%{arg1}) для \"%{arg2}\""
             },
@@ -88331,6 +90474,7 @@ $CONF = {
               "nl" => "Ongebalanceerde offset van de tijdelijke stackvloer: %{arg1}\n",
               "pt" => "Deslocamento desequilibrado do limite da pilha temporária: %{arg1}\n",
               "ru" => "Нарушен баланс смещения нижней границы стека временных значений: %{arg1}\n",
+              "sr" => "Неуравнотежен померај доње границе стека привремених вредности: %{arg1}\n",
               "tr" => "Dengesiz geçici yığın tabanı uzaklığı: %{arg1}\n",
               "uk" => "Незбалансоване зміщення нижньої межі стека тимчасових значень: %{arg1}\n"
             },
@@ -88381,6 +90525,7 @@ $CONF = {
               "nl" => "semi-panic: poging om een vrijgegeven tekenreeks te dupliceren",
               "pt" => "semi-panic: tentativa de duplicar uma string libertada",
               "ru" => "полупаника: попытка скопировать освобождённую строку",
+              "sr" => "полу-паника: покушај дуплирања ослобођене ниске",
               "tr" => "yarı panik: serbest bırakılmış dizgeyi kopyalama girişimi",
               "uk" => "напівпаніка: спроба скопіювати звільнений рядок"
             },
@@ -88424,6 +90569,7 @@ $CONF = {
               "nl" => "oeps: oopsHV",
               "pt" => "ops: oopsHV",
               "ru" => "Внутренняя ошибка: oopsHV",
+              "sr" => "упс: oopsHV",
               "tr" => "hata: oopsHV",
               "uk" => "ой: oopsHV"
             },
@@ -88467,6 +90613,7 @@ $CONF = {
               "nl" => "Gebruik van each() op een hash na invoegen zonder de hash-iterator opnieuw in te stellen leidt tot ongedefinieerd gedrag",
               "pt" => "Utilizar each() numa hash após uma inserção, sem reinicializar o iterador, resulta em comportamento indefinido",
               "ru" => "Использование each() для хеша после вставки без сброса итератора хеша приводит к неопределённому поведению",
+              "sr" => "Употреба each() над хешом после уметања, без ресетовања итератора хеша, доводи до недефинисаног понашања",
               "tr" => "Hash yineleyicisi sıfırlanmadan ekleme sonrasında hash üzerinde each() kullanımı tanımsız davranışa yol açar",
               "uk" => "Використання each() для хешу після вставлення без скидання ітератора хешу призводить до невизначеної поведінки"
             },
@@ -88511,6 +90658,7 @@ $CONF = {
               "nl" => "%{arg1} is nooit geïntroduceerd",
               "pt" => "%{arg1} nunca foi introduzido",
               "ru" => "Объявление %{arg1} так и не вступило в силу",
+              "sr" => "%{arg1} никада није уведен",
               "tr" => "%{arg1} hiç tanıtılmadı",
               "uk" => "%{arg1} так і не введено в область видимості"
             },
@@ -88560,6 +90708,7 @@ $CONF = {
               "nl" => "Interne %%<num>p kan conflicteren met toekomstige printf-uitbreidingen",
               "pt" => "O formato interno %%<num>p pode entrar em conflito com futuras extensões de printf",
               "ru" => "Внутренний формат %%<num>p может конфликтовать с будущими расширениями printf",
+              "sr" => "интерно %%<num>p може бити у сукобу са будућим printf проширењима",
               "tr" => "Dahili %%<num>p, gelecekteki printf uzantılarıyla çakışabilir",
               "uk" => "Внутрішній формат %%<num>p може конфліктувати з майбутніми розширеннями printf"
             },
@@ -88603,6 +90752,7 @@ $CONF = {
               "nl" => "Poging om SV buiten een arena vrij te geven: 0x%{arg1}",
               "pt" => "Tentativa de libertar SV fora da arena: 0x%{arg1}",
               "ru" => "Попытка освободить SV вне арены: 0x%{arg1}",
+              "sr" => "Покушај ослобађања SV-а који није у арени: 0x%{arg1}",
               "tr" => "Arena dışındaki SV'yi serbest bırakma girişimi: 0x%{arg1}",
               "uk" => "Спроба звільнити SV поза аренами: 0x%{arg1}"
             },
@@ -88699,6 +90849,10 @@ $CONF = {
                 "*" => "Попытка освободить несуществующую совместно используемую строку '%{key}'",
                 "present" => "Попытка освободить несуществующую совместно используемую строку '%{key}' (utf8)"
               },
+              "sr" => {
+                "absent" => "Покушај ослобађања непостојећег дељеног низа '%{key}'",
+                "present" => "Покушај ослобађања непостојећег дељеног низа '%{key}' (utf8)"
+              },
               "tr" => {
                 "absent" => "Var olmayan paylaşılan '%{key}' dizgesini serbest bırakma girişimi",
                 "present" => "Var olmayan paylaşılan '%{key}' dizgesini serbest bırakma girişimi (utf8)"
@@ -88764,6 +90918,7 @@ $CONF = {
               "nl" => "%{arg1} moest onverwacht worden aangemaakt",
               "pt" => "Foi necessário criar %{arg1} inesperadamente",
               "ru" => "Неожиданно потребовалось создать %{arg1}",
+              "sr" => "Неочекивано је морао да се направи симбол %{arg1}",
               "tr" => "%{arg1} beklenmedik biçimde oluşturulmak zorunda kaldı",
               "uk" => "Неочікувано довелося створити %{arg1}"
             },
@@ -88829,6 +90984,7 @@ $CONF = {
               "nl" => "Poging om glob-pointers zonder referenties vrij te geven",
               "pt" => "Tentativa de libertar ponteiros glob sem referências",
               "ru" => "Попытка освободить указатели глобов, на которые нет ссылок",
+              "sr" => "Покушај ослобађања нереференцираних показивача глоба",
               "tr" => "Başvurulmayan glob işaretçilerini serbest bırakma girişimi",
               "uk" => "Спроба звільнити вказівники глоба з нульовим лічильником посилань"
             },
@@ -88874,6 +91030,7 @@ $CONF = {
               "nl" => "Ongeldige CRTL-omgevingswaarde \"%{arg1}\"\n",
               "pt" => "Valor de ambiente CRTL malformado \"%{arg1}\"\n",
               "ru" => "Некорректное значение \"%{arg1}\" в environ библиотеки CRTL\n",
+              "sr" => "Неисправна CRTL environ вредност „%{arg1}“\n",
               "tr" => "Hatalı CRTL environ değeri \"%{arg1}\"\n",
               "uk" => "Некоректне значення environ у CRTL \"%{arg1}\"\n"
             },
@@ -88924,6 +91081,7 @@ $CONF = {
               "nl" => "Bufferoverloop in prime_env_iter: %{arg1}",
               "pt" => "Excesso de capacidade do buffer em prime_env_iter: %{arg1}",
               "ru" => "Переполнение буфера в prime_env_iter: %{arg1}",
+              "sr" => "Прекорачење бафера у prime_env_iter: %{arg1}",
               "tr" => "prime_env_iter içinde arabellek taşması: %{arg1}",
               "uk" => "Переповнення буфера у prime_env_iter: %{arg1}"
             },
@@ -88974,6 +91132,7 @@ $CONF = {
               "nl" => "Ongeldig bericht in prime_env_iter: |%{arg1}|",
               "pt" => "Mensagem malformada em prime_env_iter: |%{arg1}|",
               "ru" => "Некорректное сообщение в prime_env_iter: |%{arg1}|",
+              "sr" => "Неисправна порука у prime_env_iter: |%{arg1}|",
               "tr" => "prime_env_iter içinde hatalı ileti: |%{arg1}|",
               "uk" => "Некоректне повідомлення в prime_env_iter: |%{arg1}|"
             },
@@ -89023,6 +91182,7 @@ $CONF = {
               "nl" => "Poging om scalar zonder referenties vrij te geven: SV 0x%{arg1}",
               "pt" => "Tentativa de libertar escalar sem referências: SV 0x%{arg1}",
               "ru" => "Попытка освободить скаляр с нулевым счётчиком ссылок: SV 0x%{arg1}",
+              "sr" => "Покушај ослобађања скалара без референци: SV 0x%{arg1}",
               "tr" => "Başvurulmayan skaları serbest bırakma girişimi: SV 0x%{arg1}",
               "uk" => "Спроба звільнити скаляр із нульовим лічильником посилань: SV 0x%{arg1}"
             },
@@ -89074,6 +91234,7 @@ $CONF = {
               "nl" => "Dubbele free() genegeerd",
               "pt" => "free() duplicado ignorado",
               "ru" => "Повторный вызов free() проигнорирован",
+              "sr" => "Занемарен је вишеструки free()",
               "tr" => "Yinelenen free() çağrısı yok sayıldı",
               "uk" => "Повторний виклик free() проігноровано"
             },
@@ -89117,6 +91278,7 @@ $CONF = {
               "nl" => "realloc() van vrijgegeven geheugen genegeerd",
               "pt" => "realloc() de memória libertada ignorado",
               "ru" => "Вызов realloc() для освобождённой памяти проигнорирован",
+              "sr" => "Занемарен је realloc() над ослобођеном меморијом",
               "tr" => "Serbest bırakılmış bellek üzerinde realloc() çağrısı yok sayıldı",
               "uk" => "Виклик realloc() для вже звільненої пам'яті проігноровано"
             },
@@ -89160,6 +91322,7 @@ $CONF = {
               "nl" => "Ongeldige free() genegeerd",
               "pt" => "free() inválido ignorado",
               "ru" => "Некорректный вызов free() проигнорирован",
+              "sr" => "Занемарен је неисправан free()",
               "tr" => "Geçersiz free() çağrısı yok sayıldı",
               "uk" => "Некоректний виклик free() проігноровано"
             },
@@ -89203,6 +91366,7 @@ $CONF = {
               "nl" => "Ongeldige realloc() genegeerd",
               "pt" => "realloc() inválido ignorado",
               "ru" => "Некорректный вызов realloc() проигнорирован",
+              "sr" => "Занемарен је неисправан realloc()",
               "tr" => "Geçersiz realloc() çağrısı yok sayıldı",
               "uk" => "Некоректний виклик realloc() проігноровано"
             },
@@ -89376,6 +91540,16 @@ $CONF = {
                   "statement" => "Объявление \"%{declaration}\" переменной %{prior_name} скрывает более раннее объявление в том же операторе"
                 }
               },
+              "sr" => {
+                "subroutine" => {
+                  "scope" => "Декларација „%{declaration}“ потпрограма %{prior_name} заклања ранију декларацију у истом опсегу",
+                  "statement" => "Декларација „%{declaration}“ потпрограма %{prior_name} заклања ранију декларацију у истој наредби"
+                },
+                "variable" => {
+                  "scope" => "Декларација „%{declaration}“ променљиве %{prior_name} заклања ранију декларацију у истом опсегу",
+                  "statement" => "Декларација „%{declaration}“ променљиве %{prior_name} заклања ранију декларацију у истој наредби"
+                }
+              },
               "tr" => {
                 "subroutine" => {
                   "scope" => "\"%{declaration}\" alt yordam %{prior_name}, aynı kapsamda önceki bildirimi gölgeler",
@@ -89467,6 +91641,7 @@ $CONF = {
               "nl" => "\t(Bedoelde u \"local\" in plaats van \"our\"?)\n",
               "pt" => "\t(Queria dizer \"local\" em vez de \"our\"?)\n",
               "ru" => "\t(Возможно, имелось в виду \"local\" вместо \"our\"?)\n",
+              "sr" => "\t(Да ли сте мислили „local“ уместо „our“?)\n",
               "tr" => "\t(\"our\" yerine \"local\" mı demek istediniz?)\n",
               "uk" => "\t(Можливо, ви мали на увазі \"local\" замість \"our\"?)\n"
             },
@@ -89510,6 +91685,7 @@ $CONF = {
               "nl" => "\"our\"-variabele %{arg1} opnieuw gedeclareerd",
               "pt" => "Variável \"our\" %{arg1} novamente declarada",
               "ru" => "Переменная %{arg1} повторно объявлена через \"our\"",
+              "sr" => "Променљива „our“ %{arg1} поново је декларисана",
               "tr" => "\"our\" değişkeni %{arg1} yeniden bildirildi",
               "uk" => "Змінну \"our\" %{arg1} оголошено повторно"
             },
@@ -89561,6 +91737,7 @@ $CONF = {
               "nl" => "SIG%{arg1}-handler \"__ANON__\" is niet gedefinieerd.\n",
               "pt" => "O manipulador do sinal SIG%{arg1} \"__ANON__\" não está definido.\n",
               "ru" => "Обработчик \"__ANON__\" сигнала SIG%{arg1} не определён.\n",
+              "sr" => "Обрађивач сигнала SIG%{arg1} „__ANON__“ није дефинисан.\n",
               "tr" => "SIG%{arg1} işleyicisi \"__ANON__\" tanımlı değil.\n",
               "uk" => "Обробник \"__ANON__\" для SIG%{arg1} не визначено.\n"
             },
@@ -89610,6 +91787,7 @@ $CONF = {
               "nl" => "Kan signaal CHLD niet negeren; standaardafhandeling wordt afgedwongen",
               "pt" => "Não é possível ignorar o sinal CHLD; a impor o comportamento predefinido",
               "ru" => "Нельзя игнорировать сигнал CHLD; принудительно установлена обработка по умолчанию",
+              "sr" => "Није могуће игнорисати сигнал CHLD; враћам га на подразумевану вредност",
               "tr" => "CHLD sinyali yok sayılamaz; varsayılan değere zorlanıyor",
               "uk" => "Неможливо ігнорувати сигнал CHLD, примусово відновлено типову обробку"
             },
@@ -89654,6 +91832,7 @@ $CONF = {
               "nl" => "SIG%{arg1}-handler \"%{arg2}\" is niet gedefinieerd.\n",
               "pt" => "O manipulador do sinal SIG%{arg1} \"%{arg2}\" não está definido.\n",
               "ru" => "Обработчик \"%{arg2}\" сигнала SIG%{arg1} не определён.\n",
+              "sr" => "Обрађивач сигнала SIG%{arg1} „%{arg2}“ није дефинисан.\n",
               "tr" => "SIG%{arg1} işleyicisi \"%{arg2}\" tanımlı değil.\n",
               "uk" => "Обробник \"%{arg2}\" сигналу SIG%{arg1} не визначено.\n"
             },
@@ -89709,6 +91888,7 @@ $CONF = {
               "nl" => "Signaal bestaat niet: SIG%{arg1}",
               "pt" => "Sinal inexistente: SIG%{arg1}",
               "ru" => "Нет такого сигнала: SIG%{arg1}",
+              "sr" => "Нема таквог сигнала: SIG%{arg1}",
               "tr" => "Böyle bir sinyal yok: SIG%{arg1}",
               "uk" => "Немає такого сигналу: SIG%{arg1}"
             },
@@ -89760,6 +91940,7 @@ $CONF = {
               "nl" => "Poging om een referentie als lvalue in substr te gebruiken",
               "pt" => "Tentativa de utilizar uma referência como lvalue em substr",
               "ru" => "Попытка использовать ссылку как lvalue в substr",
+              "sr" => "Покушај употребе референце као леве вредности у substr",
               "tr" => "substr içinde başvuru lvalue olarak kullanılmaya çalışıldı",
               "uk" => "Спроба використати посилання як lvalue у substr"
             },
@@ -89804,6 +91985,7 @@ $CONF = {
               "nl" => "substr valt buiten de tekenreeks",
               "pt" => "substr fora dos limites da string",
               "ru" => "substr выходит за границы строки",
+              "sr" => "substr изван низа",
               "tr" => "substr dizenin dışında",
               "uk" => "substr виходить за межі рядка"
             },
@@ -89847,6 +92029,7 @@ $CONF = {
               "nl" => "Dubbelzinnig gebruik van %{arg1}{%{arg2}} geïnterpreteerd als %{arg3}%{arg4}",
               "pt" => "Uso ambíguo de %{arg1}{%{arg2}} interpretado como %{arg3}%{arg4}",
               "ru" => "Неоднозначная конструкция %{arg1}{%{arg2}} интерпретируется как %{arg3}%{arg4}",
+              "sr" => "Двосмислена употреба %{arg1}{%{arg2}} разрешена је као %{arg3}%{arg4}",
               "tr" => "%{arg1}{%{arg2}} ifadesinin belirsiz kullanımı %{arg3}%{arg4} olarak çözümlendi",
               "uk" => "Неоднозначне використання %{arg1}{%{arg2}} витлумачено як %{arg3}%{arg4}"
             },
@@ -89913,6 +92096,7 @@ $CONF = {
               "nl" => "Dubbelzinnig gebruik van %{arg1}{%{arg2}%{arg3}} geïnterpreteerd als %{arg4}%{arg5}%{arg6}",
               "pt" => "Uso ambíguo de %{arg1}{%{arg2}%{arg3}} interpretado como %{arg4}%{arg5}%{arg6}",
               "ru" => "Неоднозначная конструкция %{arg1}{%{arg2}%{arg3}} интерпретируется как %{arg4}%{arg5}%{arg6}",
+              "sr" => "Двосмислена употреба %{arg1}{%{arg2}%{arg3}} разрешена је као %{arg4}%{arg5}%{arg6}",
               "tr" => "%{arg1}{%{arg2}%{arg3}} ifadesinin belirsiz kullanımı %{arg4}%{arg5}%{arg6} olarak çözümlendi",
               "uk" => "Неоднозначне використання %{arg1}{%{arg2}%{arg3}} витлумачено як %{arg4}%{arg5}%{arg6}"
             },
@@ -89987,6 +92171,7 @@ $CONF = {
               "nl" => "Dubbelzinnige aanroep geïnterpreteerd als CORE::%{arg1}(); kwalificeer deze expliciet of gebruik &",
               "pt" => "Chamada ambígua interpretada como CORE::%{arg1}(); qualifique-a explicitamente ou utilize &",
               "ru" => "Неоднозначный вызов интерпретирован как CORE::%{arg1}(); укажите этот префикс явно или используйте &",
+              "sr" => "Двосмислен позив разрешен као CORE::%{arg1}(); наведите квалификатор или употребите &",
               "tr" => "Belirsiz çağrı CORE::%{arg1}() olarak çözümlendi; bu şekilde niteleyin veya & kullanın",
               "uk" => "Неоднозначний виклик витлумачено як CORE::%{arg1}(), укажіть це явно або використайте &"
             },
@@ -90037,6 +92222,7 @@ $CONF = {
               "nl" => "Mogelijk onbedoelde interpolatie van \$\\ in reguliere expressie",
               "pt" => "Possível interpolação involuntária de \$\\ numa expressão regular",
               "ru" => "Возможна непреднамеренная интерполяция \$\\ в регулярном выражении",
+              "sr" => "Могућа ненамерна интерполација \$\\ у регуларном изразу",
               "tr" => "Düzenli ifadede \$\\ karakterinin istenmeden enterpole edilmiş olması olası",
               "uk" => "Можлива ненавмисна інтерполяція \$\\ у регулярному виразі"
             },
@@ -90081,6 +92267,7 @@ $CONF = {
               "nl" => "Operator of puntkomma ontbreekt vóór %{arg1}%{arg2}",
               "pt" => "Falta um operador ou um ponto e vírgula antes de %{arg1}%{arg2}",
               "ru" => "Перед %{arg1}%{arg2} отсутствует оператор или точка с запятой",
+              "sr" => "Недостаје оператор или тачка-зарез пре %{arg1}%{arg2}",
               "tr" => "%{arg1}%{arg2} öncesinde işleç veya noktalı virgül eksik",
               "uk" => "Перед %{arg1}%{arg2} бракує оператора або крапки з комою"
             },
@@ -90149,6 +92336,7 @@ $CONF = {
               "nl" => "Dubbelzinnig gebruik van %{arg1} geïnterpreteerd als operator %{arg2}",
               "pt" => "Utilização ambígua de %{arg1} interpretada como operador %{arg2}",
               "ru" => "Неоднозначное использование %{arg1} интерпретировано как оператор %{arg2}",
+              "sr" => "Двосмислена употреба %{arg1} разрешена је као оператор %{arg2}",
               "tr" => "%{arg1} belirsiz kullanımı %{arg2} işleci olarak çözümlendi",
               "uk" => "Неоднозначне використання %{arg1} витлумачено як оператор %{arg2}"
             },
@@ -90203,6 +92391,7 @@ $CONF = {
               "nl" => "Waarschuwing: gebruik van \"%{arg1}\" zonder haakjes is dubbelzinnig",
               "pt" => "Aviso: a utilização de \"%{arg1}\" sem parênteses é ambígua",
               "ru" => "Предупреждение: использование \"%{arg1}\" без скобок неоднозначно",
+              "sr" => "Упозорење: употреба „%{arg1}“ без заграда је двосмислена",
               "tr" => "\"%{arg1}\" ifadesinin parantezsiz kullanımı belirsiz",
               "uk" => "Попередження: використання \"%{arg1}\" без дужок є неоднозначним"
             },
@@ -90267,6 +92456,7 @@ $CONF = {
               "nl" => "Mogelijk onbedoelde interpolatie van %{arg1} in tekenreeks",
               "pt" => "Possível interpolação involuntária de %{arg1} na string",
               "ru" => "Возможна непреднамеренная интерполяция %{arg1} в строке",
+              "sr" => "Могуће је ненамерно интерполирање %{arg1} у ниски",
               "tr" => "Dizgede %{arg1} ifadesinin istenmeden enterpole edilmiş olması olası",
               "uk" => "Можлива ненавмисна інтерполяція %{arg1} у рядку"
             },
@@ -90331,6 +92521,7 @@ $CONF = {
               "nl" => "\$[ gebruikt in %{arg1} (bedoelde u misschien \$]?)",
               "pt" => "\$[ utilizado em %{arg1} (queria dizer \$]?)",
               "ru" => "\$[ используется при %{arg1} (возможно, имелось в виду \$] ?)",
+              "sr" => "\$[ употребљен у оператору %{arg1} (да ли сте мислили на \$]?)",
               "tr" => "%{arg1} bağlamında \$[ kullanıldı (\$] mi demek istediniz ?)",
               "uk" => "\$[ використано у %{arg1} (можливо, малося на увазі \$] ?)"
             },
@@ -90382,6 +92573,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -90426,6 +92618,7 @@ $CONF = {
               "nl" => "Nutteloos gebruik van %{arg1} zonder waarden",
               "pt" => "Utilização inútil de %{arg1} sem valores",
               "ru" => "Бесполезное использование %{arg1} без значений",
+              "sr" => "Бескорисна употреба функције %{arg1} без вредности",
               "tr" => "Değer olmadan %{arg1} kullanmak işe yaramaz",
               "uk" => "Марне використання %{arg1} без значень"
             },
@@ -90475,6 +92668,7 @@ $CONF = {
               "nl" => "Omgekeerde operator %{arg1}=",
               "pt" => "Operador %{arg1}= invertido",
               "ru" => "Обратный порядок символов в операторе %{arg1}=",
+              "sr" => "Оператор %{arg1}= је обрнут",
               "tr" => "Ters yazılmış %{arg1}= işleci",
               "uk" => "Оператор %{arg1}= записано навпаки"
             },
@@ -90523,6 +92717,7 @@ $CONF = {
               "nl" => "Bareword aangetroffen in voorwaarde",
               "pt" => "Palavra não delimitada encontrada numa condição",
               "ru" => "В условном выражении обнаружено слово без кавычек",
+              "sr" => "Пронађена је реч без наводника у услову",
               "tr" => "Koşullu ifadede yalın sözcük bulundu",
               "uk" => "В умові знайдено слово без лапок"
             },
@@ -90567,6 +92762,7 @@ $CONF = {
               "nl" => "Bareword \"%{arg1}\" verwijst naar een niet-bestaand pakket",
               "pt" => "A palavra não delimitada \"%{arg1}\" refere-se a um pacote inexistente",
               "ru" => "Слово \"%{arg1}\" без кавычек ссылается на несуществующий пакет",
+              "sr" => "Ненаведени ниски знак „%{arg1}“ односи се на непостојећи пакет",
               "tr" => "Yalın sözcük \"%{arg1}\" var olmayan bir pakete başvuruyor",
               "uk" => "Слово без лапок \"%{arg1}\" позначає неіснуючий пакет"
             },
@@ -90631,6 +92827,7 @@ $CONF = {
               "nl" => "Attribuut op BEGIN-blok genegeerd",
               "pt" => "Atributo num bloco BEGIN ignorado",
               "ru" => "Атрибут блока BEGIN игнорируется",
+              "sr" => "Атрибут у блоку BEGIN је занемарен",
               "tr" => "BEGIN bloğundaki öznitelik yok sayıldı",
               "uk" => "Атрибут блоку BEGIN проігноровано"
             },
@@ -90675,6 +92872,7 @@ $CONF = {
               "nl" => "Prototype op BEGIN-blok genegeerd",
               "pt" => "Protótipo num bloco BEGIN ignorado",
               "ru" => "Прототип блока BEGIN игнорируется",
+              "sr" => "Прототип у блоку BEGIN је занемарен",
               "tr" => "BEGIN bloğundaki prototip yok sayıldı",
               "uk" => "Прототип блоку BEGIN проігноровано"
             },
@@ -90718,6 +92916,7 @@ $CONF = {
               "nl" => "= aangetroffen in voorwaarde; dit moet waarschijnlijk == zijn",
               "pt" => "Foi encontrado = numa condição; deveria ser ==",
               "ru" => "В условии обнаружено =, должно быть ==",
+              "sr" => "Пронађен је = у услову; требало би да буде ==",
               "tr" => "Koşullu ifadede = bulundu; == olmalı",
               "uk" => "В умові знайдено =, має бути =="
             },
@@ -90762,6 +92961,7 @@ $CONF = {
               "nl" => "\"\\c%{arg1}\" kan duidelijker worden geschreven als \"%{arg2}\"",
               "pt" => "\"\\c%{arg1}\" escreve-se mais claramente como \"%{arg2}\"",
               "ru" => "Вместо \"\\c%{arg1}\" понятнее написать просто \"%{arg2}\"",
+              "sr" => "„\\c%{arg1}“ је јасније написати једноставно као „%{arg2}“",
               "tr" => "\"\\c%{arg1}\" daha açık biçimde yalnızca \"%{arg2}\" olarak yazılır",
               "uk" => "\"\\c%{arg1}\" зрозуміліше записати просто як \"%{arg2}\""
             },
@@ -90821,6 +93021,7 @@ $CONF = {
               "nl" => "Mogelijk voorrangsprobleem bij besturingsstroomoperator (%{arg1})",
               "pt" => "Possível problema de precedência com o operador de controlo de fluxo (%{arg1})",
               "ru" => "Возможна проблема с приоритетом оператора управления потоком выполнения (%{arg1})",
+              "sr" => "Могући проблем с првенством оператора за управљање током извршавања (%{arg1})",
               "tr" => "Denetim akışı işleciyle (%{arg1}) ilgili olası öncelik sorunu",
               "uk" => "Можлива проблема з пріоритетом оператора керування потоком виконання (%{arg1})"
             },
@@ -90915,6 +93116,10 @@ $CONF = {
               "ru" => {
                 "hex" => "Символ %{character}, не являющийся шестнадцатеричной цифрой, преждевременно завершает %{escape}.  Результат интерпретации: \"%{resolved}\"",
                 "octal" => "Символ %{character}, не являющийся восьмеричной цифрой, преждевременно завершает %{escape}.  Результат интерпретации: \"%{resolved}\""
+              },
+              "sr" => {
+                "hex" => "Нехексадекадни знак %{character} рано прекида %{escape}.  Разрешено као „%{resolved}“",
+                "octal" => "Неоктални знак %{character} рано прекида %{escape}.  Разрешено као „%{resolved}“"
               },
               "tr" => {
                 "hex" => "Onaltılık olmayan %{character} karakteri %{escape} kaçışını erken sonlandırıyor. Çözümlenen değer: \"%{resolved}\"",
@@ -91081,6 +93286,11 @@ $CONF = {
                 "hexadecimal" => "Недопустимая шестнадцатеричная цифра '%{digit}' проигнорирована",
                 "octal" => "Недопустимая восьмеричная цифра '%{digit}' проигнорирована"
               },
+              "sr" => {
+                "binary" => "Занемарена је недозвољена бинарна цифра „%{digit}“",
+                "hexadecimal" => "Занемарена је недозвољена хексадекадна цифра „%{digit}“",
+                "octal" => "Занемарена је недозвољена октална цифра „%{digit}“"
+              },
               "tr" => {
                 "binary" => "Geçersiz ikili basamak '%{digit}' yok sayıldı",
                 "hexadecimal" => "Geçersiz onaltılık basamak '%{digit}' yok sayıldı",
@@ -91144,6 +93354,7 @@ $CONF = {
               "nl" => "Dubbele constante %{constant} in dispatch-patroon kan nooit overeenkomen; duplicaat bij %{duplicate_file} regel %{duplicate_line}, eerste bij %{first_file} regel %{first_line}",
               "pt" => "A constante duplicada %{constant} do padrão dispatch nunca corresponderá; duplicado em %{duplicate_file} linha %{duplicate_line}, primeira ocorrência em %{first_file} linha %{first_line}",
               "ru" => "Повторяющаяся константа %{constant} в образце dispatch никогда не даст совпадения; повтор находится в %{duplicate_file}, строка %{duplicate_line}, первое вхождение — в %{first_file}, строка %{first_line}",
+              "sr" => "Дупликат константе шаблона dispatch %{constant} никада се неће подударити; дупликат у %{duplicate_file}, линија %{duplicate_line}, прво појављивање у %{first_file}, линија %{first_line}",
               "tr" => "yinelenen dağıtım deseni sabiti %{constant} hiçbir zaman eşleşmeyecek; yinelenen: %{duplicate_file} dosyasında %{duplicate_line}. İlk tanım: %{first_file} dosyasında %{first_line}",
               "uk" => "повторна константа %{constant} у шаблоні dispatch ніколи не збігатиметься; повторення у файлі %{duplicate_file}, рядок %{duplicate_line}, перше входження у файлі %{first_file}, рядок %{first_line}"
             },
@@ -91215,6 +93426,7 @@ $CONF = {
               "nl" => "Benoemde capture '%{arg1}' komt voor in meerdere regexen binnen een dispatch-on-clausule; alleen de eerste regex wordt gekoppeld aan de lexicale variabele; latere captures zijn niet via die variabele beschikbaar",
               "pt" => "A captura nomeada '%{arg1}' aparece em várias expressões regulares numa cláusula dispatch-on; só a primeira expressão regular é associada à variável lexical, e as capturas posteriores não ficam visíveis através dessa variável",
               "ru" => "Именованная группа захвата '%{arg1}' встречается в нескольких регулярных выражениях ветви dispatch-on; её лексическая переменная связана только с первым регулярным выражением; результаты последующих захватов через эту переменную недоступны",
+              "sr" => "Именовани захват „%{arg1}” појављује се у више регуларних израза у клаузи dispatch-on; само први регуларни израз се повезује са његовом лексичком променљивом; каснији захвати нису доступни преко те променљиве",
               "tr" => "Adlandırılmış yakalama '%{arg1}' bir dispatch-on deyimindeki birden fazla düzenli ifadede bulunuyor; yalnızca ilk düzenli ifade kendi leksik değişkenine eşleniyor; sonraki yakalamalar bu değişken üzerinden görünür değil",
               "uk" => "Іменоване захоплення '%{arg1}' трапляється в кількох регулярних виразах у гілці dispatch-on; лише перший регулярний вираз відображається на його лексичну змінну; наступні захоплення недоступні через цю змінну"
             },
@@ -91266,6 +93478,7 @@ $CONF = {
               "nl" => "each op een anonieme array begint altijd vanaf het begin",
               "pt" => "each sobre um array anónimo começará sempre pelo início",
               "ru" => "each для анонимного массива всегда будет начинать перебор с начала",
+              "sr" => "each на анонимском низу увек почиње испочетка",
               "tr" => "Anonim dizi üzerinde each her zaman baştan başlar",
               "uk" => "each для анонімного масиву завжди починатиме з початку"
             },
@@ -91309,6 +93522,7 @@ $CONF = {
               "nl" => "each op een anonieme hash begint altijd vanaf het begin",
               "pt" => "each sobre um hash anónimo começará sempre pelo início",
               "ru" => "each для анонимного хеша всегда будет начинать перебор с начала",
+              "sr" => "each на анонимском хешу увек почиње испочетка",
               "tr" => "Anonim karma üzerinde each her zaman baştan başlar",
               "uk" => "each для анонімного хешу завжди починатиме обхід спочатку"
             },
@@ -91352,6 +93566,7 @@ $CONF = {
               "nl" => "elseif moet elsif zijn",
               "pt" => "Deve usar elsif em vez de elseif",
               "ru" => "Вместо elseif следует использовать elsif",
+              "sr" => "Треба да пише elsif, а не elseif",
               "tr" => "elseif yerine elsif kullanılmalı",
               "uk" => "Замість elseif має бути elsif"
             },
@@ -91395,6 +93610,7 @@ $CONF = {
               "nl" => "Array doorgegeven aan stat wordt naar een scalaire waarde omgezet",
               "pt" => "O array passado a stat será convertido em um escalar",
               "ru" => "Массив, переданный в stat, будет преобразован в скаляр",
+              "sr" => "Низ прослеђен функцији stat биће претворен у скаларну вредност",
               "tr" => "stat işlevine geçirilen dizi bir skaler değere dönüştürülecek",
               "uk" => "Масив, переданий stat, буде приведено до скаляра"
             },
@@ -91439,6 +93655,7 @@ $CONF = {
               "nl" => "Array passed to stat will be coerced to a scalar (bedoelde u misschien stat %{name}?)",
               "pt" => "Array passed to stat will be coerced to a scalar (queria dizer stat %{name}?)",
               "ru" => "Массив, переданный в stat, будет преобразован в скаляр (возможно, имелось в виду stat %{name}?)",
+              "sr" => "Низ прослеђен функцији stat биће претворен у скаларну вредност (да ли сте хтели stat %{name}?)",
               "tr" => "stat işlevine geçirilen dizi bir skaler değere dönüştürülecek (stat %{name} mi demek istediniz?)",
               "uk" => "Масив, переданий до stat, буде перетворено на скаляр (можливо, ви мали на увазі stat %{name}?)"
             },
@@ -91489,6 +93706,7 @@ $CONF = {
               "nl" => "%%%{arg1}%{arg2}%{arg3}%{arg4} in scalaire context kan beter worden geschreven als \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "pt" => "%%%{arg1}%{arg2}%{arg3}%{arg4} em contexto escalar escreve-se melhor como \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "ru" => "В скалярном контексте вместо %%%{arg1}%{arg2}%{arg3}%{arg4} лучше написать \$%{arg5}%{arg6}%{arg7}%{arg8}",
+              "sr" => "%%%{arg1}%{arg2}%{arg3}%{arg4} у скаларном контексту боље је написати као \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "tr" => "Skaler bağlamda %%%{arg1}%{arg2}%{arg3}%{arg4} yerine \$%{arg5}%{arg6}%{arg7}%{arg8} yazmak daha doğru",
               "uk" => "%%%{arg1}%{arg2}%{arg3}%{arg4} у скалярному контексті краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}"
             },
@@ -91576,6 +93794,7 @@ $CONF = {
               "nl" => "%%%{arg1}%{arg2}%{arg3}%{arg4} in scalaire context kan beter worden geschreven als \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "pt" => "%%%{arg1}%{arg2}%{arg3}%{arg4} em contexto escalar escreve-se melhor como \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "ru" => "В скалярном контексте вместо %%%{arg1}%{arg2}%{arg3}%{arg4} лучше написать \$%{arg5}%{arg6}%{arg7}%{arg8}",
+              "sr" => "%%%{arg1}%{arg2}%{arg3}%{arg4} у скаларном контексту боље је написати као \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "tr" => "Skaler bağlamda %%%{arg1}%{arg2}%{arg3}%{arg4} yerine \$%{arg5}%{arg6}%{arg7}%{arg8} yazmak daha doğru",
               "uk" => "%%%{arg1}%{arg2}%{arg3}%{arg4} у скалярному контексті краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}"
             },
@@ -91663,6 +93882,7 @@ $CONF = {
               "nl" => "Ontbrekende ']' in prototype voor %{arg1}: %{arg2}",
               "pt" => "Falta ']' no protótipo de %{arg1}: %{arg2}",
               "ru" => "Отсутствует ']' в прототипе для %{arg1} : %{arg2}",
+              "sr" => "Недостаје „]“ у прототипу за %{arg1} : %{arg2}",
               "tr" => "%{arg1} için prototipte ']' eksik: %{arg2}",
               "uk" => "Бракує ']' у прототипі для %{arg1} : %{arg2}"
             },
@@ -91718,6 +93938,7 @@ $CONF = {
               "nl" => "Prototype na '%{arg1}' voor %{arg2}: %{arg3}",
               "pt" => "Protótipo após '%{arg1}' para %{arg2}: %{arg3}",
               "ru" => "Продолжение прототипа после '%{arg1}' для %{arg2} : %{arg3}",
+              "sr" => "Прототип после „%{arg1}“ за %{arg2} : %{arg3}",
               "tr" => "%{arg1} karakterinden sonra prototip: %{arg2} : %{arg3}",
               "uk" => "Прототип після '%{arg1}' для %{arg2} : %{arg3}"
             },
@@ -91778,6 +93999,7 @@ $CONF = {
               "nl" => "Ongeldig teken na '_' in prototype voor %{arg1}: %{arg2}",
               "pt" => "Carácter inválido após '_' no protótipo de %{arg1}: %{arg2}",
               "ru" => "Недопустимый символ после '_' в прототипе для %{arg1} : %{arg2}",
+              "sr" => "Недозвољен знак после „_“ у прототипу за %{arg1} : %{arg2}",
               "tr" => "%{arg1} için prototipte '_' sonrasında geçersiz karakter: %{arg2}",
               "uk" => "Недопустимий символ після '_' у прототипі для %{arg1} : %{arg2}"
             },
@@ -91833,6 +94055,7 @@ $CONF = {
               "nl" => "Ongeldig teken in prototype voor %{arg1}: %{arg2}",
               "pt" => "Carácter inválido no protótipo de %{arg1}: %{arg2}",
               "ru" => "Недопустимый символ в прототипе для %{arg1} : %{arg2}",
+              "sr" => "Недозвољен знак у прототипу за %{arg1} : %{arg2}",
               "tr" => "%{arg1} için prototipte geçersiz karakter: %{arg2}",
               "uk" => "Неприпустимий символ у прототипі для %{arg1} : %{arg2}"
             },
@@ -91888,6 +94111,7 @@ $CONF = {
               "nl" => "Kan pakket %{arg1} niet vinden voor \@%{arg2}::ISA",
               "pt" => "Não foi possível localizar o pacote %{arg1} para \@%{arg2}::ISA",
               "ru" => "Не удалось найти пакет %{arg1} для \@%{arg2}::ISA",
+              "sr" => "Није могуће пронаћи пакет %{arg1} за \@%{arg2}::ISA",
               "tr" => "\@%{arg2}::ISA için %{arg1} paketi bulunamıyor",
               "uk" => "Не вдалося знайти пакет %{arg1} для \@%{arg2}::ISA"
             },
@@ -91945,6 +94169,7 @@ $CONF = {
               "nl" => "/%{arg1}/ kan waarschijnlijk beter worden geschreven als \"%{arg2}\"",
               "pt" => "Provavelmente deveria escrever /%{arg1}/ como \"%{arg2}\"",
               "ru" => "/%{arg1}/, вероятно, следует записать как \"%{arg2}\"",
+              "sr" => "/%{arg1}/ вероватно треба написати као „%{arg2}“",
               "tr" => "/%{arg1}/ yerine \"%{arg2}\" yazmak daha doğru olabilir",
               "uk" => "/%{arg1}/, імовірно, слід записати як \"%{arg2}\""
             },
@@ -92000,6 +94225,7 @@ $CONF = {
               "nl" => "length() gebruikt op \@array (bedoelde u \"scalar(\@array)\"?)",
               "pt" => "length() utilizado em \@array (queria dizer \"scalar(\@array)\"?)",
               "ru" => "Функция length() применена к \@array (возможно, имелось в виду \"scalar(\@array)\"?)",
+              "sr" => "length() употребљен над \@array (да ли сте мислили „scalar(\@array)“?)",
               "tr" => "length() \@array üzerinde kullanıldı (\"scalar(\@array)\" mı demek istediniz?)",
               "uk" => "length() застосовано до \@array (можливо, ви мали на увазі \"scalar(\@array)\"?)"
             },
@@ -92042,6 +94268,7 @@ $CONF = {
               "nl" => "length() gebruikt op %%hash (bedoelde u \"scalar(keys %%hash)\"?)",
               "pt" => "length() utilizado em %%hash (queria dizer \"scalar(keys %%hash)\"?)",
               "ru" => "Функция length() применена к %%hash (возможно, имелось в виду \"scalar(keys %%hash)\"?)",
+              "sr" => "length() употребљен над %%hash (да ли сте мислили „scalar(keys %%hash)“?)",
               "tr" => "length() %%hash üzerinde kullanıldı (\"scalar(keys %%hash)\" mı demek istediniz?)",
               "uk" => "length() застосовано до %%hash (можливо, малося на увазі \"scalar(keys %%hash)\"?)"
             },
@@ -92129,6 +94356,10 @@ $CONF = {
                 "array" => "Функция length() применена к %{aggregate_name} (возможно, имелось в виду \"scalar(%{aggregate_name})\"?)",
                 "hash" => "Функция length() применена к %{aggregate_name} (возможно, имелось в виду \"scalar(keys %{aggregate_name})\"?)"
               },
+              "sr" => {
+                "array" => "length() употребљен над %{aggregate_name} (да ли сте мислили „scalar(%{aggregate_name})“?)",
+                "hash" => "length() употребљен над %{aggregate_name} (да ли сте мислили „scalar(keys %{aggregate_name})“?)"
+              },
               "tr" => {
                 "array" => "length(), %{aggregate_name} üzerinde kullanıldı (\"scalar(%{aggregate_name})\" mı demek istediniz?)",
                 "hash" => "length(), %{aggregate_name} üzerinde kullanıldı (\"scalar(keys %{aggregate_name})\" mı demek istediniz?)"
@@ -92194,6 +94425,7 @@ $CONF = {
               "nl" => "Nutteloze lokalisatie van %{arg1}",
               "pt" => "Localização inútil de %{arg1}",
               "ru" => "Бесполезная локализация %{arg1}",
+              "sr" => "Локализација операције %{arg1} нема ефекта",
               "tr" => "%{arg1} için local ile yerelleştirmenin etkisi yoktur",
               "uk" => "Марна локалізація %{arg1}"
             },
@@ -92231,6 +94463,7 @@ $CONF = {
                 "nl" => "operation",
                 "pt" => "operation",
                 "ru" => "genitive",
+                "sr" => "genitive",
                 "tr" => "operation",
                 "uk" => "genitive"
               },
@@ -92275,6 +94508,7 @@ $CONF = {
               "nl" => "Bij het opzoeken van methode %{arg1}->%{arg2}() kan pakket %{arg3} niet worden gevonden, hoewel het voorkomt in \@%{arg4}::ISA (bent u misschien vergeten %{arg5} te laden?)",
               "pt" => "Ao tentar resolver a chamada de método %{arg1}->%{arg2}(), não foi possível localizar o pacote %{arg3}, apesar de constar em \@%{arg4}::ISA (esqueceu-se de carregar %{arg5}?)",
               "ru" => "При попытке разрешить вызов метода %{arg1}->%{arg2}() не удалось найти пакет %{arg3}, хотя он указан в \@%{arg4}::ISA (возможно, вы забыли загрузить %{arg5}?)",
+              "sr" => "При покушају разрешавања позива методе %{arg1}->%{arg2}(), није могуће пронаћи пакет %{arg3}, иако се помиње у \@%{arg4}::ISA (можда сте заборавили да учитате %{arg5}?)",
               "tr" => "%{arg1}->%{arg2}() yöntem çağrısı çözümlenirken, \@%{arg4}::ISA içinde belirtilen %{arg3} paketi bulunamadı (belki %{arg5} yüklenmemiştir?)",
               "uk" => "Під час спроби розв'язати виклик методу %{arg1}->%{arg2}() не вдалося знайти пакет %{arg3}, хоча його зазначено в \@%{arg4}::ISA (можливо, ви забули завантажити %{arg5}?)"
             },
@@ -92377,6 +94611,7 @@ $CONF = {
               "nl" => "Meerdimensionale syntaxis %{arg1} wordt niet ondersteund",
               "pt" => "A sintaxe multidimensional %{arg1} não é suportada",
               "ru" => "Синтаксис многомерной индексации %{arg1} не поддерживается",
+              "sr" => "Вишедимензионална синтакса %{arg1} није подржана",
               "tr" => "Çok boyutlu %{arg1} sözdizimi desteklenmiyor",
               "uk" => "Багатовимірний синтаксис %{arg1} не підтримується"
             },
@@ -92442,6 +94677,7 @@ $CONF = {
               "nl" => "!=~ moet !~ zijn",
               "pt" => "Deve usar !~ em vez de !=~",
               "ru" => "Вместо !=~ следует использовать !~",
+              "sr" => "!=~ треба да буде !~",
               "tr" => "!=~ yerine !~ kullanılmalı",
               "uk" => "Замість !=~ має бути !~"
             },
@@ -92486,6 +94722,7 @@ $CONF = {
               "nl" => "Verkeerd geplaatste _ in getal",
               "pt" => "Sublinhado _ mal colocado no número",
               "ru" => "Неверное расположение _ в числе",
+              "sr" => "Погрешно постављена доња црта _ у броју",
               "tr" => "Sayıda _ yanlış yerde",
               "uk" => "Неправильне розташування _ у числі"
             },
@@ -92529,6 +94766,7 @@ $CONF = {
               "nl" => "Haakjes ontbreken rond lijst \"%{arg1}\"",
               "pt" => "Faltam parênteses à volta da lista \"%{arg1}\"",
               "ru" => "Отсутствуют скобки вокруг списка \"%{arg1}\"",
+              "sr" => "Недостају заграде око листе „%{arg1}“",
               "tr" => "\"%{arg1}\" listesinde parantezler eksik",
               "uk" => "Навколо списку \"%{arg1}\" бракує дужок"
             },
@@ -92577,6 +94815,7 @@ $CONF = {
               "nl" => "%{arg1} (...) wordt als functie geïnterpreteerd",
               "pt" => "%{arg1} (...) interpretado como função",
               "ru" => "%{arg1} (...) интерпретируется как функция",
+              "sr" => "%{arg1} (...) протумачено као функција",
               "tr" => "%{arg1} (...) işlev olarak yorumlandı",
               "uk" => "%{arg1} (...) витлумачено як функцію"
             },
@@ -92626,6 +94865,7 @@ $CONF = {
               "nl" => "Mogelijk voorrangsprobleem bij bitsgewijze operator %{arg1}",
               "pt" => "Possível problema de precedência no operador bit a bit %{arg1}",
               "ru" => "Возможна проблема с приоритетом побитового оператора %{arg1}",
+              "sr" => "Могући проблем с првенством битовског оператора %{arg1}",
               "tr" => "Bitsel %{arg1} işleciyle ilgili olası öncelik sorunu",
               "uk" => "Можлива проблема з пріоритетом побітового оператора %{arg1}"
             },
@@ -92688,6 +94928,9 @@ $CONF = {
               "nl" => "Mogelijk voorrangsprobleem tussen ! en %{arg1}",
               "pt" => "Possível problema de precedência entre ! e %{arg1}",
               "ru" => "Возможна проблема с приоритетами между ! и %{arg1}",
+              "sr" => {
+                "*" => "Могући проблем с првенством оператора ! и %{arg1}"
+              },
               "tr" => {
                 "*" => "! ile %{arg1} arasında öncelik sorunu olabilir"
               },
@@ -92761,6 +95004,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "instrumental",
+                "sr" => "instrumental",
                 "tr" => "operation",
                 "uk" => "instrumental"
               },
@@ -92805,6 +95049,7 @@ $CONF = {
               "nl" => "Probleem met operatorprioriteit: open %{arg1} moet open(%{arg2}) zijn",
               "pt" => "Problema de precedência: open %{arg1} deveria ser open(%{arg2})",
               "ru" => "Проблема с приоритетом операторов: вместо open %{arg1} следует использовать open(%{arg2})",
+              "sr" => "Проблем са приоритетом: open %{arg1} треба да буде open(%{arg2})",
               "tr" => "Öncelik sorunu: open %{arg1}, open(%{arg2}) olarak yazılmalı",
               "uk" => "Проблема з пріоритетом операторів: замість open %{arg1} слід писати open(%{arg2})"
             },
@@ -92934,6 +95179,10 @@ $CONF = {
                 "*" => "Недопустимое преобразование в %{operation}: конец строки",
                 "conversion" => "Недопустимое преобразование в %{operation}: \"%{conversion}\""
               },
+              "sr" => {
+                "conversion" => "Неисправна конверзија у %{operation}: \"%{conversion}\"",
+                "end_of_format" => "Неисправна конверзија у %{operation}: крај ниске"
+              },
               "tr" => {
                 "*" => "%{operation} işleminde geçersiz dönüşüm: \"%{conversion}\"",
                 "end_of_format" => "%{operation} işleminde geçersiz dönüşüm: Dizenin sonu"
@@ -93006,6 +95255,7 @@ $CONF = {
               "nl" => "Vectorargument wordt niet ondersteund bij alfaversies",
               "pt" => "Argumentos vetoriais não são suportados com versões alfa",
               "ru" => "Векторный аргумент не поддерживается для альфа-версий",
+              "sr" => "векторски аргумент није подржан уз алфа верзије",
               "tr" => "Alfa sürümlerinde vektör bağımsız değişkeni desteklenmiyor",
               "uk" => "Векторний аргумент не підтримується для альфа-версій"
             },
@@ -93049,6 +95299,7 @@ $CONF = {
               "nl" => "%{arg1}() te vroeg aangeroepen om het prototype te controleren",
               "pt" => "%{arg1}() foi chamado demasiado cedo para verificar o protótipo",
               "ru" => "%{arg1}() вызвана слишком рано для проверки прототипа",
+              "sr" => "Позив %{arg1}() је био преран да би се проверило да ли одговара прототипу",
               "tr" => "%{arg1}(), işlev prototipi denetlenemeden önce çağrıldı",
               "uk" => "%{arg1}() викликано надто рано для перевірки прототипу"
             },
@@ -93100,6 +95351,7 @@ $CONF = {
               "nl" => "Prototypen komen niet overeen:%{function}%{current} tegenover %{proposed}",
               "pt" => "Incompatibilidade de protótipos:%{function}%{current} e %{proposed}",
               "ru" => "Несоответствие прототипов:%{function}%{current} и %{proposed}",
+              "sr" => "Прототипи се не подударају: %{function}%{current} наспрам %{proposed}",
               "tr" => "Prototip uyuşmazlığı:%{function}%{current} ve %{proposed}",
               "uk" => "Невідповідність прототипів:%{function}%{current} проти %{proposed}"
             },
@@ -93162,6 +95414,7 @@ $CONF = {
               "nl" => "Prototype '%{arg1}' overschreven door attribuut 'prototype(%{arg2})' in %{arg3}",
               "pt" => "O protótipo '%{arg1}' é substituído pelo atributo 'prototype(%{arg2})' em %{arg3}",
               "ru" => "Прототип '%{arg1}' заменён атрибутом 'prototype(%{arg2})' в %{arg3}",
+              "sr" => "Прототип „%{arg1}“ је замењен атрибутом „prototype(%{arg2})“ у потпрограму %{arg3}",
               "tr" => "%{arg3} içinde '%{arg1}' prototipinin yerini 'prototype(%{arg2})' özniteliği aldı",
               "uk" => "Прототип '%{arg1}' перевизначено атрибутом 'prototype(%{arg2})' у %{arg3}"
             },
@@ -93251,6 +95504,7 @@ $CONF = {
               "nl" => "Mogelijk geprobeerd woorden met komma's te scheiden",
               "pt" => "Possível tentativa de separar palavras com vírgulas",
               "ru" => "Возможна попытка разделить слова запятыми",
+              "sr" => "Могући покушај раздвајања речи зарезима",
               "tr" => "Sözcükleri virgülle ayırma girişimi olabilir",
               "uk" => "Можлива спроба розділити слова комами"
             },
@@ -93293,6 +95547,7 @@ $CONF = {
               "nl" => "Mogelijk geprobeerd commentaar in een qw()-lijst op te nemen",
               "pt" => "Possível tentativa de incluir comentários numa lista qw()",
               "ru" => "Возможна попытка поместить комментарии в список qw()",
+              "sr" => "Могући покушај уметања коментара у qw() листу",
               "tr" => "qw() listesine açıklama ekleme girişimi olabilir",
               "uk" => "Можлива спроба розмістити коментарі у списку qw()"
             },
@@ -93335,6 +95590,7 @@ $CONF = {
               "nl" => "Mogelijk geprobeerd witruimte in een qw()-lijst te escapen",
               "pt" => "Possível tentativa de usar escapes em espaços em branco numa lista qw()",
               "ru" => "Возможна попытка экранировать пробельные символы в списке qw()",
+              "sr" => "Могући покушај заштите размака у qw() листи",
               "tr" => "qw() listesinde boşluğu kaçış karakteriyle koruma girişimi olabilir",
               "uk" => "Можлива спроба екранувати пробільні символи у списку qw()"
             },
@@ -93378,6 +95634,7 @@ $CONF = {
               "nl" => "Niet genoeg argumenten voor het formaat",
               "pt" => "Argumentos insuficientes para o formato",
               "ru" => "Недостаточно аргументов для формата",
+              "sr" => "Нема довољно аргумената за формат",
               "tr" => "Biçim için yeterli bağımsız değişken yok",
               "uk" => "Недостатньо аргументів формату"
             },
@@ -93420,6 +95677,7 @@ $CONF = {
               "nl" => "Tekenreeks \"%{arg1}\" zonder aanhalingstekens kan botsen met een toekomstig gereserveerd woord",
               "pt" => "A string \"%{arg1}\" sem aspas pode entrar em conflito com uma futura palavra reservada",
               "ru" => "Строка \"%{arg1}\" без кавычек может совпасть с будущим зарезервированным словом",
+              "sr" => "Ненаведени ниски знак „%{arg1}“ може се сукобити са будућом резервисаном речи",
               "tr" => "Tırnak içine alınmamış \"%{arg1}\" dizgesi gelecekte ayrılmış bir sözcükle çakışabilir",
               "uk" => "Рядок \"%{arg1}\" без лапок може конфліктувати з майбутнім зарезервованим словом"
             },
@@ -93469,6 +95727,7 @@ $CONF = {
               "nl" => "Er lijkt een puntkomma te ontbreken",
               "pt" => "Parece faltar um ponto e vírgula",
               "ru" => "По-видимому, отсутствует точка с запятой",
+              "sr" => "Изгледа да недостаје тачка-зарез",
               "tr" => "Noktalı virgül eksik görünüyor",
               "uk" => "Схоже, бракує крапки з комою"
             },
@@ -93513,6 +95772,7 @@ $CONF = {
               "nl" => "U moet \"%{arg1}\" tussen aanhalingstekens plaatsen",
               "pt" => "É necessário colocar \"%{arg1}\" entre aspas",
               "ru" => "Необходимо заключить \"%{arg1}\" в кавычки",
+              "sr" => "Морате ставити наводнике око „%{arg1}“",
               "tr" => "\"%{arg1}\" tırnak içine alınmalı",
               "uk" => "Потрібно взяти \"%{arg1}\" у лапки"
             },
@@ -93576,6 +95836,7 @@ $CONF = {
               "nl" => "Scalaire waarde \@%{arg1}%{arg2}%{arg3}%{arg4} kan beter worden geschreven als \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "pt" => "O valor escalar \@%{arg1}%{arg2}%{arg3}%{arg4} escreve-se melhor como \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "ru" => "Скалярное значение \@%{arg1}%{arg2}%{arg3}%{arg4} лучше записать как \$%{arg5}%{arg6}%{arg7}%{arg8}",
+              "sr" => "Скаларну вредност \@%{arg1}%{arg2}%{arg3}%{arg4} боље је написати као \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "tr" => "Skaler bağlamdaki \@%{arg1}%{arg2}%{arg3}%{arg4} değeri, \$%{arg5}%{arg6}%{arg7}%{arg8} olarak yazılsa daha iyi olur",
               "uk" => "Скалярне значення \@%{arg1}%{arg2}%{arg3}%{arg4} краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}"
             },
@@ -93663,6 +95924,7 @@ $CONF = {
               "nl" => "Scalaire waarde \@%{arg1}%{arg2}%{arg3}%{arg4} kan beter worden geschreven als \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "pt" => "O valor escalar \@%{arg1}%{arg2}%{arg3}%{arg4} escreve-se melhor como \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "ru" => "Скалярное значение \@%{arg1}%{arg2}%{arg3}%{arg4} лучше записать как \$%{arg5}%{arg6}%{arg7}%{arg8}",
+              "sr" => "Скаларну вредност \@%{arg1}%{arg2}%{arg3}%{arg4} боље је написати као \$%{arg5}%{arg6}%{arg7}%{arg8}",
               "tr" => "Skaler bağlamdaki \@%{arg1}%{arg2}%{arg3}%{arg4} değeri, \$%{arg5}%{arg6}%{arg7}%{arg8} olarak yazılsa daha iyi olur",
               "uk" => "Скалярне значення \@%{arg1}%{arg2}%{arg3}%{arg4} краще записати як \$%{arg5}%{arg6}%{arg7}%{arg8}"
             },
@@ -93749,6 +96011,7 @@ $CONF = {
               "nl" => "\"%{arg1} %{arg2}\" gebruikt in sorteervergelijking",
               "pt" => "\"%{arg1} %{arg2}\" utilizado na comparação de sort",
               "ru" => "\"%{arg1} %{arg2}\" используется в сравнении для sort",
+              "sr" => "„%{arg1} %{arg2}“ употребљено у поређењу за sort",
               "tr" => "Sıralama karşılaştırmasında \"%{arg1} %{arg2}\" kullanıldı",
               "uk" => "\"%{arg1} %{arg2}\" використано в порівнянні для sort"
             },
@@ -93804,6 +96067,7 @@ $CONF = {
               "nl" => "\\%{arg1} kan beter worden geschreven als \$%{arg2}",
               "pt" => "É preferível escrever \\%{arg1} como \$%{arg2}",
               "ru" => "\\%{arg1} лучше записать как \$%{arg2}",
+              "sr" => "\\%{arg1} је боље записати као \$%{arg2}",
               "tr" => "\\%{arg1} yerine \$%{arg2} kullanılsa daha iyi olur",
               "uk" => "\\%{arg1} краще записати як \$%{arg2}"
             },
@@ -93859,6 +96123,7 @@ $CONF = {
               "nl" => "Kan \\%{arg1} niet gebruiken als \$%{arg2} in een expressie",
               "pt" => "Não é possível usar \\%{arg1} com o significado de \$%{arg2} numa expressão",
               "ru" => "Нельзя использовать \\%{arg1} в значении \$%{arg2} в выражении",
+              "sr" => "У изразу се \\%{arg1} не може користити у значењу \$%{arg2}",
               "tr" => "Bir ifade içinde \$%{arg2} anlamında \\%{arg1} kullanılamaz",
               "uk" => "Не можна використовувати \\%{arg1} у значенні \$%{arg2} у виразі"
             },
@@ -93913,6 +96178,7 @@ $CONF = {
               "nl" => "detach van een thread die niet kon starten",
               "pt" => "detach de uma thread que não conseguiu iniciar",
               "ru" => "Вызов detach для потока, который не удалось запустить",
+              "sr" => "раздвајање нити која није могла да се покрене",
               "tr" => "Başlatılamamış bir iş parçacığını ayırma",
               "uk" => "Від'єднання потоку, який не вдалося запустити"
             },
@@ -93954,6 +96220,7 @@ $CONF = {
               "nl" => "DevCloseDC() mislukt: %{arg1}",
               "pt" => "Falha em DevCloseDC(): %{arg1}",
               "ru" => "Ошибка DevCloseDC(): %{arg1}",
+              "sr" => "DevCloseDC() није успео: %{arg1}",
               "tr" => "DevCloseDC() başarısız oldu: %{arg1}",
               "uk" => "Не вдалося виконати DevCloseDC(): %{arg1}"
             },
@@ -94002,6 +96269,7 @@ $CONF = {
               "nl" => "Kan DLL-naam voor module `%{arg1}' niet vinden via handle %{arg2}, rc=%{arg3}=%{arg4}",
               "pt" => "Não foi possível encontrar o nome da DLL do módulo `%{arg1}' através do identificador %{arg2}, rc=%{arg3}=%{arg4}",
               "ru" => "Не удалось найти имя DLL для модуля `%{arg1}' по дескриптору %{arg2}, rc=%{arg3}=%{arg4}",
+              "sr" => "Није могуће пронаћи име DLL-а за модул `%{arg1}' помоћу ручке %{arg2}, rc=%{arg3}=%{arg4}",
               "tr" => "%{arg1} modülünün DLL adı, %{arg2} tanıtıcısı kullanılarak bulunamıyor; rc=%{arg3}=%{arg4}",
               "uk" => "Не вдалося знайти ім'я DLL для модуля `%{arg1}' за дескриптором %{arg2}, rc=%{arg3}=%{arg4}"
             },
@@ -94065,6 +96333,7 @@ $CONF = {
               "nl" => "Kan DLL `%{arg1}' niet laden; mogelijk problematische module `%{arg2}'",
               "pt" => "Não foi possível carregar a DLL `%{arg1}', possível módulo problemático `%{arg2}'",
               "ru" => "Не удалось загрузить DLL `%{arg1}', возможный проблемный модуль `%{arg2}'",
+              "sr" => "Није могуће учитати DLL `%{arg1}', могући проблематични модул `%{arg2}'",
               "tr" => "%{arg1} DLL'si yüklenemiyor; sorunlu modül %{arg2} olabilir",
               "uk" => "Не вдалося завантажити DLL `%{arg1}', можливий проблемний модуль `%{arg2}'"
             },
@@ -94117,6 +96386,7 @@ $CONF = {
               "nl" => "Onverwachte programmamodus %{arg1} bij terugkeer uit PM",
               "pt" => "Modo de programa inesperado %{arg1} ao regressar de PM",
               "ru" => "Неожиданный режим программы %{arg1} при обратном переходе из PM",
+              "sr" => "Неочекивани режим програма %{arg1} при повратку из PM режима",
               "tr" => "PM'den geri dönülürken beklenmeyen %{arg1} program kipi",
               "uk" => "Неочікуваний режим програми %{arg1} під час повернення з режиму PM"
             },
@@ -94164,6 +96434,7 @@ $CONF = {
               "nl" => "detach van een reeds losgekoppelde thread",
               "pt" => "detach de uma thread já desligada",
               "ru" => "Вызов detach для уже отсоединённого потока",
+              "sr" => "раздвајање већ раздвојене нити",
               "tr" => "Zaten ayrılmış bir iş parçacığında detach çağrısı",
               "uk" => "detach для вже від'єднаного потоку"
             },
@@ -94206,6 +96477,7 @@ $CONF = {
               "nl" => "Kan CRTL environ niet lezen\n",
               "pt" => "Não foi possível ler o ambiente CRTL\n",
               "ru" => "Не удалось прочитать environ библиотеки CRTL\n",
+              "sr" => "Не могу да прочитам CRTL environ\n",
               "tr" => "CRTL environ okunamıyor\n",
               "uk" => "Не вдалося прочитати environ бібліотеки CRTL\n"
             },
@@ -94248,6 +96520,7 @@ $CONF = {
               "nl" => "getpwnam gaf ongeldige UIC %{uic} terug voor gebruiker \"%{name}\"",
               "pt" => "getpwnam devolveu UIC inválido %{uic} para o utilizador \"%{name}\"",
               "ru" => "getpwnam вернула недопустимый UIC %{uic} для пользователя \"%{name}\"",
+              "sr" => "getpwnam је вратио неважећи UIC %{uic} за корисника „%{name}”",
               "tr" => "getpwnam, \"%{name}\" kullanıcısı için geçersiz UIC %{uic} döndürdü",
               "uk" => "getpwnam повернула некоректний UIC %{uic} для користувача \"%{name}\""
             },
@@ -94300,6 +96573,7 @@ $CONF = {
               "nl" => "Geen informatie over UTC-offset; er wordt aangenomen dat de lokale tijd UTC is",
               "pt" => "Não há informação sobre o desvio UTC; presume-se que a hora local é UTC",
               "ru" => "нет информации о смещении относительно UTC; предполагается, что местное время совпадает с UTC",
+              "sr" => "нема података о UTC помаку; претпоставља се да је локално време UTC",
               "tr" => "UTC farkı bilgisi yok; yerel saat UTC kabul ediliyor",
               "uk" => "немає даних про зсув від UTC; вважається, що місцевий час відповідає UTC"
             },
@@ -94341,6 +96615,7 @@ $CONF = {
               "nl" => "Beëindiging vanwege signaal SIG%{arg2}(%{arg3})\n",
               "pt" => "A terminar devido ao sinal SIG%{arg2}(%{arg3})\n",
               "ru" => "Завершение по сигналу SIG%{arg2}(%{arg3})\n",
+              "sr" => "Прекида се рад услед сигнала SIG%{arg2}(%{arg3})\n",
               "tr" => "SIG%{arg2}(%{arg3}) sinyali nedeniyle sonlandırılıyor\n",
               "uk" => "Завершення через сигнал SIG%{arg2}(%{arg3})\n"
             },
@@ -94393,6 +96668,7 @@ $CONF = {
               "nl" => "Gebruik van niet-geïnitialiseerde waarde",
               "pt" => "Utilização de um valor não inicializado",
               "ru" => "Использование неинициализированного значения",
+              "sr" => "Употреба неиницијализоване вредности",
               "tr" => "Başlatılmamış değer kullanımı",
               "uk" => "Використання неініціалізованого значення"
             },
@@ -94482,6 +96758,10 @@ $CONF = {
                 "*" => "Использование неинициализированного значения в %{operation}",
                 "named" => "Использование неинициализированного значения %{name} в %{operation}"
               },
+              "sr" => {
+                "named" => "Употреба неиницијализоване вредности %{name} у %{operation}",
+                "unnamed" => "Употреба неиницијализоване вредности у %{operation}"
+              },
               "tr" => {
                 "named" => "%{operation} bağlamında başlangıç değeri atanmamış bir değer kullanıldı: %{name}",
                 "unnamed" => "%{operation} bağlamında başlangıç değeri atanmamış bir değer kullanıldı"
@@ -94547,6 +96827,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -94592,6 +96873,7 @@ $CONF = {
               "nl" => "Teken in '%{arg1}'-formaat loopt over bij unpack",
               "pt" => "Carácter fora do intervalo no formato '%{arg1}' em unpack; valor ajustado por módulo",
               "ru" => "Значение символа в формате '%{arg1}' приведено по модулю 256 в unpack",
+              "sr" => "Знак у формату „%{arg1}” је сведен на бајт при unpack",
               "tr" => "unpack içinde '%{arg1}' biçimindeki karakter bayta sarıldı",
               "uk" => "Значення символу у форматі '%{arg1}' зведено за модулем 256 у unpack"
             },
@@ -94641,6 +96923,7 @@ $CONF = {
               "nl" => "Ongeldig type ',' in %{arg1}",
               "pt" => "Tipo inválido ',' em %{arg1}",
               "ru" => "Недопустимый тип ',' в %{arg1}",
+              "sr" => "Неважећа врста „,” у %{arg1}",
               "tr" => "%{arg1} içinde geçersiz ',' türü",
               "uk" => "Недопустимий тип ',' у %{arg1}"
             },
@@ -94690,6 +96973,7 @@ $CONF = {
               "nl" => "Dubbele modifier '%{arg1}' na '%{arg2}' in %{arg3}",
               "pt" => "Modificador '%{arg1}' duplicado após '%{arg2}' em %{arg3}",
               "ru" => "Повторный модификатор '%{arg1}' после '%{arg2}' в %{arg3}",
+              "sr" => "Дуплирани модификатор „%{arg1}” после „%{arg2}” у %{arg3}",
               "tr" => "%{arg3} içinde '%{arg2}' sonrasında yinelenen '%{arg1}' değiştiricisi",
               "uk" => "Повторний модифікатор '%{arg1}' після '%{arg2}' у %{arg3}"
             },
@@ -94779,6 +97063,11 @@ $CONF = {
                 "few" => "Попытка вызвать untie, пока ещё существуют %{arg1} внутренние ссылки",
                 "one" => "Попытка вызвать untie, пока ещё существует %{arg1} внутренняя ссылка"
               },
+              "sr" => {
+                "*" => "Покушан је untie док још има %{arg1} унутрашњих референци",
+                "few" => "Покушан је untie док још постоје %{arg1} унутрашње референце",
+                "one" => "Покушан је untie док још постоји %{arg1} унутрашња референца"
+              },
               "tr" => {
                 "*" => "Hâlâ %{arg1} iç başvuru varken untie yapılmaya çalışıldı"
               },
@@ -94841,6 +97130,7 @@ $CONF = {
               "nl" => "%{exsv}",
               "pt" => "%{exsv}",
               "ru" => "%{exsv}",
+              "sr" => "%{exsv}",
               "tr" => "%{exsv}",
               "uk" => "%{exsv}"
             },
@@ -94890,6 +97180,7 @@ $CONF = {
               "nl" => "Ongeldig negatief getal (%{arg1}) in chr",
               "pt" => "Número negativo inválido (%{arg1}) em chr",
               "ru" => "Недопустимое отрицательное число (%{arg1}) в chr",
+              "sr" => "Неважећи негативан број (%{arg1}) у chr",
               "tr" => "chr içinde geçersiz negatif sayı (%{arg1})",
               "uk" => "Неприпустиме від'ємне число (%{arg1}) у chr"
             },
@@ -94985,6 +97276,10 @@ $CONF = {
                 "*" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт продолжения 0x%{byte} без предшествующего начального байта)",
                 "operation" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт продолжения 0x%{byte} без предшествующего начального байта) в %{operation}"
               },
+              "sr" => {
+                "none" => "Неисправан UTF-8 знак: %{bytes} (неочекивани наставни бајт 0x%{byte}, без претходног почетног бајта)",
+                "operation" => "Неисправан UTF-8 знак: %{bytes} (неочекивани наставни бајт 0x%{byte}, без претходног почетног бајта) при %{operation}"
+              },
               "tr" => {
                 "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (öncesinde başlangıç baytı olmadan beklenmedik devam baytı 0x%{byte} geldi)",
                 "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (öncesinde başlangıç baytı olmadan beklenmedik devam baytı 0x%{byte} geldi)"
@@ -95047,6 +97342,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -95142,6 +97438,10 @@ $CONF = {
                 "*" => "Некорректный символ UTF-8: (пустая строка)",
                 "operation" => "Некорректный символ UTF-8: (пустая строка) в %{operation}"
               },
+              "sr" => {
+                "none" => "Неисправан UTF-8 знак: (празан низ)",
+                "operation" => "Неисправан UTF-8 знак: (празан низ) у %{operation}"
+              },
               "tr" => {
                 "none" => "Bozuk bir UTF-8 karakteri saptandı: (boş dizge)",
                 "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: (boş dizge)"
@@ -95194,6 +97494,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -95288,6 +97589,10 @@ $CONF = {
                 "*" => "Несимвол Unicode U+%{arg1} не рекомендуется использовать для открытого обмена данными",
                 "operation" => "Несимвол Unicode U+%{arg1} не рекомендуется использовать для открытого обмена данными в %{operation}"
               },
+              "sr" => {
+                "none" => "Unicode не-знак U+%{arg1} се не препоручује за размену без ограничења",
+                "operation" => "Unicode не-знак U+%{arg1} се не препоручује за размену без ограничења у %{operation}"
+              },
               "tr" => {
                 "none" => "Unicode kapsamında \"karakter olmayan\" olarak tanımlanan U+%{arg1} kod noktası açık veri alışverişi için önerilmez",
                 "operation" => "%{operation} bağlamında Unicode kapsamında \"karakter olmayan\" olarak tanımlanan U+%{arg1} kod noktası açık veri alışverişi için önerilmez"
@@ -95346,6 +97651,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -95395,6 +97701,7 @@ $CONF = {
               "nl" => "Unicode-niet-teken U+%{arg1} wordt niet aanbevolen voor open gegevensuitwisseling",
               "pt" => "O carácter não atribuível Unicode U+%{arg1} não é recomendado para intercâmbio aberto",
               "ru" => "Несимвол Unicode U+%{arg1} не рекомендуется использовать для открытого обмена данными",
+              "sr" => "Unicode некарактер U+%{arg1} се не препоручује за отворену размену",
               "tr" => "Unicode U+%{arg1} karakter olmayan değeri açık alışveriş için önerilmez",
               "uk" => "Несимвол Unicode U+%{arg1} не рекомендовано використовувати для відкритого обміну даними"
             },
@@ -95491,6 +97798,10 @@ $CONF = {
                 "*" => "Любая последовательность UTF-8, начинающаяся с \"%{prefix}\", представляет кодовую точку вне диапазона Unicode и может быть непереносимой",
                 "operation" => "Любая последовательность UTF-8, начинающаяся с \"%{prefix}\", представляет кодовую точку вне диапазона Unicode и может быть непереносимой в %{operation}"
               },
+              "sr" => {
+                "none" => "Сваки UTF-8 низ који почиње са „%{prefix}“ означава кодну тачку изван Unicode-а и можда није преносив",
+                "operation" => "Сваки UTF-8 низ који почиње са „%{prefix}“ означава кодну тачку изван Unicode-а и можда није преносив у %{operation}"
+              },
               "tr" => {
                 "none" => "\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi Unicode dışı bir kod noktasını gösterir, taşınabilir olmayabilir",
                 "operation" => "%{operation} bağlamında \"%{prefix}\" ile başlayan her UTF-8 bayt dizisi Unicode dışı bir kod noktasını gösterir, taşınabilir olmayabilir"
@@ -95548,6 +97859,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -95597,6 +97909,7 @@ $CONF = {
               "nl" => "Bewerking \"%{arg1}\" retourneert haar argument voor niet-Unicode-codepunt 0x%{arg2}",
               "pt" => "A operação \"%{arg1}\" devolve o argumento para o ponto de código não Unicode 0x%{arg2}",
               "ru" => "Операция \"%{arg1}\" возвращает свой аргумент без изменений для кодовой точки 0x%{arg2}, не входящей в Unicode",
+              "sr" => "Операција „%{arg1}“ враћа свој аргумент за кодну тачку изван Уникода 0x%{arg2}",
               "tr" => "\"%{arg1}\" işlemi, Unicode dışı kod noktası 0x%{arg2} için bağımsız değişkenini değiştirmeden döndürür",
               "uk" => "Операція \"%{arg1}\" повертає свій аргумент без змін для кодової точки поза Unicode 0x%{arg2}"
             },
@@ -95640,6 +97953,7 @@ $CONF = {
                 "nl" => "operation",
                 "pt" => "operation",
                 "ru" => "nominative",
+                "sr" => "nominative",
                 "tr" => "operation",
                 "uk" => "nominative"
               },
@@ -95728,6 +98042,10 @@ $CONF = {
                 "*" => "Кодовая точка 0x%{arg1} не входит в Unicode и может быть непереносимой",
                 "operation" => "Кодовая точка 0x%{arg1} не входит в Unicode и может быть непереносимой в %{operation}"
               },
+              "sr" => {
+                "none" => "Кодна тачка 0x%{arg1} није Unicode и можда није преносива",
+                "operation" => "Кодна тачка 0x%{arg1} није Unicode и можда није преносива у контексту: %{operation}"
+              },
               "tr" => {
                 "none" => "0x%{arg1} kod noktası Unicode kapsamında değildir, taşınabilir olmayabilir",
                 "operation" => "%{operation} bağlamında 0x%{arg1} kod noktası Unicode kapsamında değildir, taşınabilir olmayabilir"
@@ -95785,6 +98103,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -95879,6 +98198,10 @@ $CONF = {
                 "*" => "Кодовая точка 0x%{arg1} не входит в Unicode, требует расширения Perl и поэтому непереносима",
                 "operation" => "Кодовая точка 0x%{arg1} не входит в Unicode, требует расширения Perl и поэтому непереносима в %{operation}"
               },
+              "sr" => {
+                "none" => "Кодна тачка 0x%{arg1} није Unicode, захтева Perl проширење и зато није преносива",
+                "operation" => "Кодна тачка 0x%{arg1} није Unicode, захтева Perl проширење и зато није преносива у контексту: %{operation}"
+              },
               "tr" => {
                 "none" => "0x%{arg1} kod noktası Unicode kapsamında değildir, bir Perl genişletmesi gerektirir ve bu nedenle taşınabilir değildir",
                 "operation" => "%{operation} bağlamında 0x%{arg1} kod noktası Unicode kapsamında değildir, bir Perl genişletmesi gerektirir ve bu nedenle taşınabilir değildir"
@@ -95936,6 +98259,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -96030,6 +98354,10 @@ $CONF = {
                 "*" => "Любая последовательность UTF-8, начинающаяся с \"%{prefix}\", является расширением Perl и потому непереносима",
                 "operation" => "Любая последовательность UTF-8, начинающаяся с \"%{prefix}\", является расширением Perl и потому непереносима в %{operation}"
               },
+              "sr" => {
+                "none" => "Сваки UTF-8 низ који почиње са „%{prefix}“ представља Perl проширење и зато није преносив",
+                "operation" => "Сваки UTF-8 низ који почиње са „%{prefix}“ представља Perl проширење и зато није преносив у %{operation}"
+              },
               "tr" => {
                 "none" => "\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi bir Perl genişletmesidir ve bu nedenle taşınabilir değildir",
                 "operation" => "%{operation} bağlamında \"%{prefix}\" ile başlayan her UTF-8 bayt dizisi bir Perl genişletmesidir ve bu nedenle taşınabilir değildir"
@@ -96087,6 +98415,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -96137,6 +98466,7 @@ $CONF = {
               "nl" => "Niet-Unicode-codepunt 0x%{arg1} vergeleken met Unicode-eigenschap; mogelijk niet portabel",
               "pt" => "Ponto de código não Unicode 0x%{arg1} comparado com uma propriedade Unicode; pode não ser portável",
               "ru" => "Кодовая точка 0x%{arg1}, не входящая в Unicode, сопоставлена со свойством Unicode; результат может быть непереносимым",
+              "sr" => "Поклопљена је не-Уникодна кодна тачка 0x%{arg1} са Unicode својством; можда није преносиво",
               "tr" => "Unicode dışı %{arg1} kod noktası Unicode özelliğiyle eşleşti; taşınabilir olmayabilir",
               "uk" => "Кодову точку поза Unicode 0x%{arg1} зіставлено з властивістю Unicode; це може бути непереносним"
             },
@@ -96232,6 +98562,10 @@ $CONF = {
                 "*" => "Некорректный символ UTF-8: %{bytes} (переполнение)",
                 "operation" => "Некорректный символ UTF-8: %{bytes} (переполнение) в %{operation}"
               },
+              "sr" => {
+                "none" => "Неисправан UTF-8 знак: %{bytes} (прекорачење)",
+                "operation" => "Неисправан UTF-8 знак: %{bytes} (прекорачење) у %{operation}"
+              },
               "tr" => {
                 "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (değer taşması oluştu)",
                 "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (değer taşması oluştu)"
@@ -96289,6 +98623,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -96384,6 +98719,10 @@ $CONF = {
                 "*" => "Некорректный символ UTF-8: %{bytes} (любая последовательность UTF-8, начинающаяся с \"%{prefix}\", избыточно длинна; её можно и следует заменить другой, более короткой последовательностью)",
                 "operation" => "Некорректный символ UTF-8: %{bytes} (любая последовательность UTF-8, начинающаяся с \"%{prefix}\", избыточно длинна; её можно и следует заменить другой, более короткой последовательностью) в %{operation}"
               },
+              "sr" => {
+                "none" => "Неисправан UTF-8 знак: %{bytes} (сваки UTF-8 низ који почиње са „%{prefix}“ је предугачак и може и треба да буде представљен другим, краћим низом)",
+                "operation" => "Неисправан UTF-8 знак: %{bytes} (сваки UTF-8 низ који почиње са „%{prefix}“ је предугачак и може и треба да буде представљен другим, краћим низом) при %{operation}"
+              },
               "tr" => {
                 "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi gereğinden uzundur; farklı ve daha kısa bir bayt dizisiyle gösterilebilir ve gösterilmelidir)",
                 "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi gereğinden uzundur; farklı ve daha kısa bir bayt dizisiyle gösterilebilir ve gösterilmelidir)"
@@ -96446,6 +98785,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -96541,6 +98881,10 @@ $CONF = {
                 "*" => "Некорректный символ UTF-8: %{bytes} (избыточно длинная последовательность; для представления %{codepoint} используйте %{canonical_bytes})",
                 "operation" => "Некорректный символ UTF-8: %{bytes} (избыточно длинная последовательность; для представления %{codepoint} используйте %{canonical_bytes}) в %{operation}"
               },
+              "sr" => {
+                "none" => "Неисправан UTF-8 знак: %{bytes} (предугачак запис; уместо њега употребите %{canonical_bytes} за представљање %{codepoint})",
+                "operation" => "Неисправан UTF-8 знак: %{bytes} (предугачак запис; уместо њега употребите %{canonical_bytes} за представљање %{codepoint}) при %{operation}"
+              },
               "tr" => {
                 "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (gereğinden uzun; %{codepoint} kod noktasını göstermek için bunun yerine %{canonical_bytes} kullanın)",
                 "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (gereğinden uzun; %{codepoint} kod noktasını göstermek için bunun yerine %{canonical_bytes} kullanın)"
@@ -96608,6 +98952,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -96659,6 +99004,7 @@ $CONF = {
               "nl" => "utf8 \"\\x%{arg1}\" komt niet overeen met een Unicode-codepunt",
               "pt" => "O valor UTF-8 \"\\x%{arg1}\" não corresponde a Unicode",
               "ru" => "utf8 \"\\x%{arg1}\" не соответствует символу Unicode",
+              "sr" => "utf8 „\\x%{arg1}” се не пресликава у Unicode",
               "tr" => "utf8 \"\\x%{arg1}\" Unicode karşılığı değildir",
               "uk" => "utf8 \"\\x%{arg1}\" не відповідає символу Unicode"
             },
@@ -96708,6 +99054,7 @@ $CONF = {
               "nl" => "Tekenreeksen met codepunten boven 0xFF kunnen niet aan bestandshandles in het geheugen worden gekoppeld\n",
               "pt" => "Strings com pontos de código superiores a 0xFF não podem ser mapeadas para identificadores de ficheiros em memória\n",
               "ru" => "Строки с кодовыми точками выше 0xFF нельзя использовать в качестве содержимого файлов в памяти\n",
+              "sr" => "Низови са кодним тачкама већим од 0xFF не могу се пресликати у ручке датотека у меморији\n",
               "tr" => "0xFF üzerindeki kod noktalarına sahip dizgeler bellek içi dosya tutamaçlarına eşlenemez\n",
               "uk" => "Рядки з кодовими точками понад 0xFF не можна відображати на файлові дескриптори в пам'яті\n"
             },
@@ -96889,6 +99236,16 @@ $CONF = {
                   "operation" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения; сразу после начального байта 0x%{start_byte}; требуемая длина последовательности в байтах: %{expected_bytes}; длина допустимого префикса: %{available_bytes}) в %{operation}"
                 }
               },
+              "sr" => {
+                "after_bytes" => {
+                  "none" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни, 0x%{unexpected_byte}; после исправног префикса дужине %{available_bytes} који почиње бајтом 0x%{start_byte}; потребна дужина низа је %{expected_bytes} бајтова; дужина исправног префикса је %{available_bytes})",
+                  "operation" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни, 0x%{unexpected_byte}; после исправног префикса дужине %{available_bytes} који почиње бајтом 0x%{start_byte}; потребна дужина низа је %{expected_bytes} бајтова; дужина исправног префикса је %{available_bytes}) при %{operation}"
+                },
+                "immediate" => {
+                  "none" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни, 0x%{unexpected_byte}; непосредно после почетног бајта 0x%{start_byte}; потребна дужина низа је %{expected_bytes} бајтова; дужина исправног префикса је %{available_bytes})",
+                  "operation" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни, 0x%{unexpected_byte}; непосредно после почетног бајта 0x%{start_byte}; потребна дужина низа је %{expected_bytes} бајтова; дужина исправног префикса је %{available_bytes}) при %{operation}"
+                }
+              },
               "tr" => {
                 "after_bytes" => {
                   "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; 0x%{start_byte} baytıyla başlayan %{available_bytes} bayt uzunluğundaki geçerli önekten sonra; gerekli bayt dizisi uzunluğu %{expected_bytes} bayt; geçerli önek uzunluğu %{available_bytes} bayt)",
@@ -96987,6 +99344,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -97151,6 +99509,20 @@ $CONF = {
                   "operation" => "Некорректный символ UTF-8: %{bytes} (слишком короткая последовательность; число доступных байтов: %{available_bytes}, требуется: %{expected_bytes}) в %{operation}"
                 }
               },
+              "sr" => {
+                "few" => {
+                  "none" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступна су %{available_bytes} бајта, потребно је %{expected_bytes})",
+                  "operation" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступна су %{available_bytes} бајта, потребно је %{expected_bytes}) при %{operation}"
+                },
+                "one" => {
+                  "none" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступан је 1 бајт, потребно је %{expected_bytes})",
+                  "operation" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступан је 1 бајт, потребно је %{expected_bytes}) при %{operation}"
+                },
+                "other" => {
+                  "none" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступно је %{available_bytes} бајтова, потребно је %{expected_bytes})",
+                  "operation" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступно је %{available_bytes} бајтова, потребно је %{expected_bytes}) при %{operation}"
+                }
+              },
               "tr" => {
                 "*" => {
                   "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (çok kısa; %{available_bytes} bayt mevcut, %{expected_bytes} bayt gerekli)",
@@ -97228,6 +99600,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -97277,6 +99650,7 @@ $CONF = {
               "nl" => "Bewerking \"%{arg1}\" retourneert haar argument voor UTF-16-surrogaat U+%{arg2}",
               "pt" => "A operação \"%{arg1}\" devolve o argumento para o substituto UTF-16 U+%{arg2}",
               "ru" => "Операция \"%{arg1}\" возвращает свой аргумент без изменений для суррогата UTF-16 U+%{arg2}",
+              "sr" => "Операција „%{arg1}“ враћа свој аргумент за UTF-16 сурогат U+%{arg2}",
               "tr" => "\"%{arg1}\" işlemi, UTF-16 vekil kod noktası U+%{arg2} için bağımsız değişkenini değiştirmeden döndürür",
               "uk" => "Операція \"%{arg1}\" повертає свій аргумент для сурогата UTF-16 U+%{arg2}"
             },
@@ -97320,6 +99694,7 @@ $CONF = {
                 "nl" => "operation",
                 "pt" => "operation",
                 "ru" => "nominative",
+                "sr" => "nominative",
                 "tr" => "operation",
                 "uk" => "nominative"
               },
@@ -97408,6 +99783,10 @@ $CONF = {
                 "*" => "Суррогат UTF-16 U+%{arg1}",
                 "operation" => "Суррогат UTF-16 U+%{arg1} в %{operation}"
               },
+              "sr" => {
+                "none" => "UTF-16 сурогат U+%{arg1}",
+                "operation" => "UTF-16 сурогат U+%{arg1} у %{operation}"
+              },
               "tr" => {
                 "none" => "UTF-16 vekil kod noktası U+%{arg1} saptandı",
                 "operation" => "%{operation} bağlamında UTF-16 vekil kod noktası U+%{arg1} saptandı"
@@ -97466,6 +99845,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -97515,6 +99895,7 @@ $CONF = {
               "nl" => "UTF-16-surrogaat U+%{arg1}",
               "pt" => "Substituto UTF-16 U+%{arg1}",
               "ru" => "Суррогат UTF-16 U+%{arg1}",
+              "sr" => "UTF-16 сурогат U+%{arg1}",
               "tr" => "UTF-16 vekil kod noktası U+%{arg1}",
               "uk" => "Сурогат UTF-16 U+%{arg1}"
             },
@@ -97567,6 +99948,7 @@ $CONF = {
               "nl" => "Unicode-surrogaat U+%{arg1} is ongeldig in UTF-8",
               "pt" => "O substituto Unicode U+%{arg1} é inválido em UTF-8",
               "ru" => "Суррогат Unicode U+%{arg1} недопустим в UTF-8",
+              "sr" => "Уникод сурогат U+%{arg1} није дозвољен у UTF-8",
               "tr" => "Unicode vekil kod noktası U+%{arg1}, UTF-8'de geçersizdir",
               "uk" => "Сурогат Unicode U+%{arg1} є недопустимим у UTF-8"
             },
@@ -97661,6 +100043,10 @@ $CONF = {
                 "*" => "Суррогат UTF-16 (любая последовательность UTF-8, начинающаяся с \"%{prefix}\", представляет суррогат)",
                 "operation" => "Суррогат UTF-16 (любая последовательность UTF-8, начинающаяся с \"%{prefix}\", представляет суррогат) в %{operation}"
               },
+              "sr" => {
+                "none" => "UTF-16 сурогат (сваки UTF-8 низ који почиње са „%{prefix}“ означава сурогат)",
+                "operation" => "UTF-16 сурогат (сваки UTF-8 низ који почиње са „%{prefix}“ означава сурогат) у %{operation}"
+              },
               "tr" => {
                 "none" => "UTF-16 vekil kod noktası saptandı (\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi bir vekil kod noktasını gösterir)",
                 "operation" => "%{operation} bağlamında UTF-16 vekil kod noktası saptandı (\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi bir vekil kod noktasını gösterir)"
@@ -97718,6 +100104,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -97768,6 +100155,7 @@ $CONF = {
               "nl" => "Ongeldig UTF-8-teken (onverwacht einde van de tekenreeks) in %{operation}",
               "pt" => "Caractere UTF-8 malformado (fim inesperado da string) em %{operation}",
               "ru" => "Некорректный символ UTF-8 (неожиданный конец строки) в %{operation}",
+              "sr" => "Неисправан UTF-8 знак (неочекивани крај ниске) у %{operation}",
               "tr" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı (dizge beklenmedik biçimde sona erdi)",
               "uk" => "Некоректний символ UTF-8 (неочікуваний кінець рядка) у %{operation}"
             },
@@ -97805,6 +100193,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -97850,6 +100239,7 @@ $CONF = {
               "nl" => "Ongeldig UTF-8-teken (onverwacht einde van de tekenreeks)",
               "pt" => "Caractere UTF-8 malformado (fim inesperado da cadeia)",
               "ru" => "Некорректный символ UTF-8 (неожиданный конец строки)",
+              "sr" => "Неисправан UTF-8 знак (неочекивани крај ниске)",
               "tr" => "Biçimsiz UTF-8 karakteri (dizgenin beklenmedik biçimde sonu)",
               "uk" => "Некоректно сформований символ UTF-8 (неочікуваний кінець рядка)"
             },
@@ -97939,6 +100329,10 @@ $CONF = {
                 "*" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения, сразу после начального байта 0x%{start_byte}; требуется 2 байта, получен 1)",
                 "operation" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения, сразу после начального байта 0x%{start_byte}; требуется 2 байта, получен 1) в %{operation}"
               },
+              "sr" => {
+                "none" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни бајт 0x%{unexpected_byte}, непосредно после почетног бајта 0x%{start_byte}; потребна су 2 бајта, добијен је 1)",
+                "operation" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни бајт 0x%{unexpected_byte}, непосредно после почетног бајта 0x%{start_byte}; потребна су 2 бајта, добијен је 1) у %{operation}"
+              },
               "tr" => {
                 "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (başlangıç baytı 0x%{start_byte} değerinin hemen ardından devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; 2 bayt gerekli, 1 bayt alındı)",
                 "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (başlangıç baytı 0x%{start_byte} değerinin hemen ardından devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; 2 bayt gerekli, 1 bayt alındı)"
@@ -98012,6 +100406,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "prepositional",
+                "sr" => "locative",
                 "tr" => "operation",
                 "uk" => "locative"
               },
@@ -98136,6 +100531,13 @@ $CONF = {
                 "program_name" => "Широкий символ в \$0",
                 "setenv_key_encoding" => "Широкий символ в ключе setenv (кодирование в utf8)"
               },
+              "sr" => {
+                "*" => "Широк карактер у операцији штампања",
+                "program_name" => "Широк карактер у имену програма \$0",
+                "setenv" => "Широк карактер у операцији setenv",
+                "setenv_key_encoding" => "Широк карактер у кључу операције setenv (кодирање у utf8)",
+                "warn" => "Широк карактер у упозорењу"
+              },
               "tr" => {
                 "print" => "print içinde geniş karakter",
                 "program_name" => "\$0 içinde geniş karakter",
@@ -98201,6 +100603,7 @@ $CONF = {
               "nl" => "Te laat om het CHECK-blok uit te voeren",
               "pt" => "Demasiado tarde para executar um bloco CHECK",
               "ru" => "Слишком поздно выполнять блок CHECK",
+              "sr" => "Прекасно је за покретање блока CHECK",
               "tr" => "CHECK bloğunu çalıştırmak için çok geç",
               "uk" => "Запізно виконувати блок CHECK"
             },
@@ -98243,6 +100646,7 @@ $CONF = {
               "nl" => "Te laat om het INIT-blok uit te voeren",
               "pt" => "Demasiado tarde para executar um bloco INIT",
               "ru" => "Слишком поздно выполнять блок INIT",
+              "sr" => "Прeкасно је за покретање блока INIT",
               "tr" => "INIT bloğunu çalıştırmak için çok geç",
               "uk" => "Запізно виконувати блок INIT"
             },
@@ -98437,6 +100841,17 @@ $CONF = {
                 "non_destructive_transliteration" => "Бесполезное использование транслитерации без изменения исходной строки (tr///r) в пустом контексте",
                 "variable" => "Бесполезное использование переменной в пустом контексте"
               },
+              "sr" => {
+                "*" => "Бескорисна употреба %{arg1} у контексту без повратне вредности",
+                "anonymous_array" => "Бескорисна употреба анонимског низа ([]) у контексту без повратне вредности",
+                "anonymous_hash" => "Бескорисна употреба анонимског хеша ({}) у контексту без повратне вредности",
+                "constant" => "Бескорисна употреба константе (%{arg1}) у контексту без повратне вредности",
+                "constant_undef" => "Бескорисна употреба константе (undef) у контексту без повратне вредности",
+                "negative_pattern_binding" => "Бескорисна употреба негативног везивања обрасца (!~) у контексту без повратне вредности",
+                "non_destructive_substitution" => "Бескорисна употреба недеструктивне замене (s///r) у контексту без повратне вредности",
+                "non_destructive_transliteration" => "Бескорисна употреба недеструктивне транслитерације (tr///r) у контексту без повратне вредности",
+                "variable" => "Бескорисна употреба променљиве у контексту без повратне вредности"
+              },
               "tr" => {
                 "*" => "Değerin kullanılmadığı bağlamda %{arg1} kullanımı yararsızdır",
                 "anonymous_array" => "Değerin kullanılmadığı bağlamda anonim dizi ([]) kullanımı yararsızdır",
@@ -98502,6 +100917,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "void_expression_genitive",
+                "sr" => "void_expression_genitive",
                 "tr" => "void_expression",
                 "uk" => "void_expression_genitive"
               },
@@ -98688,6 +101104,18 @@ $CONF = {
                 "non_destructive_transliteration" => "Бесполезное использование транслитерации без изменения исходной строки (tr///r) в пустом контексте",
                 "variable" => "Бесполезное использование переменной в пустом контексте"
               },
+              "sr" => {
+                "*" => "Бескорисна употреба %{arg1} у контексту без вредности",
+                "anonymous_array" => "Бескорисна употреба анонимског низа ([]) у контексту без вредности",
+                "anonymous_hash" => "Бескорисна употреба анонимског хеша ({}) у контексту без вредности",
+                "constant" => "Бескорисна употреба константе (%{arg1}) у контексту без вредности",
+                "constant_undef" => "Бескорисна употреба константе (undef) у контексту без вредности",
+                "negative_pattern_binding" => "Бескорисна употреба негативног везивања шаблона (!~) у контексту без вредности",
+                "non_destructive_substitution" => "Бескорисна употреба недеструктивне замене (s///r) у контексту без вредности",
+                "non_destructive_transliteration" => "Бескорисна употреба недеструктивне транслитерације (tr///r) у контексту без вредности",
+                "time" => "Бескорисна употреба функције time у контексту без вредности",
+                "variable" => "Бескорисна употреба променљиве у контексту без вредности"
+              },
               "tr" => {
                 "*" => "Değerin kullanılmadığı bağlamda %{arg1} kullanımı yararsızdır",
                 "anonymous_array" => "Değerin kullanılmadığı bağlamda anonim dizi ([]) kullanımı yararsızdır",
@@ -98754,6 +101182,7 @@ $CONF = {
                 "nl" => "indefinite",
                 "pt" => "indefinite",
                 "ru" => "void_expression_genitive",
+                "sr" => "void_expression_genitive",
                 "tr" => "void_expression",
                 "uk" => "void_expression_genitive"
               },
@@ -98800,6 +101229,7 @@ $CONF = {
               "nl" => "%{text}",
               "pt" => "%{text}",
               "ru" => "%{text}",
+              "sr" => "%{text}",
               "tr" => "%{text}",
               "uk" => "%{text}"
             },
@@ -107413,6 +109843,10 @@ $CONF = {
       "cardinal" => "cardinal_rule_5",
       "ordinal" => "ordinal_rule_1"
     },
+    "sr" => {
+      "cardinal" => "cardinal_rule_10",
+      "ordinal" => "ordinal_rule_1"
+    },
     "tr" => {
       "cardinal" => "cardinal_rule_1",
       "ordinal" => "ordinal_rule_1"
@@ -107426,6 +109860,14 @@ $CONF = {
     "cardinal_rule_1" => {
       "expression" => "(n) == 1 ? \"one\" : \"other\"",
       "forms" => [
+        "one",
+        "other"
+      ]
+    },
+    "cardinal_rule_10" => {
+      "expression" => "(n) % 10 == 1 && (n) % 100 != 11 ? \"one\" : (n) % 10 >= 2 && (n) % 10 <= 4 && ((n) % 100 < 12 || (n) % 100 > 14) ? \"few\" : \"other\"",
+      "forms" => [
+        "few",
         "one",
         "other"
       ]
