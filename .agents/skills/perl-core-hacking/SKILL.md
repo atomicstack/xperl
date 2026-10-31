@@ -19,6 +19,21 @@ Treat core changes as compatibility-sensitive. Read existing code and tests firs
 
 Read [references/core-change-workflow.md](references/core-change-workflow.md) for internals sources, risk checks, and validation patterns.
 
+## Perl idioms and wrappers
+
+Use idiomatic Perl internals. When Perl provides a macro or helper for an
+operation, prefer that interface over its underlying C or library call.
+For example, use `Copy`, `Move`, and `Zero` for memory operations, and
+`Newx`, `Renew`, and `Safefree` for allocation. These wrappers can carry
+portability, overflow, debugging, and ownership requirements.
+
+If a wrapper exposes a declaration-order or interpreter-context problem,
+fix the placement, declarations, or context. Do not bypass it merely to
+silence the compiler. Inline definitions that depend on `proto.h` or
+`embed.h` belong in `inline.h` rather than an earlier header. Use a lower-level
+call only when the wrapper does not fit the operation, and explain the
+concrete reason.
+
 ## Boundaries
 
 - When modifying a C source file, preserve the position of its opening poem or
