@@ -58,13 +58,15 @@ my %required_forms;
                 while ( $source->{$operation} =~ /\(([!%&*+\-.\/:<=>?^|~]+)\)/g ) {
                     my $symbol = $1;
 
-                    # Void-expression phrases may preserve the dotted string
-                    # complement spelling used by the English source role.
+                    # Check the complete operator token without requiring
+                    # English parentheses around translated descriptions.
+                    my $operator_char = qr/[!%&*+\-.\/:<=>?^|~]/;
                     $symbol = '~.'
                       if $operation eq 'scomplement'
                       && $symbol eq '~'
-                      && index( $text, '(~.)' ) >= 0;
-                    push @symbols, "$operation/$form/$symbol" if index( $text, "($symbol)" ) < 0;
+                      && $text =~ /(?<!$operator_char)~\.(?!$operator_char)/;
+                    push @symbols, "$operation/$form/$symbol"
+                      unless $text =~ /(?<!$operator_char)\Q$symbol\E(?!$operator_char)/;
                 }
             }
         }
@@ -532,18 +534,19 @@ ok( Diag::Words::validate_bindings( $copy, $data ), 'identity source permits a r
     my $roles = Storable::dclone($diag);
     for my $language ( sort keys %{ $catalog->{languages} } ) {
         my $target_rule =
-            $language eq 'fi'                                                                ? 'operation_object'
+            $language eq 'zh'                                                                ? 'default'
+          : $language eq 'fi'                                                                ? 'operation_object'
           : $language eq 'he' || $language eq 'hu' || $language eq 'tr'                      ? 'operation'
           : $language eq 'ar' || $language eq 'en' || $language eq 'cy' || $language eq 'fa' ? 'operation'
           : $language eq 'de'                                                                ? 'accusative'
           : $language eq 'is'                                                                ? 'dative'
-          : $language eq 'ru' || $language eq 'uk'                                           ? 'accusative'
+          : $language eq 'ru' || $language eq 'uk' || $language eq 'sr'                        ? 'accusative'
           :                                                               'indefinite';
         my $context_rule =
             $language eq 'fi'                      ? 'operation'
           : $language eq 'cy'                      ? 'soft_mutation'
           : $language eq 'ru'                      ? 'prepositional'
-          : $language eq 'uk'                      ? 'locative'
+          : $language eq 'uk' || $language eq 'sr' ? 'locative'
           : $language eq 'de' || $language eq 'is' ? 'dative'
           :                                          $target_rule;
         is( $roles->{operation_words}{target}{rules}{$language},  $target_rule,  "$language binds the target role" );

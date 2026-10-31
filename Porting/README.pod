@@ -20,7 +20,7 @@ F<lib/> and F<t/> directories.  Now thought to be largely superseded.
 
 Program to facilitate addition of new F<.pod> files to F<pod/>.
 
-=head2 F<bench-class-value.py> and F<bench-class-value.pl>
+=head2 F<bench-class-value.pl> and F<bench-class-value.py>
 
 Compare core class, Moo, and blessed hash construction, field access, and
 resident memory. The Python driver runs isolated Perl workers in randomized
