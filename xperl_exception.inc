@@ -3015,6 +3015,7 @@ Perl_xperl_render_exception_annotated(pTHX_ SV *object, const char *language,
             SV *prefix;
             bool grouped_hint;
             bool grouped_context;
+            bool suppress_location = FALSE;
 
             if (!in_range)
                 break;
@@ -3047,6 +3048,19 @@ Perl_xperl_render_exception_annotated(pTHX_ SV *object, const char *language,
             code = Perl_xperl_field(aTHX_ diagnostic, "code");
             location = Perl_xperl_field(aTHX_ diagnostic, "location");
 
+            /* A user-supplied final newline suppresses source decoration in
+             * both the annotated header and the message body. */
+            if (SvOK(code) && !SvROK(code)
+                && (strEQ(SvPV_nolen(code), "WARNING_USER_TEXT")
+                    || strEQ(SvPV_nolen(code), "ERROR_USER_TEXT"))) {
+                SV *message = Perl_xperl_named_param(aTHX_ diagnostic, "text");
+                if (SvOK(message) && !SvROK(message)) {
+                    STRLEN length;
+                    const char *bytes = SvPV(message, length);
+                    suppress_location = length && bytes[length - 1] == '\n';
+                }
+            }
+
             /* Rendering template arguments can run overloaded stringification
              * which mutates the diagnostics array.  Recheck the tail link
              * after rendering so a removed or replaced tail is not hidden. */
@@ -3078,7 +3092,7 @@ Perl_xperl_render_exception_annotated(pTHX_ SV *object, const char *language,
                 else
                     sv_catpvs(prefix, "UNKNOWN");
             }
-            if (!grouped_context && SvROK(location)
+            if (!grouped_context && !suppress_location && SvROK(location)
                 && SvTYPE(SvRV(location)) == SVt_PVHV) {
                 HV *location_hv = MUTABLE_HV(SvRV(location));
                 SV *file = Perl_xperl_field(aTHX_ location_hv, "file");

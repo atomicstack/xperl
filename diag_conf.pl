@@ -101207,7 +101207,8 @@ $CONF = {
           "macro" => "PERL_APPEND_WARNING_USER_TEXT",
           "source_files" => [
             "pp_sys.c",
-            "util.c"
+            "util.c",
+            "xperl_exception.inc"
           ],
           "tags" => [
             "subject:diagnostic_exception_api"
