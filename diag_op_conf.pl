@@ -30021,6 +30021,2600 @@ grammatical selector fields; it is not a template parameter.
         }
       }
     },
+    "sr" => {
+      "base_form" => "nominative",
+      "forms" => [
+        "nominative",
+        "genitive",
+        "accusative",
+        "instrumental",
+        "locative",
+        "void_expression_genitive"
+      ],
+      "rules" => {
+        "accusative" => {
+          "form" => "accusative",
+          "select" => {}
+        },
+        "genitive" => {
+          "form" => "genitive",
+          "select" => {}
+        },
+        "instrumental" => {
+          "form" => "instrumental",
+          "select" => {}
+        },
+        "locative" => {
+          "form" => "locative",
+          "select" => {}
+        },
+        "nominative" => {
+          "form" => "nominative",
+          "select" => {}
+        },
+        "void_expression_genitive" => {
+          "form" => "void_expression_genitive",
+          "select" => {}
+        }
+      },
+      "tags" => {
+        "gender" => [
+          "masculine",
+          "feminine",
+          "neuter",
+          "plural"
+        ]
+      },
+      "words" => {
+        "aassign" => {
+          "forms" => {
+            "accusative" => "доделу листе",
+            "genitive" => "доделе листе",
+            "locative" => "о додели листе",
+            "nominative" => "додела листе"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "add" => {
+          "forms" => {
+            "accusative" => "сабирање (+)",
+            "genitive" => "сабирања (+)",
+            "locative" => "сабирању (+)",
+            "nominative" => "сабирање (+)",
+            "void_expression_genitive" => "сабирања (+)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "aeach" => {
+          "forms" => {
+            "accusative" => "операцију each над низом",
+            "genitive" => "операције each над низом",
+            "instrumental" => "операцијом each над низом",
+            "locative" => "операцији each над низом",
+            "nominative" => "операција each над низом"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "aelem" => {
+          "forms" => {
+            "accusative" => "елемент низа",
+            "genitive" => "елемента низа",
+            "instrumental" => "елементом низа",
+            "locative" => "елементу низа",
+            "nominative" => "елемент низа",
+            "void_expression_genitive" => "елемента низа"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "aelemfast" => {
+          "forms" => {
+            "accusative" => "елемент низа са константним индексом",
+            "genitive" => "елемента низа са константним индексом",
+            "instrumental" => "елементом низа са константним индексом",
+            "locative" => "елементу низа са константним индексом",
+            "nominative" => "елемент низа са константним индексом",
+            "void_expression_genitive" => "елемента низа са константним индексом"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "aelemfast_lex" => {
+          "forms" => {
+            "accusative" => "елемент лексичког низа са константним индексом",
+            "genitive" => "елемента лексичког низа са константним индексом",
+            "instrumental" => "елементом лексичког низа са константним индексом",
+            "locative" => "елементу лексичког низа са константним индексом",
+            "nominative" => "елемент лексичког низа са константним индексом",
+            "void_expression_genitive" => "елемента лексичког низа са константним индексом"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "aelemfastlex_store" => {
+          "forms" => {
+            "accusative" => "упис елемента лексичког низа са константним индексом",
+            "genitive" => "уписа елемента лексичког низа са константним индексом",
+            "instrumental" => "уписом елемента лексичког низа са константним индексом",
+            "locative" => "упису елемента лексичког низа са константним индексом",
+            "nominative" => "упис елемента лексичког низа са константним индексом"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "akeys" => {
+          "forms" => {
+            "accusative" => "кључеве низа",
+            "genitive" => "кључева низа",
+            "instrumental" => "кључевима низа",
+            "locative" => "кључевима низа",
+            "nominative" => "кључеви низа"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "plural"
+          }
+        },
+        "and" => {
+          "forms" => {
+            "accusative" => "логичко и (&&)",
+            "genitive" => "логичког и (&&)",
+            "instrumental" => "логичким и (&&)",
+            "locative" => "логичком и (&&)",
+            "nominative" => "логичко и (&&)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "andassign" => {
+          "forms" => {
+            "accusative" => "логичко додељивање помоћу &&=",
+            "genitive" => "логичког додељивања помоћу &&=",
+            "instrumental" => "логичким додељивањем помоћу &&=",
+            "locative" => "логичком додељивању помоћу &&=",
+            "nominative" => "логичко додељивање помоћу &&="
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "anoncode" => {
+          "forms" => {
+            "accusative" => "анонимни потпрограм",
+            "genitive" => "анонимног потпрограма",
+            "locative" => "о анонимном потпрограму",
+            "nominative" => "анонимни потпрограм",
+            "void_expression_genitive" => "анонимног потпрограма"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "anonconst" => {
+          "forms" => {
+            "accusative" => "анонимну константу",
+            "genitive" => "анонимне константе",
+            "locative" => "о анонимној константи",
+            "nominative" => "анонимна константа"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anonhash" => {
+          "forms" => {
+            "accusative" => "анонимски хеш ({})",
+            "genitive" => "анонимског хеша ({})",
+            "instrumental" => "анонимским хешом ({})",
+            "locative" => "анонимском хешу ({})",
+            "nominative" => "анонимски хеш ({})",
+            "void_expression_genitive" => "анонимског хеша ({})"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "anonlist" => {
+          "forms" => {
+            "accusative" => "анонимски низ ([])",
+            "genitive" => "анонимског низа ([])",
+            "instrumental" => "анонимским низом ([])",
+            "locative" => "анонимском низу ([])",
+            "nominative" => "анонимски низ ([])",
+            "void_expression_genitive" => "анонимског низа ([])"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "anywhile" => {
+          "forms" => {
+            "accusative" => "итератор any/all",
+            "genitive" => "итератора any/all",
+            "instrumental" => "итератором any/all",
+            "locative" => "итератору any/all",
+            "nominative" => "итератор any/all"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "argcheck" => {
+          "forms" => {
+            "accusative" => "проверу аргумената потпрограма",
+            "genitive" => "провере аргумената потпрограма",
+            "instrumental" => "провером аргумената потпрограма",
+            "locative" => "провери аргумената потпрограма",
+            "nominative" => "провера аргумената потпрограма"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "argdefelem" => {
+          "forms" => {
+            "accusative" => "подразумевану вредност аргумента потпрограма",
+            "genitive" => "подразумеване вредности аргумента потпрограма",
+            "instrumental" => "подразумеваном вредношћу аргумента потпрограма",
+            "locative" => "подразумеваној вредности аргумента потпрограма",
+            "nominative" => "подразумевана вредност аргумента потпрограма"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "argelem" => {
+          "forms" => {
+            "accusative" => "аргумент потпрограма",
+            "genitive" => "аргумента потпрограма",
+            "instrumental" => "аргументом потпрограма",
+            "locative" => "аргументу потпрограма",
+            "nominative" => "аргумент потпрограма"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "aslice" => {
+          "forms" => {
+            "accusative" => "исечак низа",
+            "genitive" => "исечка низа",
+            "instrumental" => "исечком низа",
+            "locative" => "исечку низа",
+            "nominative" => "исечак низа",
+            "void_expression_genitive" => "исечка низа"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "av2arylen" => {
+          "forms" => {
+            "accusative" => "дужину низа",
+            "genitive" => "дужине низа",
+            "locative" => "о дужини низа",
+            "nominative" => "дужина низа",
+            "void_expression_genitive" => "дужине низа"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "avalues" => {
+          "forms" => {
+            "accusative" => "вредности низа",
+            "genitive" => "вредности низа",
+            "instrumental" => "вредностима низа",
+            "locative" => "вредностима низа",
+            "nominative" => "вредности низа"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "plural"
+          }
+        },
+        "avhvswitch" => {
+          "forms" => {
+            "accusative" => "пребацивање између низа и хеша",
+            "genitive" => "пребацивања између низа и хеша",
+            "locative" => "о пребацивању између низа и хеша",
+            "nominative" => "пребацивање између низа и хеша"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "backtick" => {
+          "forms" => {
+            "accusative" => "извршавање команде у повратним наводницима (``, qx)",
+            "genitive" => "извршавања команде у повратним наводницима (``, qx)",
+            "locative" => "о извршавању команде у повратним наводницима (``, qx)",
+            "nominative" => "извршавање команде у повратним наводницима (``, qx)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "bit_and" => {
+          "forms" => {
+            "accusative" => "битовску конјункцију (&)",
+            "genitive" => "битовске конјункције (&)",
+            "locative" => "битовској конјункцији (&)",
+            "nominative" => "битовска конјункција (&)",
+            "void_expression_genitive" => "битовске конјункције (&)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "bit_or" => {
+          "forms" => {
+            "accusative" => "битовску дисјункцију (|)",
+            "genitive" => "битовске дисјункције (|)",
+            "locative" => "битовској дисјункцији (|)",
+            "nominative" => "битовска дисјункција (|)",
+            "void_expression_genitive" => "битовске дисјункције (|)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "bit_xor" => {
+          "forms" => {
+            "accusative" => "битовску искључиву дисјункцију (^)",
+            "genitive" => "битовске искључиве дисјункције (^)",
+            "locative" => "битовској искључивој дисјункцији (^)",
+            "nominative" => "битовска искључива дисјункција (^)",
+            "void_expression_genitive" => "битовске искључиве дисјункције (^)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "catch" => {
+          "forms" => {
+            "accusative" => "catch {} блок",
+            "genitive" => "catch {} блока",
+            "locative" => "о catch {} блоку",
+            "nominative" => "catch {} блок"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "classname" => {
+          "forms" => {
+            "accusative" => "ime klase",
+            "genitive" => "imena klase",
+            "locative" => "imenu klase",
+            "nominative" => "ime klase"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "clonecv" => {
+          "forms" => {
+            "accusative" => "приватни потпрограм",
+            "genitive" => "приватног потпрограма",
+            "locative" => "о приватном потпрограму",
+            "nominative" => "приватни потпрограм"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "cmpchain_and" => {
+          "forms" => {
+            "accusative" => "ланчано поређење",
+            "genitive" => "ланчаног поређења",
+            "locative" => "о ланчаном поређењу",
+            "nominative" => "ланчано поређење",
+            "void_expression_genitive" => "ланчаног поређења"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "cmpchain_dup" => {
+          "forms" => {
+            "accusative" => "премештање операнада поређења",
+            "genitive" => "премештања операнада поређења",
+            "locative" => "о премештању операнада поређења",
+            "nominative" => "премештање операнада поређења"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "complement" => {
+          "forms" => {
+            "accusative" => "комплемент јединице (~)",
+            "genitive" => "комплемента јединице (~)",
+            "instrumental" => "комплементом јединице (~)",
+            "locative" => "комплементу јединице (~)",
+            "nominative" => "комплемент јединице (~)",
+            "void_expression_genitive" => "комплемента јединице (~)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "concat" => {
+          "forms" => {
+            "accusative" => "надовезивање ниски (.) или ниску",
+            "genitive" => "надовезивања ниски (.) или ниске",
+            "locative" => "надовезивању ниски (.) или ниски",
+            "nominative" => "надовезивање ниски (.) или ниска",
+            "void_expression_genitive" => "надовезивања ниски (.)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "cond_expr" => {
+          "forms" => {
+            "accusative" => "условни израз",
+            "genitive" => "условног израза",
+            "instrumental" => "условним изразом",
+            "locative" => "условном изразу",
+            "nominative" => "условни израз"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "const" => {
+          "forms" => {
+            "accusative" => "константну ставку",
+            "genitive" => "константне ставке",
+            "locative" => "о константној ставци",
+            "nominative" => "константна ставка"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "coreargs" => {
+          "forms" => {
+            "accusative" => "потпрограм CORE::",
+            "genitive" => "потпрограма CORE::",
+            "locative" => "о потпрограму CORE::",
+            "nominative" => "потпрограм CORE::"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dbstate" => {
+          "forms" => {
+            "accusative" => "следећу наредбу за отклањање грешака",
+            "genitive" => "следеће наредбе за отклањање грешака",
+            "instrumental" => "следећом наредбом за отклањање грешака",
+            "locative" => "следећој наредби за отклањање грешака",
+            "nominative" => "следећа наредба за отклањање грешака"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "defined" => {
+          "forms" => {
+            "accusative" => "оператор defined",
+            "genitive" => "оператора defined",
+            "locative" => "о оператору defined",
+            "nominative" => "оператор defined",
+            "void_expression_genitive" => "оператора defined"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "dispatch" => {
+          "forms" => {
+            "accusative" => "избор константе dispatch",
+            "genitive" => "избора константе dispatch",
+            "locative" => "о избору константе dispatch",
+            "nominative" => "избор константе dispatch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dispatch_on" => {
+          "forms" => {
+            "accusative" => "подударање са шаблоном dispatch",
+            "genitive" => "подударања са шаблоном dispatch",
+            "locative" => "о подударању са шаблоном dispatch",
+            "nominative" => "подударање са шаблоном dispatch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dispatchcoerce" => {
+          "forms" => {
+            "accusative" => "ознаку шаблона dispatch",
+            "genitive" => "ознаке шаблона dispatch",
+            "locative" => "о ознаци шаблона dispatch",
+            "nominative" => "ознака шаблона dispatch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "divide" => {
+          "forms" => {
+            "accusative" => "дељење (/)",
+            "genitive" => "дељења (/)",
+            "locative" => "о дељењу (/)",
+            "nominative" => "дељење (/)",
+            "void_expression_genitive" => "дељења (/)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "do_block" => {
+          "forms" => {
+            "accusative" => "блок do",
+            "genitive" => "блока do",
+            "nominative" => "блок do"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dor" => {
+          "forms" => {
+            "accusative" => "логичко или ако је дефинисано (//)",
+            "genitive" => "логичког или ако је дефинисано (//)",
+            "instrumental" => "логичким или ако је дефинисано (//)",
+            "locative" => "логичком или ако је дефинисано (//)",
+            "nominative" => "логичко или ако је дефинисано (//)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "dorassign" => {
+          "forms" => {
+            "accusative" => "додељивање ако је дефинисано помоћу //=",
+            "genitive" => "додељивања ако је дефинисано помоћу //=",
+            "instrumental" => "додељивањем ако је дефинисано помоћу //=",
+            "locative" => "додељивању ако је дефинисано помоћу //=",
+            "nominative" => "додељивање ако је дефинисано помоћу //="
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "emptyavhv" => {
+          "forms" => {
+            "accusative" => "празан анонимски хеш или низ",
+            "genitive" => "празног анонимског хеша или низа",
+            "instrumental" => "празним анонимским хешом или низом",
+            "locative" => "празном анонимском хешу или низу",
+            "nominative" => "празан анонимски хеш или низ"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "enter" => {
+          "forms" => {
+            "accusative" => "улазак у блок",
+            "genitive" => "уласка у блок",
+            "locative" => "о уласку у блок",
+            "nominative" => "улазак у блок"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enterdispatchon" => {
+          "forms" => {
+            "accusative" => "улазак у клаузу dispatch-on()",
+            "genitive" => "уласка у клаузу dispatch-on()",
+            "locative" => "о уласку у клаузу dispatch-on()",
+            "nominative" => "улазак у клаузу dispatch-on()"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enteriter" => {
+          "forms" => {
+            "accusative" => "улазак у foreach петљу",
+            "genitive" => "уласка у foreach петљу",
+            "locative" => "о уласку у foreach петљу",
+            "nominative" => "улазак у foreach петљу"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enterloop" => {
+          "forms" => {
+            "accusative" => "улазак у петљу",
+            "genitive" => "уласка у петљу",
+            "locative" => "о уласку у петљу",
+            "nominative" => "улазак у петљу"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "entersub" => {
+          "forms" => {
+            "accusative" => "улазак у потпрограм",
+            "genitive" => "уласка у потпрограм",
+            "instrumental" => "уласком у потпрограм",
+            "locative" => "уласку у потпрограм",
+            "nominative" => "улазак у потпрограм"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "eq" => {
+          "forms" => {
+            "accusative" => "нумеричку једнакост (==)",
+            "genitive" => "нумеричке једнакости (==)",
+            "instrumental" => "нумеричком једнакошћу (==)",
+            "locative" => "нумеричкој једнакости (==)",
+            "nominative" => "нумеричка једнакост (==)",
+            "void_expression_genitive" => "нумеричке једнакости (==)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "equ" => {
+          "forms" => {
+            "accusative" => "нумеричку једнакост која препознаје undef (===)",
+            "genitive" => "нумеричке једнакости која препознаје undef (===)",
+            "instrumental" => "нумеричком једнакошћу која препознаје undef (===)",
+            "locative" => "нумеричкој једнакости која препознаје undef (===)",
+            "nominative" => "нумеричка једнакост која препознаје undef (===)",
+            "void_expression_genitive" => "нумеричке једнакости која препознаје undef (===)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "flip" => {
+          "forms" => {
+            "accusative" => "опсег (или оператор flip)",
+            "genitive" => "опсега (или оператора flip)",
+            "instrumental" => "опсегом (или оператором flip)",
+            "locative" => "опсегу (или оператору flip)",
+            "nominative" => "опсег (или оператор flip)",
+            "void_expression_genitive" => "оператора flip"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "flop" => {
+          "forms" => {
+            "accusative" => "опсег (или оператор flop)",
+            "genitive" => "опсега (или оператора flop)",
+            "instrumental" => "опсегом (или оператором flop)",
+            "locative" => "опсегу (или оператору flop)",
+            "nominative" => "опсег (или оператор flop)",
+            "void_expression_genitive" => "оператора flop"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "ge" => {
+          "forms" => {
+            "accusative" => "нумеричко поређење веће од или једнако (>=)",
+            "genitive" => "нумеричког поређења веће од или једнако (>=)",
+            "instrumental" => "нумеричким поређењем веће од или једнако (>=)",
+            "locative" => "нумеричком поређењу веће од или једнако (>=)",
+            "nominative" => "нумеричко поређење веће од или једнако (>=)",
+            "void_expression_genitive" => "нумеричког поређења веће од или једнако (>=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "gelem" => {
+          "forms" => {
+            "accusative" => "елемент глоба",
+            "genitive" => "елемента глоба",
+            "locative" => "о елементу глоба",
+            "nominative" => "елемент глоба"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "grepwhile" => {
+          "forms" => {
+            "accusative" => "итератор grep",
+            "genitive" => "итератора grep",
+            "instrumental" => "итератором grep",
+            "locative" => "итератору grep",
+            "nominative" => "итератор grep"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "gt" => {
+          "forms" => {
+            "accusative" => "нумеричко поређење веће од (>)",
+            "genitive" => "нумеричког поређења веће од (>)",
+            "instrumental" => "нумеричким поређењем веће од (>)",
+            "locative" => "нумеричком поређењу веће од (>)",
+            "nominative" => "нумеричко поређење веће од (>)",
+            "void_expression_genitive" => "нумеричког поређења веће од (>)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "gv" => {
+          "forms" => {
+            "accusative" => "вредност глоба",
+            "genitive" => "вредности глоба",
+            "locative" => "о вредности глоба",
+            "nominative" => "вредност глоба",
+            "void_expression_genitive" => "вредности глоба"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "gvsv" => {
+          "forms" => {
+            "accusative" => "скаларну променљиву",
+            "genitive" => "скаларне променљиве",
+            "locative" => "о скаларној променљивој",
+            "nominative" => "скаларна променљива",
+            "void_expression_genitive" => "скаларне променљиве"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "helem" => {
+          "forms" => {
+            "accusative" => "елемент хеша",
+            "genitive" => "елемента хеша",
+            "instrumental" => "елементом хеша",
+            "locative" => "елементу хеша",
+            "nominative" => "елемент хеша",
+            "void_expression_genitive" => "елемента хеша"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "helemexistsor" => {
+          "forms" => {
+            "accusative" => "проверу постојања елемента хеша или",
+            "genitive" => "провере постојања елемента хеша или",
+            "locative" => "о провери постојања елемента хеша или",
+            "nominative" => "провера постојања елемента хеша или"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "hintseval" => {
+          "forms" => {
+            "accusative" => "савете за eval",
+            "genitive" => "савета за eval",
+            "locative" => "о саветима за eval",
+            "nominative" => "савети за eval"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "hslice" => {
+          "forms" => {
+            "accusative" => "исечак хеша",
+            "genitive" => "исечка хеша",
+            "instrumental" => "исечком хеша",
+            "locative" => "исечку хеша",
+            "nominative" => "исечак хеша",
+            "void_expression_genitive" => "исечка хеша"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "i_add" => {
+          "forms" => {
+            "accusative" => "целобројно сабирање (+)",
+            "genitive" => "целобројног сабирања (+)",
+            "locative" => "целобројном сабирању (+)",
+            "nominative" => "целобројно сабирање (+)",
+            "void_expression_genitive" => "целобројног сабирања (+)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_divide" => {
+          "forms" => {
+            "accusative" => "целобројно дељење (/)",
+            "genitive" => "целобројног дељења (/)",
+            "locative" => "целобројном дељењу (/)",
+            "nominative" => "целобројно дељење (/)",
+            "void_expression_genitive" => "целобројног дељења (/)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_eq" => {
+          "forms" => {
+            "accusative" => "целобројну једнакост (==)",
+            "genitive" => "целобројне једнакости (==)",
+            "instrumental" => "целобројном једнакошћу (==)",
+            "locative" => "целобројној једнакости (==)",
+            "nominative" => "целобројна једнакост (==)",
+            "void_expression_genitive" => "целобројне једнакости (==)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "i_equ" => {
+          "forms" => {
+            "accusative" => "целобројну једнакост која препознаје undef (===)",
+            "genitive" => "целобројне једнакости која препознаје undef (===)",
+            "instrumental" => "целобројном једнакошћу која препознаје undef (===)",
+            "locative" => "целобројној једнакости која препознаје undef (===)",
+            "nominative" => "целобројна једнакост која препознаје undef (===)",
+            "void_expression_genitive" => "целобројне једнакости која препознаје undef (===)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "i_ge" => {
+          "forms" => {
+            "accusative" => "целобројно поређење веће од или једнако (>=)",
+            "genitive" => "целобројног поређења веће од или једнако (>=)",
+            "instrumental" => "целобројним поређењем веће од или једнако (>=)",
+            "locative" => "целобројном поређењу веће од или једнако (>=)",
+            "nominative" => "целобројно поређење веће од или једнако (>=)",
+            "void_expression_genitive" => "целобројног поређења веће од или једнако (>=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_gt" => {
+          "forms" => {
+            "accusative" => "целобројно поређење веће од (>)",
+            "genitive" => "целобројног поређења веће од (>)",
+            "instrumental" => "целобројним поређењем веће од (>)",
+            "locative" => "целобројном поређењу веће од (>)",
+            "nominative" => "целобројно поређење веће од (>)",
+            "void_expression_genitive" => "целобројног поређења веће од (>)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_le" => {
+          "forms" => {
+            "accusative" => "целобројно поређење мање од или једнако (<=)",
+            "genitive" => "целобројног поређења мање од или једнако (<=)",
+            "instrumental" => "целобројним поређењем мање од или једнако (<=)",
+            "locative" => "целобројном поређењу мање од или једнако (<=)",
+            "nominative" => "целобројно поређење мање од или једнако (<=)",
+            "void_expression_genitive" => "целобројног поређења мање од или једнако (<=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_lt" => {
+          "forms" => {
+            "accusative" => "целобројно поређење мање од (<)",
+            "genitive" => "целобројног поређења мање од (<)",
+            "instrumental" => "целобројним поређењем мање од (<)",
+            "locative" => "целобројном поређењу мање од (<)",
+            "nominative" => "целобројно поређење мање од (<)",
+            "void_expression_genitive" => "целобројног поређења мање од (<)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_modulo" => {
+          "forms" => {
+            "accusative" => "целобројни остатак при дељењу (%)",
+            "genitive" => "целобројног остатка при дељењу (%)",
+            "locative" => "целобројном остатку при дељењу (%)",
+            "nominative" => "целобројни остатак при дељењу (%)",
+            "void_expression_genitive" => "целобројног остатка при дељењу (%)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "i_multiply" => {
+          "forms" => {
+            "accusative" => "целобројно множење (*)",
+            "genitive" => "целобројног множења (*)",
+            "locative" => "о целобројном множењу (*)",
+            "nominative" => "целобројно множење (*)",
+            "void_expression_genitive" => "целобројног множења (*)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_ncmp" => {
+          "forms" => {
+            "accusative" => "целобројно поређење (<=>)",
+            "genitive" => "целобројног поређења (<=>)",
+            "locative" => "целобројном поређењу (<=>)",
+            "nominative" => "целобројно поређење (<=>)",
+            "void_expression_genitive" => "целобројног поређења (<=>)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_ne" => {
+          "forms" => {
+            "accusative" => "целобројну неједнакост (!=)",
+            "genitive" => "целобројне неједнакости (!=)",
+            "instrumental" => "целобројном неједнакошћу (!=)",
+            "locative" => "целобројној неједнакости (!=)",
+            "nominative" => "целобројна неједнакост (!=)",
+            "void_expression_genitive" => "целобројне неједнакости (!=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "i_negate" => {
+          "forms" => {
+            "accusative" => "целобројну негацију (-)",
+            "genitive" => "целобројне негације (-)",
+            "instrumental" => "целобројном негацијом (-)",
+            "locative" => "целобројној негацији (-)",
+            "nominative" => "целобројна негација (-)",
+            "void_expression_genitive" => "целобројне негације (-)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "i_neu" => {
+          "forms" => {
+            "accusative" => "целобројну неједнакост која препознаје undef (!==)",
+            "genitive" => "целобројне неједнакости која препознаје undef (!==)",
+            "instrumental" => "целобројном неједнакошћу која препознаје undef (!==)",
+            "locative" => "целобројној неједнакости која препознаје undef (!==)",
+            "nominative" => "целобројна неједнакост која препознаје undef (!==)",
+            "void_expression_genitive" => "целобројне неједнакости која препознаје undef (!==)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "i_postdec" => {
+          "forms" => {
+            "accusative" => "постфиксно целобројно умањивање (--)",
+            "genitive" => "постфиксног целобројног умањивања (--)",
+            "locative" => "о постфиксном целобројном умањивању (--)",
+            "nominative" => "постфиксно целобројно умањивање (--)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_postinc" => {
+          "forms" => {
+            "accusative" => "постфиксно целобројно увећавање (++)",
+            "genitive" => "постфиксног целобројног увећавања (++)",
+            "locative" => "о постфиксном целобројном увећавању (++)",
+            "nominative" => "постфиксно целобројно увећавање (++)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_predec" => {
+          "forms" => {
+            "accusative" => "префиксно целобројно умањивање (--)",
+            "genitive" => "префиксног целобројног умањивања (--)",
+            "locative" => "о префиксном целобројном умањивању (--)",
+            "nominative" => "префиксно целобројно умањивање (--)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_preinc" => {
+          "forms" => {
+            "accusative" => "префиксно целобројно увећавање (++)",
+            "genitive" => "префиксног целобројног увећавања (++)",
+            "locative" => "о префиксном целобројном увећавању (++)",
+            "nominative" => "префиксно целобројно увећавање (++)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_subtract" => {
+          "forms" => {
+            "accusative" => "целобројно одузимање (-)",
+            "genitive" => "целобројног одузимања (-)",
+            "locative" => "целобројном одузимању (-)",
+            "nominative" => "целобројно одузимање (-)",
+            "void_expression_genitive" => "целобројног одузимања (-)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "implements" => {
+          "forms" => {
+            "accusative" => "проверу састављања улога",
+            "genitive" => "провере састављања улога",
+            "instrumental" => "провером састављања улога",
+            "locative" => "о провери састављања улога",
+            "nominative" => "провера састављања улога"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "initfield" => {
+          "forms" => {
+            "accusative" => "inicijalizacija polja",
+            "genitive" => "inicijalizacije polja",
+            "locative" => "inicijalizaciji polja",
+            "nominative" => "inicijalizacija polja"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "introcv" => {
+          "forms" => {
+            "accusative" => "приватни потпрограм",
+            "genitive" => "приватног потпрограма",
+            "locative" => "о приватном потпрограму",
+            "nominative" => "приватни потпрограм"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "is_bool" => {
+          "forms" => {
+            "accusative" => "проверу логичког типа",
+            "genitive" => "провере логичког типа",
+            "locative" => "о провери логичког типа",
+            "nominative" => "провера логичког типа"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "is_weak" => {
+          "forms" => {
+            "accusative" => "проверу типа слабе референце",
+            "genitive" => "провере типа слабе референце",
+            "locative" => "о провери типа слабе референце",
+            "nominative" => "провера типа слабе референце"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "isa" => {
+          "forms" => {
+            "accusative" => "проверу припадности изведеној класи",
+            "genitive" => "провере припадности изведеној класи",
+            "instrumental" => "провером припадности изведеној класи",
+            "locative" => "о провери припадности изведеној класи",
+            "nominative" => "провера припадности изведеној класи"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "iter" => {
+          "forms" => {
+            "accusative" => "итератор foreach петље",
+            "genitive" => "итератора foreach петље",
+            "locative" => "о итератору foreach петље",
+            "nominative" => "итератор foreach петље"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "join" => {
+          "forms" => {
+            "accusative" => "спајање или ниску",
+            "genitive" => "спајања или ниске",
+            "instrumental" => "спајањем или ниском",
+            "locative" => "спајању или ниски",
+            "nominative" => "спајање или ниска",
+            "void_expression_genitive" => "операције спајања"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "kvaslice" => {
+          "forms" => {
+            "accusative" => "исечак низа индекса и вредности",
+            "genitive" => "исечка низа индекса и вредности",
+            "instrumental" => "исечком низа индекса и вредности",
+            "locative" => "исечку низа индекса и вредности",
+            "nominative" => "исечак низа индекса и вредности",
+            "void_expression_genitive" => "исечка низа индекса и вредности"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "kvhslice" => {
+          "forms" => {
+            "accusative" => "исечак хеша кључа и вредности",
+            "genitive" => "исечка хеша кључа и вредности",
+            "instrumental" => "исечком хеша кључа и вредности",
+            "locative" => "исечку хеша кључа и вредности",
+            "nominative" => "исечак хеша кључа и вредности",
+            "void_expression_genitive" => "исечка хеша кључа и вредности"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "le" => {
+          "forms" => {
+            "accusative" => "нумеричко поређење мање од или једнако (<=)",
+            "genitive" => "нумеричког поређења мање од или једнако (<=)",
+            "instrumental" => "нумеричким поређењем мање од или једнако (<=)",
+            "locative" => "нумеричком поређењу мање од или једнако (<=)",
+            "nominative" => "нумеричко поређење мање од или једнако (<=)",
+            "void_expression_genitive" => "нумеричког поређења мање од или једнако (<=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "leave" => {
+          "forms" => {
+            "accusative" => "излазак из блока",
+            "genitive" => "изласка из блока",
+            "locative" => "о изласку из блока",
+            "nominative" => "излазак из блока"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavedispatch" => {
+          "forms" => {
+            "accusative" => "излазак из блока dispatch",
+            "genitive" => "изласка из блока dispatch",
+            "locative" => "о изласку из блока dispatch",
+            "nominative" => "излазак из блока dispatch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavedispatchon" => {
+          "forms" => {
+            "accusative" => "излазак из клаузе dispatch-on",
+            "genitive" => "изласка из клаузе dispatch-on",
+            "locative" => "о изласку из клаузе dispatch-on",
+            "nominative" => "излазак из клаузе dispatch-on"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leaveeval" => {
+          "forms" => {
+            "accusative" => "излазак из eval \"string\" конструкције",
+            "genitive" => "изласка из eval \"string\" конструкције",
+            "locative" => "о изласку из eval \"string\" конструкције",
+            "nominative" => "излазак из eval \"string\" конструкције"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavegiven" => {
+          "forms" => {
+            "accusative" => "излазак из блока given",
+            "genitive" => "изласка из блока given",
+            "locative" => "о изласку из блока given",
+            "nominative" => "излазак из блока given"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leaveloop" => {
+          "forms" => {
+            "accusative" => "излазак из петље",
+            "genitive" => "изласка из петље",
+            "locative" => "о изласку из петље",
+            "nominative" => "излазак из петље"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavesub" => {
+          "forms" => {
+            "accusative" => "излазак из потпрограма",
+            "genitive" => "изласка из потпрограма",
+            "instrumental" => "изласком из потпрограма",
+            "locative" => "изласку из потпрограма",
+            "nominative" => "излазак из потпрограма"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "leavesublv" => {
+          "forms" => {
+            "accusative" => "повратну вредност потпрограма као леву вредност",
+            "genitive" => "повратне вредности потпрограма као леве вредности",
+            "instrumental" => "повратном вредношћу потпрограма као левом вредношћу",
+            "locative" => "повратној вредности потпрограма као левој вредности",
+            "nominative" => "повратна вредност потпрограма као лева вредност"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "leavetry" => {
+          "forms" => {
+            "accusative" => "излазак из eval {block} конструкције",
+            "genitive" => "изласка из eval {block} конструкције",
+            "locative" => "о изласку из eval {block} конструкције",
+            "nominative" => "излазак из eval {block} конструкције"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavetrycatch" => {
+          "forms" => {
+            "accusative" => "излазак из try {block} конструкције",
+            "genitive" => "изласка из try {block} конструкције",
+            "locative" => "о изласку из try {block} конструкције",
+            "nominative" => "излазак из try {block} конструкције"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavewhen" => {
+          "forms" => {
+            "accusative" => "излазак из блока when",
+            "genitive" => "изласка из блока when",
+            "locative" => "о изласку из блока when",
+            "nominative" => "излазак из блока when"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavewrite" => {
+          "forms" => {
+            "accusative" => "излазак из write конструкције",
+            "genitive" => "изласка из write конструкције",
+            "locative" => "о изласку из write конструкције",
+            "nominative" => "излазак из write конструкције"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "left_shift" => {
+          "forms" => {
+            "accusative" => "померање битова улево (<<)",
+            "genitive" => "померања битова улево (<<)",
+            "locative" => "померању битова улево (<<)",
+            "nominative" => "померање битова улево (<<)",
+            "void_expression_genitive" => "померања улево (<<)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "lineseq" => {
+          "forms" => {
+            "accusative" => "низ линија",
+            "genitive" => "низа линија",
+            "instrumental" => "низом линија",
+            "locative" => "низу линија",
+            "nominative" => "низ линија"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "lslice" => {
+          "forms" => {
+            "accusative" => "исечак листе",
+            "genitive" => "исечка листе",
+            "instrumental" => "исечком листе",
+            "locative" => "исечку листе",
+            "nominative" => "исечак листе",
+            "void_expression_genitive" => "исечка листе"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "lt" => {
+          "forms" => {
+            "accusative" => "нумеричко поређење мање од (<)",
+            "genitive" => "нумеричког поређења мање од (<)",
+            "instrumental" => "нумеричким поређењем мање од (<)",
+            "locative" => "нумеричком поређењу мање од (<)",
+            "nominative" => "нумеричко поређење мање од (<)",
+            "void_expression_genitive" => "нумеричког поређења мање од (<)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "lvavref" => {
+          "forms" => {
+            "accusative" => "референцу низа л-вредности",
+            "genitive" => "референце низа л-вредности",
+            "locative" => "о референци низа л-вредности",
+            "nominative" => "референца низа л-вредности"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lvref" => {
+          "forms" => {
+            "accusative" => "доделу референце л-вредности",
+            "genitive" => "доделе референце л-вредности",
+            "locative" => "о додели референце л-вредности",
+            "nominative" => "додела референце л-вредности"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lvrefslice" => {
+          "forms" => {
+            "accusative" => "доделу референце л-вредности",
+            "genitive" => "доделе референце л-вредности",
+            "locative" => "о додели референце л-вредности",
+            "nominative" => "додела референце л-вредности"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "mapwhile" => {
+          "forms" => {
+            "accusative" => "итератор map",
+            "genitive" => "итератора map",
+            "instrumental" => "итератором map",
+            "locative" => "итератору map",
+            "nominative" => "итератор map"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "match" => {
+          "forms" => {
+            "accusative" => "поклапање са шаблоном (m//)",
+            "genitive" => "поклапања са шаблоном (m//)",
+            "instrumental" => "поклапањем са шаблоном (m//)",
+            "locative" => "о поклапању са шаблоном (m//)",
+            "nominative" => "поклапање са шаблоном (m//)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "method" => {
+          "forms" => {
+            "accusative" => "проналажење методе",
+            "genitive" => "проналажења методе",
+            "locative" => "о проналажењу методе",
+            "nominative" => "проналажење методе"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_named" => {
+          "forms" => {
+            "accusative" => "методу са познатим именом",
+            "genitive" => "методе са познатим именом",
+            "locative" => "о методи са познатим именом",
+            "nominative" => "метода са познатим именом"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_redir" => {
+          "forms" => {
+            "accusative" => "преусмеравање методе са познатим именом",
+            "genitive" => "преусмеравања методе са познатим именом",
+            "locative" => "о преусмеравању методе са познатим именом",
+            "nominative" => "преусмеравање методе са познатим именом"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_redir_super" => {
+          "forms" => {
+            "accusative" => "преусмеравање super методе са познатим именом",
+            "genitive" => "преусмеравања super методе са познатим именом",
+            "locative" => "о преусмеравању super методе са познатим именом",
+            "nominative" => "преусмеравање super методе са познатим именом"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_super" => {
+          "forms" => {
+            "accusative" => "super методу са познатим именом",
+            "genitive" => "super методе са познатим именом",
+            "locative" => "о super методи са познатим именом",
+            "nominative" => "super метода са познатим именом"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "methstart" => {
+          "forms" => {
+            "accusative" => "početak metode",
+            "genitive" => "početka metode",
+            "locative" => "početku metode",
+            "nominative" => "početak metode"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "modulo" => {
+          "forms" => {
+            "accusative" => "остатак при дељењу (%)",
+            "genitive" => "остатка при дељењу (%)",
+            "locative" => "остатку при дељењу (%)",
+            "nominative" => "остатак при дељењу (%)",
+            "void_expression_genitive" => "остатка при дељењу (%)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "multiconcat" => {
+          "forms" => {
+            "accusative" => "надовезивање ниски (.) или ниску",
+            "genitive" => "надовезивања ниски (.) или ниске",
+            "locative" => "надовезивању ниски (.) или ниски",
+            "nominative" => "надовезивање ниски (.) или ниска"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "multideref" => {
+          "forms" => {
+            "accusative" => "приступ елементу низа или хеша",
+            "genitive" => "приступа елементу низа или хеша",
+            "instrumental" => "приступом елементу низа или хеша",
+            "locative" => "приступу елементу низа или хеша",
+            "nominative" => "приступ елементу низа или хеша"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "multiparam" => {
+          "forms" => {
+            "accusative" => "obrada potpisa",
+            "genitive" => "obrade potpisa",
+            "locative" => "obradi potpisa",
+            "nominative" => "obrada potpisa"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "multiply" => {
+          "forms" => {
+            "accusative" => "множење (*)",
+            "genitive" => "множења (*)",
+            "locative" => "о множењу (*)",
+            "nominative" => "множење (*)",
+            "void_expression_genitive" => "множења (*)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "nbit_and" => {
+          "forms" => {
+            "accusative" => "нумеричку битовску конјункцију (&)",
+            "genitive" => "нумеричке битовске конјункције (&)",
+            "locative" => "нумеричкој битовској конјункцији (&)",
+            "nominative" => "нумеричка битовска конјункција (&)",
+            "void_expression_genitive" => "нумеричке битовске конјункције (&)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "nbit_or" => {
+          "forms" => {
+            "accusative" => "нумеричку битовску дисјункцију (|)",
+            "genitive" => "нумеричке битовске дисјункције (|)",
+            "locative" => "нумеричкој битовској дисјункцији (|)",
+            "nominative" => "нумеричка битовска дисјункција (|)",
+            "void_expression_genitive" => "нумеричке битовске дисјункције (|)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "nbit_xor" => {
+          "forms" => {
+            "accusative" => "нумеричку битовску искључиву дисјункцију (^)",
+            "genitive" => "нумеричке битовске искључиве дисјункције (^)",
+            "locative" => "нумеричкој битовској искључивој дисјункцији (^)",
+            "nominative" => "нумеричка битовска искључива дисјункција (^)",
+            "void_expression_genitive" => "нумеричке битовске искључиве дисјункције (^)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "ncmp" => {
+          "forms" => {
+            "accusative" => "нумеричко поређење (<=>)",
+            "genitive" => "нумеричког поређења (<=>)",
+            "locative" => "нумеричком поређењу (<=>)",
+            "nominative" => "нумеричко поређење (<=>)",
+            "void_expression_genitive" => "нумеричког поређења (<=>)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "ncomplement" => {
+          "forms" => {
+            "accusative" => "бројчани комплемент јединице (~)",
+            "genitive" => "бројчаног комплемента јединице (~)",
+            "instrumental" => "бројчаним комплементом јединице (~)",
+            "locative" => "бројчаном комплементу јединице (~)",
+            "nominative" => "бројчани комплемент јединице (~)",
+            "void_expression_genitive" => "бројчаног комплемента јединице (~)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "ne" => {
+          "forms" => {
+            "accusative" => "нумеричку неједнакост (!=)",
+            "genitive" => "нумеричке неједнакости (!=)",
+            "instrumental" => "нумеричком неједнакошћу (!=)",
+            "locative" => "нумеричкој неједнакости (!=)",
+            "nominative" => "нумеричка неједнакост (!=)",
+            "void_expression_genitive" => "нумеричке неједнакости (!=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "negate" => {
+          "forms" => {
+            "accusative" => "негацију (-)",
+            "genitive" => "негације (-)",
+            "locative" => "негацији (-)",
+            "nominative" => "негација (-)",
+            "void_expression_genitive" => "негације (-)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "neu" => {
+          "forms" => {
+            "accusative" => "нумеричку неједнакост која препознаје undef (!==)",
+            "genitive" => "нумеричке неједнакости која препознаје undef (!==)",
+            "instrumental" => "нумеричком неједнакошћу која препознаје undef (!==)",
+            "locative" => "нумеричкој неједнакости која препознаје undef (!==)",
+            "nominative" => "нумеричка неједнакост која препознаје undef (!==)",
+            "void_expression_genitive" => "нумеричке неједнакости која препознаје undef (!==)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "nextstate" => {
+          "forms" => {
+            "accusative" => "следећу наредбу",
+            "genitive" => "следеће наредбе",
+            "instrumental" => "следећом наредбом",
+            "locative" => "следећој наредби",
+            "nominative" => "следећа наредба"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "null" => {
+          "forms" => {
+            "accusative" => "null операцију",
+            "genitive" => "null операције",
+            "locative" => "о null операцији",
+            "nominative" => "null операција"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "or" => {
+          "forms" => {
+            "accusative" => "логичко или (||)",
+            "genitive" => "логичког или (||)",
+            "instrumental" => "логичким или (||)",
+            "locative" => "логичком или (||)",
+            "nominative" => "логичко или (||)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "orassign" => {
+          "forms" => {
+            "accusative" => "логичко додељивање помоћу ||=",
+            "genitive" => "логичког додељивања помоћу ||=",
+            "instrumental" => "логичким додељивањем помоћу ||=",
+            "locative" => "логичком додељивању помоћу ||=",
+            "nominative" => "логичко додељивање помоћу ||="
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "padany" => {
+          "forms" => {
+            "accusative" => "лексички ограничену вредност",
+            "genitive" => "лексички ограничене вредности",
+            "locative" => "о лексички ограниченој вредности",
+            "nominative" => "лексички ограничена вредност",
+            "void_expression_genitive" => "променљиве"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "padav" => {
+          "forms" => {
+            "accusative" => "лексички ограничен низ",
+            "genitive" => "лексички ограниченог низа",
+            "locative" => "о лексички ограниченом низу",
+            "nominative" => "лексички ограничен низ",
+            "void_expression_genitive" => "низ променљиви"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "padcv" => {
+          "forms" => {
+            "accusative" => "приватни потпрограм",
+            "genitive" => "приватног потпрограма",
+            "locative" => "о приватном потпрограму",
+            "nominative" => "приватни потпрограм"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padhv" => {
+          "forms" => {
+            "accusative" => "лексички ограничену хеш-табелу",
+            "genitive" => "лексички ограничене хеш-табеле",
+            "locative" => "о лексички ограниченој хеш-табели",
+            "nominative" => "лексички ограничена хеш-табела",
+            "void_expression_genitive" => "хеш-табеле променљивих"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "padrange" => {
+          "forms" => {
+            "accusative" => "списак приватних променљивих",
+            "genitive" => "списка приватних променљивих",
+            "locative" => "о списку приватних променљивих",
+            "nominative" => "списак приватних променљивих"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padsv" => {
+          "forms" => {
+            "accusative" => "лексички ограничену променљиву",
+            "genitive" => "лексички ограничене променљиве",
+            "locative" => "о лексички ограниченој променљивој",
+            "nominative" => "лексички ограничена променљива",
+            "void_expression_genitive" => "скаларне променљиве"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "padsv_store" => {
+          "forms" => {
+            "accusative" => "доделу скаларној променљивој у лексичком опсегу",
+            "genitive" => "доделе скаларној променљивој у лексичком опсегу",
+            "locative" => "о додели скаларној променљивој у лексичком опсегу",
+            "nominative" => "додела скаларној променљивој у лексичком опсегу"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "paramstore" => {
+          "forms" => {
+            "accusative" => "podrazumevani izraz parametra potpisa",
+            "genitive" => "podrazumevanog izraza parametra potpisa",
+            "locative" => "podrazumevanom izrazu parametra potpisa",
+            "nominative" => "podrazumevani izraz parametra potpisa"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "paramtest" => {
+          "forms" => {
+            "accusative" => "provera vrednosti argumenta potpisa",
+            "genitive" => "provere vrednosti argumenta potpisa",
+            "locative" => "proveri vrednosti argumenta potpisa",
+            "nominative" => "provera vrednosti argumenta potpisa"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "poptry" => {
+          "forms" => {
+            "accusative" => "уклањање try",
+            "genitive" => "уклањања try",
+            "locative" => "о уклањању try",
+            "nominative" => "уклањање try"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "pos" => {
+          "forms" => {
+            "accusative" => "позицију поклапања",
+            "genitive" => "позиције поклапања",
+            "locative" => "о позицији поклапања",
+            "nominative" => "позиција поклапања"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "postdec" => {
+          "forms" => {
+            "accusative" => "постфиксно умањивање (--)",
+            "genitive" => "постфиксног умањивања (--)",
+            "locative" => "о постфиксном умањивању (--)",
+            "nominative" => "постфиксно умањивање (--)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "postinc" => {
+          "forms" => {
+            "accusative" => "постфиксно увећавање (++)",
+            "genitive" => "постфиксног увећавања (++)",
+            "locative" => "о постфиксном увећавању (++)",
+            "nominative" => "постфиксно увећавање (++)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "pow" => {
+          "forms" => {
+            "accusative" => "степеновање (**)",
+            "genitive" => "степеновања (**)",
+            "locative" => "о степеновању (**)",
+            "nominative" => "степеновање (**)",
+            "void_expression_genitive" => "степеновања (**)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "predec" => {
+          "forms" => {
+            "accusative" => "префиксно умањивање (--)",
+            "genitive" => "префиксног умањивања (--)",
+            "locative" => "о префиксном умањивању (--)",
+            "nominative" => "префиксно умањивање (--)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "preinc" => {
+          "forms" => {
+            "accusative" => "префиксно увећавање (++)",
+            "genitive" => "префиксног увећавања (++)",
+            "locative" => "о префиксном увећавању (++)",
+            "nominative" => "префиксно увећавање (++)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "prototype" => {
+          "forms" => {
+            "accusative" => "прототип потпрограма",
+            "genitive" => "прототипа потпрограма",
+            "locative" => "о прототипу потпрограма",
+            "nominative" => "прототип потпрограма",
+            "void_expression_genitive" => "прототипа потпрограма"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "pushdefer" => {
+          "forms" => {
+            "accusative" => "push defer {} блок",
+            "genitive" => "push defer {} блока",
+            "locative" => "о push defer {} блоку",
+            "nominative" => "push defer {} блок"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "qr" => {
+          "forms" => {
+            "accusative" => "навођење шаблона (qr//)",
+            "genitive" => "навођења шаблона (qr//)",
+            "locative" => "о навођењу шаблона (qr//)",
+            "nominative" => "навођење шаблона (qr//)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "range" => {
+          "forms" => {
+            "accusative" => "опсег преклопника",
+            "genitive" => "опсега преклопника",
+            "instrumental" => "опсегом преклопника",
+            "locative" => "опсегу преклопника",
+            "nominative" => "опсег преклопника",
+            "void_expression_genitive" => "опсега преклопника"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "rcatline" => {
+          "forms" => {
+            "accusative" => "оператор за додавање улазно-излазног садржаја",
+            "genitive" => "оператора за додавање улазно-излазног садржаја",
+            "locative" => "о оператору за додавање улазно-излазног садржаја",
+            "nominative" => "оператор за додавање улазно-излазног садржаја"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "ref" => {
+          "forms" => {
+            "accusative" => "оператор типа референце",
+            "genitive" => "оператора типа референце",
+            "locative" => "о оператору типа референце",
+            "nominative" => "оператор типа референце",
+            "void_expression_genitive" => "оператора типа референце"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "ref_cmp" => {
+          "forms" => {
+            "accusative" => "поређење типа референце",
+            "genitive" => "поређења типа референце",
+            "locative" => "о поређењу типа референце",
+            "nominative" => "поређење типа референце"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "refassign" => {
+          "forms" => {
+            "accusative" => "доделу референце л-вредности",
+            "genitive" => "доделе референце л-вредности",
+            "locative" => "о додели референце л-вредности",
+            "nominative" => "додела референце л-вредности"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "refgen" => {
+          "forms" => {
+            "accusative" => "конструктор референци",
+            "genitive" => "конструктора референци",
+            "locative" => "о конструктору референци",
+            "nominative" => "конструктор референци",
+            "void_expression_genitive" => "конструктора референци"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "regcmaybe" => {
+          "forms" => {
+            "accusative" => "унутрашњи заштитни механизам регуларног израза",
+            "genitive" => "унутрашњег заштитног механизма регуларног израза",
+            "locative" => "о унутрашњем заштитном механизму регуларног израза",
+            "nominative" => "унутрашњи заштитни механизам регуларног израза"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "regcomp" => {
+          "forms" => {
+            "accusative" => "компилацију регуларног израза",
+            "genitive" => "компилације регуларног израза",
+            "locative" => "о компилацији регуларног израза",
+            "nominative" => "компилација регуларног израза"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "regcreset" => {
+          "forms" => {
+            "accusative" => "унутрашње ресетовање регуларног израза",
+            "genitive" => "унутрашњег ресетовања регуларног израза",
+            "locative" => "о унутрашњем ресетовању регуларног израза",
+            "nominative" => "унутрашње ресетовање регуларног израза"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "repeat" => {
+          "forms" => {
+            "accusative" => "понављање (x)",
+            "genitive" => "понављања (x)",
+            "locative" => "понављању (x)",
+            "nominative" => "понављање (x)",
+            "void_expression_genitive" => "понављања (x)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "reset" => {
+          "forms" => {
+            "accusative" => "ресетовање симбола",
+            "genitive" => "ресетовања симбола",
+            "instrumental" => "ресетовањем симбола",
+            "locative" => "ресетовању симбола",
+            "nominative" => "ресетовање симбола"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "right_shift" => {
+          "forms" => {
+            "accusative" => "померање битова удесно (>>)",
+            "genitive" => "померања битова удесно (>>)",
+            "locative" => "померању битова удесно (>>)",
+            "nominative" => "померање битова удесно (>>)",
+            "void_expression_genitive" => "померања удесно (>>)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "rv2av" => {
+          "forms" => {
+            "accusative" => "разреференцирање низа",
+            "genitive" => "разреференцирања низа",
+            "instrumental" => "разреференцирањем низа",
+            "locative" => "разреференцирању низа",
+            "nominative" => "разреференцирање низа"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "rv2cv" => {
+          "forms" => {
+            "accusative" => "дереференцирање потпрограма",
+            "genitive" => "дереференцирања потпрограма",
+            "locative" => "о дереференцирању потпрограма",
+            "nominative" => "дереференцирање потпрограма"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "rv2gv" => {
+          "forms" => {
+            "accusative" => "конверзију референце у глоб",
+            "genitive" => "конверзије референце у глоб",
+            "locative" => "о конверзији референце у глоб",
+            "nominative" => "конверзија референце у глоб"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "rv2hv" => {
+          "forms" => {
+            "accusative" => "разреференцирање хеша",
+            "genitive" => "разреференцирања хеша",
+            "instrumental" => "разреференцирањем хеша",
+            "locative" => "разреференцирању хеша",
+            "nominative" => "разреференцирање хеша"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "rv2sv" => {
+          "forms" => {
+            "accusative" => "дереференцирање скалара",
+            "genitive" => "дереференцирања скалара",
+            "locative" => "о дереференцирању скалара",
+            "nominative" => "дереференцирање скалара"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "sassign" => {
+          "forms" => {
+            "accusative" => "доделу скаларне вредности",
+            "genitive" => "доделе скаларне вредности",
+            "locative" => "о додели скаларне вредности",
+            "nominative" => "додела скаларне вредности"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "sbit_and" => {
+          "forms" => {
+            "accusative" => "ниску битовску конјункцију (&.)",
+            "genitive" => "ниске битовске конјункције (&.)",
+            "locative" => "ниској битовској конјункцији (&.)",
+            "nominative" => "ниска битовска конјункција (&.)",
+            "void_expression_genitive" => "ниске битовске конјункције (&.)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "sbit_or" => {
+          "forms" => {
+            "accusative" => "ниску битовску дисјункцију (|.)",
+            "genitive" => "ниске битовске дисјункције (|.)",
+            "locative" => "ниској битовској дисјункцији (|.)",
+            "nominative" => "ниска битовска дисјункција (|.)",
+            "void_expression_genitive" => "ниске битовске дисјункције (|.)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "sbit_xor" => {
+          "forms" => {
+            "accusative" => "ниску битовску искључиву дисјункцију (^.)",
+            "genitive" => "ниске битовске искључиве дисјункције (^.)",
+            "locative" => "ниској битовској искључивој дисјункцији (^.)",
+            "nominative" => "ниска битовска искључива дисјункција (^.)",
+            "void_expression_genitive" => "ниске битовске искључиве дисјункције (^.)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "schomp" => {
+          "forms" => {
+            "accusative" => "уклањање завршног новог реда из скалара",
+            "genitive" => "уклањања завршног новог реда из скалара",
+            "locative" => "о уклањању завршног новог реда из скалара",
+            "nominative" => "уклањање завршног новог реда из скалара"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "schop" => {
+          "forms" => {
+            "accusative" => "одсецање скалара",
+            "genitive" => "одсецања скалара",
+            "locative" => "о одсецању скалара",
+            "nominative" => "одсецање скалара"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "scmp" => {
+          "forms" => {
+            "accusative" => "поређење ниски (cmp)",
+            "genitive" => "поређења ниски (cmp)",
+            "locative" => "поређењу ниски (cmp)",
+            "nominative" => "поређење ниски (cmp)",
+            "void_expression_genitive" => "поређења ниски (cmp)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "scomplement" => {
+          "forms" => {
+            "accusative" => "комплемент јединице над ниском (~)",
+            "genitive" => "комплемента јединице над ниском (~)",
+            "instrumental" => "комплементом јединице над ниском (~)",
+            "locative" => "комплементу јединице над ниском (~)",
+            "nominative" => "комплемент јединице над ниском (~)",
+            "void_expression_genitive" => "комплемента јединице над ниском (~)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "scope" => {
+          "forms" => {
+            "accusative" => "блок",
+            "genitive" => "блока",
+            "locative" => "о блоку",
+            "nominative" => "блок"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "seq" => {
+          "forms" => {
+            "accusative" => "једнакост ниски",
+            "genitive" => "једнакости ниски",
+            "instrumental" => "једнакошћу ниски",
+            "locative" => "једнакости ниски",
+            "nominative" => "једнакост ниски",
+            "void_expression_genitive" => "једнакости ниски"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "sequ" => {
+          "forms" => {
+            "accusative" => "једнакост ниски која препознаје undef",
+            "genitive" => "једнакости ниски која препознаје undef",
+            "instrumental" => "једнакошћу ниски која препознаје undef",
+            "locative" => "једнакости ниски која препознаје undef",
+            "nominative" => "једнакост ниски која препознаје undef",
+            "void_expression_genitive" => "једнакости ниски која препознаје undef"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "sge" => {
+          "forms" => {
+            "accusative" => "поређење ниски веће од или једнако",
+            "genitive" => "поређења ниски веће од или једнако",
+            "instrumental" => "поређењем ниски веће од или једнако",
+            "locative" => "поређењу ниски веће од или једнако",
+            "nominative" => "поређење ниски веће од или једнако",
+            "void_expression_genitive" => "поређења ниски веће од или једнако"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "sgt" => {
+          "forms" => {
+            "accusative" => "поређење ниски веће од",
+            "genitive" => "поређења ниски веће од",
+            "instrumental" => "поређењем ниски веће од",
+            "locative" => "поређењу ниски веће од",
+            "nominative" => "поређење ниски веће од",
+            "void_expression_genitive" => "поређења ниски веће од"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "sle" => {
+          "forms" => {
+            "accusative" => "поређење ниски мање од или једнако",
+            "genitive" => "поређења ниски мање од или једнако",
+            "instrumental" => "поређењем ниски мање од или једнако",
+            "locative" => "поређењу ниски мање од или једнако",
+            "nominative" => "поређење ниски мање од или једнако",
+            "void_expression_genitive" => "поређења ниски мање од или једнако"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "slt" => {
+          "forms" => {
+            "accusative" => "поређење ниски мање од",
+            "genitive" => "поређења ниски мање од",
+            "instrumental" => "поређењем ниски мање од",
+            "locative" => "поређењу ниски мање од",
+            "nominative" => "поређење ниски мање од",
+            "void_expression_genitive" => "поређења ниски мање од"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "smartmatch" => {
+          "forms" => {
+            "accusative" => "паметно поређење",
+            "genitive" => "паметног поређења",
+            "instrumental" => "паметним поређењем",
+            "locative" => "паметном поређењу",
+            "nominative" => "паметно поређење",
+            "void_expression_genitive" => "паметног поређења"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "sne" => {
+          "forms" => {
+            "accusative" => "неједнакост ниски",
+            "genitive" => "неједнакости ниски",
+            "instrumental" => "неједнакошћу ниски",
+            "locative" => "неједнакости ниски",
+            "nominative" => "неједнакост ниски",
+            "void_expression_genitive" => "неједнакости ниски"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "sneu" => {
+          "forms" => {
+            "accusative" => "неједнакост ниски која препознаје undef",
+            "genitive" => "неједнакости ниски која препознаје undef",
+            "instrumental" => "неједнакошћу ниски која препознаје undef",
+            "locative" => "неједнакости ниски која препознаје undef",
+            "nominative" => "неједнакост ниски која препознаје undef",
+            "void_expression_genitive" => "неједнакости ниски која препознаје undef"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "srefgen" => {
+          "forms" => {
+            "accusative" => "конструктор једне референце",
+            "genitive" => "конструктора једне референце",
+            "locative" => "о конструктору једне референце",
+            "nominative" => "конструктор једне референце",
+            "void_expression_genitive" => "конструктора једне референце"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "sselect" => {
+          "forms" => {
+            "accusative" => "системски позив select",
+            "genitive" => "системског позива select",
+            "locative" => "о системском позиву select",
+            "nominative" => "системски позив select"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "stringify" => {
+          "forms" => {
+            "accusative" => "ниску",
+            "genitive" => "ниске",
+            "locative" => "ниски",
+            "nominative" => "ниска",
+            "void_expression_genitive" => "претварања у ниску"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "subst" => {
+          "forms" => {
+            "accusative" => "замену (s///)",
+            "genitive" => "замене (s///)",
+            "instrumental" => "заменом (s///)",
+            "locative" => "о замени (s///)",
+            "nominative" => "замена (s///)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "substcont" => {
+          "forms" => {
+            "accusative" => "итератор замене",
+            "genitive" => "итератора замене",
+            "locative" => "о итератору замене",
+            "nominative" => "итератор замене"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "substr_left" => {
+          "forms" => {
+            "accusative" => "издвајање почетка ниске",
+            "genitive" => "издвајања почетка ниске",
+            "instrumental" => "издвајањем почетка ниске",
+            "locative" => "издвајању почетка ниске",
+            "nominative" => "издвајање почетка ниске"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "subtract" => {
+          "forms" => {
+            "accusative" => "одузимање (-)",
+            "genitive" => "одузимања (-)",
+            "locative" => "одузимању (-)",
+            "nominative" => "одузимање (-)",
+            "void_expression_genitive" => "одузимања (-)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "trans" => {
+          "forms" => {
+            "accusative" => "транслитерацију (tr///)",
+            "genitive" => "транслитерације (tr///)",
+            "instrumental" => "транслитерацијом (tr///)",
+            "locative" => "о транслитерацији (tr///)",
+            "nominative" => "транслитерација (tr///)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "transr" => {
+          "forms" => {
+            "accusative" => "транслитерацију (tr///)",
+            "genitive" => "транслитерације (tr///)",
+            "instrumental" => "транслитерацијом (tr///)",
+            "locative" => "о транслитерацији (tr///)",
+            "nominative" => "транслитерација (tr///)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "undef" => {
+          "forms" => {
+            "accusative" => "оператор undef",
+            "genitive" => "оператора undef",
+            "locative" => "о оператору undef",
+            "nominative" => "оператор undef"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "unstack" => {
+          "forms" => {
+            "accusative" => "завршиоца итерације",
+            "genitive" => "завршиоца итерације",
+            "locative" => "о завршиоцу итерације",
+            "nominative" => "завршилац итерације"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "unweaken" => {
+          "forms" => {
+            "accusative" => "уклањање слабљења референце",
+            "genitive" => "уклањања слабљења референце",
+            "locative" => "о уклањању слабљења референце",
+            "nominative" => "уклањање слабљења референце"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "weaken" => {
+          "forms" => {
+            "accusative" => "слабљење референце",
+            "genitive" => "слабљења референце",
+            "locative" => "о слабљењу референце",
+            "nominative" => "слабљење референце"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "xor" => {
+          "forms" => {
+            "accusative" => "логичко искључиво или",
+            "genitive" => "логичког искључивог или",
+            "instrumental" => "логичким искључивим или",
+            "locative" => "логичком искључивом или",
+            "nominative" => "логичко искључиво или",
+            "void_expression_genitive" => "логичког искључивог или"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "yield" => {
+          "forms" => {
+            "accusative" => "vraćanje vrednosti iz generatora",
+            "genitive" => "vraćanja vrednosti iz generatora",
+            "locative" => "vraćanju vrednosti iz generatora",
+            "nominative" => "vraćanje vrednosti iz generatora"
+          },
+          "status" => "draft",
+          "tags" => {}
+        }
+      }
+    },
     "tr" => {
       "base_form" => "default",
       "forms" => [

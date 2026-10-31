@@ -5706,6 +5706,10 @@ ext/XPerl-DiagPack-RU/Makefile.PL	MakeMaker driver for XPerl::DiagPack::RU
 ext/XPerl-DiagPack-RU/RU.pm		Russian diagnostic language pack
 ext/XPerl-DiagPack-RU/RU.xs		Russian diagnostic language-pack XS interface
 ext/XPerl-DiagPack-RU/RU_data.inc	Russian diagnostic language-pack catalog
+ext/XPerl-DiagPack-SR/Makefile.PL	MakeMaker driver for XPerl::DiagPack::SR
+ext/XPerl-DiagPack-SR/SR.pm		Serbian diagnostic language pack
+ext/XPerl-DiagPack-SR/SR.xs		Serbian diagnostic language-pack XS interface
+ext/XPerl-DiagPack-SR/SR_data.inc	Serbian diagnostic language-pack catalog
 ext/XPerl-DiagPack-TR/Makefile.PL	MakeMaker driver for XPerl::DiagPack::TR
 ext/XPerl-DiagPack-TR/TR.pm		Turkish diagnostic language pack
 ext/XPerl-DiagPack-TR/TR.xs		Turkish diagnostic language-pack XS interface
