@@ -3623,6 +3623,7 @@ typedef struct {
     bool die_group_seen;
     bool more_after_source;
     SV *unwind_record;
+    SV *annotated_previous_header;
 } perl_diag_delivery;
 
 static AV *
@@ -4068,12 +4069,20 @@ Perl_diag_error_hook_value(pTHX_ perl_diag_delivery *delivery, SV *view)
  * Caught errors have no automatic fatal output. Structured formats serialize
  * the same group; as_json() remains the whole-object inspection view. */
 static void
-Perl_diag_emit_group(pTHX_ SV *view, bool warning)
+Perl_diag_emit_group(pTHX_ perl_diag_delivery *delivery, SV *view, bool warning)
 {
     if (!warning && PL_in_eval)
         return;
 
-    Perl_write_to_stderr_internal(aTHX_ Perl_diag_render_group_view(aTHX_ view), warning);
+    /* Share headers only between automatic outputs in this delivery. Hook
+     * arguments and explicit renders must remain complete on their own. */
+    SV *render_view = Perl_diag_render_group_view(aTHX_ view);
+    SV *copy = sv_2mortal(newRV_noinc(MUTABLE_SV(
+        newHVhv(MUTABLE_HV(SvRV(render_view))))));
+    sv_bless(copy, SvSTASH(SvRV(render_view)));
+    (void)hv_stores(MUTABLE_HV(SvRV(copy)), "_annotated_previous_header",
+                    newRV_inc(delivery->annotated_previous_header));
+    Perl_write_to_stderr_internal(aTHX_ copy, warning);
     if (warning) {
         AV *messages = Perl_diag_messages(aTHX_ view);
         SSize_t i;
@@ -4147,8 +4156,10 @@ Perl_diag_deliver_unit(pTHX_ perl_diag_delivery *delivery, SV *view,
                     Perl_diag_error_hook_value(aTHX_ delivery, view), &result);
         }
     }
-    if (invoked)
+    if (invoked) {
+        sv_setpvs(delivery->annotated_previous_header, "");
         (void)hv_stores(record, "hook", newSVpv(warning ? "__WARN__" : "__DIE__", 0));
+    }
 
     bool rethrow = result.failure && SvROK(result.failure)
         && SvRV(result.failure) == SvRV(delivery->exception);
@@ -4184,7 +4195,7 @@ Perl_diag_deliver_unit(pTHX_ perl_diag_delivery *delivery, SV *view,
     }
     else if (!suppressed) {
         Perl_diag_copy_messages(aTHX_ delivery->output, messages);
-        Perl_diag_emit_group(aTHX_ view, warning);
+        Perl_diag_emit_group(aTHX_ delivery, view, warning);
     }
 }
 
@@ -4357,6 +4368,7 @@ Perl_diag_process_delivery(pTHX_ SV *exception, U32 category, bool force_error)
     perl_diag_hook_result except_result = { NULL, NULL };
     Zero(&delivery, 1, perl_diag_delivery);
     delivery.exception = exception;
+    delivery.annotated_previous_header = sv_2mortal(newSVpvs(""));
     (void)hv_delete(MUTABLE_HV(SvRV(exception)), "_delivery_output_complete",
                     sizeof("_delivery_output_complete") - 1, G_DISCARD);
     delivery.records = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));

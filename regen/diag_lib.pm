@@ -512,10 +512,11 @@ sub diagnostics {
         die "invalid severity alias $name\n"
           unless $name =~ /\A[A-Z][A-Z0-9_]+\z/
           && defined $aliases->{$name}
-          && $aliases->{$name} =~ /\A[WDSFPXA]\z/;
+          && $aliases->{$name} =~ /\A[WDSFPXAN]\z/;
         die "duplicate severity letter $aliases->{$name}\n" if $letters{ $aliases->{$name} }++;
     }
-    die "severity aliases must cover W, D, S, F, P, X and A\n" unless keys(%letters) == 7;
+    die "severity aliases must cover W, D, S, F, P, X and A\n"
+      if grep { !$letters{$_} } qw(W D S F P X A);
     my $common = $conf->{common} || {};
     die "catalog common definitions must be a hash\n"
       unless ref($common) eq 'HASH';

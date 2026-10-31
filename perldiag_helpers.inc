@@ -28,14 +28,6 @@ Perl_throw_append_exception_0_1438(pTHX_ UV diag_index,
 }
 
 PERL_STATIC_INLINE void
-Perl_throw_append_exception_0_2512(pTHX_ UV diag_index,
-    SV **exception_slot,
-    U32 category)
-{
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, NULL, category);
-}
-
-PERL_STATIC_INLINE void
 Perl_throw_append_exception_1_1756(pTHX_ UV diag_index,
     SV **exception_slot,
     const char *ma_fmt1,
@@ -122,15 +114,14 @@ Perl_throw_append_exception_1_2513(pTHX_ UV diag_index,
     SV **exception_slot,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
-    const char *ma_arg1_pv,
-    U32 category)
+    const char *ma_arg1_pv)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
 
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" UTF8f, UTF8fARG(ma_arg1_utf8_flag, ma_arg1_len, ma_arg1_pv));
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
 }
 
 PERL_STATIC_INLINE void
@@ -7683,7 +7674,7 @@ Perl_throw_warner_9_2620(pTHX_ UV diag_index,
 
 
 /* Generated from:
- * c4a27bdd64f5536a09764f6d9b7355a663fb7387b45aa7d2056b7a8704f637b4 diag_conf.pl
+ * cbf5bd9e1cf8e93e94e5e4d6f1314b247f6566b58dab88e9fbae2852adf20214 diag_conf.pl
  * 6510e6553ea58cc2c5404bc3524e14de99d6b39d5bf4cb3fc3271ba678cf283b diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

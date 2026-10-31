@@ -94,6 +94,12 @@ Annotated rendering respects a final newline in user warning and error
 messages: it adds no source location to the header or message body. The
 structured diagnostic retains its source location for inspection.
 
+Annotated rendering shares consecutive identical headers and places
+contained hints on separate indented lines under their parent's header.
+It preserves nearby parser source text and avoids adding a location after
+a message that already ends in a newline. Operator-expected hints now have
+C<NOTE> severity; the parent controls their syntax-warning policy.
+
 Parser errors and catalogued C<croak> and C<DIE> failures now deliver
 C<XPerl::Exception> objects by default. Plain C<die "text"> and
 C<warn "text"> create C<ERROR_USER_TEXT> and C<WARNING_USER_TEXT> diagnostics

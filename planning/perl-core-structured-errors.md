@@ -17,6 +17,13 @@ Choose the starting range, handling of retired identifiers and treatment of
 numeric literals before changing any numbers. Existing numbers stay stable
 until that decision is made.
 
+Review subordinate hints and context diagnostics whose severity or warning
+categories still describe an independent warning. Trace their producers and
+containers before changing classification. The parent should control warning
+enablement and fatalization when the child only supplies an explanation.
+Keep diagnostic numbers stable and test containment, standalone inspection,
+and legacy rendering when moving these records into the Note hierarchy.
+
 ## Translation maintenance
 
 Imported packs need native linguistic review, including complete phrases,
@@ -51,6 +58,12 @@ until actual producers and consumers have moved.
 ## Deferred capture and compatibility work
 
 Automatic stack capture and chronological propagation history are deferred.
+Capture portable Perl-level frame data at the first throw, rather than live
+stack pointers or a platform-specific native backtrace. Preserve that original
+snapshot across rethrows and record propagation sites separately. Diagnostic
+source locations remain independent of both. Define which internal frames to
+omit and how eval, require, generators, and thread boundaries appear before
+implementing capture.
 Argument inclusion remains unresolved. Applications can enrich objects in
 `__EXCEPT__` or collect caller information at reporting sites. Current
 objects do not provide an automatic full stack or THROW/CATCH history.
