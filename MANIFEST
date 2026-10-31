@@ -5718,6 +5718,10 @@ ext/XPerl-DiagPack-UK/Makefile.PL	MakeMaker driver for XPerl::DiagPack::UK
 ext/XPerl-DiagPack-UK/UK.pm		Ukrainian diagnostic language pack
 ext/XPerl-DiagPack-UK/UK.xs		Ukrainian diagnostic language-pack XS interface
 ext/XPerl-DiagPack-UK/UK_data.inc	Ukrainian diagnostic language-pack catalog
+ext/XPerl-DiagPack-ZH/Makefile.PL	MakeMaker driver for XPerl::DiagPack::ZH
+ext/XPerl-DiagPack-ZH/ZH.pm		Simplified Chinese diagnostic language pack
+ext/XPerl-DiagPack-ZH/ZH.xs		Simplified Chinese diagnostic language-pack XS interface
+ext/XPerl-DiagPack-ZH/ZH_data.inc	Simplified Chinese diagnostic language-pack catalog
 ext/XS-APItest/APItest.pm			XS::APItest extension
 ext/XS-APItest/APItest.xs			XS::APItest extension
 ext/XS-APItest/APItest_autoload.xs		XS::APItest AUTOLOAD-related XS split

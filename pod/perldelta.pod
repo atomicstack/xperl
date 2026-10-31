@@ -68,9 +68,11 @@ See L<builtin/cardinal_plural_form>.
 
 =head2 Additional diagnostic translations
 
-The experimental diagnostic catalog adds Persian (C<fa>), Russian (C<ru>),
-Ukrainian (C<uk>) and Welsh (C<cy>) translations, integer plural rules and
-shared operation vocabulary. Persian cardinal plural categories use C<one>
+The experimental diagnostic catalog adds Simplified Chinese (C<zh>),
+Persian (C<fa>), Russian (C<ru>), Ukrainian (C<uk>) and Welsh (C<cy>)
+translations, integer plural rules and
+shared operation vocabulary. Chinese cardinal and ordinal categories are
+always C<other>. Persian cardinal plural categories use C<one>
 for 0 and 1, and C<other> for all larger unsigned integers; its ordinal
 category is always C<other>.
 Translations are machine-generated drafts and have not had native linguistic
@@ -498,7 +500,7 @@ variable.
 
 =item *
 
-Diagnostic translations are provided by seventeen optional
+Diagnostic translations are provided by eighteen optional
 C<XPerl::DiagPack::XX> XS modules. English remains compiled into Perl and
 miniperl. Requiring a pack registers its capability without selecting it;
 C<use XPerl::DiagPack qw(all)> loads installed packs. The provisional

@@ -1,6 +1,6 @@
 # Diagnostic translation language queue
 
-The registered packs are `ar cy de en es fa fi fr he hu is it nl pt ru sr tr uk`.
+The registered packs are `ar cy de en es fa fi fr he hu is it nl pt ru sr tr uk zh`.
 They have been imported and tested; native linguistic review is separate.
 The builtin integer cardinal and ordinal functions cover the retained CLDR
 languages independently of installed packs. Adding a pack requires translated
@@ -8,13 +8,12 @@ sentences, vocabulary and grammatical forms, not just plural categories.
 
 ## Queue
 
-Serbian (`sr`) uses Cyrillic. The next priorities are Mandarin Chinese
-(Simplified Chinese), Swedish, then Hindi. Refine the remaining order when
-real translation contexts expose different requirements.
+Serbian (`sr`) uses Cyrillic and Mandarin Chinese (`zh`) uses Simplified
+Chinese. The next priorities are Swedish, then Hindi. Refine the remaining
+order when real translation contexts expose different requirements.
 
 | Language | Code | Main question |
 |---|---|---|
-| Mandarin Chinese | `zh` | Simplified Chinese technical vocabulary |
 | Swedish | `sv` | Phrase agreement and independent ordinal rules |
 | Hindi | `hi` | Devanagari text and agreement |
 | Polish | `pl` | Case, agreement and phrase forms |
@@ -26,8 +25,7 @@ real translation contexts expose different requirements.
 | Thai | `th` | Technical wording and layout |
 | Cantonese | `yue` | Independent wording and support for a three-letter code |
 
-The initial Serbian pack uses Cyrillic and the initial Mandarin pack will
-use Simplified Chinese. The current pack interface uses two-letter codes;
+The current pack interface uses two-letter codes;
 Cantonese requires an interface decision, not an invented alias or
 substitution of Mandarin wording.
 

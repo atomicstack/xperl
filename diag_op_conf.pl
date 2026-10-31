@@ -36839,6 +36839,1477 @@ grammatical selector fields; it is not a template parameter.
           }
         }
       }
+    },
+    "zh" => {
+      "base_form" => "default",
+      "forms" => [
+        "default"
+      ],
+      "rules" => {
+        "default" => {
+          "form" => "default",
+          "select" => {}
+        }
+      },
+      "tags" => {},
+      "words" => {
+        "aassign" => {
+          "forms" => {
+            "default" => "列表赋值"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "add" => {
+          "forms" => {
+            "default" => "加法 (+)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aeach" => {
+          "forms" => {
+            "default" => "数组上的 each 操作"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelem" => {
+          "forms" => {
+            "default" => "数组元素"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelemfast" => {
+          "forms" => {
+            "default" => "常量数组元素"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelemfast_lex" => {
+          "forms" => {
+            "default" => "常量词法数组元素"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelemfastlex_store" => {
+          "forms" => {
+            "default" => "常量词法数组元素存储"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "akeys" => {
+          "forms" => {
+            "default" => "数组上的 keys 操作"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "and" => {
+          "forms" => {
+            "default" => "逻辑与（&&）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "andassign" => {
+          "forms" => {
+            "default" => "逻辑与赋值（&&=）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anoncode" => {
+          "forms" => {
+            "default" => "匿名子程序"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anonconst" => {
+          "forms" => {
+            "default" => "匿名常量"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anonhash" => {
+          "forms" => {
+            "default" => "匿名哈希（{}）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anonlist" => {
+          "forms" => {
+            "default" => "匿名数组（[]）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anywhile" => {
+          "forms" => {
+            "default" => "any/all 迭代器"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "argcheck" => {
+          "forms" => {
+            "default" => "检查子例程参数"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "argdefelem" => {
+          "forms" => {
+            "default" => "子例程参数默认值"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "argelem" => {
+          "forms" => {
+            "default" => "子例程参数"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aslice" => {
+          "forms" => {
+            "default" => "数组切片"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "av2arylen" => {
+          "forms" => {
+            "default" => "数组长度"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "avalues" => {
+          "forms" => {
+            "default" => "数组上的 values 操作"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "avhvswitch" => {
+          "forms" => {
+            "default" => "数组/哈希切换"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "backtick" => {
+          "forms" => {
+            "default" => "反引号执行（``, qx）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "bit_and" => {
+          "forms" => {
+            "default" => "按位与 (&)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "bit_or" => {
+          "forms" => {
+            "default" => "按位或 (|)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "bit_xor" => {
+          "forms" => {
+            "default" => "按位异或 (^)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "catch" => {
+          "forms" => {
+            "default" => "catch {} 代码块"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "classname" => {
+          "forms" => {
+            "default" => "类名"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "clonecv" => {
+          "forms" => {
+            "default" => "私有子程序"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "cmpchain_and" => {
+          "forms" => {
+            "default" => "比较链"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "cmpchain_dup" => {
+          "forms" => {
+            "default" => "比较项重排"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "complement" => {
+          "forms" => {
+            "default" => "按位取反（~）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "concat" => {
+          "forms" => {
+            "default" => "字符串连接 (.) 或字符串"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "cond_expr" => {
+          "forms" => {
+            "default" => "条件表达式"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "const" => {
+          "forms" => {
+            "default" => "常量项"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "coreargs" => {
+          "forms" => {
+            "default" => "CORE:: 子程序"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dbstate" => {
+          "forms" => {
+            "default" => "调试用的下一条语句"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "defined" => {
+          "forms" => {
+            "default" => "defined 运算符"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dispatch" => {
+          "forms" => {
+            "default" => "分派常量选择"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dispatch_on" => {
+          "forms" => {
+            "default" => "分派模式匹配"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dispatchcoerce" => {
+          "forms" => {
+            "default" => "分派模式标记"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "divide" => {
+          "forms" => {
+            "default" => "除法（/）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "do_block" => {
+          "forms" => {
+            "default" => "do 代码块"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dor" => {
+          "forms" => {
+            "default" => "已定义或（//）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dorassign" => {
+          "forms" => {
+            "default" => "已定义或赋值（//=）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "emptyavhv" => {
+          "forms" => {
+            "default" => "空匿名哈希/数组"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enter" => {
+          "forms" => {
+            "default" => "进入代码块"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enterdispatchon" => {
+          "forms" => {
+            "default" => "进入 dispatch-on 子句()"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enteriter" => {
+          "forms" => {
+            "default" => "进入 foreach 循环"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enterloop" => {
+          "forms" => {
+            "default" => "进入循环"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "entersub" => {
+          "forms" => {
+            "default" => "子例程入口"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "eq" => {
+          "forms" => {
+            "default" => "数值相等比较 (==)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "equ" => {
+          "forms" => {
+            "default" => "可处理 undef 的数值相等比较 (===)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "flip" => {
+          "forms" => {
+            "default" => "范围（或 flip）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "flop" => {
+          "forms" => {
+            "default" => "范围（或 flop）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ge" => {
+          "forms" => {
+            "default" => "数值大于或等于比较 (>=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "gelem" => {
+          "forms" => {
+            "default" => "全局符号表元素"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "grepwhile" => {
+          "forms" => {
+            "default" => "grep 迭代器"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "gt" => {
+          "forms" => {
+            "default" => "数值大于比较 (>)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "gv" => {
+          "forms" => {
+            "default" => "全局符号表值"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "gvsv" => {
+          "forms" => {
+            "default" => "标量变量"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "helem" => {
+          "forms" => {
+            "default" => "哈希元素"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "helemexistsor" => {
+          "forms" => {
+            "default" => "哈希元素存在或"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "hintseval" => {
+          "forms" => {
+            "default" => "eval 提示信息"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "hslice" => {
+          "forms" => {
+            "default" => "哈希切片"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_add" => {
+          "forms" => {
+            "default" => "整数加法 (+)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_divide" => {
+          "forms" => {
+            "default" => "整数除法 (/)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_eq" => {
+          "forms" => {
+            "default" => "整数相等比较 (==)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_equ" => {
+          "forms" => {
+            "default" => "可处理 undef 的整数相等比较 (===)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_ge" => {
+          "forms" => {
+            "default" => "整数大于或等于比较 (>=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_gt" => {
+          "forms" => {
+            "default" => "整数大于比较 (>)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_le" => {
+          "forms" => {
+            "default" => "整数小于或等于比较 (<=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_lt" => {
+          "forms" => {
+            "default" => "整数小于比较 (<)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_modulo" => {
+          "forms" => {
+            "default" => "整数取模 (%)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_multiply" => {
+          "forms" => {
+            "default" => "整数乘法（*）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_ncmp" => {
+          "forms" => {
+            "default" => "整数比较 (<=>)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_ne" => {
+          "forms" => {
+            "default" => "整数不等比较 (!=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_negate" => {
+          "forms" => {
+            "default" => "整数取负（-）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_neu" => {
+          "forms" => {
+            "default" => "可处理 undef 的整数不等比较 (!==)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_postdec" => {
+          "forms" => {
+            "default" => "整数后置自减（--）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_postinc" => {
+          "forms" => {
+            "default" => "整数后置自增（++）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_predec" => {
+          "forms" => {
+            "default" => "整数前置自减（--）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_preinc" => {
+          "forms" => {
+            "default" => "整数前置自增（++）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_subtract" => {
+          "forms" => {
+            "default" => "整数减法 (-)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "implements" => {
+          "forms" => {
+            "default" => "角色组合测试"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "initfield" => {
+          "forms" => {
+            "default" => "初始化字段"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "introcv" => {
+          "forms" => {
+            "default" => "私有子程序"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "is_bool" => {
+          "forms" => {
+            "default" => "布尔类型测试"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "is_weak" => {
+          "forms" => {
+            "default" => "弱引用类型测试"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "isa" => {
+          "forms" => {
+            "default" => "派生类测试"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "iter" => {
+          "forms" => {
+            "default" => "foreach 循环迭代器"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "join" => {
+          "forms" => {
+            "default" => "join 操作或字符串"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "kvaslice" => {
+          "forms" => {
+            "default" => "索引/值数组切片"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "kvhslice" => {
+          "forms" => {
+            "default" => "键/值哈希切片"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "le" => {
+          "forms" => {
+            "default" => "数值小于或等于比较 (<=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leave" => {
+          "forms" => {
+            "default" => "退出代码块"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavedispatch" => {
+          "forms" => {
+            "default" => "退出分派代码块"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavedispatchon" => {
+          "forms" => {
+            "default" => "退出 dispatch-on 子句"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leaveeval" => {
+          "forms" => {
+            "default" => "退出 eval \"string\""
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavegiven" => {
+          "forms" => {
+            "default" => "退出 given 代码块"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leaveloop" => {
+          "forms" => {
+            "default" => "退出循环"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavesub" => {
+          "forms" => {
+            "default" => "子例程出口"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavesublv" => {
+          "forms" => {
+            "default" => "左值子例程返回"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavetry" => {
+          "forms" => {
+            "default" => "退出 eval {block}"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavetrycatch" => {
+          "forms" => {
+            "default" => "退出 try {block}"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavewhen" => {
+          "forms" => {
+            "default" => "退出 when 代码块"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavewrite" => {
+          "forms" => {
+            "default" => "退出写入操作"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "left_shift" => {
+          "forms" => {
+            "default" => "左移位 (<<)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lineseq" => {
+          "forms" => {
+            "default" => "行序列"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lslice" => {
+          "forms" => {
+            "default" => "列表切片"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lt" => {
+          "forms" => {
+            "default" => "数值小于比较 (<)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lvavref" => {
+          "forms" => {
+            "default" => "左值数组引用"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lvref" => {
+          "forms" => {
+            "default" => "左值引用赋值"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lvrefslice" => {
+          "forms" => {
+            "default" => "左值引用赋值"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "mapwhile" => {
+          "forms" => {
+            "default" => "map 迭代器"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "match" => {
+          "forms" => {
+            "default" => "模式匹配（m//）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method" => {
+          "forms" => {
+            "default" => "方法查找"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_named" => {
+          "forms" => {
+            "default" => "已知名称的方法"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_redir" => {
+          "forms" => {
+            "default" => "重定向到已知名称的方法"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_redir_super" => {
+          "forms" => {
+            "default" => "重定向到已知名称的 super 方法"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_super" => {
+          "forms" => {
+            "default" => "已知名称的 super 方法"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "methstart" => {
+          "forms" => {
+            "default" => "方法调用开始"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "modulo" => {
+          "forms" => {
+            "default" => "取模 (%)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "multiconcat" => {
+          "forms" => {
+            "default" => "字符串连接 (.) 或字符串"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "multideref" => {
+          "forms" => {
+            "default" => "数组或哈希查找"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "multiparam" => {
+          "forms" => {
+            "default" => "签名处理"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "multiply" => {
+          "forms" => {
+            "default" => "乘法（*）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "nbit_and" => {
+          "forms" => {
+            "default" => "数值按位与 (&)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "nbit_or" => {
+          "forms" => {
+            "default" => "数值按位或 (|)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "nbit_xor" => {
+          "forms" => {
+            "default" => "数值按位异或 (^)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ncmp" => {
+          "forms" => {
+            "default" => "数值比较 (<=>)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ncomplement" => {
+          "forms" => {
+            "default" => "数值按位取反（~）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ne" => {
+          "forms" => {
+            "default" => "数值不等比较 (!=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "negate" => {
+          "forms" => {
+            "default" => "取负 (-)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "neu" => {
+          "forms" => {
+            "default" => "可处理 undef 的数值不等比较 (!==)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "nextstate" => {
+          "forms" => {
+            "default" => "下一条语句"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "null" => {
+          "forms" => {
+            "default" => "空操作"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "or" => {
+          "forms" => {
+            "default" => "逻辑或（||）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "orassign" => {
+          "forms" => {
+            "default" => "逻辑或赋值（||=）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padany" => {
+          "forms" => {
+            "default" => "词法作用域值"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padav" => {
+          "forms" => {
+            "default" => "词法作用域数组"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padcv" => {
+          "forms" => {
+            "default" => "私有子程序"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padhv" => {
+          "forms" => {
+            "default" => "词法作用域哈希"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padrange" => {
+          "forms" => {
+            "default" => "私有变量列表"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padsv" => {
+          "forms" => {
+            "default" => "词法作用域变量"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padsv_store" => {
+          "forms" => {
+            "default" => "词法作用域标量赋值"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "paramstore" => {
+          "forms" => {
+            "default" => "签名参数默认表达式"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "paramtest" => {
+          "forms" => {
+            "default" => "签名参数值测试"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "poptry" => {
+          "forms" => {
+            "default" => "弹出 try"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "pos" => {
+          "forms" => {
+            "default" => "匹配位置"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "postdec" => {
+          "forms" => {
+            "default" => "后置自减（--）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "postinc" => {
+          "forms" => {
+            "default" => "后置自增（++）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "pow" => {
+          "forms" => {
+            "default" => "幂运算（**）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "predec" => {
+          "forms" => {
+            "default" => "前置自减（--）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "preinc" => {
+          "forms" => {
+            "default" => "前置自增（++）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "prototype" => {
+          "forms" => {
+            "default" => "子程序原型"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "pushdefer" => {
+          "forms" => {
+            "default" => "压入 defer {} 代码块"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "qr" => {
+          "forms" => {
+            "default" => "模式引用（qr//）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "range" => {
+          "forms" => {
+            "default" => "翻转-翻回范围（flip-flop）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rcatline" => {
+          "forms" => {
+            "default" => "追加 I/O 运算符"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ref" => {
+          "forms" => {
+            "default" => "引用类型运算符"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ref_cmp" => {
+          "forms" => {
+            "default" => "引用类型比较"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "refassign" => {
+          "forms" => {
+            "default" => "左值引用赋值"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "refgen" => {
+          "forms" => {
+            "default" => "引用构造器"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "regcmaybe" => {
+          "forms" => {
+            "default" => "正则表达式内部保护操作"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "regcomp" => {
+          "forms" => {
+            "default" => "正则表达式编译"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "regcreset" => {
+          "forms" => {
+            "default" => "正则表达式内部重置操作"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "repeat" => {
+          "forms" => {
+            "default" => "重复 (x)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "reset" => {
+          "forms" => {
+            "default" => "符号重置"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "right_shift" => {
+          "forms" => {
+            "default" => "右移位 (>>)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2av" => {
+          "forms" => {
+            "default" => "数组解引用"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2cv" => {
+          "forms" => {
+            "default" => "子程序解引用"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2gv" => {
+          "forms" => {
+            "default" => "引用转全局符号表项的类型转换"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2hv" => {
+          "forms" => {
+            "default" => "哈希解引用"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2sv" => {
+          "forms" => {
+            "default" => "标量解引用"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sassign" => {
+          "forms" => {
+            "default" => "标量赋值"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sbit_and" => {
+          "forms" => {
+            "default" => "字符串按位与 (&.)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sbit_or" => {
+          "forms" => {
+            "default" => "字符串按位或 (|.)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sbit_xor" => {
+          "forms" => {
+            "default" => "字符串按位异或 (^.)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "schomp" => {
+          "forms" => {
+            "default" => "标量去除行尾符"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "schop" => {
+          "forms" => {
+            "default" => "标量截断"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "scmp" => {
+          "forms" => {
+            "default" => "字符串比较 (cmp)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "scomplement" => {
+          "forms" => {
+            "default" => "字符串按位取反（~）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "scope" => {
+          "forms" => {
+            "default" => "代码块"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "seq" => {
+          "forms" => {
+            "default" => "字符串相等比较"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sequ" => {
+          "forms" => {
+            "default" => "可处理 undef 的字符串相等比较"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sge" => {
+          "forms" => {
+            "default" => "字符串大于或等于比较"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sgt" => {
+          "forms" => {
+            "default" => "字符串大于比较"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sle" => {
+          "forms" => {
+            "default" => "字符串小于或等于比较"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "slt" => {
+          "forms" => {
+            "default" => "字符串小于比较"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "smartmatch" => {
+          "forms" => {
+            "default" => "智能匹配"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sne" => {
+          "forms" => {
+            "default" => "字符串不等比较"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sneu" => {
+          "forms" => {
+            "default" => "可处理 undef 的字符串不等比较"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "srefgen" => {
+          "forms" => {
+            "default" => "单引用构造器"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sselect" => {
+          "forms" => {
+            "default" => "select 系统调用"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "stringify" => {
+          "forms" => {
+            "default" => "字符串"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "subst" => {
+          "forms" => {
+            "default" => "替换（s///）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "substcont" => {
+          "forms" => {
+            "default" => "替换迭代器"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "substr_left" => {
+          "forms" => {
+            "default" => "substr 左侧截取"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "subtract" => {
+          "forms" => {
+            "default" => "减法 (-)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "trans" => {
+          "forms" => {
+            "default" => "字符转换（tr///）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "transr" => {
+          "forms" => {
+            "default" => "字符转换（tr///）"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "undef" => {
+          "forms" => {
+            "default" => "undef 运算符"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "unstack" => {
+          "forms" => {
+            "default" => "迭代结束处理"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "unweaken" => {
+          "forms" => {
+            "default" => "取消引用弱化"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "weaken" => {
+          "forms" => {
+            "default" => "弱化引用"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "xor" => {
+          "forms" => {
+            "default" => "逻辑异或"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "yield" => {
+          "forms" => {
+            "default" => "从生成器产生值"
+          },
+          "status" => "draft",
+          "tags" => {}
+        }
+      }
     }
   },
   "literal_operations" => [
