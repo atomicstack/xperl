@@ -239,6 +239,37 @@ review. See
 [XPerl::Diagnostic](lib/XPerl/Diagnostic.pm), and
 [diagpack](lib/diagpack.pm) for the interfaces.
 
+### Compact hash storage
+
+Ordinary hashes use a compact array of `HE` entries and a separate
+open-addressed lookup index. On 64-bit builds an entry occupies 16 bytes,
+with no collision-chain pointer. The index stores one-, two-, or four-byte
+entry identifiers; the cached hash remains in the key's `HEK`. The index
+and entry array grow independently, and indexed hashes recycle deleted
+entries through a per-hash free list. Neither `HV` nor `XPVHV` grows.
+
+Empty hashes allocate no entry storage, and singletons use one arena entry.
+The experimental `PERL_HASH_LINEAR_MAX` setting can keep up to two, four,
+or eight entries in a dense array searched linearly before building an
+index. Its default is zero, which uses indexed storage beyond a singleton.
+Shared-key interning retains its existing chained table and stable key
+allocations.
+
+Iteration scans the entry array. Hash-function seeding remains enabled,
+while bucket-order perturbation, `PERL_PERTURB_KEYS`, and
+`Hash::Util::hash_traversal_mask` are removed. Insertion during iteration is
+detected through iterator state. Hashes do not promise insertion order.
+`Hash::Util::hash_storage_info` exposes allocation sizes, capacities,
+free-list length, tombstones, and probe distances.
+
+The representation changes the XS ABI and requires rebuilding extensions.
+`HeNEXT` is removed, and writes to `HvMAX` use explicit setters. Returned
+`HE *` and `SV **` pointers must be reacquired after entry-array relocation
+or deletion that compacts a dense array. Core consumers and bundled XS
+modules are adapted to these lifetime rules. The
+[design and benchmark report](Porting/hash-oa-design.pod) records the
+compatibility limits, memory accounting, and measured performance trade-offs.
+
 ## Bundled distribution changes
 
 ### Tensor-XS and p5-matrix-utils
