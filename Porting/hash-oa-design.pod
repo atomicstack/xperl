@@ -11,21 +11,22 @@ every Perl hash uses this representation.
 =head1 REPRESENTATION
 
 Empty ordinary hashes allocate no entry storage, and C<keys> or C<each> on an
-empty hash does not allocate it. A one-entry hash uses an arena-backed compact
-C<HE> slot with no chain pointer. With two or more entries, very small hashes
-can use a dense array of compact C<HE> entries and linear search without
+empty hash does not allocate it. With a positive linear threshold, a
+one-entry hash uses an arena-backed compact C<HE> slot with no chain pointer.
+With two or more entries, very small hashes can use a dense array of compact
+C<HE> entries and linear search without
 allocating open-addressing metadata. The startup
 environment variable C<PERL_HASH_LINEAR_MAX> selects the maximum number of
-entries kept in this form: zero (the default) uses the indexed form once a
-hash grows beyond one entry;
-two, four, or eight enables the corresponding threshold. Adding a second key
-moves the singleton into a compact entry array, which grows through capacities
-two, four, and eight as needed. Deletion shifts later entries left to keep
-the array dense. Inserting beyond the selected threshold promotes the same
-entries into the indexed form. Deleting from two entries to one returns to
-the arena-backed singleton representation;
-deleting the last entry or clearing the hash returns it to the unallocated
-state.
+entries kept in this form. The default is four. Zero disables this form and
+uses indexed storage from the first key. Positive settings of two, four, or
+eight select the corresponding threshold. With a positive threshold, adding
+a second key moves the singleton into a compact entry array, which grows
+through capacities two, four, and eight as needed. Deletion shifts later
+entries left to keep the array dense. Inserting beyond the selected threshold
+promotes the same entries into the indexed form. With a positive threshold,
+deleting from two entries to one returns to the arena-backed singleton
+representation. Deleting the last entry or clearing the hash returns it to
+the unallocated state.
 
 After promotion, the hash uses an open-addressed index separate from the
 contiguous array of entries. Each index slot stores only an entry identifier.
@@ -33,16 +34,21 @@ The full cached hash remains in the entry's C<HEK>. The identifier uses one
 byte when slot capacity is at most 128, two bytes when it is at most 32,768,
 and four bytes above that. Zero means empty; an all-ones identifier marks a
 deleted slot; live identifiers are entry positions plus one. The entry array
-grows independently, by about 1.2 times its current capacity. The slot array
-doubles when an insertion collision occurs at or beyond two-thirds
-occupancy. This is a target, not a hard occupancy ceiling: an insertion that
-does not collide can take the table above two-thirds. Deleted entries join a
+grows independently, by about 1.2 times its current capacity. On a colliding
+insert, the slot array is maintained when projected occupancy reaches about
+two-thirds. If tombstones are at least half of the currently occupied slots
+(tombstones are at least as numerous as live entries), the index is rebuilt
+at the same capacity; otherwise it doubles. This is a target, not a hard
+occupancy ceiling: an insertion that does not collide can take the table
+above two-thirds. Deleted entries join a
 freelist whose link is encoded as an integer, allowing the entry allocation
 to be reused without storing a pointer in every entry.
 
-On 64-bit builds, the singleton arena slot is one 16-byte compact C<HE>.
-Including the common 24-byte C<HV> and 32-byte C<XPVHV>, its structural
-total is 72 bytes. The promoted open-addressed form has 24 bytes of metadata
+With the default positive threshold, a singleton uses one arena-backed
+16-byte compact C<HE> on 64-bit builds. At threshold zero, the first key uses
+indexed storage instead. Including the common 24-byte C<HV> and 32-byte
+C<XPVHV>, the default singleton's structural total is 72 bytes. The promoted
+open-addressed form has 24 bytes of metadata
 before the entry-identifier array in the same allocation. Its index slots use
 one, two, or four bytes as the identifier widens. The linear form has no
 index allocation or metadata header. This design does not enlarge the C<HV>
@@ -101,11 +107,13 @@ including headerless linear hashes; C<Hash::Util::hash_storage_info()> uses
 C<open_addressed> for actual index allocation and C<linear> for the
 headerless form.
 
-The shared-key table starts with 32,768 pointer slots and doubles when an
-insertion collision crosses its two-thirds occupancy target. It retains
-tombstones and rebuilds the index when tombstone occupancy requires cleanup.
-An interned C<HEK> is canonical for its key bytes and storage flags, and its
-address remains stable while referenced, including across slot-array growth.
+The shared-key table starts with 32,768 pointer slots. On a colliding
+insertion, it checks whether projected occupancy reaches two-thirds.
+Non-colliding insertions can take occupancy above that target. When tombstones
+are at least as numerous as live entries, it rebuilds at the same capacity;
+otherwise it doubles. An interned C<HEK> is canonical for its key bytes and
+storage flags, and its address remains stable while referenced, including
+across slot-array growth.
 C<share_hek()> increments the shared reference count; C<unshare_hek()>
 releases it, and the address becomes invalid when the final reference is
 released. There is no value
@@ -508,10 +516,10 @@ identifiers use adaptive one-, two-, or four-byte widths; the slot
 index is limited to 2^26 slots. Deleted entries
 are reused, but the entry vector does not shrink or compact after heavy
 deletion; iteration therefore scans up to its historical high-water mark.
-With the default C<PERL_HASH_LINEAR_MAX=0>, the indexed form has a minimum
-entry capacity of eight, adding fixed table storage for tiny hashes. A
-positive linear threshold avoids this index allocation for small hashes but
-uses linear lookup and shifts entries on deletion. Repeated lookup and
+With the default C<PERL_HASH_LINEAR_MAX=4>, hashes with up to four entries
+avoid the index allocation but use linear lookup and shift entries on
+deletion. Setting the threshold to zero disables linear storage and uses an
+index from the first key. Repeated lookup and
 replacement also pay for key-copy and
 compatibility guards needed for magic and reentrant mutation. The earlier
 64-bit inline-hash comparison showed substantial lookup and iteration gains

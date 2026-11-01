@@ -276,14 +276,15 @@ perl_construct(pTHXx)
 #endif
     PL_curcop = &PL_compiling;	/* needed by ckWARN, right away */
 
-    /* Select the optional dense representation before creating ordinary
-     * hashes. Invalid values leave the default indexed representation on. */
+    /* Select the dense representation before creating ordinary hashes.
+     * Zero disables it; absent or invalid values use the four-key default. */
     {
         const char *linear_max = PerlEnv_getenv("PERL_HASH_LINEAR_MAX");
-        PL_hash_linear_max = linear_max && linear_max[1] == '\0'
-            && (linear_max[0] == '2' || linear_max[0] == '4'
-                || linear_max[0] == '8')
-            ? (U8)(linear_max[0] - '0') : 0;
+        PL_hash_linear_max = linear_max && linear_max[0]
+            && linear_max[1] == '\0'
+            && (linear_max[0] == '0' || linear_max[0] == '2'
+                || linear_max[0] == '4' || linear_max[0] == '8')
+            ? (U8)(linear_max[0] - '0') : 4;
     }
 
 #ifdef PERL_TRACE_OPS

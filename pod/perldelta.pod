@@ -803,18 +803,25 @@ C<#ifdef XPERL> after including the header.
 =head2 Experimental XPerl hash storage
 
 Ordinary hashes now use a compact array of two-pointer C<HE> records and
-an independently grown open-addressed index. A singleton uses one compact
-16-byte C<HE> from the arena on 64-bit builds. When
-C<PERL_HASH_LINEAR_MAX> is positive, hashes with two or more keys can use a
-dense C<HE> array with linear search and promote to indexed storage after the
-selected threshold. The index stores
+an independently grown open-addressed index. With the default positive
+threshold, a singleton uses one compact 16-byte C<HE> from the arena on
+64-bit builds. At threshold zero, hashes use indexed storage from the first
+key. By default, hashes with up to four keys use a dense C<HE> array with
+linear search and promote to indexed storage after the fourth key.
+C<PERL_HASH_LINEAR_MAX> can select a threshold of zero, two, four, or eight
+entries. The index stores
 adaptive-width entry identifiers only; the full cached hash remains in the
 entry's C<HEK>. Indexed hashes recycle deleted entry positions through a
-per-hash free list. C<HV> and C<XPVHV> sizes are unchanged. Shared-key
+per-hash free list. On a colliding insert at the occupancy threshold, the
+ordinary index is rebuilt at the same capacity when tombstones are at least
+as numerous as live entries; otherwise it doubles. C<HV> and C<XPVHV> sizes
+are unchanged. Shared-key
 interning now uses an open-addressed array of C<HEK *> pointers with
 tombstones. Each shared C<HEK> has a reference-count prefix; its address
 remains stable while referenced, including when the slot array grows. The
-table reserves 32,768 slots and grows on colliding inserts. Traversal scans
+table reserves 32,768 slots. At the collision-gated occupancy threshold, it
+rebuilds at the same capacity when tombstones are at least as numerous as
+live entries; otherwise it doubles. Traversal scans
 the entry array independently of hash
 values. The C<PERL_PERTURB_KEYS> controls and
 C<Hash::Util::hash_traversal_mask> are removed. Hash-function seeding is

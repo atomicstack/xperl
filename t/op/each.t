@@ -81,7 +81,9 @@ SKIP: {
     undef %h;
     %h = (1,1);
     $size = Hash::Util::num_buckets(%h);
-    is ($size, 8, "size 8");
+    my %singleton = (1,1);
+    is ($size, Hash::Util::num_buckets(%singleton),
+        "undef restores fresh singleton storage");
 }
 
 # test scalar each

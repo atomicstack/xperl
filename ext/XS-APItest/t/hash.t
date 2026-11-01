@@ -139,6 +139,8 @@ main_tests (\@keys, \@testkeys, ' [utf8 hash]');
     ok($growth->[14] > 0, 'growth probe retained keys across the resize');
     ok($growth->[16], 'tombstone pressure triggers a same-size table rebuild');
     is($growth->[15], 0, 'tombstone rebuild clears old deleted slots');
+    cmp_ok($growth->[17], '>=', $growth->[18],
+           'shared-key cleanup starts when tombstones reach half of occupied slots');
 
     if ($Config::Config{useithreads} && eval { require threads; 1 }) {
         my $thread_key = "xperl-strtab-thread-key-$$";
@@ -489,7 +491,9 @@ sub test_precomputed_hashes {
     }
     die 'Could not find keys for the collision-policy test'
         unless $collision && grep(defined, @keys) == 8;
-    store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 0..5;
+    store_prehashed(\%hash, $keys[0], 0, $hashes[0]);
+    keys(%hash) = 4;
+    store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 1..5;
     is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 8,
        'noncolliding inserts keep the initial index size');
     store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 6..7;
@@ -503,7 +507,9 @@ sub test_precomputed_hashes {
        'a collision grows the index at the two-thirds threshold');
 
     my %lazy;
-    store_prehashed(\%lazy, $keys[$_], $_, $hashes[$_]) for 0..7;
+    store_prehashed(\%lazy, $keys[0], 0, $hashes[0]);
+    keys(%lazy) = 4;
+    store_prehashed(\%lazy, $keys[$_], $_, $hashes[$_]) for 1..7;
     my $current = each %lazy;
     delete $lazy{$current};
     store_prehashed(\%lazy, $collision->[0], 99, $collision->[1]);
@@ -515,6 +521,7 @@ sub test_precomputed_hashes {
 
     my %sparse_lazy;
     store_prehashed(\%sparse_lazy, $keys[0], 0, $hashes[0]);
+    keys(%sparse_lazy) = 4;
     my $sparse_current = each %sparse_lazy;
     delete $sparse_lazy{$sparse_current};
     store_prehashed(\%sparse_lazy, $collision->[0], 99, $collision->[1]);
