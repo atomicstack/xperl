@@ -795,6 +795,11 @@ Jaguar (Darwin 6) once again.
 
 =head1 Internal Changes
 
+=head2 XPerl extension detection
+
+F<perl.h> defines C<XPERL> to C<1>. C and XS extensions can test
+C<#ifdef XPERL> after including the header.
+
 =head2 Experimental XPerl hash storage
 
 Ordinary hashes now use a compact array of two-pointer C<HE> records and

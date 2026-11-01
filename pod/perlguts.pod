@@ -14,6 +14,9 @@ to provide some info on the basic workings of the Perl core.  It is far
 from complete and probably contains many errors.  Please refer any
 questions or comments to the Perl 5 Porters E<lt>perl5-porters@perl.orgE<gt>.
 
+XPerl defines C<XPERL> to C<1> in F<perl.h>. C and XS extensions can use
+C<#ifdef XPERL> after including that header to select XPerl-specific code.
+
 =head1 Variables
 
 =head2 Datatypes
