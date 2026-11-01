@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: 58899e1b88843c67833de4872a35b975ad1964e9a3b84f135b4e0e048116d86e */
+/* Language-scoped rendered data SHA-256: e751c103f80e745e6fde3f277c50cced910657658fb685acb3d9aaaed1802cb3 */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
 
@@ -384,6 +384,7 @@ Perl_diag_plural_selector_uk_1816_0(pTHX_ U16 language, UV n)
 {
     PERL_UNUSED_CONTEXT;
     PERL_UNUSED_ARG(language);
+    PERL_UNUSED_ARG(n);
     return PERL_DIAG_PLURAL_SELECTOR_uk_1816_0(n);
 }
 
@@ -804,6 +805,7 @@ Perl_diag_plural_selector_uk_2630_0(pTHX_ U16 language, UV n)
 {
     PERL_UNUSED_CONTEXT;
     PERL_UNUSED_ARG(language);
+    PERL_UNUSED_ARG(n);
     return PERL_DIAG_PLURAL_SELECTOR_uk_2630_0(n);
 }
 
@@ -18393,7 +18395,7 @@ static const perl_diagpack_catalog perl_diagpack_catalog_uk = {
 };
 
 /* Generated from:
- * 2f4b0e54a22e990f6b5c28177dbafa609ef89a9ffaf1c6e46f581375637d94da regen/diag.pl
+ * 32a25b4a9ac85360514375da1f043cd8d892ad04f2bf0bf58342807a73bb4469 regen/diag.pl
  * dbd24274544a0e3a2d2029c35ace882adc88b488182d683999d7ebe957ec7d80 regen/diag_lib.pm
  * b081c1e7f063cf8ffbaa36cba2bd01fac310e9ef0ecff9f272acd7d9ac6804a9 regen/diag_pack.pm
  * b7b22be791efb8517c49d1ab46f247fc85f7c3d64cbb0633f83e59f2a2002b3c regen/diag_words.pm
