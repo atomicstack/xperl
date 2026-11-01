@@ -1142,7 +1142,7 @@ PERLVAR(I, execution_context, PERL_EXECUTION_CONTEXT)
 PERLVAR(I, excepthook, SV *)
 PERLVARI(I, in_excepthook, bool, FALSE)
 /* Maximum inline entry-vector capacity for small hashes (2, 4, 8, or 0). */
-PERLVARI(I, hash_linear_max, U8, 0)
+PERLVARI(I, hash_linear_max, U8, 4)
 
 /* If you are adding a U8 or U16, check to see if there are 'Space' comments
  * above on where there are gaps which currently will be structure padding.  */

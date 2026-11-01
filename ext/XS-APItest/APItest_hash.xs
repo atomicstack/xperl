@@ -324,6 +324,8 @@ test_shared_hek_probe(input, max_growth_keys = 0)
         U32 tombstones_after_reinsert;
         U32 tombstones_after_cleanup;
         U32 cleanup_limit;
+        U32 tombstones_at_cleanup = 0;
+        U32 live_at_cleanup = 0;
         bool cleanup_observed = FALSE;
         char keybuf[96];
         STRLEN keylen;
@@ -391,6 +393,7 @@ test_shared_hek_probe(input, max_growth_keys = 0)
                 const U32 old_capacity = HvMAX(PL_strtab) + 1;
                 HEK **old_slots = HvSTRSLOTS(PL_strtab);
                 const U32 old_tombstones = HvSTRTAB(PL_strtab)->tombstones;
+                const U32 old_live = HvTOTALKEYS(PL_strtab);
                 my_snprintf(keybuf, sizeof keybuf,
                             "xperl-shared-hek-cleanup-%" UVuf "-%" UVuf,
                             PTR2UV(input), (UV)i);
@@ -401,6 +404,8 @@ test_shared_hek_probe(input, max_growth_keys = 0)
                     && HvMAX(PL_strtab) + 1 == old_capacity
                     && HvSTRSLOTS(PL_strtab) != old_slots) {
                     cleanup_observed = TRUE;
+                    tombstones_at_cleanup = old_tombstones;
+                    live_at_cleanup = old_live;
                     tombstones_after_cleanup =
                         HvSTRTAB(PL_strtab)->tombstones;
                 }
@@ -434,6 +439,8 @@ test_shared_hek_probe(input, max_growth_keys = 0)
         av_push(result, newSVuv(held_count));
         av_push(result, newSVuv(tombstones_after_cleanup));
         av_push(result, newSVuv(cleanup_observed));
+        av_push(result, newSVuv(tombstones_at_cleanup));
+        av_push(result, newSVuv(live_at_cleanup));
         RETVAL = newRV_noinc((SV *)result);
     OUTPUT:
         RETVAL

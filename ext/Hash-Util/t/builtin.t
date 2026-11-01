@@ -5,7 +5,8 @@ use Test::More;
 
 my @Exported_Funcs;
 BEGIN {
-    @Exported_Funcs = qw( bucket_ratio num_buckets used_buckets );
+    @Exported_Funcs = qw( bucket_ratio num_buckets used_buckets
+                          hash_storage_info );
     plan tests => 13 + @Exported_Funcs;
     use_ok 'Hash::Util', @Exported_Funcs;
 }
@@ -20,8 +21,11 @@ is(num_buckets(%hash), 8, "Empty hash should have eight buckets");
 is(used_buckets(%hash), 0, "Empty hash should have no used buckets");
 
 $hash{1}= 1;
-is(bucket_ratio(%hash), "1/8", "hash has expected bucket_ratio");
-is(num_buckets(%hash), 8, "hash should have eight buckets");
+my $single_info = Hash::Util::hash_storage_info(\%hash);
+my ($single_ratio, $single_buckets) = $single_info->{linear}
+    ? ("1/1", 1) : ("1/8", 8);
+is(bucket_ratio(%hash), $single_ratio, "hash has expected bucket_ratio");
+is(num_buckets(%hash), $single_buckets, "hash has expected bucket count");
 is(used_buckets(%hash), 1, "hash should have one used buckets");
 
 $hash{$_}= $_ for 2..7;

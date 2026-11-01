@@ -199,6 +199,111 @@ SKIP: {
 
 SKIP: {
     unless (eval { require Hash::Util; Hash::Util->can('hash_storage_info') }) {
+        skip('hash_storage_info unavailable', 1);
+    }
+    my $default_mode = <<'PERL';
+use strict;
+use warnings;
+use Hash::Util qw(hash_storage_info hash_value);
+my %hash;
+$hash{"default:$_"} = $_ for 0 .. 3;
+my $info = hash_storage_info(\%hash);
+die "default did not keep four entries linear\n"
+    unless $info->{linear} && !$info->{index_capacity}
+        && $info->{entry_capacity} == 4;
+$hash{'default:4'} = 4;
+$info = hash_storage_info(\%hash);
+die "default did not promote after four entries\n"
+    unless !$info->{linear} && $info->{index_capacity} == 8
+        && keys(%hash) == 5 && $hash{'default:4'} == 4;
+
+my @home;
+my ($collision0, $collision4);
+for my $i (0 .. 100_000) {
+    my $key = "threshold:$i";
+    my $slot = hash_value($key) & 7;
+    if ($slot <= 7 && !defined $home[$slot]) {
+        $home[$slot] = $key;
+    }
+    elsif ($slot == 0 && !defined $collision0) {
+        $collision0 = $key;
+    }
+    elsif ($slot == 4 && !defined $collision4) {
+        $collision4 = $key;
+    }
+    last if $collision0 && $collision4 && !grep { !defined } @home[0 .. 7];
+}
+die "could not find keys for deterministic slot homes\n"
+    if !$collision0 || !$collision4 || grep { !defined } @home[0 .. 7];
+
+my %reuse;
+$reuse{$home[$_]} = $_ for 0 .. 4;
+delete $reuse{$home[$_]} for 0 .. 1;
+my $reuse_info = hash_storage_info(\%reuse);
+die "below-two-thirds tombstone-reuse setup failed\n"
+    unless $reuse_info->{index_capacity} == 8
+        && $reuse_info->{live} == 3 && $reuse_info->{tombstones} == 2;
+$reuse{$collision0} = 99;
+$reuse_info = hash_storage_info(\%reuse);
+die "tombstone reuse below the occupancy threshold resized the index\n"
+    unless $reuse_info->{index_capacity} == 8
+        && $reuse_info->{tombstones} == 1
+        && $reuse{$collision0} == 99;
+
+my %below;
+$below{$home[$_]} = $_ for 0 .. 4;
+die "five entries did not promote into eight slots\n"
+    unless hash_storage_info(\%below)->{index_capacity} == 8;
+delete $below{$home[$_]} for 0 .. 1;
+my $below_info = hash_storage_info(\%below);
+die "below-half setup failed\n"
+    unless $below_info->{live} == 3 && $below_info->{tombstones} == 2;
+$below{$collision4} = 99;
+$below_info = hash_storage_info(\%below);
+die "below-half tombstones did not grow instead of same-size cleanup\n"
+    unless $below_info->{index_capacity} == 16
+        && !$below_info->{tombstones} && keys(%below) == 4
+        && $below{$collision4} == 99 && $below{$home[2]} == 2;
+
+my %half;
+$half{$home[$_]} = $_ for 0 .. 7;
+delete $half{$home[$_]} for 0 .. 3;
+my $half_info = hash_storage_info(\%half);
+die "half-occupied setup failed\n"
+    unless $half_info->{live} == 4 && $half_info->{tombstones} == 4;
+$half{$collision4} = 99;
+$half_info = hash_storage_info(\%half);
+die "half-occupied tombstones did not rebuild at the same size\n"
+    unless $half_info->{index_capacity} == 8 && !$half_info->{tombstones}
+        && keys(%half) == 5 && $half{$collision4} == 99
+        && $half{$home[7]} == 7;
+
+my %grow;
+$grow{$home[$_]} = $_ for 0 .. 5;
+delete $grow{$home[0]};
+die "growth setup did not retain one tombstone\n"
+    unless hash_storage_info(\%grow)->{tombstones} == 1;
+$grow{$collision4} = 99;
+my $grow_info = hash_storage_info(\%grow);
+die "low tombstone fraction did not grow the index and clear tombstones\n"
+    unless $grow_info->{index_capacity} == 16 && !$grow_info->{tombstones}
+        && keys(%grow) == 6 && $grow{$collision4} == 99
+        && $grow{$home[5]} == 5;
+print "ok\n";
+PERL
+    my ($out, $err);
+    {
+        local $ENV{PERL_HASH_LINEAR_MAX};
+        delete $ENV{PERL_HASH_LINEAR_MAX};
+        ($out, $err) = runperl_and_capture({}, ['-I../lib', '-e', $default_mode]);
+    }
+    is($out, "ok\n",
+       'default K=4 and collision-gated tombstone thresholds behave as designed')
+        or diag($err);
+}
+
+SKIP: {
+    unless (eval { require Hash::Util; Hash::Util->can('hash_storage_info') }) {
         skip('hash_storage_info unavailable', 4);
     }
     my $linear_mode = <<'PERL';

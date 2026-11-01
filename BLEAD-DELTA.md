@@ -246,16 +246,23 @@ open-addressed lookup index. On 64-bit builds an entry occupies 16 bytes,
 with no collision-chain pointer. The index stores one-, two-, or four-byte
 entry identifiers; the cached hash remains in the key's `HEK`. The index
 and entry array grow independently, and indexed hashes recycle deleted
-entries through a per-hash free list. Neither `HV` nor `XPVHV` grows.
+entries through a per-hash free list. At the collision-gated occupancy
+threshold, the ordinary index is rebuilt at the same capacity when
+tombstones are at least as numerous as live entries; otherwise it grows.
+Neither `HV` nor `XPVHV` grows.
 
-Empty hashes allocate no entry storage, and singletons use one arena entry.
-The experimental `PERL_HASH_LINEAR_MAX` setting can keep up to two, four,
-or eight entries in a dense array searched linearly before building an
-index. Its default is zero, which uses indexed storage beyond a singleton.
+Empty hashes allocate no entry storage. With the default positive threshold,
+a singleton uses one arena entry. The experimental `PERL_HASH_LINEAR_MAX`
+setting can keep up to two, four, or eight entries in a dense array searched
+linearly before building an index. Its default is four, so hashes with up to
+four entries use linear search before promotion. At threshold zero, hashes
+use indexed storage from the first key.
 Shared-key interning uses an open-addressed slot array of `HEK *` pointers.
 The slots have tombstones; each shared `HEK` carries a reference-count
 prefix, and its allocation remains stable while referenced, including when
-the slot array grows. The table reserves 32,768 slots. Hash::Util provides
+the slot array grows. The table reserves 32,768 slots. At the collision-gated
+occupancy threshold, it rebuilds at the same capacity when tombstones are at
+least as numerous as live entries; otherwise it doubles. Hash::Util provides
 `shared_key_refcount` for non-mutating reference-count lookup and
 `shared_keys` for copied key strings, and `immortalize_key` to acquire a
 permanent reference until interpreter destruction. Pins are copied into

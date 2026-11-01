@@ -35,7 +35,9 @@ table stores stable HEK pointers in a separate open-addressed index.
 #include "perl.h"
 #include "class.h"
 
-/* we split when we collide and we have a load factor over 0.667.
+/* We rebuild on collision when occupied slots exceed a load of 0.667.
+ * If at least half of the occupied slots are tombstones, keep the capacity.
+ * Otherwise double it. Both rebuilds discard tombstones.
  * NOTE if you change this formula so we split earlier than previously
  * you MUST change the logic in hv_ksplit()
  */
@@ -155,22 +157,20 @@ S_strtab_prepare_insert(pTHX_ U32 hash, const char *key, STRLEN klen,
                         U8 flags, U32 *pos, bool collision)
 {
     U32 capacity = HvMAX(PL_strtab) + 1;
-    U32 live = HvTOTALKEYS(PL_strtab) + 1;
     U32 occupied = HvTOTALKEYS(PL_strtab)
         + HvSTRTAB(PL_strtab)->tombstones
         + (*pos != OA_EMPTY && HvSTRSLOTS(PL_strtab)[*pos] == HvSTR_TOMBSTONE
            ? 0 : 1);
     bool resized = FALSE;
 
-    if (collision && live + (live >> 1) > HvMAX(PL_strtab)) {
-        if (capacity > ((U32)MAX_BUCKET_MAX + 1) / 2)
-            Perl_croak_memory_wrap();
-        S_strtab_resize(aTHX_ capacity * 2);
-        resized = TRUE;
-    }
-    else if (collision && HvSTRTAB(PL_strtab)->tombstones
-             && occupied + (occupied >> 1) > HvMAX(PL_strtab)) {
-        S_strtab_resize(aTHX_ capacity);
+    if (collision && occupied + (occupied >> 1) > HvMAX(PL_strtab)) {
+        if (HvSTRTAB(PL_strtab)->tombstones >= HvTOTALKEYS(PL_strtab))
+            S_strtab_resize(aTHX_ capacity);
+        else {
+            if (capacity > ((U32)MAX_BUCKET_MAX + 1) / 2)
+                Perl_croak_memory_wrap();
+            S_strtab_resize(aTHX_ capacity * 2);
+        }
         resized = TRUE;
     }
     if (resized)
@@ -962,6 +962,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     bool is_utf8;
     const int return_svp = action & HV_FETCH_JUST_SV;
     HEK *keysv_hek = NULL;
+    U32 insert_pos = OA_EMPTY;
 
     if (!hv)
         return NULL;
@@ -1325,7 +1326,9 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
 #endif
     {
         entry = HvIS_OA(hv)
-              ? S_oa_find(aTHX_ hv, hash, key, klen, flags, keysv_hek, NULL)
+              ? S_oa_find(aTHX_ hv, hash, key, klen, flags, keysv_hek,
+                          action & (HV_FETCH_LVALUE|HV_FETCH_ISSTORE)
+                              ? &insert_pos : NULL)
               : (HvARRAY(hv))[hash & (I32) HvMAX(hv)];
     }
 
@@ -1499,22 +1502,23 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
             S_oa_index_resize(aTHX_ hv, (U32)xhv->xhv_max + 1);
         {
             const STRLEN oldsize = xhv->xhv_max + 1;
-            const STRLEN projected_live = HvTOTALKEYS(hv) + 1;
-            const STRLEN projected_occupied = projected_live
-                                            + HvOA(hv)->tombstones;
+            /* Reusing a tombstone does not occupy another index slot. */
+            const bool reuses_deleted = insert_pos != OA_EMPTY
+                && HvOA_INDEX_GET(hv, insert_pos) == OA_DELETED;
+            const STRLEN projected_occupied = HvTOTALKEYS(hv)
+                + HvOA(hv)->tombstones + (reuses_deleted ? 0 : 1);
             const U32 home_slot = hash & (U32)xhv->xhv_max;
             const U32 home_entry = HvOA_INDEX_GET(hv, home_slot);
             const bool home_collision = home_entry != 0;
-            const bool live_load = projected_live
-                                 + (projected_live >> 1) > xhv->xhv_max;
             const bool occupied_pressure = projected_occupied
                                  + (projected_occupied >> 1) > xhv->xhv_max;
 
-            if (home_collision && live_load && oldsize < MAX_BUCKET_MAX + 1)
-                S_hsplit(aTHX_ hv, oldsize, oldsize * 2);
-            else if (home_collision && HvOA(hv)->tombstones
-                     && occupied_pressure)
-                S_hsplit(aTHX_ hv, oldsize, oldsize);
+            if (home_collision && occupied_pressure) {
+                if (HvOA(hv)->tombstones >= HvTOTALKEYS(hv))
+                    S_hsplit(aTHX_ hv, oldsize, oldsize);
+                else if (oldsize < MAX_BUCKET_MAX + 1)
+                    S_hsplit(aTHX_ hv, oldsize, oldsize * 2);
+            }
         }
         entry = S_oa_new_entry(aTHX_ hv);
       ordinary_entry_ready:
