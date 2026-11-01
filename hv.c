@@ -1758,6 +1758,7 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     char *mro_key_copy = NULL;
     HEK *keysv_hek = NULL;
     U8 mro_changes = 0; /* 1 = isa; 2 = package moved */
+    U32 pos;
     SV *sv;
     GV *gv = NULL;
     HV *stash = NULL;
@@ -1836,7 +1837,7 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     else if (!hash)
         PERL_HASH(hash, key, klen);
 
-    entry = S_oa_find(aTHX_ hv, hash, key, klen, k_flags, keysv_hek, NULL);
+    entry = S_oa_find(aTHX_ hv, hash, key, klen, k_flags, keysv_hek, &pos);
 
     if (!entry)
         goto not_found;
@@ -1887,9 +1888,6 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
             S_oa_free_key(aTHX_ old_hek, old_len, old_flags);
         }
         else if (HvIS_OA(hv) && HvARRAY(hv)) {
-            U32 pos;
-            (void)S_oa_find(aTHX_ hv, hash, key, klen, k_flags,
-                            keysv_hek, &pos);
             if (pos != OA_EMPTY) {
                 HvOA_INDEX_SET(hv, pos, OA_DELETED);
                 HvOA(hv)->tombstones++;
