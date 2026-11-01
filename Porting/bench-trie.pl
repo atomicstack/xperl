@@ -543,7 +543,7 @@ __END__
 
 =head1 NAME
 
-bench-trie.pl - Compare corpus scanning across Perl builds
+bench_trie.pl - Compare corpus scanning across Perl builds
 
 =head1 SYNOPSIS
 

@@ -142,7 +142,7 @@ __END__
 
 =head1 NAME
 
-bench-class-value.pl - measure class, Moo, and blessed hash objects
+bench_class_value.pl - measure class, Moo, and blessed hash objects
 
 =head1 SYNOPSIS
 
