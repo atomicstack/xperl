@@ -208,6 +208,53 @@ PERL
        'allocator reports usable bytes for a heap entry vector');
 }
 
+{
+    my $script = <<'PERL';
+use strict;
+use warnings;
+use Hash::Util qw(bucket_info bucket_array hash_storage_info);
+
+sub check_hash {
+    my ($hash, $expected, $where) = @_;
+    my ($keys, $slots, $used) = bucket_info($hash);
+    die "$where: bucket_info key count" unless $keys == @$expected;
+    die "$where: bucket_info used count" unless $used == @$expected;
+    my $info = hash_storage_info($hash);
+    my $expected_slots = $info->{linear}
+        ? $info->{entry_capacity} : $info->{index_capacity};
+    die "$where: bucket_info slot count"
+        if @$expected && $slots != $expected_slots;
+    my $buckets = bucket_array($hash);
+    my @physical = $buckets ? map { ref($_) ? @$_ : () } @$buckets : ();
+    my @actual = sort @physical;
+    my @wanted = sort @$expected;
+    die "$where: bucket_array keys" unless "@actual" eq "@wanted";
+}
+
+for my $count (1 .. 8) {
+    my %hash = map { ("linear:$_" => $_) } 0 .. $count - 1;
+    my @expected = map { "linear:$_" } 0 .. $count - 1;
+    check_hash(\%hash, \@expected, "inserted $count");
+
+    delete $hash{$expected[0]};
+    shift @expected;
+    check_hash(\%hash, \@expected, "deleted from $count");
+}
+print "ok\n";
+PERL
+    for my $limit (0, 2, 4, 8) {
+        local $ENV{PERL_HASH_LINEAR_MAX} = $limit;
+        open my $child, '-|', $^X, "-I$FindBin::Bin/../../../lib",
+            '-e', $script
+            or die "could not start bucket diagnostics probe: $!";
+        my $output = do { local $/; <$child> };
+        close $child;
+        is($?, 0, "bucket diagnostics handle threshold $limit")
+            or diag($output);
+        is($output, "ok\n", "bucket diagnostics preserve threshold $limit keys");
+    }
+}
+
 sub clone_storage_state {
     my ($table, $deleted, $present) = @_;
     return threads->create(sub {
