@@ -903,9 +903,13 @@ C<HvARRAY> is no longer an array of bucket-head pointers for ordinary
 hashes. Use the iterator API, or XPerl's hash-aware C<HvENTRY_LIMIT>,
 C<HvENTRY_FIRST>, and C<HvENTRY_NEXT> macros for direct storage traversal.
 C<HeNEXT> is removed because compact entries have no collision-chain
-pointer. C<HeSHARED_NEXT> applies only to entries in C<PL_strtab>;
-standalone entries have no chain link. XS extensions must be rebuilt for
-this experimental representation.
+pointer. C<PL_strtab> contains no C<HE> entries or chain links; its
+open-addressed slots point directly to shared C<HEK>s. The
+C<HeSHARED_NEXT> macro is removed. Generic value-fetch and iterator APIs do
+not apply to C<PL_strtab>. A shared C<HEK *> address remains stable while
+referenced, including when the slot array grows. C<share_hek>/C<unshare_hek>
+manage those reference counts. XS extensions must be rebuilt for this
+experimental representation.
 
 C<HvMAX(hv)> is now read-only. Code that changed it as an lvalue must use
 C<HvMAX_SET(hv, max)> for indexed storage or

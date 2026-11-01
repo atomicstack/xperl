@@ -453,7 +453,9 @@ perl_construct(pTHXx)
         /* SHAREKEYS tells us that the hash has its keys shared with PL_strtab,
          * which is not the case with PL_strtab itself */
         HvSHAREKEYS_off(PL_strtab);			/* mandatory */
-        hv_ksplit(PL_strtab, 1 << 11);
+        /* Reserve 32,768 HEK slots for 16,384 live keys at the 2/3 load
+         * threshold.  Shared HEKs are allocated only as keys are interned. */
+        hv_ksplit(PL_strtab, 1 << 14);
     }
 
 #ifdef USE_ITHREADS
@@ -1436,32 +1438,37 @@ perl_destruct(pTHXx)
 
     /* Destruct the global string table. */
     {
-        /* Yell and reset the HeVAL() slots that are still holding refcounts,
-         * so that sv_free() won't fail on them.
-         * Now that the global string table is using a single hunk of memory
-         * for both HE and HEK, we either need to explicitly unshare it the
-         * correct way, or actually free things here.
-         */
-        I32 riter = 0;
-        const I32 max = HvMAX(PL_strtab);
-        HE * const * const array = HvARRAY(PL_strtab);
-        HE *hent = array[0];
+        const U32 capacity = (U32)HvMAX(PL_strtab) + 1;
+        HEK ** const slots = HvARRAY(PL_strtab)
+            ? HvSTRSLOTS(PL_strtab) : NULL;
+        U32 i;
 
-        for (;;) {
-            if (hent && ckWARN_d(WARN_INTERNAL)) {
-                HE * const next = HeSHARED_NEXT(hent);
-                PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SHARED_STRING_RETAINED((long)hent->he_valu.hent_refcount, HeKEY(hent));
-                Safefree(hent);
-                hent = next;
-            }
-            if (!hent) {
-                if (++riter > max)
-                    break;
-                hent = array[riter];
+        struct hv_strtab_pin *pin = slots ? HvSTRTAB(PL_strtab)->pins : NULL;
+
+        /* Release intentional pins before checking for unbalanced owners. */
+        while (pin) {
+            struct hv_strtab_pin *next = pin->next;
+            assert(HvSTR_REFCOUNT(pin->hek) >= pin->count);
+            HvSTR_REFCOUNT(pin->hek) -= pin->count - 1;
+            unshare_hek(pin->hek);
+            Safefree(pin);
+            pin = next;
+        }
+        if (slots)
+            HvSTRTAB(PL_strtab)->pins = NULL;
+
+        /* Report and free HEKs that still have references at destruction. */
+        for (i = 0; slots && i < capacity; i++) {
+            HEK * const hek = slots[i];
+            if (hek && hek != HvSTR_TOMBSTONE) {
+                if (ckWARN_d(WARN_INTERNAL))
+                    PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SHARED_STRING_RETAINED(
+                        (long)HvSTR_REFCOUNT(hek), HEK_KEY(hek));
+                Safefree(HvSTR_SHARED(hek));
             }
         }
 
-        Safefree(array);
+        Safefree(HvARRAY(PL_strtab));
         HvARRAY(PL_strtab) = 0;
         HvTOTALKEYS(PL_strtab) = 0;
     }

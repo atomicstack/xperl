@@ -5,7 +5,150 @@ use warnings;
 use Config;
 use FindBin;
 use Test::More;
-use Hash::Util qw(hash_storage_info bucket_info bucket_array);
+use Hash::Util qw(hash_storage_info shared_key_refcount shared_keys immortalize_key
+                  bucket_info bucket_array);
+
+{
+    my $key = "xperl-hash-util-shared-key-$$";
+    my @before = shared_keys();
+    my $absent_refcount = shared_key_refcount($key);
+    my $count_after_absent_lookup = scalar shared_keys();
+    ok(!grep($_ eq $key, @before), 'fresh shared key is absent');
+    is($absent_refcount, 0,
+       'refcount lookup does not intern an absent key');
+    is($count_after_absent_lookup, scalar @before,
+       'absent refcount lookup leaves shared-key count unchanged');
+
+    my %first = ($key => 1);
+    is(shared_key_refcount($key), 1, 'one hash owns one shared-key reference');
+    my %second = %first;
+    is(shared_key_refcount($key), 2, 'copying a hash acquires a shared-key ref');
+    my @keys = shared_keys();
+    is(scalar @keys, scalar shared_keys(),
+       'shared_keys list and scalar contexts report the same count');
+    my ($copy) = grep { $_ eq $key } @keys;
+    ok(defined $copy, 'shared_keys includes the interned key');
+    $copy .= '-changed';
+    ok(exists $first{$key} && exists $second{$key},
+       'changing a returned key copy does not change either hash');
+    is(shared_key_refcount($key), 2,
+       'changing a returned key copy does not change the interned refcount');
+    delete $first{$key};
+    is(shared_key_refcount($key), 1, 'deletion releases one shared-key ref');
+    delete $second{$key};
+    is(shared_key_refcount($key), 0, 'last deletion releases the shared key');
+}
+
+for my $key ("xperl-hash-util-nul-$$\0tail",
+             "xperl-hash-util-utf8-$$\x{e9}",
+             "xperl-hash-util-wide-$$\x{100}") {
+    utf8::upgrade($key) if $key =~ /\x{e9}/;
+    my %hash = ($key => 1);
+    is(shared_key_refcount($key), 1,
+       'shared_key_refcount accepts binary and UTF8 keys');
+    my ($copy) = grep { $_ eq $key } shared_keys();
+    ok(defined $copy, 'shared_keys returns binary and UTF8 key copies');
+    is(utf8::is_utf8($copy), utf8::is_utf8($key),
+       'shared_keys preserves the key UTF8 flag');
+    $copy = 'changed';
+    ok(exists $hash{$key}, 'mutating copied binary or UTF8 key has no effect');
+}
+
+
+{
+    my $bytes = "xperl-hash-util-wasutf8-$$\x{e9}";
+    my $utf8 = $bytes;
+    utf8::upgrade($utf8);
+    my %byte_hash = ($bytes => 1);
+    my %utf8_hash = ($utf8 => 2);
+    is(shared_key_refcount($bytes), 1, 'byte HEK has its own reference count');
+    is(shared_key_refcount($utf8), 1, 'WASUTF8 HEK has its own reference count');
+    my @copies = grep { $_ eq $bytes } shared_keys();
+    is(scalar @copies, 2, 'shared_keys includes both byte and WASUTF8 HEKs');
+    is(scalar(grep { utf8::is_utf8($_) } @copies), 1,
+       'only the WASUTF8 copy is upgraded');
+    is(scalar(grep { !utf8::is_utf8($_) } @copies), 1,
+       'the plain byte copy remains downgraded');
+
+    $byte_hash{$utf8} = 3;
+    is(scalar keys %byte_hash, 1, 'UTF8 replacement preserves hash key identity');
+    is(shared_key_refcount($bytes), 0, 'replacement releases the byte HEK');
+    is(shared_key_refcount($utf8), 2, 'replacement acquires the WASUTF8 HEK');
+    my ($returned) = keys %byte_hash;
+    ok(utf8::is_utf8($returned), 'keys returns the upgraded replacement key');
+    undef $returned;
+    delete $utf8_hash{$utf8};
+    is(shared_key_refcount($utf8), 1, 'deletion releases one WASUTF8 reference');
+    $byte_hash{$bytes} = 4;
+    is(shared_key_refcount($utf8), 0, 'byte replacement releases the WASUTF8 HEK');
+    is(shared_key_refcount($bytes), 1, 'byte replacement acquires a byte HEK');
+    delete $byte_hash{$bytes};
+    is(shared_key_refcount($bytes), 0, 'last byte reference is released');
+}
+
+
+{
+    my $bytes = "xperl-immortal-byte-$$\x{e9}";
+    my $utf8 = $bytes;
+    utf8::upgrade($utf8);
+    my $ascii = "xperl-immortal-ascii-$$";
+    utf8::upgrade($ascii);
+    for my $key ($bytes, $utf8, $ascii, "xperl-immortal-wide-$$\x{100}",
+                 "xperl-immortal-nul-$$\0tail") {
+        is(shared_key_refcount($key), 0, 'key starts absent before immortalization');
+        is(immortalize_key($key), 1, 'immortalization interns an absent key');
+        is(immortalize_key($key), 2, 'each immortalization acquires one reference');
+        {
+            my %hash = ($key => 1);
+            is(shared_key_refcount($key), 3, 'a hash acquires its own reference');
+        }
+        is(shared_key_refcount($key), 2, 'pins survive the last hash owner');
+    }
+    my @copies = grep { $_ eq $bytes } shared_keys();
+    is(scalar @copies, 2, 'byte and WASUTF8 immortalizations stay distinct');
+    is(scalar(grep { utf8::is_utf8($_) } @copies), 1,
+       'immortalized WASUTF8 key is upgraded when listed');
+
+    SKIP: {
+        skip 'Perl not compiled with useithreads', 2 unless $Config{useithreads};
+        require threads;
+        my $thread = threads->create(sub {
+            my ($key) = @_;
+            my $before = shared_key_refcount($key);
+            my $after = immortalize_key($key);
+            return [$before, $after];
+        }, $utf8);
+        is_deeply($thread->join, [2, 3], 'thread clone inherits independent pins');
+        is(shared_key_refcount($utf8), 2, 'child pin does not change parent refs');
+    }
+
+    my $cow_key = "xperl-immortal-cow-$$";
+    {
+        my %hash = ($cow_key => 1);
+        my ($key) = keys %hash;
+        my $before = shared_key_refcount($key);
+        is(immortalize_key($key), $before + 1,
+           'immortalizing a shared key SV acquires exactly one reference');
+    }
+    is(shared_key_refcount($cow_key), 1,
+       'pin survives both the shared key SV and its source hash');
+
+    local $ENV{PERL_DESTRUCT_LEVEL} = 2;
+    my $script = q{
+        open STDERR, '>&', STDOUT or die $!;
+        require Hash::Util;
+        my $key = "xperl-immortal-shutdown-$$";
+        Hash::Util::immortalize_key($key);
+        Hash::Util::immortalize_key($key);
+        print "ok\n";
+    };
+    open my $child, '-|', $^X, "-I$FindBin::Bin/../../../lib", '-e', $script
+        or die "could not start immortal-key shutdown probe: $!";
+    my $output = do { local $/; <$child> };
+    close $child;
+    is($?, 0, 'immortal-key shutdown probe exits successfully');
+    is($output, "ok\n", 'intentional pins produce no unbalanced-key warning');
+}
 
 {
     local $ENV{PERL_HASH_LINEAR_MAX} = 2;
@@ -271,5 +414,8 @@ ok(!exists $wide{$wide_early} && !exists $wide{$wide_late}
        && exists $wide{$wide_replacement_one}
        && exists $wide{$wide_replacement_two},
    'lookups remain correct after wide-index deletions and reuse');
+
+is(shared_key_refcount("xperl-immortal-byte-$$\x{e9}"), 2,
+   'permanent references survive shared-key index growth');
 
 done_testing();

@@ -33,7 +33,7 @@ our @EXPORT_OK  = qw(
                      lock_hash_recurse unlock_hash_recurse
                      lock_hashref_recurse unlock_hashref_recurse
 
-                     hash_storage_info
+                     hash_storage_info shared_key_refcount shared_keys immortalize_key
                      bucket_ratio
                      used_buckets
                      num_buckets
@@ -544,9 +544,11 @@ Fields are as follows:
     rest : list of counts, Kth element is the number of buckets
            with K keys in it.
 
-On XPerl open-addressed hashes, buckets are index slots. Each occupied
+On XPerl ordinary open-addressed hashes, buckets are index slots. Each occupied
 slot contains one entry. Deleted slots count as empty in this summary.
 Use C<hash_storage_info()> to distinguish tombstones and measure probing.
+Passing C<undef> returns an empty list. The process-wide shared-key table is
+not exposed by these bucket diagnostics.
 
 See also bucket_stats() and bucket_array().
 
@@ -573,7 +575,7 @@ Fields are as follows:
 
 See also bucket_info() and bucket_array().
 
-On open-addressed hashes, the chain-based quality score and collision
+On ordinary open-addressed hashes, the chain-based quality score and collision
 percentage do not measure probe costs. Use C<hash_storage_info()> for
 probe distances and tombstones.
 
@@ -598,10 +600,11 @@ Returns a packed representation of the bucket array associated with a hash. Each
 of the array is either an integer K, in which case it represents K empty buckets, or
 a reference to another array which contains the keys that are in that bucket.
 
-On open-addressed hashes, each nonempty slot contains a single key.
+On ordinary open-addressed hashes, each nonempty slot contains a single key.
 The output shows physical index order. Hash iteration scans the separate
 entry array, so these orders need not match. Tombstones are grouped with
 empty slots here. C<hash_storage_info()> reports their number separately.
+Passing C<undef> returns an empty list.
 
 B<Note that the information returned by these diagnostics is sensitive information>:
 by knowing it one can directly attack perl's hash function which in turn may allow
@@ -661,6 +664,39 @@ addresses. No address is a stable identifier.
 
 This function scans the index and free list. It reports physical storage
 for tied hashes, rather than the tied object's contents.
+
+=item B<shared_key_refcount>
+
+    my $count = shared_key_refcount($key);
+
+Returns the current reference count for the canonical shared-key entry
+matching C<$key>, or zero if the key is not interned. This lookup does not
+intern the key or change its reference count. The key's UTF8 flag and bytes
+are used with the same canonicalization rules as hash keys.
+
+=item B<immortalize_key>
+
+    my $count = immortalize_key($key);
+
+Interns C<$key> if necessary and acquires one permanent reference to its
+shared-key entry. Returns the resulting reference count. Every call adds
+one reference, including repeated calls for the same key. The key remains
+interned until this interpreter is destroyed. These references are copied
+into cloned interpreters and released during interpreter destruction.
+UTF8 canonicalization matches C<shared_key_refcount()>.
+
+=item B<shared_keys>
+
+    my @keys = shared_keys();
+    my $count = shared_keys();
+
+Returns copies of the key strings currently interned in Perl's shared-key
+table, one per interned key. In scalar context it returns the number of
+interned keys. The list order is unspecified. Returned strings are independent copies: changing one
+does not modify the shared key or change its reference count. Embedded NULs are preserved. UTF8 keys retain the
+UTF8 flag, and keys stored with C<HEK_WASUTF8> are upgraded before they
+are returned. Plain byte and C<HEK_WASUTF8> entries with equal characters
+are returned separately.
 
 
 =cut

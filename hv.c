@@ -23,7 +23,7 @@ records in a headerless dense array and search it linearly. Larger ordinary
 hashes keep the same entry array and add an open-addressed index that maps each
 key hash to an entry index. Each HE contains a pointer to the value and a
 pointer to a HEK structure that holds the key and its hash. The shared string
-table keeps its separate bucket chains.
+table stores stable HEK pointers in a separate open-addressed index.
 
 =cut
 
@@ -44,13 +44,12 @@ table keeps its separate bucket chains.
  *  number of buckets,
  */
 #define MAX_BUCKET_MAX ((1<<26)-1)
-#define DO_HSPLIT(xhv) ( ( ((xhv)->xhv_keys + ((xhv)->xhv_keys >> 1)) > (xhv)->xhv_max ) && \
-                           ((xhv)->xhv_max < MAX_BUCKET_MAX) )
-
 /* Ordinary hashes use a dense HE vector and an independent open-addressed
- * index.  PL_strtab keeps its separate bucket chains. */
+ * index. PL_strtab uses a separate open-addressed HEK pointer index. */
 #define OA_EMPTY U32_MAX
 #define OA_DELETED HV_OA_DELETED
+#define STRTAB_MIN_CAPACITY 32768
+#define HVhek_STORAGE_MASK (0xFF & ~HVhek_NOTSHARED)
 
 static bool
 S_linear_enabled(pTHX_ HV *hv)
@@ -64,6 +63,130 @@ static void S_oa_index_insert(HV *hv, HE *entry, U32 hash);
 static HE *S_oa_new_entry(pTHX_ HV *hv);
 static HE *S_alloc_he(pTHX);
 static void S_release_he(pTHX_ HE *he);
+static HEK *S_strtab_find(pTHX_ U32 hash, const char *key, STRLEN klen, U8 flags,
+                          U32 *insert_pos, bool *collision);
+static void S_strtab_resize(pTHX_ U32 capacity);
+static void S_strtab_prepare_insert(pTHX_ U32 hash, const char *key,
+                                    STRLEN klen, U8 flags, U32 *pos,
+                                    bool collision);
+static void S_strtab_insert(pTHX_ HEK *hek, U32 pos);
+
+static HEK *
+S_strtab_find(pTHX_ U32 hash, const char *key, STRLEN klen, U8 flags,
+              U32 *insert_pos, bool *collision)
+{
+    U32 capacity = HvMAX(PL_strtab) + 1;
+    U32 pos = hash & (capacity - 1), first_deleted = OA_EMPTY, i;
+    HEK **slots;
+
+    if (!HvARRAY(PL_strtab)) {
+        if (insert_pos)
+            *insert_pos = OA_EMPTY;
+        if (collision)
+            *collision = FALSE;
+        return NULL;
+    }
+    slots = HvSTRSLOTS(PL_strtab);
+
+    if (collision)
+        *collision = slots[pos] != NULL;
+    for (i = 0; i < capacity; i++, pos = (pos + 1) & (capacity - 1)) {
+        HEK *hek = slots[pos];
+        if (!hek) {
+            if (insert_pos)
+                *insert_pos = first_deleted != OA_EMPTY ? first_deleted : pos;
+            return NULL;
+        }
+        if (hek == HvSTR_TOMBSTONE) {
+            if (first_deleted == OA_EMPTY)
+                first_deleted = pos;
+            continue;
+        }
+        if (HEK_HASH(hek) == hash && HEK_LEN(hek) == (I32)klen
+            && (HEK_FLAGS(hek) & HVhek_STORAGE_MASK) == flags
+            && (HEK_KEY(hek) == key || memEQ(HEK_KEY(hek), key, klen))) {
+            if (insert_pos)
+                *insert_pos = pos;
+            return hek;
+        }
+    }
+    if (insert_pos)
+        *insert_pos = first_deleted;
+    return NULL;
+}
+
+static void
+S_strtab_resize(pTHX_ U32 capacity)
+{
+    struct hv_strtab *old = HvARRAY(PL_strtab)
+        ? HvSTRTAB(PL_strtab) : NULL;
+    struct hv_strtab *table;
+    char *raw;
+    U32 i;
+
+    if (capacity < STRTAB_MIN_CAPACITY)
+        capacity = STRTAB_MIN_CAPACITY;
+    if (capacity > MAX_BUCKET_MAX + 1 || (capacity & (capacity - 1)))
+        Perl_croak_memory_wrap();
+    Newxz(raw, HvSTR_BYTES_FOR(capacity), char);
+    table = (struct hv_strtab *)raw;
+    if (old) {
+        HEK **old_slots = old->slots;
+        table->pins = old->pins;
+        U32 old_capacity = HvMAX(PL_strtab) + 1;
+        for (i = 0; i < old_capacity; i++) {
+            HEK *hek = old_slots[i];
+            U32 pos;
+            if (!hek || hek == HvSTR_TOMBSTONE)
+                continue;
+            pos = HEK_HASH(hek) & (capacity - 1);
+            while (table->slots[pos])
+                pos = (pos + 1) & (capacity - 1);
+            table->slots[pos] = hek;
+        }
+        Safefree(old);
+    }
+    HvARRAY(PL_strtab) = (HE **)table;
+    HvMAX_SET(PL_strtab, capacity - 1);
+}
+
+static void
+S_strtab_prepare_insert(pTHX_ U32 hash, const char *key, STRLEN klen,
+                        U8 flags, U32 *pos, bool collision)
+{
+    U32 capacity = HvMAX(PL_strtab) + 1;
+    U32 live = HvTOTALKEYS(PL_strtab) + 1;
+    U32 occupied = HvTOTALKEYS(PL_strtab)
+        + HvSTRTAB(PL_strtab)->tombstones
+        + (*pos != OA_EMPTY && HvSTRSLOTS(PL_strtab)[*pos] == HvSTR_TOMBSTONE
+           ? 0 : 1);
+    bool resized = FALSE;
+
+    if (collision && live + (live >> 1) > HvMAX(PL_strtab)) {
+        if (capacity > ((U32)MAX_BUCKET_MAX + 1) / 2)
+            Perl_croak_memory_wrap();
+        S_strtab_resize(aTHX_ capacity * 2);
+        resized = TRUE;
+    }
+    else if (collision && HvSTRTAB(PL_strtab)->tombstones
+             && occupied + (occupied >> 1) > HvMAX(PL_strtab)) {
+        S_strtab_resize(aTHX_ capacity);
+        resized = TRUE;
+    }
+    if (resized)
+        (void)S_strtab_find(aTHX_ hash, key, klen, flags, pos, NULL);
+}
+
+static void
+S_strtab_insert(pTHX_ HEK *hek, U32 pos)
+{
+    if (pos == OA_EMPTY)
+        Perl_croak_memory_wrap();
+    if (HvSTRSLOTS(PL_strtab)[pos] == HvSTR_TOMBSTONE)
+        HvSTRTAB(PL_strtab)->tombstones--;
+    HvSTRSLOTS(PL_strtab)[pos] = hek;
+    HvTOTALKEYS(PL_strtab)++;
+}
 
 static void
 S_oa_index_resize(pTHX_ HV *hv, U32 capacity)
@@ -431,7 +554,6 @@ S_oa_free_deleted(pTHX_ HV *hv, HE *entry)
    change if we add a flag bit that matters to the shared string table but not
    to Storable (or similar). */
 
-#define HVhek_STORAGE_MASK (0xFF & ~HVhek_NOTSHARED)
 
 #ifdef PURIFY
 
@@ -1186,6 +1308,17 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     else if (!hash)
         PERL_HASH(hash, key, klen);
 
+    if (HvIS_STRTAB(hv)) {
+        HEK *hek = S_strtab_find(aTHX_ hash, key, klen,
+                                 flags & HVhek_STORAGE_MASK, NULL, NULL);
+        void *result = (action & HV_FETCH_ISEXISTS) && hek ? (void *)hek : NULL;
+        /* The shared table stores reference counts, not values. It supports
+         * existence checks but has no HE or SV ** to return from a fetch. */
+        if (flags & HVhek_FREEKEY)
+            Safefree(key);
+        return result;
+    }
+
 #ifdef DYNAMIC_ENV_FETCH
     if (!HvARRAY(hv)) entry = NULL;
     else
@@ -1199,145 +1332,95 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     if (!entry)
         goto not_found;
 
-    if (HvIS_OA(hv)) {
-        if (entry)
-            goto found;
-    }
-    else if (keysv_hek) {
-        /* keysv is actually a HEK in disguise, so we can match just by
-         * comparing the HEK pointers in the HE chain. There is a slight
-         * caveat: on something like "\x80", which has both plain and utf8
-         * representations, perl's hashes do encoding-insensitive lookups,
-         * but preserve the encoding of the stored key. Thus a particular
-         * key could map to two different HEKs in PL_strtab. We only
-         * conclude 'not found' if all the flags are the same; otherwise
-         * we fall back to a full search (this should only happen in rare
-         * cases).
-         */
-        int keysv_flags = HEK_FLAGS(keysv_hek);
-        HE  *orig_entry = entry;
-
-        for (; entry; entry = HeSHARED_NEXT(entry)) {
-            HEK *hek = HeKEY_hek(entry);
-            if (hek == keysv_hek)
-                goto found;
-            if (HEK_FLAGS(hek) != keysv_flags)
-                break; /* need to do full match */
-        }
-        if (!entry)
-            goto not_found;
-        /* failed on shortcut - do full search loop */
-        entry = orig_entry;
-    }
-
-    for (; entry; entry = HeSHARED_NEXT(entry)) {
-        if (HeHASH(entry) != hash)		/* strings can't be equal */
-            continue;
-        if (HeKLEN(entry) != (I32)klen)
-            continue;
-        if (memNE(HeKEY(entry),key,klen))	/* is this it? */
-            continue;
-        if ((HeKFLAGS(entry) ^ flags) & HVhek_UTF8)
-            continue;
-
-      found:
-        if (action & (HV_FETCH_LVALUE|HV_FETCH_ISSTORE)) {
-            if ((HeKFLAGS(entry) ^ flags) & HVhek_WASUTF8) {
-                /* We match if HVhek_UTF8 bit in our flags and hash key's
-                   match.  But if entry was set previously with HVhek_WASUTF8
-                   and key now doesn't (or vice versa) then we should change
-                   the key's flag, as this is assignment.  */
-                if ((HeKFLAGS(entry) & HVhek_NOTSHARED) == 0) {
-                    /* Need to swap the key we have for a key with the flags we
-                       need. As keys are shared we can't just write to the
-                       flag, so we share the new one, unshare the old one.  */
-                    HEK * const new_hek
-                        = share_hek_flags(key, klen, hash, flags & ~HVhek_FREEKEY);
-                    unshare_hek (HeKEY_hek(entry));
-                    HeKEY_hek(entry) = new_hek;
-                }
-                else if (hv == PL_strtab) {
-                    /* PL_strtab is usually the only hash without HvSHAREKEYS,
-                       so putting this test here is cheap  */
-                    if (flags & HVhek_FREEKEY)
-                        Safefree(key);
-                    PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN(action & HV_FETCH_LVALUE ? "fetch" : "store");
-                }
-                else {
-                    /* Effectively this is save_hek_flags() for a new version
-                       of the HEK and Safefree() of the old rolled together. */
-                    HeKFLAGS(entry) ^= HVhek_WASUTF8;
-                }
-                if (flags & HVhek_ENABLEHVKFLAGS)
-                    HvHASKFLAGS_on(hv);
+    if (action & (HV_FETCH_LVALUE|HV_FETCH_ISSTORE)) {
+        if ((HeKFLAGS(entry) ^ flags) & HVhek_WASUTF8) {
+            /* We match if HVhek_UTF8 bit in our flags and hash key's
+               match.  But if entry was set previously with HVhek_WASUTF8
+               and key now doesn't (or vice versa) then we should change
+               the key's flag, as this is assignment.  */
+            if ((HeKFLAGS(entry) & HVhek_NOTSHARED) == 0) {
+                /* Need to swap the key we have for a key with the flags we
+                   need. As keys are shared we can't just write to the
+                   flag, so we share the new one, unshare the old one.  */
+                HEK * const new_hek
+                    = share_hek_flags(key, klen, hash, flags & ~HVhek_FREEKEY);
+                unshare_hek (HeKEY_hek(entry));
+                HeKEY_hek(entry) = new_hek;
             }
-            if (HeVAL(entry) == &PL_sv_placeholder) {
-                /* yes, can store into placeholder slot */
-                if (action & HV_FETCH_LVALUE) {
-                    if (SvMAGICAL(hv)) {
-                        /* This preserves behaviour with the old hv_fetch
-                           implementation which at this point would bail out
-                           with a break; (at "if we find a placeholder, we
-                           pretend we haven't found anything")
+            else {
+                /* Effectively this is save_hek_flags() for a new version
+                   of the HEK and Safefree() of the old rolled together. */
+                HeKFLAGS(entry) ^= HVhek_WASUTF8;
+            }
+            if (flags & HVhek_ENABLEHVKFLAGS)
+                HvHASKFLAGS_on(hv);
+        }
+        if (HeVAL(entry) == &PL_sv_placeholder) {
+            /* yes, can store into placeholder slot */
+            if (action & HV_FETCH_LVALUE) {
+                if (SvMAGICAL(hv)) {
+                    /* This preserves behaviour with the old hv_fetch
+                       implementation which at this point would bail out
+                       with a break; (at "if we find a placeholder, we
+                       pretend we haven't found anything")
 
-                           That break mean that if a placeholder were found, it
-                           caused a call into hv_store, which in turn would
-                           check magic, and if there is no magic end up pretty
-                           much back at this point (in hv_store's code).  */
-                        break;
-                    }
-                    /* LVAL fetch which actually needs a store.  */
-                    val = newSV_type(SVt_NULL);
+                       That break mean that if a placeholder were found, it
+                       caused a call into hv_store, which in turn would
+                       check magic, and if there is no magic end up pretty
+                       much back at this point (in hv_store's code).  */
+                    goto not_found;
+                }
+                /* LVAL fetch which actually needs a store.  */
+                val = newSV_type(SVt_NULL);
+                HvPLACEHOLDERS(hv)--;
+            } else {
+                /* store */
+                if (val != &PL_sv_placeholder)
                     HvPLACEHOLDERS(hv)--;
-                } else {
-                    /* store */
-                    if (val != &PL_sv_placeholder)
-                        HvPLACEHOLDERS(hv)--;
+            }
+            HeVAL(entry) = val;
+        } else if (action & HV_FETCH_ISSTORE) {
+            if (HvIS_OA(hv)) {
+                SV *lookup_sv;
+                const char *lookup_key;
+                SV *oldval = HeVAL(entry);
+                if (val && !SvIMMORTAL(val))
+                    sv_2mortal(SvREFCNT_inc(val));
+                /* The supplied key can alias a HEK replaced above when
+                 * its WASUTF8 flag changed. Copy the current key. */
+                lookup_sv = sv_2mortal(newSVpvn_flags(
+                    HeKEY(entry), HeKLEN(entry),
+                    (flags & HVhek_UTF8) ? SVf_UTF8 : 0));
+                lookup_key = SvPVX_const(lookup_sv);
+                if (flags & HVhek_FREEKEY) {
+                    Safefree(key);
+                    flags &= ~HVhek_FREEKEY;
                 }
                 HeVAL(entry) = val;
-            } else if (action & HV_FETCH_ISSTORE) {
-                if (HvIS_OA(hv)) {
-                    SV *lookup_sv;
-                    const char *lookup_key;
-                    SV *oldval = HeVAL(entry);
+                SvREFCNT_dec(oldval);
+                entry = S_oa_find(aTHX_ hv, hash, lookup_key, klen, flags,
+                                 NULL, NULL);
+                if (!entry || HeVAL(entry) != val) {
                     if (val && !SvIMMORTAL(val))
-                        sv_2mortal(SvREFCNT_inc(val));
-                    /* The supplied key can alias a HEK replaced above when
-                     * its WASUTF8 flag changed. Copy the current key. */
-                    lookup_sv = sv_2mortal(newSVpvn_flags(
-                        HeKEY(entry), HeKLEN(entry),
-                        (flags & HVhek_UTF8) ? SVf_UTF8 : 0));
-                    lookup_key = SvPVX_const(lookup_sv);
-                    if (flags & HVhek_FREEKEY) {
-                        Safefree(key);
-                        flags &= ~HVhek_FREEKEY;
-                    }
-                    HeVAL(entry) = val;
-                    SvREFCNT_dec(oldval);
-                    entry = S_oa_find(aTHX_ hv, hash, lookup_key, klen, flags,
-                                     NULL, NULL);
-                    if (!entry || HeVAL(entry) != val) {
-                        if (val && !SvIMMORTAL(val))
-                            SvREFCNT_inc_simple_void_NN(val);
-                        return NULL;
-                    }
-                } else {
-                    SvREFCNT_dec(HeVAL(entry));
-                    HeVAL(entry) = val;
+                        SvREFCNT_inc_simple_void_NN(val);
+                    return NULL;
                 }
+            } else {
+                SvREFCNT_dec(HeVAL(entry));
+                HeVAL(entry) = val;
             }
-        } else if (HeVAL(entry) == &PL_sv_placeholder) {
-            /* if we find a placeholder, we pretend we haven't found
-               anything */
-            break;
         }
-        if (flags & HVhek_FREEKEY)
-            Safefree(key);
-        if (return_svp) {
-            return (void *) &HeVAL(entry);
-        }
-        return entry;
+    } else if (HeVAL(entry) == &PL_sv_placeholder) {
+        /* if we find a placeholder, we pretend we haven't found
+           anything */
+        goto not_found;
     }
+    if (flags & HVhek_FREEKEY)
+        Safefree(key);
+    if (return_svp) {
+        return (void *) &HeVAL(entry);
+    }
+    return entry;
 
   not_found:
 #ifdef DYNAMIC_ENV_FETCH  /* %ENV lookup?  If so, try to fetch the value now */
@@ -1669,8 +1752,6 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
 
     XPVHV* xhv;
     HE *entry;
-    HE **oentry;
-    HE **first_entry;
     bool is_utf8 = cBOOL(k_flags & HVhek_UTF8);
     bool was_linear = FALSE;
     bool key_alias_entry = FALSE;
@@ -1755,260 +1836,202 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     else if (!hash)
         PERL_HASH(hash, key, klen);
 
-    if (HvIS_OA(hv))
-        first_entry = oentry = NULL;
-    else
-        first_entry = oentry = &(HvARRAY(hv))[hash & (I32) HvMAX(hv)];
-    entry = HvIS_OA(hv)
-          ? S_oa_find(aTHX_ hv, hash, key, klen, k_flags, keysv_hek, NULL)
-          : *oentry;
+    entry = S_oa_find(aTHX_ hv, hash, key, klen, k_flags, keysv_hek, NULL);
 
     if (!entry)
         goto not_found;
 
-    if (HvIS_OA(hv)) {
-        if (entry)
-            goto found;
-    }
-    else if (keysv_hek) {
-        /* keysv is actually a HEK in disguise, so we can match just by
-         * comparing the HEK pointers in the HE chain. There is a slight
-         * caveat: on something like "\x80", which has both plain and utf8
-         * representations, perl's hashes do encoding-insensitive lookups,
-         * but preserve the encoding of the stored key. Thus a particular
-         * key could map to two different HEKs in PL_strtab. We only
-         * conclude 'not found' if all the flags are the same; otherwise
-         * we fall back to a full search (this should only happen in rare
-         * cases).
-         */
-        int keysv_flags = HEK_FLAGS(keysv_hek);
-
-        for (; entry; oentry = &HeSHARED_NEXT(entry), entry = *oentry) {
-            HEK *hek = HeKEY_hek(entry);
-            if (hek == keysv_hek)
-                goto found;
-            if (HEK_FLAGS(hek) != keysv_flags)
-                break; /* need to do full match */
-        }
-        if (!entry)
-            goto not_found;
-        /* failed on shortcut - do full search loop */
-        oentry = first_entry;
-        entry = *oentry;
+    was_linear = HvIS_LINEAR(hv);
+    if (hv == PL_strtab) {
+        if (k_flags & HVhek_FREEKEY)
+            Safefree(key);
+        PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN("delete");
     }
 
-    for (; entry; oentry = &HeSHARED_NEXT(entry), entry = *oentry) {
-        if (HeHASH(entry) != hash)		/* strings can't be equal */
-            continue;
-        if (HeKLEN(entry) != (I32)klen)
-            continue;
-        if (memNE(HeKEY(entry),key,klen))	/* is this it? */
-            continue;
-        if ((HeKFLAGS(entry) ^ k_flags) & HVhek_UTF8)
-            continue;
+    sv = HeVAL(entry);
 
-      found:
-        was_linear = HvIS_LINEAR(hv);
-        if (hv == PL_strtab) {
-            if (k_flags & HVhek_FREEKEY)
-                Safefree(key);
-            PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN("delete");
-        }
+    /* if placeholder is here, it's already been deleted.... */
+    if (sv == &PL_sv_placeholder) {
+        if (k_flags & HVhek_FREEKEY)
+            Safefree(key);
+        return NULL;
+    }
+    if (SvREADONLY(hv) && sv && SvREADONLY(sv)) {
+        S_hv_notallowed(aTHX_ k_flags, key, klen, HV_NOTALLOWED_DELETE_READONLY);
+    }
 
-        sv = HeVAL(entry);
-
-        /* if placeholder is here, it's already been deleted.... */
-        if (sv == &PL_sv_placeholder) {
-            if (k_flags & HVhek_FREEKEY)
-                Safefree(key);
-            return NULL;
-        }
-        if (SvREADONLY(hv) && sv && SvREADONLY(sv)) {
-            S_hv_notallowed(aTHX_ k_flags, key, klen, HV_NOTALLOWED_DELETE_READONLY);
-        }
-
-        /*
-         * If a restricted hash, rather than really deleting the entry, put
-         * a placeholder there. This marks the key as being "approved", so
-         * we can still access via not-really-existing key without raising
-         * an error.
-         */
-        if (SvREADONLY(hv)) {
-            /* We'll be saving this slot, so the number of allocated keys
-             * doesn't go down, but the number placeholders goes up */
-            HeVAL(entry) = &PL_sv_placeholder;
-            HvPLACEHOLDERS(hv)++;
-        }
-        else {
-            HeVAL(entry) = NULL;
-            if (HvIS_LINEAR(hv)) {
-                HEK *old_hek;
-                I32 old_len;
-                U8 old_flags;
-                const U32 idx = (U32)(entry - (HE *)HvARRAY(hv));
-                if (key == HeKEY(entry)) {
-                    key_alias_entry = TRUE;
-                    mro_key_copy = savepvn(key, klen);
-                }
-            S_linear_remove_at(aTHX_ hv, idx, &old_hek, &old_len, &old_flags);
-                S_oa_free_key(aTHX_ old_hek, old_len, old_flags);
+    /*
+     * If a restricted hash, rather than really deleting the entry, put
+     * a placeholder there. This marks the key as being "approved", so
+     * we can still access via not-really-existing key without raising
+     * an error.
+     */
+    if (SvREADONLY(hv)) {
+        /* We'll be saving this slot, so the number of allocated keys
+         * doesn't go down, but the number placeholders goes up */
+        HeVAL(entry) = &PL_sv_placeholder;
+        HvPLACEHOLDERS(hv)++;
+    }
+    else {
+        HeVAL(entry) = NULL;
+        if (HvIS_LINEAR(hv)) {
+            HEK *old_hek;
+            I32 old_len;
+            U8 old_flags;
+            const U32 idx = (U32)(entry - (HE *)HvARRAY(hv));
+            if (key == HeKEY(entry)) {
+                key_alias_entry = TRUE;
+                mro_key_copy = savepvn(key, klen);
             }
-            else if (HvIS_OA(hv) && HvARRAY(hv)) {
-                U32 pos;
-                (void)S_oa_find(aTHX_ hv, hash, key, klen, k_flags,
-                                keysv_hek, &pos);
-                if (pos != OA_EMPTY) {
-                    HvOA_INDEX_SET(hv, pos, OA_DELETED);
-                    HvOA(hv)->tombstones++;
-                }
-                xhv->xhv_keys--;
-                if (xhv->xhv_keys == 0)
-                    HvHASKFLAGS_off(hv);
-            } else
-                *oentry = HeSHARED_NEXT(entry);
-            if (!was_linear) {
-                if (HvHasAUX(hv) && entry == HvAUX(hv)->xhv_eiter /* HvEITER(hv) */) {
-                    HvLAZYDEL_on(hv);
-                }
-                else {
-                    if (!HvIS_OA(hv) && HvHasAUX(hv) && HvLAZYDEL(hv) &&
-                        entry == HeSHARED_NEXT(HvAUX(hv)->xhv_eiter))
-                        HeSHARED_NEXT(HvAUX(hv)->xhv_eiter) = HeSHARED_NEXT(entry);
-                    if (HvIS_OA(hv)) {
-                        S_oa_free_deleted(aTHX_ hv, entry);
-                    } else
-                        hv_free_ent(NULL, entry);
-                }
+        S_linear_remove_at(aTHX_ hv, idx, &old_hek, &old_len, &old_flags);
+            S_oa_free_key(aTHX_ old_hek, old_len, old_flags);
+        }
+        else if (HvIS_OA(hv) && HvARRAY(hv)) {
+            U32 pos;
+            (void)S_oa_find(aTHX_ hv, hash, key, klen, k_flags,
+                            keysv_hek, &pos);
+            if (pos != OA_EMPTY) {
+                HvOA_INDEX_SET(hv, pos, OA_DELETED);
+                HvOA(hv)->tombstones++;
             }
-            if (!HvIS_OA(hv))
-                xhv->xhv_keys--; /* HvTOTALKEYS(hv)-- */
+            xhv->xhv_keys--;
             if (xhv->xhv_keys == 0)
                 HvHASKFLAGS_off(hv);
         }
+        if (!was_linear) {
+            if (HvHasAUX(hv) && entry == HvAUX(hv)->xhv_eiter /* HvEITER(hv) */) {
+                HvLAZYDEL_on(hv);
+            }
+            else {
+                S_oa_free_deleted(aTHX_ hv, entry);
+            }
+        }
+        if (xhv->xhv_keys == 0)
+            HvHASKFLAGS_off(hv);
+    }
 
-        /* If this is a stash and the key ends with ::, then someone is
-         * deleting a package.
-         */
-        if (sv && SvTYPE(sv) == SVt_PVGV && HvHasENAME(hv)) {
-                const char * const package_key = mro_key_copy
-                    ? mro_key_copy : key;
-                gv = (GV *)sv;
-                if ((
-                     (klen > 1 && package_key[klen-2] == ':' && package_key[klen-1] == ':')
-                      ||
-                     (klen == 1 && package_key[0] == ':')
-                    )
-                 && (klen != 6 || hv!=PL_defstash || memNE(package_key,"main::",6))
-                 && (stash = GvHV((GV *)gv))
-                 && HvHasENAME(stash)) {
-                        /* A previous version of this code checked that the
-                         * GV was still in the symbol table by fetching the
-                         * GV with its name. That is not necessary (and
-                         * sometimes incorrect), as HvENAME cannot be set
-                         * on hv if it is not in the symtab. */
-                        mro_changes = 2;
-                        /* Hang on to it for a bit. */
-                        SvREFCNT_inc_simple_void_NN(
-                         sv_2mortal((SV *)gv)
-                        );
-                }
-                else if (memEQs(package_key, klen, "ISA") && GvAV(gv)) {
-                    AV *isa = GvAV(gv);
-                    MAGIC *mg = mg_find((SV*)isa, PERL_MAGIC_isa);
+    /* If this is a stash and the key ends with ::, then someone is
+     * deleting a package.
+     */
+    if (sv && SvTYPE(sv) == SVt_PVGV && HvHasENAME(hv)) {
+            const char * const package_key = mro_key_copy
+                ? mro_key_copy : key;
+            gv = (GV *)sv;
+            if ((
+                 (klen > 1 && package_key[klen-2] == ':' && package_key[klen-1] == ':')
+                  ||
+                 (klen == 1 && package_key[0] == ':')
+                )
+             && (klen != 6 || hv!=PL_defstash || memNE(package_key,"main::",6))
+             && (stash = GvHV((GV *)gv))
+             && HvHasENAME(stash)) {
+                    /* A previous version of this code checked that the
+                     * GV was still in the symbol table by fetching the
+                     * GV with its name. That is not necessary (and
+                     * sometimes incorrect), as HvENAME cannot be set
+                     * on hv if it is not in the symtab. */
+                    mro_changes = 2;
+                    /* Hang on to it for a bit. */
+                    SvREFCNT_inc_simple_void_NN(
+                     sv_2mortal((SV *)gv)
+                    );
+            }
+            else if (memEQs(package_key, klen, "ISA") && GvAV(gv)) {
+                AV *isa = GvAV(gv);
+                MAGIC *mg = mg_find((SV*)isa, PERL_MAGIC_isa);
 
-                    mro_changes = 1;
-                    if (mg) {
-                        if (mg->mg_obj == (SV*)gv) {
-                            /* This is the only stash this ISA was used for.
-                             * The isaelem magic asserts if there's no
-                             * isa magic on the array, so explicitly
-                             * remove the magic on both the array and its
-                             * elements.  @ISA shouldn't be /too/ large.
-                             */
-                            SV **svp, **end;
-                        strip_magic:
-                            svp = AvARRAY(isa);
-                            if (svp) {
-                                end = svp + (AvFILLp(isa)+1);
-                                while (svp < end) {
-                                    if (*svp)
-                                        mg_free_type(*svp, PERL_MAGIC_isaelem);
-                                    ++svp;
-                                }
+                mro_changes = 1;
+                if (mg) {
+                    if (mg->mg_obj == (SV*)gv) {
+                        /* This is the only stash this ISA was used for.
+                         * The isaelem magic asserts if there's no
+                         * isa magic on the array, so explicitly
+                         * remove the magic on both the array and its
+                         * elements.  @ISA shouldn't be /too/ large.
+                         */
+                        SV **svp, **end;
+                    strip_magic:
+                        svp = AvARRAY(isa);
+                        if (svp) {
+                            end = svp + (AvFILLp(isa)+1);
+                            while (svp < end) {
+                                if (*svp)
+                                    mg_free_type(*svp, PERL_MAGIC_isaelem);
+                                ++svp;
                             }
-                            mg_free_type((SV*)GvAV(gv), PERL_MAGIC_isa);
+                        }
+                        mg_free_type((SV*)GvAV(gv), PERL_MAGIC_isa);
+                    }
+                    else {
+                        /* mg_obj is an array of stashes
+                           Note that the array doesn't keep a reference
+                           count on the stashes.
+                         */
+                        AV *av = (AV*)mg->mg_obj;
+                        SV **svp, **arrayp;
+                        SSize_t index;
+                        SSize_t items;
+
+                        assert(SvTYPE(mg->mg_obj) == SVt_PVAV);
+
+                        /* remove the stash from the magic array */
+                        arrayp = svp = AvARRAY(av);
+                        items = AvFILLp(av) + 1;
+                        if (items == 1) {
+                            assert(*arrayp == (SV *)gv);
+                            mg->mg_obj = NULL;
+                            /* avoid a double free on the last stash */
+                            AvFILLp(av) = -1;
+                            /* The magic isn't MGf_REFCOUNTED, so release
+                             * the array manually.
+                             */
+                            SvREFCNT_dec_NN(av);
+                            goto strip_magic;
                         }
                         else {
-                            /* mg_obj is an array of stashes
-                               Note that the array doesn't keep a reference
-                               count on the stashes.
-                             */
-                            AV *av = (AV*)mg->mg_obj;
-                            SV **svp, **arrayp;
-                            SSize_t index;
-                            SSize_t items;
-
-                            assert(SvTYPE(mg->mg_obj) == SVt_PVAV);
-
-                            /* remove the stash from the magic array */
-                            arrayp = svp = AvARRAY(av);
-                            items = AvFILLp(av) + 1;
-                            if (items == 1) {
-                                assert(*arrayp == (SV *)gv);
-                                mg->mg_obj = NULL;
-                                /* avoid a double free on the last stash */
-                                AvFILLp(av) = -1;
-                                /* The magic isn't MGf_REFCOUNTED, so release
-                                 * the array manually.
-                                 */
-                                SvREFCNT_dec_NN(av);
-                                goto strip_magic;
+                            while (items--) {
+                                if (*svp == (SV*)gv)
+                                    break;
+                                ++svp;
                             }
-                            else {
-                                while (items--) {
-                                    if (*svp == (SV*)gv)
-                                        break;
-                                    ++svp;
-                                }
-                                index = svp - arrayp;
-                                assert(index >= 0 && index <= AvFILLp(av));
-                                if (index < AvFILLp(av)) {
-                                    arrayp[index] = arrayp[AvFILLp(av)];
-                                }
-                                arrayp[AvFILLp(av)] = NULL;
-                                --AvFILLp(av);
+                            index = svp - arrayp;
+                            assert(index >= 0 && index <= AvFILLp(av));
+                            if (index < AvFILLp(av)) {
+                                arrayp[index] = arrayp[AvFILLp(av)];
                             }
+                            arrayp[AvFILLp(av)] = NULL;
+                            --AvFILLp(av);
                         }
                     }
                 }
-        }
-
-        if ((k_flags & HVhek_FREEKEY) && !key_alias_entry)
-            Safefree(key);
-
-        if (sv) {
-            /* deletion of method from stash */
-            if (isGV(sv) && isGV_with_GP(sv) && GvCVu(sv)
-             && HvHasENAME(hv))
-                mro_method_changed_in(hv);
-
-            if (d_flags & G_DISCARD) {
-                SvREFCNT_dec(sv);
-                sv = NULL;
             }
-            else {
-                sv_2mortal(sv);
-            }
-        }
-
-        if (mro_changes == 1) mro_isa_changed_in(hv);
-        else if (mro_changes == 2)
-            mro_package_moved(NULL, stash, gv, 1);
-
-        Safefree(mro_key_copy);
-
-        return sv;
     }
+
+    if ((k_flags & HVhek_FREEKEY) && !key_alias_entry)
+        Safefree(key);
+
+    if (sv) {
+        /* deletion of method from stash */
+        if (isGV(sv) && isGV_with_GP(sv) && GvCVu(sv)
+         && HvHasENAME(hv))
+            mro_method_changed_in(hv);
+
+        if (d_flags & G_DISCARD) {
+            SvREFCNT_dec(sv);
+            sv = NULL;
+        }
+        else {
+            sv_2mortal(sv);
+        }
+    }
+
+    if (mro_changes == 1) mro_isa_changed_in(hv);
+    else if (mro_changes == 2)
+        mro_package_moved(NULL, stash, gv, 1);
+
+    Safefree(mro_key_copy);
+
+    return sv;
 
   not_found:
     if (SvREADONLY(hv)) {
@@ -2060,15 +2083,13 @@ static void
 S_hsplit(pTHX_ HV *hv, STRLEN const oldsize, STRLEN newsize)
 {
     PERL_ARGS_ASSERT_HSPLIT;
-
-    STRLEN i = 0;
-    char *a = (char*) HvARRAY(hv);
-    HE **aep;
+    PERL_UNUSED_ARG(oldsize);
 
     if (newsize > MAX_BUCKET_MAX+1)
             return;
 
-    if (HvIS_OA(hv)) {
+    assert(HvIS_OA(hv));
+    {
         struct hv_oa *old = HvOA(hv);
         U32 used = old->used;
         HE *entries = old->entries;
@@ -2081,50 +2102,7 @@ S_hsplit(pTHX_ HV *hv, STRLEN const oldsize, STRLEN newsize)
                 S_oa_index_insert(hv, e, HeHASH(e));
         }
         HvOA(hv)->tombstones = 0;
-        return;
     }
-
-    PL_nomemok = TRUE;
-    Renew(a, PERL_HV_ARRAY_ALLOC_BYTES(newsize), char);
-    PL_nomemok = FALSE;
-    if (!a) {
-      return;
-    }
-
-    HvARRAY(hv) = (HE**) a;
-    HvMAX_SET(hv, newsize - 1);
-    /* now we can safely clear the second half */
-    Zero(&a[oldsize * sizeof(HE*)], (newsize-oldsize) * sizeof(HE*), char);	/* zero 2nd half*/
-
-    if (!HvTOTALKEYS(hv))       /* skip rest if no entries */
-        return;
-
-    /* don't share keys in large simple hashes */
-    if (LARGE_HASH_HEURISTIC(hv, HvTOTALKEYS(hv)))
-        HvSHAREKEYS_off(hv);
-
-
-    newsize--;
-    aep = (HE**)a;
-    do {
-        HE **oentry = aep + i;
-        HE *entry = aep[i];
-
-        if (!entry)				/* non-existent */
-            continue;
-        do {
-            U32 j = (HeHASH(entry) & newsize);
-            if (j != (U32)i) {
-                *oentry = HeSHARED_NEXT(entry);
-                HeSHARED_NEXT(entry) = aep[j];
-                aep[j] = entry;
-            }
-            else {
-                oentry = &HeSHARED_NEXT(entry);
-            }
-            entry = *oentry;
-        } while (entry);
-    } while (i++ < oldsize);
 }
 
 /*
@@ -2155,6 +2133,22 @@ Perl_hv_ksplit(pTHX_ HV *hv, IV newmax)
     wantsize = (I32) newmax;                            /* possible truncation here */
     if (wantsize != newmax)
         return;
+
+    if (HvIS_STRTAB(hv)) {
+        U32 capacity = STRTAB_MIN_CAPACITY;
+        U32 needed;
+        if (wantsize < 0 || (U32)wantsize > (U32)MAX_BUCKET_MAX)
+            return;
+        needed = (U32)wantsize + ((U32)wantsize >> 1);
+        while (capacity <= needed) {
+            if (capacity > ((U32)MAX_BUCKET_MAX + 1) / 2)
+                return;
+            capacity <<= 1;
+        }
+        if (!HvARRAY(hv) || capacity > HvMAX(hv) + 1)
+            S_strtab_resize(aTHX_ capacity);
+        return;
+    }
 
     oldsize = HvIS_LINEAR(hv) ? (HvLINEAR_CAP(hv)
                                   ? (I32)HvLINEAR_CAP(hv) : 1)
@@ -2301,8 +2295,7 @@ Perl_newHVhv(pTHX_ HV *ohv)
     HV *hv;
     STRLEN hv_max;
 
-    /* PL_strtab stores HEK reference counts, not SV values, and its entries
-     * are embedded in shared_he allocations.  It is not a value hash that
+    /* PL_strtab stores shared HEKs, not values. It is not a value hash that
      * can be copied with newHVhv(). */
     if (ohv && ohv == PL_strtab)
         PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN("copy");
@@ -2585,6 +2578,9 @@ Perl_hv_clear(pTHX_ HV *hv)
     if (!hv)
         return;
 
+    if (HvIS_STRTAB(hv))
+        return;
+
     DEBUG_A(Perl_hv_assert(aTHX_ hv));
 
     /* avoid hv being freed when calling destructors below */
@@ -2642,26 +2638,6 @@ Perl_hv_clear(pTHX_ HV *hv)
                     if (oldval) SvREFCNT_dec_NN(oldval);
                 }
             }
-        } else if (!HvIS_OA(hv)) {
-        STRLEN max = HvMAX(hv);
-        STRLEN i;
-        for (i = 0; i <= max; i++) {
-            HE *entry = (HvARRAY(hv))[i];
-            for (; entry; entry = HeSHARED_NEXT(entry)) {
-                /* not already placeholder */
-                if (HeVAL(entry) != &PL_sv_placeholder) {
-                    if (HeVAL(entry)) {
-                        if (SvREADONLY(HeVAL(entry))) {
-                            SV* const keysv = hv_iterkeysv(entry);
-                            PERL_THROW_ERROR_MUTATION_READ_ONLY_RESTRICTED_HASH_KEY_DELETION(keysv);
-                        }
-                        SvREFCNT_dec_NN(HeVAL(entry));
-                    }
-                    HeVAL(entry) = &PL_sv_placeholder;
-                    HvPLACEHOLDERS(hv)++;
-                }
-            }
-        }
         }
     }
     else {
@@ -2706,6 +2682,9 @@ Perl_hv_clear_placeholders(pTHX_ HV *hv)
 {
     PERL_ARGS_ASSERT_HV_CLEAR_PLACEHOLDERS;
 
+    if (!hv || HvIS_STRTAB(hv))
+        return;
+
     const U32 items = (U32)HvPLACEHOLDERS_get(hv);
 
     if (items)
@@ -2717,7 +2696,9 @@ S_clear_placeholders(pTHX_ HV *hv, const U32 placeholders)
 {
     PERL_ARGS_ASSERT_CLEAR_PLACEHOLDERS;
 
-    I32 i;
+    if (HvIS_STRTAB(hv))
+        return;
+
     U32 to_find = placeholders;
 
     assert(to_find);
@@ -2787,40 +2768,7 @@ S_clear_placeholders(pTHX_ HV *hv, const U32 placeholders)
         return;
     }
 
-    i = HvMAX(hv);
-    do {
-        /* Loop down the linked list heads  */
-        HE **oentry = &(HvARRAY(hv))[i];
-        HE *entry;
-
-        while ((entry = *oentry)) {
-            if (HeVAL(entry) == &PL_sv_placeholder) {
-                *oentry = HeSHARED_NEXT(entry);
-                if (entry == HvEITER_get(hv))
-                    HvLAZYDEL_on(hv);
-                else {
-                    if (HvHasAUX(hv) && HvLAZYDEL(hv) &&
-                        entry == HeSHARED_NEXT(HvAUX(hv)->xhv_eiter))
-                        HeSHARED_NEXT(HvAUX(hv)->xhv_eiter) = HeSHARED_NEXT(entry);
-                    hv_free_ent(NULL, entry);
-                }
-
-                if (--to_find == 0) {
-                    /* Finished.  */
-                    HvTOTALKEYS(hv) -= (IV)placeholders;
-                    if (HvTOTALKEYS(hv) == 0)
-                        HvHASKFLAGS_off(hv);
-                    HvPLACEHOLDERS_set(hv, 0);
-                    return;
-                }
-            } else {
-                oentry = &HeSHARED_NEXT(entry);
-            }
-        }
-    } while (--i >= 0);
-    /* You can't get here, hence assertion should always fail.  */
-    assert (to_find == 0);
-    NOT_REACHED; /* NOTREACHED */
+    NOT_REACHED; /* PL_strtab has no HE entries. */
 }
 
 static void
@@ -2853,10 +2801,9 @@ Perl_hfree_next_entry(pTHX_ HV *hv, STRLEN *indexp)
 
     struct xpvhv_aux *iter;
     HE *entry;
-    HE ** array;
-#ifdef DEBUGGING
-    STRLEN orig_index = *indexp;
-#endif
+
+    if (HvIS_STRTAB(hv))
+        return NULL;
 
     if (HvHasAUX(hv) && ((iter = HvAUX(hv)))) {
         if ((entry = iter->xhv_eiter)) {
@@ -2948,33 +2895,9 @@ Perl_hfree_next_entry(pTHX_ HV *hv, STRLEN *indexp)
         return NULL;
     }
 
-    array = HvARRAY(hv);
-    assert(array);
-    while ( ! ((entry = array[*indexp])) ) {
-        if ((*indexp)++ >= HvMAX(hv))
-            *indexp = 0;
-        assert(*indexp != orig_index);
-    }
-    array[*indexp] = HeSHARED_NEXT(entry);
-    ((XPVHV*) SvANY(hv))->xhv_keys--;
-
-    if (   PL_phase != PERL_PHASE_DESTRUCT && HvHasENAME(hv)
-        && HeVAL(entry) && isGV(HeVAL(entry))
-        && GvHV(HeVAL(entry)) && HvHasENAME(GvHV(HeVAL(entry)))
-    ) {
-        STRLEN klen;
-        const char * const key = HePV(entry,klen);
-        if ((klen > 1 && key[klen-1]==':' && key[klen-2]==':')
-         || (klen == 1 && key[0] == ':')) {
-            mro_package_moved(
-             NULL, GvHV(HeVAL(entry)),
-             (GV *)HeVAL(entry), 0
-            );
-        }
-    }
-    return hv_free_ent_ret(entry);
+    NOT_REACHED; /* PL_strtab has no HE entries. */
+    return NULL;
 }
-
 
 /*
 =for apidoc hv_undef
@@ -2999,6 +2922,8 @@ Perl_hv_undef_flags(pTHX_ HV *hv, U32 flags)
     SSize_t orig_ix = PL_tmps_ix; /* silence compiler warning about uninitialized vars */
 
     if (!hv)
+        return;
+    if (HvIS_STRTAB(hv) && HvTOTALKEYS(hv))
         return;
     save = cBOOL(SvREFCNT(hv));
     DEBUG_A(Perl_hv_assert(aTHX_ hv));
@@ -3149,6 +3074,7 @@ Perl_hv_undef_flags(pTHX_ HV *hv, U32 flags)
     }
 }
 
+
 /*
 =for apidoc hv_fill
 
@@ -3170,6 +3096,18 @@ STRLEN
 Perl_hv_fill(pTHX_ HV *const hv)
 {
     PERL_ARGS_ASSERT_HV_FILL;
+
+    if (HvIS_STRTAB(hv)) {
+        U32 i, count = 0;
+        if (!HvARRAY(hv))
+            return 0;
+        for (i = 0; i <= HvMAX(hv); i++) {
+            HEK *hek = HvSTRSLOTS(hv)[i];
+            if (hek && hek != HvSTR_TOMBSTONE)
+                count++;
+        }
+        return count;
+    }
 
     STRLEN count = 0;
     HE **ents = HvARRAY(hv);
@@ -3214,6 +3152,7 @@ static struct xpvhv_aux*
 S_hv_auxinit(pTHX_ HV *hv)
 {
     PERL_ARGS_ASSERT_HV_AUXINIT;
+    assert(!HvIS_STRTAB(hv));
 
     struct xpvhv_aux *iter;
 
@@ -3264,6 +3203,9 @@ I32
 Perl_hv_iterinit(pTHX_ HV *hv)
 {
     PERL_ARGS_ASSERT_HV_ITERINIT;
+
+    if (HvIS_STRTAB(hv))
+        return 0;
 
     if (HvHasAUX(hv)) {
         struct xpvhv_aux * iter = HvAUX(hv);
@@ -3715,6 +3657,9 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
     MAGIC* mg;
     struct xpvhv_aux *iter;
 
+    if (HvIS_STRTAB(hv))
+        return NULL;
+
     if (!HvHasAUX(hv)) {
         /* Too many things (well, pp_each at least) merrily assume that you can
            call hv_iternext without calling hv_iterinit, so we'll have to deal
@@ -3913,60 +3858,8 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
         return entry;
     }
 
-    /* At start of hash, entry is NULL.  */
-    if (entry)
-    {
-        entry = HeSHARED_NEXT(entry);
-        if (!(flags & HV_ITERNEXT_WANTPLACEHOLDERS)) {
-            /*
-             * Skip past any placeholders -- don't want to include them in
-             * any iteration.
-             */
-            while (entry && HeVAL(entry) == &PL_sv_placeholder) {
-                entry = HeSHARED_NEXT(entry);
-            }
-        }
-    }
-
-    /* Skip the entire loop if the hash is empty.   */
-    if ((flags & HV_ITERNEXT_WANTPLACEHOLDERS)
-        ? HvTOTALKEYS(hv) : HvUSEDKEYS(hv)) {
-        STRLEN max = HvMAX(hv);
-        while (!entry) {
-            /* OK. Come to the end of the current list.  Grab the next one.  */
-
-            iter->xhv_riter++; /* HvRITER(hv)++ */
-            if (iter->xhv_riter > (I32)max /* HvRITER(hv) > HvMAX(hv) */) {
-                /* There is no next one.  End of the hash.  */
-                iter->xhv_riter = -1; /* HvRITER(hv) = -1 */
-                break;
-            }
-            entry = (HvARRAY(hv))[iter->xhv_riter & max];
-
-            if (!(flags & HV_ITERNEXT_WANTPLACEHOLDERS)) {
-                /* If we have an entry, but it's a placeholder, don't count it.
-                   Try the next.  */
-                while (entry && HeVAL(entry) == &PL_sv_placeholder)
-                    entry = HeSHARED_NEXT(entry);
-            }
-            /* Will loop again if this linked list starts NULL
-               (for HV_ITERNEXT_WANTPLACEHOLDERS)
-               or if we run through it and find only placeholders.  */
-        }
-    }
-    else {
-        iter->xhv_riter = -1;
-    }
-
-    if (oldentry && HvLAZYDEL(hv)) {		/* was deleted earlier? */
-        HvLAZYDEL_off(hv);
-        if (S_oa_contains(aTHX_ hv, oldentry)) S_oa_free_deleted(aTHX_ hv, oldentry);
-        else hv_free_ent(NULL, oldentry);
-    }
-
-    iter->xhv_eiter = entry; /* HvEITER(hv) = entry */
-    iter->xhv_aux_flags &= ~HvAUXf_ITER_ACTIVE;
-    return entry;
+    NOT_REACHED; /* PL_strtab has no HE entries. */
+    return NULL;
 }
 
 /*
@@ -4114,79 +4007,68 @@ S_unshare_hek_or_pvn(pTHX_ const HEK *hek, const char *str, I32 len, U32 hash)
 {
     PERL_ARGS_ASSERT_UNSHARE_HEK_OR_PVN;
 
-    HE *entry;
-    HE **oentry;
+    HEK *entry;
+    U32 pos;
     int k_flags = 0;
-    struct shared_he *he = NULL;
+    struct shared_hek *shared;
 
     if (hek) {
         assert((HEK_FLAGS(hek) & HVhek_NOTSHARED) == 0);
-        /* Find the shared he which is just before us in memory.  */
-        he = (struct shared_he *)(((char *)hek)
-                                  - STRUCT_OFFSET(struct shared_he,
-                                                  shared_he_hek));
+        shared = HvSTR_SHARED((HEK *)hek);
+        assert(&shared->shared_hek_hek == hek);
 
-        /* Assert that the caller passed us a genuine (or at least consistent)
-           shared hek  */
-        assert (he->shared_he_he.hent_hek == hek);
-
-        if (he->shared_he_he.he_valu.hent_refcount - 1) {
-            --he->shared_he_he.he_valu.hent_refcount;
+        if (shared->refcount > 1) {
+            --shared->refcount;
             return;
         }
 
         hash = HEK_HASH(hek);
     } else if (len < 0) {
-        STRLEN tmplen = -len;
+        STRLEN tmplen = 0 - (STRLEN)len;
         /* See the note in hv_fetch(). --jhi */
         void * free_str = NULL;
         if (! utf8_to_bytes_new_pv((const U8 **) &str, &tmplen, &free_str)) {
             k_flags = HVhek_UTF8;
         }
-        else {
-            k_flags |= HVhek_WASUTF8;
-            len = tmplen;
-            if (free_str) {
-                k_flags |= HVhek_FREEKEY;
-            }
+        else if (free_str) {
+            PERL_HASH(hash, str, tmplen);
+            k_flags = HVhek_WASUTF8 | HVhek_FREEKEY;
         }
+        len = tmplen;
     }
 
-    /* what follows was the moral equivalent of:
-    if ((Svp = hv_fetch(PL_strtab, tmpsv, FALSE, hash))) {
-        if (--*Svp == NULL)
-            hv_delete(PL_strtab, str, len, G_DISCARD, hash);
-    } */
+    if (hek) {
+        HEK ** const slots = HvSTRSLOTS(PL_strtab);
+        const U32 mask = HvMAX(PL_strtab);
+        U32 probes;
 
-    /* assert(xhv_array != 0) */
-    oentry = &(HvARRAY(PL_strtab))[hash & (I32) HvMAX(PL_strtab)];
-    if (he) {
-        const HE *const he_he = &(he->shared_he_he);
-        for (entry = *oentry; entry; oentry = &HeSHARED_NEXT(entry), entry = *oentry) {
-            if (entry == he_he)
+        /* Shared HEKs are canonical and stable. Locate the exact pointer
+         * without reading any candidate's key or cached hash. */
+        pos = hash & mask;
+        entry = NULL;
+        for (probes = 0; probes <= mask; probes++, pos = (pos + 1) & mask) {
+            if (slots[pos] == hek) {
+                entry = slots[pos];
+                break;
+            }
+            if (!slots[pos])
                 break;
         }
-    } else {
-        const U8 flags_masked = k_flags & HVhek_STORAGE_MASK;
-        for (entry = *oentry; entry; oentry = &HeSHARED_NEXT(entry), entry = *oentry) {
-            if (HeHASH(entry) != hash)		/* strings can't be equal */
-                continue;
-            if (HeKLEN(entry) != len)
-                continue;
-            if (HeKEY(entry) != str && memNE(HeKEY(entry),str,len))	/* is this it? */
-                continue;
-            if (HeKFLAGS(entry) != flags_masked)
-                continue;
-            break;
-        }
     }
-
+    else {
+        entry = S_strtab_find(aTHX_ hash, str, len,
+                              k_flags & HVhek_STORAGE_MASK, &pos, NULL);
+    }
     if (entry) {
-        if (--entry->he_valu.hent_refcount == 0) {
-            *oentry = HeSHARED_NEXT(entry);
-            Safefree(entry);
+        shared = HvSTR_SHARED(entry);
+        if (--shared->refcount == 0) {
+            HvSTRSLOTS(PL_strtab)[pos] = HvSTR_TOMBSTONE;
+            HvSTRTAB(PL_strtab)->tombstones++;
             HvTOTALKEYS(PL_strtab)--;
+            Safefree(shared);
         }
+    } else {
+        entry = NULL;
     }
 
     if (!entry)
@@ -4222,6 +4104,138 @@ this.
 
 =cut
 */
+
+/*
+=for apidoc shared_key_refcount
+
+Returns the reference count of the shared key corresponding to C<keysv>, or
+zero if it is absent. The lookup follows normal hash-key canonicalization
+without interning the key or changing its reference count.
+
+=for apidoc shared_keys
+
+Returns a newly allocated AV of copied shared-key strings. The caller owns
+the AV. The strings do not retain references to the shared HEKs.
+
+=cut
+*/
+
+Size_t
+Perl_shared_key_refcount(pTHX_ SV *keysv)
+{
+    PERL_ARGS_ASSERT_SHARED_KEY_REFCOUNT;
+
+    STRLEN len;
+    const char *key = SvPV_const(keysv, len);
+    U8 flags = 0;
+    U32 hash;
+    void *free_key = NULL;
+    HEK *hek;
+    Size_t count;
+
+    if (!PL_strtab || !HvARRAY(PL_strtab))
+        return 0;
+    if (SvIsCOW_shared_hash(keysv))
+        return HvSTR_REFCOUNT(SvSHARED_HEK_FROM_PV(key));
+    if (len > I32_MAX)
+        return 0;
+    if (SvUTF8(keysv)) {
+        if (!utf8_to_bytes_new_pv((const U8 **)&key, &len, &free_key))
+            flags = HVhek_UTF8;
+        else
+            flags = HVhek_WASUTF8;
+    }
+    PERL_HASH(hash, key, len);
+    hek = S_strtab_find(aTHX_ hash, key, len, flags, NULL, NULL);
+    count = hek ? HvSTR_REFCOUNT(hek) : 0;
+    Safefree(free_key);
+    return count;
+}
+
+/*
+=for apidoc immortalize_key
+
+Acquires a permanent reference to the shared key corresponding to C<keysv>,
+interning it if necessary. Returns the resulting reference count. Each call
+acquires one reference. The references belong to this interpreter and are
+copied when it is cloned.
+
+=cut
+*/
+
+Size_t
+Perl_immortalize_key(pTHX_ SV *keysv)
+{
+    PERL_ARGS_ASSERT_IMMORTALIZE_KEY;
+
+    STRLEN len;
+    const char *key = SvPV_const(keysv, len);
+    HEK *hek;
+    U32 hash;
+    U8 flags = 0;
+    void *free_key = NULL;
+    struct hv_strtab_pin *pin;
+
+    if (SvIsCOW_shared_hash(keysv))
+        hek = share_hek_hek(SvSHARED_HEK_FROM_PV(key));
+    else {
+        if (len > I32_MAX)
+            PERL_THROW_ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE();
+        if (SvUTF8(keysv)) {
+            if (!utf8_to_bytes_new_pv((const U8 **)&key, &len, &free_key))
+                flags = HVhek_UTF8;
+            else
+                flags = HVhek_WASUTF8;
+        }
+        PERL_HASH(hash, key, len);
+        hek = share_hek_flags(key, len, hash,
+                              flags | (free_key ? HVhek_FREEKEY : 0));
+    }
+    for (pin = HvSTRTAB(PL_strtab)->pins; pin; pin = pin->next) {
+        if (pin->hek == hek) {
+            pin->count++;
+            return HvSTR_REFCOUNT(hek);
+        }
+    }
+    /* Track intentional references separately from leaked references so full
+     * destruction can retain its shared-key balance check. */
+    Newx(pin, 1, struct hv_strtab_pin);
+    pin->hek = hek;
+    pin->count = 1;
+    pin->next = HvSTRTAB(PL_strtab)->pins;
+    HvSTRTAB(PL_strtab)->pins = pin;
+    return HvSTR_REFCOUNT(hek);
+}
+
+AV *
+Perl_shared_keys(pTHX)
+{
+    PERL_ARGS_ASSERT_SHARED_KEYS;
+
+    AV *keys = newAV();
+    U32 i, capacity;
+    HEK **slots;
+
+    if (!PL_strtab || !HvARRAY(PL_strtab))
+        return keys;
+    av_extend(keys, HvTOTALKEYS(PL_strtab));
+    capacity = HvMAX(PL_strtab) + 1;
+    slots = HvSTRSLOTS(PL_strtab);
+    /* Copying values does not intern keys or change the pointer table. */
+    for (i = 0; i < capacity; i++) {
+        HEK *hek = slots[i];
+        SV *key;
+        if (!hek || hek == HvSTR_TOMBSTONE)
+            continue;
+        key = newSVpvn(HEK_KEY(hek), HEK_LEN(hek));
+        if (HEK_UTF8(hek))
+            SvUTF8_on(key);
+        else if (HEK_WASUTF8(hek))
+            sv_utf8_upgrade(key);
+        av_push(keys, key);
+    }
+    return keys;
+}
 
 HEK *
 Perl_share_hek(pTHX_ const char *str, SSize_t len, U32 hash)
@@ -4262,9 +4276,11 @@ S_share_hek_flags(pTHX_ const char *str, STRLEN len, U32 hash, int flags)
 {
     PERL_ARGS_ASSERT_SHARE_HEK_FLAGS;
 
-    HE *entry;
+    HEK *hek;
+    struct shared_hek *shared;
     const U8 flags_masked = flags & HVhek_STORAGE_MASK;
-    const U32 hindex = hash & (I32) HvMAX(PL_strtab);
+    U32 pos;
+    bool collision;
 
     assert(!(flags & HVhek_NOTSHARED));
 
@@ -4272,79 +4288,33 @@ S_share_hek_flags(pTHX_ const char *str, STRLEN len, U32 hash, int flags)
         PERL_THROW_ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE();
     }
 
-    /* what follows is the moral equivalent of:
-
-    if (!(Svp = hv_fetch(PL_strtab, str, len, FALSE)))
-        hv_store(PL_strtab, str, len, NULL, hash);
-
-        Can't rehash the shared string table, so not sure if it's worth
-        counting the number of entries in the linked list
-    */
-
-    /* assert(xhv_array != 0) */
-    entry = (HvARRAY(PL_strtab))[hindex];
-    for (;entry; entry = HeSHARED_NEXT(entry)) {
-        if (HeHASH(entry) != hash)		/* strings can't be equal */
-            continue;
-        if (HeKLEN(entry) != (SSize_t) len)
-            continue;
-        if (HeKEY(entry) != str && memNE(HeKEY(entry),str,len))	/* is this it? */
-            continue;
-        if (HeKFLAGS(entry) != flags_masked)
-            continue;
-        break;
+    if (!HvARRAY(PL_strtab))
+        S_strtab_resize(aTHX_ STRTAB_MIN_CAPACITY);
+    hek = S_strtab_find(aTHX_ hash, str, len, flags_masked, &pos, &collision);
+    if (hek) {
+        HvSTR_REFCOUNT(hek)++;
     }
-
-    if (!entry) {
-        /* What used to be head of the list.
-           If this is NULL, then we're the first entry for this slot, which
-           means we need to increase fill.  */
-        struct shared_he *new_entry;
-        HEK *hek;
-        char *k;
-        HE **const head = &HvARRAY(PL_strtab)[hindex];
-        HE *const next = *head;
-        XPVHV * const xhv = (XPVHV*)SvANY(PL_strtab);
-
-        /* We don't actually store a HE from the arena and a regular HEK.
-           Instead we allocate one chunk of memory big enough for both,
-           and put the HEK straight after the HE. This way we can find the
-           HE directly from the HEK.
-        */
-
-        Newx(k, STRUCT_OFFSET(struct shared_he,
-                                shared_he_hek.hek_key[0]) + len + 2, char);
-        new_entry = (struct shared_he *)k;
-        entry = &(new_entry->shared_he_he);
-        hek = &(new_entry->shared_he_hek);
-
+    else {
+        char *raw;
+        S_strtab_prepare_insert(aTHX_ hash, str, len, flags_masked,
+                                &pos, collision);
+        Newx(raw, STRUCT_OFFSET(struct shared_hek,
+                                shared_hek_hek.hek_key[0]) + len + 2, char);
+        shared = (struct shared_hek *)raw;
+        hek = &shared->shared_hek_hek;
         Copy(str, HEK_KEY(hek), len, char);
         HEK_KEY(hek)[len] = 0;
         HEK_LEN(hek) = len;
         HEK_HASH(hek) = hash;
-        HEK_FLAGS(hek) = (unsigned char)flags_masked;
-
-        /* Still "point" to the HEK, so that other code need not know what
-           we're up to.  */
-        HeKEY_hek(entry) = hek;
-        entry->he_valu.hent_refcount = 0;
-        HeSHARED_NEXT(entry) = next;
-        *head = entry;
-
-        xhv->xhv_keys++; /* HvTOTALKEYS(hv)++ */
-        if (!next) {			/* initial entry? */
-        } else if ( DO_HSPLIT(xhv) ) {
-            const STRLEN oldsize = xhv->xhv_max + 1;
-            hsplit(PL_strtab, oldsize, oldsize * 2);
-        }
+        HEK_FLAGS(hek) = flags_masked;
+        shared->refcount = 1;
+        S_strtab_insert(aTHX_ hek, pos);
     }
-
-    ++entry->he_valu.hent_refcount;
 
     if (flags & HVhek_FREEKEY)
         Safefree(str);
 
-    return HeKEY_hek(entry);
+    return hek;
 }
 
 SSize_t *

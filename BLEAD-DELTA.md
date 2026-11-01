@@ -252,20 +252,28 @@ Empty hashes allocate no entry storage, and singletons use one arena entry.
 The experimental `PERL_HASH_LINEAR_MAX` setting can keep up to two, four,
 or eight entries in a dense array searched linearly before building an
 index. Its default is zero, which uses indexed storage beyond a singleton.
-Shared-key interning retains its existing chained table and stable key
-allocations.
+Shared-key interning uses an open-addressed slot array of `HEK *` pointers.
+The slots have tombstones; each shared `HEK` carries a reference-count
+prefix, and its allocation remains stable while referenced, including when
+the slot array grows. The table reserves 32,768 slots. Hash::Util provides
+`shared_key_refcount` for non-mutating reference-count lookup and
+`shared_keys` for copied key strings, and `immortalize_key` to acquire a
+permanent reference until interpreter destruction. Pins are copied into
+cloned interpreters. Its bucket diagnostics do not expose
+the shared-key table.
 
 Iteration scans the entry array. Hash-function seeding remains enabled,
 while bucket-order perturbation, `PERL_PERTURB_KEYS`, and
 `Hash::Util::hash_traversal_mask` are removed. Insertion during iteration is
 detected through iterator state. Hashes do not promise insertion order.
 `Hash::Util::hash_storage_info` exposes allocation sizes, capacities,
-free-list length, tombstones, and probe distances.
+free-list length, tombstones, and probe distances. Ordinary hash value and
+iteration APIs do not apply to `PL_strtab`.
 
 The representation changes the XS ABI and requires rebuilding extensions.
-`HeNEXT` is removed, and writes to `HvMAX` use explicit setters. Returned
-`HE *` and `SV **` pointers must be reacquired after entry-array relocation
-or deletion that compacts a dense array. Core consumers and bundled XS
+`HeNEXT` and `HeSHARED_NEXT` are removed, and writes to `HvMAX` use explicit
+setters. Returned `HE *` and `SV **` pointers must be reacquired after
+entry-array relocation or deletion that compacts a dense array. Core consumers and bundled XS
 modules are adapted to these lifetime rules. The
 [design and benchmark report](Porting/hash-oa-design.pod) records the
 compatibility limits, memory accounting, and measured performance trade-offs.

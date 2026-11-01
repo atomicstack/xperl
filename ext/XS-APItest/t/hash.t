@@ -4,6 +4,7 @@ use strict;
 use utf8;
 use Tie::Hash;
 use Test::More;
+use Config;
 
 BEGIN {use_ok('XS::APItest')};
 
@@ -71,6 +72,122 @@ main_tests (\@keys, \@testkeys, ' [utf8 hash]');
     like ($@, qr/^$what/, $what);
     # I can't work out how to get to the code that flips the wasutf8 flag on
     # the hash key without some ikcy XS
+}
+
+{
+    require Hash::Util;
+    my $strtab = strtab();
+    is_deeply([Hash::Util::bucket_info(undef)], [],
+       'bucket_info does not expose the shared-key table');
+    is_deeply([Hash::Util::bucket_array(undef)], [],
+       'bucket_array does not expose the shared-key table');
+    is_deeply([Hash::Util::bucket_info($strtab)], [],
+       'bucket_info rejects an explicit shared-key table reference');
+    is_deeply([Hash::Util::bucket_array($strtab)], [],
+       'bucket_array rejects an explicit shared-key table reference');
+
+    my $strtab_info = XS::APItest::Hash::shared_key_storage_info();
+    cmp_ok($strtab_info->[0], '>=', 32768,
+           'shared-key table reserves at least 16K keys');
+    is($strtab_info->[3], length(pack('p', '')),
+       'shared-key slots are HEK pointers');
+    cmp_ok($strtab_info->[5], '<=', $strtab_info->[0],
+           'private APItest probe distance is bounded by table capacity');
+    cmp_ok($strtab_info->[6], '>=', $strtab_info->[5],
+           'private APItest total probe distance includes its maximum');
+
+    my $ordinary_info_error;
+    eval { Hash::Util::hash_storage_info(strtab()) };
+    $ordinary_info_error = $@;
+    like($ordinary_info_error, qr/PL_strtab/,
+         'ordinary hash diagnostics reject PL_strtab');
+
+    my $probe = XS::APItest::Hash::test_shared_hek_probe(
+        "xperl-strtab-ref-probe-$$", 0);
+    ok($probe->[3], 'duplicate interning returns the same shared HEK');
+    is_deeply([@$probe[4..6]], [1, 2, 1],
+              'shared HEK reference counts track duplicate interning');
+    is($probe->[12], $probe->[11] + 1,
+       'unsharing the last reference leaves one tombstone');
+    cmp_ok($probe->[13], '<', $probe->[12],
+           'reinterning a deleted key reuses or rebuilds its tombstone');
+
+    my $binary_probe = XS::APItest::Hash::test_shared_hek_probe(
+        "xperl\0strtab-$$", 0);
+    ok($binary_probe->[3] && $binary_probe->[9] == length("xperl\0strtab-$$"),
+       'shared HEKs preserve embedded NUL bytes');
+
+    my $latin1 = "\x{e9}";
+    utf8::upgrade($latin1);
+    my $latin1_probe = XS::APItest::Hash::test_shared_hek_probe($latin1, 0);
+    ok(!$latin1_probe->[7] && $latin1_probe->[8],
+       'UTF-8 Latin-1 keys retain the shared HEK WASUTF8 flag');
+    my $wide = "\x{100}";
+    utf8::upgrade($wide);
+    my $wide_probe = XS::APItest::Hash::test_shared_hek_probe($wide, 0);
+    ok($wide_probe->[7] && !$wide_probe->[8],
+       'wide shared keys retain the UTF8 HEK flag');
+
+    my $growth_key = "xperl-strtab-growth-probe-$$";
+    my $growth_limit = $strtab_info->[0];
+    my $growth = XS::APItest::Hash::test_shared_hek_probe(
+        $growth_key, $growth_limit);
+    ok($growth->[2], 'interning enough keys grows PL_strtab');
+    ok($growth->[3], 'the held shared HEK pointer survives table growth');
+    is_deeply([@$growth[4..6]], [1, 2, 1],
+              'reference counts remain correct across table growth');
+    ok($growth->[14] > 0, 'growth probe retained keys across the resize');
+    ok($growth->[16], 'tombstone pressure triggers a same-size table rebuild');
+    is($growth->[15], 0, 'tombstone rebuild clears old deleted slots');
+
+    if ($Config::Config{useithreads} && eval { require threads; 1 }) {
+        my $thread_key = "xperl-strtab-thread-key-$$";
+        my %thread_hash = ($thread_key => 1);
+        my $thread = threads->create(sub {
+            my ($hash) = @_;
+            my ($key) = keys %$hash;
+            my $before = Hash::Util::shared_key_refcount($key);
+            my $probe = XS::APItest::Hash::test_shared_hek_probe($key, 0);
+            return [$probe->[3], $probe->[4] - $before,
+                    $probe->[5] - $before, $probe->[6] - $before];
+        }, \%thread_hash);
+        is_deeply($thread->join, [1, 1, 2, 1],
+                  'thread clone probe preserves HEK identity and refcount deltas');
+        is($thread_hash{$thread_key}, 1,
+           'thread shared-key probe leaves the source hash unchanged');
+    }
+    else {
+        pass('thread shared-key probe is skipped without ithreads');
+        pass('thread shared-key source check is skipped without ithreads');
+    }
+
+    my $plain_ascii = "xperl-unsharepvn-plain-$$";
+    my $utf8_ascii = "xperl-unsharepvn-utf8-ascii-$$";
+    utf8::upgrade($utf8_ascii);
+    my $downgradable = "\x{e9}xperl-unsharepvn-$$";
+    utf8::upgrade($downgradable);
+    my $wide_key = "\x{100}xperl-unsharepvn-$$";
+    utf8::upgrade($wide_key);
+    my $nul_key = "xperl\0unsharepvn-$$";
+    my $wide_bytes = $wide_key;
+    utf8::encode($wide_bytes);
+    my @unsharepvn_cases = (
+        ['plain ASCII', $plain_ascii, 0, 0, length($plain_ascii)],
+        ['UTF8 flagged ASCII', $utf8_ascii, 0, 0, length($utf8_ascii)],
+        ['downgradable UTF8', $downgradable, 0, 1,
+         1 + length('xperl-unsharepvn-' . $$)],
+        ['wide UTF8', $wide_key, 1, 0, length($wide_bytes)],
+        ['embedded NUL', $nul_key, 0, 0, length($nul_key)],
+    );
+    for my $case (@unsharepvn_cases) {
+        my ($label, $key, $expect_utf8, $expect_wasutf8, $expect_len) = @$case;
+        my $result = XS::APItest::Hash::test_unsharepvn_refcount($key);
+        is_deeply([@$result[0..2]], [1, 2, 1],
+                  "unsharepvn decrements the canonical HEK refcount for $label");
+        is_deeply([@$result[3..5]],
+                  [$expect_utf8, $expect_wasutf8, $expect_len],
+                  "unsharepvn canonicalizes $label consistently with share_hek");
+    }
 }
 
 {
