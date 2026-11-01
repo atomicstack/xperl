@@ -11,6 +11,15 @@
 #ifndef H_PERL
 #define H_PERL 1
 
+/*
+=for apidoc_section $genconfig
+=for apidoc Amn#||XPERL
+
+Defined as 1 by the XPerl headers. XS code can test this symbol to detect
+XPerl-specific APIs.
+
+=cut
+*/
 #define XPERL 1
 
 #if defined(__HP_cc) || defined(__HP_aCC)
