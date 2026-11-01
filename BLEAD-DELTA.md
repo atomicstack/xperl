@@ -386,6 +386,9 @@ the source changes above and must be regenerated when their inputs change.
 
 ## Compatibility posture
 
+C and XS extensions can identify XPerl with `#ifdef XPERL` after including
+`perl.h`, which defines the macro to `1`.
+
 Existing Perl behavior is preserved where practical. The fork's experimental
 features and development policies may continue to evolve as the branch
 develops. Compatibility handling includes feature-disabled code paths,

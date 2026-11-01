@@ -11,6 +11,8 @@
 #ifndef H_PERL
 #define H_PERL 1
 
+#define XPERL 1
+
 #if defined(__HP_cc) || defined(__HP_aCC)
 /* The HPUX compiler for Itanium is very picky and warns about
  * things that gcc doesn't and that we would prefer it does not.
