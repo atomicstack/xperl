@@ -164,7 +164,8 @@ bucket_info(rhv)
             for ( bucket_index= 0; bucket_index <= max_bucket_index; bucket_index++ ) {
                 I32 chain_length= BUCKET_INFO_ITEMS_ON_STACK;
                 for (he= HvIS_LINEAR(hv)
-                         ? bucket_array[bucket_index]
+                         ? (bucket_index < HvTOTALKEYS(hv)
+                            ? &HvENTRIES(hv)[bucket_index] : NULL)
                          : HvIS_OA(hv)
                          ? (HvOA_INDEX_GET(hv, bucket_index) != 0
                             && HvOA_INDEX_GET(hv, bucket_index) != U32_MAX
@@ -230,7 +231,8 @@ bucket_array(rhv)
             for ( i= 0; i <= max; i++ ) {
                 AV *key_av= NULL;
                 for (he= HvIS_LINEAR(hv)
-                         ? (HE *)&HvENTRIES(hv)[i]
+                         ? (i < HvTOTALKEYS(hv)
+                            ? &HvENTRIES(hv)[i] : NULL)
                          : HvIS_OA(hv)
                          ? (HvOA_INDEX_GET(hv, i) != 0
                             && HvOA_INDEX_GET(hv, i) != U32_MAX
