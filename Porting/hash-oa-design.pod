@@ -77,16 +77,18 @@ XS code. Code that saves an C<HE *> across mutation may depend on a stable
 address. A compact entry in a relocatable array cannot provide that stability
 by itself; reacquire it after entry-array growth or deletion from linear
 storage. The tied-fetch pool uses a standalone 16-byte arena C<HE>; when
-retired, its link is stored in the value union. The shared-key C<PL_strtab>
-uses a separate C<shared_he> container, whose link is accessed through
-C<HeSHARED_NEXT()>.
+retired, its link is stored in the value union. C<PL_strtab> contains no
+C<HE> records: its open-addressed slots point directly to individually
+allocated shared C<HEK>s. Each shared-key allocation has a reference-count
+prefix, and the C<HEK> address remains stable while referenced, including
+when the slot array grows.
 
 C<HeNEXT()> was a public macro for following chained entries. Ordinary hash
 entries have no chain link, and the macro has no hash argument that can
-identify the entry kind. The macro is therefore removed. C<HeSHARED_NEXT()>
-applies to entries in the shared-key table container, not ordinary hash
-entries. This is a source compatibility change for XS code that used
-C<HeNEXT()>. New code should use the hash-aware entry index macros
+identify the entry kind. The macro is therefore removed. C<PL_strtab> no
+longer stores chain-linked C<HE>s, so C<HeSHARED_NEXT()> is removed too.
+This is a source compatibility change for XS code that used either macro.
+New code should use the hash-aware entry index macros
 C<HvENTRY_LIMIT()>, C<HvENTRY_FIRST()>, and C<HvENTRY_NEXT()>, or the
 iterator APIs.
 
@@ -98,6 +100,27 @@ directly. C<HvIS_OA(hv)> identifies the compact non-strtab hash family,
 including headerless linear hashes; C<Hash::Util::hash_storage_info()> uses
 C<open_addressed> for actual index allocation and C<linear> for the
 headerless form.
+
+The shared-key table starts with 32,768 pointer slots and doubles when an
+insertion collision crosses its two-thirds occupancy target. It retains
+tombstones and rebuilds the index when tombstone occupancy requires cleanup.
+An interned C<HEK> is canonical for its key bytes and storage flags, and its
+address remains stable while referenced, including across slot-array growth.
+C<share_hek()> increments the shared reference count; C<unshare_hek()>
+releases it, and the address becomes invalid when the final reference is
+released. There is no value
+slot or C<HE *> to fetch from C<PL_strtab>; generic hash-entry access and
+iteration APIs must not be used on it. Hash::Util provides
+C<shared_key_refcount()> and C<shared_keys()> for functional inspection;
+its bucket diagnostics do not expose C<PL_strtab>.
+C<immortalize_key()> acquires one interpreter-lifetime reference per call.
+A sparse list records counts only for pinned keys, so full destruction can
+release intentional pins before checking for unbalanced owners. The list
+is copied into cloned interpreters; ordinary shared HEKs need no extra
+per-key metadata. On a typical 64-bit build, the pin registry adds an
+eight-byte pointer to the table header and a 24-byte record per distinct
+pinned key. Pin registration scans this sparse list; ordinary interning
+does not scan it. A larger pin workload may justify indexing the registry.
 
 Any change to C<HE>, C<HV>, or the C<hv_fetch()> contract can affect XS and
 embedding code even when Perl-level tests pass. Review generated API
@@ -111,7 +134,11 @@ iteration while deleting, restricted hashes, tied hashes, destructor
 reentrancy during replace/delete/clear, lvalue references retained through
 growth, optional thread cloning, independent index and entry growth, free-list
 reuse, and tombstone rebuilding. The focused XS hash tests also exercise
-collision-triggered growth using keys selected by their computed homes.
+collision-triggered growth using keys selected by their computed homes. The
+shared-key tests cover canonical interning, reference counts, UTF-8 flags,
+tombstone reuse, stable C<HEK *> identity through table growth, and thread
+cloning. XS::APItest-only diagnostics scan the HEK-pointer slots before
+constructing their result; Hash::Util does not expose the table layout.
 
 F<Porting/bench-hash-oa.pl> runs each workload in a fresh process and reports
 CSV fields for interpreter version, operation, size, repetitions, operations,
@@ -343,10 +370,141 @@ The large run's raw CSV, summaries, source patches, and build metadata are in
 F<tmp/hash-oa-final-k4-index-only-vs-original/>. Candidate executable
 SHA-256: C<aeec7f784c64f268218b0d7f6d985fbf520926ee79d3d31e31419d338ab10f9a>.
 
+=head2 Whole-hash comparison after shared-key migration
+
+The full comparison on 2026-11-01 used the original chained ordinary-hash
+build at C<dcf3c53437> and the current working tree. Both identify as
+5.45.5 and use GCC 13.3 with C<-O3>. Both source snapshots contain local
+changes, recorded by the runner. The candidate also includes the subsequent
+rebase, so this is a whole-build comparison, not a storage-only attribution.
+No HE layout experiment is included: the current HE remains 16 bytes.
+
+F<Porting/bench-hash-oa-compare.py> ran five paired trials, with randomized
+build order and paired hash/query seeds. The candidate used its default
+C<PERL_HASH_LINEAR_MAX=0>; tiny linear storage was disabled. The matrix
+covered 1, 2, 4, 8, 16, 32, 128, 1,000, 10,000, 100,000 and one million keys,
+with all twelve workloads below. All 1,320 worker validations passed.
+
+These are median paired speed ratios: baseline time divided by candidate
+time. Greater than 1 means the candidate is faster; less than 1 means it is
+slower. The iteration workloads consume returned keys and values with
+C<length()>. Hole workloads remove 90% of entries before timing iteration
+and report time per remaining live entry.
+
+  Workload                    1,000       100,000     1,000,000
+  Fetch, insertion order           1.000      1.253      1.840
+  Fetch, shuffled                  0.913      1.122      0.986
+  Fetch, missing                   0.904      1.111      1.119
+  keys                             1.235      2.060      3.347
+  values                           1.375      2.458      6.292
+  each                             1.186      3.196      5.261
+  Insert                           0.872      1.052      1.292
+  Delete                           0.828      1.442      1.452
+  Delete/store churn               0.779      1.102      1.188
+  keys, 90% deleted                1.267      2.022      2.759
+  values, 90% deleted              1.361      2.237      2.765
+  each, 90% deleted                1.139      2.070      3.296
+
+The large iteration gains are consistent across the five trials. At one
+million keys, paired ranges were 3.280-3.574 for C<keys>, 5.920-7.125 for
+C<values>, and 5.223-5.442 for C<each>. Shuffled successful fetches ranged
+from 0.964 to 0.991, so ordered-hit gains must not be generalized to all
+lookup orders. Small mutation workloads remain slower: at 1,000 entries,
+insert, delete and churn ranged from 0.815-0.890, 0.653-0.866 and
+0.714-0.828 respectively. Some 100,000-entry workloads have wider ranges,
+including ratios on both sides of parity.
+
+Requested table storage, excluding keys, values and HV bodies, was:
+
+  Keys       Chained bytes      Current bytes
+          1             88                160
+          2            112                160
+          4            160                160
+          8            320                168
+         16            640                312
+         32          1,280                680
+      1,000         40,384             21,896
+    100,000      4,497,152          2,741,080
+  1,000,000     40,777,216         26,496,696
+
+The chained HE figure counts live arena cells and excludes shared arena
+slack; the current figure includes allocated entry-vector spare capacity.
+The current default allocates the full index/vector representation even for
+one or two keys. Optional tiny/arena-singleton storage was not enabled in
+this comparison. These requested-byte estimates are not process RSS.
+
+=head2 Shared-key pointer index measurements
+
+The shared-key comparison on 2026-11-01 used x86-64 Linux on an Intel
+Core i7-1185G7. Both builds already used compact ordinary hashes; this
+comparison measures the chained versus pointer-index shared string table,
+not the whole ordinary-hash representation change. Five paired trials used
+a fixed hash seed. CPU frequency was not pinned.
+
+F<Porting/bench-strtab.pl> and F<Porting/bench-strtab-compare.py> reproduce
+the controlled fill/clear workloads. Each round fills a normal hash with
+computed string keys and then undefines it. The shared string table retains
+its capacity between rounds; the ordinary hash releases its arrays. The
+second-owner workload retains the keys in a separate keeper hash, so clearing
+the target does not release the final key references. Keeper setup and
+teardown are outside that measurement.
+
+The table reports median full-cycle time, after averaging each trial's
+rounds: 20 rounds at 100,000 keys and five at one million. Units are
+milliseconds per fill/clear cycle. Stage medians are not added together.
+
+  Keys       Ownership     Chained strtab   Pointer OA
+    100,000  Final owner          33.84          34.32
+  1,000,000  Final owner         608.8          613.7
+    100,000  Second owner         26.03          25.64
+  1,000,000  Second owner        462.5          458.7
+
+These full-cycle results are close to parity, with differences around one
+percent. Repeated final-owner fills are slower with the pointer index, while
+repeated clears are faster; the costs largely offset each other. First
+clears behave differently from later clears. At 100,000 keys their median
+cost was 65.1 ns/key for chaining and 77.2 ns/key for OA. At one million it
+was 158.6 and 163.6 ns/key. These timings should not be generalized across
+allocators or key distributions.
+
+Native CPU samples and per-round Callgrind profiles locate the first-clear
+penalty in allocator cleanup when freeing the ordinary hash index after its
+entries. In separate fresh-process snapshots, the chained baseline's index
+was allocated with mmap, while the candidate's same-sized index was an
+arena allocation. Unmapping the former avoids the allocator consolidation
+that freeing the latter triggers. Later rounds use arena allocations in both
+builds. Requested sizes and capacities matched. This is an allocation-history
+effect, not evidence that the final-key probe is slower. Restoring the old
+HEK allocation request size by adding temporary padding did not improve the
+candidate's full clear, so key allocation size alone does not explain the
+allocation history.
+
+A temporary XS helper separately timed the C key-release API after warming
+the table, excluding ordinary HE and SV destruction. With 24-byte keys,
+final-reference release medians were 18.80 versus 16.26 ns/key at 100,000
+keys, and 55.51 versus 47.49 ns/key at one million. Pointer-only probes and
+removal without freeing were close to parity. These measurements isolate
+mechanisms and do not replace full-cycle benchmarks.
+
+On this 64-bit build the shared allocation prefix falls from 24 bytes to
+eight bytes, saving 16 requested bytes per key before allocator rounding.
+The HEK header, key bytes and flags are common to both layouts. At about
+102,450 total interned keys, both tables allocate 262,144 pointer slots, so
+the prefix saving is about 1.56 MiB. At about 3,450 interned keys, the new
+32,768-slot reservation exceeds the baseline's 8,192 slots by about 192 KiB.
+After accounting for the prefix saving, the candidate uses about 138 KiB
+more requested storage at that size. These estimates exclude allocator
+metadata and slack. Freshly filled process RSS in the controlled final-owner
+workload was 33.1 versus 31.5 MiB at 100,000 keys, and 207.6 versus 192.9 MiB
+at one million. RSS includes the interpreter, keys, values and ordinary hash
+storage, and allocator retention changes it on later rounds.
+
 =head1 LIMITS AND FOLLOW-UP
 
-The process-wide C<PL_strtab> remains a chained legacy hash. Ordinary hash
-entry identifiers use adaptive one-, two-, or four-byte widths; the slot
+The process-wide C<PL_strtab> is an open-addressed array of shared C<HEK *>
+slots. It starts with 32,768 slots, stores full hashes in each shared C<HEK>,
+and has no C<HE> records, entry array, or freelist. Ordinary hash entry
+identifiers use adaptive one-, two-, or four-byte widths; the slot
 index is limited to 2^26 slots. Deleted entries
 are reused, but the entry vector does not shrink or compact after heavy
 deletion; iteration therefore scans up to its historical high-water mark.

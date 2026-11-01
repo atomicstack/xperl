@@ -393,6 +393,7 @@
 # define hv_name_set(a,b,c,d)                   Perl_hv_name_set(aTHX_ a,b,c,d)
 # define hv_new_he()                            Perl_hv_new_he(aTHX)
 # define hv_scalar(a)                           Perl_hv_scalar(aTHX_ a)
+# define immortalize_key(a)                     Perl_immortalize_key(aTHX_ a)
 # define init_i18nl10n(a)                       Perl_init_i18nl10n(aTHX_ a)
 # define init_stacks()                          Perl_init_stacks(aTHX)
 # define init_tm(a)                             Perl_init_tm(aTHX_ a)
@@ -751,6 +752,8 @@
 # define set_context                            Perl_set_context
 # define setdefout(a)                           Perl_setdefout(aTHX_ a)
 # define share_hek(a,b,c)                       Perl_share_hek(aTHX_ a,b,c)
+# define shared_key_refcount(a)                 Perl_shared_key_refcount(aTHX_ a)
+# define shared_keys()                          Perl_shared_keys(aTHX)
 # define single_1bit_pos32                      Perl_single_1bit_pos32
 # define sortsv(a,b,c)                          Perl_sortsv(aTHX_ a,b,c)
 # define sortsv_flags(a,b,c,d)                  Perl_sortsv_flags(aTHX_ a,b,c,d)

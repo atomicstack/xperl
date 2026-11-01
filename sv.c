@@ -17742,8 +17742,25 @@ perl_clone_using(PerlInterpreter *proto_perl, UV flags,
     /* create (a non-shared!) shared string table */
     PL_strtab		= newHV();
     HvSHAREKEYS_off(PL_strtab);
-    hv_ksplit(PL_strtab, HvTOTALKEYS(proto_perl->Istrtab));
+    {
+        IV strtab_keys = HvTOTALKEYS(proto_perl->Istrtab);
+        if (strtab_keys < (1 << 14))
+            strtab_keys = 1 << 14;
+        hv_ksplit(PL_strtab, strtab_keys);
+    }
     ptr_table_store(PL_ptr_table, proto_perl->Istrtab, PL_strtab);
+    {
+        struct hv_strtab_pin *source = HvSTRTAB(proto_perl->Istrtab)->pins;
+        for (; source; source = source->next) {
+            struct hv_strtab_pin *pin;
+            Newx(pin, 1, struct hv_strtab_pin);
+            pin->hek = hek_dup(source->hek, param);
+            pin->count = source->count;
+            HvSTR_REFCOUNT(pin->hek) += pin->count - 1;
+            pin->next = HvSTRTAB(PL_strtab)->pins;
+            HvSTRTAB(PL_strtab)->pins = pin;
+        }
+    }
 
     Zero(PL_sv_consts, SV_CONSTS_COUNT, SV*);
 

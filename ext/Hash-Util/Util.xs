@@ -135,12 +135,17 @@ bucket_info(rhv)
     if (SvROK(rhv) && SvTYPE(SvRV(rhv))==SVt_PVHV && !SvMAGICAL(SvRV(rhv))) {
         hv = (const HV *) SvRV(rhv);
     } else if (!SvOK(rhv)) {
-        hv = PL_strtab;
+        hv = NULL;
     }
     if (hv) {
-        U32 max_bucket_index= HvMAX(hv);
-        U32 total_keys= HvUSEDKEYS(hv);
-        HE **bucket_array= HvARRAY(hv);
+        U32 max_bucket_index;
+        U32 total_keys;
+        HE **bucket_array;
+        if (HvIS_STRTAB(hv))
+            XSRETURN(0);
+        max_bucket_index = HvMAX(hv);
+        total_keys = HvUSEDKEYS(hv);
+        bucket_array = HvARRAY(hv);
         mXPUSHi(total_keys);
         mXPUSHi(max_bucket_index+1);
         mXPUSHi(0); /* for the number of used buckets */
@@ -203,10 +208,12 @@ bucket_array(rhv)
     if (SvROK(rhv) && SvTYPE(SvRV(rhv))==SVt_PVHV && !SvMAGICAL(SvRV(rhv))) {
         hv = (const HV *) SvRV(rhv);
     } else if (!SvOK(rhv)) {
-        hv = PL_strtab;
+        hv = NULL;
     }
     if (hv) {
-        HE **he_ptr= HvARRAY(hv);
+        HE **he_ptr = HvARRAY(hv);
+        if (HvIS_STRTAB(hv))
+            XSRETURN(0);
         if (!he_ptr) {
             XSRETURN(0);
         } else {
@@ -280,7 +287,7 @@ bucket_ratio(rhv)
 {
     if (SvROK(rhv)) {
         rhv= SvRV(rhv);
-        if ( SvTYPE(rhv)==SVt_PVHV ) {
+        if ( SvTYPE(rhv)==SVt_PVHV && !HvIS_STRTAB((HV *)rhv) ) {
 #if PERL_VERSION_LT(5,25,0)
             SV *ret= Perl_hv_scalar(aTHX_ (HV*)rhv);
 #else
@@ -301,7 +308,7 @@ num_buckets(rhv)
 {
     if (SvROK(rhv)) {
         rhv= SvRV(rhv);
-        if ( SvTYPE(rhv)==SVt_PVHV ) {
+        if ( SvTYPE(rhv)==SVt_PVHV && !HvIS_STRTAB((HV *)rhv) ) {
             XSRETURN_UV(HvMAX((HV*)rhv)+1);
         }
     }
@@ -316,7 +323,7 @@ used_buckets(rhv)
 {
     if (SvROK(rhv)) {
         rhv= SvRV(rhv);
-        if ( SvTYPE(rhv)==SVt_PVHV ) {
+        if ( SvTYPE(rhv)==SVt_PVHV && !HvIS_STRTAB((HV *)rhv) ) {
             XSRETURN_UV(HvFILL((HV*)rhv));
         }
     }
@@ -329,10 +336,14 @@ hash_storage_info(hash)
         HV *hash
     CODE:
     {
-        HV *info = newHV();
-        UV index_bytes = HvARRAY(hash) ? (HvMAX(hash) + 1) * sizeof(HE *) : 0;
-        UV entry_bytes = HvTOTALKEYS(hash) * sizeof(HE);
-        UV allocated_bytes = 0;
+        HV *info;
+        UV index_bytes, entry_bytes, allocated_bytes;
+        if (HvIS_STRTAB(hash))
+            Perl_croak(aTHX_ "hash_storage_info cannot inspect PL_strtab");
+        info = newHV();
+        index_bytes = HvARRAY(hash) ? (HvMAX(hash) + 1) * sizeof(HE *) : 0;
+        entry_bytes = HvTOTALKEYS(hash) * sizeof(HE);
+        allocated_bytes = 0;
 #define STORAGE_INFO(name, value) \
         (void)hv_stores(info, name, newSVuv((UV)(value)))
         STORAGE_INFO("he_size", sizeof(HE));
@@ -458,3 +469,39 @@ hash_storage_info(hash)
     }
     OUTPUT:
         RETVAL
+
+UV
+immortalize_key(key)
+        SV *key
+    CODE:
+        RETVAL = Perl_immortalize_key(aTHX_ key);
+    OUTPUT:
+        RETVAL
+
+UV
+shared_key_refcount(key)
+        SV *key
+    CODE:
+        RETVAL = Perl_shared_key_refcount(aTHX_ key);
+    OUTPUT:
+        RETVAL
+
+void
+shared_keys()
+    PREINIT:
+        AV *keys;
+        SSize_t i, last;
+        SV **slot;
+    PPCODE:
+        if (GIMME_V == G_VOID)
+            XSRETURN_EMPTY;
+        if (GIMME_V == G_SCALAR)
+            XSRETURN_UV(HvTOTALKEYS(PL_strtab));
+        keys = MUTABLE_AV(sv_2mortal((SV *)Perl_shared_keys(aTHX)));
+        last = av_len(keys);
+        EXTEND(SP, last + 1);
+        for (i = 0; i <= last; i++) {
+            slot = av_fetch(keys, i, FALSE);
+            if (slot && *slot)
+                XPUSHs(sv_2mortal(SvREFCNT_inc_simple_NN(*slot)));
+        }

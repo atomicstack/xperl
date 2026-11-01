@@ -1,5 +1,43 @@
 MODULE = XS::APItest:Hash               PACKAGE = XS::APItest::Hash
 
+AV *
+shared_key_storage_info()
+    PREINIT:
+        AV *result;
+        U32 capacity;
+        U32 live;
+        U32 tombstones;
+        U32 i;
+        UV max_distance = 0;
+        UV total_distance = 0;
+        HEK **slots;
+    CODE:
+        capacity = HvARRAY(PL_strtab) ? HvMAX(PL_strtab) + 1 : 0;
+        live = HvTOTALKEYS(PL_strtab);
+        tombstones = HvSTRTAB(PL_strtab)->tombstones;
+        slots = HvSTRSLOTS(PL_strtab);
+        for (i = 0; i < capacity; i++) {
+            HEK *hek = slots[i];
+            if (hek && hek != HvSTR_TOMBSTONE) {
+                UV distance = (i - (HEK_HASH(hek) & (capacity - 1)))
+                              & (capacity - 1);
+                total_distance += distance;
+                if (distance > max_distance)
+                    max_distance = distance;
+            }
+        }
+        result = newAV();
+        av_push(result, newSVuv(capacity));
+        av_push(result, newSVuv(live));
+        av_push(result, newSVuv(tombstones));
+        av_push(result, newSVuv(sizeof(HEK *)));
+        av_push(result, newSVuv(STRUCT_OFFSET(struct hv_strtab, slots)));
+        av_push(result, newSVuv(max_distance));
+        av_push(result, newSVuv(total_distance));
+        RETVAL = result;
+    OUTPUT:
+        RETVAL
+
 void
 rot13_hash(hash)
         HV *hash
@@ -254,6 +292,203 @@ test_share_unshare_pvn(input)
         RETVAL = newSVpvn(p, len);
         unsharepvn(p, len, hash);
         OUTPUT:
+        RETVAL
+
+SV *
+test_shared_hek_probe(input, max_growth_keys = 0)
+        SV *input
+        UV max_growth_keys
+    PREINIT:
+        STRLEN len;
+        const char *pv;
+        SSize_t share_len;
+        U32 hash;
+        HEK *target;
+        HEK *duplicate;
+        HEK **held = NULL;
+        U32 held_count = 0;
+        U32 held_capacity = 0;
+        U32 capacity_before;
+        U32 capacity_after;
+        U32 i;
+        Size_t refs_after_first;
+        Size_t refs_after_duplicate;
+        Size_t refs_after_release;
+        U32 target_hash;
+        bool same_pointer;
+        bool target_utf8;
+        bool target_was_utf8;
+        I32 target_len;
+        U32 tombstones_before;
+        U32 tombstones_after_delete;
+        U32 tombstones_after_reinsert;
+        U32 tombstones_after_cleanup;
+        U32 cleanup_limit;
+        bool cleanup_observed = FALSE;
+        char keybuf[96];
+        STRLEN keylen;
+        HEK *reinserted;
+        HEK *cleanup_hek;
+        AV *result;
+    CODE:
+        if (max_growth_keys > 1000000)
+            croak("test_shared_hek_probe growth limit is too large");
+        pv = SvPV(input, len);
+        if (len > I32_MAX)
+            croak("test_shared_hek_probe key is too long");
+        share_len = SvUTF8(input) ? -(SSize_t)len : (SSize_t)len;
+        PERL_HASH(hash, pv, len);
+        target = share_hek(pv, share_len, hash);
+        capacity_before = HvMAX(PL_strtab) + 1;
+        refs_after_first = HvSTR_REFCOUNT(target);
+        duplicate = share_hek(pv, share_len, hash);
+        refs_after_duplicate = HvSTR_REFCOUNT(target);
+        unshare_hek(duplicate);
+        refs_after_release = HvSTR_REFCOUNT(target);
+        target_hash = HEK_HASH(target);
+        target_utf8 = HEK_UTF8(target);
+        target_was_utf8 = HEK_WASUTF8(target);
+        target_len = HEK_LEN(target);
+
+        if (max_growth_keys) {
+            held_capacity = 64;
+            Newx(held, held_capacity, HEK *);
+            for (i = 0; i < max_growth_keys; i++) {
+                if (held_count == held_capacity) {
+                    held_capacity *= 2;
+                    Renew(held, held_capacity, HEK *);
+                }
+                my_snprintf(keybuf, sizeof keybuf,
+                            "xperl-shared-hek-growth-%" UVuf "-%" UVuf,
+                            PTR2UV(input), (UV)i);
+                keylen = strlen(keybuf);
+                PERL_HASH(hash, keybuf, keylen);
+                held[held_count++] = share_hek(keybuf, keylen, hash);
+                if (HvMAX(PL_strtab) + 1 > capacity_before)
+                    break;
+            }
+        }
+        capacity_after = HvMAX(PL_strtab) + 1;
+        duplicate = share_hek(pv, share_len, HEK_HASH(target));
+        refs_after_duplicate = HvSTR_REFCOUNT(target);
+        same_pointer = target == duplicate;
+        unshare_hek(duplicate);
+        refs_after_release = HvSTR_REFCOUNT(target);
+
+        tombstones_before = HvSTRTAB(PL_strtab)->tombstones;
+        unshare_hek(target);
+        for (i = held_count; i > 0; i--)
+            unshare_hek(held[i - 1]);
+        tombstones_after_delete = HvSTRTAB(PL_strtab)->tombstones;
+
+        reinserted = share_hek(pv, share_len, target_hash);
+        tombstones_after_reinsert = HvSTRTAB(PL_strtab)->tombstones;
+        unshare_hek(reinserted);
+
+        if (max_growth_keys) {
+            cleanup_limit = capacity_after * 2;
+            for (i = 0; i < cleanup_limit; i++) {
+                const U32 old_capacity = HvMAX(PL_strtab) + 1;
+                HEK **old_slots = HvSTRSLOTS(PL_strtab);
+                const U32 old_tombstones = HvSTRTAB(PL_strtab)->tombstones;
+                my_snprintf(keybuf, sizeof keybuf,
+                            "xperl-shared-hek-cleanup-%" UVuf "-%" UVuf,
+                            PTR2UV(input), (UV)i);
+                keylen = strlen(keybuf);
+                PERL_HASH(hash, keybuf, keylen);
+                cleanup_hek = share_hek(keybuf, keylen, hash);
+                if (old_tombstones
+                    && HvMAX(PL_strtab) + 1 == old_capacity
+                    && HvSTRSLOTS(PL_strtab) != old_slots) {
+                    cleanup_observed = TRUE;
+                    tombstones_after_cleanup =
+                        HvSTRTAB(PL_strtab)->tombstones;
+                }
+                unshare_hek(cleanup_hek);
+                if (cleanup_observed)
+                    break;
+            }
+            if (!cleanup_observed)
+                tombstones_after_cleanup = HvSTRTAB(PL_strtab)->tombstones;
+        }
+        else {
+            tombstones_after_cleanup = HvSTRTAB(PL_strtab)->tombstones;
+        }
+        Safefree(held);
+
+        result = newAV();
+        av_push(result, newSVuv(capacity_before));
+        av_push(result, newSVuv(capacity_after));
+        av_push(result, newSVuv(capacity_after > capacity_before));
+        av_push(result, newSVuv(same_pointer));
+        av_push(result, newSVuv(refs_after_first));
+        av_push(result, newSVuv(refs_after_duplicate));
+        av_push(result, newSVuv(refs_after_release));
+        av_push(result, newSVuv(target_utf8 ? 1 : 0));
+        av_push(result, newSVuv(target_was_utf8 ? 1 : 0));
+        av_push(result, newSVuv(target_len));
+        av_push(result, newSVuv(target_hash));
+        av_push(result, newSVuv(tombstones_before));
+        av_push(result, newSVuv(tombstones_after_delete));
+        av_push(result, newSVuv(tombstones_after_reinsert));
+        av_push(result, newSVuv(held_count));
+        av_push(result, newSVuv(tombstones_after_cleanup));
+        av_push(result, newSVuv(cleanup_observed));
+        RETVAL = newRV_noinc((SV *)result);
+    OUTPUT:
+        RETVAL
+
+SV *
+test_unsharepvn_refcount(input)
+        SV *input
+    PREINIT:
+        STRLEN len;
+        const char *pv;
+        I32 share_len;
+        U32 hash;
+        HEK *hek;
+        Size_t refs_after_hold;
+        Size_t refs_after_duplicate;
+        Size_t refs_after_unshare;
+        Size_t refs_to_release;
+        U32 hek_utf8;
+        U32 hek_wasutf8;
+        I32 hek_len;
+        AV *result;
+    CODE:
+        pv = SvPV(input, len);
+        if (len > I32_MAX)
+            croak("test_unsharepvn_refcount key is too long");
+        share_len = SvUTF8(input) ? -(I32)len : (I32)len;
+        PERL_HASH(hash, pv, len);
+        hek = share_hek(pv, share_len, hash);
+        refs_after_hold = HvSTR_REFCOUNT(hek);
+        (void)share_hek(pv, share_len, hash);
+        refs_after_duplicate = HvSTR_REFCOUNT(hek);
+
+        unsharepvn(pv, share_len, hash);
+        refs_after_unshare = HvSTR_REFCOUNT(hek);
+        hek_utf8 = cBOOL(HEK_UTF8(hek));
+        hek_wasutf8 = cBOOL(HEK_WASUTF8(hek));
+        hek_len = HEK_LEN(hek);
+
+        /* Release every remaining reference, including the extra one if
+         * unsharepvn failed to match this key's canonical shared HEK. */
+        refs_to_release = HvSTR_REFCOUNT(hek);
+        while (refs_to_release) {
+            refs_to_release--;
+            unshare_hek(hek);
+        }
+
+        result = newAV();
+        av_push(result, newSVuv(refs_after_hold));
+        av_push(result, newSVuv(refs_after_duplicate));
+        av_push(result, newSVuv(refs_after_unshare));
+        av_push(result, newSVuv(hek_utf8));
+        av_push(result, newSVuv(hek_wasutf8));
+        av_push(result, newSViv(hek_len));
+        RETVAL = newRV_noinc((SV *)result);
+    OUTPUT:
         RETVAL
 
 void

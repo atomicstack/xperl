@@ -811,14 +811,19 @@ selected threshold. The index stores
 adaptive-width entry identifiers only; the full cached hash remains in the
 entry's C<HEK>. Indexed hashes recycle deleted entry positions through a
 per-hash free list. C<HV> and C<XPVHV> sizes are unchanged. Shared-key
-interning keeps its chained representation. Traversal scans the entry array
-independently of hash values. The C<PERL_PERTURB_KEYS> controls and
+interning now uses an open-addressed array of C<HEK *> pointers with
+tombstones. Each shared C<HEK> has a reference-count prefix; its address
+remains stable while referenced, including when the slot array grows. The
+table reserves 32,768 slots and grows on colliding inserts. Traversal scans
+the entry array independently of hash
+values. The C<PERL_PERTURB_KEYS> controls and
 C<Hash::Util::hash_traversal_mask> are removed. Hash-function seeding is
 retained. Insertion during an active traversal is detected without random
 state.
 
-This changes the XS ABI and direct-storage interfaces. C<HeNEXT> is
-removed. C<HvMAX> is no longer writable as an lvalue; use C<HvMAX_SET> or
+This changes the XS ABI and direct-storage interfaces. C<HeNEXT> and
+C<HeSHARED_NEXT> are removed. C<HvMAX> is no longer writable as an
+lvalue; use C<HvMAX_SET> or
 C<HvMAX_SET_LINEAR> according to storage form. C<HE *> and C<SV **> pointers
 into a hash must be reacquired after entry-array growth and after deletion
 from a headerless linear hash, which shifts later entries. See
@@ -826,6 +831,12 @@ L<perlguts/Working with HVs> and
 F<Porting/hash-oa-design.pod> for the experimental compatibility limits.
 C<Hash::Util::hash_storage_info> reports capacities, free-list length,
 tombstones, probe distances, and allocation sizes.
+C<Hash::Util::shared_key_refcount> looks up a shared key's reference count
+without interning it, and C<Hash::Util::shared_keys> returns copies of the
+interned key strings. C<Hash::Util::immortalize_key> interns a key and
+acquires one permanent reference per call, retained until interpreter
+destruction and copied into cloned interpreters. Hash::Util bucket diagnostics do not expose
+C<PL_strtab>; generic value-entry and iteration APIs do not apply to it.
 
 XXX Changes which affect the interface available to C<XS> code go here. Other
 significant internal changes for future core maintainers should be noted as

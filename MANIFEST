@@ -6617,6 +6617,8 @@ Porting/bench-hash-oa.pl			Benchmark experimental hash storage
 Porting/bench-hash-oa-compare.py		Run paired hash storage benchmarks
 Porting/bench-hash-oa-lookup.pl			Benchmark flat hash lookups and storage
 Porting/bench-hash-oa-lookup-compare.py		Run paired flat hash lookup benchmarks
+Porting/bench-strtab.pl				Benchmark shared key table fill and teardown
+Porting/bench-strtab-compare.py			Run paired shared key table benchmarks
 Porting/bench-trie.pl				Compare trie corpus scans across Perl builds
 Porting/bisect.pl				A tool to make bisecting easy
 Porting/bisect-example.sh			Example script to use with git bisect run

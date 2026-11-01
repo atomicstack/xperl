@@ -2219,6 +2219,7 @@ Admp	|I32	|ibcmp_utf8	|NN const char *s1			\
 				|NULLOK char **pe2			\
 				|UV l2					\
 				|bool u2
+Cdp	|Size_t |immortalize_key|NN SV *keysv
 
 eop	|STRLEN |infix_plugin_standard					\
 				|NN char *operator_ptr			\
@@ -3737,6 +3738,9 @@ Xp	|void	|set_numeric_standard					\
 Xp	|void	|set_numeric_underlying 				\
 				|NN const char *file			\
 				|const line_t caller_line
+Cdp	|Size_t |shared_key_refcount					\
+				|NN SV *keysv
+CRdp	|AV *	|shared_keys
 Adp	|HEK *	|share_hek	|NN const char *str			\
 				|SSize_t len				\
 				|U32 hash

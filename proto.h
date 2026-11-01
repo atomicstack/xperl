@@ -4100,6 +4100,15 @@ Perl_ibcmp_utf8(pTHX_ const char *s1, char **pe1, UV l1, bool u1, const char *s2
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;       \
     } STMT_END
 
+PERL_CALLCONV Size_t
+Perl_immortalize_key(pTHX_ SV *keysv)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_IMMORTALIZE_KEY        \
+    STMT_START { Perl_assert_aTHX; assert(keysv);      \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 PERL_CALLCONV STRLEN
 Perl_infix_plugin_standard(pTHX_ char *operator_ptr, STRLEN operator_len, struct Perl_custom_infix **def)
         Perl_attribute_nonnull_aTHX
@@ -8897,6 +8906,23 @@ Perl_share_hek(pTHX_ const char *str, SSize_t len, U32 hash)
 #define PERL_ARGS_ASSERT_SHARE_HEK              \
     STMT_START { Perl_assert_aTHX; assert(str);        \
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV Size_t
+Perl_shared_key_refcount(pTHX_ SV *keysv)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_SHARED_KEY_REFCOUNT    \
+    STMT_START { Perl_assert_aTHX; assert(keysv);      \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV AV *
+Perl_shared_keys(pTHX)
+        Perl_attribute_nonnull_aTHX
+        __attribute__warn_unused_result__;
+#define PERL_ARGS_ASSERT_SHARED_KEYS            \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
 PERL_CALLCONV Signal_t

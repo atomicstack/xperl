@@ -2791,6 +2791,12 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
                 freq[1] = totalkeys;
                 max = 1;
             }
+            else if (MUTABLE_HV(sv) == PL_strtab) {
+                const U32 capacity = (U32)HvMAX(sv) + 1;
+                freq[0] = capacity - totalkeys;
+                freq[1] = totalkeys;
+                max = 1;
+            }
             else if (HvIS_OA(MUTABLE_HV(sv))) {
                 const U32 capacity = HvMAX(sv) + 1;
                 freq[0] = capacity - totalkeys;
@@ -2832,7 +2838,9 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
                                 n + n(n-1)/2k
             */
 
-            if (!HvIS_LINEAR(MUTABLE_HV(sv))) {
+            if (!HvIS_LINEAR(MUTABLE_HV(sv))
+                && MUTABLE_HV(sv) != PL_strtab)
+            {
                 for (i = max; i > 0; i--) { /* Precision: count down. */
                     sum += freq[i] * i * i;
                 }
@@ -2849,7 +2857,10 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
         dump_indent(level, file, "  KEYS = %" IVdf "\n", (IV)totalkeys);
         {
             STRLEN count = 0;
-            if (HvARRAY(sv)) {
+            if (MUTABLE_HV(sv) == PL_strtab) {
+                count = totalkeys;
+            }
+            else if (HvARRAY(sv)) {
                 STRLEN i;
                 for (i = 0; i < HvENTRY_LIMIT(sv); ++i)
                     if (HvENTRY_FIRST(sv, i)) ++count;
@@ -2968,35 +2979,58 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
             if (HvTOTALKEYS(hv)) {
                 STRLEN i;
                 int count = maxnest - nest;
-                for (i=0; i < HvENTRY_LIMIT(hv); i++) {
-                    HE *he;
-                    for (he = HvENTRY_FIRST(hv, i); he;
-                         he = HvENTRY_NEXT(hv, he)) {
-                        U32 hash;
-                        SV * keysv;
-                        const char * keypv;
-                        SV * elt;
+                if (hv == PL_strtab) {
+                    HEK * const * const slots = HvSTRSLOTS(hv);
+                    const U32 capacity = (U32)HvMAX(hv) + 1;
+                    for (i = 0; slots && i < capacity; i++) {
+                        HEK * const hek = slots[i];
+                        const char *keypv;
                         STRLEN len;
 
+                        if (!hek || hek == HvSTR_TOMBSTONE)
+                            continue;
                         if (count-- <= 0) goto DONEHV;
 
-                        hash = HeHASH(he);
-                        keysv = hv_iterkeysv(he);
-                        keypv = SvPV_const(keysv, len);
-                        elt = HeVAL(he);
-
+                        keypv = HEK_KEY(hek);
+                        len = HEK_LEN(hek);
                         dump_indent(level+1, file, "Elt %s ",
                                 pv_display_for_dump(d, keypv, len, 0, pvlim));
-                        if (SvUTF8(keysv))
-                            PerlIO_printf(file, "[UTF8 \"%s\"] ", sv_uni_display(d, keysv, 6 * SvCUR(keysv), UNI_DISPLAY_QQ));
-                        if (HvEITER_get(hv) == he)
-                            PerlIO_printf(file, "[CURRENT] ");
-                        PerlIO_printf(file, "HASH = 0x%" UVxf, (UV) hash);
+                        if (HEK_UTF8(hek))
+                            PerlIO_printf(file, "[UTF8 \"%s\"] ",
+                                          pv_uni_display(d, (const U8 *)keypv, len,
+                                                         6 * len, UNI_DISPLAY_QQ));
+                        PerlIO_printf(file, "HASH = 0x%" UVxf,
+                                      (UV)HEK_HASH(hek));
+                        PerlIO_printf(file, " REFCNT = 0x%" UVxf "\n",
+                                      (UV)HvSTR_REFCOUNT(hek));
+                    }
+                }
+                else {
+                    for (i=0; i < HvENTRY_LIMIT(hv); i++) {
+                        HE *he;
+                        for (he = HvENTRY_FIRST(hv, i); he;
+                             he = HvENTRY_NEXT(hv, he)) {
+                            U32 hash;
+                            SV * keysv;
+                            const char * keypv;
+                            SV * elt;
+                            STRLEN len;
 
-                        if (sv == (SV*)PL_strtab)
-                            PerlIO_printf(file, " REFCNT = 0x%" UVxf "\n",
-                                (UV)he->he_valu.hent_refcount );
-                        else {
+                            if (count-- <= 0) goto DONEHV;
+
+                            hash = HeHASH(he);
+                            keysv = hv_iterkeysv(he);
+                            keypv = SvPV_const(keysv, len);
+                            elt = HeVAL(he);
+
+                            dump_indent(level+1, file, "Elt %s ",
+                                    pv_display_for_dump(d, keypv, len, 0, pvlim));
+                            if (SvUTF8(keysv))
+                                PerlIO_printf(file, "[UTF8 \"%s\"] ", sv_uni_display(d, keysv, 6 * SvCUR(keysv), UNI_DISPLAY_QQ));
+                            if (HvEITER_get(hv) == he)
+                                PerlIO_printf(file, "[CURRENT] ");
+                            PerlIO_printf(file, "HASH = 0x%" UVxf, (UV) hash);
+
                             (void)PerlIO_putc(file, '\n');
                             do_sv_dump(level+1, file, elt, nest+1, maxnest, dumpops, pvlim);
                         }
