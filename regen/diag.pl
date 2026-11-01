@@ -838,7 +838,7 @@ sub write_plural_selector_definition {
     push @branches, "(IV)PERL_DIAG_PLURAL_${kind}_$language(n)";
     print {$out} render_plural_rule_macro( $macro, join( ' ', @branches ) );
     print {$out} "PERL_STATIC_INLINE IV\n$name(pTHX_ U16 language, UV n)\n{\n",
-      "    PERL_UNUSED_CONTEXT;\n    PERL_UNUSED_ARG(language);\n",
+      "    PERL_UNUSED_CONTEXT;\n    PERL_UNUSED_ARG(language);\n    PERL_UNUSED_ARG(n);\n",
       "    return $macro(n);\n}\n\n";
     return $registry->{plural_names}{$key} = $name;
 }

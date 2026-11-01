@@ -14444,6 +14444,7 @@ Perl_diag_plural_selector_en_1816_0(pTHX_ U16 language, UV n)
 {
     PERL_UNUSED_CONTEXT;
     PERL_UNUSED_ARG(language);
+    PERL_UNUSED_ARG(n);
     return PERL_DIAG_PLURAL_SELECTOR_en_1816_0(n);
 }
 
