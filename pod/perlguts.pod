@@ -891,11 +891,13 @@ entry array and linear search until their configured threshold, without an
 index allocation or metadata header. Deleting from this representation shifts later entries
 left. Inserting beyond the threshold promotes the entries to an
 open-addressed index, which stores adaptive-width entry identifiers only.
-The full cached hash remains in the entry's C<HEK>. An index resize leaves
-entry addresses unchanged. Growing the entry array or deleting from the
-linear form can invalidate C<HE *> and C<SV **> pointers returned by hash access functions.
-Reacquire these pointers after such mutations and after calls into Perl or
-magic callbacks. The value's separately allocated C<SV> does not move with
+The full cached hash remains in the entry's C<HEK>. Growing or compacting the
+entry array can invalidate C<HE *> and C<SV **> pointers returned by hash
+access functions. Deleting from the headerless linear form can also
+invalidate pointers by shifting later entries. Reacquire these pointers after
+insertions or preallocation that can grow or compact the array, after such
+deletions, and after calls into Perl or magic callbacks. The value's
+separately allocated C<SV> does not move with
 the entry array. Retain an owned SV reference when its lifetime must extend
 across callbacks or deletion.
 

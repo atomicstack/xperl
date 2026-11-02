@@ -365,6 +365,7 @@ hash_storage_info(hash)
                          : (UV)capacity * sizeof(HE);
             STORAGE_INFO("entry_capacity", capacity);
             STORAGE_INFO("entry_used", HvTOTALKEYS(hash));
+            STORAGE_INFO("entry_holes", 0);
             STORAGE_INFO("arena_backed", arena_backed ? 1 : 0);
             STORAGE_INFO("arena_slot_size", arena_backed
                          ? sizeof(HE) : 0);
@@ -400,7 +401,8 @@ hash_storage_info(hash)
             entry_bytes = oa ? oa->capacity * sizeof(HE) : 0;
             STORAGE_INFO("entry_capacity", oa ? oa->capacity : 0);
             STORAGE_INFO("entry_used", oa ? oa->used : 0);
-            STORAGE_INFO("free_head", oa ? oa->free_head : 0);
+            STORAGE_INFO("free_head", 0);
+            STORAGE_INFO("entry_holes", oa ? oa->used - HvTOTALKEYS(hash) : 0);
             STORAGE_INFO("tombstones", oa ? oa->tombstones : 0);
             STORAGE_INFO("index_width", index_width);
             STORAGE_INFO("slot_size", index_width);
@@ -410,16 +412,9 @@ hash_storage_info(hash)
             STORAGE_INFO("entry_index_bytes", entry_index_bytes);
             STORAGE_INFO("entry_spare", oa ? oa->capacity - oa->used : 0);
             if (oa) {
-                U32 link = oa->free_head;
-                UV free_count = 0, empty = 0, deleted = 0;
+                UV empty = 0, deleted = 0;
                 UV probe_total = 0, probe_max = 0;
                 STRLEN i;
-                while (link) {
-                    if (link > oa->used || free_count >= oa->used)
-                        Perl_croak(aTHX_ "Corrupt hash entry free list");
-                    free_count++;
-                    link = HeNEXT_FREE(&oa->entries[link - 1]);
-                }
                 for (i = 0; i <= HvMAX(hash); i++) {
                     const U32 entry_index = HvOA_INDEX_GET(hash, i);
                     if (!entry_index)
@@ -433,7 +428,7 @@ hash_storage_info(hash)
                         if (distance > probe_max) probe_max = distance;
                     }
                 }
-                STORAGE_INFO("free_list_length", free_count);
+                STORAGE_INFO("free_list_length", 0);
                 STORAGE_INFO("index_empty", empty);
                 STORAGE_INFO("index_deleted", deleted);
                 STORAGE_INFO("probe_total", probe_total);

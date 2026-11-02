@@ -33,16 +33,31 @@ contiguous array of entries. Each index slot stores only an entry identifier.
 The full cached hash remains in the entry's C<HEK>. The identifier uses one
 byte when slot capacity is at most 128, two bytes when it is at most 32,768,
 and four bytes above that. Zero means empty; an all-ones identifier marks a
-deleted slot; live identifiers are entry positions plus one. The entry array
-grows independently, by about 1.2 times its current capacity. On a colliding
-insert, the slot array is maintained when projected occupancy reaches about
-two-thirds. If tombstones are at least half of the currently occupied slots
-(tombstones are at least as numerous as live entries), the index is rebuilt
-at the same capacity; otherwise it doubles. This is a target, not a hard
-occupancy ceiling: an insertion that does not collide can take the table
-above two-thirds. Deleted entries join a
-freelist whose link is encoded as an integer, allowing the entry allocation
-to be reused without storing a pointer in every entry.
+deleted slot; live identifiers are entry positions plus one. Index capacity
+remains a power of two. Through an index capacity of 16,384 slots, entry
+capacity is the floor of two-thirds of index capacity, and filling that
+entry allocation can trigger an index rebuild. Above that size, index
+pressure triggers a rebuild when live entries plus tombstones reach the
+floor of two-thirds of capacity. The entry array grows independently by 25
+percent when full. On insertion it compacts only when holes occupy at least
+one fifth of its capacity and their storage uses at least 1 MiB. Otherwise
+it grows by 25 percent without resizing the index. Index rebuilds use the
+next power of two at least three times the live entry count, with a minimum
+of eight slots. On index growth or a same-size rebuild, holes are compacted
+in place only when both thresholds are met or packing is required by coupled
+sizing, a capacity limit, or the identifier range. Otherwise the index is rebuilt
+using existing entry positions and holes without copying the entry array.
+Shrinking an index above 16,384 slots sets entry capacity to 125 percent of
+the live count and packs any holes. Shrinking to 16,384 slots or fewer
+couples entry capacity to two-thirds of index capacity and packs holes.
+Changing entry capacity uses C<Renew>, which may relocate the array.
+Deletion alone does not trigger a
+rebuild.
+Since deleted positions are not reused, entry allocation can exceed index
+capacity. Identifier width remains tied to index capacity:
+one byte through 128 slots, two bytes through 32,768 slots, and four bytes
+above that. The compacted order is internal and does not promise public
+iteration order.
 
 With the default positive threshold, a singleton uses one arena-backed
 16-byte compact C<HE> on 64-bit builds. At threshold zero, the first key uses
@@ -55,11 +70,10 @@ index allocation or metadata header. This design does not enlarge the C<HV>
 or C<XPVHV> structure. The original chained representation used a 24-byte
 C<HE> on 64-bit builds; these sizes depend on pointer width.
 
-This separates probe-table growth from entry growth. It avoids moving live
-entry records when the slot table expands and keeps the per-slot index small.
-The trade-off is that a lookup follows an index identifier to an entry and
-then reaches its C<HEK> to check the cached hash and key. Deletion and
-iteration must maintain entry allocation and slot state together.
+At larger sizes, index and entry allocation can grow independently. The
+trade-off is that a lookup follows an index identifier to an entry and then
+reaches its C<HEK> to check the cached hash and key. Deletion and iteration
+must maintain entry allocation and slot state together.
 
 =head1 API AND ABI COMPATIBILITY
 
@@ -69,11 +83,12 @@ continue to follow existing rules.
 
 The C API exposes more than Perl-level behavior. C<hv_fetch()> and related
 functions return an C<SV **> that points to a value field. That field is
-inside the entry record. Growing the contiguous entry array relocates that
-record and invalidates a previously returned C<SV **>. In the optional
+inside the entry record. Resizing the contiguous entry allocation with
+C<Renew> may relocate that record and invalidate a previously returned
+C<SV **>. Reacquire returned C<HE *> and C<SV **> pointers after insertions
+or preallocation that can grow or compact the array. In the optional
 headerless linear mode, deletion shifts later records and invalidates their
-pointers too. Reacquire returned C<HE *> and C<SV **> pointers after these
-mutations. XS code that saved such a pointer across growth or deletion may
+pointers too. XS code that saved such a pointer across these operations may
 need changes. Perl-level lvalue references do not have the same problem
 because they refer to the value SV, not its slot.
 
@@ -81,8 +96,8 @@ The C<HE *> interface is more sensitive. Public macros such as C<HeVAL()> and
 C<HeKEY()> expose entry fields, and hash iteration APIs can expose entries to
 XS code. Code that saves an C<HE *> across mutation may depend on a stable
 address. A compact entry in a relocatable array cannot provide that stability
-by itself; reacquire it after entry-array growth or deletion from linear
-storage. The tied-fetch pool uses a standalone 16-byte arena C<HE>; when
+by itself; reacquire it after insertion or preallocation that can grow or
+compact the entry array, or after deletion from linear storage. The tied-fetch pool uses a standalone 16-byte arena C<HE>; when
 retired, its link is stored in the value union. C<PL_strtab> contains no
 C<HE> records: its open-addressed slots point directly to individually
 allocated shared C<HEK>s. Each shared-key allocation has a reference-count
@@ -107,13 +122,12 @@ including headerless linear hashes; C<Hash::Util::hash_storage_info()> uses
 C<open_addressed> for actual index allocation and C<linear> for the
 headerless form.
 
-The shared-key table starts with 32,768 pointer slots. On a colliding
-insertion, it checks whether projected occupancy reaches two-thirds.
-Non-colliding insertions can take occupancy above that target. When tombstones
-are at least as numerous as live entries, it rebuilds at the same capacity;
-otherwise it doubles. An interned C<HEK> is canonical for its key bytes and
-storage flags, and its address remains stable while referenced, including
-across slot-array growth.
+The shared-key table has a minimum capacity of 32,768 pointer slots. Before
+insertion, when live slots plus tombstones reach the floor of two-thirds of
+capacity, it rebuilds at the next power of two at least three times the live
+count, while retaining the minimum capacity. An interned C<HEK> is canonical
+for its key bytes and storage flags, and its address remains stable while
+referenced, including across slot-array growth.
 C<share_hek()> increments the shared reference count; C<unshare_hek()>
 releases it, and the address becomes invalid when the final reference is
 released. There is no value
@@ -137,12 +151,12 @@ before treating the experiment as a settled ABI.
 
 =head1 VALIDATION
 
-F<t/op/hash-oa.t> covers repeated insert/delete reuse, binary and UTF-8 keys,
+F<t/op/hash-oa.t> covers repeated insert/delete, binary and UTF-8 keys,
 iteration while deleting, restricted hashes, tied hashes, destructor
 reentrancy during replace/delete/clear, lvalue references retained through
-growth, optional thread cloning, independent index and entry growth, free-list
-reuse, and tombstone rebuilding. The focused XS hash tests also exercise
-collision-triggered growth using keys selected by their computed homes. The
+growth, optional thread cloning, entry-budget compaction, no-reuse deletion,
+and tombstone rebuilding. The focused XS hash tests also exercise index
+growth and compaction. The
 shared-key tests cover canonical interning, reference counts, UTF-8 flags,
 tombstone reuse, stable C<HEK *> identity through table growth, and thread
 cloning. XS::APItest-only diagnostics scan the HEK-pointer slots before
@@ -165,7 +179,8 @@ live count. Both current RSS and peak RSS are recorded, showing the process
 footprint after deletion beside its high-water mark.
 
 When C<Hash::Util::hash_storage_info()> is available, the CSV includes live
-entries, index and entry capacities, tombstones, entry and freelist usage,
+entries, index and entry capacities, tombstones, entry holes, and the
+compatibility free-list count,
 probe counts, requested bytes, and allocator bytes. The baseline requested
 byte count includes live C<HE> records and the bucket array, but excludes
 arena slack. Its allocator-bytes field is zero because the baseline chained
@@ -510,12 +525,14 @@ storage, and allocator retention changes it on later rounds.
 =head1 LIMITS AND FOLLOW-UP
 
 The process-wide C<PL_strtab> is an open-addressed array of shared C<HEK *>
-slots. It starts with 32,768 slots, stores full hashes in each shared C<HEK>,
-and has no C<HE> records, entry array, or freelist. Ordinary hash entry
-identifiers use adaptive one-, two-, or four-byte widths; the slot
-index is limited to 2^26 slots. Deleted entries
-are reused, but the entry vector does not shrink or compact after heavy
-deletion; iteration therefore scans up to its historical high-water mark.
+slots. Its minimum capacity is 32,768 slots. Before insertion, when live
+entries plus tombstones reach C<floor(2*capacity/3)>, it rebuilds at the next
+power of two at least three times the live entry count, retaining the minimum
+capacity. It stores full hashes in each shared C<HEK> and has no C<HE>
+records, entry array, or freelist. Ordinary hash entry identifiers use
+adaptive one-, two-, or four-byte widths; the slot index is limited to 2^26
+slots. Deleted ordinary hash entries are not reused and can leave holes in
+the entry array until a later insertion compacts it.
 With the default C<PERL_HASH_LINEAR_MAX=4>, hashes with up to four entries
 avoid the index allocation but use linear lookup and shift entries on
 deletion. Setting the threshold to zero disables linear storage and uses an

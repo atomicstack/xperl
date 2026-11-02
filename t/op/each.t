@@ -112,7 +112,7 @@ is ($total, 100, "test values keys resets iterator");
 
 is (keys(%hash), 10, "keys (%hash)");
 SKIP: {
-    skip "no Hash::Util on miniperl", 8, if is_miniperl;
+    skip "no Hash::Util on miniperl", 9, if is_miniperl;
     require Hash::Util;
     sub Hash::Util::num_buckets (\%);
 
@@ -124,9 +124,12 @@ SKIP: {
 
     %hash = split /, /, 'Pugh, Pugh, Barney McGrew, Cuthbert, Dibble, Grubb';
     is (keys(%hash), 3, "now 3 keys");
-    # 3 keys won't be enough to trigger any "must grow" criteria:
-    is(Hash::Util::num_buckets(%hash), $size,
-       "size doesn't change with 3 keys");
+    my $small_size = Hash::Util::num_buckets(%hash);
+    cmp_ok($small_size, '<=', $size,
+           "insertion may shrink a sparsely populated hash");
+    cmp_ok($small_size, '>=', keys(%hash),
+           "small hash retains enough storage for its keys");
+    $size = $small_size;
 
     keys(%hash) = keys(%hash);
     is (Hash::Util::num_buckets(%hash), $size,

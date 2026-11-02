@@ -493,18 +493,21 @@ sub test_precomputed_hashes {
         unless $collision && grep(defined, @keys) == 8;
     store_prehashed(\%hash, $keys[0], 0, $hashes[0]);
     keys(%hash) = 4;
-    store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 1..5;
+    store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 1..4;
     is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 8,
-       'noncolliding inserts keep the initial index size');
+       'five noncolliding inserts remain below the index threshold');
+    store_prehashed(\%hash, $keys[5], 5, $hashes[5]);
+    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 16,
+       'noncolliding inserts grow the index at the two-thirds threshold');
     store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 6..7;
-    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 8,
-       'noncolliding inserts may fill the whole index');
-    ok(!exists $hash{'absent from full index'},
-       'unsuccessful lookup terminates when no index slot is empty');
-    is($hash{$keys[7]}, 7, 'successful lookup works in a full index');
+    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 16,
+       'noncolliding inserts retain the resized index');
+    ok(!exists $hash{'absent from resized index'},
+       'unsuccessful lookup terminates after index growth');
+    is($hash{$keys[7]}, 7, 'successful lookup works after index growth');
     store_prehashed(\%hash, $collision->[0], 99, $collision->[1]);
     is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 16,
-       'a collision grows the index at the two-thirds threshold');
+       'collision lookup fits below the next index threshold');
 
     my %lazy;
     store_prehashed(\%lazy, $keys[0], 0, $hashes[0]);
@@ -517,7 +520,7 @@ sub test_precomputed_hashes {
     is($lazy_info->{entry_used}, 9,
        'insertion appends while the deleted iterator entry is retained');
     is($lazy_info->{free_list_length}, 0,
-       'the lazy-deleted entry stays out of the free list until iterator reset');
+       'the lazy-deleted entry is never placed on the free list');
 
     my %sparse_lazy;
     store_prehashed(\%sparse_lazy, $keys[0], 0, $hashes[0]);
@@ -527,12 +530,14 @@ sub test_precomputed_hashes {
     store_prehashed(\%sparse_lazy, $collision->[0], 99, $collision->[1]);
     store_prehashed(\%sparse_lazy, $keys[$_], $_, $hashes[$_]) for 1..7;
     my $sparse_info = Hash::Util::hash_storage_info(\%sparse_lazy);
-    is($sparse_info->{index_capacity}, 8,
-       'noncolliding inserts can fill an index with a lazy entry retained');
-    is($sparse_info->{entry_used}, 9,
-       'one-byte indices encode an entry number above slot capacity');
+    is($sparse_info->{index_capacity}, 16,
+       'noncolliding inserts grow an index with a lazy entry retained');
+    is($sparse_info->{entry_used}, 8,
+       'index pressure compacts the lazily deleted entry');
+    is($sparse_info->{entry_holes}, 0,
+       'compaction removes the lazy deleted entry hole');
     is($sparse_info->{index_width}, 1,
-       'the full eight-slot index retains one-byte entry indices');
+       'the resized index retains one-byte entry indices');
     is($sparse_lazy{$collision->[0]}, 99,
        'lookup works after filling slots around a lazy entry');
 }

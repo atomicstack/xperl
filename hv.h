@@ -21,7 +21,6 @@ struct he {
     union {
         SV	*hent_val;	/* scalar value that was hashed */
         Size_t	hent_refcount;	/* references for this shared hash key */
-        U32     hent_next_free; /* OA free-list link, encoded as index + 1 */
         HE      *hent_next_pool; /* tied-fetch pool link while retired */
     } he_valu;
 };
@@ -32,7 +31,6 @@ struct hv_oa {
     HE *entries;
     U32 capacity;
     U32 used;
-    U32 free_head;
     U32 tombstones;
     U8 indices[1];
 };
@@ -525,7 +523,6 @@ Null HE pointer.
 
 #  define Nullhe Null(HE*)
 #endif
-#define HeNEXT_FREE(he)		((he)->he_valu.hent_next_free)
 #define HePOOL_NEXT(he)		((he)->he_valu.hent_next_pool)
 #define HvIS_OA(hv)		((const HV *)(hv) != PL_strtab)
 #define HvIS_STRTAB(hv)		((const HV *)(hv) == PL_strtab)
@@ -548,11 +545,6 @@ Null HE pointer.
 
 Accesses the next free tied-fetch entry. The value field stores this link only
 while the HE is retired in the tied-fetch pool.
-
-=for apidoc Cm|U32|HeNEXT_FREE|HE *he
-
-Accesses a vacant compact entry's free-list link, encoded as index plus
-one. Zero ends the free list.
 
 =for apidoc Cmn|U32|HV_OA_DELETED
 
@@ -675,10 +667,10 @@ not HE records, and is not traversed through these macros.
 
 These macros traverse storage without changing the hash iterator. Obtain
 each position with C<HvENTRY_FIRST> and follow it with C<HvENTRY_NEXT>.
-Entry-array growth and transitions between a singleton HE and an entry array
-invalidate returned entry pointers. Retain integer positions and reacquire
-entries after callbacks that can insert or delete keys. The SV values remain
-separately allocated.
+Entry-array growth, compaction, and transitions between a singleton HE and
+an entry array invalidate returned entry pointers. Compaction also changes
+integer positions. Retain keys and refetch entries after callbacks that can
+insert or delete keys. The SV values remain separately allocated.
 
 =cut
 */
