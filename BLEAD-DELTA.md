@@ -263,7 +263,10 @@ the live count and packs any
 holes. Shrinking to 16,384 slots or fewer couples entry capacity to
 two-thirds of index capacity and packs holes. Changing entry capacity uses
 `Renew`, which may relocate the array. Deletion alone does not trigger a
-rebuild.
+rebuild. Explicit `hv_ksplit()` reservation allocates entry space for the
+requested count plus existing holes above the coupled range, including when
+the index already has enough capacity. New-key insertion reuses its initial
+probe result unless an index rebuild invalidates it.
 Entry allocation can exceed index capacity, while
 identifier width remains tied to index capacity: one byte through 128 slots,
 two bytes through 32,768 slots, and four bytes above that. The internal

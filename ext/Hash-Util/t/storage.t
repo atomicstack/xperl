@@ -497,4 +497,77 @@ ok(!exists $wide{$wide_early} && !exists $wide{$wide_late}
 is(shared_key_refcount("xperl-immortal-byte-$$\x{e9}"), 2,
    'permanent references survive shared-key index growth');
 
+{
+    my %reserved;
+    keys %reserved = 10_000;
+    my $small = hash_storage_info(\%reserved);
+    is($small->{index_capacity}, 16_384,
+       'reservation reaches the coupled index cutoff');
+    is($small->{entry_capacity}, int(2 * 16_384 / 3),
+       'reservation preserves coupled two-thirds entry sizing');
+
+    keys %reserved = 20_000;
+    my $before = hash_storage_info(\%reserved);
+    cmp_ok($before->{entry_capacity}, '>=', 20_000,
+           'large reservation allocates entry space up front');
+    $reserved{"reserve:$_"} = $_ for 1 .. 20_000;
+    my $filled = hash_storage_info(\%reserved);
+    is($filled->{entry_capacity}, $before->{entry_capacity},
+       'filling reserved entries needs no entry-array growth');
+    is($filled->{index_capacity}, $before->{index_capacity},
+       'filling reserved entries needs no index growth');
+
+    my $first = each %reserved;
+    keys %reserved = 21_000;
+    my $grown = hash_storage_info(\%reserved);
+    is($grown->{index_capacity}, $filled->{index_capacity},
+       'entry reservation can grow without index growth');
+    cmp_ok($grown->{entry_capacity}, '>=', 21_000,
+           'reservation is honored when the index is already large enough');
+    my %seen;
+    while (my ($key, $value) = each %reserved) {
+        $seen{$key}++;
+    }
+    is(scalar(keys %seen), 20_000,
+       'keys reservation resets iteration over all entries');
+    ok(!grep($_ != 1, values %seen),
+       'entry reservation does not repeat iterated entries');
+
+    delete $reserved{"reserve:$_"} for 1 .. 1_000;
+    keys %reserved = 21_000;
+    my $holes = hash_storage_info(\%reserved);
+    cmp_ok($holes->{entry_spare}, '>=', 2_000,
+           'reservation accounts for positions occupied by deleted entries');
+    is($holes->{entry_holes}, 1_000,
+       'reservation leaves compaction to the normal policy');
+    is($reserved{'reserve:20000'}, 20_000,
+       'entry relocation preserves existing values');
+}
+
+{
+    my @colliding;
+    my $candidate = 0;
+    while (@colliding < 40) {
+        my $key = "probe-wrap:" . $candidate++;
+        push @colliding, $key if (Hash::Util::hash_value($key) & 127) == 127;
+    }
+    my %probe;
+    keys %probe = 64;
+    $probe{$colliding[$_]} = $_ for 0 .. 19;
+    delete $probe{$colliding[$_]} for 0 .. 9;
+    $probe{$colliding[19]} = 100;
+    is(scalar(keys %probe), 10,
+       'replacement past tombstones does not create a duplicate entry');
+    $probe{$colliding[$_]} = $_ for 20 .. 39;
+    is(scalar(keys %probe), 30,
+       'saved insertion slots support a cluster wrapping past the index end');
+    ok(!grep(!exists $probe{$colliding[$_]}, 10 .. 39),
+       'all colliding survivors and appended entries remain reachable');
+    is($probe{$colliding[19]}, 100,
+       'tombstone reuse preserves the replaced value');
+    my $info = hash_storage_info(\%probe);
+    is($info->{index_deleted}, $info->{tombstones},
+       'saved-slot insertion maintains the tombstone count');
+}
+
 done_testing();

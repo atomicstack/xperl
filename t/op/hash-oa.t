@@ -528,19 +528,19 @@ SKIP: {
     delete $preallocated{"prealloc:$_"} for 0 .. 99;
     $before = Hash::Util::hash_storage_info(\%preallocated);
     is($before->{entry_holes}, 100, 'deletion leaves sparse HE holes');
-    my $entry_state = join ':', @{$before}{qw(entry_used entry_capacity entries_address)};
 
     keys %preallocated = 30_000;
     my $after = Hash::Util::hash_storage_info(\%preallocated);
     is($after->{index_capacity}, 65_536,
        'keys preallocation grows the index to 65536 slots');
-    is(join(':', @{$after}{qw(entry_used entry_capacity entries_address)}),
-       $entry_state, 'index-only resize keeps the HE allocation pointer');
+    ok($after->{entry_used} == $before->{entry_used}
+       && $after->{entry_capacity} >= 30_100,
+       'explicit reservation grows entry space without compacting holes');
     is($after->{entry_holes}, 100,
-       'index-only resize preserves sparse deleted entries');
+       'explicit reservation preserves sparse deleted entries');
     ok($preallocated{'prealloc:100'} == 100
        && $preallocated{'prealloc:11999'} == 11_999,
-       'index-only resize preserves existing values');
+       'explicit reservation preserves existing values');
 }
 
 SKIP: {

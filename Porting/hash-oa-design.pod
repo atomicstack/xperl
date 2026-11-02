@@ -47,6 +47,12 @@ of eight slots. On index growth or a same-size rebuild, holes are compacted
 in place only when both thresholds are met or packing is required by coupled
 sizing, a capacity limit, or the identifier range. Otherwise the index is rebuilt
 using existing entry positions and holes without copying the entry array.
+Explicit reservation through C<hv_ksplit()> reserves entry space as well as
+index space. Above the coupled range it reserves the requested live-entry
+count plus existing holes, even when the index already has enough capacity.
+This avoids repeated entry growth during known-size construction. Incremental
+insertion retains the 25 percent entry-growth policy.
+
 Shrinking an index above 16,384 slots sets entry capacity to 125 percent of
 the live count and packs any holes. Shrinking to 16,384 slots or fewer
 couples entry capacity to two-thirds of index capacity and packs holes.

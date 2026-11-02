@@ -831,6 +831,10 @@ Shrinking to 16,384 slots or fewer couples entry capacity to two-thirds of
 index capacity and packs holes.
 Changing entry capacity uses C<Renew> and may relocate the entry array.
 Deletion alone does not rebuild either array.
+Explicit C<hv_ksplit()> reservation allocates entry space for the requested
+count plus existing holes above the coupled range, including when the index
+already has enough capacity. New-key insertion reuses its initial probe
+result unless an index rebuild invalidates it.
 The entry allocation can exceed index capacity, but identifier width
 continues to depend on index capacity: one byte through 128 slots, two bytes
 through 32,768 slots, and four bytes above that. The
