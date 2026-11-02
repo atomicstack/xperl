@@ -811,17 +811,38 @@ linear search and promote to indexed storage after the fourth key.
 C<PERL_HASH_LINEAR_MAX> can select a threshold of zero, two, four, or eight
 entries. The index stores
 adaptive-width entry identifiers only; the full cached hash remains in the
-entry's C<HEK>. Indexed hashes recycle deleted entry positions through a
-per-hash free list. On a colliding insert at the occupancy threshold, the
-ordinary index is rebuilt at the same capacity when tombstones are at least
-as numerous as live entries; otherwise it doubles. C<HV> and C<XPVHV> sizes
-are unchanged. Shared-key
-interning now uses an open-addressed array of C<HEK *> pointers with
+entry's C<HEK>. Index capacity remains a power of two. Through an index
+capacity of 16,384 slots, entry capacity is
+C<floor(2*index_capacity/3)>, and filling that entry allocation can trigger
+an index rebuild. Above that size, index pressure triggers a rebuild when
+live entries plus tombstones reach C<floor(2*index_capacity/3)>. The entry
+array grows independently by 25 percent when full. It compacts on insertion
+only when holes occupy at least one fifth of entry capacity and their storage
+uses at least 1 MiB. Otherwise it grows by 25 percent without resizing the
+index. An index rebuild uses the next power of two at least three times the
+live entry count, with a minimum of eight slots. On index growth or a
+same-size rebuild, holes are compacted in place only when both thresholds
+are met or packing is required by coupled sizing, a capacity limit, or the
+identifier range. Otherwise the index is rebuilt using existing entry
+positions and holes without copying the entry array. Shrinking an index
+above 16,384 slots sets entry capacity to 125 percent of the live count and
+packs any holes.
+Shrinking to 16,384 slots or fewer couples entry capacity to two-thirds of
+index capacity and packs holes.
+Changing entry capacity uses C<Renew> and may relocate the entry array.
+Deletion alone does not rebuild either array.
+The entry allocation can exceed index capacity, but identifier width
+continues to depend on index capacity: one byte through 128 slots, two bytes
+through 32,768 slots, and four bytes above that. The
+entry traversal order is an implementation detail and does not guarantee
+public hash iteration order. C<HV> and C<XPVHV> sizes are unchanged.
+Shared-key interning now uses an open-addressed array of C<HEK *> pointers with
 tombstones. Each shared C<HEK> has a reference-count prefix; its address
 remains stable while referenced, including when the slot array grows. The
-table reserves 32,768 slots. At the collision-gated occupancy threshold, it
-rebuilds at the same capacity when tombstones are at least as numerous as
-live entries; otherwise it doubles. Traversal scans
+table has a minimum capacity of 32,768 slots. Before insertion, when live
+entries plus tombstones reach C<floor(2*index_capacity/3)>, it rebuilds with
+a capacity equal to the next power of two at least three times the live entry
+count, while retaining the minimum capacity. Traversal scans
 the entry array independently of hash
 values. The C<PERL_PERTURB_KEYS> controls and
 C<Hash::Util::hash_traversal_mask> are removed. Hash-function seeding is
@@ -832,12 +853,13 @@ This changes the XS ABI and direct-storage interfaces. C<HeNEXT> and
 C<HeSHARED_NEXT> are removed. C<HvMAX> is no longer writable as an
 lvalue; use C<HvMAX_SET> or
 C<HvMAX_SET_LINEAR> according to storage form. C<HE *> and C<SV **> pointers
-into a hash must be reacquired after entry-array growth and after deletion
-from a headerless linear hash, which shifts later entries. See
+into a hash must be reacquired after insertion or preallocation that can
+compact or grow the entry array, and after deletion from a headerless linear
+hash, which shifts later entries. See
 L<perlguts/Working with HVs> and
 F<Porting/hash-oa-design.pod> for the experimental compatibility limits.
-C<Hash::Util::hash_storage_info> reports capacities, free-list length,
-tombstones, probe distances, and allocation sizes.
+C<Hash::Util::hash_storage_info> reports capacities, tombstones, probe
+distances, and allocation sizes.
 C<Hash::Util::shared_key_refcount> looks up a shared key's reference count
 without interning it, and C<Hash::Util::shared_keys> returns copies of the
 interned key strings. C<Hash::Util::immortalize_key> interns a key and

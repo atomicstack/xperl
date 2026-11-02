@@ -16586,7 +16586,6 @@ S_sv_dup_common(pTHX_ const SV *const ssv, CLONE_PARAMS *const param)
                         oa = (struct hv_oa *)oa_bytes;
                         oa->capacity = soa->capacity;
                         oa->used = used;
-                        oa->free_head = soa->free_head;
                         oa->tombstones = soa->tombstones;
                         oa->entries = NULL;
                         HvARRAY(dsv) = (HE **)oa;
@@ -16598,7 +16597,6 @@ S_sv_dup_common(pTHX_ const SV *const ssv, CLONE_PARAMS *const param)
                                 const HE *source = &soa->entries[i];
                                 HE *dest = &oa->entries[i];
                                 if (!HeKEY_hek(source)) {
-                                    HeNEXT_FREE(dest) = HeNEXT_FREE(source);
                                     continue;
                                 }
                                 ptr_table_store(PL_ptr_table, source, dest);

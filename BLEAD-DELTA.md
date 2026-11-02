@@ -244,12 +244,31 @@ review. See
 Ordinary hashes use a compact array of `HE` entries and a separate
 open-addressed lookup index. On 64-bit builds an entry occupies 16 bytes,
 with no collision-chain pointer. The index stores one-, two-, or four-byte
-entry identifiers; the cached hash remains in the key's `HEK`. The index
-and entry array grow independently, and indexed hashes recycle deleted
-entries through a per-hash free list. At the collision-gated occupancy
-threshold, the ordinary index is rebuilt at the same capacity when
-tombstones are at least as numerous as live entries; otherwise it grows.
-Neither `HV` nor `XPVHV` grows.
+entry identifiers; the cached hash remains in the key's `HEK`. Index
+capacity remains a power of two. Through an index capacity of 16,384 slots,
+entry capacity is the floor of two-thirds of index capacity, and filling
+that allocation can trigger an index rebuild. Above that size, index
+pressure triggers a rebuild when live entries plus tombstones reach the
+floor of two-thirds of capacity. The entry array grows independently by 25
+percent when full. On insertion it compacts only when holes occupy at least
+one fifth of its capacity and their storage uses at least 1 MiB. Otherwise
+it grows by 25 percent without resizing the index. Index rebuilds use the
+next power of two at least three times the live count, with a minimum of
+eight slots. On index growth or a same-size rebuild, holes are compacted in
+place only when both thresholds are met or packing is required by coupled
+sizing, a capacity limit, or the identifier range. Otherwise the index is rebuilt
+using existing entry positions and holes without copying the entry array.
+Shrinking an index above 16,384 slots sets entry capacity to 125 percent of
+the live count and packs any
+holes. Shrinking to 16,384 slots or fewer couples entry capacity to
+two-thirds of index capacity and packs holes. Changing entry capacity uses
+`Renew`, which may relocate the array. Deletion alone does not trigger a
+rebuild.
+Entry allocation can exceed index capacity, while
+identifier width remains tied to index capacity: one byte through 128 slots,
+two bytes through 32,768 slots, and four bytes above that. The internal
+traversal order does not promise a public iteration order. Neither `HV` nor
+`XPVHV` grows.
 
 Empty hashes allocate no entry storage. With the default positive threshold,
 a singleton uses one arena entry. The experimental `PERL_HASH_LINEAR_MAX`
@@ -260,9 +279,10 @@ use indexed storage from the first key.
 Shared-key interning uses an open-addressed slot array of `HEK *` pointers.
 The slots have tombstones; each shared `HEK` carries a reference-count
 prefix, and its allocation remains stable while referenced, including when
-the slot array grows. The table reserves 32,768 slots. At the collision-gated
-occupancy threshold, it rebuilds at the same capacity when tombstones are at
-least as numerous as live entries; otherwise it doubles. Hash::Util provides
+the slot array grows. The table has a minimum capacity of 32,768 slots.
+Before insertion, when live entries plus tombstones reach
+`floor(2*capacity/3)`, it rebuilds at the next power of two at least three
+times the live count, retaining the minimum capacity. Hash::Util provides
 `shared_key_refcount` for non-mutating reference-count lookup and
 `shared_keys` for copied key strings, and `immortalize_key` to acquire a
 permanent reference until interpreter destruction. Pins are copied into
@@ -274,13 +294,15 @@ while bucket-order perturbation, `PERL_PERTURB_KEYS`, and
 `Hash::Util::hash_traversal_mask` are removed. Insertion during iteration is
 detected through iterator state. Hashes do not promise insertion order.
 `Hash::Util::hash_storage_info` exposes allocation sizes, capacities,
-free-list length, tombstones, and probe distances. Ordinary hash value and
+entry holes, the compatibility free-list count, tombstones, and probe
+distances. Ordinary hash value and
 iteration APIs do not apply to `PL_strtab`.
 
 The representation changes the XS ABI and requires rebuilding extensions.
 `HeNEXT` and `HeSHARED_NEXT` are removed, and writes to `HvMAX` use explicit
 setters. Returned `HE *` and `SV **` pointers must be reacquired after
-entry-array relocation or deletion that compacts a dense array. Core consumers and bundled XS
+entry-array relocation or compaction during insertion or preallocation, and
+after deletion that shifts entries in a dense array. Core consumers and bundled XS
 modules are adapted to these lifetime rules. The
 [design and benchmark report](Porting/hash-oa-design.pod) records the
 compatibility limits, memory accounting, and measured performance trade-offs.

@@ -642,9 +642,30 @@ C<entry_index_bytes> is the encoded entry-identifier array size.
 C<slot_size> is the identifier width for each index slot.
 C<entry_capacity> counts allocated HE positions, C<entry_used> is the
 entry-array high-water mark, and C<entry_spare> is capacity beyond that
-mark. C<free_list_length> counts deleted positions available for reuse.
-A deleted current iterator entry is retained until the iterator advances
-or resets, so it is not yet on the free list.
+mark. New entries append at the high-water mark. Deleted positions are not
+reused. C<entry_holes> counts deleted positions below the high-water mark,
+including entries awaiting lazy deletion. For index capacities through
+16,384 slots, entry capacity is
+C<floor(2*index_capacity/3)>; larger indexes use independent entry growth.
+Above 16,384 slots, a full entry array compacts only when holes occupy at
+least one fifth of its capacity and the holes together occupy at least 1 MiB.
+Otherwise it grows by 25 percent without resizing the index. Index pressure
+triggers a rebuild when live entries plus tombstones reach
+C<floor(2*index_capacity/3)>. Any index rebuild uses the next power of two at
+least three times the live entry count, with a minimum of eight slots.
+Shrinking an index packs any holes and reduces the entry allocation: above
+16,384 slots, capacity becomes 125 percent of the live count; at 16,384 slots
+or less, it recouples to two-thirds of index capacity. Index growth or a
+same-size rebuild retains adequate entry capacity. It compacts holes in place
+when both thresholds are met or packing is required by a shrink, coupled
+storage, a capacity change, or the identifier range. Otherwise the rebuild
+keeps hole positions and indexes the live entries without copying the entry
+array. Changing entry capacity uses C<Renew>, which may relocate the array.
+Entry identifier width remains tied to index capacity, even when entry
+capacity exceeds it: one byte through 128 slots,
+two bytes through 32,768 slots, and four bytes above that.
+C<free_list_length> remains available for compatibility and is always zero
+for ordinary hashes.
 
 C<probe_total>, C<probe_max>, and C<probe_mean> give the total, maximum,
 and mean displacement of live slots from their initial hash position.
@@ -662,7 +683,7 @@ their allocator-usable sizes; zero means unavailable. C<entries_address>
 and C<index_address> help detect relocation and are process-local
 addresses. No address is a stable identifier.
 
-This function scans the index and free list. It reports physical storage
+This function scans the index and entry array. It reports physical storage
 for tied hashes, rather than the tied object's contents.
 
 =item B<shared_key_refcount>

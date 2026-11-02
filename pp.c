@@ -6793,28 +6793,25 @@ PP(pp_hslice)
                 U32 entry_index = 0;
                 const bool was_linear = HvIS_LINEAR(hv);
                 const bool is_oa_entry = HvENTRY_INDEX(hv, svp, entry_index);
+                PERL_UNUSED_VAR(entry_index);
                 if (HvNAME_get(hv) && isGV_or_RVCV(*svp)) {
                     save_gp(MUTABLE_GV(*svp), !(PL_op->op_flags & OPf_SPECIAL));
-                    if (was_linear) {
+                    if (was_linear || is_oa_entry) {
                         HE *he = hv_fetch_ent(hv, keysv, 0, 0);
                         if (!he)
                             he = hv_fetch_ent(hv, keysv, 1, 0);
                         svp = he ? &HeVAL(he) : NULL;
                     }
-                    else if (is_oa_entry)
-                        svp = HvENTRY_SVP(hv, entry_index);
                 }
                 else if (preeminent) {
                     save_helem_flags(hv, keysv, svp,
                          (PL_op->op_flags & OPf_SPECIAL) ? 0 : SAVEf_SETMAGIC);
-                    if (was_linear) {
+                    if (was_linear || is_oa_entry) {
                         HE *he = hv_fetch_ent(hv, keysv, 0, 0);
                         if (!he)
                             he = hv_fetch_ent(hv, keysv, 1, 0);
                         svp = he ? &HeVAL(he) : NULL;
                     }
-                    else if (is_oa_entry)
-                        svp = HvENTRY_SVP(hv, entry_index);
                 }
                 else
                     SAVEHDELETE(hv, keysv);

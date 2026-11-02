@@ -1107,6 +1107,7 @@ Perl_save_helem_flags(pTHX_ HV *hv, SV *key, SV **sptr, const U32 flags)
     bool is_linear_entry = FALSE;
 
     is_oa_entry = HvENTRY_INDEX(hv, sptr, entry_index);
+    PERL_UNUSED_VAR(entry_index);
     if (HvIS_LINEAR(hv) && HvTOTALKEYS(hv)) {
         const UV ptr = PTR2UV(sptr);
         const UV first = PTR2UV(&HeVAL(&HvENTRIES(hv)[0]));
@@ -1116,26 +1117,23 @@ Perl_save_helem_flags(pTHX_ HV *hv, SV *key, SV **sptr, const U32 flags)
     }
     saved_key = sv_2mortal(newSVsv(key));
 
-    /* Copying a magical key can run code that grows the hash. */
-    if (is_linear_entry) {
+    /* Copying a magical key can grow or compact the hash. Refetch by key,
+     * because compaction changes entry indices as well as addresses. */
+    if (is_linear_entry || is_oa_entry) {
         HE *he = hv_fetch_ent(hv, saved_key, 0, 0);
         if (!he)
             he = hv_fetch_ent(hv, saved_key, 1, 0);
         if (he)
             sptr = &HeVAL(he);
     }
-    else if (is_oa_entry)
-        sptr = HvENTRY_SVP(hv, entry_index);
 
     SvGETMAGIC(*sptr);
-    if (is_linear_entry) {
+    if (is_linear_entry || is_oa_entry) {
         HE *he = hv_fetch_ent(hv, saved_key, 0, 0);
         if (!he)
             he = hv_fetch_ent(hv, saved_key, 1, 0);
         sptr = he ? &HeVAL(he) : sptr;
     }
-    else if (is_oa_entry)
-        sptr = HvENTRY_SVP(hv, entry_index);
     {
         dSS_ADD;
         SS_ADD_PTR(SvREFCNT_inc_simple(hv));
