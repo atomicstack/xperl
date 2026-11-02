@@ -2967,6 +2967,9 @@ Perl_padname_free(pTHX_ PADNAME *pn)
             struct padname_fieldinfo *info = PadnameFIELDINFO(pn);
             if(!--info->refcount) {
                 SvREFCNT_dec(info->fieldstash);
+                SvREFCNT_dec(info->storage_owner);
+                if(info->inherited_field)
+                    PadnameREFCNT_dec(info->inherited_field);
                 /* todo: something about defop */
                 SvREFCNT_dec(info->paramname);
 
@@ -3058,8 +3061,12 @@ Perl_padname_dup(pTHX_ PADNAME *src, CLONE_PARAMS *param)
         assert(PadnameFIELDINFO(src));
         struct padname_fieldinfo *sinfo = PadnameFIELDINFO(src);
         struct padname_fieldinfo *dinfo = (struct padname_fieldinfo *)ptr_table_fetch(PL_ptr_table, sinfo);
-        if (dinfo)
+        if (dinfo) {
+            /* newPADNAMEouter already owns its shared field info. */
+            if(PadnameFIELDINFO(dst) != dinfo)
+                dinfo->refcount++;
             PadnameFIELDINFO(dst) = dinfo;
+        }
         else {
             Newxz(dinfo, 1, struct padname_fieldinfo);
             PadnameFIELDINFO(dst) = dinfo;
@@ -3069,6 +3076,16 @@ Perl_padname_dup(pTHX_ PADNAME *src, CLONE_PARAMS *param)
              * fieldstash in case it points back here */
             dinfo->refcount   = 1;
             dinfo->fieldix    = sinfo->fieldix;
+            dinfo->relative_fieldix = sinfo->relative_fieldix;
+            dinfo->is_inherited = sinfo->is_inherited;
+            dinfo->is_private = sinfo->is_private;
+            dinfo->def_if_undef = sinfo->def_if_undef;
+            dinfo->def_if_false = sinfo->def_if_false;
+            /* Default optrees belong to compiled CVs, not cloned field info. */
+            dinfo->defop = NULL;
+            dinfo->storage_owner = hv_dup_inc(sinfo->storage_owner, param);
+            dinfo->inherited_field = sinfo->inherited_field
+                ? padname_dup_inc(sinfo->inherited_field, param) : NULL;
             dinfo->fieldstash = hv_dup_inc(sinfo->fieldstash, param);
             dinfo->paramname  = sv_dup_inc(sinfo->paramname, param);
         }

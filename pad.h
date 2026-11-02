@@ -98,11 +98,15 @@ struct padname_with_str {
  */
 struct padname_fieldinfo {
     U32        refcount;
-    PADOFFSET  fieldix;    /* absolute index into ObjectFIELDS() array; resolved at seal time */
+    PADOFFSET  fieldix;    /* compiled layout index, translated for the runtime object */
     PADOFFSET  relative_fieldix; /* class-relative index (0-based within defining class/role) */
-    HV        *fieldstash; /* original class package which added this field */
+    HV        *fieldstash; /* lexical declaring class, including inherited aliases */
+    HV        *storage_owner; /* consuming class that owns an inherited field */
+    PADNAME   *inherited_field; /* original declaration shared by this alias */
     OP        *defop;      /* optree fragment for defaulting expression */
     SV        *paramname;  /* name of the :param to look for in constructor */
+    int        is_inherited : 1;
+    int        is_private : 1;
     int        def_if_undef : 1; /* default op uses //= */
     int        def_if_false : 1; /* default op uses ||= */
 };

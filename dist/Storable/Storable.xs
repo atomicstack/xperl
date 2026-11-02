@@ -4111,6 +4111,14 @@ static int store_blessed(
     if (hook)
         return store_hook(aTHX_ cxt, sv, type, pkg, hook);
 
+#ifdef PERL_MAGIC_class_storage
+    if (SvMAGICAL(sv)) {
+        MAGIC *storage = mg_find(sv, PERL_MAGIC_class_storage);
+        if (storage && storage->mg_obj)
+            CROAK(("Modern class storage requires an explicit STORABLE_freeze hook"));
+    }
+#endif
+
     /*
      * This is a blessed SV without any serialization hook.
      */

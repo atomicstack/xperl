@@ -51,9 +51,9 @@ name and no GV, it is I<not> a protosub and may be directly invoked.
 =item *
 
 C<xhv_class_adjust_blocks> may point to an AV containing CV pointers to each of
-the C<ADJUST> blocks defined on the class. If the class has a superclass, this
-array will additionally contain duplicate pointers of the CVs of its parent
-class. The AV is created lazily the first time an element is pushed to it; it
+the C<ADJUST> blocks defined on the class and supplied by its composed roles.
+Ancestor blocks are visited separately by the constructor. The AV is created
+lazily the first time an element is pushed to it; it
 is valid for there not to be one, and this pointer will be C<NULL> in that
 case.
 
@@ -157,17 +157,23 @@ CV, so the structure does not add any new fields.
 
 =head2 Instances
 
-Object instances are represented by an entirely new SV type, whose base type
-is C<SVt_PVOBJ>. This should still be blessed into its class stash and wrapped
-in an RV in the usual manner for classical object.
+Public instances are ordinary blessed references. Their C<SvSTASH> provides
+standard Perl dispatch. C<PERL_MAGIC_class_storage> owns an internal class
+object, whose unblessed C<SVt_PVOBJ> vector holds lexical fields. The
+internal class object owns its package metadata through its own storage
+magic. This association is the authority for field-layout validation.
+C<SvSTASH> on the public referent is a compatibility dispatch association.
 
-As these are their own unique container type, distinct from hashes or arrays,
-the core C<builtin::reftype> function returns a new value when asked about
-these. That value is C<"OBJECT">.
+C<builtin::reftype> reports the public referent type. No public instance has
+C<SVt_PVOBJ> as its referent. Strong ownership runs from the public referent
+to storage and metadata. Storage has no backlink to its owner. Normal magic
+and SV cloning preserve this graph across interpreter threads.
 
-Internally, such an object is an array of SV pointers whose size is fixed at
-creation time (because the number of fields in a class is known after
-compilation). An object instance stores the max field index within it (for
+The internal field vector has one slot per original declaration in the
+effective hierarchy. Its size is fixed when storage is created. Runtime
+metadata owns the effective package, an ancestor-first list of modern
+classes, and per-declaring-class index shifts. The compiler's class-relative
+layout and role offsets are translated through these shifts. An object instance stores the max field index within it (for
 basic error-checking on access), and a fixed-size array of SV pointers storing
 the individual field values.
 
@@ -368,25 +374,34 @@ provided by that class.
 =head2 Constructor
 
 The generated constructor for a class itself is an XSUB which performs three
-tasks in order: it creates the instance SV itself, invokes the field
+tasks in order: it creates an ordinary scalar referent or retains an existing blessed
+reference, attaches internal field storage, invokes the field
 initializers, then invokes the ADJUST block CVs. The constructor for any class
 is always the same basic shape, regardless of whether the class has a
 superclass or not.
 
-The field initializers are collected into a generated optree-based CV called
-the field initializer CV. This is the CV which contains all the optree
-fragments for the field initializing expressions. When invoked, the field
-initializer CV might make a chained call to the superclass initializer if one
-exists, before invoking all of the individual field initialization ops. The
-field initializer CV is invoked with two items on the stack; being the
-instance SV and a direct HV containing the constructor parameters. Note
-carefully: this HV is passed I<directly>, not via an RV reference. This is
-permitted because both the caller and the callee are directly generated code
-and not arbitrary pure-perl subroutines.
+Each declaring class has an initializer CV containing only its own field
+initialization and composed-role initializer calls. Construction visits every
+modern class in ancestor-first order once, including ancestors reached
+through conventional packages. It then visits each class's own C<ADJUST>
+blocks in the same order. Shared ancestors are deduplicated.
 
-The ADJUST block CVs are all collected into a single flat list, merging all of
-the ones defined by the superclass as well. They are all invoked in order,
-after the field initializer CV.
+An initializer CV receives the public reference and a direct HV containing
+constructor parameters. The HV is passed directly, without an RV, because
+both caller and callee are generated core code.
+
+An inherited field PADNAME keeps its child's lexical C<fieldstash> and owns
+references to the original declaration and its consuming storage class.
+C<OP_METHSTART> resolves such bindings per pad, allowing own and inherited
+fields in one method. Inherited aliases are bound in initializer CVs before
+own defaults run. They add no initializer op, field slot, constructor
+parameter, or serializer entry. C<:private> is checked during alias binding.
+
+Final destruction transfers released hidden storage into C<sv_clear>'s
+existing iterative container walk. A temporary AV orders hidden fields before
+the ordinary referent body, preserving depth-first reverse-field cleanup
+without C recursion for deep object chains. Explicit reblessing and
+unblessing release storage synchronously.
 
 =head2 C<$self> Access During Methods
 

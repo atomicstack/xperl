@@ -816,9 +816,6 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
             style->maxrecursed = TRUE;
 	}
 
-        /* Class objects have no ordinary Perl reference representation.  Use
-         * the core shallow field API so Dumper can round-trip them without
-         * invoking constructors or methods. */
 #ifdef class_object_to_hash
         if (realtype == SVt_PVOBJ) {
             SV *hashref = class_object_to_hash(val);
@@ -843,6 +840,41 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
             sv_catpvs(retval, "' )");
             SvREFCNT_dec(hashref);
             return 1;
+        }
+#endif
+
+        /* Keep the normal referent dumper so payload and field values share
+         * its graph handling. The outer call restores modern field storage. */
+        bool modern_object = FALSE;
+#ifdef PERL_MAGIC_class_storage
+        if (realpack && SvMAGICAL(ival)
+                && mg_find(ival, PERL_MAGIC_class_storage)
+                && mg_find(ival, PERL_MAGIC_class_storage)->mg_obj) {
+            SV *hashref = sv_2mortal(class_object_to_hash(val));
+            STRLEN plen = strlen(realpack);
+            STRLEN pticks = num_q(realpack, plen);
+            modern_object = TRUE;
+            no_bless = TRUE;
+            sv_catpvs(retval, "builtin::class_object_from_hash(");
+            SV *fieldname = sv_2mortal(newSVpvs("builtin::class_object_to_hash("));
+            sv_catpvn(fieldname, name, namelen);
+            sv_catpvs(fieldname, ")");
+            DD_dump(aTHX_ hashref, SvPVX_const(fieldname), SvCUR(fieldname),
+                    retval, seenhv, postav, level + 1, apad, style);
+            sv_catpvs(retval, ", '");
+            if (pticks) {
+                char *npack;
+                char *npack_buffer = NULL;
+                New(0, npack_buffer, plen + pticks + 1, char);
+                npack = npack_buffer;
+                plen += esc_q(npack, realpack, plen);
+                npack[plen] = '\0';
+                sv_catpvn(retval, npack, plen);
+                Safefree(npack_buffer);
+            }
+            else
+                sv_catpvn(retval, realpack, plen);
+            sv_catpvs(retval, "', ");
         }
 #endif
 
@@ -1232,6 +1264,9 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
 	else {
 	    warn("cannot handle ref type %d", (int)realtype);
 	}
+
+        if(modern_object)
+            sv_catpvs(retval, ")");
 
 	if (realpack && !no_bless) {  /* free blessed allocs */
             STRLEN plen, pticks;

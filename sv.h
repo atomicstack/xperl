@@ -42,7 +42,8 @@ The types are:
 
 These are most easily explained from the bottom up.
 
-C<SVt_PVOBJ> is for object instances of the new `use feature 'class'` kind.
+C<SVt_PVOBJ> is internal field storage for C<use feature 'class'>.
+Public class instances are ordinary blessed references.
 C<SVt_PVIO> is for I/O objects, C<SVt_PVFM> for formats, C<SVt_PVCV> for
 subroutines, C<SVt_PVHV> for hashes and C<SVt_PVAV> for arrays.
 
@@ -126,7 +127,7 @@ Type flag for formats.  See L</svtype>.
 Type flag for I/O objects.  See L</svtype>.
 
 =for apidoc AmnUx||SVt_PVOBJ
-Type flag for object instances.  See L</svtype>.
+Type flag for internal modern class field storage. See L</svtype>.
 
 =cut
 
@@ -520,8 +521,6 @@ These guys don't need the curly blocks
 
 /* scalar SVs with SVp_POK */
 #define SVppv_STATIC    0x40000000 /* PV is pointer to static const; must be set with SVf_IsCOW */
-/* PVOBJ */
-#define SVpobj_LEGACY  0x40000000 /* class has a legacy-self field */
 /* PVAV */
 #define SVpav_REAL	0x40000000  /* free old entries */
 /* PVHV */
@@ -723,13 +722,6 @@ struct xobject {
     SSize_t     xobject_maxfield;
     SSize_t     xobject_iter_sv_at; /* this is only used by Perl_sv_clear() */
 };
-
-/* Include the type in this test: other SV types reuse this flag bit. */
-#define ObjectHASLEGACY(inst) \
-    ((SvFLAGS(inst) & (SVTYPEMASK|SVpobj_LEGACY)) \
-        == (SVt_PVOBJ|SVpobj_LEGACY))
-#define ObjectHASLEGACY_on(inst) \
-    (assert(SvTYPE(inst) == SVt_PVOBJ), SvFLAGS(inst) |= SVpobj_LEGACY)
 
 #define ObjectFIELDS(inst)    ((inst)->sv_u.svu_fields)
 #define ObjectMAXFIELD(inst)  ((XPVOBJ *)SvANY(inst))->xobject_maxfield

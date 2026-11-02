@@ -1288,6 +1288,14 @@ behaviour into the regexp.
 Storable will throw an exception if a frozen regular expression cannot
 be thawed.
 
+=head1 MODERN CLASS OBJECTS
+
+Objects with modern class field storage require explicit C<STORABLE_freeze>
+and C<STORABLE_thaw> hooks. Storable rejects objects without a freeze hook
+because storing their ordinary referent alone would discard lexical fields.
+A thaw hook declared as an ordinary C<sub> can call C<CONSTRUCT> to initialize
+the restored reference before invoking field-using methods.
+
 =head1 BUGS
 
 You can't store GLOB, FORMLINE, etc.... If you can define semantics
