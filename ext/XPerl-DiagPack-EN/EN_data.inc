@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: 7d1ff6a11658ce69df038072dea89b2c5c52d1f6758d7f00a0998aa52cd1e900 */
+/* Language-scoped rendered data SHA-256: fa04d3b1a0cda9682cd8cc9dd1aac35603a9a673673795e2c88d1fe6edbaec2a */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
 
@@ -1105,6 +1105,7 @@ static const char perl_diag_template_text_e43bc909[] = "an array slice";
 static const char perl_diag_template_text_0016bc3e[] = "an array variable";
 static const char perl_diag_template_text_b6756fa0[] = "an index/value array slice";
 static const char perl_diag_template_text_8bf6c171[] = "An operator may be missing before \"%1$s\".";
+static const char perl_diag_template_text_d4d1db65[] = "Ancestor field %1$s is private and cannot be inherited";
 static const char perl_diag_template_text_6fafc159[] = "anonymous array ([])";
 static const char perl_diag_template_text_c7a6951b[] = "anonymous constant";
 static const char perl_diag_template_text_3a71b3e6[] = "anonymous hash ({})";
@@ -1394,6 +1395,7 @@ static const char perl_diag_template_text_7cf8cd7f[] = "Cannot apply \"%1$s\" in
 static const char perl_diag_template_text_2eedc41e[] = "Cannot apply a :writer attribute to a non-scalar field";
 static const char perl_diag_template_text_4ac288a6[] = "Cannot apply magicfuncs shape %1$s to SV type %2$s";
 static const char perl_diag_template_text_91967da4[] = "Cannot assign :param(%1$s) to field %2$s because that name is already in use";
+static const char perl_diag_template_text_9fcf8ea4[] = "Cannot change an object blessing during TEARDOWN";
 static const char perl_diag_template_text_9c659456[] = "Cannot chr %1$s";
 static const char perl_diag_template_text_702e15cf[] = "Cannot complete in-place edit of %1$s: Current directory has changed";
 static const char perl_diag_template_text_1aa5dedd[] = "Cannot complete in-place edit of %1$s: failed to rename work file '%2$s' to '%3$s': %4$s";
@@ -1401,6 +1403,7 @@ static const char perl_diag_template_text_9db16486[] = "Cannot complete in-place
 static const char perl_diag_template_text_b61454d8[] = "Cannot compress %1$s in pack";
 static const char perl_diag_template_text_668f157d[] = "Cannot compress integer in pack";
 static const char perl_diag_template_text_b2466466[] = "Cannot compress negative numbers in pack";
+static const char perl_diag_template_text_3ccca3c9[] = "Cannot CONSTRUCT while class storage is being initialized or released";
 static const char perl_diag_template_text_ecd4c96b[] = "Cannot convert a reference to %1$s to typeglob";
 static const char perl_diag_template_text_eda47298[] = "Cannot copy to %1$s";
 static const char perl_diag_template_text_20bbaf23[] = "Cannot copy to %1$s in %2$s";
@@ -1411,6 +1414,7 @@ static const char perl_diag_template_text_c369e253[] = "Cannot create POSIX 2008
 static const char perl_diag_template_text_f5476699[] = "Cannot create role %1$s as it already has a non-empty @ISA";
 static const char perl_diag_template_text_add25050[] = "Cannot define role %1$s as it is already a class";
 static const char perl_diag_template_text_daa318c3[] = "Cannot invoke a method of %1$s on an instance of %2$s";
+static const char perl_diag_template_text_41c860bf[] = "Cannot invoke a modern method without initialized class storage";
 static const char perl_diag_template_text_903c8019[] = "Cannot invoke method %1$s on a non-instance";
 static const char perl_diag_template_text_1b288cce[] = "Cannot invoke method on a non-instance";
 static const char perl_diag_template_text_0cc4799c[] = "Cannot modify shared string table in hv_%1$s";
@@ -1423,6 +1427,7 @@ static const char perl_diag_template_text_af0f2d67[] = "Cannot reopen existing r
 static const char perl_diag_template_text_515ca03e[] = "Cannot resume a failed generator";
 static const char perl_diag_template_text_23761a58[] = "cannot set the state of a generator";
 static const char perl_diag_template_text_c8a00d32[] = "Cannot set tied @DB::args";
+static const char perl_diag_template_text_7c500210[] = "Cannot supply parameters to an already constructed object";
 static const char perl_diag_template_text_fec97a50[] = "Cannot tie unreifiable array";
 static const char perl_diag_template_text_b0891f1f[] = "Cannot use __CLASS__ outside of a method or field initializer expression";
 static const char perl_diag_template_text_eae13e05[] = "Cannot use a redacted RNG seed";
@@ -1449,6 +1454,8 @@ static const char perl_diag_template_text_59087c3a[] = "Class already has a supe
 static const char perl_diag_template_text_72cab597[] = "Class attribute %1$s requires a value";
 static const char perl_diag_template_text_4de22735[] = "class is experimental";
 static const char perl_diag_template_text_8b4592fb[] = "class name";
+static const char perl_diag_template_text_2d300f6f[] = "Class object payload must be an unblessed reference";
+static const char perl_diag_template_text_23fefcbd[] = "Class storage was released during field initialization";
 static const char perl_diag_template_text_937dd9da[] = "class_object_from_hash expects a hash reference";
 static const char perl_diag_template_text_c11ff25d[] = "class_object_from_hash expects the name of a class";
 static const char perl_diag_template_text_6bb555c4[] = "class_object_to_hash expects a class object";
@@ -1477,6 +1484,8 @@ static const char perl_diag_template_text_66676efe[] = "Constant(%1$s): $^H{%2$s
 static const char perl_diag_template_text_66953689[] = "Constant(%1$s): Call to &{$^H{%2$s}} did not return a defined value";
 static const char perl_diag_template_text_6618279d[] = "Constant(charnames) unknown";
 static const char perl_diag_template_text_4cda274f[] = "Constants from lexical variables potentially modified elsewhere are no longer permitted";
+static const char perl_diag_template_text_ba9efd7e[] = "CONSTRUCT requires a class name or blessed reference";
+static const char perl_diag_template_text_042bdd49[] = "CONSTRUCT requires a modern class in the object hierarchy";
 static const char perl_diag_template_text_df505881[] = "Copy method did not return a reference";
 static const char perl_diag_template_text_d6ec1355[] = "CORE:: subroutine";
 static const char perl_diag_template_text_54a8a9ec[] = "CORE::%1$s is not a keyword";
@@ -1620,6 +1629,8 @@ static const char perl_diag_template_text_b415b813[] = "Fatal VMS error (status=
 static const char perl_diag_template_text_fb1a187e[] = "FETCHSIZE returned a negative value";
 static const char perl_diag_template_text_d6724b49[] = "Field %1$s is not accessible outside a method";
 static const char perl_diag_template_text_8073e1fe[] = "Field %1$s of %2$s is not accessible in a method of %3$s";
+static const char perl_diag_template_text_9fa7a67e[] = "Field %1$s with :inherited requires a class ancestor and cannot have an initializer, :param, :private, an attribute value, or repeated :inherited";
+static const char perl_diag_template_text_c421fd67[] = "Field %1$s with :private cannot have an attribute value, repeated :private, or :inherited";
 static const char perl_diag_template_text_a7dc70d3[] = "Field '%1$s' conflicts between '%2$s' and '%3$s'\n";
 static const char perl_diag_template_text_77ef41fa[] = "Field already has a parameter name, cannot add another";
 static const char perl_diag_template_text_72fcd64f[] = "field is experimental";
@@ -1716,6 +1727,7 @@ static const char perl_diag_template_text_11a6f2a9[] = "index/value array slice"
 static const char perl_diag_template_text_26c3b696[] = "Infinite recursion in regex";
 static const char perl_diag_template_text_7a6f1f39[] = "Infinite recursion in user-defined property\n";
 static const char perl_diag_template_text_5e7a07a0[] = "Infinite recursion via empty pattern";
+static const char perl_diag_template_text_daf8a764[] = "Inherited field %1$s has ambiguous ancestor declarations";
 static const char perl_diag_template_text_9558f9dc[] = "initialise field";
 static const char perl_diag_template_text_76482bff[] = "Initialization of state variables in list currently forbidden";
 static const char perl_diag_template_text_bacbd577[] = "Insecure $ENV{%1$s} while running setgid";
@@ -1999,6 +2011,7 @@ static const char perl_diag_template_text_b5b21ad4[] = "nl_langinfo returned emp
 static const char perl_diag_template_text_e91433cb[] = "No -%1$s allowed while running setgid";
 static const char perl_diag_template_text_4822a731[] = "No -%1$s allowed while running setuid";
 static const char perl_diag_template_text_75b7c9da[] = "No -%1$s allowed with (suid) fdscript";
+static const char perl_diag_template_text_93dcfa83[] = "No ancestor declares inherited field %1$s";
 static const char perl_diag_template_text_a6b5d81e[] = "No code specified for -%1$s";
 static const char perl_diag_template_text_d3f8e535[] = "No comma allowed after filehandle";
 static const char perl_diag_template_text_e976543d[] = "No comma allowed after subroutine name";
@@ -2077,12 +2090,14 @@ static const char perl_diag_template_text_52e479d6[] = "numeric less-than-or-equ
 static const char perl_diag_template_text_93e435a8[] = "numeric lt (<)";
 static const char perl_diag_template_text_e994513c[] = "numeric ne (!=)";
 static const char perl_diag_template_text_ffc5db1a[] = "Numeric variables with more than one digit may not start with '0'";
+static const char perl_diag_template_text_2d86d6f7[] = "Object blessing changed during CONSTRUCT";
 static const char perl_diag_template_text_aa19e420[] = "object ellipsis must follow field pairs";
 static const char perl_diag_template_text_e638b380[] = "object field names must be constants";
 static const char perl_diag_template_text_5427eaf7[] = "object field pattern requires key/value pairs";
 static const char perl_diag_template_text_42fac699[] = "object fields cannot follow an ellipsis";
 static const char perl_diag_template_text_d1d34bd6[] = "object hash slurp must be the final pattern element";
 static const char perl_diag_template_text_741da3c7[] = "object hash slurp must be the final pattern element and cannot use an ellipsis";
+static const char perl_diag_template_text_6755c8e4[] = "Object hierarchy contains incompatible modern class layouts";
 static const char perl_diag_template_text_89540218[] = "Odd name/value argument for subroutine '%1$s'";
 static const char perl_diag_template_text_42fcf183[] = "Odd number of arguments passed to %1$s constructor";
 static const char perl_diag_template_text_132aef47[] = "Odd number of elements in anonymous hash";
@@ -2548,6 +2563,7 @@ static const char perl_diag_template_text_cf6309cf[] = "Stack unwind deferred";
 static const char perl_diag_template_text_cc9ab7d4[] = "Starting Full Screen process with flag=%1$s, mytype=%2$s";
 static const char perl_diag_template_text_2b77aada[] = "Starting PM process with flag=%1$s, mytype=%2$s";
 static const char perl_diag_template_text_a5dcbd37[] = "Statement unlikely to be reached";
+static const char perl_diag_template_text_ab6be4f4[] = "Storage owner of inherited field %1$s is absent from the object hierarchy";
 static const char perl_diag_template_text_473287f8[] = "string";
 static const char perl_diag_template_text_0870337d[] = "string 1's complement (~)";
 static const char perl_diag_template_text_a124264b[] = "string 1's complement (~.)";
@@ -5221,6 +5237,22 @@ enum {
     perl_diag_template_start_en_2751,
     perl_diag_template_start_en_2752,
     perl_diag_template_start_en_2753,
+    perl_diag_template_start_en_2754,
+    perl_diag_template_start_en_2755,
+    perl_diag_template_start_en_2756,
+    perl_diag_template_start_en_2757,
+    perl_diag_template_start_en_2758,
+    perl_diag_template_start_en_2759,
+    perl_diag_template_start_en_2760,
+    perl_diag_template_start_en_2761,
+    perl_diag_template_start_en_2762,
+    perl_diag_template_start_en_2763,
+    perl_diag_template_start_en_2764,
+    perl_diag_template_start_en_2765,
+    perl_diag_template_start_en_2766,
+    perl_diag_template_start_en_2767,
+    perl_diag_template_start_en_2768,
+    perl_diag_template_start_en_2769,
     perl_diag_template_end_en,
 };
 
@@ -7101,6 +7133,22 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_object_method_call_legacy_self_unavailable_number,                          UINT64_C(         0), perl_diag_template_text_ed6ba4a4,  0,   0 },
     { perl_diag_warning_misc_object_legacy_reference_survives_number,                             UINT64_C(         0), perl_diag_template_text_2b43b461,  0,   0 },
     { perl_diag_error_object_field_attribute_legacy_self_already_assigned_number,                 UINT64_C(         0), perl_diag_template_text_eb103293,  0,   0 },
+    { perl_diag_error_object_field_initialization_storage_released_number,                        UINT64_C(         0), perl_diag_template_text_23fefcbd,  0,   0 },
+    { perl_diag_error_object_bless_during_teardown_number,                                        UINT64_C(         0), perl_diag_template_text_9fcf8ea4,  0,   0 },
+    { perl_diag_error_object_composition_layouts_incompatible_number,                             UINT64_C(         0), perl_diag_template_text_6755c8e4,  0,   0 },
+    { perl_diag_error_object_constructor_invocant_invalid_number,                                 UINT64_C(         0), perl_diag_template_text_ba9efd7e,  0,   0 },
+    { perl_diag_error_object_constructor_storage_busy_number,                                     UINT64_C(         0), perl_diag_template_text_3ccca3c9,  0,   0 },
+    { perl_diag_error_object_constructor_already_initialized_number,                              UINT64_C(         0), perl_diag_template_text_7c500210,  0,   0 },
+    { perl_diag_error_object_constructor_modern_ancestor_required_number,                         UINT64_C(         0), perl_diag_template_text_042bdd49,  0,   0 },
+    { perl_diag_error_object_constructor_blessing_changed_number,                                 UINT64_C(         0), perl_diag_template_text_2d86d6f7,  0,   0 },
+    { perl_diag_error_object_conversion_payload_reference_required_number,                        UINT64_C(         0), perl_diag_template_text_2d300f6f,  0,   0 },
+    { perl_diag_error_object_method_call_storage_required_number,                                 UINT64_C(         0), perl_diag_template_text_41c860bf,  0,   0 },
+    { perl_diag_error_object_field_attribute_inherited_invalid_number,                            UINT64_C(         0), perl_diag_template_text_9fa7a67e,  1,   1 },
+    { perl_diag_error_object_field_attribute_private_invalid_number,                              UINT64_C(         0), perl_diag_template_text_c421fd67,  1,   1 },
+    { perl_diag_error_object_field_inheritance_missing_number,                                    UINT64_C(         0), perl_diag_template_text_93dcfa83,  1,   1 },
+    { perl_diag_error_object_field_inheritance_ambiguous_number,                                  UINT64_C(         0), perl_diag_template_text_daf8a764,  1,   1 },
+    { perl_diag_error_object_field_inheritance_private_number,                                    UINT64_C(         0), perl_diag_template_text_d4d1db65,  1,   1 },
+    { perl_diag_error_object_field_inheritance_owner_missing_number,                              UINT64_C(         0), perl_diag_template_text_ab6be4f4,  1,   1 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -8663,6 +8711,22 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2751, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2752, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2753, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2754, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2755, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2756, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2757, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2758, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2759, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2760, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2761, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2762, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2763, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2764, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2765, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2766, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2767, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2768, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2769, NULL                        },
 };
 
 static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
@@ -16864,6 +16928,86 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2753 = {
     perl_diagpack_param_schema_ids + 0, 0
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2754 = {
+    2754, "ERROR_OBJECT_FIELD_INITIALIZATION_STORAGE_RELEASED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2755 = {
+    2755, "ERROR_OBJECT_BLESS_DURING_TEARDOWN",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2756 = {
+    2756, "ERROR_OBJECT_COMPOSITION_LAYOUTS_INCOMPATIBLE",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2757 = {
+    2757, "ERROR_OBJECT_CONSTRUCTOR_INVOCANT_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2758 = {
+    2758, "ERROR_OBJECT_CONSTRUCTOR_STORAGE_BUSY",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2759 = {
+    2759, "ERROR_OBJECT_CONSTRUCTOR_ALREADY_INITIALIZED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2760 = {
+    2760, "ERROR_OBJECT_CONSTRUCTOR_MODERN_ANCESTOR_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2761 = {
+    2761, "ERROR_OBJECT_CONSTRUCTOR_BLESSING_CHANGED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2762 = {
+    2762, "ERROR_OBJECT_CONVERSION_PAYLOAD_REFERENCE_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2763 = {
+    2763, "ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2764 = {
+    2764, "ERROR_OBJECT_FIELD_ATTRIBUTE_INHERITED_INVALID",
+    perl_diagpack_param_schema_ids + 459, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2765 = {
+    2765, "ERROR_OBJECT_FIELD_ATTRIBUTE_PRIVATE_INVALID",
+    perl_diagpack_param_schema_ids + 459, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2766 = {
+    2766, "ERROR_OBJECT_FIELD_INHERITANCE_MISSING",
+    perl_diagpack_param_schema_ids + 459, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2767 = {
+    2767, "ERROR_OBJECT_FIELD_INHERITANCE_AMBIGUOUS",
+    perl_diagpack_param_schema_ids + 459, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2768 = {
+    2768, "ERROR_OBJECT_FIELD_INHERITANCE_PRIVATE",
+    perl_diagpack_param_schema_ids + 459, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2769 = {
+    2769, "ERROR_OBJECT_FIELD_INHERITANCE_OWNER_MISSING",
+    perl_diagpack_param_schema_ids + 459, 1
+};
+
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     /* local schema row zero is unused */
     NULL, &perl_diagpack_schema_1001, &perl_diagpack_schema_1002, &perl_diagpack_schema_1003,
@@ -17384,7 +17528,12 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     &perl_diagpack_schema_2742, &perl_diagpack_schema_2743, &perl_diagpack_schema_2744,
     &perl_diagpack_schema_2745, &perl_diagpack_schema_2747, &perl_diagpack_schema_2748,
     &perl_diagpack_schema_2749, &perl_diagpack_schema_2750, &perl_diagpack_schema_2751,
-    &perl_diagpack_schema_2752, &perl_diagpack_schema_2753,
+    &perl_diagpack_schema_2752, &perl_diagpack_schema_2753, &perl_diagpack_schema_2754,
+    &perl_diagpack_schema_2755, &perl_diagpack_schema_2756, &perl_diagpack_schema_2757,
+    &perl_diagpack_schema_2758, &perl_diagpack_schema_2759, &perl_diagpack_schema_2760,
+    &perl_diagpack_schema_2761, &perl_diagpack_schema_2762, &perl_diagpack_schema_2763,
+    &perl_diagpack_schema_2764, &perl_diagpack_schema_2765, &perl_diagpack_schema_2766,
+    &perl_diagpack_schema_2767, &perl_diagpack_schema_2768, &perl_diagpack_schema_2769,
 };
 
 static const perl_diag_selector_domain_t perl_diag_selector_domains[] = {

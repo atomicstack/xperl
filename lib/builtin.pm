@@ -31,7 +31,7 @@ builtin - Perl pragma to import built-in utility functions
         cardinal_plural_form ordinal_plural_form
         get_diagnostic_data
         package_implements
-        class_object_to_hash class_object_from_hash
+        is_class_object class_object_to_hash class_object_from_hash
     );
 
     use builtin ':5.40';  # most of the above
@@ -615,6 +615,13 @@ dispatching the object's C<implements> or C<DOES> methods.  It is the
 authoritative implementation used by the default C<implements> method of
 classes and roles declared with the class feature.
 
+=head2 is_class_object
+
+    is_class_object($value)
+
+Returns true when the value is a blessed reference with attached modern
+class storage. This does not call object methods or inspect the package name.
+
 =head2 class_object_to_hash
 
     class_object_to_hash($object)
@@ -625,10 +632,15 @@ values are shared with the object; they are not recursively copied.
 =head2 class_object_from_hash
 
     class_object_from_hash($hashref, $classname)
+    class_object_from_hash($hashref, $classname, $payload_reference)
 
 Creates a class object from the field hash returned by
 C<class_object_to_hash>.  This bypasses the class constructor and installs
 the field values directly, sharing the values with the supplied hash.
+The optional third argument supplies an unblessed reference to use as the
+ordinary payload. Its identity and contents are preserved. Without it, the
+payload is a new undef scalar referent. The package may be a conventional
+descendant of a modern class with a compatible field layout.
 
 =head1 SEE ALSO
 

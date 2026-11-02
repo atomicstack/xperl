@@ -1682,40 +1682,49 @@ EODUMP
     # this could crash [github #22959]
     class Foo {
     };
-    do_test('class object with no fields', Foo->new, <<~'EOS');
+    my $class_storage_prefix = <<~'EOS';
     SV = IV\($ADDR\) at $ADDR
       REFCNT = \d+
       FLAGS = \(ROK\)
       RV = $ADDR
-      SV = PVOBJ\($ADDR\) at $ADDR
+      SV = PVMG\($ADDR\) at $ADDR
         REFCNT = 1
-        FLAGS = \(OBJECT\)
+        FLAGS = \(OBJECT,RMG\)
+        IV = 0
+        NV = 0
+        PV = 0
+        MAGIC = $ADDR
+          MG_VIRTUAL = 0
+          MG_PRIVATE = \d+
+          MG_TYPE = PERL_MAGIC_class_storage\(j\)
+          MG_FLAGS = 0x02
+            REFCOUNTED
+          MG_OBJ = $ADDR
+          SV = PVOBJ\($ADDR\) at $ADDR
+            REFCNT = 1
+            FLAGS = \(RMG\)
+    (?s:.*?)
+    EOS
+    do_test('class object with no fields', Foo->new, $class_storage_prefix . <<~'EOS');
+            MAXFIELD = -1
+            FIELDS = 0x0
         STASH = $ADDR\s+"Foo"
-        MAXFIELD = -1
-        FIELDS = 0x0
     EOS
 
-    # test object with fields too
     class Foo2 {
         field $x = 0;
     };
-    do_test('class object with a field', Foo2->new, <<~'EOS');
-    SV = IV\($ADDR\) at $ADDR
-      REFCNT = \d+
-      FLAGS = \(ROK\)
-      RV = $ADDR
-      SV = PVOBJ\($ADDR\) at $ADDR
-        REFCNT = 1
-        FLAGS = \(OBJECT\)
+    do_test('class object with a field', Foo2->new, $class_storage_prefix . <<~'EOS');
+            MAXFIELD = 0
+            FIELDS = $ADDR
+            Field No\. 0 \(\$x\)
+            SV = IV\($ADDR\) at $ADDR
+              REFCNT = 1
+              FLAGS = \(IOK,pIOK\)
+              IV = 0
         STASH = $ADDR\s+"Foo2"
-        MAXFIELD = 0
-        FIELDS = $ADDR
-        Field No\. 0 \(\$x\)
-        SV = IV\($ADDR\) at $ADDR
-          REFCNT = 1
-          FLAGS = \(IOK,pIOK\)
-          IV = 0
     EOS
+
 }
 
 done_testing();

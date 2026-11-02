@@ -20,6 +20,7 @@ require Exporter;
 use constant IS_PRE_516_PERL => "$]" < 5.016;
 use constant SUPPORTS_CORE_BOOLS => defined &builtin::is_bool;
 use constant SUPPORTS_CORE_CLASS_OBJECTS => defined &builtin::class_object_to_hash;
+use constant SUPPORTS_BLESSED_CLASS_OBJECTS => defined &builtin::is_class_object;
 
 use Carp ();
 
@@ -426,9 +427,6 @@ sub _dump {
         die "Recursion limit of $s->{maxrecurse} exceeded";
     }
 
-    # Class objects have no ordinary Perl reference representation.  Use the
-    # builtin shallow field conversion so they can be dumped and restored
-    # without invoking constructors or methods.
     if (SUPPORTS_CORE_CLASS_OBJECTS && $realtype eq 'OBJECT') {
       $s->{level}++;
       my $hash = builtin::class_object_to_hash($val);
@@ -437,6 +435,20 @@ sub _dump {
              _quote($realpack) . ')';
       $s->{level}--;
       return $out;
+    }
+
+    # Restore field storage around the normal payload dump. Keep one seen
+    # table for references shared between fields and the ordinary referent.
+    my $modern_object = SUPPORTS_BLESSED_CLASS_OBJECTS &&
+                        builtin::is_class_object($val);
+    if ($modern_object) {
+      $s->{level}++;
+      my $modern_fields = builtin::class_object_to_hash($val);
+      $out = 'builtin::class_object_from_hash(' .
+             $s->_dump($modern_fields, "builtin::class_object_to_hash($name)") . ', ' .
+             _quote($realpack) . ', ';
+      $s->{level}--;
+      $no_bless = 1;
     }
 
     # we have a blessed ref
@@ -581,6 +593,8 @@ sub _dump {
     else {
       Carp::croak("Can't handle '$realtype' type");
     }
+
+    $out .= ')' if $modern_object;
 
     if ($realpack and !$no_bless) { # we have a blessed ref
       $out .= ', ' . _quote($realpack) . ' )';
@@ -994,8 +1008,9 @@ of eval'ing code from untrusted sources!)
 Objects created by the experimental C<class> feature are dumped using the
 experimental C<builtin::class_object_to_hash> and
 C<builtin::class_object_from_hash> functions.  Their fields are represented
-shallowly, so references in fields retain their identity when the dumped form
-is evaluated.
+shallowly. The ordinary referent payload is preserved along with lexical
+fields. With C<Purity>, shared references and cycles between fields and the
+payload are restored through the usual fixup statements.
 
 Any references that are the same as one of those passed in will be named
 C<$VAR>I<n> (where I<n> is a numeric suffix), and other duplicate references

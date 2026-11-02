@@ -12294,7 +12294,7 @@ S_dispatch_pattern_match(pTHX_ const struct dispatch_pattern_node *node, SV *val
             || !S_dispatch_pattern_is_a(aTHX_ value, node->object_class))
             return FALSE;
         if (fields) {
-            if (SvTYPE(SvRV(value)) == SVt_PVOBJ)
+            if (class_storage(value) != NULL)
                 logical = sv_2mortal(Perl_class_object_to_hash(aTHX_ value));
             matched = S_dispatch_pattern_match_object_fields(aTHX_
                 fields, logical ? logical : value, bindings, nbindings, owner);
@@ -12304,7 +12304,7 @@ S_dispatch_pattern_match(pTHX_ const struct dispatch_pattern_node *node, SV *val
                  || (node->object_shape->op->op_type == OP_EMPTYAVHV
                      && (node->object_shape->op->op_private
                          & OPpEMPTYAVHV_IS_HV)))
-                && SvTYPE(SvRV(value)) == SVt_PVOBJ)
+                && class_storage(value) != NULL)
                 logical = sv_2mortal(Perl_class_object_to_hash(aTHX_ value));
             matched = S_dispatch_pattern_match(aTHX_ node->object_shape,
                                             logical ? logical : value,
@@ -12349,7 +12349,7 @@ S_dispatch_pattern_match(pTHX_ const struct dispatch_pattern_node *node, SV *val
             if ((shape_node->op->op_type == OP_ANONHASH
                  || (shape_node->op->op_type == OP_EMPTYAVHV
                      && (shape_node->op->op_private & OPpEMPTYAVHV_IS_HV)))
-                && SvTYPE(SvRV(value)) == SVt_PVOBJ)
+                && class_storage(value) != NULL)
                 logical = sv_2mortal(Perl_class_object_to_hash(aTHX_ value));
             matched = S_dispatch_pattern_match(aTHX_ shape_node,
                                             logical ? logical : value,

@@ -113,4 +113,95 @@ is($restored_destroyed, 1, 'restored object is released at end of scope');
     ok(!defined($weak), 'discarded field hash releases its field references');
 }
 
+is(builtin::is_class_object($object), 1, 'storage predicate recognizes a modern instance');
+ok(!builtin::is_class_object(bless({}, 'PlainObjectHash')), 'storage predicate rejects ordinary legacy object');
+ok(!builtin::is_class_object('ObjectHashTest'), 'storage predicate rejects class name');
+
+for my $useperl (0, 1) {
+    local $Data::Dumper::Useperl = $useperl;
+    local $Data::Dumper::Purity = 1;
+    for my $kind (qw(SCALAR ARRAY HASH)) {
+        my $shared = { value => 42 };
+        my $payload = $kind eq 'HASH' ? { shared => $shared }
+                    : $kind eq 'ARRAY' ? [$shared] : \my $scalar;
+        $$payload = $shared if $kind eq 'SCALAR';
+        my $object = bless $payload, 'ObjectHashTest';
+        $object->CONSTRUCT(scalar => $shared);
+        $shared->{owner} = $object;
+        our $VAR1;
+        local $VAR1;
+        my $dump = Dumper($object);
+        eval $dump;
+        is($@, '', "Dumper Useperl=$useperl $kind payload graph evaluates");
+        my $restored = $VAR1;
+        is(Scalar::Util::reftype($restored), $kind eq 'SCALAR' ? 'REF' : $kind, "Dumper preserves $kind payload kind");
+        is($restored->scalar->{value}, 42, 'Dumper preserves field data');
+        my $restored_shared = $kind eq 'HASH' ? $restored->{shared}
+                            : $kind eq 'ARRAY' ? $restored->[0] : $$restored;
+        is(refaddr($restored_shared), refaddr($restored->scalar),
+            'Dumper preserves references shared between payload and fields');
+        is(refaddr($restored_shared->{owner}), refaddr($restored),
+            'Dumper preserves a cycle through fields to public object');
+        delete $shared->{owner};
+        delete $restored_shared->{owner};
+    }
+}
+
+for my $payload ({ payload => 9 }, [9], \my $scalar) {
+    my $before = refaddr($payload);
+    eval { builtin::class_object_from_hash({
+        '$scalar' => 1, '@array' => 'wrong', '%hash' => {},
+    }, 'ObjectHashTest', $payload) };
+    like($@, qr/must be a reference/, 'invalid restored field is rejected');
+    ok(!Scalar::Util::blessed($payload), 'failed restoration leaves caller payload unblessed');
+    is(refaddr($payload), $before, 'failed restoration preserves payload identity');
+    ok(!builtin::is_class_object($payload), 'failed restoration leaves no modern storage');
+}
+
+{
+    my $legacy = bless {}, 'PlainObjectHash';
+    my @die;
+    local $SIG{__DIE__} = sub { push @die, "$_[0]" };
+    local $Data::Dumper::Useperl = 1;
+    Dumper($legacy);
+    is(scalar @die, 0, 'pure Perl Dumper detects storage without invoking die hooks');
+}
+
+SKIP: {
+    skip('Storable unavailable', 4) unless eval { require Storable; 1 };
+    eval { Storable::dclone($object) };
+    like($@, qr/Modern class storage requires an explicit STORABLE_freeze hook/,
+        'Storable rejects implicit serialization that would discard modern fields');
+    my $legacy = Storable::dclone(bless({ payload => 12 }, 'PlainObjectHash'));
+    is($legacy->{payload}, 12, 'ordinary legacy Storable serialization is unaffected');
+    class ObjectHashStorable {
+        field $value :param :reader;
+        method STORABLE_freeze($cloning) { "$value" }
+        sub STORABLE_thaw ($self, $cloning, $serialized) {
+            $self->CONSTRUCT(value => $serialized);
+        }
+    }
+    my $source = ObjectHashStorable->new(value => 27);
+    my $restored = Storable::dclone($source);
+    is($restored->value, 27, 'explicit Storable hooks can restore modern fields');
+    is(Scalar::Util::reftype($restored), 'SCALAR', 'Storable hooks retain ordinary referent representation');
+}
+
+role ObjectHashAggregateRole {
+    field @role_array;
+    field %role_hash;
+}
+class ObjectHashAggregateParent :implements(ObjectHashAggregateRole) { }
+class ObjectHashAggregateChild :isa(ObjectHashAggregateParent) {
+    field @role_array :inherited;
+    field %role_hash :inherited;
+}
+for my $invalid (
+    { '@role_array' => {}, '%role_hash' => {} },
+    { '@role_array' => [], '%role_hash' => [] },
+) {
+    eval { builtin::class_object_from_hash($invalid, 'ObjectHashAggregateChild') };
+    like($@, qr/has the wrong reference type/, 'role aggregate restoration validates referent type before inherited aliases bind');
+}
+
 done_testing();

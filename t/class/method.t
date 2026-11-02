@@ -159,7 +159,7 @@ no warnings 'experimental::class';
         }
     }
 
-    like(Testcase9->new->test, qr/^X is 123 and Y is 456 for Testcase9=OBJECT\(0x.*\)$/,
+    like(Testcase9->new->test, qr/^X is 123 and Y is 456 for Testcase9=SCALAR\(0x.*\)$/,
         'lexical method with signature counts $self correctly');
 }
 

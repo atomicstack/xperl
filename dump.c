@@ -2548,10 +2548,6 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
     /* process type-specific SV flags */
 
     switch (type) {
-    case SVt_PVOBJ:
-        if(ObjectHASLEGACY(sv))
-            sv_catpvs(d, "LEGACY,");
-        break;
     case SVt_PVCV:
     case SVt_PVFM:
         append_flags(d, CvFLAGS(sv), cv_flags_names);
@@ -3335,18 +3331,23 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
         if (nest < maxnest && ObjectFIELDS(sv)) {
             SSize_t count;
             SV **svp = ObjectFIELDS(sv);
-            PADNAME **pname = PadnamelistARRAY(HvAUX(SvSTASH(sv))->xhv_class_fields);
+            MAGIC *metadata = SvMAGIC(sv)
+                ? mg_find(sv, PERL_MAGIC_class_storage) : NULL;
             for (count = 0;
                  count <= ObjectMAXFIELD(sv) && count < maxnest;
                  count++, svp++)
             {
                 SV *const field = *svp;
-                PADNAME *pn = pname[count];
-
-                dump_indent(level + 1, file, "Field No. %" IVdf " (%s)\n",
-                                             (IV)count, PadnamePV(pn));
-
-                do_sv_dump(level+1, file, field, nest+1, maxnest, dumpops, pvlim);
+                PADNAME *pn = metadata && metadata->mg_obj
+                    && SvTYPE(metadata->mg_obj) == SVt_PVAV
+                    ? class_field_name(sv, count) : NULL;
+                if(pn)
+                    dump_indent(level + 1, file, "Field No. %" IVdf " (%s)\n",
+                                                 (IV)count, PadnamePV(pn));
+                else
+                    dump_indent(level + 1, file, "Field No. %" IVdf "\n", (IV)count);
+                if(field)
+                    do_sv_dump(level+1, file, field, nest+1, maxnest, dumpops, pvlim);
             }
         }
         break;

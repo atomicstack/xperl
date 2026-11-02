@@ -156,18 +156,17 @@ is($argument, 15, 'unsigned constructor retains normal argument aliases');
     sub legacy_value { $_[0]{value} }
 }
 class LegacySignatureConstructor :isa(LegacyConstructorParent) {
-    field $legacy :blessed_self :param;
     field $extra :param :reader;
     sub new ($class, $value, $extra) {
         my $parent = $class->SUPER::new(value => $value);
-        return $class->CONSTRUCT(legacy => $parent, extra => $extra);
+        return $parent->CONSTRUCT(extra => $extra);
     }
 }
 my $legacy = LegacySignatureConstructor->new(16, 17);
 is($legacy->legacy_value, 16, 'custom signature feeds the legacy parent construction path');
 is($legacy->extra, 17, 'custom signature feeds native parameters in a legacy subclass');
 
-is(ref($default->CONSTRUCT(x => 18)), 'DefaultConstructor',
+is(ref($default->CONSTRUCT), 'DefaultConstructor',
     'generated CONSTRUCT can be invoked on an existing instance');
 is($default->x, 10, 'instance invocation does not change the original object');
 

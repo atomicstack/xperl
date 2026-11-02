@@ -120,10 +120,17 @@ Fields are variables that are visible in the scope of the class - more
 specifically within L</method> and L<ADJUST|/Adjustment> blocks. Each class
 instance gets its own storage of fields, independent of other instances.
 
-A field behaves like a normal lexically scoped variable. It has a sigil and is
-private to the class (though creation of an accessor method will make it
-accessible from the outside). The main difference is that different instances
-access different values in the same scope.
+A field behaves like a normal lexically scoped variable. Its name is visible
+only within its declaring class. A descendant can explicitly bind that name
+to the existing storage with C<:inherited>, unless the original declaration
+has C<:private>. Accessor methods can expose values to callers. Different
+instances access different values in the same lexical scope.
+
+Each field name, including its sigil, identifies one storage declaration
+throughout an object's hierarchy. A descendant cannot declare another
+storage field with the same name. C<:inherited> shares an existing declaration
+and adds no storage. A shared ancestor reached through several inheritance
+paths contributes its fields once.
 
     class WithFields {
         field $scalar = 42;
@@ -274,9 +281,9 @@ already loaded.
 
 =head4 Conventional superclasses
 
-C<:isa> accepts either a native class or a conventional package. When the
-superclass is conventional, the class must declare one scalar field marked
-C<:blessed_self>. The class author constructs that object explicitly:
+C<:isa> accepts either a modern class or a conventional package. Every
+instance is an ordinary blessed reference. A custom constructor can create
+that reference through its conventional parent, then attach modern fields:
 
     package Point {
         sub new {
@@ -291,57 +298,49 @@ C<:blessed_self>. The class author constructs that object explicitly:
     }
 
     class RGBPoint :isa(Point) {
-        field $legacy :blessed_self :param;
         field $red :param;
         field $green :param;
         field $blue :param;
 
         sub new ($class, $x, $y, $red, $green, $blue) {
-            my $parent = $class->SUPER::new(x => $x, y => $y);
-            return $class->CONSTRUCT(
-                legacy => $parent, red => $red,
-                green => $green, blue => $blue,
+            my $self = $class->SUPER::new(x => $x, y => $y);
+            return $self->CONSTRUCT(
+                red => $red, green => $green, blue => $blue,
             );
         }
-
         method kind { "rgb($red, $green, $blue)" }
     }
 
     my $point = RGBPoint->new(10, 20, 200, 100, 50);
     say $point->describe;  # (10, 20): rgb(200, 100, 50)
 
-The generated C<CONSTRUCT> never calls a conventional parent constructor.
-A custom C<new> can call C<SUPER::new>, use a factory, or create a blessed
-reference itself. Supply the result through a C<:param> field, as above, or
-through a field initializer. The value must be a non-native reference blessed
-into the exact requested subclass. Hash, array, scalar, and code references
-are supported.
+C<CONSTRUCT> on a blessed reference returns that same object and preserves
+its referent, contents, blessing, and identity. It never calls a conventional
+parent constructor. Scalar, array, hash, and code references are supported,
+including referents with existing magic or overload behavior. All methods,
+ordinary subs, XSUBs, and C<ADJUST> blocks receive the same public reference.
+A conventional constructor cannot call field-using modern methods before
+C<CONSTRUCT> attaches their storage.
 
-The association is established when the marked field is initialized. Declare
-it before fields whose initializers call conventional methods. Calls before
-attachment fail. After attachment, later field initializers and C<ADJUST>
-blocks can use both native and conventional methods. A conventional parent
-constructor cannot call native methods on its result before attachment.
+A modern class can declare one superclass. Roles cannot declare C<:isa>.
+Conventional packages may connect several modern ancestors through C<@ISA>.
+The effective object's hierarchy determines the union of modern fields,
+including ancestors reached through conventional intermediaries. Shared
+ancestors contribute their fields once. Distinct field declarations must
+have unique names throughout that union. Conflicts in known class ancestry
+are diagnosed when the class is sealed. A conventional package's effective
+union is checked before C<CONSTRUCT> initializes an object.
 
-Method lookup follows the subclass's inheritance normally. A selected
-conventional sub receives the legacy reference. A selected native method
-receives the native object. Thus a conventional parent method can call a
-native override, as C<describe> does above. Ordinary function calls do not
-convert their arguments. Direct calls to native method CVs recognize the
-associated legacy reference.
+Each modern class's own fields are initialized once, in ancestor-first order,
+following conventional C<@ISA> order. All field initialization finishes before
+C<ADJUST> blocks run in the same ancestor-first order. Methods keep their
+declaring field identities, and role fields belong to the consuming class.
+A conventional descendant can inherit a modern constructor while keeping
+its own blessing and ordinary method lookup.
 
-The native object owns the legacy reference. A weak link on the legacy
-referent identifies its native owner. One legacy referent can belong to
-only one live native object. Further native subclasses use C<:isa> and
-inherit this association by field slot, independently of the lexical field
-name. A subclass cannot declare another C<:blessed_self> field, even under a
-different name. Use an inherited accessor if subclass methods need access to
-the blessed reference. A class may specify only one superclass. Roles cannot
-declare C<:isa>.
-
-Field-hash restoration bypasses constructors as usual. It establishes the
-association using the restored C<:blessed_self> field, and rejects a referent
-that already belongs to another live native object.
+Field-hash restoration bypasses constructors. Its optional payload reference
+preserves the conventional representation. See
+L<builtin/class_object_from_hash>.
 
 =head3 :implements
 
@@ -379,15 +378,46 @@ as ordinary inheritance relationships.
 
 =head2 Field attributes
 
-=head3 :blessed_self
+=head3 :inherited
 
-This attribute marks the scalar field that holds the conventional parent's
-object. It is available on a class that inherits from a conventional package
-via C<:isa>, and takes no attribute value. Use C<:param> or a field initializer
-to provide the blessed reference. The field initializer validates and attaches
-the object, then makes the field read-only. The referenced object's contents
-remain mutable. Exactly one such field is allowed, including inherited
-fields. It does not replace the native method's lexical C<$self>.
+    field $foo :inherited;
+    field @items :inherited;
+    field %options :inherited;
+
+This declaration introduces a lexical name for an existing ancestor field.
+It allocates no storage, runs no initializer, and consumes no constructor
+parameter. Reads and writes share the original field, including array and
+hash identity. The original declaration owns initialization and visibility.
+Readers and writers can be generated on an inherited declaration.
+
+    class Base {
+        field $count :param = 0;
+    }
+    class Derived :isa(Base) {
+        field $count :inherited;
+        method increment { ++$count }
+    }
+
+Ancestor names do not enter a descendant's lexical scope automatically.
+An inherited declaration must resolve to one ancestor storage declaration
+when the class is sealed. Missing, ambiguous, or C<:private> ancestors are
+errors. Conventional ancestry used by C<:inherited> must be established at
+that time, for example with C<use parent> or C<BEGIN>. Later changes to
+C<@ISA> cannot rebind the sealed dependency to a different field.
+
+An inherited declaration cannot have an initializer, C<:param>, C<:private>,
+or an attribute value. A role cannot declare C<:inherited>, because it has no
+class ancestry. A class can inherit a field supplied by an ancestor's role.
+
+=head3 :private
+
+    field $secret :private = 42;
+
+This attribute prevents descendants from binding the field with
+C<:inherited>. Methods in the original declaring class can access it on all
+instances, including descendant objects. The attribute does not hide the
+field from explicit serialization or debugging APIs. It takes no value and
+cannot be combined with C<:inherited>.
 
 =head3 :param
 
@@ -561,26 +591,47 @@ created up to that point.
 
 After the construction phase, the object is ready to be used.
 
-Using C<blessed> (C<Scalar::Util::blessed> or C<builtin::blessed>) on the
-object will return the name of the class, while C<reftype>
-(C<Scalar::Util::reftype> or C<builtin::reftype>) will return the string
-C<'OBJECT'>.
+C<blessed> returns the effective package name. C<reftype> returns the
+ordinary referent type, such as C<SCALAR>, C<HASH>, or C<ARRAY>. The default
+C<CONSTRUCT> creates a reference to an undef scalar, equivalent to
+C<bless \my $value, $class>. The referent can be used and changed normally.
+Lexical fields have separate internal storage.
+
+Calling C<CONSTRUCT> again without parameters returns the same initialized
+object. Supplying parameters again is an error. Reentrant C<CONSTRUCT>
+during initialization or teardown is an error. If initialization on an
+existing object fails, its payload survives and another C<CONSTRUCT> can
+retry with fresh fields. A failed class-name construction retains partial
+fields for normal destruction, including C<DESTROY> access to fields that
+were initialized before the failure.
 
 =head2 Destruction
 
-An object is destroyed when the last reference to it goes away, just as with
-other data structures in Perl.
+The last reference disappearing invokes normal C<DESTROY>. If C<DESTROY>
+resurrects the object, its blessing and fields survive. When destruction
+proceeds, C<TEARDOWN> runs once through named inherited lookup, without C<AUTOLOAD>
+fallback, while the old
+blessing and fields are accessible. Parent teardown requires an explicit
+C<SUPER::TEARDOWN> call. Perl then releases modern field storage. A legacy
+package merely declaring a method named C<TEARDOWN> gains no new behavior.
 
-For objects with a C<:blessed_self> field, the native object owns destruction. A native
-C<DESTROY> override receives the native object and can explicitly call
-C<SUPER::DESTROY>. Otherwise, an inherited conventional destructor receives
-the legacy reference. Once native destruction is committed, Perl unblesses
-the legacy referent before releasing it, preventing another automatic
-C<DESTROY> call. Native resurrection preserves the association.
+Blessing an initialized object into a different package calls C<TEARDOWN>
+while its old blessing and fields are intact. Perl releases those fields,
+then applies the new blessing. It does not call
+C<DESTROY>. Blessing it into the same package preserves its fields. Active
+methods and escaped field aliases retain their individual field values
+after storage release. Reentrant blessing into a different package during
+C<TEARDOWN> is an error.
 
-If the legacy referent's reference count exceeds the reference owned by the
-native field at this point, Perl warns that legacy references outlive their
-native owner. These surviving references refer to an unblessed value.
+A C<TEARDOWN> exception during explicit reblessing propagates, retaining the
+old blessing but releasing modern state. Later field methods fail with a
+missing-storage diagnostic. Destruction uses the usual cleanup exception
+policy. If C<TEARDOWN> resurrects the reference, its fields are released
+and later destruction does not call C<TEARDOWN> again.
+
+The internal C<sv_unbless> lifecycle helper applies the same teardown rule
+when removing a blessing. XS code directly changing C<SvOBJECT> bypasses
+lifecycle hooks, including C<DESTROY>.
 
 =head1 TODO
 

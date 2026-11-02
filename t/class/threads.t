@@ -65,11 +65,10 @@ next_test(); # account for is() inside thread
     sub describe { my ($self) = @_; "$self->{x}:" . $self->colour }
 }
 class NativeThreadPoint :isa(LegacyThreadPoint) {
-    field $legacy :blessed_self :param;
     sub new ($class, %args) {
         my $colour = delete $args{colour};
         my $parent = $class->SUPER::new(%args);
-        return $class->CONSTRUCT(legacy => $parent, colour => $colour);
+        return $parent->CONSTRUCT(colour => $colour);
     }
     field $colour :param;
     method colour { $colour }

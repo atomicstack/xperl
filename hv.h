@@ -139,7 +139,6 @@ struct xpvhv_aux {
 
     /* These fields are valid for class and role stashes. */
     HV          *xhv_class_legacy_parent;
-    PADOFFSET    xhv_class_legacy_self; /* field index + 1, or zero */
     HV          *xhv_class_superclass;         /* STASH of the :isa() base class */
     CV          *xhv_class_initfields_cv;      /* CV for running initfields */
     AV          *xhv_class_adjust_blocks;      /* CVs containing the ADJUST blocks */

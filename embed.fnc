@@ -1114,16 +1114,25 @@ Adfpt	|void	|ck_warner	|U32 err				\
 Adfpt	|void	|ck_warner_d	|U32 err				\
 				|NN const char *pat			\
 				|...
-Cp	|SV *	|class_method_invocant					\
-				|NN SV *self				\
-				|NN CV *cv
+Cp	|PADNAME *|class_field_name					\
+				|NN SV *instance			\
+				|PADOFFSET fieldix
 Adpx	|void	|class_method_parse_post_blockstart			\
 				|NN CV *cv
 Adp	|SV *	|class_object_from_hash 				\
 				|NN SV *hashref 			\
 				|NN SV *classname
+Cp	|SV *	|class_object_restore					\
+				|NN SV *hashref 			\
+				|NN SV *classname			\
+				|NULLOK SV *payload
 Adp	|SV *	|class_object_to_hash					\
 				|NN SV *object
+Cp	|void	|class_release	|NN SV *referent			\
+				|bool destroying
+Cp	|SV *	|class_storage	|NN SV *self
+Cp	|SV *	|class_take_storage					\
+				|NN SV *referent
 
 : Some static inline functions need predeclaration because they are used
 : inside other static inline functions.
@@ -4268,6 +4277,7 @@ Cip	|bool	|SvTRUE_common	|NN SV *sv				\
 Adip	|bool	|SvTRUE_NN	|NN SV *sv
 Adip	|bool	|SvTRUE_nomg	|NULLOK SV *sv
 APTdp	|const char *|svtypename|U8 type
+Cp	|void	|sv_unbless	|NN SV *reference
 ARdp	|char * |sv_uni_display |NN SV *dsv				\
 				|NN SV *ssv				\
 				|STRLEN pvlim				\

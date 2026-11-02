@@ -34,20 +34,6 @@ Cannot invoke a method of "XXX" on an instance of "YYY" at - line 6.
 ########
 no warnings 'experimental::class';
 use feature 'class';
-class XXX {}
-bless [], "XXX";
-EXPECT
-Attempt to bless into a class at - line 4.
-########
-no warnings 'experimental::class';
-use feature 'class';
-class XXX {}
-bless(XXX->new, "main");
-EXPECT
-Can't bless an object reference at - line 4.
-########
-no warnings 'experimental::class';
-use feature 'class';
 class XXX { field $zz; $zz = 123; }
 EXPECT
 Field $zz is not accessible outside a method at - line 3.
@@ -150,7 +136,7 @@ Can't locate object method "new" via package "C" at - line 5.
 use v5.36;
 use feature 'class';
 no warnings 'experimental::class';
-class C { BEGIN { C->new; } };
+class C { BEGIN { C->CONSTRUCT; } };
 EXPECT
 Cannot create an object of incomplete class "C" at - line 4.
 BEGIN failed--compilation aborted at - line 4.

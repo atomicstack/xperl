@@ -559,3 +559,9 @@ diag_word_operation_identity(name)
         RETVAL = Perl_diag_word_operation_from_name(text, text ? length : 0);
     OUTPUT:
         RETVAL
+
+void
+sv_unbless(reference)
+    SV *reference
+CODE:
+    Perl_sv_unbless(aTHX_ reference);
