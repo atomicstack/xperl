@@ -4400,7 +4400,7 @@ S_share_hek_flags(pTHX_ const char *str, STRLEN len, U32 hash, int flags)
         S_strtab_resize(aTHX_ STRTAB_MIN_CAPACITY);
     hek = S_strtab_find(aTHX_ hash, str, len, flags_masked, &pos, &collision);
     if (hek) {
-        HvSTR_REFCOUNT(hek)++;
+        (void)share_hek_hek(hek);
     }
     else {
         char *raw;

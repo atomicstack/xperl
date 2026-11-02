@@ -280,8 +280,8 @@ linearly before building an index. Its default is four, so hashes with up to
 four entries use linear search before promotion. At threshold zero, hashes
 use indexed storage from the first key.
 Shared-key interning uses an open-addressed slot array of `HEK *` pointers.
-The slots have tombstones; each shared `HEK` carries a reference-count
-prefix, and its allocation remains stable while referenced, including when
+The slots have tombstones; each shared `HEK` carries a `U32` reference-count
+prefix (12 bytes total for count, hash, and length), and its allocation remains stable while referenced, including when
 the slot array grows. The table has a minimum capacity of 32,768 slots.
 Before insertion, when live entries plus tombstones reach
 `floor(2*capacity/3)`, it rebuilds at the next power of two at least three

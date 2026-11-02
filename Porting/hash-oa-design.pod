@@ -128,6 +128,11 @@ including headerless linear hashes; C<Hash::Util::hash_storage_info()> uses
 C<open_addressed> for actual index allocation and C<linear> for the
 headerless form.
 
+Each shared key has a C<U32> reference-count prefix. Together with its
+C<U32> hash and C<I32> length, this gives a 12-byte header before the key
+bytes. Reference acquisition checks for overflow instead of wrapping to zero.
+Actual heap savings depend on allocator size classes.
+
 The shared-key table has a minimum capacity of 32,768 pointer slots. Before
 insertion, when live slots plus tombstones reach the floor of two-thirds of
 capacity, it rebuilds at the next power of two at least three times the live
