@@ -66,7 +66,7 @@ struct hek {
 };
 
 struct shared_hek {
-    Size_t refcount;
+    U32 refcount;
     struct hek shared_hek_hek;
 };
 
@@ -562,7 +562,7 @@ Returns the shared string table header.
 
 The shared string table slot value marking a deleted key.
 
-=for apidoc Cm|Size_t|HvSTR_REFCOUNT|HEK *hek
+=for apidoc Cm|U32|HvSTR_REFCOUNT|HEK *hek
 
 Returns the reference count for a shared HEK.
 
@@ -789,7 +789,9 @@ Null HEK pointer.
 #define Perl_sharepvn(pv, len, hash) HEK_KEY(share_hek(pv, len, hash))
 #define sharepvn(pv, len, hash)	     Perl_sharepvn(pv, len, hash)
 
-#define share_hek_hek(hek) (++HvSTR_REFCOUNT(hek), (hek))
+#define share_hek_hek(hek) \
+    ((UNLIKELY(HvSTR_REFCOUNT(hek) == U32_MAX) \
+        ? (Perl_croak_memory_wrap(), (U32)0) : ++HvSTR_REFCOUNT(hek)), (hek))
 
 #define hv_store_ent(hv, keysv, val, hash)				\
     ((HE *) hv_common((hv), (keysv), NULL, 0, 0, HV_FETCH_ISSTORE,	\

@@ -8,6 +8,12 @@ use Config;
 
 BEGIN {use_ok('XS::APItest')};
 
+is_deeply(XS::APItest::Hash::shared_hek_refcount_probe(0xffff_fffe),
+          [4, 12, 0xffff_ffff],
+          'shared HEK uses a 12-byte header and reaches the U32 count limit');
+eval { XS::APItest::Hash::shared_hek_refcount_probe(0xffff_ffff) };
+like($@, qr/memory wrap/, 'shared HEK reference count cannot wrap to zero');
+
 sub preform_test;
 sub test_present;
 sub test_absent;

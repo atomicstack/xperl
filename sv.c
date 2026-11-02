@@ -17754,6 +17754,8 @@ perl_clone_using(PerlInterpreter *proto_perl, UV flags,
             Newx(pin, 1, struct hv_strtab_pin);
             pin->hek = hek_dup(source->hek, param);
             pin->count = source->count;
+            if (UNLIKELY(pin->count - 1 > U32_MAX - HvSTR_REFCOUNT(pin->hek)))
+                Perl_croak_memory_wrap();
             HvSTR_REFCOUNT(pin->hek) += pin->count - 1;
             pin->next = HvSTRTAB(PL_strtab)->pins;
             HvSTRTAB(PL_strtab)->pins = pin;

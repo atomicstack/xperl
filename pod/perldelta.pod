@@ -841,8 +841,9 @@ through 32,768 slots, and four bytes above that. The
 entry traversal order is an implementation detail and does not guarantee
 public hash iteration order. C<HV> and C<XPVHV> sizes are unchanged.
 Shared-key interning now uses an open-addressed array of C<HEK *> pointers with
-tombstones. Each shared C<HEK> has a reference-count prefix; its address
-remains stable while referenced, including when the slot array grows. The
+tombstones. Each shared C<HEK> has a C<U32> reference-count prefix, giving
+a 12-byte header for count, hash, and length. Reference acquisition checks
+for overflow. Its address remains stable while referenced, including when the slot array grows. The
 table has a minimum capacity of 32,768 slots. Before insertion, when live
 entries plus tombstones reach C<floor(2*index_capacity/3)>, it rebuilds with
 a capacity equal to the next power of two at least three times the live entry

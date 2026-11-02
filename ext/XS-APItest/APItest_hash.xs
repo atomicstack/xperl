@@ -1,6 +1,25 @@
 MODULE = XS::APItest:Hash               PACKAGE = XS::APItest::Hash
 
 AV *
+shared_hek_refcount_probe(count)
+    UV count
+    PREINIT:
+        struct shared_hek key;
+        HEK *hek = &key.shared_hek_hek;
+    CODE:
+        if (count > U32_MAX)
+            croak("test count exceeds U32");
+        key.refcount = (U32)count;
+        (void)share_hek_hek(hek);
+        RETVAL = newAV();
+        av_push(RETVAL, newSVuv(sizeof(key.refcount)));
+        av_push(RETVAL, newSVuv(STRUCT_OFFSET(struct shared_hek,
+                                             shared_hek_hek.hek_key[0])));
+        av_push(RETVAL, newSVuv(key.refcount));
+    OUTPUT:
+        RETVAL
+
+AV *
 shared_key_storage_info()
     PREINIT:
         AV *result;
