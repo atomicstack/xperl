@@ -6,6 +6,25 @@ The builtin integer cardinal and ordinal functions cover the retained CLDR
 languages independently of installed packs. Adding a pack requires translated
 sentences, vocabulary and grammatical forms, not just plural categories.
 
+## Pending sentence translations
+
+The SipHash builtin diagnostics added in `48454f965b` have English templates
+only. Translate them for the 18 configured non-English packs, then review the
+results before importing them. Until then, those packs use English fallback.
+
+| Code | English source |
+|---|---|
+| `ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED` | SipHash input must be a byte string |
+| `ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID` | SipHash round counts must be non-negative integers |
+| `ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE` | SipHash round count is too large |
+| `ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID` | SipHash seed must be exactly 16 bytes |
+
+The translation driver's dry run prepared 72 prompts, one for each code and
+target language, under `../tmp/siphash-translation-queue/`. No translations
+have been imported. Run the repair driver with `--no-import` and one
+`--code=CODE` value per batch, review the candidates, then import and
+regenerate the accepted translations.
+
 ## Queue
 
 Serbian (`sr`) uses Cyrillic and Mandarin Chinese (`zh`) uses Simplified
