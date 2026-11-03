@@ -53,6 +53,11 @@ loop setup. Use the flat lookup benchmark when comparing small hash sizes.
 
 Do performance analysis on the code snippets in F<t/perf/benchmarks>.
 
+=head2 F<bench-strtab-compare.py> and F<bench-strtab.pl>
+
+Compare shared-key table fill and teardown across Perl builds. The driver
+records paired benchmark results for the shared-key table implementation.
+
 =head2 F<bench-trie.pl>
 
 Compare regex scanning across Perl builds using frozen HTML, prose, Perl
