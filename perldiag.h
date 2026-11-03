@@ -1192,6 +1192,10 @@ enum perl_diag_index {
     perl_diag_error_value_hash_key_length_out_of_range_idx,
     perl_diag_error_value_restricted_hash_key_access_disallowed_idx,
     perl_diag_error_value_restricted_hash_key_deletion_disallowed_idx,
+    perl_diag_error_value_siphash_input_byte_string_required_idx,
+    perl_diag_error_value_siphash_round_count_invalid_idx,
+    perl_diag_error_value_siphash_round_count_too_large_idx,
+    perl_diag_error_value_siphash_seed_length_invalid_idx,
     perl_diag_error_value_version_format_invalid_idx,
     perl_diag_error_value_version_input_not_numeric_idx,
     perl_diag_error_value_version_object_invalid_idx,
@@ -2777,6 +2781,10 @@ enum perl_diag_number {
     perl_diag_error_value_hash_key_length_out_of_range_number                                  = 1023,
     perl_diag_error_value_restricted_hash_key_access_disallowed_number                         = 1801,
     perl_diag_error_value_restricted_hash_key_deletion_disallowed_number                       = 1802,
+    perl_diag_error_value_siphash_input_byte_string_required_number                            = 2775,
+    perl_diag_error_value_siphash_round_count_invalid_number                                   = 2776,
+    perl_diag_error_value_siphash_round_count_too_large_number                                 = 2777,
+    perl_diag_error_value_siphash_seed_length_invalid_number                                   = 2778,
     perl_diag_error_value_version_format_invalid_number                                        = 2612,
     perl_diag_error_value_version_input_not_numeric_number                                     = 1892,
     perl_diag_error_value_version_object_invalid_number                                        = 1893,
@@ -5014,7 +5022,7 @@ enum perl_diag_selector_domain_id {
 
 
 #if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)
-#define PERL_DIAG_METADATA_COUNT 1581
+#define PERL_DIAG_METADATA_COUNT 1585
 
 #endif
 
@@ -20269,6 +20277,34 @@ enum perl_diag_selector_domain_id {
         __LINE__ \
     )
 
+#define PERL_THROW_ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_value_siphash_input_byte_string_required_idx, \
+        __FILE__, \
+        __LINE__ \
+    )
+
+#define PERL_THROW_ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_value_siphash_round_count_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
+    )
+
+#define PERL_THROW_ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_value_siphash_round_count_too_large_idx, \
+        __FILE__, \
+        __LINE__ \
+    )
+
+#define PERL_THROW_ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_value_siphash_seed_length_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
+    )
+
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_ABORT() \
     STMT_START { \
         PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID(); \
@@ -22069,6 +22105,10 @@ enum perl_diag_selector_domain_id {
 /* PERL_THROW_ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE => ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE */
 /* PERL_THROW_ERROR_VALUE_RESTRICTED_HASH_KEY_ACCESS_DISALLOWED => ERROR_VALUE_RESTRICTED_HASH_KEY_ACCESS_DISALLOWED */
 /* PERL_THROW_ERROR_VALUE_RESTRICTED_HASH_KEY_DELETION_DISALLOWED => ERROR_VALUE_RESTRICTED_HASH_KEY_DELETION_DISALLOWED */
+/* PERL_THROW_ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED => ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED */
+/* PERL_THROW_ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID => ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID */
+/* PERL_THROW_ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE => ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE */
+/* PERL_THROW_ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID => ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID */
 /* PERL_THROW_ERROR_VALUE_VERSION_FORMAT_INVALID => ERROR_VALUE_VERSION_FORMAT_INVALID */
 /* PERL_THROW_ERROR_VALUE_VERSION_INPUT_NOT_NUMERIC => ERROR_VALUE_VERSION_INPUT_NOT_NUMERIC */
 /* PERL_THROW_ERROR_VALUE_VERSION_OBJECT_INVALID => ERROR_VALUE_VERSION_OBJECT_INVALID */
@@ -22532,7 +22572,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * f722f60b45892c3b76bf07c4655d783b1468c6a96a822382bdf924305fe3b3aa diag_conf.pl
+ * f7d8b9a2b80aefa65626b106197bbe8ec95e5dd573a8653885597cdaee975434 diag_conf.pl
  * 6510e6553ea58cc2c5404bc3524e14de99d6b39d5bf4cb3fc3271ba678cf283b diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

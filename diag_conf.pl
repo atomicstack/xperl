@@ -2913,6 +2913,9 @@ $CONF = {
     "XPerl::Diagnostic::Error::Value::RestrictedHash" => {
       "parent" => "XPerl::Diagnostic::Error::Value"
     },
+    "XPerl::Diagnostic::Error::Value::SipHash" => {
+      "parent" => "XPerl::Diagnostic::Error::Value"
+    },
     "XPerl::Diagnostic::Error::Value::Version" => {
       "parent" => "XPerl::Diagnostic::Error::Value"
     },
@@ -58121,6 +58124,106 @@ $CONF = {
             "api" => "CROAK"
           },
           "class" => "XPerl::Diagnostic::Error::Value::RestrictedHash"
+        },
+        "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" => {
+          "number" => 2775,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED",
+          "source_files" => [
+            "builtin.c"
+          ],
+          "tags" => [
+            "condition:type_mismatch",
+            "subject:builtins_operators"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "SipHash input must be a byte string"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Value::SipHash"
+        },
+        "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" => {
+          "number" => 2776,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID",
+          "macro" => "PERL_THROW_ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID",
+          "source_files" => [
+            "builtin.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:builtins_operators"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "SipHash round counts must be non-negative integers"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Value::SipHash"
+        },
+        "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" => {
+          "number" => 2777,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE",
+          "macro" => "PERL_THROW_ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE",
+          "source_files" => [
+            "builtin.c"
+          ],
+          "tags" => [
+            "condition:size_count_range",
+            "subject:builtins_operators"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "SipHash round count is too large"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Value::SipHash"
+        },
+        "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" => {
+          "number" => 2778,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID",
+          "macro" => "PERL_THROW_ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID",
+          "source_files" => [
+            "builtin.c"
+          ],
+          "tags" => [
+            "condition:size_count_range",
+            "subject:builtins_operators"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "SipHash seed must be exactly 16 bytes"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Value::SipHash"
         },
         "ERROR_VALUE_VERSION_FORMAT_INVALID" => {
           "number" => 2612,

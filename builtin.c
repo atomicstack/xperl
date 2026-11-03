@@ -133,17 +133,17 @@ S_builtin_siphash_rounds(pTHX_ SV *value)
 
     SvGETMAGIC(value);
     if (!SvOK(value) || SvROK(value))
-        croak("SipHash round counts must be non-negative integers");
+        PERL_THROW_ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID();
     digits = SvPV_nomg(value, len);
     if (!len)
-        croak("SipHash round counts must be non-negative integers");
+        PERL_THROW_ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID();
     for (STRLEN i = 0; i < len; i++) {
         UV digit;
         if (!isDIGIT_A(digits[i]))
-            croak("SipHash round counts must be non-negative integers");
+            PERL_THROW_ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID();
         digit = (UV)(digits[i] - '0');
         if (rounds > (UV_MAX - digit) / 10)
-            croak("SipHash round count is too large");
+            PERL_THROW_ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE();
         rounds = rounds * 10 + digit;
     }
     return rounds;
@@ -184,17 +184,17 @@ XS(XS_builtin_siphash)
         STRLEN seed_len;
         SvGETMAGIC(seed_sv);
         if (!SvOK(seed_sv) || SvROK(seed_sv))
-            croak("SipHash seed must be exactly 16 bytes");
+            PERL_THROW_ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID();
         seed = (const U8 *)SvPVbyte_nomg(seed_sv, seed_len);
         if (seed_len != 16)
-            croak("SipHash seed must be exactly 16 bytes");
+            PERL_THROW_ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID();
     }
 
     {
         SV *input_sv = ST(string_arg);
         SvGETMAGIC(input_sv);
         if (!SvOK(input_sv) || SvROK(input_sv))
-            croak("SipHash input must be a byte string");
+            PERL_THROW_ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED();
         input = (const U8 *)SvPVbyte_nomg(input_sv, input_len);
     }
 
