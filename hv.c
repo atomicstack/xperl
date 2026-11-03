@@ -84,16 +84,15 @@ static HE *S_oa_new_entry(pTHX_ HV *hv, U32 *slotp);
 static HE *S_alloc_he(pTHX);
 static void S_release_he(pTHX_ HE *he);
 static HEK *S_strtab_find(pTHX_ U32 hash, const char *key, STRLEN klen, U8 flags,
-                          Size_t *insert_pos, bool *collision);
+                          Size_t *insert_pos);
 static void S_strtab_resize(pTHX_ Size_t capacity);
 static void S_strtab_prepare_insert(pTHX_ U32 hash, const char *key,
-                                    STRLEN klen, U8 flags, Size_t *pos,
-                                    bool collision);
+                                    STRLEN klen, U8 flags, Size_t *pos);
 static void S_strtab_insert(pTHX_ HEK *hek, Size_t pos);
 
 static HEK *
 S_strtab_find(pTHX_ U32 hash, const char *key, STRLEN klen, U8 flags,
-              Size_t *insert_pos, bool *collision)
+              Size_t *insert_pos)
 {
     Size_t capacity = HvMAX(PL_strtab) + 1;
     Size_t pos = hash & (capacity - 1), first_deleted = STRTAB_NO_SLOT, i;
@@ -102,14 +101,10 @@ S_strtab_find(pTHX_ U32 hash, const char *key, STRLEN klen, U8 flags,
     if (!HvARRAY(PL_strtab)) {
         if (insert_pos)
             *insert_pos = STRTAB_NO_SLOT;
-        if (collision)
-            *collision = FALSE;
         return NULL;
     }
     slots = HvSTRSLOTS(PL_strtab);
 
-    if (collision)
-        *collision = slots[pos] != NULL;
     for (i = 0; i < capacity; i++, pos = (pos + 1) & (capacity - 1)) {
         HEK *hek = slots[pos];
         if (!hek) {
@@ -172,21 +167,22 @@ S_strtab_resize(pTHX_ Size_t capacity)
 
 static void
 S_strtab_prepare_insert(pTHX_ U32 hash, const char *key, STRLEN klen,
-                        U8 flags, Size_t *pos, bool collision)
+                        U8 flags, Size_t *pos)
 {
     Size_t capacity = HvMAX(PL_strtab) + 1;
     Size_t occupied = HvTOTALKEYS(PL_strtab)
         + HvSTRTAB(PL_strtab)->tombstones;
-    PERL_UNUSED_ARG(collision);
 
-    if (occupied >= capacity / 2) {
+    if (occupied >= capacity / 2
+        && (*pos == STRTAB_NO_SLOT
+            || HvSTRSLOTS(PL_strtab)[*pos] != HvSTR_TOMBSTONE)) {
         if (HvSTRTAB(PL_strtab)->tombstones < (occupied + 1) / 2) {
             if (capacity > MEM_SIZE_MAX / 2)
                 Perl_croak_memory_wrap();
             capacity *= 2;
         }
         S_strtab_resize(aTHX_ capacity);
-        (void)S_strtab_find(aTHX_ hash, key, klen, flags, pos, NULL);
+        (void)S_strtab_find(aTHX_ hash, key, klen, flags, pos);
     }
 }
 
@@ -1634,7 +1630,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
 
     if (HvIS_STRTAB(hv)) {
         HEK *hek = S_strtab_find(aTHX_ hash, key, klen,
-                                 flags & HVhek_STORAGE_MASK, NULL, NULL);
+                                 flags & HVhek_STORAGE_MASK, NULL);
         void *result = (action & HV_FETCH_ISEXISTS) && hek ? (void *)hek : NULL;
         /* The shared table stores reference counts, not values. It supports
          * existence checks but has no HE or SV ** to return from a fetch. */
@@ -4426,7 +4422,7 @@ S_unshare_hek_or_pvn(pTHX_ const HEK *hek, const char *str, I32 len, U32 hash)
     }
     else {
         entry = S_strtab_find(aTHX_ hash, str, len,
-                              k_flags & HVhek_STORAGE_MASK, &pos, NULL);
+                              k_flags & HVhek_STORAGE_MASK, &pos);
     }
     if (entry) {
         shared = HvSTR_SHARED(entry);
@@ -4515,7 +4511,7 @@ Perl_shared_key_refcount(pTHX_ SV *keysv)
             flags = HVhek_WASUTF8;
     }
     PERL_HASH(hash, key, len);
-    hek = S_strtab_find(aTHX_ hash, key, len, flags, NULL, NULL);
+    hek = S_strtab_find(aTHX_ hash, key, len, flags, NULL);
     count = hek ? HvSTR_REFCOUNT(hek) : 0;
     Safefree(free_key);
     return count;
@@ -4649,7 +4645,6 @@ S_share_hek_flags(pTHX_ const char *str, STRLEN len, U32 hash, int flags)
     struct shared_hek *shared;
     const U8 flags_masked = flags & HVhek_STORAGE_MASK;
     Size_t pos;
-    bool collision;
 
     assert(!(flags & HVhek_NOTSHARED));
 
@@ -4659,14 +4654,13 @@ S_share_hek_flags(pTHX_ const char *str, STRLEN len, U32 hash, int flags)
 
     if (!HvARRAY(PL_strtab))
         S_strtab_resize(aTHX_ STRTAB_MIN_CAPACITY);
-    hek = S_strtab_find(aTHX_ hash, str, len, flags_masked, &pos, &collision);
+    hek = S_strtab_find(aTHX_ hash, str, len, flags_masked, &pos);
     if (hek) {
         (void)share_hek_hek(hek);
     }
     else {
         char *raw;
-        S_strtab_prepare_insert(aTHX_ hash, str, len, flags_masked,
-                                &pos, collision);
+        S_strtab_prepare_insert(aTHX_ hash, str, len, flags_masked, &pos);
         Newx(raw, STRUCT_OFFSET(struct shared_hek,
                                 shared_hek_hek.hek_key[0]) + len + 2, char);
         shared = (struct shared_hek *)raw;
