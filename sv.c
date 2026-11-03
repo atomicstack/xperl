@@ -1051,7 +1051,7 @@ Perl_newSV_type_generic(pTHX_ const svtype type)
         case SVt_PVHV:
             ((XPVHV*)new_body)->xhv_keys = 0;
             /* start with PERL_HASH_DEFAULT_HvMAX+1 buckets: */
-            ((XPVHV*)new_body)->xhv_max = PERL_HASH_DEFAULT_HvMAX;
+            ((XPVHV*)new_body)->xhv_max = PERL_HASH_DEFAULT_HvMAX_RAW;
 
             assert(!SvOK(sv));
 #ifndef NODEFAULT_SHAREKEYS
@@ -1320,7 +1320,7 @@ Perl_sv_upgrade(pTHX_ SV *const sv, svtype new_type)
                     .xmg_u = {.xmg_magic = NULL},
                     .xhv_keys = 0,
                     /* start with PERL_HASH_DEFAULT_HvMAX+1 buckets: */
-                    .xhv_max = PERL_HASH_DEFAULT_HvMAX,
+                    .xhv_max = PERL_HASH_DEFAULT_HvMAX_RAW,
                 };
                 *((XPVHV*) SvANY(sv)) = pvhv;
             }
@@ -16546,14 +16546,15 @@ S_sv_dup_common(pTHX_ const SV *const ssv, CLONE_PARAMS *const param)
                     XPVHV * const sxhv = (XPVHV*)SvANY(ssv);
                     if (HvIS_LINEAR(ssv)) {
                         const U32 capacity = HvLINEAR_CAP(ssv);
-                        if (capacity == 1 && HvTOTALKEYS(ssv) == 1) {
+                        if (capacity == 1) {
                             HE *entry = Perl_hv_new_he(aTHX);
                             HvARRAY(dsv) = (HE **)entry;
                             ptr_table_store(PL_ptr_table, HvENTRIES(ssv), entry);
                             ptr_table_store(PL_ptr_table,
                                 &HeVAL(HvENTRIES(ssv)), &HeVAL(entry));
-                            S_sv_dup_oa_entry(aTHX_ HvENTRIES(ssv), entry,
-                                              param);
+                            if (HvTOTALKEYS(ssv))
+                                S_sv_dup_oa_entry(aTHX_ HvENTRIES(ssv), entry,
+                                                  param);
                         }
                         else if (capacity >= 2) {
                             HE *entries;
@@ -16580,8 +16581,10 @@ S_sv_dup_common(pTHX_ const SV *const ssv, CLONE_PARAMS *const param)
                         const struct hv_oa * const soa = HvOA(ssv);
                         const U32 used = soa->used;
                         const U32 index_capacity = HvMAX(ssv) + 1;
-                        const size_t index_bytes = STRUCT_OFFSET(struct hv_oa,
-                            indices) + HvOA_INDEX_BYTES_FOR(index_capacity);
+                        const Size_t storage_bytes = HvOA_STORAGE_BYTES(
+                            index_capacity, soa->capacity);
+                        const Size_t index_bytes = STRUCT_OFFSET(struct hv_oa,
+                            indices) + storage_bytes;
                         Newx(oa_bytes, index_bytes, char);
                         oa = (struct hv_oa *)oa_bytes;
                         oa->capacity = soa->capacity;
@@ -16610,18 +16613,13 @@ S_sv_dup_common(pTHX_ const SV *const ssv, CLONE_PARAMS *const param)
                                         &oa->entries[i], param);
                             }
                         }
-                        {
-                            U32 pos;
-                            for (pos = 0; pos < index_capacity; ++pos)
-                                HvOA_INDEX_SET(dsv, pos,
-                                               HvOA_INDEX_GET(ssv, pos));
-                        }
+                        Copy(soa->indices, oa->indices, storage_bytes, U8);
                     }
                     else {
                         char *darray;
-                        Newx(darray, PERL_HV_ARRAY_ALLOC_BYTES(dxhv->xhv_max+1), char);
+                        Newx(darray, PERL_HV_ARRAY_ALLOC_BYTES(HvMAX(dsv)+1), char);
                         HvARRAY(dsv) = (HE**)darray;
-                        while (i <= sxhv->xhv_max) {
+                        while (i <= HvMAX(ssv)) {
                             const HE * const source = HvARRAY(ssv)[i];
                             HvARRAY(dsv)[i] = source
                                 ? he_dup(source, FALSE, param) : 0;
@@ -17741,10 +17739,13 @@ perl_clone_using(PerlInterpreter *proto_perl, UV flags,
     PL_strtab		= newHV();
     HvSHAREKEYS_off(PL_strtab);
     {
-        IV strtab_keys = HvTOTALKEYS(proto_perl->Istrtab);
+        Size_t strtab_keys = HvTOTALKEYS(proto_perl->Istrtab);
+        IV reserve_keys;
         if (strtab_keys < (1 << 14))
             strtab_keys = 1 << 14;
-        hv_ksplit(PL_strtab, strtab_keys);
+        reserve_keys = strtab_keys > (Size_t)IV_MAX
+                     ? IV_MAX : (IV)strtab_keys;
+        hv_ksplit(PL_strtab, reserve_keys);
     }
     ptr_table_store(PL_ptr_table, proto_perl->Istrtab, PL_strtab);
     {

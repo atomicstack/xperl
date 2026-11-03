@@ -7,6 +7,31 @@
 #  include <malloc.h>
 #endif
 
+#ifdef PERL_HASH_INDEX_CHAINS
+#define HASHUTIL_BUCKET_FIRST(hv, bucket, buckets, chain_entry) \
+    (HvIS_LINEAR(hv) \
+       ? ((bucket) < HvTOTALKEYS(hv) ? &HvENTRIES(hv)[bucket] : NULL) \
+       : HvIS_OA(hv) \
+           ? (((chain_entry) = HvOA_INDEX_GET(hv, bucket)) \
+                ? &HvOA(hv)->entries[(chain_entry) - 1] : NULL) \
+           : (buckets)[bucket])
+#define HASHUTIL_BUCKET_NEXT(hv, he, chain_entry) \
+    (HvIS_OA(hv) && !HvIS_LINEAR(hv) \
+       ? (((chain_entry) = HvCHAIN_NEXT(hv, (chain_entry) - 1)) \
+            ? &HvOA(hv)->entries[(chain_entry) - 1] : NULL) \
+       : HvENTRY_NEXT(hv, he))
+#else
+#define HASHUTIL_BUCKET_FIRST(hv, bucket, buckets, chain_entry) \
+    (HvIS_LINEAR(hv) \
+       ? ((bucket) < HvTOTALKEYS(hv) ? &HvENTRIES(hv)[bucket] : NULL) \
+       : HvIS_OA(hv) \
+           ? (HvOA_INDEX_GET(hv, bucket) != 0 \
+                && HvOA_INDEX_GET(hv, bucket) != U32_MAX \
+                ? &HvOA(hv)->entries[HvOA_INDEX_GET(hv, bucket) - 1] : NULL) \
+           : (buckets)[bucket])
+#define HASHUTIL_BUCKET_NEXT(hv, he, chain_entry) HvENTRY_NEXT(hv, he)
+#endif
+
 MODULE = Hash::Util		PACKAGE = Hash::Util
 
 void
@@ -163,16 +188,11 @@ bucket_info(rhv)
             U32 bucket_index;
             for ( bucket_index= 0; bucket_index <= max_bucket_index; bucket_index++ ) {
                 I32 chain_length= BUCKET_INFO_ITEMS_ON_STACK;
-                for (he= HvIS_LINEAR(hv)
-                         ? (bucket_index < HvTOTALKEYS(hv)
-                            ? &HvENTRIES(hv)[bucket_index] : NULL)
-                         : HvIS_OA(hv)
-                         ? (HvOA_INDEX_GET(hv, bucket_index) != 0
-                            && HvOA_INDEX_GET(hv, bucket_index) != U32_MAX
-                            ? &HvOA(hv)->entries[HvOA_INDEX_GET(hv, bucket_index) - 1]
-                            : NULL)
-                         : bucket_array[bucket_index];
-                     he; he= HvENTRY_NEXT(hv, he)) {
+                U32 chain_entry = 0;
+                PERL_UNUSED_VAR(chain_entry);
+                for (he= HASHUTIL_BUCKET_FIRST(hv, bucket_index,
+                                               bucket_array, chain_entry);
+                     he; he= HASHUTIL_BUCKET_NEXT(hv, he, chain_entry)) {
                     chain_length++;
                 }
                 while ( max_chain_length < chain_length ) {
@@ -230,16 +250,10 @@ bucket_array(rhv)
             mXPUSHs(newRV_noinc((SV*)info_av));
             for ( i= 0; i <= max; i++ ) {
                 AV *key_av= NULL;
-                for (he= HvIS_LINEAR(hv)
-                         ? (i < HvTOTALKEYS(hv)
-                            ? &HvENTRIES(hv)[i] : NULL)
-                         : HvIS_OA(hv)
-                         ? (HvOA_INDEX_GET(hv, i) != 0
-                            && HvOA_INDEX_GET(hv, i) != U32_MAX
-                            ? &HvOA(hv)->entries[HvOA_INDEX_GET(hv, i) - 1]
-                            : NULL)
-                         : he_ptr[i];
-                     he; he= HvENTRY_NEXT(hv, he)) {
+                U32 chain_entry = 0;
+                PERL_UNUSED_VAR(chain_entry);
+                for (he= HASHUTIL_BUCKET_FIRST(hv, i, he_ptr, chain_entry);
+                     he; he= HASHUTIL_BUCKET_NEXT(hv, he, chain_entry)) {
                     SV *key_sv;
                     char *str;
                     STRLEN len;
@@ -339,13 +353,22 @@ hash_storage_info(hash)
     CODE:
     {
         HV *info;
-        UV index_bytes, entry_bytes, allocated_bytes;
+        UV index_bytes, entry_bytes, allocated_bytes, link_bytes, fullchains;
+        UV fingerprint_bits, fingerprint_bytes;
+        bool integer_chained;
         if (HvIS_STRTAB(hash))
             Perl_croak(aTHX_ "hash_storage_info cannot inspect PL_strtab");
         info = newHV();
         index_bytes = HvARRAY(hash) ? (HvMAX(hash) + 1) * sizeof(HE *) : 0;
         entry_bytes = HvTOTALKEYS(hash) * sizeof(HE);
         allocated_bytes = 0;
+        link_bytes = fullchains = 0;
+        fingerprint_bits = fingerprint_bytes = 0;
+#ifdef PERL_HASH_INDEX_CHAINS
+        integer_chained = TRUE;
+#else
+        integer_chained = FALSE;
+#endif
 #define STORAGE_INFO(name, value) \
         (void)hv_stores(info, name, newSVuv((UV)(value)))
         STORAGE_INFO("he_size", sizeof(HE));
@@ -354,9 +377,14 @@ hash_storage_info(hash)
         STORAGE_INFO("live", HvTOTALKEYS(hash));
         STORAGE_INFO("index_capacity", HvARRAY(hash) && !HvIS_LINEAR(hash)
                      ? HvMAX(hash) + 1 : 0);
+        STORAGE_INFO("integer_chained", integer_chained ? 1 : 0);
 #ifdef HvIS_OA
         STORAGE_INFO("linear", HvIS_LINEAR(hash) ? 1 : 0);
+#ifdef PERL_HASH_INDEX_CHAINS
+        STORAGE_INFO("open_addressed", 0);
+#else
         STORAGE_INFO("open_addressed", HvIS_OA(hash) && !HvIS_LINEAR(hash));
+#endif
         if (HvIS_LINEAR(hash)) {
             const U32 capacity = HvLINEAR_CAP(hash);
             const bool arena_backed = capacity == 1 && HvARRAY(hash);
@@ -394,8 +422,23 @@ hash_storage_info(hash)
             struct hv_oa *oa = HvARRAY(hash) ? HvOA(hash) : NULL;
             const U32 capacity = oa ? HvMAX(hash) + 1 : 0;
             const U32 index_width = oa ? HvOA_INDEX_WIDTH(hash) : 0;
+            const U32 slot_size = index_width;
             const UV hash_bytes = 0;
-            const UV entry_index_bytes = (UV)capacity * index_width;
+#if defined(PERL_HASH_INDEX_CHAINS) && defined(PERL_HASH_CHAIN_FINGERPRINT)
+            fingerprint_bits = oa ? index_width * 8 : 0;
+            fingerprint_bytes = oa
+                ? HvOA_FINGERPRINT_BYTES_FOR(oa->capacity) : 0;
+#endif
+            const UV entry_index_bytes = oa
+#ifdef PERL_HASH_INDEX_CHAINS
+                ? HvOA_STORAGE_BYTES(capacity, oa->capacity) : 0;
+#else
+                ? (UV)capacity * index_width : 0;
+#endif
+#ifdef PERL_HASH_INDEX_CHAINS
+            link_bytes = oa ? (UV)oa->capacity
+                * HvOA_RECORD_WIDTH_FOR(oa->capacity) : 0;
+#endif
             index_bytes = oa ? STRUCT_OFFSET(struct hv_oa, indices)
                               + entry_index_bytes : 0;
             entry_bytes = oa ? oa->capacity * sizeof(HE) : 0;
@@ -405,7 +448,7 @@ hash_storage_info(hash)
             STORAGE_INFO("entry_holes", oa ? oa->used - HvTOTALKEYS(hash) : 0);
             STORAGE_INFO("tombstones", oa ? oa->tombstones : 0);
             STORAGE_INFO("index_width", index_width);
-            STORAGE_INFO("slot_size", index_width);
+            STORAGE_INFO("slot_size", slot_size);
             STORAGE_INFO("metadata_bytes", oa
                          ? STRUCT_OFFSET(struct hv_oa, indices) : 0);
             STORAGE_INFO("hash_bytes", hash_bytes);
@@ -415,6 +458,25 @@ hash_storage_info(hash)
                 UV empty = 0, deleted = 0;
                 UV probe_total = 0, probe_max = 0;
                 STRLEN i;
+#ifdef PERL_HASH_INDEX_CHAINS
+                for (i = 0; i < capacity; i++) {
+                    U32 chain_entry = HvOA_INDEX_GET(hash, i);
+                    UV distance = 0;
+                    if (!chain_entry) {
+                        empty++;
+                        continue;
+                    }
+                    do {
+                        probe_total += distance;
+                        if (distance > probe_max)
+                            probe_max = distance;
+                        distance++;
+                        chain_entry = HvCHAIN_NEXT(hash, chain_entry - 1);
+                    } while (chain_entry);
+                    if (distance > 1)
+                        fullchains++;
+                }
+#else
                 for (i = 0; i <= HvMAX(hash); i++) {
                     const U32 entry_index = HvOA_INDEX_GET(hash, i);
                     if (!entry_index)
@@ -428,6 +490,7 @@ hash_storage_info(hash)
                         if (distance > probe_max) probe_max = distance;
                     }
                 }
+#endif
                 STORAGE_INFO("free_list_length", 0);
                 STORAGE_INFO("index_empty", empty);
                 STORAGE_INFO("index_deleted", deleted);
@@ -457,7 +520,11 @@ hash_storage_info(hash)
 #else
         STORAGE_INFO("open_addressed", 0);
 #endif
+        STORAGE_INFO("fingerprint_bits", fingerprint_bits);
+        STORAGE_INFO("fingerprint_bytes", fingerprint_bytes);
         STORAGE_INFO("index_bytes", index_bytes);
+        STORAGE_INFO("link_bytes", link_bytes);
+        STORAGE_INFO("fullchains", fullchains);
         STORAGE_INFO("entry_bytes", entry_bytes);
         STORAGE_INFO("requested_bytes", index_bytes + entry_bytes);
         STORAGE_INFO("allocator_bytes", allocated_bytes);

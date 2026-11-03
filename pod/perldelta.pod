@@ -803,34 +803,53 @@ C<#ifdef XPERL> after including the header.
 =head2 Experimental XPerl hash storage
 
 Ordinary hashes now use a compact array of two-pointer C<HE> records and
-an independently grown open-addressed index. With the default positive
+an independently grown index. By default, indexed hashes use integer chains:
+packed bucket heads point to a packed per-entry next-link array. The link and
+head identifiers use one, two, or four bytes; fingerprints are disabled by
+default. Open addressing remains available by selecting
+C<PERL_HASH_INDEX_OA>. With the default positive
 threshold, a singleton uses one compact 16-byte C<HE> from the arena on
 64-bit builds. At threshold zero, hashes use indexed storage from the first
 key. By default, hashes with up to four keys use a dense C<HE> array with
 linear search and promote to indexed storage after the fourth key.
 C<PERL_HASH_LINEAR_MAX> can select a threshold of zero, two, four, or eight
-entries. The index stores
-adaptive-width entry identifiers only; the full cached hash remains in the
-entry's C<HEK>. Index capacity remains a power of two. Through an index
-capacity of 16,384 slots, entry capacity is
-C<floor(2*index_capacity/3)>, and filling that entry allocation can trigger
-an index rebuild. Above that size, index pressure triggers a rebuild when
-live entries plus tombstones reach C<floor(2*index_capacity/3)>. The entry
-array grows independently by 25 percent when full. It compacts on insertion
-only when holes occupy at least one fifth of entry capacity and their storage
-uses at least 1 MiB. Otherwise it grows by 25 percent without resizing the
-index. An index rebuild uses the next power of two at least three times the
-live entry count, with a minimum of eight slots. On index growth or a
-same-size rebuild, holes are compacted in place only when both thresholds
-are met or packing is required by coupled sizing, a capacity limit, or the
-identifier range. Otherwise the index is rebuilt using existing entry
-positions and holes without copying the entry array. Shrinking an index
-above 16,384 slots sets entry capacity to 125 percent of the live count and
-packs any holes.
-Shrinking to 16,384 slots or fewer couples entry capacity to two-thirds of
-index capacity and packs holes.
-Changing entry capacity uses C<Renew> and may relocate the entry array.
-Deletion alone does not rebuild either array.
+entries. In OA builds, the index stores adaptive-width entry identifiers
+only; the full cached hash remains in the entry's C<HEK>. Index capacity
+remains a power of two. Through an index capacity of 16,384 slots, OA entry
+capacity is C<floor(2*index_capacity/3)>, and filling that entry allocation
+can trigger an index rebuild. The following load, tombstone, growth, and
+shrink rules describe OA indexes. Above that size, index pressure triggers a
+rebuild when live entries plus tombstones reach
+C<floor(2*index_capacity/3)>. Above the
+coupled range, the full entry array grows independently by 25 percent.
+Entry compaction uses a
+20 percent hole threshold at all sizes, with no byte threshold. A full entry
+array compacts when it reaches this threshold. A non-full array compacts at
+this threshold when its proposed entry capacity,
+C<live + floor(live/4) + 1> with a minimum of eight, is at most half its
+current capacity. Otherwise a full entry array grows under the sizing rules
+below. Deletion alone does not rebuild either array. These are standalone
+insertion checks. An index rebuild that is otherwise required also packs
+entries when holes meet the 20 percent threshold; that rebuild does not use
+the standalone HE shrink test.
+
+After any required full-entry compaction, when index occupancy reaches
+two-thirds, tombstones are cleared at the same index capacity if they make
+up at least half of occupied slots. With fewer tombstones, the index grows
+to preserve the live-load limit. Growth uses the next power of two that can
+hold C<3 * live> entries, with a minimum of eight slots. Shrinking is
+considered only during compaction. The target index must be at most half its
+previous capacity. Its target is the next power of two that can hold
+C<3 * (live + 1)> entries, with a minimum of eight slots. The entry array
+can shrink independently when its target capacity,
+C<live + floor(live/4) + 1> (minimum eight), is at most half its previous
+capacity. Otherwise existing capacities are retained. Rebuilds, including
+compaction, reuse the index allocation when index and entry capacities are
+unchanged. Without compaction, entry positions and holes are preserved. For
+initial sizing and ordinary growth through 16,384 index slots, entry capacity
+remains coupled to two-thirds of index capacity. Above that size, entry capacity grows
+independently. A shrink can leave entry capacity decoupled from index
+capacity. Changing it uses C<Renew> and may relocate the entry array.
 Explicit C<hv_ksplit()> reservation allocates entry space for the requested
 count plus existing holes above the coupled range, including when the index
 already has enough capacity. New-key insertion reuses its initial probe
@@ -840,14 +859,84 @@ continues to depend on index capacity: one byte through 128 slots, two bytes
 through 32,768 slots, and four bytes above that. The
 entry traversal order is an implementation detail and does not guarantee
 public hash iteration order. C<HV> and C<XPVHV> sizes are unchanged.
+The ordinary hash index is capped at C<2^30> slots, supporting at most
+715,827,882 live keys at its two-thirds load limit. Inserting beyond this
+count or explicitly pre-sizing beyond it throws
+C<Hash key count exceeds limit of 715827882>.
+
+All builds encode the indexed bucket count and tiny-storage state in the
+existing C<xhv_max> field, without enlarging C<HV> or C<XPVHV>. For indexed
+storage, the low six bits hold the bucket-count exponent. Tiny storage sets bit 6
+as a form tag and stores its capacity in the low six bits. The encoding is
+independent of pointer width and works on 32-bit builds. C<HvMAX(hv)> remains
+the logical accessor, returning the bucket mask for indexed storage and the
+logical maximum for tiny storage. Use the form-specific setters; do not read
+or write C<xhv_max> directly. Paired benchmarks found no broad slowdown, but
+do not establish a general speedup.
+
+The header C<hv.h> enables C<PERL_HASH_INDEX_CHAINS> by default unless
+C<PERL_HASH_INDEX_OA> is selected. C<PERL_HASH_CHAIN_FINGERPRINT> enables
+fingerprints for chains. Selecting OA together with either chains or
+fingerprints is rejected. C<PL_strtab> remains open-addressed in every build.
+The default chain index retains the compact entry array and tiny-hash form.
+It uses power-of-two buckets, a packed bucket-head array, and a packed
+next-identifier array with one link per entry slot. Identifiers are one-based
+and zero marks an empty bucket or chain end. Their width follows entry
+capacity, including holes: one byte through 255 entries, two bytes through
+65,535, and four bytes above that. Widening these arrays does not move the
+entry array; bucket resizing and entry compaction rebuild the chains.
+
+In the default chain layout, entry storage starts at eight slots and grows by 25
+percent when full, independently of bucket capacity. Entry compaction uses a
+20 percent hole threshold at all capacities, with no byte threshold. A full
+entry array compacts at this threshold while retaining the bucket count. A
+non-full array compacts at this threshold when its proposed entry capacity,
+C<live + floor(live/4) + 1> (minimum eight), is at most half its current
+capacity. These are standalone insertion checks. An index rebuild that is
+otherwise required also packs entries at this threshold, but does not apply
+the standalone HE shrink test. Otherwise a full entry array grows by 25
+percent without changing the bucket array. When live
+entries reach two-thirds of bucket capacity,
+the index grows to the next power of two that can hold C<3 * live> entries,
+with a minimum of eight buckets. Compaction normally keeps the bucket count.
+It shrinks the bucket array only when its target, the next power of two at
+least C<3 * (live + 1)>, is at most half its current capacity. The entry
+array can shrink independently when its target capacity,
+C<live + floor(live/4) + 1> (minimum eight), is at most half its current
+capacity. C<hv_ksplit()> pre-sizing uses a baseline of 1.5 times the
+requested
+count and reserves entry space for that count. Promotion from the tiny linear
+form uses the baseline open-addressed sizing policy.
+
+The optional build-time option C<PERL_HASH_CHAIN_FINGERPRINT> stores an 8-, 16-,
+or 32-bit hash fingerprint with each entry link. Lookup checks it before
+loading the candidate entry and its C<HEK>. This can avoid key-record reads
+for misses at the cost of a larger link array. The next-identifier array adds
+memory proportional to entry capacity in addition to bucket heads. Fingerprints
+are disabled by default. To select the open-addressed layout, do a clean build
+with C<-DPERL_HASH_INDEX_OA> applied to all objects; for example:
+
+    make clean
+    ./Configure -S -Doptimize='-O3 -DPERL_HASH_INDEX_OA'
+    make -j4 test_prep
+
 Shared-key interning now uses an open-addressed array of C<HEK *> pointers with
 tombstones. Each shared C<HEK> has a C<U32> reference-count prefix, giving
 a 12-byte header for count, hash, and length. Reference acquisition checks
-for overflow. Its address remains stable while referenced, including when the slot array grows. The
-table has a minimum capacity of 32,768 slots. Before insertion, when live
-entries plus tombstones reach C<floor(2*index_capacity/3)>, it rebuilds with
-a capacity equal to the next power of two at least three times the live entry
-count, while retaining the minimum capacity. Traversal scans
+for overflow. Its address remains stable while referenced, including when the
+slot array grows. Capacity, probe positions, and tombstone count use
+native-size integers. The pointer index has no fixed C<2^26> slot limit; its
+growth is limited by checked allocation arithmetic and available memory. The
+cached hash and reference count in each C<HEK> remain C<U32>. Since the hash
+is 32 bits, hash distribution can limit performance above C<2^32> slots. This
+does not change the ordinary hash index's C<2^30> slot limit. The table has a
+minimum capacity of 32,768 slots. Before insertion, when live
+entries plus tombstones reach C<floor(2*index_capacity/3)>, it targets the
+next power of two able to hold three times the live entries, while retaining
+the minimum capacity. It grows when tombstones are below half the occupied
+slots. Otherwise it clears tombstones at the same capacity, except that it
+shrinks when the target is at most half the current capacity. It has no
+entry-array compaction or early shrink check. Traversal scans
 the entry array independently of hash
 values. The C<PERL_PERTURB_KEYS> controls and
 C<Hash::Util::hash_traversal_mask> are removed. Hash-function seeding is

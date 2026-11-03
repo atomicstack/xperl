@@ -3348,8 +3348,9 @@ PP(pp_aassign)
             if (SvRMAGICAL(hash) || HvUSEDKEYS(hash))
                 hv_clear(hash);
 
-            /* "nelems" was converted to the number of pairs earlier. */
-            if (nelems > PERL_HASH_DEFAULT_HvMAX) {
+            /* "nelems" is the pair count. Reserve small entry arrays too,
+             * avoiding incremental growth while constructing this hash. */
+            if (nelems > 1) {
                 hv_ksplit(hash, nelems);
             }
 

@@ -545,7 +545,9 @@ Fields are as follows:
            with K keys in it.
 
 On XPerl ordinary open-addressed hashes, buckets are index slots. Each occupied
-slot contains one entry. Deleted slots count as empty in this summary.
+slot contains one entry. In integer-chained builds, a bucket can contain more
+than one entry and the length counts include those chains. Deleted slots count
+as empty in the open-addressed summary.
 Use C<hash_storage_info()> to distinguish tombstones and measure probing.
 Passing C<undef> returns an empty list. The process-wide shared-key table is
 not exposed by these bucket diagnostics.
@@ -601,9 +603,11 @@ of the array is either an integer K, in which case it represents K empty buckets
 a reference to another array which contains the keys that are in that bucket.
 
 On ordinary open-addressed hashes, each nonempty slot contains a single key.
-The output shows physical index order. Hash iteration scans the separate
-entry array, so these orders need not match. Tombstones are grouped with
-empty slots here. C<hash_storage_info()> reports their number separately.
+In integer-chained builds, each bucket array contains every key in its chain.
+The output shows physical bucket order. Hash iteration scans the separate
+entry array, so these orders need not match. Open-addressed tombstones are
+grouped with empty slots here. C<hash_storage_info()> reports their number
+separately; integer-chained indexes do not use tombstones.
 Passing C<undef> returns an empty list.
 
 B<Note that the information returned by these diagnostics is sensitive information>:
@@ -624,7 +628,19 @@ an experimental diagnostic interface. Field names and meanings may change
 with the hash implementation.
 
 C<live> counts indexed entries, including restricted-hash placeholders.
+C<open_addressed> and C<integer_chained> distinguish the two indexed layouts.
+C<integer_chained> reports whether this Perl build uses encoded integer links
+for ordinary indexed hashes. Tiny linear hashes still have no bucket links.
+When integer chaining uses fingerprints, C<fingerprint_bits> reports their
+width (8, 16, or 32); it is zero when fingerprints are disabled or the index
+has not been allocated.
+In the chained layout, C<fullchains> counts buckets with at least two live
+entries. C<link_bytes> reports the allocated bytes for per-entry next-index
+records, including fingerprints when enabled; it is zero for open-addressed
+and linear layouts, and before an index has been allocated.
 C<index_capacity>, C<index_empty>, and C<index_deleted> describe the index.
+C<index_empty> counts buckets without a head in integer-chained builds;
+C<index_deleted> and C<tombstones> are zero there.
 C<linear> is true when the hash uses its dense, headerless tiny-entry form.
 Such a hash has no index allocation: index fields and probe statistics are
 zero, including C<index_bytes>, while C<entry_capacity> reports the current
@@ -636,45 +652,70 @@ C<allocator_bytes> is zero because the slot is not a separate allocation.
 Vectors with two or more entries use compact HE slots.
 C<tombstones> is the table's maintained deleted-slot count.
 C<index_width> is the number of bytes used by each entry identifier (one,
-two, or four); it may be zero or one before an index is allocated.
-C<hash_bytes> is zero because cached hashes remain in HEKs.
-C<entry_index_bytes> is the encoded entry-identifier array size.
-C<slot_size> is the identifier width for each index slot.
+two, or four); it may be zero or one before an index is allocated. In
+integer-chained builds, the width is selected from C<entry_capacity>: one byte
+through 255 positions, two bytes through 65,535, and four bytes above that.
+C<hash_bytes> is zero because there is no separate cached-hash allocation.
+C<fingerprint_bytes> reports the per-entry fingerprint space; it is already
+included in C<entry_index_bytes>. In integer-chained builds, bucket heads use
+C<index_width> bytes each. Each per-entry link uses that width for its next
+entry identifier, plus a fingerprint of the current HE's hash when enabled.
+The fingerprint is stored with the current HE's link, not with the HE it
+references. Thus C<link_bytes> includes the fingerprint space, and
+C<entry_index_bytes> includes bucket heads and all link records.
+C<slot_size> reports the bucket-head width, which is C<index_width>.
 C<entry_capacity> counts allocated HE positions, C<entry_used> is the
 entry-array high-water mark, and C<entry_spare> is capacity beyond that
 mark. New entries append at the high-water mark. Deleted positions are not
 reused. C<entry_holes> counts deleted positions below the high-water mark,
-including entries awaiting lazy deletion. For index capacities through
-16,384 slots, entry capacity is
-C<floor(2*index_capacity/3)>; larger indexes use independent entry growth.
-Above 16,384 slots, a full entry array compacts only when holes occupy at
-least one fifth of its capacity and the holes together occupy at least 1 MiB.
-Otherwise it grows by 25 percent without resizing the index. Index pressure
-triggers a rebuild when live entries plus tombstones reach
-C<floor(2*index_capacity/3)>. Any index rebuild uses the next power of two at
-least three times the live entry count, with a minimum of eight slots.
-Shrinking an index packs any holes and reduces the entry allocation: above
-16,384 slots, capacity becomes 125 percent of the live count; at 16,384 slots
-or less, it recouples to two-thirds of index capacity. Index growth or a
-same-size rebuild retains adequate entry capacity. It compacts holes in place
-when both thresholds are met or packing is required by a shrink, coupled
-storage, a capacity change, or the identifier range. Otherwise the rebuild
-keeps hole positions and indexes the live entries without copying the entry
-array. Changing entry capacity uses C<Renew>, which may relocate the array.
-Entry identifier width remains tied to index capacity, even when entry
-capacity exceeds it: one byte through 128 slots,
-two bytes through 32,768 slots, and four bytes above that.
+including entries awaiting lazy deletion. In open-addressed builds, entry
+capacity through 16,384 index slots is C<floor(2*index_capacity/3)>; above
+that size it grows independently of the index. A full entry array compacts
+when holes reach one fifth of capacity, at every size. Otherwise it grows
+by 25 percent without resizing the index. A non-full array compacts at the
+same hole threshold when its target capacity, C<live + floor(live/4) + 1>
+with a minimum of eight, is at most half its current capacity.
+
+Open-addressed index pressure occurs when live entries plus tombstones reach
+C<floor(2*index_capacity/3)>. At that point, after any required full-entry
+compaction, the index clears tombstones at the same capacity if they are at
+least half of occupied slots. Otherwise it grows to the next power of two
+that holds C<3 * live> entries, with a minimum of eight slots. Shrinking is
+considered only during compaction. The target index capacity is the next
+power of two that holds C<3 * (live + 1)> entries, with a minimum of eight,
+and must be at most half the current index capacity. The entry array can
+shrink independently when its target capacity is at most half its current
+capacity. Otherwise capacities are retained. An index rebuild also packs
+entries when holes reach one fifth of capacity, but does not apply the
+standalone HE shrink test. Rebuilds reuse the index allocation when index
+and entry capacities are unchanged. Without compaction, entry positions and
+holes are preserved. Changing entry capacity uses C<Renew>, which may
+relocate the array.
+
+Integer-chained builds keep append-only HE positions and grow their bucket
+array independently of the entry array. When live entries reach two-thirds
+of bucket capacity, the index grows to the next power of two that holds
+C<3 * live> entries. Deleted entries are unlinked from bucket chains and do
+not leave index tombstones. Compaction and shrinking follow the same hole
+threshold and half-capacity rules described above.
+For open-addressed hashes, entry identifier width remains tied to index
+capacity, even when entry capacity exceeds it: one byte through 128 slots,
+two bytes through 32,768 slots, and four bytes above that. Integer-chained
+hashes instead use the entry-capacity thresholds described above.
 C<free_list_length> remains available for compatibility and is always zero
 for ordinary hashes.
 
 C<probe_total>, C<probe_max>, and C<probe_mean> give the total, maximum,
-and mean displacement of live slots from their initial hash position.
-These distances count slots passed before a successful match. They do
-not measure unsuccessful lookups or count key comparisons.
+and mean number of entries passed before reaching live entries. In an
+open-addressed hash these are slot displacements from the initial hash
+position; in an integer-chained hash they are positions within bucket chains.
+They do not measure unsuccessful lookups or count key comparisons.
 
 C<he_size>, C<hv_size>, C<hv_body_size>, C<slot_size>, and
 C<metadata_bytes> report structure sizes in bytes. For indexed hashes,
-C<index_bytes> includes the index header and encoded entry identifiers.
+C<index_bytes> includes the index header, bucket heads, chain links, and any
+embedded fingerprints. Use C<fingerprint_bytes> to measure that portion
+separately.
 C<entry_bytes> includes spare HE positions. An arena-backed singleton uses
 one HE slot, so its C<arena_slot_size> equals C<he_size>.
 C<requested_bytes> sums those two allocations, excluding keys, values,

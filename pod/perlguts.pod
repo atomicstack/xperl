@@ -885,12 +885,18 @@ information on how to use the hash access functions on tied hashes.
 =for apidoc Amh|void|PERL_HASH|U32 hash|char *key|STRLEN klen
 
 XPerl stores ordinary hash entries in a compact, relocatable array. The
-default C<PERL_HASH_LINEAR_MAX=0> uses indexed storage after the singleton
-arena form. With a positive setting, hashes with two or more keys use a dense
-entry array and linear search until their configured threshold, without an
+default C<PERL_HASH_LINEAR_MAX=4> uses an arena entry for a singleton and a
+dense entry array with linear search for two through four keys, without an
 index allocation or metadata header. Deleting from this representation shifts later entries
-left. Inserting beyond the threshold promotes the entries to an
-open-addressed index, which stores adaptive-width entry identifiers only.
+left. Inserting beyond the threshold promotes the entries to the build's
+selected index. A threshold of zero selects indexed storage from the first
+key. By default, indexed hashes use integer chains; C<hv.h>
+defines C<PERL_HASH_INDEX_CHAINS> unless C<PERL_HASH_INDEX_OA> is selected.
+Open addressing is available by selecting C<PERL_HASH_INDEX_OA>. The two
+options cannot be combined. C<PERL_HASH_CHAIN_FINGERPRINT> enables optional
+chain fingerprints and cannot be combined with OA. Fingerprints are off by
+default. C<PL_strtab> remains open-addressed in all builds.
+The open-addressed index stores adaptive-width entry identifiers only.
 The full cached hash remains in the entry's C<HEK>. Growing or compacting the
 entry array can invalidate C<HE *> and C<SV **> pointers returned by hash
 access functions. Deleting from the headerless linear form can also
@@ -916,9 +922,10 @@ experimental representation.
 C<HvMAX(hv)> is now read-only. Code that changed it as an lvalue must use
 C<HvMAX_SET(hv, max)> for indexed storage or
 C<HvMAX_SET_LINEAR(hv, capacity)> for headerless linear storage. The raw
-C<xhv_max> field contains a storage-form tag in linear mode and must not be
-written directly. C<HvIS_OA(hv)> identifies the compact non-strtab hash
-family, including its headerless linear state; use
+C<xhv_max> field stores the bucket-count exponent for indexed storage and a
+form tag with capacity for headerless linear storage. It is encoded and must
+not be read or written directly. C<HvIS_OA(hv)> identifies the compact
+non-strtab hash family, including its headerless linear state; use
 C<Hash::Util::hash_storage_info()> and its C<open_addressed> and C<linear>
 fields to distinguish whether an index is currently allocated.
 

@@ -204,29 +204,42 @@ die "default did not promote after four entries\n"
 
 my %compact = map { ("compact:$_" => $_) } 0 .. 4;
 my $before = hash_storage_info(\%compact);
-die "five entries did not fit the initial indexed entry budget\n"
-    unless $before->{index_capacity} == 8
-        && $before->{entry_capacity} == 5 && $before->{entry_used} == 5;
+die "five entries did not allocate indexed storage\n"
+    unless $before->{index_capacity} && $before->{entry_used} == 5;
+my $fill = 5;
+while ($before->{entry_used} < $before->{entry_capacity}) {
+    $compact{"compact:$fill"} = $fill++;
+    $before = hash_storage_info(\%compact);
+}
 my @order = keys %compact;
-delete $compact{$order[1]};
-delete $compact{$order[3]};
+my $holes = int(($before->{entry_capacity} + 4) / 5);
+delete $compact{$order[$_]} for 0 .. $holes - 1;
 my $deleted = hash_storage_info(\%compact);
-die "deletion reused an entry position\n"
-    unless $deleted->{entry_used} == 5 && !$deleted->{free_list_length};
+die "deletion did not preserve append-only entry positions\n"
+    unless $deleted->{entry_used} == $before->{entry_capacity}
+        && !$deleted->{free_list_length};
 $compact{replacement} = 99;
 my $after = hash_storage_info(\%compact);
-die "entry-budget exhaustion did not compact survivors\n"
-    unless $after->{index_capacity} == 16 && $after->{entry_capacity} == 10
-        && $after->{entry_used} == 4 && !$after->{tombstones}
+my $expected_entry_capacity = $deleted->{entry_capacity};
+my $shrink_target = $deleted->{live} + ($deleted->{live} >> 2) + 1;
+$shrink_target = 8 if $shrink_target < 8;
+$expected_entry_capacity = $shrink_target
+    if $shrink_target <= $deleted->{entry_capacity} / 2;
+die "entry-budget compaction did not retain the expected capacities\n"
+    unless $after->{index_capacity} == $deleted->{index_capacity}
+        && $after->{entry_capacity} == $expected_entry_capacity
+        && $after->{entry_used} == $after->{live} && !$after->{entry_holes}
+        && !$after->{tombstones}
         && !$after->{free_list_length};
-my @expected = grep { $_ ne $order[1] && $_ ne $order[3] } @order;
+my %deleted_key = map { $order[$_] => 1 } 0 .. $holes - 1;
+my @expected = grep { !$deleted_key{$_} } @order;
 push @expected, 'replacement';
 my @compacted = keys %compact;
 die "compaction did not preserve survivor order and append the new key\n"
     unless join("\0", @compacted) eq join("\0", @expected);
 die "compaction lost a surviving value\n"
-    unless $compact{$order[0]} == 0 && $compact{$order[2]} == 2
-        && $compact{$order[4]} == 4 && $compact{replacement} == 99;
+    unless !grep { $compact{$_} != substr($_, 7) } grep { /^compact:/ } @expected
+        && $compact{replacement} == 99;
 
 my @iterated;
 while (my ($key) = each %compact) { push @iterated, $key }
@@ -234,17 +247,29 @@ die "iteration order disagrees with compacted entry order\n"
     unless "@iterated" eq "@expected";
 
 my %lazy = map { ("lazy:$_" => $_) } 0 .. 4;
+my $lazy_capacity = hash_storage_info(\%lazy)->{entry_capacity};
+my $lazy_next = 5;
+while (hash_storage_info(\%lazy)->{entry_used} < $lazy_capacity) {
+    $lazy{"lazy:$lazy_next"} = $lazy_next++;
+}
+my @lazy_keys = keys %lazy;
 my ($current) = each %lazy;
 die "each did not return a current key\n" unless defined $current;
 delete $lazy{$current};
+my $lazy_hole_threshold = int(($lazy_capacity + 4) / 5);
+my $extra_lazy_deletes = $lazy_hole_threshold - 1;
+for my $key (grep { $_ ne $current } @lazy_keys) {
+    last unless $extra_lazy_deletes--;
+    delete $lazy{$key};
+}
 my $lazy_deleted = hash_storage_info(\%lazy);
 die "current iterator deletion was not retained lazily\n"
-    unless $lazy_deleted->{entry_used} == 5
-        && $lazy_deleted->{entry_holes} == 1;
+    unless $lazy_deleted->{entry_used} == $lazy_capacity
+        && $lazy_deleted->{entry_holes} == $lazy_hole_threshold;
 $lazy{replacement} = 99;
 my $lazy_after = hash_storage_info(\%lazy);
 die "insertion after lazy deletion did not compact the entry vector\n"
-    unless $lazy_after->{entry_used} == 5
+    unless $lazy_after->{entry_used} == $lazy_after->{live}
         && !$lazy_after->{entry_holes}
         && !$lazy_after->{tombstones}
         && $lazy{replacement} == 99;
@@ -255,7 +280,8 @@ my ($warning, $next_key) = ('', undef);
 }
 die "insertion after lazy iterator deletion did not warn\n"
     unless !defined($next_key) && $warning =~ /each\(\).*insertion.*iterator/i;
-die "insertion after lazy deletion lost a key\n" unless keys(%lazy) == 5;
+die "insertion after lazy deletion lost a key\n"
+    unless keys(%lazy) == $lazy_capacity - $lazy_hole_threshold + 1;
 print "ok\n";
 PERL
     my ($out, $err);
@@ -266,6 +292,48 @@ PERL
     }
     is($out, "ok\n",
        'default K=4 and append-and-compact indexed policy behave as designed')
+        or diag($err);
+}
+
+{
+    my $tiny_reservation = <<'PERL';
+use strict;
+use warnings;
+
+for my $requested (1 .. 4) {
+    my %hash;
+    keys %hash = $requested;
+    for my $key (0 .. $requested - 1) {
+        $hash{"tiny:$requested:$key"} = $key;
+    }
+    die "tiny reservation $requested lost a value\n"
+        if grep { $hash{"tiny:$requested:$_"} != $_ }
+            0 .. $requested - 1;
+    my ($first) = each %hash;
+    die "tiny reservation $requested did not start iteration\n"
+        unless defined $first;
+    keys %hash = 4;
+    my @seen;
+    while (my ($key) = each %hash) { push @seen, $key }
+    my @expected = map { "tiny:$requested:$_" } 0 .. $requested - 1;
+    die "tiny reservation $requested did not reset iteration\n"
+        unless join("\0", sort @seen) eq join("\0", sort @expected)
+            && @seen == @expected;
+}
+
+my %alias;
+keys %alias = 1;
+$alias{first} = 10;
+my $value = \$alias{first};
+keys %alias = 4;
+$$value = 11;
+die "alias did not survive growth of a tiny reservation\n"
+    unless $alias{first} == 11 && keys(%alias) == 1;
+print "ok\n";
+PERL
+    my ($out, $err) = runperl_and_capture(
+        { PERL_HASH_LINEAR_MAX => 4 }, ['-I../lib', '-e', $tiny_reservation]);
+    is($out, "ok\n", 'tiny reservations preserve values, aliases, and iterator reset')
         or diag($err);
 }
 
@@ -298,13 +366,16 @@ use Hash::Util qw(hash_storage_info);
 sub setup {
     my ($ordinary, @magic) = @_;
     my %hash;
+    keys %hash = 8;
+    my $reserved = hash_storage_info(\%hash);
+    $ordinary = $reserved->{entry_capacity} - @magic;
     $hash{"ordinary:$_"} = $_ for 0 .. $ordinary - 1;
     tie $hash{$_}, 'OACompactionMagic', \%hash, $_ for @magic;
     my $before = hash_storage_info(\%hash);
     die "setup did not fill the indexed entry budget\n"
-        unless $before->{index_capacity} == 8
-            && $before->{entry_capacity} == 5
-            && $before->{entry_used} == 5;
+        unless $before->{index_capacity}
+            && $before->{entry_capacity} == $reserved->{entry_capacity}
+            && $before->{entry_used} == $before->{entry_capacity};
     delete $hash{'ordinary:0'};
     delete $hash{'ordinary:1'};
     return \%hash;
@@ -319,7 +390,9 @@ die "scalar local restoration was lost\n"
     unless $scalar->{target} eq 'original'
         && $scalar->{'growth:target'} == 99;
 die "scalar local callback did not compact\n"
-    unless hash_storage_info($scalar)->{entry_used} == 4;
+    unless hash_storage_info($scalar)->{entry_used}
+        == hash_storage_info($scalar)->{live}
+        && !hash_storage_info($scalar)->{entry_holes};
 
 my $slice = setup(3, 'target', 'second');
 {
@@ -331,7 +404,9 @@ die "slice local restoration was lost\n"
     unless $slice->{target} eq 'original' && $slice->{second} eq 'original'
         && $slice->{'growth:target'} == 99;
 die "slice local callback did not compact\n"
-    unless hash_storage_info($slice)->{entry_used} == 5
+    unless hash_storage_info($slice)->{entry_used}
+            == hash_storage_info($slice)->{live}
+        && !hash_storage_info($slice)->{entry_holes}
         && $slice->{'growth:target'} == 99
         && $slice->{'growth:second'} == 99;
 
@@ -345,7 +420,9 @@ die "multideref local restoration was lost\n"
     unless $outer->{inner}{target} eq 'original'
         && $outer->{inner}{'growth:target'} == 99;
 die "multideref callback did not compact\n"
-    unless hash_storage_info($outer->{inner})->{entry_used} == 4;
+    unless hash_storage_info($outer->{inner})->{entry_used}
+        == hash_storage_info($outer->{inner})->{live}
+        && !hash_storage_info($outer->{inner})->{entry_holes};
 print "ok\n";
 PERL
     my ($out, $err);
@@ -367,36 +444,42 @@ use strict;
 use warnings;
 use Hash::Util qw(hash_storage_info);
 my %hash;
-$hash{"growth:$_"} = $_ for 0 .. 10_921;
+keys %hash = 10_000;
 my $info = hash_storage_info(\%hash);
-die "coupled growth did not reach the two-thirds entry budget\n"
-    unless $info->{index_capacity} == 16_384
-        && $info->{entry_capacity} == 10_922;
-my $next = 10_922;
+die "reservation did not allocate an index\n" unless $info->{index_capacity};
+my $initial_index_capacity = $info->{index_capacity};
+my $next = 0;
+while ($info->{index_capacity} == $initial_index_capacity) {
+    die "index did not grow before the safety limit\n" if $next > 100_000;
+    my $id = $next++;
+    $hash{"growth:$id"} = $id;
+    $info = hash_storage_info(\%hash);
+}
+my $grown_index_capacity = $info->{index_capacity};
+die "index did not grow at occupancy pressure\n"
+    unless $grown_index_capacity > $initial_index_capacity;
+my $entry_limit = $info->{entry_capacity};
+while ($info->{entry_used} < $entry_limit) {
+    my $id = $next++;
+    $hash{"growth:$id"} = $id;
+    $info = hash_storage_info(\%hash);
+    die "index changed before the entry array filled\n"
+        unless $info->{index_capacity} == $grown_index_capacity;
+}
+my $used_before_growth = $info->{entry_used};
 my $id = $next++;
 $hash{"growth:$id"} = $id;
 $info = hash_storage_info(\%hash);
-die "index growth did not preserve the 1.25 HE growth step\n"
-    unless $info->{index_capacity} == 32_768
-        && $info->{entry_capacity} == 13_652
-        && $info->{entry_used} == 10_923;
-my $limit = $info->{entry_capacity};
-while ($next < $limit) {
-    my $id = $next++;
-    $hash{"growth:$id"} = $id;
-}
-my $last = $next++;
-$hash{"growth:$last"} = $last;
-$info = hash_storage_info(\%hash);
-die "independent HE growth changed the index capacity\n"
-    unless $info->{index_capacity} == 32_768
-        && $info->{entry_capacity} == 17_065
-        && $info->{entry_used} == 13_653;
+die "entry-array growth changed the index or failed to add room\n"
+    unless $info->{index_capacity} == $grown_index_capacity
+        && $info->{entry_capacity} > $entry_limit
+        && $info->{entry_used} == $used_before_growth + 1;
 die "independent growth lost entries\n"
-    unless $hash{'growth:0'} == 0 && $hash{"growth:$last"} == $last;
+    unless $hash{'growth:0'} == 0 && $hash{"growth:$id"} == $id;
 print "ok\n";
 PERL
-    my ($out, $err) = runperl_and_capture({}, ['-I../lib', '-e', $independent_growth]);
+    my ($out, $err) = runperl_and_capture(
+        { PERL_HASH_LINEAR_MAX => 0 }, ['-I../lib', '-e', $independent_growth]);
     is($out, "ok\n", 'entry storage grows independently above 16K index slots')
         or diag($err);
 }
@@ -412,16 +495,24 @@ use Hash::Util qw(hash_storage_info);
 my %hash;
 $hash{"seed:$_"} = $_ for 0 .. 87_380;
 my $info = hash_storage_info(\%hash);
-die "large table did not reach 131072 slots at two-thirds occupancy\n"
-    unless $info->{index_capacity} == 131_072 && $info->{live} == 87_381;
+my $old_index_capacity = $info->{index_capacity};
+die "large table did not reach its two-thirds occupancy limit\n"
+    unless $info->{index_capacity} >= 65_536 && $info->{live} == 87_381;
 delete $hash{"seed:$_"} for 0 .. 81_380;
 die "large-table deletion setup did not leave 6000 entries\n"
     unless keys(%hash) == 6_000;
+my $entry_capacity_before_shrink = $info->{entry_capacity};
 $hash{'shrink-trigger'} = 99;
 $info = hash_storage_info(\%hash);
+my $expected_entry_capacity = 6_000 + (6_000 >> 2) + 1;
+my $expected_index_capacity = 8;
+$expected_index_capacity *= 2
+    while $expected_index_capacity < 3 * (6_000 + 1);
 die "index shrink did not shrink the entry vector with 25 percent spare\n"
-    unless $info->{index_capacity} == 32_768
-        && $info->{entry_capacity} == 7_500;
+    unless $info->{index_capacity} == $expected_index_capacity
+        && $info->{index_capacity} <= $old_index_capacity / 2
+        && $info->{entry_capacity} == $expected_entry_capacity
+        && $info->{entry_capacity} <= $entry_capacity_before_shrink / 2;
 for my $i (1 .. 70_000) {
     delete $hash{churn};
     $hash{churn} = $i;
@@ -450,67 +541,70 @@ use strict;
 use warnings;
 use Hash::Util qw(hash_storage_info);
 my %hash;
-$hash{"seed:$_"} = $_ for 0 .. 79_998;
-$hash{churn} = 0;
 my $info = hash_storage_info(\%hash);
-die "setup did not use a 131072-slot index below its load limit\n"
-    unless $info->{index_capacity} == 131_072
-        && $info->{live} == 80_000
-        && $info->{live} + $info->{tombstones} < 87_381;
-
-delete $hash{"seed:$_"} for 0 .. 19_999;
-$info = hash_storage_info(\%hash);
-my $old_capacity = $info->{entry_capacity};
-my $spare = $old_capacity - $info->{entry_used};
-for my $i (1 .. $spare) {
-    delete $hash{churn};
-    $hash{churn} = $i;
+if ($info->{integer_chained}) {
+    keys %hash = 20_000;
+    $info = hash_storage_info(\%hash);
+    my $capacity = $info->{entry_capacity};
+    my @keys = map { "chain:$_" } 0 .. $capacity - 1;
+    $hash{$keys[$_]} = $_ for 0 .. $#keys;
+    delete $hash{$keys[$_]}
+        for 0 .. int(($capacity + 4) / 5) - 1;
+    my $before = hash_storage_info(\%hash);
+    my $index_capacity = $before->{index_capacity};
+    $hash{'chain:replacement'} = 99;
+    $info = hash_storage_info(\%hash);
+    die "sub-MiB holes did not compact at the 20 percent threshold\n"
+        unless $before->{entry_holes} * $before->{he_size} < 1_048_576
+            && !$info->{entry_holes}
+            && $info->{entry_capacity} == $capacity
+            && $info->{index_capacity} == $index_capacity
+            && $info->{entry_used} == $info->{live}
+            && $hash{'chain:replacement'} == 99;
 }
-$info = hash_storage_info(\%hash);
-die "HE fill did not reach its budget with sub-MiB holes above 20 percent\n"
-    unless $info->{entry_used} == $old_capacity
-        && $info->{entry_holes} * 5 >= $old_capacity
-        && $info->{entry_holes} * $info->{he_size} < 1_048_576
-        && $info->{live} + $info->{tombstones} < 87_381;
-delete $hash{churn};
-$hash{churn} = 99;
-$info = hash_storage_info(\%hash);
-my $grown_capacity = $old_capacity + ($old_capacity >> 2);
-die "sub-MiB holes caused optional compaction instead of HE growth\n"
-    unless $info->{index_capacity} == 131_072
-        && $info->{entry_capacity} == $grown_capacity
-        && $info->{entry_used} == $old_capacity + 1
-        && $info->{entry_holes} * $info->{he_size} < 1_048_576;
+else {
+    $hash{"seed:$_"} = $_ for 0 .. 79_998;
+    $hash{churn} = 0;
+    $info = hash_storage_info(\%hash);
+    die "setup did not use a large index below its load limit\n"
+        unless $info->{index_capacity} >= 131_072
+            && $info->{live} == 80_000
+            && $info->{live} + $info->{tombstones}
+                < int(2 * $info->{index_capacity} / 3);
 
-delete $hash{"seed:$_"} for 20_000 .. 64_999;
-$info = hash_storage_info(\%hash);
-$spare = $info->{entry_capacity} - $info->{entry_used};
-for my $i (1 .. $spare) {
-    delete $hash{churn};
-    $hash{churn} = $i;
+    my $old_index_capacity = $info->{index_capacity};
+    my $old_capacity = $info->{entry_capacity};
+    my $spare = $old_capacity - $info->{entry_used};
+    for my $i (1 .. $spare) {
+        delete $hash{churn};
+        $hash{churn} = $i;
+    }
+    $info = hash_storage_info(\%hash);
+    die "setup did not fill the entry array\n"
+        unless $info->{entry_used} == $old_capacity;
+
+    delete $hash{"seed:$_"} for 0 .. 19_999;
+    $info = hash_storage_info(\%hash);
+    die "sub-MiB hole set did not cross the proportional threshold\n"
+        unless $info->{entry_holes} * 5 >= $old_capacity
+            && $info->{entry_holes} * $info->{he_size} < 1_048_576
+            && $info->{live} + $info->{tombstones}
+                < int(2 * $info->{index_capacity} / 3);
+    $hash{'compaction-trigger'} = 99;
+    $info = hash_storage_info(\%hash);
+    die "sub-MiB holes did not compact at the proportional threshold\n"
+        unless $info->{index_capacity} == $old_index_capacity
+            && $info->{entry_capacity} == $old_capacity
+            && !$info->{entry_holes}
+            && $info->{entry_used} == $info->{live}
+            && $hash{'seed:65000'} == 65_000
+            && $hash{'seed:79998'} == 79_998
+            && $hash{'compaction-trigger'} == 99;
 }
-$info = hash_storage_info(\%hash);
-die "large-hole setup did not exceed both optional-compaction thresholds\n"
-    unless $info->{entry_used} == $info->{entry_capacity}
-        && $info->{entry_holes} * 5 >= $info->{entry_capacity}
-        && $info->{entry_holes} * $info->{he_size} >= 1_048_576
-        && $info->{live} + $info->{tombstones} < 87_381;
-my $capacity = $info->{entry_capacity};
-delete $hash{churn};
-$hash{churn} = 99;
-$info = hash_storage_info(\%hash);
-die "large holes did not trigger optional compaction\n"
-    unless $info->{index_capacity} == 131_072
-        && $info->{entry_capacity} == $capacity
-        && !$info->{entry_holes}
-        && $info->{entry_used} == $info->{live}
-        && $hash{'seed:65000'} == 65_000
-        && $hash{'seed:79998'} == 79_998
-        && $hash{churn} == 99;
 print "ok\n";
 PERL
     my ($out, $err) = runperl_and_capture({}, ['-I../lib', '-e', $optional_compaction]);
-    is($out, "ok\n", 'optional compaction requires both hole thresholds')
+    is($out, "ok\n", 'compaction uses a proportional threshold without a byte floor')
         or diag($err);
 }
 
@@ -522,7 +616,7 @@ SKIP: {
     $preallocated{"prealloc:$_"} = $_ for 0 .. 11_999;
     my $before = Hash::Util::hash_storage_info(\%preallocated);
     ok($before->{index_capacity} == 32_768
-       && $before->{entry_capacity} == 13_652
+       && $before->{entry_capacity} >= 12_000
        && $before->{entry_used} == 12_000,
        'sparse hash reaches the expected large-index HE allocation');
     delete $preallocated{"prealloc:$_"} for 0 .. 99;

@@ -1439,10 +1439,10 @@ perl_destruct(pTHXx)
 
     /* Destruct the global string table. */
     {
-        const U32 capacity = (U32)HvMAX(PL_strtab) + 1;
+        const Size_t capacity = HvMAX(PL_strtab) + 1;
         HEK ** const slots = HvARRAY(PL_strtab)
             ? HvSTRSLOTS(PL_strtab) : NULL;
-        U32 i;
+        Size_t i;
 
         struct hv_strtab_pin *pin = slots ? HvSTRTAB(PL_strtab)->pins : NULL;
 

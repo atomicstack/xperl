@@ -7044,7 +7044,8 @@ PP(pp_anonhash)
     if (pairs == 0)
         return NORMAL;
 
-    if (pairs > PERL_HASH_DEFAULT_HvMAX) {
+    /* Reserve the known size before stores grow the compact entry array. */
+    if (pairs > 1) {
         hv_ksplit(hv, pairs);
     }
 

@@ -461,7 +461,7 @@ Perl_newSV_type(pTHX_ const svtype type)
         case SVt_PVHV:
             ((XPVHV*)new_body)->xhv_keys = 0;
             /* start with PERL_HASH_DEFAULT_HvMAX+1 buckets: */
-            ((XPVHV*)new_body)->xhv_max = PERL_HASH_DEFAULT_HvMAX;
+            ((XPVHV*)new_body)->xhv_max = PERL_HASH_DEFAULT_HvMAX_RAW;
 
             assert(!SvOK(sv));
 #ifndef NODEFAULT_SHAREKEYS

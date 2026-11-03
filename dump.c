@@ -2765,7 +2765,7 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
         }
         break;
     case SVt_PVHV: {
-        U32 totalkeys;
+        Size_t totalkeys;
         if (HvHasAUX(sv)) {
             struct xpvhv_aux *const aux = HvAUX(sv);
             dump_indent(level, file, "  AUX_FLAGS = %" UVuf "\n",
@@ -2775,30 +2775,30 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
         totalkeys = HvTOTALKEYS(MUTABLE_HV(sv));
         if (totalkeys) {
             /* Show distribution of HEs in the ARRAY */
-            int freq[200];
+            Size_t freq[200];
 #define FREQ_MAX ((int)(C_ARRAY_LENGTH(freq) - 1))
             int i;
             int max = 0;
-            U32 pow2 = 2;
-            U32 keys = totalkeys;
+            Size_t pow2 = 2;
+            Size_t keys = totalkeys;
             NV theoret, sum = 0;
 
             PerlIO_printf(file, "  (");
-            Zero(freq, FREQ_MAX + 1, int);
+            Zero(freq, FREQ_MAX + 1, Size_t);
             if (HvIS_LINEAR(MUTABLE_HV(sv))) {
-                const U32 capacity = HvLINEAR_CAP(sv);
+                const Size_t capacity = HvLINEAR_CAP(sv);
                 freq[0] = capacity - totalkeys;
                 freq[1] = totalkeys;
                 max = 1;
             }
             else if (MUTABLE_HV(sv) == PL_strtab) {
-                const U32 capacity = (U32)HvMAX(sv) + 1;
+                const Size_t capacity = HvMAX(sv) + 1;
                 freq[0] = capacity - totalkeys;
                 freq[1] = totalkeys;
                 max = 1;
             }
             else if (HvIS_OA(MUTABLE_HV(sv))) {
-                const U32 capacity = HvMAX(sv) + 1;
+                const Size_t capacity = HvMAX(sv) + 1;
                 freq[0] = capacity - totalkeys;
                 freq[1] = totalkeys;
                 max = 1;
@@ -2819,9 +2819,9 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
             }
             for (i = 0; i <= max; i++) {
                 if (freq[i]) {
-                    PerlIO_printf(file, "%d%s:%d", i,
+                    PerlIO_printf(file, "%d%s:%" UVuf, i,
                                   (i == FREQ_MAX) ? "+" : "",
-                                  freq[i]);
+                                  (UV)freq[i]);
                     if (i != max)
                         PerlIO_printf(file, ", ");
                 }
@@ -2842,7 +2842,7 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
                 && MUTABLE_HV(sv) != PL_strtab)
             {
                 for (i = max; i > 0; i--) { /* Precision: count down. */
-                    sum += freq[i] * i * i;
+                    sum += (NV)freq[i] * i * i;
                 }
                 while ((keys = keys >> 1))
                     pow2 = pow2 << 1;
@@ -2854,7 +2854,7 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
             }
         }
         (void)PerlIO_putc(file, '\n');
-        dump_indent(level, file, "  KEYS = %" IVdf "\n", (IV)totalkeys);
+        dump_indent(level, file, "  KEYS = %" UVuf "\n", (UV)totalkeys);
         {
             STRLEN count = 0;
             if (MUTABLE_HV(sv) == PL_strtab) {
@@ -2981,7 +2981,7 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
                 int count = maxnest - nest;
                 if (hv == PL_strtab) {
                     HEK * const * const slots = HvSTRSLOTS(hv);
-                    const U32 capacity = (U32)HvMAX(hv) + 1;
+                    const Size_t capacity = HvMAX(hv) + 1;
                     for (i = 0; slots && i < capacity; i++) {
                         HEK * const hek = slots[i];
                         const char *keypv;

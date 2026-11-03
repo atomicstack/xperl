@@ -456,6 +456,13 @@ is $regexp->precomp, 'fit', 'pmregexp returns the right regexp';
     is($k, "\x{100}", "check utf8 preserved by B::HV::ARRAY");
 }
 
+{
+    my %h = map { ("key$_" => $_) } 1 .. 40;
+    my $max = B::svref_2object(\%h)->MAX;
+    ok($max >= keys(%h) - 1 && (($max + 1) & $max) == 0,
+       'B::HV::MAX returns the logical bucket mask');
+}
+
 # test op_parent
 
 SKIP: {
