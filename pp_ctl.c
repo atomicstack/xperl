@@ -8455,8 +8455,8 @@ S_require_file(pTHX_ SV *sv)
                                     goto treat_as_string;
                                 else {
                                     PERL_THROW_ERROR_LOAD_HOOK_INC_METHODS_NOT_FOUND(pkg, dirsv == loader
-                                            ? perl_diag_selector_domain_1754_0_object_hook_2
-                                            : perl_diag_selector_domain_1754_0_array_object_hook_1);
+                                            ? PERL_DIAG_SEL_INC_HOOK_TARGET_OBJECT_HOOK
+                                            : PERL_DIAG_SEL_INC_HOOK_TARGET_ARRAY_OBJECT_HOOK);
                                 }
                             }
                         }
@@ -8590,7 +8590,7 @@ S_require_file(pTHX_ SV *sv)
                                 exception = errsv;
                             else
                                 PERL_APPEND_ERROR_USER_TEXT(&exception, errsv);
-                            PERL_APPEND_ERROR_LOAD_HOOK_INC_DIED(&exception, method ? method : "INC", method ? perl_diag_selector_domain_2449_0_method_1 : perl_diag_selector_domain_2449_0_sub_2);
+                            PERL_APPEND_ERROR_LOAD_HOOK_INC_DIED(&exception, method ? method : "INC", method ? PERL_DIAG_SEL_INC_HOOK_FORM_METHOD : PERL_DIAG_SEL_INC_HOOK_FORM_SUB);
                             PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY(exception);
                         }
                     }

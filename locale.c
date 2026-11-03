@@ -4584,7 +4584,7 @@ S_new_ctype(pTHX_ const char *newctype, bool force)
             codeset = langinfo_c(CODESET, LC_CTYPE, newctype, NULL);
 #    endif
 
-            PERL_APPEND_COMPOSED_LOCALE_WARNING(
+            PERL_APPEND_WARNING_LOCALE_CTYPE_CHARACTER_SEMANTICS_UNEXPECTED(
                 &exception, PERL_DIAG_SELECTOR_FROM_WARNING_LOCALE_CTYPE_CHARACTER_SEMANTICS_UNEXPECTED_LOCALE_TYPE(locale_type), newctype, bad_chars_list,
                 (UV)bad_count,
                 PERL_DIAG_SELECTOR_FROM_WARNING_LOCALE_CTYPE_CHARACTER_SEMANTICS_UNEXPECTED_CODESET_STATE(codeset_state), codeset);

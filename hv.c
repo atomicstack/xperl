@@ -4448,7 +4448,7 @@ S_unshare_hek_or_pvn(pTHX_ const HEK *hek, const char *str, I32 len, U32 hash)
     if (!entry)
         PERL_WARN_WARNING_SEVERE_INTERNAL_SHARED_STRING_FREE_NOT_FOUND(
             hek ? HEK_KEY(hek) : str,
-            (k_flags & HVhek_UTF8) ? perl_diag_selector_domain_1623_0_present_2 : perl_diag_selector_domain_1623_0_absent_1
+            (k_flags & HVhek_UTF8) ? PERL_DIAG_SEL_PRESENCE_PRESENT : PERL_DIAG_SEL_PRESENCE_ABSENT
         );
     if (k_flags & HVhek_FREEKEY)
         Safefree(str);

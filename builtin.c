@@ -551,7 +551,7 @@ Perl_XS_builtin_indexed(pTHX_ CV *cv)
     switch(GIMME_V) {
         case G_VOID:
             PERL_WARN_WARNING_VOID_USELESS_EXPRESSION_PV(
-                perl_diag_selector_domain_2072_0_literal_5,
+                PERL_DIAG_SEL_VOID_EXPR_LITERAL,
                 perl_diag_word_operation_none, "builtin::indexed");
             XSRETURN(0);
 

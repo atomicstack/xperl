@@ -650,7 +650,7 @@ Perl_dump_sv_child(pTHX_ SV *sv)
 
     if (returned_errno || *buffer) {
         PERL_WARN_WARNING_INTERNAL_SYSTEM_PROCESS_LEAK_DUMP_CHILD_REPORTED_FAILURE(
-            *buffer ? perl_diag_selector_domain_1623_0_present_2 : perl_diag_selector_domain_1623_0_absent_1, (int) *buffer, buffer + 1,
+            *buffer ? PERL_DIAG_SEL_PRESENCE_PRESENT : PERL_DIAG_SEL_PRESENCE_ABSENT, (int) *buffer, buffer + 1,
             returned_errno, Strerror(returned_errno));
     }
 }

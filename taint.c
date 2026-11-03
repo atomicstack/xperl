@@ -89,8 +89,8 @@ Perl_taint_proper(pTHX_ const char *f, const char *const s)
             PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_HASH_ALIAS_FORBIDDEN(
                 generic_target ? "" : s,
                 PERL_DIAG_SELECTOR_FROM_ERROR_TAINT_ENVIRONMENT_HASH_ALIAS_FORBIDDEN_TAINT_CONTEXT(taint_context),
-                generic_target ? perl_diag_selector_domain_1804_1_generic_1
-                               : perl_diag_selector_domain_1804_1_named_2);
+                generic_target ? PERL_DIAG_SEL_TAINT_TARGET_FORM_GENERIC
+                               : PERL_DIAG_SEL_TAINT_TARGET_FORM_NAMED);
         }
         else if (strEQ(f, PERL_FORMAT_ERROR_TAINT_ENVIRONMENT_GLOB_ALIAS_FORBIDDEN))
             PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_GLOB_ALIAS_FORBIDDEN(s, PERL_DIAG_SELECTOR_FROM_ERROR_TAINT_ENVIRONMENT_GLOB_ALIAS_FORBIDDEN_TAINT_CONTEXT(taint_context));

@@ -842,7 +842,7 @@ do_spawn2_handles(pTHX_ const char *cmd, int exectype, const int *handles)
     }
     else {
         if (status < 0) {
-            PERL_WARN_WARNING_IO_EXEC_SELECTED_LAUNCH_OPERATION_FAILED((exectype == EXECF_EXEC ? perl_diag_selector_domain_2335_0_exec_1 : perl_diag_selector_domain_2335_0_spawn_2), cmd, strerror(errno));
+            PERL_WARN_WARNING_IO_EXEC_SELECTED_LAUNCH_OPERATION_FAILED((exectype == EXECF_EXEC ? PERL_DIAG_SEL_PROCESS_LAUNCH_EXEC : PERL_DIAG_SEL_PROCESS_LAUNCH_SPAWN), cmd, strerror(errno));
             status = 255 * 256;
         }
         else

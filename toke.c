@@ -6941,7 +6941,7 @@ yyl_colon(pTHX_ char *s)
                context messages from the parser diagnostic.
             */
             PL_bufptr = s;
-            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_ATTRIBUTE_LIST_SUFFIX_INVALID(*s ? perl_diag_selector_domain_1439_0_invalid_separator_1 : perl_diag_selector_domain_1439_0_unterminated_2, *s ? (int)*s : 0);
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_ATTRIBUTE_LIST_SUFFIX_INVALID(*s ? PERL_DIAG_SEL_ATTRIBUTE_SUFFIX_INVALID_SEPARATOR : PERL_DIAG_SEL_ATTRIBUTE_SUFFIX_UNTERMINATED, *s ? (int)*s : 0);
             op_free(attrs);
             OPERATOR(PERLY_COLON);
         }
@@ -10045,8 +10045,8 @@ yyl_try(pTHX_ char *s)
             if (PL_lex_brackets
                 && PL_lex_brackstack[PL_lex_brackets-1] != XFAKEEOF)
             {
-            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_UNCLOSED_STRUCTURE(PL_lex_formbrack ? perl_diag_selector_domain_1440_0_format_not_terminated_1
-                                 : perl_diag_selector_domain_1440_0_missing_right_bracket_2);
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_UNCLOSED_STRUCTURE(PL_lex_formbrack ? PERL_DIAG_SEL_UNCLOSED_STRUCTURE_FORMAT_NOT_TERMINATED
+                                 : PERL_DIAG_SEL_UNCLOSED_STRUCTURE_MISSING_RIGHT_BRACKET);
             }
             DEBUG_T({
                 PerlIO_printf(Perl_debug_log, "### Tokener got EOF\n");
@@ -10921,14 +10921,14 @@ S_pending_ident(pTHX)
             if (has_colon)
                 /* diag_listed_as: No package name allowed for variable %s
                                    in "our" */
-            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_OUR_NAME_QUALIFIED(*PL_tokenbuf == '&' ? perl_diag_selector_domain_1414_0_subroutine_1 : perl_diag_selector_domain_1414_0_variable_2, PL_tokenbuf, UTF ? SVf_UTF8 : 0);
+            PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_OUR_NAME_QUALIFIED(*PL_tokenbuf == '&' ? PERL_DIAG_SEL_DECLARATION_KIND_SUBROUTINE : PERL_DIAG_SEL_DECLARATION_KIND_VARIABLE, PL_tokenbuf, UTF ? SVf_UTF8 : 0);
             tmp = allocmy(PL_tokenbuf, tokenbuf_len, UTF ? SVf_UTF8 : 0);
         }
         else {
             OP *o;
             if (has_colon) {
-                PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_LEXICAL_NAME_QUALIFIED(PL_in_my == KEY_my ? perl_diag_selector_domain_2500_0_my_2 :
-                    PL_in_my == KEY_field ? perl_diag_selector_domain_2500_0_field_1 : perl_diag_selector_domain_2500_0_state_3, *PL_tokenbuf == '&' ? perl_diag_selector_domain_1414_0_subroutine_1 : perl_diag_selector_domain_1414_0_variable_2, PL_tokenbuf, UTF ? SVf_UTF8 : 0);
+                PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_LEXICAL_NAME_QUALIFIED(PL_in_my == KEY_my ? PERL_DIAG_SEL_LEXICAL_DECL_KIND_MY :
+                    PL_in_my == KEY_field ? PERL_DIAG_SEL_LEXICAL_DECL_KIND_FIELD : PERL_DIAG_SEL_LEXICAL_DECL_KIND_STATE, *PL_tokenbuf == '&' ? PERL_DIAG_SEL_DECLARATION_KIND_SUBROUTINE : PERL_DIAG_SEL_DECLARATION_KIND_VARIABLE, PL_tokenbuf, UTF ? SVf_UTF8 : 0);
             }
 
             o = newOP(OP_PADANY, 0);
@@ -13521,9 +13521,9 @@ Perl_scan_num(pTHX_ const char *start, YYSTYPE* lvalp)
                         overflowed = TRUE;
                         n = (NV) u;
                         PERL_WARN_WARNING_OVERFLOW_INTEGER_LITERAL_RANGE_EXCEEDED_DEFAULT_ENABLED(
-                            shift == 1 ? perl_diag_selector_domain_2116_0_binary_1
-                          : shift == 3 ? perl_diag_selector_domain_2116_0_octal_3
-                                       : perl_diag_selector_domain_2116_0_hexadecimal_2);
+                            shift == 1 ? PERL_DIAG_SEL_NUM_RADIX_BINARY
+                          : shift == 3 ? PERL_DIAG_SEL_NUM_RADIX_OCTAL
+                                       : PERL_DIAG_SEL_NUM_RADIX_HEXADECIMAL);
                     } else
                         u = x | b;		/* add the digit to the end */
                 }
@@ -14384,11 +14384,11 @@ Perl_diag_parse_fallback_message(pTHX_ const char *s, STRLEN len, U32 flags,
     } STMT_END
 
     context_id = Perl_diag_selector_from_cstr(aTHX_
-        perl_diag_selector_domain_2501_0_id, context_kind);
+        PERL_DIAG_DOMAIN_PARSER_CONTEXT, context_kind);
     PERL_PARSER_CONTEXT_PARAM(0, message_value);
     Perl_diag_setup_param(aTHX_ params,
         perl_diag_error_compilation_unclassified_parser_context_idx, 1,
-        perl_diag_selector_domain_2501_0_id, context_id);
+        PERL_DIAG_DOMAIN_PARSER_CONTEXT, context_id);
     PERL_PARSER_CONTEXT_PARAM(2, file_value);
     PERL_PARSER_CONTEXT_PARAM(3, newSViv((IV)line));
     PERL_PARSER_CONTEXT_PARAM(4, context_value);

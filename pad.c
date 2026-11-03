@@ -933,8 +933,8 @@ S_pad_check_dup(pTHX_ PADNAME *name, U32 flags, const HV *ourstash)
                     PL_parser->in_my == KEY_my     ? "my"    :
                     PL_parser->in_my == KEY_sigvar ? "my"    :
                     PL_parser->in_my == KEY_field  ? "field" :
-                                                     "state" ), *PadnamePV(pn) == '&' ? perl_diag_selector_domain_1414_0_subroutine_1 : perl_diag_selector_domain_1414_0_variable_2, pn, (COP_SEQ_RANGE_HIGH(pn) == PERL_PADSEQ_INTRO
-                    ? perl_diag_selector_domain_2159_1_scope_1 : perl_diag_selector_domain_2159_1_statement_2));
+                                                     "state" ), *PadnamePV(pn) == '&' ? PERL_DIAG_SEL_DECLARATION_KIND_SUBROUTINE : PERL_DIAG_SEL_DECLARATION_KIND_VARIABLE, pn, (COP_SEQ_RANGE_HIGH(pn) == PERL_PADSEQ_INTRO
+                    ? PERL_DIAG_SEL_SHADOW_LOCATION_SCOPE : PERL_DIAG_SEL_SHADOW_LOCATION_STATEMENT));
             --off;
             break;
         }
@@ -1185,8 +1185,8 @@ S_unavailable(pTHX_ PADNAME *name)
 {
     /* diag_listed_as: Variable "%s" is not available */
     PERL_WARN_WARNING_CLOSURE_LEXICAL_CAPTURE_UNAVAILABLE(*PadnamePV(name) == '&'
-                               ? perl_diag_selector_domain_1414_0_subroutine_1
-                               : perl_diag_selector_domain_1414_0_variable_2, name);
+                               ? PERL_DIAG_SEL_DECLARATION_KIND_SUBROUTINE
+                               : PERL_DIAG_SEL_DECLARATION_KIND_VARIABLE, name);
 }
 
 static PADOFFSET
@@ -1307,7 +1307,7 @@ S_pad_findlex(pTHX_ const char *namepv, STRLEN namelen, U32 flags, const CV* cv,
                         newwarn = 0;
                         /* diag_listed_as: Variable "%s" will not stay
                                            shared */
-                        PERL_WARN_WARNING_CLOSURE_LEXICAL_CAPTURE_WILL_NOT_STAY_SHARED(*namepv == '&' ? perl_diag_selector_domain_1414_0_subroutine_1 : perl_diag_selector_domain_1414_0_variable_2, 1, namelen, namepv);
+                        PERL_WARN_WARNING_CLOSURE_LEXICAL_CAPTURE_WILL_NOT_STAY_SHARED(*namepv == '&' ? PERL_DIAG_SEL_DECLARATION_KIND_SUBROUTINE : PERL_DIAG_SEL_DECLARATION_KIND_VARIABLE, 1, namelen, namepv);
                     }
 
                     if (fake_offset && CvANON(cv)

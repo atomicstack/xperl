@@ -3973,9 +3973,43 @@ sub write_variant_macros {
     }
 }
 
+sub write_macro_ownership_index {
+    my ( $out, $diagnostics ) = @_;
+    my %owner;
+
+    for my $diag (@$diagnostics) {
+        my $code = $diag->{code};
+        my @macros = ( Diag::Migration::macro_name($diag) );
+        push @macros, map { Diag::Migration::alias_macro_name( $diag, $_ ) }
+          @{ $diag->{emit}{aliases} || [] };
+        push @macros, map {
+            Diag::Migration::variant_macro_name(
+                $diag, $_, $diag->{variants}{$_} )
+        } keys %{ $diag->{variants} || {} };
+        for my $field (qw(accumulate_macro format_macro)) {
+            push @macros, $diag->{emit}{$field}
+              if exists $diag->{emit}{$field}
+              && defined $diag->{emit}{$field}
+              && length $diag->{emit}{$field};
+        }
+
+        for my $macro (@macros) {
+            die "diagnostic $code has invalid macro name $macro\n"
+              unless $macro =~ /\A[A-Za-z_][A-Za-z0-9_]*\z/;
+            die "macro $macro belongs to both $owner{$macro} and $code\n"
+              if exists $owner{$macro} && $owner{$macro} ne $code;
+            $owner{$macro} = $code;
+        }
+    }
+
+    print {$out} "/* Generated macro ownership index: search either name or code. */\n";
+    print {$out} "/* $_ => $owner{$_} */\n" for sort keys %owner;
+    print {$out} "\n";
+}
+
 # Emit the shared wildcard/category IDs and one typed enum per ordered domain.
 sub write_selector_domain_enums {
-    my ( $out, $selector_layouts ) = @_;
+    my ( $out, $selector_layouts, $aliases ) = @_;
     my %domains;
     for my $layout ( values %$selector_layouts ) {
         for my $column ( 0 .. $#{ $layout->{domains} || [] } ) {
@@ -4019,6 +4053,43 @@ sub write_selector_domain_enums {
       sort { $a <=> $b } keys %domains;
     print {$out} "enum perl_diag_selector_domain_id {\n",
       render_enum_rows( \@domain_rows ), "};\n\n";
+
+    my ( %alias_by_domain, %domain_by_alias );
+    for my $key ( sort keys %{ $aliases || {} } ) {
+        my ( $code, $column ) = $key =~ /\A([A-Z][A-Z0-9_]*):([0-9]+)\z/
+          or die "invalid selector alias key $key\n";
+        my $alias = $aliases->{$key};
+        die "invalid selector alias $alias for $key\n"
+          unless defined($alias) && $alias =~ /\A[A-Z][A-Z0-9_]*\z/;
+        my $layout = $selector_layouts->{$code}
+          or die "selector alias $key has no diagnostic\n";
+        my $domain = $layout->{domains}[$column]
+          or die "selector alias $key has no selector column\n";
+        my $id = $domain->{domain_id}
+          or die "selector alias $key has no producer domain\n";
+        die "selector domain $id has conflicting aliases\n"
+          if exists $alias_by_domain{$id} && $alias_by_domain{$id} ne $alias;
+        die "selector alias $alias names two domains\n"
+          if exists $domain_by_alias{$alias} && $domain_by_alias{$alias} != $id;
+        $alias_by_domain{$id} = $alias;
+        $domain_by_alias{$alias} = $id;
+    }
+
+    for my $domain_id ( sort { $a <=> $b } keys %domains ) {
+        my $alias = $alias_by_domain{$domain_id} or next;
+        my $domain = $domains{$domain_id};
+        my %seen;
+        print {$out} "#define PERL_DIAG_DOMAIN_$alias ",
+          selector_domain_id_name( $domain->{owner_number}, $domain->{owner_column} ), "\n";
+        for my $value ( @{ $domain->{values} } ) {
+            my $name = uc($value);
+            $name =~ s/[^A-Z0-9]+/_/g;
+            die "selector alias $alias has colliding values\n" if $seen{$name}++;
+            print {$out} "#define PERL_DIAG_SEL_${alias}_${name} ",
+              $domain->{symbols}{$value}, "\n";
+        }
+        print {$out} "\n";
+    }
 
     for my $domain_id ( sort { $a <=> $b } keys %domains ) {
         my $domain = $domains{$domain_id};
@@ -4065,7 +4136,7 @@ sub write_selector_domain_enums {
 
 # Render indexes, diagnostic macros, aliases, and fixed-value variants.
 sub render_header {
-    my ( $diagnostics, $diag_table, $diag_index, $registry, $warning_categories, $selector_layouts ) = @_;
+    my ( $diagnostics, $diag_table, $diag_index, $registry, $warning_categories, $selector_layouts, $selector_aliases ) = @_;
 
     my $text = '';
     open my $out, '>', \$text or die "Cannot buffer diagnostic header: $!\n";
@@ -4124,7 +4195,7 @@ HEADER
     print {$out} "\nenum perl_diag_number {\n",
       render_enum_rows( \@number_rows ), "};\n";
 
-    write_selector_domain_enums( $out, $selector_layouts );
+    write_selector_domain_enums( $out, $selector_layouts, $selector_aliases );
 
     print {$out} "\n#if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)\n";
     print {$out} "#define PERL_DIAG_METADATA_COUNT " . scalar(@$diagnostics) . "\n";
@@ -4137,6 +4208,8 @@ HEADER
     for my $diag (@$diagnostics) {
         write_variant_macros( $out, $diag );
     }
+
+    write_macro_ownership_index( $out, $diagnostics );
 
     print {$out} "#endif /* PERL_DIAG_H */\n";
     close $out or die "Cannot close diagnostic header buffer: $!\n";
@@ -4250,7 +4323,7 @@ sub prepare_generation {
     my $data             = render_data( $diagnostics, $diag_table, $diag_index,
         $selector_layouts, $conf->{languages}, $conf->{plural_rules}, $class_model );
     my $header           = render_header( $diagnostics, $diag_table, $diag_index,
-        $helpers, $warning_categories, $selector_layouts );
+        $helpers, $warning_categories, $selector_layouts, $conf->{selector_aliases} );
     my $plural           = Diag::Plural::render();
 
     return {

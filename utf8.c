@@ -324,7 +324,7 @@ Perl_uvoffuni_to_utf8_flags_msgs(pTHX_ U8 *d, UV input_uv, UV flags, HV** msgs)
             else {
                 PERL_WARN_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT(
                     perl_diag_word_operation_none,
-                    input_uv, perl_diag_selector_domain_2311_0_none_1, "", category);
+                    input_uv, PERL_DIAG_SEL_UTF8_CONTEXT_NONE, "", category);
             }
 
             /* Don't output a 2nd msg */
@@ -369,7 +369,7 @@ Perl_uvoffuni_to_utf8_flags_msgs(pTHX_ U8 *d, UV input_uv, UV flags, HV** msgs)
                 else {
                     PERL_WARN_WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX(
                         perl_diag_word_operation_none,
-                        input_uv, perl_diag_selector_domain_2311_0_none_1, "", category);
+                        input_uv, PERL_DIAG_SEL_UTF8_CONTEXT_NONE, "", category);
                 }
 
                 if (flags & UNICODE_DISALLOW_SUPER) {
@@ -2811,7 +2811,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         PERL_WARN_WARNING_UTF8_EMPTY_SEQUENCE,
                         PERL_APPEND_WARNING_UTF8_EMPTY_SEQUENCE,
                         PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_EMPTY_SEQUENCE(PL_op) : "");
                 }
                 else if (structured_surrogate_prefix_warning) {
@@ -2820,7 +2820,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         PERL_APPEND_WARNING_UTF8_SURROGATE_SURROGATE_SEQUENCE_PREFIX,
                         PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
                         short_sequence_bytes,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_SURROGATE_SURROGATE_SEQUENCE_PREFIX(PL_op) : "");
                 }
                 else if (structured_surrogate_codepoint_warning) {
@@ -2829,7 +2829,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         PERL_APPEND_WARNING_UTF8_SURROGATE_SURROGATE_DECODED,
                         PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
                         input_uv,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_SURROGATE_SURROGATE_DECODED(PL_op) : "");
                 }
                 else if (structured_nonchar_codepoint_warning) {
@@ -2838,7 +2838,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         PERL_APPEND_WARNING_UTF8_NONCHAR_NONCHARACTER_DECODED,
                         PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
                         input_uv,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NONCHAR_NONCHARACTER_DECODED(PL_op) : "");
                 }
                 else if (structured_short_sequence_warning) {
@@ -2849,7 +2849,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         short_sequence_bytes,
                         (UV) avail_len,
                         (UV) expectlen,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_SEQUENCE_TOO_SHORT(PL_op) : "");
                 }
                 else if (structured_continuation_warning) {
@@ -2859,7 +2859,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
                         continuation_sequence_bytes,
                         (UV) *s0,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_CONTINUATION_WITHOUT_START(PL_op) : "");
                 }
                 else if (structured_non_continuation_warning) {
@@ -2872,8 +2872,8 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         (UV) s0[0],
                         (UV) expectlen,
                         (UV) curlen,
-                        curlen == 1 ? perl_diag_selector_domain_2620_0_immediate_2 : perl_diag_selector_domain_2620_0_after_bytes_1,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        curlen == 1 ? PERL_DIAG_SEL_UTF8_CONTINUATION_IMMEDIATE : PERL_DIAG_SEL_UTF8_CONTINUATION_AFTER_BYTES,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_SEQUENCE_CONTINUATION_INVALID(PL_op) : "");
                 }
                 else if (structured_overlong_sequence_warning) {
@@ -2883,7 +2883,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
                         overlong_sequence_bytes,
                         overlong_sequence_prefix,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_OVERLONG_PREFIX(PL_op) : "");
                 }
                 else if (structured_overlong_value_warning) {
@@ -2894,7 +2894,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         overlong_value_bytes,
                         overlong_value_canonical_bytes,
                         overlong_value_codepoint,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_OVERLONG_VALUE(PL_op) : "");
                 }
                 else if (structured_overflow_sequence_warning) {
@@ -2903,7 +2903,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         PERL_APPEND_WARNING_UTF8_NON_UNICODE_SEQUENCE_VALUE_OVERFLOW,
                         PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
                         overflow_sequence_bytes,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NON_UNICODE_SEQUENCE_VALUE_OVERFLOW(PL_op) : "");
                 }
                 else if (structured_extended_sequence_warning) {
@@ -2912,7 +2912,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         PERL_APPEND_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_SEQUENCE_PREFIX,
                         PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
                         extended_sequence_prefix,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_SEQUENCE_PREFIX(PL_op) : "");
                 }
                 else if (structured_non_unicode_sequence_warning) {
@@ -2921,7 +2921,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         PERL_APPEND_WARNING_UTF8_NON_UNICODE_ABOVE_UNICODE_SEQUENCE_PREFIX,
                         PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
                         non_unicode_sequence_prefix,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NON_UNICODE_ABOVE_UNICODE_SEQUENCE_PREFIX(PL_op) : "");
                 }
                 else if (structured_extended_codepoint_warning) {
@@ -2930,7 +2930,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         PERL_APPEND_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT,
                         PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
                         input_uv,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT(PL_op) : "");
                 }
                 else if (structured_super_codepoint_warning) {
@@ -2939,7 +2939,7 @@ Perl_utf8_to_uv_msgs_helper_(const U8 * const s0,
                         PERL_APPEND_WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX,
                         PL_op ? PERL_DIAG_WORD_OPERATION(PL_op->op_type) : perl_diag_word_operation_none,
                         input_uv,
-                        PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                        PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                         PL_op ? PERL_DIAG_OP_DESC_WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX(PL_op) : "");
                 }
                 else {
@@ -3169,7 +3169,7 @@ Perl_bytes_cmp_utf8(pTHX_ const U8 *b, STRLEN blen, const U8 *u, STRLEN ulen)
                             byte_dump_string_(u - 2, 2, 0),
                             *(u - 1),
                             *(u - 2),
-                            PL_op ? perl_diag_selector_domain_2311_0_operation_2 : perl_diag_selector_domain_2311_0_none_1,
+                            PL_op ? PERL_DIAG_SEL_UTF8_CONTEXT_OPERATION : PERL_DIAG_SEL_UTF8_CONTEXT_NONE,
                             PL_op
                                 ? PERL_DIAG_OP_DESC_WARNING_UTF8_TWO_BYTE_SEQUENCE_CONTINUATION_INVALID(PL_op)
                                 : "");

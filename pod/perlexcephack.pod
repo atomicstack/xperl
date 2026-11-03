@@ -630,9 +630,17 @@ For example, C<PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED(...)> is a
 variant of C<ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH>. The catalog binds
 its C<reference_type> selector to C<HASH>; the C call site passes only the
 observed referent. Search the variant name in F<diag_conf.pl> to find its
-owning code and shared message. Add a named variant when a call site would
-otherwise need a C<perl_diag_selector_domain_...> constant. Those constants
-are generated implementation details and their numeric suffixes can change.
+owning code and shared message. Add a named variant for a fixed selector.
+When a selector depends on a runtime condition, use a
+C<PERL_DIAG_SEL_PREFIX_VALUE> alias declared by C<selector_aliases> in the
+catalog. The C<perl_diag_selector_domain_...> constants are generated
+implementation details and their numeric suffixes can change.
+
+F<perldiag.h> ends with a generated macro ownership index. Each line pairs
+one primary, delivery-alias, or variant macro with its owning diagnostic
+code. Search either name there to find the other, then search the macro in
+C source for its call sites. The helper functions are shared by argument
+shape, so their generated names do not identify one diagnostic.
 
 An argument marked C<internal> is retained in the diagnostic's C<params>
 without becoming a template placeholder. The reference mismatch diagnostic
