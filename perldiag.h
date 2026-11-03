@@ -12593,12 +12593,14 @@ enum perl_diag_selector_domain_id {
         __LINE__ \
     )
 
-#define PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(ma_reference_type) \
-    Perl_throw_die_1_1172( \
+#define PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(ma_reference_type, ma_observed) \
+    Perl_throw_die_2_2036( \
         aTHX_ perl_diag_error_type_reference_referent_type_mismatch_idx, \
         __FILE__, \
         __LINE__, \
-        ma_reference_type \
+        ma_reference_type, \
+        "%s", \
+        (const char *)(ma_observed) \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_MATCH_TARGET_POINTER_MISSING() \
@@ -20482,22 +20484,22 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_COND_WAIT_STATUS_ERROR(ma_error) \
     PERL_PANIC_ERROR_INTERNAL_THREADS_CONDITION_API_FAILED_WITH_STATUS("COND_WAIT", ma_error)
 
-#define PERL_THROW_ERROR_TYPE_REFERENCE_ARRAY_REQUIRED() \
-    PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(perl_diag_selector_domain_1172_0_array_2)
+#define PERL_THROW_ERROR_TYPE_REFERENCE_ARRAY_REQUIRED(ma_observed) \
+    PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(perl_diag_selector_domain_1172_0_array_2, ma_observed)
 
-#define PERL_THROW_ERROR_TYPE_REFERENCE_EXPECTED_CODE() \
-    PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(perl_diag_selector_domain_1172_0_code_4)
+#define PERL_THROW_ERROR_TYPE_REFERENCE_EXPECTED_CODE(ma_observed) \
+    PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(perl_diag_selector_domain_1172_0_code_4, ma_observed)
 
-#define PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED() \
-    PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(perl_diag_selector_domain_1172_0_hash_3)
+#define PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED(ma_observed) \
+    PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(perl_diag_selector_domain_1172_0_hash_3, ma_observed)
 
-#define PERL_THROW_ERROR_TYPE_REFERENCE_SCALAR_REQUIRED() \
-    PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(perl_diag_selector_domain_1172_0_scalar_6)
+#define PERL_THROW_ERROR_TYPE_REFERENCE_SCALAR_REQUIRED(ma_observed) \
+    PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(perl_diag_selector_domain_1172_0_scalar_6, ma_observed)
 
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * 6dec88c46af68139755a9a916e9b35aa2ab951b96f16813f2900a2235d45f21a diag_conf.pl
+ * 23551d81b7501922a3ef2e7dd5cad456ecef3e4ed7722245684fb65d5c2788e3 diag_conf.pl
  * 6510e6553ea58cc2c5404bc3524e14de99d6b39d5bf4cb3fc3271ba678cf283b diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

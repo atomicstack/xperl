@@ -276,7 +276,7 @@ PP(pp_rv2sv)
 
         sv = SvRV(sv);
         if (SvTYPE(sv) >= SVt_PVAV)
-            PERL_THROW_ERROR_TYPE_REFERENCE_SCALAR_REQUIRED();
+            PERL_THROW_ERROR_TYPE_REFERENCE_SCALAR_REQUIRED(sv_peek(sv));
     }
     else {
         gv = MUTABLE_GV(sv);
@@ -6562,7 +6562,7 @@ S_do_delete_local(pTHX)
                 PERL_PANIC_ERROR_INTERNAL_HASH_ARRAY_HASH_DELETE_FORM_UNSUPPORTED();
     }
     else
-            PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED();
+            PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED(sv_peek(osv));
     if (sliced) {
         if (gimme == G_VOID)
             SP = ORIGMARK;
@@ -6627,7 +6627,7 @@ PP_wrapped(pp_delete,
             }
         }
         else
-            PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED();
+            PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED(sv_peek(MUTABLE_SV(hv)));
         if (discard)
             SP = ORIGMARK;
         else if (gimme == G_SCALAR) {
@@ -6652,7 +6652,7 @@ PP_wrapped(pp_delete,
                 PERL_PANIC_ERROR_INTERNAL_HASH_ARRAY_HASH_DELETE_FORM_UNSUPPORTED();
         }
         else
-            PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED();
+            PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED(sv_peek(MUTABLE_SV(hv)));
         if (!sv)
             sv = &PL_sv_undef;
         if (!discard)
@@ -6690,7 +6690,7 @@ PP_wrapped(pp_exists, ((PL_op->op_private & OPpEXISTS_SUB) ? 1 : 2), 0)
         }
     }
     else {
-        PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED();
+        PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED(sv_peek(MUTABLE_SV(hv)));
     }
     RETPUSHNO;
 }

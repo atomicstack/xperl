@@ -1625,8 +1625,8 @@ is(
 );
 like(
     $pp_hot,
-    qr/PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH\(\s*is_pp_rv2av\s*\?\s*perl_diag_selector_domain_1172_0_array_2\s*:\s*perl_diag_selector_domain_1172_0_hash_3/s,
-    'not-reference callers pass symbolic Perl reference types'
+    qr/if \(is_pp_rv2av\)\s*PERL_THROW_ERROR_TYPE_REFERENCE_ARRAY_REQUIRED\(sv_peek\(sv\)\);\s*PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED\(sv_peek\(sv\)\);/s,
+    'not-reference callers use named variants and capture the actual referent'
 );
 unlike(
     $pp_hot,

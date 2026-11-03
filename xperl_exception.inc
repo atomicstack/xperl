@@ -2867,6 +2867,16 @@ Perl_xperl_render_diagnostic_modern_body(pTHX_ HV *fields, const char *language,
         SV *rendered = Perl_xperl_render_diagnostic_template(aTHX_ fields,
                                                          language, engine);
 
+        if (rendered && SvOK(code) && !SvROK(code)
+            && strEQ(SvPV_nolen(code),
+                     "ERROR_TYPE_REFERENCE_" "REFERENT_TYPE_MISMATCH")) {
+            SV *observed = Perl_xperl_named_param(aTHX_ fields, "observed");
+            if (SvOK(observed)) {
+                sv_catpvs(rendered, "\nObserved referent: ");
+                sv_catsv(rendered, observed);
+            }
+        }
+
         return rendered ? rendered : newSVpvs("<no catalog template>");
     }
 }

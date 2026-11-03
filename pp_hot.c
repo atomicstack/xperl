@@ -2447,9 +2447,11 @@ PP(pp_rv2av)
             sv = amagic_deref_call(sv, is_pp_rv2av ? to_av_amg : to_hv_amg);
         }
         sv = SvRV(sv);
-        if (UNLIKELY(SvTYPE(sv) != type))
-            /* diag_listed_as: Not an ARRAY reference */
-            PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(is_pp_rv2av ? perl_diag_selector_domain_1172_0_array_2 : perl_diag_selector_domain_1172_0_hash_3);
+        if (UNLIKELY(SvTYPE(sv) != type)) {
+            if (is_pp_rv2av)
+                PERL_THROW_ERROR_TYPE_REFERENCE_ARRAY_REQUIRED(sv_peek(sv));
+            PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED(sv_peek(sv));
+        }
         else if (UNLIKELY(PL_op->op_flags & OPf_MOD
                 && PL_op->op_private & OPpLVAL_INTRO))
             PERL_THROW_ERROR_MUTATION_LOCALIZATION_THROUGH_REFERENCE_FORBIDDEN();
@@ -4627,7 +4629,7 @@ PP(pp_multideref)
                 }
                 sv = SvRV(sv);
                 if (UNLIKELY(SvTYPE(sv) != SVt_PVAV))
-                    PERL_THROW_ERROR_TYPE_REFERENCE_ARRAY_REQUIRED();
+                    PERL_THROW_ERROR_TYPE_REFERENCE_ARRAY_REQUIRED(sv_peek(sv));
             }
             else if (SvTYPE(sv) != SVt_PVAV) {
                 if (!isGV_with_GP(sv))
@@ -4817,7 +4819,7 @@ PP(pp_multideref)
                 }
                 sv = SvRV(sv);
                 if (UNLIKELY(SvTYPE(sv) != SVt_PVHV))
-                    PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED();
+                    PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED(sv_peek(sv));
             }
             else if (SvTYPE(sv) != SVt_PVHV) {
                 if (!isGV_with_GP(sv))
@@ -6504,7 +6506,7 @@ PP(pp_entersub)
         case SVt_PVHV:
         case SVt_PVAV:
           do_die:
-            PERL_THROW_ERROR_TYPE_REFERENCE_EXPECTED_CODE();
+            PERL_THROW_ERROR_TYPE_REFERENCE_EXPECTED_CODE(sv_peek(sv));
         }
     }
 
