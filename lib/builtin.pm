@@ -18,6 +18,7 @@ builtin - Perl pragma to import built-in utility functions
         true false is_bool
         inf nan
         rand_bytes
+        siphash siphash_1_3 siphash_2_4
         weaken unweaken is_weak
         blessed refaddr reftype
         created_as_string created_as_number
@@ -213,6 +214,47 @@ must not rely on combining separate requests producing the same result as one
 larger request.
 
 Available starting with Perl 5.46.
+
+=head2 siphash
+
+    $digest = siphash($rounds, $final_rounds, $string);
+    $digest = siphash($rounds, $final_rounds, $string, $seed);
+
+This function is currently B<experimental>.
+
+Computes SipHash with the requested number of compression and finalization
+rounds. Both counts must be non-negative decimal integers. C<$string> is a byte
+string. The result is exactly eight bytes, in little-endian order. Convert it
+to hexadecimal for display:
+
+    my $hex = unpack('H*', siphash_2_4('hello'));
+
+The reverse operation, C<pack('H*', $hex)>, turns hexadecimal text into bytes.
+For example, C<pack('H*', '000102030405060708090a0b0c0d0e0f')> makes the
+16-byte default seed.
+
+C<$seed> is exactly 16 bytes. When omitted, it defaults to the bytes C<00>
+through C<0f>, in that order. Supply an unpredictable secret seed when using
+SipHash against attacker-controlled input. The default seed produces
+reproducible hashes and is public.
+
+=head2 siphash_1_3
+
+    $digest = siphash_1_3($string);
+    $digest = siphash_1_3($string, $seed);
+
+This experimental function computes SipHash with one compression round and
+three finalization rounds. It has the same seed, input, and result format as
+L</siphash>.
+
+=head2 siphash_2_4
+
+    $digest = siphash_2_4($string);
+    $digest = siphash_2_4($string, $seed);
+
+This experimental function computes SipHash with two compression rounds and
+four finalization rounds. It has the same seed, input, and result format as
+L</siphash>.
 
 =head2 get_diagnostic_data
 

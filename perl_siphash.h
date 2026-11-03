@@ -223,10 +223,9 @@ void S_perl_siphash_seed_state(const unsigned char * const seed_buf, unsigned ch
     SIPHASH_SEED_STATE(seed_buf, v[0],v[1],v[2],v[3]);
 }
 
-#define PERL_SIPHASH_FNC(FNC,SIP_ROUNDS,SIP_FINAL_ROUNDS) \
+#define PERL_SIPHASH_CORE(FNC,PARAMS,SIP_ROUNDS,SIP_FINAL_ROUNDS) \
 PERL_STATIC_INLINE U64 \
-FNC ## _with_state_64 \
-  (const unsigned char * const state, const unsigned char *in, const STRLEN inlen) \
+FNC PARAMS \
 {                                   \
   const int left = inlen & 7;       \
   const U8 *end = in + inlen - left;\
@@ -272,8 +271,12 @@ FNC ## _with_state_64 \
                             \
   b = v0 ^ v1 ^ v2  ^ v3;   \
   return b;                 \
-}                           \
-                            \
+}
+
+#define PERL_SIPHASH_FNC(FNC,SIP_ROUNDS,SIP_FINAL_ROUNDS) \
+PERL_SIPHASH_CORE(FNC ## _with_state_64, \
+  (const unsigned char * const state, const unsigned char *in, const STRLEN inlen), \
+  SIP_ROUNDS, SIP_FINAL_ROUNDS) \
 PERL_STATIC_INLINE U32      \
 FNC ## _with_state          \
   (const unsigned char * const state, const unsigned char *in, const STRLEN inlen) \
@@ -314,4 +317,22 @@ PERL_SIPHASH_FNC(
     ,SIPROUND;SIPROUND;
     ,SIPROUND;SIPROUND;SIPROUND;SIPROUND;
 )
+
+PERL_SIPHASH_CORE(S_perl_hash_siphash_with_rounds_with_state_64,
+    (const unsigned char * const state, const unsigned char *in,
+     const STRLEN inlen, const UV rounds, const UV final_rounds),
+    for (UV i = 0; i < rounds; i++) SIPROUND;,
+    for (UV i = 0; i < final_rounds; i++) SIPROUND;)
+
+PERL_STATIC_INLINE U64
+S_perl_hash_siphash_with_rounds_64(const unsigned char * const seed,
+                                   const unsigned char *in, const STRLEN inlen,
+                                   const UV rounds, const UV final_rounds)
+{
+    U64 state[4];
+    SIPHASH_SEED_STATE(seed, state[0], state[1], state[2], state[3]);
+    return S_perl_hash_siphash_with_rounds_with_state_64((U8 *)state, in,
+                                                          inlen, rounds,
+                                                          final_rounds);
+}
 
