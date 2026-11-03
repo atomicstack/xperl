@@ -4651,6 +4651,7 @@ Perl_diag_append(pTHX_ SV **exception_slot, SV *err, UV diag_index,
     SV *diagnostic;
     const perl_diag_metadata_t *meta;
     const COP *location_cop;
+    MAGIC *source_magic;
 
     assert(diag_index && diag_index <= PERL_DIAG_METADATA_COUNT);
     meta = &perl_diag_metadata[diag_index];
@@ -4723,6 +4724,31 @@ Perl_diag_append(pTHX_ SV **exception_slot, SV *err, UV diag_index,
         PERL_SAFE_HV_FETCHS(diagnostic_hv, "is_hint");
         sv_setiv(*slot, 1);
     }
+    source_magic = diagnostic_params
+        ? SvMAGIC(MUTABLE_SV(diagnostic_params)) : NULL;
+    for (; source_magic; source_magic = source_magic->mg_moremagic) {
+        if (source_magic->mg_type == PERL_MAGIC_ext
+            && source_magic->mg_len == sizeof("xperl_c_source") - 1
+            && source_magic->mg_ptr
+            && memEQ(source_magic->mg_ptr, "xperl_c_source",
+                     sizeof("xperl_c_source") - 1)
+            && source_magic->mg_obj && SvROK(source_magic->mg_obj)
+            && SvTYPE(SvRV(source_magic->mg_obj)) == SVt_PVAV) {
+            AV *source = MUTABLE_AV(SvRV(source_magic->mg_obj));
+            SV **file = av_fetch(source, 0, FALSE);
+            SV **line = av_fetch(source, 1, FALSE);
+            HV *record = newHV();
+            if (file && line) {
+                (void)hv_stores(record, "file", newSVsv(*file));
+                (void)hv_stores(record, "line", newSVsv(*line));
+                (void)hv_stores(diagnostic_hv, "c_source",
+                                newRV_noinc(MUTABLE_SV(record)));
+            }
+            else
+                SvREFCNT_dec_NN(MUTABLE_SV(record));
+            break;
+        }
+    }
     params = NULL;
     PERL_SAFE_HV_FETCHS(diagnostic_hv, "params");
     if (diagnostic_params) {
@@ -4732,7 +4758,8 @@ Perl_diag_append(pTHX_ SV **exception_slot, SV *err, UV diag_index,
     else {
         sv_setrv_noinc(*slot, MUTABLE_SV(params = newAV()));
     }
-    if (params && !diagnostic_params && err
+    if (params && (!diagnostic_params
+                   || (source_magic && av_top_index(params) < 0)) && err
         && (!Perl_diag_has_positional_template(diag_index)
             || strEQ(meta->code, "ERROR_COMPILATION_UNCLASSIFIED_ERROR")
             || strEQ(meta->code, "ERROR_COMPILATION_UNCLASSIFIED_PARSER_ERROR")

@@ -55214,6 +55214,19 @@ $CONF = {
             ]
           },
           "counts_as_error" => 1,
+          "variants" => {
+            "ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_SYMBOL_NO_CONTEXT" => {
+              "macro" => "PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_SYMBOL_NO_CONTEXT",
+              "values" => {
+                "kind" => {
+                  "en" => "symbol"
+                }
+              },
+              "emit" => {
+                "api" => "DIE_NOCONTEXT"
+              }
+            }
+          },
           "emit" => {
             "api" => "CROAK",
             "aliases" => [

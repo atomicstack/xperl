@@ -534,7 +534,7 @@ XS(Perl_XPerl_Diagnostic_new)
     STRLEN code_len;
     static const char *keys[] = {
         "code", "number", "kind", "severity", "selector_key", "light",
-        "context_follows_index"
+        "context_follows_index", "c_source"
     };
     Size_t i;
 
@@ -1411,6 +1411,11 @@ Perl_xperl_json_diagnostic_head(pTHX_ SV *out, HV *fields)
         Perl_xperl_field(aTHX_ fields, "code"));
     sv_catpvs(out, ",\"location\":");
     Perl_xperl_json_location(aTHX_ out, Perl_xperl_field(aTHX_ fields, "location"));
+    if (SvOK(Perl_xperl_field(aTHX_ fields, "c_source"))) {
+        sv_catpvs(out, ",\"c_source\":");
+        Perl_xperl_json_location(aTHX_ out,
+            Perl_xperl_field(aTHX_ fields, "c_source"));
+    }
     sv_catpvs(out, ",\"contents\":[");
 }
 
@@ -3159,6 +3164,21 @@ Perl_xperl_render_exception_annotated(pTHX_ SV *object, const char *language,
                                 aTHX_ engine, file, line, language);
                             sv_catpvs(text_location, ".");
                         }
+                    }
+                }
+            }
+            if (!grouped_context) {
+                SV *c_source = Perl_xperl_field(aTHX_ diagnostic, "c_source");
+                if (SvROK(c_source) && SvTYPE(SvRV(c_source)) == SVt_PVHV) {
+                    HV *source = MUTABLE_HV(SvRV(c_source));
+                    SV *file = Perl_xperl_field(aTHX_ source, "file");
+                    SV *line = Perl_xperl_field(aTHX_ source, "line");
+                    if (SvOK(file) && SvOK(line)) {
+                        sv_catpvs(prefix, " [C ");
+                        sv_catsv(prefix, file);
+                        sv_catpvs(prefix, ":");
+                        sv_catsv(prefix, line);
+                        sv_catpvs(prefix, "]");
                     }
                 }
             }

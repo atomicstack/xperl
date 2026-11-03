@@ -1993,9 +1993,6 @@ sub diag_helper_eligible {
           && $emit_params[0]{name} eq 'category'
           && $emit_params[0]{type} eq 'uv';
     }
-    return
-      if grep { Diag::Migration::variant_api( $diag, $_ ) ne $api } values %{ $diag->{variants} || {} };
-
     if ( $api =~ /\A(?:WARNER|CK_WARNER|CK_WARNER_D|FATAL_WARNER)\z/ ) {
         my @categories = @{ $diag->{warning_categories} || [] };
         return unless ( @categories && @categories <= 4 ) || @emit_params;
@@ -2085,7 +2082,8 @@ sub helper_signature {
       && ( @{ $diag->{warning_categories} || [] }
         || grep { $_->{name} eq 'category' } @{ $diag->{emit}{params} || [] } );
 
-    return join( ",\n    ", 'UV ' . generated_c_name('diagnostic_index'), @formal );
+    return join( ",\n    ", 'UV ' . generated_c_name('diagnostic_index'),
+        'const char *source_file', 'UV source_line', @formal );
 }
 
 # Format one composed parameter into the shared carrier arrays, preserving UTF-8 flags.
@@ -2167,6 +2165,8 @@ sub write_helper_delivery {
     my $exception_slot = generated_c_name('exception_slot');
     my $diag_index = generated_c_name('diagnostic_index');
     my $append = generated_c_function('append');
+
+    $params = "Perl_diag_source_params($params, source_file, source_line)";
 
     if ( my $delivery = ordinary_delivery_definition( $api, 1 ) ) {
         my $function = $delivery->{sv_function};
@@ -2272,7 +2272,6 @@ sub collect_helper_candidates {
 
     for my $diag (@$diagnostics) {
         my @aliases = @{ $diag->{emit}{aliases} || [] };
-        next if @aliases && keys %{ $diag->{variants} || {} };
         my @helper_specs =
           map { [ $_, undef ] } ( $diag->{emit}{api}, @aliases );
         if ( my $macro = $diag->{emit}{accumulate_macro} ) {
@@ -2390,8 +2389,34 @@ C
 sub render_helpers {
     my ($registry) = @_;
 
-    return render_word_identity_helper()
+    return render_source_params_helper()
+      . render_word_identity_helper()
       . join( '', map { $registry->{bodies}{$_} } sort keys %{ $registry->{bodies} } );
+}
+
+sub render_source_params_helper {
+    return <<'C';
+/* Carry the C call site on the parameter array until the diagnostic is built. */
+PERL_STATIC_INLINE AV *
+Perl_diag_source_params(AV *params, const char *file, UV line)
+{
+    dTHX;
+    AV *source;
+    SV *source_ref;
+
+    if (!params)
+        params = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    source = newAV();
+    av_push(source, newSVpv(file, 0));
+    av_push(source, newSVuv(line));
+    source_ref = newRV_noinc(MUTABLE_SV(source));
+    (void)sv_magicext(MUTABLE_SV(params), source_ref, PERL_MAGIC_ext,
+                      NULL, "xperl_c_source", sizeof("xperl_c_source") - 1);
+    SvREFCNT_dec_NN(source_ref);
+    return params;
+}
+
+C
 }
 
 # Macro formats and capture
@@ -3239,7 +3264,7 @@ sub parser_action_call {
 # Select warning or fatal taint delivery while retaining diagnostic metadata.
 sub taint_call {
     my ( $diag, $values, $params_ref, $message_sv ) = @_;
-    $params_ref ||= 'NULL';
+    $params_ref ||= 'Perl_diag_source_params(NULL, __FILE__, __LINE__)';
     my $metadata = diagnostic_enum_name( $diag->{code}, 'IDX' );
     my ( $warning, $fatal );
 
@@ -3264,7 +3289,7 @@ sub warning_call {
       = @{$options}{
         qw(api format values params category message warning_categories)
       };
-    $params_ref ||= 'NULL';
+    $params_ref ||= 'Perl_diag_source_params(NULL, __FILE__, __LINE__)';
     my @categories = @{ $diag->{warning_categories} || [] };
     my @delivery   = grep { ( $_->{role} || '' ) ne 'regex_location' } @{ $diag->{emit}{params} || [] };
     my @locations  = grep { ( $_->{role} || '' ) eq 'regex_location' } @{ $diag->{emit}{params} || [] };
@@ -3346,6 +3371,8 @@ sub captured_delivery_call {
         qw(parser checked positional direct_empty_croak
           parameter_av_expression)
       };
+    $parameter_av_expression =
+      "Perl_diag_source_params($parameter_av_expression, __FILE__, __LINE__)";
     my ( $template_message_var, $message_format, $message_values, $cformat, $capture_values ) =
       @{$message}{qw(variable format values original_format original_values)};
     my $context_ptr_name = generated_c_name('context_ptr');
@@ -3483,10 +3510,11 @@ sub uncaptured_delivery_call {
       @{$format}{qw(format_expression value_expressions delivery_expressions)};
     my @delivery_params = @{ $format->{delivery_inputs} };
     my $delivery        = ordinary_delivery_definition( $emitter, 0 );
+    my $source_params = 'Perl_diag_source_params(NULL, __FILE__, __LINE__)';
 
     if ( $delivery && $emitter ne 'CROAK_CONTEXT' ) {
         my ( $function, $context ) = @{$delivery}{qw(function context)};
-        return "$function($context$catalog_metadata, NULL, $cformat$values)";
+        return "$function($context$catalog_metadata, $source_params, $cformat$values)";
     }
 
     if ( $emitter eq 'NOPERL_DIE' ) {
@@ -3495,11 +3523,11 @@ sub uncaptured_delivery_call {
 
     if ( $emitter eq 'CROAK_CONTEXT' ) {
         my $context = @delivery_params ? "$delivery_params[0], " : 'aTHX_ ';
-        return generated_c_function('croak') . "($context$catalog_metadata, NULL, $cformat$values)";
+        return generated_c_function('croak') . "($context$catalog_metadata, $source_params, $cformat$values)";
     }
 
     if ( $emitter eq 'APPEND_EXCEPTION' ) {
-        return generated_c_function('append') . "(aTHX_ (SV **)($delivery_params[0]), &PL_sv_undef, $catalog_metadata, NULL, 0)";
+        return generated_c_function('append') . "(aTHX_ (SV **)($delivery_params[0]), &PL_sv_undef, $catalog_metadata, $source_params, 0)";
     }
 
     if ( Diag::Migration::is_warning_emitter($emitter) ) {
@@ -3517,18 +3545,18 @@ sub uncaptured_delivery_call {
 
     if ( $emitter eq 'DEFER_ERROR' ) {
         return "Perl_defer_error_diag_params(aTHX_ mess($cformat$values), "
-          . "$catalog_metadata, NULL, NULL, 0)";
+          . "$catalog_metadata, $source_params, NULL, 0)";
     }
 
     if ( $emitter eq 'YYERROR' ) {
         my $message = @{ $format->{message_inputs} } ? "form($cformat$values)" : $cformat;
-        return "Perl_yyerror_diag(aTHX_ $catalog_metadata, $message, 0)";
+        return "Perl_yyerror_diag_params(aTHX_ $catalog_metadata, $message, 0, $source_params)";
     }
 
     if ( $emitter eq 'YYERROR_PV' ) {
-        return "Perl_yyerror_diag(aTHX_ $catalog_metadata, form($cformat$values)$call_values)";
+        return "Perl_yyerror_diag_params(aTHX_ $catalog_metadata, form($cformat$values)$call_values, $source_params)";
     }
-    return "yyerror_pvn(form($cformat$values), strlen(form($cformat$values))$call_values)";
+    return "Perl_yyerror_diag_pvn_params(aTHX_ $catalog_metadata, form($cformat$values), strlen(form($cformat$values))$call_values, $source_params)";
 }
 
 # Emit delivery aliases using the same captured parameters as the primary macro.
@@ -3544,6 +3572,10 @@ sub write_delivery_aliases {
     my @delivery_params = @{ $format->{delivery_inputs} };
     my ( $positional_capture, $parameter_av_expression ) =
       @{$capture}{qw(positional parameter_av_expression)};
+    $parameter_av_expression =
+      "Perl_diag_source_params($parameter_av_expression, __FILE__, __LINE__)"
+      if $parameter_av_expression;
+    my $source_params = 'Perl_diag_source_params(NULL, __FILE__, __LINE__)';
     my @fatal_alias_setup   = @{ $setup->{fatal} };
     my @warning_alias_setup = @{ $setup->{warning} };
     my ( $fatal_alias_values, $warning_alias_values, $message_format, $template_message_var ) = @{$setup}{
@@ -3610,7 +3642,7 @@ sub write_delivery_aliases {
 
         if ( $delivery && $alias ne 'CROAK' ) {
             my ( $function, $context ) = @{$delivery}{qw(function context)};
-            $alias_call = "$function($context$catalog_metadata, NULL, $cformat$values)";
+            $alias_call = "$function($context$catalog_metadata, $source_params, $cformat$values)";
         }
         elsif ( $alias eq 'NOPERL_DIE' ) {
             $alias_call = "Perl_noperl_die($cformat$values)";
@@ -3656,6 +3688,7 @@ sub render_helper_macro {
         ? diagnostic_enum_name( $diag->{code}, 'IDX' )
         : 'aTHX_ ' . diagnostic_enum_name( $diag->{code}, 'IDX' )
     );
+    push @helper_args, '__FILE__', '__LINE__';
 
     if ( $api eq 'APPEND_EXCEPTION' || $api eq 'APPEND_WARNING' ) {
         push @helper_args, '(SV **)(' . $diag->{emit}{params}[0]{name} . ')';
@@ -3758,6 +3791,7 @@ sub write_dynamic_macros {
     my @dynamic_call_args =
       map { $_->{name} } @{ $diag->{emit}{params} || [] };
     my $dynamic_values = join( ', ', @dynamic_args, @dynamic_call_args );
+    my $source_params = 'Perl_diag_source_params(NULL, __FILE__, __LINE__)';
     die "diagnostic $code needs one format parameter for warning compatibility\n"
       if $diag->{dynamic} eq 'format'
       && Diag::Migration::is_warning_emitter($emitter)
@@ -3787,7 +3821,7 @@ sub write_dynamic_macros {
             );
         }
         else {
-            $dynamic_call = generated_c_function('croak_nocontext') . "($catalog_metadata, NULL, $dynamic_values)";
+            $dynamic_call = generated_c_function('croak_nocontext') . "($catalog_metadata, $source_params, $dynamic_values)";
         }
     }
     elsif ( $diag->{dynamic} eq 'sv' ) {
@@ -3795,9 +3829,9 @@ sub write_dynamic_macros {
     }
     else {
         my $function = $emitter eq 'YYERROR'
-          || $emitter eq 'YYERROR_PV' ? 'Perl_yyerror_diag' : 'Perl_yyerror_diag_pvn';
+          || $emitter eq 'YYERROR_PV' ? 'Perl_yyerror_diag_params' : 'Perl_yyerror_diag_pvn_params';
         my @delivery = $emitter eq 'YYERROR' ? ('0') : @dynamic_call_args;
-        $dynamic_call = $function . '(aTHX_ ' . join( ', ', $catalog_metadata, @dynamic_args, @delivery ) . ')';
+        $dynamic_call = $function . '(aTHX_ ' . join( ', ', $catalog_metadata, @dynamic_args, @delivery, $source_params ) . ')';
     }
 
     my $dynamic_params = join( ', ', @dynamic_args, @dynamic_call_args );

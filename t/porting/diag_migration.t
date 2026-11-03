@@ -1674,7 +1674,7 @@ sub macro_uses_catalog_entry {
 
 like(
     $helpers,
-qr/Perl_throw_croak_[0-9]+_[0-9]+\(pTHX_ UV diag_index\)\n\{\n    Perl_diag_croak_sv\(aTHX_ diag_index, NULL, NULL\);/,
+qr/Perl_throw_croak_[0-9]+_[0-9]+\(pTHX_ UV diag_index,\n\s*const char \*source_file,\n\s*UV source_line\)\n\{\n    Perl_diag_croak_sv\(aTHX_ diag_index, Perl_diag_source_params\(NULL, source_file, source_line\), NULL\);/,
     'argumentless fatal helpers delegate template selection to the throw API'
 );
 like(
@@ -1684,12 +1684,12 @@ like(
 );
 like(
     $helpers,
-qr/Perl_throw_die_nocontext_[0-9]+_[0-9]+\(UV diag_index\)\n\{\n\s*dTHX;\n\s*Perl_diag_die_nocontext_sv\(diag_index, NULL, NULL\);/,
+qr/Perl_throw_die_nocontext_[0-9]+_[0-9]+\(UV diag_index,\n\s*const char \*source_file,\n\s*UV source_line\)\n\{\n\s*dTHX;\n\s*Perl_diag_die_nocontext_sv\(diag_index, Perl_diag_source_params\(NULL, source_file, source_line\), NULL\);/,
     'context-free DIE helpers retain their no-context API'
 );
 like(
     $helpers,
-qr/Perl_throw_warn_nocontext_[0-9]+_[0-9]+\(UV diag_index,[\s\S]*?\n\s*Perl_diag_warn_nocontext_sv\(diag_index, params_av, NULL\);/,
+qr/Perl_throw_warn_nocontext_[0-9]+_[0-9]+\(UV diag_index,[\s\S]*?\n\s*Perl_diag_warn_nocontext_sv\(diag_index, Perl_diag_source_params\(params_av, source_file, source_line\), NULL\);/,
     'context-free warning helpers retain their no-context API'
 );
 like(
@@ -1725,7 +1725,7 @@ my ($runtime_category_helper) =
   /(Perl_throw_warner_[0-9]+_[0-9]+)/;
 like(
     $helpers,
-qr/\Q$runtime_category_helper\E\(pTHX_ UV diag_index,[\s\S]*?U32 category\)\n\{[\s\S]*?Perl_diag_warner_sv\(aTHX_ diag_index, params_av, category, NULL\);/,
+qr/\Q$runtime_category_helper\E\(pTHX_ UV diag_index,[\s\S]*?U32 category\)\n\{[\s\S]*?Perl_diag_warner_sv\(aTHX_ diag_index, Perl_diag_source_params\(params_av, source_file, source_line\), category, NULL\);/,
     'shared warning helpers accept runtime categories as delivery arguments'
 );
 like(
@@ -1773,7 +1773,7 @@ my ($default_helper) =
   /(Perl_throw_croak_[0-9]+_[0-9]+)/;
 like(
     $helpers,
-qr/\Q$default_helper\E\(pTHX_ UV diag_index,\n\s*HV \*ma_arg1,[\s\S]*?const char \*ma_default1\)[\s\S]*?const perl_hvname_default scratch_default_arg1 = \{ ma_arg1, ma_default1 \};[\s\S]*?PERL_HvNAMEf_DEFAULT, &scratch_default_arg1/,
+qr/\Q$default_helper\E\(pTHX_ UV diag_index,\n\s*const char \*source_file,\n\s*UV source_line,\n\s*HV \*ma_arg1,[\s\S]*?const char \*ma_default1\)[\s\S]*?const perl_hvname_default scratch_default_arg1 = \{ ma_arg1, ma_default1 \};[\s\S]*?PERL_HvNAMEf_DEFAULT, &scratch_default_arg1/,
     'shared helpers parameterize custom-format fallback values'
 );
 like(
@@ -1806,7 +1806,7 @@ my ($taint_helper) =
   generated_macro_body( $header, 'PERL_CHECK_TAINT_ERROR_TAINT_DEPENDENCY_INSECURE' ) =~ /(Perl_throw_taint_[0-9]+_[0-9]+)/;
 like(
     $helpers,
-qr/\Q$taint_helper\E\(pTHX_ UV diag_index,[\s\S]*?if \(PL_unsafe \|\| TAINT_WARN_get\)[\s\S]*?Perl_diag_taint_warner_d_sv\(aTHX_ diag_index, params_av, packWARN\(WARN_TAINT\), NULL\);[\s\S]*?Perl_diag_croak_sv\(aTHX_ diag_index, params_av, NULL\);/,
+qr/\Q$taint_helper\E\(pTHX_ UV diag_index,[\s\S]*?if \(PL_unsafe \|\| TAINT_WARN_get\)[\s\S]*?Perl_diag_taint_warner_d_sv\(aTHX_ diag_index, Perl_diag_source_params\(params_av, source_file, source_line\), packWARN\(WARN_TAINT\), NULL\);[\s\S]*?Perl_diag_croak_sv\(aTHX_ diag_index, Perl_diag_source_params\(params_av, source_file, source_line\), NULL\);/,
     'taint helpers retain their warning-or-croak delivery policy'
 );
 my ($other_taint_helper) =
@@ -1818,7 +1818,7 @@ my ($append_helper) =
 my ($append_helper_body) = $helpers =~ /(^\Q$append_helper\E\([\s\S]*?^\})/m;
 like(
     $helpers,
-qr/\Q$append_helper\E\(pTHX_ UV diag_index,\n\s*SV \*\*exception_slot\)[\s\S]*?Perl_diag_append\(aTHX_ exception_slot, NULL, diag_index, NULL, 0\);/,
+qr/\Q$append_helper\E\(pTHX_ UV diag_index,\n\s*const char \*source_file,\n\s*UV source_line,\n\s*SV \*\*exception_slot\)[\s\S]*?Perl_diag_append\(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params\(NULL, source_file, source_line\), 0\);/,
     'argumentless append helpers preserve the accumulator delivery'
 );
 unlike(
@@ -1834,7 +1834,7 @@ my ($other_append_text_helper) =
   /(Perl_throw_append_exception_[0-9]+_[0-9]+)/;
 like(
     $helpers,
-qr/\Q$append_text_helper\E\(pTHX_ UV diag_index,[\s\S]*?Perl_diag_append\(aTHX_ exception_slot, NULL, diag_index, params_av, 0\);/,
+qr/\Q$append_text_helper\E\(pTHX_ UV diag_index,[\s\S]*?Perl_diag_append\(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params\(params_av, source_file, source_line\), 0\);/,
     'append helpers pass structured parameters into the accumulator'
 );
 is( $other_append_text_helper, $append_text_helper, 'append diagnostics with matching arguments reuse one helper' );
@@ -1883,7 +1883,7 @@ like(
 );
 like(
     $helpers,
-qr/\Q$locale_warning_helper\E\(pTHX_ UV diag_index,[\s\S]*?SV \*\*exception_slot,[\s\S]*?U32 category[\s\S]*?Perl_diag_append\(aTHX_ exception_slot, NULL, diag_index, params_av, category\);/,
+qr/\Q$locale_warning_helper\E\(pTHX_ UV diag_index,[\s\S]*?SV \*\*exception_slot,[\s\S]*?U32 category[\s\S]*?Perl_diag_append\(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params\(params_av, source_file, source_line\), category\);/,
     'locale character warning retains structured data and warning category'
 );
 like( $locale_warning_macro, qr/packWARN\(WARN_LOCALE\)/,
@@ -1911,7 +1911,7 @@ like(
 );
 like(
     $unknown_class_body,
-qr/Perl_yyerror_diag_pvn_params\(aTHX_ perl_diag_error_syntax_declaration_variable_type_package_not_found_idx,[\s\S]*?params_av\)/,
+qr/Perl_yyerror_diag_pvn_params\(aTHX_ perl_diag_error_syntax_declaration_variable_type_package_not_found_idx,[\s\S]*?Perl_diag_source_params\(params_av, __FILE__, __LINE__\)\)/,
     'typed parser templates still use parser error accumulation'
 );
 like(
@@ -1922,7 +1922,7 @@ qr/^#define PERL_WARN_WARNING_UTF8_TWO_BYTE_SEQUENCE_CONTINUATION_INVALID\(ma_op
 my $syntax_error_body = generated_macro_body( $header, 'PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID' );
 like(
     $syntax_error_body,
-    qr/Perl_yyerror_diag_pvn_params\(aTHX_ perl_diag_error_syntax_invalid_idx, NULL, 0, 0, NULL\)/,
+    qr/Perl_yyerror_diag_pvn_params\(aTHX_ perl_diag_error_syntax_invalid_idx, NULL, 0, 0, Perl_diag_source_params\(NULL, __FILE__, __LINE__\)\)/,
     'zero-argument catalogued parser errors defer rendering'
 );
 unlike(
@@ -1935,7 +1935,7 @@ my $unclassified_parser_body = generated_macro_body(
 );
 like(
     $unclassified_parser_body,
-qr/sv_setpvf\(tmpl_message, "%" SVf, SVfARG\(scratch_message_copy\)\);[\s\S]*?Perl_yyerror_diag_pvn_params\(aTHX_ perl_diag_error_compilation_unclassified_parser_error_idx, NULL, 0, 0, params_av\)/,
+qr/sv_setpvf\(tmpl_message, "%" SVf, SVfARG\(scratch_message_copy\)\);[\s\S]*?Perl_yyerror_diag_pvn_params\(aTHX_ perl_diag_error_compilation_unclassified_parser_error_idx, NULL, 0, 0, Perl_diag_source_params\(params_av, __FILE__, __LINE__\)\)/,
     'unclassified parser diagnostics keep their caller-supplied message as data'
 );
 my $deferred_error_body = generated_macro_body(
@@ -1943,7 +1943,7 @@ my $deferred_error_body = generated_macro_body(
 );
 like(
     $deferred_error_body,
-qr/Perl_defer_error_diag_params\(aTHX_ &PL_sv_undef, perl_diag_error_strict_vars_global_symbol_requires_explicit_package_name_idx, params_av, 0\)/,
+qr/Perl_defer_error_diag_params\(aTHX_ &PL_sv_undef, perl_diag_error_strict_vars_global_symbol_requires_explicit_package_name_idx, Perl_diag_source_params\(params_av, __FILE__, __LINE__\), 0\)/,
     'deferred parser errors record structured data without rendering early'
 );
 unlike(

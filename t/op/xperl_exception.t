@@ -373,6 +373,15 @@ q{sub XPerl::lv_temporary :lvalue { index "abc", 0 } XPerl::lv_temporary = 1;},
         );
     }
 
+    eval { *{my $undef} = 3 };
+    is( $@->contents->[0]->code,
+        'ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED',
+        'the named symbol throw keeps the catalog code' );
+    is( $@->contents->[0]->params->[0]{value}, 6,
+        'the named symbol throw keeps the selector value' );
+    like( $@->render_as_legacy('en'), qr/undefined value as a symbol reference/,
+        'the named symbol throw selects the symbol message' );
+
     my @warnings;
     {
         local $SIG{__EXCEPT__} = sub { push @warnings, $_[0] };
@@ -4392,6 +4401,10 @@ ok(
 );
 is( $@->contents->[0]->code,
     'ERROR_SYNTAX_INVALID', 'a generated parser macro records its catalog code' );
+like( $@->contents->[0]->{c_source}{file}, qr/\.c\z/,
+    'a parser diagnostic records its C call-site file' );
+cmp_ok( $@->contents->[0]->{c_source}{line}, '>', 0,
+    'a parser diagnostic records its C call-site line' );
 is( $@->contents->[0]->number,
     1164, 'the parser diagnostic retains its catalog number' );
 ok(
@@ -4416,9 +4429,24 @@ is_diagnostic_text( $@->contents->[0],
     'syntax error', 'the diagnostic renders its catalog template' );
 like(
     $@->render_as_modern('en'),
-qr/#1164 FATAL_ERROR\.CORE_COMPILE\.ERROR_SYNTAX_INVALID \(eval \d+\):1\nSyntax error at \(eval \d+\) line 1, at EOF/,
+qr/#1164 FATAL_ERROR\.CORE_COMPILE\.ERROR_SYNTAX_INVALID \(eval \d+\):1 \[C [^\]]+\.c:\d+\]\nSyntax error at \(eval \d+\) line 1, at EOF/,
     'modern exception rendering prefixes the diagnostic location'
 );
+
+eval { my $array = []; my $value = $array->{key}; };
+is( $@->contents->[0]->code,
+    'ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH',
+    'a runtime throw retains its catalog code' );
+like( $@->contents->[0]->{c_source}{file}, qr/\.c\z/,
+    'a runtime throw records its C call-site file' );
+cmp_ok( $@->contents->[0]->{c_source}{line}, '>', 0,
+    'a runtime throw records its C call-site line' );
+my $runtime_json = JSON::PP->new->decode( $@->as_json );
+is( $runtime_json->{contents}[0]{c_source}{file},
+    $@->contents->[0]->{c_source}{file},
+    'exception JSON includes the C source packet' );
+like( $@->render_as_modern('en'), qr/\[C [^\]]+\.c:\d+\]/,
+    'modern rendering shows the C call site' );
 
 eval 'package XPerlVersionError 01;';
 my ($version_error) = grep { $_->code eq 'ERROR_SYNTAX_VERSION_INVALID_DECLARATION' } @{ $@->contents };

@@ -143,7 +143,7 @@ S_rv2gv(pTHX_ SV *sv, const bool vivify_sv, const bool strict,
                     goto wasref;
                 }
                 if (PL_op->op_flags & OPf_REF || strict) {
-                    PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_NO_CONTEXT(perl_diag_selector_domain_1755_0_symbol_6);
+                    PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_SYMBOL_NO_CONTEXT();
                 }
                 if (ckWARN(WARN_UNINITIALIZED))
                     report_uninit(sv);
