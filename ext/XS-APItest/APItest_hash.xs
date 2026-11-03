@@ -1,5 +1,112 @@
 MODULE = XS::APItest:Hash               PACKAGE = XS::APItest::Hash
 
+UV
+ordinary_hash_capacity_for(live, minimum)
+        UV live
+        UV minimum
+    CODE:
+        RETVAL = live <= U32_MAX && minimum <= U32_MAX
+            ? S_hv_oa_capacity_for((U32)live, (U32)minimum) : 0;
+    OUTPUT:
+        RETVAL
+
+UV
+ordinary_hash_size_valid(buckets, entries)
+        UV buckets
+        UV entries
+    CODE:
+        RETVAL = buckets <= U32_MAX && entries <= U32_MAX
+            ? S_hv_oa_size_valid((U32)buckets, (U32)entries) : 0;
+    OUTPUT:
+        RETVAL
+
+void
+ordinary_hash_reserve_over_limit(hv)
+        HV *hv
+    CODE:
+        hv_ksplit(hv, (IV)HV_MAX_KEYS + 1);
+
+void
+ordinary_hash_reserve_maximum(hv)
+        HV *hv
+    CODE:
+        if (sizeof(Size_t) >= 8)
+            croak("maximum reservation probe is only safe on 32-bit Size_t");
+        hv_ksplit(hv, (IV)HV_MAX_KEYS);
+
+void
+ordinary_hash_saturated_store(hv, replace)
+        HV *hv
+        IV replace
+    CODE:
+        ENTER;
+        SAVESTRLEN(HvTOTALKEYS(hv));
+        hv_ksplit(hv, 9);
+        HvTOTALKEYS(hv) = HV_MAX_KEYS;
+        if (replace)
+            hv_store(hv, "kept", 4, &PL_sv_yes, 0);
+        else
+            hv_store(hv, "fresh", 5, &PL_sv_yes, 0);
+        LEAVE;
+
+UV
+ordinary_hash_saturated_fetch_missing(hv)
+        HV *hv
+    PREINIT:
+        SV **svp;
+    CODE:
+        ENTER;
+        SAVESTRLEN(HvTOTALKEYS(hv));
+        hv_ksplit(hv, 9);
+        HvTOTALKEYS(hv) = HV_MAX_KEYS;
+        svp = hv_fetch(hv, "missing", 7, 0);
+        RETVAL = svp != NULL;
+        LEAVE;
+    OUTPUT:
+        RETVAL
+
+AV *
+hv_max_encoding_info(hv, reserve)
+        HV *hv
+        IV reserve
+    PREINIT:
+        AV *result;
+    CODE:
+        if (reserve >= 0)
+            hv_ksplit(hv, reserve);
+        result = newAV();
+        av_push(result, newSVuv(HvMAX_RAW(hv)));
+        av_push(result, newSVuv(HvMAX(hv)));
+        av_push(result, newSVuv(cBOOL(HvIS_LINEAR(hv))));
+        av_push(result, newSVuv(HvIS_LINEAR(hv) ? HvLINEAR_CAP(hv) : 0));
+        RETVAL = result;
+    OUTPUT:
+        RETVAL
+
+AV *
+hv_max_tiny_encoding_info(capacity)
+        UV capacity
+    PREINIT:
+        HV *hv;
+        AV *result;
+    CODE:
+        if (capacity > 8)
+            croak("tiny test capacity is out of range");
+        hv = newHV();
+        assert(!HvARRAY(hv));
+        HvMAX_SET_LINEAR(hv, (U32)capacity);
+        result = newAV();
+        av_push(result, newSVuv(HvMAX_RAW(hv)));
+        av_push(result, newSVuv(HvMAX(hv)));
+        av_push(result, newSVuv(cBOOL(HvIS_LINEAR(hv))));
+        av_push(result, newSVuv(HvLINEAR_CAP(hv)));
+        /* This HV has no backing array. Restore its normal form before freeing it. */
+        HvMAX_SET(hv, PERL_HASH_DEFAULT_HvMAX);
+        SvREFCNT_dec_NN((SV *)hv);
+        RETVAL = result;
+    OUTPUT:
+        RETVAL
+
 AV *
 shared_hek_refcount_probe(count)
     UV count
@@ -23,23 +130,24 @@ AV *
 shared_key_storage_info()
     PREINIT:
         AV *result;
-        U32 capacity;
-        U32 live;
-        U32 tombstones;
-        U32 i;
+        Size_t capacity;
+        Size_t live;
+        Size_t tombstones;
+        Size_t i;
+        Size_t distance;
         UV max_distance = 0;
         UV total_distance = 0;
         HEK **slots;
     CODE:
-        capacity = HvARRAY(PL_strtab) ? HvMAX(PL_strtab) + 1 : 0;
-        live = HvTOTALKEYS(PL_strtab);
+        capacity = HvARRAY(PL_strtab) ? (Size_t)HvMAX(PL_strtab) + 1 : 0;
+        live = (Size_t)HvTOTALKEYS(PL_strtab);
         tombstones = HvSTRTAB(PL_strtab)->tombstones;
         slots = HvSTRSLOTS(PL_strtab);
         for (i = 0; i < capacity; i++) {
             HEK *hek = slots[i];
             if (hek && hek != HvSTR_TOMBSTONE) {
-                UV distance = (i - (HEK_HASH(hek) & (capacity - 1)))
-                              & (capacity - 1);
+                distance = (i - ((Size_t)HEK_HASH(hek) & (capacity - 1)))
+                           & (capacity - 1);
                 total_distance += distance;
                 if (distance > max_distance)
                     max_distance = distance;
@@ -56,6 +164,29 @@ shared_key_storage_info()
         RETVAL = result;
     OUTPUT:
         RETVAL
+
+UV
+shared_key_capacity_for(live)
+        UV live
+    CODE:
+        RETVAL = (UV)(Size_t)live == live
+            ? (UV)S_hv_strtab_capacity_for((Size_t)live) : 0;
+    OUTPUT:
+        RETVAL
+
+UV
+shared_key_size_valid(capacity)
+        UV capacity
+    CODE:
+        RETVAL = (UV)(Size_t)capacity == capacity
+            ? (UV)S_hv_strtab_size_valid((Size_t)capacity) : 0;
+    OUTPUT:
+        RETVAL
+
+void
+shared_key_reserve_overflow()
+    CODE:
+        hv_ksplit(PL_strtab, IV_MAX);
 
 void
 rot13_hash(hash)
@@ -283,6 +414,28 @@ common(params)
         OUTPUT:
         RETVAL
 
+SV *
+shared_query_key(input)
+        SV *input
+    PREINIT:
+        STRLEN len;
+        const char *key;
+        I32 shared_len;
+    CODE:
+        key = SvPV(input, len);
+        if (len > I32_MAX)
+            croak("shared query key is too long");
+        shared_len = SvUTF8(input) ? -(I32)len : (I32)len;
+        RETVAL = newSVpvn_share(key, shared_len, 0);
+    OUTPUT:
+        RETVAL
+
+void
+disable_hash_key_sharing(hash)
+        HV *hash
+    CODE:
+        HvSHAREKEYS_off(hash);
+
 void
 test_hv_free_ent()
         PPCODE:
@@ -327,8 +480,8 @@ test_shared_hek_probe(input, max_growth_keys = 0)
         HEK **held = NULL;
         U32 held_count = 0;
         U32 held_capacity = 0;
-        U32 capacity_before;
-        U32 capacity_after;
+        Size_t capacity_before;
+        Size_t capacity_after;
         U32 i;
         Size_t refs_after_first;
         Size_t refs_after_duplicate;
@@ -338,13 +491,14 @@ test_shared_hek_probe(input, max_growth_keys = 0)
         bool target_utf8;
         bool target_was_utf8;
         I32 target_len;
-        U32 tombstones_before;
-        U32 tombstones_after_delete;
-        U32 tombstones_after_reinsert;
-        U32 tombstones_after_cleanup;
-        U32 cleanup_limit;
-        U32 tombstones_at_cleanup = 0;
-        U32 live_at_cleanup = 0;
+        Size_t tombstones_before;
+        Size_t tombstones_after_delete;
+        Size_t tombstones_after_reinsert;
+        Size_t tombstones_after_cleanup;
+        Size_t cleanup_limit;
+        Size_t tombstones_at_cleanup = 0;
+        Size_t live_at_cleanup = 0;
+        Size_t cleanup_i;
         bool cleanup_observed = FALSE;
         char keybuf[96];
         STRLEN keylen;
@@ -360,7 +514,7 @@ test_shared_hek_probe(input, max_growth_keys = 0)
         share_len = SvUTF8(input) ? -(SSize_t)len : (SSize_t)len;
         PERL_HASH(hash, pv, len);
         target = share_hek(pv, share_len, hash);
-        capacity_before = HvMAX(PL_strtab) + 1;
+        capacity_before = (Size_t)HvMAX(PL_strtab) + 1;
         refs_after_first = HvSTR_REFCOUNT(target);
         duplicate = share_hek(pv, share_len, hash);
         refs_after_duplicate = HvSTR_REFCOUNT(target);
@@ -385,11 +539,11 @@ test_shared_hek_probe(input, max_growth_keys = 0)
                 keylen = strlen(keybuf);
                 PERL_HASH(hash, keybuf, keylen);
                 held[held_count++] = share_hek(keybuf, keylen, hash);
-                if (HvMAX(PL_strtab) + 1 > capacity_before)
+                if ((Size_t)HvMAX(PL_strtab) + 1 > capacity_before)
                     break;
             }
         }
-        capacity_after = HvMAX(PL_strtab) + 1;
+        capacity_after = (Size_t)HvMAX(PL_strtab) + 1;
         duplicate = share_hek(pv, share_len, HEK_HASH(target));
         refs_after_duplicate = HvSTR_REFCOUNT(target);
         same_pointer = target == duplicate;
@@ -407,20 +561,21 @@ test_shared_hek_probe(input, max_growth_keys = 0)
         unshare_hek(reinserted);
 
         if (max_growth_keys) {
-            cleanup_limit = capacity_after * 2;
-            for (i = 0; i < cleanup_limit; i++) {
-                const U32 old_capacity = HvMAX(PL_strtab) + 1;
+            cleanup_limit = capacity_after > 500000
+                ? 1000000 : capacity_after * 2;
+            for (cleanup_i = 0; cleanup_i < cleanup_limit; cleanup_i++) {
+                const Size_t old_capacity = (Size_t)HvMAX(PL_strtab) + 1;
                 HEK **old_slots = HvSTRSLOTS(PL_strtab);
-                const U32 old_tombstones = HvSTRTAB(PL_strtab)->tombstones;
-                const U32 old_live = HvTOTALKEYS(PL_strtab);
+                const Size_t old_tombstones = HvSTRTAB(PL_strtab)->tombstones;
+                const Size_t old_live = HvTOTALKEYS(PL_strtab);
                 my_snprintf(keybuf, sizeof keybuf,
                             "xperl-shared-hek-cleanup-%" UVuf "-%" UVuf,
-                            PTR2UV(input), (UV)i);
+                            PTR2UV(input), (UV)cleanup_i);
                 keylen = strlen(keybuf);
                 PERL_HASH(hash, keybuf, keylen);
                 cleanup_hek = share_hek(keybuf, keylen, hash);
                 if (old_tombstones
-                    && HvMAX(PL_strtab) + 1 == old_capacity
+                    && (Size_t)HvMAX(PL_strtab) + 1 == old_capacity
                     && HvSTRSLOTS(PL_strtab) != old_slots) {
                     cleanup_observed = TRUE;
                     tombstones_at_cleanup = old_tombstones;

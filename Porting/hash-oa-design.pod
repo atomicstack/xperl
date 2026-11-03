@@ -1,12 +1,18 @@
 =head1 NAME
 
-hash-oa-design - Experimental hash storage with open addressing
+hash-oa-design - Compact hash storage with integer chains and optional open addressing
 
 =head1 STATUS
 
-This document records the design and compatibility questions for the
-experimental open-addressed hash representation. It is not a promise that
-every Perl hash uses this representation.
+This document records the compact hash representation and its compatibility
+requirements. Ordinary hashes use integer chains by default, without
+fingerprints. Open addressing and fingerprinted chains are optional builds.
+The shared-key table uses open addressing independently of that choice.
+
+The storage rules below describe the current experimental implementation.
+The benchmark results later in this document record earlier open-addressed
+builds and are historical; they do not measure the current compaction policy
+or default integer-chain layout.
 
 =head1 REPRESENTATION
 
@@ -28,37 +34,70 @@ deleting from two entries to one returns to the arena-backed singleton
 representation. Deleting the last entry or clearing the hash returns it to
 the unallocated state.
 
-After promotion, the hash uses an open-addressed index separate from the
-contiguous array of entries. Each index slot stores only an entry identifier.
+After promotion, the hash uses an index separate from the contiguous array of
+entries. By default, indexed hashes use integer chains: C<hv.h> defines
+C<PERL_HASH_INDEX_CHAINS> unless C<PERL_HASH_INDEX_OA> is selected. The chain
+index uses packed bucket heads and one packed next identifier per entry slot.
+Fingerprints are disabled unless C<PERL_HASH_CHAIN_FINGERPRINT> is defined.
+Selecting OA together with chains or fingerprints is rejected. C<PL_strtab>
+remains open-addressed in every build.
+
+With C<PERL_HASH_INDEX_OA>, each index slot stores only an entry identifier.
+The following load, tombstone, capacity, and shrink rules describe the OA
+layout.
 The full cached hash remains in the entry's C<HEK>. The identifier uses one
 byte when slot capacity is at most 128, two bytes when it is at most 32,768,
 and four bytes above that. Zero means empty; an all-ones identifier marks a
 deleted slot; live identifiers are entry positions plus one. Index capacity
-remains a power of two. Through an index capacity of 16,384 slots, entry
-capacity is the floor of two-thirds of index capacity, and filling that
-entry allocation can trigger an index rebuild. Above that size, index
-pressure triggers a rebuild when live entries plus tombstones reach the
-floor of two-thirds of capacity. The entry array grows independently by 25
-percent when full. On insertion it compacts only when holes occupy at least
-one fifth of its capacity and their storage uses at least 1 MiB. Otherwise
-it grows by 25 percent without resizing the index. Index rebuilds use the
-next power of two at least three times the live entry count, with a minimum
-of eight slots. On index growth or a same-size rebuild, holes are compacted
-in place only when both thresholds are met or packing is required by coupled
-sizing, a capacity limit, or the identifier range. Otherwise the index is rebuilt
-using existing entry positions and holes without copying the entry array.
+The OA index capacity remains a power of two. Entry compaction uses a 20
+percent hole threshold at all
+sizes; there is no minimum byte threshold. A full entry array compacts when
+it meets this threshold. A non-full array compacts at this threshold when
+its proposed entry capacity, C<live + floor(live/4) + 1> with a minimum of
+eight, is at most half its current capacity. Otherwise a full entry array
+grows under the sizing rules below. Deletion alone does not rebuild either
+array. These are standalone insertion checks. An index rebuild that is
+otherwise required also packs entries when holes meet the 20 percent
+threshold; that rebuild does not use the standalone HE shrink test.
+
+All builds use this representation encoding in the existing C<xhv_max>
+field, so it does not enlarge C<HV> or C<XPVHV>. For indexed storage, the low
+six bits hold the log2 of the bucket count. For headerless tiny storage, bit 6
+marks the form and the low six bits hold its entry capacity. The encoding is
+independent of pointer width and works on 32-bit builds. C<HvMAX(hv)> remains
+the logical accessor: for indexed storage it returns the bucket mask, and for
+tiny storage it returns the logical maximum. Code must use the form-specific
+setters and must not read or write the encoded field directly.
+
+In OA builds, after any required full-entry compaction, when index occupancy
+reaches the two-thirds limit, tombstones are cleared at the same
+index capacity if they make up at least half of occupied slots. With fewer
+tombstones, the index grows to preserve the live-load limit. Growth uses the
+next power of two that can hold C<3 * live> entries, with a minimum of eight
+slots. Shrinking is considered only during compaction. The new index must be
+at most half its previous capacity. Its target is the next power of two
+that can hold C<3 * (live + 1)> entries, with a minimum of eight slots. The
+entry array can shrink independently when its target capacity,
+C<live + floor(live/4) + 1> (minimum eight), is at most half its previous
+capacity. Otherwise existing capacities are retained. Rebuilds, including
+compaction, reuse the index allocation when index and entry capacities are
+unchanged. Without compaction, entry positions and holes are preserved.
+
+For initial sizing and ordinary growth through 16,384 index slots,
+open-addressed entry capacity remains coupled to two-thirds of index
+capacity. Above that size, entry capacity grows independently. A shrink can
+leave entry capacity decoupled from index capacity. Changing entry capacity
+uses C<Renew>, which may relocate the array. The shared-key table has no
+entry-array compaction or early shrink check. At its two-thirds occupancy
+limit, it targets the next power of two able to hold C<3 * live> keys, with
+its minimum capacity. It grows when tombstones are below half of occupied
+slots. Otherwise it clears tombstones at the same capacity, except that it
+shrinks when the target is at most half the current capacity.
 Explicit reservation through C<hv_ksplit()> reserves entry space as well as
 index space. Above the coupled range it reserves the requested live-entry
 count plus existing holes, even when the index already has enough capacity.
-This avoids repeated entry growth during known-size construction. Incremental
-insertion retains the 25 percent entry-growth policy.
-
-Shrinking an index above 16,384 slots sets entry capacity to 125 percent of
-the live count and packs any holes. Shrinking to 16,384 slots or fewer
-couples entry capacity to two-thirds of index capacity and packs holes.
-Changing entry capacity uses C<Renew>, which may relocate the array.
-Deletion alone does not trigger a
-rebuild.
+This avoids repeated entry growth during known-size construction. Above the
+coupled range, incremental insertion grows a full entry array by 25 percent.
 Since deleted positions are not reused, entry allocation can exceed index
 capacity. Identifier width remains tied to index capacity:
 one byte through 128 slots, two bytes through 32,768 slots, and four bytes
@@ -80,6 +119,81 @@ At larger sizes, index and entry allocation can grow independently. The
 trade-off is that a lookup follows an index identifier to an entry and then
 reaches its C<HEK> to check the cached hash and key. Deletion and iteration
 must maintain entry allocation and slot state together.
+
+=head1 DEFAULT INTEGER-CHAIN INDEX
+
+Ordinary non-magical fetches use the same C<hv_common()> entry path for
+tiny, open-addressed, and integer-chain storage. Shared query keys use their
+cached hash and can match by HEK identity. Byte-string queries in tiny
+storage compare lengths and key bytes without computing a hash. The lookup
+and key comparison helpers are inline, and successful lookups use the common
+placeholder and return-value handling. Magical keys and hashes, key
+conversion, and modifying operations retain the general path.
+
+The default indexed layout uses integer chains for ordinary hashes.
+C<PERL_HASH_INDEX_CHAINS> is defined by C<hv.h> unless
+C<PERL_HASH_INDEX_OA> is selected. To opt into open addressing, define
+C<PERL_HASH_INDEX_OA>; it cannot be combined with C<PERL_HASH_INDEX_CHAINS>
+or C<PERL_HASH_CHAIN_FINGERPRINT>. The optional
+C<PERL_HASH_CHAIN_FINGERPRINT> adds fingerprints to integer-chain links and
+is disabled by default. C<PL_strtab> continues to use open addressing. The
+entry representation is unchanged: compact 16-byte C<HE> records in an
+append-ordered array, with the same headerless linear representation for tiny
+hashes.
+
+The chain index has a power-of-two bucket count and a separate packed array
+of bucket heads. A second packed array stores one next identifier per entry
+slot. Identifiers are one-based entry positions; zero means an empty bucket
+or the end of a chain. Both arrays use one-byte identifiers when entry
+capacity is at most 255, two-byte identifiers through 65,535, and four-byte
+identifiers above that. Holes count toward entry capacity. Widening these
+arrays copies the identifiers but does not move the C<HE> array. Bucket
+resizing and entry compaction rebuild the chains.
+
+The default chain layout keeps entry and bucket capacity independent. Entry
+storage starts at a minimum capacity of eight and grows by 25 percent when
+full, with at least one additional slot. Explicit reservation can reserve entry
+space independently. Entry compaction uses a 20 percent hole threshold at
+all capacities, with no byte threshold. A full entry array compacts when it
+meets this threshold without growing the bucket array. A non-full array
+compacts at this threshold when its proposed entry capacity,
+C<live + floor(live/4) + 1> (minimum eight), is at most half its current
+capacity. These are standalone insertion checks. An index rebuild that is
+otherwise required also packs entries at this threshold, but does not apply
+the standalone HE shrink test. Otherwise a full entry array grows by 25
+percent without changing the bucket array.
+
+When live entries reach two-thirds of bucket capacity, the index grows to
+the next power of two that can hold C<3 * live> entries, with a minimum of
+eight buckets. Compaction normally keeps the bucket count. It can shrink the
+bucket array only when its target, the next power of two at least
+C<3 * (live + 1)>, is at most half the current count. The entry array can
+shrink independently when its target capacity, C<live + floor(live/4) + 1>
+(minimum eight), is at most half its current capacity. C<hv_ksplit()>
+pre-sizing uses a baseline capacity of 1.5 times the requested count and
+reserves entry space for that count too. Promotion from the tiny linear form uses the baseline
+open-addressed sizing policy.
+
+The optional build-time option C<PERL_HASH_CHAIN_FINGERPRINT> stores a compact
+hash fingerprint with each entry's next-link record. Its width follows the
+link identifier: 8, 16, or 32 bits. Lookup checks the fingerprint before
+loading the candidate entry and its C<HEK>. This can avoid key-record reads
+for misses, at the cost of a larger link array. The fingerprint option is
+experimental and does not establish a stable API or public iteration-order
+guarantee.
+
+The chain form adds a packed next-identifier array sized by entry capacity,
+as well as the bucket-head array. Its lookup follows a bucket head and then
+the chain identifiers to entry records. Those arrays add memory compared
+with the open-addressed index, whose slot array stores a single identifier
+per bucket. The open-addressed index remains available as an opt-in layout.
+
+To select the open-addressed layout, use a clean build so the define applies
+to every object file:
+
+    make clean
+    ./Configure -S -Doptimize='-O3 -DPERL_HASH_INDEX_OA'
+    make -j4 test_prep
 
 =head1 API AND ABI COMPATIBILITY
 
@@ -122,10 +236,10 @@ iterator APIs.
 C<HvMAX(hv)> is no longer an lvalue. XS code that wrote it must use
 C<HvMAX_SET(hv, max)> for indexed storage or
 C<HvMAX_SET_LINEAR(hv, capacity)> for headerless linear storage. The raw
-C<xhv_max> field contains the linear-mode tag and must not be written
-directly. C<HvIS_OA(hv)> identifies the compact non-strtab hash family,
-including headerless linear hashes; C<Hash::Util::hash_storage_info()> uses
-C<open_addressed> for actual index allocation and C<linear> for the
+C<xhv_max> field contains the encoded representation and must not be read or
+written directly. C<HvIS_OA(hv)> identifies the compact non-strtab hash
+family, including headerless linear hashes; C<Hash::Util::hash_storage_info()>
+uses C<open_addressed> for actual index allocation and C<linear> for the
 headerless form.
 
 Each shared key has a C<U32> reference-count prefix. Together with its
@@ -135,8 +249,12 @@ Actual heap savings depend on allocator size classes.
 
 The shared-key table has a minimum capacity of 32,768 pointer slots. Before
 insertion, when live slots plus tombstones reach the floor of two-thirds of
-capacity, it rebuilds at the next power of two at least three times the live
-count, while retaining the minimum capacity. An interned C<HEK> is canonical
+capacity, it targets the next power of two able to hold three times the live
+count, while retaining the minimum capacity. It grows when tombstones are
+below half of occupied slots. Otherwise it clears tombstones at the same
+capacity, except that it shrinks when the target is at most half the current
+capacity. There is no entry-array compaction or early shrink check. An
+interned C<HEK> is canonical
 for its key bytes and storage flags, and its address remains stable while
 referenced, including across slot-array growth.
 C<share_hek()> increments the shared reference count; C<unshare_hek()>
@@ -272,9 +390,19 @@ F<tmp/hash-oa-he16-full.log> and F<tmp/hash-oa-he16-lsan.log>.
 
 =head1 MEASURED RESULTS
 
+A paired comparison of stored-mask and exponent-encoded C<xhv_max> found no
+broad slowdown. Results were mixed and do not establish a general speedup; no
+performance gain is claimed for the encoding.
+
+The figures in this section are historical measurements of an earlier
+identifier-only open-addressed candidate. That build predates the current
+compaction and shrinking rules, the default integer-chain layout, or optional
+fingerprints. Treat the results below as measurements of that recorded build, not
+as estimates for the current implementation.
+
 Measurements compare the original chained hash with the experimental compact
 hash on Linux x86_64, kernel C<7.0.0-42-generic>, using an Intel Core
-i7-1185G7. The final candidate uses C<PERL_HASH_LINEAR_MAX=4>, compact 16-byte
+i7-1185G7. The historical candidate uses C<PERL_HASH_LINEAR_MAX=4>, compact 16-byte
 C<HE> records, and an identifier-only index. Both builds use Perl v5.45.5,
 GCC 13.3.0, C<-O3>, and no threads.
 
@@ -535,15 +663,27 @@ storage, and allocator retention changes it on later rounds.
 
 =head1 LIMITS AND FOLLOW-UP
 
-The process-wide C<PL_strtab> is an open-addressed array of shared C<HEK *>
-slots. Its minimum capacity is 32,768 slots. Before insertion, when live
-entries plus tombstones reach C<floor(2*capacity/3)>, it rebuilds at the next
-power of two at least three times the live entry count, retaining the minimum
-capacity. It stores full hashes in each shared C<HEK> and has no C<HE>
+Each interpreter's C<PL_strtab> is an open-addressed array of shared C<HEK *>
+slots. Its capacity, probe positions, and tombstone count use native-size
+integers. The pointer index has no fixed C<2^26> slot limit. Growth is limited
+by checked allocation arithmetic and available memory. The cached hash in
+each C<HEK> and its reference count remain C<U32>; because the hash is still
+32 bits, hash distribution can become a performance limitation above
+C<2^32> slots. The ordinary hash index retains its C<2^30> slot
+limit. The table's minimum capacity is 32,768 slots. Before insertion, when
+live entries plus tombstones reach C<floor(2*capacity/3)>, it targets the next
+power of two able to hold C<3 * live> entries, retaining the minimum
+capacity. It grows when tombstones are below half of occupied slots.
+Otherwise it clears tombstones at the same capacity, except that it shrinks
+when the target is at most half the current capacity. It has no entry-array
+compaction or early shrink check. It stores full hashes in each shared C<HEK> and has no C<HE>
 records, entry array, or freelist. Ordinary hash entry identifiers use
-adaptive one-, two-, or four-byte widths; the slot index is limited to 2^26
-slots. Deleted ordinary hash entries are not reused and can leave holes in
-the entry array until a later insertion compacts it.
+adaptive one-, two-, or four-byte widths; the ordinary hash index is limited
+to 2^30 slots. At the two-thirds load limit, an ordinary hash can hold at most
+715,827,882 live keys. Inserting a key or explicitly pre-sizing beyond this
+limit throws C<Hash key count exceeds limit of 715827882>. Deleted ordinary
+hash entries are not reused and can leave holes in the entry array until a
+later insertion compacts it.
 With the default C<PERL_HASH_LINEAR_MAX=4>, hashes with up to four entries
 avoid the index allocation but use linear lookup and shift entries on
 deletion. Setting the threshold to zero disables linear storage and uses an

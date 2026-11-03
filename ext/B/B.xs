@@ -1588,7 +1588,6 @@ MODULE = B	PACKAGE = B::IV
 #define PVCV_outside_seq_ix sv_U32p | STRUCT_OFFSET(struct xpvcv, xcv_outside_seq)
 #define PVCV_flags_ix	sv_U32p | STRUCT_OFFSET(struct xpvcv, xcv_flags)
 
-#define PVHV_max_ix	sv_STRLENp | STRUCT_OFFSET(struct xpvhv, xhv_max)
 #define PVHV_keys_ix	sv_STRLENp | STRUCT_OFFSET(struct xpvhv, xhv_keys)
 
 # The type checking code in B has always been identical for all SV types,
@@ -1629,7 +1628,6 @@ IVX(sv)
 	B::CV::OUTSIDE = PVCV_outside_ix
 	B::CV::OUTSIDE_SEQ = PVCV_outside_seq_ix
 	B::CV::CvFLAGS = PVCV_flags_ix
-	B::HV::MAX = PVHV_max_ix
 	B::HV::KEYS = PVHV_keys_ix
     PREINIT:
 	char *ptr;
@@ -2212,6 +2210,14 @@ MODULE = B	PACKAGE = B::HV		PREFIX = Hv
 STRLEN
 HvFILL(hv)
 	B::HV	hv
+
+STRLEN
+HvMAX(hv)
+	B::HV	hv
+    CODE:
+	RETVAL = HvMAX(hv);
+    OUTPUT:
+	RETVAL
 
 I32
 HvRITER(hv)

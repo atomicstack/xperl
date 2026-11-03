@@ -15,6 +15,16 @@
 #endif
 
 
+/* Ordinary hashes use integer chains unless the OA experiment is selected.
+ * Shared-key table indexing is independent of this choice. */
+#if defined(PERL_HASH_INDEX_OA)
+#  if defined(PERL_HASH_INDEX_CHAINS) || defined(PERL_HASH_CHAIN_FINGERPRINT)
+#    error "PERL_HASH_INDEX_OA cannot be combined with integer-chain options"
+#  endif
+#elif !defined(PERL_HASH_INDEX_CHAINS)
+#  define PERL_HASH_INDEX_CHAINS
+#endif
+
 /* Compact hash entry. */
 struct he {
     HEK		*hent_hek;	/* hash key */
@@ -26,6 +36,8 @@ struct he {
 };
 
 #define HV_OA_DELETED U32_MAX
+#define HV_MAX_BUCKETS ((U32)1 << 30)
+#define HV_MAX_KEYS ((HV_MAX_BUCKETS / 3) * 2 + (HV_MAX_BUCKETS % 3) * 2 / 3)
 
 struct hv_oa {
     HE *entries;
@@ -35,10 +47,45 @@ struct hv_oa {
     U8 indices[1];
 };
 
-#define HvOA_INDEX_WIDTH_FOR(capacity) \
+#ifdef PERL_HASH_INDEX_CHAINS
+#  define HvOA_INDEX_WIDTH_FOR(capacity) \
+    ((capacity) <= 255 ? 1 : (capacity) <= 65535 ? 2 : 4)
+#  define HvOA_INDEX_WIDTH(hv) HvOA_INDEX_WIDTH_FOR(HvOA(hv)->capacity)
+#  ifdef PERL_HASH_CHAIN_FINGERPRINT
+#    define HvOA_RECORD_WIDTH_FOR(capacity) \
+      (2 * HvOA_INDEX_WIDTH_FOR(capacity))
+#    define HvOA_STORAGE_BYTES(buckets,entries) \
+      ((Size_t)(buckets) * HvOA_INDEX_WIDTH_FOR(entries) \
+       + (Size_t)(entries) * HvOA_RECORD_WIDTH_FOR(entries))
+#    define HvOA_FINGERPRINT_BYTES_FOR(entries) \
+      ((Size_t)(entries) * HvOA_INDEX_WIDTH_FOR(entries))
+#    define HvOA_FINGERPRINT_GET(hv,pos) \
+      S_hv_oa_fingerprint_get(HvOA(hv), (U32)HvMAX(hv) + 1, (U32)(pos))
+#    define HvOA_FINGERPRINT_SET(hv,pos,hash) \
+      S_hv_oa_fingerprint_set(HvOA(hv), (U32)HvMAX(hv) + 1, (U32)(pos), \
+                              (U32)(hash))
+#    define HvOA_FINGERPRINT_VALUE_SET(hv,pos,value) \
+      S_hv_oa_fingerprint_set_value(HvOA(hv), (U32)HvMAX(hv) + 1, \
+                                    (U32)(pos), (U32)(value))
+#  else
+#    define HvOA_RECORD_WIDTH_FOR(capacity) HvOA_INDEX_WIDTH_FOR(capacity)
+#    define HvOA_STORAGE_BYTES(buckets,entries) \
+      (((Size_t)(buckets) + (entries)) * HvOA_INDEX_WIDTH_FOR(entries))
+#    define HvOA_FINGERPRINT_BYTES_FOR(entries) 0
+#  endif
+#  define HvCHAIN_NEXT(hv,ix) \
+    HvOA_INDEX_GET((hv), (U32)HvMAX(hv) + 1 + (ix))
+#  define HvCHAIN_NEXT_SET(hv,ix,value) \
+    HvOA_INDEX_SET((hv), (U32)HvMAX(hv) + 1 + (ix), (value))
+#else
+#  define HvOA_INDEX_WIDTH_FOR(capacity) \
     ((capacity) <= 128 ? 1 : (capacity) <= 32768 ? 2 : 4)
-#define HvOA_INDEX_WIDTH(hv) \
+#  define HvOA_INDEX_WIDTH(hv) \
     HvOA_INDEX_WIDTH_FOR((U32)HvMAX(hv) + 1)
+#  define HvOA_STORAGE_BYTES(buckets,entries) HvOA_INDEX_BYTES_FOR(buckets)
+#  define HvOA_RECORD_WIDTH_FOR(capacity) HvOA_INDEX_WIDTH_FOR(capacity)
+#  define HvOA_FINGERPRINT_BYTES_FOR(entries) 0
+#endif
 #define HvOA_INDEX_BYTES_FOR(capacity) \
     ((Size_t)(capacity) * HvOA_INDEX_WIDTH_FOR(capacity))
 #define HvOA_INDEX_REGION(oa,capacity) ((U8 *)(oa)->indices)
@@ -78,7 +125,7 @@ struct hv_strtab_pin {
 
 struct hv_strtab {
     struct hv_strtab_pin *pins;
-    U32 tombstones;
+    Size_t tombstones;
     HEK *slots[1];
 };
 
@@ -193,14 +240,14 @@ struct xpvhv {
     HV*		xmg_stash;	/* class package */
     union xmgu_	xmg_u;
     STRLEN      xhv_keys;       /* total keys, including placeholders */
-    STRLEN      xhv_max;        /* subscript of last element of xhv_array */
+    STRLEN      xhv_max;        /* bucket exponent or tagged linear capacity */
 };
 
 struct xpvhv_with_aux {
     HV         *xmg_stash;      /* class package */
     union xmgu_ xmg_u;
     STRLEN      xhv_keys;       /* total keys, including placeholders */
-    STRLEN      xhv_max;        /* subscript of last element of xhv_array */
+    STRLEN      xhv_max;        /* bucket exponent or tagged linear capacity */
     struct xpvhv_aux xhv_aux;
 };
 
@@ -360,10 +407,28 @@ thus converted down to plain bytes.
 
 #define PERL_HASH_DEFAULT_HvMAX 7
 
-/* The high bit of xhv_max marks a headerless, dense linear HE array.  The
- * remaining bits hold its allocated capacity. */
-#define HV_LINEAR_FLAG ((STRLEN)1 << (sizeof(STRLEN) * CHAR_BIT - 1))
-#define HV_LINEAR_CAP_MASK (~HV_LINEAR_FLAG)
+/* Indexed hashes store the bucket-count exponent in six bits. Bit 6
+ * marks a dense linear HE array, with its capacity in the low six bits.
+ * The remaining bits are available for representation tags on 32-bit hosts
+ * as well as 64-bit hosts, without enlarging the HV body. */
+#define HV_MAX_EXPONENT_MASK ((STRLEN)63)
+#define HV_LINEAR_FLAG ((STRLEN)1 << 6)
+#define HV_LINEAR_CAP_MASK HV_MAX_EXPONENT_MASK
+#define PERL_HASH_DEFAULT_HvMAX_RAW ((STRLEN)3)
+
+PERL_STATIC_INLINE STRLEN
+S_hv_encode_max(STRLEN max)
+{
+    STRLEN capacity = max + 1;
+    STRLEN exponent = 0;
+    assert(capacity && !(capacity & (capacity - 1)));
+    while (capacity > 1) {
+        capacity >>= 1;
+        exponent++;
+    }
+    assert(exponent < sizeof(STRLEN) * CHAR_BIT);
+    return exponent;
+}
 
 /* these hash entry flags ride on hent_klen (for use only in magic/tied HVs) */
 #define HEf_SVKEY	-2	/* hent_key is an SV* */
@@ -395,8 +460,8 @@ hash.
 #define HvLINEAR_CAP(hv) ((U32)(HvMAX_RAW(hv) & HV_LINEAR_CAP_MASK))
 #define HvMAX(hv) (HvIS_LINEAR(hv) \
                    ? (STRLEN)(HvLINEAR_CAP(hv) ? HvLINEAR_CAP(hv) - 1 : 0) \
-                   : HvMAX_RAW(hv))
-#define HvMAX_SET(hv,max) (HvMAX_RAW(hv) = (STRLEN)(max))
+                   : (((STRLEN)1 << (HvMAX_RAW(hv) & HV_MAX_EXPONENT_MASK)) - 1))
+#define HvMAX_SET(hv,max) (HvMAX_RAW(hv) = S_hv_encode_max((STRLEN)(max)))
 #define HvMAX_SET_LINEAR(hv,cap) \
     (HvMAX_RAW(hv) = HV_LINEAR_FLAG | (STRLEN)(cap))
 
@@ -546,6 +611,16 @@ Null HE pointer.
 Accesses the next free tied-fetch entry. The value field stores this link only
 while the HE is retired in the tied-fetch pool.
 
+=for apidoc Cmn|U32|HV_MAX_BUCKETS
+
+The maximum bucket count for an ordinary hash. This limit does not apply
+to the shared-key table.
+
+=for apidoc Cmn|U32|HV_MAX_KEYS
+
+The maximum number of ordinary hash entries, including restricted-hash
+placeholders, at the configured maximum load.
+
 =for apidoc Cmn|U32|HV_OA_DELETED
 
 The reserved index-slot entry value identifying a tombstone.
@@ -570,7 +645,7 @@ Returns the reference count for a shared HEK.
 
 Returns the allocation containing a shared HEK.
 
-=for apidoc Cm|Size_t|HvSTR_BYTES_FOR|U32 capacity
+=for apidoc Cm|Size_t|HvSTR_BYTES_FOR|Size_t capacity
 
 Returns the allocation size for a shared string table with the given
 capacity.
@@ -633,6 +708,8 @@ The mask extracting the linear entry capacity from the raw maximum field.
 
 Accesses the raw maximum field, including the linear-storage tag. Use
 C<HvMAX> for the logical maximum and the form-specific setters for updates.
+Indexed hashes store the bucket-count exponent in the low six bits of this
+field, not a bucket mask.
 
 =for apidoc Cm|U32|HvLINEAR_CAP|HV *hv
 

@@ -8,6 +8,151 @@ use Config;
 
 BEGIN {use_ok('XS::APItest')};
 
+{
+    my %default;
+    my $info = XS::APItest::Hash::hv_max_encoding_info(\%default, -1);
+    is_deeply($info, [3, 7, 0, 0],
+              'default indexed hash stores exponent 3, logical mask 7');
+
+    my %grown;
+    $info = XS::APItest::Hash::hv_max_encoding_info(\%grown, 9);
+    is_deeply($info, [4, 15, 0, 0],
+              'reserved indexed hash stores exponent 4, logical mask 15');
+
+    for my $capacity (0, 1, 4) {
+        my $expected_raw = 0x40 | $capacity;
+        my $expected_max = $capacity ? $capacity - 1 : 0;
+        $info = XS::APItest::Hash::hv_max_tiny_encoding_info($capacity);
+        is_deeply($info, [$expected_raw, $expected_max, 1, $capacity],
+                  "tiny capacity $capacity uses tag and literal capacity");
+    }
+}
+
+subtest 'ordinary hash bucket limit arithmetic' => sub {
+    my $capacity_for = \&XS::APItest::Hash::ordinary_hash_capacity_for;
+    my $size_valid = \&XS::APItest::Hash::ordinary_hash_size_valid;
+    my $max_buckets = 1_073_741_824; # 2^30
+    my $max_live = 715_827_882;      # floor(2 * 2^30 / 3)
+
+    is($capacity_for->($max_live, 8), $max_buckets,
+       'maximum supported live count maps to 2^30 buckets');
+    is($capacity_for->($max_live + 1, 8), 0,
+       'first live count beyond the limit has no capacity');
+    is($capacity_for->(1, 0), 0, 'invalid minimum capacity is rejected');
+    is($capacity_for->(1, 4), 8,
+       'growth from a small internal index uses the normal minimum');
+    ok(!$size_valid->(2 * $max_buckets, 0),
+       'bucket capacity above 2^30 is rejected');
+    is($size_valid->($max_buckets, $max_live),
+       $Config::Config{sizesize} >= 8 ? 1 : 0,
+       'maximum policy size is valid only when allocation bytes fit');
+};
+
+{
+    my %h = (kept => 1);
+    eval { XS::APItest::Hash::ordinary_hash_reserve_over_limit(\%h) };
+    like($@, qr/Hash key count exceeds limit of 715827882/,
+         'ordinary hash reservation above the limit reports the limit');
+    is($h{kept}, 1, 'failed reservation preserves existing values');
+    is(scalar keys %h, 1, 'failed reservation preserves existing keys');
+}
+
+SKIP: {
+    skip 'maximum reservation fits on a 64-bit allocation size', 2
+        unless $Config::Config{sizesize} < 8;
+    my %h = (kept => 1);
+    eval { XS::APItest::Hash::ordinary_hash_reserve_maximum(\%h) };
+    like($@, qr/memory wrap/,
+         'maximum reservation fails allocation preflight on 32-bit');
+    is(scalar keys %h, 1,
+       'failed 32-bit allocation preflight leaves existing hash unchanged');
+}
+
+{
+    my %h = (kept => 7);
+    XS::APItest::Hash::ordinary_hash_saturated_store(\%h, 1);
+    is($h{kept}, 1, 'replacing a key remains allowed at the key limit');
+    eval { XS::APItest::Hash::ordinary_hash_saturated_store(\%h, 0) };
+    like($@, qr/Hash key count exceeds limit of 715827882/,
+         'new key insertion at the limit reports the limit');
+    is($h{kept}, 1, 'rejected insertion preserves the replacement value');
+    is(scalar keys %h, 1, 'failed insertion leaves the key count unchanged');
+    ok(!exists $h{fresh}, 'failed insertion leaves no new key');
+}
+
+{
+    my %h = (kept => 1);
+    is(XS::APItest::Hash::ordinary_hash_saturated_fetch_missing(\%h), 0,
+       'missing fetch at the key limit remains a normal miss');
+    is($h{kept}, 1, 'missing fetch at the limit preserves existing values');
+}
+
+subtest 'PL_strtab capacity arithmetic' => sub {
+    my $capacity_for = \&XS::APItest::Hash::shared_key_capacity_for;
+    my $size_valid = \&XS::APItest::Hash::shared_key_size_valid;
+
+    is($capacity_for->(0), 32768, 'empty table uses the minimum capacity');
+    is($capacity_for->(10_922), 32768,
+       'live count below the minimum table threshold stays at minimum');
+    is($capacity_for->(10_923), 65536,
+       'capacity target rounds up when 3*live exceeds the minimum');
+    ok($size_valid->(32768), 'minimum table capacity is valid');
+    ok($size_valid->(65536), 'power-of-two table capacity is valid');
+    ok(!$size_valid->(32769), 'non-power-of-two table capacity is invalid');
+    ok(!$size_valid->(16384), 'capacity below table minimum is invalid');
+
+    my $two26 = 67_108_864;
+    is($capacity_for->(22_369_621), $two26,
+       'capacity arithmetic reaches the former 2^26 limit');
+    is($capacity_for->(22_369_622), 2 * $two26,
+       'capacity arithmetic grows beyond the former 2^26 limit');
+    ok($size_valid->($two26), '2^26 table capacity is valid');
+
+    SKIP: {
+        skip('wide Size_t boundary cases', 8)
+            unless $Config::Config{sizesize} >= 8;
+        my $two32 = 4_294_967_296;
+        is($capacity_for->(1_431_655_765), $two32,
+           'capacity arithmetic reaches 2^32 on wide Size_t');
+        is($capacity_for->(1_431_655_766), 2 * $two32,
+           'capacity arithmetic crosses 2^32 on wide Size_t');
+        ok($size_valid->($two32), '2^32 table capacity is valid');
+        ok($size_valid->(2 * $two32), '2^33 table capacity is valid');
+
+        my $largest_capacity = 1_152_921_504_606_846_976;
+        my $first_invalid_capacity = 2_305_843_009_213_693_952;
+        ok($size_valid->($largest_capacity),
+           'largest power-of-two allocation fits on 64-bit Size_t');
+        ok(!$size_valid->($first_invalid_capacity),
+           'next power-of-two allocation exceeds 64-bit Size_t');
+        is($capacity_for->($largest_capacity), 0,
+           'capacity target is rejected when its allocation would overflow');
+        is($capacity_for->(6_148_914_691_236_517_206), 0,
+           '3*live arithmetic overflow returns no capacity');
+    }
+
+    SKIP: {
+        skip('32-bit Size_t boundary cases', 2)
+            unless $Config::Config{sizesize} < 8;
+        ok($size_valid->(536_870_912),
+           'largest power-of-two allocation fits on 32-bit Size_t');
+        ok(!$size_valid->(1_073_741_824),
+           'next power-of-two allocation exceeds 32-bit Size_t');
+    }
+};
+
+{
+    my $key = "xperl-strtab-reserve-overflow-$$";
+    my %owner = ($key => 1);
+    my $before = XS::APItest::Hash::shared_key_storage_info()->[0];
+    eval { XS::APItest::Hash::shared_key_reserve_overflow() };
+    like($@, qr/memory wrap/,
+         'unrepresentable shared-key reservation is rejected');
+    is(XS::APItest::Hash::shared_key_storage_info()->[0], $before,
+       'failed reservation leaves the existing table capacity unchanged');
+    is($owner{$key}, 1, 'shared-key table remains usable after overflow rejection');
+}
+
 is_deeply(XS::APItest::Hash::shared_hek_refcount_probe(0xffff_fffe),
           [4, 12, 0xffff_ffff],
           'shared HEK uses a 12-byte header and reaches the U32 count limit');
@@ -208,6 +353,86 @@ main_tests (\@keys, \@testkeys, ' [utf8 hash]');
 foreach my $in ("", "N", "a\0b") {
     my $got = XS::APItest::Hash::test_share_unshare_pvn($in);
     is ($got, $in, "test_share_unshare_pvn");
+}
+
+{
+    require Hash::Util;
+
+    my $exact_key = "xperl-shared-query-exact-$$";
+    my %exact_hash = ($exact_key => 'exact value');
+    my $exact_query = XS::APItest::Hash::shared_query_key($exact_key);
+    is(XS::APItest::Hash::common({hv => \%exact_hash, keysv => $exact_query}),
+       'exact value', 'shared query HEK finds its identical stored HEK');
+
+    my %collision_hash;
+    keys %collision_hash = 64;
+    my $bucket_count = (Hash::Util::bucket_info(\%collision_hash))[1];
+    my %candidate_for_bucket;
+    my ($present_key, $missing_key);
+    for my $candidate (0 .. 100_000) {
+        my $key = sprintf "xperl-shared-query-miss-%08d-$$", $candidate;
+        my $bucket = Hash::Util::hash_value($key) & ($bucket_count - 1);
+        if (exists $candidate_for_bucket{$bucket}) {
+            ($present_key, $missing_key) =
+                ($candidate_for_bucket{$bucket}, $key);
+            last;
+        }
+        $candidate_for_bucket{$bucket} = $key;
+    }
+    die "could not find same-bucket shared-key miss test keys\n"
+        unless defined $present_key;
+    $collision_hash{$present_key} = 'present';
+    my $missing_query = XS::APItest::Hash::shared_query_key($missing_key);
+    is(XS::APItest::Hash::common({hv => \%collision_hash,
+                                  keysv => $missing_query}),
+       undef, 'distinct shared HEKs with matching flags remain a miss');
+
+    my $utf8_key = "xperl-shared-query-\x{e9}-$$";
+    utf8::upgrade($utf8_key);
+    my $byte_key = $utf8_key;
+    utf8::downgrade($byte_key, 1);
+    my %utf8_hash = ($utf8_key => 'stored as UTF8/WASUTF8');
+    my $byte_query = XS::APItest::Hash::shared_query_key($byte_key);
+    is(XS::APItest::Hash::common({hv => \%utf8_hash, keysv => $byte_query}),
+       'stored as UTF8/WASUTF8',
+       'byte shared query matches a canonical UTF8/WASUTF8 HEK');
+
+    my %byte_hash = ($byte_key => 'stored as bytes');
+    my $utf8_query = XS::APItest::Hash::shared_query_key($utf8_key);
+    is(XS::APItest::Hash::common({hv => \%byte_hash, keysv => $utf8_query}),
+       'stored as bytes',
+       'UTF8/WASUTF8 shared query matches a canonical byte HEK');
+
+    my %unshared_hash;
+    XS::APItest::Hash::disable_hash_key_sharing(\%unshared_hash);
+    my $unshared_key = "xperl-shared-query-private-$$";
+    $unshared_hash{$unshared_key} = 'private HEK value';
+    is(Hash::Util::shared_key_refcount($unshared_key), 0,
+       'disabled hash-key sharing keeps the stored HEK private');
+    my $shared_query = XS::APItest::Hash::shared_query_key($unshared_key);
+    is(Hash::Util::shared_key_refcount($unshared_key), 1,
+       'shared lookup query owns the only shared HEK reference');
+    is(XS::APItest::Hash::common({hv => \%unshared_hash,
+                                  keysv => $shared_query}),
+       'private HEK value',
+       'shared query HEK finds an existing unshared hash HEK');
+
+    my %restricted;
+    my $placeholder_key = "xperl-shared-query-placeholder-$$";
+    Hash::Util::lock_keys(\%restricted, $placeholder_key);
+    my $placeholder_query
+        = XS::APItest::Hash::shared_query_key($placeholder_key);
+    is(XS::APItest::Hash::common({hv => \%restricted,
+                                  keysv => $placeholder_query}),
+       undef, 'shared query of a restricted placeholder fetches as undef');
+    ok(!exists($restricted{$placeholder_query}),
+       'shared query does not make an allowed placeholder exist');
+    is(scalar keys %restricted, 0,
+       'shared placeholder lookup does not create a live hash entry');
+    $restricted{$placeholder_key} = 'filled placeholder';
+    is(XS::APItest::Hash::common({hv => \%restricted,
+                                  keysv => $placeholder_query}),
+       'filled placeholder', 'restricted placeholder remains writable');
 }
 
 {
@@ -517,7 +742,7 @@ sub test_precomputed_hashes {
 
     my %lazy;
     store_prehashed(\%lazy, $keys[0], 0, $hashes[0]);
-    keys(%lazy) = 4;
+    keys(%lazy) = 5;
     store_prehashed(\%lazy, $keys[$_], $_, $hashes[$_]) for 1..7;
     my $current = each %lazy;
     delete $lazy{$current};
@@ -530,7 +755,7 @@ sub test_precomputed_hashes {
 
     my %sparse_lazy;
     store_prehashed(\%sparse_lazy, $keys[0], 0, $hashes[0]);
-    keys(%sparse_lazy) = 4;
+    keys(%sparse_lazy) = 5;
     my $sparse_current = each %sparse_lazy;
     delete $sparse_lazy{$sparse_current};
     store_prehashed(\%sparse_lazy, $collision->[0], 99, $collision->[1]);
@@ -538,10 +763,12 @@ sub test_precomputed_hashes {
     my $sparse_info = Hash::Util::hash_storage_info(\%sparse_lazy);
     is($sparse_info->{index_capacity}, 16,
        'noncolliding inserts grow an index with a lazy entry retained');
-    is($sparse_info->{entry_used}, 8,
-       'index pressure compacts the lazily deleted entry');
-    is($sparse_info->{entry_holes}, 0,
-       'compaction removes the lazy deleted entry hole');
+    my $sparse_entry_used = $sparse_info->{integer_chained} ? 9 : 8;
+    my $sparse_entry_holes = $sparse_info->{integer_chained} ? 1 : 0;
+    is($sparse_info->{entry_used}, $sparse_entry_used,
+       'index pressure handles the lazily deleted entry');
+    is($sparse_info->{entry_holes}, $sparse_entry_holes,
+       'index pressure leaves the expected deleted-entry hole state');
     is($sparse_info->{index_width}, 1,
        'the resized index retains one-byte entry indices');
     is($sparse_lazy{$collision->[0]}, 99,

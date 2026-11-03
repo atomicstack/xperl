@@ -57400,6 +57400,36 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::User::Opaque"
         },
+        "ERROR_VALUE_HASH_CAPACITY_EXCEEDED" => {
+          "number" => 2756,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_VALUE_HASH_CAPACITY_EXCEEDED",
+          "macro" => "PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED",
+          "source_files" => [
+            "hv.c"
+          ],
+          "tags" => [
+            "condition:size_count_range"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Hash key count exceeds limit of %{limit}"
+            },
+            "args" => [
+              {
+                "name" => "limit",
+                "type" => "uv",
+                "format_str" => "UVuf"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Value::Hash"
+        },
         "ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE" => {
           "number" => 1105,
           "severity" => "FATAL_ERROR",

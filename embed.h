@@ -54,8 +54,13 @@
 #   undef HvAUXf_IS_ROLE
 #   undef HvAUXf_ITER_ACTIVE
 #   undef HvAUXf_ITER_INSERTED
+#   undef HvCHAIN_NEXT_SET
 #   undef HvENTRY_INDEX
 #   undef HvENTRY_SVP
+#   undef HvOA_FINGERPRINT_BYTES_FOR
+#   undef HvOA_FINGERPRINT_GET
+#   undef HvOA_FINGERPRINT_SET
+#   undef HvOA_FINGERPRINT_VALUE_SET
 #   undef HvSTASH_IS_CLASS_OR_ROLE
 #   undef HvSTASH_IS_CLASS_SEALED
 #   undef HvSTASH_IS_ROLE
@@ -115,6 +120,9 @@
 #   if !defined(PERL_EXT)
 #     undef DEBUG_ONLY
 #     undef GV_CACHE_ONLY
+#     undef HvCHAIN_NEXT
+#     undef HvOA_RECORD_WIDTH_FOR
+#     undef HvOA_STORAGE_BYTES
 #     undef invlist_intersection_
 #     undef invlist_subtract_
 #     undef invlist_union_

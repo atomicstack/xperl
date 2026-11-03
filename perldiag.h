@@ -1169,6 +1169,7 @@ enum perl_diag_index {
     perl_diag_error_user_opaque_sv_delivery_idx,
     perl_diag_error_user_reference_idx,
     perl_diag_error_user_text_idx,
+    perl_diag_error_value_hash_capacity_exceeded_idx,
     perl_diag_error_value_hash_iteration_randomization_unavailable_idx,
     perl_diag_error_value_hash_key_length_out_of_range_idx,
     perl_diag_error_value_restricted_hash_key_access_disallowed_idx,
@@ -2735,6 +2736,7 @@ enum perl_diag_number {
     perl_diag_error_user_opaque_sv_delivery_number                                             = 1685,
     perl_diag_error_user_reference_number                                                      = 2482,
     perl_diag_error_user_text_number                                                           = 2438,
+    perl_diag_error_value_hash_capacity_exceeded_number                                        = 2756,
     perl_diag_error_value_hash_iteration_randomization_unavailable_number                      = 1105,
     perl_diag_error_value_hash_key_length_out_of_range_number                                  = 1023,
     perl_diag_error_value_restricted_hash_key_access_disallowed_number                         = 1801,
@@ -4783,7 +4785,7 @@ enum perl_diag_selector_domain_id {
 
 
 #if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)
-#define PERL_DIAG_METADATA_COUNT 1562
+#define PERL_DIAG_METADATA_COUNT 1563
 
 #endif
 
@@ -17088,6 +17090,12 @@ enum perl_diag_selector_domain_id {
 #define PERL_FORMAT_NOTE_CONTEXT_NEAR_SOURCE_ANNOTATED(language, values) \
     Perl_diag_render_format(aTHX_ perl_diag_note_context_near_source_annotated_idx, (values), (language))
 
+#define PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED(ma_limit) \
+    Perl_throw_croak_1_1607( \
+        aTHX_ perl_diag_error_value_hash_capacity_exceeded_idx, \
+        ma_limit \
+    )
+
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_ABORT() \
     STMT_START { \
         PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID(); \
@@ -17508,7 +17516,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * 8e44b846be4499bb2497c0f44894ab7915ad9ca47721400333c0b9ba8d9bb813 diag_conf.pl
+ * 1d6e975a72eea2b0622c9063b8c9e83ba8e5737752055f38fc5a5809d11a5fc8 diag_conf.pl
  * 6510e6553ea58cc2c5404bc3524e14de99d6b39d5bf4cb3fc3271ba678cf283b diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

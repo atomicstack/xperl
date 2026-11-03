@@ -3428,6 +3428,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_USER_OPAQUE_SV_DELIVERY",                                             1685,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  716,   1,  760,  FALSE, FALSE, "XPerl::Diagnostic::Error::User::Opaque",                                    "XPerl::Diagnostic::Error::User::Opaque",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_USER_REFERENCE",                                                      2482,  "USER_RUNTIME", "FATAL_ERROR",    TRUE,  723,   1,  770,  FALSE, FALSE, "XPerl::Diagnostic::Error::User",                                            "XPerl::Diagnostic::Error::User",                                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_USER_TEXT",                                                           2438,  "USER_RUNTIME", "FATAL_ERROR",    TRUE,  459,   1,  476,  FALSE, FALSE, "XPerl::Diagnostic::Error::User",                                            "XPerl::Diagnostic::Error::User",                                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_VALUE_HASH_CAPACITY_EXCEEDED",                                        2756,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  533,   1,  562,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::Hash",                                     "XPerl::Diagnostic::Error::Value::Hash",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE",                      1105,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::Hash",                                     "XPerl::Diagnostic::Error::Value::Hash",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE",                                  1023,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::Hash",                                     "XPerl::Diagnostic::Error::Value::Hash",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_VALUE_RESTRICTED_HASH_KEY_ACCESS_DISALLOWED",                         1801,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  638,   1,  677,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::RestrictedHash",                           "XPerl::Diagnostic::Error::Value::RestrictedHash",                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -12143,6 +12144,11 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2755 = {
     perl_diagpack_param_schema_ids + 537, 3
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2756 = {
+    2756, "ERROR_VALUE_HASH_CAPACITY_EXCEEDED",
+    perl_diagpack_param_schema_ids + 533, 1
+};
+
 static const char perl_diag_template_text_02bf4c82[] = "\t%1$s = \"%2$s\"%3$s\n";
 static const char perl_diag_template_text_a852440d[] = "\t%1$s = (unset)%2$s\n";
 static const char perl_diag_template_text_3f70ea97[] = "\t(Are you trying to call %1$s() on dirhandle %2$s?)\n";
@@ -12928,6 +12934,7 @@ static const char perl_diag_template_text_5e25e024[] = "Had to create %1$s unexp
 static const char perl_diag_template_text_0022c727[] = "hash dereference";
 static const char perl_diag_template_text_200842a9[] = "hash element";
 static const char perl_diag_template_text_6782bfec[] = "hash element exists or";
+static const char perl_diag_template_text_b200452b[] = "Hash key count exceeds limit of %1$s";
 static const char perl_diag_template_text_440e4eb3[] = "hash pattern ellipsis must be last";
 static const char perl_diag_template_text_4fd89373[] = "hash pattern keys must be constants, pins, or zero-argument calls";
 static const char perl_diag_template_text_838c7d18[] = "hash pattern may contain only one ellipsis";
@@ -17222,6 +17229,7 @@ enum {
     perl_diag_template_start_en_2753,
     perl_diag_template_start_en_2754,
     perl_diag_template_start_en_2755,
+    perl_diag_template_start_en_2756,
     perl_diag_template_end_en,
 };
 
@@ -19104,6 +19112,7 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_object_field_attribute_legacy_self_already_assigned_number,                 UINT64_C(         0), perl_diag_template_text_eb103293,  0,   0 },
     { perl_diag_note_context_syntax_error_annotated_number,                                       UINT64_C(         0), perl_diag_template_text_596c7665,  0,   0 },
     { perl_diag_note_context_near_source_annotated_number,                                        UINT64_C(         0), perl_diag_template_text_72c2dbef,  3,   1 },
+    { perl_diag_error_value_hash_capacity_exceeded_number,                                        UINT64_C(         0), perl_diag_template_text_b200452b,  1,   1 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -20668,6 +20677,7 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2753, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2754, NULL                        },
     { 0,   3,  perl_diag_word_group_none, perl_diag_template_start_en_2755, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2756, NULL                        },
 };
 
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
@@ -21191,7 +21201,7 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     &perl_diagpack_schema_2745, &perl_diagpack_schema_2747, &perl_diagpack_schema_2748,
     &perl_diagpack_schema_2749, &perl_diagpack_schema_2750, &perl_diagpack_schema_2751,
     &perl_diagpack_schema_2752, &perl_diagpack_schema_2753, &perl_diagpack_schema_2754,
-    &perl_diagpack_schema_2755,
+    &perl_diagpack_schema_2755, &perl_diagpack_schema_2756,
 };
 
 static const perl_diagpack_catalog perl_diagpack_builtin_catalog_en = {
@@ -21320,7 +21330,7 @@ static const perl_diagpack_engine * const perl_diagpack_builtin_engines[] = {
 
 
 /* Generated from:
- * 8e44b846be4499bb2497c0f44894ab7915ad9ca47721400333c0b9ba8d9bb813 diag_conf.pl
+ * 1d6e975a72eea2b0622c9063b8c9e83ba8e5737752055f38fc5a5809d11a5fc8 diag_conf.pl
  * 6510e6553ea58cc2c5404bc3524e14de99d6b39d5bf4cb3fc3271ba678cf283b diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */
