@@ -55,4 +55,19 @@ like($@, qr/Wide character/, 'wide-character input is rejected');
 eval { siphash_2_4() };
 like($@, qr/Usage:/, 'missing input is rejected');
 
+for my $case (
+    [ sub { siphash(-1, 4, 'abc') },
+      'ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID' ],
+    [ sub { siphash('18446744073709551616', 4, 'abc') },
+      'ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE' ],
+    [ sub { siphash_2_4('abc', 'short') },
+      'ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID' ],
+    [ sub { siphash_2_4(undef) },
+      'ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED' ],
+) {
+    eval { $case->[0]->() };
+    is($@->contents->[0]->code, $case->[1],
+       "$case->[1] has a stable diagnostic identity");
+}
+
 done_testing();

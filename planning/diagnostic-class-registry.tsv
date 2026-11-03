@@ -368,6 +368,7 @@ XPerl::Diagnostic::Error::Value	XPerl::Diagnostic::Error	0	catalog class	-
 XPerl::Diagnostic::Error::Value::Hash	XPerl::Diagnostic::Error::Value	0	catalog class	-
 XPerl::Diagnostic::Error::Value::Range	XPerl::Diagnostic::Error::Value	0	catalog class	-
 XPerl::Diagnostic::Error::Value::RestrictedHash	XPerl::Diagnostic::Error::Value	0	catalog class	-
+XPerl::Diagnostic::Error::Value::SipHash	XPerl::Diagnostic::Error::Value	0	catalog class	-
 XPerl::Diagnostic::Error::Value::Version	XPerl::Diagnostic::Error::Value	0	catalog class	-
 XPerl::Diagnostic::Note	XPerl::Diagnostic	1	catalog class	-
 XPerl::Diagnostic::Note::Context	XPerl::Diagnostic::Note	1	catalog class	-
