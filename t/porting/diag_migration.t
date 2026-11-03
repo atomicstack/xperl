@@ -170,6 +170,28 @@ our ( $CONF, $META );
 do './diag_conf.pl';
 my $conf        = $CONF;
 my $diagnostics = Diag::Migration::diagnostics($conf);
+my @misnamed_producers;
+for my $diag (@$diagnostics) {
+    for my $entry ( [ $diag->{code}, $diag->{macro} ],
+        map { [ $_, $diag->{variants}{$_}{macro} ] }
+            keys %{ $diag->{variants} || {} } ) {
+        my ( $code, $macro ) = @$entry;
+        next unless defined $macro;
+        $macro =~ s/^PERL_(?:THROW|WARN|APPEND|ADD_COMPILE_ERR|DEPRECATE|CHECK_TAINT|PANIC|FORMAT)_//;
+        push @misnamed_producers, "$code => $macro" if $macro ne $code;
+    }
+}
+is( join( "\n", @misnamed_producers ), '',
+    'generated producer names identify their catalog codes' );
+my @raw_selector_sites;
+for my $entry ( split /\n/, Diag::Migration::read_source('MANIFEST') ) {
+    my ($path) = $entry =~ /\A(\S+\.c)\s/ or next;
+    my $source = Diag::Migration::read_source($path);
+    push @raw_selector_sites, "$path: $1"
+        while $source =~ /\b(perl_diag_selector_domain_\d+_\d+(?:_id|_[a-z0-9_]+_\d+))\b/g;
+}
+is( join( "\n", @raw_selector_sites ), '',
+    'C producers use stable semantic selector aliases' );
 
 {
     my @checks = (
@@ -731,6 +753,31 @@ my $selector_generated_data = Diag::Migration::read_source('perldiag_data.inc');
 my $french_pack_data = Diag::Migration::read_source('ext/XPerl-DiagPack-FR/FR_data.inc');
 my $generated_helpers       = Diag::Migration::read_source('perldiag_helpers.inc');
 my $generated_catalog       = join "\n", $generated_header, $selector_generated_data, $generated_helpers;
+my %macro_owners = $generated_header =~
+    m{^/\* (PERL_[A-Z0-9_]+) => ([A-Z][A-Z0-9_]+) \*/$}mg;
+my @missing_macro_owners;
+for my $diag (@$diagnostics) {
+    my @macros = ( Diag::Migration::macro_name($diag) );
+    push @macros, map { Diag::Migration::alias_macro_name( $diag, $_ ) }
+        @{ $diag->{emit}{aliases} || [] };
+    push @macros, map {
+        Diag::Migration::variant_macro_name( $diag, $_, $diag->{variants}{$_} )
+    } keys %{ $diag->{variants} || {} };
+    for my $field (qw(accumulate_macro format_macro)) {
+        push @macros, $diag->{emit}{$field}
+            if exists $diag->{emit}{$field}
+            && defined $diag->{emit}{$field}
+            && length $diag->{emit}{$field};
+    }
+    push @missing_macro_owners,
+        map { "$_ => " . ( $macro_owners{$_} // '(missing)' ) }
+        grep { ( $macro_owners{$_} // '' ) ne $diag->{code} } @macros;
+}
+is( join( "\n", @missing_macro_owners ), '',
+    'generated primary, alias, and variant macros identify their owner code' );
+is( $macro_owners{'PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED'},
+    'ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH',
+    'a named reference variant points directly to its shared diagnostic' );
 like(
     $generated_header,
     qr/enum perl_diag_selector_common_value\s*\{[\s\S]*?perl_diag_selector_invalid\s*=\s*-1,[\s\S]*?perl_diag_selector_wildcard\s*=\s*0,[\s\S]*?perl_diag_selector_plural_zero\s*=\s*1,[\s\S]*?perl_diag_selector_plural_other\s*=\s*6,/,
@@ -1564,12 +1611,12 @@ is(
 my $doio = Diag::Migration::read_source('doio.c');
 like(
     $doio,
-    qr/PERL_THROW_ERROR_IO_INPLACE_EDIT_PATH_CONTEXT_INVALID\(\s*orig_pv,\s*perl_diag_selector_domain_1181_0_cwd_changed_1\)/s,
+    qr/PERL_THROW_ERROR_IO_INPLACE_EDIT_PATH_CONTEXT_INVALID\(\s*orig_pv,\s*PERL_DIAG_SEL_INPLACE_EDIT_PATH_CWD_CHANGED\)/s,
     'in-place edit directory changes pass a symbolic selector value'
 );
 like(
     $doio,
-    qr/PERL_THROW_ERROR_IO_INPLACE_EDIT_PATH_CONTEXT_INVALID\(\s*orig_pv,\s*perl_diag_selector_domain_1181_0_work_file_missing_2\)/s,
+    qr/PERL_THROW_ERROR_IO_INPLACE_EDIT_PATH_CONTEXT_INVALID\(\s*orig_pv,\s*PERL_DIAG_SEL_INPLACE_EDIT_PATH_WORK_FILE_MISSING\)/s,
     'in-place edit work-file failures pass a symbolic selector value'
 );
 my ($undefined_reference) = grep { $_->{code} eq 'ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED' } @$diagnostics;
@@ -1865,7 +1912,7 @@ for my $case (
     [ 'PERL_WARN_WARNING_LOCALE_WIDE_CHARACTER_UNDER_BYTE_CTYPE',          'WARNING_LOCALE_WIDE_CHARACTER_UNDER_BYTE_CTYPE' ],
     [ 'PERL_WARN_WARNING_INTERNAL_MEMORY_WINDOWS_FREE_TO_WRONG_POOL',                     'WARNING_INTERNAL_MEMORY_WINDOWS_FREE_TO_WRONG_POOL' ],
     [ 'PERL_WARN_WARNING_SEVERE_INTERNAL_SCALAR_FREE_OUTSIDE_ARENAS',                          'WARNING_SEVERE_INTERNAL_SCALAR_FREE_OUTSIDE_ARENAS' ],
-    [ 'PERL_APPEND_COMPOSED_LOCALE_WARNING',                  'WARNING_LOCALE_CTYPE_CHARACTER_SEMANTICS_UNEXPECTED' ],
+    [ 'PERL_APPEND_WARNING_LOCALE_CTYPE_CHARACTER_SEMANTICS_UNEXPECTED', 'WARNING_LOCALE_CTYPE_CHARACTER_SEMANTICS_UNEXPECTED' ],
     [ 'PERL_WARN_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT',                           'WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT' ],
     [ 'PERL_WARN_WARNING_UTF8_WIDE_CHARACTER_IN_BYTE_OPERATION',                'WARNING_UTF8_WIDE_CHARACTER_IN_BYTE_OPERATION' ],
     [ 'PERL_WARN_WARNING_OVERFLOW_TIME_INPUT_OUT_OF_RANGE',                    'WARNING_OVERFLOW_TIME_INPUT_OUT_OF_RANGE' ],
@@ -1885,7 +1932,7 @@ for my $case (
     my ( $macro, $code ) = @$case;
     ok( macro_uses_catalog_entry( $header, $macro, $code ), "$macro passes its catalog index to generated code", );
 }
-my $locale_warning_macro = generated_macro_body( $header, 'PERL_APPEND_COMPOSED_LOCALE_WARNING' );
+my $locale_warning_macro = generated_macro_body( $header, 'PERL_APPEND_WARNING_LOCALE_CTYPE_CHARACTER_SEMANTICS_UNEXPECTED' );
 my ($locale_warning_helper) = $locale_warning_macro =~ /(Perl_throw_append_exception_[0-9]+_[0-9]+)/;
 like(
     $locale_warning_macro,

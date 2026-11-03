@@ -325,7 +325,7 @@ Perl_diag_append_alien_digit_warning(pTHX_ SV **exception_slot,
 
     if (diag_index == perl_diag_warning_syntax_digit_escape_terminated_early_idx) {
         PERL_APPEND_WARNING_SYNTAX_DIGIT_ESCAPE_TERMINATED_EARLY(exception_slot,
-                                        radix == 8 ? perl_diag_selector_domain_2094_0_octal_2 : perl_diag_selector_domain_2094_0_hex_1,
+                                        radix == 8 ? PERL_DIAG_SEL_ESCAPE_RADIX_OCTAL : PERL_DIAG_SEL_ESCAPE_RADIX_HEX,
                                         SvUTF8(character), SvCUR(character),
                                         SvPVX_const(character), escape,
                                         SvUTF8(resolved), SvCUR(resolved),

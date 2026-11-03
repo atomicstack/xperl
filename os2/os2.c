@@ -1416,7 +1416,7 @@ do_spawn3(pTHX_ char *cmd, int execf, int flag)
                    rc = result(aTHX_ P_WAIT,
                                spawnl(P_NOWAIT,shell,shell,copt,cmd,(char*)0));
                 if (rc < 0)
-                    PERL_WARN_WARNING_IO_EXEC_SELECTED_LAUNCH_OPERATION_FAILED((execf == EXECF_SPAWN ? perl_diag_selector_domain_2335_0_spawn_2 : perl_diag_selector_domain_2335_0_exec_1), shell, Strerror(errno));
+                    PERL_WARN_WARNING_IO_EXEC_SELECTED_LAUNCH_OPERATION_FAILED((execf == EXECF_SPAWN ? PERL_DIAG_SEL_PROCESS_LAUNCH_SPAWN : PERL_DIAG_SEL_PROCESS_LAUNCH_EXEC), shell, Strerror(errno));
                 if (rc < 0)
                     rc = -1;
             }

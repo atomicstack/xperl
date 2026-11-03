@@ -11776,7 +11776,7 @@ Perl_sv_2io(pTHX_ SV *const sv)
         /* FALLTHROUGH */
     default:
         if (!SvOK(sv))
-            PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED(perl_diag_selector_domain_1755_0_filehandle_2);
+            PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED(PERL_DIAG_SEL_UNDEFINED_REF_KIND_FILEHANDLE);
         if (SvROK(sv)) {
             SvGETMAGIC(SvRV(sv));
             return sv_2io(SvRV(sv));
@@ -15300,15 +15300,15 @@ Perl_sv_vcatpvfn_flags(pTHX_ SV *const sv, const char *const pat, const STRLEN p
                     if (arg_missing) {
                         /* C/XS callers can leave an unrelated op active.
                          * Only the Perl formatting ops identify this operation. */
-                        U16 operation = perl_diag_selector_domain_1635_0_formatter_1;
+                        U16 operation = PERL_DIAG_SEL_FORMAT_FUNCTION_FORMATTER;
                         const char *name = "sv_vcatpvfn()";
 
                         if (PL_op && PL_op->op_type == OP_PRTF) {
-                            operation = perl_diag_selector_domain_1635_0_printf_2;
+                            operation = PERL_DIAG_SEL_FORMAT_FUNCTION_PRINTF;
                             name = "printf";
                         }
                         else if (PL_op && PL_op->op_type == OP_SPRINTF) {
-                            operation = perl_diag_selector_domain_1635_0_sprintf_3;
+                            operation = PERL_DIAG_SEL_FORMAT_FUNCTION_SPRINTF;
                             name = "sprintf";
                         }
                         PERL_THROW_ERROR_FORMAT_PRINTF_N_ARGUMENT_REQUIRED(
@@ -19587,7 +19587,7 @@ Perl_report_uninit(pTHX_ const SV *uninit_sv)
         /* diag_listed_as: Use of uninitialized value%s */
         PERL_WARN_WARNING_UNINITIALIZED_VALUE_WITH_OPERATION(
             S_uninit_word_operation(operation_name),
-            varname ? perl_diag_selector_domain_2250_0_named_1 : perl_diag_selector_domain_2250_0_unnamed_2,
+            varname ? PERL_DIAG_SEL_VALUE_NAME_FORM_NAMED : PERL_DIAG_SEL_VALUE_NAME_FORM_UNNAMED,
             varname ? varname : &PL_sv_no, desc);
     else
         PERL_WARN_WARNING_UNINITIALIZED_VALUE_WITHOUT_OPERATION();

@@ -563,7 +563,7 @@ XS(XS_UNIVERSAL_import_unimport)
         if (strNE(class_pv,"_charnames"))
             PERL_WARN_WARNING_MISSING_IMPORT_IMPORT_OR_UNIMPORT_MISSING_WITH_ARGUMENTS(
                 ix ? "unimport" : "import",
-                items > 2 ? perl_diag_selector_domain_2043_0_truncated_2 : perl_diag_selector_domain_2043_0_complete_1,
+                items > 2 ? PERL_DIAG_SEL_TEXT_LENGTH_TRUNCATED : PERL_DIAG_SEL_TEXT_LENGTH_COMPLETE,
                 ST(1),
                 ST(0)
             );

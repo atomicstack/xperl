@@ -2846,7 +2846,7 @@ S_parse_lparen_question_flags(pTHX_ RExC_state_t *pRExC_state)
                         wastedflags |= wflagbit;
                         /* diag_listed_as: Useless (?-%s) - don't use /%s modifier in regex; marked by <-- HERE in m/%s/ */
                         PERL_WARN_WARNING_REGEXP_MODIFIER_INLINE_GLOBAL_OR_ONCE_IGNORED(
-                            flagsp == &negflags ? perl_diag_selector_domain_2383_0_disabled_1 : perl_diag_selector_domain_2383_0_enabled_2,
+                            flagsp == &negflags ? PERL_DIAG_SEL_REGEX_MODIFIER_DISABLED : PERL_DIAG_SEL_REGEX_MODIFIER_ENABLED,
                             flagsp == &negflags ? "?-" : "?",
                             *RExC_parse,
                             UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse + 1), sI,
@@ -2866,7 +2866,7 @@ S_parse_lparen_question_flags(pTHX_ RExC_state_t *pRExC_state)
                         wastedflags |= WASTED_GC;
                         /* diag_listed_as: Useless (?-%s) - don't use /%s modifier in regex; marked by <-- HERE in m/%s/ */
                         PERL_WARN_WARNING_REGEXP_MODIFIER_INLINE_CONTINUE_IGNORED(
-                            flagsp == &negflags ? perl_diag_selector_domain_2383_0_disabled_1 : perl_diag_selector_domain_2383_0_enabled_2,
+                            flagsp == &negflags ? PERL_DIAG_SEL_REGEX_MODIFIER_DISABLED : PERL_DIAG_SEL_REGEX_MODIFIER_ENABLED,
                             flagsp == &negflags ? "?-" : "?",
                             UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse + 1), sI,
                             UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse + 1),
@@ -3474,7 +3474,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                 /* For strict backwards compatibility, don't change the message
                  * now that we also have lowercase operands */
                 PERL_THROW_ERROR_REGEXP_VERB_OPENER_NOT_ADJACENT(
-                    isUPPER(*RExC_parse) ? perl_diag_selector_domain_2526_0_named_verb_2 : perl_diag_selector_domain_2526_0_generic_construct_1,
+                    isUPPER(*RExC_parse) ? PERL_DIAG_SEL_REGEX_VERB_FORM_NAMED_VERB : PERL_DIAG_SEL_REGEX_VERB_FORM_GENERIC_CONSTRUCT,
                     UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
                     UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
                     PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
@@ -3507,8 +3507,8 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                 if ( RExC_parse >= RExC_end || *RExC_parse != ')' ) {
                   unterminated_verb_pattern:
                     PERL_THROW_ERROR_REGEXP_VERB_CONSTRUCT_UNTERMINATED(
-                        has_upper ? perl_diag_selector_domain_2526_0_named_verb_2 : perl_diag_selector_domain_2526_0_generic_construct_1,
-                        perl_diag_selector_domain_2526_1_argument_1,
+                        has_upper ? PERL_DIAG_SEL_REGEX_VERB_FORM_NAMED_VERB : PERL_DIAG_SEL_REGEX_VERB_FORM_GENERIC_CONSTRUCT,
+                        PERL_DIAG_SEL_REGEX_VERB_SUFFIX_ARGUMENT,
                         UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
                         UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
                         PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
@@ -3516,8 +3516,8 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
             } else {
                 if ( RExC_parse >= RExC_end || *RExC_parse != ')' ) {
                     PERL_THROW_ERROR_REGEXP_VERB_CONSTRUCT_UNTERMINATED(
-                        has_upper ? perl_diag_selector_domain_2526_0_named_verb_2 : perl_diag_selector_domain_2526_0_generic_construct_1,
-                        perl_diag_selector_domain_2526_1_construct_2,
+                        has_upper ? PERL_DIAG_SEL_REGEX_VERB_FORM_NAMED_VERB : PERL_DIAG_SEL_REGEX_VERB_FORM_GENERIC_CONSTRUCT,
+                        PERL_DIAG_SEL_REGEX_VERB_SUFFIX_CONSTRUCT,
                         UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
                         UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
                         PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
@@ -3736,7 +3736,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                 RExC_parse_inc_safe();
                 if (has_upper || verb_len == 0) {
                     PERL_THROW_ERROR_REGEXP_VERB_NAME_UNKNOWN(
-                        perl_diag_selector_domain_2526_0_named_verb_2,
+                        PERL_DIAG_SEL_REGEX_VERB_FORM_NAMED_VERB,
                         UTF, verb_len, start_verb,
                         UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
                         UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
@@ -3744,7 +3744,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                 }
                 else {
                     PERL_THROW_ERROR_REGEXP_VERB_NAME_UNKNOWN(
-                        perl_diag_selector_domain_2526_0_generic_construct_1,
+                        PERL_DIAG_SEL_REGEX_VERB_FORM_GENERIC_CONSTRUCT,
                         UTF, verb_len, start_verb,
                         UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
                         UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
@@ -3818,7 +3818,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                     RExC_parse_inc_by(1);
                     if (RExC_parse >= RExC_end) {
                         PERL_THROW_ERROR_REGEXP_GROUP_NAME_P_PREFIX_UNTERMINATED(
-                            perl_diag_selector_domain_2532_0_named_capture_1,
+                            PERL_DIAG_SEL_REGEX_P_GROUP_FORM_NAMED_CAPTURE,
                             UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
                             UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
                             PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
@@ -3829,7 +3829,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp, U32 depth)
                     RExC_parse_inc_by(1);
                     if (RExC_parse >= RExC_end) {
                         PERL_THROW_ERROR_REGEXP_GROUP_NAME_P_PREFIX_UNTERMINATED(
-                            perl_diag_selector_domain_2532_0_named_recursion_2,
+                            PERL_DIAG_SEL_REGEX_P_GROUP_FORM_NAMED_RECURSION,
                             UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
                             UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
                             PERL_REPORT_LOCATION_AFTER_START(RExC_parse));
@@ -9053,7 +9053,7 @@ S_handle_possible_posix(pTHX_ RExC_state_t *pRExC_state,
             * call is to check only, which we've already handled above) */
             RExC_parse_set((char *) p);
             PERL_THROW_ERROR_REGEXP_CHAR_CLASS_POSIX_NAME_UNKNOWN(
-                complement ? perl_diag_selector_domain_2600_0_complemented_1 : perl_diag_selector_domain_2600_0_positive_2,
+                complement ? PERL_DIAG_SEL_POSIX_CLASS_FORM_COMPLEMENTED : PERL_DIAG_SEL_POSIX_CLASS_FORM_POSITIVE,
                 UTF, RExC_parse - name_start - 2, name_start,
                 UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(RExC_parse), sI,
                 UTF, PERL_REPORT_LOCATION_AFTER_LENGTH(RExC_parse),
@@ -10299,9 +10299,9 @@ S_regclass(pTHX_ RExC_state_t *pRExC_state, I32 *flagp, U32 depth,
                 *RExC_parse, *RExC_parse,
                 maybe_class == OOB_NAMEDCLASS
                     ? (POSIXCC_NOTYET(*RExC_parse)
-                        ? perl_diag_selector_domain_2398_0_unimplemented_3
-                        : perl_diag_selector_domain_2398_0_invalid_1)
-                    : perl_diag_selector_domain_2398_0_recognized_2,
+                        ? PERL_DIAG_SEL_POSIX_BRACKET_FORM_UNIMPLEMENTED
+                        : PERL_DIAG_SEL_POSIX_BRACKET_FORM_INVALID)
+                    : PERL_DIAG_SEL_POSIX_BRACKET_FORM_RECOGNIZED,
                 not_posix_region_end);
         }
     }

@@ -2533,7 +2533,7 @@ PP(pp_rv2av)
     return NORMAL;
 
  croak_cant_return:
-    PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_AGGREGATE_IN_SCALAR_CONTEXT(is_pp_rv2av ? perl_diag_selector_domain_1194_0_array_1 : perl_diag_selector_domain_1194_0_hash_2);
+    PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_AGGREGATE_IN_SCALAR_CONTEXT(is_pp_rv2av ? PERL_DIAG_SEL_AGGREGATE_KIND_ARRAY : PERL_DIAG_SEL_AGGREGATE_KIND_HASH);
 }
 
 
@@ -4319,7 +4319,7 @@ Perl_do_readline(pTHX)
                 PerlIO_clearerr(fp);
                 if (!do_close(PL_last_in_gv, FALSE)) {
                     PERL_WARN_WARNING_GLOB_CHILD_EXIT_FAILED(
-                        (STATUS_CURRENT & 0x80) ? perl_diag_selector_domain_2202_0_core_dumped_1 : perl_diag_selector_domain_2202_0_normal_2,
+                        (STATUS_CURRENT & 0x80) ? PERL_DIAG_SEL_CHILD_EXIT_FORM_CORE_DUMPED : PERL_DIAG_SEL_CHILD_EXIT_FORM_NORMAL,
                         (int)(STATUS_CURRENT >> 8));
                 }
             }
@@ -4542,7 +4542,7 @@ S_softref2xv_lite(pTHX_ SV *const sv, const char *const what,
     if (PL_op->op_private & HINT_STRICT_REFS) {
         if (SvOK(sv))
             PERL_THROW_ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN(sv, PERL_DIAG_SELECTOR_FROM_ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN_REFERENCE_KIND(reference_kind),
-                (SvPOKp(sv) && SvCUR(sv) > 32) ? perl_diag_selector_domain_2043_0_truncated_2 : perl_diag_selector_domain_2043_0_complete_1);
+                (SvPOKp(sv) && SvCUR(sv) > 32) ? PERL_DIAG_SEL_TEXT_LENGTH_TRUNCATED : PERL_DIAG_SEL_TEXT_LENGTH_COMPLETE);
         else
             PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_NO_CONTEXT(PERL_DIAG_SELECTOR_FROM_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_KIND(what));
     }
@@ -6490,12 +6490,12 @@ PP(pp_entersub)
                 const char *sym;
                 STRLEN len;
                 if (UNLIKELY(!SvOK(sv)))
-                    PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_DIE(perl_diag_selector_domain_1755_0_subroutine_5);
+                    PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_DIE(PERL_DIAG_SEL_UNDEFINED_REF_KIND_SUBROUTINE);
 
                 sym = SvPV_nomg_const(sv, len);
                 if (PL_op->op_private & HINT_STRICT_REFS)
                     PERL_THROW_ERROR_STRICT_REFS_SUBROUTINE_STRING_REFERENCE_FORBIDDEN(sv,
-                        len > 32 ? perl_diag_selector_domain_2043_0_truncated_2 : perl_diag_selector_domain_2043_0_complete_1);
+                        len > 32 ? PERL_DIAG_SEL_TEXT_LENGTH_TRUNCATED : PERL_DIAG_SEL_TEXT_LENGTH_COMPLETE);
                 cv = get_cvn_flags(sym, len, GV_ADD|SvUTF8(sv));
                 break;
             }

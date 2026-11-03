@@ -1586,7 +1586,7 @@ S_dir_unchanged(pTHX_ const char *orig_pv, MAGIC *mg)
         && ( statbuf.st_dev != orig_cwd_stat->st_dev
                      || statbuf.st_ino != orig_cwd_stat->st_ino)) {
         PERL_THROW_ERROR_IO_INPLACE_EDIT_PATH_CONTEXT_INVALID(
-                orig_pv, perl_diag_selector_domain_1181_0_cwd_changed_1);
+                orig_pv, PERL_DIAG_SEL_INPLACE_EDIT_PATH_CWD_CHANGED);
     }
 #else
     SV **temp_psv = av_fetch((AV*)mg->mg_obj, ARGVMG_TEMP_NAME, FALSE);
@@ -1598,7 +1598,7 @@ S_dir_unchanged(pTHX_ const char *orig_pv, MAGIC *mg)
         && PerlLIO_stat(SvPVX(*temp_psv), &statbuf) < 0) {
         PERL_THROW_ERROR_IO_INPLACE_EDIT_PATH_CONTEXT_INVALID(
                 orig_pv,
-                perl_diag_selector_domain_1181_0_work_file_missing_2);
+                PERL_DIAG_SEL_INPLACE_EDIT_PATH_WORK_FILE_MISSING);
     }
 #endif
 

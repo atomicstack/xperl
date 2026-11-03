@@ -623,8 +623,8 @@ Other compromises kick in only when the result is within a digit of overflowing.
 
             switch (base) {
               default: goto bad_base;
-              case 2:  radix = perl_diag_selector_domain_2116_0_binary_1;      break;
-              case 16: radix = perl_diag_selector_domain_2116_0_hexadecimal_2; break;
+              case 2:  radix = PERL_DIAG_SEL_NUM_RADIX_BINARY;      break;
+              case 16: radix = PERL_DIAG_SEL_NUM_RADIX_HEXADECIMAL; break;
               case 10: /* Base 10 historically has not raised warnings here */
                 goto illegal_warning_done;
               case 8:
@@ -638,7 +638,7 @@ Other compromises kick in only when the result is within a digit of overflowing.
                     goto illegal_warning_done;
                 }
 
-                radix = perl_diag_selector_domain_2116_0_octal_3;
+                radix = PERL_DIAG_SEL_NUM_RADIX_OCTAL;
                 break;
             }
 
@@ -694,9 +694,9 @@ Other compromises kick in only when the result is within a digit of overflowing.
 
             switch (base) {
               default: goto bad_base;
-              case 2:  radix = perl_diag_selector_domain_2116_0_binary_1;      break;
-              case 8:  radix = perl_diag_selector_domain_2116_0_octal_3;       break;
-              case 16: radix = perl_diag_selector_domain_2116_0_hexadecimal_2; break;
+              case 2:  radix = PERL_DIAG_SEL_NUM_RADIX_BINARY;      break;
+              case 8:  radix = PERL_DIAG_SEL_NUM_RADIX_OCTAL;       break;
+              case 16: radix = PERL_DIAG_SEL_NUM_RADIX_HEXADECIMAL; break;
               case 10: /* Base 10 historically has not raised a warning here */
                 goto overflow_warning_done;
             }

@@ -5979,9 +5979,9 @@ Perl_find_script(pTHX_ const char *scriptname, bool dosearch,
             if (flags & 1) {			/* do or die? */
                 /* diag_listed_as: Can't execute %s */
                 PERL_THROW_ERROR_SYSTEM_PROCESS_EXECUTABLE_LOOKUP_FAILED(
-                    xfailed ? perl_diag_selector_domain_1557_0_execute_1 : perl_diag_selector_domain_1557_0_find_2,
-                    xfailed ? perl_diag_selector_domain_1557_1_unavailable_1
-                            : seen_dot ? perl_diag_selector_domain_1557_1_ordinary_3 : perl_diag_selector_domain_1557_1_dot_not_in_path_2,
+                    xfailed ? PERL_DIAG_SEL_SCRIPT_ACTION_EXECUTE : PERL_DIAG_SEL_SCRIPT_ACTION_FIND,
+                    xfailed ? PERL_DIAG_SEL_SCRIPT_STATUS_UNAVAILABLE
+                            : seen_dot ? PERL_DIAG_SEL_SCRIPT_STATUS_ORDINARY : PERL_DIAG_SEL_SCRIPT_STATUS_DOT_NOT_IN_PATH,
                     xfailed ? xfailed : scriptname);
             }
             scriptname = NULL;
@@ -6221,11 +6221,11 @@ Perl_report_evil_fh(pTHX_ const GV *gv)
              ? "socket" : "filehandle");
         const bool have_name = name && SvCUR(name);
         PERL_WARN_WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE(PERL_DIAG_SELECTOR_FROM_WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE_HANDLE_STATE(vile), PERL_DIAG_SELECTOR_FROM_WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE_HANDLE_TYPE(type),
-            have_name ? perl_diag_selector_domain_2250_0_named_1 : perl_diag_selector_domain_2250_0_unnamed_2, PERL_DIAG_SELECTOR_FROM_WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE_OPERATION_FORM(operation_form), func,
+            have_name ? PERL_DIAG_SEL_VALUE_NAME_FORM_NAMED : PERL_DIAG_SEL_VALUE_NAME_FORM_UNNAMED, PERL_DIAG_SELECTOR_FROM_WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE_OPERATION_FORM(operation_form), func,
             have_name ? name : &PL_sv_no, packWARN(warn_type));
         if (io && IoDIRP(io) && !(IoFLAGS(io) & IOf_FAKE_DIRP))
                 PERL_WARN_WARNING_IO_DIRHANDLE_USED_AS_FILEHANDLE_SUGGESTION(
-                    have_name ? perl_diag_selector_domain_2250_0_named_1 : perl_diag_selector_domain_2250_0_unnamed_2, func,
+                    have_name ? PERL_DIAG_SEL_VALUE_NAME_FORM_NAMED : PERL_DIAG_SEL_VALUE_NAME_FORM_UNNAMED, func,
                     PERL_DIAG_SELECTOR_FROM_WARNING_IO_DIRHANDLE_USED_AS_FILEHANDLE_SUGGESTION_OPERATION_FORM(operation_form),
                     have_name ? name : &PL_sv_no, packWARN(warn_type));
     }

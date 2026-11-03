@@ -1931,7 +1931,7 @@ Perl_magic_setenv(pTHX_ SV *sv, MAGIC *mg)
     }
     else {
         if (!sv_utf8_downgrade(keysv, /* fail_ok */ TRUE)) {
-            PERL_WARN_WARNING_UTF8_WIDE_CHARACTER_IN_BYTE_OPERATION(perl_diag_selector_domain_2088_0_setenv_key_encoding_4);
+            PERL_WARN_WARNING_UTF8_WIDE_CHARACTER_IN_BYTE_OPERATION(PERL_DIAG_SEL_BYTE_OP_SETENV_KEY_ENCODING);
         }
 
         key = SvPV_const(keysv,klen);
@@ -1944,7 +1944,7 @@ Perl_magic_setenv(pTHX_ SV *sv, MAGIC *mg)
         (void)SvPV_force_nomg_nolen(sv);
         (void)sv_utf8_downgrade(sv, /* fail_ok */ TRUE);
         if (SvUTF8(sv)) {
-            PERL_WARN_WARNING_UTF8_WIDE_CHARACTER_IN_BYTE_OPERATION(perl_diag_selector_domain_2088_0_setenv_3);
+            PERL_WARN_WARNING_UTF8_WIDE_CHARACTER_IN_BYTE_OPERATION(PERL_DIAG_SEL_BYTE_OP_SETENV);
             SvUTF8_off(sv);
         }
         s = SvPVX(sv);
@@ -3960,7 +3960,7 @@ Perl_magic_set(pTHX_ SV *sv, MAGIC *mg)
                     if (val <= 0) {
                         sv_setsv(sv, PL_rs);
                         PERL_THROW_ERROR_IO_RECORDSEPARATOR_LENGTH_NOT_POSITIVE(
-                            val < 0 ? perl_diag_selector_domain_1215_0_negative_integer_1 : perl_diag_selector_domain_1215_0_zero_2);
+                            val < 0 ? PERL_DIAG_SEL_RECORD_SEPARATOR_LENGTH_NEGATIVE_INTEGER : PERL_DIAG_SEL_RECORD_SEPARATOR_LENGTH_ZERO);
                     }
                 } else {
                     sv_setsv(sv, PL_rs);
@@ -4197,7 +4197,7 @@ Perl_magic_set(pTHX_ SV *sv, MAGIC *mg)
                that same (UTF8-encoded) value. */
             sv_utf8_encode(GvSV(mg->mg_obj));
 
-            PERL_WARN_WARNING_UTF8_WIDE_CHARACTER_IN_BYTE_OPERATION(perl_diag_selector_domain_2088_0_program_name_2);
+            PERL_WARN_WARNING_UTF8_WIDE_CHARACTER_IN_BYTE_OPERATION(PERL_DIAG_SEL_BYTE_OP_PROGRAM_NAME);
         }
 
         LOCK_DOLLARZERO_MUTEX;

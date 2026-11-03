@@ -16978,7 +16978,7 @@ Perl_ck_length(pTHX_ OP *o)
                     return o;
             }
             if (name)
-                PERL_WARN_WARNING_SYNTAX_LENGTH_NAMED_AGGREGATE_COERCION(hash ? perl_diag_selector_domain_1194_0_hash_2 : perl_diag_selector_domain_1194_0_array_1, name);
+                PERL_WARN_WARNING_SYNTAX_LENGTH_NAMED_AGGREGATE_COERCION(hash ? PERL_DIAG_SEL_AGGREGATE_KIND_HASH : PERL_DIAG_SEL_AGGREGATE_KIND_ARRAY, name);
             else if (hash)
      /* diag_listed_as: length() used on %s (did you mean "scalar(%s)"?) */
                 PERL_WARN_WARNING_SYNTAX_LENGTH_HASH_COERCION_WITHOUT_NAME();

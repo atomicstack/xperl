@@ -888,7 +888,7 @@ PP_wrapped(pp_open, 0, 1)
     GV * const gv = MUTABLE_GV(*++MARK);
 
     if (!isGV(gv) && !(SvTYPE(gv) == SVt_PVLV && isGV_with_GP(gv)))
-        PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_DIE(perl_diag_selector_domain_1755_0_filehandle_2);
+        PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_DIE(PERL_DIAG_SEL_UNDEFINED_REF_KIND_FILEHANDLE);
 
     if ((io = GvIOp(gv))) {
         const MAGIC *mg;
@@ -3156,7 +3156,7 @@ PP_wrapped(pp_stat, !(PL_op->op_flags & OPf_REF), 0)
             if (gv != PL_defgv) {
             do_fstat_warning_check:
                 PERL_WARN_WARNING_IO_LSTAT_ON_FILEHANDLE(
-                    gv ? perl_diag_selector_domain_2221_0_named_2 : perl_diag_selector_domain_2221_0_anonymous_1,
+                    gv ? PERL_DIAG_SEL_LSTAT_HANDLE_FORM_NAMED : PERL_DIAG_SEL_LSTAT_HANDLE_FORM_ANONYMOUS,
                     gv ? newSVhek_mortal(GvENAME_HEK(gv))
                        : sv_2mortal(newSVpvs("")));
             } else if (PL_laststype != OP_LSTAT)

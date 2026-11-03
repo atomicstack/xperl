@@ -167,9 +167,9 @@ S_rv2gv(pTHX_ SV *sv, const bool vivify_sv, const bool strict,
             }
             else {
                 if (strict) {
-                    PERL_THROW_ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN(sv, perl_diag_selector_domain_2425_0_symbol_4,
+                    PERL_THROW_ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN(sv, PERL_DIAG_SEL_STRICT_REF_KIND_SYMBOL,
                         (SvPOKp(sv) && SvCUR(sv) > 32)
-                            ? perl_diag_selector_domain_2043_0_truncated_2 : perl_diag_selector_domain_2043_0_complete_1);
+                            ? PERL_DIAG_SEL_TEXT_LENGTH_TRUNCATED : PERL_DIAG_SEL_TEXT_LENGTH_COMPLETE);
                 }
                 if ((PL_op->op_private & (OPpLVAL_INTRO|OPpDONT_INIT_GV))
                     == OPpDONT_INIT_GV) {
@@ -230,7 +230,7 @@ Perl_softref2xv(pTHX_ SV *const sv, const char *const what,
     if (PL_op->op_private & HINT_STRICT_REFS) {
         if (SvOK(sv))
             PERL_THROW_ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN(sv, PERL_DIAG_SELECTOR_FROM_ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN_REFERENCE_KIND(reference_kind),
-                (SvPOKp(sv) && SvCUR(sv) > 32) ? perl_diag_selector_domain_2043_0_truncated_2 : perl_diag_selector_domain_2043_0_complete_1);
+                (SvPOKp(sv) && SvCUR(sv) > 32) ? PERL_DIAG_SEL_TEXT_LENGTH_TRUNCATED : PERL_DIAG_SEL_TEXT_LENGTH_COMPLETE);
         else
             PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_NO_CONTEXT(PERL_DIAG_SELECTOR_FROM_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_KIND(what));
     }
@@ -8339,8 +8339,8 @@ PP_wrapped(pp_coreargs, 0, 0)
     if (numargs < minargs || numargs > maxargs)
         /* diag_listed_as: Too many arguments for %s */
         PERL_THROW_ERROR_CALL_BINDING_ARITY_INVALID_ARGUMENT_COUNT(
-            numargs < minargs ? perl_diag_selector_domain_1500_0_too_few_1
-                              : perl_diag_selector_domain_1500_0_too_many_2,
+            numargs < minargs ? PERL_DIAG_SEL_ARGUMENT_COUNT_TOO_FEW
+                              : PERL_DIAG_SEL_ARGUMENT_COUNT_TOO_MANY,
             opnum ? PERL_DIAG_PL_OP_DESC_COREARGS_ERROR_CALL_BINDING_ARITY_INVALID_ARGUMENT_COUNT(opnum)
                   : SvPV_nolen_const(cSVOP_sv));
 
@@ -8406,8 +8406,8 @@ PP_wrapped(pp_coreargs, 0, 0)
                     whicharg,
                     PERL_DIAG_PL_OP_DESC_COREARGS_HASH_REFERENCE(opnum),
                     (opnum == OP_DBMCLOSE || opnum == OP_DBMOPEN)
-                        ? perl_diag_selector_domain_2001_0_hash_only_1
-                        : perl_diag_selector_domain_2001_0_hash_or_array_2
+                        ? PERL_DIAG_SEL_HASH_ARG_HASH_ONLY
+                        : PERL_DIAG_SEL_HASH_ARG_HASH_OR_ARRAY
                 );
             PUSHs(SvRV(*svp));
             break;
@@ -8446,10 +8446,10 @@ PP_wrapped(pp_coreargs, 0, 0)
                     whicharg,
                     PL_op_name[opnum],
                     wantscalar
-                        ? perl_diag_selector_domain_2002_0_scalar_reference_3
+                        ? PERL_DIAG_SEL_REF_ARG_SCALAR_REFERENCE
                         : opnum == OP_LOCK || opnum == OP_UNDEF
-                            ? perl_diag_selector_domain_2002_0_reference_with_code_1
-                            : perl_diag_selector_domain_2002_0_reference_without_code_2
+                            ? PERL_DIAG_SEL_REF_ARG_REFERENCE_WITH_CODE
+                            : PERL_DIAG_SEL_REF_ARG_REFERENCE_WITHOUT_CODE
                 );
             PUSHs(SvRV(*svp));
             if (opnum == OP_UNDEF && SvRV(*svp) == (SV *)PL_defgv) {
@@ -8988,10 +8988,10 @@ S_check_argc(pTHX_ UV argc, UV params, UV opt_params, char slurpy)
         /* diag_listed_as: Too many arguments for subroutine '%s' (got %d; expected %d) */
         /* diag_listed_as: Too many arguments for subroutine '%s' (got %d; expected at most %d)*/
         PERL_THROW_ERROR_CALL_BINDING_ARITY_SUBROUTINE_COUNT_MISMATCH(
-            too_few ? perl_diag_selector_domain_1500_0_too_few_1 : perl_diag_selector_domain_1500_0_too_many_2,
+            too_few ? PERL_DIAG_SEL_ARGUMENT_COUNT_TOO_FEW : PERL_DIAG_SEL_ARGUMENT_COUNT_TOO_MANY,
             S_find_runcv_name(), argc,
-            too_few ? (slurpy || opt_params ? perl_diag_selector_domain_2431_1_minimum_2 : perl_diag_selector_domain_2431_1_exact_1)
-                    : (opt_params ? perl_diag_selector_domain_2431_1_maximum_3 : perl_diag_selector_domain_2431_1_exact_1),
+            too_few ? (slurpy || opt_params ? PERL_DIAG_SEL_ARG_BOUND_MINIMUM : PERL_DIAG_SEL_ARG_BOUND_EXACT)
+                    : (opt_params ? PERL_DIAG_SEL_ARG_BOUND_MAXIMUM : PERL_DIAG_SEL_ARG_BOUND_EXACT),
             too_few ? (params - opt_params) : params);
 
     if (UNLIKELY(slurpy == '%' && argc > params && (argc - params) % 2))

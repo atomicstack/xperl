@@ -3220,7 +3220,7 @@ Perl_Gv_AMupdate(pTHX_ HV *stash, bool destructing)
                                                     : newSVpvs_flags("???", SVs_TEMP);
                         /* diag_listed_as: Can't resolve method "%s" overloading "%s" in package "%s" */
                         PERL_THROW_ERROR_OVERLOAD_METHOD_RESOLUTION_FAILED(
-                            GvCVGEN(gv) ? perl_diag_selector_domain_1757_0_stub_found_2 : perl_diag_selector_domain_1757_0_method_not_found_1,
+                            GvCVGEN(gv) ? PERL_DIAG_SEL_OVERLOAD_RESULT_STUB_FOUND : PERL_DIAG_SEL_OVERLOAD_RESULT_METHOD_NOT_FOUND,
                             name, cp, HvNAME_HEK(stash));
                     }
                 }
@@ -3768,9 +3768,9 @@ Perl_diag_overload_method_not_found_message(pTHX_ const char *operation,
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
     IV left_state_id = Perl_diag_selector_from_cstr(aTHX_
-        perl_diag_selector_domain_1589_1_id, left_overload_state);
+        PERL_DIAG_DOMAIN_OVERLOAD_STATE, left_overload_state);
     IV right_state_id = Perl_diag_selector_from_cstr(aTHX_
-        perl_diag_selector_domain_1589_1_id, right_overload_state);
+        PERL_DIAG_DOMAIN_OVERLOAD_STATE, right_overload_state);
 
     SV * const tmpl_operation = Perl_diag_setup_param(aTHX_
         params_av, perl_diag_error_overload_operation_method_not_found_idx, 0,
@@ -3784,7 +3784,7 @@ Perl_diag_overload_method_not_found_message(pTHX_ const char *operation,
 
     Perl_diag_setup_param(aTHX_
         params_av, perl_diag_error_overload_operation_method_not_found_idx, 2,
-        perl_diag_selector_domain_1589_1_id, left_state_id);
+        PERL_DIAG_DOMAIN_OVERLOAD_STATE, left_state_id);
 
     SV * const tmpl_left_package = Perl_diag_setup_param(aTHX_
         params_av, perl_diag_error_overload_operation_method_not_found_idx, 3,
@@ -3793,7 +3793,7 @@ Perl_diag_overload_method_not_found_message(pTHX_ const char *operation,
 
     Perl_diag_setup_param(aTHX_
         params_av, perl_diag_error_overload_operation_method_not_found_idx, 4,
-        perl_diag_selector_domain_1589_1_id, right_state_id);
+        PERL_DIAG_DOMAIN_OVERLOAD_STATE, right_state_id);
 
     SV * const tmpl_right_package = Perl_diag_setup_param(aTHX_
         params_av, perl_diag_error_overload_operation_method_not_found_idx, 5,
