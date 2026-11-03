@@ -6304,6 +6304,26 @@ Perl_throw_die_2_2017(pTHX_ UV diag_index,
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
+Perl_throw_die_2_2036(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
+    IV ma_arg1,
+    const char *ma_fmt2,
+    const char *ma_arg2)
+{
+    AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+
+    Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
+        perl_diag_selector_domain_1172_0_id, ma_arg1);
+
+    SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
+        0, perl_diag_selector_invalid);
+    sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
+    NORETURN_FUNCTION_END;
+}
+
+ __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_2_2042(pTHX_ UV diag_index,
     const char *source_file,
     UV source_line,
@@ -8414,7 +8434,7 @@ Perl_throw_warner_9_2620(pTHX_ UV diag_index,
 
 
 /* Generated from:
- * 6dec88c46af68139755a9a916e9b35aa2ab951b96f16813f2900a2235d45f21a diag_conf.pl
+ * 23551d81b7501922a3ef2e7dd5cad456ecef3e4ed7722245684fb65d5c2788e3 diag_conf.pl
  * 6510e6553ea58cc2c5404bc3524e14de99d6b39d5bf4cb3fc3271ba678cf283b diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

@@ -626,6 +626,21 @@ template with fixed bindings, use catalog variants so individual conditions
 retain symbolic names. External arbitrary text belongs at an explicit
 opaque boundary rather than masquerading as a catalog translation.
 
+For example, C<PERL_THROW_ERROR_TYPE_REFERENCE_HASH_REQUIRED(...)> is a
+variant of C<ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH>. The catalog binds
+its C<reference_type> selector to C<HASH>; the C call site passes only the
+observed referent. Search the variant name in F<diag_conf.pl> to find its
+owning code and shared message. Add a named variant when a call site would
+otherwise need a C<perl_diag_selector_domain_...> constant. Those constants
+are generated implementation details and their numeric suffixes can change.
+
+An argument marked C<internal> is retained in the diagnostic's C<params>
+without becoming a template placeholder. The reference mismatch diagnostic
+uses this for a bounded C<sv_peek> description. Its annotated renderer shows
+the description, and JSON includes it as a named parameter. Legacy wording
+still comes from the translated template. Check both forms when adding
+debugging context to another diagnostic.
+
 Regenerate, rebuild affected code, and exercise both the structured record
 and rendered output. Verify the diagnostic's own source location, the order
 of accumulated diagnostics, and the final disposition. When a selector is

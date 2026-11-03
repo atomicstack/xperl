@@ -55284,6 +55284,12 @@ $CONF = {
                 "format_str" => "s",
                 "selector_values" => $META->{"reftype_name"},
                 "selector_unsorted" => 1
+              },
+              {
+                "name" => "observed",
+                "type" => "text",
+                "format_str" => "s",
+                "internal" => 1
               }
             ]
           },

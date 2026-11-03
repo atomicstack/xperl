@@ -4447,6 +4447,23 @@ is( $runtime_json->{contents}[0]{c_source}{file},
     'exception JSON includes the C source packet' );
 like( $@->render_as_modern('en'), qr/\[C [^\]]+\.c:\d+\]/,
     'modern rendering shows the C call site' );
+is( $@->contents->[0]->params->[1]{name}, 'observed',
+    'the mismatch diagnostic names the observed referent' );
+like( $@->contents->[0]->params->[1]{value}, qr/AV\(\)/,
+    'the mismatch diagnostic captures the actual array referent type' );
+like( $@->render_as_modern('en'), qr/Observed referent: AV\(\)/,
+    'modern rendering shows the actual referent' );
+is( $runtime_json->{contents}[0]{params}[1]{name}, 'observed',
+    'JSON names the observed referent' );
+
+my $observed_scalar = 'PWNED';
+eval { my $scalar_ref = \$observed_scalar; my $value = $scalar_ref->{key}; };
+like( $@->render_as_modern('en'), qr/Observed referent: PV\("PWNED"/,
+    'modern rendering includes a bounded scalar value' );
+like( $@->render_as_legacy('en'), qr/Not a HASH reference/,
+    'legacy wording for a mismatched referent remains unchanged' );
+unlike( $@->render_as_legacy('en'), qr/Observed referent:/,
+    'legacy rendering omits the new debugging detail' );
 
 eval 'package XPerlVersionError 01;';
 my ($version_error) = grep { $_->code eq 'ERROR_SYNTAX_VERSION_INVALID_DECLARATION' } @{ $@->contents };
