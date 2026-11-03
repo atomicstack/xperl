@@ -92,19 +92,19 @@ subtest 'PL_strtab capacity arithmetic' => sub {
     my $size_valid = \&XS::APItest::Hash::shared_key_size_valid;
 
     is($capacity_for->(0), 32768, 'empty table uses the minimum capacity');
-    is($capacity_for->(10_922), 32768,
+    is($capacity_for->(16_383), 32768,
        'live count below the minimum table threshold stays at minimum');
-    is($capacity_for->(10_923), 65536,
-       'capacity target rounds up when 3*live exceeds the minimum');
+    is($capacity_for->(16_384), 65536,
+       'capacity target rounds up before a half-full table gains a key');
     ok($size_valid->(32768), 'minimum table capacity is valid');
     ok($size_valid->(65536), 'power-of-two table capacity is valid');
     ok(!$size_valid->(32769), 'non-power-of-two table capacity is invalid');
     ok(!$size_valid->(16384), 'capacity below table minimum is invalid');
 
     my $two26 = 67_108_864;
-    is($capacity_for->(22_369_621), $two26,
+    is($capacity_for->(33_554_431), $two26,
        'capacity arithmetic reaches the former 2^26 limit');
-    is($capacity_for->(22_369_622), 2 * $two26,
+    is($capacity_for->(33_554_432), 2 * $two26,
        'capacity arithmetic grows beyond the former 2^26 limit');
     ok($size_valid->($two26), '2^26 table capacity is valid');
 
@@ -112,9 +112,9 @@ subtest 'PL_strtab capacity arithmetic' => sub {
         skip('wide Size_t boundary cases', 8)
             unless $Config::Config{sizesize} >= 8;
         my $two32 = 4_294_967_296;
-        is($capacity_for->(1_431_655_765), $two32,
+        is($capacity_for->(2_147_483_647), $two32,
            'capacity arithmetic reaches 2^32 on wide Size_t');
-        is($capacity_for->(1_431_655_766), 2 * $two32,
+        is($capacity_for->(2_147_483_648), 2 * $two32,
            'capacity arithmetic crosses 2^32 on wide Size_t');
         ok($size_valid->($two32), '2^32 table capacity is valid');
         ok($size_valid->(2 * $two32), '2^33 table capacity is valid');
@@ -127,8 +127,8 @@ subtest 'PL_strtab capacity arithmetic' => sub {
            'next power-of-two allocation exceeds 64-bit Size_t');
         is($capacity_for->($largest_capacity), 0,
            'capacity target is rejected when its allocation would overflow');
-        is($capacity_for->(6_148_914_691_236_517_206), 0,
-           '3*live arithmetic overflow returns no capacity');
+        is($capacity_for->(9_223_372_036_854_775_808), 0,
+           '2*live arithmetic overflow returns no capacity');
     }
 
     SKIP: {
@@ -284,6 +284,8 @@ main_tests (\@keys, \@testkeys, ' [utf8 hash]');
     my $growth = XS::APItest::Hash::test_shared_hek_probe(
         $growth_key, $growth_limit);
     ok($growth->[2], 'interning enough keys grows PL_strtab');
+    cmp_ok($growth->[14], '<=', $growth_limit / 2 + 1,
+           'shared-key table grows by half occupancy');
     ok($growth->[3], 'the held shared HEK pointer survives table growth');
     is_deeply([@$growth[4..6]], [1, 2, 1],
               'reference counts remain correct across table growth');

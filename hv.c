@@ -179,13 +179,12 @@ S_strtab_prepare_insert(pTHX_ U32 hash, const char *key, STRLEN klen,
         + HvSTRTAB(PL_strtab)->tombstones;
     PERL_UNUSED_ARG(collision);
 
-    if (occupied >= OA_ENTRY_CAPACITY(capacity)) {
-        const Size_t target = S_hv_strtab_capacity_for(HvTOTALKEYS(PL_strtab));
-        if (!target)
-            Perl_croak_memory_wrap();
-        if (HvSTRTAB(PL_strtab)->tombstones < (occupied + 1) / 2
-            || target <= capacity / 2)
-            capacity = target;
+    if (occupied >= capacity / 2) {
+        if (HvSTRTAB(PL_strtab)->tombstones < (occupied + 1) / 2) {
+            if (capacity > MEM_SIZE_MAX / 2)
+                Perl_croak_memory_wrap();
+            capacity *= 2;
+        }
         S_strtab_resize(aTHX_ capacity);
         (void)S_strtab_find(aTHX_ hash, key, klen, flags, pos, NULL);
     }
@@ -2444,18 +2443,14 @@ Perl_hv_ksplit(pTHX_ HV *hv, IV newmax)
     char *a;
 
     if (HvIS_STRTAB(hv)) {
-        Size_t capacity = STRTAB_MIN_CAPACITY;
-        Size_t needed;
+        Size_t capacity;
         if (newmax < 0)
             return;
-        if ((UV)newmax > MEM_SIZE_MAX / 3 * 2)
+        if ((UV)(Size_t)newmax != (UV)newmax)
             Perl_croak_memory_wrap();
-        needed = (Size_t)newmax + (Size_t)newmax / 2;
-        while (capacity <= needed) {
-            if (capacity > MEM_SIZE_MAX / 2)
-                Perl_croak_memory_wrap();
-            capacity *= 2;
-        }
+        capacity = S_hv_strtab_capacity_for((Size_t)newmax);
+        if (!capacity)
+            Perl_croak_memory_wrap();
         if (!HvARRAY(hv) || capacity > HvMAX(hv) + 1)
             S_strtab_resize(aTHX_ capacity);
         return;
