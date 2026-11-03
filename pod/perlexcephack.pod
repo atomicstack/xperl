@@ -527,6 +527,11 @@ entries. These schemas deliberately differ from private blessed hashes.
 
 Diagnostic records select code, number, kind, severity, parameter records,
 location, nested contents, and applicable warning/hint/fatal fields.
+Generated producer macros pass C<__FILE__> and C<__LINE__> from their call
+site. The diagnostic stores them in C<c_source>, independently of the Perl
+source C<location>. The annotated header shows C<[C file.c:line]> and JSON
+includes a C<c_source> object with C<file> and C<line> keys. A diagnostic
+created outside those macros may omit C<c_source>.
 Standalone diagnostic JSON has no translated human-message field.
 Exception inspection contains selected exception state and omits the private
 delivery journal. Delivery envelopes add the rendered human C<message> and group

@@ -83,6 +83,9 @@ renders the whole exception from catalog templates and diagnostic data for
 the requested language. Consecutive identical headers are shown once, and
 contained hints appear on their own indented lines under the parent's
 header. Parser context, including nearby source text, is retained.
+When a generated core macro records its C call site, the annotated header
+shows it as C<[C file.c:line]>. JSON includes the same file and line under
+each diagnostic's C<c_source> key.
 English annotated syntax errors use sentence capitalization and put nearby
 source before the file and line. Legacy wording and ordering are preserved.
 Diagnostic objects do not retain rendered C<text>

@@ -122,6 +122,10 @@ C<has_errors>. Both store their diagnostic entries under C<contents>.
 Diagnostic storage is allocated when entries are added. JSON and Dumper
 records use C<contents> for diagnostic lists at every level.
 
+Diagnostics emitted by generated core macros now record the C source file
+and line of the macro call. Annotated output shows this location in the
+header, and JSON exposes it under C<c_source>.
+
 =head2 Experimental data-shape matching
 
 The documentation is now split into L<perldispatchontut>, a progressive

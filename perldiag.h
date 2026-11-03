@@ -4791,12 +4791,16 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_THROW_ERROR_NUMERIC_DOMAIN_DIVISION_BY_ZERO() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_numeric_domain_division_by_zero_idx \
+        aTHX_ perl_diag_error_numeric_domain_division_by_zero_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_NUMERIC_DOMAIN_MODULUS_BY_ZERO() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_numeric_domain_modulus_by_zero_idx \
+        aTHX_ perl_diag_error_numeric_domain_modulus_by_zero_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_UNKNOWN(ma_length, ma_modifier, flags) \
@@ -4810,716 +4814,976 @@ enum perl_diag_selector_domain_id {
         SV * const tmpl_modifier = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_regexp_modifier_literal_unknown_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_modifier, "%.*s", in_length, in_modifier); \
         if (scratch_utf8_flags & SVf_UTF8) SvUTF8_on(tmpl_modifier); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_modifier_literal_unknown_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_modifier_literal_unknown_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_VALUE_NOT_REFERENCE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_reference_aliasing_value_not_reference_idx \
+        aTHX_ perl_diag_error_mutation_reference_aliasing_value_not_reference_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_VALUE_NOT_REFERENCE_DIE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_mutation_reference_aliasing_value_not_reference_idx \
+        aTHX_ perl_diag_error_mutation_reference_aliasing_value_not_reference_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_ESCAPE_CHARACTER_NAME_BRACES_REQUIRED() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_escape_character_name_braces_required_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_escape_character_name_braces_required_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_THROW_ERROR_IO_DBM_BACKEND_UNAVAILABLE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_io_dbm_backend_unavailable_idx \
+        aTHX_ perl_diag_error_io_dbm_backend_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_BUFFER_LENGTH_NEGATIVE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_io_buffer_length_negative_idx \
+        aTHX_ perl_diag_error_io_buffer_length_negative_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_BUFFER_OFFSET_OUT_OF_RANGE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_io_buffer_offset_out_of_range_idx \
+        aTHX_ perl_diag_error_io_buffer_offset_out_of_range_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_RANGE_ENDPOINT_OUTSIDE_INTEGER_RANGE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_iterator_range_endpoint_outside_integer_range_idx \
+        aTHX_ perl_diag_error_iterator_range_endpoint_outside_integer_range_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_RETURN_OUTSIDE_SUBROUTINE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_return_outside_subroutine_idx \
+        aTHX_ perl_diag_error_control_flow_return_outside_subroutine_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_UTF8_UNPACK_STRING_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_utf8_unpack_string_invalid_idx \
+        aTHX_ perl_diag_error_unicode_utf8_unpack_string_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_UTF8_PACK_STRING_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_utf8_pack_string_invalid_idx \
+        aTHX_ perl_diag_error_unicode_utf8_pack_string_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_REGEXP_RECURSION_EMPTY_PATTERN_CYCLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_regexp_recursion_empty_pattern_cycle_idx \
+        aTHX_ perl_diag_error_regexp_recursion_empty_pattern_cycle_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MEMORY_SIZE_PACK_RESULT_OVERFLOW() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_memory_size_pack_result_overflow_idx \
+        aTHX_ perl_diag_error_memory_size_pack_result_overflow_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RUN_OPTION_VALUE_REQUIRED(ma_option) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_run_option_value_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_option \
     )
 
 #define PERL_THROW_ERROR_RUN_OPTION_INCLUDE_DIRECTORY_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_run_option_include_directory_required_idx \
+        aTHX_ perl_diag_error_run_option_include_directory_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_PARAMETER_AFTER_SLURPY() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_parameter_after_slurpy_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_parameter_after_slurpy_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_MANDATORY_PARAMETER_AFTER_OPTIONAL() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_mandatory_parameter_after_optional_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_mandatory_parameter_after_optional_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_THROW_ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_value_hash_key_length_out_of_range_idx \
+        aTHX_ perl_diag_error_value_hash_key_length_out_of_range_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_NAMESPACE_SEPARATOR_MALFORMED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_declaration_namespace_separator_malformed_idx \
+        aTHX_ perl_diag_error_syntax_declaration_namespace_separator_malformed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_ENCODING_VARIABLE_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_encoding_variable_unsupported_idx \
+        aTHX_ perl_diag_error_unicode_encoding_variable_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RNG_PROVIDER_OBJECT_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_rng_provider_object_required_idx \
+        aTHX_ perl_diag_error_rng_provider_object_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_FORMAT_LENGTH_CODE_REQUIRES_NUMERIC_TYPE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_format_length_code_requires_numeric_type_idx \
+        aTHX_ perl_diag_error_pack_format_length_code_requires_numeric_type_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_BOUNDS_UNPACK_POSITION_OUTSIDE_STRING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_bounds_unpack_position_outside_string_idx \
+        aTHX_ perl_diag_error_pack_bounds_unpack_position_outside_string_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_FORMAT_POINTER_REQUIRES_EXPLICIT_SIZE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_format_pointer_requires_explicit_size_idx \
+        aTHX_ perl_diag_error_pack_format_pointer_requires_explicit_size_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_BOUNDS_UNPACK_SKIP_OUTSIDE_STRING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_bounds_unpack_skip_outside_string_idx \
+        aTHX_ perl_diag_error_pack_bounds_unpack_skip_outside_string_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_IPC_MESSAGE_TOO_SHORT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_ipc_message_too_short_idx \
+        aTHX_ perl_diag_error_system_ipc_message_too_short_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_ASSIGNMENT_ARRAY_BASE_NONZERO() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_assignment_array_base_nonzero_idx \
+        aTHX_ perl_diag_error_mutation_assignment_array_base_nonzero_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_BLESS_NATIVE_CLASS_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_bless_native_class_forbidden_idx \
+        aTHX_ perl_diag_error_object_bless_native_class_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_BLESS_CURRENT_PACKAGE_FREED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_bless_current_package_freed_idx \
+        aTHX_ perl_diag_error_object_bless_current_package_freed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_BLESS_INVALID_CLASS_NAME_REFERENCE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_bless_invalid_class_name_reference_idx \
+        aTHX_ perl_diag_error_object_bless_invalid_class_name_reference_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_EVAL_TRAILING_INPUT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_substitution_eval_trailing_input_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_substitution_eval_trailing_input_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_INPUT_NON_UNSIGNED_INTEGER() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_input_non_unsigned_integer_idx \
+        aTHX_ perl_diag_error_pack_input_non_unsigned_integer_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_DEFER_BLOCK() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_control_flow_goto_cannot_enter_defer_block_idx \
+        aTHX_ perl_diag_error_control_flow_goto_cannot_enter_defer_block_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_BLESS_NATIVE_OBJECT_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_bless_native_object_forbidden_idx \
+        aTHX_ perl_diag_error_object_bless_native_object_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_BLESS_REFERENCE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_bless_reference_required_idx \
+        aTHX_ perl_diag_error_object_bless_reference_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_CHANGE_ANONYMOUS_STASH() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_composition_inheritance_isa_change_anonymous_stash_idx \
+        aTHX_ perl_diag_error_object_composition_inheritance_isa_change_anonymous_stash_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_ANONYMOUS_STASH() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_composition_inheritance_method_change_anonymous_stash_idx \
+        aTHX_ perl_diag_error_object_composition_inheritance_method_change_anonymous_stash_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PROCESS_WAIT_FLAGS_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_process_wait_flags_unsupported_idx \
+        aTHX_ perl_diag_error_system_process_wait_flags_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_SIGNAL_KILL_PROCESS_ID_NOT_NUMERIC() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_signal_kill_process_id_not_numeric_idx \
+        aTHX_ perl_diag_error_system_signal_kill_process_id_not_numeric_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_ANONYMOUS_STASH() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_composition_inheritance_linearization_anonymous_stash_idx \
+        aTHX_ perl_diag_error_object_composition_inheritance_linearization_anonymous_stash_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_SUBROUTINE_CANNOT_UNDEFINE_ACTIVE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_subroutine_cannot_undefine_active_idx \
+        aTHX_ perl_diag_error_mutation_subroutine_cannot_undefine_active_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_TYPE_REFERENCE_WEAK_UNWEAKEN_NONREFERENCE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_type_reference_weak_unweaken_nonreference_idx \
+        aTHX_ perl_diag_error_type_reference_weak_unweaken_nonreference_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NAMED_STASH_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_method_lookup_named_stash_required_idx \
+        aTHX_ perl_diag_error_object_method_lookup_named_stash_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_TYPE_REFERENCE_WEAK_WEAKEN_NONREFERENCE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_type_reference_weak_weaken_nonreference_idx \
+        aTHX_ perl_diag_error_type_reference_weak_weaken_nonreference_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_WRITER_REQUIRES_SCALAR() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_field_attribute_writer_requires_scalar_idx \
+        aTHX_ perl_diag_error_object_field_attribute_writer_requires_scalar_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_PACK_COMPRESSED_INTEGER_BUFFER_EXHAUSTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_pack_compressed_integer_buffer_exhausted_idx \
+        aTHX_ perl_diag_error_internal_pack_compressed_integer_buffer_exhausted_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_INPUT_NEGATIVE_COMPRESSED_INTEGER() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_input_negative_compressed_integer_idx \
+        aTHX_ perl_diag_error_pack_input_negative_compressed_integer_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_GENERATOR_CANNOT_RESUME_FAILED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_generator_cannot_resume_failed_idx \
+        aTHX_ perl_diag_error_iterator_generator_cannot_resume_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_TIE_ARRAY_NOT_REIFIABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_tie_array_not_reifiable_idx \
+        aTHX_ perl_diag_error_mutation_tie_array_not_reifiable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_NAME_CONTEXT_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_definition_class_name_context_required_idx \
+        aTHX_ perl_diag_error_object_definition_class_name_context_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RNG_SEED_REDACTED_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_rng_seed_redacted_forbidden_idx \
+        aTHX_ perl_diag_error_rng_seed_redacted_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_SUPERCLASS_ALREADY_ASSIGNED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_composition_inheritance_superclass_already_assigned_idx \
+        aTHX_ perl_diag_error_object_composition_inheritance_superclass_already_assigned_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_REGEXP_SUBSTITUTION_CONTEXT_CLONE_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_regexp_substitution_context_clone_unsupported_idx \
+        aTHX_ perl_diag_error_regexp_substitution_context_clone_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OVERLOAD_RETURN_VALUE_COPY_REFERENCE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_overload_return_value_copy_reference_required_idx \
+        aTHX_ perl_diag_error_overload_return_value_copy_reference_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_FORMAT_COUNT_AFTER_LENGTH_CODE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_format_count_after_length_code_idx \
+        aTHX_ perl_diag_error_pack_format_count_after_length_code_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_DELIMITER_LENGTH_EXCEEDED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_heredoc_delimiter_length_exceeded_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_heredoc_delimiter_length_exceeded_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_HANDLE_FILENAME_UNAVAILABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_io_handle_filename_unavailable_idx \
+        aTHX_ perl_diag_error_io_handle_filename_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_TAINT_REGEXP_EVAL_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_taint_regexp_eval_forbidden_idx \
+        aTHX_ perl_diag_error_taint_regexp_eval_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_ANGLE_LENGTH_EXCEEDED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_angle_length_exceeded_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_angle_length_exceeded_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_TIE_FETCHSIZE_RESULT_NEGATIVE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_tie_fetchsize_result_negative_idx \
+        aTHX_ perl_diag_error_mutation_tie_fetchsize_result_negative_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_ALREADY_ASSIGNED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_field_attribute_parameter_already_assigned_idx \
+        aTHX_ perl_diag_error_object_field_attribute_parameter_already_assigned_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_GENERATOR_ALREADY_INVOKED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_generator_already_invoked_idx \
+        aTHX_ perl_diag_error_iterator_generator_already_invoked_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_GENERATOR_NO_SUSPENDED_CONTINUATION() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_generator_no_suspended_continuation_idx \
+        aTHX_ perl_diag_error_iterator_generator_no_suspended_continuation_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_ANGLE_GLOB_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_angle_glob_unterminated_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_angle_glob_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_IDENTIFIER_LENGTH_EXCEEDED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_identifier_length_exceeded_idx \
+        aTHX_ perl_diag_error_syntax_identifier_length_exceeded_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_STRING_VEC_ELEMENT_WIDTH_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_string_vec_element_width_invalid_idx \
+        aTHX_ perl_diag_error_string_vec_element_width_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_REGEXP_RECURSION_GROUP_REENTERED_WITHOUT_PROGRESS() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_regexp_recursion_group_reentered_without_progress_idx \
+        aTHX_ perl_diag_error_regexp_recursion_group_reentered_without_progress_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_UTF16_SURROGATE_PAIR_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_utf16_surrogate_pair_invalid_idx \
+        aTHX_ perl_diag_error_unicode_utf16_surrogate_pair_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_FORMAT_MISMATCHED_BRACKETS() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_format_mismatched_brackets_idx \
+        aTHX_ perl_diag_error_pack_format_mismatched_brackets_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_VARIABLE_LOOP_SIGIL_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_declaration_variable_loop_sigil_missing_idx \
+        aTHX_ perl_diag_error_syntax_declaration_variable_loop_sigil_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_PROGRAM_NULL() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_regexp_execution_program_null_idx \
+        aTHX_ perl_diag_error_internal_regexp_execution_program_null_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_IDENTIFIER_NAMESPACE_LENGTH_EXCEEDED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_identifier_namespace_length_exceeded_idx \
+        aTHX_ perl_diag_error_syntax_identifier_namespace_length_exceeded_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_INPUT_NEGATIVE_LENGTH_COUNT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_input_negative_length_count_idx \
+        aTHX_ perl_diag_error_pack_input_negative_length_count_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_STRING_VEC_LVALUE_OFFSET_NEGATIVE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_string_vec_lvalue_offset_negative_idx \
+        aTHX_ perl_diag_error_string_vec_lvalue_offset_negative_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_TYPE_REFERENCE_CODE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_type_reference_code_required_idx \
+        aTHX_ perl_diag_error_type_reference_code_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_FORMAT_REPORT_EMPTY_PICTURE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_format_report_empty_picture_idx \
+        aTHX_ perl_diag_error_format_report_empty_picture_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_FORMAT_PRINTF_OVERFLOW_FLOAT_RESULT_TOO_LARGE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_format_printf_overflow_float_result_too_large_idx \
+        aTHX_ perl_diag_error_format_printf_overflow_float_result_too_large_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LEXICAL_EXPORT_ODD_ARGUMENT_COUNT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_lexical_export_odd_argument_count_idx \
+        aTHX_ perl_diag_error_lexical_export_odd_argument_count_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_REQUIRES_SCALAR() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_field_attribute_parameter_requires_scalar_idx \
+        aTHX_ perl_diag_error_object_field_attribute_parameter_requires_scalar_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MEMORY_SIZE_VEC_OFFSET_OUT_OF_RANGE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_memory_size_vec_offset_out_of_range_idx \
+        aTHX_ perl_diag_error_memory_size_vec_offset_out_of_range_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OVERLOAD_RETURN_VALUE_DEREFERENCE_REFERENCE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_overload_return_value_dereference_reference_required_idx \
+        aTHX_ perl_diag_error_overload_return_value_dereference_reference_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OVERLOAD_RETURN_VALUE_REGEXP_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_overload_return_value_regexp_required_idx \
+        aTHX_ perl_diag_error_overload_return_value_regexp_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_FORMAT_STRUCTURE_SIZE_OVERFLOW() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_format_structure_size_overflow_idx \
+        aTHX_ perl_diag_error_pack_format_structure_size_overflow_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_PROTOTYPE_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_prototype_unterminated_idx \
+        aTHX_ perl_diag_error_syntax_prototype_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RNG_PROVIDER_INTEGER_ADDRESS_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_rng_provider_integer_address_required_idx \
+        aTHX_ perl_diag_error_rng_provider_integer_address_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RNG_PROVIDER_BYTE_STRING_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_rng_provider_byte_string_required_idx \
+        aTHX_ perl_diag_error_rng_provider_byte_string_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RNG_PROVIDER_BYTE_COUNT_MISMATCH() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_rng_provider_byte_count_mismatch_idx \
+        aTHX_ perl_diag_error_rng_provider_byte_count_mismatch_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RNG_SEED_DRAND48_SIZE_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_rng_seed_drand48_size_invalid_idx \
+        aTHX_ perl_diag_error_rng_seed_drand48_size_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RNG_SEED_BYTE_STRING_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_rng_seed_byte_string_required_idx \
+        aTHX_ perl_diag_error_rng_seed_byte_string_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_LAYER_MODULE_LOAD_REENTRY() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_io_layer_module_load_reentry_idx \
+        aTHX_ perl_diag_error_io_layer_module_load_reentry_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_ROLE_ISA_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_composition_inheritance_role_isa_forbidden_idx \
+        aTHX_ perl_diag_error_object_composition_inheritance_role_isa_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_REGEXP_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_regexp_unterminated_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_regexp_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_REGEXP_EVAL_CODE_BLOCK_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_regexp_eval_code_block_unterminated_idx \
+        aTHX_ perl_diag_error_regexp_eval_code_block_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SMARTMATCH_OBJECT_OVERLOAD_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_smartmatch_object_overload_required_idx \
+        aTHX_ perl_diag_error_smartmatch_object_overload_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LOAD_SOURCE_FILTER_CHARACTER_STREAM_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_load_source_filter_character_stream_unsupported_idx \
+        aTHX_ perl_diag_error_load_source_filter_character_stream_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_PATTERN_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_substitution_pattern_unterminated_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_substitution_pattern_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_REPLACEMENT_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_substitution_replacement_unterminated_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_substitution_replacement_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_value_hash_iteration_randomization_unavailable_idx \
+        aTHX_ perl_diag_error_value_hash_iteration_randomization_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_SEARCH_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_transliteration_search_unterminated_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_transliteration_search_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_REPLACEMENT_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_transliteration_replacement_unterminated_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_transliteration_replacement_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_SUBROUTINE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_call_lookup_undefined_subroutine_idx \
+        aTHX_ perl_diag_error_call_lookup_undefined_subroutine_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_ANGLE_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_angle_unterminated_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_angle_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_ATTRIBUTE_PARAMETER_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_declaration_attribute_parameter_unterminated_idx \
+        aTHX_ perl_diag_error_syntax_declaration_attribute_parameter_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_QUOTED_DELIMITER_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_heredoc_quoted_delimiter_unterminated_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_heredoc_quoted_delimiter_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_CONSTRUCT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_control_flow_goto_cannot_enter_construct_idx \
+        aTHX_ perl_diag_error_control_flow_goto_cannot_enter_construct_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_UNQUOTED_DELIMITER_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_heredoc_unquoted_delimiter_missing_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_heredoc_unquoted_delimiter_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_ITERATOR_FREED_VALUE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_iterator_freed_value_idx \
+        aTHX_ perl_diag_error_internal_iterator_freed_value_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_IDENTIFIER_RESOLVED_VARIABLE_LENGTH_EXCEEDED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_identifier_resolved_variable_length_exceeded_idx \
+        aTHX_ perl_diag_error_syntax_identifier_resolved_variable_length_exceeded_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RNG_BYTES_COUNT_TOO_LARGE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_rng_bytes_count_too_large_idx \
+        aTHX_ perl_diag_error_rng_bytes_count_too_large_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RNG_BYTES_COUNT_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_rng_bytes_count_invalid_idx \
+        aTHX_ perl_diag_error_rng_bytes_count_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_FILESYSTEM_PATH_CONVERSION_EMPTY_INPUT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_io_filesystem_path_conversion_empty_input_idx \
+        aTHX_ perl_diag_error_io_filesystem_path_conversion_empty_input_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_GENERATOR_STATE_MUTATION_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_generator_state_mutation_forbidden_idx \
+        aTHX_ perl_diag_error_iterator_generator_state_mutation_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_CONVERSION_HASH_REFERENCE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_conversion_hash_reference_required_idx \
+        aTHX_ perl_diag_error_object_conversion_hash_reference_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_CONVERSION_NATIVE_CLASS_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_conversion_native_class_required_idx \
+        aTHX_ perl_diag_error_object_conversion_native_class_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_CONVERSION_NATIVE_OBJECT_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_conversion_native_object_required_idx \
+        aTHX_ perl_diag_error_object_conversion_native_object_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_PROGRAM_TRAVERSAL_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_regexp_execution_program_traversal_unterminated_idx \
+        aTHX_ perl_diag_error_internal_regexp_execution_program_traversal_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_PROGRAM_MAGIC_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_regexp_execution_program_magic_invalid_idx \
+        aTHX_ perl_diag_error_internal_regexp_execution_program_magic_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PROCESS_DUMP_CORE_QUALIFICATION_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_process_dump_core_qualification_required_idx \
+        aTHX_ perl_diag_error_system_process_dump_core_qualification_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PROCESS_EXEC_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_process_exec_unsupported_idx \
+        aTHX_ perl_diag_error_system_process_exec_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_GENERATOR_CONTINUATION_UNAVAILABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_generator_continuation_unavailable_idx \
+        aTHX_ perl_diag_error_iterator_generator_continuation_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_GENERATOR_RUNNING_INVALID_ARGUMENT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_generator_running_invalid_argument_idx \
+        aTHX_ perl_diag_error_iterator_generator_running_invalid_argument_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_GENERATOR_INVALID_WRAPPER() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_generator_invalid_wrapper_idx \
+        aTHX_ perl_diag_error_iterator_generator_invalid_wrapper_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_INVALID_STATE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_invalid_state_idx \
+        aTHX_ perl_diag_error_iterator_invalid_state_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_CONSTRUCTOR_CODE_REFERENCE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_constructor_code_reference_required_idx \
+        aTHX_ perl_diag_error_iterator_constructor_code_reference_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_INPUT_MISSING_LENGTH_VALUE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_input_missing_length_value_idx \
+        aTHX_ perl_diag_error_pack_input_missing_length_value_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_FORMAT_REPEAT_COUNT_OVERFLOW() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_format_repeat_count_overflow_idx \
+        aTHX_ perl_diag_error_pack_format_repeat_count_overflow_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_WINDOWS_PROCESS_PSEUDO_CHILD_START_TIMEOUT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_system_platform_windows_process_pseudo_child_start_timeout_idx \
+        aTHX_ perl_diag_error_internal_system_platform_windows_process_pseudo_child_start_timeout_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_FREE_ZERO_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_pad_offset_free_zero_forbidden_idx \
+        aTHX_ perl_diag_error_internal_pad_offset_free_zero_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_FETCH_ZERO_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_pad_offset_fetch_zero_forbidden_idx \
+        aTHX_ perl_diag_error_internal_pad_offset_fetch_zero_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_OPCODE_UNHANDLED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_regexp_execution_opcode_unhandled_idx \
+        aTHX_ perl_diag_error_internal_regexp_execution_opcode_unhandled_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_STRING_SUBSTR_REPLACEMENT_OUT_OF_RANGE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_string_substr_replacement_out_of_range_idx \
+        aTHX_ perl_diag_error_string_substr_replacement_out_of_range_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_GENERATOR_YIELD_WITHOUT_RUNNING_CONTEXT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_generator_yield_without_running_context_idx \
+        aTHX_ perl_diag_error_iterator_generator_yield_without_running_context_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_WARN_WARNING_INTERNAL_SYSTEM_PLATFORM_VMS_VFORK_TRACKING_UNBALANCED() \
     Perl_throw_warn_0_1144( \
-        aTHX_ perl_diag_warning_internal_system_platform_vms_vfork_tracking_unbalanced_idx \
+        aTHX_ perl_diag_warning_internal_system_platform_vms_vfork_tracking_unbalanced_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_WARN_WARNING_SYSTEM_PLATFORM_VMS_UTC_OFFSET_UNAVAILABLE() \
     Perl_throw_warn_0_1144( \
-        aTHX_ perl_diag_warning_system_platform_vms_utc_offset_unavailable_idx \
+        aTHX_ perl_diag_warning_system_platform_vms_utc_offset_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_COMMENT_ADJACENT_TO_SIGIL() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_comment_adjacent_to_sigil_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_comment_adjacent_to_sigil_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_NAMED_DEFINITION_FORBIDDEN() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_subroutine_constant_named_definition_forbidden_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_subroutine_constant_named_definition_forbidden_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_REQUIRE_NAME_ANGLE_BRACKETS_FORBIDDEN() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_require_name_angle_brackets_forbidden_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_require_name_angle_brackets_forbidden_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_SIGIL_INVALID() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_named_parameter_sigil_invalid_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_named_parameter_sigil_invalid_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_SLURPY_DEFAULT_FORBIDDEN() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_slurpy_default_forbidden_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_slurpy_default_forbidden_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_IDENTIFIER_SCALAR_NAME_INCOMPLETE() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_identifier_scalar_name_incomplete_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_identifier_scalar_name_incomplete_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_PROTOTYPE_SYNTAX_AFTER_SIGIL() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_prototype_syntax_after_sigil_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_prototype_syntax_after_sigil_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SUBROUTINE_ANONYMOUS_BODY_MISSING() \
     STMT_START { \
         STMT_START { \
         STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_subroutine_anonymous_body_missing_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_subroutine_anonymous_body_missing_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
         YYERROR; \
     } STMT_END; \
     } STMT_END; \
@@ -5528,14 +5792,14 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_PARAMETER_SUFFIX_INVALID() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_parameter_suffix_invalid_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_parameter_suffix_invalid_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_ESCAPE_CONTROL_CHARACTER_MISSING() \
     STMT_START { \
         STMT_START { \
         STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_escape_control_character_missing_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_escape_control_character_missing_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
         yyquit(); \
     } STMT_END; \
     } STMT_END; \
@@ -5546,7 +5810,7 @@ enum perl_diag_selector_domain_id {
     STMT_START { \
         STMT_START { \
         STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_escape_character_name_close_brace_missing_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_escape_character_name_close_brace_missing_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
         yyquit(); \
     } STMT_END; \
     } STMT_END; \
@@ -5557,7 +5821,7 @@ enum perl_diag_selector_domain_id {
     STMT_START { \
         STMT_START { \
         STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_escape_character_name_source_brace_mismatch_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_escape_character_name_source_brace_mismatch_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
         yyquit(); \
     } STMT_END; \
     } STMT_END; \
@@ -5566,19 +5830,19 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_NAME_MISSING() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_named_parameter_name_missing_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_named_parameter_name_missing_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SOURCE_VERSION_CONTROL_CONFLICT_MARKER() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_source_version_control_conflict_marker_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_source_version_control_conflict_marker_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_CATCH_VARIABLE_MISSING() \
     STMT_START { \
         STMT_START { \
         STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_catch_variable_missing_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_catch_variable_missing_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
         YYERROR; \
     } STMT_END; \
     } STMT_END; \
@@ -5589,7 +5853,7 @@ enum perl_diag_selector_domain_id {
     STMT_START { \
         STMT_START { \
         STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_dispatch_on_outside_dispatch_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_dispatch_on_outside_dispatch_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
         YYERROR; \
     } STMT_END; \
     } STMT_END; \
@@ -5600,7 +5864,7 @@ enum perl_diag_selector_domain_id {
     STMT_START { \
         STMT_START { \
         STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_dispatch_non_on_statement_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_dispatch_non_on_statement_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
         YYERROR; \
     } STMT_END; \
     } STMT_END; \
@@ -5609,19 +5873,19 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_NAMESPACE_ALIAS_REQUIRES_USE() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_namespace_alias_requires_use_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_namespace_alias_requires_use_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_invalid_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_invalid_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_ITERATOR_GENERATOR_YIELD_OUTSIDE_GENERATOR() \
     STMT_START { \
         STMT_START { \
         STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_iterator_generator_yield_outside_generator_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_iterator_generator_yield_outside_generator_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
         YYERROR; \
     } STMT_END; \
     } STMT_END; \
@@ -5631,6 +5895,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SYNTAX_LEXER_API_CONTRACT_INVALID(ma_operation) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_syntax_lexer_api_contract_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation) \
     )
@@ -5638,6 +5904,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SYNTAX_PARSER_FLAGS_INVALID(ma_operation) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_syntax_parser_flags_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation) \
     )
@@ -5645,24 +5913,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_NUMERIC_CONVERSION_BASE_UNSUPPORTED(ma_base) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_numeric_conversion_base_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_base \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PROCESS_CHILD_ERRNO_PIPE_PARTIAL_READ(ma_count) \
     Perl_throw_croak_1_1169( \
         aTHX_ perl_diag_error_internal_system_process_child_errno_pipe_partial_read_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_count \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PROCESS_CHILD_ERRNO_PIPE_PARTIAL_READ_DIE(ma_count) \
     Perl_throw_die_1_1169( \
         aTHX_ perl_diag_error_internal_system_process_child_errno_pipe_partial_read_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_count \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_INVALID_FORMAT(ma_format) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_format_printf_quadmath_invalid_format_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_format) \
     )
@@ -5670,45 +5946,47 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_FORMATTING_FAILED(ma_format) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_format_printf_quadmath_formatting_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_format) \
     )
 
 #define PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_REFERENT_TYPE_MISMATCH(ma_reference_type) \
-    STMT_START { \
-        IV const in_reference_type = ma_reference_type; \
-        AV * const params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV()))); \
-         \
-        Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_mutation_reference_aliasing_referent_type_mismatch_idx, 0, perl_diag_selector_domain_1172_0_id, in_reference_type); \
-         \
-        SV * const message_sv = NULL; \
-        Perl_diag_croak_sv(aTHX_ perl_diag_error_mutation_reference_aliasing_referent_type_mismatch_idx, params_av, message_sv); \
-    } STMT_END
+    Perl_throw_croak_1_1172( \
+        aTHX_ perl_diag_error_mutation_reference_aliasing_referent_type_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
+        ma_reference_type \
+    )
 
 #define PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_REFERENT_TYPE_MISMATCH_DIE(ma_reference_type) \
-    STMT_START { \
-        IV const in_reference_type = ma_reference_type; \
-        AV * const params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV()))); \
-         \
-        Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_mutation_reference_aliasing_referent_type_mismatch_idx, 0, perl_diag_selector_domain_1172_0_id, in_reference_type); \
-         \
-        SV * const message_sv = NULL; \
-        Perl_diag_die_sv(aTHX_ perl_diag_error_mutation_reference_aliasing_referent_type_mismatch_idx, params_av, message_sv); \
-    } STMT_END
+    Perl_throw_die_1_1172( \
+        aTHX_ perl_diag_error_mutation_reference_aliasing_referent_type_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
+        ma_reference_type \
+    )
 
 #define PERL_THROW_ERROR_SYSTEM_PROCESS_DUMP_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_process_dump_unsupported_idx \
+        aTHX_ perl_diag_error_system_process_dump_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_OPEN_SCRIPT_NULL_INPUT_CREATION_FAILED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_io_open_script_null_input_creation_failed_idx \
+        aTHX_ perl_diag_error_io_open_script_null_input_creation_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RUN_OPTION_MODULE_NAME_REQUIRED(ma_option) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_run_option_module_name_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_option \
     )
@@ -5716,6 +5994,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_RUN_OPTION_PROGRAM_TEXT_REQUIRED(ma_option) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_run_option_program_text_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_option \
     )
@@ -5723,6 +6003,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_RUN_ENVIRONMENT_PERL5OPT_FORBIDDEN_SWITCH(ma_option) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_run_environment_perl5opt_forbidden_switch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_option \
     )
@@ -5730,6 +6012,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_CHDIR_FAILED(ma_directory) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_io_filesystem_directory_chdir_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_directory) \
     )
@@ -5737,6 +6021,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PROCESS_SHEBANG_EXEC_FAILED(ma_path) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_system_process_shebang_exec_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_path) \
     )
@@ -5744,6 +6030,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_SIGNAL_UNKNOWN_HOOK(ma_hook) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_system_signal_unknown_hook_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_hook) \
     )
@@ -5751,6 +6039,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_INPLACE_EDIT_PATH_CONTEXT_INVALID(ma_path, ma_failure_reason) \
     Perl_throw_croak_2_1181( \
         aTHX_ perl_diag_error_io_inplace_edit_path_context_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_path), \
         ma_failure_reason \
@@ -5759,6 +6049,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_INPLACE_EDIT_CANNOT_CREATE_BACKUP(ma_original, ma_backup, ma_error) \
     Perl_throw_croak_3_1182( \
         aTHX_ perl_diag_error_io_inplace_edit_cannot_create_backup_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_original), \
         "%s", \
@@ -5770,6 +6062,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_LAYER_BYTE_OPERATION_ON_UTF8_HANDLE(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_io_layer_byte_operation_on_utf8_handle_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -5777,6 +6071,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CALL_CORE_KEYWORD_NOT_CALLABLE(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_call_core_keyword_not_callable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -5784,6 +6080,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_INVALID_MODIFIER(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_croak_3_1185( \
         aTHX_ perl_diag_error_pack_format_invalid_modifier_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         "%s", \
@@ -5795,6 +6093,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SECURITY_OPERATION_MASK_TRAP(ma_arg1, ma_arg1_operation) \
     Perl_throw_croak_2_1186( \
         aTHX_ perl_diag_error_security_operation_mask_trap_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg1_operation \
@@ -5803,6 +6103,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_SLASH_REPEAT_COUNT_FORBIDDEN(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_pack_format_slash_repeat_count_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -5810,6 +6112,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SYNTAX_PLUGIN_KEYWORD_RESULT_INVALID(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_syntax_plugin_keyword_result_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -5817,12 +6121,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYMBOL_TABLE_SLOT_SYMBOL_INVALID(ma_symbol_kind) \
     Perl_throw_croak_1_1189( \
         aTHX_ perl_diag_error_symbol_table_slot_symbol_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_symbol_kind \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_SCALAR_COPY_SOURCE_NOT_SCALAR(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_scalar_copy_source_not_scalar_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -5830,6 +6138,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_MUTATION_ASSIGNMENT_GLOB_REFERENT_TYPE_UNSUPPORTED(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_mutation_assignment_glob_referent_type_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -5837,6 +6147,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PROCESS_PIPE_FORK_FAILED(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_system_process_pipe_fork_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -5844,18 +6156,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_VALUE_NOT_MODIFIABLE(ma_return_value_kind) \
     Perl_throw_croak_1_1193( \
         aTHX_ perl_diag_error_mutation_lvalue_return_value_not_modifiable_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_return_value_kind \
     )
 
 #define PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_AGGREGATE_IN_SCALAR_CONTEXT(ma_aggregate_kind) \
     Perl_throw_croak_1_1194( \
         aTHX_ perl_diag_error_mutation_lvalue_return_aggregate_in_scalar_context_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_aggregate_kind \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_INVALID_LOOP_VARIABLE(ma_arg1, ma_arg1_operation) \
     Perl_throw_croak_2_1186( \
         aTHX_ perl_diag_error_iterator_invalid_loop_variable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg1_operation \
@@ -5864,6 +6182,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_INVALID_PACKAGE_CODE_SUFFIX(ma_arg1) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_invalid_package_code_suffix_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1 \
     )
@@ -5871,6 +6191,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_INHERITED_BYTE_ORDER_CONFLICT(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1197( \
         aTHX_ perl_diag_error_pack_format_inherited_byte_order_conflict_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         "%s", \
@@ -5880,6 +6202,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_CONFLICTING_BYTE_ORDER_MODIFIERS(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1197( \
         aTHX_ perl_diag_error_pack_format_conflicting_byte_order_modifiers_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         "%s", \
@@ -5889,6 +6213,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_OR_ROLE_CONTEXT_REQUIRED(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_object_definition_class_or_role_context_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -5896,6 +6222,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SCALAR_MAGIC_SHAPE_TYPE_MISMATCH(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1200( \
         aTHX_ perl_diag_error_internal_scalar_magic_shape_type_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2 \
     )
@@ -5903,6 +6231,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_TYPE_GLOB_CONSTANT_CONVERSION_UNSUPPORTED(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_type_glob_constant_conversion_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -5910,6 +6240,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SCALAR_COPY_TARGET_TYPE_UNSUPPORTED(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_scalar_copy_target_type_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -5917,6 +6249,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_REGEXP_DATA_NEXT_NODE_OPCODE_OUT_OF_RANGE(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1200( \
         aTHX_ perl_diag_error_internal_regexp_data_next_node_opcode_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2 \
     )
@@ -5924,6 +6258,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SCALAR_MAGIC_TYPE_UNKNOWN(ma_arg1) \
     Perl_throw_croak_1_1204( \
         aTHX_ perl_diag_error_internal_scalar_magic_type_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%o", \
         ma_arg1 \
     )
@@ -5931,19 +6267,25 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_NAMESPACE_ALIAS_DUPLICATE(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_syntax_declaration_namespace_alias_duplicate_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_LEXICAL_EXPORT_REFERENCE_TYPE_MISMATCH(ma_reference_type) \
-    Perl_throw_croak_1_1206( \
+    Perl_throw_croak_1_1172( \
         aTHX_ perl_diag_error_lexical_export_reference_type_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_reference_type \
     )
 
 #define PERL_THROW_ERROR_IO_INPLACE_EDIT_CANNOT_CLOSE_WORK_FILE(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1207( \
         aTHX_ perl_diag_error_io_inplace_edit_cannot_close_work_file_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -5953,12 +6295,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_HEREDOC_INDENTATION_MISMATCH(ma_arg1) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_syntax_quoted_string_heredoc_indentation_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_FORMAT_PRINTF_OVERFLOW_FIELD_VALUE_TOO_LARGE(ma_arg1_operation, ma_arg1) \
     Perl_throw_croak_2_1209( \
         aTHX_ perl_diag_error_format_printf_overflow_field_value_too_large_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_operation, \
         "%s", \
         (const char *)(ma_arg1) \
@@ -5967,6 +6313,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_UNICODE_UTF8_UNPACK_CHARACTER_INVALID(ma_arg1) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_unicode_utf8_unpack_character_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1 \
     )
@@ -5974,6 +6322,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SECURITY_PRIVILEGE_SETUID_INPUT_FORBIDDEN(ma_input_kind, ma_switch) \
     Perl_throw_croak_2_1211( \
         aTHX_ perl_diag_error_security_privilege_setuid_input_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_input_kind, \
         "%c", \
         ma_switch \
@@ -5982,12 +6332,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_CALL_COMMA_AFTER_INDIRECT_NAME(ma_target_kind) \
     Perl_throw_croak_1_1212( \
         aTHX_ perl_diag_error_syntax_call_comma_after_indirect_name_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_target_kind \
     )
 
 #define PERL_THROW_ERROR_PACK_FORMAT_MISSING_GROUP_TERMINATOR(ma_arg1) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_pack_format_missing_group_terminator_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1 \
     )
@@ -5995,6 +6349,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_RUN_ENVIRONMENT_SIGNALS_POLICY_INVALID(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_run_environment_signals_policy_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -6002,18 +6358,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_RECORDSEPARATOR_LENGTH_NOT_POSITIVE(ma_reason) \
     Perl_throw_croak_1_1215( \
         aTHX_ perl_diag_error_io_recordseparator_length_not_positive_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_reason \
     )
 
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_DIRECT_ROLE_LIMIT_EXCEEDED(ma_arg1) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_object_composition_direct_role_limit_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_IMPLEMENTS_ATTRIBUTE_TRAILING_TEXT(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_object_composition_implements_attribute_trailing_text_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -6021,6 +6383,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_ATTRIBUTE_TRAILING_TEXT(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_object_composition_inheritance_isa_attribute_trailing_text_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -6028,6 +6392,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_RUN_OPTION_UNICODE_UNKNOWN_LETTER(ma_arg1) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_run_option_unicode_unknown_letter_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1 \
     )
@@ -6035,12 +6401,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SCALAR_MAGIC_SHAPE_UNKNOWN(ma_arg1) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_scalar_magic_shape_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_RUN_OPTION_UNKNOWN_COMMAND_LINE_SWITCH(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_run_option_unknown_command_line_switch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -6048,12 +6418,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SCALAR_MAGIC_VERSION_UNSUPPORTED(ma_arg1) \
     Perl_throw_croak_1_1169( \
         aTHX_ perl_diag_error_internal_scalar_magic_version_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_BYTE_CONVERSION_FAILED_IN_OPERATION(ma_arg1_operation, ma_arg1) \
     Perl_throw_croak_2_1209( \
         aTHX_ perl_diag_error_unicode_wide_character_byte_conversion_failed_in_operation_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_operation, \
         "%s", \
         (const char *)(ma_arg1) \
@@ -6062,6 +6436,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_LAYER_UNKNOWN_QUERY_OPTION(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_io_layer_unknown_query_option_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -6069,6 +6445,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_TRIE_LITERAL_NODE_UNSUPPORTED(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1225( \
         aTHX_ perl_diag_error_internal_regexp_compiler_trie_literal_node_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         "%s", \
         (const char *)(ma_arg2) \
@@ -6077,30 +6455,40 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_ITERATOR_BODY_OP_INVALID(ma_arg1) \
     Perl_throw_croak_1_1169( \
         aTHX_ perl_diag_error_internal_iterator_body_op_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_UNWIND_BASE_INVALID(ma_arg1) \
     Perl_throw_croak_1_1227( \
         aTHX_ perl_diag_error_internal_stack_save_unwind_base_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_CONSTANT_FOLD_SCALAR_JUMP_STATUS_INVALID(ma_arg1) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_opcode_constant_fold_scalar_jump_status_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_ENTRY_TYPE_UNKNOWN(ma_arg1) \
     Perl_throw_croak_1_1169( \
         aTHX_ perl_diag_error_internal_stack_save_entry_type_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_PAD_STATE_ALLOCATION_ARRAY_MISMATCH(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1230( \
         aTHX_ perl_diag_error_internal_pad_state_allocation_array_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg1, \
         "%p", \
@@ -6110,6 +6498,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PAD_STATE_FREE_ARRAY_MISMATCH(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1230( \
         aTHX_ perl_diag_error_internal_pad_state_free_array_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg1, \
         "%p", \
@@ -6119,6 +6509,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PAD_STATE_RESET_ARRAY_MISMATCH(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1230( \
         aTHX_ perl_diag_error_internal_pad_state_reset_array_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg1, \
         "%p", \
@@ -6128,6 +6520,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PAD_STATE_SWIPE_ARRAY_MISMATCH(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1230( \
         aTHX_ perl_diag_error_internal_pad_state_swipe_array_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg1, \
         "%p", \
@@ -6137,6 +6531,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_STRING_INSERT_BOUNDS_INVALID(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1230( \
         aTHX_ perl_diag_error_internal_scalar_string_insert_bounds_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg1, \
         "%p", \
@@ -6146,6 +6542,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SCALAR_UPGRADE_BODY_TYPE_DOWNGRADE(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1200( \
         aTHX_ perl_diag_error_internal_scalar_upgrade_body_type_downgrade_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2 \
     )
@@ -6153,6 +6551,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_INTERNAL_MEMORY_CV_OP_SLAB_UNRELEASED(ma_arg1) \
     Perl_throw_warn_1_1236( \
         aTHX_ perl_diag_warning_internal_memory_cv_op_slab_unreleased_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg1 \
     )
@@ -6160,526 +6560,719 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_PHASE_INIT_TREATED_AS_BEGIN(ma_arg1) \
     Perl_throw_warn_1_1237( \
         aTHX_ perl_diag_warning_phase_init_treated_as_begin_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_FORMAT_PRINTF_HEXADECIMAL_FLOAT_BOUNDS_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_format_printf_hexadecimal_float_bounds_invalid_idx \
+        aTHX_ perl_diag_error_internal_format_printf_hexadecimal_float_bounds_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MEMORY_SIZE_LIST_EXTEND_OVERFLOW() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_memory_size_list_extend_overflow_idx \
+        aTHX_ perl_diag_error_memory_size_list_extend_overflow_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_LAYER_FIND_TOO_FEW_ARGUMENTS() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_io_layer_find_too_few_arguments_idx \
+        aTHX_ perl_diag_error_io_layer_find_too_few_arguments_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_UTF16_SCRIPT_ENCODING_UNSUPPORTED(ma_encoding) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_unicode_utf16_script_encoding_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_encoding) \
     )
 
 #define PERL_THROW_ERROR_PACK_FORMAT_CHECKSUM_DIRECTIVE_IN_PACK() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_format_checksum_directive_in_pack_idx \
+        aTHX_ perl_diag_error_pack_format_checksum_directive_in_pack_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_BOUNDS_UNPACK_BACKUP_OUTSIDE_STRING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_bounds_unpack_backup_outside_string_idx \
+        aTHX_ perl_diag_error_pack_bounds_unpack_backup_outside_string_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_NAMESPACE_ALIAS_NAME_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_declaration_namespace_alias_name_invalid_idx \
+        aTHX_ perl_diag_error_syntax_declaration_namespace_alias_name_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PHASE_BEGIN_UNSAFE_AFTER_COMPILATION_ERRORS() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_phase_begin_unsafe_after_compilation_errors_idx \
+        aTHX_ perl_diag_error_phase_begin_unsafe_after_compilation_errors_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_GIVEN_BLOCK() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_control_flow_goto_cannot_enter_given_block_idx \
+        aTHX_ perl_diag_error_control_flow_goto_cannot_enter_given_block_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_EXPRESSION() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_control_flow_goto_cannot_enter_expression_idx \
+        aTHX_ perl_diag_error_control_flow_goto_cannot_enter_expression_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_ENTER_FOREACH_BODY() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_control_flow_goto_cannot_enter_foreach_body_idx \
+        aTHX_ perl_diag_error_control_flow_goto_cannot_enter_foreach_body_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_SHORT_NAME_FROM_HANDLE_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_platform_os2_module_short_name_from_handle_unsupported_idx \
+        aTHX_ perl_diag_error_system_platform_os2_module_short_name_from_handle_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_ARRAY_INDEX_VALUE_SLICE_NOT_MODIFIABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_lvalue_return_array_index_value_slice_not_modifiable_idx \
+        aTHX_ perl_diag_error_mutation_lvalue_return_array_index_value_slice_not_modifiable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_HASH_KEYS_NOT_MODIFIABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_lvalue_return_hash_keys_not_modifiable_idx \
+        aTHX_ perl_diag_error_mutation_lvalue_return_hash_keys_not_modifiable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_ARRAY_KEYS_NOT_MODIFIABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_lvalue_return_array_keys_not_modifiable_idx \
+        aTHX_ perl_diag_error_mutation_lvalue_return_array_keys_not_modifiable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_LEXICAL_ARRAY_IN_SCALAR_CONTEXT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_lvalue_return_lexical_array_in_scalar_context_idx \
+        aTHX_ perl_diag_error_mutation_lvalue_return_lexical_array_in_scalar_context_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_LEXICAL_HASH_IN_SCALAR_CONTEXT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_lvalue_return_lexical_hash_in_scalar_context_idx \
+        aTHX_ perl_diag_error_mutation_lvalue_return_lexical_hash_in_scalar_context_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DEREFERENCE_HASH_USED_AS_REFERENCE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dereference_hash_used_as_reference_idx \
+        aTHX_ perl_diag_error_syntax_dereference_hash_used_as_reference_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DEREFERENCE_ARRAY_USED_AS_REFERENCE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dereference_array_used_as_reference_idx \
+        aTHX_ perl_diag_error_syntax_dereference_array_used_as_reference_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DEBUGGER_TIED_ARGUMENT_ARRAY() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_debugger_tied_argument_array_idx \
+        aTHX_ perl_diag_error_debugger_tied_argument_array_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_DECLARED_REFERENCE_POSITION_LIMIT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_declared_reference_position_limit_idx \
+        aTHX_ perl_diag_error_iterator_declared_reference_position_limit_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_ITERATOR_DECLARED_REFERENCE_COUNT_LIMIT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_iterator_declared_reference_count_limit_idx \
+        aTHX_ perl_diag_error_iterator_declared_reference_count_limit_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_FORMAT_PRINTF_VARARGS_POSITIONAL_ARGUMENT_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_format_printf_varargs_positional_argument_unsupported_idx \
+        aTHX_ perl_diag_error_format_printf_varargs_positional_argument_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_VERSION_CONFLICTING_DECLARATION() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_version_conflicting_declaration_idx \
+        aTHX_ perl_diag_error_syntax_version_conflicting_declaration_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_FORMAT_MISSING_PACK_LENGTH_TARGET() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_format_missing_pack_length_target_idx \
+        aTHX_ perl_diag_error_pack_format_missing_pack_length_target_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_FORMAT_MISSING_UNPACK_LENGTH_TARGET() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_format_missing_unpack_length_target_idx \
+        aTHX_ perl_diag_error_pack_format_missing_unpack_length_target_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_VERSION_DOWNGRADE_BELOW_5_11() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_version_downgrade_below_5_11_idx \
+        aTHX_ perl_diag_error_syntax_version_downgrade_below_5_11_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_REGEXP_RECURSION_EVAL_PROGRESS_LIMIT_EXCEEDED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_regexp_recursion_eval_progress_limit_exceeded_idx \
+        aTHX_ perl_diag_error_regexp_recursion_eval_progress_limit_exceeded_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LEXICAL_EXPORT_REFERENCE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_lexical_export_reference_required_idx \
+        aTHX_ perl_diag_error_lexical_export_reference_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_FEATURE_DISABLED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_reference_aliasing_feature_disabled_idx \
+        aTHX_ perl_diag_error_mutation_reference_aliasing_feature_disabled_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_PLAN9_NETWORK_FUNCTION_UNAVAILABLE(ma_function) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_system_platform_plan9_network_function_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_function) \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_WINDOW_DEVICE_CONTEXT_REQUIRES_MESSAGE_QUEUE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_platform_os2_window_device_context_requires_message_queue_idx \
+        aTHX_ perl_diag_error_system_platform_os2_window_device_context_requires_message_queue_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_FORMAT_PRINTF_HEX_FLOAT_BUFFER_END_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_format_printf_hex_float_buffer_end_invalid_idx \
+        aTHX_ perl_diag_error_internal_format_printf_hex_float_buffer_end_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SECURITY_PRIVILEGE_SCRIPT_DESCRIPTOR_UNVERIFIABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_security_privilege_script_descriptor_unverifiable_idx \
+        aTHX_ perl_diag_error_security_privilege_script_descriptor_unverifiable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_DECODING_CAT_API_INPUT_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_decoding_cat_api_input_invalid_idx \
+        aTHX_ perl_diag_error_unicode_decoding_cat_api_input_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_MAGICAL_LIST_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_declaration_subroutine_constant_magical_list_unsupported_idx \
+        aTHX_ perl_diag_error_syntax_declaration_subroutine_constant_magical_list_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_UTF8_CHARACTER_MALFORMED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_utf8_character_malformed_idx \
+        aTHX_ perl_diag_error_unicode_utf8_character_malformed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_UTF8_CHARACTER_MALFORMED_NO_CONTEXT() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_unicode_utf8_character_malformed_idx \
+        perl_diag_error_unicode_utf8_character_malformed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_DEFINITION_ATTRIBUTE_VALUE_UNTERMINATED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_definition_attribute_value_unterminated_idx \
+        aTHX_ perl_diag_error_object_definition_attribute_value_unterminated_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LOAD_ABI_INTERPRETER_POINTER_MISMATCH() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_load_abi_interpreter_pointer_mismatch_idx \
+        aTHX_ perl_diag_error_load_abi_interpreter_pointer_mismatch_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SECURITY_PRIVILEGE_FDSCRIPT_NAME_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_security_privilege_fdscript_name_missing_idx \
+        aTHX_ perl_diag_error_security_privilege_fdscript_name_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_USE_MODULE_NAME_NOT_CONSTANT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_declaration_use_module_name_not_constant_idx \
+        aTHX_ perl_diag_error_syntax_declaration_use_module_name_not_constant_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_OPEN_TOO_MANY_ARGUMENTS() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_io_open_too_many_arguments_idx \
+        aTHX_ perl_diag_error_io_open_too_many_arguments_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_NAME_ARRAY_ELEMENT_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_regexp_data_named_capture_name_array_element_missing_idx \
+        aTHX_ perl_diag_error_internal_regexp_data_named_capture_name_array_element_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_RUN_SCRIPT_EXTRACTION_HEADER_NOT_FOUND() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_run_script_extraction_header_not_found_idx \
+        aTHX_ perl_diag_error_run_script_extraction_header_not_found_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_XSUB_REFERENCE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_platform_os2_module_xsub_reference_required_idx \
+        aTHX_ perl_diag_error_system_platform_os2_module_xsub_reference_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_HASH_EXISTS_OR_ELEMENT_OP_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_hash_exists_or_element_op_required_idx \
+        aTHX_ perl_diag_error_internal_hash_exists_or_element_op_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_MESSAGE_READ_MODE_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_platform_os2_pipe_message_read_mode_invalid_idx \
+        aTHX_ perl_diag_error_system_platform_os2_pipe_message_read_mode_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_NAME_EMPTY() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_platform_os2_pipe_name_empty_idx \
+        aTHX_ perl_diag_error_system_platform_os2_pipe_name_empty_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_HANDLE_DESCRIPTOR_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_platform_os2_pipe_handle_descriptor_invalid_idx \
+        aTHX_ perl_diag_error_system_platform_os2_pipe_handle_descriptor_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MEMORY_SIZE_STACK_EXTEND_OVERFLOW() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_memory_size_stack_extend_overflow_idx \
+        aTHX_ perl_diag_error_memory_size_stack_extend_overflow_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MEMORY_SIZE_STRING_EXTEND_OVERFLOW() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_memory_size_string_extend_overflow_idx \
+        aTHX_ perl_diag_error_memory_size_string_extend_overflow_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_TIE_AGGREGATE_SELF_REFERENCE_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_tie_aggregate_self_reference_forbidden_idx \
+        aTHX_ perl_diag_error_mutation_tie_aggregate_self_reference_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_VARIABLE_REFERENCE_FEATURE_DISABLED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_declaration_variable_reference_feature_disabled_idx \
+        aTHX_ perl_diag_error_syntax_declaration_variable_reference_feature_disabled_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_DECLARED_REFS_FEATURE_DISABLED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_declaration_variable_reference_feature_disabled_idx \
+        aTHX_ perl_diag_error_syntax_declaration_variable_reference_feature_disabled_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_FILE_TEST_LSTAT_REQUIRES_LSTAT_CACHE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_io_file_test_lstat_requires_lstat_cache_idx \
+        aTHX_ perl_diag_error_io_file_test_lstat_requires_lstat_cache_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_INPUT_U0_REQUIRES_UTF8_INPUT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_input_u0_requires_utf8_input_idx \
+        aTHX_ perl_diag_error_pack_input_u0_requires_utf8_input_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LOAD_IMPORT_UNIVERSAL_EXPORT_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_load_import_universal_export_unsupported_idx \
+        aTHX_ perl_diag_error_load_import_universal_export_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_UTF32_BIG_ENDIAN_SCRIPT_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_utf32_big_endian_script_unsupported_idx \
+        aTHX_ perl_diag_error_unicode_utf32_big_endian_script_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_UTF32_LITTLE_ENDIAN_SCRIPT_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_utf32_little_endian_script_unsupported_idx \
+        aTHX_ perl_diag_error_unicode_utf32_little_endian_script_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_PACK_INPUT_UNTERMINATED_COMPRESSED_INTEGER() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_pack_input_unterminated_compressed_integer_idx \
+        aTHX_ perl_diag_error_pack_input_unterminated_compressed_integer_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CALL_BINDING_ARITY_SIGNATURE_MISMATCH(ma_signature) \
-    STMT_START { \
-        const char * const in_signature = (const char *)(ma_signature); \
-        AV * const params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV()))); \
-         \
-        SV * const tmpl_signature = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_call_binding_arity_signature_mismatch_idx, 0, 0, perl_diag_selector_invalid); \
-        sv_setpvf(tmpl_signature, "%s", in_signature); \
-         \
-        SV * const message_sv = NULL; \
-        Perl_diag_croak_sv(aTHX_ perl_diag_error_call_binding_arity_signature_mismatch_idx, params_av, message_sv); \
-    } STMT_END
+    Perl_throw_croak_1_1166( \
+        aTHX_ perl_diag_error_call_binding_arity_signature_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
+        "%s", \
+        (const char *)(ma_signature) \
+    )
 
 #define PERL_THROW_ERROR_CALL_BINDING_ARITY_SIGNATURE_MISMATCH_NO_CONTEXT(ma_signature) \
-    Perl_diag_croak_nocontext(perl_diag_error_call_binding_arity_signature_mismatch_idx, NULL, "Usage: %" "s", ma_signature)
+    Perl_throw_croak_nocontext_1_1314( \
+        perl_diag_error_call_binding_arity_signature_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
+        "%s", \
+        (const char *)(ma_signature) \
+    )
 
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_ATTRIBUTE_EMPTY_LIST_ASSIGNMENT_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_declaration_attribute_empty_list_assignment_forbidden_idx \
+        aTHX_ perl_diag_error_syntax_declaration_attribute_empty_list_assignment_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_VERSION_CONSTANT_NUMBER_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_version_constant_number_required_idx \
+        aTHX_ perl_diag_error_syntax_version_constant_number_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_BYTE_CONVERSION_FAILED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_wide_character_byte_conversion_failed_idx \
+        aTHX_ perl_diag_error_unicode_wide_character_byte_conversion_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_RECORD_SEPARATOR_NOT_BYTES() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_wide_character_record_separator_not_bytes_idx \
+        aTHX_ perl_diag_error_unicode_wide_character_record_separator_not_bytes_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LEXICAL_IMPORT_OUTSIDE_COMPILATION() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_lexical_import_outside_compilation_idx \
+        aTHX_ perl_diag_error_lexical_import_outside_compilation_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_GROUP_ENTER_FAILED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_identity_effective_group_enter_failed_idx \
+        aTHX_ perl_diag_error_system_identity_effective_group_enter_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_USER_ENTER_FAILED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_identity_effective_user_enter_failed_idx \
+        aTHX_ perl_diag_error_system_identity_effective_user_enter_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_CONTAINER_EXISTS_SUBROUTINE_NAME_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_container_exists_subroutine_name_required_idx \
+        aTHX_ perl_diag_error_syntax_container_exists_subroutine_name_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LEXICAL_EXPORT_OUTSIDE_COMPILATION() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_lexical_export_outside_compilation_idx \
+        aTHX_ perl_diag_error_lexical_export_outside_compilation_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_GROUP_RESTORE_FAILED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_identity_effective_group_restore_failed_idx \
+        aTHX_ perl_diag_error_system_identity_effective_group_restore_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_IDENTITY_EFFECTIVE_USER_RESTORE_FAILED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_identity_effective_user_restore_failed_idx \
+        aTHX_ perl_diag_error_system_identity_effective_user_restore_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_CHARACTER_NAME_WILDCARD_INFO_FUNCTION_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_unicode_character_name_wildcard_info_function_missing_idx \
+        aTHX_ perl_diag_error_internal_unicode_character_name_wildcard_info_function_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_CHARACTER_NAME_LOOSE_LOOKUP_FUNCTION_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_unicode_character_name_loose_lookup_function_missing_idx \
+        aTHX_ perl_diag_error_internal_unicode_character_name_loose_lookup_function_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_INVERSION_LIST_GENERATED_VERSION_MISMATCH() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_unicode_inversion_list_generated_version_mismatch_idx \
+        aTHX_ perl_diag_error_internal_unicode_inversion_list_generated_version_mismatch_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_IO_LAYER_INDEX_INVALID_WITHOUT_DEFAULT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_io_layer_index_invalid_without_default_idx \
+        aTHX_ perl_diag_error_internal_io_layer_index_invalid_without_default_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_BACKREF_STORAGE_POINTER_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_scalar_backref_storage_pointer_missing_idx \
+        aTHX_ perl_diag_error_internal_scalar_backref_storage_pointer_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_DUPLICATE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_memory_pool_free_duplicate_idx \
+        aTHX_ perl_diag_error_internal_memory_pool_free_duplicate_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_HASH_STORE_FAILED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_hash_store_failed_idx \
+        aTHX_ perl_diag_error_internal_hash_store_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_ALGORITHM_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_object_composition_inheritance_mro_algorithm_missing_idx \
+        aTHX_ perl_diag_error_internal_object_composition_inheritance_mro_algorithm_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_BACKREF_STORAGE_FREED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_scalar_backref_storage_freed_idx \
+        aTHX_ perl_diag_error_internal_scalar_backref_storage_freed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_SNPRINTF_FAILED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_format_printf_snprintf_failed_idx \
+        aTHX_ perl_diag_error_internal_format_printf_snprintf_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_PAD_CLONE_PADLIST_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_pad_clone_padlist_missing_idx \
+        aTHX_ perl_diag_error_internal_pad_clone_padlist_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_LOCALE_TIME_STRFTIME_UNAVAILABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_locale_time_strftime_unavailable_idx \
+        aTHX_ perl_diag_error_internal_locale_time_strftime_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_NAME_VALUE_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_regexp_compiler_named_capture_name_value_missing_idx \
+        aTHX_ perl_diag_error_internal_regexp_compiler_named_capture_name_value_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_SIBLING_SPLICE_PARENT_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_opcode_sibling_splice_parent_required_idx \
+        aTHX_ perl_diag_error_internal_opcode_sibling_splice_parent_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_NAME_HASH_VALUE_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_regexp_compiler_named_capture_name_hash_value_missing_idx \
+        aTHX_ perl_diag_error_internal_regexp_compiler_named_capture_name_hash_value_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_SCANNER_RESULT_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_regexp_compiler_named_capture_scanner_result_missing_idx \
+        aTHX_ perl_diag_error_internal_regexp_compiler_named_capture_scanner_result_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_CAPACITY_OVERFLOW() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_stack_save_capacity_overflow_idx \
+        aTHX_ perl_diag_error_internal_stack_save_capacity_overflow_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNSUPPORTED_OPERATION_NOT_IMPLEMENTED(ma_operation) \
-    STMT_START { \
-        const char * const in_operation = (const char *)(ma_operation); \
-        AV * const params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV()))); \
-         \
-        SV * const tmpl_operation = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_unsupported_operation_not_implemented_idx, 0, 0, perl_diag_selector_invalid); \
-        sv_setpvf(tmpl_operation, "%s", in_operation); \
-         \
-        SV * const message_sv = NULL; \
-        Perl_diag_croak_sv(aTHX_ perl_diag_error_unsupported_operation_not_implemented_idx, params_av, message_sv); \
-    } STMT_END
+    Perl_throw_croak_1_1166( \
+        aTHX_ perl_diag_error_unsupported_operation_not_implemented_idx, \
+        __FILE__, \
+        __LINE__, \
+        "%s", \
+        (const char *)(ma_operation) \
+    )
 
 #define PERL_THROW_ERROR_UNSUPPORTED_OPERATION_NOT_IMPLEMENTED_NO_CONTEXT(ma_operation) \
-    Perl_diag_croak_nocontext(perl_diag_error_unsupported_operation_not_implemented_idx, NULL, "The following operation is not implemented: %" "s", ma_operation)
+    Perl_throw_croak_nocontext_1_1314( \
+        perl_diag_error_unsupported_operation_not_implemented_idx, \
+        __FILE__, \
+        __LINE__, \
+        "%s", \
+        (const char *)(ma_operation) \
+    )
 
 #define PERL_THROW_ERROR_UNSUPPORTED_OPERATION_NOT_IMPLEMENTED_DIE(ma_operation) \
-    STMT_START { \
-        const char * const in_operation = (const char *)(ma_operation); \
-        AV * const params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV()))); \
-         \
-        SV * const tmpl_operation = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_unsupported_operation_not_implemented_idx, 0, 0, perl_diag_selector_invalid); \
-        sv_setpvf(tmpl_operation, "%s", in_operation); \
-         \
-        SV * const message_sv = NULL; \
-        Perl_diag_die_sv(aTHX_ perl_diag_error_unsupported_operation_not_implemented_idx, params_av, message_sv); \
-    } STMT_END
+    Perl_throw_die_1_1379( \
+        aTHX_ perl_diag_error_unsupported_operation_not_implemented_idx, \
+        __FILE__, \
+        __LINE__, \
+        "%s", \
+        (const char *)(ma_operation) \
+    )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_CALL_ARGUMENT_COUNT_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_platform_os2_pipe_call_argument_count_invalid_idx \
+        aTHX_ perl_diag_error_system_platform_os2_pipe_call_argument_count_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_VERSION_LEGACY_AFTER_MODERN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_version_legacy_after_modern_idx \
+        aTHX_ perl_diag_error_syntax_version_legacy_after_modern_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_VERSION_MODERN_AFTER_LEGACY() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_version_modern_after_legacy_idx \
+        aTHX_ perl_diag_error_syntax_version_modern_after_legacy_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_DIAG_FORMAT_WARNING_SYSTEM_PLATFORM_VMS_CRTL_ENVIRONMENT_UNAVAILABLE "Can't read CRTL environ\n"
 
 #define PERL_WARN_WARNING_SYSTEM_PLATFORM_VMS_CRTL_ENVIRONMENT_UNAVAILABLE() \
     Perl_throw_warn_0_1144( \
-        aTHX_ perl_diag_warning_system_platform_vms_crtl_environment_unavailable_idx \
+        aTHX_ perl_diag_warning_system_platform_vms_crtl_environment_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_WARN_WARNING_SYSTEM_PLATFORM_VMS_PASSWORD_ENTRY_UIC_INVALID(ma_uic, ma_name) \
     Perl_throw_warn_2_1385( \
         aTHX_ perl_diag_warning_system_platform_vms_password_entry_uic_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%#o", \
         ma_uic, \
         "%s", \
@@ -6688,77 +7281,79 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_WARN_WARNING_RUN_ENVIRONMENT_HASH_SEED_NON_HEX_CHARACTER() \
     Perl_throw_warn_0_1144( \
-        aTHX_ perl_diag_warning_run_environment_hash_seed_non_hex_character_idx \
+        aTHX_ perl_diag_warning_run_environment_hash_seed_non_hex_character_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_PARAMETER_SIGIL_INVALID() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_parameter_sigil_invalid_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_parameter_sigil_invalid_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_MUTATION_ASSIGNMENT_MIXED_SCALAR_AND_LIST_TARGETS() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_assignment_mixed_scalar_and_list_targets_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_assignment_mixed_scalar_and_list_targets_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_NAMED_PARAMETER_DUPLICATE() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_named_parameter_duplicate_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_named_parameter_duplicate_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_SOURCE_HEX_SEQUENCE_INVALID() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_escape_character_name_source_hex_sequence_invalid_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_escape_character_name_source_hex_sequence_invalid_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_CALL_RETURN_COMMA_MISSING() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_call_return_comma_missing_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_call_return_comma_missing_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_CONTAINER_MULTIDIMENSIONAL_HASH_LOOKUP_DISABLED() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_container_multidimensional_hash_lookup_disabled_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_container_multidimensional_hash_lookup_disabled_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_SLURPY_PARAMETER_DUPLICATE() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_slurpy_parameter_duplicate_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_slurpy_parameter_duplicate_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_OPTIONAL_DEFAULT_MISSING() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_optional_default_missing_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_optional_default_missing_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SIGNATURE_POSITIONAL_PARAMETER_AFTER_NAMED() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_positional_parameter_after_named_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_signature_positional_parameter_after_named_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_ASCII_LIMIT_EXCEEDED() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_modifier_literal_ascii_limit_exceeded_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_modifier_literal_ascii_limit_exceeded_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_RIGHT_CURLY_UNMATCHED() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_delimiter_right_curly_unmatched_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_delimiter_right_curly_unmatched_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_RIGHT_SQUARE_UNMATCHED() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_delimiter_right_square_unmatched_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_delimiter_right_square_unmatched_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_NEGATED_BINDING_FORBIDDEN() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_quoted_string_substitution_negated_binding_forbidden_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_quoted_string_substitution_negated_binding_forbidden_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_NEGATED_BINDING_FORBIDDEN() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_quoted_string_transliteration_negated_binding_forbidden_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_quoted_string_transliteration_negated_binding_forbidden_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_CHARSET_CONFLICT(ma_first, ma_second) \
@@ -6772,7 +7367,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_second = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_regexp_modifier_literal_charset_conflict_idx, 1, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_second, "%c", in_second); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_modifier_literal_charset_conflict_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_modifier_literal_charset_conflict_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_REGEXP_MODIFIER_LITERAL_REPEATED(ma_modifier) \
@@ -6782,7 +7377,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_modifier = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_regexp_modifier_literal_repeated_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_modifier, "%c", in_modifier); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_modifier_literal_repeated_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_regexp_modifier_literal_repeated_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_CALL_BINDING_ARITY_TOO_FEW_ARGUMENTS(ma_name_operation, ma_name, flags) \
@@ -6798,7 +7393,7 @@ enum perl_diag_selector_domain_id {
         SV * const tmpl_name = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_call_binding_arity_too_few_arguments_idx, 1, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_name, "%s", in_name); \
         if (scratch_utf8_flags & SVf_UTF8) SvUTF8_on(tmpl_name); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_call_binding_arity_too_few_arguments_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_call_binding_arity_too_few_arguments_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_CALL_BINDING_ARITY_TOO_MANY_ARGUMENTS(ma_name_operation, ma_name, flags) \
@@ -6814,7 +7409,7 @@ enum perl_diag_selector_domain_id {
         SV * const tmpl_name = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_call_binding_arity_too_many_arguments_idx, 1, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_name, "%s", in_name); \
         if (scratch_utf8_flags & SVf_UTF8) SvUTF8_on(tmpl_name); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_call_binding_arity_too_many_arguments_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_call_binding_arity_too_many_arguments_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_CALL_COMMA_MISSING(ma_function_operation, ma_function) \
@@ -6828,7 +7423,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_function = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_call_comma_missing_idx, 1, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_function, "%s", in_function); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_call_comma_missing_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_call_comma_missing_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_CALL_BINDING_TYPE_SCALAR_CONTAINER_ACCESS_FORBIDDEN(ma_feature, flags) \
@@ -6841,7 +7436,7 @@ enum perl_diag_selector_domain_id {
         SV * const tmpl_feature = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_call_binding_type_scalar_container_access_forbidden_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_feature, "%s", in_feature); \
         if (scratch_utf8_flags & SVf_UTF8) SvUTF8_on(tmpl_feature); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_call_binding_type_scalar_container_access_forbidden_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_call_binding_type_scalar_container_access_forbidden_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_SOURCE_NON_ASCII_CHARACTER_FORBIDDEN(ma_character, flags) \
@@ -6851,7 +7446,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_character = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_source_non_ascii_character_forbidden_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_character, "%02X", in_character); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_source_non_ascii_character_forbidden_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_source_non_ascii_character_forbidden_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_NUMERIC_LITERAL_OCTAL_DIGIT_INVALID(ma_digit) \
@@ -6861,7 +7456,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_digit = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_numeric_literal_octal_digit_invalid_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_digit, "%c", in_digit); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_numeric_literal_octal_digit_invalid_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_numeric_literal_octal_digit_invalid_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_NUMERIC_LITERAL_BINARY_DIGIT_INVALID(ma_digit) \
@@ -6871,7 +7466,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_digit = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_numeric_literal_binary_digit_invalid_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_digit, "%c", in_digit); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_numeric_literal_binary_digit_invalid_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_numeric_literal_binary_digit_invalid_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING(ma_base) \
@@ -6881,7 +7476,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_base = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_numeric_literal_base_digits_missing_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_base, "%s", in_base); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_numeric_literal_base_digits_missing_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_numeric_literal_base_digits_missing_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_OUR_NAME_QUALIFIED(ma_kind, ma_name, flags) \
@@ -6896,7 +7491,7 @@ enum perl_diag_selector_domain_id {
         SV * const tmpl_name = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_declaration_our_name_qualified_idx, 1, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_name, "%s", in_name); \
         if (scratch_utf8_flags & SVf_UTF8) SvUTF8_on(tmpl_name); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_our_name_qualified_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_our_name_qualified_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_CATCH_DECLARATOR_REPEATED(ma_name) \
@@ -6906,7 +7501,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_name = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_declaration_catch_declarator_repeated_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_name, "%s", in_name); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_catch_declarator_repeated_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_catch_declarator_repeated_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_DECLARATOR_REPEATED(ma_name, ma_scope) \
@@ -6920,7 +7515,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_scope = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_declaration_declarator_repeated_idx, 1, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_scope, "%s", in_scope); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_declarator_repeated_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_declarator_repeated_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_CALL_BINDING_TYPE_EXPRESSION_TYPE_MISMATCH(ma_number, ma_function, ma_function_operation, ma_expected_kind, ma_actual_operation, ma_sigils, ma_actual, flags) \
@@ -6957,12 +7552,12 @@ enum perl_diag_selector_domain_id {
         SV * const tmpl_actual = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_call_binding_type_expression_type_mismatch_idx, 6, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_actual, "%s", in_actual); \
         if (scratch_utf8_flags & SVf_UTF8) SvUTF8_on(tmpl_actual); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_call_binding_type_expression_type_mismatch_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_call_binding_type_expression_type_mismatch_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_VARIABLE_STATE_LIST_INITIALIZATION_FORBIDDEN() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_variable_state_list_initialization_forbidden_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_variable_state_list_initialization_forbidden_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_MUTATION_LVALUE_TARGET_NOT_MODIFIABLE(ma_target, ma_target_operation, ma_context_operation, ma_context) \
@@ -6984,7 +7579,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_context = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_mutation_lvalue_target_not_modifiable_idx, 3, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_context, "%s", in_context); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_lvalue_target_not_modifiable_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_lvalue_target_not_modifiable_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_TARGET_NOT_DECLARABLE(ma_target, ma_target_operation, ma_scope) \
@@ -7002,17 +7597,17 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_scope = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_declaration_target_not_declarable_idx, 2, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_scope, "%s", in_scope); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_target_not_declarable_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_target_not_declarable_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_MUTATION_REFERENCE_ALIASING_LOCALIZED_PARENTHESIZED_ARRAY() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_reference_aliasing_localized_parenthesized_array_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_reference_aliasing_localized_parenthesized_array_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_MUTATION_REFERENCE_ALIASING_PARENTHESIZED_HASH() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_reference_aliasing_parenthesized_hash_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_reference_aliasing_parenthesized_hash_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_MUTATION_REFERENCE_ALIASING_TARGET_NOT_SUPPORTED(ma_target, ma_context, ma_context_operation, ma_target_operation) \
@@ -7034,7 +7629,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_target_operation = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_mutation_reference_aliasing_target_not_supported_idx, 3, 0, perl_diag_selector_invalid); \
         sv_setuv(tmpl_target_operation, in_target_operation); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_reference_aliasing_target_not_supported_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_reference_aliasing_target_not_supported_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_MUTATION_REFERENCE_ALIASING_SCALAR_TARGET_NOT_SUPPORTED(ma_target, ma_target_operation) \
@@ -7048,7 +7643,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_target_operation = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_mutation_reference_aliasing_scalar_target_not_supported_idx, 1, 0, perl_diag_selector_invalid); \
         sv_setuv(tmpl_target_operation, in_target_operation); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_reference_aliasing_scalar_target_not_supported_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_reference_aliasing_scalar_target_not_supported_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_MUTATION_LVALUE_CALL_NON_LVALUE_SUBROUTINE_IN_CONTEXT(ma_subroutine, ma_context, ma_context_operation, flags) \
@@ -7070,7 +7665,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_context_operation = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_mutation_lvalue_call_non_lvalue_subroutine_in_context_idx, 2, 0, perl_diag_selector_invalid); \
         sv_setuv(tmpl_context_operation, in_context_operation); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_lvalue_call_non_lvalue_subroutine_in_context_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_mutation_lvalue_call_non_lvalue_subroutine_in_context_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SPECIAL_CONTROL_NAME_FORBIDDEN(ma_sigil, ma_control, ma_length, ma_name, ma_is_utf8, ma_context) \
@@ -7088,7 +7683,7 @@ enum perl_diag_selector_domain_id {
         if (in_is_utf8) SvUTF8_on(tmpl_var_name); \
          \
         Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_declaration_special_control_name_forbidden_idx, 1, perl_diag_selector_domain_1426_0_id, in_context); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_special_control_name_forbidden_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_special_control_name_forbidden_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_SPECIAL_NAME_FORBIDDEN(ma_length, ma_name, ma_context, flags) \
@@ -7105,7 +7700,7 @@ enum perl_diag_selector_domain_id {
         if (scratch_utf8_flags & SVf_UTF8) SvUTF8_on(tmpl_var_name); \
          \
         Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_declaration_special_name_forbidden_idx, 1, perl_diag_selector_domain_1426_0_id, in_context); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_special_name_forbidden_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_special_name_forbidden_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_NAMED_SEQUENCE_TOO_LONG(ma_length, ma_sequence) \
@@ -7116,7 +7711,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_sequence = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_quoted_string_transliteration_named_sequence_too_long_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_sequence, "%.*s", in_length, in_sequence); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_quoted_string_transliteration_named_sequence_too_long_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_quoted_string_transliteration_named_sequence_too_long_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DECLARATION_USE_NO_IN_EXPRESSION(ma_keyword) \
@@ -7126,17 +7721,19 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_keyword = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_declaration_use_no_in_expression_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_keyword, "%s", in_keyword); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_use_no_in_expression_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_use_no_in_expression_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_NOT_GRAPHEME() \
     STMT_START { \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_delimiter_not_grapheme_idx, NULL, 0, 0, NULL); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_delimiter_not_grapheme_idx, NULL, 0, 0, Perl_diag_source_params(NULL, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_APPEND_ERROR_UNICODE_CODE_POINT_HEX_ESCAPE_OVERFLOW(exception_slot, ma_length, ma_digits, ma_maximum) \
     Perl_throw_append_exception_2_1432( \
         aTHX_ perl_diag_error_unicode_code_point_hex_escape_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%.*s", \
         ma_length, \
@@ -7159,7 +7756,7 @@ enum perl_diag_selector_domain_id {
         SV * const tmpl_name = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_declaration_variable_type_package_not_found_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_name, "%" UTF8f, UTF8fARG(in_is_utf8, in_length, (in_name_bytes ? SvPVX(scratch_name_copy) : NULL))); \
         if (scratch_utf8_flags & SVf_UTF8) SvUTF8_on(tmpl_name); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_variable_type_package_not_found_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_variable_type_package_not_found_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_OVERLOAD_CONSTANT_CONVERSION_FAILED(ma_reason, ma_constant_utf8, ma_constant_length, ma_constant_text, ma_overload_type, flags) \
@@ -7184,11 +7781,11 @@ enum perl_diag_selector_domain_id {
         SV * const tmpl_overload_type = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_overload_constant_conversion_failed_idx, 2, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_overload_type, "%s", in_overload_type); \
         if (scratch_utf8_flags & SVf_UTF8) SvUTF8_on(tmpl_overload_type); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_overload_constant_conversion_failed_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_overload_constant_conversion_failed_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_PROPAGATION_EVAL_ERROR_TEXT(ma_message, ma_length, flags) \
-    Perl_yyerror_diag_pvn(aTHX_ perl_diag_error_propagation_eval_error_text_idx, ma_message, ma_length, flags)
+    Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_propagation_eval_error_text_idx, ma_message, ma_length, flags, Perl_diag_source_params(NULL, __FILE__, __LINE__))
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_VERSION_INVALID_DECLARATION(ma_reason) \
     STMT_START { \
@@ -7196,12 +7793,14 @@ enum perl_diag_selector_domain_id {
         AV * const params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV()))); \
          \
         Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_version_invalid_declaration_idx, 0, perl_diag_selector_domain_1437_0_id, in_reason); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_version_invalid_declaration_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_version_invalid_declaration_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_HANDLER_UNAVAILABLE(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_unicode_character_name_handler_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
@@ -7215,7 +7814,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_separator = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_declaration_attribute_list_suffix_invalid_idx, 1, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_separator, "%c", in_separator); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_attribute_list_suffix_invalid_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_attribute_list_suffix_invalid_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_DELIMITER_UNCLOSED_STRUCTURE(ma_reason) \
@@ -7224,43 +7823,57 @@ enum perl_diag_selector_domain_id {
         AV * const params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV()))); \
          \
         Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_delimiter_unclosed_structure_idx, 0, perl_diag_selector_domain_1440_0_id, in_reason); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_delimiter_unclosed_structure_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_delimiter_unclosed_structure_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_THROW_ERROR_RUN_OPTION_TAINT_UNAVAILABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_run_option_taint_unavailable_idx \
+        aTHX_ perl_diag_error_run_option_taint_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_FILE_TEST_SYMLINK_REQUIRES_LSTAT_CACHE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_io_file_test_symlink_requires_lstat_cache_idx \
+        aTHX_ perl_diag_error_io_file_test_symlink_requires_lstat_cache_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_TARGET_NESTING_LIMIT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_control_flow_goto_target_nesting_limit_idx \
+        aTHX_ perl_diag_error_control_flow_goto_target_nesting_limit_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_LOCALIZATION_THROUGH_REFERENCE_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_mutation_localization_through_reference_forbidden_idx \
+        aTHX_ perl_diag_error_mutation_localization_through_reference_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_NUMERIC_LITERAL_TOO_LONG() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_numeric_literal_too_long_idx \
+        aTHX_ perl_diag_error_syntax_numeric_literal_too_long_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYMBOL_TABLE_PACKAGE_NAME_LENGTH_OUT_OF_RANGE(ma_length) \
     Perl_throw_croak_1_1449( \
         aTHX_ perl_diag_error_internal_symbol_table_package_name_length_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_length \
     )
 
 #define PERL_THROW_ERROR_PACK_BOUNDS_PACK_POSITION_OUTSIDE_STRING(ma_character) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_pack_bounds_pack_position_outside_string_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_character \
     )
@@ -7268,6 +7881,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_OPEN_SCRIPT_INPUT_UNAVAILABLE(ma_file, ma_error) \
     Perl_throw_croak_2_1207( \
         aTHX_ perl_diag_error_io_open_script_input_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_file), \
         "%s", \
@@ -7277,6 +7892,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CONTROL_FLOW_SCOPE_CANNOT_LEAVE_PROTECTED_BLOCK(ma_operation, ma_block) \
     Perl_throw_croak_2_1207( \
         aTHX_ perl_diag_error_control_flow_scope_cannot_leave_protected_block_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         "%s", \
@@ -7286,6 +7903,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CONTROL_FLOW_SCOPE_CANNOT_LEAVE_PROTECTED_BLOCK_DIE(ma_operation, ma_block) \
     Perl_throw_die_2_1452( \
         aTHX_ perl_diag_error_control_flow_scope_cannot_leave_protected_block_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         "%s", \
@@ -7295,12 +7914,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_NAMED_SUBROUTINE(ma_name) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_call_lookup_undefined_named_subroutine_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_name) \
     )
 
 #define PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_SUBROUTINE_NEAR_LABEL(ma_name, ma_label) \
     Perl_throw_croak_2_1454( \
         aTHX_ perl_diag_error_call_lookup_undefined_subroutine_near_label_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_name), \
         "%s", \
         (const char *)(ma_label) \
@@ -7309,6 +7932,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_CONVERSION_FIELD_REFERENCE_REQUIRED(ma_field) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_object_conversion_field_reference_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_field) \
     )
@@ -7316,6 +7941,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_CONVERSION_FIELD_REFERENCE_TYPE_MISMATCH(ma_field) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_object_conversion_field_reference_type_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_field) \
     )
@@ -7323,6 +7950,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_CLEAR_SAVE_ENCODING_OVERFLOW(ma_offset, ma_low, ma_high) \
     Perl_throw_croak_3_1458( \
         aTHX_ perl_diag_error_internal_pad_offset_clear_save_encoding_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_offset, \
         "%p", \
         ma_low, \
@@ -7333,12 +7962,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_VALUE_SAVE_ENCODING_OVERFLOW(ma_offset) \
     Perl_throw_croak_1_1449( \
         aTHX_ perl_diag_error_internal_pad_offset_value_save_encoding_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_offset \
     )
 
 #define PERL_THROW_ERROR_IO_OPEN_DUPLICATION_TOO_MANY_ARGUMENTS(ma_arg2) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_io_open_duplication_too_many_arguments_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2 \
     )
@@ -7346,6 +7979,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_OPEN_STDOUT_TOO_MANY_ARGUMENTS(ma_arg2) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_io_open_stdout_too_many_arguments_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2 \
     )
@@ -7353,6 +7988,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_OPEN_STDIN_TOO_MANY_ARGUMENTS(ma_arg2) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_io_open_stdin_too_many_arguments_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2 \
     )
@@ -7360,6 +7997,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_INPLACE_EDIT_CANNOT_REPLACE_ORIGINAL(ma_arg2, ma_arg3, ma_arg4, ma_arg5) \
     Perl_throw_croak_4_1463( \
         aTHX_ perl_diag_error_io_inplace_edit_cannot_replace_original_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2), \
         "%s", \
@@ -7373,6 +8012,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_STACK_ARGUMENT_OP_CAPACITY_NOT_EXTENDED(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1464( \
         aTHX_ perl_diag_error_internal_stack_argument_op_capacity_not_extended_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         "%p", \
@@ -7384,6 +8025,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_INTERNAL_OPCODE_OP_STRUCTURE_CLASS_UNRECOGNIZED(ma_arg2) \
     Perl_throw_warn_1_1237( \
         aTHX_ perl_diag_warning_internal_opcode_op_structure_class_unrecognized_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7391,6 +8034,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MUTATION_TIE_BACKEND_PACKAGE_MISSING(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1466( \
         aTHX_ perl_diag_error_internal_mutation_tie_backend_package_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2, \
         "%c", \
@@ -7402,6 +8047,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MUTATION_TIE_BACKEND_ENTRY_POINT_MISSING(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1466( \
         aTHX_ perl_diag_error_internal_mutation_tie_backend_entry_point_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2, \
         "%c", \
@@ -7413,6 +8060,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYMBOL_TABLE_OBSOLETE_SPECIAL_VARIABLE(ma_arg2) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_symbol_table_obsolete_special_variable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2 \
     )
@@ -7420,6 +8069,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_LOCALE_DATA_LANGINFO_ITEM_UNHANDLED(ma_arg2) \
     Perl_throw_croak_1_1469( \
         aTHX_ perl_diag_error_internal_locale_data_langinfo_item_unhandled_idx, \
+        __FILE__, \
+        __LINE__, \
         "%jd", \
         ma_arg2 \
     )
@@ -7427,6 +8078,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PROCESS_PRCTL_NAME_SET_FAILED(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_system_process_prctl_name_set_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7434,6 +8087,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_RECORDSEPARATOR_REFERENCE_TYPE_UNSUPPORTED(ma_ref_type) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_io_recordseparator_reference_type_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_ref_type) \
     )
@@ -7441,12 +8096,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_CONSTANT_FOLD_LIST_JUMP_STATUS_INVALID(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_opcode_constant_fold_list_jump_status_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_SCOPE_ESCAPE_FORBIDDEN(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1207( \
         aTHX_ perl_diag_error_control_flow_scope_escape_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2), \
         "%s", \
@@ -7456,6 +8115,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_TRANSLITERATION_FINAL_MARKER_INVALID(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1475( \
         aTHX_ perl_diag_error_internal_syntax_quoted_string_transliteration_final_marker_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%x", \
         ma_arg2, \
         ma_arg3 \
@@ -7464,6 +8125,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_ITERATOR_VARIABLE_LIST_PUSHMARK_REQUIRED(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_iterator_variable_list_pushmark_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7471,6 +8134,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_ITERATOR_VARIABLE_REFERENCE_OP_INVALID(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1477( \
         aTHX_ perl_diag_error_internal_iterator_variable_reference_op_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2), \
         ma_arg3 \
@@ -7479,6 +8144,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_ITERATOR_SCALAR_VARIABLE_OP_REQUIRED(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1477( \
         aTHX_ perl_diag_error_internal_iterator_scalar_variable_op_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2), \
         ma_arg3 \
@@ -7487,6 +8154,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_ITERATOR_VARIABLE_PAD_TARGET_DISCONTIGUOUS(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1479( \
         aTHX_ perl_diag_error_internal_iterator_variable_pad_target_discontiguous_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         ma_arg3, \
         ma_arg4 \
@@ -7495,6 +8164,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_CALL_CV_LOOKUP_FLAGS_INVALID(ma_arg2) \
     Perl_throw_croak_1_1204( \
         aTHX_ perl_diag_error_internal_call_cv_lookup_flags_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%x", \
         ma_arg2 \
     )
@@ -7502,12 +8173,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_CUSTOM_METADATA_FIELD_INVALID(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_opcode_custom_metadata_field_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_CUSTOM_REGISTRATION_FAILED(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_opcode_custom_registration_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7515,6 +8190,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_PAGE_SIZE_QUERY_FAILED(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_memory_page_size_query_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7522,6 +8199,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_RUN_OPTION_SHEBANG_SWITCH_NOT_EMULATABLE(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_run_option_shebang_switch_not_emulatable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.1s", \
         (const char *)(ma_arg2) \
     )
@@ -7529,6 +8208,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_RUN_OPTION_UNKNOWN_SWITCH(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_run_option_unknown_switch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.1s", \
         (const char *)(ma_arg2) \
     )
@@ -7536,6 +8217,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SECURITY_PRIVILEGE_FDSCRIPT_NAME_SYNTAX_INVALID(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_security_privilege_fdscript_name_syntax_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7543,6 +8226,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SECURITY_PRIVILEGE_SETGID_INPUT_FORBIDDEN(ma_input_kind, ma_switch) \
     Perl_throw_croak_2_1211( \
         aTHX_ perl_diag_error_security_privilege_setgid_input_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_input_kind, \
         "%c", \
         ma_switch \
@@ -7551,6 +8236,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SECURITY_PRIVILEGE_FDSCRIPT_INPUT_FORBIDDEN(ma_input_kind, ma_switch) \
     Perl_throw_croak_2_1211( \
         aTHX_ perl_diag_error_security_privilege_fdscript_input_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_input_kind, \
         "%c", \
         ma_switch \
@@ -7559,6 +8246,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_LAYER_APPLICATION_UNAVAILABLE(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_io_layer_application_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7566,6 +8255,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_LAYER_OPEN_TOO_MANY_ARGUMENTS(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_io_layer_open_too_many_arguments_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7573,6 +8264,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_INCREMENT_RESULT_NONPOSITIVE(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1200( \
         aTHX_ perl_diag_error_internal_io_descriptor_refcount_increment_result_nonpositive_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         ma_arg3 \
     )
@@ -7580,12 +8273,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_INCREMENT_FD_NEGATIVE(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_io_descriptor_refcount_increment_fd_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_FD_OUT_OF_RANGE(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1200( \
         aTHX_ perl_diag_error_internal_io_descriptor_refcount_decrement_fd_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         ma_arg3 \
     )
@@ -7593,6 +8290,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_COUNT_NONPOSITIVE(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1200( \
         aTHX_ perl_diag_error_internal_io_descriptor_refcount_decrement_count_nonpositive_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         ma_arg3 \
     )
@@ -7600,12 +8299,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_DECREMENT_FD_NEGATIVE(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_io_descriptor_refcount_decrement_fd_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_FD_OUT_OF_RANGE(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1200( \
         aTHX_ perl_diag_error_internal_io_descriptor_refcount_query_fd_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         ma_arg3 \
     )
@@ -7613,6 +8316,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_COUNT_NONPOSITIVE(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1200( \
         aTHX_ perl_diag_error_internal_io_descriptor_refcount_query_count_nonpositive_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         ma_arg3 \
     )
@@ -7620,12 +8325,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_IO_DESCRIPTOR_REFCOUNT_QUERY_FD_NEGATIVE(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_io_descriptor_refcount_query_fd_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_MUTATION_LVALUE_RETURN_HASH_KEY_VALUE_SLICE_NOT_MODIFIABLE(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_mutation_lvalue_return_hash_key_value_slice_not_modifiable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7633,6 +8342,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CALL_BINDING_ARITY_INVALID_ARGUMENT_COUNT(ma_argument_count_relation, ma_function) \
     Perl_throw_croak_2_1500( \
         aTHX_ perl_diag_error_call_binding_arity_invalid_argument_count_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_argument_count_relation, \
         "%s", \
         (const char *)(ma_function) \
@@ -7641,12 +8352,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_STACK_CALL_CONTEXT_MISSING(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_stack_call_context_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_COMPILATION_TOO_MANY_ERRORS(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_compilation_too_many_errors_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7654,6 +8369,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CONTROL_FLOW_LOOP_OUTSIDE_LOOP_BLOCK(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_control_flow_loop_outside_loop_block_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7661,6 +8378,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_COPY_SOURCE_FREED(ma_arg2) \
     Perl_throw_croak_1_1504( \
         aTHX_ perl_diag_error_internal_scalar_copy_source_freed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2 \
     )
@@ -7668,6 +8387,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_STACK_ARGUMENT_XSUB_CAPACITY_NOT_EXTENDED(ma_arg2, ma_arg3, ma_arg4, ma_arg5, ma_arg6, ma_arg7) \
     Perl_throw_croak_6_1505( \
         aTHX_ perl_diag_error_internal_stack_argument_xsub_capacity_not_extended_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2), \
         "%s", \
@@ -7685,6 +8406,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_STAR_IN_LENGTH(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_pack_format_star_in_length_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7692,6 +8415,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_INVALID_DIRECTIVE(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1197( \
         aTHX_ perl_diag_error_pack_format_invalid_directive_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2, \
         "%s", \
@@ -7701,6 +8426,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_INVALID_LENGTH_DIRECTIVE(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1197( \
         aTHX_ perl_diag_error_pack_format_invalid_length_directive_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2, \
         "%s", \
@@ -7710,6 +8437,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_POSITION_BEFORE_START(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_pack_format_position_before_start_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7717,6 +8446,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_GROUP_STARTS_WITH_COUNT(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_pack_format_group_starts_with_count_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7724,6 +8455,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_GROUP_NESTING_TOO_DEEP(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_pack_format_group_nesting_too_deep_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7731,6 +8464,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_MALFORMED_LENGTH_INTEGER(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_pack_format_malformed_length_integer_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7738,6 +8473,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_INVALID_UNPACK_DIRECTIVE(ma_arg2) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_pack_format_invalid_unpack_directive_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2 \
     )
@@ -7745,6 +8482,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PACK_MARK_OUTSIDE_BUFFER(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1514( \
         aTHX_ perl_diag_error_internal_pack_mark_outside_buffer_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         "%p", \
@@ -7755,6 +8494,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_FORMAT_INVALID_PACK_DIRECTIVE(ma_arg2) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_pack_format_invalid_pack_directive_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2 \
     )
@@ -7762,6 +8503,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PACK_UTF8_PREDICTED_INPUT_EXHAUSTED(ma_arg2, ma_arg3, ma_arg4, ma_arg5, ma_arg6) \
     Perl_throw_croak_5_1516( \
         aTHX_ perl_diag_error_internal_pack_utf8_predicted_input_exhausted_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2, \
         "%p", \
@@ -7776,6 +8519,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PACK_INPUT_LENGTH_MISMATCH(ma_arg2, ma_arg3, ma_arg4, ma_arg5) \
     Perl_throw_croak_4_1517( \
         aTHX_ perl_diag_error_internal_pack_input_length_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         "%p", \
@@ -7788,6 +8533,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_FREE_TYPE_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_internal_regexp_data_free_type_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2 \
     )
@@ -7795,6 +8542,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_CLONE_TYPE_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_internal_regexp_data_clone_type_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2 \
     )
@@ -7802,6 +8551,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_PROPERTY_SET_OPERATION_UNKNOWN(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1520( \
         aTHX_ perl_diag_error_internal_regexp_compiler_property_set_operation_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2), \
         ma_arg3, \
@@ -7811,6 +8562,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_DEBUG_OPCODE_OUT_OF_RANGE(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1200( \
         aTHX_ perl_diag_error_internal_regexp_data_debug_opcode_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         ma_arg3 \
     )
@@ -7818,18 +8571,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_STUDY_VARYING_OPCODE_UNHANDLED(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_regexp_compiler_study_varying_opcode_unhandled_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_STUDY_SIMPLE_OPCODE_UNHANDLED(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_regexp_compiler_study_simple_opcode_unhandled_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_STUDY_EXTENDED_CLASS_UNRESOLVED(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_regexp_compiler_study_extended_class_unresolved_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7837,6 +8596,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_CAPTURE_SAVE_ENTRY_COUNT_NEGATIVE(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1525( \
         aTHX_ perl_diag_error_internal_regexp_execution_capture_save_entry_count_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         ma_arg3, \
         ma_arg4 \
@@ -7845,18 +8606,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_CHAR_CLASS_LOCALE_CLASS_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_regexp_execution_char_class_locale_class_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_START_CLASS_OPCODE_UNHANDLED(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_regexp_execution_start_class_opcode_unhandled_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_REPEAT_OPCODE_UNHANDLED(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1528( \
         aTHX_ perl_diag_error_internal_regexp_execution_repeat_opcode_unhandled_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         "%s", \
         (const char *)(ma_arg3) \
@@ -7865,24 +8632,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_OPERATION_FLAGS_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_regexp_data_named_capture_operation_flags_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_ITERATION_FLAGS_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_regexp_data_named_capture_iteration_flags_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_DATA_NAMED_CAPTURE_SCALAR_FLAGS_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_regexp_data_named_capture_scalar_flags_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_WARN_WARNING_CLEANUP_MAGIC_DESTRUCTOR_DURING_GLOBAL_DESTRUCTION(ma_arg2) \
     Perl_throw_warn_1_1236( \
         aTHX_ perl_diag_warning_cleanup_magic_destructor_during_global_destruction_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2 \
     )
@@ -7890,6 +8665,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_NUMERIC_CONVERSION_INTEGER_COERCION_FORBIDDEN(ma_arg3_operation, ma_arg2, ma_arg3) \
     Perl_throw_croak_3_1533( \
         aTHX_ perl_diag_error_numeric_conversion_integer_coercion_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg3_operation, \
         "%s", \
         (const char *)(ma_arg2), \
@@ -7900,6 +8677,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_NUMERIC_CONVERSION_NUMBER_COERCION_FORBIDDEN(ma_arg3_operation, ma_arg2, ma_arg3) \
     Perl_throw_croak_3_1533( \
         aTHX_ perl_diag_error_numeric_conversion_number_coercion_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg3_operation, \
         "%s", \
         (const char *)(ma_arg2), \
@@ -7910,6 +8689,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_UNDEFINE_FREED_VALUE(ma_arg2) \
     Perl_throw_croak_1_1504( \
         aTHX_ perl_diag_error_internal_scalar_undefine_freed_value_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2 \
     )
@@ -7917,6 +8698,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_STRING_CHOP_POINTER_OUT_OF_BOUNDS(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1464( \
         aTHX_ perl_diag_error_internal_scalar_string_chop_pointer_out_of_bounds_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         "%p", \
@@ -7928,6 +8711,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_BACKREF_SINGLE_REFERRER_MISMATCH(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1230( \
         aTHX_ perl_diag_error_internal_scalar_backref_single_referrer_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         "%p", \
@@ -7937,6 +8722,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_TYPE_STRING_SCALAR_COERCION_UNSUPPORTED(ma_arg3_operation, ma_arg2, ma_arg3) \
     Perl_throw_croak_3_1533( \
         aTHX_ perl_diag_error_type_string_scalar_coercion_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg3_operation, \
         "%s", \
         (const char *)(ma_arg2), \
@@ -7947,6 +8734,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_COPY_SOURCE_FREED_WITH_DESTINATION(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1230( \
         aTHX_ perl_diag_error_internal_scalar_copy_source_freed_with_destination_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         "%p", \
@@ -7956,6 +8745,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SCALAR_COPY_SOURCE_NOT_SCALAR_IN_OPERATION(ma_arg3_operation, ma_arg2, ma_arg3) \
     Perl_throw_croak_3_1533( \
         aTHX_ perl_diag_error_internal_scalar_copy_source_not_scalar_in_operation_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg3_operation, \
         "%s", \
         (const char *)(ma_arg2), \
@@ -7966,6 +8757,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SCALAR_COPY_TARGET_TYPE_UNSUPPORTED_IN_OPERATION(ma_arg3_operation, ma_arg2, ma_arg3) \
     Perl_throw_croak_3_1533( \
         aTHX_ perl_diag_error_internal_scalar_copy_target_type_unsupported_in_operation_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg3_operation, \
         "%s", \
         (const char *)(ma_arg2), \
@@ -7976,6 +8769,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_PRINTABLE(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1542( \
         aTHX_ perl_diag_error_syntax_quoted_string_transliteration_range_reversed_printable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2, \
         "%c", \
@@ -7985,6 +8780,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_SUBROUTINE_LEXICAL_NAME_MISSING(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_syntax_declaration_subroutine_lexical_name_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -7992,6 +8789,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CASEMOD_MARKER_EXPECTED(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1544( \
         aTHX_ perl_diag_error_internal_syntax_quoted_string_casemod_marker_expected_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         "%p", \
@@ -8002,12 +8801,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CASEMOD_ESCAPE_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1169( \
         aTHX_ perl_diag_error_internal_syntax_quoted_string_casemod_escape_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_SYNTAX_PLUGIN_INFIX_PARTIAL_IDENTIFIER_MATCH(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1546( \
         aTHX_ perl_diag_error_internal_syntax_plugin_infix_partial_identifier_match_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         "%s", \
         (const char *)(ma_arg3) \
@@ -8016,6 +8819,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SYNTAX_NUMERIC_LITERAL_START_CHARACTER_UNEXPECTED(ma_arg2) \
     Perl_throw_croak_1_1019( \
         aTHX_ perl_diag_error_internal_syntax_numeric_literal_start_character_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2 \
     )
@@ -8023,6 +8828,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_COMPILATION_FILE_HAS_ERRORS(ma_arg2, ma_error_count) \
     Perl_throw_croak_2_1186( \
         aTHX_ perl_diag_error_compilation_file_has_errors_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2), \
         ma_error_count \
@@ -8031,6 +8838,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_COMPILATION_EXECUTION_ABORTED(ma_arg2, ma_error_count) \
     Perl_throw_croak_2_1186( \
         aTHX_ perl_diag_error_compilation_execution_aborted_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2), \
         ma_error_count \
@@ -8039,19 +8848,25 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF16_FILTER_BLOCK_MODE_FORBIDDEN(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_unicode_utf16_filter_block_mode_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_USER_OPAQUE_RENDERED_MESSAGE(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_user_opaque_rendered_message_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
 
 #define PERL_THROW_ERROR_USER_OPAQUE_RENDERED_MESSAGE_NO_CONTEXT(ma_arg2) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_user_opaque_rendered_message_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -8059,13 +8874,17 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_USER_OPAQUE_RENDERED_MESSAGE_WITH_CONTEXT(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_user_opaque_rendered_message_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
 
 #define PERL_THROW_ERROR_USER_OPAQUE_RENDERED_MESSAGE_DIE(ma_arg2) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_user_opaque_rendered_message_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -8073,6 +8892,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_CASE_MAPPING_LATIN1_OUTLIER_UNEXPECTED(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1542( \
         aTHX_ perl_diag_error_internal_unicode_case_mapping_latin1_outlier_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg2, \
         "%c", \
@@ -8082,6 +8903,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_REALLOC_OWNER_MISMATCH(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1464( \
         aTHX_ perl_diag_error_internal_memory_pool_realloc_owner_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         "%p", \
@@ -8093,6 +8916,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_OWNER_MISMATCH(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1464( \
         aTHX_ perl_diag_error_internal_memory_pool_free_owner_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         "%p", \
@@ -8104,6 +8929,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_NEXT_LINK_MISSING(ma_arg2) \
     Perl_throw_croak_1_1504( \
         aTHX_ perl_diag_error_internal_memory_pool_free_next_link_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2 \
     )
@@ -8111,6 +8938,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_POOL_FREE_LINKS_INCONSISTENT(ma_arg2, ma_arg3, ma_arg4, ma_arg5) \
     Perl_throw_croak_4_1556( \
         aTHX_ perl_diag_error_internal_memory_pool_free_links_inconsistent_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         "%p", \
@@ -8124,6 +8953,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PROCESS_EXECUTABLE_LOOKUP_FAILED(ma_operation, ma_path_context, ma_target) \
     Perl_throw_croak_3_1557( \
         aTHX_ perl_diag_error_system_process_executable_lookup_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation, \
         ma_path_context, \
         "%s", \
@@ -8133,6 +8964,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_RUN_OPTION_UNICODE_INVALID_MASK(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_run_option_unicode_invalid_mask_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -8140,6 +8973,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_RUN_ENVIRONMENT_HASH_PERTURBATION_INVALID(ma_arg2) \
     Perl_throw_warn_1_1237( \
         aTHX_ perl_diag_warning_run_environment_hash_perturbation_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -8147,6 +8982,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LOAD_ABI_INTERPRETER_SIZE_MISMATCH(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1560( \
         aTHX_ perl_diag_error_load_abi_interpreter_size_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         ma_arg3 \
     )
@@ -8154,6 +8991,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LOAD_ABI_PERL_API_VERSION_MISMATCH(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1207( \
         aTHX_ perl_diag_error_load_abi_perl_api_version_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2), \
         "%s", \
@@ -8163,6 +9002,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_DBM_FILTER_REENTRY(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_io_dbm_filter_reentry_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -8170,6 +9011,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_FILESYSTEM_PATH_CONVERSION_INVALID_ARGUMENT_COUNT(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_io_filesystem_path_conversion_invalid_argument_count_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -8177,30 +9020,40 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_PROCESSOR_COUNT_TOO_LARGE(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_internal_system_platform_os2_system_info_processor_count_too_large_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_QUERY_COUNT_OUT_OF_RANGE(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_system_platform_os2_system_info_query_count_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_HEADER_BUFFER_SIZE_ZERO(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_system_platform_os2_module_header_buffer_size_zero_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PROCESS_TYPE_QUERY_KIND_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_system_platform_os2_process_type_query_kind_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_OPEN_MODE_INVALID(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_system_platform_os2_pipe_open_mode_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -8208,6 +9061,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_CONNECT_MODE_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_system_platform_os2_pipe_connect_mode_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -8215,6 +9070,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_CONTROL_OPERATION_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_system_platform_os2_pipe_control_operation_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -8222,6 +9079,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_WAIT_ARGUMENT_FORBIDDEN(ma_arg2) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_system_platform_os2_pipe_wait_argument_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2) \
     )
@@ -8229,6 +9088,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYSTEM_SIGNAL_WINDOWS_PROCESS_TERMINATING(ma_arg2, ma_arg3) \
     Perl_throw_warn_2_1572( \
         aTHX_ perl_diag_warning_system_signal_windows_process_terminating_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2), \
         ma_arg3 \
@@ -8237,18 +9098,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_OBJECT_CONSTRUCTOR_ARGUMENT_PAIRS_ODD(ma_stash) \
     Perl_throw_warn_1_1574( \
         aTHX_ perl_diag_warning_object_constructor_argument_pairs_odd_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_stash \
     )
 
 #define PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_CLASS_INCOMPLETE(ma_stash) \
     Perl_throw_croak_1_1575( \
         aTHX_ perl_diag_error_object_constructor_class_incomplete_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_stash \
     )
 
 #define PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_UNKNOWN_PARAMETERS(ma_stash, ma_paramnames, ma_param_count) \
     Perl_throw_croak_3_1576( \
         aTHX_ perl_diag_error_object_constructor_unknown_parameters_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_stash, \
         (SV *)(ma_paramnames), \
         ma_param_count \
@@ -8257,72 +9124,96 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_REOPEN_FORBIDDEN(ma_stash) \
     Perl_throw_croak_1_1575( \
         aTHX_ perl_diag_error_object_definition_class_reopen_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_stash \
     )
 
 #define PERL_THROW_ERROR_OBJECT_DEFINITION_CLASS_EXISTING_ISA_FORBIDDEN(ma_stash) \
     Perl_throw_croak_1_1578( \
         aTHX_ perl_diag_error_object_definition_class_existing_isa_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_stash \
     )
 
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_NATIVE_SUPERCLASS_REQUIRED(ma_superclassname) \
     Perl_throw_croak_1_1579( \
         aTHX_ perl_diag_error_object_composition_inheritance_native_superclass_required_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_superclassname) \
     )
 
 #define PERL_THROW_ERROR_OBJECT_DEFINITION_ATTRIBUTE_VALUE_REQUIRED(ma_name) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_object_definition_attribute_value_required_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_name) \
     )
 
 #define PERL_THROW_ERROR_OBJECT_DEFINITION_ATTRIBUTE_UNKNOWN(ma_name) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_object_definition_attribute_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_name) \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_FIELD_LAYOUT_MISSING(ma_rolestash) \
     Perl_throw_croak_1_1575( \
         aTHX_ perl_diag_error_internal_object_composition_role_field_layout_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_rolestash \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_PROTOTYPE_MISSING(ma_rolestash) \
     Perl_throw_croak_1_1575( \
         aTHX_ perl_diag_error_internal_object_composition_role_prototype_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_rolestash \
     )
 
 #define PERL_THROW_ERROR_OBJECT_DEFINITION_ROLE_REOPEN_FORBIDDEN(ma_stash) \
     Perl_throw_croak_1_1575( \
         aTHX_ perl_diag_error_object_definition_role_reopen_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_stash \
     )
 
 #define PERL_THROW_ERROR_OBJECT_DEFINITION_ROLE_PACKAGE_ALREADY_CLASS(ma_stash) \
     Perl_throw_croak_1_1575( \
         aTHX_ perl_diag_error_object_definition_role_package_already_class_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_stash \
     )
 
 #define PERL_THROW_ERROR_OBJECT_DEFINITION_ROLE_EXISTING_ISA_FORBIDDEN(ma_stash) \
     Perl_throw_croak_1_1578( \
         aTHX_ perl_diag_error_object_definition_role_existing_isa_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_stash \
     )
 
 #define PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_UNKNOWN(ma_name) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_object_field_attribute_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_name) \
     )
 
 #define PERL_THROW_ERROR_OVERLOAD_OPERATION_METHOD_NOT_FOUND(ma_operation, ma_arity, ma_left_overload_state, ma_left_package, ma_right_overload_state, ma_right_package) \
     Perl_throw_croak_6_1589( \
         aTHX_ perl_diag_error_overload_operation_method_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_arity, \
@@ -8335,60 +9226,80 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_DEPTH_EXCEEDED(ma_stashhek) \
     Perl_throw_croak_1_1590( \
         aTHX_ perl_diag_error_object_composition_inheritance_linearization_depth_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_stashhek \
     )
 
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_PACKAGE_NOT_FOUND(ma_classname) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_object_composition_inheritance_method_change_package_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_classname) \
     )
 
 #define PERL_THROW_ERROR_PROPAGATION_EVAL_EXCEPTION(ma_errsv) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_propagation_eval_exception_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_errsv) \
     )
 
 #define PERL_WARN_WARNING_COMPILATION_UNCLASSIFIED_DEFERRED_MESSAGE(ma_err) \
     Perl_throw_warn_1_1594( \
         aTHX_ perl_diag_warning_compilation_unclassified_deferred_message_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_err) \
     )
 
 #define PERL_THROW_ERROR_OBJECT_METHOD_CALL_INVOCANT_REQUIRED(ma_meth) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_object_method_call_invocant_required_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_meth) \
     )
 
 #define PERL_THROW_ERROR_OBJECT_METHOD_CALL_UNINITIALIZED_INVOCANT(ma_meth) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_object_method_call_uninitialized_invocant_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_meth) \
     )
 
 #define PERL_WARN_WARNING_USER_REFERENCE(ma_exsv) \
     Perl_throw_warn_1_1594( \
         aTHX_ perl_diag_warning_user_reference_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_exsv) \
     )
 
 #define PERL_THROW_ERROR_IO_HANDLE_INVALID_VALUE(ma_newsv) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_io_handle_invalid_value_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_newsv) \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_SUBROUTINE_NAMED_SUFFIX_INVALID(ma_PL_subname) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_syntax_declaration_subroutine_named_suffix_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_PL_subname) \
     )
 
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_NATIVE_ROLE_REQUIRED(ma_role) \
     Perl_throw_croak_1_1600( \
         aTHX_ perl_diag_error_object_composition_native_role_required_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_role, \
         "(unknown)" \
     )
@@ -8396,30 +9307,40 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LEXICAL_IMPORT_INVALID_VERSION_BUNDLE(ma_sym) \
     Perl_throw_croak_1_1579( \
         aTHX_ perl_diag_error_lexical_import_invalid_version_bundle_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_sym) \
     )
 
 #define PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_GENERATED_METHOD_NAME_INVALID(ma_value) \
     Perl_throw_croak_1_1579( \
         aTHX_ perl_diag_error_object_field_attribute_generated_method_name_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_value) \
     )
 
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_MRO_NAME_UNKNOWN(ma_name) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_object_composition_inheritance_mro_name_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_name) \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_ARRAY_EXTEND_INDEX_INVALID(ma_arg1) \
     Perl_throw_croak_1_1604( \
         aTHX_ perl_diag_error_internal_array_extend_index_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_IO_OPEN_UNKNOWN_MODE(ma_arg1_size1, ma_arg1_value) \
     Perl_throw_croak_1_1605( \
         aTHX_ perl_diag_error_io_open_unknown_mode_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_arg1_size1, \
         (const char *)(ma_arg1_value) \
@@ -8428,6 +9349,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_LAYER_OPEN_SPECIFICATION_UNAVAILABLE(ma_arg1_size1, ma_arg1_value) \
     Perl_throw_croak_1_1605( \
         aTHX_ perl_diag_error_io_layer_open_specification_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_arg1_size1, \
         (const char *)(ma_arg1_value) \
@@ -8436,12 +9359,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SYMBOL_TABLE_GLOB_NAME_LENGTH_OUT_OF_RANGE(ma_arg1) \
     Perl_throw_croak_1_1607( \
         aTHX_ perl_diag_error_internal_symbol_table_glob_name_length_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_VALUE_TAG_UNKNOWN(ma_arg1) \
     Perl_throw_croak_1_1608( \
         aTHX_ perl_diag_error_internal_hash_refcounted_entry_value_tag_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1 \
     )
@@ -8449,6 +9376,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_CHAIN_FLAGS_INVALID(ma_arg1) \
     Perl_throw_croak_1_1608( \
         aTHX_ perl_diag_error_internal_hash_refcounted_entry_chain_flags_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1 \
     )
@@ -8456,6 +9385,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_FETCH_PV_FLAGS_INVALID(ma_arg1) \
     Perl_throw_croak_1_1608( \
         aTHX_ perl_diag_error_internal_hash_refcounted_entry_fetch_pv_flags_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1 \
     )
@@ -8463,6 +9394,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_FETCH_SV_UTF8_FLAG_FORBIDDEN(ma_arg1) \
     Perl_throw_croak_1_1608( \
         aTHX_ perl_diag_error_internal_hash_refcounted_entry_fetch_sv_utf8_flag_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1 \
     )
@@ -8470,6 +9403,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_HASH_REFCOUNTED_ENTRY_CREATE_SV_UTF8_FLAG_FORBIDDEN(ma_arg1) \
     Perl_throw_croak_1_1608( \
         aTHX_ perl_diag_error_internal_hash_refcounted_entry_create_sv_utf8_flag_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1 \
     )
@@ -8477,6 +9412,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_LABEL_FLAGS_INVALID(ma_arg1) \
     Perl_throw_croak_1_1608( \
         aTHX_ perl_diag_error_internal_opcode_label_flags_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1 \
     )
@@ -8484,6 +9421,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LOAD_HOOK_NAME_UNKNOWN(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_load_hook_name_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -8491,6 +9430,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LOAD_HOOK_VALUE_NOT_CODE_OR_UNDEF(ma_arg1_size1, ma_arg1_value) \
     Perl_throw_croak_1_1605( \
         aTHX_ perl_diag_error_load_hook_value_not_code_or_undef_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_arg1_size1, \
         (const char *)(ma_arg1_value) \
@@ -8499,6 +9440,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_DATA_STORE_FAILED(ma_arg1_size1, ma_arg1_value, ma_arg2) \
     Perl_throw_croak_2_1616( \
         aTHX_ perl_diag_error_internal_object_composition_inheritance_mro_data_store_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_arg1_size1, \
         (const char *)(ma_arg1_value), \
@@ -8508,6 +9451,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_REGISTER_FAILED(ma_arg1_size1, ma_arg1_value, ma_arg2) \
     Perl_throw_croak_2_1616( \
         aTHX_ perl_diag_error_internal_object_composition_inheritance_mro_register_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_arg1_size1, \
         (const char *)(ma_arg1_value), \
@@ -8517,12 +9462,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PHASE_BEGIN_NESTING_LIMIT(ma_arg1) \
     Perl_throw_croak_1_1604( \
         aTHX_ perl_diag_error_phase_begin_nesting_limit_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_PAD_NAME_ADD_FLAGS_INVALID(ma_arg1) \
     Perl_throw_croak_1_1608( \
         aTHX_ perl_diag_error_internal_pad_name_add_flags_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1 \
     )
@@ -8530,6 +9479,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PAD_NAME_FIND_FLAGS_INVALID(ma_arg1) \
     Perl_throw_croak_1_1608( \
         aTHX_ perl_diag_error_internal_pad_name_find_flags_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1 \
     )
@@ -8537,6 +9488,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PAD_NAME_LEXICAL_FIND_FLAGS_INVALID(ma_arg1) \
     Perl_throw_croak_1_1608( \
         aTHX_ perl_diag_error_internal_pad_name_lexical_find_flags_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1 \
     )
@@ -8544,12 +9497,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_PAGE_SIZE_NONPOSITIVE(ma_arg1) \
     Perl_throw_croak_1_1604( \
         aTHX_ perl_diag_error_internal_memory_page_size_nonpositive_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_WARN_WARNING_INTERNAL_SYSTEM_PROCESS_LEAK_DUMP_CHILD_REPORTED_FAILURE(ma_output_state, ma_output_length, ma_output_text, ma_errno, ma_error) \
     Perl_throw_warn_4_1623( \
         aTHX_ perl_diag_warning_internal_system_process_leak_dump_child_reported_failure_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_output_state, \
         "%.*s", \
         ma_output_length, \
@@ -8562,6 +9519,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_RUN_OPTION_MODULE_NAME_SINGLE_COLON(ma_arg1_size1, ma_arg1_value, ma_arg2) \
     Perl_throw_croak_2_1624( \
         aTHX_ perl_diag_error_run_option_module_name_single_colon_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_arg1_size1, \
         (const char *)(ma_arg1_value), \
@@ -8572,6 +9531,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_LAYER_ABI_FUNCTION_TABLE_SIZE_MISMATCH(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1625( \
         aTHX_ perl_diag_error_io_layer_abi_function_table_size_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2 \
     )
@@ -8579,6 +9540,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_LAYER_ABI_INSTANCE_TOO_SMALL(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1625( \
         aTHX_ perl_diag_error_io_layer_abi_instance_too_small_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2 \
     )
@@ -8586,18 +9549,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MUTATION_ASSIGNMENT_SHARED_RHS_COPY_REQUIRED(ma_arg1) \
     Perl_throw_croak_1_1607( \
         aTHX_ perl_diag_error_internal_mutation_assignment_shared_rhs_copy_required_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_STACK_ARGUMENT_GROW_COUNT_NEGATIVE(ma_arg1) \
     Perl_throw_croak_1_1604( \
         aTHX_ perl_diag_error_internal_stack_argument_grow_count_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_ALLOCATION_ENCODING_OVERFLOW(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_croak_3_1629( \
         aTHX_ perl_diag_error_internal_stack_save_allocation_encoding_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2, \
         ma_arg3 \
@@ -8606,18 +9575,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_STRING_SET_LENGTH_OUT_OF_RANGE(ma_arg1) \
     Perl_throw_croak_1_1604( \
         aTHX_ perl_diag_error_internal_scalar_string_set_length_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_STRING_FRESH_SET_LENGTH_OUT_OF_RANGE(ma_arg1) \
     Perl_throw_croak_1_1604( \
         aTHX_ perl_diag_error_internal_scalar_string_fresh_set_length_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_BACKREF_REFERRER_TYPE_UNSUPPORTED(ma_arg1) \
     Perl_throw_croak_1_1608( \
         aTHX_ perl_diag_error_internal_scalar_backref_referrer_type_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1 \
     )
@@ -8625,12 +9600,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_COPY_REPLACEMENT_REFCOUNT_INVALID(ma_arg1) \
     Perl_throw_croak_1_1607( \
         aTHX_ perl_diag_error_internal_scalar_copy_replacement_refcount_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_BYTE_OFFSET_OUT_OF_RANGE(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1625( \
         aTHX_ perl_diag_error_internal_unicode_utf8_byte_offset_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2 \
     )
@@ -8638,6 +9617,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_FORMAT_PRINTF_N_ARGUMENT_REQUIRED(ma_operation_name, ma_arg1) \
     Perl_throw_croak_2_1635( \
         aTHX_ perl_diag_error_format_printf_n_argument_required_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_name, \
         "%s", \
         (const char *)(ma_arg1) \
@@ -8646,12 +9627,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_STACK_SAVE_CLONE_ENTRY_TYPE_UNKNOWN(ma_arg1) \
     Perl_throw_croak_1_1604( \
         aTHX_ perl_diag_error_internal_stack_save_clone_entry_type_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_BUFFER_CAPACITY_EXCEEDED(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1625( \
         aTHX_ perl_diag_error_internal_syntax_quoted_string_buffer_capacity_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2 \
     )
@@ -8659,6 +9644,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_RUN_OPTION_SHEBANG_SWITCH_TOO_LATE(ma_length, ma_option) \
     Perl_throw_croak_1_1605( \
         aTHX_ perl_diag_error_run_option_shebang_switch_too_late_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_length, \
         (const char *)(ma_option) \
@@ -8667,12 +9654,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF16_FILTER_REENTERED_AFTER_ERROR(ma_arg1) \
     Perl_throw_croak_1_1604( \
         aTHX_ perl_diag_error_internal_unicode_utf16_filter_reentered_after_error_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_CALLOC_REQUEST_OUT_OF_RANGE(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1625( \
         aTHX_ perl_diag_error_internal_memory_size_calloc_request_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2 \
     )
@@ -8680,93 +9671,129 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_RUN_OPTION_UNICODE_UNKNOWN_FLAG_BITS(ma_arg1) \
     Perl_throw_croak_1_1607( \
         aTHX_ perl_diag_error_run_option_unicode_unknown_flag_bits_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_VEC_STRING_NOT_BYTES() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_wide_character_vec_string_not_bytes_idx \
+        aTHX_ perl_diag_error_unicode_wide_character_vec_string_not_bytes_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_VARIABLE_MY_IN_FALSE_CONDITIONAL() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_declaration_variable_my_in_false_conditional_idx \
+        aTHX_ perl_diag_error_syntax_declaration_variable_my_in_false_conditional_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_CONTAINER_DELETE_ELEMENT_OR_SLICE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_container_delete_element_or_slice_required_idx \
+        aTHX_ perl_diag_error_syntax_container_delete_element_or_slice_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_CONTAINER_EXISTS_ELEMENT_OR_SUBROUTINE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_container_exists_element_or_subroutine_required_idx \
+        aTHX_ perl_diag_error_syntax_container_exists_element_or_subroutine_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_CONTAINER_DEFINED_ARRAY_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_container_defined_array_forbidden_idx \
+        aTHX_ perl_diag_error_syntax_container_defined_array_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_CONTAINER_DEFINED_HASH_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_container_defined_hash_forbidden_idx \
+        aTHX_ perl_diag_error_syntax_container_defined_hash_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_CAPTURE_MODIFIABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_declaration_subroutine_constant_capture_modifiable_idx \
+        aTHX_ perl_diag_error_syntax_declaration_subroutine_constant_capture_modifiable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SECURITY_PRIVILEGE_KERNEL_SETID_SCRIPT_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_security_privilege_kernel_setid_script_forbidden_idx \
+        aTHX_ perl_diag_error_security_privilege_kernel_setid_script_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_SIGNATURE_FEATURE_DISABLED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_signature_feature_disabled_idx \
+        aTHX_ perl_diag_error_syntax_signature_feature_disabled_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_REGEXP_RECURSION_SUBROUTINE_PROGRESS_LIMIT_EXCEEDED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_regexp_recursion_subroutine_progress_limit_exceeded_idx \
+        aTHX_ perl_diag_error_regexp_recursion_subroutine_progress_limit_exceeded_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_LEXER_BYTE_INPUT_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_unicode_wide_character_lexer_byte_input_required_idx \
+        aTHX_ perl_diag_error_unicode_wide_character_lexer_byte_input_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_CHAIN_AMBIGUOUS() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_quoted_string_transliteration_range_chain_ambiguous_idx \
+        aTHX_ perl_diag_error_syntax_quoted_string_transliteration_range_chain_ambiguous_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_SIGNATURE_ATTRIBUTES_FOLLOW_SIGNATURE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_signature_attributes_follow_signature_idx \
+        aTHX_ perl_diag_error_syntax_signature_attributes_follow_signature_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_MALFORMED_REPORT_WITHOUT_DECODER_ERROR() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_unicode_utf8_malformed_report_without_decoder_error_idx \
+        aTHX_ perl_diag_error_internal_unicode_utf8_malformed_report_without_decoder_error_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_CHANGED_DURING_GETCWD() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_io_filesystem_directory_changed_during_getcwd_idx \
+        aTHX_ perl_diag_error_io_filesystem_directory_changed_during_getcwd_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_IO_OPEN_RAW_VALUE_LIST_FORBIDDEN(ma_arg2) \
     Perl_throw_croak_1_1227( \
         aTHX_ perl_diag_error_internal_io_open_raw_value_list_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_IPC_CONTROL_BUFFER_LENGTH_INVALID(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_croak_3_1659( \
         aTHX_ perl_diag_error_system_ipc_control_buffer_length_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg2), \
         ma_arg3, \
@@ -8776,12 +9803,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_SIGNAL_PENDING_LIMIT_REACHED(ma_arg2) \
     Perl_throw_croak_1_1449( \
         aTHX_ perl_diag_error_system_signal_pending_limit_reached_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_WARN_WARNING_INTERNAL_MEMORY_OP_SLAB_READONLY_PROTECTION_FAILED(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_warn_3_1661( \
         aTHX_ perl_diag_warning_internal_memory_op_slab_readonly_protection_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         ma_arg3, \
@@ -8791,6 +9822,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_INTERNAL_MEMORY_OP_SLAB_READWRITE_PROTECTION_FAILED(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_warn_3_1661( \
         aTHX_ perl_diag_warning_internal_memory_op_slab_readwrite_protection_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         ma_arg3, \
@@ -8800,6 +9833,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PAD_NAME_LEXICAL_ALLOCATION_FLAGS_INVALID(ma_arg1) \
     Perl_throw_croak_1_1204( \
         aTHX_ perl_diag_error_internal_pad_name_lexical_allocation_flags_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" U32xf, \
         ma_arg1 \
     )
@@ -8807,12 +9842,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_CONTEXT_VALUE_INVALID(ma_arg2) \
     Perl_throw_croak_1_1227( \
         aTHX_ perl_diag_error_internal_opcode_context_value_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_CALL_BINDING_PROTOTYPE_PROTOTYPE_VALUE_REQUIRED(ma_arg2) \
     Perl_throw_croak_1_1665( \
         aTHX_ perl_diag_error_internal_call_binding_prototype_prototype_value_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%lx", \
         ma_arg2 \
     )
@@ -8820,6 +9859,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PAD_OFFSET_SWIPE_OUT_OF_RANGE(ma_arg2, ma_arg3) \
     Perl_throw_croak_2_1666( \
         aTHX_ perl_diag_error_internal_pad_offset_swipe_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         ma_arg3 \
     )
@@ -8827,18 +9868,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_INTERNAL_CONTROL_FLOW_EXIT_REQUEST_REPORTED(ma_arg2) \
     Perl_throw_warn_1_1667( \
         aTHX_ perl_diag_warning_internal_control_flow_exit_request_reported_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_WARN_WARNING_INTERNAL_CONTROL_FLOW_FAILURE_EXIT_REQUEST_REPORTED(ma_arg2) \
     Perl_throw_warn_1_1668( \
         aTHX_ perl_diag_warning_internal_control_flow_failure_exit_request_reported_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_UNICODE_CODE_POINT_CHR_NONFINITE(ma_arg1) \
     Perl_throw_croak_1_1669( \
         aTHX_ perl_diag_error_unicode_code_point_chr_nonfinite_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" NVgf, \
         ma_arg1 \
     )
@@ -8846,6 +9893,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_INPUT_NONFINITE_COMPRESSED_INTEGER(ma_arg1) \
     Perl_throw_croak_1_1669( \
         aTHX_ perl_diag_error_pack_input_nonfinite_compressed_integer_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" NVgf, \
         ma_arg1 \
     )
@@ -8853,6 +9902,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_SCANNER_FLAGS_INVALID(ma_arg2) \
     Perl_throw_croak_1_1665( \
         aTHX_ perl_diag_error_internal_regexp_compiler_named_capture_scanner_flags_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%lx", \
         ma_arg2 \
     )
@@ -8860,12 +9911,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_TYPE_UPGRADE_TARGET_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1449( \
         aTHX_ perl_diag_error_internal_scalar_type_upgrade_target_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_WARN_WARNING_INTERNAL_MEMORY_COW_READONLY_PROTECTION_FAILED(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_warn_3_1661( \
         aTHX_ perl_diag_warning_internal_memory_cow_readonly_protection_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         ma_arg3, \
@@ -8875,6 +9930,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_INTERNAL_MEMORY_COW_READWRITE_PROTECTION_FAILED(ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_warn_3_1661( \
         aTHX_ perl_diag_warning_internal_memory_cow_readwrite_protection_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg2, \
         ma_arg3, \
@@ -8884,18 +9941,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_TYPE_ALLOCATION_TARGET_UNKNOWN(ma_arg2) \
     Perl_throw_croak_1_1449( \
         aTHX_ perl_diag_error_internal_scalar_type_allocation_target_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_CONCAT_BRACKETS_OPEN(ma_arg2) \
     Perl_throw_croak_1_1227( \
         aTHX_ perl_diag_error_internal_syntax_quoted_string_concat_brackets_open_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_HEADER_QUERY_FAILED(ma_arg2, ma_arg3, ma_arg4, ma_arg5, ma_arg6) \
     Perl_throw_croak_5_1677( \
         aTHX_ perl_diag_error_system_platform_os2_module_header_query_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2, \
         ma_arg3, \
         ma_arg4, \
@@ -8907,24 +9970,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_WAIT_ARGUMENT_COUNT_EXCEEDED(ma_arg2) \
     Perl_throw_croak_1_1227( \
         aTHX_ perl_diag_error_system_platform_os2_pipe_wait_argument_count_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PIPE_INSTANCE_COUNT_OUT_OF_RANGE(ma_arg2) \
     Perl_throw_croak_1_1227( \
         aTHX_ perl_diag_error_system_platform_os2_pipe_instance_count_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_LEXICAL_IMPORT_UNKNOWN_BUILTIN(ma_name) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_lexical_import_unknown_builtin_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_name) \
     )
 
 #define PERL_THROW_ERROR_UNICODE_WIDE_CHARACTER_BITWISE_STRING_NOT_BYTES(ma_operator, ma_operation_name_selector) \
     Perl_throw_croak_2_1681( \
         aTHX_ perl_diag_error_unicode_wide_character_bitwise_string_not_bytes_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operator), \
         ma_operation_name_selector \
@@ -8933,6 +10004,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN(ma_operation) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_hash_shared_string_table_modification_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation) \
     )
@@ -8940,24 +10013,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE(ma_index) \
     Perl_throw_croak_1_1168( \
         aTHX_ perl_diag_error_mutation_element_array_value_not_creatable_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_index \
     )
 
 #define PERL_THROW_ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE_DIE(ma_index) \
     Perl_throw_die_1_1683( \
         aTHX_ perl_diag_error_mutation_element_array_value_not_creatable_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_index \
     )
 
 #define PERL_THROW_ERROR_MUTATION_ELEMENT_HASH_VALUE_NOT_CREATABLE(ma_key) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_mutation_element_hash_value_not_creatable_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_key) \
     )
 
 #define PERL_THROW_ERROR_MUTATION_ELEMENT_HASH_VALUE_NOT_CREATABLE_DIE(ma_key) \
     Perl_throw_die_1_1684( \
         aTHX_ perl_diag_error_mutation_element_hash_value_not_creatable_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_key) \
     )
 
@@ -8973,6 +10054,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_METHOD_CALL_INVOCANT_CLASS_INCOMPATIBLE(ma_arg1, ma_arg2) \
     Perl_throw_croak_2_1686( \
         aTHX_ perl_diag_error_object_method_call_invocant_class_incompatible_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2 \
     )
@@ -8980,6 +10063,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_OBJECT_COMPOSITION_METHOD_PROVIDER_CONFLICT(exception_slot, ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_append_exception_3_1687( \
         aTHX_ perl_diag_error_object_composition_method_provider_conflict_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_arg1), \
         (SV *)(ma_arg2), \
@@ -8989,6 +10074,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_PARAMETER_NAME_CONFLICT(ma_value, ma_arg2) \
     Perl_throw_croak_2_1688( \
         aTHX_ perl_diag_error_object_field_attribute_parameter_name_conflict_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_value), \
         (SV *)(ma_arg2) \
     )
@@ -8996,12 +10083,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_SIGNAL_KILL_SIGNAL_NAME_UNKNOWN(ma_arg1) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_system_signal_kill_signal_name_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_OBJECT_FIELD_LEGACY_NAME_NOT_DECLARED(ma_arg1, ma_lexname, ma_arg3) \
     Perl_throw_croak_3_1690( \
         aTHX_ perl_diag_error_object_field_legacy_name_not_declared_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         ma_lexname, \
         ma_arg3 \
@@ -9010,12 +10101,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_MUTATION_LOCALIZATION_LEXICAL_VARIABLE_FORBIDDEN(ma_arg1) \
     Perl_throw_croak_1_1691( \
         aTHX_ perl_diag_error_mutation_localization_lexical_variable_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_PROTOTYPE_MALFORMED(ma_arg1, ma_protosv) \
     Perl_throw_croak_2_1688( \
         aTHX_ perl_diag_error_syntax_prototype_malformed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         (SV *)(ma_protosv) \
     )
@@ -9023,12 +10118,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_FIELD_ACCESS_METHOD_CONTEXT_REQUIRED(ma_arg1) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_object_field_access_method_context_required_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_OBJECT_FIELD_ACCESS_DECLARING_CLASS_REQUIRED(ma_arg1, ma_fieldstash, ma_PL_curstash) \
     Perl_throw_croak_3_1694( \
         aTHX_ perl_diag_error_object_field_access_declaring_class_required_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         ma_fieldstash, \
         ma_PL_curstash \
@@ -9037,42 +10136,56 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_HANDLE_DIRHANDLE_USED_AS_FILEHANDLE(ma_arg1) \
     Perl_throw_croak_1_1590( \
         aTHX_ perl_diag_error_io_handle_dirhandle_used_as_filehandle_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_IO_HANDLE_FILEHANDLE_USED_AS_DIRHANDLE(ma_arg1) \
     Perl_throw_croak_1_1590( \
         aTHX_ perl_diag_error_io_handle_filehandle_used_as_dirhandle_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_OBJECT_DESTRUCTION_GLOBAL_RESURRECTION_FORBIDDEN(ma_arg1) \
     Perl_throw_croak_1_1590( \
         aTHX_ perl_diag_error_object_destruction_global_resurrection_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_IO_HANDLE_INVALID_NAMED_HANDLE(ma_arg1) \
     Perl_throw_croak_1_1590( \
         aTHX_ perl_diag_error_io_handle_invalid_named_handle_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_LOAD_REQUIRE_TRUE_VALUE_REQUIRED(ma_name) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_load_require_true_value_required_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_name) \
     )
 
 #define PERL_THROW_ERROR_LOAD_REQUIRE_COMPILATION_FAILED(ma_error) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_load_require_compilation_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_error) \
     )
 
 #define PERL_THROW_ERROR_LEXICAL_IMPORT_UNSUPPORTED_VERSION_BUNDLE(ma_bundle, ma_version) \
     Perl_throw_croak_2_1207( \
         aTHX_ perl_diag_error_lexical_import_unsupported_version_bundle_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_bundle), \
         "%s", \
@@ -9082,6 +10195,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_FORMAT_PRINTF_NONFINITE_CHARACTER_CONVERSION(ma_value, ma_format) \
     Perl_throw_croak_2_1723( \
         aTHX_ perl_diag_error_format_printf_nonfinite_character_conversion_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" NVgf, \
         ma_value, \
         "%c", \
@@ -9091,6 +10206,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_PACK_INPUT_NONFINITE_VALUE(ma_value, ma_format) \
     Perl_throw_croak_2_1723( \
         aTHX_ perl_diag_error_pack_input_nonfinite_value_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" NVgf, \
         ma_value, \
         "%c", \
@@ -9100,6 +10217,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_DEBUGGER_LINE_MAGIC_KEY_NOT_SCALAR(ma_length, ma_pointer) \
     Perl_throw_croak_2_1725( \
         aTHX_ perl_diag_error_internal_debugger_line_magic_key_not_scalar_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_length, \
         "%s", \
         (const char *)(ma_pointer) \
@@ -9108,6 +10227,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_INVERSION_LIST_APPEND_ORDER_INVALID(ma_final, ma_start, ma_match) \
     Perl_throw_croak_3_1726( \
         aTHX_ perl_diag_error_internal_unicode_inversion_list_append_order_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_final, \
         ma_start, \
         "%c", \
@@ -9117,6 +10238,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ROOT_RESULT_MISSING(ma_flags) \
     Perl_throw_croak_1_1608( \
         aTHX_ perl_diag_error_internal_regexp_compiler_root_result_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_flags \
     )
@@ -9124,6 +10247,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_CAPTURE_SAVE_OFFSET_OVERFLOW(ma_offset, ma_open, ma_floor) \
     Perl_throw_croak_3_1728( \
         aTHX_ perl_diag_error_internal_regexp_execution_capture_save_offset_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_offset, \
         ma_open, \
         ma_floor \
@@ -9132,6 +10257,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CONTROL_FLOW_LOOP_LABEL_NOT_FOUND(ma_op, ma_label) \
     Perl_throw_croak_2_1729( \
         aTHX_ perl_diag_error_control_flow_loop_label_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_op), \
         (SV *)(ma_label) \
@@ -9140,12 +10267,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_METHOD_CALL_UNBLESSED_INVOCANT(ma_method) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_object_method_call_unblessed_invocant_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_method) \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_SCALAR_UPGRADE_BODY_TYPE_NOT_UPGRADABLE(ma_type, ma_old, ma_new) \
     Perl_throw_croak_3_1731( \
         aTHX_ perl_diag_error_internal_scalar_upgrade_body_type_not_upgradable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_type), \
         ma_old, \
@@ -9155,6 +10286,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_CHECK_END_SHIFT_NEGATIVE(ma_shift, ma_pattern) \
     Perl_throw_croak_2_1725( \
         aTHX_ perl_diag_error_internal_regexp_execution_check_end_shift_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_shift, \
         "%s", \
         (const char *)(ma_pattern) \
@@ -9163,6 +10296,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_BACKREF_VALUE_MISSING_OUTSIDE_DESTRUCTION(ma_pointer, ma_phase, ma_count) \
     Perl_throw_croak_3_1734( \
         aTHX_ perl_diag_error_internal_scalar_backref_value_missing_outside_destruction_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_pointer, \
         "%s", \
@@ -9173,6 +10308,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_CACHED_POSITION_MISMATCH(ma_function, ma_cached, ma_real, ma_value) \
     Perl_throw_croak_4_1735( \
         aTHX_ perl_diag_error_internal_unicode_utf8_cached_position_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_function), \
         ma_cached, \
@@ -9183,6 +10320,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_REALLOC_REQUEST_OUT_OF_RANGE(ma_pointer, ma_size) \
     Perl_throw_croak_2_1736( \
         aTHX_ perl_diag_error_internal_memory_size_realloc_request_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_pointer, \
         ma_size \
@@ -9191,6 +10330,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF16_CONVERSION_BYTE_LENGTH_ODD(ma_direction, ma_length) \
     Perl_throw_croak_2_1186( \
         aTHX_ perl_diag_error_internal_unicode_utf16_conversion_byte_length_odd_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_direction), \
         ma_length \
@@ -9199,23 +10340,31 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_DECODER_PROBLEM_UNHANDLED(ma_problem) \
     Perl_throw_croak_1_1169( \
         aTHX_ perl_diag_error_internal_unicode_utf8_decoder_problem_unhandled_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_problem \
     )
 
 #define PERL_THROW_ERROR_OBJECT_METHOD_CALL_NAMED_NATIVE_INSTANCE_REQUIRED(ma_name) \
     Perl_throw_croak_1_1740( \
         aTHX_ perl_diag_error_object_method_call_named_native_instance_required_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_name \
     )
 
 #define PERL_THROW_ERROR_OBJECT_METHOD_CALL_ANONYMOUS_NATIVE_INSTANCE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_method_call_anonymous_native_instance_required_idx \
+        aTHX_ perl_diag_error_object_method_call_anonymous_native_instance_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SCALAR_COPY_DESTINATION_FREED(ma_source, ma_destination) \
     Perl_throw_croak_2_1742( \
         aTHX_ perl_diag_error_internal_scalar_copy_destination_freed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_source), \
         "%p", \
         ma_destination \
@@ -9224,12 +10373,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_MUTATION_READ_ONLY_RESTRICTED_HASH_KEY_DELETION(ma_key) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_mutation_read_only_restricted_hash_key_deletion_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_key) \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_MUTATION_LVALUE_CALL_ARGUMENT_TREE_INVALID(ma_type, ma_targ) \
     Perl_throw_croak_2_1745( \
         aTHX_ perl_diag_error_internal_mutation_lvalue_call_argument_tree_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_type, \
         ma_targ \
     )
@@ -9237,6 +10390,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MUTATION_LVALUE_CALL_TARGET_TREE_INVALID(ma_type, ma_targ) \
     Perl_throw_croak_2_1745( \
         aTHX_ perl_diag_error_internal_mutation_lvalue_call_target_tree_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_type, \
         ma_targ \
     )
@@ -9244,6 +10399,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_STRICT_REFS_BAREWORD_REFERENCE_FORBIDDEN(ma_word, ma_kind) \
     Perl_throw_croak_2_1747( \
         aTHX_ perl_diag_error_strict_refs_bareword_reference_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_word), \
         ma_kind \
     )
@@ -9251,6 +10408,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_NAMED_ESCAPE(ma_min, ma_max) \
     Perl_throw_croak_2_1748( \
         aTHX_ perl_diag_error_syntax_quoted_string_transliteration_range_reversed_named_escape_idx, \
+        __FILE__, \
+        __LINE__, \
         "%04" UVXf, \
         ma_min, \
         "%04" UVXf, \
@@ -9260,6 +10419,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_HEX_ESCAPE(ma_min, ma_max) \
     Perl_throw_croak_2_1748( \
         aTHX_ perl_diag_error_syntax_quoted_string_transliteration_range_reversed_hex_escape_idx, \
+        __FILE__, \
+        __LINE__, \
         "%04" UVXf, \
         ma_min, \
         "%04" UVXf, \
@@ -9269,6 +10430,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SYNTAX_QUOTED_STRING_SUBSCRIPT_HEURISTIC_STATE_UNKNOWN(ma_value, ma_file, ma_line) \
     Perl_throw_croak_3_1750( \
         aTHX_ perl_diag_error_internal_syntax_quoted_string_subscript_heuristic_state_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%x", \
         ma_value, \
         "%s", \
@@ -9279,6 +10442,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_IO_OPEN_SCRIPT_NULL_INPUT_OPEN_FAILED(ma_bucket, ma_error) \
     Perl_throw_croak_2_1207( \
         aTHX_ perl_diag_error_io_open_script_null_input_open_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_bucket), \
         "%s", \
@@ -9288,6 +10453,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LOAD_HOOK_INC_METHODS_NOT_FOUND(ma_package, ma_hook_context) \
     Perl_throw_croak_2_1754( \
         aTHX_ perl_diag_error_load_hook_inc_methods_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_package, \
         ma_hook_context \
     )
@@ -9295,24 +10462,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED(ma_kind) \
     Perl_throw_croak_1_1755( \
         aTHX_ perl_diag_error_type_uninitialized_reference_value_required_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_kind \
     )
 
 #define PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_DIE(ma_kind) \
     Perl_throw_die_1_1755( \
         aTHX_ perl_diag_error_type_uninitialized_reference_value_required_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_kind \
     )
 
 #define PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_NO_CONTEXT(ma_kind) \
     Perl_throw_die_nocontext_1_1755( \
         perl_diag_error_type_uninitialized_reference_value_required_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_kind \
     )
 
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_OPAQUE_FAILURE(exception_slot, ma_message) \
     Perl_throw_append_exception_1_1756( \
         aTHX_ perl_diag_error_internal_locale_opaque_failure_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_message) \
@@ -9321,6 +10496,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OVERLOAD_METHOD_RESOLUTION_FAILED(ma_resolution_failure, ma_method_name, ma_operator, ma_package) \
     Perl_throw_croak_4_1757( \
         aTHX_ perl_diag_error_overload_method_resolution_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_resolution_failure, \
         (SV *)(ma_method_name), \
         "%s", \
@@ -9331,6 +10508,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_ASSERTION_FAILED(ma_condition, ma_file, ma_line) \
     Perl_throw_croak_3_1760( \
         aTHX_ perl_diag_error_internal_assertion_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_condition), \
         "%s", \
@@ -9341,6 +10520,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_TO_EXCLUSIVE_UPGRADE_FORBIDDEN(ma_name, ma_file, ma_line, ma_thread, ma_mutex, ma_reliable, ma_readers, ma_xcounter, ma_rcounter) \
     Perl_throw_croak_9_1761( \
         aTHX_ perl_diag_error_internal_threads_lock_read_to_exclusive_upgrade_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_name), \
         "%s", \
@@ -9360,6 +10541,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_COUNT_NEGATIVE(ma_name, ma_file, ma_line, ma_thread, ma_mutex, ma_reliable, ma_readers, ma_xcounter, ma_rcounter) \
     Perl_throw_croak_9_1761( \
         aTHX_ perl_diag_error_internal_threads_lock_read_count_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_name), \
         "%s", \
@@ -9379,6 +10562,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_NESTED_EXCLUSIVE_ACQUIRE_FORBIDDEN(ma_name, ma_file, ma_line, ma_thread, ma_mutex, ma_condition, ma_reliable, ma_readers, ma_xcounter, ma_rcounter) \
     Perl_throw_croak_10_1763( \
         aTHX_ perl_diag_error_internal_threads_lock_nested_exclusive_acquire_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_name), \
         "%s", \
@@ -9400,6 +10585,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_WRITE_COUNT_NEGATIVE(ma_name, ma_file, ma_line, ma_thread, ma_mutex, ma_reliable, ma_readers, ma_xcounter, ma_rcounter) \
     Perl_throw_croak_9_1761( \
         aTHX_ perl_diag_error_internal_threads_lock_write_count_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_name), \
         "%s", \
@@ -9419,6 +10606,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_EXCLUSIVE_RELEASE_WITHOUT_OWNERSHIP(ma_name, ma_file, ma_line, ma_thread, ma_mutex, ma_reliable, ma_readers, ma_xcounter, ma_rcounter) \
     Perl_throw_croak_9_1761( \
         aTHX_ perl_diag_error_internal_threads_lock_exclusive_release_without_ownership_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_name), \
         "%s", \
@@ -9438,6 +10627,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_ACQUIRE_COUNTER_STATE_INVALID(ma_name, ma_file, ma_line, ma_thread, ma_mutex, ma_reliable, ma_readers, ma_xcounter, ma_rcounter) \
     Perl_throw_croak_9_1761( \
         aTHX_ perl_diag_error_internal_threads_lock_read_acquire_counter_state_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_name), \
         "%s", \
@@ -9457,6 +10648,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_READ_RELEASE_COUNT_NONPOSITIVE(ma_name, ma_file, ma_line, ma_thread, ma_mutex, ma_reliable, ma_readers, ma_xcounter, ma_rcounter) \
     Perl_throw_croak_9_1761( \
         aTHX_ perl_diag_error_internal_threads_lock_read_release_count_nonpositive_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_name), \
         "%s", \
@@ -9476,6 +10669,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_WARNING_MAPPING_MISSING(ma_file, ma_line, ma_location) \
     Perl_throw_croak_3_1768( \
         aTHX_ perl_diag_error_internal_regexp_compiler_diagnostic_warning_mapping_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_file), \
         ma_line, \
@@ -9486,6 +10681,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_PATTERN_OFFSET_NEGATIVE(ma_file, ma_line, ma_offset, ma_pattern_length, ma_pattern) \
     Perl_throw_croak_4_1770( \
         aTHX_ perl_diag_error_internal_regexp_compiler_diagnostic_pattern_offset_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_file), \
         ma_line, \
@@ -9498,6 +10695,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NOT_FOUND(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2) \
     Perl_throw_croak_2_1772( \
         aTHX_ perl_diag_error_object_method_lookup_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9507,6 +10706,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NOT_FOUND_DIE(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2) \
     Perl_throw_die_2_1772( \
         aTHX_ perl_diag_error_object_method_lookup_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9516,6 +10717,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_PACKAGE_NOT_FOUND(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2, ma_arg3) \
     Perl_throw_croak_3_1773( \
         aTHX_ perl_diag_error_object_method_lookup_package_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9526,6 +10729,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_PACKAGE_NOT_FOUND_DIE(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2, ma_arg3) \
     Perl_throw_die_3_1773( \
         aTHX_ perl_diag_error_object_method_lookup_package_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9536,6 +10741,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CALL_LOOKUP_INHERITED_AUTOLOAD_FORBIDDEN(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text) \
     Perl_throw_croak_2_1774( \
         aTHX_ perl_diag_error_call_lookup_inherited_autoload_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         ma_arg2_utf8, \
         ma_arg2_length, \
@@ -9545,6 +10752,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_QUOTED_STRING_TERMINATOR_MISSING(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1775( \
         aTHX_ perl_diag_error_syntax_quoted_string_terminator_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         ma_arg2_utf8, \
@@ -9557,6 +10766,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_SOURCE_CHARACTER_UNRECOGNIZED(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1778( \
         aTHX_ perl_diag_error_syntax_source_character_unrecognized_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg2_utf8, \
@@ -9568,6 +10779,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_IDENTIFIER_QUALIFIED_COMPONENT_MISSING(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2) \
     Perl_throw_croak_2_1779( \
         aTHX_ perl_diag_error_syntax_identifier_qualified_component_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9578,6 +10791,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_IDENTIFIER_CORE_KEYWORD_UNKNOWN(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_croak_1_1780( \
         aTHX_ perl_diag_error_syntax_identifier_core_keyword_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text) \
@@ -9586,6 +10801,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_LIMIT_SIZE_OR_ALLOCATION_EXCEEDED(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2) \
     Perl_throw_croak_2_1779( \
         aTHX_ perl_diag_error_regexp_limit_size_or_allocation_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9596,6 +10813,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_WHOLE_PATTERN_CALL_UNTERMINATED(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2) \
     Perl_throw_croak_2_1779( \
         aTHX_ perl_diag_error_regexp_group_subroutine_whole_pattern_call_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9606,6 +10825,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_EVAL_CODE_BLOCK_METADATA_MISSING(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2) \
     Perl_throw_croak_2_1779( \
         aTHX_ perl_diag_error_internal_regexp_compiler_eval_code_block_metadata_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9616,6 +10837,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_EVAL_RUNTIME_CODE_DISABLED(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2) \
     Perl_throw_croak_2_1779( \
         aTHX_ perl_diag_error_regexp_eval_runtime_code_disabled_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9626,6 +10849,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_BRANCH_RESULT_MISSING(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1785( \
         aTHX_ perl_diag_error_internal_regexp_compiler_branch_result_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%#" UVxf, \
         ma_arg1, \
         ma_arg2_utf8, \
@@ -9638,6 +10863,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_LIMIT_CAPTURE_COUNT_EXCEEDED(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1786( \
         aTHX_ perl_diag_error_regexp_limit_capture_count_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2_utf8, \
         ma_arg2_length, \
@@ -9649,6 +10876,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_REGEXP_COMPILER_TRAILING_INPUT(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2) \
     Perl_throw_croak_2_1779( \
         aTHX_ perl_diag_error_internal_regexp_compiler_trailing_input_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9659,6 +10888,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_PIECE_RESULT_MISSING(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1785( \
         aTHX_ perl_diag_error_internal_regexp_compiler_piece_result_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%#" UVxf, \
         ma_arg1, \
         ma_arg2_utf8, \
@@ -9671,6 +10902,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ATOM_RESULT_MISSING(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1785( \
         aTHX_ perl_diag_error_internal_regexp_compiler_atom_result_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%#" UVxf, \
         ma_arg1, \
         ma_arg2_utf8, \
@@ -9683,6 +10916,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ESCAPE_NAMED_SUBPATTERN_RESULT_MISSING(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1785( \
         aTHX_ perl_diag_error_internal_regexp_compiler_escape_named_subpattern_result_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%#" UVxf, \
         ma_arg1, \
         ma_arg2_utf8, \
@@ -9695,6 +10930,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_CHAR_CLASS_ATOM_RESULT_MISSING(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1785( \
         aTHX_ perl_diag_error_internal_regexp_compiler_char_class_atom_result_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%#" UVxf, \
         ma_arg1, \
         ma_arg2_utf8, \
@@ -9707,6 +10944,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_GROUP_RESULT_MISSING(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1785( \
         aTHX_ perl_diag_error_internal_regexp_compiler_group_result_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%#" UVxf, \
         ma_arg1, \
         ma_arg2_utf8, \
@@ -9719,6 +10958,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_TRAILING_BACKSLASH(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2) \
     Perl_throw_croak_2_1779( \
         aTHX_ perl_diag_error_regexp_escape_trailing_backslash_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9729,6 +10970,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_ESCAPE_NAMED_SINGLE_VALUE_REQUIRES_UTF8(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2) \
     Perl_throw_croak_2_1779( \
         aTHX_ perl_diag_error_internal_regexp_compiler_escape_named_single_value_requires_utf8_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9739,6 +10982,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_LOCALE_FOLD_SOURCE_MAPPING_MISSING(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1795( \
         aTHX_ perl_diag_error_internal_regexp_compiler_locale_fold_source_mapping_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2_utf8, \
         ma_arg2_length, \
@@ -9750,6 +10995,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_CHAR_CLASS_EXTENDED_RESULT_MISSING(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1785( \
         aTHX_ perl_diag_error_internal_regexp_compiler_char_class_extended_result_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%#" UVxf, \
         ma_arg1, \
         ma_arg2_utf8, \
@@ -9762,6 +11009,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_COMMENT_UNTERMINATED(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2) \
     Perl_throw_croak_2_1779( \
         aTHX_ perl_diag_error_regexp_group_comment_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -9772,6 +11021,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_LIMIT_LOOKBEHIND_LENGTH_EXCEEDED(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_croak_3_1786( \
         aTHX_ perl_diag_error_regexp_limit_lookbehind_length_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2_utf8, \
         ma_arg2_length, \
@@ -9783,6 +11034,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_COMPILER_DIAGNOSTIC_DEBUG_OPCODE_OUT_OF_RANGE(ma_arg1, ma_arg2, ma_arg3_utf8, ma_arg3_length, ma_arg3_text, ma_arg4) \
     Perl_throw_croak_4_1799( \
         aTHX_ perl_diag_error_internal_regexp_compiler_diagnostic_debug_opcode_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2, \
         ma_arg3_utf8, \
@@ -9795,6 +11048,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_MESSAGE_AT_LOCATION(ma_message, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_1800( \
         aTHX_ perl_diag_error_regexp_message_at_location_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_message), \
         ma_before_utf8, \
@@ -9808,12 +11063,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_VALUE_RESTRICTED_HASH_KEY_ACCESS_DISALLOWED(ma_key) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_value_restricted_hash_key_access_disallowed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_key) \
     )
 
 #define PERL_THROW_ERROR_VALUE_RESTRICTED_HASH_KEY_DELETION_DISALLOWED(ma_key) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_value_restricted_hash_key_deletion_disallowed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_key) \
     )
 
@@ -9822,6 +11081,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_CHECK_TAINT_ERROR_TAINT_DEPENDENCY_INSECURE(ma_operation, ma_taint_context) \
     Perl_throw_taint_2_1803( \
         aTHX_ perl_diag_error_taint_dependency_insecure_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_taint_context \
@@ -9832,6 +11093,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_HASH_ALIAS_FORBIDDEN(ma_operation, ma_taint_context, ma_alias_target_kind) \
     Perl_throw_taint_3_1804( \
         aTHX_ perl_diag_error_taint_environment_hash_alias_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_taint_context, \
@@ -9843,6 +11106,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_GLOB_ALIAS_FORBIDDEN(ma_operation, ma_taint_context) \
     Perl_throw_taint_2_1803( \
         aTHX_ perl_diag_error_taint_environment_glob_alias_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_taint_context \
@@ -9853,6 +11118,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_CHECK_TAINT_ERROR_TAINT_OPERATION_INSECURE(ma_operation, ma_taint_context) \
     Perl_throw_taint_2_1803( \
         aTHX_ perl_diag_error_taint_operation_insecure_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_taint_context \
@@ -9863,6 +11130,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_DIRECTORY_INSECURE(ma_operation, ma_taint_context) \
     Perl_throw_taint_2_1803( \
         aTHX_ perl_diag_error_taint_environment_directory_insecure_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_taint_context \
@@ -9873,6 +11142,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_CHECK_TAINT_ERROR_TAINT_ENVIRONMENT_VARIABLE_INSECURE(ma_operation, ma_taint_context) \
     Perl_throw_taint_2_1803( \
         aTHX_ perl_diag_error_taint_environment_variable_insecure_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_taint_context \
@@ -9881,14 +11152,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_CHECK_TAINT_ERROR_TAINT_UNCLASSIFIED_FORMAT(ma_format, ma_operation, ma_context) \
     STMT_START { \
         if (PL_unsafe || TAINT_WARN_get) \
-            Perl_diag_ck_warner_d(aTHX_ perl_diag_error_taint_unclassified_format_idx, NULL, packWARN(WARN_TAINT), ma_format, ma_operation, ma_context); \
+            Perl_diag_ck_warner_d(aTHX_ perl_diag_error_taint_unclassified_format_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_TAINT), ma_format, ma_operation, ma_context); \
         else \
-            Perl_diag_croak(aTHX_ perl_diag_error_taint_unclassified_format_idx, NULL, ma_format, ma_operation, ma_context); \
+            Perl_diag_croak(aTHX_ perl_diag_error_taint_unclassified_format_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), ma_format, ma_operation, ma_context); \
     } STMT_END
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_VMS_ENVIRONMENT_ENUMERATION_SENDER_UNKNOWN(ma_process, ma_message) \
     Perl_throw_croak_2_1810( \
         aTHX_ perl_diag_error_system_platform_vms_environment_enumeration_sender_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%x", \
         ma_process, \
         "%s", \
@@ -9898,18 +11171,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_BUFFER_OVERFLOW(ma_api) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_format_printf_buffer_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_api) \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_STACK_JUMP_SETJMP_RESULT_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_stack_jump_setjmp_result_invalid_idx \
+        aTHX_ perl_diag_error_internal_stack_jump_setjmp_result_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_UNICODE_UTF8_FORWARD_HOP_START_OUT_OF_BOUNDS(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_croak_nocontext_3_1816( \
         perl_diag_error_internal_unicode_utf8_forward_hop_start_out_of_bounds_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg1, \
         ma_arg2, \
@@ -9920,32 +11199,44 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_CONTEXT_LOOKUP_FAILED(ma_arg1) \
     Perl_throw_croak_nocontext_1_1817( \
         perl_diag_error_internal_threads_context_lookup_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_BUCKET_MALLOC_REQUEST_OUT_OF_RANGE() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_internal_memory_size_bucket_malloc_request_out_of_range_idx \
+        perl_diag_error_internal_memory_size_bucket_malloc_request_out_of_range_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MEMORY_SIZE_ALLOCATION_REQUEST_TOO_LARGE() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_memory_size_allocation_request_too_large_idx \
+        perl_diag_error_memory_size_allocation_request_too_large_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_MEMORY_ALLOCATOR_ALIGNMENT_FREE_POINTER_MISALIGNED() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_internal_memory_allocator_alignment_free_pointer_misaligned_idx \
+        perl_diag_error_internal_memory_allocator_alignment_free_pointer_misaligned_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_BUCKET_REALLOC_REQUEST_OUT_OF_RANGE() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_internal_memory_size_bucket_realloc_request_out_of_range_idx \
+        perl_diag_error_internal_memory_size_bucket_realloc_request_out_of_range_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_PAD_STATE_ARRAY_PAIR_INCONSISTENT(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_croak_context_3_1822( \
         aTHX_ perl_diag_error_internal_pad_state_array_pair_inconsistent_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%" UVxf, \
@@ -9957,6 +11248,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_PAD_STATE_ACTIVE_ARRAY_REQUIRED(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_croak_context_3_1822( \
         aTHX_ perl_diag_error_internal_pad_state_active_array_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%" UVxf, \
@@ -9968,6 +11261,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_RUN_OPTION_STARTUP_SWITCH_REQUIRED(ma_switch, ma_switch_source) \
     Perl_throw_croak_context_2_1824( \
         aTHX_ perl_diag_error_run_option_startup_switch_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_switch, \
         ma_switch_source \
@@ -9975,203 +11270,283 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_PIN_REQUIRES_EXISTING_SCALAR() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_pin_requires_existing_scalar_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_pin_requires_existing_scalar_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_DISPATCH_SUBJECT_ASSIGNMENT_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_dispatch_subject_assignment_missing_idx \
+        aTHX_ perl_diag_error_internal_dispatch_subject_assignment_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_DISPATCH_SUBJECT_LEXICAL_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_dispatch_subject_lexical_missing_idx \
+        aTHX_ perl_diag_error_internal_dispatch_subject_lexical_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DISPATCH_CAPTURE_CAPACITY_EXCEEDED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_dispatch_capture_capacity_exceeded_idx \
+        aTHX_ perl_diag_error_dispatch_capture_capacity_exceeded_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_EXPRESSION_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_concat_expression_unsupported_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_concat_expression_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_COMPONENT_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_concat_component_unsupported_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_concat_component_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_DUPLICATE_CAPTURE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_concat_duplicate_capture_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_concat_duplicate_capture_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_ADJACENT_CAPTURES() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_concat_adjacent_captures_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_concat_adjacent_captures_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ASSIGNMENT_TARGET_NOT_SCALAR() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_assignment_target_not_scalar_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_assignment_target_not_scalar_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_REGEXP_CODE_BLOCK_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_regexp_code_block_forbidden_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_regexp_code_block_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_CAPTURE_SEPARATOR_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_concat_capture_separator_missing_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_concat_capture_separator_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_DUPLICATE_KEY(ma_arg1) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_syntax_dispatch_shape_hash_duplicate_key_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_LIST_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_object_field_list_invalid_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_object_field_list_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_ELLIPSIS_POSITION_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_object_ellipsis_position_invalid_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_object_ellipsis_position_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_SLURP_CONFLICT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_object_slurp_conflict_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_object_slurp_conflict_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_SLURP_NOT_LAST() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_object_slurp_not_last_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_object_slurp_not_last_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_AFTER_ELLIPSIS() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_object_field_after_ellipsis_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_object_field_after_ellipsis_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_NAME_NOT_CONSTANT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_object_field_name_not_constant_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_object_field_name_not_constant_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_VALUE_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_object_field_value_missing_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_object_field_value_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_ZERO_ARGUMENT_CALL_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_call_zero_argument_call_required_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_call_zero_argument_call_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_REGEXP_DYNAMIC_PATTERN_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_regexp_dynamic_pattern_forbidden_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_regexp_dynamic_pattern_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_FORM_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_call_form_unsupported_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_call_form_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NUMEQ_LITERAL_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_numeq_literal_required_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_numeq_literal_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_CLASS_AND_SHAPE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_object_class_and_shape_required_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_object_class_and_shape_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_ELLIPSIS_COUNT_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_array_ellipsis_count_invalid_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_array_ellipsis_count_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_MULTIPLE_SLURPS() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_array_multiple_slurps_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_array_multiple_slurps_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_ELLIPSIS_NOT_AT_EDGE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_array_ellipsis_not_at_edge_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_array_ellipsis_not_at_edge_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ARRAY_SLURP_POSITION_CONFLICT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_array_slurp_position_conflict_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_array_slurp_position_conflict_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_ELLIPSES() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_multiple_ellipses_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_multiple_ellipses_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_SLURPS() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_multiple_slurps_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_multiple_slurps_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_KEY_VALUE_PAIR_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_key_value_pair_required_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_key_value_pair_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_ELLIPSIS_NOT_LAST() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_ellipsis_not_last_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_ellipsis_not_last_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_SLURP_POSITION_CONFLICT() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_slurp_position_conflict_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_slurp_position_conflict_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_KEY_FORM_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_key_form_unsupported_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_hash_key_form_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_EXPRESSION_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_expression_unsupported_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_expression_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DISPATCH_CALL_TARGET_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_dispatch_call_target_missing_idx \
+        aTHX_ perl_diag_error_dispatch_call_target_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_METHOD_FORM_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_call_method_form_unsupported_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_call_method_form_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NUMERIC_COERCION_OPERAND_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_numeric_coercion_operand_invalid_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_numeric_coercion_operand_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_DISPATCH_COMPILED_SHAPE_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_dispatch_compiled_shape_missing_idx \
+        aTHX_ perl_diag_error_internal_dispatch_compiled_shape_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_API_FAILED_AT_LOCATION(ma_operation, ma_error, ma_file, ma_line) \
     Perl_throw_croak_nocontext_4_1866( \
         perl_diag_error_internal_threads_api_failed_at_location_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_error, \
@@ -10183,6 +11558,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_LOCK_MUTEX_ALLOCATION_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_croak_nocontext_2_1867( \
         perl_diag_error_internal_threads_lock_mutex_allocation_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg2 \
@@ -10191,6 +11568,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_CONDITION_ALLOCATION_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_croak_nocontext_2_1867( \
         perl_diag_error_internal_threads_condition_allocation_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg2 \
@@ -10198,12 +11577,16 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_STRING_INTERPOLATION_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_shape_string_interpolation_forbidden_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_string_interpolation_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_CAPTURE_DUPLICATE_NAME(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_croak_1_1780( \
         aTHX_ perl_diag_error_syntax_dispatch_capture_duplicate_name_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text) \
@@ -10212,6 +11595,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CALL_BINDING_INVALID_QUALIFIED_XSUB_CALL(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_croak_nocontext_3_1882( \
         perl_diag_error_call_binding_invalid_qualified_xsub_call_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2, \
         "%s", \
@@ -10221,6 +11606,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CALL_BINDING_INVALID_XSUB_CALL(ma_arg1, ma_arg2) \
     Perl_throw_croak_nocontext_2_1883( \
         perl_diag_error_call_binding_invalid_xsub_call_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         "%s", \
         (const char *)(ma_arg2) \
@@ -10229,6 +11616,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CALL_BINDING_INVALID_ANONYMOUS_XSUB_CALL(ma_arg1, ma_arg2) \
     Perl_throw_croak_nocontext_2_1884( \
         perl_diag_error_call_binding_invalid_anonymous_xsub_call_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1, \
         "%s", \
@@ -10238,22 +11627,30 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_SIZE_MALLOC_REQUEST_OUT_OF_RANGE(ma_arg1) \
     Perl_throw_croak_nocontext_1_1885( \
         perl_diag_error_internal_memory_size_malloc_request_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PROCESS_FORK_UNAVAILABLE() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_process_fork_unavailable_idx \
+        perl_diag_error_system_process_fork_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_VSNPRINTF_UNAVAILABLE() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_internal_format_printf_quadmath_vsnprintf_unavailable_idx \
+        perl_diag_error_internal_format_printf_quadmath_vsnprintf_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_VSNPRINTF_FAILED() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_internal_format_printf_vsnprintf_failed_idx \
+        perl_diag_error_internal_format_printf_vsnprintf_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LOAD_ABI_MODULE_PERL_API_VERSION_MISMATCH(ma_arg1, ma_arg2, ma_arg3) \
@@ -10274,7 +11671,7 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg3, "%s", in_arg3); \
          \
         SV * const message_sv = NULL; \
-        Perl_diag_croak_nocontext_sv(perl_diag_error_load_abi_module_perl_api_version_mismatch_idx, params_av, message_sv); \
+        Perl_diag_croak_nocontext_sv(perl_diag_error_load_abi_module_perl_api_version_mismatch_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), message_sv); \
     } STMT_END
 
 #define PERL_THROW_ERROR_LOAD_ABI_MODULE_PERL_API_VERSION_MISMATCH_BEFORE_INIT(ma_arg1, ma_arg2, ma_arg3) \
@@ -10282,46 +11679,62 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_PANIC_ERROR_INTERNAL_EMBEDDING_HANDSHAKE_KEY_OVERFLOW() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_internal_embedding_handshake_key_overflow_idx \
+        perl_diag_error_internal_embedding_handshake_key_overflow_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_VALUE_VERSION_RADIX_NOT_FOUND(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_internal_value_version_radix_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_VALUE_VERSION_INPUT_NOT_NUMERIC() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_value_version_input_not_numeric_idx \
+        aTHX_ perl_diag_error_value_version_input_not_numeric_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_VALUE_VERSION_OBJECT_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_value_version_object_invalid_idx \
+        aTHX_ perl_diag_error_value_version_object_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LOAD_GLOBAL_SYMBOL_VISIBILITY_UNSUPPORTED(ma_arg1) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_load_global_symbol_visibility_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_HAIKU_DEBUG_PRINT_MESSAGE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_platform_haiku_debug_print_message_required_idx \
+        aTHX_ perl_diag_error_system_platform_haiku_debug_print_message_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_HAIKU_DEBUG_DEBUGGER_MESSAGE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_system_platform_haiku_debug_debugger_message_required_idx \
+        aTHX_ perl_diag_error_system_platform_haiku_debug_debugger_message_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_API_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_croak_nocontext_2_1897( \
         perl_diag_error_system_platform_os2_api_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -10331,31 +11744,41 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_ORDINAL_INVALID(ma_arg1) \
     Perl_throw_croak_nocontext_1_1817( \
         perl_diag_error_internal_system_platform_os2_threads_join_ordinal_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_THREADS_JOIN_ALREADY_WAITED() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_threads_join_already_waited_idx \
+        perl_diag_error_system_platform_os2_threads_join_already_waited_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_REUSED_ID(ma_arg1) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_internal_system_platform_os2_threads_join_reused_id_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_JOIN_STATE_UNKNOWN(ma_arg1) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_internal_system_platform_os2_threads_join_state_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_EXIT_STATE_UNKNOWN(ma_arg1) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_internal_system_platform_os2_threads_exit_state_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -10363,24 +11786,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_ORDINAL_INVALID(ma_arg1) \
     Perl_throw_croak_nocontext_1_1817( \
         perl_diag_error_internal_system_platform_os2_threads_detach_ordinal_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_THREADS_DETACH_ALREADY_WAITED() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_threads_detach_already_waited_idx \
+        perl_diag_error_system_platform_os2_threads_detach_already_waited_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_REUSED_ID(ma_arg1) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_internal_system_platform_os2_threads_detach_reused_id_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_DETACH_STATE_UNKNOWN(ma_arg1) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_internal_system_platform_os2_threads_detach_state_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -10388,6 +11819,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_LOAD_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_croak_nocontext_2_1897( \
         perl_diag_error_system_platform_os2_module_load_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -10396,19 +11829,25 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PROCESS_TYPE_CHANGE_REQUIRES_OS2() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_process_type_change_requires_os2_idx \
+        perl_diag_error_system_platform_os2_process_type_change_requires_os2_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_ORDINAL_TABLE_SIZE_MISMATCH(ma_arg1, ma_arg2) \
     Perl_throw_croak_nocontext_2_1909( \
         perl_diag_error_internal_system_platform_os2_ordinal_table_size_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_PM_REQUIRED(ma_arg1) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_system_platform_os2_module_pm_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -10416,6 +11855,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_ENTRY_POINT_UNAVAILABLE(ma_arg1, ma_arg2) \
     Perl_throw_croak_nocontext_2_1897( \
         perl_diag_error_system_platform_os2_module_entry_point_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -10424,43 +11865,59 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_MODULE_ENTRY_POINT_SENTINEL_UNRESOLVED() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_internal_system_platform_os2_module_entry_point_sentinel_unresolved_idx \
+        perl_diag_error_internal_system_platform_os2_module_entry_point_sentinel_unresolved_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_SYSTEM_INFO_PROCESS_ID_MISMATCH() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_internal_system_platform_os2_system_info_process_id_mismatch_idx \
+        perl_diag_error_internal_system_platform_os2_system_info_process_id_mismatch_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_APPLICATION_TYPE_QUERY_REQUIRES_OS2() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_application_type_query_requires_os2_idx \
+        perl_diag_error_system_platform_os2_application_type_query_requires_os2_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MEMORY_ALLOCATION_API_FAILED(ma_arg1) \
     Perl_throw_croak_nocontext_1_1915( \
         perl_diag_error_system_platform_os2_memory_allocation_api_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_NOT_REFERENCE() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_module_name_components_not_reference_idx \
+        perl_diag_error_system_platform_os2_module_name_components_not_reference_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_NOT_ARRAY() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_module_name_components_not_array_idx \
+        perl_diag_error_system_platform_os2_module_name_components_not_array_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MODULE_NAME_COMPONENTS_EMPTY() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_module_name_components_empty_idx \
+        perl_diag_error_system_platform_os2_module_name_components_empty_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_INSTALL_PREFIX_TOO_LONG(ma_arg1) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_system_platform_os2_path_install_prefix_too_long_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -10468,6 +11925,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_EXECUTABLE_DIRECTORY_MISSING(ma_arg1, ma_arg2) \
     Perl_throw_croak_nocontext_2_1897( \
         perl_diag_error_system_platform_os2_path_executable_directory_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -10475,8 +11934,10 @@ enum perl_diag_selector_domain_id {
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_PARENT_STRIP_FAILED(ma_arg1) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_system_platform_os2_path_parent_strip_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -10484,6 +11945,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_SUBSTITUTION_NAME_TOO_LONG(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_croak_nocontext_3_1889( \
         perl_diag_error_system_platform_os2_path_substitution_name_too_long_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -10494,29 +11957,39 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_PREFIX_RESULT_TOO_LONG() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_path_prefix_result_too_long_idx \
+        perl_diag_error_system_platform_os2_path_prefix_result_too_long_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_PATH_PREFIX_COMPONENT_MISSING(ma_arg1) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_system_platform_os2_path_prefix_component_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_WINDOW_MESSAGE_QUEUE_MISSING() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_window_message_queue_missing_idx \
+        perl_diag_error_system_platform_os2_window_message_queue_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_WINDOW_QUIT_REQUESTED() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_window_quit_requested_idx \
+        perl_diag_error_system_platform_os2_window_quit_requested_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_DOS_ERROR_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_croak_nocontext_2_1930( \
         perl_diag_error_system_platform_os2_error_mode_dos_error_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         "%s", \
         (const char *)(ma_arg2) \
@@ -10525,6 +11998,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_DRIVE_NOT_ALPHABETIC(ma_arg1) \
     Perl_throw_croak_nocontext_1_1932( \
         perl_diag_error_system_platform_os2_error_mode_drive_not_alphabetic_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1 \
     )
@@ -10532,6 +12007,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_ERROR_MODE_POPUP_SUPPRESSION_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_croak_nocontext_2_1933( \
         perl_diag_error_system_platform_os2_error_mode_popup_suppression_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         "%s", \
@@ -10540,17 +12017,23 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_MESSAGE_COUNT_INTEGER_STORAGE_REQUIRED() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_message_count_integer_storage_required_idx \
+        perl_diag_error_system_platform_os2_message_count_integer_storage_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_PATH_EXTLIBPATH_RESULT_UNCHANGED() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_internal_system_platform_os2_path_extlibpath_result_unchanged_idx \
+        perl_diag_error_internal_system_platform_os2_path_extlibpath_result_unchanged_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_API_FAILED_WITH_RETURN_CODE(ma_operation, ma_error) \
     Perl_throw_croak_nocontext_2_1867( \
         perl_diag_error_internal_threads_api_failed_with_return_code_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_error \
@@ -10559,12 +12042,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_SYSTEM_PLATFORM_OS2_THREADS_CONDITION_SIGNAL_FAILED(ma_arg1) \
     Perl_throw_croak_nocontext_1_1915( \
         perl_diag_error_internal_system_platform_os2_threads_condition_signal_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_CONDITION_API_FAILED_WITH_RETURN_CODE(ma_operation, ma_error) \
     Perl_throw_croak_nocontext_2_1867( \
         perl_diag_error_internal_threads_condition_api_failed_with_return_code_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_error \
@@ -10572,7 +12059,9 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_OS2_THREADS_TLS_ALLOCATION_FAILED() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_system_platform_os2_threads_tls_allocation_failed_idx \
+        perl_diag_error_system_platform_os2_threads_tls_allocation_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_DIAG_FORMAT_ERROR_SYSTEM_PLATFORM_VMS_SERVICE_STATUS_FAILED "Fatal VMS error (status=%" "d" ") at %" "s" ", line %" "d"
@@ -10580,6 +12069,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_VMS_SERVICE_STATUS_FAILED(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_croak_context_3_1971( \
         aTHX_ perl_diag_error_system_platform_vms_service_status_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         "%s", \
         (const char *)(ma_arg2), \
@@ -10588,24 +12079,32 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_PANIC_ERROR_INTERNAL_LOCALE_SWITCH_FORK_RESTORE_FAILED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_locale_switch_fork_restore_failed_idx \
+        aTHX_ perl_diag_error_internal_locale_switch_fork_restore_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_WINDOWS_FUNCTION_UNAVAILABLE(ma_arg1) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_system_platform_windows_function_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_IO_CONTROL_IOCTL_REQUIRES_SOCKET() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_io_control_ioctl_requires_socket_idx \
+        perl_diag_error_io_control_ioctl_requires_socket_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_API_FAILED(ma_operation) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_internal_threads_api_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation) \
     )
@@ -10613,13 +12112,15 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_THREADS_CONDITION_API_FAILED_WITH_STATUS(ma_operation, ma_error) \
     Perl_throw_croak_nocontext_2_1979( \
         perl_diag_error_internal_threads_condition_api_failed_with_status_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_error \
     )
 
 #define PERL_THROW_ERROR_USER_OPAQUE_LITERAL_FORMAT(ma_format) \
-    Perl_diag_croak_nocontext(perl_diag_error_user_opaque_literal_format_idx, NULL, ma_format)
+    Perl_diag_croak_nocontext(perl_diag_error_user_opaque_literal_format_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), ma_format)
 
 #define PERL_THROW_ERROR_INTERNAL_SCALAR_TYPE_CLONE_SOURCE_UNKNOWN(ma_type, context) \
     STMT_START { \
@@ -10632,19 +12133,23 @@ enum perl_diag_selector_domain_id {
         sv_setiv(tmpl_type, in_type); \
          \
         SV * const message_sv = NULL; \
-        Perl_diag_croak_sv(context_ptr, perl_diag_error_internal_scalar_type_clone_source_unknown_idx, params_av, message_sv); \
+        Perl_diag_croak_sv(context_ptr, perl_diag_error_internal_scalar_type_clone_source_unknown_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), message_sv); \
     } STMT_END
 
 #define PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE(ma_function) \
-    Perl_throw_croak_nocontext_1_1551( \
+    Perl_throw_croak_nocontext_1_1314( \
         perl_diag_error_system_syscall_function_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_function) \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_DIE(ma_function) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_system_syscall_function_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_function) \
     )
@@ -10652,43 +12157,57 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYSTEM_SYSCALL_FUNCTION_UNAVAILABLE_NO_CONTEXT(ma_function) \
     Perl_throw_die_nocontext_1_1988( \
         perl_diag_error_system_syscall_function_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_function) \
     )
 
 #define PERL_THROW_ERROR_MEMORY_SIZE_ARRAY_EXTEND_OVERFLOW() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_memory_size_array_extend_overflow_idx \
+        perl_diag_error_memory_size_array_extend_overflow_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_BUILTIN_CONSTANT_ID_UNKNOWN(ma_arg1) \
     Perl_throw_die_1_1990( \
         aTHX_ perl_diag_error_internal_opcode_builtin_constant_id_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_EXECUTION_FREED_OP_CALLED(ma_arg1) \
     Perl_throw_die_1_1991( \
         aTHX_ perl_diag_error_internal_opcode_execution_freed_op_called_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_LOAD_REQUIRE_NAME_LEADING_PACKAGE_SEPARATOR_FORBIDDEN(ma_arg1) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_load_require_name_leading_package_separator_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_LOAD_REQUIRE_NAME_EMPTY_BAREWORD() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_load_require_name_empty_bareword_idx \
+        aTHX_ perl_diag_error_load_require_name_empty_bareword_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CALL_LOOKUP_UNKNOWN_CORE_KEYWORD(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_die_1_1994( \
         aTHX_ perl_diag_error_call_lookup_unknown_core_keyword_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text) \
@@ -10696,22 +12215,30 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_THROW_ERROR_SYSTEM_CRYPT_UNAVAILABLE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_system_crypt_unavailable_idx \
+        aTHX_ perl_diag_error_system_crypt_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_HASH_ARRAY_HASH_DELETE_FORM_UNSUPPORTED() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_internal_hash_array_hash_delete_form_unsupported_idx \
+        aTHX_ perl_diag_error_internal_hash_array_hash_delete_form_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_SPLIT_ITERATION_LIMIT_EXCEEDED() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_internal_regexp_execution_split_iteration_limit_exceeded_idx \
+        aTHX_ perl_diag_error_internal_regexp_execution_split_iteration_limit_exceeded_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_SOCKET_OPERATION_UNAVAILABLE(ma_name) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_io_socket_operation_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_name) \
     )
@@ -10719,6 +12246,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_EXECUTION_IMPLEMENTATION_MISSING(ma_arg1, ma_arg2) \
     Perl_throw_die_2_1999( \
         aTHX_ perl_diag_error_internal_opcode_execution_implementation_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg2 \
@@ -10727,6 +12256,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CALL_BINDING_TYPE_ARRAY_REFERENCE_REQUIRED(ma_arg1, ma_arg2) \
     Perl_throw_die_2_2000( \
         aTHX_ perl_diag_error_call_binding_type_array_reference_required_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         "%s", \
         (const char *)(ma_arg2) \
@@ -10735,6 +12266,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CALL_BINDING_TYPE_HASH_REFERENCE_REQUIRED(ma_argument_number, ma_operation_description, ma_accepted_reference_types) \
     Perl_throw_die_3_2001( \
         aTHX_ perl_diag_error_call_binding_type_hash_reference_required_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_argument_number, \
         "%s", \
         (const char *)(ma_operation_description), \
@@ -10744,6 +12277,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CALL_BINDING_TYPE_REFERENCE_TYPE_UNSUPPORTED(ma_argument_number, ma_operation_name, ma_accepted_reference_types) \
     Perl_throw_die_3_2002( \
         aTHX_ perl_diag_error_call_binding_type_reference_type_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_argument_number, \
         "%s", \
         (const char *)(ma_operation_name), \
@@ -10753,65 +12288,89 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_CALL_BINDING_CORE_ARGUMENT_CLASS_UNKNOWN(ma_arg1) \
     Perl_throw_die_1_2003( \
         aTHX_ perl_diag_error_internal_call_binding_core_argument_class_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%x", \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_INTERNAL_REGEXP_EXECUTION_SUBSTITUTION_ITERATION_LIMIT_EXCEEDED() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_internal_regexp_execution_substitution_iteration_limit_exceeded_idx \
+        aTHX_ perl_diag_error_internal_regexp_execution_substitution_iteration_limit_exceeded_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DEBUGGER_STATEMENT_HOOK_UNDEFINED() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_debugger_statement_hook_undefined_idx \
+        aTHX_ perl_diag_error_debugger_statement_hook_undefined_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_CONTROL_FLOW_RETURN_CONTEXT_TYPE_UNEXPECTED(ma_arg1) \
     Perl_throw_die_1_1169( \
         aTHX_ perl_diag_error_internal_control_flow_return_context_type_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_UNDEFINED_NAMED_TARGET(ma_arg1) \
     Perl_throw_die_1_1684( \
         aTHX_ perl_diag_error_control_flow_goto_subroutine_undefined_named_target_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_UNDEFINED_TARGET() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_goto_subroutine_undefined_target_idx \
+        aTHX_ perl_diag_error_control_flow_goto_subroutine_undefined_target_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_OUTSIDE_SUBROUTINE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_goto_subroutine_outside_subroutine_idx \
+        aTHX_ perl_diag_error_control_flow_goto_subroutine_outside_subroutine_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_EVAL_STRING_FORBIDDEN() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_goto_subroutine_from_eval_string_forbidden_idx \
+        aTHX_ perl_diag_error_control_flow_goto_subroutine_from_eval_string_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_EVAL_BLOCK_FORBIDDEN() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_goto_subroutine_from_eval_block_forbidden_idx \
+        aTHX_ perl_diag_error_control_flow_goto_subroutine_from_eval_block_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_SUBROUTINE_FROM_CALLBACK_FORBIDDEN() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_goto_subroutine_from_callback_forbidden_idx \
+        aTHX_ perl_diag_error_control_flow_goto_subroutine_from_callback_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_CANNOT_LEAVE_PSEUDO_BLOCK() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_goto_cannot_leave_pseudo_block_idx \
+        aTHX_ perl_diag_error_control_flow_goto_cannot_leave_pseudo_block_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_CONTROL_FLOW_GOTO_CONTEXT_TYPE_UNEXPECTED(ma_arg1, ma_arg2) \
     Perl_throw_die_2_2014( \
         aTHX_ perl_diag_error_internal_control_flow_goto_context_type_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2 \
     )
@@ -10819,6 +12378,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_LABEL_NOT_FOUND(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_die_1_1994( \
         aTHX_ perl_diag_error_control_flow_goto_label_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text) \
@@ -10827,12 +12388,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_CONTROL_FLOW_GOTO_UNWIND_INDEX_NEGATIVE(ma_arg1) \
     Perl_throw_die_1_2016( \
         aTHX_ perl_diag_error_internal_control_flow_goto_unwind_index_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_THROW_ERROR_LOAD_PERL_VERSION_TOO_NEW(ma_arg1, ma_arg2) \
     Perl_throw_die_2_2017( \
         aTHX_ perl_diag_error_load_perl_version_too_new_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         (SV *)(ma_arg2) \
     )
@@ -10840,6 +12405,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LOAD_PERL_VERSION_TOO_OLD(ma_arg1, ma_arg2) \
     Perl_throw_die_2_2017( \
         aTHX_ perl_diag_error_load_perl_version_too_old_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         (SV *)(ma_arg2) \
     )
@@ -10847,21 +12414,27 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LOAD_PERL_VERSION_AMBIGUOUS_REQUIREMENT(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_die_3_2019( \
         aTHX_ perl_diag_error_load_perl_version_ambiguous_requirement_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         (SV *)(ma_arg2), \
         (SV *)(ma_arg3) \
     )
 
 #define PERL_THROW_ERROR_LOAD_FILENAME_REQUIRED(ma_arg1) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_load_filename_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_LOAD_HOOK_FILENAME_REQUIRED(ma_arg1) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_load_hook_filename_required_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -10869,6 +12442,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LOAD_FILENAME_INVALID(ma_arg1, ma_arg2) \
     Perl_throw_die_2_1452( \
         aTHX_ perl_diag_error_load_filename_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -10876,8 +12451,10 @@ enum perl_diag_selector_domain_id {
     )
 
 #define PERL_THROW_ERROR_LOAD_REQUIRE_PREVIOUS_LOAD_FAILED(ma_arg1) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_load_require_previous_load_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -10885,27 +12462,37 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_FILENAME_DISALLOWED(ma_arg1) \
     Perl_throw_die_1_1684( \
         aTHX_ perl_diag_error_load_require_name_bareword_filename_disallowed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_NUL_FORBIDDEN() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_load_require_name_bareword_nul_forbidden_idx \
+        aTHX_ perl_diag_error_load_require_name_bareword_nul_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_SLASH_DOT_FORBIDDEN() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_load_require_name_bareword_slash_dot_forbidden_idx \
+        aTHX_ perl_diag_error_load_require_name_bareword_slash_dot_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LOAD_REQUIRE_NAME_BAREWORD_BACKSLASH_DOT_FORBIDDEN() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_load_require_name_bareword_backslash_dot_forbidden_idx \
+        aTHX_ perl_diag_error_load_require_name_bareword_backslash_dot_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LOAD_FILE_OPEN_FAILED(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_die_3_2028( \
         aTHX_ perl_diag_error_load_file_open_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -10917,59 +12504,79 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_LOAD_NOT_FOUND_IN_INC(exception_slot, ma_arg1) \
     Perl_throw_append_exception_1_1756( \
         aTHX_ perl_diag_error_load_not_found_in_inc_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_LOAD_NOT_FOUND_AT_PATH(ma_arg1) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_load_not_found_at_path_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_OUTSIDE_TOPICALIZER(ma_arg1) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_control_flow_switch_outside_topicalizer_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_DISPATCH_CLAUSE_OUTSIDE_DISPATCH() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_switch_dispatch_clause_outside_dispatch_idx \
+        aTHX_ perl_diag_error_control_flow_switch_dispatch_clause_outside_dispatch_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_CONTINUE_OUTSIDE_WHEN() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_switch_continue_outside_when_idx \
+        aTHX_ perl_diag_error_control_flow_switch_continue_outside_when_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_BREAK_OUTSIDE_GIVEN() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_switch_break_outside_given_idx \
+        aTHX_ perl_diag_error_control_flow_switch_break_outside_given_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_SWITCH_BREAK_IN_LOOP_TOPICALIZER() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_switch_break_in_loop_topicalizer_idx \
+        aTHX_ perl_diag_error_control_flow_switch_break_in_loop_topicalizer_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_TYPE_REFERENCE_REFERENT_TYPE_MISMATCH(ma_reference_type) \
-    Perl_throw_die_1_2036( \
+    Perl_throw_die_1_1172( \
         aTHX_ perl_diag_error_type_reference_referent_type_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_reference_type \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_MATCH_TARGET_POINTER_MISSING() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_internal_regexp_execution_match_target_pointer_missing_idx \
+        aTHX_ perl_diag_error_internal_regexp_execution_match_target_pointer_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_CAPTURE_MATCH_OFFSETS_OUT_OF_BOUNDS(ma_arg1, ma_arg2, ma_arg3, ma_arg4, ma_arg5, ma_arg6) \
     Perl_throw_die_6_2039( \
         aTHX_ perl_diag_error_internal_regexp_execution_capture_match_offsets_out_of_bounds_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2, \
         ma_arg3, \
@@ -10983,12 +12590,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_PANIC_ERROR_INTERNAL_ITERATOR_INVALID_CONTEXT_TYPE(ma_arg1) \
     Perl_throw_die_1_1169( \
         aTHX_ perl_diag_error_internal_iterator_invalid_context_type_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_REGEXP_EXECUTION_SUBSTITUTION_STATE_MISSING(ma_arg1, ma_arg2) \
     Perl_throw_die_2_2042( \
         aTHX_ perl_diag_error_internal_regexp_execution_substitution_state_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg1, \
         "%p", \
@@ -10998,122 +12609,164 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_STRICT_REFS_SUBROUTINE_STRING_REFERENCE_FORBIDDEN(ma_value, ma_truncation) \
     Perl_throw_die_2_2043( \
         aTHX_ perl_diag_error_strict_refs_subroutine_string_reference_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_value), \
         ma_truncation \
     )
 
 #define PERL_THROW_ERROR_CALL_CLOSURE_PROTOTYPE_NOT_CALLABLE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_call_closure_prototype_not_callable_idx \
+        aTHX_ perl_diag_error_call_closure_prototype_not_callable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DEBUGGER_SUBROUTINE_HOOK_UNDEFINED() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_debugger_subroutine_hook_undefined_idx \
+        aTHX_ perl_diag_error_debugger_subroutine_hook_undefined_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_LVALUE_CALL_NON_LVALUE_SUBROUTINE(ma_arg1) \
     Perl_throw_die_1_1684( \
         aTHX_ perl_diag_error_mutation_lvalue_call_non_lvalue_subroutine_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_NAMED_SORT_SUBROUTINE(ma_arg1) \
     Perl_throw_die_1_1684( \
         aTHX_ perl_diag_error_call_lookup_undefined_named_sort_subroutine_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_CALL_LOOKUP_UNDEFINED_SORT_SUBROUTINE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_call_lookup_undefined_sort_subroutine_idx \
+        aTHX_ perl_diag_error_call_lookup_undefined_sort_subroutine_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_FORMAT_REPORT_BODY_UNDEFINED(ma_arg1) \
     Perl_throw_die_1_1684( \
         aTHX_ perl_diag_error_format_report_body_undefined_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_FORMAT_REPORT_HEADER_UNDEFINED(ma_arg1) \
     Perl_throw_die_1_1684( \
         aTHX_ perl_diag_error_format_report_header_undefined_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_IO_CONTROL_ARGUMENT_BUFFER_OVERRUN(ma_arg1) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_io_control_argument_buffer_overrun_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_IO_FILESYSTEM_PERMISSION_EFFECTIVE_ACCESS_UNAVAILABLE(ma_arg1) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_internal_io_filesystem_permission_effective_access_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_IO_FILESYSTEM_PERMISSION_REAL_ACCESS_UNAVAILABLE(ma_arg1) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_internal_io_filesystem_permission_real_access_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_IO_FILE_TEST_TEXT_BINARY_UNSUPPORTED_ON_HANDLE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_io_file_test_text_binary_unsupported_on_handle_idx \
+        aTHX_ perl_diag_error_io_file_test_text_binary_unsupported_on_handle_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_IO_FILESYSTEM_DIRECTORY_OPERATION_UNAVAILABLE(ma_arg1) \
-    Perl_throw_die_1_1551( \
+    Perl_throw_die_1_1379( \
         aTHX_ perl_diag_error_io_filesystem_directory_operation_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PROCESS_GETPGRP_UNSUPPORTED_PROCESS_ID() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_system_process_getpgrp_unsupported_process_id_idx \
+        aTHX_ perl_diag_error_system_process_getpgrp_unsupported_process_id_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PROCESS_SETPGRP_UNSUPPORTED_IDS() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_system_process_setpgrp_unsupported_ids_idx \
+        aTHX_ perl_diag_error_system_process_setpgrp_unsupported_ids_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_IPC_SYSTEM_V_UNAVAILABLE() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_system_ipc_system_v_unavailable_idx \
+        aTHX_ perl_diag_error_system_ipc_system_v_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_SYSCALL_TOO_MANY_ARGUMENTS() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_system_syscall_too_many_arguments_idx \
+        aTHX_ perl_diag_error_system_syscall_too_many_arguments_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_SYSCALL_NUMBER_REQUIRED() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_system_syscall_number_required_idx \
+        aTHX_ perl_diag_error_system_syscall_number_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_WARN_WARNING_SEVERE_DEBUGGING_TIED_ARRAY_REIFICATION() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_debugging_tied_array_reification_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_DEBUGGING) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_DEBUGGING_DELETED_ARRAY_CLEAR() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_debugging_deleted_array_clear_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_DEBUGGING) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_BUILTIN_FUNCTION_USED(ma_arg1) \
     Perl_throw_ck_warner_d_1_2071( \
         aTHX_ perl_diag_warning_experimental_builtin_function_used_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_EXPERIMENTAL__BUILTIN) \
@@ -11122,6 +12775,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_VOID_USELESS_EXPRESSION_PV(ma_op_name, ma_operation_identity, ma_arg1) \
     Perl_throw_ck_warner_3_2072( \
         aTHX_ perl_diag_warning_void_useless_expression_pv_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_op_name, \
         ma_operation_identity, \
         "%s", \
@@ -11132,6 +12787,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SCALAR_USELESS_EXPRESSION(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_scalar_useless_expression_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_SCALAR) \
@@ -11140,30 +12797,40 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_HASH_FIELD_INITIALIZER_ODD_ELEMENT_COUNT() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_misc_hash_field_initializer_odd_element_count_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_IO_OPEN_REFERENCE_UNSUPPORTED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_io_open_reference_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_IO) \
     )
 
 #define PERL_WARN_WARNING_IO_PIPE_OPEN_COMMAND_MISSING() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_io_pipe_open_command_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_PIPE) \
     )
 
 #define PERL_WARN_WARNING_IO_PIPE_BIDIRECTIONAL_OPEN_UNSUPPORTED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_io_pipe_bidirectional_open_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_PIPE) \
     )
 
 #define PERL_WARN_WARNING_IO_NEWLINE_FAILED_OPERATION_ON_NEWLINE_FILENAME(ma_arg1) \
     Perl_throw_warner_1_2078( \
         aTHX_ perl_diag_warning_io_newline_failed_operation_on_newline_filename_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_NEWLINE) \
@@ -11172,6 +12839,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_STANDARD_OUTPUT_HANDLE_REOPENED_FOR_INPUT(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2079( \
         aTHX_ perl_diag_warning_io_standard_output_handle_reopened_for_input_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg2, \
@@ -11181,6 +12850,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_STDIN_REOPENED_FOR_OUTPUT(ma_arg1) \
     Perl_throw_warner_1_2080( \
         aTHX_ perl_diag_warning_io_stdin_reopened_for_output_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         packWARN(WARN_IO) \
     )
@@ -11188,6 +12859,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INPLACE_ARGV_FORK_OPEN_IGNORED(ma_arg1) \
     Perl_throw_ck_warner_d_1_2071( \
         aTHX_ perl_diag_warning_severe_inplace_argv_fork_open_ignored_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_INPLACE) \
@@ -11196,6 +12869,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INPLACE_EDIT_INPUT_NOT_REGULAR(ma_arg1) \
     Perl_throw_ck_warner_d_1_2071( \
         aTHX_ perl_diag_warning_severe_inplace_edit_input_not_regular_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_INPLACE) \
@@ -11204,6 +12879,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INPLACE_EDIT_INPUT_NOT_REGULAR_UNCHECKED(ma_arg1) \
     Perl_throw_warner_1_2078( \
         aTHX_ perl_diag_warning_severe_inplace_edit_input_not_regular_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_INPLACE) \
@@ -11212,6 +12889,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INPLACE_EDIT_BACKUP_ALIASES_INPUT(ma_arg1) \
     Perl_throw_ck_warner_d_1_2083( \
         aTHX_ perl_diag_warning_severe_inplace_edit_backup_aliases_input_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_INPLACE) \
     )
@@ -11219,6 +12898,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INPLACE_EDIT_TEMPORARY_OUTPUT_CREATE_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_d_2_2084( \
         aTHX_ perl_diag_warning_severe_inplace_edit_temporary_output_create_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -11229,6 +12910,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INPLACE_ARGV_INPUT_OPEN_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2085( \
         aTHX_ perl_diag_warning_severe_inplace_argv_input_open_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -11239,6 +12922,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_FILEHANDLE_CLOSE_FAILED_WITH_NAME(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_d_2_2086( \
         aTHX_ perl_diag_warning_io_filehandle_close_failed_with_name_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         (SV *)(ma_arg2), \
         packWARN(WARN_IO) \
@@ -11247,6 +12932,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_FILEHANDLE_CLOSE_FAILED_WITHOUT_NAME(ma_arg1) \
     Perl_throw_ck_warner_d_1_2083( \
         aTHX_ perl_diag_warning_io_filehandle_close_failed_without_name_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_IO) \
     )
@@ -11254,6 +12941,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_WIDE_CHARACTER_IN_BYTE_OPERATION(ma_operation) \
     Perl_throw_ck_warner_d_1_2088( \
         aTHX_ perl_diag_warning_utf8_wide_character_in_byte_operation_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation, \
         packWARN(WARN_UTF8) \
     )
@@ -11261,6 +12950,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_SYMLINK_TEST_ON_NAMED_FILEHANDLE(ma_arg1) \
     Perl_throw_ck_warner_1_2089( \
         aTHX_ perl_diag_warning_io_symlink_test_on_named_filehandle_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         packWARN(WARN_IO) \
     )
@@ -11268,6 +12959,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_SYMLINK_TEST_ON_NAMED_FILEHANDLE_UNCHECKED(ma_arg1) \
     Perl_throw_warner_1_2080( \
         aTHX_ perl_diag_warning_io_symlink_test_on_named_filehandle_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         packWARN(WARN_IO) \
     )
@@ -11275,12 +12968,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_SYMLINK_TEST_ON_ANONYMOUS_FILEHANDLE() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_io_symlink_test_on_anonymous_filehandle_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_IO) \
     )
 
 #define PERL_WARN_WARNING_IO_EXEC_EXEC_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2091( \
         aTHX_ perl_diag_warning_io_exec_exec_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -11291,6 +12988,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_GLOB_CHILD_START_FAILED(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_glob_child_start_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_GLOB) \
@@ -11299,12 +12998,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_PORTABLE_VEC_WIDTH_EXCEEDS_32_BITS() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_portable_vec_width_exceeds_32_bits_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_PORTABLE) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_DIGIT_ESCAPE_TERMINATED_EARLY(ma_radix, ma_character_utf8, ma_character_length, ma_character_text, ma_escape, ma_resolved_utf8, ma_resolved_length, ma_resolved_text) \
     Perl_throw_warner_4_2094( \
         aTHX_ perl_diag_warning_syntax_digit_escape_terminated_early_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_radix, \
         ma_character_utf8, \
         ma_character_length, \
@@ -11320,6 +13023,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_SYNTAX_DIGIT_ESCAPE_TERMINATED_EARLY(exception_slot, ma_radix, ma_character_utf8, ma_character_length, ma_character_text, ma_escape, ma_resolved_utf8, ma_resolved_length, ma_resolved_text) \
     Perl_throw_append_warning_4_2094( \
         aTHX_ perl_diag_warning_syntax_digit_escape_terminated_early_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_radix, \
         ma_character_utf8, \
@@ -11336,12 +13041,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_DEBUGGING_RUNLOOP_ENTRY_OP_NULL() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_debugging_runloop_entry_op_null_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_DEBUGGING) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_INHERITANCE_PACKAGE_UNAVAILABLE_FOR_SPECIAL_LOOKUP(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2096( \
         aTHX_ perl_diag_warning_syntax_inheritance_package_unavailable_for_special_lookup_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         ma_arg2, \
         packWARN(WARN_SYNTAX) \
@@ -11350,6 +13059,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_METHOD_LOOKUP_ANCESTOR_PACKAGE_UNAVAILABLE(ma_arg1_size1, ma_arg1_value, ma_arg2_size1, ma_arg2_value, ma_arg3, ma_arg4_size1, ma_arg4_value, ma_arg5) \
     Perl_throw_ck_warner_5_2097( \
         aTHX_ perl_diag_warning_syntax_method_lookup_ancestor_package_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_arg1_size1, \
         (const char *)(ma_arg1_value), \
@@ -11367,6 +13078,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_VARIABLE_NOT_IMPORTED(ma_sigil, ma_length, ma_name_bytes, ma_is_utf8) \
     Perl_throw_ck_warner_d_1_2098( \
         aTHX_ perl_diag_warning_misc_variable_not_imported_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_sigil, \
         ma_length, \
         (const char *)(ma_name_bytes), \
@@ -11377,6 +13090,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_VARIABLE_NOT_IMPORTED_SUBROUTINE_HINT(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_ck_warner_d_1_2099( \
         aTHX_ perl_diag_warning_misc_variable_not_imported_subroutine_hint_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -11386,6 +13101,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_SYMBOL_CREATED_DURING_LOOKUP(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_ck_warner_d_1_2099( \
         aTHX_ perl_diag_warning_severe_internal_symbol_created_during_lookup_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -11395,6 +13112,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_ONCE_PACKAGE_NAME_USED_ONCE(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2101( \
         aTHX_ perl_diag_warning_once_package_name_used_once_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2, \
         packWARN(WARN_ONCE) \
@@ -11403,6 +13122,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_WARNING_ONCE_PACKAGE_NAME_USED_ONCE(ma_arg1, ma_arg2) \
     Perl_throw_fatal_warner_2_2101( \
         aTHX_ perl_diag_warning_once_package_name_used_once_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2, \
         packWARN(WARN_ONCE) \
@@ -11411,12 +13132,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_ELSEIF_SPELLING_UNRECOGNIZED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_syntax_elseif_spelling_unrecognized_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_APPEND_WARNING_LOCALE_CTYPE_LOCALE_UNSUPPORTED(exception_slot, ma_locale) \
     Perl_throw_append_exception_1_2103( \
         aTHX_ perl_diag_warning_locale_ctype_locale_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_locale), \
@@ -11426,6 +13151,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_LOCALE_CATEGORY_UNRECOGNIZED(ma_locale_state, ma_category, ma_locale) \
     Perl_throw_warner_3_2104( \
         aTHX_ perl_diag_warning_locale_category_unrecognized_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_locale_state, \
         ma_category, \
         "%s", \
@@ -11436,30 +13163,40 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_MALLOC_DUPLICATE_FREE_IGNORED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_malloc_duplicate_free_ignored_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MALLOC) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_MALLOC_INVALID_FREE_IGNORED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_malloc_invalid_free_ignored_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MALLOC) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_MALLOC_FREED_BLOCK_REALLOC_IGNORED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_malloc_freed_block_realloc_ignored_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MALLOC) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_MALLOC_INVALID_REALLOC_IGNORED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_malloc_invalid_realloc_ignored_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MALLOC) \
     )
 
 #define PERL_WARN_WARNING_SIGNAL_NAME_UNRECOGNIZED(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_signal_name_unrecognized_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_SIGNAL) \
@@ -11468,24 +13205,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_ARRAY_LENGTH_TARGET_FREED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_array_length_target_freed_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_SUBSTR_RANGE_OUTSIDE_STRING() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_substr_range_outside_string_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SUBSTR) \
     )
 
 #define PERL_WARN_WARNING_SUBSTR_LVALUE_TARGET_REFERENCE() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_substr_lvalue_target_reference_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SUBSTR) \
     )
 
 #define PERL_WARN_WARNING_SIGNAL_NAMED_HANDLER_UNDEFINED(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2113( \
         aTHX_ perl_diag_warning_signal_named_handler_undefined_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg2, \
@@ -11495,6 +13240,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SIGNAL_ANONYMOUS_HANDLER_UNDEFINED(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_signal_anonymous_handler_undefined_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_SIGNAL) \
@@ -11503,6 +13250,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_PORTABLE_INTEGER_LITERAL_EXCEEDS_32_BITS(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_portable_integer_literal_exceeds_32_bits_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_PORTABLE) \
@@ -11511,6 +13260,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_DIGIT_INVALID_RADIX_DIGIT_IGNORED(ma_radix, ma_digit) \
     Perl_throw_warner_2_2116( \
         aTHX_ perl_diag_warning_syntax_digit_invalid_radix_digit_ignored_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_radix, \
         "%c", \
         ma_digit, \
@@ -11520,6 +13271,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_OVERFLOW_INTEGER_LITERAL_RANGE_EXCEEDED(ma_radix) \
     Perl_throw_warner_1_2117( \
         aTHX_ perl_diag_warning_overflow_integer_literal_range_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_radix, \
         packWARN(WARN_OVERFLOW) \
     )
@@ -11527,6 +13280,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_OVERFLOW_INTEGER_LITERAL_RANGE_EXCEEDED_DEFAULT_ENABLED(ma_radix) \
     Perl_throw_ck_warner_d_1_2117( \
         aTHX_ perl_diag_warning_overflow_integer_literal_range_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_radix, \
         packWARN(WARN_OVERFLOW) \
     )
@@ -11534,12 +13289,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_CONDITIONAL_CONSTANT_ASSIGNMENT() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_conditional_constant_assignment_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_WARN_WARNING_VOID_USELESS_EXPRESSION_SV(ma_op_name, ma_operation_identity, ma_arg1) \
     Perl_throw_ck_warner_3_2119( \
         aTHX_ perl_diag_warning_void_useless_expression_sv_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_op_name, \
         ma_operation_identity, \
         (SV *)(ma_arg1), \
@@ -11549,18 +13308,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_EXPERIMENTAL_REFALIASING_REFERENCE_ALIASING_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_refaliasing_reference_aliasing_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__REFALIASING) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_DECLARED_REFS_REFERENCE_DECLARATION_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_declared_refs_reference_declaration_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__DECLARED_REFS) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_LOCALIZATION_NO_EFFECT(ma_arg1, ma_arg1_operation) \
     Perl_throw_ck_warner_2_2122( \
         aTHX_ perl_diag_warning_syntax_localization_no_effect_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg1_operation, \
@@ -11570,6 +13335,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_SUBROUTINE_PROTOTYPE_ATTRIBUTE_REPLACED(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_warner_1_2123( \
         aTHX_ perl_diag_warning_misc_subroutine_prototype_attribute_replaced_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -11579,6 +13346,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_PROTOTYPE_DECLARED_PROTOTYPE_OVERRIDDEN_BY_ATTRIBUTE(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2_utf8, ma_arg2_length, ma_arg2_text, ma_arg3) \
     Perl_throw_warner_3_2124( \
         aTHX_ perl_diag_warning_syntax_prototype_declared_prototype_overridden_by_attribute_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -11592,6 +13361,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_AGGREGATE_BINDING_SCALARIZED_NAMED(ma_arg1, ma_operation_name_selector, ma_arg2, ma_arg3) \
     Perl_throw_warner_4_2125( \
         aTHX_ perl_diag_warning_misc_aggregate_binding_scalarized_named_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_operation_name_selector, \
@@ -11603,6 +13374,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_AGGREGATE_BINDING_SCALARIZED_ANONYMOUS(ma_arg1, ma_operation_name_selector, ma_arg2, ma_arg3) \
     Perl_throw_warner_4_2126( \
         aTHX_ perl_diag_warning_misc_aggregate_binding_scalarized_anonymous_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_operation_name_selector, \
@@ -11616,6 +13389,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_PRECEDENCE_UNPARENTHESIZED_NEGATION_WITH_OPERATOR(ma_arg1_operation, ma_arg1) \
     Perl_throw_ck_warner_2_2127( \
         aTHX_ perl_diag_warning_syntax_precedence_unparenthesized_negation_with_operator_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_operation, \
         "%s", \
         (const char *)(ma_arg1), \
@@ -11625,6 +13400,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_CONTROL_TRANSFER_PRECEDENCE(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_syntax_control_transfer_precedence_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_SYNTAX) \
@@ -11633,6 +13410,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_PARENTHESIS_DECLARATION_LIST_PARENTHESES_MISSING(ma_arg1) \
     Perl_throw_warner_1_2078( \
         aTHX_ perl_diag_warning_syntax_parenthesis_declaration_list_parentheses_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_PARENTHESIS) \
@@ -11641,24 +13420,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_TRANSLITERATION_DELETE_MODIFIER_NO_EFFECT() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_transliteration_delete_modifier_no_effect_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_MISC_TRANSLITERATION_REPLACEMENT_LONGER_THAN_SEARCH() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_transliteration_replacement_longer_than_search_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_BAREWORD_BAREWORD_IN_CONDITIONAL() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_syntax_bareword_bareword_in_conditional_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_BAREWORD) \
     )
 
 #define PERL_WARN_WARNING_MISC_TRUTH_TEST_MAY_DISCARD_DEFINED_VALUE(ma_operation, ma_operation_name_selector) \
     Perl_throw_warner_2_2133( \
         aTHX_ perl_diag_warning_misc_truth_test_may_discard_defined_value_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_operation_name_selector, \
@@ -11668,6 +13455,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_PROTOTYPE_DECLARATION_PROTOTYPE_MISMATCH(ma_function, ma_current, ma_proposed) \
     Perl_throw_warner_3_2134( \
         aTHX_ perl_diag_warning_syntax_prototype_declaration_prototype_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_function), \
         (SV *)(ma_current), \
         (SV *)(ma_proposed), \
@@ -11677,24 +13466,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_SUBROUTINE_LVALUE_ATTRIBUTE_TOO_LATE() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_misc_subroutine_lvalue_attribute_too_late_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_BEGIN_PROTOTYPE_IGNORED() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_begin_prototype_ignored_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_BEGIN_ATTRIBUTES_IGNORED() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_begin_attributes_ignored_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_WARN_WARNING_REDEFINE_CONSTANT_SUBROUTINE_REDEFINED(ma_arg1) \
     Perl_throw_warner_1_2138( \
         aTHX_ perl_diag_warning_redefine_constant_subroutine_redefined_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_REDEFINE) \
     )
@@ -11702,18 +13499,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_VOID_CHECK_BLOCK_REGISTERED_TOO_LATE() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_void_check_block_registered_too_late_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_VOID) \
     )
 
 #define PERL_WARN_WARNING_VOID_INIT_BLOCK_REGISTERED_TOO_LATE() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_void_init_block_registered_too_late_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_VOID) \
     )
 
 #define PERL_WARN_WARNING_REDEFINE_REPORT_FORMAT_REDEFINED(ma_arg1) \
     Perl_throw_warner_1_2138( \
         aTHX_ perl_diag_warning_redefine_report_format_redefined_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_REDEFINE) \
     )
@@ -11721,24 +13524,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_REDEFINE_DEFAULT_STDOUT_REPORT_FORMAT_REDEFINED() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_redefine_default_stdout_report_format_redefined_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_REDEFINE) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_ARRAY_COERCION_OP_UNEXPECTED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_internal_array_coercion_op_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_INTERNAL) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_HASH_COERCION_OP_UNEXPECTED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_internal_hash_coercion_op_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_INTERNAL) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_PRECEDENCE_COMPARISON_WITH_BITWISE_OPERATOR(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_syntax_precedence_comparison_with_bitwise_operator_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_PRECEDENCE) \
@@ -11747,6 +13558,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_ARRAY_BASE_USED_IN_COMPARISON(ma_arg1_operation, ma_arg1) \
     Perl_throw_warner_2_2146( \
         aTHX_ perl_diag_warning_syntax_array_base_used_in_comparison_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_operation, \
         "%s", \
         (const char *)(ma_arg1), \
@@ -11756,6 +13569,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_FILE_TEST_ARRAY_COERCION_WITH_ELEMENT_HINT(ma_name) \
     Perl_throw_warner_1_2138( \
         aTHX_ perl_diag_warning_syntax_file_test_array_coercion_with_element_hint_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_name), \
         packWARN(WARN_SYNTAX) \
     )
@@ -11763,12 +13578,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_FILE_TEST_ARRAY_COERCION_WITHOUT_ELEMENT_HINT() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_file_test_array_coercion_without_element_hint_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_ARRAY_INSERTION_VALUES_MISSING(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_syntax_array_insertion_values_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_SYNTAX) \
@@ -11777,6 +13596,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_SORT_COMPARISON_LEXICAL_A_OR_B(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2085( \
         aTHX_ perl_diag_warning_syntax_sort_comparison_lexical_a_or_b_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -11787,12 +13608,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_REGEXP_MODIFIER_SPLIT_GLOBAL_IGNORED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_regexp_modifier_split_global_ignored_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_REGEXP) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_JOIN_SEPARATOR_PATTERN_INSTEAD_OF_STRING(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2152( \
         aTHX_ perl_diag_warning_syntax_join_separator_pattern_instead_of_string_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         (SV *)(ma_arg2), \
         packWARN(WARN_SYNTAX) \
@@ -11801,18 +13626,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_EACH_ANONYMOUS_HASH_ITERATOR_RESTARTS() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_each_anonymous_hash_iterator_restarts_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_EACH_ANONYMOUS_ARRAY_ITERATOR_RESTARTS() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_each_anonymous_array_iterator_restarts_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_LENGTH_NAMED_AGGREGATE_COERCION(ma_aggregate_kind, ma_aggregate_name) \
     Perl_throw_warner_2_2155( \
         aTHX_ perl_diag_warning_syntax_length_named_aggregate_coercion_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_aggregate_kind, \
         (SV *)(ma_aggregate_name), \
         packWARN(WARN_SYNTAX) \
@@ -11821,24 +13652,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_LENGTH_HASH_COERCION_WITHOUT_NAME() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_length_hash_coercion_without_name_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_LENGTH_ARRAY_COERCION_WITHOUT_NAME() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_length_array_coercion_without_name_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_SIGNATURE_NAMED_PARAMETERS_PARAMETER_DECLARED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_signature_named_parameters_parameter_declared_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__SIGNATURE_NAMED_PARAMETERS) \
     )
 
 #define PERL_WARN_WARNING_SHADOW_DECLARATION_MASKS_EARLIER_BINDING(ma_declaration, ma_entity_kind, ma_prior_name, ma_declaration_extent) \
     Perl_throw_warner_4_2159( \
         aTHX_ perl_diag_warning_shadow_declaration_masks_earlier_binding_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_declaration), \
         ma_entity_kind, \
@@ -11850,6 +13689,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SHADOW_OUR_VARIABLE_REDECLARED(ma_arg1) \
     Perl_throw_warner_1_2160( \
         aTHX_ perl_diag_warning_shadow_our_variable_redeclared_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         packWARN(WARN_SHADOW) \
     )
@@ -11857,12 +13698,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SHADOW_OUR_REDECLARATION_LOCAL_SUGGESTION() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_shadow_our_redeclaration_local_suggestion_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SHADOW) \
     )
 
 #define PERL_WARN_WARNING_CLOSURE_LEXICAL_CAPTURE_UNAVAILABLE(ma_entity_kind, ma_name) \
     Perl_throw_ck_warner_2_2162( \
         aTHX_ perl_diag_warning_closure_lexical_capture_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_entity_kind, \
         ma_name, \
         packWARN(WARN_CLOSURE) \
@@ -11871,6 +13716,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_CLOSURE_LEXICAL_CAPTURE_WILL_NOT_STAY_SHARED(ma_entity_kind, ma_lexical_name_utf8, ma_lexical_name_length, ma_lexical_name_text) \
     Perl_throw_warner_2_2163( \
         aTHX_ perl_diag_warning_closure_lexical_capture_will_not_stay_shared_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_entity_kind, \
         ma_lexical_name_utf8, \
         ma_lexical_name_length, \
@@ -11881,6 +13728,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_LEXICAL_DECLARATION_NEVER_INTRODUCED(ma_arg1) \
     Perl_throw_ck_warner_d_1_2164( \
         aTHX_ perl_diag_warning_severe_internal_lexical_declaration_never_introduced_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         packWARN(WARN_INTERNAL) \
     )
@@ -11888,6 +13737,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_EXPERIMENTAL_ARGS_ARRAY_WITH_SIGNATURES_IMPLICIT_USE(ma_arg1_operation, ma_arg1) \
     Perl_throw_ck_warner_d_2_2165( \
         aTHX_ perl_diag_warning_experimental_args_array_with_signatures_implicit_use_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_operation, \
         "%s", \
         (const char *)(ma_arg1), \
@@ -11897,6 +13748,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_EXPERIMENTAL_ARGS_ARRAY_WITH_SIGNATURES_EXPLICIT_USE(ma_arg1_operation, ma_arg1) \
     Perl_throw_ck_warner_d_2_2165( \
         aTHX_ perl_diag_warning_experimental_args_array_with_signatures_explicit_use_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_operation, \
         "%s", \
         (const char *)(ma_arg1), \
@@ -11906,18 +13759,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_EXEC_STATEMENT_AFTER_EXEC_UNLIKELY_REACHED() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_io_exec_statement_after_exec_unlikely_reached_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXEC) \
     )
 
 #define PERL_WARN_WARNING_IO_EXEC_SYSTEM_INSTEAD_OF_EXEC_SUGGESTION() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_io_exec_system_instead_of_exec_suggestion_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXEC) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_PROTOTYPE_CALL_TOO_EARLY_TO_CHECK_PROTOTYPE(ma_arg1) \
     Perl_throw_warner_1_2138( \
         aTHX_ perl_diag_warning_syntax_prototype_call_too_early_to_check_prototype_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_PROTOTYPE) \
     )
@@ -11925,6 +13784,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SCOPE_STACK_UNBALANCED(ma_direction, ma_magnitude) \
     Perl_throw_ck_warner_d_2_2170( \
         aTHX_ perl_diag_warning_severe_internal_destruction_scope_stack_unbalanced_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_direction, \
         ma_magnitude, \
         packWARN(WARN_INTERNAL) \
@@ -11933,6 +13794,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SAVE_STACK_UNBALANCED(ma_direction, ma_magnitude) \
     Perl_throw_ck_warner_d_2_2170( \
         aTHX_ perl_diag_warning_severe_internal_destruction_save_stack_unbalanced_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_direction, \
         ma_magnitude, \
         packWARN(WARN_INTERNAL) \
@@ -11941,6 +13804,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_TEMP_STACK_FLOOR_UNBALANCED(ma_arg1) \
     Perl_throw_ck_warner_d_1_2172( \
         aTHX_ perl_diag_warning_severe_internal_destruction_temp_stack_floor_unbalanced_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         packWARN(WARN_INTERNAL) \
     )
@@ -11948,6 +13813,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_CONTEXT_STACK_UNBALANCED(ma_direction, ma_magnitude) \
     Perl_throw_ck_warner_d_2_2170( \
         aTHX_ perl_diag_warning_severe_internal_destruction_context_stack_unbalanced_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_direction, \
         ma_magnitude, \
         packWARN(WARN_INTERNAL) \
@@ -11956,6 +13823,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SHARED_STRING_RETAINED(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2174( \
         aTHX_ perl_diag_warning_severe_internal_destruction_shared_string_retained_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         "%s", \
         (const char *)(ma_arg2), \
@@ -11965,6 +13834,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SCALAR_ALLOCATION_COUNT_NONZERO(ma_arg1) \
     Perl_throw_ck_warner_d_1_2172( \
         aTHX_ perl_diag_warning_severe_internal_destruction_scalar_allocation_count_nonzero_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         packWARN(WARN_INTERNAL) \
     )
@@ -11972,12 +13843,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SIGNAL_IGNORED_CHLD_RESET_TO_DEFAULT() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_signal_ignored_chld_reset_to_default_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SIGNAL) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_DEBUGGING_RUN_OPTION_INVALID_FLAG(ma_arg1) \
     Perl_throw_ck_warner_d_1_2177( \
         aTHX_ perl_diag_warning_severe_debugging_run_option_invalid_flag_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         packWARN(WARN_DEBUGGING) \
@@ -11986,18 +13861,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_DEBUGGING_RUN_OPTION_BUILD_REQUIRED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_debugging_run_option_build_required_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_DEBUGGING) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_INPLACE_EDIT_FILENAMES_MISSING() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_inplace_edit_filenames_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_INPLACE) \
     )
 
 #define PERL_WARN_WARNING_IO_LAYER_SEPARATOR_INVALID(ma_arg1, ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_ck_warner_4_2180( \
         aTHX_ perl_diag_warning_io_layer_separator_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         "%c", \
@@ -12012,6 +13893,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_LAYER_ARGUMENT_LIST_UNTERMINATED(ma_arg1_size1, ma_arg1_value) \
     Perl_throw_ck_warner_1_2181( \
         aTHX_ perl_diag_warning_io_layer_argument_list_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_arg1_size1, \
         (const char *)(ma_arg1_value), \
@@ -12021,6 +13904,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_LAYER_NAME_UNKNOWN(ma_arg1_size1, ma_arg1_value) \
     Perl_throw_ck_warner_1_2181( \
         aTHX_ perl_diag_warning_io_layer_name_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_arg1_size1, \
         (const char *)(ma_arg1_value), \
@@ -12030,24 +13915,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_LAYER_SCALAR_READONLY_FOR_WRITE() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_io_layer_scalar_readonly_for_write_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_LAYER) \
     )
 
 #define PERL_WARN_WARNING_IO_LAYER_SCALAR_SEEK_BEFORE_START() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_io_layer_scalar_seek_before_start_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_LAYER) \
     )
 
 #define PERL_WARN_WARNING_MISC_OBJECT_BLESS_EMPTY_CLASS_NAME_DEFAULTED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_object_bless_empty_class_name_defaulted_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_MISC_CONSTANT_SUBROUTINE_UNDEFINED(ma_arg1) \
     Perl_throw_ck_warner_1_2186( \
         aTHX_ perl_diag_warning_misc_constant_subroutine_undefined_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_MISC) \
     )
@@ -12055,30 +13948,40 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_NUMERIC_REPEAT_COUNT_NONFINITE() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_numeric_repeat_count_nonfinite_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_NUMERIC) \
     )
 
 #define PERL_WARN_WARNING_NUMERIC_REPEAT_COUNT_NEGATIVE() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_numeric_repeat_count_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_NUMERIC) \
     )
 
 #define PERL_WARN_WARNING_MISC_RNG_SEED_REFERENCE_WITHOUT_STRING_OVERLOAD() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_rng_seed_reference_without_string_overload_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_OVERFLOW_RNG_SEED_INTEGER_TRUNCATED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_overflow_rng_seed_integer_truncated_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_OVERFLOW) \
     )
 
 #define PERL_WARN_WARNING_UTF8_CHR_NEGATIVE_VALUE(ma_arg1) \
     Perl_throw_warner_1_2138( \
         aTHX_ perl_diag_warning_utf8_chr_negative_value_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_UTF8) \
     )
@@ -12086,24 +13989,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_ANONYMOUS_HASH_ODD_ELEMENT_COUNT() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_anonymous_hash_odd_element_count_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_MISC_SPLICE_OFFSET_PAST_ARRAY_END() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_splice_offset_past_array_end_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_REPORT_FORMAT_VALUES_MISSING() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_syntax_report_format_values_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_WARN_WARNING_EXITING_CONTROL_TRANSFER_CROSSES_CONTEXT(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2091( \
         aTHX_ perl_diag_warning_exiting_control_transfer_crosses_context_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -12114,6 +14025,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_EXCEPTION_DURING_CLEANUP(ma_arg1) \
     Perl_throw_ck_warner_1_2186( \
         aTHX_ perl_diag_warning_misc_exception_during_cleanup_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_MISC) \
     )
@@ -12121,6 +14034,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_DEPRECATE_WARNING_DEPRECATED_DOT_IN_INC_RELATIVE_DO_FILE_NOT_IN_INC(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2085( \
         aTHX_ perl_diag_warning_deprecated_dot_in_inc_relative_do_file_not_in_inc_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -12131,6 +14046,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_DISPATCH_REGEXP_CAPTURE_SHADOWED(ma_arg1) \
     Perl_throw_ck_warner_d_1_2083( \
         aTHX_ perl_diag_warning_syntax_dispatch_regexp_capture_shadowed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_SYNTAX) \
     )
@@ -12138,6 +14055,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_DISPATCH_CONSTANT_UNREACHABLE(ma_constant, ma_duplicate_file, ma_duplicate_line, ma_first_file, ma_first_line) \
     Perl_throw_ck_warner_d_5_2199( \
         aTHX_ perl_diag_warning_syntax_dispatch_constant_unreachable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_constant), \
         "%s", \
@@ -12152,12 +14071,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_ASSIGNMENT_TO_TEMPORARY() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_misc_assignment_to_temporary_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_GLOB_CHILD_EXIT_FAILED(ma_core_status, ma_status) \
     Perl_throw_ck_warner_2_2202( \
         aTHX_ perl_diag_warning_glob_child_exit_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_core_status, \
         ma_status, \
         packWARN(WARN_GLOB) \
@@ -12166,6 +14089,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_READLINE_MALFORMED_SEQUENCE(ma_arg1) \
     Perl_throw_warner_1_2203( \
         aTHX_ perl_diag_warning_utf8_readline_malformed_sequence_idx, \
+        __FILE__, \
+        __LINE__, \
         "%02X", \
         ma_arg1, \
         packWARN(WARN_UTF8) \
@@ -12174,6 +14099,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_ARRAY_INDEX_REFERENCE_WITHOUT_OVERLOAD(ma_arg1) \
     Perl_throw_warner_1_2138( \
         aTHX_ perl_diag_warning_misc_array_index_reference_without_overload_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_MISC) \
     )
@@ -12181,6 +14108,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_ARRAY_INDEX_REFERENCE_WITHOUT_OVERLOAD_IF_ENABLED(ma_arg1) \
     Perl_throw_ck_warner_1_2186( \
         aTHX_ perl_diag_warning_misc_array_index_reference_without_overload_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_MISC) \
     )
@@ -12188,12 +14117,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_RECURSION_ANONYMOUS_SUBROUTINE_DEPTH_EXCEEDED() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_recursion_anonymous_subroutine_depth_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_RECURSION) \
     )
 
 #define PERL_WARN_WARNING_RECURSION_NAMED_SUBROUTINE_DEPTH_EXCEEDED(ma_arg1) \
     Perl_throw_warner_1_2138( \
         aTHX_ perl_diag_warning_recursion_named_subroutine_depth_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_RECURSION) \
     )
@@ -12201,6 +14134,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UNPACK_CHARACTER_WRAPPED_TO_BYTE(ma_arg1) \
     Perl_throw_ck_warner_1_2207( \
         aTHX_ perl_diag_warning_unpack_character_wrapped_to_byte_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         packWARN(WARN_UNPACK) \
@@ -12209,6 +14144,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_PACK_UNPACK_BYTE_FORMAT_CHARACTER_WRAPPED(ma_arg1, ma_arg2, category) \
     Perl_throw_ck_warner_2_2209( \
         aTHX_ perl_diag_warning_pack_unpack_byte_format_character_wrapped_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         "%s", \
@@ -12219,6 +14156,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_PACK_UNPACK_BYTE_FORMAT_CHARACTER_WRAPPED(exception_slot, category, ma_arg1, ma_arg2) \
     Perl_throw_append_warning_2_2209( \
         aTHX_ perl_diag_warning_pack_unpack_byte_format_character_wrapped_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%c", \
         ma_arg1, \
@@ -12230,6 +14169,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UNPACK_FORMAT_COMMA_IGNORED(ma_arg1) \
     Perl_throw_warner_1_2078( \
         aTHX_ perl_diag_warning_unpack_format_comma_ignored_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_UNPACK) \
@@ -12238,6 +14179,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UNPACK_FORMAT_MODIFIER_DUPLICATE(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_ck_warner_3_2211( \
         aTHX_ perl_diag_warning_unpack_format_modifier_duplicate_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         "%c", \
@@ -12250,36 +14193,48 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_PACK_SIGNED_BYTE_VALUE_WRAPPED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_pack_signed_byte_value_wrapped_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_PACK) \
     )
 
 #define PERL_WARN_WARNING_PACK_UNSIGNED_BYTE_VALUE_WRAPPED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_pack_unsigned_byte_value_wrapped_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_PACK) \
     )
 
 #define PERL_WARN_WARNING_PACK_W_CHARACTER_WRAPPED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_pack_w_character_wrapped_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_PACK) \
     )
 
 #define PERL_WARN_WARNING_PACK_POINTER_TARGET_TEMPORARY() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_pack_pointer_target_temporary_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_PACK) \
     )
 
 #define PERL_WARN_WARNING_PACK_UUENCODE_LINE_WIDTH_EXCESSIVE() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_pack_uuencode_line_width_excessive_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_PACK) \
     )
 
 #define PERL_WARN_WARNING_UNTIE_INNER_REFERENCES_REMAIN(ma_arg1) \
     Perl_throw_ck_warner_1_2217( \
         aTHX_ perl_diag_warning_untie_inner_references_remain_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         packWARN(WARN_UNTIE) \
     )
@@ -12287,18 +14242,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_IO_SELECT_BITMASK_NOT_STRING() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_io_select_bitmask_not_string_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_IO_REPORT_PAGE_OVERFLOW() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_io_report_page_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_IO) \
     )
 
 #define PERL_WARN_WARNING_IO_SOCKET_ADDRESS_TRUNCATED(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_io_socket_address_truncated_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_IO) \
@@ -12307,6 +14268,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_LSTAT_ON_FILEHANDLE(ma_handle_kind, ma_handle_name) \
     Perl_throw_ck_warner_2_2221( \
         aTHX_ perl_diag_warning_io_lstat_on_filehandle_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_handle_kind, \
         (SV *)(ma_handle_name), \
         packWARN(WARN_IO) \
@@ -12315,6 +14278,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_UNOPENED_CHDIR_HANDLE_UNOPENED(ma_arg1) \
     Perl_throw_ck_warner_1_2186( \
         aTHX_ perl_diag_warning_io_unopened_chdir_handle_unopened_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_UNOPENED) \
     )
@@ -12322,6 +14287,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_DIRECTORY_OPERATION_ON_FILEHANDLE(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2113( \
         aTHX_ perl_diag_warning_io_directory_operation_on_filehandle_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg2, \
@@ -12331,6 +14298,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_DIRECTORY_OPERATION_ON_INVALID_HANDLE(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2113( \
         aTHX_ perl_diag_warning_io_directory_operation_on_invalid_handle_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg2, \
@@ -12340,6 +14309,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_OVERFLOW_TIME_INPUT_OUT_OF_RANGE(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2225( \
         aTHX_ perl_diag_warning_overflow_time_input_out_of_range_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%.0" NVff, \
@@ -12350,6 +14321,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_OVERFLOW_TIME_INPUT_BELOW_MINIMUM(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2225( \
         aTHX_ perl_diag_warning_overflow_time_input_below_minimum_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%.0" NVff, \
@@ -12360,6 +14333,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_OVERFLOW_TIME_CONVERSION_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2225( \
         aTHX_ perl_diag_warning_overflow_time_conversion_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%.0" NVff, \
@@ -12370,24 +14345,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_ALARM_DURATION_NEGATIVE() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_misc_alarm_duration_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_MISC_SLEEP_DURATION_NEGATIVE() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_misc_sleep_duration_negative_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_UNIPROP_WILDCARDS_PROPERTY_WILDCARD_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_uniprop_wildcards_property_wildcard_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__UNIPROP_WILDCARDS) \
     )
 
 #define PERL_DEPRECATE_WARNING_DEPRECATED_UNICODE_PROPERTY_NAME_PROPERTY_NAME_USED(ma_property_length, ma_property_text, ma_reason, ma_detail) \
     Perl_throw_ck_warner_d_3_2232( \
         aTHX_ perl_diag_warning_deprecated_unicode_property_name_property_name_used_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_property_length, \
         (const char *)(ma_property_text), \
@@ -12399,12 +14382,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_EXPERIMENTAL_PRIVATE_USE_PROPERTY_OVERRIDE_APPLIED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_private_use_property_override_applied_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__PRIVATE_USE) \
     )
 
 #define PERL_WARN_WARNING_REGEXP_QUANTIFIER_ZERO_WIDTH_EXPRESSION(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_ck_warner_1_2234( \
         aTHX_ perl_diag_warning_regexp_quantifier_zero_width_expression_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -12414,6 +14401,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_NON_UNICODE_PROPERTY_MATCH_ABOVE_UNICODE_MAX(ma_arg1) \
     Perl_throw_warner_1_2235( \
         aTHX_ perl_diag_warning_utf8_non_unicode_property_match_above_unicode_max_idx, \
+        __FILE__, \
+        __LINE__, \
         "%04" UVXf, \
         ma_arg1, \
         packWARN(WARN_NON_UNICODE) \
@@ -12422,6 +14411,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_NUMERIC_VALUE_NONNUMERIC_IN_OPERATION(ma_arg2_operation, ma_arg1, ma_arg2) \
     Perl_throw_warner_3_2236( \
         aTHX_ perl_diag_warning_numeric_value_nonnumeric_in_operation_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg2_operation, \
         "%s", \
         (const char *)(ma_arg1), \
@@ -12433,6 +14424,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_NUMERIC_VALUE_NONNUMERIC_WITHOUT_OPERATION(ma_arg1) \
     Perl_throw_warner_1_2078( \
         aTHX_ perl_diag_warning_numeric_value_nonnumeric_without_operation_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_NUMERIC) \
@@ -12441,6 +14434,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_NUMERIC_INCREMENT_VALUE_NONNUMERIC(ma_arg1) \
     Perl_throw_warner_1_2078( \
         aTHX_ perl_diag_warning_numeric_increment_value_nonnumeric_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_NUMERIC) \
@@ -12449,30 +14444,40 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_TYPEGLOB_UNDEFINED_VALUE_ASSIGNED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_typeglob_undefined_value_assigned_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_FREED_SCALAR_COPY() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_internal_freed_scalar_copy_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_INTERNAL) \
     )
 
 #define PERL_WARN_WARNING_MISC_TYPE_REFERENCE_ALREADY_WEAK() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_type_reference_already_weak_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_MISC_TYPE_REFERENCE_NOT_WEAK() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_type_reference_not_weak_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_IMPRECISION_INCREMENT_PRECISION_LOSS(ma_arg1) \
     Perl_throw_ck_warner_1_2243( \
         aTHX_ perl_diag_warning_imprecision_increment_precision_loss_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" NVff, \
         ma_arg1, \
         packWARN(WARN_IMPRECISION) \
@@ -12481,6 +14486,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IMPRECISION_DECREMENT_PRECISION_LOSS(ma_arg1) \
     Perl_throw_ck_warner_1_2243( \
         aTHX_ perl_diag_warning_imprecision_decrement_precision_loss_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" NVff, \
         ma_arg1, \
         packWARN(WARN_IMPRECISION) \
@@ -12489,6 +14496,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISSING_PRINTF_CONVERSION_ARGUMENT_MISSING(ma_arg1_operation, ma_arg1) \
     Perl_throw_ck_warner_2_2127( \
         aTHX_ perl_diag_warning_missing_printf_conversion_argument_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_operation, \
         "%s", \
         (const char *)(ma_arg1), \
@@ -12498,18 +14507,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_PRINTF_POINTER_EXTENSION_WIDTH_CONFLICT() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_internal_printf_pointer_extension_width_conflict_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_INTERNAL) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_PRINTF_VECTOR_DEVELOPMENT_VERSION_UNSUPPORTED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_syntax_printf_vector_development_version_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_PRINTF) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_PRINTF_CONVERSION_INVALID(ma_operation, ma_conversion_state, ma_conversion) \
     Perl_throw_warner_3_2248( \
         aTHX_ perl_diag_warning_syntax_printf_conversion_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_conversion_state, \
@@ -12520,6 +14535,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_REDUNDANT_PRINTF_ARGUMENT_UNUSED(ma_arg1_operation, ma_arg1) \
     Perl_throw_ck_warner_2_2127( \
         aTHX_ perl_diag_warning_redundant_printf_argument_unused_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_operation, \
         "%s", \
         (const char *)(ma_arg1), \
@@ -12529,6 +14546,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UNINITIALIZED_VALUE_WITH_OPERATION(ma_operation_identity, ma_name_state_selector, ma_name, ma_operation) \
     Perl_throw_warner_4_2250( \
         aTHX_ perl_diag_warning_uninitialized_value_with_operation_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         ma_name_state_selector, \
         (SV *)(ma_name), \
@@ -12540,12 +14559,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UNINITIALIZED_VALUE_WITHOUT_OPERATION() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_uninitialized_value_without_operation_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_UNINITIALIZED) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_AFTER_GREEDY_SLOT(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_warner_3_2252( \
         aTHX_ perl_diag_warning_syntax_illegalproto_character_after_greedy_slot_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         (SV *)(ma_arg2), \
@@ -12557,6 +14580,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_BRACKET_GROUP_UNTERMINATED(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2253( \
         aTHX_ perl_diag_warning_syntax_illegalproto_bracket_group_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         "%s", \
         (const char *)(ma_arg2), \
@@ -12566,6 +14591,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_UNRECOGNIZED(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2253( \
         aTHX_ perl_diag_warning_syntax_illegalproto_character_unrecognized_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         "%s", \
         (const char *)(ma_arg2), \
@@ -12575,6 +14602,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_ILLEGALPROTO_CHARACTER_AFTER_UNDERSCORE_INVALID(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2253( \
         aTHX_ perl_diag_warning_syntax_illegalproto_character_after_underscore_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         "%s", \
         (const char *)(ma_arg2), \
@@ -12584,6 +14613,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_UNARY_CALL_WITHOUT_PARENTHESES(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_ck_warner_d_1_2099( \
         aTHX_ perl_diag_warning_syntax_ambiguous_unary_call_without_parentheses_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -12593,12 +14624,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_REGEXP_BACKSLASH_VARIABLE_INTERPOLATION() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_syntax_ambiguous_regexp_backslash_variable_interpolation_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_AMBIGUOUS) \
     )
 
 #define PERL_APPEND_WARNING_SYNTAX_AMBIGUOUS_REGEXP_BACKSLASH_VARIABLE_INTERPOLATION(exception_slot) \
     Perl_throw_append_warning_0_2257( \
         aTHX_ perl_diag_warning_syntax_ambiguous_regexp_backslash_variable_interpolation_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         packWARN(WARN_AMBIGUOUS) \
     )
@@ -12606,6 +14641,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_SUBSTITUTION_BACKREFERENCE_DOLLAR_PREFERRED(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2258( \
         aTHX_ perl_diag_warning_syntax_substitution_backreference_dollar_preferred_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         "%c", \
@@ -12616,6 +14653,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_SYNTAX_SUBSTITUTION_BACKREFERENCE_DOLLAR_PREFERRED(exception_slot, ma_arg1, ma_arg2) \
     Perl_throw_append_warning_2_2258( \
         aTHX_ perl_diag_warning_syntax_substitution_backreference_dollar_preferred_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%c", \
         ma_arg1, \
@@ -12627,6 +14666,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_STRING_ESCAPE_UNRECOGNIZED(ma_arg1) \
     Perl_throw_ck_warner_1_2207( \
         aTHX_ perl_diag_warning_misc_string_escape_unrecognized_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         packWARN(WARN_MISC) \
@@ -12635,6 +14676,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_MISC_STRING_ESCAPE_UNRECOGNIZED(exception_slot, ma_arg1) \
     Perl_throw_append_warning_1_2259( \
         aTHX_ perl_diag_warning_misc_string_escape_unrecognized_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%c", \
         ma_arg1, \
@@ -12644,6 +14687,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_MULTIDIMENSIONAL_SUBSCRIPT_UNSUPPORTED(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_warner_1_2123( \
         aTHX_ perl_diag_warning_syntax_multidimensional_subscript_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -12653,6 +14698,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_SIGNAL_HANDLER_BAREWORD_NEEDS_QUOTES(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_warner_1_2123( \
         aTHX_ perl_diag_warning_syntax_signal_handler_bareword_needs_quotes_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -12662,12 +14709,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_STRING_CASEMOD_END_WITHOUT_START() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_string_casemod_end_without_start_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_CORE_CALL_RESOLUTION(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_syntax_ambiguous_core_call_resolution_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_AMBIGUOUS) \
@@ -12676,42 +14727,56 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_QW_COMMA_IN_WORD_LIST() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_qw_comma_in_word_list_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_QW) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_QW_COMMENT_MARKER_IN_WORD_LIST() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_qw_comment_marker_in_word_list_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_QW) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_QW_WHITESPACE_ESCAPE_IN_WORD_LIST() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_qw_whitespace_escape_in_word_list_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_QW) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_SEMICOLON_PREVIOUS_LINE_SEMICOLON_MAY_BE_MISSING() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_semicolon_previous_line_semicolon_may_be_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SEMICOLON) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_NEGATED_PATTERN_BINDING_OPERATOR_REVERSED() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_syntax_negated_pattern_binding_operator_reversed_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_NUMERIC_INEQUALITY_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_equ_undef_aware_numeric_inequality_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__EQU) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_SUBSTITUTION_EXPRESSION_BACKSLASH_DIGIT(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2258( \
         aTHX_ perl_diag_warning_syntax_substitution_expression_backslash_digit_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         "%c", \
@@ -12722,6 +14787,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_SEPARATOR_MISSING_BEFORE_SIGILED_NAME(ma_arg1, ma_arg2_utf8, ma_arg2_length, ma_arg2_text) \
     Perl_throw_ck_warner_d_2_2271( \
         aTHX_ perl_diag_warning_syntax_ambiguous_separator_missing_before_sigiled_name_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         ma_arg2_utf8, \
@@ -12733,6 +14800,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_SIGIL_RESOLVED_AS_OPERATOR(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_d_2_2272( \
         aTHX_ perl_diag_warning_syntax_ambiguous_sigil_resolved_as_operator_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         "%c", \
@@ -12743,6 +14812,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_RESERVED_LOWERCASE_BAREWORD_MAY_BECOME_RESERVED(ma_arg1) \
     Perl_throw_warner_1_2078( \
         aTHX_ perl_diag_warning_syntax_reserved_lowercase_bareword_may_become_reserved_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_RESERVED) \
@@ -12751,6 +14822,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_BAREWORD_PACKAGE_BAREWORD_HAS_NO_STASH(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_warner_1_2123( \
         aTHX_ perl_diag_warning_syntax_bareword_package_bareword_has_no_stash_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -12760,78 +14833,104 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_EXPERIMENTAL_NAMESPACES_CURRENT_NAMESPACE_CONSTANT_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_namespaces_current_namespace_constant_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__NAMESPACES) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_CLASS_CURRENT_CLASS_CONSTANT_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_class_current_class_constant_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__CLASS) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_CLASS_ADJUST_BLOCK_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_class_adjust_block_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__CLASS) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_KEYWORD_ALL_BLOCK_OPERATOR_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_keyword_all_block_operator_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__KEYWORD_ALL) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_KEYWORD_ANY_BLOCK_OPERATOR_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_keyword_any_block_operator_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__KEYWORD_ANY) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_CLASS_DECLARATION_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_class_declaration_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__CLASS) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_DEFER_BLOCK_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_defer_block_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__DEFER) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_STRING_EQUALITY_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_equ_undef_aware_string_equality_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__EQU) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_CLASS_FIELD_DECLARATION_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_class_field_declaration_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__CLASS) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_TRY_FINALLY_BLOCK_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_try_finally_block_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__TRY) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_NAMESPACES_NAMESPACE_DECLARATION_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_namespaces_namespace_declaration_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__NAMESPACES) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_STRING_INEQUALITY_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_equ_undef_aware_string_inequality_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__EQU) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_PRECEDENCE_UNPARENTHESIZED_OPEN_BAREWORD(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, ma_arg2_utf8, ma_arg2_length, ma_arg2_text) \
     Perl_throw_warner_2_2287( \
         aTHX_ perl_diag_warning_syntax_precedence_unparenthesized_open_bareword_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -12844,24 +14943,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_EXPERIMENTAL_CLASS_ROLE_DECLARATION_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_class_role_declaration_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__CLASS) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_CLASS_METHOD_DECLARATION_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_class_method_declaration_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__CLASS) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_EQU_UNDEF_AWARE_NUMERIC_EQUALITY_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_equ_undef_aware_numeric_equality_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__EQU) \
     )
 
 #define PERL_WARN_WARNING_SYNTAX_ASSIGNMENT_OPERATOR_REVERSED(ma_arg1) \
     Perl_throw_warner_1_2291( \
         aTHX_ perl_diag_warning_syntax_assignment_operator_reversed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         packWARN(WARN_SYNTAX) \
@@ -12870,6 +14977,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_UNDECLARED_AGGREGATE_INTERPOLATION(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_warner_1_2123( \
         aTHX_ perl_diag_warning_syntax_ambiguous_undeclared_aggregate_interpolation_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -12879,6 +14988,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_PARENTHESIZED_FORM_INTERPRETED_AS_FUNCTION(ma_arg1) \
     Perl_throw_warner_1_2078( \
         aTHX_ perl_diag_warning_syntax_parenthesized_form_interpreted_as_function_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_SYNTAX) \
@@ -12887,6 +14998,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_BRACKETED_KEYWORD_DEREFERENCE_RESOLUTION(ma_arg1, ma_arg2, ma_arg3, ma_arg4, ma_arg5, ma_arg6) \
     Perl_throw_warner_6_2294( \
         aTHX_ perl_diag_warning_syntax_ambiguous_bracketed_keyword_dereference_resolution_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         "%s", \
@@ -12905,6 +15018,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_AMBIGUOUS_BRACED_NAME_DEREFERENCE_RESOLUTION(ma_arg1, ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_warner_4_2295( \
         aTHX_ perl_diag_warning_syntax_ambiguous_braced_name_dereference_resolution_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_arg1, \
         (SV *)(ma_arg2), \
@@ -12917,24 +15032,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_REGEXP_MODIFIER_MATCH_CONTINUE_WITHOUT_GLOBAL() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_regexp_modifier_match_continue_without_global_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_REGEXP) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_ENHANCED_XX_DOUBLE_EXTENDED_MODIFIER_USED() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_experimental_enhanced_xx_double_extended_modifier_used_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_EXPERIMENTAL__ENHANCED_XX) \
     )
 
 #define PERL_WARN_WARNING_REGEXP_MODIFIER_SUBSTITUTION_CONTINUE_IGNORED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_regexp_modifier_substitution_continue_ignored_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_REGEXP) \
     )
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_EXTRA_PAIRED_DELIMITERS_NON_ASCII_DELIMITER_USED(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_ck_warner_d_1_2099( \
         aTHX_ perl_diag_warning_experimental_extra_paired_delimiters_non_ascii_delimiter_used_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -12944,6 +15067,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_DEPRECATE_WARNING_DEPRECATED_DELIMITER_WILL_BE_PAIRED_UNPAIRED_DELIMITER_USED(ma_arg1_utf8, ma_arg1_length, ma_arg1_text) \
     Perl_throw_ck_warner_d_1_2099( \
         aTHX_ perl_diag_warning_deprecated_delimiter_will_be_paired_unpaired_delimiter_used_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_utf8, \
         ma_arg1_length, \
         (const char *)(ma_arg1_text), \
@@ -12953,36 +15078,48 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_NUMBER_UNDERSCORE_MISPLACED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_syntax_number_underscore_misplaced_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_SYNTAX) \
     )
 
 #define PERL_WARN_WARNING_OVERFLOW_HEXADECIMAL_FLOAT_EXPONENT_UNDERFLOW() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_overflow_hexadecimal_float_exponent_underflow_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_OVERFLOW) \
     )
 
 #define PERL_WARN_WARNING_OVERFLOW_HEXADECIMAL_FLOAT_EXPONENT_OVERFLOW() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_overflow_hexadecimal_float_exponent_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_OVERFLOW) \
     )
 
 #define PERL_WARN_WARNING_OVERFLOW_HEXADECIMAL_FLOAT_MANTISSA_PRECISION_EXCEEDED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_overflow_hexadecimal_float_mantissa_precision_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_OVERFLOW) \
     )
 
 #define PERL_WARN_WARNING_OVERFLOW_VSTRING_DECIMAL_COMPONENT() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_overflow_vstring_decimal_component_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_OVERFLOW) \
     )
 
 #define PERL_WARN_WARNING_MISSING_IMPORT_IMPORT_OR_UNIMPORT_MISSING_WITH_ARGUMENTS(ma_method_name, ma_argument_list_state, ma_argument_preview, ma_package_name) \
     Perl_throw_ck_warner_d_4_2307( \
         aTHX_ perl_diag_warning_missing_import_import_or_unimport_missing_with_arguments_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_method_name), \
         ma_argument_list_state, \
@@ -12994,6 +15131,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_TRUNCATED_SEQUENCE_IN_OPERATION(ma_operation_identity, ma_operation) \
     Perl_throw_ck_warner_d_2_2165( \
         aTHX_ perl_diag_warning_utf8_truncated_sequence_in_operation_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%s", \
         (const char *)(ma_operation), \
@@ -13003,12 +15142,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_TRUNCATED_SEQUENCE_WITHOUT_OPERATION() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_utf8_truncated_sequence_without_operation_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_UTF8) \
     )
 
 #define PERL_WARN_WARNING_UTF8_TWO_BYTE_SEQUENCE_CONTINUATION_INVALID(ma_operation_identity, ma_bytes, ma_unexpected_byte, ma_start_byte, ma_context_selector, ma_operation) \
     Perl_throw_ck_warner_d_6_2311( \
         aTHX_ perl_diag_warning_utf8_two_byte_sequence_continuation_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%s", \
         (const char *)(ma_bytes), \
@@ -13025,6 +15168,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_SURROGATE_CASE_MAPPING_RETURNS_SURROGATE_UNCHANGED(ma_arg1_operation, ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_d_3_2314( \
         aTHX_ perl_diag_warning_utf8_surrogate_case_mapping_returns_surrogate_unchanged_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_operation, \
         "%s", \
         (const char *)(ma_arg1), \
@@ -13036,6 +15181,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_NON_UNICODE_CASE_MAPPING_RETURNS_SUPER_UNCHANGED(ma_arg1_operation, ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_d_3_2314( \
         aTHX_ perl_diag_warning_utf8_non_unicode_case_mapping_returns_super_unchanged_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_operation, \
         "%s", \
         (const char *)(ma_arg1), \
@@ -13047,6 +15194,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_LOCALE_CASE_MAPPING_CROSSES_BYTE_BOUNDARY(ma_arg1_operation, ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_ck_warner_4_2316( \
         aTHX_ perl_diag_warning_locale_case_mapping_crosses_byte_boundary_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1_operation, \
         "%s", \
         (const char *)(ma_arg1), \
@@ -13060,30 +15209,40 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_LOCALE_CAPITAL_SHARP_S_FOLD_SUBSTITUTED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_locale_capital_sharp_s_fold_substituted_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_LOCALE) \
     )
 
 #define PERL_WARN_WARNING_LOCALE_DESCENDER_S_LIGATURE_FOLD_SUBSTITUTED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_locale_descender_s_ligature_fold_substituted_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_LOCALE) \
     )
 
 #define PERL_WARN_WARNING_LOCALE_LONG_ST_LIGATURE_FOLD_SUBSTITUTED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_locale_long_st_ligature_fold_substituted_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_LOCALE) \
     )
 
 #define PERL_WARN_WARNING_LOCALE_DOTTED_I_FOLD_SUBSTITUTED() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_locale_dotted_i_fold_substituted_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_LOCALE) \
     )
 
 #define PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_IN_OUTPUT(ma_arg1) \
     Perl_throw_warner_1_2235( \
         aTHX_ perl_diag_warning_utf8_surrogate_surrogate_in_output_idx, \
+        __FILE__, \
+        __LINE__, \
         "%04" UVXf, \
         ma_arg1, \
         packWARN(WARN_SURROGATE) \
@@ -13092,12 +15251,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_PIPE_FORK_FAILED_RETRYING() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_io_pipe_fork_failed_retrying_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_PIPE) \
     )
 
 #define PERL_WARN_WARNING_IO_FILEHANDLE_WRONG_DIRECTION_WITH_NAME(ma_name, ma_direction) \
     Perl_throw_warner_2_2323( \
         aTHX_ perl_diag_warning_io_filehandle_wrong_direction_with_name_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_name, \
         ma_direction, \
         packWARN(WARN_IO) \
@@ -13106,6 +15269,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_FILEHANDLE_WRONG_DIRECTION_WITHOUT_NAME(ma_direction) \
     Perl_throw_warner_1_2324( \
         aTHX_ perl_diag_warning_io_filehandle_wrong_direction_without_name_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_direction, \
         packWARN(WARN_IO) \
     )
@@ -13113,6 +15278,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_OPERATION_ON_CLOSED_OR_UNOPENED_HANDLE(ma_handle_state, ma_handle_type, ma_handle_name_state, ma_operation_form, ma_operation, ma_handle_name, category) \
     Perl_throw_warner_6_2325( \
         aTHX_ perl_diag_warning_io_operation_on_closed_or_unopened_handle_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_handle_state, \
         ma_handle_type, \
         ma_handle_name_state, \
@@ -13126,6 +15293,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_DIRHANDLE_USED_AS_FILEHANDLE_SUGGESTION(ma_handle_name_state, ma_operation, ma_operation_form, ma_handle_name, category) \
     Perl_throw_warner_4_2326( \
         aTHX_ perl_diag_warning_io_dirhandle_used_as_filehandle_suggestion_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_handle_name_state, \
         "%s", \
         (const char *)(ma_operation), \
@@ -13137,6 +15306,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_EXEC_SPAWN_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2091( \
         aTHX_ perl_diag_warning_io_exec_spawn_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -13147,6 +15318,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_EXEC_OS2_PM_PROCESS_SESSION_MISMATCH(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2328( \
         aTHX_ perl_diag_warning_io_exec_os2_pm_process_session_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2, \
         packWARN(WARN_EXEC) \
@@ -13155,6 +15328,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_EXEC_OS2_FULLSCREEN_PROCESS_SESSION_MISMATCH(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2328( \
         aTHX_ perl_diag_warning_io_exec_os2_fullscreen_process_session_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         ma_arg2, \
         packWARN(WARN_EXEC) \
@@ -13163,6 +15338,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_EXEC_OS2_SCRIPT_READ_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_ck_warner_2_2091( \
         aTHX_ perl_diag_warning_io_exec_os2_script_read_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -13173,6 +15350,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_EXEC_OS2_INTERPRETER_LINE_ARGUMENT_LIMIT(ma_arg1_size1, ma_arg1_value, ma_arg2) \
     Perl_throw_warner_2_2331( \
         aTHX_ perl_diag_warning_io_exec_os2_interpreter_line_argument_limit_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_arg1_size1, \
         (const char *)(ma_arg1_value), \
@@ -13184,6 +15363,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_EXEC_OS2_SCRIPT_ARGV0_OVERRIDE_UNSUPPORTED(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_ck_warner_3_2332( \
         aTHX_ perl_diag_warning_io_exec_os2_script_argv0_override_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -13196,6 +15377,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_EXEC_OS2_EXECUTABLE_WITH_ARGV0_OVERRIDE_NOT_FOUND(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_ck_warner_3_2332( \
         aTHX_ perl_diag_warning_io_exec_os2_executable_with_argv0_override_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -13208,6 +15391,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_EXEC_OS2_LAUNCH_FAILED(ma_arg1, ma_arg2, ma_arg3) \
     Perl_throw_ck_warner_3_2332( \
         aTHX_ perl_diag_warning_io_exec_os2_launch_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -13220,6 +15405,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_EXEC_SELECTED_LAUNCH_OPERATION_FAILED(ma_operation_kind, ma_target, ma_error) \
     Perl_throw_ck_warner_3_2335( \
         aTHX_ perl_diag_warning_io_exec_selected_launch_operation_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_kind, \
         "%s", \
         (const char *)(ma_target), \
@@ -13233,6 +15420,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_VMS_CLI_SYMBOL_VALUE_TOO_LONG(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_misc_vms_cli_symbol_value_too_long_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_MISC) \
@@ -13241,6 +15430,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_VMS_CRTL_ENVIRONMENT_ENTRY_MALFORMED(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_severe_internal_vms_crtl_environment_entry_malformed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_INTERNAL) \
@@ -13249,6 +15440,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_VMS_ENVIRONMENT_ENUMERATION_BUFFER_OVERFLOW(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_severe_internal_vms_environment_enumeration_buffer_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_INTERNAL) \
@@ -13257,6 +15450,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_VMS_ENVIRONMENT_ENUMERATION_MESSAGE_MALFORMED(ma_arg1) \
     Perl_throw_warner_1_2078( \
         aTHX_ perl_diag_warning_severe_internal_vms_environment_enumeration_message_malformed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_INTERNAL) \
@@ -13265,6 +15460,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_MISC_VMS_LOGICAL_VALUE_TRUNCATED(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2340( \
         aTHX_ perl_diag_warning_misc_vms_logical_value_truncated_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg2, \
@@ -13274,6 +15471,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_IO_PIPE_VMS_HELPER_SCRIPT_UNAVAILABLE() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_io_pipe_vms_helper_script_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_PIPE) \
     )
 
@@ -13292,13 +15491,15 @@ enum perl_diag_selector_domain_id {
             sv_setpvf(tmpl_arg2, "%s", in_arg2); \
              \
             SV * const message_sv = NULL; \
-            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_io_pipe_vms_command_start_failed_idx, params_av, packWARN(WARN_PIPE), message_sv); \
+            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_io_pipe_vms_command_start_failed_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_PIPE), message_sv); \
         } \
     } STMT_END
 
 #define PERL_WARN_WARNING_IO_EXEC_VMS_WAITPID_TARGET_NOT_CHILD(ma_arg1, ma_arg2) \
     Perl_throw_warner_2_2343( \
         aTHX_ perl_diag_warning_io_exec_vms_waitpid_target_not_child_idx, \
+        __FILE__, \
+        __LINE__, \
         "%x", \
         ma_arg1, \
         "%x", \
@@ -13321,13 +15522,15 @@ enum perl_diag_selector_domain_id {
             sv_setpvf(tmpl_arg2, "%s", in_arg2); \
              \
             SV * const message_sv = NULL; \
-            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_io_exec_vms_exec_failed_idx, params_av, packWARN(WARN_EXEC), message_sv); \
+            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_io_exec_vms_exec_failed_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_EXEC), message_sv); \
         } \
     } STMT_END
 
 #define PERL_WARN_WARNING_IO_EXEC_VMS_SPAWN_FAILED(ma_arg1) \
     Perl_throw_ck_warner_1_2073( \
         aTHX_ perl_diag_warning_io_exec_vms_spawn_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         packWARN(WARN_EXEC) \
@@ -13336,6 +15539,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_OVERFLOW_WIN32_SLEEP_MILLISECONDS_RANGE_EXCEEDED(ma_arg1) \
     Perl_throw_ck_warner_1_2346( \
         aTHX_ perl_diag_warning_overflow_win32_sleep_milliseconds_range_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1, \
         packWARN(WARN_OVERFLOW) \
     )
@@ -13343,18 +15548,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_UNREFERENCED_GLOB_POINTERS_FREE() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_internal_unreferenced_glob_pointers_free_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_INTERNAL) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_HASH_ITERATION_AFTER_INSERTION() \
     Perl_throw_ck_warner_d_0_2069( \
         aTHX_ perl_diag_warning_severe_internal_hash_iteration_after_insertion_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_INTERNAL) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_SHARED_STRING_FREE_NOT_FOUND(ma_key, ma_utf8_marker) \
     Perl_throw_ck_warner_d_2_2349( \
         aTHX_ perl_diag_warning_severe_internal_shared_string_free_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_key), \
         ma_utf8_marker, \
@@ -13364,24 +15575,32 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_SCALAR_HANDLE_STORAGE_NOT_BYTE_STRING() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_utf8_scalar_handle_storage_not_byte_string_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_UTF8) \
     )
 
 #define PERL_WARN_WARNING_LOCALE_REGEXP_BOUNDARY_ASSUMES_UTF8() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_locale_regexp_boundary_assumes_utf8_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_LOCALE) \
     )
 
 #define PERL_WARN_WARNING_LOCALE_REGEXP_SET_ASSUMES_UTF8() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_locale_regexp_set_assumes_utf8_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_LOCALE) \
     )
 
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_SCALAR_FREE_OUTSIDE_ARENAS(ma_arg1) \
     Perl_throw_ck_warner_d_1_2353( \
         aTHX_ perl_diag_warning_severe_internal_scalar_free_outside_arenas_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1, \
         packWARN(WARN_INTERNAL) \
@@ -13390,6 +15609,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_DEBUGGING_TEMPORARY_SCALAR_FREE_PREMATURE(ma_arg1) \
     Perl_throw_ck_warner_d_1_2353( \
         aTHX_ perl_diag_warning_severe_debugging_temporary_scalar_free_premature_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1, \
         packWARN(WARN_DEBUGGING) \
@@ -13398,6 +15619,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SEVERE_INTERNAL_ZERO_REFCOUNT_SCALAR_FREE(ma_arg1) \
     Perl_throw_warner_1_2235( \
         aTHX_ perl_diag_warning_severe_internal_zero_refcount_scalar_free_idx, \
+        __FILE__, \
+        __LINE__, \
         "%" UVxf, \
         ma_arg1, \
         packWARN(WARN_INTERNAL) \
@@ -13406,6 +15629,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_SYNTAX_CONTROL_ESCAPE_PRINTABLE_RESULT(exception_slot, ma_arg1, ma_arg2) \
     Perl_throw_append_warning_2_2209( \
         aTHX_ perl_diag_warning_syntax_control_escape_printable_result_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%c", \
         ma_arg1, \
@@ -13419,6 +15644,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT(ma_operation_identity, ma_arg1, ma_context, ma_operation, category) \
     Perl_throw_warner_4_2357( \
         aTHX_ perl_diag_warning_utf8_non_unicode_perl_extended_codepoint_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%" UVXf, \
         ma_arg1, \
@@ -13431,6 +15658,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_CODEPOINT(exception_slot, category, ma_operation_identity, ma_arg1, ma_context, ma_operation) \
     Perl_throw_append_warning_4_2357( \
         aTHX_ perl_diag_warning_utf8_non_unicode_perl_extended_codepoint_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%" UVXf, \
@@ -13446,6 +15675,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX(ma_operation_identity, ma_arg1, ma_context, ma_operation, category) \
     Perl_throw_warner_4_2357( \
         aTHX_ perl_diag_warning_utf8_non_unicode_codepoint_above_unicode_max_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%" UVXf, \
         ma_arg1, \
@@ -13458,6 +15689,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_NON_UNICODE_CODEPOINT_ABOVE_UNICODE_MAX(exception_slot, category, ma_operation_identity, ma_arg1, ma_context, ma_operation) \
     Perl_throw_append_warning_4_2357( \
         aTHX_ perl_diag_warning_utf8_non_unicode_codepoint_above_unicode_max_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%" UVXf, \
@@ -13473,6 +15706,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_NONCHAR_NONCHARACTER_ENCODED(ma_arg1) \
     Perl_throw_ck_warner_d_1_2353( \
         aTHX_ perl_diag_warning_utf8_nonchar_noncharacter_encoded_idx, \
+        __FILE__, \
+        __LINE__, \
         "%04" UVXf, \
         ma_arg1, \
         packWARN(WARN_NONCHAR) \
@@ -13481,6 +15716,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_NONCHAR_NONCHARACTER_ENCODED(exception_slot, ma_arg1) \
     Perl_throw_append_warning_1_2359( \
         aTHX_ perl_diag_warning_utf8_nonchar_noncharacter_encoded_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%04" UVXf, \
         ma_arg1, \
@@ -13492,6 +15729,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_ENCODED(ma_arg1) \
     Perl_throw_ck_warner_d_1_2353( \
         aTHX_ perl_diag_warning_utf8_surrogate_surrogate_encoded_idx, \
+        __FILE__, \
+        __LINE__, \
         "%04" UVXf, \
         ma_arg1, \
         packWARN(WARN_SURROGATE) \
@@ -13500,6 +15739,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_SURROGATE_SURROGATE_ENCODED(exception_slot, ma_arg1) \
     Perl_throw_append_warning_1_2360( \
         aTHX_ perl_diag_warning_utf8_surrogate_surrogate_encoded_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%04" UVXf, \
         ma_arg1, \
@@ -13509,6 +15750,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_REDEFINE_METHOD_REDEFINED(ma_arg1) \
     Perl_throw_warner_1_2138( \
         aTHX_ perl_diag_warning_redefine_method_redefined_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_REDEFINE) \
     )
@@ -13516,6 +15759,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_REDEFINE_SUBROUTINE_REDEFINED(ma_arg1) \
     Perl_throw_warner_1_2138( \
         aTHX_ perl_diag_warning_redefine_subroutine_redefined_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         packWARN(WARN_REDEFINE) \
     )
@@ -13523,6 +15768,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_HASH_ELEMENT_SCALAR_CONTEXT_WITH_KEY_PLACEHOLDER(ma_arg1, ma_arg2, ma_arg3, ma_arg4, ma_arg5, ma_arg6, ma_arg7, ma_arg8) \
     Perl_throw_warner_8_2363( \
         aTHX_ perl_diag_warning_syntax_hash_element_scalar_context_with_key_placeholder_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         "%c", \
         ma_arg2, \
@@ -13543,6 +15790,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_SLICE_SCALAR_CONTEXT_WITH_KEY_PLACEHOLDER(ma_arg1, ma_arg2, ma_arg3, ma_arg4, ma_arg5, ma_arg6, ma_arg7, ma_arg8) \
     Perl_throw_warner_8_2363( \
         aTHX_ perl_diag_warning_syntax_slice_scalar_context_with_key_placeholder_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         "%c", \
         ma_arg2, \
@@ -13563,6 +15812,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_HASH_ELEMENT_SCALAR_CONTEXT_WITH_CONSTANT_KEY(ma_arg1, ma_arg2, ma_arg3, ma_arg4, ma_arg5, ma_arg6, ma_arg7, ma_arg8) \
     Perl_throw_warner_8_2365( \
         aTHX_ perl_diag_warning_syntax_hash_element_scalar_context_with_constant_key_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         "%c", \
         ma_arg2, \
@@ -13581,6 +15832,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYNTAX_SLICE_SCALAR_CONTEXT_WITH_CONSTANT_KEY(ma_arg1, ma_arg2, ma_arg3, ma_arg4, ma_arg5, ma_arg6, ma_arg7, ma_arg8) \
     Perl_throw_warner_8_2365( \
         aTHX_ perl_diag_warning_syntax_slice_scalar_context_with_constant_key_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_arg1), \
         "%c", \
         ma_arg2, \
@@ -13599,6 +15852,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_COMPOSED_LOCALE_WARNING(exception_slot, ma_locale_type, ma_locale, ma_characters, ma_bad_count, ma_codeset_state, ma_codeset) \
     Perl_throw_append_exception_6_2367( \
         aTHX_ perl_diag_warning_locale_ctype_character_semantics_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_locale_type, \
         "%s", \
@@ -13634,7 +15889,7 @@ enum perl_diag_selector_domain_id {
             sv_setpvf(tmpl_arg4, "%s", in_arg4); \
              \
             SV * const message_sv = NULL; \
-            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_io_syscalls_argument_embedded_nul_idx, params_av, packWARN(WARN_SYSCALLS), message_sv); \
+            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_io_syscalls_argument_embedded_nul_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_SYSCALLS), message_sv); \
         } \
     } STMT_END
 
@@ -13655,7 +15910,7 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg2, "%s", in_arg2); \
          \
         SV * const message_sv = NULL; \
-        Perl_diag_warner_sv(aTHX_ perl_diag_warning_locale_wide_character_under_byte_ctype_idx, params_av, packWARN(WARN_LOCALE), message_sv); \
+        Perl_diag_warner_sv(aTHX_ perl_diag_warning_locale_wide_character_under_byte_ctype_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_LOCALE), message_sv); \
     } STMT_END
 
 #define PERL_WARN_WARNING_OVERFLOW_VERSION_COMPONENT_WITH_LIMIT(ma_arg1) \
@@ -13668,7 +15923,7 @@ enum perl_diag_selector_domain_id {
             sv_setiv(tmpl_arg1, in_arg1); \
              \
             SV * const message_sv = NULL; \
-            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_overflow_version_component_with_limit_idx, params_av, packWARN(WARN_OVERFLOW), message_sv); \
+            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_overflow_version_component_with_limit_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_OVERFLOW), message_sv); \
         } \
     } STMT_END
 
@@ -13677,7 +15932,7 @@ enum perl_diag_selector_domain_id {
         if (Perl_ckwarn(aTHX_ packWARN(WARN_OVERFLOW))) { \
              \
             SV * const message_sv = NULL; \
-            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_overflow_version_component_idx, NULL, packWARN(WARN_OVERFLOW), message_sv); \
+            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_overflow_version_component_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_OVERFLOW), message_sv); \
         } \
     } STMT_END
 
@@ -13695,7 +15950,7 @@ enum perl_diag_selector_domain_id {
             sv_setpvf(tmpl_arg2, "%s", in_arg2); \
              \
             SV * const message_sv = NULL; \
-            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_misc_version_trailing_invalid_data_ignored_idx, params_av, packWARN(WARN_MISC), message_sv); \
+            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_misc_version_trailing_invalid_data_ignored_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_MISC), message_sv); \
         } \
     } STMT_END
 
@@ -13704,41 +15959,53 @@ enum perl_diag_selector_domain_id {
         if (Perl_ckwarn(aTHX_ packWARN(WARN_NUMERIC))) { \
              \
             SV * const message_sv = NULL; \
-            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_numeric_version_development_numification_lossy_idx, NULL, packWARN(WARN_NUMERIC), message_sv); \
+            Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_numeric_version_development_numification_lossy_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_NUMERIC), message_sv); \
         } \
     } STMT_END
 
 #define PERL_WARN_WARNING_LOAD_GLOBAL_SYMBOL_LOADING_UNSUPPORTED(ma_arg1) \
     Perl_throw_warn_1_1237( \
         aTHX_ perl_diag_warning_load_global_symbol_loading_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
 
 #define PERL_WARN_WARNING_INTERNAL_SYSTEM_PLATFORM_OS2_JOIN_UNSTARTED_THREAD() \
     Perl_throw_warn_nocontext_0_2375( \
-        perl_diag_warning_internal_system_platform_os2_join_unstarted_thread_idx \
+        perl_diag_warning_internal_system_platform_os2_join_unstarted_thread_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_DETACH_UNSTARTED_THREAD() \
     Perl_throw_warn_nocontext_0_2375( \
-        perl_diag_warning_system_platform_os2_detach_unstarted_thread_idx \
+        perl_diag_warning_system_platform_os2_detach_unstarted_thread_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_THREAD_ALREADY_DETACHED() \
     Perl_throw_warn_nocontext_0_2375( \
-        perl_diag_warning_system_platform_os2_thread_already_detached_idx \
+        perl_diag_warning_system_platform_os2_thread_already_detached_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_PM_RESTORE_MODE_UNEXPECTED(ma_arg1) \
     Perl_throw_warn_nocontext_1_2378( \
         perl_diag_warning_system_platform_os2_pm_restore_mode_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_DEVICE_CONTEXT_CLOSE_FAILED(ma_arg1) \
     Perl_throw_warn_nocontext_1_2379( \
         perl_diag_warning_system_platform_os2_device_context_close_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1) \
     )
@@ -13746,6 +16013,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_FORK_DLL_NAME_LOOKUP_FAILED(ma_arg1, ma_arg2, ma_arg3, ma_arg4) \
     Perl_throw_warn_nocontext_4_2380( \
         perl_diag_warning_system_platform_os2_fork_dll_name_lookup_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         ma_arg2, \
@@ -13757,6 +16026,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_SYSTEM_PLATFORM_OS2_FORK_DLL_RELOAD_FAILED(ma_arg1, ma_arg2) \
     Perl_throw_warn_nocontext_2_2381( \
         perl_diag_warning_system_platform_os2_fork_dll_reload_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_arg1), \
         "%s", \
@@ -13766,6 +16037,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_INTERNAL_MEMORY_WINDOWS_FREE_TO_WRONG_POOL(ma_arg1, ma_arg2) \
     Perl_throw_warn_nocontext_2_2382( \
         perl_diag_warning_internal_memory_windows_free_to_wrong_pool_idx, \
+        __FILE__, \
+        __LINE__, \
         "%p", \
         ma_arg1, \
         "%p", \
@@ -13806,7 +16079,7 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_after, "%" UTF8f, UTF8fARG(in_after_utf8, in_after_length, (in_after_text ? SvPVX(scratch_after_copy) : NULL))); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_sv(aTHX_ perl_diag_warning_regexp_modifier_inline_global_or_once_ignored_idx, params_av, packWARN(WARN_REGEXP), message_sv)); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_sv(aTHX_ perl_diag_warning_regexp_modifier_inline_global_or_once_ignored_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv)); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_MODIFIER_INLINE_CONTINUE_IGNORED(ma_modifier_mode, ma_modifier_prefix, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text, location) \
@@ -13839,25 +16112,25 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_after, "%" UTF8f, UTF8fARG(in_after_utf8, in_after_length, (in_after_text ? SvPVX(scratch_after_copy) : NULL))); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_sv(aTHX_ perl_diag_warning_regexp_modifier_inline_continue_ignored_idx, params_av, packWARN(WARN_REGEXP), message_sv)); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_sv(aTHX_ perl_diag_warning_regexp_modifier_inline_continue_ignored_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv)); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_MODIFIER_KEEP_COPY_DISABLE_IGNORED(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_modifier_keep_copy_disable_ignored_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_modifier_keep_copy_disable_ignored_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_MODIFIER_EMPTY_GROUP(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_modifier_empty_group_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_modifier_empty_group_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_QUANTIFIER_MAXIMUM_BELOW_MINIMUM(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_quantifier_maximum_below_minimum_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_quantifier_maximum_below_minimum_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_QUANTIFIER_FIXED_COUNT_GREEDINESS_IGNORED(ma_arg1, location) \
@@ -13869,7 +16142,7 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg1, "%c", in_arg1); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_quantifier_fixed_count_greediness_ignored_idx, params_av, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_quantifier_fixed_count_greediness_ignored_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_QUANTIFIER_EXCESSIVE_ZERO_WIDTH_REPETITION(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, location) \
@@ -13886,7 +16159,7 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg1, "%" UTF8f, UTF8fARG(in_arg1_utf8, in_arg1_length, (in_arg1_text ? SvPVX(scratch_arg1_copy) : NULL))); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_quantifier_excessive_zero_width_repetition_idx, params_av, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_quantifier_excessive_zero_width_repetition_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_MODIFIER_BOUNDARY_FORCES_UNICODE(ma_arg1_size1, ma_arg1_value, ma_arg2, location) \
@@ -13903,12 +16176,14 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg2, "%s", in_arg2); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_modifier_boundary_forces_unicode_idx, params_av, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_modifier_boundary_forces_unicode_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_ESCAPE_DIGIT_OUTSIDE_RADIX(ma_radix, ma_character_utf8, ma_character_length, ma_character_text, ma_escape, ma_resolved_utf8, ma_resolved_length, ma_resolved_text) \
     Perl_throw_warner_4_2392( \
         aTHX_ perl_diag_warning_regexp_escape_digit_outside_radix_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_radix, \
         ma_character_utf8, \
         ma_character_length, \
@@ -13924,6 +16199,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_REGEXP_ESCAPE_DIGIT_OUTSIDE_RADIX(exception_slot, ma_radix, ma_character_utf8, ma_character_length, ma_character_text, ma_escape, ma_resolved_utf8, ma_resolved_length, ma_resolved_text) \
     Perl_throw_append_warning_4_2392( \
         aTHX_ perl_diag_warning_regexp_escape_digit_outside_radix_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_radix, \
         ma_character_utf8, \
@@ -13946,7 +16223,7 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg1, "%.1s", in_arg1); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_escape_unknown_alphanumeric_idx, params_av, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_escape_unknown_alphanumeric_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_ESCAPE_LITERAL_OPEN_BRACE_AMBIGUOUS(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text, location) \
@@ -13972,7 +16249,7 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_after, "%" UTF8f, UTF8fARG(in_after_utf8, in_after_length, (in_after_text ? SvPVX(scratch_after_copy) : NULL))); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_regexp_escape_literal_open_brace_ambiguous_idx, params_av, packWARN(WARN_REGEXP), message_sv)); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_sv(aTHX_ perl_diag_warning_regexp_escape_literal_open_brace_ambiguous_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv)); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_ESCAPE_LITERAL_CLOSE_DELIMITER_UNESCAPED(ma_arg1, location) \
@@ -13984,7 +16261,7 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg1, "%c", in_arg1); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_escape_literal_close_delimiter_unescaped_idx, params_av, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_escape_literal_close_delimiter_unescaped_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_PORTABLE_REGEXP_CODEPOINT_REQUIRES_PERL_EXTENSION(ma_arg1, location) \
@@ -13996,7 +16273,7 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg1, "%" UVXf, in_arg1); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_PORTABLE), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_portable_regexp_codepoint_requires_perl_extension_idx, params_av, packWARN(WARN_PORTABLE), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_PORTABLE), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_portable_regexp_codepoint_requires_perl_extension_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_PORTABLE), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CASE_FOLD_INVERSE_MAPPING_MISSING(ma_arg1, location) \
@@ -14008,7 +16285,7 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg1, "%02X", in_arg1); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_d_regex_sv(aTHX_ perl_diag_warning_regexp_case_fold_inverse_mapping_missing_idx, params_av, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_d_regex_sv(aTHX_ perl_diag_warning_regexp_case_fold_inverse_mapping_missing_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_POSIX_OUTER_BRACKETS_MISSING(ma_arg1, ma_arg2, ma_class_status, location) \
@@ -14027,25 +16304,25 @@ enum perl_diag_selector_domain_id {
         Perl_diag_setup_param(aTHX_ params_av, perl_diag_warning_regexp_char_class_posix_outer_brackets_missing_idx, 2, perl_diag_selector_domain_2398_0_id, in_class_status); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_posix_outer_brackets_missing_idx, params_av, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_posix_outer_brackets_missing_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_EMPTY_NAMED_ESCAPE_IGNORED(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_empty_named_escape_ignored_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_empty_named_escape_ignored_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_NAMED_ESCAPE_TRUNCATED(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_named_escape_truncated_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_named_escape_truncated_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_EXTENDED_STRING_PROPERTY_PART_IGNORED(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_extended_string_property_part_ignored_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_extended_string_property_part_ignored_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_ESCAPE_UNKNOWN_ALPHANUMERIC(ma_arg1, location) \
@@ -14057,19 +16334,19 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg1, "%c", in_arg1); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_escape_unknown_alphanumeric_idx, params_av, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_escape_unknown_alphanumeric_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_DEPRECATE_WARNING_DEPRECATED_REGEXP_CHAR_CLASS_LITERAL_VERTICAL_SPACE(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_DEPRECATED), Perl_diag_ck_warner_d_regex_sv(aTHX_ perl_diag_warning_deprecated_regexp_char_class_literal_vertical_space_idx, NULL, packWARN(WARN_DEPRECATED), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_DEPRECATED), Perl_diag_ck_warner_d_regex_sv(aTHX_ perl_diag_warning_deprecated_regexp_char_class_literal_vertical_space_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_DEPRECATED), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_DEPRECATE_WARNING_DEPRECATED_REGEXP_CHAR_CLASS_UNESCAPED_HASH(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_DEPRECATED), Perl_diag_ck_warner_d_regex_sv(aTHX_ perl_diag_warning_deprecated_regexp_char_class_unescaped_hash_idx, NULL, packWARN(WARN_DEPRECATED), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_DEPRECATED), Perl_diag_ck_warner_d_regex_sv(aTHX_ perl_diag_warning_deprecated_regexp_char_class_unescaped_hash_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_DEPRECATED), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_END_NOT_CHARACTER(ma_arg1_utf8, ma_arg1_length, ma_arg1_text, location) \
@@ -14086,7 +16363,7 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg1, "%" UTF8f, UTF8fARG(in_arg1_utf8, in_arg1_length, (in_arg1_text ? SvPVX(scratch_arg1_copy) : NULL))); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_range_end_not_character_idx, params_av, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_ck_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_range_end_not_character_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_START_NOT_CHARACTER(ma_arg1_size1, ma_arg1_size2, ma_arg1_value, location) \
@@ -14100,25 +16377,25 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg1, "%*.*s", in_arg1_size1, in_arg1_size2, in_arg1_value); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_range_start_not_character_idx, params_av, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_range_start_not_character_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_UNICODE_NOTATION_MIXED(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_range_unicode_notation_mixed_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_range_unicode_notation_mixed_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_ASCII_ENDPOINTS_MIXED(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_range_ascii_endpoints_mixed_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_range_ascii_endpoints_mixed_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_RANGE_DECIMAL_GROUPS_MIXED(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_range_decimal_groups_mixed_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_range_decimal_groups_mixed_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_ESCAPE_NONPORTABLE_NOTATION(ma_arg1_size1, ma_arg1_value, ma_arg2, location) \
@@ -14135,25 +16412,25 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg2, "%s", in_arg2); \
          \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_escape_nonportable_notation_idx, params_av, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_char_class_escape_nonportable_notation_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_COMMENT_HASH_SPACING_SUSPICIOUS(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_comment_hash_spacing_suspicious_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_comment_hash_spacing_suspicious_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_COMMENT_SECOND_HASH_SUSPICIOUS(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_comment_second_hash_suspicious_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_comment_second_hash_suspicious_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_REGEXP_COMMENT_CLOSE_BRACKET_SUSPICIOUS(location) \
     STMT_START { \
         SV * const message_sv = NULL; \
-        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_comment_close_bracket_suspicious_idx, NULL, packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+        WARN_HELPER_(location, packWARN(WARN_REGEXP), Perl_diag_warner_regex_sv(aTHX_ perl_diag_warning_regexp_comment_close_bracket_suspicious_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), packWARN(WARN_REGEXP), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
     } STMT_END
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_VLB_CAPTURING_LOOKBEHIND_USED(ma_arg1, location) \
@@ -14168,60 +16445,76 @@ enum perl_diag_selector_domain_id {
         STMT_START { \
         if (!RExC_warned_WARN_EXPERIMENTAL__VLB) { \
             RExC_warned_WARN_EXPERIMENTAL__VLB = 1; \
-            WARN_HELPER_(location, packWARN(WARN_EXPERIMENTAL__VLB), Perl_diag_ck_warner_d_regex_sv(aTHX_ perl_diag_warning_experimental_vlb_capturing_lookbehind_used_idx, params_av, packWARN(WARN_EXPERIMENTAL__VLB), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
+            WARN_HELPER_(location, packWARN(WARN_EXPERIMENTAL__VLB), Perl_diag_ck_warner_d_regex_sv(aTHX_ perl_diag_warning_experimental_vlb_capturing_lookbehind_used_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), packWARN(WARN_EXPERIMENTAL__VLB), message_sv, UTF, PERL_REPORT_LOCATION_BEFORE_LENGTH(location), sI, PERL_REPORT_LOCATION_AFTER_LENGTH(location), PERL_REPORT_LOCATION_AFTER_START(location))); \
         } \
     } STMT_END; \
     } STMT_END
 
 #define PERL_DEPRECATE_WARNING_DEPRECATED_COMPONENT_USED(ma_message, category) \
-    Perl_diag_ck_warner_d(aTHX_ perl_diag_warning_deprecated_component_used_idx, NULL, category, ASSERT_IS_LITERAL(ma_message " is deprecated"))
+    Perl_diag_ck_warner_d(aTHX_ perl_diag_warning_deprecated_component_used_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), category, ASSERT_IS_LITERAL(ma_message " is deprecated"))
 
 #define PERL_DEPRECATE_WARNING_DEPRECATED_COMPONENT_REMOVAL_SCHEDULED(ma_message, ma_when, category) \
-    Perl_diag_ck_warner_d(aTHX_ perl_diag_warning_deprecated_component_removal_scheduled_idx, NULL, category, ASSERT_IS_LITERAL(ma_message " is deprecated, and will disappear in Perl " ma_when))
+    Perl_diag_ck_warner_d(aTHX_ perl_diag_warning_deprecated_component_removal_scheduled_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), category, ASSERT_IS_LITERAL(ma_message " is deprecated, and will disappear in Perl " ma_when))
 
 #define PERL_DEPRECATE_WARNING_DEPRECATED_COMPONENT_FATALIZATION_SCHEDULED(ma_message, ma_when, category) \
-    Perl_diag_ck_warner_d(aTHX_ perl_diag_warning_deprecated_component_fatalization_scheduled_idx, NULL, category, ASSERT_IS_LITERAL(ma_message " is deprecated, and will become fatal in Perl " ma_when))
+    Perl_diag_ck_warner_d(aTHX_ perl_diag_warning_deprecated_component_fatalization_scheduled_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), category, ASSERT_IS_LITERAL(ma_message " is deprecated, and will become fatal in Perl " ma_when))
 
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_BUILTIN_SCALAR_DISPATCH_OP_UNKNOWN(ma_arg1) \
     Perl_throw_die_nocontext_1_2418( \
         perl_diag_error_internal_opcode_builtin_scalar_dispatch_op_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_OPCODE_BUILTIN_VOID_DISPATCH_OP_UNKNOWN(ma_arg1) \
     Perl_throw_die_nocontext_1_2418( \
         perl_diag_error_internal_opcode_builtin_void_dispatch_op_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_arg1 \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_SYMBOL_TABLE_GLOB_DESTRUCTION_RECREATION_LIMIT() \
     Perl_throw_die_nocontext_0_2420( \
-        perl_diag_error_internal_symbol_table_glob_destruction_recreation_limit_idx \
+        perl_diag_error_internal_symbol_table_glob_destruction_recreation_limit_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_HASH_PLACEHOLDER_COUNT_SLOT_CREATION_FAILED() \
     Perl_throw_die_nocontext_0_2420( \
-        perl_diag_error_internal_hash_placeholder_count_slot_creation_failed_idx \
+        perl_diag_error_internal_hash_placeholder_count_slot_creation_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_HASH_PLACEHOLDER_COUNT_SET_CREATION_FAILED() \
     Perl_throw_die_nocontext_0_2420( \
-        perl_diag_error_internal_hash_placeholder_count_set_creation_failed_idx \
+        perl_diag_error_internal_hash_placeholder_count_set_creation_failed_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_PLATFORM_VMS_ENVIRONMENT_LIST_ASSIGNMENT_UNSUPPORTED() \
     Perl_throw_die_nocontext_0_2420( \
-        perl_diag_error_system_platform_vms_environment_list_assignment_unsupported_idx \
+        perl_diag_error_system_platform_vms_environment_list_assignment_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_TYPE_REFERENCE_GLOB_OR_IO_REQUIRED() \
     Perl_throw_die_nocontext_0_2420( \
-        perl_diag_error_type_reference_glob_or_io_required_idx \
+        perl_diag_error_type_reference_glob_or_io_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN(ma_value, ma_reference_kind, ma_truncation) \
     Perl_throw_die_nocontext_3_2425( \
         perl_diag_error_strict_refs_string_reference_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_value), \
         ma_reference_kind, \
         ma_truncation \
@@ -14229,26 +16522,34 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_THROW_ERROR_FORMAT_REPORT_NONTERMINATING_REPEAT() \
     Perl_throw_die_nocontext_0_2420( \
-        perl_diag_error_format_report_nonterminating_repeat_idx \
+        perl_diag_error_format_report_nonterminating_repeat_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_IDENTITY_DISTINCT_USER_IDS_UNSUPPORTED() \
     Perl_throw_die_nocontext_0_2420( \
-        perl_diag_error_system_identity_distinct_user_ids_unsupported_idx \
+        perl_diag_error_system_identity_distinct_user_ids_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYSTEM_IDENTITY_DISTINCT_GROUP_IDS_UNSUPPORTED() \
     Perl_throw_die_nocontext_0_2420( \
-        perl_diag_error_system_identity_distinct_group_ids_unsupported_idx \
+        perl_diag_error_system_identity_distinct_group_ids_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_LOAD_SOURCE_FILTER_DELETE_ORDER_INVALID() \
     Perl_throw_die_nocontext_0_2420( \
-        perl_diag_error_load_source_filter_delete_order_invalid_idx \
+        perl_diag_error_load_source_filter_delete_order_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_FORMAT_PRINTF_FREXP_EXPONENT_UNSET(ma_value) \
-    Perl_diag_die_nocontext(perl_diag_error_internal_format_printf_frexp_exponent_unset_idx, NULL, "panic: frexp: %" VCATPVFN_FV_GF, ma_value)
+    Perl_diag_die_nocontext(perl_diag_error_internal_format_printf_frexp_exponent_unset_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), "panic: frexp: %" VCATPVFN_FV_GF, ma_value)
 
 #define PERL_THROW_ERROR_CALL_BINDING_ARITY_SUBROUTINE_COUNT_MISMATCH(ma_count_error, ma_name, ma_actual_count, ma_expected_bound, ma_expected_count) \
     STMT_START { \
@@ -14275,7 +16576,7 @@ enum perl_diag_selector_domain_id {
         sv_setuv(tmpl_expected_count, in_expected_count); \
          \
         SV * const message_sv = NULL; \
-        Perl_diag_croak_caller_sv(perl_diag_error_call_binding_arity_subroutine_count_mismatch_idx, params_av, message_sv); \
+        Perl_diag_croak_caller_sv(perl_diag_error_call_binding_arity_subroutine_count_mismatch_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), message_sv); \
     } STMT_END
 
 #define PERL_THROW_ERROR_CALL_BINDING_ARITY_ODD_SLURPY_HASH_ARGUMENT_COUNT(ma_arg1) \
@@ -14289,12 +16590,14 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_arg1, "%" SVf, SVfARG(scratch_arg1_copy)); \
          \
         SV * const message_sv = NULL; \
-        Perl_diag_croak_caller_sv(perl_diag_error_call_binding_arity_odd_slurpy_hash_argument_count_idx, params_av, message_sv); \
+        Perl_diag_croak_caller_sv(perl_diag_error_call_binding_arity_odd_slurpy_hash_argument_count_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), message_sv); \
     } STMT_END
 
 #define PERL_APPEND_ERROR_CALL_BINDING_NAMED_PARAMETER_UNKNOWN_NAME(exception_slot, ma_parameter, ma_function) \
     Perl_throw_append_exception_2_2433( \
         aTHX_ perl_diag_error_call_binding_named_parameter_unknown_name_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_parameter), \
         (SV *)(ma_function) \
@@ -14303,6 +16606,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_CALL_BINDING_NAMED_PARAMETER_REQUIRED_NAME_MISSING(exception_slot, ma_parameter, ma_function) \
     Perl_throw_append_exception_2_2433( \
         aTHX_ perl_diag_error_call_binding_named_parameter_required_name_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_parameter), \
         (SV *)(ma_function) \
@@ -14323,12 +16628,14 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_message = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_compilation_unclassified_parser_error_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_message, "%" SVf, SVfARG(scratch_message_copy)); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_compilation_unclassified_parser_error_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_compilation_unclassified_parser_error_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_APPEND_ERROR_USER_TEXT(exception_slot, ma_text) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_user_text_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_text) \
     )
@@ -14336,6 +16643,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_USER_TEXT(exception_slot, ma_text) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_warning_user_text_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_text) \
     )
@@ -14351,37 +16660,49 @@ enum perl_diag_selector_domain_id {
         SV * const tmpl_var_name = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_strict_vars_global_symbol_requires_explicit_package_name_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_var_name, "%s%.*s", in_sigil, in_length, in_name_bytes); \
         if (in_is_utf8) SvUTF8_on(tmpl_var_name); \
-        Perl_defer_error_diag_params(aTHX_ &PL_sv_undef, perl_diag_error_strict_vars_global_symbol_requires_explicit_package_name_idx, params_av, 0); \
+        Perl_defer_error_diag_params(aTHX_ &PL_sv_undef, perl_diag_error_strict_vars_global_symbol_requires_explicit_package_name_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), 0); \
     } STMT_END
 
 #define PERL_THROW_ERROR_DISPATCH_CALL_PREDICATE_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_dispatch_call_predicate_required_idx \
+        aTHX_ perl_diag_error_dispatch_call_predicate_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_NOT_CONSTANT_OR_PIN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_call_predicate_argument_not_constant_or_pin_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_call_predicate_argument_not_constant_or_pin_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARITY_MISMATCH() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_call_predicate_arity_mismatch_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_call_predicate_arity_mismatch_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_call_predicate_argument_invalid_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_call_predicate_argument_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_LAYOUT_UNSUPPORTED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_dispatch_call_predicate_argument_layout_unsupported_idx \
+        aTHX_ perl_diag_error_syntax_dispatch_call_predicate_argument_layout_unsupported_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_APPEND_ERROR_PROPAGATION_RETHROW_CONTEXT(exception_slot, ma_file, ma_line) \
     Perl_throw_append_exception_2_2446( \
         aTHX_ perl_diag_error_propagation_rethrow_context_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_file), \
@@ -14391,12 +16712,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_PHASE_BEGIN_FAILED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_phase_begin_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_WARNING_PROPAGATION_CAUGHT_EXCEPTION_REPORTED_AS_WARNING(exception_slot, ma_text, ma_file, ma_line) \
     Perl_throw_append_exception_3_2448( \
         aTHX_ perl_diag_warning_propagation_caught_exception_reported_as_warning_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_text), \
         "%s", \
@@ -14407,6 +16732,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_LOAD_HOOK_INC_DIED(exception_slot, ma_hook, ma_invocation_kind) \
     Perl_throw_append_exception_2_2449( \
         aTHX_ perl_diag_error_load_hook_inc_died_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_hook), \
@@ -14416,6 +16743,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_PHASE_CALL_QUEUE_ABORTED(exception_slot, ma_phase) \
     Perl_throw_append_exception_1_1756( \
         aTHX_ perl_diag_error_phase_call_queue_aborted_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_phase) \
@@ -14424,12 +16753,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_PROPAGATION_EVAL_CONTEXT(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_propagation_eval_context_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_COMPILATION_UNCLASSIFIED_ERROR(exception_slot, ma_text) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_compilation_unclassified_error_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_text) \
     )
@@ -14437,18 +16770,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_COMPILATION_FAILED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_compilation_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_PHASE_UNITCHECK_FAILED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_phase_unitcheck_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_OBJECT_COMPOSITION_FIELD_PROVIDER_CONFLICT(exception_slot, ma_field, ma_role1, ma_role2) \
     Perl_throw_append_exception_3_1687( \
         aTHX_ perl_diag_error_object_composition_field_provider_conflict_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_field), \
         (SV *)(ma_role1), \
@@ -14458,6 +16797,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_OBJECT_COMPOSITION_METHOD_IMPLEMENTATION_REQUIRED(exception_slot, ma_method, ma_class) \
     Perl_throw_append_exception_2_2433( \
         aTHX_ perl_diag_error_object_composition_method_implementation_required_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_method), \
         (SV *)(ma_class) \
@@ -14466,18 +16807,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_LOAD_CONTEXT_H2PH_HINT(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_load_context_h2ph_hint_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_LOAD_CONTEXT_HEADER_SUFFIX_HINT(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_load_context_header_suffix_hint_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_LOAD_CONTEXT_INC_ENTRIES_CHECKED(exception_slot, ma_entries) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_load_context_inc_entries_checked_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_entries) \
     )
@@ -14485,6 +16832,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_LOAD_CONTEXT_MODULE_INSTALL_HINT(exception_slot, ma_module) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_load_context_module_install_hint_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_module) \
     )
@@ -14492,6 +16841,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_CALLBACK_FAILED(exception_slot, ma_error) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_unicode_property_definition_callback_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_error) \
     )
@@ -14499,12 +16850,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_NAME_DEFINITION_NOT_FOUND(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_unicode_property_name_definition_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_EXPANSION(exception_slot, ma_name) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_unicode_property_context_expansion_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_name) \
     )
@@ -14512,12 +16867,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_NAME_QUALIFIED_NAME_INVALID(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_unicode_property_name_qualified_name_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_RANGE_REVERSED(exception_slot, ma_contents) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_unicode_property_definition_range_reversed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_contents) \
     )
@@ -14525,12 +16884,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_TAINTED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_unicode_property_definition_tainted_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_NAME(exception_slot, ma_name) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_unicode_property_context_name_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_name) \
     )
@@ -14538,6 +16901,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_CODEPOINT_OVERFLOW(exception_slot, ma_contents) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_unicode_property_definition_codepoint_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_contents) \
     )
@@ -14545,18 +16910,24 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_PRIVATE_OVERRIDE_TAINTED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_unicode_property_definition_private_override_tainted_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_RECURSION_DEFINITION_REENTERED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_unicode_property_recursion_definition_reentered_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_RUNTIME_NAME(exception_slot, ma_name) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_unicode_property_context_runtime_name_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_name) \
     )
@@ -14564,30 +16935,40 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_OTHER_THREAD_TIMEOUT(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_unicode_property_definition_other_thread_timeout_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_NAME_USER_DEFINITION_UNKNOWN(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_unicode_property_name_user_definition_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_WILDCARD_NO_VALUES_MATCH(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_unicode_property_wildcard_no_values_match_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_WILDCARD_UNTERMINATED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_unicode_property_wildcard_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_UNICODE_PROPERTY_CONTEXT_INVALID_DEFINITION_AT_PATTERN(exception_slot, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_append_exception_2_2478( \
         aTHX_ perl_diag_error_unicode_property_context_invalid_definition_at_pattern_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_before_utf8, \
         ma_before_length, \
@@ -14600,6 +16981,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_NOTE_OMISSION_NAMED_PARAMETER_DIAGNOSTICS(exception_slot, ma_omitted_count) \
     Perl_throw_append_exception_1_2479( \
         aTHX_ perl_diag_note_omission_named_parameter_diagnostics_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_omitted_count \
     )
@@ -14607,6 +16990,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LOAD_XS_VERSION_PACKAGE_MISMATCH(ma_module, ma_object_version, ma_version_name, ma_perl_version) \
     Perl_throw_croak_4_2480( \
         aTHX_ perl_diag_error_load_xs_version_package_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_module), \
         (SV *)(ma_object_version), \
         "%s", \
@@ -14617,6 +17002,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_LOAD_XS_VERSION_BOOTSTRAP_MISMATCH(ma_module, ma_object_version, ma_perl_version) \
     Perl_throw_croak_3_2481( \
         aTHX_ perl_diag_error_load_xs_version_bootstrap_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_module), \
         (SV *)(ma_object_version), \
         (SV *)(ma_perl_version) \
@@ -14629,12 +17016,14 @@ enum perl_diag_selector_domain_id {
         AV * const params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV()))); \
          \
         PERL_DIAG_PUSH_PARAM(params_av, "object", "sv", newSVsv(in_object), 0); \
-        Perl_diag_append(aTHX_ exception_slot_ptr, &PL_sv_undef, perl_diag_error_user_reference_idx, params_av, 0); \
+        Perl_diag_append(aTHX_ exception_slot_ptr, &PL_sv_undef, perl_diag_error_user_reference_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), 0); \
     } STMT_END
 
 #define PERL_APPEND_ERROR_OBJECT_COMPOSITION_FAILED(exception_slot, ma_class, ma_error_count) \
     Perl_throw_append_exception_2_2483( \
         aTHX_ perl_diag_error_object_composition_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_class), \
         ma_error_count \
@@ -14643,6 +17032,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_CONTROL_CHARACTER_INVALID(ma_reason, ma_control, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_4_2484( \
         aTHX_ perl_diag_error_regexp_escape_control_character_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_reason, \
         "%c", \
         ma_control, \
@@ -14657,78 +17048,104 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_BRACES_REQUIRED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_octal_braces_required_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_CLOSE_BRACE_MISSING(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_octal_close_brace_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_DIGITS_MISSING(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_octal_digits_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_OCTAL_DIGIT_INVALID(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_octal_digit_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_DIGITS_MISSING(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_hex_digits_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_UNBRACED_DIGITS_EXCESS(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_hex_unbraced_digits_excess_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_UNBRACED_DIGIT_INVALID(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_hex_unbraced_digit_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_CLOSE_BRACE_MISSING(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_hex_close_brace_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_BRACED_DIGITS_MISSING(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_hex_braced_digits_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_HEX_BRACED_DIGIT_INVALID(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_hex_braced_digit_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_CONTROL_NONPRINTABLE_CHARACTER(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_control_nonprintable_character_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_CONTROL_OPEN_BRACE_INVALID(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_syntax_escape_control_open_brace_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_SYNTAX_ESCAPE_CONTROL_OPEN_BRACE_PRINTABLE_RESULT(exception_slot, ma_control) \
     Perl_throw_append_exception_1_2497( \
         aTHX_ perl_diag_error_syntax_escape_control_open_brace_printable_result_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%c", \
         ma_control \
@@ -14737,6 +17154,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_ESCAPE_LEGACY_API_UNCALLABLE(ma_api) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_syntax_escape_legacy_api_uncallable_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_api) \
     )
@@ -14744,6 +17163,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_CODE_POINT_OCTAL_ESCAPE_OVERFLOW(exception_slot, ma_length, ma_digits, ma_maximum) \
     Perl_throw_append_exception_2_2499( \
         aTHX_ perl_diag_error_unicode_code_point_octal_escape_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%.*s", \
         ma_length, \
@@ -14766,7 +17187,7 @@ enum perl_diag_selector_domain_id {
         SV * const tmpl_name = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_syntax_declaration_lexical_name_qualified_idx, 2, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_name, "%s", in_name); \
         if (scratch_utf8_flags & SVf_UTF8) SvUTF8_on(tmpl_name); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_lexical_name_qualified_idx, NULL, 0, flags, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_syntax_declaration_lexical_name_qualified_idx, NULL, 0, flags, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_COMPILATION_UNCLASSIFIED_PARSER_CONTEXT(ma_message, ma_context, ma_file, ma_line, ma_context_value) \
@@ -14793,12 +17214,14 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_context_value = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_compilation_unclassified_parser_context_idx, 4, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_context_value, "%s", in_context_value); \
-        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_compilation_unclassified_parser_context_idx, NULL, 0, 0, params_av); \
+        Perl_yyerror_diag_pvn_params(aTHX_ perl_diag_error_compilation_unclassified_parser_context_idx, NULL, 0, 0, Perl_diag_source_params(params_av, __FILE__, __LINE__)); \
     } STMT_END
 
 #define PERL_APPEND_WARNING_SYNTAX_RUNAWAY_MULTILINE_STRING_SUGGESTION(exception_slot, ma_open, ma_close, ma_line) \
     Perl_throw_append_exception_3_2502( \
         aTHX_ perl_diag_warning_syntax_runaway_multiline_string_suggestion_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_open), \
         (SV *)(ma_close), \
@@ -14809,6 +17232,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_UNKNOWN(exception_slot, ma_name) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_unicode_character_name_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_name) \
     )
@@ -14816,6 +17241,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_CHARACTER_INVALID(exception_slot, ma_context) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_unicode_character_name_character_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_context) \
     )
@@ -14823,6 +17250,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_REPEATED_SPACE(exception_slot, ma_context) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_unicode_character_name_repeated_space_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_context) \
     )
@@ -14830,6 +17259,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_UTF8_CHARNAME_RESULT_MALFORMED(exception_slot, ma_escape, ma_value_prefix) \
     Perl_throw_append_exception_2_2433( \
         aTHX_ perl_diag_error_unicode_utf8_charname_result_malformed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_escape), \
         (SV *)(ma_value_prefix) \
@@ -14838,6 +17269,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_UNICODE_CHARACTER_NAME_FAILURE_AT_PATTERN(exception_slot, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_append_exception_2_2478( \
         aTHX_ perl_diag_error_unicode_character_name_failure_at_pattern_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_before_utf8, \
         ma_before_length, \
@@ -14850,6 +17283,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_UNICODE_CODE_POINT_ENCODING_LIMIT_EXCEEDED(ma_length, ma_digits, ma_maximum) \
     Perl_throw_croak_2_2509( \
         aTHX_ perl_diag_error_unicode_code_point_encoding_limit_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_length, \
         (const char *)(ma_digits), \
@@ -14860,6 +17295,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_UNICODE_CODE_POINT_REGEXP_LIMIT_EXCEEDED(ma_length, ma_digits, ma_maximum, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_4_2510( \
         aTHX_ perl_diag_error_unicode_code_point_regexp_limit_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_length, \
         (const char *)(ma_digits), \
@@ -14876,6 +17313,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_SYNTAX_OPERATOR_EXPECTED(exception_slot, ma_found_kind) \
     Perl_throw_append_exception_1_2511( \
         aTHX_ perl_diag_warning_syntax_operator_expected_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_found_kind, \
         packWARN(WARN_SYNTAX) \
@@ -14884,12 +17323,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_MISSING_SEMICOLON(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_note_hint_operator_expected_missing_semicolon_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_PREDECLARE(exception_slot, ma_name_utf8, ma_name_length, ma_name_text) \
     Perl_throw_append_exception_1_2513( \
         aTHX_ perl_diag_note_hint_operator_expected_predeclare_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_name_utf8, \
         ma_name_length, \
@@ -14899,6 +17342,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_NOTE_HINT_OPERATOR_EXPECTED_MISSING_OPERATOR(exception_slot, ma_context_utf8, ma_context_length, ma_context_text) \
     Perl_throw_append_exception_1_2513( \
         aTHX_ perl_diag_note_hint_operator_expected_missing_operator_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_context_utf8, \
         ma_context_length, \
@@ -14908,6 +17353,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_HIERARCHY_INCONSISTENT(exception_slot, ma_class) \
     Perl_throw_append_exception_1_2515( \
         aTHX_ perl_diag_error_object_composition_inheritance_c3_hierarchy_inconsistent_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_class \
     )
@@ -14915,6 +17362,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_MERGE_RESULT_CONTEXT(exception_slot, ma_class) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_object_composition_inheritance_c3_merge_result_context_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_class) \
     )
@@ -14922,6 +17371,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_PARENT_CONFLICT_CONTEXT(exception_slot, ma_parent) \
     Perl_throw_append_exception_1_2438( \
         aTHX_ perl_diag_error_object_composition_inheritance_c3_parent_conflict_context_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         (SV *)(ma_parent) \
     )
@@ -14929,22 +17380,30 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_OBJECT_COMPOSITION_INHERITANCE_PACKAGE_CREATION_FAILED(ma_class) \
     Perl_throw_croak_1_1453( \
         aTHX_ perl_diag_error_object_composition_inheritance_package_creation_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_class) \
     )
 
 #define PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NEXT_METHOD_CONTEXT_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_method_lookup_next_method_context_required_idx \
+        aTHX_ perl_diag_error_object_method_lookup_next_method_context_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NEXT_ENCLOSING_METHOD_UNKNOWN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_method_lookup_next_enclosing_method_unknown_idx \
+        aTHX_ perl_diag_error_object_method_lookup_next_enclosing_method_unknown_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_METHOD_LOOKUP_NEXT_METHOD_NOT_FOUND(ma_method_utf8, ma_method_length, ma_method_text, ma_class) \
     Perl_throw_croak_2_2521( \
         aTHX_ perl_diag_error_object_method_lookup_next_method_not_found_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_method_utf8, \
         ma_method_length, \
         (const char *)(ma_method_text), \
@@ -14954,12 +17413,16 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_NOTE_HINT_STACK_UNWIND_DEFERRED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_note_hint_stack_unwind_deferred_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_THROW_ERROR_REGEXP_GROUP_OPEN_PAREN_UNMATCHED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_open_paren_unmatched_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -14971,6 +17434,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_UNTERMINATED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -14982,6 +17447,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_CLOSE_PAREN_UNMATCHED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_close_paren_unmatched_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -14993,6 +17460,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_VERB_CONSTRUCT_UNTERMINATED(ma_verb_kind, ma_verb_part, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_4_2526( \
         aTHX_ perl_diag_error_regexp_verb_construct_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_verb_kind, \
         ma_verb_part, \
         ma_before_utf8, \
@@ -15006,6 +17475,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_LIMIT_COMPILE_NESTING_EXCEEDED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_limit_compile_nesting_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15017,6 +17488,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_VERB_OPENER_NOT_ADJACENT(ma_verb_kind, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_2528( \
         aTHX_ perl_diag_error_regexp_verb_opener_not_adjacent_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_verb_kind, \
         ma_before_utf8, \
         ma_before_length, \
@@ -15029,6 +17502,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_NAME_INITIAL_CHARACTER_INVALID(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_name_initial_character_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15040,6 +17515,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_NAME_TARGET_MISSING(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_name_target_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15051,6 +17528,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_QUESTION_OPENER_NOT_ADJACENT(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_question_opener_not_adjacent_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15062,6 +17541,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_NAME_P_PREFIX_UNTERMINATED(ma_sequence_type, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_2532( \
         aTHX_ perl_diag_error_regexp_group_name_p_prefix_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_sequence_type, \
         ma_before_utf8, \
         ma_before_length, \
@@ -15074,6 +17555,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_UNTERMINATED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_modifier_inline_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15085,6 +17568,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_NAMED_CALL_UNTERMINATED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_subroutine_named_call_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15096,6 +17581,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_NAME_DELIMITER_UNTERMINATED(ma_sequence_opener, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_group_name_delimiter_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_sequence_opener, \
         ma_before_utf8, \
@@ -15109,6 +17596,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CONDITIONAL_NAME_UNTERMINATED(ma_condition_opener, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_conditional_name_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_condition_opener, \
         ma_before_utf8, \
@@ -15122,6 +17611,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_LOOKAROUND_UNTERMINATED(ma_lookaround, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_1800( \
         aTHX_ perl_diag_error_regexp_group_lookaround_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_lookaround), \
         ma_before_utf8, \
@@ -15135,6 +17626,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_TARGET_MISSING(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_reference_target_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15146,6 +17639,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_REFERENCE_NUMBER_INVALID(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_reference_number_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15157,6 +17652,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_ASCII_LIMIT_EXCEEDED(ma_modifier, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_modifier_inline_ascii_limit_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_modifier, \
         ma_before_utf8, \
@@ -15170,6 +17667,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_REPEATED(ma_modifier, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_modifier_inline_repeated_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_modifier, \
         ma_before_utf8, \
@@ -15183,6 +17682,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_CHARSET_CONFLICT(ma_first, ma_second, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_4_2542( \
         aTHX_ perl_diag_error_regexp_modifier_inline_charset_conflict_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_first, \
         "%c", \
@@ -15198,6 +17699,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_MODIFIER_INLINE_NEGATION_FORBIDDEN(ma_modifier, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_modifier_inline_negation_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_modifier, \
         ma_before_utf8, \
@@ -15211,6 +17714,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_CLOSE_BRACE_MISSING(ma_escape, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_escape_close_brace_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_escape, \
         ma_before_utf8, \
@@ -15224,6 +17729,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_BRACED_CONTENT_MISSING(ma_escape, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_escape_braced_content_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_escape, \
         ma_before_utf8, \
@@ -15237,6 +17744,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_INTERPOLATED_SET_REQUIRED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_extended_interpolated_set_required_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15248,6 +17757,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_EXPRESSION_INCOMPLETE(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_extended_expression_incomplete_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15259,6 +17770,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_UNTERMINATED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_extended_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15270,6 +17783,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_OPERATOR_MISSING(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_extended_operator_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15281,6 +17796,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_BINARY_OPERATOR_UNEXPECTED(ma_operator, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_char_class_extended_binary_operator_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_operator, \
         ma_before_utf8, \
@@ -15294,6 +17811,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_CHARACTER_UNEXPECTED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_extended_character_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15305,6 +17824,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_CLOSE_BRACKET_UNEXPECTED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_extended_close_bracket_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15316,6 +17837,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_CLOSE_PAREN_UNMATCHED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_extended_close_paren_unmatched_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15327,6 +17850,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_OPEN_PAREN_UNEXPECTED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_extended_open_paren_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15338,6 +17863,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_QUANTIFIER_INTEGER_INVALID(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_quantifier_integer_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15349,6 +17876,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_LIMIT_QUANTIFIER_COUNT_EXCEEDED(ma_limit, ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_3_2556( \
         aTHX_ perl_diag_error_regexp_limit_quantifier_count_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_limit, \
         ma_before_utf8, \
         ma_before_length, \
@@ -15361,6 +17890,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_QUANTIFIER_NESTED(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_quantifier_nested_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15372,6 +17903,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_QUANTIFIER_TARGET_MISSING(ma_before_utf8, ma_before_length, ma_before, ma_after_utf8, ma_after_length, ma_after) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_quantifier_target_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before), \
@@ -15383,6 +17916,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_VERB_COLON_MISSING(ma_verb_utf8, ma_verb_length, ma_verb_text, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2559( \
         aTHX_ perl_diag_error_regexp_verb_colon_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_verb_utf8, \
         ma_verb_length, \
         (const char *)(ma_verb_text), \
@@ -15397,6 +17932,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_VERB_NAME_UNKNOWN(ma_verb_kind, ma_verb_utf8, ma_verb_length, ma_verb_text, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_4_2560( \
         aTHX_ perl_diag_error_regexp_verb_name_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_verb_kind, \
         ma_verb_utf8, \
         ma_verb_length, \
@@ -15412,6 +17949,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_VERB_ARGUMENT_MISSING(ma_verb_length, ma_verb_text, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2561( \
         aTHX_ perl_diag_error_regexp_verb_argument_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_verb_length, \
         (const char *)(ma_verb_text), \
@@ -15426,6 +17965,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_MODIFIER_PROPERTY_WILDCARD_FORBIDDEN(ma_modifier_prefix, ma_modifier_char, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2562( \
         aTHX_ perl_diag_error_regexp_modifier_property_wildcard_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         (const char *)(ma_modifier_prefix), \
         ma_modifier_char, \
         ma_before_utf8, \
@@ -15439,6 +17980,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_SEQUENCE_UNKNOWN(ma_sequence_utf8, ma_sequence_length, ma_sequence_text, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2559( \
         aTHX_ perl_diag_error_regexp_group_sequence_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_sequence_utf8, \
         ma_sequence_length, \
         (const char *)(ma_sequence_text), \
@@ -15453,6 +17996,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_DELIMITER_UNTERMINATED(ma_sequence_length, ma_sequence_text, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2561( \
         aTHX_ perl_diag_error_regexp_group_backreference_delimiter_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         "%.*s", \
         ma_sequence_length, \
         (const char *)(ma_sequence_text), \
@@ -15467,6 +18012,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_LITERAL_OPEN_BRACE_FORBIDDEN(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_escape_literal_open_brace_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15478,6 +18025,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_PROPERTY_NAME_MISSING(ma_escape, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_escape_property_name_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_escape, \
         ma_before_utf8, \
@@ -15491,6 +18040,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_PROPERTY_SHORT_NAME_INVALID(ma_escape, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_escape_property_short_name_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_escape, \
         ma_before_utf8, \
@@ -15504,6 +18055,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_RELATIVE_TARGET_UNAVAILABLE(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_backreference_relative_target_unavailable_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15515,6 +18068,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_UNTERMINATED(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_backreference_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15526,6 +18081,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_BRACED_UNTERMINATED(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_backreference_braced_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15537,6 +18094,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_BACKREFERENCE_GROUP_ZERO_FORBIDDEN(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_backreference_group_zero_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15548,6 +18107,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_HEX_SEQUENCE_INVALID(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_escape_character_name_hex_sequence_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15559,6 +18120,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_BRACES_NOT_ADJACENT(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_escape_character_name_braces_not_adjacent_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15570,6 +18133,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_N_ESCAPE_NAME_REQUIRED(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_n_escape_name_required_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15581,6 +18146,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_N_ESCAPE_NOT_SINGLE_CHARACTER(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_n_escape_not_single_character_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15592,6 +18159,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_CHARACTER_NAME_EMPTY_SEQUENCE_FORBIDDEN(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_escape_character_name_empty_sequence_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15603,6 +18172,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CONDITIONAL_DEFINE_ALTERNATION_FORBIDDEN(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_conditional_define_alternation_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15614,6 +18185,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CONDITIONAL_UNTERMINATED(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_conditional_unterminated_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15625,6 +18198,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CONDITIONAL_BRANCH_COUNT_EXCEEDED(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_conditional_branch_count_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15636,6 +18211,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CONDITIONAL_TEST_SYNTAX_INVALID(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_conditional_test_syntax_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15647,6 +18224,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_CONSTRUCT_INCOMPLETE(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_construct_incomplete_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15658,6 +18237,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CONDITIONAL_TEST_UNKNOWN(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_conditional_test_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15669,6 +18250,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_GLOBAL_POSITION_IN_WILDCARD_FORBIDDEN(ma_operation, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_1800( \
         aTHX_ perl_diag_error_regexp_escape_global_position_in_wildcard_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_operation), \
         ma_before_utf8, \
@@ -15682,6 +18265,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_LOOKAROUND_MATCH_START_RESET_FORBIDDEN(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_lookaround_match_start_reset_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15693,6 +18278,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_C_ESCAPE_UNSUPPORTED(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_escape_c_escape_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15704,6 +18291,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_QUANTIFIER_UNBOUNDED_EMPTY_WILDCARD_FORBIDDEN(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_quantifier_unbounded_empty_wildcard_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15715,6 +18304,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_PROPERTY_WILDCARD_NESTING_FORBIDDEN(ma_escape_char, ma_following_char, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_4_2542( \
         aTHX_ perl_diag_error_regexp_escape_property_wildcard_nesting_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_escape_char, \
         "%c", \
@@ -15730,6 +18321,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_RANGE_ENDPOINT_NOT_CHARACTER(ma_range_utf8, ma_range_length, ma_range_text, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2559( \
         aTHX_ perl_diag_error_regexp_char_class_range_endpoint_not_character_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_range_utf8, \
         ma_range_length, \
         (const char *)(ma_range_text), \
@@ -15744,6 +18337,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_RANGE_REVERSED(ma_range_utf8, ma_range_length, ma_range_text, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2559( \
         aTHX_ perl_diag_error_regexp_char_class_range_reversed_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_range_utf8, \
         ma_range_length, \
         (const char *)(ma_range_text), \
@@ -15758,6 +18353,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_LITERAL_VERTICAL_SPACE_FORBIDDEN(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_literal_vertical_space_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15769,6 +18366,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_OCTAL_DIGIT_COUNT_INVALID(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_octal_digit_count_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15780,6 +18379,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_ESCAPE_UNKNOWN(ma_escape_char, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_char_class_escape_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_escape_char, \
         ma_before_utf8, \
@@ -15793,6 +18394,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_CLOSE_PAREN_MISSING(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_subroutine_close_paren_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15804,6 +18407,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_SUBROUTINE_RELATIVE_CALL_NUMBER_MISSING(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_group_subroutine_relative_call_number_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15815,6 +18420,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_REGEXP_COMPILER_LITERAL_LENGTH_OVERFLOW(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_internal_regexp_compiler_literal_length_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15826,6 +18433,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_INTERNAL_REGEXP_COMPILER_ATOM_DELIMITER_UNEXPECTED(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_internal_regexp_compiler_atom_delimiter_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15837,6 +18446,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_SEQUENCE_UNIMPLEMENTED(ma_sequence_char, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_group_sequence_unimplemented_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_sequence_char, \
         ma_before_utf8, \
@@ -15850,6 +18461,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_GROUP_NAME_IDENTIFIER_INVALID(ma_reason_kind, ma_codepoint, ma_identifier_before_utf8, ma_identifier_before_length, ma_identifier_before_text, ma_identifier_after_utf8, ma_identifier_after_length, ma_identifier_after_text, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_6_2598( \
         aTHX_ perl_diag_error_regexp_group_name_identifier_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_reason_kind, \
         "%04X", \
         ma_codepoint, \
@@ -15870,6 +18483,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_ESCAPE_BOUNDARY_TYPE_UNKNOWN(ma_bound_type_utf8, ma_bound_type_length, ma_bound_type_text, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2559( \
         aTHX_ perl_diag_error_regexp_escape_boundary_type_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_bound_type_utf8, \
         ma_bound_type_length, \
         (const char *)(ma_bound_type_text), \
@@ -15884,6 +18499,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_POSIX_NAME_UNKNOWN(ma_class_kind, ma_class_name_utf8, ma_class_name_length, ma_class_name_text, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_4_2600( \
         aTHX_ perl_diag_error_regexp_char_class_posix_name_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_class_kind, \
         ma_class_name_utf8, \
         ma_class_name_length, \
@@ -15899,6 +18516,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_POSIX_SYNTAX_RESERVED(ma_delimiter, ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_3_2535( \
         aTHX_ perl_diag_error_regexp_char_class_posix_syntax_reserved_idx, \
+        __FILE__, \
+        __LINE__, \
         "%c", \
         ma_delimiter, \
         ma_before_utf8, \
@@ -15912,6 +18531,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_EXTENDED_STRING_PROPERTY_UNSUPPORTED(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_extended_string_property_unsupported_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15923,6 +18544,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_REGEXP_CHAR_CLASS_INVERTED_STRING_PROPERTY_FORBIDDEN(ma_before_utf8, ma_before_length, ma_before_text, ma_after_utf8, ma_after_length, ma_after_text) \
     Perl_throw_croak_2_2523( \
         aTHX_ perl_diag_error_regexp_char_class_inverted_string_property_forbidden_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_before_utf8, \
         ma_before_length, \
         (const char *)(ma_before_text), \
@@ -15934,6 +18557,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_REGEXP_CHAR_CLASS_POSIX_SYNTAX_SUSPICIOUS(ma_reason) \
     Perl_throw_warner_1_2604( \
         aTHX_ perl_diag_warning_regexp_char_class_posix_syntax_suspicious_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_reason, \
         packWARN(WARN_REGEXP) \
     )
@@ -15941,6 +18566,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_REGEXP_CHAR_CLASS_POSIX_SYNTAX_SUSPICIOUS(exception_slot, ma_reason) \
     Perl_throw_append_warning_1_2604( \
         aTHX_ perl_diag_warning_regexp_char_class_posix_syntax_suspicious_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_reason, \
         packWARN(WARN_REGEXP) \
@@ -15949,6 +18576,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_SYNTAX_IDENTIFIER_CHARACTER_INVALID(ma_codepoint, ma_identifier_before_utf8, ma_identifier_before_length, ma_identifier_before_text, ma_identifier_after_utf8, ma_identifier_after_length, ma_identifier_after_text) \
     Perl_throw_croak_3_2605( \
         aTHX_ perl_diag_error_syntax_identifier_character_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         "%04X", \
         ma_codepoint, \
         ma_identifier_before_utf8, \
@@ -15961,64 +18590,84 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_THROW_ERROR_SYNTAX_IDENTIFIER_NUMERIC_NAME_LEADING_ZERO() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_syntax_identifier_numeric_name_leading_zero_idx \
+        aTHX_ perl_diag_error_syntax_identifier_numeric_name_leading_zero_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_REQUIRED_PARAMETER_MISSING(ma_parameter, ma_class_name) \
     Perl_throw_croak_2_1688( \
         aTHX_ perl_diag_error_object_constructor_required_parameter_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV *)(ma_parameter), \
         (SV *)(ma_class_name) \
     )
 
 #define PERL_THROW_ERROR_CONTROL_FLOW_GOTO_LABEL_REQUIRED() \
     Perl_throw_die_0_1001( \
-        aTHX_ perl_diag_error_control_flow_goto_label_required_idx \
+        aTHX_ perl_diag_error_control_flow_goto_label_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_MUTATION_READ_ONLY_VALUE_MODIFICATION() \
     Perl_throw_croak_nocontext_0_1290( \
-        perl_diag_error_mutation_read_only_value_modification_idx \
+        perl_diag_error_mutation_read_only_value_modification_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_WARN_WARNING_MISC_HASH_ASSIGNMENT_ODD_ELEMENT_COUNT() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_hash_assignment_odd_element_count_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_MISC_HASH_ASSIGNMENT_ODD_ELEMENT_COUNT_UNCHECKED() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_misc_hash_assignment_odd_element_count_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_MISC_HASH_ASSIGNMENT_AGGREGATE_REFERENCE_IN_ODD_LIST() \
     Perl_throw_ck_warner_0_2075( \
         aTHX_ perl_diag_warning_misc_hash_assignment_aggregate_reference_in_odd_list_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_WARN_WARNING_MISC_HASH_ASSIGNMENT_AGGREGATE_REFERENCE_IN_ODD_LIST_UNCHECKED() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_misc_hash_assignment_aggregate_reference_in_odd_list_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_THROW_ERROR_VALUE_VERSION_FORMAT_INVALID(ma_reason) \
     Perl_throw_croak_context_1_2612( \
         aTHX_ perl_diag_error_value_version_format_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_reason \
     )
 
 #define PERL_PANIC_ERROR_INTERNAL_MEMORY_PAGE_SIZE_QUERY_UNKNOWN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_internal_memory_page_size_query_unknown_idx \
+        aTHX_ perl_diag_error_internal_memory_page_size_query_unknown_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_PARSE_FAILED() \
     STMT_START { \
-        Perl_defer_error_diag_params(aTHX_ &PL_sv_undef, perl_diag_error_syntax_parse_failed_idx, NULL, 0); \
+        Perl_defer_error_diag_params(aTHX_ &PL_sv_undef, perl_diag_error_syntax_parse_failed_idx, Perl_diag_source_params(NULL, __FILE__, __LINE__), 0); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_STRICT_SUBS_BAREWORD_FORBIDDEN(ma_word) \
@@ -16030,7 +18679,7 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_word = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_strict_subs_bareword_forbidden_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_word, "%" SVf, SVfARG(scratch_word_copy)); \
-        Perl_defer_error_diag_params(aTHX_ &PL_sv_undef, perl_diag_error_strict_subs_bareword_forbidden_idx, params_av, 0); \
+        Perl_defer_error_diag_params(aTHX_ &PL_sv_undef, perl_diag_error_strict_subs_bareword_forbidden_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), 0); \
     } STMT_END
 
 #define PERL_ADD_COMPILE_ERR_ERROR_IO_HANDLE_BAREWORD_NAME_FORBIDDEN(ma_filehandle) \
@@ -16040,12 +18689,14 @@ enum perl_diag_selector_domain_id {
          \
         SV * const tmpl_filehandle = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_io_handle_bareword_name_forbidden_idx, 0, 0, perl_diag_selector_invalid); \
         sv_setpvf(tmpl_filehandle, "%s", in_filehandle); \
-        Perl_defer_error_diag_params(aTHX_ &PL_sv_undef, perl_diag_error_io_handle_bareword_name_forbidden_idx, params_av, 0); \
+        Perl_defer_error_diag_params(aTHX_ &PL_sv_undef, perl_diag_error_io_handle_bareword_name_forbidden_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), 0); \
     } STMT_END
 
 #define PERL_APPEND_ERROR_NUMERIC_DOMAIN_LOG_SQRT_ARGUMENT_INVALID(exception_slot, ma_operation, ma_value) \
     Perl_throw_append_exception_2_2617( \
         aTHX_ perl_diag_error_numeric_domain_log_sqrt_argument_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation, \
         "%" NVgf, \
@@ -16055,6 +18706,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_SEQUENCE_TOO_SHORT(ma_operation_identity, ma_bytes, ma_available_bytes, ma_expected_bytes, ma_context, ma_operation, category) \
     Perl_throw_warner_6_2618( \
         aTHX_ perl_diag_warning_utf8_sequence_too_short_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%s", \
         (const char *)(ma_bytes), \
@@ -16069,6 +18722,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_SEQUENCE_TOO_SHORT(exception_slot, category, ma_operation_identity, ma_bytes, ma_available_bytes, ma_expected_bytes, ma_context, ma_operation) \
     Perl_throw_append_warning_6_2618( \
         aTHX_ perl_diag_warning_utf8_sequence_too_short_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%s", \
@@ -16084,6 +18739,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_CONTINUATION_WITHOUT_START(ma_operation_identity, ma_bytes, ma_byte, ma_context, ma_operation, category) \
     Perl_throw_warner_5_2619( \
         aTHX_ perl_diag_warning_utf8_continuation_without_start_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%s", \
         (const char *)(ma_bytes), \
@@ -16098,6 +18755,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_CONTINUATION_WITHOUT_START(exception_slot, category, ma_operation_identity, ma_bytes, ma_byte, ma_context, ma_operation) \
     Perl_throw_append_warning_5_2619( \
         aTHX_ perl_diag_warning_utf8_continuation_without_start_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%s", \
@@ -16113,6 +18772,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_SEQUENCE_CONTINUATION_INVALID(ma_operation_identity, ma_bytes, ma_unexpected_byte, ma_start_byte, ma_expected_bytes, ma_available_bytes, ma_position_form, ma_context, ma_operation, category) \
     Perl_throw_warner_9_2620( \
         aTHX_ perl_diag_warning_utf8_sequence_continuation_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%s", \
         (const char *)(ma_bytes), \
@@ -16132,6 +18793,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_SEQUENCE_CONTINUATION_INVALID(exception_slot, category, ma_operation_identity, ma_bytes, ma_unexpected_byte, ma_start_byte, ma_expected_bytes, ma_available_bytes, ma_position_form, ma_context, ma_operation) \
     Perl_throw_append_warning_9_2620( \
         aTHX_ perl_diag_warning_utf8_sequence_continuation_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%s", \
@@ -16152,6 +18815,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_OVERLONG_PREFIX(ma_operation_identity, ma_bytes, ma_prefix, ma_context, ma_operation, category) \
     Perl_throw_warner_5_2621( \
         aTHX_ perl_diag_warning_utf8_overlong_prefix_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%s", \
         (const char *)(ma_bytes), \
@@ -16166,6 +18831,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_OVERLONG_PREFIX(exception_slot, category, ma_operation_identity, ma_bytes, ma_prefix, ma_context, ma_operation) \
     Perl_throw_append_warning_5_2621( \
         aTHX_ perl_diag_warning_utf8_overlong_prefix_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%s", \
@@ -16181,6 +18848,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_OVERLONG_VALUE(ma_operation_identity, ma_bytes, ma_canonical_bytes, ma_codepoint, ma_context, ma_operation, category) \
     Perl_throw_warner_6_2622( \
         aTHX_ perl_diag_warning_utf8_overlong_value_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%s", \
         (const char *)(ma_bytes), \
@@ -16197,6 +18866,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_OVERLONG_VALUE(exception_slot, category, ma_operation_identity, ma_bytes, ma_canonical_bytes, ma_codepoint, ma_context, ma_operation) \
     Perl_throw_append_warning_6_2622( \
         aTHX_ perl_diag_warning_utf8_overlong_value_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%s", \
@@ -16214,6 +18885,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_SEQUENCE_PREFIX(ma_operation_identity, ma_prefix, ma_context, ma_operation, category) \
     Perl_throw_warner_4_2623( \
         aTHX_ perl_diag_warning_utf8_non_unicode_perl_extended_sequence_prefix_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%s", \
         (const char *)(ma_prefix), \
@@ -16226,6 +18899,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_NON_UNICODE_PERL_EXTENDED_SEQUENCE_PREFIX(exception_slot, category, ma_operation_identity, ma_prefix, ma_context, ma_operation) \
     Perl_throw_append_warning_4_2623( \
         aTHX_ perl_diag_warning_utf8_non_unicode_perl_extended_sequence_prefix_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%s", \
@@ -16239,6 +18914,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_NON_UNICODE_ABOVE_UNICODE_SEQUENCE_PREFIX(ma_operation_identity, ma_prefix, ma_context, ma_operation, category) \
     Perl_throw_warner_4_2623( \
         aTHX_ perl_diag_warning_utf8_non_unicode_above_unicode_sequence_prefix_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%s", \
         (const char *)(ma_prefix), \
@@ -16251,6 +18928,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_NON_UNICODE_ABOVE_UNICODE_SEQUENCE_PREFIX(exception_slot, category, ma_operation_identity, ma_prefix, ma_context, ma_operation) \
     Perl_throw_append_warning_4_2623( \
         aTHX_ perl_diag_warning_utf8_non_unicode_above_unicode_sequence_prefix_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%s", \
@@ -16264,6 +18943,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_NON_UNICODE_SEQUENCE_VALUE_OVERFLOW(ma_operation_identity, ma_bytes, ma_context, ma_operation, category) \
     Perl_throw_warner_4_2623( \
         aTHX_ perl_diag_warning_utf8_non_unicode_sequence_value_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%s", \
         (const char *)(ma_bytes), \
@@ -16276,6 +18957,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_NON_UNICODE_SEQUENCE_VALUE_OVERFLOW(exception_slot, category, ma_operation_identity, ma_bytes, ma_context, ma_operation) \
     Perl_throw_append_warning_4_2623( \
         aTHX_ perl_diag_warning_utf8_non_unicode_sequence_value_overflow_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%s", \
@@ -16289,6 +18972,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_EMPTY_SEQUENCE(ma_operation_identity, ma_context, ma_operation, category) \
     Perl_throw_warner_3_2626( \
         aTHX_ perl_diag_warning_utf8_empty_sequence_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         ma_context, \
         "%s", \
@@ -16299,6 +18984,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_EMPTY_SEQUENCE(exception_slot, category, ma_operation_identity, ma_context, ma_operation) \
     Perl_throw_append_warning_3_2626( \
         aTHX_ perl_diag_warning_utf8_empty_sequence_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         ma_context, \
@@ -16310,6 +18997,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_NONCHAR_NONCHARACTER_DECODED(ma_operation_identity, ma_arg1, ma_context, ma_operation, category) \
     Perl_throw_warner_4_2357( \
         aTHX_ perl_diag_warning_utf8_nonchar_noncharacter_decoded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%04" UVXf, \
         ma_arg1, \
@@ -16322,6 +19011,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_NONCHAR_NONCHARACTER_DECODED(exception_slot, category, ma_operation_identity, ma_arg1, ma_context, ma_operation) \
     Perl_throw_append_warning_4_2357( \
         aTHX_ perl_diag_warning_utf8_nonchar_noncharacter_decoded_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%04" UVXf, \
@@ -16335,6 +19026,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_DECODED(ma_operation_identity, ma_arg1, ma_context, ma_operation, category) \
     Perl_throw_warner_4_2357( \
         aTHX_ perl_diag_warning_utf8_surrogate_surrogate_decoded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%04" UVXf, \
         ma_arg1, \
@@ -16347,6 +19040,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_SURROGATE_SURROGATE_DECODED(exception_slot, category, ma_operation_identity, ma_arg1, ma_context, ma_operation) \
     Perl_throw_append_warning_4_2357( \
         aTHX_ perl_diag_warning_utf8_surrogate_surrogate_decoded_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%04" UVXf, \
@@ -16360,6 +19055,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_WARN_WARNING_UTF8_SURROGATE_SURROGATE_SEQUENCE_PREFIX(ma_operation_identity, ma_prefix, ma_context, ma_operation, category) \
     Perl_throw_warner_4_2623( \
         aTHX_ perl_diag_warning_utf8_surrogate_surrogate_sequence_prefix_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_operation_identity, \
         "%s", \
         (const char *)(ma_prefix), \
@@ -16372,6 +19069,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_WARNING_UTF8_SURROGATE_SURROGATE_SEQUENCE_PREFIX(exception_slot, category, ma_operation_identity, ma_prefix, ma_context, ma_operation) \
     Perl_throw_append_warning_4_2623( \
         aTHX_ perl_diag_warning_utf8_surrogate_surrogate_sequence_prefix_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_operation_identity, \
         "%s", \
@@ -16406,48 +19105,64 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_NUMERIC_TOGGLE_DEPTH_UNDERFLOW(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_internal_locale_switch_numeric_toggle_depth_underflow_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_OBJECT_DUPLICATION_FAILED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_internal_locale_switch_object_duplication_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_PARSE_RESULT_UNEXPECTED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_internal_locale_name_parse_result_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_THREAD_CONFIGURATION_FAILED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_internal_locale_switch_thread_configuration_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_GLOBAL_OBJECT_ACTIVATION_FAILED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_internal_locale_switch_global_object_activation_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_C_OBJECT_CREATION_FAILED(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_internal_locale_switch_c_object_creation_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_INITIALIZATION_TRIAL_INVALID(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_internal_locale_switch_initialization_trial_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_CONVENTION_VALUE_MISSING(exception_slot, ma_key) \
     Perl_throw_append_exception_1_1756( \
         aTHX_ perl_diag_error_internal_locale_data_convention_value_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_key) \
@@ -16456,6 +19171,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_CATEGORY_UNKNOWN(exception_slot, ma_category) \
     Perl_throw_append_exception_1_2646( \
         aTHX_ perl_diag_error_internal_locale_name_category_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_category \
     )
@@ -16463,6 +19180,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_CHAR_CLASS_UNKNOWN(exception_slot, ma_class) \
     Perl_throw_append_exception_1_2646( \
         aTHX_ perl_diag_error_internal_locale_data_char_class_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_class \
     )
@@ -16470,6 +19189,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_CURRENT_CATEGORY_NAME_MISSING(exception_slot, ma_category) \
     Perl_throw_append_exception_1_1756( \
         aTHX_ perl_diag_error_internal_locale_name_current_category_name_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_category) \
@@ -16478,6 +19199,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_CONVENTION_ITEM_UNKNOWN(exception_slot, ma_item) \
     Perl_throw_append_exception_1_2646( \
         aTHX_ perl_diag_error_internal_locale_data_convention_item_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_item \
     )
@@ -16485,6 +19208,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_SAVED_NAME_RESTORE_FAILED(exception_slot, ma_locale) \
     Perl_throw_append_exception_1_1756( \
         aTHX_ perl_diag_error_internal_locale_switch_saved_name_restore_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_locale) \
@@ -16493,6 +19218,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_OBJECT_ACTIVATION_FAILED(exception_slot, ma_object, ma_locale) \
     Perl_throw_append_exception_2_2651( \
         aTHX_ perl_diag_error_internal_locale_switch_object_activation_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%p", \
         ma_object, \
@@ -16503,6 +19230,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_NEW_OBJECT_ACTIVATION_FAILED(exception_slot, ma_caller_line) \
     Perl_throw_append_exception_1_2652( \
         aTHX_ perl_diag_error_internal_locale_switch_new_object_activation_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         ma_caller_line \
     )
@@ -16510,6 +19239,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_IGNORED_CATEGORY_OVERRIDE_MISMATCH(exception_slot, ma_category, ma_expected, ma_actual) \
     Perl_throw_append_exception_3_2653( \
         aTHX_ perl_diag_error_internal_locale_name_ignored_category_override_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_category), \
@@ -16522,6 +19253,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_REPLACEMENT_CHARACTER_UNEXPECTED(exception_slot, ma_value, ma_locale) \
     Perl_throw_append_exception_2_2654( \
         aTHX_ perl_diag_error_internal_locale_data_replacement_character_unexpected_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_value), \
@@ -16532,6 +19265,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_DATA_ALTERNATE_DIGITS_SEPARATOR_MISSING(exception_slot, ma_digits, ma_locale) \
     Perl_throw_append_exception_2_2654( \
         aTHX_ perl_diag_error_internal_locale_data_alternate_digits_separator_missing_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_digits), \
@@ -16542,6 +19277,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_COMPOSITE_BUFFER_CAPACITY_EXCEEDED(exception_slot, ma_entry, ma_constructed_size1, ma_constructed_value, ma_needed, ma_capacity) \
     Perl_throw_append_exception_4_2656( \
         aTHX_ perl_diag_error_internal_locale_name_composite_buffer_capacity_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_entry), \
@@ -16590,12 +19327,14 @@ enum perl_diag_selector_domain_id {
         sv_setpvf(tmpl_dot_number, "%g", in_dot_number); \
          \
         SV * const message_sv = NULL; \
-        Perl_diag_append(aTHX_ exception_slot_ptr, message_sv, perl_diag_error_internal_locale_data_langinfo_value_empty_idx, params_av, 0); \
+        Perl_diag_append(aTHX_ exception_slot_ptr, message_sv, perl_diag_error_internal_locale_data_langinfo_value_empty_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), 0); \
     } STMT_END
 
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_NAME_COMPOSITE_SPECIFICATION_INVALID(exception_slot, ma_length, ma_text, ma_reason) \
     Perl_throw_append_exception_2_2658( \
         aTHX_ perl_diag_error_internal_locale_name_composite_specification_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%.*s", \
         ma_length, \
@@ -16606,6 +19345,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_INTERNAL_LOCALE_SWITCH_CATEGORY_CHANGE_FAILED(exception_slot, ma_category, ma_category_number, ma_current, ma_failed, ma_file, ma_proxy_line, ma_immediate_line, ma_via) \
     Perl_throw_append_exception_8_2659( \
         aTHX_ perl_diag_error_internal_locale_switch_category_change_failed_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot), \
         "%s", \
         (const char *)(ma_category), \
@@ -16913,136 +19654,188 @@ enum perl_diag_selector_domain_id {
 #define PERL_APPEND_ERROR_FATALIZED_WARNING_WRAPPER(exception_slot) \
     Perl_throw_append_exception_0_1438( \
         aTHX_ perl_diag_error_fatalized_warning_wrapper_idx, \
+        __FILE__, \
+        __LINE__, \
         (SV **)(exception_slot) \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_LIST_NOT_ARRAY() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_children_list_not_array_idx \
+        aTHX_ perl_diag_error_diagnostic_api_children_list_not_array_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_MEMBER_NOT_DIAGNOSTIC() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_children_member_not_diagnostic_idx \
+        aTHX_ perl_diag_error_diagnostic_api_children_member_not_diagnostic_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_LEAF_CONTAINER_FORBIDDEN() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_children_leaf_container_forbidden_idx \
+        aTHX_ perl_diag_error_diagnostic_api_children_leaf_container_forbidden_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_DERIVED_LIST_NOT_ARRAY() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_children_derived_list_not_array_idx \
+        aTHX_ perl_diag_error_diagnostic_api_children_derived_list_not_array_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_DERIVED_MEMBER_NOT_DIAGNOSTIC() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_children_derived_member_not_diagnostic_idx \
+        aTHX_ perl_diag_error_diagnostic_api_children_derived_member_not_diagnostic_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_DERIVE_CYCLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_children_derive_cycle_idx \
+        aTHX_ perl_diag_error_diagnostic_api_children_derive_cycle_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_STORED_LIST_NOT_ARRAY() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_children_stored_list_not_array_idx \
+        aTHX_ perl_diag_error_diagnostic_api_children_stored_list_not_array_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_APPEND_CYCLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_children_append_cycle_idx \
+        aTHX_ perl_diag_error_diagnostic_api_children_append_cycle_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_APPENDED_ITEM_NOT_DIAGNOSTIC() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_children_appended_item_not_diagnostic_idx \
+        aTHX_ perl_diag_error_diagnostic_api_children_appended_item_not_diagnostic_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_EXCEPTION_ITEM_NOT_DIAGNOSTIC() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_children_exception_item_not_diagnostic_idx \
+        aTHX_ perl_diag_error_diagnostic_api_children_exception_item_not_diagnostic_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_RECEIVER_TYPE_MISMATCH(ma_class_name) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_diagnostic_api_receiver_type_mismatch_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_class_name) \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_CONTEXT_NOT_HASH() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_render_context_not_hash_idx \
+        aTHX_ perl_diag_error_diagnostic_api_render_context_not_hash_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_FIELDS_NOT_HASH() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_construction_fields_not_hash_idx \
+        aTHX_ perl_diag_error_diagnostic_api_construction_fields_not_hash_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_CODE_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_construction_code_missing_idx \
+        aTHX_ perl_diag_error_diagnostic_api_construction_code_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_PARAMETERS_NOT_ARRAY() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_construction_parameters_not_array_idx \
+        aTHX_ perl_diag_error_diagnostic_api_construction_parameters_not_array_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_LOCATION_NOT_HASH() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_construction_location_not_hash_idx \
+        aTHX_ perl_diag_error_diagnostic_api_construction_location_not_hash_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_WARNING_CATEGORIES_NOT_ARRAY() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_construction_warning_categories_not_array_idx \
+        aTHX_ perl_diag_error_diagnostic_api_construction_warning_categories_not_array_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_LIGHT_FLAG_NOT_SCALAR() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_construction_light_flag_not_scalar_idx \
+        aTHX_ perl_diag_error_diagnostic_api_construction_light_flag_not_scalar_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_CONSTRUCTION_CONTEXT_INDEX_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_construction_context_index_invalid_idx \
+        aTHX_ perl_diag_error_diagnostic_api_construction_context_index_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_THROW_EVENT_NOT_HASH() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_throw_event_not_hash_idx \
+        aTHX_ perl_diag_error_diagnostic_api_throw_event_not_hash_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_THROW_MESSAGE_INDEX_RESERVED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_throw_message_index_reserved_idx \
+        aTHX_ perl_diag_error_diagnostic_api_throw_message_index_reserved_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_THROW_RETHROW_DIAGNOSTIC_MISSING() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_throw_rethrow_diagnostic_missing_idx \
+        aTHX_ perl_diag_error_diagnostic_api_throw_rethrow_diagnostic_missing_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_FORMAT_UNKNOWN(ma_format) \
     Perl_throw_croak_1_1166( \
         aTHX_ perl_diag_error_diagnostic_api_render_format_unknown_idx, \
+        __FILE__, \
+        __LINE__, \
         "%s", \
         (const char *)(ma_format) \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_render_input_invalid_idx \
+        aTHX_ perl_diag_error_diagnostic_api_render_input_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_PARAMETER_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_diagnostic_api_render_parameter_invalid_idx \
+        aTHX_ perl_diag_error_diagnostic_api_render_parameter_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_FORMAT_WARNING_DIAGNOSTIC_LANGUAGE_PACK_LOAD_FAILED(language, values) \
@@ -17050,38 +19843,52 @@ enum perl_diag_selector_domain_id {
 
 #define PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_field_attribute_legacy_self_invalid_idx \
+        aTHX_ perl_diag_error_object_field_attribute_legacy_self_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_DEFINITION_LEGACY_SELF_REQUIRED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_definition_legacy_self_required_idx \
+        aTHX_ perl_diag_error_object_definition_legacy_self_required_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_LEGACY_REFERENCE_INVALID() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_legacy_reference_invalid_idx \
+        aTHX_ perl_diag_error_object_legacy_reference_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_LEGACY_ALREADY_ATTACHED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_legacy_already_attached_idx \
+        aTHX_ perl_diag_error_object_legacy_already_attached_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_THROW_ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_method_call_legacy_self_unavailable_idx \
+        aTHX_ perl_diag_error_object_method_call_legacy_self_unavailable_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_WARN_WARNING_MISC_OBJECT_LEGACY_REFERENCE_SURVIVES() \
     Perl_throw_warner_0_2074( \
         aTHX_ perl_diag_warning_misc_object_legacy_reference_survives_idx, \
+        __FILE__, \
+        __LINE__, \
         packWARN(WARN_MISC) \
     )
 
 #define PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_ALREADY_ASSIGNED() \
     Perl_throw_croak_0_1006( \
-        aTHX_ perl_diag_error_object_field_attribute_legacy_self_already_assigned_idx \
+        aTHX_ perl_diag_error_object_field_attribute_legacy_self_already_assigned_idx, \
+        __FILE__, \
+        __LINE__ \
     )
 
 #define PERL_FORMAT_NOTE_CONTEXT_SYNTAX_ERROR_ANNOTATED(language, values) \
@@ -17093,6 +19900,8 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED(ma_limit) \
     Perl_throw_croak_1_1607( \
         aTHX_ perl_diag_error_value_hash_capacity_exceeded_idx, \
+        __FILE__, \
+        __LINE__, \
         ma_limit \
     )
 
@@ -17408,6 +20217,9 @@ enum perl_diag_selector_domain_id {
 #define PERL_THROW_UMASK_NOT_IMPLEMENTED() \
     PERL_THROW_ERROR_UNSUPPORTED_OPERATION_NOT_IMPLEMENTED_DIE("umask")
 
+#define PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_SYMBOL_NO_CONTEXT() \
+    PERL_THROW_ERROR_TYPE_UNINITIALIZED_REFERENCE_VALUE_REQUIRED_NO_CONTEXT(perl_diag_selector_domain_1755_0_symbol_6)
+
 #define PERL_PANIC_COND_BROADCAST_ERROR_AT_LOCATION(ma_error, ma_file, ma_line) \
     PERL_PANIC_ERROR_INTERNAL_THREADS_API_FAILED_AT_LOCATION("COND_BROADCAST", ma_error, ma_file, ma_line)
 
@@ -17516,7 +20328,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * 1d6e975a72eea2b0622c9063b8c9e83ba8e5737752055f38fc5a5809d11a5fc8 diag_conf.pl
+ * e659809295e324b7cb9122c42bdc955707fa610872c1b9a1d0953dedd2f3f11b diag_conf.pl
  * 6510e6553ea58cc2c5404bc3524e14de99d6b39d5bf4cb3fc3271ba678cf283b diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

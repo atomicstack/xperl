@@ -4,6 +4,26 @@
    Any changes made here will be lost!
  */
 
+/* Carry the C call site on the parameter array until the diagnostic is built. */
+PERL_STATIC_INLINE AV *
+Perl_diag_source_params(AV *params, const char *file, UV line)
+{
+    dTHX;
+    AV *source;
+    SV *source_ref;
+
+    if (!params)
+        params = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+    source = newAV();
+    av_push(source, newSVpv(file, 0));
+    av_push(source, newSVuv(line));
+    source_ref = newRV_noinc(MUTABLE_SV(source));
+    (void)sv_magicext(MUTABLE_SV(params), source_ref, PERL_MAGIC_ext,
+                      NULL, "xperl_c_source", sizeof("xperl_c_source") - 1);
+    SvREFCNT_dec_NN(source_ref);
+    return params;
+}
+
 /* Unknown names keep their supplied display text through identity zero. */
 PERL_STATIC_INLINE UV
 Perl_diag_word_operation_from_name(const char *name, STRLEN length)
@@ -22,13 +42,17 @@ Perl_diag_word_operation_from_name(const char *name, STRLEN length)
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_0_1438(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot)
 {
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, NULL, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(NULL, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_1_1756(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     const char *ma_arg1)
@@ -38,11 +62,13 @@ Perl_throw_append_exception_1_1756(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_1_2103(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     const char *ma_arg1,
@@ -53,11 +79,13 @@ Perl_throw_append_exception_1_2103(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_1_2438(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     SV *ma_arg1)
 {
@@ -66,11 +94,13 @@ Perl_throw_append_exception_1_2438(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" SVf, SVfARG(ma_arg1));
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_1_2479(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     UV ma_arg1)
 {
@@ -79,11 +109,13 @@ Perl_throw_append_exception_1_2479(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg1, ma_arg1);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_1_2497(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     int ma_arg1)
@@ -93,11 +125,13 @@ Perl_throw_append_exception_1_2497(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_1_2511(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     IV ma_arg1,
     U32 category)
@@ -106,11 +140,13 @@ Perl_throw_append_exception_1_2511(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_2511_0_id, ma_arg1);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_1_2513(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
@@ -121,11 +157,13 @@ Perl_throw_append_exception_1_2513(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" UTF8f, UTF8fARG(ma_arg1_utf8_flag, ma_arg1_len, ma_arg1_pv));
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_1_2515(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const HEK *ma_arg1)
 {
@@ -134,11 +172,13 @@ Perl_throw_append_exception_1_2515(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" HEKf, HEKfARG(ma_arg1));
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_1_2646(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     int ma_arg1)
 {
@@ -147,11 +187,13 @@ Perl_throw_append_exception_1_2646(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_1_2652(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     line_t ma_arg1)
 {
@@ -160,11 +202,13 @@ Perl_throw_append_exception_1_2652(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg1, ma_arg1);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_2_1432(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     U32 ma_arg1_sv_setpvf_1,
@@ -181,11 +225,13 @@ Perl_throw_append_exception_2_1432(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_2_2433(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     SV *ma_arg1,
     SV *ma_arg2)
@@ -199,11 +245,13 @@ Perl_throw_append_exception_2_2433(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" SVf, SVfARG(ma_arg2));
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_2_2446(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     const char *ma_arg1,
@@ -218,11 +266,13 @@ Perl_throw_append_exception_2_2446(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg2, ma_arg2);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_2_2449(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     const char *ma_arg1,
@@ -236,11 +286,13 @@ Perl_throw_append_exception_2_2449(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_2449_0_id, ma_arg2);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_2_2478(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
@@ -258,11 +310,13 @@ Perl_throw_append_exception_2_2478(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" UTF8f, UTF8fARG(ma_arg2_utf8_flag, ma_arg2_len, ma_arg2_pv));
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_2_2483(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     SV *ma_arg1,
     UV ma_arg2)
@@ -276,11 +330,13 @@ Perl_throw_append_exception_2_2483(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg2, ma_arg2);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_2_2499(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     U32 ma_arg1_sv_setpvf_1,
@@ -296,11 +352,13 @@ Perl_throw_append_exception_2_2499(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg2, ma_arg2);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_2_2617(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     IV ma_arg1,
     const char *ma_fmt2,
@@ -314,11 +372,13 @@ Perl_throw_append_exception_2_2617(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_2_2651(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     const void *ma_arg1,
@@ -334,11 +394,13 @@ Perl_throw_append_exception_2_2651(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_2_2654(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     const char *ma_arg1,
@@ -354,11 +416,13 @@ Perl_throw_append_exception_2_2654(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_2_2658(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     int ma_arg1_sv_setpvf_1,
@@ -373,11 +437,13 @@ Perl_throw_append_exception_2_2658(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_2658_0_id, ma_arg2);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_3_1687(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     SV *ma_arg1,
     SV *ma_arg2,
@@ -396,11 +462,13 @@ Perl_throw_append_exception_3_1687(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" SVf, SVfARG(ma_arg3));
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_3_2448(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     SV *ma_arg1,
     const char *ma_fmt2,
@@ -420,11 +488,13 @@ Perl_throw_append_exception_3_2448(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg3, ma_arg3);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_3_2502(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     SV *ma_arg1,
     SV *ma_arg2,
@@ -444,11 +514,13 @@ Perl_throw_append_exception_3_2502(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg3, ma_arg3);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_3_2653(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     const char *ma_arg1,
@@ -470,11 +542,13 @@ Perl_throw_append_exception_3_2653(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_4_2656(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     const char *ma_arg1,
@@ -501,11 +575,13 @@ Perl_throw_append_exception_4_2656(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg4, ma_arg4);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_6_2367(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     IV ma_arg1,
     const char *ma_fmt2,
@@ -541,11 +617,13 @@ Perl_throw_append_exception_6_2367(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg6, ma_fmt6, ma_arg6);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_exception_8_2659(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     const char *ma_arg1,
@@ -592,21 +670,25 @@ Perl_throw_append_exception_8_2659(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 7,
         perl_diag_selector_domain_2659_0_id, ma_arg8);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, 0);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), 0);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_0_2257(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     U32 category)
 {
     if (!Perl_ckwarn(aTHX_ packWARN(WARN_AMBIGUOUS)))
         return;
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, NULL, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(NULL, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_1_2259(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     int ma_arg1,
@@ -619,11 +701,13 @@ Perl_throw_append_warning_1_2259(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_1_2359(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     UV ma_arg1,
@@ -636,11 +720,13 @@ Perl_throw_append_warning_1_2359(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_1_2360(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     UV ma_arg1,
@@ -653,11 +739,13 @@ Perl_throw_append_warning_1_2360(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_1_2604(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     IV ma_arg1,
     U32 category)
@@ -668,11 +756,13 @@ Perl_throw_append_warning_1_2604(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_2604_0_id, ma_arg1);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_2_2209(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     int ma_arg1,
@@ -689,11 +779,13 @@ Perl_throw_append_warning_2_2209(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_2_2258(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     const char *ma_fmt1,
     int ma_arg1,
@@ -712,11 +804,13 @@ Perl_throw_append_warning_2_2258(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_3_2626(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     UV ma_arg1,
     IV ma_arg2,
@@ -736,11 +830,13 @@ Perl_throw_append_warning_3_2626(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_4_2094(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     IV ma_arg1,
     int ma_arg2_utf8_flag,
@@ -771,11 +867,13 @@ Perl_throw_append_warning_4_2094(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" UTF8f, UTF8fARG(ma_arg4_utf8_flag, ma_arg4_len, ma_arg4_pv));
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_4_2357(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     UV ma_arg1,
     const char *ma_fmt2,
@@ -801,11 +899,13 @@ Perl_throw_append_warning_4_2357(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_4_2392(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     IV ma_arg1,
     int ma_arg2_utf8_flag,
@@ -836,11 +936,13 @@ Perl_throw_append_warning_4_2392(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" UTF8f, UTF8fARG(ma_arg4_utf8_flag, ma_arg4_len, ma_arg4_pv));
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_4_2623(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     UV ma_arg1,
     const char *ma_fmt2,
@@ -866,11 +968,13 @@ Perl_throw_append_warning_4_2623(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_5_2619(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     UV ma_arg1,
     const char *ma_fmt2,
@@ -902,11 +1006,13 @@ Perl_throw_append_warning_5_2619(pTHX_ UV diag_index,
     SV * const tmpl_arg5 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 4,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg5, ma_fmt5, ma_arg5);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_5_2621(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     UV ma_arg1,
     const char *ma_fmt2,
@@ -938,11 +1044,13 @@ Perl_throw_append_warning_5_2621(pTHX_ UV diag_index,
     SV * const tmpl_arg5 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 4,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg5, ma_fmt5, ma_arg5);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_6_2618(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     UV ma_arg1,
     const char *ma_fmt2,
@@ -978,11 +1086,13 @@ Perl_throw_append_warning_6_2618(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg6, ma_fmt6, ma_arg6);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_6_2622(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     UV ma_arg1,
     const char *ma_fmt2,
@@ -1020,11 +1130,13 @@ Perl_throw_append_warning_6_2622(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg6, ma_fmt6, ma_arg6);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_append_warning_9_2620(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV **exception_slot,
     UV ma_arg1,
     const char *ma_fmt2,
@@ -1076,18 +1188,22 @@ Perl_throw_append_warning_9_2620(pTHX_ UV diag_index,
     SV * const tmpl_arg9 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 8,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg9, ma_fmt9, ma_arg9);
-    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, params_av, category);
+    Perl_diag_append(aTHX_ exception_slot, NULL, diag_index, Perl_diag_source_params(params_av, source_file, source_line), category);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_0_2075(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     U32 category)
 {
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, NULL, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(NULL, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_1_2073(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     U32 category)
@@ -1097,11 +1213,13 @@ Perl_throw_ck_warner_1_2073(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_1_2089(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const HEK *ma_arg1,
     U32 category)
 {
@@ -1110,11 +1228,13 @@ Perl_throw_ck_warner_1_2089(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" HEKf, HEKfARG(ma_arg1));
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_1_2181(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1_sv_setpvf_1,
     const char *ma_arg1_sv_setpvf_2,
@@ -1125,11 +1245,13 @@ Perl_throw_ck_warner_1_2181(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1_sv_setpvf_1, ma_arg1_sv_setpvf_2);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_1_2186(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     U32 category)
 {
@@ -1138,11 +1260,13 @@ Perl_throw_ck_warner_1_2186(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" SVf, SVfARG(ma_arg1));
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_1_2207(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     U32 category)
@@ -1152,11 +1276,13 @@ Perl_throw_ck_warner_1_2207(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_1_2217(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     U32 category)
 {
@@ -1165,11 +1291,13 @@ Perl_throw_ck_warner_1_2217(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg1, ma_arg1);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_1_2234(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -1180,11 +1308,13 @@ Perl_throw_ck_warner_1_2234(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" UTF8f, UTF8fARG(ma_arg1_utf8_flag, ma_arg1_len, ma_arg1_pv));
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_1_2243(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     NV ma_arg1,
     U32 category)
@@ -1194,11 +1324,13 @@ Perl_throw_ck_warner_1_2243(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_1_2346(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     unsigned long ma_arg1,
     U32 category)
 {
@@ -1207,11 +1339,13 @@ Perl_throw_ck_warner_1_2346(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg1, ma_arg1);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_2_2091(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -1227,11 +1361,13 @@ Perl_throw_ck_warner_2_2091(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_2_2096(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     const HEK *ma_arg2,
     U32 category)
@@ -1245,11 +1381,13 @@ Perl_throw_ck_warner_2_2096(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" HEKf, HEKfARG(ma_arg2));
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_2_2113(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const HEK *ma_arg2,
@@ -1264,11 +1402,13 @@ Perl_throw_ck_warner_2_2113(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" HEKf, HEKfARG(ma_arg2));
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_2_2122(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     UV ma_arg2,
@@ -1283,11 +1423,13 @@ Perl_throw_ck_warner_2_2122(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg2, ma_arg2);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_2_2127(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -1302,11 +1444,13 @@ Perl_throw_ck_warner_2_2127(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_2_2162(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     const PADNAME *ma_arg2,
     U32 category)
@@ -1319,11 +1463,13 @@ Perl_throw_ck_warner_2_2162(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" PNf, PNfARG(ma_arg2));
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_2_2202(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     int ma_arg2,
     U32 category)
@@ -1336,11 +1482,13 @@ Perl_throw_ck_warner_2_2202(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_2_2209(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -1356,11 +1504,13 @@ Perl_throw_ck_warner_2_2209(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_2_2221(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     SV *ma_arg2,
     U32 category)
@@ -1373,11 +1523,13 @@ Perl_throw_ck_warner_2_2221(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" SVf, SVfARG(ma_arg2));
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_2_2225(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -1393,11 +1545,13 @@ Perl_throw_ck_warner_2_2225(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_2_2258(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -1413,11 +1567,13 @@ Perl_throw_ck_warner_2_2258(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_3_2072(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     UV ma_arg2,
     const char *ma_fmt3,
@@ -1436,11 +1592,13 @@ Perl_throw_ck_warner_3_2072(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_3_2119(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     UV ma_arg2,
     SV *ma_arg3,
@@ -1458,11 +1616,13 @@ Perl_throw_ck_warner_3_2119(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" SVf, SVfARG(ma_arg3));
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_3_2211(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -1484,11 +1644,13 @@ Perl_throw_ck_warner_3_2211(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_3_2332(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -1510,11 +1672,13 @@ Perl_throw_ck_warner_3_2332(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_3_2335(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -1534,11 +1698,13 @@ Perl_throw_ck_warner_3_2335(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_4_2180(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -1566,11 +1732,13 @@ Perl_throw_ck_warner_4_2180(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_4_2316(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -1597,11 +1765,13 @@ Perl_throw_ck_warner_4_2316(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_5_2097(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1_sv_setpvf_1,
     const char *ma_arg1_sv_setpvf_2,
@@ -1636,18 +1806,22 @@ Perl_throw_ck_warner_5_2097(pTHX_ UV diag_index,
     SV * const tmpl_arg5 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 4,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg5, "%" SVf_QUOTEDPREFIX, SVfARG(ma_arg5));
-    Perl_diag_ck_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_0_2069(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     U32 category)
 {
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, NULL, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(NULL, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_1_2071(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     U32 category)
@@ -1657,11 +1831,13 @@ Perl_throw_ck_warner_d_1_2071(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_1_2083(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     U32 category)
 {
@@ -1670,11 +1846,13 @@ Perl_throw_ck_warner_d_1_2083(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" SVf, SVfARG(ma_arg1));
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_1_2088(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     U32 category)
 {
@@ -1682,11 +1860,13 @@ Perl_throw_ck_warner_d_1_2088(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_2088_0_id, ma_arg1);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_1_2098(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_sv_setpvf_1,
     int ma_arg1_sv_setpvf_2,
     const char *ma_arg1_sv_setpvf_3,
@@ -1699,11 +1879,13 @@ Perl_throw_ck_warner_d_1_2098(pTHX_ UV diag_index,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%c%.*s", ma_arg1_sv_setpvf_1, ma_arg1_sv_setpvf_2, ma_arg1_sv_setpvf_3);
     if (ma_arg1_sv_setpvf_4) SvUTF8_on(tmpl_arg1);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_1_2099(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -1714,11 +1896,13 @@ Perl_throw_ck_warner_d_1_2099(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" UTF8f, UTF8fARG(ma_arg1_utf8_flag, ma_arg1_len, ma_arg1_pv));
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_1_2117(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     U32 category)
 {
@@ -1726,11 +1910,13 @@ Perl_throw_ck_warner_d_1_2117(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_2116_0_id, ma_arg1);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_1_2164(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const PADNAME *ma_arg1,
     U32 category)
 {
@@ -1739,11 +1925,13 @@ Perl_throw_ck_warner_d_1_2164(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" PNf, PNfARG(ma_arg1));
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_1_2172(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     long ma_arg1,
     U32 category)
 {
@@ -1752,11 +1940,13 @@ Perl_throw_ck_warner_d_1_2172(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_1_2177(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     U32 category)
@@ -1766,11 +1956,13 @@ Perl_throw_ck_warner_d_1_2177(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_1_2353(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     UV ma_arg1,
     U32 category)
@@ -1780,11 +1972,13 @@ Perl_throw_ck_warner_d_1_2353(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_2_2084(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -1800,11 +1994,13 @@ Perl_throw_ck_warner_d_2_2084(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_2_2086(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const HEK *ma_arg1,
     SV *ma_arg2,
     U32 category)
@@ -1818,11 +2014,13 @@ Perl_throw_ck_warner_d_2_2086(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" SVf, SVfARG(ma_arg2));
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_2_2165(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -1837,11 +2035,13 @@ Perl_throw_ck_warner_d_2_2165(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_2_2170(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     UV ma_arg2,
     U32 category)
@@ -1854,11 +2054,13 @@ Perl_throw_ck_warner_d_2_2170(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg2, ma_arg2);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_2_2271(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     int ma_arg2_utf8_flag,
@@ -1875,11 +2077,13 @@ Perl_throw_ck_warner_d_2_2271(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" UTF8f, UTF8fARG(ma_arg2_utf8_flag, ma_arg2_len, ma_arg2_pv));
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_2_2272(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -1895,11 +2099,13 @@ Perl_throw_ck_warner_d_2_2272(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_2_2349(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2,
@@ -1913,11 +2119,13 @@ Perl_throw_ck_warner_d_2_2349(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_1623_0_id, ma_arg2);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_3_2232(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1_sv_setpvf_1,
     const char *ma_arg1_sv_setpvf_2,
@@ -1937,11 +2145,13 @@ Perl_throw_ck_warner_d_3_2232(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" SVf, SVfARG(ma_arg3));
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_3_2314(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -1962,11 +2172,13 @@ Perl_throw_ck_warner_d_3_2314(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_4_2307(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2,
@@ -1990,11 +2202,13 @@ Perl_throw_ck_warner_d_4_2307(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" SVf_QUOTEDPREFIX, SVfARG(ma_arg4));
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_5_2199(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -2026,11 +2240,13 @@ Perl_throw_ck_warner_d_5_2199(pTHX_ UV diag_index,
     SV * const tmpl_arg5 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 4,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg5, ma_arg5);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_ck_warner_d_6_2311(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -2067,18 +2283,22 @@ Perl_throw_ck_warner_d_6_2311(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg6, ma_fmt6, ma_arg6);
-    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_ck_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
-Perl_throw_croak_0_1006(pTHX_ UV diag_index)
+Perl_throw_croak_0_1006(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line)
 {
-    Perl_diag_croak_sv(aTHX_ diag_index, NULL, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(NULL, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_10_1763(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -2137,12 +2357,14 @@ Perl_throw_croak_10_1763(pTHX_ UV diag_index,
     SV * const tmpl_arg10 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 9,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg10, ma_arg10);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1019(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1)
 {
@@ -2151,12 +2373,14 @@ Perl_throw_croak_1_1019(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1166(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1)
 {
@@ -2165,12 +2389,14 @@ Perl_throw_croak_1_1166(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1168(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2178,12 +2404,14 @@ Perl_throw_croak_1_1168(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1169(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     U32 ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2191,48 +2419,70 @@ Perl_throw_croak_1_1169(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
+    NORETURN_FUNCTION_END;
+}
+
+ __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
+Perl_throw_croak_1_1172(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
+    IV ma_arg1)
+{
+    AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+
+    Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
+        perl_diag_selector_domain_1172_0_id, ma_arg1);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1189(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_1189_0_id, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1193(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_1193_0_id, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1194(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_1194_0_id, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1204(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     U32 ma_arg1)
 {
@@ -2241,48 +2491,42 @@ Perl_throw_croak_1_1204(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
-    NORETURN_FUNCTION_END;
-}
-
- __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
-Perl_throw_croak_1_1206(pTHX_ UV diag_index,
-    IV ma_arg1)
-{
-    AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
-
-    Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
-        perl_diag_selector_domain_1172_0_id, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1212(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_1212_0_id, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1215(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_1215_0_id, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1227(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     long ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2290,12 +2534,14 @@ Perl_throw_croak_1_1227(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1449(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     unsigned long ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2303,12 +2549,14 @@ Perl_throw_croak_1_1449(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1453(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2316,12 +2564,14 @@ Perl_throw_croak_1_1453(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" SVf, SVfARG(ma_arg1));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1469(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     PERL_INTMAX_T ma_arg1)
 {
@@ -2330,12 +2580,14 @@ Perl_throw_croak_1_1469(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1504(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1)
 {
@@ -2344,12 +2596,14 @@ Perl_throw_croak_1_1504(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1575(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     HV *ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2357,12 +2611,14 @@ Perl_throw_croak_1_1575(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" HvNAMEf_QUOTEDPREFIX, HvNAMEfARG(ma_arg1));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1578(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     HV *ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2370,12 +2626,14 @@ Perl_throw_croak_1_1578(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" HEKf, HEKfARG(HvNAME_HEK(ma_arg1)));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1579(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2383,12 +2641,14 @@ Perl_throw_croak_1_1579(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" SVf_QUOTEDPREFIX, SVfARG(ma_arg1));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1590(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const HEK *ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2396,12 +2656,14 @@ Perl_throw_croak_1_1590(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" HEKf, HEKfARG(ma_arg1));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1600(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     HV *ma_arg1,
     const char *ma_default1)
 {
@@ -2411,12 +2673,14 @@ Perl_throw_croak_1_1600(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" PERL_HvNAMEf_DEFAULT, &scratch_default_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1604(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2424,12 +2688,14 @@ Perl_throw_croak_1_1604(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1605(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1_sv_setpvf_1,
     const char *ma_arg1_sv_setpvf_2)
@@ -2439,12 +2705,14 @@ Perl_throw_croak_1_1605(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1_sv_setpvf_1, ma_arg1_sv_setpvf_2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1607(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2452,12 +2720,14 @@ Perl_throw_croak_1_1607(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1608(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     UV ma_arg1)
 {
@@ -2466,12 +2736,14 @@ Perl_throw_croak_1_1608(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1665(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     unsigned long ma_arg1)
 {
@@ -2480,12 +2752,14 @@ Perl_throw_croak_1_1665(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1669(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     NV ma_arg1)
 {
@@ -2494,12 +2768,14 @@ Perl_throw_croak_1_1669(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1691(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const PADNAME *ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2507,12 +2783,14 @@ Perl_throw_croak_1_1691(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" PNf, PNfARG(ma_arg1));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1740(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const HEK *ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -2520,24 +2798,28 @@ Perl_throw_croak_1_1740(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" HEKf_QUOTEDPREFIX, HEKfARG(ma_arg1));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1755(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_1755_0_id, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_1_1780(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv)
@@ -2547,12 +2829,14 @@ Perl_throw_croak_1_1780(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" UTF8f, UTF8fARG(ma_arg1_utf8_flag, ma_arg1_len, ma_arg1_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1181(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2)
@@ -2565,12 +2849,14 @@ Perl_throw_croak_2_1181(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_1181_0_id, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1186(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     UV ma_arg2)
@@ -2584,12 +2870,14 @@ Perl_throw_croak_2_1186(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1197(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -2604,12 +2892,14 @@ Perl_throw_croak_2_1197(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1200(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     int ma_arg2)
 {
@@ -2622,12 +2912,14 @@ Perl_throw_croak_2_1200(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1207(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -2642,12 +2934,14 @@ Perl_throw_croak_2_1207(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1209(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2)
@@ -2661,12 +2955,14 @@ Perl_throw_croak_2_1209(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1211(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     const char *ma_fmt2,
     int ma_arg2)
@@ -2679,12 +2975,14 @@ Perl_throw_croak_2_1211(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1225(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     U32 ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2)
@@ -2698,12 +2996,14 @@ Perl_throw_croak_2_1225(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1230(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     const char *ma_fmt2,
@@ -2718,12 +3018,14 @@ Perl_throw_croak_2_1230(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1454(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2)
@@ -2737,12 +3039,14 @@ Perl_throw_croak_2_1454(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1475(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     U32 ma_arg1,
     int ma_arg2)
@@ -2756,12 +3060,14 @@ Perl_throw_croak_2_1475(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1477(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     SSize_t ma_arg2)
@@ -2775,12 +3081,14 @@ Perl_throw_croak_2_1477(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1500(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2)
@@ -2793,12 +3101,14 @@ Perl_throw_croak_2_1500(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1528(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2)
@@ -2812,12 +3122,14 @@ Perl_throw_croak_2_1528(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1542(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -2832,12 +3144,14 @@ Perl_throw_croak_2_1542(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1546(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SSize_t ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2)
@@ -2851,12 +3165,14 @@ Perl_throw_croak_2_1546(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1560(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SSize_t ma_arg1,
     SSize_t ma_arg2)
 {
@@ -2869,12 +3185,14 @@ Perl_throw_croak_2_1560(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1616(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1_sv_setpvf_1,
     const char *ma_arg1_sv_setpvf_2,
@@ -2889,12 +3207,14 @@ Perl_throw_croak_2_1616(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1624(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1_sv_setpvf_1,
     const char *ma_arg1_sv_setpvf_2,
@@ -2910,12 +3230,14 @@ Perl_throw_croak_2_1624(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1625(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     UV ma_arg2)
 {
@@ -2928,12 +3250,14 @@ Perl_throw_croak_2_1625(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1635(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2)
@@ -2946,12 +3270,14 @@ Perl_throw_croak_2_1635(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1666(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     long ma_arg1,
     long ma_arg2)
 {
@@ -2964,12 +3290,14 @@ Perl_throw_croak_2_1666(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1681(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2)
@@ -2982,12 +3310,14 @@ Perl_throw_croak_2_1681(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_1681_0_id, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1686(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     HV *ma_arg1,
     HV *ma_arg2)
 {
@@ -3000,12 +3330,14 @@ Perl_throw_croak_2_1686(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" HvNAMEf_QUOTEDPREFIX, HvNAMEfARG(ma_arg2));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1688(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     SV *ma_arg2)
 {
@@ -3018,12 +3350,14 @@ Perl_throw_croak_2_1688(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" SVf, SVfARG(ma_arg2));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1723(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     NV ma_arg1,
     const char *ma_fmt2,
@@ -3038,12 +3372,14 @@ Perl_throw_croak_2_1723(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1725(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2)
@@ -3057,12 +3393,14 @@ Perl_throw_croak_2_1725(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1729(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     SV *ma_arg2)
@@ -3076,12 +3414,14 @@ Perl_throw_croak_2_1729(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" SVf, SVfARG(ma_arg2));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1736(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     UV ma_arg2)
@@ -3095,12 +3435,14 @@ Perl_throw_croak_2_1736(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1742(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     const char *ma_fmt2,
     const void *ma_arg2)
@@ -3114,12 +3456,14 @@ Perl_throw_croak_2_1742(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1745(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     long ma_arg1,
     UV ma_arg2)
 {
@@ -3132,12 +3476,14 @@ Perl_throw_croak_2_1745(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1747(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     IV ma_arg2)
 {
@@ -3149,12 +3495,14 @@ Perl_throw_croak_2_1747(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_1747_0_id, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1748(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     UV ma_arg1,
     const char *ma_fmt2,
@@ -3169,12 +3517,14 @@ Perl_throw_croak_2_1748(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1754(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     HV *ma_arg1,
     IV ma_arg2)
 {
@@ -3186,12 +3536,14 @@ Perl_throw_croak_2_1754(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_1754_0_id, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1772(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -3206,12 +3558,14 @@ Perl_throw_croak_2_1772(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" SVf_QUOTEDPREFIX, SVfARG(ma_arg2));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1774(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     int ma_arg2_utf8_flag,
     UV ma_arg2_len,
@@ -3226,12 +3580,14 @@ Perl_throw_croak_2_1774(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" UTF8f, UTF8fARG(ma_arg2_utf8_flag, ma_arg2_len, ma_arg2_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1779(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -3247,12 +3603,14 @@ Perl_throw_croak_2_1779(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_1810(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     U32 ma_arg1,
     const char *ma_fmt2,
@@ -3267,12 +3625,14 @@ Perl_throw_croak_2_1810(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_2509(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     U32 ma_arg1_sv_setpvf_1,
     const char *ma_arg1_sv_setpvf_2,
@@ -3288,12 +3648,14 @@ Perl_throw_croak_2_2509(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_2521(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -3308,12 +3670,14 @@ Perl_throw_croak_2_2521(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" HEKf, HEKfARG(ma_arg2));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_2_2523(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -3330,12 +3694,14 @@ Perl_throw_croak_2_2523(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" UTF8f, UTF8fARG(ma_arg2_utf8_flag, ma_arg2_len, ma_arg2_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1182(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -3356,12 +3722,14 @@ Perl_throw_croak_3_1182(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1185(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -3382,12 +3750,14 @@ Perl_throw_croak_3_1185(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1458(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     unsigned long ma_arg1,
     const char *ma_fmt2,
     const void *ma_arg2,
@@ -3407,12 +3777,14 @@ Perl_throw_croak_3_1458(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1464(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     const char *ma_fmt2,
@@ -3433,12 +3805,14 @@ Perl_throw_croak_3_1464(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1466(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -3459,12 +3833,14 @@ Perl_throw_croak_3_1466(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1479(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SSize_t ma_arg1,
     SSize_t ma_arg2,
     SSize_t ma_arg3)
@@ -3482,12 +3858,14 @@ Perl_throw_croak_3_1479(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1514(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     const char *ma_fmt2,
@@ -3507,12 +3885,14 @@ Perl_throw_croak_3_1514(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1520(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     int ma_arg2,
@@ -3531,12 +3911,14 @@ Perl_throw_croak_3_1520(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1525(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     int ma_arg2,
     int ma_arg3)
@@ -3554,12 +3936,14 @@ Perl_throw_croak_3_1525(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1533(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -3579,12 +3963,14 @@ Perl_throw_croak_3_1533(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1544(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     const char *ma_fmt2,
@@ -3604,12 +3990,14 @@ Perl_throw_croak_3_1544(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1557(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     IV ma_arg2,
     const char *ma_fmt3,
@@ -3626,12 +4014,14 @@ Perl_throw_croak_3_1557(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1576(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     HV *ma_arg1,
     SV *ma_arg2,
     UV ma_arg3)
@@ -3649,12 +4039,14 @@ Perl_throw_croak_3_1576(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1629(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     IV ma_arg2,
     IV ma_arg3)
@@ -3672,12 +4064,14 @@ Perl_throw_croak_3_1629(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1659(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     unsigned long ma_arg2,
@@ -3696,12 +4090,14 @@ Perl_throw_croak_3_1659(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1690(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     const PADNAME *ma_arg2,
     const HEK *ma_arg3)
@@ -3719,12 +4115,14 @@ Perl_throw_croak_3_1690(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" HEKf, HEKfARG(ma_arg3));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1694(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     HV *ma_arg2,
     HV *ma_arg3)
@@ -3742,12 +4140,14 @@ Perl_throw_croak_3_1694(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" HvNAMEf_QUOTEDPREFIX, HvNAMEfARG(ma_arg3));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1726(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     UV ma_arg2,
     const char *ma_fmt3,
@@ -3766,12 +4166,14 @@ Perl_throw_croak_3_1726(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1728(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     UV ma_arg2,
     IV ma_arg3)
@@ -3789,12 +4191,14 @@ Perl_throw_croak_3_1728(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1731(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     UV ma_arg2,
@@ -3813,12 +4217,14 @@ Perl_throw_croak_3_1731(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1734(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     const char *ma_fmt2,
@@ -3838,12 +4244,14 @@ Perl_throw_croak_3_1734(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1750(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     U32 ma_arg1,
     const char *ma_fmt2,
@@ -3863,12 +4271,14 @@ Perl_throw_croak_3_1750(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1760(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -3888,12 +4298,14 @@ Perl_throw_croak_3_1760(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1768(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     int ma_arg2,
@@ -3913,12 +4325,14 @@ Perl_throw_croak_3_1768(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1773(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -3938,12 +4352,14 @@ Perl_throw_croak_3_1773(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" SVf_QUOTEDPREFIX, SVfARG(ma_arg3));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1775(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     int ma_arg2_utf8_flag,
@@ -3965,12 +4381,14 @@ Perl_throw_croak_3_1775(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1778(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     int ma_arg2_utf8_flag,
@@ -3991,12 +4409,14 @@ Perl_throw_croak_3_1778(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1785(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     UV ma_arg1,
     int ma_arg2_utf8_flag,
@@ -4018,12 +4438,14 @@ Perl_throw_croak_3_1785(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1786(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     int ma_arg2_utf8_flag,
     UV ma_arg2_len,
@@ -4044,12 +4466,14 @@ Perl_throw_croak_3_1786(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1795(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     ptrdiff_t ma_arg1,
     int ma_arg2_utf8_flag,
     UV ma_arg2_len,
@@ -4070,12 +4494,14 @@ Perl_throw_croak_3_1795(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1800(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     int ma_arg2_utf8_flag,
@@ -4098,12 +4524,14 @@ Perl_throw_croak_3_1800(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" UTF8f, UTF8fARG(ma_arg3_utf8_flag, ma_arg3_len, ma_arg3_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_2481(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     SV *ma_arg2,
     SV *ma_arg3)
@@ -4121,12 +4549,14 @@ Perl_throw_croak_3_2481(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" SVf, SVfARG(ma_arg3));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_2528(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     int ma_arg2_utf8_flag,
     UV ma_arg2_len,
@@ -4147,12 +4577,14 @@ Perl_throw_croak_3_2528(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" UTF8f, UTF8fARG(ma_arg3_utf8_flag, ma_arg3_len, ma_arg3_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_2532(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     int ma_arg2_utf8_flag,
     UV ma_arg2_len,
@@ -4173,12 +4605,14 @@ Perl_throw_croak_3_2532(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" UTF8f, UTF8fARG(ma_arg3_utf8_flag, ma_arg3_len, ma_arg3_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_2535(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     int ma_arg2_utf8_flag,
@@ -4201,12 +4635,14 @@ Perl_throw_croak_3_2535(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" UTF8f, UTF8fARG(ma_arg3_utf8_flag, ma_arg3_len, ma_arg3_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_2556(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     int ma_arg2_utf8_flag,
     UV ma_arg2_len,
@@ -4228,12 +4664,14 @@ Perl_throw_croak_3_2556(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" UTF8f, UTF8fARG(ma_arg3_utf8_flag, ma_arg3_len, ma_arg3_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_2559(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -4257,12 +4695,14 @@ Perl_throw_croak_3_2559(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" UTF8f, UTF8fARG(ma_arg3_utf8_flag, ma_arg3_len, ma_arg3_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_2561(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1_sv_setpvf_1,
     const char *ma_arg1_sv_setpvf_2,
@@ -4286,12 +4726,14 @@ Perl_throw_croak_3_2561(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" UTF8f, UTF8fARG(ma_arg3_utf8_flag, ma_arg3_len, ma_arg3_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_2562(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_arg1_sv_setpvf_1,
     int ma_arg1_sv_setpvf_2,
     int ma_arg2_utf8_flag,
@@ -4314,12 +4756,14 @@ Perl_throw_croak_3_2562(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" UTF8f, UTF8fARG(ma_arg3_utf8_flag, ma_arg3_len, ma_arg3_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_2605(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     U32 ma_arg1,
     int ma_arg2_utf8_flag,
@@ -4342,12 +4786,14 @@ Perl_throw_croak_3_2605(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" UTF8f, UTF8fARG(ma_arg3_utf8_flag, ma_arg3_len, ma_arg3_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_1463(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -4374,12 +4820,14 @@ Perl_throw_croak_4_1463(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_1517(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     const char *ma_fmt2,
@@ -4405,12 +4853,14 @@ Perl_throw_croak_4_1517(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg4, ma_arg4);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_1556(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     const char *ma_fmt2,
@@ -4437,12 +4887,14 @@ Perl_throw_croak_4_1556(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_1735(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     UV ma_arg2,
@@ -4466,12 +4918,14 @@ Perl_throw_croak_4_1735(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" SVf, SVfARG(ma_arg4));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_1757(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     SV *ma_arg2,
     const char *ma_fmt3,
@@ -4494,12 +4948,14 @@ Perl_throw_croak_4_1757(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" HEKf256, HEKfARG(ma_arg4));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_1770(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     int ma_arg2,
@@ -4525,12 +4981,14 @@ Perl_throw_croak_4_1770(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4_sv_setpvf_1, ma_arg4_sv_setpvf_2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_1799(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     int ma_arg2,
     int ma_arg3_utf8_flag,
@@ -4556,12 +5014,14 @@ Perl_throw_croak_4_1799(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_2480(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     SV *ma_arg2,
     const char *ma_fmt3,
@@ -4585,12 +5045,14 @@ Perl_throw_croak_4_2480(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" SVf, SVfARG(ma_arg4));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_2484(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     const char *ma_fmt2,
     int ma_arg2,
@@ -4617,12 +5079,14 @@ Perl_throw_croak_4_2484(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" UTF8f, UTF8fARG(ma_arg4_utf8_flag, ma_arg4_len, ma_arg4_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_2510(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     U32 ma_arg1_sv_setpvf_1,
     const char *ma_arg1_sv_setpvf_2,
@@ -4652,12 +5116,14 @@ Perl_throw_croak_4_2510(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" UTF8f, UTF8fARG(ma_arg4_utf8_flag, ma_arg4_len, ma_arg4_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_2526(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     IV ma_arg2,
     int ma_arg3_utf8_flag,
@@ -4682,12 +5148,14 @@ Perl_throw_croak_4_2526(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" UTF8f, UTF8fARG(ma_arg4_utf8_flag, ma_arg4_len, ma_arg4_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_2542(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -4716,12 +5184,14 @@ Perl_throw_croak_4_2542(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" UTF8f, UTF8fARG(ma_arg4_utf8_flag, ma_arg4_len, ma_arg4_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_2560(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     int ma_arg2_utf8_flag,
     UV ma_arg2_len,
@@ -4749,12 +5219,14 @@ Perl_throw_croak_4_2560(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" UTF8f, UTF8fARG(ma_arg4_utf8_flag, ma_arg4_len, ma_arg4_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_4_2600(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     int ma_arg2_utf8_flag,
     UV ma_arg2_len,
@@ -4782,12 +5254,14 @@ Perl_throw_croak_4_2600(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" UTF8f, UTF8fARG(ma_arg4_utf8_flag, ma_arg4_len, ma_arg4_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_5_1516(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -4819,12 +5293,14 @@ Perl_throw_croak_5_1516(pTHX_ UV diag_index,
     SV * const tmpl_arg5 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 4,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg5, ma_arg5);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_5_1677(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     long ma_arg1,
     long ma_arg2,
     long ma_arg3,
@@ -4853,12 +5329,14 @@ Perl_throw_croak_5_1677(pTHX_ UV diag_index,
     SV * const tmpl_arg5 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 4,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg5, ma_fmt5, ma_arg5);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_6_1505(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -4897,12 +5375,14 @@ Perl_throw_croak_6_1505(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg6, ma_fmt6, ma_arg6);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_6_1589(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2,
@@ -4933,12 +5413,14 @@ Perl_throw_croak_6_1589(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg6, "%" SVf, SVfARG(ma_arg6));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_6_2598(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     const char *ma_fmt2,
     U32 ma_arg2,
@@ -4979,12 +5461,14 @@ Perl_throw_croak_6_2598(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg6, "%" UTF8f, UTF8fARG(ma_arg6_utf8_flag, ma_arg6_len, ma_arg6_pv));
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_9_1761(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -5037,24 +5521,28 @@ Perl_throw_croak_9_1761(pTHX_ UV diag_index,
     SV * const tmpl_arg9 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 8,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg9, ma_arg9);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_context_1_2612(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_1437_0_id, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_context_2_1824(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     IV ma_arg2)
@@ -5067,12 +5555,14 @@ Perl_throw_croak_context_2_1824(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_1824_0_id, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_context_3_1822(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -5093,12 +5583,14 @@ Perl_throw_croak_context_3_1822(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_context_3_1971(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -5117,20 +5609,24 @@ Perl_throw_croak_context_3_1971(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
-Perl_throw_croak_nocontext_0_1290(UV diag_index)
+Perl_throw_croak_nocontext_0_1290(UV diag_index,
+    const char *source_file,
+    UV source_line)
 {
     dTHX;
-    Perl_diag_croak_sv(aTHX_ diag_index, NULL, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(NULL, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
-Perl_throw_croak_nocontext_1_1551(UV diag_index,
+Perl_throw_croak_nocontext_1_1314(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1)
 {
@@ -5140,12 +5636,14 @@ Perl_throw_croak_nocontext_1_1551(UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_1_1817(UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1)
 {
     dTHX;
@@ -5154,12 +5652,14 @@ Perl_throw_croak_nocontext_1_1817(UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_1_1885(UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1)
 {
     dTHX;
@@ -5168,12 +5668,14 @@ Perl_throw_croak_nocontext_1_1885(UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_1_1915(UV diag_index,
+    const char *source_file,
+    UV source_line,
     long ma_arg1)
 {
     dTHX;
@@ -5182,12 +5684,14 @@ Perl_throw_croak_nocontext_1_1915(UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_1_1932(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1)
 {
@@ -5197,12 +5701,14 @@ Perl_throw_croak_nocontext_1_1932(UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_2_1867(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     int ma_arg2)
@@ -5217,12 +5723,14 @@ Perl_throw_croak_nocontext_2_1867(UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_2_1883(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const HEK *ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2)
@@ -5237,12 +5745,14 @@ Perl_throw_croak_nocontext_2_1883(UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_2_1884(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     UV ma_arg1,
     const char *ma_fmt2,
@@ -5258,12 +5768,14 @@ Perl_throw_croak_nocontext_2_1884(UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_2_1897(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -5279,12 +5791,14 @@ Perl_throw_croak_nocontext_2_1897(UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_2_1909(UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     int ma_arg2)
 {
@@ -5298,12 +5812,14 @@ Perl_throw_croak_nocontext_2_1909(UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_2_1930(UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2)
@@ -5318,12 +5834,14 @@ Perl_throw_croak_nocontext_2_1930(UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_2_1933(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -5339,12 +5857,14 @@ Perl_throw_croak_nocontext_2_1933(UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_2_1979(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     long ma_arg2)
@@ -5359,12 +5879,14 @@ Perl_throw_croak_nocontext_2_1979(UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_3_1816(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     UV ma_arg2,
@@ -5385,12 +5907,14 @@ Perl_throw_croak_nocontext_3_1816(UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_3_1882(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const HEK *ma_arg1,
     const HEK *ma_arg2,
     const char *ma_fmt3,
@@ -5410,12 +5934,14 @@ Perl_throw_croak_nocontext_3_1882(UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_3_1889(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -5437,12 +5963,14 @@ Perl_throw_croak_nocontext_3_1889(UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_nocontext_4_1866(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     int ma_arg2,
@@ -5468,19 +5996,23 @@ Perl_throw_croak_nocontext_4_1866(UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg4, ma_arg4);
-    Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
-Perl_throw_die_0_1001(pTHX_ UV diag_index)
+Perl_throw_die_0_1001(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line)
 {
-    Perl_diag_die_sv(aTHX_ diag_index, NULL, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(NULL, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_1_1169(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     U32 ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -5488,12 +6020,28 @@ Perl_throw_die_1_1169(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg1, ma_arg1);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
-Perl_throw_die_1_1551(pTHX_ UV diag_index,
+Perl_throw_die_1_1172(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
+    IV ma_arg1)
+{
+    AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+
+    Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
+        perl_diag_selector_domain_1172_0_id, ma_arg1);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
+    NORETURN_FUNCTION_END;
+}
+
+ __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
+Perl_throw_die_1_1379(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1)
 {
@@ -5502,12 +6050,14 @@ Perl_throw_die_1_1551(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_1_1683(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -5515,12 +6065,14 @@ Perl_throw_die_1_1683(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_1_1684(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -5528,24 +6080,28 @@ Perl_throw_die_1_1684(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" SVf, SVfARG(ma_arg1));
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_1_1755(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_1755_0_id, ma_arg1);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_1_1990(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -5553,12 +6109,14 @@ Perl_throw_die_1_1990(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_1_1991(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1)
 {
@@ -5567,12 +6125,14 @@ Perl_throw_die_1_1991(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_1_1994(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv)
@@ -5582,12 +6142,14 @@ Perl_throw_die_1_1994(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" UTF8f, UTF8fARG(ma_arg1_utf8_flag, ma_arg1_len, ma_arg1_pv));
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_1_2003(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     U32 ma_arg1)
 {
@@ -5596,12 +6158,14 @@ Perl_throw_die_1_2003(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_1_2016(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     long ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -5609,24 +6173,14 @@ Perl_throw_die_1_2016(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
-    NORETURN_FUNCTION_END;
-}
-
- __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
-Perl_throw_die_1_2036(pTHX_ UV diag_index,
-    IV ma_arg1)
-{
-    AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
-
-    Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
-        perl_diag_selector_domain_1172_0_id, ma_arg1);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_2_1452(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -5641,12 +6195,14 @@ Perl_throw_die_2_1452(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_2_1772(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -5661,12 +6217,14 @@ Perl_throw_die_2_1772(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" SVf_QUOTEDPREFIX, SVfARG(ma_arg2));
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_2_1999(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     int ma_arg2)
@@ -5680,12 +6238,14 @@ Perl_throw_die_2_1999(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_2_2000(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2)
@@ -5699,12 +6259,14 @@ Perl_throw_die_2_2000(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_2_2014(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     U32 ma_arg1,
     long ma_arg2)
 {
@@ -5717,12 +6279,14 @@ Perl_throw_die_2_2014(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_2_2017(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     SV *ma_arg2)
 {
@@ -5735,12 +6299,14 @@ Perl_throw_die_2_2017(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" SVf, SVfARG(ma_arg2));
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_2_2042(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     const char *ma_fmt2,
@@ -5755,12 +6321,14 @@ Perl_throw_die_2_2042(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_2_2043(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     IV ma_arg2)
 {
@@ -5772,12 +6340,14 @@ Perl_throw_die_2_2043(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_2043_0_id, ma_arg2);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_3_1773(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -5797,12 +6367,14 @@ Perl_throw_die_3_1773(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" SVf_QUOTEDPREFIX, SVfARG(ma_arg3));
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_3_2001(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -5820,12 +6392,14 @@ Perl_throw_die_3_2001(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         perl_diag_selector_domain_2001_0_id, ma_arg3);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_3_2002(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -5843,12 +6417,14 @@ Perl_throw_die_3_2002(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         perl_diag_selector_domain_2002_0_id, ma_arg3);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_3_2019(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     SV *ma_arg2,
     SV *ma_arg3)
@@ -5866,12 +6442,14 @@ Perl_throw_die_3_2019(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" SVf, SVfARG(ma_arg3));
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_3_2028(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -5892,12 +6470,14 @@ Perl_throw_die_3_2028(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_6_2039(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     I32 ma_arg1,
     SSize_t ma_arg2,
     SSize_t ma_arg3,
@@ -5932,20 +6512,24 @@ Perl_throw_die_6_2039(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg6, ma_arg6);
-    Perl_diag_die_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_die_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
-Perl_throw_die_nocontext_0_2420(UV diag_index)
+Perl_throw_die_nocontext_0_2420(UV diag_index,
+    const char *source_file,
+    UV source_line)
 {
     dTHX;
-    Perl_diag_die_nocontext_sv(diag_index, NULL, NULL);
+    Perl_diag_die_nocontext_sv(diag_index, Perl_diag_source_params(NULL, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_nocontext_1_1755(UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     dTHX;
@@ -5953,12 +6537,14 @@ Perl_throw_die_nocontext_1_1755(UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_1755_0_id, ma_arg1);
-    Perl_diag_die_nocontext_sv(diag_index, params_av, NULL);
+    Perl_diag_die_nocontext_sv(diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_nocontext_1_1988(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1)
 {
@@ -5968,12 +6554,14 @@ Perl_throw_die_nocontext_1_1988(UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_die_nocontext_sv(diag_index, params_av, NULL);
+    Perl_diag_die_nocontext_sv(diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_nocontext_1_2418(UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1)
 {
     dTHX;
@@ -5982,12 +6570,14 @@ Perl_throw_die_nocontext_1_2418(UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_die_nocontext_sv(diag_index, params_av, NULL);
+    Perl_diag_die_nocontext_sv(diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_die_nocontext_3_2425(UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     IV ma_arg2,
     IV ma_arg3)
@@ -6004,12 +6594,14 @@ Perl_throw_die_nocontext_3_2425(UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         perl_diag_selector_domain_2043_0_id, ma_arg3);
-    Perl_diag_die_nocontext_sv(diag_index, params_av, NULL);
+    Perl_diag_die_nocontext_sv(diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     NORETURN_FUNCTION_END;
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_fatal_warner_2_2101(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const HEK *ma_arg1,
     const HEK *ma_arg2,
     U32 category)
@@ -6023,11 +6615,13 @@ Perl_throw_fatal_warner_2_2101(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" HEKf, HEKfARG(ma_arg2));
-    Perl_diag_fatal_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_fatal_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_taint_2_1803(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2)
@@ -6041,15 +6635,17 @@ Perl_throw_taint_2_1803(pTHX_ UV diag_index,
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_1803_0_id, ma_arg2);
     if (PL_unsafe || TAINT_WARN_get) {
-        Perl_diag_taint_warner_d_sv(aTHX_ diag_index, params_av, packWARN(WARN_TAINT), NULL);
+        Perl_diag_taint_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), packWARN(WARN_TAINT), NULL);
     }
     else {
-        Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+        Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     }
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_taint_3_1804(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2,
@@ -6067,21 +6663,25 @@ Perl_throw_taint_3_1804(pTHX_ UV diag_index,
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         perl_diag_selector_domain_1804_1_id, ma_arg3);
     if (PL_unsafe || TAINT_WARN_get) {
-        Perl_diag_taint_warner_d_sv(aTHX_ diag_index, params_av, packWARN(WARN_TAINT), NULL);
+        Perl_diag_taint_warner_d_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), packWARN(WARN_TAINT), NULL);
     }
     else {
-        Perl_diag_croak_sv(aTHX_ diag_index, params_av, NULL);
+        Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
     }
 }
 
 PERL_STATIC_INLINE void
-Perl_throw_warn_0_1144(pTHX_ UV diag_index)
+Perl_throw_warn_0_1144(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line)
 {
-    Perl_diag_warn_sv(aTHX_ diag_index, NULL, NULL);
+    Perl_diag_warn_sv(aTHX_ diag_index, Perl_diag_source_params(NULL, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_1_1236(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1)
 {
@@ -6090,11 +6690,13 @@ Perl_throw_warn_1_1236(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_warn_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_warn_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_1_1237(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1)
 {
@@ -6103,11 +6705,13 @@ Perl_throw_warn_1_1237(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_warn_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_warn_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_1_1574(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     HV *ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -6115,11 +6719,13 @@ Perl_throw_warn_1_1574(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" HvNAMEf_QUOTEDPREFIX, HvNAMEfARG(ma_arg1));
-    Perl_diag_warn_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_warn_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_1_1594(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -6127,11 +6733,13 @@ Perl_throw_warn_1_1594(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" SVf, SVfARG(ma_arg1));
-    Perl_diag_warn_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_warn_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_1_1667(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     unsigned long ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -6139,11 +6747,13 @@ Perl_throw_warn_1_1667(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setuv(tmpl_arg1, ma_arg1);
-    Perl_diag_warn_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_warn_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_1_1668(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     long ma_arg1)
 {
     AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
@@ -6151,11 +6761,13 @@ Perl_throw_warn_1_1668(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_warn_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_warn_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_2_1385(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     U32 ma_arg1,
     const char *ma_fmt2,
@@ -6170,11 +6782,13 @@ Perl_throw_warn_2_1385(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_warn_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_warn_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_2_1572(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     int ma_arg2)
@@ -6188,11 +6802,13 @@ Perl_throw_warn_2_1572(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_warn_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_warn_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_3_1661(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     unsigned long ma_arg2,
@@ -6211,11 +6827,13 @@ Perl_throw_warn_3_1661(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg3, ma_arg3);
-    Perl_diag_warn_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_warn_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_4_1623(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     const char *ma_fmt2,
     int ma_arg2_sv_setpvf_1,
@@ -6240,18 +6858,22 @@ Perl_throw_warn_4_1623(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_warn_sv(aTHX_ diag_index, params_av, NULL);
+    Perl_diag_warn_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
-Perl_throw_warn_nocontext_0_2375(UV diag_index)
+Perl_throw_warn_nocontext_0_2375(UV diag_index,
+    const char *source_file,
+    UV source_line)
 {
     dTHX;
-    Perl_diag_warn_nocontext_sv(diag_index, NULL, NULL);
+    Perl_diag_warn_nocontext_sv(diag_index, Perl_diag_source_params(NULL, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_nocontext_1_2378(UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1)
 {
     dTHX;
@@ -6260,11 +6882,13 @@ Perl_throw_warn_nocontext_1_2378(UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg1, ma_arg1);
-    Perl_diag_warn_nocontext_sv(diag_index, params_av, NULL);
+    Perl_diag_warn_nocontext_sv(diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_nocontext_1_2379(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1)
 {
@@ -6274,11 +6898,13 @@ Perl_throw_warn_nocontext_1_2379(UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_warn_nocontext_sv(diag_index, params_av, NULL);
+    Perl_diag_warn_nocontext_sv(diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_nocontext_2_2381(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -6294,11 +6920,13 @@ Perl_throw_warn_nocontext_2_2381(UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_warn_nocontext_sv(diag_index, params_av, NULL);
+    Perl_diag_warn_nocontext_sv(diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_nocontext_2_2382(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const void *ma_arg1,
     const char *ma_fmt2,
@@ -6314,11 +6942,13 @@ Perl_throw_warn_nocontext_2_2382(UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_warn_nocontext_sv(diag_index, params_av, NULL);
+    Perl_diag_warn_nocontext_sv(diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warn_nocontext_4_2380(UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     int ma_arg2,
@@ -6344,18 +6974,22 @@ Perl_throw_warn_nocontext_4_2380(UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_warn_nocontext_sv(diag_index, params_av, NULL);
+    Perl_diag_warn_nocontext_sv(diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_0_2074(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     U32 category)
 {
-    Perl_diag_warner_sv(aTHX_ diag_index, NULL, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(NULL, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_1_2078(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     U32 category)
@@ -6365,11 +6999,13 @@ Perl_throw_warner_1_2078(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_1_2080(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const HEK *ma_arg1,
     U32 category)
 {
@@ -6378,11 +7014,13 @@ Perl_throw_warner_1_2080(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" HEKf, HEKfARG(ma_arg1));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_1_2117(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     U32 category)
 {
@@ -6390,11 +7028,13 @@ Perl_throw_warner_1_2117(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_2116_0_id, ma_arg1);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_1_2123(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -6405,11 +7045,13 @@ Perl_throw_warner_1_2123(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" UTF8f, UTF8fARG(ma_arg1_utf8_flag, ma_arg1_len, ma_arg1_pv));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_1_2138(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     U32 category)
 {
@@ -6418,11 +7060,13 @@ Perl_throw_warner_1_2138(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" SVf, SVfARG(ma_arg1));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_1_2160(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const PADNAME *ma_arg1,
     U32 category)
 {
@@ -6431,11 +7075,13 @@ Perl_throw_warner_1_2160(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, "%" PNf, PNfARG(ma_arg1));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_1_2203(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     U32 ma_arg1,
     U32 category)
@@ -6445,11 +7091,13 @@ Perl_throw_warner_1_2203(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_1_2235(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     UV ma_arg1,
     U32 category)
@@ -6459,11 +7107,13 @@ Perl_throw_warner_1_2235(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_1_2291(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     U32 category)
@@ -6473,11 +7123,13 @@ Perl_throw_warner_1_2291(pTHX_ UV diag_index,
     SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg1, ma_fmt1, ma_arg1);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_1_2324(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     U32 category)
 {
@@ -6485,11 +7137,13 @@ Perl_throw_warner_1_2324(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_2323_0_id, ma_arg1);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_1_2604(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     U32 category)
 {
@@ -6497,11 +7151,13 @@ Perl_throw_warner_1_2604(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
         perl_diag_selector_domain_2604_0_id, ma_arg1);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2079(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const HEK *ma_arg2,
@@ -6516,11 +7172,13 @@ Perl_throw_warner_2_2079(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" HEKf, HEKfARG(ma_arg2));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2085(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     const char *ma_fmt2,
@@ -6536,11 +7194,13 @@ Perl_throw_warner_2_2085(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2101(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const HEK *ma_arg1,
     const HEK *ma_arg2,
     U32 category)
@@ -6554,11 +7214,13 @@ Perl_throw_warner_2_2101(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" HEKf, HEKfARG(ma_arg2));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2116(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     const char *ma_fmt2,
     int ma_arg2,
@@ -6572,11 +7234,13 @@ Perl_throw_warner_2_2116(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2133(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2,
@@ -6590,11 +7254,13 @@ Perl_throw_warner_2_2133(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_2133_0_id, ma_arg2);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2146(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -6609,11 +7275,13 @@ Perl_throw_warner_2_2146(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2152(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     SV *ma_arg2,
     U32 category)
@@ -6627,11 +7295,13 @@ Perl_throw_warner_2_2152(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" SVf, SVfARG(ma_arg2));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2155(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     SV *ma_arg2,
     U32 category)
@@ -6644,11 +7314,13 @@ Perl_throw_warner_2_2155(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" SVf, SVfARG(ma_arg2));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2163(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     int ma_arg2_utf8_flag,
     UV ma_arg2_len,
@@ -6663,11 +7335,13 @@ Perl_throw_warner_2_2163(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" UTF8f, UTF8fARG(ma_arg2_utf8_flag, ma_arg2_len, ma_arg2_pv));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2174(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     long ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -6682,11 +7356,13 @@ Perl_throw_warner_2_2174(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2253(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -6701,11 +7377,13 @@ Perl_throw_warner_2_2253(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2287(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -6723,11 +7401,13 @@ Perl_throw_warner_2_2287(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, "%" UTF8f, UTF8fARG(ma_arg2_utf8_flag, ma_arg2_len, ma_arg2_pv));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2323(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const HEK *ma_arg1,
     IV ma_arg2,
     U32 category)
@@ -6740,11 +7420,13 @@ Perl_throw_warner_2_2323(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         perl_diag_selector_domain_2323_0_id, ma_arg2);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2328(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1,
     int ma_arg2,
     U32 category)
@@ -6758,11 +7440,13 @@ Perl_throw_warner_2_2328(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2331(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1_sv_setpvf_1,
     const char *ma_arg1_sv_setpvf_2,
@@ -6779,11 +7463,13 @@ Perl_throw_warner_2_2331(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2340(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     int ma_arg2,
@@ -6798,11 +7484,13 @@ Perl_throw_warner_2_2340(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setiv(tmpl_arg2, ma_arg2);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_2_2343(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     U32 ma_arg1,
     const char *ma_fmt2,
@@ -6818,11 +7506,13 @@ Perl_throw_warner_2_2343(pTHX_ UV diag_index,
     SV * const tmpl_arg2 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg2, ma_fmt2, ma_arg2);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_3_2104(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     int ma_arg2,
     const char *ma_fmt3,
@@ -6841,11 +7531,13 @@ Perl_throw_warner_3_2104(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_3_2124(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     int ma_arg1_utf8_flag,
     UV ma_arg1_len,
     const char *ma_arg1_pv,
@@ -6868,11 +7560,13 @@ Perl_throw_warner_3_2124(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" SVf, SVfARG(ma_arg3));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_3_2134(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     SV *ma_arg2,
     SV *ma_arg3,
@@ -6891,11 +7585,13 @@ Perl_throw_warner_3_2134(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" SVf, SVfARG(ma_arg3));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_3_2236(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -6916,11 +7612,13 @@ Perl_throw_warner_3_2236(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_3_2248(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2,
@@ -6939,11 +7637,13 @@ Perl_throw_warner_3_2248(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, "%" SVf, SVfARG(ma_arg3));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_3_2252(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     SV *ma_arg2,
@@ -6964,11 +7664,13 @@ Perl_throw_warner_3_2252(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_3_2626(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     IV ma_arg2,
     const char *ma_fmt3,
@@ -6987,11 +7689,13 @@ Perl_throw_warner_3_2626(pTHX_ UV diag_index,
     SV * const tmpl_arg3 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 2,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg3, ma_fmt3, ma_arg3);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_4_2094(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     int ma_arg2_utf8_flag,
     UV ma_arg2_len,
@@ -7019,11 +7723,13 @@ Perl_throw_warner_4_2094(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" UTF8f, UTF8fARG(ma_arg4_utf8_flag, ma_arg4_len, ma_arg4_pv));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_4_2125(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2,
@@ -7047,11 +7753,13 @@ Perl_throw_warner_4_2125(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" SVf, SVfARG(ma_arg4));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_4_2126(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2,
@@ -7077,11 +7785,13 @@ Perl_throw_warner_4_2126(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_4_2159(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     const char *ma_arg1,
     IV ma_arg2,
@@ -7104,11 +7814,13 @@ Perl_throw_warner_4_2159(pTHX_ UV diag_index,
 
     Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         perl_diag_selector_domain_2159_1_id, ma_arg4);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_4_2250(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     IV ma_arg2,
     SV *ma_arg3,
@@ -7132,11 +7844,13 @@ Perl_throw_warner_4_2250(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_4_2295(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     SV *ma_arg2,
@@ -7162,11 +7876,13 @@ Perl_throw_warner_4_2295(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" SVf, SVfARG(ma_arg4));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_4_2326(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -7189,11 +7905,13 @@ Perl_throw_warner_4_2326(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" SVf, SVfARG(ma_arg4));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_4_2357(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     UV ma_arg2,
@@ -7218,11 +7936,13 @@ Perl_throw_warner_4_2357(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_4_2392(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     int ma_arg2_utf8_flag,
     UV ma_arg2_len,
@@ -7250,11 +7970,13 @@ Perl_throw_warner_4_2392(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, "%" UTF8f, UTF8fARG(ma_arg4_utf8_flag, ma_arg4_len, ma_arg4_pv));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_4_2623(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -7279,11 +8001,13 @@ Perl_throw_warner_4_2623(pTHX_ UV diag_index,
     SV * const tmpl_arg4 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 3,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg4, ma_fmt4, ma_arg4);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_5_2619(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -7314,11 +8038,13 @@ Perl_throw_warner_5_2619(pTHX_ UV diag_index,
     SV * const tmpl_arg5 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 4,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg5, ma_fmt5, ma_arg5);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_5_2621(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -7349,11 +8075,13 @@ Perl_throw_warner_5_2621(pTHX_ UV diag_index,
     SV * const tmpl_arg5 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 4,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg5, ma_fmt5, ma_arg5);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_6_2294(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     const char *ma_fmt1,
     int ma_arg1,
     const char *ma_fmt2,
@@ -7393,11 +8121,13 @@ Perl_throw_warner_6_2294(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg6, ma_fmt6, ma_arg6);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_6_2325(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     IV ma_arg1,
     IV ma_arg2,
     IV ma_arg3,
@@ -7428,11 +8158,13 @@ Perl_throw_warner_6_2325(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg6, "%" SVf, SVfARG(ma_arg6));
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_6_2618(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -7467,11 +8199,13 @@ Perl_throw_warner_6_2618(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg6, ma_fmt6, ma_arg6);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_6_2622(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -7508,11 +8242,13 @@ Perl_throw_warner_6_2622(pTHX_ UV diag_index,
     SV * const tmpl_arg6 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 5,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg6, ma_fmt6, ma_arg6);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_8_2363(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     const char *ma_fmt2,
     int ma_arg2,
@@ -7562,11 +8298,13 @@ Perl_throw_warner_8_2363(pTHX_ UV diag_index,
     SV * const tmpl_arg8 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 7,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg8, ma_fmt8, ma_arg8);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_8_2365(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     SV *ma_arg1,
     const char *ma_fmt2,
     int ma_arg2,
@@ -7614,11 +8352,13 @@ Perl_throw_warner_8_2365(pTHX_ UV diag_index,
     SV * const tmpl_arg8 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 7,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg8, ma_fmt8, ma_arg8);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 PERL_STATIC_INLINE void
 Perl_throw_warner_9_2620(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
     UV ma_arg1,
     const char *ma_fmt2,
     const char *ma_arg2,
@@ -7669,12 +8409,12 @@ Perl_throw_warner_9_2620(pTHX_ UV diag_index,
     SV * const tmpl_arg9 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 8,
         0, perl_diag_selector_invalid);
     sv_setpvf(tmpl_arg9, ma_fmt9, ma_arg9);
-    Perl_diag_warner_sv(aTHX_ diag_index, params_av, category, NULL);
+    Perl_diag_warner_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), category, NULL);
 }
 
 
 /* Generated from:
- * 1d6e975a72eea2b0622c9063b8c9e83ba8e5737752055f38fc5a5809d11a5fc8 diag_conf.pl
+ * e659809295e324b7cb9122c42bdc955707fa610872c1b9a1d0953dedd2f3f11b diag_conf.pl
  * 6510e6553ea58cc2c5404bc3524e14de99d6b39d5bf4cb3fc3271ba678cf283b diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

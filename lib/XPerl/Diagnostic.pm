@@ -48,7 +48,9 @@ other diagnostics.
 C<render_as_json> (also named C<as_json>) returns a C<xperl.diagnostic.v2> JSON document without loading
 a JSON module. The document contains C<code>, C<number>, C<kind>,
 C<severity>, C<selector_key>, C<params>, and C<location>.
-The location currently contains C<file> and C<line>.
+The location currently contains C<file> and C<line>. Diagnostics emitted by
+generated core macros also carry C<c_source>, with the C file and line where
+the macro was invoked. This is separate from the Perl source location.
 Categorized warnings include C<warning_categories>, an array of symbolic
 category names such as C<WARN_UNINITIALIZED>. Other diagnostics omit it.
 Categorized core warning subclasses follow the warning-control hierarchy.
