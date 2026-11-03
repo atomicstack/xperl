@@ -24,7 +24,7 @@ if ($NoTaintSupport) {
     exit 0;
 }
 
-plan tests => 1074;
+plan tests => 1077;
 
 $| = 1;
 
@@ -2575,6 +2575,17 @@ is eval { no warnings; eval $::x.1 }, 1, 'reset does not taint undef';
     is_tainted $n2, "- SETn";
     $n3 = $tn * 2.2;
     is_tainted $n3, "* SETn";
+}
+
+{
+    no warnings qw(void once);
+    local $::taint_eval_scope = 1;
+    eval { $TAINT };
+    isnt_tainted $@, 'successful eval clears taint from the error scalar';
+    eval { die "tainted error$TAINT" };
+    is_tainted $@, 'a tainted exception remains tainted';
+    eval { 1 };
+    isnt_tainted $@, 'a later successful eval clears exception taint';
 }
 
 # check that localizing something with get magic (e.g. taint) doesn't

@@ -612,19 +612,21 @@ for my $case (
     }
     my $diagnostic = $exception->contents->[0];
     my $location = $diagnostic->location;
+    my $c_source = $diagnostic->{c_source};
+    my $c_suffix = " [C $c_source->{file}:$c_source->{line}]";
     ok( $location->{file} && $location->{line},
         'warning retains its structured source location' );
     my $before = $exception->as_json;
     for my $language (qw(en fr sr)) {
         my $rendered = $exception->render_as_annotated($language);
         if ($terminated) {
-            is( $rendered, "#2439 WARNING.USER_RUNTIME.WARNING_USER_TEXT\nprefix:$message",
-                "$language final newline suppresses header and body locations" );
+            is( $rendered, "#2439 WARNING.USER_RUNTIME.WARNING_USER_TEXT$c_suffix\nprefix:$message",
+                "$language final newline suppresses Perl source locations" );
             is( $exception->render_as_legacy($language), "prefix:$message",
                 "$language final newline preserves legacy warning text" );
         }
         else {
-            like( $rendered, qr/\Q$location->{file}:$location->{line}\E\n/,
+            like( $rendered, qr/\Q$location->{file}:$location->{line}$c_suffix\E\n/,
                 "$language unterminated warning retains its header location" );
         }
     }
@@ -658,7 +660,7 @@ for my $case (
         'annotated rendering shares only consecutive identical headers' );
     is( scalar(() = $rendered =~ /^Global symbol /mg), 4,
         'sharing headers retains every diagnostic body' );
-    like( $rendered, qr/headers\.pl:7\n.*\n.*\n#2440 .*headers\.pl:8\n/s,
+    like( $rendered, qr/headers\.pl:7 \[C [^]]+\]\n.*\n.*\n#2440 .*headers\.pl:8 \[C [^]]+\]\n/s,
         'a changed location starts another header' );
     is( $exception->render_as_annotated('en'), $rendered,
         'a new render starts with a fresh header' );

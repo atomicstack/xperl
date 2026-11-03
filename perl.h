@@ -2284,6 +2284,8 @@ Returns the SV holding the current structured exception object.
 #  define PERL_CLEAR_ERROR_OBJ() ((void)0)
 #endif
 
+/* $@ keeps its core magic across clears. Discard taint from its previous
+ * value before reusing the scalar for an empty or new error. */
 /* contains inlined gv_add_by_type */
 #define CLEAR_ERRSV() STMT_START {					\
     SV ** const svp = &GvSV(PL_errgv);					\
@@ -2296,6 +2298,7 @@ Returns the SV holding the current structured exception object.
         SV *const errsv = *svp;						\
         SvPVCLEAR(errsv);                                               \
         SvPOK_only(errsv);						\
+        SvTAINTED_off(errsv);						\
         if (SvMAGICAL(errsv) && !mg_find(errsv, PERL_MAGIC_sv)) {						\
             mg_free(errsv);						\
         }								\
@@ -2315,6 +2318,7 @@ Returns the SV holding the current structured exception object.
         *svp = dupsv;							\
     } else {								\
         SV *const errsv = *svp;						\
+        SvTAINTED_off(errsv);						\
         if (SvMAGICAL(errsv) && !mg_find(errsv, PERL_MAGIC_sv)) {						\
             mg_free(errsv);						\
         }								\
