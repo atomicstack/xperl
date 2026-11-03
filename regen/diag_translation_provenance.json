@@ -5691,6 +5691,26 @@
             "reviewed" : false,
             "workflow" : "translate"
          },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "d829c6f5dac5ec4bd1d086646da0414eb429daa53eceeb4cd99681d2381717a7",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "8a9d7316c221ba2febc84a295cf6dc48b1e5f246247b9433a6e30bb0e4ef390c",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "ee388332f66e6a0ed070ea9a7c298e95249309d1d995f6d7bbe35b2ce54a729d",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "62727afd481914b5e208beab833861095f647ea392eae88b8f4fa3c9059ebd71",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_VALUE_VERSION_FORMAT_INVALID" : {
             "fingerprint" : "bdb7890c53752414bf4b209a453b736505d5baf138151a35a8a11266f233bf48",
             "reviewed" : false,
@@ -13473,6 +13493,26 @@
             "reviewed" : false,
             "workflow" : "repair"
          },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "a29ccded8b3b53e3e76c525f242afe4fae2f01373d8458b0d1da90dc97f22030",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "1512d42319601985f5c7e203e8b8a058b24badeeef3b13c0036477109f2c2b9c",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "a9dba7ff97968889b8a8abac5f7c14270650e72c8254d59cb7b89d4aea7bb9b6",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "1de0885958f68de87ca01d29fd559df075110cea7609e3413e6dcc9c8405f5f5",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_VALUE_VERSION_FORMAT_INVALID" : {
             "fingerprint" : "4e50243e614e179ad7898b1f91e92af44037f685dc1f53582de1700ea038ba9d",
             "reviewed" : false,
@@ -15785,6 +15825,26 @@
             "reviewed" : false,
             "workflow" : "repair"
          },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "60372da44c457944a47934db16f3435331bb1f4463bd9142d90b70a2f1a98037",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "2bb198d5553562037302ae817ac0f5d71fc0e787ca13eea60901b3390be9666f",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "407e439ae142a5fe782aa046a6db3b811ab002e6207cbec84606e24b91d8ffdf",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "e7376fe659839f7e8bc08624cf444120c3d8fa7e9d3c7cb59d051ce187f3ee6e",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "WARNING_DIAGNOSTIC_LANGUAGE_PACK_LOAD_FAILED" : {
             "fingerprint" : "459b9f221df3e7ae412a97eedb58abad7890fc4b2b4cbde7431377f4f16df924",
             "reviewed" : false,
@@ -16014,6 +16074,26 @@
          },
          "ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE" : {
             "fingerprint" : "e4476722f21ac03af765f88cfe42a672ee589fa06d54dd9a1513f4e74521a8ec",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "d5b41d2fc30cf89b645fa352c6dae2aac12e0427d5523bbe898a7b00e101276f",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "8f1e6f1456231fe3d74bf0ba838f80c14f456c0afd0be0da9f24f1fc453e55d0",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "cd240eb890c4209264b40de69eee715058b288c8b1ee6109bbe3cfc6aef6554b",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "e5a8006f5367659d90019bcbcee9610430fc042854747addd5a21959d14c5c46",
             "reviewed" : false,
             "workflow" : "repair"
          },
@@ -21743,6 +21823,26 @@
             "fingerprint" : "ec47506e8f25b4a630dfcb2d5c70c01a89fda94c67bfc7741f729bf9d8571177",
             "reviewed" : false,
             "workflow" : "translate"
+         },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "9c92010a8bed13abf2a2985ce8f64cab0f6196ddafc8c7f3bfb5f1035c413c0a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "2013545bf88ad097ed719f3b0398548471c82f5d572f505a90e5833864e8bbaa",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "6c86fbe979d6c55ac65afe44bed0b7b37ee8cbe4659f16a6347006ad75ed5279",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "6b3f767e43d3be047dcefb4e3adaafd50f69d82636759cb958b798aca0bc483d",
+            "reviewed" : false,
+            "workflow" : "repair"
          },
          "ERROR_VALUE_VERSION_FORMAT_INVALID" : {
             "fingerprint" : "22a03d8b39f1f651b3c73070a436e43394ff724dd176d52e8f248719d36d40e1",
@@ -29526,6 +29626,26 @@
             "reviewed" : false,
             "workflow" : "translate"
          },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "9451de63a649062955c2dfb95287b18251a6bb0a86a9641406bcd239e71efc96",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "4069e4c9878173d51fd5a051f01a4f71fb5fb6bfc48d2b2f4ce1763064fd050d",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "1f765294a5d112e103f3f004f3b4d91dd4898e2aaeecd7679af950e4fd2def68",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "11086c82732bd8ab1172d4b18caa41bf1506f33b662f48e0d09e973bc09aaaf3",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_VALUE_VERSION_FORMAT_INVALID" : {
             "fingerprint" : "888495417cd46a54d2c5292c24ac7c2f4b995a88af9f8176a4f2f3eb42a4bcc5",
             "reviewed" : false,
@@ -31920,6 +32040,26 @@
          },
          "ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE" : {
             "fingerprint" : "596e4629b89cc13ab06d4bb33b1c616c33d6f718c0d7a1a5419330b97d15934f",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "479e9ba102905d6099ad89f772330fcd75b05bd64bdb94158fb3421a33540e58",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "c0df96dffb2f0702015094d874e56c0f922ac1b31152e7ae8540645c240c7225",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "7da8063f1469c9f69b9fdd8c55c2ad18c2286a38cedb985387ddc4d6e379f17c",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "404e1dc10852d75dc942265863d063e299d023ece8ae56f96f078b515f1b25bd",
             "reviewed" : false,
             "workflow" : "repair"
          },
@@ -37654,6 +37794,26 @@
             "fingerprint" : "5d04ad87732134589ebc04214172c58c0c1a8b8196cc1b9067fd30c5e35b04f3",
             "reviewed" : false,
             "workflow" : "translate"
+         },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "420e531ced6225649be48c7e1f291fce2f4a627feb85db48172f584981bd3b32",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "7fe4f3054acfe89509bf6b5a5de7596a0299b400eb7363ebbb6915e949cbc576",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "a2df1a51b01dfb13ec422943f45fdccec90a2ef617ddbd0947ff190a8e2ae3c5",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "a9e2240af215f9a58eb96e60ccb6a2c61855ad09ca07dab7177378dbd7beb493",
+            "reviewed" : false,
+            "workflow" : "repair"
          },
          "ERROR_VALUE_VERSION_FORMAT_INVALID" : {
             "fingerprint" : "fd5d2710f48c22dfdef809eee944dbfe93ae7f5d375a532b9a112efb758a61fc",
@@ -45437,6 +45597,26 @@
             "reviewed" : false,
             "workflow" : "translate"
          },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "d07f3214c4c878678b7e3d493c3852a876ca43468803be13c95ac07e6b6df863",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "8c3c33166af9e87379b25d4895ed5d09f6aa2ee54ee06931a6b971403afe48a5",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "2c3b4c6effc2fbe17acfcbe6eb50ee9332749ae03e7fd9afe9c7cdd0f33f33b4",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "1b0de99ffc65fc3ae6bd2e08aae3b676c44c52d6d018cdf57c5bccd760f01acc",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_VALUE_VERSION_FORMAT_INVALID" : {
             "fingerprint" : "a51f0854eb447b30b6ea3682b3c4b29b4b56cbfd66f5dc8d674b7b043caee442",
             "reviewed" : false,
@@ -47984,6 +48164,26 @@
             "reviewed" : false,
             "workflow" : "repair"
          },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "7fa5bab9fe82839f2adb4ec93bc3b5fd61610541279e8fa9aa04708a94407ece",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "3bb81ad1ef2d10e179a17b57bb0af4574732ff1c8795439146cb5e2c63329cae",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "52e551167a1ccc33c4fa25ede1a0c36ceecc90f049807571ef68c1c8dce8c558",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "279ba891120421d9f220e8c0bff228810a9329bf551cecc3e83d4b6dfa5fb7d2",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "WARNING_DIAGNOSTIC_LANGUAGE_PACK_LOAD_FAILED" : {
             "fingerprint" : "2e4c05dcc75d13057383f9f513392285d0e288b067edd7c46c0b45c301b0075b",
             "reviewed" : false,
@@ -48451,6 +48651,26 @@
             "reviewed" : false,
             "workflow" : "repair"
          },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "4a83a87a21306dcd564d0b9d5ca92dab7f6979c3b6dffebc4961e4f7df6171ef",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "4eaa362933544f13f18500b1adc2b9ca777b15c267d9b24c3deb200482b73968",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "5f235e1105259f89fc55aa6379966f2c484f8a6ee864ca5411dc3fe3b6cf6b30",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "a0e23a8ec02e73045c78fbc4e13ce8da163f0787bc028d409353b4299029a5e2",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "WARNING_DIAGNOSTIC_LANGUAGE_PACK_LOAD_FAILED" : {
             "fingerprint" : "270bb6879e507e6e6be05a7535c03d9b0fcaeef2cc45e70c0c965d2494513583",
             "reviewed" : false,
@@ -48860,6 +49080,26 @@
          },
          "ERROR_SYSTEM_PLATFORM_VMS_PATH_INC_UNIX_CONVERSION_FAILED" : {
             "fingerprint" : "30d09637604200fa2abbfb810c44dd153a98b37e04c6b662fdd8467b1db1cb93",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "4eab581cd2d9051d7721253d5d157e2ef6b35afef4d67e7098bebee2fb8c46e8",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "b485777a123c8a75a5688481e023b0ee7714d5d8f787bdfc28f6c70f723c627a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "e9f2310ed377ef7098dda2dd6e202b729ffbe993af84a7a4363ed4d983397af3",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "fbaa856948cd3a7269b1f2260e4fa44f4cde11828dfa6951ff76765363668240",
             "reviewed" : false,
             "workflow" : "repair"
          },
@@ -50022,6 +50262,26 @@
          },
          "ERROR_SYSTEM_SIGNAL_HANDLER_MISSING" : {
             "fingerprint" : "8be3901c6ccae804e9587b4ab9c66b83e8b7fb9c2552d1c330cde7c019750524",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "362dbeed3ad1decdfe841a4eeffe18459ab289e1893c3f91704575b5bb51c438",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "425f43d80184cd270089809a9ad4f974e2ea402fb67a9adf2d55c3eeb1ee7653",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "3044878b649fd3628ff471805dd6e12f683243d499fb78897dbbb21f9803b4b6",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "f1356981f1db714992810b55745291078b9ab00074ed8fc4a52b89a9a0fbd087",
             "reviewed" : false,
             "workflow" : "repair"
          },
@@ -55969,6 +56229,26 @@
          },
          "ERROR_VALUE_RESTRICTED_HASH_KEY_DELETION_DISALLOWED" : {
             "fingerprint" : "32a5deb7a1edc1f393732e2380eef52076d31d988d7192d1e22bd94ac3c09eaa",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "3b73ba5c81a259a06b4ac5e723e3f793b63a0cdab2fdecab1463abcd4cae2a2c",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "ab1e72dc3995ad45119b58e1728f0daa51d97b992574655c38f97c446b1f91c5",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "9ace88ec035dba49f63be4a2653f7c96d3a6ea7ab85b367a1140baa1a23c6eb5",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "b2fb4559bae047b3329888d97fc95a5b90e926108c9338700c712b6458da1e21",
             "reviewed" : false,
             "workflow" : "repair"
          },
@@ -63754,6 +64034,26 @@
             "reviewed" : false,
             "workflow" : "repair"
          },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "0e50c3d0d86fef797f3c1249b318e87a859846c8d66a6dfc45ac20bc96147954",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "0d72076e0bd028a6d3ba59e6f85b667357dc08a594ab5a989036a42f365bdf05",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "ad7f5ef5eb5ad8f2ee8346519e07ab2930f11e201317cecc7dcc472a10fca7f7",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "e88ca7d2db66dc7852311ec247774bdf24ba44f8114e1f719742b7589379be19",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_VALUE_VERSION_FORMAT_INVALID" : {
             "fingerprint" : "39a720e895d0fb936ea78f629723529288187d6a09c1145b3f152167d74f85c9",
             "reviewed" : false,
@@ -71535,6 +71835,26 @@
             "fingerprint" : "64495cd63e7cb915f95a2d6a0088618819c625df231421bc764879cbb06c8cfe",
             "reviewed" : false,
             "workflow" : "translate"
+         },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "14955bd9421415945f48e18375500641b778c5586628d69aae0fc48c41354d8d",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "87df09e0dda8caeb37711d9f7f5d17e6b4e436da9b685f529ac63e75555bb03d",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "0e1f406705d733834cd4db61f29edf39a17fc113e6c26dde0c279661e5dbc9ed",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "87bba26af325cb4482b4d0130148af9f5525b530e4e6bc697046e3f820644b3e",
+            "reviewed" : false,
+            "workflow" : "repair"
          },
          "ERROR_VALUE_VERSION_FORMAT_INVALID" : {
             "fingerprint" : "ebe3c4fc13bf6aab3414612090ce97655dfc6c44e54144b7c7bbcf824a1143ae",
@@ -79318,6 +79638,26 @@
             "reviewed" : false,
             "workflow" : "repair"
          },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "181159032235fdc8488eb5e23574ab5d6347b4f74b4caba47745d0ba3909092b",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "3d237025e50ef73a28d3979f819b9db297c9771532fc42d5fb5f338d92de6794",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "fed24a9603eae76f4e46fc7393b3070ddfc752be184c8ef05e9e877cecb89ee5",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "53ce396c00221796047fbdc025eb2b0efb3b2619ab0668998e41b34547b24b12",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_VALUE_VERSION_FORMAT_INVALID" : {
             "fingerprint" : "0a9c49ad6a13f9fc7096f2f71b018649acc6eb7e7cf18c6de790b4175f9e946c",
             "reviewed" : false,
@@ -87097,6 +87437,26 @@
          },
          "ERROR_VALUE_RESTRICTED_HASH_KEY_DELETION_DISALLOWED" : {
             "fingerprint" : "70bc76efff24fcfff8c0e5100ccf0b51f4bd287f4ebc96e901000a2e80057b99",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "a575097c245e6ebf5cd799685a1a23ba9af8e593f67c3a99babdad0a02bc8f1a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID" : {
+            "fingerprint" : "b7d6dd9205558556a94c029057f727275f98767cf389a016a01e5000ff498ad3",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE" : {
+            "fingerprint" : "e6ebaf2a970d2a8f6af7dfc63dc1a98dc90761ed77bc52d8fe55a6e4c9d55771",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID" : {
+            "fingerprint" : "1a7357981415dcf5dd9eeafdac2b82e4bceacb363106835c1ed35ffb7bed627a",
             "reviewed" : false,
             "workflow" : "repair"
          },

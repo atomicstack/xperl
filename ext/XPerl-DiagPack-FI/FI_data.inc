@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: ef0494a82131cc3afaf54546d44add8b68ac17028607967af785c8fd809c3b7d */
+/* Language-scoped rendered data SHA-256: 4fb18800c3308c5981433fe8d6e0a76abb9c7f1f84c8f79832d8d1d0f3002734 */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
 
@@ -2691,6 +2691,10 @@ static const char perl_diag_template_text_4bf2a04f[] = "silmukkaan siirtyminen";
 static const char perl_diag_template_text_1bc2ef6d[] = "silmukkaan siirtymiseen";
 static const char perl_diag_template_text_f767da42[] = "silmukkaan siirtymist\303\244";
 static const char perl_diag_template_text_9964e210[] = "Silmukkamuuttujasta puuttuu $-merkki";
+static const char perl_diag_template_text_878db932[] = "SipHash-kierrosm\303\244\303\244rien on oltava ei-negatiivisia kokonaislukuja";
+static const char perl_diag_template_text_b9a59609[] = "SipHash-kierrosm\303\244\303\244r\303\244 on liian suuri";
+static const char perl_diag_template_text_02fb43b0[] = "SipHash-siemenen on oltava t\303\244sm\303\244lleen 16 tavua";
+static const char perl_diag_template_text_6fdb5aad[] = "SipHash-sy\303\266tteen on oltava tavujono";
 static const char perl_diag_template_text_852516e6[] = "sis\303\244inen %<num>p voi olla ristiriidassa printfin tulevien laajennusten kanssa";
 static const char perl_diag_template_text_884724fc[] = "Sis\303\244inen pituuslaskenta on virheellinen.\n\"%1$s\"-merkint\303\244\303\244 ei lis\303\244tty kokonaan kohteeseen \"%2$s\"; tarvittiin=%3$s, kapasiteetti=%4$s";
 static const char perl_diag_template_text_85770d5e[] = "Sis\303\244inen ristiriita vfork-kutsujen seurannassa";
@@ -6071,6 +6075,10 @@ enum {
     perl_diag_template_start_fi_2753,
     perl_diag_template_start_fi_2754,
     perl_diag_template_start_fi_2755,
+    perl_diag_template_start_fi_2775,
+    perl_diag_template_start_fi_2776,
+    perl_diag_template_start_fi_2777,
+    perl_diag_template_start_fi_2778,
     perl_diag_template_end_fi,
 };
 
@@ -7939,6 +7947,10 @@ static const perl_diag_template_case_t perl_diag_template_cases_fi[] = {
     { perl_diag_error_object_field_attribute_legacy_self_already_assigned_number,                 UINT64_C(         0), perl_diag_template_text_e1235d4c,  0,   0 },
     { perl_diag_note_context_syntax_error_annotated_number,                                       UINT64_C(         0), perl_diag_template_text_9b13be95,  0,   0 },
     { perl_diag_note_context_near_source_annotated_number,                                        UINT64_C(         0), perl_diag_template_text_94307679,  3,   1 },
+    { perl_diag_error_value_siphash_input_byte_string_required_number,                            UINT64_C(         0), perl_diag_template_text_6fdb5aad,  0,   0 },
+    { perl_diag_error_value_siphash_round_count_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_878db932,  0,   0 },
+    { perl_diag_error_value_siphash_round_count_too_large_number,                                 UINT64_C(         0), perl_diag_template_text_b9a59609,  0,   0 },
+    { perl_diag_error_value_siphash_seed_length_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_02fb43b0,  0,   0 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -9503,6 +9515,10 @@ static const perl_diag_template_t perl_diag_templates_fi[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fi_2753, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fi_2754, NULL                        },
     { 0,   3,  perl_diag_word_group_none, perl_diag_template_start_fi_2755, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fi_2775, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fi_2776, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fi_2777, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fi_2778, NULL                        },
 };
 
 static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
@@ -17715,6 +17731,26 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2755 = {
     perl_diagpack_param_schema_ids + 534, 3
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2775 = {
+    2775, "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2776 = {
+    2776, "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2777 = {
+    2777, "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2778 = {
+    2778, "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_fi[] = {
     /* local schema row zero is unused */
     NULL, &perl_diagpack_schema_1001, &perl_diagpack_schema_1002, &perl_diagpack_schema_1003,
@@ -18236,7 +18272,8 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_fi[] = {
     &perl_diagpack_schema_2745, &perl_diagpack_schema_2747, &perl_diagpack_schema_2748,
     &perl_diagpack_schema_2749, &perl_diagpack_schema_2750, &perl_diagpack_schema_2751,
     &perl_diagpack_schema_2752, &perl_diagpack_schema_2753, &perl_diagpack_schema_2754,
-    &perl_diagpack_schema_2755,
+    &perl_diagpack_schema_2755, &perl_diagpack_schema_2775, &perl_diagpack_schema_2776,
+    &perl_diagpack_schema_2777, &perl_diagpack_schema_2778,
 };
 
 static const perl_diag_selector_domain_t perl_diag_selector_domains[] = {

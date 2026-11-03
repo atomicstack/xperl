@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: a5fd8c25ae8316920532535972a188429a4ece792bea350dbc3d84dcc9563e28 */
+/* Language-scoped rendered data SHA-256: 5ae914a2bb3f7e265756777788e9834374491ae2bab568d31c6b66645186b86e */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
 
@@ -1835,6 +1835,7 @@ static const char perl_diag_template_text_c4fa1169[] = "La fonctionnalit\303\251
 static const char perl_diag_template_text_10eaa533[] = "La fonctionnalit\303\251 private_use est exp\303\251rimentale";
 static const char perl_diag_template_text_484ae9a9[] = "La fusion a \303\251chou\303\251 sur le parent \302\253%1$s\302\273.";
 static const char perl_diag_template_text_dd8ecbfb[] = "La graine RNG::Seed du g\303\251n\303\251rateur Drand48 int\303\251gr\303\251 doit contenir exactement 4 octets";
+static const char perl_diag_template_text_7276c6ab[] = "La graine SipHash doit faire exactement 16 octets";
 static const char perl_diag_template_text_0a151589[] = "La liste de remplacement est plus longue que la liste de recherche";
 static const char perl_diag_template_text_c0fd96e5[] = "La liste des enfants du diagnostic doit \303\252tre une r\303\251f\303\251rence \303\240 un tableau\n";
 static const char perl_diag_template_text_5b9cc96f[] = "La liste des enfants du groupe de diagnostics doit \303\252tre une r\303\251f\303\251rence \303\240 un tableau\n";
@@ -1942,6 +1943,7 @@ static const char perl_diag_template_text_380ba2eb[] = "Le nom du groupe doit co
 static const char perl_diag_template_text_6399f005[] = "Le nom du module doit \303\252tre une constante";
 static const char perl_diag_template_text_621b28c0[] = "Le nombre d'octets de builtin::rand_bytes() doit \303\252tre un entier positif ou nul";
 static const char perl_diag_template_text_82be292f[] = "Le nombre d'octets demand\303\251 \303\240 builtin::rand_bytes() est trop grand";
+static const char perl_diag_template_text_39574f10[] = "Le nombre de tours de SipHash est trop \303\251lev\303\251";
 static const char perl_diag_template_text_bd6b8a9b[] = "Le nombre maximal de signaux en attente (%1$s) a \303\251t\303\251 d\303\251pass\303\251";
 static const char perl_diag_template_text_bffe3207[] = "Le non-caract\303\250re Unicode U+%1$s n'est pas recommand\303\251 pour l'\303\251change ouvert";
 static const char perl_diag_template_text_2ef9f5e2[] = "Le num\303\251ro de version doit \303\252tre une constante num\303\251rique";
@@ -2015,6 +2017,7 @@ static const char perl_diag_template_text_cc4039ec[] = "les expressions r\303\25
 static const char perl_diag_template_text_1f3a4c34[] = "Les filtres de source ne s'appliquent qu'aux flux d'octets";
 static const char perl_diag_template_text_22cf82ef[] = "Les modificateurs d'expression r\303\251guli\303\250re \"/%1$s\" et \"/%2$s\" sont incompatibles";
 static const char perl_diag_template_text_71e276ed[] = "Les modificateurs d\342\200\231expression r\303\251guli\303\250re \302\253 %1$s \302\273 et \302\253 %2$s \302\273 sont mutuellement exclusifs ; emplacement indiqu\303\251 par <-- HERE dans m/%3$s <-- HERE %4$s/";
+static const char perl_diag_template_text_ecc4fe44[] = "Les nombres de tours SipHash doivent \303\252tre des entiers non n\303\251gatifs";
 static const char perl_diag_template_text_41d998ac[] = "les noms de capture ne peuvent pas \303\252tre r\303\251p\303\251t\303\251s dans une concat\303\251nation de motif dispatch";
 static const char perl_diag_template_text_c98e7f0d[] = "les noms de champ d'objet doivent \303\252tre des constantes";
 static const char perl_diag_template_text_1229d150[] = "Les objets Diagnostic::Note ne peuvent pas contenir d\342\200\231enfants\n";
@@ -2057,6 +2060,7 @@ static const char perl_diag_template_text_ceaa2719[] = "lstat() sur le descripte
 static const char perl_diag_template_text_c9d3ce2f[] = "lstat() sur le descripteur de fichier %1$s";
 static const char perl_diag_template_text_ea32189d[] = "L\342\200\231attribut :blessed_self exige un champ scalaire unique dans une classe ayant une superclasse conventionnelle et ne prend aucune valeur d\342\200\231attribut";
 static const char perl_diag_template_text_69ec475b[] = "L\342\200\231enfant du groupe de diagnostics doit \303\252tre un diagnostic\n";
+static const char perl_diag_template_text_b4188b2b[] = "L\342\200\231entr\303\251e de SipHash doit \303\252tre une cha\303\256ne d\342\200\231octets";
 static const char perl_diag_template_text_22791b10[] = "L\342\200\231indicateur light du diagnostic doit \303\252tre un scalaire\n";
 static const char perl_diag_template_text_f2711b98[] = "L\342\200\231indice de suivi du contexte du diagnostic doit \303\252tre un entier positif ou nul\n";
 static const char perl_diag_template_text_a100b604[] = "L\342\200\231objet natif n\342\200\231a pas de self h\303\251rit\303\251 initialis\303\251";
@@ -5538,6 +5542,10 @@ enum {
     perl_diag_template_start_fr_2753,
     perl_diag_template_start_fr_2754,
     perl_diag_template_start_fr_2755,
+    perl_diag_template_start_fr_2775,
+    perl_diag_template_start_fr_2776,
+    perl_diag_template_start_fr_2777,
+    perl_diag_template_start_fr_2778,
     perl_diag_template_end_fr,
 };
 
@@ -7391,6 +7399,10 @@ static const perl_diag_template_case_t perl_diag_template_cases_fr[] = {
     { perl_diag_error_object_field_attribute_legacy_self_already_assigned_number,                 UINT64_C(         0), perl_diag_template_text_757981a7,  0,   0 },
     { perl_diag_note_context_syntax_error_annotated_number,                                       UINT64_C(         0), perl_diag_template_text_a8f5a4e3,  0,   0 },
     { perl_diag_note_context_near_source_annotated_number,                                        UINT64_C(         0), perl_diag_template_text_49070474,  3,   1 },
+    { perl_diag_error_value_siphash_input_byte_string_required_number,                            UINT64_C(         0), perl_diag_template_text_b4188b2b,  0,   0 },
+    { perl_diag_error_value_siphash_round_count_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_ecc4fe44,  0,   0 },
+    { perl_diag_error_value_siphash_round_count_too_large_number,                                 UINT64_C(         0), perl_diag_template_text_39574f10,  0,   0 },
+    { perl_diag_error_value_siphash_seed_length_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_7276c6ab,  0,   0 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -8955,6 +8967,10 @@ static const perl_diag_template_t perl_diag_templates_fr[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fr_2753, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fr_2754, NULL                        },
     { 0,   3,  perl_diag_word_group_none, perl_diag_template_start_fr_2755, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fr_2775, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fr_2776, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fr_2777, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_fr_2778, NULL                        },
 };
 
 static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
@@ -17167,6 +17183,26 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2755 = {
     perl_diagpack_param_schema_ids + 534, 3
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2775 = {
+    2775, "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2776 = {
+    2776, "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2777 = {
+    2777, "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2778 = {
+    2778, "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_fr[] = {
     /* local schema row zero is unused */
     NULL, &perl_diagpack_schema_1001, &perl_diagpack_schema_1002, &perl_diagpack_schema_1003,
@@ -17688,7 +17724,8 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_fr[] = {
     &perl_diagpack_schema_2745, &perl_diagpack_schema_2747, &perl_diagpack_schema_2748,
     &perl_diagpack_schema_2749, &perl_diagpack_schema_2750, &perl_diagpack_schema_2751,
     &perl_diagpack_schema_2752, &perl_diagpack_schema_2753, &perl_diagpack_schema_2754,
-    &perl_diagpack_schema_2755,
+    &perl_diagpack_schema_2755, &perl_diagpack_schema_2775, &perl_diagpack_schema_2776,
+    &perl_diagpack_schema_2777, &perl_diagpack_schema_2778,
 };
 
 static const perl_diag_selector_domain_t perl_diag_selector_domains[] = {
