@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: fa04d3b1a0cda9682cd8cc9dd1aac35603a9a673673795e2c88d1fe6edbaec2a */
+/* Language-scoped rendered data SHA-256: e7f3c9cf1a9035324f6a83b9e27c64fe16d266cfafde8aa3e4d472fac30c2a37 */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
 
@@ -1452,9 +1452,11 @@ static const char perl_diag_template_text_a7a4e5bf[] = "Class :isa attribute req
 static const char perl_diag_template_text_eb103293[] = "Class already has a declared or inherited :blessed_self field";
 static const char perl_diag_template_text_59087c3a[] = "Class already has a superclass, cannot add another";
 static const char perl_diag_template_text_72cab597[] = "Class attribute %1$s requires a value";
+static const char perl_diag_template_text_f17be851[] = "Class field bucket %1$s must be a hash reference";
 static const char perl_diag_template_text_4de22735[] = "class is experimental";
 static const char perl_diag_template_text_8b4592fb[] = "class name";
 static const char perl_diag_template_text_2d300f6f[] = "Class object payload must be an unblessed reference";
+static const char perl_diag_template_text_2dae2a46[] = "Class object snapshot $self must be a blessed reference";
 static const char perl_diag_template_text_23fefcbd[] = "Class storage was released during field initialization";
 static const char perl_diag_template_text_937dd9da[] = "class_object_from_hash expects a hash reference";
 static const char perl_diag_template_text_c11ff25d[] = "class_object_from_hash expects the name of a class";
@@ -5253,6 +5255,8 @@ enum {
     perl_diag_template_start_en_2767,
     perl_diag_template_start_en_2768,
     perl_diag_template_start_en_2769,
+    perl_diag_template_start_en_2770,
+    perl_diag_template_start_en_2771,
     perl_diag_template_end_en,
 };
 
@@ -7149,6 +7153,8 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_object_field_inheritance_ambiguous_number,                                  UINT64_C(         0), perl_diag_template_text_daf8a764,  1,   1 },
     { perl_diag_error_object_field_inheritance_private_number,                                    UINT64_C(         0), perl_diag_template_text_d4d1db65,  1,   1 },
     { perl_diag_error_object_field_inheritance_owner_missing_number,                              UINT64_C(         0), perl_diag_template_text_ab6be4f4,  1,   1 },
+    { perl_diag_error_object_conversion_owner_bucket_required_number,                             UINT64_C(         0), perl_diag_template_text_f17be851,  1,   1 },
+    { perl_diag_error_object_conversion_snapshot_self_required_number,                            UINT64_C(         0), perl_diag_template_text_2dae2a46,  0,   0 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -8727,6 +8733,8 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2767, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2768, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2769, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2770, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2771, NULL                        },
 };
 
 static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
@@ -9096,6 +9104,7 @@ static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
     { "buffer_bytes",             "uv"   },
     { "expression",               "text" },
     { "language",                 "text" },
+    { "owner",                    "text" },
 };
 
 static const U16 perl_diagpack_param_schema_ids[] = {
@@ -9145,7 +9154,7 @@ static const U16 perl_diagpack_param_schema_ids[] = {
      360,  362,  363,  365,   14,    2,    4,    6,    7,    8,   20,   21,   28,   32,   34,   42,
       43,   45,   60,   67,   81,   98,   99,  105,  106,  107,  108,  109,  110,  111,  112,  113,
      114,  120,  122,  126,  141,  157,  187,  266,  268,  269,  273,  279,  280,  303,  323,  345,
-     347,  351,  352,  361,  364,
+     347,  351,  352,  361,  364,  366,
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1001 = {
@@ -17008,6 +17017,16 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2769 = {
     perl_diagpack_param_schema_ids + 459, 1
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2770 = {
+    2770, "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED",
+    perl_diagpack_param_schema_ids + 726, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2771 = {
+    2771, "ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     /* local schema row zero is unused */
     NULL, &perl_diagpack_schema_1001, &perl_diagpack_schema_1002, &perl_diagpack_schema_1003,
@@ -17534,6 +17553,7 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     &perl_diagpack_schema_2761, &perl_diagpack_schema_2762, &perl_diagpack_schema_2763,
     &perl_diagpack_schema_2764, &perl_diagpack_schema_2765, &perl_diagpack_schema_2766,
     &perl_diagpack_schema_2767, &perl_diagpack_schema_2768, &perl_diagpack_schema_2769,
+    &perl_diagpack_schema_2770, &perl_diagpack_schema_2771,
 };
 
 static const perl_diag_selector_domain_t perl_diag_selector_domains[] = {

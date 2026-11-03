@@ -300,12 +300,12 @@ sub _printable_unicode {
 # dump the refs in the current dumper object.
 # expects same args as new() if called via package name.
 #
-our @post;
+our (@post, @restore, @restore_names);
 sub Dumpperl {
   my($s) = shift;
   my(@out, $val, $name);
   my($i) = 0;
-  local(@post);
+  local(@post, @restore, @restore_names);
 
   $s = $s->new(@_) unless ref $s;
 
@@ -321,10 +321,19 @@ sub Dumpperl {
       $valstr = $s->_dump($val, $name);
     }
 
-    $valstr = "$name = " . $valstr . ';' if @post or !$s->{terse};
+    $valstr = "$name = " . $valstr . ';' if @post or @restore or !$s->{terse};
     my $out = $s->_compose_out($valstr, \@post);
 
     push @out, $out;
+  }
+  $out[-1] .= $s->_compose_out('', \@restore) if @restore;
+  for my $wrapper (@restore_names) {
+    for my $entry (values %{$s->{seen}}) {
+      $entry->[0] =~ s~\Q$wrapper\E(->\{'\$self'\}|(->|(?=[{\[]))|)~
+        $1 eq "->{'\$self'}" ? $wrapper :
+        defined($2) ? "builtin::class_object_to_hash($wrapper)->" : $wrapper
+      ~ge;
+    }
   }
   return wantarray ? @out : join('', @out);
 }
@@ -349,6 +358,7 @@ use constant _bad_vsmg => defined &_vstring && (_vstring(~v0)||'') eq "v0";
 sub _dump {
   my($s, $val, $name) = @_;
   my($out, $type, $id, $sname);
+  my $modern_payload = delete $s->{modern_payload};
 
   $type = ref $val;
   $out = "";
@@ -359,7 +369,7 @@ sub _dump {
     # method.  Trap errors and warn() instead of die()ing, like the XS
     # implementation.
     my $freezer = $s->{freezer};
-    if ($freezer and UNIVERSAL::can($val, $freezer)) {
+    if (!$modern_payload and $freezer and UNIVERSAL::can($val, $freezer)) {
       eval { $val->$freezer() };
       warn "WARNING(Freezer method call failed): $@" if $@;
     }
@@ -371,7 +381,7 @@ sub _dump {
 
     # Note: By this point $name is always defined and of non-zero length.
     # Keep a tab on it so that we do not fall into recursive pit.
-    if (exists $s->{seen}{$id}) {
+    if (!$modern_payload && exists $s->{seen}{$id}) {
       if ($s->{purity} and $s->{level} > 0) {
         $out = ($realtype eq 'HASH')  ? '{}' :
                ($realtype eq 'ARRAY') ? '[]' :
@@ -392,7 +402,7 @@ sub _dump {
       }
       return $out;
     }
-    else {
+    elsif (!$modern_payload) {
       # store our name
       $s->{seen}{$id} = [ (
           ($name =~ /^[@%]/)
@@ -437,18 +447,37 @@ sub _dump {
       return $out;
     }
 
-    # Restore field storage around the normal payload dump. Keep one seen
-    # table for references shared between fields and the ordinary referent.
-    my $modern_object = SUPPORTS_BLESSED_CLASS_OBJECTS &&
+    # Keep the payload identity separate from its temporary field wrapper.
+    # Reference fixups run before the final storage attachment phase.
+    my $modern_object = !$modern_payload && SUPPORTS_BLESSED_CLASS_OBJECTS &&
                         builtin::is_class_object($val);
     if ($modern_object) {
+      my $fields = builtin::class_object_to_hash($val);
+      delete $fields->{'$self'};
+      my $selfname = $name . "->{'\$self'}";
+      $s->{seen}{$id}[0] = $selfname;
       $s->{level}++;
-      my $modern_fields = builtin::class_object_to_hash($val);
-      $out = 'builtin::class_object_from_hash(' .
-             $s->_dump($modern_fields, "builtin::class_object_to_hash($name)") . ', ' .
-             _quote($realpack) . ', ';
+      my $payload;
+      {
+        local $s->{modern_payload} = 1;
+        $payload = $s->_dump($val, $selfname);
+      }
+      my $owners = $s->_dump($fields, $name);
       $s->{level}--;
-      $no_bless = 1;
+      $out = "{ '\$self' => " . $payload;
+      my $entries = substr($owners, 1, -1);
+      $out .= ',' . $entries if $entries =~ /\S/;
+      $out .= ' }';
+      push @restore_names, $name;
+      if ($s->{terse}) {
+        $out = 'builtin::class_object_from_hash(' . $out . ')';
+        $out .= '->' . $s->{toaster} . '()' if $s->{toaster} ne '';
+        return $out;
+      }
+      my $restore = "$name = builtin::class_object_from_hash($name)";
+      $restore .= '->' . $s->{toaster} . '()' if $s->{toaster} ne '';
+      push @restore, $restore;
+      return $out;
     }
 
     # we have a blessed ref
@@ -594,12 +623,10 @@ sub _dump {
       Carp::croak("Can't handle '$realtype' type");
     }
 
-    $out .= ')' if $modern_object;
-
     if ($realpack and !$no_bless) { # we have a blessed ref
       $out .= ', ' . _quote($realpack) . ' )';
       $out .= '->' . $s->{toaster} . '()'
-        if $s->{toaster} ne '';
+        if !$modern_payload && $s->{toaster} ne '';
       $s->{apad} = $blesspad;
     }
     $s->{level}--;
@@ -1008,9 +1035,12 @@ of eval'ing code from untrusted sources!)
 Objects created by the experimental C<class> feature are dumped using the
 experimental C<builtin::class_object_to_hash> and
 C<builtin::class_object_from_hash> functions.  Their fields are represented
-shallowly. The ordinary referent payload is preserved along with lexical
-fields. With C<Purity>, shared references and cycles between fields and the
-payload are restored through the usual fixup statements.
+under their original storage-owner classes, alongside C<'$self'> containing
+the ordinary blessed referent. Reference fixups run before the final
+C<class_object_from_hash> statements attach field storage. These statements
+preserve existing field aliases and run before any C<Toaster> hook. C<Terse>
+uses compact inline restoration. The usual Dumper limits on graph fidelity
+and alias discovery order still apply.
 
 Any references that are the same as one of those passed in will be named
 C<$VAR>I<n> (where I<n> is a numeric suffix), and other duplicate references

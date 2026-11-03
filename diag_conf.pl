@@ -35353,6 +35353,38 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Conversion"
         },
+        "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED" => {
+          "number" => 2770,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:type_mismatch",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Class field bucket %{owner} must be a hash reference"
+            },
+            "args" => [
+              {
+                "name" => "owner",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Conversion"
+        },
         "ERROR_OBJECT_CONVERSION_PAYLOAD_REFERENCE_REQUIRED" => {
           "number" => 2762,
           "severity" => "FATAL_ERROR",
@@ -35369,6 +35401,31 @@ $CONF = {
           "message" => {
             "templates" => {
               "en" => "Class object payload must be an unblessed reference"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Conversion"
+        },
+        "ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED" => {
+          "number" => 2771,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Class object snapshot \$self must be a blessed reference"
             },
             "args" => []
           },

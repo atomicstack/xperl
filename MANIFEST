@@ -6773,6 +6773,7 @@ t/class/inherited_fields.t		Explicit inherited and private class fields
 t/class/legacy-inherit.t		Legacy superclass constructors and method dispatch
 t/class/method.t			See if class method declarations work
 t/class/object_hash.t			Test class object hash conversion
+t/class/object_snapshot.t		Class live snapshots and deferred restoration
 t/class/phasers.t			See if class phaser blocks work
 t/class/threads.t			See if classes work across multiple threads
 t/class/utf8.t				See if class syntax works with non-ASCII UTF-8

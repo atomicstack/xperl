@@ -16570,7 +16570,8 @@ S_sv_dup_common(pTHX_ const SV *const ssv, CLONE_PARAMS *const param)
                     Newx(ObjectFIELDS(dsv), fieldcount, SV *);
                     ObjectMAXFIELD(dsv) = fieldcount - 1;
 
-                    sv_dup_inc_multiple(ObjectFIELDS(ssv), ObjectFIELDS(dsv), fieldcount, param);
+                    if(fieldcount)
+                        sv_dup_inc_multiple(ObjectFIELDS(ssv), ObjectFIELDS(dsv), fieldcount, param);
                 }
                 break;
             }

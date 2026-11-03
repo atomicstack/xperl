@@ -869,6 +869,16 @@ Perl_ckwarn_d(pTHX_ U32 w)
         __attribute__pure__;
 #define PERL_ARGS_ASSERT_CKWARN_D
 
+PERL_CALLCONV CV *
+Perl_class_bind_context(pTHX_ CV *cv, bool force_clone)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_CLASS_BIND_CONTEXT     \
+    STMT_START { Perl_assert_aTHX; assert(cv);                              \
+                 assert(SvTYPE(cv) == SVt_PVCV || SvTYPE(cv) == SVt_PVFM);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                       \
+    } STMT_END
+
 PERL_CALLCONV PADNAME *
 Perl_class_field_name(pTHX_ SV *instance, PADOFFSET fieldix)
         Perl_attribute_nonnull_aTHX
@@ -901,11 +911,10 @@ Perl_class_object_from_hash(pTHX_ SV *hashref, SV *classname)
 PERL_CALLCONV SV *
 Perl_class_object_restore(pTHX_ SV *hashref, SV *classname, SV *payload)
         Perl_attribute_nonnull_aTHX
-        Perl_attribute_nonnull(pTHX_1)
-        Perl_attribute_nonnull(pTHX_2);
+        Perl_attribute_nonnull(pTHX_1);
 #define PERL_ARGS_ASSERT_CLASS_OBJECT_RESTORE   \
-    STMT_START { Perl_assert_aTHX; assert(hashref); assert(classname);  \
-                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                   \
+    STMT_START { Perl_assert_aTHX; assert(hashref);    \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
 PERL_CALLCONV SV *

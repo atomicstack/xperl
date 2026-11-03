@@ -390,6 +390,13 @@ An object's overridden C<isa> method also participates in the check.
 Class-qualified shapes then inspect the object's underlying structure
 directly; they do not call constructors or accessors.
 
+A modern class-qualified shape sees that class's own and composed-role
+fields, plus its explicit C<:inherited> aliases. A parent shape on a child
+object selects the parent's original declaration even when the child owns
+a same-named field. Conventional package shapes inspect the ordinary
+referent payload, including packages that inherit modern field storage.
+This pattern field view is separate from owner-keyed field serialization.
+
 For objects created with Perl's C<class> feature, field names include their
 sigils:
 

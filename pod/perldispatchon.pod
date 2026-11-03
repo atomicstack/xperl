@@ -629,6 +629,13 @@ hash, or reference shape:
         }
     }
 
+A modern class-qualified shape sees that class's own and composed-role
+fields, plus its explicit C<:inherited> aliases. A parent shape on a child
+object selects the parent's original declaration even when the child owns
+a same-named field. Conventional package shapes inspect the ordinary
+referent payload, including packages that inherit modern field storage.
+This pattern field view is separate from owner-keyed field serialization.
+
 Hash shapes inspect quoted fields, array shapes inspect positional values,
 and scalar-reference shapes can bind their referents.  For an object created
 with C<class>, use the field names including their sigils:

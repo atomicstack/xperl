@@ -152,12 +152,23 @@ class UnionConflictB { field $collision = 2 }
     package UnionDuplicateRoleLegacy;
     our @ISA = ('UnionRoleLeft', 'UnionRoleAbsent');
 }
-eval { UnionConflictLegacy->new };
-like($@, qr/Field.*collision|field.*collision/, 'distinct field declarations in mixed union must have unique names');
-eval { UnionDuplicateRoleLegacy->new };
-like($@, qr/Field.*shared|field.*shared/, 'independent class consumers cannot introduce duplicate role fields');
-eval q{ class UnionShadowRejected :isa(UnionConflictA) { field $collision = 3 } };
-like($@, qr/Field.*collision|field.*collision/, 'direct superclass field shadowing is rejected');
+my $conflicting_names = UnionConflictLegacy->new;
+my $owner_fields = builtin::class_object_to_hash($conflicting_names);
+is($owner_fields->{UnionConflictA}{'$collision'}, 1, 'first unrelated class keeps its same-named field');
+is($owner_fields->{UnionConflictB}{'$collision'}, 2, 'second unrelated class keeps distinct storage');
+my $duplicate_role = UnionDuplicateRoleLegacy->new;
+UnionRoleLeft->can('increment_shared')->($duplicate_role);
+my $role_owners = builtin::class_object_to_hash($duplicate_role);
+is($role_owners->{UnionRoleLeft}{'$shared'}, 1, 'first role consumer owns its role field');
+is($role_owners->{UnionRoleAbsent}{'$shared'}, 0, 'second role consumer has independent same-named storage');
+eval q{ class UnionShadowAllowed :isa(UnionConflictA) {
+    field $collision = 3;
+    method child_collision { $collision }
+} };
+is($@, '', 'distinct child storage may reuse parent field name');
+my $shadow = UnionShadowAllowed->new;
+is($shadow->child_collision, 3, 'child method accesses its own same-named field');
+
 
 SKIP: {
     skip('threads unavailable', 2) unless $Config{useithreads};

@@ -695,9 +695,10 @@ XS(XS_builtin_class_object_to_hash)
 XS(XS_builtin_class_object_from_hash)
 {
     dXSARGS;
-    if (items != 2 && items != 3)
-        croak_xs_usage(cv, "hashref, classname, payload = undef");
-    ST(0) = sv_2mortal(class_object_restore(ST(0), ST(1), items == 3 ? ST(2) : NULL));
+    if (items < 1 || items > 3)
+        croak_xs_usage(cv, "hashref, classname = undef, payload = undef");
+    ST(0) = sv_2mortal(class_object_restore(ST(0), items > 1 ? ST(1) : NULL,
+        items == 3 ? ST(2) : NULL));
     XSRETURN(1);
 }
 

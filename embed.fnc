@@ -1114,6 +1114,9 @@ Adfpt	|void	|ck_warner	|U32 err				\
 Adfpt	|void	|ck_warner_d	|U32 err				\
 				|NN const char *pat			\
 				|...
+Cp	|CV *	|class_bind_context					\
+				|NN CV *cv				\
+				|bool force_clone
 Cp	|PADNAME *|class_field_name					\
 				|NN SV *instance			\
 				|PADOFFSET fieldix
@@ -1124,7 +1127,7 @@ Adp	|SV *	|class_object_from_hash 				\
 				|NN SV *classname
 Cp	|SV *	|class_object_restore					\
 				|NN SV *hashref 			\
-				|NN SV *classname			\
+				|NULLOK SV *classname			\
 				|NULLOK SV *payload
 Adp	|SV *	|class_object_to_hash					\
 				|NN SV *object

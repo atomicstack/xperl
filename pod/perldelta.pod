@@ -45,9 +45,14 @@ C<$self>. The former C<:blessed_self> field attribute is removed.
 
 Modern fields form the union of the effective hierarchy, including modern
 ancestors reached through conventional packages and shared diamonds.
-Distinct storage declarations with the same field name now conflict,
-including declarations at different levels of a direct class hierarchy.
-Use C<field $name :inherited> to explicitly share an ancestor field instead.
+Different classes may own distinct same-named fields. Field-hash conversion
+always groups original fields by storage-owner class, including single-owner
+objects; fieldless and alias-only classes add no buckets. Its C<'$self'>
+entry retains the actual blessed object. One-argument restoration attaches
+fields to that same referent. Data::Dumper defers normal restoration until
+reference fixups finish. This preserves same-named values and existing
+field aliases during reconstruction. Use C<field $name :inherited> to
+explicitly share one unambiguous ancestor declaration.
 C<:private> prevents descendants from binding that field. Inherited aliases
 add no storage or initialization and do not make other ancestor fields
 implicitly visible. See L<perlclass/Field attributes>.

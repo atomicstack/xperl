@@ -990,6 +990,7 @@ static const perl_diag_param_metadata_t perl_diag_param_metadata[] = {
     { "buffer_bytes",             "uv"   },
     { "expression",               "text" },
     { "language",                 "text" },
+    { "owner",                    "text" },
 };
 
 static const U16 perl_diag_param_ids[] = {
@@ -1040,7 +1041,7 @@ static const U16 perl_diag_param_ids[] = {
       36,  344,  358,  359,  360,  361,  363,  364,  366,   14,    2,    4,    7,    8,   20,   21,
       28,   32,   34,   42,   43,   45,   60,   68,   82,   99,  100,  106,  107,  108,  109,  110,
      111,  112,  113,  114,  115,  121,  123,  127,  129,  143,  159,  188,  267,  269,  270,  274,
-     280,  281,  304,  324,  346,  348,  352,  353,  362,  365,
+     280,  281,  304,  324,  346,  348,  352,  353,  362,  365,  367,
 };
 
 static const perl_diag_input_metadata_t perl_diag_input_metadata[] = {
@@ -1498,6 +1499,7 @@ static const perl_diag_input_metadata_t perl_diag_input_metadata[] = {
     { "buffer_bytes",             "uv"   },
     { "expression",               "text" },
     { "language",                 "text" },
+    { "owner",                    "text" },
 };
 
 static const perl_diag_param_input_range_t perl_diag_param_input_ranges[] = {
@@ -2282,6 +2284,7 @@ static const perl_diag_param_input_range_t perl_diag_param_input_ranges[] = {
     { 439,  1 },
     { 448,  1 },
     { 451,  1 },
+    { 453,  1 },
 };
 
 static const perl_diag_metadata_t perl_diag_metadata[] = {
@@ -2875,7 +2878,9 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_OBJECT_CONVERSION_HASH_REFERENCE_REQUIRED",                           1120,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_CONVERSION_NATIVE_CLASS_REQUIRED",                             1121,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_CONVERSION_NATIVE_OBJECT_REQUIRED",                            1122,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED",                             2770,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  731,   1,  780,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_CONVERSION_PAYLOAD_REFERENCE_REQUIRED",                        2762,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED",                            2771,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_DEFINITION_ATTRIBUTE_UNKNOWN",                                 1581,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Definition",                              "XPerl::Diagnostic::Error::Object::Definition",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_DEFINITION_ATTRIBUTE_VALUE_REQUIRED",                          1580,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Definition",                              "XPerl::Diagnostic::Error::Object::Definition",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_DEFINITION_ATTRIBUTE_VALUE_UNTERMINATED",                      1291,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Definition",                              "XPerl::Diagnostic::Error::Object::Definition",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -4292,6 +4297,7 @@ static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
     { "buffer_bytes",             "uv"   },
     { "expression",               "text" },
     { "language",                 "text" },
+    { "owner",                    "text" },
 };
 
 static const U16 perl_diagpack_param_schema_ids[] = {
@@ -4341,7 +4347,7 @@ static const U16 perl_diagpack_param_schema_ids[] = {
       36,  344,  358,  359,  360,  361,  363,  364,  366,   14,    2,    4,    7,    8,   20,   21,
       28,   32,   34,   42,   43,   45,   60,   68,   82,   99,  100,  106,  107,  108,  109,  110,
      111,  112,  113,  114,  115,  121,  123,  127,  129,  143,  159,  188,  267,  269,  270,  274,
-     280,  281,  304,  324,  346,  348,  352,  353,  362,  365,
+     280,  281,  304,  324,  346,  348,  352,  353,  362,  365,  367,
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1001 = {
@@ -12224,6 +12230,16 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2769 = {
     perl_diagpack_param_schema_ids + 462, 1
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2770 = {
+    2770, "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED",
+    perl_diagpack_param_schema_ids + 731, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2771 = {
+    2771, "ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
 static const char perl_diag_template_text_02bf4c82[] = "\t%1$s = \"%2$s\"%3$s\n";
 static const char perl_diag_template_text_a852440d[] = "\t%1$s = (unset)%2$s\n";
 static const char perl_diag_template_text_3f70ea97[] = "\t(Are you trying to call %1$s() on dirhandle %2$s?)\n";
@@ -12792,9 +12808,11 @@ static const char perl_diag_template_text_a7a4e5bf[] = "Class :isa attribute req
 static const char perl_diag_template_text_eb103293[] = "Class already has a declared or inherited :blessed_self field";
 static const char perl_diag_template_text_59087c3a[] = "Class already has a superclass, cannot add another";
 static const char perl_diag_template_text_72cab597[] = "Class attribute %1$s requires a value";
+static const char perl_diag_template_text_f17be851[] = "Class field bucket %1$s must be a hash reference";
 static const char perl_diag_template_text_4de22735[] = "class is experimental";
 static const char perl_diag_template_text_8b4592fb[] = "class name";
 static const char perl_diag_template_text_2d300f6f[] = "Class object payload must be an unblessed reference";
+static const char perl_diag_template_text_2dae2a46[] = "Class object snapshot $self must be a blessed reference";
 static const char perl_diag_template_text_23fefcbd[] = "Class storage was released during field initialization";
 static const char perl_diag_template_text_937dd9da[] = "class_object_from_hash expects a hash reference";
 static const char perl_diag_template_text_c11ff25d[] = "class_object_from_hash expects the name of a class";
@@ -17330,6 +17348,8 @@ enum {
     perl_diag_template_start_en_2767,
     perl_diag_template_start_en_2768,
     perl_diag_template_start_en_2769,
+    perl_diag_template_start_en_2770,
+    perl_diag_template_start_en_2771,
     perl_diag_template_end_en,
 };
 
@@ -19226,6 +19246,8 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_object_field_inheritance_ambiguous_number,                                  UINT64_C(         0), perl_diag_template_text_daf8a764,  1,   1 },
     { perl_diag_error_object_field_inheritance_private_number,                                    UINT64_C(         0), perl_diag_template_text_d4d1db65,  1,   1 },
     { perl_diag_error_object_field_inheritance_owner_missing_number,                              UINT64_C(         0), perl_diag_template_text_ab6be4f4,  1,   1 },
+    { perl_diag_error_object_conversion_owner_bucket_required_number,                             UINT64_C(         0), perl_diag_template_text_f17be851,  1,   1 },
+    { perl_diag_error_object_conversion_snapshot_self_required_number,                            UINT64_C(         0), perl_diag_template_text_2dae2a46,  0,   0 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -20804,6 +20826,8 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2767, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2768, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2769, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2770, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2771, NULL                        },
 };
 
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
@@ -21332,6 +21356,7 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     &perl_diagpack_schema_2761, &perl_diagpack_schema_2762, &perl_diagpack_schema_2763,
     &perl_diagpack_schema_2764, &perl_diagpack_schema_2765, &perl_diagpack_schema_2766,
     &perl_diagpack_schema_2767, &perl_diagpack_schema_2768, &perl_diagpack_schema_2769,
+    &perl_diagpack_schema_2770, &perl_diagpack_schema_2771,
 };
 
 static const perl_diagpack_catalog perl_diagpack_builtin_catalog_en = {
@@ -21460,7 +21485,7 @@ static const perl_diagpack_engine * const perl_diagpack_builtin_engines[] = {
 
 
 /* Generated from:
- * 379e66ab6ad3604d19e9ab422e634987119baf452ac4f736c95b8aa6123ae61d diag_conf.pl
+ * 3285a07092c483b8cc374b6bb8dfbaba6e51bbdb6f4baafb370f9a727b208998 diag_conf.pl
  * 4d5ea2c68c07d8b67a01411f57a355fd47b545ebcbbda8b14355c3d7154213fa diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */
