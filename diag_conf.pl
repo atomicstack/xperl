@@ -58140,7 +58140,25 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "SipHash input must be a byte string"
+              "ar" => "يجب أن يكون مُدخل SipHash سلسلة بايتات",
+              "cy" => "Rhaid i fewnbwn SipHash fod yn llinyn beit",
+              "de" => "Die SipHash-Eingabe muss eine Byte-Zeichenkette sein",
+              "en" => "SipHash input must be a byte string",
+              "es" => "La entrada de SipHash debe ser una cadena de bytes",
+              "fa" => "ورودی SipHash باید یک رشتهٔ بایتی باشد",
+              "fi" => "SipHash-syötteen on oltava tavujono",
+              "fr" => "L’entrée de SipHash doit être une chaîne d’octets",
+              "he" => "קלט SipHash חייב להיות מחרוזת בתים",
+              "hu" => "A SipHash bemenetének bájtsorozatnak kell lennie",
+              "is" => "Inntak SipHash verður að vera bætaruna",
+              "it" => "L’input di SipHash deve essere una stringa di byte",
+              "nl" => "SipHash-invoer moet een reeks bytes zijn",
+              "pt" => "A entrada do SipHash deve ser uma cadeia de bytes",
+              "ru" => "Входные данные SipHash должны быть байтовой строкой",
+              "sr" => "Улаз за SipHash мора бити низ бајтова",
+              "tr" => "SipHash girdisi bir bayt dizisi olmalıdır",
+              "uk" => "Вхідне значення SipHash має бути байтовим рядком",
+              "zh" => "SipHash 输入必须是字节字符串"
             },
             "args" => []
           },
@@ -58165,7 +58183,25 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "SipHash round counts must be non-negative integers"
+              "ar" => "يجب أن تكون أعداد جولات SipHash أعدادًا صحيحة غير سالبة",
+              "cy" => "Rhaid i gyfrifon rowndiau SipHash fod yn gyfanrifau annegyddol",
+              "de" => "SipHash-Rundenzahlen müssen nichtnegative Ganzzahlen sein",
+              "en" => "SipHash round counts must be non-negative integers",
+              "es" => "Los recuentos de rondas de SipHash deben ser enteros no negativos",
+              "fa" => "تعداد دورهای SipHash باید عدد صحیح نامنفی باشد",
+              "fi" => "SipHash-kierrosmäärien on oltava ei-negatiivisia kokonaislukuja",
+              "fr" => "Les nombres de tours SipHash doivent être des entiers non négatifs",
+              "he" => "מספרי סבבי SipHash חייבים להיות מספרים שלמים לא שליליים",
+              "hu" => "A SipHash körszámainak nemnegatív egész számoknak kell lenniük",
+              "is" => "Fjöldi SipHash-umferða verður að vera heiltala sem er ekki neikvæð",
+              "it" => "I conteggi dei round di SipHash devono essere numeri interi non negativi",
+              "nl" => "Het aantal SipHash-rondes moet een niet-negatief geheel getal zijn",
+              "pt" => "As contagens de rodadas do SipHash devem ser inteiros não negativos",
+              "ru" => "Число раундов SipHash должно быть неотрицательным целым числом",
+              "sr" => "Бројеви рунди SipHash-а морају бити ненегативни цели бројеви",
+              "tr" => "SipHash tur sayıları negatif olmayan tam sayılar olmalıdır",
+              "uk" => "Кількість раундів SipHash має бути невід’ємним цілим числом",
+              "zh" => "SipHash 的轮数必须是非负整数"
             },
             "args" => []
           },
@@ -58190,7 +58226,25 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "SipHash round count is too large"
+              "ar" => "عدد جولات SipHash كبير جدًا",
+              "cy" => "Mae cyfrif rowndiau SipHash yn rhy fawr",
+              "de" => "Die SipHash-Rundenanzahl ist zu groß",
+              "en" => "SipHash round count is too large",
+              "es" => "El número de rondas de SipHash es demasiado grande",
+              "fa" => "تعداد دورهای SipHash بیش از حد بزرگ است",
+              "fi" => "SipHash-kierrosmäärä on liian suuri",
+              "fr" => "Le nombre de tours de SipHash est trop élevé",
+              "he" => "מספר סבבי SipHash גדול מדי",
+              "hu" => "A SipHash-körök száma túl nagy",
+              "is" => "Fjöldi SipHash-umferða er of mikill",
+              "it" => "Il numero di round di SipHash è troppo elevato",
+              "nl" => "Het aantal SipHash-rondes is te groot",
+              "pt" => "O número de rodadas do SipHash é grande demais",
+              "ru" => "Число раундов SipHash слишком велико",
+              "sr" => "Број SipHash рунди је превелик",
+              "tr" => "SipHash tur sayısı çok büyük",
+              "uk" => "Кількість раундів SipHash завелика",
+              "zh" => "SipHash 轮数过大"
             },
             "args" => []
           },
@@ -58215,7 +58269,25 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "SipHash seed must be exactly 16 bytes"
+              "ar" => "يجب أن يكون طول بذرة SipHash 16 بايتًا بالضبط",
+              "cy" => "Rhaid i hedyn SipHash fod yn union 16 beit",
+              "de" => "Der SipHash-Seed muss genau 16 Byte lang sein",
+              "en" => "SipHash seed must be exactly 16 bytes",
+              "es" => "La semilla de SipHash debe tener exactamente 16 bytes",
+              "fa" => "بذر SipHash باید دقیقاً ۱۶ بایت باشد",
+              "fi" => "SipHash-siemenen on oltava täsmälleen 16 tavua",
+              "fr" => "La graine SipHash doit faire exactement 16 octets",
+              "he" => "זרע SipHash חייב להיות בדיוק באורך 16 בתים",
+              "hu" => "A SipHash seednek pontosan 16 bájtosnak kell lennie",
+              "is" => "SipHash-fræ verður að vera nákvæmlega 16 bæti",
+              "it" => "Il seed di SipHash deve essere esattamente di 16 byte",
+              "nl" => "De SipHash-seed moet precies 16 bytes lang zijn",
+              "pt" => "A semente do SipHash deve ter exatamente 16 bytes",
+              "ru" => "Начальное значение SipHash должно содержать ровно 16 байт",
+              "sr" => "Почетна вредност SipHash-а мора имати тачно 16 бајтова",
+              "tr" => "SipHash tohumu tam olarak 16 bayt olmalıdır",
+              "uk" => "Початкове значення SipHash має містити рівно 16 байтів",
+              "zh" => "SipHash 种子必须恰好为 16 字节"
             },
             "args" => []
           },

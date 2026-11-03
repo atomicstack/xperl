@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: 67d0416ee3ed78135fb760c25d941e5390f45913b2a258f0d07ced488bde5e9a */
+/* Language-scoped rendered data SHA-256: fb2b9b4404402b439f518827829e34d0c71baf7919aba84e3cf037550968255a */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
 
@@ -1262,6 +1262,7 @@ static const char perl_diag_template_text_9428f1f4[] = "\320\261\320\273\320\276
 static const char perl_diag_template_text_b7cbc777[] = "\320\261\320\273\320\276\320\272\320\260";
 static const char perl_diag_template_text_082e533c[] = "\320\261\320\273\320\276\320\272\320\260 do";
 static const char perl_diag_template_text_85eac6de[] = "\320\261\320\273\320\276\320\272\320\276\320\262\320\270 \320\272\320\276\320\264\320\260 \321\200\320\265\320\263\321\203\320\273\320\260\321\200\320\275\320\270\321\205 \320\270\320\267\321\200\320\260\320\267\320\260 \320\275\320\270\321\201\321\203 \320\277\320\276\320\264\321\200\320\266\320\260\320\275\320\270 \321\203 \321\210\320\260\320\261\320\273\320\276\320\275\320\270\320\274\320\260 \320\264\320\270\321\201\320\277\320\265\321\207\320\270\321\200\320\260\321\232\320\260";
+static const char perl_diag_template_text_aad7cf58[] = "\320\221\321\200\320\276\321\230 SipHash \321\200\321\203\320\275\320\264\320\270 \321\230\320\265 \320\277\321\200\320\265\320\262\320\265\320\273\320\270\320\272";
 static const char perl_diag_template_text_0312d3e2[] = "\320\221\321\200\320\276\321\230 \320\261\320\260\321\230\321\202\320\276\320\262\320\260 \321\203 builtin::rand_bytes() \320\274\320\276\321\200\320\260 \320\261\320\270\321\202\320\270 \320\275\320\265\320\275\320\265\320\263\320\260\321\202\320\270\320\262\320\260\320\275 \321\206\320\265\320\276 \320\261\321\200\320\276\321\230";
 static const char perl_diag_template_text_aa30eda9[] = "\320\221\321\200\320\276\321\230 \320\261\320\260\321\230\321\202\320\276\320\262\320\260 \321\203 builtin::rand_bytes() \321\230\320\265 \320\277\321\200\320\265\320\262\320\265\320\273\320\270\320\272";
 static const char perl_diag_template_text_882b33c9[] = "\320\221\321\200\320\276\321\230 \320\262\320\265\321\200\320\267\320\270\321\230\320\265 \320\274\320\276\321\200\320\260 \320\261\320\270\321\202\320\270 \320\272\320\276\320\275\321\201\321\202\320\260\320\275\321\202\320\260\320\275 \320\261\321\200\320\276\321\230";
@@ -1270,6 +1271,7 @@ static const char perl_diag_template_text_ce8c8aad[] = "\320\221\321\200\320\276
 static const char perl_diag_template_text_d19c2bab[] = "\320\221\321\200\320\276\321\230 \321\230\320\265 \320\277\321\200\320\276\320\275\320\260\321\222\320\265\320\275 \321\202\320\260\320\274\320\276 \320\263\320\264\320\265 \321\201\320\265 \320\276\321\207\320\265\320\272\321\203\321\230\320\265 \320\276\320\277\320\265\321\200\320\260\321\202\320\276\321\200";
 static const char perl_diag_template_text_19e8d081[] = "\320\221\321\200\320\276\321\230\320\260\321\207 \320\260\320\273\320\276\320\272\320\260\321\206\320\270\321\230\320\260 SV \320\277\321\200\320\270 \320\263\320\260\321\210\320\265\321\232\321\203: %1$s\n";
 static const char perl_diag_template_text_cd6335a1[] = "\320\221\321\200\320\276\321\230\320\260\321\232\320\265 \320\277\320\276\321\201\320\273\320\265 \320\264\321\203\320\266\320\270\320\275\320\265/\320\272\320\276\320\264\320\260 \321\203 \320\276\320\277\320\265\321\200\320\260\321\206\320\270\321\230\320\270 unpack";
+static const char perl_diag_template_text_2010ed26[] = "\320\221\321\200\320\276\321\230\320\265\320\262\320\270 \321\200\321\203\320\275\320\264\320\270 SipHash-\320\260 \320\274\320\276\321\200\320\260\321\230\321\203 \320\261\320\270\321\202\320\270 \320\275\320\265\320\275\320\265\320\263\320\260\321\202\320\270\320\262\320\275\320\270 \321\206\320\265\320\273\320\270 \320\261\321\200\320\276\321\230\320\265\320\262\320\270";
 static const char perl_diag_template_text_b2072d37[] = "\320\261\321\200\320\276\321\230\321\207\320\260\320\275\320\270 \320\272\320\276\320\274\320\277\320\273\320\265\320\274\320\265\320\275\321\202 \321\230\320\265\320\264\320\270\320\275\320\270\321\206\320\265 (~)";
 static const char perl_diag_template_text_935e012a[] = "\320\261\321\200\320\276\321\230\321\207\320\260\320\275\320\276\320\263 \320\272\320\276\320\274\320\277\320\273\320\265\320\274\320\265\320\275\321\202\320\260 \321\230\320\265\320\264\320\270\320\275\320\270\321\206\320\265 (~)";
 static const char perl_diag_template_text_9f8376e6[] = "\320\261\321\200\320\276\321\230\321\207\320\260\320\275\320\276\320\274 \320\272\320\276\320\274\320\277\320\273\320\265\320\274\320\265\320\275\321\202\321\203 \321\230\320\265\320\264\320\270\320\275\320\270\321\206\320\265 (~)";
@@ -2908,6 +2910,7 @@ static const char perl_diag_template_text_8ba43d1f[] = "\320\237\320\276\321\202
 static const char perl_diag_template_text_a1c4c067[] = "\320\237\320\276\321\202\321\200\320\265\320\261\320\260\320\275 \321\230\320\265 Perl %1$s (\320\264\320\260 \320\273\320\270 \321\201\321\202\320\265 \320\274\320\270\321\201\320\273\320\270\320\273\320\270 %2$s?) \342\200\224 \320\264\320\276\321\201\321\202\321\203\320\277\320\260\320\275 \321\230\320\265 \321\201\320\260\320\274\320\276 %3$s; \320\270\320\267\320\262\321\200\321\210\320\260\320\262\320\260\321\232\320\265 \321\230\320\265 \320\267\320\260\321\203\321\201\321\202\320\260\320\262\321\231\320\265\320\275\320\276";
 static const char perl_diag_template_text_c8c8ddd1[] = "\320\237\320\276\321\202\321\200\320\265\320\261\320\260\320\275 \321\230\320\265 Perl %1$s \342\200\224 \320\264\320\276\321\201\321\202\321\203\320\277\320\260\320\275 \321\230\320\265 \321\201\320\260\320\274\320\276 %2$s; \320\270\320\267\320\262\321\200\321\210\320\260\320\262\320\260\321\232\320\265 \321\230\320\265 \320\267\320\260\321\203\321\201\321\202\320\260\320\262\321\231\320\265\320\275\320\276";
 static const char perl_diag_template_text_c4f595ba[] = "\320\237\320\276\321\202\321\200\320\265\320\261\320\275\320\265 \321\201\321\203 \321\202\320\260\321\207\320\275\320\276 3 \320\276\320\272\321\202\320\260\320\273\320\275\320\265 \321\206\320\270\321\204\321\200\320\265 \321\203 \321\200\320\265\320\263\321\203\320\273\320\260\321\200\320\275\320\276\320\274 \320\270\320\267\321\200\320\260\320\267\321\203; \320\276\320\267\320\275\320\260\321\207\320\265\320\275\320\276 \321\201\320\260 <-- HERE \321\203 m/%1$s <-- HERE %2$s/";
+static const char perl_diag_template_text_3fd0daf1[] = "\320\237\320\276\321\207\320\265\321\202\320\275\320\260 \320\262\321\200\320\265\320\264\320\275\320\276\321\201\321\202 SipHash-\320\260 \320\274\320\276\321\200\320\260 \320\270\320\274\320\260\321\202\320\270 \321\202\320\260\321\207\320\275\320\276 16 \320\261\320\260\321\230\321\202\320\276\320\262\320\260";
 static const char perl_diag_template_text_ead327f2[] = "\320\237\320\276\321\231\320\260 \320\264\320\270\321\230\320\260\320\263\320\275\320\276\321\201\321\202\320\270\320\272\320\265 \320\274\320\276\321\200\320\260\321\230\321\203 \320\261\320\270\321\202\320\270 \321\200\320\265\321\204\320\265\321\200\320\265\320\275\321\206\320\260 \320\275\320\260 \321\205\320\265\321\210\n";
 static const char perl_diag_template_text_a6e1e3d1[] = "\320\277\320\276\321\231\320\260 \320\276\320\261\321\230\320\265\320\272\321\202\320\260 \320\275\320\265 \320\274\320\276\320\263\321\203 \321\201\320\273\320\265\320\264\320\270\321\202\320\270 \320\277\320\276\321\201\320\273\320\265 \321\202\321\200\320\276\321\230\321\202\320\260\321\207\320\272\320\265";
 static const char perl_diag_template_text_45b7811e[] = "\320\237\320\276\321\231\320\265 \320\262\320\265\321\233 \320\270\320\274\320\260 \320\270\320\274\320\265 \320\277\320\260\321\200\320\260\320\274\320\265\321\202\321\200\320\260; \320\275\320\265 \320\274\320\276\320\266\320\265 \320\264\320\260 \320\274\321\203 \321\201\320\265 \320\264\320\276\320\264\320\260 \320\264\321\200\321\203\320\263\320\276";
@@ -3187,6 +3190,7 @@ static const char perl_diag_template_text_07c3821e[] = "\321\203\320\272\320\273
 static const char perl_diag_template_text_2ddd7d48[] = "\321\203\320\272\320\273\320\260\321\232\320\260\321\232\320\265 try";
 static const char perl_diag_template_text_ec990431[] = "\321\203\320\272\320\273\320\260\321\232\320\260\321\232\320\265 \320\267\320\260\320\262\321\200\321\210\320\275\320\276\320\263 \320\275\320\276\320\262\320\276\320\263 \321\200\320\265\320\264\320\260 \320\270\320\267 \321\201\320\272\320\260\320\273\320\260\321\200\320\260";
 static const char perl_diag_template_text_289dde12[] = "\321\203\320\272\320\273\320\260\321\232\320\260\321\232\320\265 \321\201\320\273\320\260\320\261\321\231\320\265\321\232\320\260 \321\200\320\265\321\204\320\265\321\200\320\265\320\275\321\206\320\265";
+static const char perl_diag_template_text_ac2be57d[] = "\320\243\320\273\320\260\320\267 \320\267\320\260 SipHash \320\274\320\276\321\200\320\260 \320\261\320\270\321\202\320\270 \320\275\320\270\320\267 \320\261\320\260\321\230\321\202\320\276\320\262\320\260";
 static const char perl_diag_template_text_ce145247[] = "\321\203\320\273\320\260\320\267\320\260\320\272 \321\203 foreach \320\277\320\265\321\202\321\231\321\203";
 static const char perl_diag_template_text_a0342219[] = "\321\203\320\273\320\260\320\267\320\260\320\272 \321\203 \320\261\320\273\320\276\320\272";
 static const char perl_diag_template_text_170447ca[] = "\321\203\320\273\320\260\320\267\320\260\320\272 \321\203 \320\265\321\204\320\265\320\272\321\202\320\270\320\262\320\275\320\270 gid \320\275\320\270\321\230\320\265 \321\203\321\201\320\277\320\265\320\276";
@@ -6235,6 +6239,10 @@ enum {
     perl_diag_template_start_sr_2753,
     perl_diag_template_start_sr_2754,
     perl_diag_template_start_sr_2755,
+    perl_diag_template_start_sr_2775,
+    perl_diag_template_start_sr_2776,
+    perl_diag_template_start_sr_2777,
+    perl_diag_template_start_sr_2778,
     perl_diag_template_end_sr,
 };
 
@@ -8105,6 +8113,10 @@ static const perl_diag_template_case_t perl_diag_template_cases_sr[] = {
     { perl_diag_error_object_field_attribute_legacy_self_already_assigned_number,                 UINT64_C(         0), perl_diag_template_text_efa953c1,  0,   0 },
     { perl_diag_note_context_syntax_error_annotated_number,                                       UINT64_C(         0), perl_diag_template_text_b3fff8a0,  0,   0 },
     { perl_diag_note_context_near_source_annotated_number,                                        UINT64_C(         0), perl_diag_template_text_f6b5af5f,  3,   1 },
+    { perl_diag_error_value_siphash_input_byte_string_required_number,                            UINT64_C(         0), perl_diag_template_text_ac2be57d,  0,   0 },
+    { perl_diag_error_value_siphash_round_count_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_2010ed26,  0,   0 },
+    { perl_diag_error_value_siphash_round_count_too_large_number,                                 UINT64_C(         0), perl_diag_template_text_aad7cf58,  0,   0 },
+    { perl_diag_error_value_siphash_seed_length_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_3fd0daf1,  0,   0 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -9669,6 +9681,10 @@ static const perl_diag_template_t perl_diag_templates_sr[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_sr_2753, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_sr_2754, NULL                        },
     { 0,   3,  perl_diag_word_group_none, perl_diag_template_start_sr_2755, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_sr_2775, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_sr_2776, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_sr_2777, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_sr_2778, NULL                        },
 };
 
 static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
@@ -17881,6 +17897,26 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2755 = {
     perl_diagpack_param_schema_ids + 534, 3
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2775 = {
+    2775, "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2776 = {
+    2776, "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2777 = {
+    2777, "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2778 = {
+    2778, "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_sr[] = {
     /* local schema row zero is unused */
     NULL, &perl_diagpack_schema_1001, &perl_diagpack_schema_1002, &perl_diagpack_schema_1003,
@@ -18402,7 +18438,8 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_sr[] = {
     &perl_diagpack_schema_2745, &perl_diagpack_schema_2747, &perl_diagpack_schema_2748,
     &perl_diagpack_schema_2749, &perl_diagpack_schema_2750, &perl_diagpack_schema_2751,
     &perl_diagpack_schema_2752, &perl_diagpack_schema_2753, &perl_diagpack_schema_2754,
-    &perl_diagpack_schema_2755,
+    &perl_diagpack_schema_2755, &perl_diagpack_schema_2775, &perl_diagpack_schema_2776,
+    &perl_diagpack_schema_2777, &perl_diagpack_schema_2778,
 };
 
 static const perl_diag_selector_domain_t perl_diag_selector_domains[] = {

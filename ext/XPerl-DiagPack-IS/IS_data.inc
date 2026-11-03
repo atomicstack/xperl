@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: 2b8c79a674be41edd48fd78806179ecd427d8930f9133a6b6d2bc9cacfb804ec */
+/* Language-scoped rendered data SHA-256: a81d2bf89392fabd12ebae347ff1682c230ccb398d631a70bb6e9d7249e9e655 */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
 
@@ -1461,6 +1461,8 @@ static const char perl_diag_template_text_0f64e2e7[] = "fjarl\303\246ging try-sa
 static const char perl_diag_template_text_2217aa8a[] = "fjarl\303\246gingu try-samhengis";
 static const char perl_diag_template_text_bd531a3e[] = "Fj\303\266ldi b\303\246ta \303\255 builtin::rand_bytes() er of mikill";
 static const char perl_diag_template_text_d4bc576c[] = "Fj\303\266ldi b\303\246ta \303\255 builtin::rand_bytes() ver\303\260ur a\303\260 vera heiltala sem er ekki neikv\303\246\303\260";
+static const char perl_diag_template_text_7556e487[] = "Fj\303\266ldi SipHash-umfer\303\260a er of mikill";
+static const char perl_diag_template_text_cf8bc514[] = "Fj\303\266ldi SipHash-umfer\303\260a ver\303\260ur a\303\260 vera heiltala sem er ekki neikv\303\246\303\260";
 static const char perl_diag_template_text_befadd7a[] = "Fj\303\266ldi \303\241 eftir lengdark\303\263\303\260a \303\255 unpack";
 static const char perl_diag_template_text_a8b6393b[] = "Fj\303\266lv\303\255tt uppfletting \303\255 hakkat\303\266flu er \303\263virk";
 static const char perl_diag_template_text_1dd67b18[] = "Fj\303\266lv\303\255\303\260 setningafr\303\246\303\260i %1$s ekki studd";
@@ -1782,6 +1784,7 @@ static const char perl_diag_template_text_3b7ba56f[] = "innri villa: top_env\n";
 static const char perl_diag_template_text_5968672f[] = "innri villa: top_env, v=%1$s\n";
 static const char perl_diag_template_text_69c0a48d[] = "innri villa: utf16_to_utf8%1$s: b\303\246tafj\303\266ldinn %2$s er oddatala";
 static const char perl_diag_template_text_dd13709f[] = "innri villa: yylex, *s=%1$s";
+static const char perl_diag_template_text_4fa8f59b[] = "Inntak SipHash ver\303\260ur a\303\260 vera b\303\246taruna";
 static const char perl_diag_template_text_d19c49af[] = "INSTALL_PREFIX er of langt: `%1$s'";
 static const char perl_diag_template_text_c9bad521[] = "IO-l\303\266g (eins og '%1$s') eru ekki tilt\303\246k";
 static const char perl_diag_template_text_3db82bc1[] = "ioctl er a\303\260eins \303\272tf\303\246rt \303\241 s\303\266kkla";
@@ -2363,6 +2366,7 @@ static const char perl_diag_template_text_92972c20[] = "setregid er ekki tilt\30
 static const char perl_diag_template_text_4b4a4622[] = "setreuid er ekki tilt\303\246kt";
 static const char perl_diag_template_text_86a13921[] = "SIG%1$s-me\303\260h\303\266ndlari \"%2$s\" er ekki skilgreindur.\n";
 static const char perl_diag_template_text_6eeb6462[] = "SIG%1$s-me\303\260h\303\266ndlari \"__ANON__\" er ekki skilgreindur.\n";
+static const char perl_diag_template_text_a220edd9[] = "SipHash-fr\303\246 ver\303\260ur a\303\260 vera n\303\241kv\303\246mlega 16 b\303\246ti";
 static const char perl_diag_template_text_a0f5692a[] = "sj\303\241lfgefin seg\303\260 vi\303\260fangs undirskriftar";
 static const char perl_diag_template_text_4d44b5d3[] = "sj\303\241lfgefin sta\303\260f\303\246rsla kerfisins (\342\200\236%1$s\342\200\234)\n";
 static const char perl_diag_template_text_7f68df01[] = "sj\303\241lfgefinni seg\303\260 vi\303\260fangs undirskriftar";
@@ -5509,6 +5513,10 @@ enum {
     perl_diag_template_start_is_2753,
     perl_diag_template_start_is_2754,
     perl_diag_template_start_is_2755,
+    perl_diag_template_start_is_2775,
+    perl_diag_template_start_is_2776,
+    perl_diag_template_start_is_2777,
+    perl_diag_template_start_is_2778,
     perl_diag_template_end_is,
 };
 
@@ -7351,6 +7359,10 @@ static const perl_diag_template_case_t perl_diag_template_cases_is[] = {
     { perl_diag_error_object_field_attribute_legacy_self_already_assigned_number,                 UINT64_C(         0), perl_diag_template_text_d7cce05e,  0,   0 },
     { perl_diag_note_context_syntax_error_annotated_number,                                       UINT64_C(         0), perl_diag_template_text_63217a3c,  0,   0 },
     { perl_diag_note_context_near_source_annotated_number,                                        UINT64_C(         0), perl_diag_template_text_2111a082,  3,   1 },
+    { perl_diag_error_value_siphash_input_byte_string_required_number,                            UINT64_C(         0), perl_diag_template_text_4fa8f59b,  0,   0 },
+    { perl_diag_error_value_siphash_round_count_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_cf8bc514,  0,   0 },
+    { perl_diag_error_value_siphash_round_count_too_large_number,                                 UINT64_C(         0), perl_diag_template_text_7556e487,  0,   0 },
+    { perl_diag_error_value_siphash_seed_length_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_a220edd9,  0,   0 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -8915,6 +8927,10 @@ static const perl_diag_template_t perl_diag_templates_is[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_is_2753, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_is_2754, NULL                        },
     { 0,   3,  perl_diag_word_group_none, perl_diag_template_start_is_2755, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_is_2775, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_is_2776, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_is_2777, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_is_2778, NULL                        },
 };
 
 static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
@@ -17127,6 +17143,26 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2755 = {
     perl_diagpack_param_schema_ids + 534, 3
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2775 = {
+    2775, "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2776 = {
+    2776, "ERROR_VALUE_SIPHASH_ROUND_COUNT_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2777 = {
+    2777, "ERROR_VALUE_SIPHASH_ROUND_COUNT_TOO_LARGE",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2778 = {
+    2778, "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_is[] = {
     /* local schema row zero is unused */
     NULL, &perl_diagpack_schema_1001, &perl_diagpack_schema_1002, &perl_diagpack_schema_1003,
@@ -17648,7 +17684,8 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_is[] = {
     &perl_diagpack_schema_2745, &perl_diagpack_schema_2747, &perl_diagpack_schema_2748,
     &perl_diagpack_schema_2749, &perl_diagpack_schema_2750, &perl_diagpack_schema_2751,
     &perl_diagpack_schema_2752, &perl_diagpack_schema_2753, &perl_diagpack_schema_2754,
-    &perl_diagpack_schema_2755,
+    &perl_diagpack_schema_2755, &perl_diagpack_schema_2775, &perl_diagpack_schema_2776,
+    &perl_diagpack_schema_2777, &perl_diagpack_schema_2778,
 };
 
 static const perl_diag_selector_domain_t perl_diag_selector_domains[] = {
