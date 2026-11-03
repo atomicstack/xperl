@@ -60,6 +60,10 @@ typedef struct {
     int use_sparse_seen_hash;
     int trailingcomma;
     int deparse;
+    bool modern_payload;
+    bool terse;
+    AV *restoreav;
+    AV *restore_names;
 } Style;
 
 static STRLEN num_q (const char *s, STRLEN slen);
@@ -644,6 +648,56 @@ dump_regexp(pTHX_ SV *retval, SV *val)
  * it exactly parallels the perl version, which was one long thing for
  * efficiency raisins.)  Ugggh!
  */
+static void
+DD_rebase_modern_names(pTHX_ HV *seen, AV *wrappers)
+{
+    for(SSize_t wi = 0; wi <= av_len(wrappers); wi++) {
+        SV *wrapper = AvARRAY(wrappers)[wi];
+        STRLEN wlen;
+        const char *w = SvPV(wrapper, wlen);
+        (void)hv_iterinit(seen);
+        HE *he;
+        while((he = hv_iternext(seen))) {
+            SV *entry = HeVAL(he);
+            if(!SvROK(entry) || SvTYPE(SvRV(entry)) != SVt_PVAV)
+                continue;
+            SV **namep = av_fetch((AV *)SvRV(entry), 0, FALSE);
+            if(!namep)
+                continue;
+            STRLEN len;
+            const char *name = SvPV(*namep, len);
+            SV *rebased = newSVpvs("");
+            for(STRLEN pos = 0; pos < len;) {
+                if(wlen <= len - pos && memEQ(name + pos, w, wlen)) {
+                    pos += wlen;
+                    const char self_suffix[] = "->{'$self'}";
+                    if(sizeof(self_suffix) - 1 <= len - pos
+                            && memEQ(name + pos, self_suffix, sizeof(self_suffix) - 1)) {
+                        sv_catpvn(rebased, w, wlen);
+                        pos += sizeof(self_suffix) - 1;
+                    }
+                    else if((len - pos >= 2 && memEQ(name + pos, "->", 2))
+                            || (pos < len && (name[pos] == '{' || name[pos] == '['))) {
+                        sv_catpvs(rebased, "builtin::class_object_to_hash(");
+                        sv_catpvn(rebased, w, wlen);
+                        sv_catpvs(rebased, ")");
+                        if(name[pos] != '-')
+                            sv_catpvs(rebased, "->");
+                    }
+                    else
+                        sv_catpvn(rebased, w, wlen);
+                }
+                else
+                    sv_catpvn(rebased, name + pos++, 1);
+            }
+            if(SvUTF8(*namep))
+                SvUTF8_on(rebased);
+            sv_setsv(*namep, rebased);
+            SvREFCNT_dec_NN(rebased);
+        }
+    }
+}
+
 static I32
 DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
 	AV *postav, const I32 level, SV *apad, Style *style)
@@ -664,6 +718,8 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
                           in later perls we should actually check the classname of the 
                           engine. this gets tricky as it involves lexical issues that arent so
                           easy to resolve */
+    bool modern_payload = style->modern_payload;
+    style->modern_payload = FALSE;
     bool is_regex = 0; /* we are dumping a regex, we need to know this before we bless */
 
     if (!val)
@@ -688,7 +744,7 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
 
         /* If a freeze method is provided and the object has it, call
            it.  Warn on errors. */
-        if (SvOBJECT(SvRV(val)) && style->freezer &&
+        if (!modern_payload && SvOBJECT(SvRV(val)) && style->freezer &&
             SvPOK(style->freezer) && SvCUR(style->freezer) &&
             gv_fetchmeth(SvSTASH(SvRV(val)), SvPVX_const(style->freezer),
                          SvCUR(style->freezer), -1) != NULL)
@@ -714,7 +770,7 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
 	/* if it has a name, we need to either look it up, or keep a tab
 	 * on it so we know when we hit it later
 	 */
-	if (namelen) {
+	if (namelen && !modern_payload) {
 	    if ((svp = hv_fetch(seenhv, id, idlen, FALSE))
 		&& (sv = *svp) && SvROK(sv) && (seenentry = (AV*)SvRV(sv)))
 	    {
@@ -816,9 +872,6 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
             style->maxrecursed = TRUE;
 	}
 
-        /* Class objects have no ordinary Perl reference representation.  Use
-         * the core shallow field API so Dumper can round-trip them without
-         * invoking constructors or methods. */
 #ifdef class_object_to_hash
         if (realtype == SVt_PVOBJ) {
             SV *hashref = class_object_to_hash(val);
@@ -842,6 +895,54 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
                 sv_catpvn(retval, realpack, plen);
             sv_catpvs(retval, "' )");
             SvREFCNT_dec(hashref);
+            return 1;
+        }
+#endif
+
+#ifdef PERL_MAGIC_class_storage
+        if (!modern_payload && realpack && SvMAGICAL(ival)
+                && mg_find(ival, PERL_MAGIC_class_storage)
+                && mg_find(ival, PERL_MAGIC_class_storage)->mg_obj) {
+            SV *hashref = sv_2mortal(class_object_to_hash(val));
+            (void)hv_deletes((HV *)SvRV(hashref), "$self", G_DISCARD);
+            SV *selfname = sv_2mortal(newSVpvn(name, namelen));
+            sv_catpvs(selfname, "->{'$self'}");
+            sv_setsv_flags(AvARRAY(seenentry)[0], selfname, SV_NOSTEAL);
+            STRLEN modern_start = SvCUR(retval);
+            sv_catpvs(retval, "{ '$self' => ");
+            style->modern_payload = TRUE;
+            DD_dump(aTHX_ val, SvPVX_const(selfname), SvCUR(selfname),
+                retval, seenhv, postav, level + 1, apad, style);
+            SV *owners = sv_2mortal(newSVpvs(""));
+            DD_dump(aTHX_ hashref, name, namelen, owners, seenhv, postav,
+                level + 1, apad, style);
+            if(SvCUR(owners) > 2) {
+                sv_catpvs(retval, ",");
+                sv_catpvn(retval, SvPVX_const(owners) + 1, SvCUR(owners) - 2);
+            }
+            sv_catpvs(retval, " }");
+            av_push(style->restore_names, newSVpvn(name, namelen));
+            if(style->terse) {
+                sv_insert(retval, modern_start, 0, "builtin::class_object_from_hash(",
+                    sizeof("builtin::class_object_from_hash(") - 1);
+                sv_catpvs(retval, ")");
+                if(SvPOK(style->toaster) && SvCUR(style->toaster)) {
+                    sv_catpvs(retval, "->");
+                    sv_catsv(retval, style->toaster);
+                    sv_catpvs(retval, "()");
+                }
+                return 1;
+            }
+            SV *restore = newSVpvn(name, namelen);
+            sv_catpvs(restore, " = builtin::class_object_from_hash(");
+            sv_catpvn(restore, name, namelen);
+            sv_catpvs(restore, ")");
+            if(SvPOK(style->toaster) && SvCUR(style->toaster)) {
+                sv_catpvs(restore, "->");
+                sv_catsv(restore, style->toaster);
+                sv_catpvs(restore, "()");
+            }
+            av_push(style->restoreav, restore);
             return 1;
         }
 #endif
@@ -1259,7 +1360,7 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
 	        sv_catpvn(retval, realpack, strlen(realpack));
 	    }
 	    sv_catpvs(retval, "' )");
-            if (style->toaster && SvPOK(style->toaster) && SvCUR(style->toaster)) {
+            if (!modern_payload && style->toaster && SvPOK(style->toaster) && SvCUR(style->toaster)) {
 		sv_catpvs(retval, "->");
                 sv_catsv(retval, style->toaster);
 		sv_catpvs(retval, "()");
@@ -1521,6 +1622,11 @@ Data_Dumper__Dumpxs(href, ...)
 	    }
 
 	    todumpav = namesav = NULL;
+            style.modern_payload = FALSE;
+            style.restoreav = newAV();
+            sv_2mortal((SV *)style.restoreav);
+            style.restore_names = newAV();
+            sv_2mortal((SV *)style.restore_names);
             style.indent = 2;
             style.quotekeys = 1;
             style.maxrecurse = 1000;
@@ -1669,6 +1775,7 @@ Data_Dumper__Dumpxs(href, ...)
                     ENTER;
                     SAVETMPS;
 		    PUTBACK;
+                    style.terse = terse;
                     DD_dump(aTHX_ val, name, name_len, valstr, seenhv,
                             postav, 0, newapad, &style);
 		    SPAGAIN;
@@ -1676,7 +1783,7 @@ Data_Dumper__Dumpxs(href, ...)
                     LEAVE;
 
 		    postlen = av_len(postav);
-		    if (postlen >= 0 || !terse) {
+		    if (postlen >= 0 || av_len(style.restoreav) >= 0 || !terse) {
 			sv_insert(valstr, 0, 0, " = ", 3);
                         sv_insert(valstr, 0, 0, name, name_len);
 			sv_catpvs(valstr, ";");
@@ -1709,6 +1816,15 @@ Data_Dumper__Dumpxs(href, ...)
 			    retval = newSVpvs_flags("", SVs_TEMP);
 		    }
 		}
+
+                for(SSize_t restoreix = 0; restoreix <= av_len(style.restoreav); restoreix++) {
+                    sv_catsv(retval, style.pad);
+                    sv_catsv(retval, AvARRAY(style.restoreav)[restoreix]);
+                    sv_catpvs(retval, ";");
+                    sv_catsv(retval, style.sep);
+                }
+
+                DD_rebase_modern_names(aTHX_ seenhv, style.restore_names);
 
                 /* we defer croaking until here so that temporary SVs and
                  * buffers won't be leaked */

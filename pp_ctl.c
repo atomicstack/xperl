@@ -12144,6 +12144,44 @@ S_dispatch_on_array_item(pTHX_ const struct dispatch_pattern_node *node,
                                  pattern_value, bindings, nbindings, owner);
 }
 
+/* Modern object patterns describe the named class's lexical field view.
+ * Serialization buckets retain every owner, while a pattern sees this
+ * class's own fields and its explicit inherited aliases. */
+static SV *
+S_dispatch_class_field_view(pTHX_ SV *object, const SV *classname)
+{
+    HV *stash = gv_stashsv((SV *)classname, 0);
+    if(!stash || !HvSTASH_IS_CLASS(stash))
+        return NULL;
+    SV *serialized = sv_2mortal(class_object_to_hash(object));
+    HV *owners = (HV *)SvRV(serialized);
+    HE *he = hv_fetch_ent(owners, newSVhek_mortal(HvNAME_HEK(stash)), 0, 0);
+    HV *view = newHV();
+    SV *result = sv_2mortal(newRV_noinc((SV *)view));
+    if(he) {
+        HV *bucket = (HV *)SvRV(HeVAL(he));
+        hv_iterinit(bucket);
+        while((he = hv_iternext(bucket)))
+            (void)hv_store_ent(view, HeSVKEY_force(he), SvREFCNT_inc(HeVAL(he)), 0);
+    }
+    PADNAMELIST *fields = HvAUX(stash)->xhv_class_fields;
+    for(SSize_t i = 0; fields && i <= PadnamelistMAX(fields); i++) {
+        PADNAME *pn = PadnamelistARRAY(fields)[i];
+        if(!pn || !PadnameIsFIELD(pn))
+            continue;
+        struct padname_fieldinfo *fi = PadnameFIELDINFO(pn);
+        if(!fi->is_inherited)
+            continue;
+        he = hv_fetch_ent(owners, newSVhek_mortal(HvNAME_HEK(fi->storage_owner)), 0, 0);
+        if(he) {
+            HE *field = hv_fetch_ent((HV *)SvRV(HeVAL(he)), PadnameSV(pn), 0, 0);
+            if(field)
+                (void)hv_store_ent(view, PadnameSV(pn), SvREFCNT_inc(HeVAL(field)), 0);
+        }
+    }
+    return result;
+}
+
 static bool
 S_dispatch_pattern_match_object_fields(pTHX_ const struct dispatch_pattern_node *node,
                                     SV *value,
@@ -12321,8 +12359,8 @@ S_dispatch_pattern_match(pTHX_ const struct dispatch_pattern_node *node, SV *val
             || !S_dispatch_pattern_is_a(aTHX_ value, node->object_class))
             return FALSE;
         if (fields) {
-            if (SvTYPE(SvRV(value)) == SVt_PVOBJ)
-                logical = sv_2mortal(Perl_class_object_to_hash(aTHX_ value));
+            if (class_storage(value) != NULL)
+                logical = S_dispatch_class_field_view(aTHX_ value, node->object_class);
             matched = S_dispatch_pattern_match_object_fields(aTHX_
                 fields, logical ? logical : value, bindings, nbindings, owner);
         }
@@ -12331,8 +12369,8 @@ S_dispatch_pattern_match(pTHX_ const struct dispatch_pattern_node *node, SV *val
                  || (node->object_shape->op->op_type == OP_EMPTYAVHV
                      && (node->object_shape->op->op_private
                          & OPpEMPTYAVHV_IS_HV)))
-                && SvTYPE(SvRV(value)) == SVt_PVOBJ)
-                logical = sv_2mortal(Perl_class_object_to_hash(aTHX_ value));
+                && class_storage(value) != NULL)
+                logical = S_dispatch_class_field_view(aTHX_ value, node->object_class);
             matched = S_dispatch_pattern_match(aTHX_ node->object_shape,
                                             logical ? logical : value,
                                             NULL, bindings, nbindings, owner);
@@ -12369,15 +12407,18 @@ S_dispatch_pattern_match(pTHX_ const struct dispatch_pattern_node *node, SV *val
             return FALSE;
         if (shape_node->op->op_type == OP_LIST
             || (shape_node->op->op_type == OP_NULL
-                && shape_node->op->op_targ == OP_LIST))
+                && shape_node->op->op_targ == OP_LIST)) {
+            if(class_storage(value) != NULL)
+                logical = S_dispatch_class_field_view(aTHX_ value, cSVOPx_sv(class_node->op));
             matched = S_dispatch_pattern_match_object_fields(aTHX_
-                shape_node, value, bindings, nbindings, owner);
+                shape_node, logical ? logical : value, bindings, nbindings, owner);
+        }
         else {
             if ((shape_node->op->op_type == OP_ANONHASH
                  || (shape_node->op->op_type == OP_EMPTYAVHV
                      && (shape_node->op->op_private & OPpEMPTYAVHV_IS_HV)))
-                && SvTYPE(SvRV(value)) == SVt_PVOBJ)
-                logical = sv_2mortal(Perl_class_object_to_hash(aTHX_ value));
+                && class_storage(value) != NULL)
+                logical = S_dispatch_class_field_view(aTHX_ value, cSVOPx_sv(class_node->op));
             matched = S_dispatch_pattern_match(aTHX_ shape_node,
                                             logical ? logical : value,
                                             NULL, bindings, nbindings, owner);

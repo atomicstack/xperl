@@ -768,12 +768,13 @@ my $native_selector_capture = generated_macro_body(
 $native_selector_capture =~ s/\\\n\s*/ /g;
 like(
     $native_selector_capture,
-    qr{
-        IV \s+ const \s+ in_reference_type \s*=\s* ma_reference_type;
-        [\s\S]*?
-        Perl_diag_setup_param\([^;]*selector_domain_1172_0_id,\s*in_reference_type
-    }x,
-    'producer capture retains the native integer selector ID'
+    qr/Perl_throw_croak_1_1172\([^;]*ma_reference_type\s*\)/,
+    'the producer passes its native selector ID to the helper'
+);
+like(
+    $generated_helpers,
+    qr/Perl_throw_croak_1_1172\([^}]*Perl_diag_setup_param\([^;]*selector_domain_1172_0_id,\s*ma_arg1\s*\)/,
+    'the helper captures the native integer selector ID'
 );
 like(
     $diagnostic_match_source,
@@ -1659,9 +1660,19 @@ is(
     'generated helper definitions are sorted alphabetically by name'
 );
 
+like( $helpers,
+    qr/Perl_diag_source_params\(params_av, source_file, source_line\)/,
+    'generated helpers pass the C source location with captured parameters' );
+$helpers =~ s/,
+    const char \*source_file,
+    UV source_line(?=,|\))//g;
+$helpers =~ s/Perl_diag_source_params\((params_av|NULL), source_file, source_line\)/$1/g;
+
 sub generated_macro_body {
     my ( $header, $name ) = @_;
     my ($body) = $header =~ /^#define \Q$name\E[^\n]*\n(.*?)(?=^#define|\z)/ms;
+    $body =~ s/Perl_diag_source_params\((params_av|NULL), __FILE__, __LINE__\)/$1/g
+        if defined $body;
     return $body;
 }
 

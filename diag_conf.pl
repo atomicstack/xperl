@@ -34914,6 +34914,31 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Bless"
         },
+        "ERROR_OBJECT_BLESS_DURING_TEARDOWN" => {
+          "number" => 2773,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_BLESS_DURING_TEARDOWN",
+          "macro" => "PERL_THROW_ERROR_OBJECT_BLESS_DURING_TEARDOWN",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Cannot change an object blessing during TEARDOWN"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Bless"
+        },
         "ERROR_OBJECT_BLESS_INVALID_CLASS_NAME_REFERENCE" => {
           "number" => 1035,
           "severity" => "FATAL_ERROR",
@@ -34964,9 +34989,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_BLESS_NATIVE_CLASS_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_OBJECT_BLESS_NATIVE_CLASS_FORBIDDEN",
-          "source_files" => [
-            "sv.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:object_role_field"
@@ -35007,9 +35030,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_BLESS_NATIVE_OBJECT_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_OBJECT_BLESS_NATIVE_OBJECT_FORBIDDEN",
-          "source_files" => [
-            "sv.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:object_role_field",
@@ -36005,6 +36026,29 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Composition::Inheritance"
         },
+        "ERROR_OBJECT_COMPOSITION_LAYOUTS_INCOMPATIBLE" => {
+          "number" => 2774,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_COMPOSITION_LAYOUTS_INCOMPATIBLE",
+          "macro" => "PERL_THROW_ERROR_OBJECT_COMPOSITION_LAYOUTS_INCOMPATIBLE",
+          "source_files" => [],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Object hierarchy contains incompatible modern class layouts"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Composition"
+        },
         "ERROR_OBJECT_COMPOSITION_METHOD_IMPLEMENTATION_REQUIRED" => {
           "number" => 2456,
           "severity" => "FATAL_ERROR",
@@ -36186,6 +36230,56 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Composition"
         },
+        "ERROR_OBJECT_CONSTRUCTOR_ALREADY_INITIALIZED" => {
+          "number" => 2759,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_CONSTRUCTOR_ALREADY_INITIALIZED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_ALREADY_INITIALIZED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Cannot supply parameters to an already constructed object"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Constructor"
+        },
+        "ERROR_OBJECT_CONSTRUCTOR_BLESSING_CHANGED" => {
+          "number" => 2761,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_CONSTRUCTOR_BLESSING_CHANGED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_BLESSING_CHANGED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Object blessing changed during CONSTRUCT"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Constructor"
+        },
         "ERROR_OBJECT_CONSTRUCTOR_CLASS_INCOMPLETE" => {
           "number" => 1575,
           "severity" => "FATAL_ERROR",
@@ -36229,6 +36323,56 @@ $CONF = {
                 "pass" => "HvNAMEfARG"
               }
             ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Constructor"
+        },
+        "ERROR_OBJECT_CONSTRUCTOR_INVOCANT_INVALID" => {
+          "number" => 2757,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_CONSTRUCTOR_INVOCANT_INVALID",
+          "macro" => "PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_INVOCANT_INVALID",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "CONSTRUCT requires a class name or blessed reference"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Constructor"
+        },
+        "ERROR_OBJECT_CONSTRUCTOR_MODERN_ANCESTOR_REQUIRED" => {
+          "number" => 2760,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_CONSTRUCTOR_MODERN_ANCESTOR_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_MODERN_ANCESTOR_REQUIRED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "CONSTRUCT requires a modern class in the object hierarchy"
+            },
+            "args" => []
           },
           "counts_as_error" => 1,
           "emit" => {
@@ -36288,6 +36432,31 @@ $CONF = {
           },
           "counts_as_error" => 1,
           "translation_review" => "Add full translations for this diagnostic; other languages currently fall back to English.",
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Constructor"
+        },
+        "ERROR_OBJECT_CONSTRUCTOR_STORAGE_BUSY" => {
+          "number" => 2758,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_CONSTRUCTOR_STORAGE_BUSY",
+          "macro" => "PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_STORAGE_BUSY",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Cannot CONSTRUCT while class storage is being initialized or released"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
           "emit" => {
             "api" => "CROAK"
           },
@@ -36578,6 +36747,88 @@ $CONF = {
               "tr" => "class_object_to_hash bir sınıf nesnesi bekliyor",
               "uk" => "class_object_to_hash очікує об'єкт класу",
               "zh" => "class_object_to_hash 需要类对象"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Conversion"
+        },
+        "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED" => {
+          "number" => 2770,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:type_mismatch",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Class field bucket %{owner} must be a hash reference"
+            },
+            "args" => [
+              {
+                "name" => "owner",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Conversion"
+        },
+        "ERROR_OBJECT_CONVERSION_PAYLOAD_REFERENCE_REQUIRED" => {
+          "number" => 2762,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_CONVERSION_PAYLOAD_REFERENCE_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_CONVERSION_PAYLOAD_REFERENCE_REQUIRED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Class object payload must be an unblessed reference"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Conversion"
+        },
+        "ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED" => {
+          "number" => 2771,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Class object snapshot \$self must be a blessed reference"
             },
             "args" => []
           },
@@ -36928,9 +37179,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_DEFINITION_LEGACY_SELF_REQUIRED",
           "macro" => "PERL_THROW_ERROR_OBJECT_DEFINITION_LEGACY_SELF_REQUIRED",
-          "source_files" => [
-            "class.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "subject:object_role_field"
           ],
@@ -37328,15 +37577,45 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Field::Attribute"
         },
+        "ERROR_OBJECT_FIELD_ATTRIBUTE_INHERITED_INVALID" => {
+          "number" => 2764,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_INHERITED_INVALID",
+          "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_INHERITED_INVALID",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Field %{field} with :inherited requires a class ancestor and cannot have an initializer, :param, :private, an attribute value, or repeated :inherited"
+            },
+            "args" => [
+              {
+                "name" => "field",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Field::Attribute"
+        },
         "ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_ALREADY_ASSIGNED" => {
           "number" => 2753,
           "severity" => "FATAL_ERROR",
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_ALREADY_ASSIGNED",
           "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_ALREADY_ASSIGNED",
-          "source_files" => [
-            "class.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "condition:conflict_duplicate",
             "subject:object_role_field"
@@ -37377,9 +37656,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID",
           "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_LEGACY_SELF_INVALID",
-          "source_files" => [
-            "class.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "subject:object_role_field"
           ],
@@ -37555,6 +37832,38 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Field::Attribute"
         },
+        "ERROR_OBJECT_FIELD_ATTRIBUTE_PRIVATE_INVALID" => {
+          "number" => 2765,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_FIELD_ATTRIBUTE_PRIVATE_INVALID",
+          "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_ATTRIBUTE_PRIVATE_INVALID",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Field %{field} with :private cannot have an attribute value, repeated :private, or :inherited"
+            },
+            "args" => [
+              {
+                "name" => "field",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Field::Attribute"
+        },
         "ERROR_OBJECT_FIELD_ATTRIBUTE_UNKNOWN" => {
           "number" => 1588,
           "severity" => "FATAL_ERROR",
@@ -37648,6 +37957,159 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Field::Attribute"
         },
+        "ERROR_OBJECT_FIELD_INHERITANCE_AMBIGUOUS" => {
+          "number" => 2767,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_FIELD_INHERITANCE_AMBIGUOUS",
+          "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_INHERITANCE_AMBIGUOUS",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Inherited field %{field} has ambiguous ancestor declarations"
+            },
+            "args" => [
+              {
+                "name" => "field",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Field"
+        },
+        "ERROR_OBJECT_FIELD_INHERITANCE_MISSING" => {
+          "number" => 2766,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_FIELD_INHERITANCE_MISSING",
+          "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_INHERITANCE_MISSING",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "No ancestor declares inherited field %{field}"
+            },
+            "args" => [
+              {
+                "name" => "field",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Field"
+        },
+        "ERROR_OBJECT_FIELD_INHERITANCE_OWNER_MISSING" => {
+          "number" => 2769,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_FIELD_INHERITANCE_OWNER_MISSING",
+          "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_INHERITANCE_OWNER_MISSING",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Storage owner of inherited field %{field} is absent from the object hierarchy"
+            },
+            "args" => [
+              {
+                "name" => "field",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Field"
+        },
+        "ERROR_OBJECT_FIELD_INHERITANCE_PRIVATE" => {
+          "number" => 2768,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_FIELD_INHERITANCE_PRIVATE",
+          "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_INHERITANCE_PRIVATE",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Ancestor field %{field} is private and cannot be inherited"
+            },
+            "args" => [
+              {
+                "name" => "field",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Field"
+        },
+        "ERROR_OBJECT_FIELD_INITIALIZATION_STORAGE_RELEASED" => {
+          "number" => 2772,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_FIELD_INITIALIZATION_STORAGE_RELEASED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_FIELD_INITIALIZATION_STORAGE_RELEASED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Class storage was released during field initialization"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Field"
+        },
         "ERROR_OBJECT_FIELD_LEGACY_NAME_NOT_DECLARED" => {
           "number" => 1690,
           "severity" => "FATAL_ERROR",
@@ -37716,9 +38178,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_LEGACY_ALREADY_ATTACHED",
           "macro" => "PERL_THROW_ERROR_OBJECT_LEGACY_ALREADY_ATTACHED",
-          "source_files" => [
-            "class.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "subject:object_role_field"
           ],
@@ -37758,9 +38218,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_LEGACY_REFERENCE_INVALID",
           "macro" => "PERL_THROW_ERROR_OBJECT_LEGACY_REFERENCE_INVALID",
-          "source_files" => [
-            "class.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "subject:object_role_field"
           ],
@@ -37952,9 +38410,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE",
           "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE",
-          "source_files" => [
-            "class.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "subject:object_role_field"
           ],
@@ -38036,6 +38492,31 @@ $CONF = {
           "emit" => {
             "api" => "CROAK",
             "expression" => 1
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::MethodCall"
+        },
+        "ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED" => {
+          "number" => 2763,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Cannot invoke a modern method without initialized class storage"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
           },
           "class" => "XPerl::Diagnostic::Error::Object::MethodCall"
         },
@@ -85457,9 +85938,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_MISC_OBJECT_LEGACY_REFERENCE_SURVIVES",
           "macro" => "PERL_WARN_WARNING_MISC_OBJECT_LEGACY_REFERENCE_SURVIVES",
-          "source_files" => [
-            "sv.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "subject:object_role_field"
           ],

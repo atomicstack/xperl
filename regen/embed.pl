@@ -2846,6 +2846,9 @@ my %needed_by_ext_re = map { $_ => 1 } qw(
 # This is a list of symbols that are needed by various ext/ modules, and are
 # not documented.  They become undefined for any other modules.
 my %needed_by_ext = map { $_ => 1 } qw(
+    HvCHAIN_NEXT
+    HvOA_RECORD_WIDTH_FOR
+    HvOA_STORAGE_BYTES
     OPpPARAM_IF_FALSE
     OPpPARAM_IF_UNDEF
     OPpSELF_IN_PAD
@@ -3065,6 +3068,7 @@ my @undocumented_potentially_always_hidden = qw(
 my %undocumented_always_visible = map { $_ => 1 } qw(
     CXt_DISPATCH
     CXt_DISPATCH_ON
+    HV_MAX_EXPONENT_MASK
     OPpDISPATCHCOERCE_MASK
     OPpCONCAT_PATTERN
     _

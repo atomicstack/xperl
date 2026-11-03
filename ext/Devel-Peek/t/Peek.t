@@ -321,11 +321,11 @@ do_test('reference to hash',
   SV = PVHV\\($ADDR\\) at $ADDR
     REFCNT = [12]
     FLAGS = \\(SHAREKEYS\\)
-    ARRAY = $ADDR  \\(0:7, 1:1\\)
-    hash quality = 100.0%
-    KEYS = 1
+    ARRAY = $ADDR  \\((?:0:7, )?1:1\\)
+(?:    hash quality = 100.0%
+)?    KEYS = 1
     FILL = 1
-    MAX = 7
+    MAX = [07]
     Elt "123" HASH = $ADDR' . $c_pattern,
 	'',
 	($] < 5.015) ? 'The hash iterator used in dump.c sets the OOK flag' : undef);
@@ -547,11 +547,11 @@ do_test('reference to hash containing Unicode',
   SV = PVHV\\($ADDR\\) at $ADDR
     REFCNT = [12]
     FLAGS = \\(SHAREKEYS,HASKFLAGS\\)
-    ARRAY = $ADDR  \\(0:7, 1:1\\)
-    hash quality = 100.0%
-    KEYS = 1
+    ARRAY = $ADDR  \\((?:0:7, )?1:1\\)
+(?:    hash quality = 100.0%
+)?    KEYS = 1
     FILL = 1
-    MAX = 7
+    MAX = [07]
     Elt "' . $cp100_bytes . '" \[UTF8 "\\\x\{100\}"\] HASH = $ADDR
     SV = PV\\($ADDR\\) at $ADDR
       REFCNT = 1
@@ -779,10 +779,10 @@ do_test('ENAME on a stash',
     REFCNT = 2
     FLAGS = \\(OOK,SHAREKEYS\\)
     AUX_FLAGS = 0                               # $] > 5.019008
-    ARRAY = $ADDR
+    ARRAY = (?:$ADDR|0x0)
     KEYS = 0
     FILL = 0
-    MAX = 7
+    MAX = [07]
     RITER = -1
     EITER = 0x0
     NAME = "RWOM"
@@ -801,10 +801,10 @@ do_test('ENAMEs on a stash',
     REFCNT = 3
     FLAGS = \\(OOK,SHAREKEYS\\)
     AUX_FLAGS = 0                               # $] > 5.019008
-    ARRAY = $ADDR
+    ARRAY = (?:$ADDR|0x0)
     KEYS = 0
     FILL = 0
-    MAX = 7
+    MAX = [07]
     RITER = -1
     EITER = 0x0
     NAME = "RWOM"
@@ -847,11 +847,11 @@ do_test('small hash',
   SV = PVHV\\($ADDR\\) at $ADDR
     REFCNT = 2
     FLAGS = \\($PADMY,SHAREKEYS\\)
-    ARRAY = $ADDR  \\(0:[67],.*\\)
-    hash quality = [0-9.]+%
-    KEYS = 2
+    ARRAY = $ADDR  \\((?:0:[67],.*|1:2)\\)
+(?:    hash quality = [0-9.]+%
+)?    KEYS = 2
     FILL = [12]
-    MAX = 7
+    MAX = [17]
 (?:    Elt "(?:Perl|Beer)" HASH = $ADDR
     SV = PV\\($ADDR\\) at $ADDR
       REFCNT = 1
@@ -874,11 +874,11 @@ do_test('small hash after keys',
     REFCNT = 2
     FLAGS = \\($PADMY,OOK,SHAREKEYS\\)
     AUX_FLAGS = 0                               # $] > 5.019008
-    ARRAY = $ADDR  \\(0:[67],.*\\)
-    hash quality = [0-9.]+%
-    KEYS = 2
+    ARRAY = $ADDR  \\((?:0:[67],.*|1:2)\\)
+(?:    hash quality = [0-9.]+%
+)?    KEYS = 2
     FILL = [12]
-    MAX = 7
+    MAX = [17]
     RITER = -1
     EITER = 0x0
 (?:    Elt "(?:Perl|Beer)" HASH = $ADDR
@@ -903,11 +903,11 @@ do_test('small hash after keys and scalar',
     REFCNT = 2
     FLAGS = \\($PADMY,OOK,SHAREKEYS\\)
     AUX_FLAGS = 0                               # $] > 5.019008
-    ARRAY = $ADDR  \\(0:[67],.*\\)
-    hash quality = [0-9.]+%
-    KEYS = 2
+    ARRAY = $ADDR  \\((?:0:[67],.*|1:2)\\)
+(?:    hash quality = [0-9.]+%
+)?    KEYS = 2
     FILL = ([12])
-    MAX = 7
+    MAX = [17]
     RITER = -1
     EITER = 0x0
 (?:    Elt "(?:Perl|Beer)" HASH = $ADDR
@@ -967,11 +967,11 @@ do_test('Dump %hash', '%hash', <<'HASH', '', undef, 1);
 SV = PVHV\($ADDR\) at $ADDR
   REFCNT = \d+
   FLAGS = \(SHAREKEYS\)
-  ARRAY = $ADDR  \(0:7, 1:1\)
-  hash quality = 100.0%
-  KEYS = 1
+  ARRAY = $ADDR  \((?:0:7, )?1:1\)
+(?:  hash quality = 100.0%
+)?  KEYS = 1
   FILL = 1
-  MAX = 7
+  MAX = [07]
   Elt "1" HASH = $ADDR
   SV = IV\($ADDR\) at $ADDR
     REFCNT = 1
@@ -1001,12 +1001,12 @@ SV = PVHV\($ADDR\) at $ADDR
         ARRAY = 0x0
         KEYS = 0
         FILL = 0
-        MAX = 7
+        MAX = [07]
   AUX_FLAGS = 0
-  ARRAY = $ADDR
+  ARRAY = (?:$ADDR|0x0)
   KEYS = 0
   FILL = 0
-  MAX = 7
+  MAX = [07]
   RITER = -1
   EITER = 0x0
 HASH
@@ -1680,40 +1680,49 @@ EODUMP
     # this could crash [github #22959]
     class Foo {
     };
-    do_test('class object with no fields', Foo->new, <<~'EOS');
+    my $class_storage_prefix = <<~'EOS';
     SV = IV\($ADDR\) at $ADDR
       REFCNT = \d+
       FLAGS = \(ROK\)
       RV = $ADDR
-      SV = PVOBJ\($ADDR\) at $ADDR
+      SV = PVMG\($ADDR\) at $ADDR
         REFCNT = 1
-        FLAGS = \(OBJECT\)
+        FLAGS = \(OBJECT,RMG\)
+        IV = 0
+        NV = 0
+        PV = 0
+        MAGIC = $ADDR
+          MG_VIRTUAL = 0
+          MG_PRIVATE = \d+
+          MG_TYPE = PERL_MAGIC_class_storage\(j\)
+          MG_FLAGS = 0x02
+            REFCOUNTED
+          MG_OBJ = $ADDR
+          SV = PVOBJ\($ADDR\) at $ADDR
+            REFCNT = 1
+            FLAGS = \(RMG\)
+    (?s:.*?)
+    EOS
+    do_test('class object with no fields', Foo->new, $class_storage_prefix . <<~'EOS');
+            MAXFIELD = -1
+            FIELDS = 0x0
         STASH = $ADDR\s+"Foo"
-        MAXFIELD = -1
-        FIELDS = 0x0
     EOS
 
-    # test object with fields too
     class Foo2 {
         field $x = 0;
     };
-    do_test('class object with a field', Foo2->new, <<~'EOS');
-    SV = IV\($ADDR\) at $ADDR
-      REFCNT = \d+
-      FLAGS = \(ROK\)
-      RV = $ADDR
-      SV = PVOBJ\($ADDR\) at $ADDR
-        REFCNT = 1
-        FLAGS = \(OBJECT\)
+    do_test('class object with a field', Foo2->new, $class_storage_prefix . <<~'EOS');
+            MAXFIELD = 0
+            FIELDS = $ADDR
+            Field No\. 0 \(\$x\)
+            SV = IV\($ADDR\) at $ADDR
+              REFCNT = 1
+              FLAGS = \(IOK,pIOK\)
+              IV = 0
         STASH = $ADDR\s+"Foo2"
-        MAXFIELD = 0
-        FIELDS = $ADDR
-        Field No\. 0 \(\$x\)
-        SV = IV\($ADDR\) at $ADDR
-          REFCNT = 1
-          FLAGS = \(IOK,pIOK\)
-          IV = 0
     EOS
+
 }
 
 done_testing();

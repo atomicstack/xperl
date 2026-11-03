@@ -673,6 +673,16 @@ XS(XS_builtin_package_implements)
 
     XSRETURN_NO;
 }
+XS(XS_builtin_is_class_object);
+XS(XS_builtin_is_class_object)
+{
+    dXSARGS;
+    if(items != 1)
+        croak_xs_usage(cv, "object");
+    ST(0) = boolSV(class_storage(ST(0)) != NULL);
+    XSRETURN(1);
+}
+
 XS(XS_builtin_class_object_to_hash)
 {
     dXSARGS;
@@ -685,9 +695,10 @@ XS(XS_builtin_class_object_to_hash)
 XS(XS_builtin_class_object_from_hash)
 {
     dXSARGS;
-    if (items != 2)
-        croak_xs_usage(cv, "hashref, classname");
-    ST(0) = sv_2mortal(class_object_from_hash(ST(0), ST(1)));
+    if (items < 1 || items > 3)
+        croak_xs_usage(cv, "hashref, classname = undef, payload = undef");
+    ST(0) = sv_2mortal(class_object_restore(ST(0), items > 1 ? ST(1) : NULL,
+        items == 3 ? ST(2) : NULL));
     XSRETURN(1);
 }
 
@@ -795,6 +806,7 @@ static const struct BuiltinFuncDescriptor builtins[] = {
     { "load_module", NO_BUNDLE, true, &XS_builtin_load_module, &ck_builtin_func1, 0 },
 
     { "package_implements", NO_BUNDLE, true, &XS_builtin_package_implements, NULL, 0 },
+    { "is_class_object", NO_BUNDLE, true, &XS_builtin_is_class_object, NULL, 0 },
     { "class_object_to_hash", NO_BUNDLE, true, &XS_builtin_class_object_to_hash, NULL, 0 },
     { "class_object_from_hash", NO_BUNDLE, true, &XS_builtin_class_object_from_hash, NULL, 0 },
     /* list functions */

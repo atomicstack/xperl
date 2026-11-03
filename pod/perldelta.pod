@@ -37,14 +37,36 @@ L<perlclass/Construction>.
 
 =head2 Experimental inheritance from conventional packages
 
-Native classes can use C<:isa(Parent)> and a C<:blessed_self> scalar
-field to inherit from conventional blessed-reference classes. The class author
-constructs the conventional representation explicitly and supplies it through
-a field parameter or initializer. The generated C<CONSTRUCT> never calls the
-parent's constructor. Method calls
-select the native or legacy representation according to the target method,
-including callbacks from conventional parent methods to native overrides.
-See L<perlclass/:isa> for construction and destruction rules.
+Modern class objects are ordinary blessed references. Class-name
+C<CONSTRUCT> creates an undef scalar referent. Object-invoked C<CONSTRUCT>
+attaches lexical fields to the existing blessed reference, retaining its
+payload and identity. Conventional and modern methods receive the same
+C<$self>. The former C<:blessed_self> field attribute is removed.
+
+Modern fields form the union of the effective hierarchy, including modern
+ancestors reached through conventional packages and shared diamonds.
+Different classes may own distinct same-named fields. Field-hash conversion
+always groups original fields by storage-owner class, including single-owner
+objects; fieldless and alias-only classes add no buckets. Its C<'$self'>
+entry retains the actual blessed object. One-argument restoration attaches
+fields to that same referent. Data::Dumper defers normal restoration until
+reference fixups finish. This preserves same-named values and existing
+field aliases during reconstruction. Use C<field $name :inherited> to
+explicitly share one unambiguous ancestor declaration.
+C<:private> prevents descendants from binding that field. Inherited aliases
+add no storage or initialization and do not make other ancestor fields
+implicitly visible. See L<perlclass/Field attributes>.
+
+C<TEARDOWN> releases modern state after normal C<DESTROY>, or before
+reblessing into another package. It runs once through normal method lookup,
+with parent delegation explicit and no C<AUTOLOAD> fallback. See
+L<perlclass/Destruction>.
+
+C<Data::Dumper> and the field-hash builtins preserve ordinary payloads along
+with modern fields. C<builtin::is_class_object> queries attached storage,
+and C<class_object_from_hash> accepts an optional ordinary payload reference.
+C<Storable> requires explicit hooks for modern fields rather than silently
+dropping their storage.
 
 =head2 Experimental diagnostic catalog lookup
 

@@ -31,7 +31,7 @@ builtin - Perl pragma to import built-in utility functions
         cardinal_plural_form ordinal_plural_form
         get_diagnostic_data
         package_implements
-        class_object_to_hash class_object_from_hash
+        is_class_object class_object_to_hash class_object_from_hash
     );
 
     use builtin ':5.40';  # most of the above
@@ -615,20 +615,53 @@ dispatching the object's C<implements> or C<DOES> methods.  It is the
 authoritative implementation used by the default C<implements> method of
 classes and roles declared with the class feature.
 
+=head2 is_class_object
+
+    is_class_object($value)
+
+Returns true when the value is a blessed reference with attached modern
+class storage. This does not call object methods or inspect the package name.
+
 =head2 class_object_to_hash
 
     class_object_to_hash($object)
 
-Returns a hash reference containing the fields of a class object.  The field
-values are shared with the object; they are not recursively copied.
+Returns a shallow live description of the object:
+
+    { '$self' => $object,
+      Parent => { '$value' => 1 }, Child => { '$value' => 2 } }
+
+C<$self> is the actual blessed reference, with its existing class storage and
+ordinary payload. Original field entries are keyed first by storage-owner
+class, then by sigiled field name. Roles use their consuming class as owner.
+Inherited aliases add no entries. Classes with no original fields are omitted;
+a fieldless object has only C<$self>. Field scalar slots and aggregate values
+are shared with the object. This is a live view, not an independent copy.
 
 =head2 class_object_from_hash
 
+    class_object_from_hash($snapshot)
     class_object_from_hash($hashref, $classname)
+    class_object_from_hash($hashref, $classname, $payload_reference)
 
-Creates a class object from the field hash returned by
-C<class_object_to_hash>.  This bypasses the class constructor and installs
-the field values directly, sharing the values with the supplied hash.
+The one-argument form reads the blessed reference in C<$snapshot-E<gt>{'$self'}>
+and attaches the owner fields to that same referent, bypassing constructors.
+Its blessing supplies the effective class. A live object with initialized
+storage is returned unchanged after validating the supplied owner buckets and
+field types. Initialization or release in progress is rejected. This form
+never replaces existing initialized storage.
+
+Every class that owns original storage requires a hash-reference bucket under
+its class name. Empty and alias-only classes require no bucket. The owner key
+distinguishes same-named fields in different classes. Original field scalar
+slots and aggregate referents are installed directly, preserving aliases.
+
+The two-argument form creates a new undef scalar referent blessed into the
+specified class, sharing the supplied field entries. The optional third
+argument instead supplies an unblessed reference whose identity and contents
+are preserved. These forms ignore a snapshot's C<$self> entry. A conventional
+descendant of a modern class is accepted. Invalid fields are rejected before
+blessing the supplied payload.
 
 =head1 SEE ALSO
 

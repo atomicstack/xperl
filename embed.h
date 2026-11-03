@@ -54,8 +54,13 @@
 #   undef HvAUXf_IS_ROLE
 #   undef HvAUXf_ITER_ACTIVE
 #   undef HvAUXf_ITER_INSERTED
+#   undef HvCHAIN_NEXT_SET
 #   undef HvENTRY_INDEX
 #   undef HvENTRY_SVP
+#   undef HvOA_FINGERPRINT_BYTES_FOR
+#   undef HvOA_FINGERPRINT_GET
+#   undef HvOA_FINGERPRINT_SET
+#   undef HvOA_FINGERPRINT_VALUE_SET
 #   undef HvSTASH_IS_CLASS_OR_ROLE
 #   undef HvSTASH_IS_CLASS_SEALED
 #   undef HvSTASH_IS_ROLE
@@ -91,8 +96,6 @@
 #   undef NETDB_R_OBSOLETE
 #   undef new_XPV
 #   undef new_XPVIV
-#   undef ObjectHASLEGACY
-#   undef ObjectHASLEGACY_on
 #   undef origin_is_conflicted
 #   undef origin_is_required
 #   undef origin_map_init
@@ -106,7 +109,6 @@
 #   undef SHY_NATIVE
 #   undef sv_2num
 #   undef sv_has_valuemagic
-#   undef SVpobj_LEGACY
 #   undef SvRVx
 #   undef SvVMAGICAL
 #   undef SvVMAGICAL_off
@@ -115,6 +117,9 @@
 #   if !defined(PERL_EXT)
 #     undef DEBUG_ONLY
 #     undef GV_CACHE_ONLY
+#     undef HvCHAIN_NEXT
+#     undef HvOA_RECORD_WIDTH_FOR
+#     undef HvOA_STORAGE_BYTES
 #     undef invlist_intersection_
 #     undef invlist_subtract_
 #     undef invlist_union_
@@ -230,10 +235,15 @@
 # define ck_entersub_args_proto_or_list(a,b,c)  Perl_ck_entersub_args_proto_or_list(aTHX_ a,b,c)
 # define ck_warner(a,...)                       Perl_ck_warner(aTHX_ a,__VA_ARGS__)
 # define ck_warner_d(a,...)                     Perl_ck_warner_d(aTHX_ a,__VA_ARGS__)
-# define class_method_invocant(a,b)             Perl_class_method_invocant(aTHX_ a,b)
+# define class_bind_context(a,b)                Perl_class_bind_context(aTHX_ a,b)
+# define class_field_name(a,b)                  Perl_class_field_name(aTHX_ a,b)
 # define class_method_parse_post_blockstart(a)  Perl_class_method_parse_post_blockstart(aTHX_ a)
 # define class_object_from_hash(a,b)            Perl_class_object_from_hash(aTHX_ a,b)
+# define class_object_restore(a,b,c)            Perl_class_object_restore(aTHX_ a,b,c)
 # define class_object_to_hash(a)                Perl_class_object_to_hash(aTHX_ a)
+# define class_release(a,b)                     Perl_class_release(aTHX_ a,b)
+# define class_storage(a)                       Perl_class_storage(aTHX_ a)
+# define class_take_storage(a)                  Perl_class_take_storage(aTHX_ a)
 # define clear_defarray(a,b)                    Perl_clear_defarray(aTHX_ a,b)
 # define clear_defarray_simple(a)               Perl_clear_defarray_simple(aTHX_ a)
 # define cop_disable_warning(a,b)               Perl_cop_disable_warning(aTHX_ a,b)
@@ -893,6 +903,7 @@
 # define sv_string_from_errnum(a,b)             Perl_sv_string_from_errnum(aTHX_ a,b)
 # define sv_tainted(a)                          Perl_sv_tainted(aTHX_ a)
 # define sv_true(a)                             Perl_sv_true(aTHX_ a)
+# define sv_unbless(a)                          Perl_sv_unbless(aTHX_ a)
 # define sv_uni_display(a,b,c,d)                Perl_sv_uni_display(aTHX_ a,b,c,d)
 # define sv_unmagic(a,b)                        Perl_sv_unmagic(aTHX_ a,b)
 # define sv_unmagicext(a,b,c)                   Perl_sv_unmagicext(aTHX_ a,b,c)

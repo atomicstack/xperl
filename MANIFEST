@@ -6777,6 +6777,7 @@ t/bigmem/sv_gets.t			Test reading a lot with sv_gets()
 t/bigmem/vec.t				Check vec() handles large offsets
 t/charset_tools.pl			To aid in portable testing across platforms with different character sets
 t/class/accessor.t			See if accessor methods work
+t/class/blessed_references.t		Ordinary blessed references for modern classes
 t/class/class.t				See if class declarations work
 t/class/construct.t			See if class constructors work
 t/class/constructor.t			Generated CONSTRUCT and custom new constructors
@@ -6785,10 +6786,13 @@ t/class/EndsWithADJUST.pm		Helper module for test for GH#23758 in t/class/phaser
 t/class/field.t				See if class field declarations work
 t/class/gh22169.t			Test defining a class that previously failed to define
 t/class/gh23511.t			Test defining a reader after a strict 'vars' violation
+t/class/hierarchy.t			Modern fields across mixed inheritance hierarchies
 t/class/inherit.t			See if class inheritance works
+t/class/inherited_fields.t		Explicit inherited and private class fields
 t/class/legacy-inherit.t		Legacy superclass constructors and method dispatch
 t/class/method.t			See if class method declarations work
 t/class/object_hash.t			Test class object hash conversion
+t/class/object_snapshot.t		Class live snapshots and deferred restoration
 t/class/phasers.t			See if class phaser blocks work
 t/class/threads.t			See if classes work across multiple threads
 t/class/utf8.t				See if class syntax works with non-ASCII UTF-8

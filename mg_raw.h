@@ -47,7 +47,7 @@
     { 'i', "want_vtbl_isaelem",
       "/* isaelem 'i' @ISA array element */" },
     { 'j', "magic_vtable_max | PERL_MAGIC_READONLY_ACCEPTABLE",
-      "/* legacy_self 'j' Weak link from a legacy referent to its native object */" },
+      "/* class_storage 'j' Modern class storage owned by an ordinary referent */" },
     { 'k', "want_vtbl_nkeys | PERL_MAGIC_VALUE_MAGIC",
       "/* nkeys 'k' scalar(keys()) lvalue */" },
     { 'L', "magic_vtable_max",
