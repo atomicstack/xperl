@@ -619,7 +619,9 @@ enum perl_diag_index {
     perl_diag_error_object_conversion_hash_reference_required_idx,
     perl_diag_error_object_conversion_native_class_required_idx,
     perl_diag_error_object_conversion_native_object_required_idx,
+    perl_diag_error_object_conversion_owner_bucket_required_idx,
     perl_diag_error_object_conversion_payload_reference_required_idx,
+    perl_diag_error_object_conversion_snapshot_self_required_idx,
     perl_diag_error_object_definition_attribute_unknown_idx,
     perl_diag_error_object_definition_attribute_value_required_idx,
     perl_diag_error_object_definition_attribute_value_unterminated_idx,
@@ -2202,7 +2204,9 @@ enum perl_diag_number {
     perl_diag_error_object_conversion_hash_reference_required_number                           = 1120,
     perl_diag_error_object_conversion_native_class_required_number                             = 1121,
     perl_diag_error_object_conversion_native_object_required_number                            = 1122,
+    perl_diag_error_object_conversion_owner_bucket_required_number                             = 2770,
     perl_diag_error_object_conversion_payload_reference_required_number                        = 2762,
+    perl_diag_error_object_conversion_snapshot_self_required_number                            = 2771,
     perl_diag_error_object_definition_attribute_unknown_number                                 = 1581,
     perl_diag_error_object_definition_attribute_value_required_number                          = 1580,
     perl_diag_error_object_definition_attribute_value_unterminated_number                      = 1291,
@@ -4817,7 +4821,7 @@ enum perl_diag_selector_domain_id {
 
 
 #if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)
-#define PERL_DIAG_METADATA_COUNT 1579
+#define PERL_DIAG_METADATA_COUNT 1581
 
 #endif
 
@@ -20034,6 +20038,21 @@ enum perl_diag_selector_domain_id {
         (SV *)(ma_field) \
     )
 
+#define PERL_THROW_ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED(ma_owner) \
+    Perl_throw_croak_1_1453( \
+        aTHX_ perl_diag_error_object_conversion_owner_bucket_required_idx, \
+        __FILE__, \
+        __LINE__, \
+        (SV *)(ma_owner) \
+    )
+
+#define PERL_THROW_ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_object_conversion_snapshot_self_required_idx, \
+        __FILE__, \
+        __LINE__ \
+    )
+
 #define PERL_THROW_ERROR_OBJECT_FIELD_INITIALIZATION_STORAGE_RELEASED() \
     Perl_throw_croak_0_1006( \
         aTHX_ perl_diag_error_object_field_initialization_storage_released_idx, \
@@ -20478,7 +20497,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * 7d47c80fc2eea703a408af8d9141e8ef0df237948b31ff0290254d750d553927 diag_conf.pl
+ * 6dec88c46af68139755a9a916e9b35aa2ab951b96f16813f2900a2235d45f21a diag_conf.pl
  * 6510e6553ea58cc2c5404bc3524e14de99d6b39d5bf4cb3fc3271ba678cf283b diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

@@ -152,8 +152,13 @@ the C<CvIsMETHOD()> macro will return true on it.
 called C<CvMETHOD()>. That one does not relate to the class system, and was
 renamed to C<CvNOWARN_AMBIGUOUS()> to avoid this confusion.)
 
-There is currently no extra information that needs to be stored about a method
-CV, so the structure does not add any new fields.
+A composed role method records its consuming class and role offset in reserved
+pad slots. Escaped lexical and anonymous methods retain that creation context
+on a fresh CV, so another consumer cannot change their field bindings. Captured
+methods and ordinary role closures retain a copied consuming-class name in
+refcounted extension magic. This metadata contains no object reference;
+normal magic duplication preserves it when an interpreter is cloned, even
+when method invocation pads are rebuilt.
 
 =head2 Instances
 

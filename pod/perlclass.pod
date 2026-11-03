@@ -126,11 +126,12 @@ to the existing storage with C<:inherited>, unless the original declaration
 has C<:private>. Accessor methods can expose values to callers. Different
 instances access different values in the same lexical scope.
 
-Each field name, including its sigil, identifies one storage declaration
-throughout an object's hierarchy. A descendant cannot declare another
-storage field with the same name. C<:inherited> shares an existing declaration
-and adds no storage. A shared ancestor reached through several inheritance
-paths contributes its fields once.
+Fields declared by different classes can have the same name and still own
+distinct storage. A method uses the declaration visible in its lexical class.
+Names, including sigils, must be unique within one storage owner, including
+fields supplied by its composed roles. C<:inherited> aliases an existing
+ancestor declaration and adds no storage. A shared ancestor reached through
+several inheritance paths contributes its fields once.
 
     class WithFields {
         field $scalar = 42;
@@ -326,10 +327,10 @@ A modern class can declare one superclass. Roles cannot declare C<:isa>.
 Conventional packages may connect several modern ancestors through C<@ISA>.
 The effective object's hierarchy determines the union of modern fields,
 including ancestors reached through conventional intermediaries. Shared
-ancestors contribute their fields once. Distinct field declarations must
-have unique names throughout that union. Conflicts in known class ancestry
-are diagnosed when the class is sealed. A conventional package's effective
-union is checked before C<CONSTRUCT> initializes an object.
+ancestors contribute their fields once. Each declaring class owns its part
+of the union, so same-named fields in different classes remain independent.
+Role composition and declarations within one class retain their name-conflict
+rules. Constructor parameter names remain unique across the whole call.
 
 Each modern class's own fields are initialized once, in ancestor-first order,
 following conventional C<@ISA> order. All field initialization finishes before
@@ -338,9 +339,26 @@ declaring field identities, and role fields belong to the consuming class.
 A conventional descendant can inherit a modern constructor while keeping
 its own blessing and ordinary method lookup.
 
-Field-hash restoration bypasses constructors. Its optional payload reference
-preserves the conventional representation. See
+Field-hash conversion returns a live description with C<'$self'> pointing to
+the actual blessed object, followed by original owner buckets:
+C<< { '$self' => $object, OwnerClass => { '$field' => $value } } >>.
+Original fields appear under the class that owns their storage; role fields
+use the consuming class. Inherited aliases have no separate entries. Classes
+with no original fields are omitted, leaving only C<'$self'> for a fieldless
+object. Scalar field slots and aggregate values remain shared.
+
+One-argument restoration attaches fields to the description's blessed
+C<'$self'> referent without running constructors. Already initialized objects
+are returned unchanged after validating the description. The older explicit
+class and optional unblessed-payload forms create another object. See
 L<builtin/class_object_from_hash>.
+
+Modern object patterns inspect the named class's own fields, its composed
+role fields, and its explicit C<:inherited> aliases. A parent pattern on a
+child object therefore selects the parent's original fields. Conventional
+package patterns inspect the ordinary payload, even when modern storage is
+attached. This field view is separate from the owner-keyed serialization
+format.
 
 =head3 :implements
 
@@ -401,7 +419,10 @@ Readers and writers can be generated on an inherited declaration.
 Ancestor names do not enter a descendant's lexical scope automatically.
 An inherited declaration must resolve to one ancestor storage declaration
 when the class is sealed. Missing, ambiguous, or C<:private> ancestors are
-errors. Conventional ancestry used by C<:inherited> must be established at
+errors. Distinct ancestor declarations with the same name are ambiguous,
+including declarations in a parent and grandparent; there is no implicit
+nearest-name choice. Several paths to the same original declaration remain
+unambiguous. Conventional ancestry used by C<:inherited> must be established at
 that time, for example with C<use parent> or C<BEGIN>. Later changes to
 C<@ISA> cannot rebind the sealed dependency to a different field.
 

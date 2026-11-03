@@ -247,6 +247,68 @@ S_class_context_owner(pTHX_ SV *instance, HV *role, CV *cv)
         && S_class_role_offset(aTHX_ consumer, role, &offset) ? consumer : NULL;
 }
 
+static const MGVTBL S_class_cv_context_vtbl = {0};
+
+static SV *
+S_class_captured_owner(pTHX_ CV *cv)
+{
+    if(CvIsMETHOD(cv) && !CvISXSUB(cv) && CvPADLIST(cv)) {
+        PAD *pad = PadlistARRAY(CvPADLIST(cv))[CvDEPTH(cv) ? CvDEPTH(cv) : 1];
+        SV *owner = PadARRAY(pad)[PADIX_FIELD_OWNER];
+        if(owner && SvOK(owner))
+            return owner;
+    }
+    MAGIC *mg = SvMAGIC(cv)
+        ? mg_findext((SV *)cv, PERL_MAGIC_ext, &S_class_cv_context_vtbl) : NULL;
+    return mg ? mg->mg_obj : NULL;
+}
+
+CV *
+Perl_class_bind_context(pTHX_ CV *cv, bool force_clone)
+{
+    PERL_ARGS_ASSERT_CLASS_BIND_CONTEXT;
+    /* A captured lexical context wins over an unrelated caller. Store only
+     * a copied class name, never an object reference or a mutable pad alias. */
+    SV *owner = S_class_captured_owner(aTHX_ cv);
+    bool captured = owner != NULL;
+    if(!owner) {
+        for(I32 level = 0; ; level++) {
+            const PERL_CONTEXT *cx = caller_cx(level, NULL);
+            if(!cx)
+                break;
+            CV *caller = cx->blk_sub.cv;
+            if(!caller)
+                continue;
+            SV *candidate = S_class_captured_owner(aTHX_ caller);
+            HV *consumer = candidate ? gv_stashsv(candidate, 0) : NULL;
+            PADOFFSET offset;
+            if(consumer && S_class_role_offset(aTHX_ consumer, CvSTASH(cv), &offset)) {
+                owner = candidate;
+                break;
+            }
+        }
+    }
+    if(!force_clone && (!owner || captured))
+        return cv;
+    CV *bound = cv_clone(cv);
+    if(owner) {
+        if(CvIsMETHOD(bound)) {
+            HV *consumer = gv_stashsv(owner, 0);
+            PADOFFSET offset;
+            if(consumer && S_class_role_offset(aTHX_ consumer, CvSTASH(bound), &offset)) {
+                PAD *pad = PadlistARRAY(CvPADLIST(bound))[1];
+                sv_setsv(PadARRAY(pad)[PADIX_FIELD_OWNER], owner);
+                sv_setuv(PadARRAY(pad)[PADIX_ROLE_OFFSET], offset);
+            }
+        }
+        SV *name = newSVsv(owner);
+        sv_magicext((SV *)bound, name, PERL_MAGIC_ext,
+            &S_class_cv_context_vtbl, NULL, 0);
+        SvREFCNT_dec_NN(name);
+    }
+    return bound;
+}
+
 static HV *
 S_class_field_owner(pTHX_ SV *self, SV *instance, CV *cv)
 {
@@ -256,7 +318,8 @@ S_class_field_owner(pTHX_ SV *self, SV *instance, CV *cv)
     HV *role = CvSTASH(cv);
     if(!HvSTASH_IS_ROLE(role))
         return role;
-    HV *consumer = NULL;
+    SV *captured = S_class_captured_owner(aTHX_ cv);
+    HV *consumer = captured ? gv_stashsv(captured, 0) : NULL;
     /* Escaped anonymous methods retain their composing context through the
      * outside CV. Lexical methods can inherit it from an active caller. */
     for(CV *outside = CvOUTSIDE(cv); outside && !consumer; outside = CvOUTSIDE(outside))
@@ -596,6 +659,9 @@ S_class_validate_fields(pTHX_ AV *classes, HV *shifts)
     for(SSize_t ci = 0; ci <= AvFILL(classes); ci++) {
         HV *decl = (HV *)AvARRAY(classes)[ci];
         struct xpvhv_aux *aux = HvAUX(decl);
+        /* Names are private to their storage owner. Constructor parameter
+         * names remain shared by the whole construction call. */
+        hv_clear(fields);
         PADNAMELIST *names = aux->xhv_class_fields;
         for(SSize_t j = 0; names && j <= PadnamelistMAX(names); j++) {
             PADNAME *pn = PadnamelistARRAY(names)[j];
@@ -860,7 +926,7 @@ S_class_object_fields_to_hash(pTHX_ HV *hash, HV *stash, SV *instance, PADOFFSET
                     PADNAME *pn = PadnamelistARRAY(rolefields)[i];
                     if (!pn || !PadnameIsFIELD(pn) || PadnameFIELDINFO(pn)->is_inherited)
                         continue;
-                    SV *value = ObjectFIELDS(instance)[offset
+                    SV *value = ObjectFIELDS(instance)[shift + offset
                         + PadnameFIELDINFO(pn)->relative_fieldix];
                     if (!value)
                         value = &PL_sv_undef;
@@ -878,8 +944,10 @@ S_class_object_fields_to_hash(pTHX_ HV *hash, HV *stash, SV *instance, PADOFFSET
 =for apidoc_section $SV
 =for apidoc class_object_to_hash
 
-Returns a shallow hash representation of a class object.  Field values are
-shared with the object.
+Returns a shallow hash representation of a class object, keyed by storage
+owner class and then sigiled field name, with C<$self> holding the actual
+blessed object. Field slots are shared with the object. Owners with no
+original storage fields are omitted.
 
 =cut
 */
@@ -894,6 +962,7 @@ Perl_class_object_to_hash(pTHX_ SV *object)
     if(!storages)
         PERL_THROW_ERROR_OBJECT_CONVERSION_NATIVE_OBJECT_REQUIRED();
     HV *hash = newHV();
+    (void)hv_stores(hash, "$self", newSVsv(object));
     SV *instance = class_storage(object);
     AV *classes = (AV *)AvARRAY(S_class_layout(aTHX_ instance))[CLASS_LAYOUT_CLASSES];
     for(SSize_t i = 0; i <= AvFILL(classes); i++) {
@@ -902,7 +971,15 @@ Perl_class_object_to_hash(pTHX_ SV *object)
         bool found = S_class_layout_shift(aTHX_ instance, decl, &shift);
         assert(found);
         PERL_UNUSED_VAR(found);
-        S_class_object_fields_to_hash(aTHX_ hash, decl, instance, shift);
+        struct xpvhv_aux *aux = HvAUX(decl);
+        PADOFFSET prefix = aux->xhv_class_superclass
+            ? HvAUX(aux->xhv_class_superclass)->xhv_class_next_fieldix : 0;
+        if(aux->xhv_class_next_fieldix == prefix)
+            continue;
+        HV *bucket = newHV();
+        (void)hv_store_ent(hash, newSVhek_mortal(HvNAME_HEK(decl)),
+                newRV_noinc((SV *)bucket), 0);
+        S_class_object_fields_to_hash(aTHX_ bucket, decl, instance, shift);
     }
     return newRV_noinc((SV *)hash);
 }
@@ -976,8 +1053,8 @@ S_class_object_fields_from_hash(pTHX_ HV *hash, HV *stash, SV *instance, PADOFFS
 /*
 =for apidoc class_object_from_hash
 
-Creates a class object from the shallow hash representation, sharing its field
-values and bypassing the constructor.
+Creates a class object from the owner-keyed shallow hash representation,
+sharing its field values and bypassing the constructor.
 
 =cut
 */
@@ -996,15 +1073,33 @@ Perl_class_object_restore(pTHX_ SV *hashref, SV *classname, SV *payload)
     if (!SvROK(hashref) || SvTYPE(SvRV(hashref)) != SVt_PVHV)
         PERL_THROW_ERROR_OBJECT_CONVERSION_HASH_REFERENCE_REQUIRED();
 
-    HV *stash = gv_stashsv(classname, 0);
+    bool hydrate = classname == NULL;
+    if(hydrate) {
+        SV **selfp = hv_fetchs((HV *)SvRV(hashref), "$self", 0);
+        payload = selfp ? *selfp : NULL;
+        if(!payload || !SvROK(payload) || !SvOBJECT(SvRV(payload)))
+            PERL_THROW_ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED();
+    }
+    HV *stash = hydrate ? SvSTASH(SvRV(payload)) : gv_stashsv(classname, 0);
     if(!stash)
         PERL_THROW_ERROR_OBJECT_CONVERSION_NATIVE_CLASS_REQUIRED();
     ENTER;
-    if(payload && (!SvROK(payload) || SvOBJECT(SvRV(payload))))
+    if(!hydrate && payload && (!SvROK(payload) || SvOBJECT(SvRV(payload))))
         PERL_THROW_ERROR_OBJECT_CONVERSION_PAYLOAD_REFERENCE_REQUIRED();
     SV *result = payload ? newSVsv(payload) : newRV_noinc(newSV(0));
     SAVEFREESV(result);
-    SV *instance = S_class_new_storage(aTHX_ stash);
+    MAGIC *old = hydrate && SvMAGICAL(SvRV(result))
+        ? mg_find(SvRV(result), PERL_MAGIC_class_storage) : NULL;
+    if(old && old->mg_private != CLASS_READY)
+        PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_STORAGE_BUSY();
+    SV *instance;
+    if(old) {
+        instance = newSVobject(ObjectMAXFIELD(old->mg_obj) + 1);
+        sv_magicext(instance, (SV *)S_class_layout(aTHX_ old->mg_obj),
+            PERL_MAGIC_class_storage, NULL, NULL, 0);
+    }
+    else
+        instance = S_class_new_storage(aTHX_ stash);
     SAVEFREESV(instance);
     AV *classes = (AV *)AvARRAY(S_class_layout(aTHX_ instance))[CLASS_LAYOUT_CLASSES];
     for(SSize_t i = 0; i <= AvFILL(classes); i++) {
@@ -1013,13 +1108,26 @@ Perl_class_object_restore(pTHX_ SV *hashref, SV *classname, SV *payload)
         bool found = S_class_layout_shift(aTHX_ instance, decl, &shift);
         assert(found);
         PERL_UNUSED_VAR(found);
-        S_class_object_fields_from_hash(aTHX_ (HV *)SvRV(hashref), decl, instance, shift);
+        struct xpvhv_aux *aux = HvAUX(decl);
+        PADOFFSET prefix = aux->xhv_class_superclass
+            ? HvAUX(aux->xhv_class_superclass)->xhv_class_next_fieldix : 0;
+        if(aux->xhv_class_next_fieldix == prefix)
+            continue;
+        SV *owner = newSVhek_mortal(HvNAME_HEK(decl));
+        HE *he = hv_fetch_ent((HV *)SvRV(hashref), owner, 0, 0);
+        SV *bucket = he ? HeVAL(he) : NULL;
+        if(!bucket || !SvROK(bucket) || SvTYPE(SvRV(bucket)) != SVt_PVHV)
+            PERL_THROW_ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED(owner);
+        S_class_object_fields_from_hash(aTHX_ (HV *)SvRV(bucket), decl, instance, shift);
     }
-    if(SvOBJECT(SvRV(result)))
+    if(!hydrate && SvOBJECT(SvRV(result)))
         PERL_THROW_ERROR_OBJECT_CONVERSION_PAYLOAD_REFERENCE_REQUIRED();
-    sv_bless(result, stash);
-    sv_magicext(SvRV(result), instance, PERL_MAGIC_class_storage, NULL, NULL, 0);
-    mg_find(SvRV(result), PERL_MAGIC_class_storage)->mg_private = CLASS_READY;
+    if(!class_storage(result)) {
+        if(!hydrate)
+            sv_bless(result, stash);
+        sv_magicext(SvRV(result), instance, PERL_MAGIC_class_storage, NULL, NULL, 0);
+        mg_find(SvRV(result), PERL_MAGIC_class_storage)->mg_private = CLASS_READY;
+    }
     SvREFCNT_inc_simple_void_NN(result);
     LEAVE;
     return result;

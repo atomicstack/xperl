@@ -49,7 +49,16 @@ PP(pp_padcv)
 {
     dTARGET;
     assert(SvTYPE(TARG) == SVt_PVCV);
-    rpp_xpush_1(TARG);
+    SV *value = TARG;
+    if(CvIsMETHOD(value) && HvSTASH_IS_ROLE(CvSTASH(value))) {
+        CV *bound = class_bind_context((CV *)value, FALSE);
+        if((SV *)bound != value) {
+            PAD_SVl(PL_op->op_targ) = (SV *)bound;
+            SvREFCNT_dec_NN(value);
+            value = (SV *)bound;
+        }
+    }
+    rpp_xpush_1(value);
     return NORMAL;
 }
 
@@ -434,8 +443,13 @@ PP(pp_prototype)
 PP(pp_anoncode)
 {
     CV *cv = MUTABLE_CV(PAD_SV(PL_op->op_targ));
-    if (CvCLONE(cv))
-        cv = MUTABLE_CV(sv_2mortal(MUTABLE_SV(cv_clone(cv))));
+    if(CvSTASH(cv) && HvSTASH_IS_ROLE(CvSTASH(cv))) {
+        CV *bound = class_bind_context(cv, CvCLONE(cv) || CvIsMETHOD(cv));
+        if(bound != cv)
+            cv = (CV *)sv_2mortal((SV *)bound);
+    }
+    else if(CvCLONE(cv))
+        cv = (CV *)sv_2mortal((SV *)cv_clone(cv));
 
     SV *sv;
     bool generator = FALSE;

@@ -24,14 +24,16 @@ weak backlink, invocant substitution, or :blessed_self attribute.
 
 ## Field declarations and inheritance
 
-A plain field declaration owns storage. Distinct storage declarations with
-the same full field name conflict throughout an object, including direct
-modern ancestors. The sigil is part of the name, matching existing role
-rules. Shared ancestor declarations are deduplicated. Known conflicts are
-rejected when a class is sealed. Runtime conventional unions are validated
-before a new object is blessed or any initialization runs.
+A plain field declaration owns storage. Different classes may own distinct
+same-named fields. Names including sigils must be unique within one owner,
+including its role contributions; existing role composition conflicts are
+preserved. Constructor parameter names remain unique across the entire
+call. Shared ancestors are deduplicated. Runtime layout validation happens
+before blessing a new object or running initialization.
 
 field $foo :inherited declares a lexical alias to existing ancestor storage.
+Multiple ancestor originals with the same name are ambiguous, including
+parent/grandparent shadows. Repeated paths to the same original are deduped.
 It preserves the child's lexical declaring stash and records strong
 references to the original field PADNAME and the original storage consumer.
 Aliases through several generations flatten to the same origin. They add
@@ -75,18 +77,35 @@ retry with fresh storage. Failed class-name construction preserves partial
 fields through normal DESTROY. Layout validation failures occur before a
 new referent is blessed, so they do not create spurious destruction calls.
 
-The shallow field conversion APIs serialize original fields once. The
-from_hash builtin accepts an optional unblessed payload reference and
-validates storage before blessing it. Failed restoration keeps the caller's
-payload unblessed with identity and contents preserved.
+The shallow conversion API returns a live view:
+{ '$self' => $object, StorageOwnerClass => { '$field' => value } }.
+The self entry is the actual blessed reference, retaining ordinary payload
+and class magic. Owner buckets contain original storage fields; roles use
+their consumer, inherited aliases add no entries, and zero-field owners are
+omitted. A fieldless object's description contains only '$self'. Field
+scalar slots and aggregate referents are shared.
 
-Data::Dumper wraps its ordinary referent dump in the restoration call.
-Both implementations share graph handling between payload and fields;
-Purity fixups use class_object_to_hash($object) field paths. The nonthrowing
-is_class_object builtin avoids error probes and user die hooks. Object-shape
-matching inspects attached modern fields. Devel::Peek describes the public
-ordinary reference and hidden vector safely. Storable requires explicit
-freeze/thaw hooks instead of silently discarding modern fields.
+One-argument restoration validates owner buckets and field types, then
+attaches the same SVs to the blessed self referent. Ready storage is
+idempotent and validated against its stored layout, including after legacy
+ancestry mutation. Initializing/releasing markers reject attachment.
+The explicit class and optional unblessed-payload forms remain available;
+they validate before blessing, preserving caller payloads on failure.
+
+Data::Dumper emits descriptions with ordinary blessed payloads. Whole-object
+references target actual self identities; field aliases remain visible in
+owner buckets. All ordinary graph fixups run before whole-call postorder
+storage attachment, and Toaster runs after attachment. Terse uses compact
+inline restoration within its existing display-oriented fidelity limits.
+Persistent Seen names are rebased onto restored payloads and live field
+views, while preloaded external references remain authoritative. Existing
+Dumper alias discovery-order limits are unchanged.
+
+The nonthrowing is_class_object builtin avoids user die hooks. Modern object
+patterns project the named class's own/role fields and explicit inherited
+aliases; conventional patterns inspect ordinary payloads. Devel::Peek
+safely describes the public referent and hidden vector. Storable requires
+explicit freeze/thaw hooks instead of silently discarding modern fields.
 
 ## Lifecycle
 
@@ -119,7 +138,7 @@ preserving depth-first reverse-field order before ordinary payload cleanup.
 Explicit blessing/unblessing remains synchronous. A 100,000-node chain was
 verified to free without C stack overflow after this integration.
 
-## Validation record
+## Initial implementation validation
 
 The final build uses -Dusethreads -DDEBUGGING and -g -O1 with workspace
 ccache. Final affected validation passes 102 files and 5,781 tests, covering
@@ -168,3 +187,44 @@ passes unsupported -v to diag_pack.pl, so its narrow generators were used
 where needed. MANIFEST contains the new tests and was sorted through
 make manisort. The interrupted Devel-PPPort ppptmp test artifact is excluded.
 No shared skills or unrelated worktrees were changed.
+
+## Final owner-bucket and live-snapshot validation
+
+The follow-up replaces hierarchy-wide field-name uniqueness with per-owner
+identity and retains constructor-key uniqueness. It adds self-contained live
+snapshots, final-phase Dumper hydration, class-scoped patterns, and immutable
+consumer context for escaped role methods and factories. Explicit inherited
+aliases remain omitted from serialized storage. Existing generic Dumper
+alias discovery-order limitations remain outside this change.
+
+The final threaded debug build passes 108 affected files and 5,142 tests:
+all class and role tests, dispatch patterns, Devel::Peek, Data::Dumper, and
+Storable. The first affected run exposed one lifetime expectation: a live
+snapshot now intentionally retains its source object through '$self'. The
+updated test drops that snapshot before checking destruction; the rerun
+passes. The 68 new snapshot assertions cover hydration state guards, stored
+layout after ancestry mutation, nested graph cycles, shared roots, scalar
+and aggregate aliases, persistent and preloaded Seen names, Toaster order,
+and compact Terse restoration in both Dumper implementations.
+
+Final porting covers 46 files and 54,041 assertions, excluding only the
+unchanged diag_churn test validated earlier. The only failures were three
+manifest checks that ran before the new test was staged. The staged-test
+manifest rerun passes all 14,963 assertions. Regeneration, diagnostics and
+packs, migration, word checks, POD, API assertions, headers, and exports pass.
+
+ASan and LSan pass 397 assertions: lifecycle91, hierarchy37, inherited57,
+conversion/context144, and live snapshots68. The 100,000-node destruction
+stress also passes. Checks use PERL_DESTRUCT_LEVEL=2, detect_leaks=1 and
+TracerPid=0; no sanitizer reports remain. No repeat of the earlier broad
+harness was needed for this follow-up.
+
+Final follow-up logs in workspace tmp:
+
+- class-live-snapshot-final-build.log
+- class-live-snapshot-focused2.log
+- class-live-snapshot-porting.log and class-live-snapshot-manifest.log
+- class-live-snapshot-asan-build.log and class-live-snapshot-asan-tests.log
+
+The original worktree remains untouched. No merge or push is included;
+integration with current main is handed to the agent owning its active work.
