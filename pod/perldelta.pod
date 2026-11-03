@@ -27,6 +27,15 @@ here, but most should go in the L</Performance Enhancements> section.
 
 [ List each enhancement as a =head2 entry ]
 
+=head2 Experimental SipHash builtins
+
+C<builtin::siphash> computes SipHash with caller-selected compression and
+finalization rounds. C<builtin::siphash_1_3> and C<builtin::siphash_2_4>
+provide the common fixed variants. They accept a byte string and an optional
+16-byte seed, and return an eight-byte digest. The default seed is the
+published test-vector key, so callers handling untrusted input should supply
+a secret seed. See L<builtin/siphash>.
+
 =head2 Custom constructors for native classes
 
 Native classes expose their generated constructor as C<CONSTRUCT>. A class without

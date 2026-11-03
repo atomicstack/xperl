@@ -124,6 +124,94 @@ XS(XS_builtin_rand_bytes)
     XSRETURN(1);
 }
 
+static UV
+S_builtin_siphash_rounds(pTHX_ SV *value)
+{
+    STRLEN len;
+    const char *digits;
+    UV rounds = 0;
+
+    SvGETMAGIC(value);
+    if (!SvOK(value) || SvROK(value))
+        croak("SipHash round counts must be non-negative integers");
+    digits = SvPV_nomg(value, len);
+    if (!len)
+        croak("SipHash round counts must be non-negative integers");
+    for (STRLEN i = 0; i < len; i++) {
+        UV digit;
+        if (!isDIGIT_A(digits[i]))
+            croak("SipHash round counts must be non-negative integers");
+        digit = (UV)(digits[i] - '0');
+        if (rounds > (UV_MAX - digit) / 10)
+            croak("SipHash round count is too large");
+        rounds = rounds * 10 + digit;
+    }
+    return rounds;
+}
+
+XS(XS_builtin_siphash);
+XS(XS_builtin_siphash)
+{
+    dXSARGS;
+    const U8 default_seed[16] = {
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f
+    };
+    const U8 *seed = default_seed;
+    const U8 *input;
+    STRLEN input_len;
+    UV rounds, final_rounds;
+    U64 hash;
+    U8 result[8];
+    const bool variable = XSANY.any_i32 == 0;
+    const I32 string_arg = variable ? 2 : 0;
+
+    if (items < string_arg + 1 || items > string_arg + 2)
+        croak_xs_usage(cv, variable ? "rounds, final_rounds, string, seed = undef"
+                                    : "string, seed = undef");
+
+    if (variable) {
+        rounds = S_builtin_siphash_rounds(aTHX_ ST(0));
+        final_rounds = S_builtin_siphash_rounds(aTHX_ ST(1));
+    }
+    else {
+        rounds = XSANY.any_i32 == 1 ? 1 : 2;
+        final_rounds = XSANY.any_i32 == 1 ? 3 : 4;
+    }
+
+    if (items == string_arg + 2) {
+        SV *seed_sv = ST(string_arg + 1);
+        STRLEN seed_len;
+        SvGETMAGIC(seed_sv);
+        if (!SvOK(seed_sv) || SvROK(seed_sv))
+            croak("SipHash seed must be exactly 16 bytes");
+        seed = (const U8 *)SvPVbyte_nomg(seed_sv, seed_len);
+        if (seed_len != 16)
+            croak("SipHash seed must be exactly 16 bytes");
+    }
+
+    {
+        SV *input_sv = ST(string_arg);
+        SvGETMAGIC(input_sv);
+        if (!SvOK(input_sv) || SvROK(input_sv))
+            croak("SipHash input must be a byte string");
+        input = (const U8 *)SvPVbyte_nomg(input_sv, input_len);
+    }
+
+    if (variable)
+        hash = S_perl_hash_siphash_with_rounds_64(seed, input, input_len,
+                                                   rounds, final_rounds);
+    else if (rounds == 1)
+        hash = S_perl_hash_siphash_1_3_64(seed, input, input_len);
+    else
+        hash = S_perl_hash_siphash_2_4_64(seed, input, input_len);
+
+    for (int i = 0; i < 8; i++)
+        result[i] = (U8)(hash >> (i * 8));
+    ST(0) = sv_2mortal(newSVpvn((const char *)result, sizeof(result)));
+    XSRETURN(1);
+}
+
 XS(Perl_builtin_get_diagnostic_data);
 XS(Perl_builtin_get_diagnostic_data)
 {
@@ -781,6 +869,9 @@ static const struct BuiltinFuncDescriptor builtins[] = {
     { "inf",        NO_BUNDLE, true,  &XS_builtin_inf,    &ck_builtin_const, BUILTIN_CONST_INF   },
     { "nan",        NO_BUNDLE, true,  &XS_builtin_nan,    &ck_builtin_const, BUILTIN_CONST_NAN   },
     { "rand_bytes", NO_BUNDLE, true,  &XS_builtin_rand_bytes, &ck_builtin_func1, 0 },
+    { "siphash", NO_BUNDLE, true, &XS_builtin_siphash, &ck_builtin_funcN, 0 },
+    { "siphash_1_3", NO_BUNDLE, true, &XS_builtin_siphash, &ck_builtin_funcN, 1 },
+    { "siphash_2_4", NO_BUNDLE, true, &XS_builtin_siphash, &ck_builtin_funcN, 2 },
     { "get_diagnostic_data", NO_BUNDLE, true, &Perl_builtin_get_diagnostic_data, &ck_builtin_func1, 0 },
 
     /* unary functions */
