@@ -167,52 +167,30 @@ Calling `CONSTRUCT` directly bypasses it. Each subclass without a local
 `new` gets its own generated alias, so reusing a parent's custom constructor
 requires explicit forwarding.
 
-#### Inheritance from conventional packages
+#### Ordinary blessed references and conventional parents
 
-The `:isa` attribute accepts a conventional blessed-reference package as
-well as a native class. A native class with a conventional parent declares
-one scalar field marked `:blessed_self`. Its author supplies the blessed
-representation through a field parameter or initializer:
+Every modern class instance is an ordinary blessed reference. Its referent
+holds hidden class storage, while ordinary methods and native methods receive
+the same public reference. A class-name `CONSTRUCT` creates an undef scalar
+referent. An object-invoked `CONSTRUCT` attaches fields to the existing
+blessed reference without changing its type, payload, blessing, or identity.
+This lets a conventional parent constructor create the object first. The
+default constructor does not invoke conventional parent constructors.
 
-```perl
-use v5.36;
-use feature 'class';
+Original fields belong to their declaring class. Different classes in a
+hierarchy may own same-named fields, and storage snapshots group them by
+owner. A descendant can explicitly alias one unambiguous ancestor field with
+`:inherited`; `:private` prevents such aliases. Aliases add no storage or
+initializer, and unmentioned ancestor fields are not implicitly visible in
+descendant lexical scope. The former `:blessed_self` attribute is removed.
 
-package BlessedPoint {
-    sub new {
-        my ($class, %args) = @_;
-        return bless \%args, $class;
-    }
-
-    sub x { $_[0]{x} }
-}
-
-class RGBPoint :isa(BlessedPoint) {
-    field $legacy :blessed_self :param;
-    field $red :param :reader;
-
-    sub new ($class, $x, $red) {
-        my $parent = $class->SUPER::new(x => $x);
-        return $class->CONSTRUCT(legacy => $parent, red => $red);
-    }
-}
-
-my $point = RGBPoint->new(10, 200);
-say $point->x;    # conventional method receives the blessed hash
-say $point->red;  # native method receives the native object
-```
-
-`CONSTRUCT` never calls the conventional parent's constructor automatically.
-The association is established when the marked field initializes. Later
-field initializers and `ADJUST` blocks can then call both kinds of methods,
-and conventional methods can call native overrides. The field becomes
-read-only after attachment, while the referenced contents remain mutable.
-
-The native object owns the blessed representation and its destruction.
-One blessed referent can belong to only one live native object. Native
-subclasses inherit the association and cannot declare a second marked
-field. Construction, method dispatch, restoration, and destruction rules
-are documented in [perlclass](pod/perlclass.pod).
+`class_object_to_hash` returns a live shallow view containing the actual
+blessed object under `'$self'` and original fields under owner-class keys.
+`class_object_from_hash` can restore those fields onto the same reference.
+`Data::Dumper` waits for ordinary graph fixups before attaching class fields,
+preserving shared references and ordinary payloads. `TEARDOWN` releases
+modern state after ordinary `DESTROY`, or before reblessing to another
+package. These rules are documented in [perlclass](pod/perlclass.pod).
 
 ### Structured exceptions and translated diagnostics
 
@@ -223,6 +201,13 @@ inspect the diagnostic objects or select annotated text, JSON, or Dumper
 output. A structured exception hook runs before the existing warning and
 die hooks, and a two-variable `catch` can retain both the compatibility
 value and the structured exception.
+
+Generated diagnostic producers capture the C file and line of their call
+site. Annotated text and JSON expose that source separately from the Perl
+location. Reference type errors can include a bounded description of the
+offending referent. Named selector aliases replace generated numeric IDs in
+C call sites, and the generated header maps each producer macro to its
+owning diagnostic code for source searches.
 
 Loadable language packs provide translated diagnostics, with English
 fallback and lexical or runtime language selection. Alongside English,
@@ -239,10 +224,19 @@ review. See
 [XPerl::Diagnostic](lib/XPerl/Diagnostic.pm), and
 [diagpack](lib/diagpack.pm) for the interfaces.
 
+### SipHash builtins
+
+The experimental `builtin::siphash` computes SipHash with caller-selected
+compression and finalization rounds. `builtin::siphash_1_3` and
+`builtin::siphash_2_4` provide the fixed variants. Each accepts a byte
+string and an optional 16-byte key, and returns eight little-endian bytes.
+The default key is the published test-vector key, `00` through `0f`.
+
 ### Compact hash storage
 
 Ordinary hashes use a compact array of `HE` entries and a separate index.
 On 64-bit builds an entry occupies 16 bytes, with no collision-chain pointer.
+The former linked `HE` chain representation is removed as a build choice.
 By default, indexed hashes use integer chains: packed bucket heads point to a
 packed per-entry next-link array, and both store one-, two-, or four-byte
 entry identifiers. Fingerprints are disabled by default. Open addressing
