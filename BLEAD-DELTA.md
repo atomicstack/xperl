@@ -359,12 +359,13 @@ cached hash and reference count in each `HEK` remain `U32`. Since the hash is
 32 bits, hash distribution can limit performance above `2^32` slots. This
 does not change the ordinary hash index's `2^30` slot limit. The table has a
 minimum capacity of 32,768 slots.
-Before insertion, when live entries plus tombstones reach half the capacity,
-the table doubles if tombstones are below half the occupied slots. Explicit
+Before insertion into an empty slot, when live entries plus tombstones reach
+half the capacity, the table doubles if tombstones are below half the
+occupied slots. Otherwise it clears tombstones at the same capacity.
+Insertion into a tombstone reuses that slot without a rebuild. Explicit
 reservation targets a power of two above twice the requested key count,
-retaining the minimum capacity.
-Otherwise it clears tombstones at the same capacity. The table does not
-shrink automatically. Hash::Util provides
+retaining the minimum capacity. The table does not shrink automatically.
+Hash::Util provides
 `shared_key_refcount` for non-mutating reference-count lookup and
 `shared_keys` for copied key strings, and `immortalize_key` to acquire a
 permanent reference until interpreter destruction. Pins are copied into

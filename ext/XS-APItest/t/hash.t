@@ -295,6 +295,13 @@ main_tests (\@keys, \@testkeys, ' [utf8 hash]');
     cmp_ok($growth->[17], '>=', $growth->[18],
            'shared-key cleanup starts when tombstones reach half of occupied slots');
 
+    my $reused = XS::APItest::Hash::test_shared_hek_tombstone_reuse();
+    is($reused->[0], $reused->[1],
+       'reusing a tombstone at half occupancy does not resize PL_strtab');
+    is($reused->[3], $reused->[2] - 1,
+       'reusing a tombstone reduces the deleted-slot count');
+    ok($reused->[4], 'reusing a tombstone keeps the shared-key slot array');
+
     if ($Config::Config{useithreads} && eval { require threads; 1 }) {
         my $thread_key = "xperl-strtab-thread-key-$$";
         my %thread_hash = ($thread_key => 1);

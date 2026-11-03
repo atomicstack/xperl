@@ -467,6 +467,75 @@ test_share_unshare_pvn(input)
         RETVAL
 
 SV *
+test_shared_hek_tombstone_reuse()
+    PREINIT:
+        Size_t capacity;
+        Size_t occupied;
+        Size_t slot;
+        Size_t held_count = 0;
+        Size_t tombstones_before;
+        Size_t tombstones_after;
+        Size_t capacity_after;
+        HEK **held;
+        HEK **slots_before;
+        HEK *replacement;
+        U32 target_hash = 0;
+        STRLEN target_len = 0;
+        char keybuf[96];
+        char target_key[96];
+        AV *result;
+    CODE:
+        capacity = (Size_t)HvMAX(PL_strtab) + 1;
+        if (capacity > 1000000)
+            croak("shared-key table is too large for the reuse test");
+        occupied = HvTOTALKEYS(PL_strtab) + HvSTRTAB(PL_strtab)->tombstones;
+        if (occupied >= capacity / 2) {
+            hv_ksplit(PL_strtab, (IV)(capacity / 2));
+            capacity = (Size_t)HvMAX(PL_strtab) + 1;
+        }
+        Newx(held, capacity / 2 - occupied + 1, HEK *);
+        for (slot = 0; occupied < capacity / 2 && slot < capacity; slot++) {
+            STRLEN len;
+            if (HvSTRSLOTS(PL_strtab)[slot])
+                continue;
+            my_snprintf(keybuf, sizeof keybuf,
+                        "xperl-strtab-reuse-%" UVuf "-%" UVuf,
+                        PTR2UV(PL_strtab), (UV)slot);
+            len = strlen(keybuf);
+            held[held_count++] = share_hek(keybuf, len, (U32)slot);
+            if (held_count == 1) {
+                Copy(keybuf, target_key, len + 1, char);
+                target_len = len;
+                target_hash = (U32)slot;
+            }
+            occupied = HvTOTALKEYS(PL_strtab)
+                + HvSTRTAB(PL_strtab)->tombstones;
+        }
+        if (!held_count || occupied != capacity / 2)
+            croak("could not fill shared-key table to half occupancy");
+        unshare_hek(held[0]);
+        tombstones_before = HvSTRTAB(PL_strtab)->tombstones;
+        slots_before = HvSTRSLOTS(PL_strtab);
+        replacement = share_hek(target_key, target_len, target_hash);
+        tombstones_after = HvSTRTAB(PL_strtab)->tombstones;
+        capacity_after = (Size_t)HvMAX(PL_strtab) + 1;
+
+        result = newAV();
+        av_push(result, newSVuv(capacity));
+        av_push(result, newSVuv(capacity_after));
+        av_push(result, newSVuv(tombstones_before));
+        av_push(result, newSVuv(tombstones_after));
+        av_push(result, newSViv(HvSTRSLOTS(PL_strtab) == slots_before));
+        RETVAL = newRV_noinc((SV *)result);
+
+        unshare_hek(replacement);
+        for (slot = 1; slot < held_count; slot++)
+            unshare_hek(held[slot]);
+        Safefree(held);
+    OUTPUT:
+        RETVAL
+
+SV *
 test_shared_hek_probe(input, max_growth_keys = 0)
         SV *input
         UV max_growth_keys
