@@ -5986,6 +5986,10 @@ ext/XPerl-DiagPack-NL/Makefile.PL	MakeMaker driver for XPerl::DiagPack::NL
 ext/XPerl-DiagPack-NL/NL.pm		Dutch diagnostic language pack
 ext/XPerl-DiagPack-NL/NL.xs		Dutch diagnostic language-pack XS interface
 ext/XPerl-DiagPack-NL/NL_data.inc	Dutch diagnostic language-pack catalog
+ext/XPerl-DiagPack-PL/Makefile.PL	MakeMaker driver for XPerl::DiagPack::PL
+ext/XPerl-DiagPack-PL/PL.pm		Polish diagnostic language pack
+ext/XPerl-DiagPack-PL/PL.xs		Polish diagnostic language-pack XS interface
+ext/XPerl-DiagPack-PL/PL_data.inc	Polish diagnostic language-pack catalog
 ext/XPerl-DiagPack-PT/Makefile.PL	MakeMaker driver for XPerl::DiagPack::PT
 ext/XPerl-DiagPack-PT/PT.pm		Portuguese diagnostic language pack
 ext/XPerl-DiagPack-PT/PT.xs		Portuguese diagnostic language-pack XS interface

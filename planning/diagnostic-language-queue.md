@@ -1,6 +1,6 @@
 # Diagnostic translation language queue
 
-The registered packs are `ar cy de en es fa fi fr he hu is it nl pt ru sr tr uk zh`.
+The registered packs are `ar cy de en es fa fi fr he hu is it nl pl pt ru sr tr uk zh`.
 They have been imported and tested; native linguistic review is separate.
 The builtin integer cardinal and ordinal functions cover the retained CLDR
 languages independently of installed packs. Adding a pack requires translated
@@ -35,7 +35,6 @@ order when real translation contexts expose different requirements.
 |---|---|---|
 | Swedish | `sv` | Phrase agreement and independent ordinal rules |
 | Hindi | `hi` | Devanagari text and agreement |
-| Polish | `pl` | Case, agreement and phrase forms |
 | Czech | `cs` | Independent Slavic phrase forms |
 | Irish | `ga` | Five cardinal categories and contextual forms |
 | Scottish Gaelic | `gd` | Four cardinal categories; independent from Irish |

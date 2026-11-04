@@ -25236,6 +25236,2374 @@ grammatical selector fields; it is not a template parameter.
         }
       }
     },
+    "pl" => {
+      "base_form" => "nominative",
+      "forms" => [
+        "nominative",
+        "genitive",
+        "accusative",
+        "instrumental",
+        "locative",
+        "void_expression_genitive"
+      ],
+      "rules" => {
+        "accusative" => {
+          "form" => "accusative",
+          "select" => {}
+        },
+        "genitive" => {
+          "form" => "genitive",
+          "select" => {}
+        },
+        "instrumental" => {
+          "form" => "instrumental",
+          "select" => {}
+        },
+        "locative" => {
+          "form" => "locative",
+          "select" => {}
+        },
+        "nominative" => {
+          "form" => "nominative",
+          "select" => {}
+        },
+        "void_expression_genitive" => {
+          "form" => "void_expression_genitive",
+          "select" => {}
+        }
+      },
+      "tags" => {
+        "gender" => [
+          "masculine",
+          "feminine",
+          "neuter",
+          "plural"
+        ]
+      },
+      "words" => {
+        "aassign" => {
+          "forms" => {
+            "accusative" => "przypisanie listowe",
+            "genitive" => "przypisania listowego",
+            "locative" => "przypisaniu listowym",
+            "nominative" => "przypisanie listowe"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "add" => {
+          "forms" => {
+            "accusative" => "dodawanie (+)",
+            "genitive" => "dodawania (+)",
+            "locative" => "dodawaniu (+)",
+            "nominative" => "dodawanie (+)",
+            "void_expression_genitive" => "dodawania (+)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "aeach" => {
+          "forms" => {
+            "accusative" => "each dla tablicy",
+            "genitive" => "each dla tablicy",
+            "locative" => "each dla tablicy",
+            "nominative" => "each dla tablicy"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelem" => {
+          "forms" => {
+            "accusative" => "element tablicy",
+            "genitive" => "elementu tablicy",
+            "locative" => "elemencie tablicy",
+            "nominative" => "element tablicy",
+            "void_expression_genitive" => "elementu tablicy"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelemfast" => {
+          "forms" => {
+            "accusative" => "stały element tablicy",
+            "genitive" => "stałego elementu tablicy",
+            "locative" => "stałym elemencie tablicy",
+            "nominative" => "stały element tablicy",
+            "void_expression_genitive" => "stałego elementu tablicy"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelemfast_lex" => {
+          "forms" => {
+            "accusative" => "stały element tablicy leksykalnej",
+            "genitive" => "stałego elementu tablicy leksykalnej",
+            "locative" => "stałym elemencie tablicy leksykalnej",
+            "nominative" => "stały element tablicy leksykalnej",
+            "void_expression_genitive" => "stałego elementu tablicy leksykalnej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelemfastlex_store" => {
+          "forms" => {
+            "accusative" => "zapis stałego elementu tablicy leksykalnej",
+            "genitive" => "zapisu stałego elementu tablicy leksykalnej",
+            "locative" => "zapisie stałego elementu tablicy leksykalnej",
+            "nominative" => "zapis stałego elementu tablicy leksykalnej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "akeys" => {
+          "forms" => {
+            "accusative" => "keys dla tablicy",
+            "genitive" => "keys dla tablicy",
+            "locative" => "keys dla tablicy",
+            "nominative" => "keys dla tablicy"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "and" => {
+          "forms" => {
+            "accusative" => "koniunkcję logiczną (&&)",
+            "genitive" => "koniunkcji logicznej (&&)",
+            "locative" => "koniunkcji logicznej (&&)",
+            "nominative" => "koniunkcja logiczna (&&)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "andassign" => {
+          "forms" => {
+            "accusative" => "przypisanie z koniunkcją logiczną (&&=)",
+            "genitive" => "przypisania z koniunkcją logiczną (&&=)",
+            "locative" => "przypisaniu z koniunkcją logiczną (&&=)",
+            "nominative" => "przypisanie z koniunkcją logiczną (&&=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anoncode" => {
+          "forms" => {
+            "accusative" => "anonimowy podprogram",
+            "genitive" => "anonimowego podprogramu",
+            "locative" => "anonimowym podprogramie",
+            "nominative" => "anonimowy podprogram",
+            "void_expression_genitive" => "anonimowego podprogramu"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anonconst" => {
+          "forms" => {
+            "accusative" => "anonimową stałą",
+            "genitive" => "anonimowej stałej",
+            "locative" => "anonimowej stałej",
+            "nominative" => "anonimowa stała"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anonhash" => {
+          "forms" => {
+            "accusative" => "anonimowy hash ({})",
+            "genitive" => "anonimowego hasza ({})",
+            "locative" => "anonimowym haszu ({})",
+            "nominative" => "anonimowy hash ({})",
+            "void_expression_genitive" => "anonimowego hasza ({})"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anonlist" => {
+          "forms" => {
+            "accusative" => "anonimową tablicę ([])",
+            "genitive" => "anonimowej tablicy ([])",
+            "locative" => "anonimowej tablicy ([])",
+            "nominative" => "anonimowa tablica ([])",
+            "void_expression_genitive" => "anonimowej tablicy ([])"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anywhile" => {
+          "forms" => {
+            "accusative" => "iterator any/all",
+            "genitive" => "iteratora any/all",
+            "locative" => "iteratorze any/all",
+            "nominative" => "iterator any/all"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "argcheck" => {
+          "forms" => {
+            "accusative" => "sprawdzenie argumentów podprogramu",
+            "genitive" => "sprawdzenia argumentów podprogramu",
+            "locative" => "sprawdzeniu argumentów podprogramu",
+            "nominative" => "sprawdzenie argumentów podprogramu"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "argdefelem" => {
+          "forms" => {
+            "accusative" => "wartość domyślną argumentu podprogramu",
+            "genitive" => "wartości domyślnej argumentu podprogramu",
+            "locative" => "wartości domyślnej argumentu podprogramu",
+            "nominative" => "wartość domyślna argumentu podprogramu"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "argelem" => {
+          "forms" => {
+            "accusative" => "argument podprogramu",
+            "genitive" => "argumentu podprogramu",
+            "locative" => "argumencie podprogramu",
+            "nominative" => "argument podprogramu"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aslice" => {
+          "forms" => {
+            "accusative" => "wycinek tablicy",
+            "genitive" => "wycinka tablicy",
+            "locative" => "wycinku tablicy",
+            "nominative" => "wycinek tablicy",
+            "void_expression_genitive" => "wycinka tablicy"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "av2arylen" => {
+          "forms" => {
+            "accusative" => "długość tablicy",
+            "genitive" => "długości tablicy",
+            "locative" => "długości tablicy",
+            "nominative" => "długość tablicy",
+            "void_expression_genitive" => "długości tablicy"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "avalues" => {
+          "forms" => {
+            "accusative" => "values dla tablicy",
+            "genitive" => "values dla tablicy",
+            "locative" => "values dla tablicy",
+            "nominative" => "values dla tablicy"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "avhvswitch" => {
+          "forms" => {
+            "accusative" => "przełącznik tablicy lub hasza",
+            "genitive" => "przełącznika tablicy lub hasza",
+            "locative" => "przełączniku tablicy lub haszu",
+            "nominative" => "przełącznik tablicy lub hasza"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "backtick" => {
+          "forms" => {
+            "accusative" => "wykonanie polecenia w cudzysłowie zwrotnym ( ``, qx)",
+            "genitive" => "wykonania polecenia w cudzysłowie zwrotnym ( ``, qx)",
+            "locative" => "wykonaniu polecenia w cudzysłowie zwrotnym ( ``, qx)",
+            "nominative" => "wykonanie polecenia w cudzysłowie zwrotnym ( ``, qx)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "bit_and" => {
+          "forms" => {
+            "accusative" => "bitową koniunkcję (&)",
+            "genitive" => "bitowej koniunkcji (&)",
+            "locative" => "bitowej koniunkcji (&)",
+            "nominative" => "bitowa koniunkcja (&)",
+            "void_expression_genitive" => "bitowej koniunkcji (&)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "bit_or" => {
+          "forms" => {
+            "accusative" => "bitową alternatywę (|)",
+            "genitive" => "bitowej alternatywy (|)",
+            "locative" => "bitowej alternatywie (|)",
+            "nominative" => "bitowa alternatywa (|)",
+            "void_expression_genitive" => "bitowej alternatywy (|)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "bit_xor" => {
+          "forms" => {
+            "accusative" => "bitową alternatywę wykluczającą (^)",
+            "genitive" => "bitowej alternatywy wykluczającej (^)",
+            "locative" => "bitowej alternatywie wykluczającej (^)",
+            "nominative" => "bitowa alternatywa wykluczająca (^)",
+            "void_expression_genitive" => "bitowej alternatywy wykluczającej (^)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "catch" => {
+          "forms" => {
+            "accusative" => "blok catch {}",
+            "genitive" => "bloku catch {}",
+            "locative" => "bloku catch {}",
+            "nominative" => "blok catch {}"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "classname" => {
+          "forms" => {
+            "accusative" => "nazwę klasy",
+            "genitive" => "nazwy klasy",
+            "locative" => "nazwie klasy",
+            "nominative" => "nazwa klasy",
+            "void_expression_genitive" => "nazwy klasy"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "clonecv" => {
+          "forms" => {
+            "accusative" => "prywatny podprogram",
+            "genitive" => "prywatnego podprogramu",
+            "locative" => "prywatnym podprogramie",
+            "nominative" => "prywatny podprogram"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "cmpchain_and" => {
+          "forms" => {
+            "accusative" => "łączenie porównań",
+            "genitive" => "łączenia porównań",
+            "locative" => "łączeniu porównań",
+            "nominative" => "łączenie porównań",
+            "void_expression_genitive" => "łączenia porównań"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "cmpchain_dup" => {
+          "forms" => {
+            "accusative" => "przestawianie porównywanych wartości",
+            "genitive" => "przestawiania porównywanych wartości",
+            "locative" => "przestawianiu porównywanych wartości",
+            "nominative" => "przestawianie porównywanych wartości"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "complement" => {
+          "forms" => {
+            "accusative" => "dopełnienie jedynkowe (~)",
+            "genitive" => "dopełnienia jedynkowego (~)",
+            "locative" => "dopełnieniu jedynkowemu (~)",
+            "nominative" => "dopełnienie jedynkowe (~)",
+            "void_expression_genitive" => "dopełnienia jedynkowego (~)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "concat" => {
+          "forms" => {
+            "accusative" => "konkatenację (.) lub ciąg znaków",
+            "genitive" => "konkatenacji (.) lub ciągu znaków",
+            "locative" => "konkatenacji (.) lub ciągu znaków",
+            "nominative" => "konkatenacja (.) lub ciąg znaków",
+            "void_expression_genitive" => "konkatenacji ciągów znaków (.)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "cond_expr" => {
+          "forms" => {
+            "accusative" => "wyrażenie warunkowe",
+            "genitive" => "wyrażenia warunkowego",
+            "locative" => "wyrażeniu warunkowym",
+            "nominative" => "wyrażenie warunkowe"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "const" => {
+          "forms" => {
+            "accusative" => "stałą",
+            "genitive" => "stałej",
+            "locative" => "stałej",
+            "nominative" => "stała"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "coreargs" => {
+          "forms" => {
+            "accusative" => "podprogram CORE::",
+            "genitive" => "podprogramu CORE::",
+            "locative" => "podprogramie CORE::",
+            "nominative" => "podprogram CORE::"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dbstate" => {
+          "forms" => {
+            "accusative" => "następną instrukcję debugowania",
+            "genitive" => "następnej instrukcji debugowania",
+            "locative" => "następnej instrukcji debugowania",
+            "nominative" => "następna instrukcja debugowania"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "defined" => {
+          "forms" => {
+            "accusative" => "operator defined",
+            "genitive" => "operatora defined",
+            "locative" => "operatorze defined",
+            "nominative" => "operator defined",
+            "void_expression_genitive" => "operatora defined"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dispatch" => {
+          "forms" => {
+            "accusative" => "wybór stałej dispatch",
+            "genitive" => "wyboru stałej dispatch",
+            "locative" => "wyborze stałej dispatch",
+            "nominative" => "wybór stałej dispatch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dispatch_on" => {
+          "forms" => {
+            "accusative" => "dopasowanie wzorca dispatch",
+            "genitive" => "dopasowania wzorca dispatch",
+            "locative" => "dopasowaniu wzorca dispatch",
+            "nominative" => "dopasowanie wzorca dispatch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dispatchcoerce" => {
+          "forms" => {
+            "accusative" => "znacznik wzorca dispatch",
+            "genitive" => "znacznika wzorca dispatch",
+            "locative" => "znaczniku wzorca dispatch",
+            "nominative" => "znacznik wzorca dispatch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "divide" => {
+          "forms" => {
+            "accusative" => "dzielenie (/)",
+            "genitive" => "dzielenia (/)",
+            "locative" => "dzieleniu (/)",
+            "nominative" => "dzielenie (/)",
+            "void_expression_genitive" => "dzielenia (/)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "do_block" => {
+          "forms" => {
+            "accusative" => "blok do",
+            "genitive" => "bloku do",
+            "nominative" => "blok do",
+            "void_expression_genitive" => "bloku do"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "dor" => {
+          "forms" => {
+            "accusative" => "operator defined-or (//)",
+            "genitive" => "operatora defined-or (//)",
+            "locative" => "operatorze defined-or (//)",
+            "nominative" => "operator defined-or (//)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dorassign" => {
+          "forms" => {
+            "accusative" => "przypisanie z operatorem defined-or (//=)",
+            "genitive" => "przypisania z operatorem defined-or (//=)",
+            "locative" => "przypisaniu z operatorem defined-or (//=)",
+            "nominative" => "przypisanie z operatorem defined-or (//=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "emptyavhv" => {
+          "forms" => {
+            "accusative" => "pusty anonimowy hash lub tablicę",
+            "genitive" => "pustego anonimowego hasza lub tablicy",
+            "locative" => "pustym anonimowym haszu lub tablicy",
+            "nominative" => "pusty anonimowy hash lub tablica"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enter" => {
+          "forms" => {
+            "accusative" => "wejście do bloku",
+            "genitive" => "wejścia do bloku",
+            "locative" => "wejściu do bloku",
+            "nominative" => "wejście do bloku"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enterdispatchon" => {
+          "forms" => {
+            "accusative" => "klauzulę dispatch-on()",
+            "genitive" => "klauzuli dispatch-on()",
+            "locative" => "klauzuli dispatch-on()",
+            "nominative" => "klauzula dispatch-on()"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enteriter" => {
+          "forms" => {
+            "accusative" => "wejście do pętli foreach",
+            "genitive" => "wejścia do pętli foreach",
+            "locative" => "wejściu do pętli foreach",
+            "nominative" => "wejście do pętli foreach"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enterloop" => {
+          "forms" => {
+            "accusative" => "wejście do pętli",
+            "genitive" => "wejścia do pętli",
+            "locative" => "wejściu do pętli",
+            "nominative" => "wejście do pętli"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "entersub" => {
+          "forms" => {
+            "accusative" => "wejście do podprogramu",
+            "genitive" => "wejścia do podprogramu",
+            "locative" => "wejściu do podprogramu",
+            "nominative" => "wejście do podprogramu"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "eq" => {
+          "forms" => {
+            "accusative" => "liczbową równość (==)",
+            "genitive" => "liczbowej równości (==)",
+            "instrumental" => "liczbową równością (==)",
+            "locative" => "liczbowej równości (==)",
+            "nominative" => "liczbowa równość (==)",
+            "void_expression_genitive" => "liczbowej równości (==)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "equ" => {
+          "forms" => {
+            "accusative" => "świadomą undef równość liczbową (===)",
+            "genitive" => "świadomej undef równości liczbowej (===)",
+            "instrumental" => "świadomą undef równością liczbową (===)",
+            "locative" => "świadomej undef równości liczbowej (===)",
+            "nominative" => "świadoma undef równość liczbowa (===)",
+            "void_expression_genitive" => "świadomej undef równości liczbowej (===)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "flip" => {
+          "forms" => {
+            "accusative" => "zakres (lub operator flip)",
+            "genitive" => "zakresu (lub operatora flip)",
+            "locative" => "zakresie (lub operatorze flip)",
+            "nominative" => "zakres (lub operator flip)",
+            "void_expression_genitive" => "operatora flip"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "flop" => {
+          "forms" => {
+            "accusative" => "zakres (lub operator flop)",
+            "genitive" => "zakresu (lub operatora flop)",
+            "locative" => "zakresie (lub operatorze flop)",
+            "nominative" => "zakres (lub operator flop)",
+            "void_expression_genitive" => "operatora flop"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ge" => {
+          "forms" => {
+            "accusative" => "liczbowe porównanie większości lub równości (>=)",
+            "genitive" => "liczbowego porównania większości lub równości (>=)",
+            "instrumental" => "liczbowym porównaniem większości lub równości (>=)",
+            "locative" => "liczbowym porównaniu większości lub równości (>=)",
+            "nominative" => "liczbowe porównanie większości lub równości (>=)",
+            "void_expression_genitive" => "liczbowego porównania większości lub równości (>=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "gelem" => {
+          "forms" => {
+            "accusative" => "element globa",
+            "genitive" => "elementu globa",
+            "locative" => "elemencie globu",
+            "nominative" => "element globa"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "grepwhile" => {
+          "forms" => {
+            "accusative" => "iterator grep",
+            "genitive" => "iteratora grep",
+            "locative" => "iteratorze grep",
+            "nominative" => "iterator grep"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "gt" => {
+          "forms" => {
+            "accusative" => "liczbowe porównanie większości (>)",
+            "genitive" => "liczbowego porównania większości (>)",
+            "instrumental" => "liczbowym porównaniem większości (>)",
+            "locative" => "liczbowym porównaniu większości (>)",
+            "nominative" => "liczbowe porównanie większości (>)",
+            "void_expression_genitive" => "liczbowego porównania większości (>)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "gv" => {
+          "forms" => {
+            "accusative" => "wartość globa",
+            "genitive" => "wartości globa",
+            "locative" => "wartości globie",
+            "nominative" => "wartość globa",
+            "void_expression_genitive" => "wartości globa"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "gvsv" => {
+          "forms" => {
+            "accusative" => "zmienną skalarną",
+            "genitive" => "zmiennej skalarnej",
+            "locative" => "zmiennej skalarnej",
+            "nominative" => "zmienna skalarna",
+            "void_expression_genitive" => "zmiennej skalarnej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "helem" => {
+          "forms" => {
+            "accusative" => "element hasza",
+            "genitive" => "elementu hasza",
+            "locative" => "elemencie hasza",
+            "nominative" => "element hasza",
+            "void_expression_genitive" => "elementu hasza"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "helemexistsor" => {
+          "forms" => {
+            "accusative" => "istnienie elementu hasza lub",
+            "genitive" => "istnienia elementu hasza lub",
+            "locative" => "istnieniu elementu hasza lub",
+            "nominative" => "istnienie elementu hasza lub"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "hintseval" => {
+          "forms" => {
+            "accusative" => "wskazówki eval",
+            "genitive" => "wskazówek eval",
+            "locative" => "wskazówkach eval",
+            "nominative" => "wskazówki eval"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "hslice" => {
+          "forms" => {
+            "accusative" => "wycinek hasza",
+            "genitive" => "wycinka hasza",
+            "locative" => "wycinku hasza",
+            "nominative" => "wycinek hasza",
+            "void_expression_genitive" => "wycinka hasza"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_add" => {
+          "forms" => {
+            "accusative" => "dodawanie całkowite (+)",
+            "genitive" => "dodawania całkowitego (+)",
+            "locative" => "dodawaniu całkowitym (+)",
+            "nominative" => "dodawanie całkowite (+)",
+            "void_expression_genitive" => "dodawania całkowitego (+)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_divide" => {
+          "forms" => {
+            "accusative" => "dzielenie całkowite (/)",
+            "genitive" => "dzielenia całkowitego (/)",
+            "locative" => "dzieleniu całkowitym (/)",
+            "nominative" => "dzielenie całkowite (/)",
+            "void_expression_genitive" => "dzielenia całkowitego (/)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_eq" => {
+          "forms" => {
+            "accusative" => "całkowitą równość (==)",
+            "genitive" => "całkowitej równości (==)",
+            "instrumental" => "całkowitą równością (==)",
+            "locative" => "całkowitej równości (==)",
+            "nominative" => "całkowita równość (==)",
+            "void_expression_genitive" => "całkowitej równości (==)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "i_equ" => {
+          "forms" => {
+            "accusative" => "świadomą undef równość całkowitą (===)",
+            "genitive" => "świadomej undef równości całkowitej (===)",
+            "instrumental" => "świadomą undef równością całkowitą (===)",
+            "locative" => "świadomej undef równości całkowitej (===)",
+            "nominative" => "świadoma undef równość całkowita (===)",
+            "void_expression_genitive" => "świadomej undef równości całkowitej (===)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "i_ge" => {
+          "forms" => {
+            "accusative" => "całkowite porównanie większości lub równości (>=)",
+            "genitive" => "całkowitego porównania większości lub równości (>=)",
+            "instrumental" => "całkowitym porównaniem większości lub równości (>=)",
+            "locative" => "całkowitym porównaniu większości lub równości (>=)",
+            "nominative" => "całkowite porównanie większości lub równości (>=)",
+            "void_expression_genitive" => "całkowitego porównania większości lub równości (>=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_gt" => {
+          "forms" => {
+            "accusative" => "całkowite porównanie większości (>)",
+            "genitive" => "całkowitego porównania większości (>)",
+            "instrumental" => "całkowitym porównaniem większości (>)",
+            "locative" => "całkowitym porównaniu większości (>)",
+            "nominative" => "całkowite porównanie większości (>)",
+            "void_expression_genitive" => "całkowitego porównania większości (>)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_le" => {
+          "forms" => {
+            "accusative" => "całkowite porównanie mniejszości lub równości (<=)",
+            "genitive" => "całkowitego porównania mniejszości lub równości (<=)",
+            "instrumental" => "całkowitym porównaniem mniejszości lub równości (<=)",
+            "locative" => "całkowitym porównaniu mniejszości lub równości (<=)",
+            "nominative" => "całkowite porównanie mniejszości lub równości (<=)",
+            "void_expression_genitive" => "całkowitego porównania mniejszości lub równości (<=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_lt" => {
+          "forms" => {
+            "accusative" => "całkowite porównanie mniejszości (<)",
+            "genitive" => "całkowitego porównania mniejszości (<)",
+            "instrumental" => "całkowitym porównaniem mniejszości (<)",
+            "locative" => "całkowitym porównaniu mniejszości (<)",
+            "nominative" => "całkowite porównanie mniejszości (<)",
+            "void_expression_genitive" => "całkowitego porównania mniejszości (<)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_modulo" => {
+          "forms" => {
+            "accusative" => "całkowitą resztę z dzielenia (%)",
+            "genitive" => "całkowitej reszty z dzielenia (%)",
+            "locative" => "całkowitej reszcie z dzielenia (%)",
+            "nominative" => "całkowita reszta z dzielenia (%)",
+            "void_expression_genitive" => "całkowitej reszty z dzielenia (%)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "i_multiply" => {
+          "forms" => {
+            "accusative" => "mnożenie całkowitoliczbowe (*)",
+            "genitive" => "mnożenia całkowitoliczbowego (*)",
+            "locative" => "mnożeniu całkowitoliczbowym (*)",
+            "nominative" => "mnożenie całkowitoliczbowe (*)",
+            "void_expression_genitive" => "mnożenia całkowitoliczbowego (*)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_ncmp" => {
+          "forms" => {
+            "accusative" => "porównanie całkowite (<=>)",
+            "genitive" => "porównania całkowitego (<=>)",
+            "locative" => "porównaniu całkowitym (<=>)",
+            "nominative" => "porównanie całkowite (<=>)",
+            "void_expression_genitive" => "porównania całkowitego (<=>)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "i_ne" => {
+          "forms" => {
+            "accusative" => "całkowitą nierówność (!=)",
+            "genitive" => "całkowitej nierówności (!=)",
+            "instrumental" => "całkowitą nierównością (!=)",
+            "locative" => "całkowitej nierówności (!=)",
+            "nominative" => "całkowita nierówność (!=)",
+            "void_expression_genitive" => "całkowitej nierówności (!=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "i_negate" => {
+          "forms" => {
+            "accusative" => "negację liczby całkowitej (-)",
+            "genitive" => "negacji liczby całkowitej (-)",
+            "locative" => "negacji liczby całkowitej (-)",
+            "nominative" => "negacja liczby całkowitej (-)",
+            "void_expression_genitive" => "negacji liczby całkowitej (-)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_neu" => {
+          "forms" => {
+            "accusative" => "świadomą undef nierówność całkowitą (!==)",
+            "genitive" => "świadomej undef nierówności całkowitej (!==)",
+            "instrumental" => "świadomą undef nierównością całkowitą (!==)",
+            "locative" => "świadomej undef nierówności całkowitej (!==)",
+            "nominative" => "świadoma undef nierówność całkowita (!==)",
+            "void_expression_genitive" => "świadomej undef nierówności całkowitej (!==)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "i_postdec" => {
+          "forms" => {
+            "accusative" => "postdekrementację całkowitoliczbową (--)",
+            "genitive" => "postdekrementacji całkowitoliczbowej (--)",
+            "locative" => "postdekrementacji całkowitoliczbowej (--)",
+            "nominative" => "postdekrementacja całkowitoliczbowa (--)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_postinc" => {
+          "forms" => {
+            "accusative" => "postinkrementację całkowitoliczbową (++)",
+            "genitive" => "postinkrementacji całkowitoliczbowej (++)",
+            "locative" => "postinkrementacji całkowitoliczbowej (++)",
+            "nominative" => "postinkrementacja całkowitoliczbowa (++)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_predec" => {
+          "forms" => {
+            "accusative" => "predekrementację całkowitoliczbową (--)",
+            "genitive" => "predekrementacji całkowitoliczbowej (--)",
+            "locative" => "predekrementacji całkowitoliczbowej (--)",
+            "nominative" => "predekrementacja całkowitoliczbowa (--)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_preinc" => {
+          "forms" => {
+            "accusative" => "preinkrementację całkowitoliczbową (++)",
+            "genitive" => "preinkrementacji całkowitoliczbowej (++)",
+            "locative" => "preinkrementacji całkowitoliczbowej (++)",
+            "nominative" => "preinkrementacja całkowitoliczbowa (++)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_subtract" => {
+          "forms" => {
+            "accusative" => "odejmowanie całkowite (-)",
+            "genitive" => "odejmowania całkowitego (-)",
+            "locative" => "odejmowaniu całkowitym (-)",
+            "nominative" => "odejmowanie całkowite (-)",
+            "void_expression_genitive" => "odejmowania całkowitego (-)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "implements" => {
+          "forms" => {
+            "accusative" => "test kompozycji ról",
+            "genitive" => "testu kompozycji ról",
+            "instrumental" => "testem kompozycji ról",
+            "locative" => "teście kompozycji ról",
+            "nominative" => "test kompozycji ról"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "initfield" => {
+          "forms" => {
+            "accusative" => "inicjalizację pola",
+            "genitive" => "inicjalizacji pola",
+            "locative" => "inicjalizacji pola",
+            "nominative" => "inicjalizacja pola",
+            "void_expression_genitive" => "inicjalizacji pola"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "introcv" => {
+          "forms" => {
+            "accusative" => "prywatny podprogram",
+            "genitive" => "prywatnego podprogramu",
+            "locative" => "prywatnym podprogramie",
+            "nominative" => "prywatny podprogram"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "is_bool" => {
+          "forms" => {
+            "accusative" => "test typu logicznego",
+            "genitive" => "testu typu logicznego",
+            "locative" => "teście typu logicznego",
+            "nominative" => "test typu logicznego"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "is_weak" => {
+          "forms" => {
+            "accusative" => "test typu słabej referencji",
+            "genitive" => "testu typu słabej referencji",
+            "locative" => "teście typu słabej referencji",
+            "nominative" => "test typu słabej referencji"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "isa" => {
+          "forms" => {
+            "accusative" => "test klasy pochodnej",
+            "genitive" => "testu klasy pochodnej",
+            "instrumental" => "testem klasy pochodnej",
+            "locative" => "teście klasy pochodnej",
+            "nominative" => "test klasy pochodnej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "iter" => {
+          "forms" => {
+            "accusative" => "iterator pętli foreach",
+            "genitive" => "iteratora pętli foreach",
+            "locative" => "iteratorze pętli foreach",
+            "nominative" => "iterator pętli foreach"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "join" => {
+          "forms" => {
+            "accusative" => "operację join lub ciąg znaków",
+            "genitive" => "operacji join lub ciągu znaków",
+            "locative" => "operacji join lub ciągu znaków",
+            "nominative" => "operacja join lub ciąg znaków",
+            "void_expression_genitive" => "operacji join"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "kvaslice" => {
+          "forms" => {
+            "accusative" => "wycinek tablicy indeksów i wartości",
+            "genitive" => "wycinka tablicy indeksów i wartości",
+            "locative" => "wycinku tablicy indeksów i wartości",
+            "nominative" => "wycinek tablicy indeksów i wartości",
+            "void_expression_genitive" => "wycinka tablicy indeksów i wartości"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "kvhslice" => {
+          "forms" => {
+            "accusative" => "wycinek hasza kluczy i wartości",
+            "genitive" => "wycinka hasza kluczy i wartości",
+            "locative" => "wycinku hasza kluczy i wartości",
+            "nominative" => "wycinek hasza kluczy i wartości",
+            "void_expression_genitive" => "wycinka hasza kluczy i wartości"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "le" => {
+          "forms" => {
+            "accusative" => "liczbowe porównanie mniejszości lub równości (<=)",
+            "genitive" => "liczbowego porównania mniejszości lub równości (<=)",
+            "instrumental" => "liczbowym porównaniem mniejszości lub równości (<=)",
+            "locative" => "liczbowym porównaniu mniejszości lub równości (<=)",
+            "nominative" => "liczbowe porównanie mniejszości lub równości (<=)",
+            "void_expression_genitive" => "liczbowego porównania mniejszości lub równości (<=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "leave" => {
+          "forms" => {
+            "accusative" => "wyjście z bloku",
+            "genitive" => "wyjścia z bloku",
+            "locative" => "wyjściu z bloku",
+            "nominative" => "wyjście z bloku"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavedispatch" => {
+          "forms" => {
+            "accusative" => "wyjście z bloku dispatch",
+            "genitive" => "wyjścia z bloku dispatch",
+            "locative" => "wyjściu z bloku dispatch",
+            "nominative" => "wyjście z bloku dispatch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavedispatchon" => {
+          "forms" => {
+            "accusative" => "wyjście z klauzuli dispatch-on",
+            "genitive" => "wyjścia z klauzuli dispatch-on",
+            "locative" => "wyjściu z klauzuli dispatch-on",
+            "nominative" => "wyjście z klauzuli dispatch-on"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leaveeval" => {
+          "forms" => {
+            "accusative" => "wyjście z eval \"string\"",
+            "genitive" => "wyjścia z eval \"string\"",
+            "locative" => "wyjściu z eval \"string\"",
+            "nominative" => "wyjście z eval \"string\""
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavegiven" => {
+          "forms" => {
+            "accusative" => "wyjście z podanego bloku",
+            "genitive" => "wyjścia z podanego bloku",
+            "locative" => "wyjściu z podanego bloku",
+            "nominative" => "wyjście z podanego bloku"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leaveloop" => {
+          "forms" => {
+            "accusative" => "wyjście z pętli",
+            "genitive" => "wyjścia z pętli",
+            "locative" => "wyjściu z pętli",
+            "nominative" => "wyjście z pętli"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavesub" => {
+          "forms" => {
+            "accusative" => "wyjście z podprogramu",
+            "genitive" => "wyjścia z podprogramu",
+            "locative" => "wyjściu z podprogramu",
+            "nominative" => "wyjście z podprogramu"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavesublv" => {
+          "forms" => {
+            "accusative" => "zwrócenie wartości przez podprogram l-wartości",
+            "genitive" => "zwrócenia wartości przez podprogram l-wartości",
+            "locative" => "zwróceniu wartości przez podprogram l-wartości",
+            "nominative" => "zwrócenie wartości przez podprogram l-wartości"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavetry" => {
+          "forms" => {
+            "accusative" => "wyjście z eval {block}",
+            "genitive" => "wyjścia z eval {block}",
+            "locative" => "wyjściu z eval {block}",
+            "nominative" => "wyjście z eval {block}"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavetrycatch" => {
+          "forms" => {
+            "accusative" => "wyjście z try {block}",
+            "genitive" => "wyjścia z try {block}",
+            "locative" => "wyjściu z try {block}",
+            "nominative" => "wyjście z try {block}"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavewhen" => {
+          "forms" => {
+            "accusative" => "wyjście z bloku when",
+            "genitive" => "wyjścia z bloku when",
+            "locative" => "wyjściu z bloku when",
+            "nominative" => "wyjście z bloku when"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavewrite" => {
+          "forms" => {
+            "accusative" => "wyjście z zapisu",
+            "genitive" => "wyjścia z zapisu",
+            "locative" => "wyjściu z zapisu",
+            "nominative" => "wyjście z zapisu"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "left_shift" => {
+          "forms" => {
+            "accusative" => "przesunięcie bitowe w lewo (<<)",
+            "genitive" => "przesunięcia bitowego w lewo (<<)",
+            "locative" => "przesunięciu bitowym w lewo (<<)",
+            "nominative" => "przesunięcie bitowe w lewo (<<)",
+            "void_expression_genitive" => "przesunięcia w lewo (<<)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "lineseq" => {
+          "forms" => {
+            "accusative" => "sekwencję wierszy",
+            "genitive" => "sekwencji wierszy",
+            "locative" => "sekwencji wierszy",
+            "nominative" => "sekwencja wierszy"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lslice" => {
+          "forms" => {
+            "accusative" => "wycinek listy",
+            "genitive" => "wycinka listy",
+            "locative" => "wycinku listy",
+            "nominative" => "wycinek listy",
+            "void_expression_genitive" => "wycinka listy"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lt" => {
+          "forms" => {
+            "accusative" => "liczbowe porównanie mniejszości (<)",
+            "genitive" => "liczbowego porównania mniejszości (<)",
+            "instrumental" => "liczbowym porównaniem mniejszości (<)",
+            "locative" => "liczbowym porównaniu mniejszości (<)",
+            "nominative" => "liczbowe porównanie mniejszości (<)",
+            "void_expression_genitive" => "liczbowego porównania mniejszości (<)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "lvavref" => {
+          "forms" => {
+            "accusative" => "referencję do tablicy jako wartości l",
+            "genitive" => "referencji do tablicy jako wartości l",
+            "locative" => "referencji do tablicy jako wartości l",
+            "nominative" => "referencja do tablicy jako wartości l"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lvref" => {
+          "forms" => {
+            "accusative" => "przypisanie referencji do wartości l",
+            "genitive" => "przypisania referencji do wartości l",
+            "locative" => "przypisaniu referencji do wartości l",
+            "nominative" => "przypisanie referencji do wartości l"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lvrefslice" => {
+          "forms" => {
+            "accusative" => "przypisanie referencji do wartości l",
+            "genitive" => "przypisania referencji do wartości l",
+            "locative" => "przypisaniu referencji do wartości l",
+            "nominative" => "przypisanie referencji do wartości l"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "mapwhile" => {
+          "forms" => {
+            "accusative" => "iterator map",
+            "genitive" => "iteratora map",
+            "locative" => "iteratorze map",
+            "nominative" => "iterator map"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "match" => {
+          "forms" => {
+            "accusative" => "dopasowanie wzorca (m//)",
+            "genitive" => "dopasowania wzorca (m//)",
+            "instrumental" => "dopasowaniem wzorca (m//)",
+            "locative" => "dopasowaniu wzorca (m//)",
+            "nominative" => "dopasowanie wzorca (m//)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method" => {
+          "forms" => {
+            "accusative" => "wyszukiwanie metody",
+            "genitive" => "wyszukiwania metody",
+            "locative" => "wyszukiwaniu metody",
+            "nominative" => "wyszukiwanie metody"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_named" => {
+          "forms" => {
+            "accusative" => "metodę o znanej nazwie",
+            "genitive" => "metody o znanej nazwie",
+            "locative" => "metodzie o znanej nazwie",
+            "nominative" => "metoda o znanej nazwie"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_redir" => {
+          "forms" => {
+            "accusative" => "przekierowanie metody o znanej nazwie",
+            "genitive" => "przekierowania metody o znanej nazwie",
+            "locative" => "przekierowaniu metody o znanej nazwie",
+            "nominative" => "przekierowanie metody o znanej nazwie"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_redir_super" => {
+          "forms" => {
+            "accusative" => "przekierowanie super o znanej nazwie",
+            "genitive" => "przekierowania super o znanej nazwie",
+            "locative" => "przekierowaniu super o znanej nazwie",
+            "nominative" => "przekierowanie super o znanej nazwie"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_super" => {
+          "forms" => {
+            "accusative" => "super o znanej nazwie",
+            "genitive" => "super o znanej nazwie",
+            "locative" => "super o znanej nazwie",
+            "nominative" => "super o znanej nazwie"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "methstart" => {
+          "forms" => {
+            "accusative" => "początek metody",
+            "genitive" => "początku metody",
+            "locative" => "początku metody",
+            "nominative" => "początek metody",
+            "void_expression_genitive" => "początku metody"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "modulo" => {
+          "forms" => {
+            "accusative" => "resztę z dzielenia (%)",
+            "genitive" => "reszty z dzielenia (%)",
+            "locative" => "reszcie z dzielenia (%)",
+            "nominative" => "reszta z dzielenia (%)",
+            "void_expression_genitive" => "reszty z dzielenia (%)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "multiconcat" => {
+          "forms" => {
+            "accusative" => "konkatenację (.) lub ciąg znaków",
+            "genitive" => "konkatenacji (.) lub ciągu znaków",
+            "locative" => "konkatenacji (.) lub ciągu znaków",
+            "nominative" => "konkatenacja (.) lub ciąg znaków"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "multideref" => {
+          "forms" => {
+            "accusative" => "wyszukiwanie w tablicy lub haszu",
+            "genitive" => "wyszukiwania w tablicy lub haszu",
+            "locative" => "wyszukiwaniu w tablicy lub haszu",
+            "nominative" => "wyszukiwanie w tablicy lub haszu"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "multiparam" => {
+          "forms" => {
+            "accusative" => "przetwarzanie sygnatur",
+            "genitive" => "przetwarzania sygnatur",
+            "locative" => "przetwarzaniu sygnatur",
+            "nominative" => "przetwarzanie sygnatur",
+            "void_expression_genitive" => "przetwarzania sygnatur"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "multiply" => {
+          "forms" => {
+            "accusative" => "mnożenie (*)",
+            "genitive" => "mnożenia (*)",
+            "locative" => "mnożeniu (*)",
+            "nominative" => "mnożenie (*)",
+            "void_expression_genitive" => "mnożenia (*)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "nbit_and" => {
+          "forms" => {
+            "accusative" => "liczbową bitową koniunkcję (&)",
+            "genitive" => "liczbowej bitowej koniunkcji (&)",
+            "locative" => "liczbowej bitowej koniunkcji (&)",
+            "nominative" => "liczbowa bitowa koniunkcja (&)",
+            "void_expression_genitive" => "liczbowej bitowej koniunkcji (&)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "nbit_or" => {
+          "forms" => {
+            "accusative" => "liczbową bitową alternatywę (|)",
+            "genitive" => "liczbowej bitowej alternatywy (|)",
+            "locative" => "liczbowej bitowej alternatywie (|)",
+            "nominative" => "liczbowa bitowa alternatywa (|)",
+            "void_expression_genitive" => "liczbowej bitowej alternatywy (|)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "nbit_xor" => {
+          "forms" => {
+            "accusative" => "liczbową bitową alternatywę wykluczającą (^)",
+            "genitive" => "liczbowej bitowej alternatywy wykluczającej (^)",
+            "locative" => "liczbowej bitowej alternatywie wykluczającej (^)",
+            "nominative" => "liczbowa bitowa alternatywa wykluczająca (^)",
+            "void_expression_genitive" => "liczbowej bitowej alternatywy wykluczającej (^)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "ncmp" => {
+          "forms" => {
+            "accusative" => "porównanie liczbowe (<=>)",
+            "genitive" => "porównania liczbowego (<=>)",
+            "locative" => "porównaniu liczbowym (<=>)",
+            "nominative" => "porównanie liczbowe (<=>)",
+            "void_expression_genitive" => "porównania liczbowego (<=>)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "ncomplement" => {
+          "forms" => {
+            "accusative" => "dopełnienie jedynkowe wartości liczbowej (~)",
+            "genitive" => "dopełnienia jedynkowego wartości liczbowej (~)",
+            "locative" => "dopełnieniu jedynkowemu wartości liczbowej (~)",
+            "nominative" => "dopełnienie jedynkowe wartości liczbowej (~)",
+            "void_expression_genitive" => "dopełnienia jedynkowego wartości liczbowej (~)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ne" => {
+          "forms" => {
+            "accusative" => "liczbową nierówność (!=)",
+            "genitive" => "liczbowej nierówności (!=)",
+            "instrumental" => "liczbową nierównością (!=)",
+            "locative" => "liczbowej nierówności (!=)",
+            "nominative" => "liczbowa nierówność (!=)",
+            "void_expression_genitive" => "liczbowej nierówności (!=)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "negate" => {
+          "forms" => {
+            "accusative" => "negację (-)",
+            "genitive" => "negacji (-)",
+            "locative" => "negacji (-)",
+            "nominative" => "negacja (-)",
+            "void_expression_genitive" => "negacji (-)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "neu" => {
+          "forms" => {
+            "accusative" => "świadomą undef nierówność liczbową (!==)",
+            "genitive" => "świadomej undef nierówności liczbowej (!==)",
+            "instrumental" => "świadomą undef nierównością liczbową (!==)",
+            "locative" => "świadomej undef nierówności liczbowej (!==)",
+            "nominative" => "świadoma undef nierówność liczbowa (!==)",
+            "void_expression_genitive" => "świadomej undef nierówności liczbowej (!==)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "nextstate" => {
+          "forms" => {
+            "accusative" => "następną instrukcję",
+            "genitive" => "następnej instrukcji",
+            "locative" => "następnej instrukcji",
+            "nominative" => "następna instrukcja"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "null" => {
+          "forms" => {
+            "accusative" => "operację null",
+            "genitive" => "operacji null",
+            "locative" => "operacji null",
+            "nominative" => "operacja null"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "or" => {
+          "forms" => {
+            "accusative" => "alternatywę logiczną (||)",
+            "genitive" => "alternatywy logicznej (||)",
+            "locative" => "alternatywie logicznej (||)",
+            "nominative" => "alternatywa logiczna (||)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "orassign" => {
+          "forms" => {
+            "accusative" => "przypisanie z alternatywą logiczną (||=)",
+            "genitive" => "przypisania z alternatywą logiczną (||=)",
+            "locative" => "przypisaniu z alternatywą logiczną (||=)",
+            "nominative" => "przypisanie z alternatywą logiczną (||=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padany" => {
+          "forms" => {
+            "accusative" => "wartość leksykalną",
+            "genitive" => "wartości leksykalnej",
+            "locative" => "wartości leksykalnej",
+            "nominative" => "wartość leksykalna",
+            "void_expression_genitive" => "zmiennej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padav" => {
+          "forms" => {
+            "accusative" => "tablicę leksykalną",
+            "genitive" => "tablicy leksykalnej",
+            "locative" => "tablicy leksykalnej",
+            "nominative" => "tablica leksykalna",
+            "void_expression_genitive" => "tablicy zmiennej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padcv" => {
+          "forms" => {
+            "accusative" => "prywatny podprogram",
+            "genitive" => "prywatnego podprogramu",
+            "locative" => "prywatnym podprogramie",
+            "nominative" => "prywatny podprogram"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padhv" => {
+          "forms" => {
+            "accusative" => "hash leksykalny",
+            "genitive" => "hasha leksykalnego",
+            "locative" => "hashu leksykalnym",
+            "nominative" => "hash leksykalny",
+            "void_expression_genitive" => "hasha zmiennej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padrange" => {
+          "forms" => {
+            "accusative" => "listę zmiennych prywatnych",
+            "genitive" => "listy zmiennych prywatnych",
+            "locative" => "liście zmiennych prywatnych",
+            "nominative" => "lista zmiennych prywatnych"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padsv" => {
+          "forms" => {
+            "accusative" => "zmienną leksykalną",
+            "genitive" => "zmiennej leksykalnej",
+            "locative" => "zmiennej leksykalnej",
+            "nominative" => "zmienna leksykalna",
+            "void_expression_genitive" => "zmiennej skalarnej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padsv_store" => {
+          "forms" => {
+            "accusative" => "przypisanie skalarne padsv",
+            "genitive" => "przypisania skalarnego padsv",
+            "locative" => "przypisaniu skalarnym padsv",
+            "nominative" => "przypisanie skalarne padsv"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "paramstore" => {
+          "forms" => {
+            "accusative" => "wyrażenie domyślne parametru sygnatury",
+            "genitive" => "wyrażenia domyślnego parametru sygnatury",
+            "locative" => "wyrażeniu domyślnym parametru sygnatury",
+            "nominative" => "wyrażenie domyślne parametru sygnatury",
+            "void_expression_genitive" => "wyrażenia domyślnego parametru sygnatury"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "paramtest" => {
+          "forms" => {
+            "accusative" => "test wartości argumentu sygnatury",
+            "genitive" => "testu wartości argumentu sygnatury",
+            "locative" => "teście wartości argumentu sygnatury",
+            "nominative" => "test wartości argumentu sygnatury",
+            "void_expression_genitive" => "testu wartości argumentu sygnatury"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "poptry" => {
+          "forms" => {
+            "accusative" => "zdjęcie try ze stosu",
+            "genitive" => "zdjęcia try ze stosu",
+            "locative" => "zdjęciu try ze stosu",
+            "nominative" => "zdjęcie try ze stosu"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "pos" => {
+          "forms" => {
+            "accusative" => "pozycję dopasowania",
+            "genitive" => "pozycji dopasowania",
+            "locative" => "pozycji dopasowania",
+            "nominative" => "pozycja dopasowania"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "postdec" => {
+          "forms" => {
+            "accusative" => "postdekrementację (--)",
+            "genitive" => "postdekrementacji (--)",
+            "locative" => "postdekrementacji (--)",
+            "nominative" => "postdekrementacja (--)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "postinc" => {
+          "forms" => {
+            "accusative" => "postinkrementację (++)",
+            "genitive" => "postinkrementacji (++)",
+            "locative" => "postinkrementacji (++)",
+            "nominative" => "postinkrementacja (++)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "pow" => {
+          "forms" => {
+            "accusative" => "potęgowanie (**)",
+            "genitive" => "potęgowania (**)",
+            "locative" => "potęgowaniu (**)",
+            "nominative" => "potęgowanie (**)",
+            "void_expression_genitive" => "potęgowania (**)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "predec" => {
+          "forms" => {
+            "accusative" => "predekrementację (--)",
+            "genitive" => "predekrementacji (--)",
+            "locative" => "predekrementacji (--)",
+            "nominative" => "predekrementacja (--)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "preinc" => {
+          "forms" => {
+            "accusative" => "preinkrementację (++)",
+            "genitive" => "preinkrementacji (++)",
+            "locative" => "preinkrementacji (++)",
+            "nominative" => "preinkrementacja (++)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "prototype" => {
+          "forms" => {
+            "accusative" => "prototyp podprogramu",
+            "genitive" => "prototypu podprogramu",
+            "locative" => "prototypie podprogramu",
+            "nominative" => "prototyp podprogramu",
+            "void_expression_genitive" => "prototypu podprogramu"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "pushdefer" => {
+          "forms" => {
+            "accusative" => "blok push defer {}",
+            "genitive" => "bloku push defer {}",
+            "locative" => "bloku push defer {}",
+            "nominative" => "blok push defer {}"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "qr" => {
+          "forms" => {
+            "accusative" => "cytowanie wzorca (qr//)",
+            "genitive" => "cytowania wzorca (qr//)",
+            "locative" => "cytowaniu wzorca (qr//)",
+            "nominative" => "cytowanie wzorca (qr//)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "range" => {
+          "forms" => {
+            "accusative" => "operator zakresu typu flip-flop",
+            "genitive" => "operatora zakresu typu flip-flop",
+            "locative" => "operatorze zakresu typu flip-flop",
+            "nominative" => "operator zakresu typu flip-flop",
+            "void_expression_genitive" => "operatora zakresu typu flip-flop"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rcatline" => {
+          "forms" => {
+            "accusative" => "operator dopisywania do wejścia/wyjścia",
+            "genitive" => "operatora dopisywania do wejścia/wyjścia",
+            "locative" => "operatorze dopisywania do wejścia/wyjścia",
+            "nominative" => "operator dopisywania do wejścia/wyjścia"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ref" => {
+          "forms" => {
+            "accusative" => "operator typu referencji",
+            "genitive" => "operatora typu referencji",
+            "locative" => "operatorze typu referencji",
+            "nominative" => "operator typu referencji",
+            "void_expression_genitive" => "operatora typu referencji"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ref_cmp" => {
+          "forms" => {
+            "accusative" => "porównanie typów referencji",
+            "genitive" => "porównania typów referencji",
+            "locative" => "porównaniu typów referencji",
+            "nominative" => "porównanie typów referencji"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "refassign" => {
+          "forms" => {
+            "accusative" => "przypisanie referencji do wartości l",
+            "genitive" => "przypisania referencji do wartości l",
+            "locative" => "przypisaniu referencji do wartości l",
+            "nominative" => "przypisanie referencji do wartości l"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "refgen" => {
+          "forms" => {
+            "accusative" => "konstruktor referencji",
+            "genitive" => "konstruktora referencji",
+            "locative" => "konstruktorze referencji",
+            "nominative" => "konstruktor referencji",
+            "void_expression_genitive" => "konstruktora referencji"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "regcmaybe" => {
+          "forms" => {
+            "accusative" => "wewnętrzną kontrolę wyrażenia regularnego",
+            "genitive" => "wewnętrznej kontroli wyrażenia regularnego",
+            "locative" => "wewnętrznej kontroli wyrażenia regularnego",
+            "nominative" => "wewnętrzna kontrola wyrażenia regularnego"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "regcomp" => {
+          "forms" => {
+            "accusative" => "kompilację wyrażenia regularnego",
+            "genitive" => "kompilacji wyrażenia regularnego",
+            "locative" => "kompilacji wyrażenia regularnego",
+            "nominative" => "kompilacja wyrażenia regularnego"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "regcreset" => {
+          "forms" => {
+            "accusative" => "wewnętrzne resetowanie wyrażenia regularnego",
+            "genitive" => "wewnętrznego resetowania wyrażenia regularnego",
+            "locative" => "wewnętrznym resetowaniu wyrażenia regularnego",
+            "nominative" => "wewnętrzne resetowanie wyrażenia regularnego"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "repeat" => {
+          "forms" => {
+            "accusative" => "powtarzanie (x)",
+            "genitive" => "powtarzania (x)",
+            "locative" => "powtarzaniu (x)",
+            "nominative" => "powtarzanie (x)",
+            "void_expression_genitive" => "powtarzania (x)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "reset" => {
+          "forms" => {
+            "accusative" => "reset symboli",
+            "genitive" => "resetu symboli",
+            "locative" => "resecie symboli",
+            "nominative" => "reset symboli"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "right_shift" => {
+          "forms" => {
+            "accusative" => "przesunięcie bitowe w prawo (>>)",
+            "genitive" => "przesunięcia bitowego w prawo (>>)",
+            "locative" => "przesunięciu bitowym w prawo (>>)",
+            "nominative" => "przesunięcie bitowe w prawo (>>)",
+            "void_expression_genitive" => "przesunięcia w prawo (>>)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "rv2av" => {
+          "forms" => {
+            "accusative" => "dereferencję tablicy",
+            "genitive" => "dereferencji tablicy",
+            "locative" => "dereferencji tablicy",
+            "nominative" => "dereferencja tablicy"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2cv" => {
+          "forms" => {
+            "accusative" => "dereferencję podprogramu",
+            "genitive" => "dereferencji podprogramu",
+            "locative" => "dereferencji podprogramu",
+            "nominative" => "dereferencja podprogramu"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2gv" => {
+          "forms" => {
+            "accusative" => "rzutowanie referencji na glob",
+            "genitive" => "rzutowania referencji na glob",
+            "locative" => "rzutowaniu referencji na glob",
+            "nominative" => "rzutowanie referencji na glob"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2hv" => {
+          "forms" => {
+            "accusative" => "dereferencję hasza",
+            "genitive" => "dereferencji hasza",
+            "locative" => "dereferencji hasza",
+            "nominative" => "dereferencja hasza"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2sv" => {
+          "forms" => {
+            "accusative" => "dereferencję skalarną",
+            "genitive" => "dereferencji skalarnej",
+            "locative" => "dereferencji skalarnej",
+            "nominative" => "dereferencja skalarna"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sassign" => {
+          "forms" => {
+            "accusative" => "przypisanie skalarne",
+            "genitive" => "przypisania skalarnego",
+            "locative" => "przypisaniu skalarnym",
+            "nominative" => "przypisanie skalarne"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sbit_and" => {
+          "forms" => {
+            "accusative" => "łańcuchową koniunkcję bitową (&.)",
+            "genitive" => "łańcuchowej koniunkcji bitowej (&.)",
+            "locative" => "łańcuchowej koniunkcji bitowej (&.)",
+            "nominative" => "łańcuchowa koniunkcja bitowa (&.)",
+            "void_expression_genitive" => "łańcuchowej koniunkcji bitowej (&.)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "sbit_or" => {
+          "forms" => {
+            "accusative" => "łańcuchową alternatywę bitową (|.)",
+            "genitive" => "łańcuchowej alternatywy bitowej (|.)",
+            "locative" => "łańcuchowej alternatywie bitowej (|.)",
+            "nominative" => "łańcuchowa alternatywa bitowa (|.)",
+            "void_expression_genitive" => "łańcuchowej alternatywy bitowej (|.)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "sbit_xor" => {
+          "forms" => {
+            "accusative" => "łańcuchową bitową alternatywę wykluczającą (^.)",
+            "genitive" => "łańcuchowej bitowej alternatywy wykluczającej (^.)",
+            "locative" => "łańcuchowej bitowej alternatywie wykluczającej (^.)",
+            "nominative" => "łańcuchowa bitowa alternatywa wykluczająca (^.)",
+            "void_expression_genitive" => "łańcuchowej bitowej alternatywy wykluczającej (^.)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "schomp" => {
+          "forms" => {
+            "accusative" => "usunięcie końcowego znaku nowej linii ze skalara",
+            "genitive" => "usunięcia końcowego znaku nowej linii ze skalara",
+            "locative" => "usunięciu końcowego znaku nowej linii ze skalara",
+            "nominative" => "usunięcie końcowego znaku nowej linii ze skalara"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "schop" => {
+          "forms" => {
+            "accusative" => "obcięcie skalarne",
+            "genitive" => "obcięcia skalarnego",
+            "locative" => "obcięciu skalarnym",
+            "nominative" => "obcięcie skalarne"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "scmp" => {
+          "forms" => {
+            "accusative" => "porównanie ciągów znaków (cmp)",
+            "genitive" => "porównania ciągów znaków (cmp)",
+            "locative" => "porównaniu ciągów znaków (cmp)",
+            "nominative" => "porównanie ciągów znaków (cmp)",
+            "void_expression_genitive" => "porównania ciągów znaków (cmp)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "scomplement" => {
+          "forms" => {
+            "accusative" => "dopełnienie jedynkowe ciągu znaków (~)",
+            "genitive" => "dopełnienia jedynkowego ciągu znaków (~)",
+            "locative" => "dopełnieniu jedynkowemu ciągu znaków (~)",
+            "nominative" => "dopełnienie jedynkowe ciągu znaków (~)",
+            "void_expression_genitive" => "dopełnienia jedynkowego ciągu znaków (~)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "scope" => {
+          "forms" => {
+            "accusative" => "blok",
+            "genitive" => "bloku",
+            "locative" => "bloku",
+            "nominative" => "blok"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "seq" => {
+          "forms" => {
+            "accusative" => "równość ciągów znaków",
+            "genitive" => "równości ciągów znaków",
+            "instrumental" => "równością ciągów znaków",
+            "locative" => "równości ciągów znaków",
+            "nominative" => "równość ciągów znaków",
+            "void_expression_genitive" => "równości ciągów znaków"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "sequ" => {
+          "forms" => {
+            "accusative" => "równość ciągów znaków uwzględniającą undef",
+            "genitive" => "równości ciągów znaków uwzględniającej undef",
+            "instrumental" => "równością ciągów znaków uwzględniającą undef",
+            "locative" => "równości ciągów znaków uwzględniającej undef",
+            "nominative" => "równość ciągów znaków uwzględniająca undef",
+            "void_expression_genitive" => "równości ciągów znaków uwzględniającej undef"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "sge" => {
+          "forms" => {
+            "accusative" => "porównanie ciągów znaków pod kątem większości lub równości",
+            "genitive" => "porównania ciągów znaków pod kątem większości lub równości",
+            "instrumental" => "porównaniem ciągów znaków pod kątem większości lub równości",
+            "locative" => "porównaniu ciągów znaków pod kątem większości lub równości",
+            "nominative" => "porównanie ciągów znaków pod kątem większości lub równości",
+            "void_expression_genitive" => "porównania ciągów znaków pod kątem większości lub równości"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "sgt" => {
+          "forms" => {
+            "accusative" => "porównanie ciągów znaków pod kątem większości",
+            "genitive" => "porównania ciągów znaków pod kątem większości",
+            "instrumental" => "porównaniem ciągów znaków pod kątem większości",
+            "locative" => "porównaniu ciągów znaków pod kątem większości",
+            "nominative" => "porównanie ciągów znaków pod kątem większości",
+            "void_expression_genitive" => "porównania ciągów znaków pod kątem większości"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "sle" => {
+          "forms" => {
+            "accusative" => "porównanie ciągów znaków pod kątem mniejszości lub równości",
+            "genitive" => "porównania ciągów znaków pod kątem mniejszości lub równości",
+            "instrumental" => "porównaniem ciągów znaków pod kątem mniejszości lub równości",
+            "locative" => "porównaniu ciągów znaków pod kątem mniejszości lub równości",
+            "nominative" => "porównanie ciągów znaków pod kątem mniejszości lub równości",
+            "void_expression_genitive" => "porównania ciągów znaków pod kątem mniejszości lub równości"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "slt" => {
+          "forms" => {
+            "accusative" => "porównanie ciągów znaków pod kątem mniejszości",
+            "genitive" => "porównania ciągów znaków pod kątem mniejszości",
+            "instrumental" => "porównaniem ciągów znaków pod kątem mniejszości",
+            "locative" => "porównaniu ciągów znaków pod kątem mniejszości",
+            "nominative" => "porównanie ciągów znaków pod kątem mniejszości",
+            "void_expression_genitive" => "porównania ciągów znaków pod kątem mniejszości"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "smartmatch" => {
+          "forms" => {
+            "accusative" => "inteligentne dopasowanie",
+            "genitive" => "inteligentnego dopasowania",
+            "locative" => "inteligentnym dopasowaniu",
+            "nominative" => "inteligentne dopasowanie",
+            "void_expression_genitive" => "inteligentnego dopasowania"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sne" => {
+          "forms" => {
+            "accusative" => "nierówność ciągów znaków",
+            "genitive" => "nierówności ciągów znaków",
+            "instrumental" => "nierównością ciągów znaków",
+            "locative" => "nierówności ciągów znaków",
+            "nominative" => "nierówność ciągów znaków",
+            "void_expression_genitive" => "nierówności ciągów znaków"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "sneu" => {
+          "forms" => {
+            "accusative" => "nierówność ciągów znaków uwzględniającą undef",
+            "genitive" => "nierówności ciągów znaków uwzględniającej undef",
+            "instrumental" => "nierównością ciągów znaków uwzględniającą undef",
+            "locative" => "nierówności ciągów znaków uwzględniającej undef",
+            "nominative" => "nierówność ciągów znaków uwzględniająca undef",
+            "void_expression_genitive" => "nierówności ciągów znaków uwzględniającej undef"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "feminine"
+          }
+        },
+        "srefgen" => {
+          "forms" => {
+            "accusative" => "konstruktor pojedynczej referencji",
+            "genitive" => "konstruktora pojedynczej referencji",
+            "locative" => "konstruktorze pojedynczej referencji",
+            "nominative" => "konstruktor pojedynczej referencji",
+            "void_expression_genitive" => "konstruktora pojedynczej referencji"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sselect" => {
+          "forms" => {
+            "accusative" => "wywołanie systemowe select",
+            "genitive" => "wywołania systemowego select",
+            "locative" => "wywołaniu systemowym select",
+            "nominative" => "wywołanie systemowe select"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "stringify" => {
+          "forms" => {
+            "accusative" => "ciąg znaków",
+            "genitive" => "ciągu znaków",
+            "locative" => "ciągu znaków",
+            "nominative" => "ciąg znaków",
+            "void_expression_genitive" => "zamiana na ciąg znaków"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "masculine"
+          }
+        },
+        "subst" => {
+          "forms" => {
+            "accusative" => "podstawienie (s///)",
+            "genitive" => "podstawienia (s///)",
+            "instrumental" => "podstawieniem (s///)",
+            "locative" => "podstawieniu (s///)",
+            "nominative" => "podstawienie (s///)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "substcont" => {
+          "forms" => {
+            "accusative" => "iterator podstawień",
+            "genitive" => "iteratora podstawień",
+            "locative" => "iteratorze podstawień",
+            "nominative" => "iterator podstawień"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "substr_left" => {
+          "forms" => {
+            "accusative" => "lewy wariant substr",
+            "genitive" => "lewego wariantu substr",
+            "locative" => "lewym wariancie substr",
+            "nominative" => "lewy wariant substr"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "subtract" => {
+          "forms" => {
+            "accusative" => "odejmowanie (-)",
+            "genitive" => "odejmowania (-)",
+            "locative" => "odejmowaniu (-)",
+            "nominative" => "odejmowanie (-)",
+            "void_expression_genitive" => "odejmowania (-)"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        },
+        "trans" => {
+          "forms" => {
+            "accusative" => "transliterację (tr///)",
+            "genitive" => "transliteracji (tr///)",
+            "instrumental" => "transliteracją (tr///)",
+            "locative" => "transliteracji (tr///)",
+            "nominative" => "transliteracja (tr///)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "transr" => {
+          "forms" => {
+            "accusative" => "transliterację (tr///)",
+            "genitive" => "transliteracji (tr///)",
+            "instrumental" => "transliteracją (tr///)",
+            "locative" => "transliteracji (tr///)",
+            "nominative" => "transliteracja (tr///)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "undef" => {
+          "forms" => {
+            "accusative" => "operator undef",
+            "genitive" => "operatora undef",
+            "locative" => "operatorze undef",
+            "nominative" => "operator undef"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "unstack" => {
+          "forms" => {
+            "accusative" => "końcowy element iteracji",
+            "genitive" => "końcowego elementu iteracji",
+            "locative" => "końcowym elemencie iteracji",
+            "nominative" => "końcowy element iteracji"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "unweaken" => {
+          "forms" => {
+            "accusative" => "przywrócenie silnej referencji",
+            "genitive" => "przywrócenia silnej referencji",
+            "locative" => "przywróceniu silnej referencji",
+            "nominative" => "przywrócenie silnej referencji"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "weaken" => {
+          "forms" => {
+            "accusative" => "osłabienie referencji",
+            "genitive" => "osłabienia referencji",
+            "locative" => "osłabieniu referencji",
+            "nominative" => "osłabienie referencji"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "xor" => {
+          "forms" => {
+            "accusative" => "alternatywę wykluczającą",
+            "genitive" => "alternatywy wykluczającej",
+            "locative" => "alternatywie wykluczającej",
+            "nominative" => "alternatywa wykluczająca",
+            "void_expression_genitive" => "alternatywy wykluczającej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "yield" => {
+          "forms" => {
+            "accusative" => "zwracanie wartości z generatora",
+            "genitive" => "zwracania wartości z generatora",
+            "locative" => "zwracaniu wartości z generatora",
+            "nominative" => "zwracanie wartości z generatora",
+            "void_expression_genitive" => "zwracania wartości z generatora"
+          },
+          "status" => "draft",
+          "tags" => {
+            "gender" => "neuter"
+          }
+        }
+      }
+    },
     "pt" => {
       "base_form" => "default",
       "forms" => [
