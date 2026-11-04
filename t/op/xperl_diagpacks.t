@@ -25,7 +25,7 @@ use B ();
 use builtin qw(cardinal_plural_form get_diagnostic_data ordinal_plural_form);
 no warnings 'experimental::builtin';
 
-my @languages              = qw(ar cy de en es fa fi fr he hu is it nl pl pt ru sr tr uk zh);
+my @languages              = qw(ar cy de en es fa fi fr he hu is it nl pl pt ru sr tlh tr uk zh);
 my $initial_render_default = ${^DIAG_RENDER};
 my %packs;
 my %load_default;
@@ -77,6 +77,35 @@ for my $language ( sort keys %packs ) {
         XPerlDiagPackTest::runperl( prog => 'print exists $INC{q[XPerl/DiagPack/DE.pm]} ? q[loaded] : q[missing]' ),
         'loaded', 'startup loads the pack named by PERL_DIAG_RENDER'
     );
+}
+
+SKIP: {
+    skip 'Klingon diagnostic pack is unavailable', 5 unless $packs{tlh};
+
+    my $runtime = eval q{
+        use diagpack 'tlh';
+        my $zero = 0;
+        eval { my $result = 1 / $zero };
+        $@;
+    };
+    ok( $runtime && ref $runtime, 'a runtime error captures the Klingon pack lexically' );
+    my $legacy = $runtime->render_as_legacy('tlh');
+    isnt( $legacy, $runtime->render_as_legacy('en'), 'Klingon rendering differs from English' );
+    {
+        local ${^DIAG_RENDER} = 'en:legacy';
+        is( $runtime->render, $legacy, 'implicit rendering retains the captured Klingon pack' );
+    }
+    {
+        local $ENV{PERL_DIAG_RENDER} = 'tlh:legacy';
+        is(
+            XPerlDiagPackTest::runperl(
+                prog => 'print exists $INC{q[XPerl/DiagPack/TLH.pm]} ? q[loaded] : q[missing]'
+            ),
+            'loaded', 'startup loads a three-letter language pack'
+        );
+    }
+    ok( grep { $_ eq 'tlh' } XPerl::DiagPack::_installed_languages(),
+        'umbrella pack discovery includes three-letter codes' );
 }
 
 {

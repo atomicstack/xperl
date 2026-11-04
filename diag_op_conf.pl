@@ -34983,6 +34983,1477 @@ grammatical selector fields; it is not a template parameter.
         }
       }
     },
+    "tlh" => {
+      "base_form" => "default",
+      "forms" => [
+        "default"
+      ],
+      "rules" => {
+        "default" => {
+          "form" => "default",
+          "select" => {}
+        }
+      },
+      "tags" => {},
+      "words" => {
+        "aassign" => {
+          "forms" => {
+            "default" => "tetlh nobwI'"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "add" => {
+          "forms" => {
+            "default" => "chel (+)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aeach" => {
+          "forms" => {
+            "default" => "'ay'meyDaq Hoch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelem" => {
+          "forms" => {
+            "default" => "'ay'"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelemfast" => {
+          "forms" => {
+            "default" => "'ay' motlh"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelemfast_lex" => {
+          "forms" => {
+            "default" => "'ay' motlh lexical"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aelemfastlex_store" => {
+          "forms" => {
+            "default" => "const lexical 'ay' pol"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "akeys" => {
+          "forms" => {
+            "default" => "'ay'mey ngaq"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "and" => {
+          "forms" => {
+            "default" => "'ej logical (&&)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "andassign" => {
+          "forms" => {
+            "default" => "logical 'ej assignment (&&=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anoncode" => {
+          "forms" => {
+            "default" => "subroutine pagh ponglu'"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anonconst" => {
+          "forms" => {
+            "default" => "constant pagh ponglu'"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anonhash" => {
+          "forms" => {
+            "default" => "ghItlhHa'lu'pu'bogh vay'pu' ({})"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anonlist" => {
+          "forms" => {
+            "default" => "ghItlhHa'lu'pu'bogh vay'mey ([])"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "anywhile" => {
+          "forms" => {
+            "default" => "iterator Hoch pagh Hoch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "argcheck" => {
+          "forms" => {
+            "default" => "subroutine arguments t'ol"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "argdefelem" => {
+          "forms" => {
+            "default" => "subroutine argument default value"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "argelem" => {
+          "forms" => {
+            "default" => "subroutine argument"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "aslice" => {
+          "forms" => {
+            "default" => "vay'mey slice"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "av2arylen" => {
+          "forms" => {
+            "default" => "vay'mey length"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "avalues" => {
+          "forms" => {
+            "default" => "vay'mey values"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "avhvswitch" => {
+          "forms" => {
+            "default" => "Array/vay'pu' switch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "backtick" => {
+          "forms" => {
+            "default" => "quoted execution (``, qx)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "bit_and" => {
+          "forms" => {
+            "default" => "bitwise and (&)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "bit_or" => {
+          "forms" => {
+            "default" => "bitwise or (|)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "bit_xor" => {
+          "forms" => {
+            "default" => "bitwise xor (^)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "catch" => {
+          "forms" => {
+            "default" => "catch {} block"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "classname" => {
+          "forms" => {
+            "default" => "class pong"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "clonecv" => {
+          "forms" => {
+            "default" => "pegh subroutine"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "cmpchain_and" => {
+          "forms" => {
+            "default" => "comparison chaining"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "cmpchain_dup" => {
+          "forms" => {
+            "default" => "comparand shuffling"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "complement" => {
+          "forms" => {
+            "default" => "1's complement (~)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "concat" => {
+          "forms" => {
+            "default" => "concatenation (.) or string"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "cond_expr" => {
+          "forms" => {
+            "default" => "conditional expression"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "const" => {
+          "forms" => {
+            "default" => "constant Doch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "coreargs" => {
+          "forms" => {
+            "default" => "CORE:: subroutine"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dbstate" => {
+          "forms" => {
+            "default" => "debug mIw ghIq"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "defined" => {
+          "forms" => {
+            "default" => "defined operator"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dispatch" => {
+          "forms" => {
+            "default" => "dispatch constant wIv"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dispatch_on" => {
+          "forms" => {
+            "default" => "dispatch pattern match"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dispatchcoerce" => {
+          "forms" => {
+            "default" => "dispatch pattern marker"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "divide" => {
+          "forms" => {
+            "default" => "wav (/)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "do_block" => {
+          "forms" => {
+            "default" => "do block"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dor" => {
+          "forms" => {
+            "default" => "defined or (//)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "dorassign" => {
+          "forms" => {
+            "default" => "defined or assignment (//=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "emptyavhv" => {
+          "forms" => {
+            "default" => "chIm anon vay'pu'/vay'mey"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enter" => {
+          "forms" => {
+            "default" => "blockDaq yI'el"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enterdispatchon" => {
+          "forms" => {
+            "default" => "dispatch-on clause() yI'el"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enteriter" => {
+          "forms" => {
+            "default" => "ghoSuv wej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "enterloop" => {
+          "forms" => {
+            "default" => "ghoSuv wej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "entersub" => {
+          "forms" => {
+            "default" => "ghoSuv Subroutine"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "eq" => {
+          "forms" => {
+            "default" => "mI' numerically (==)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "equ" => {
+          "forms" => {
+            "default" => "mI' numerically undef-aware (===)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "flip" => {
+          "forms" => {
+            "default" => "range pagh flip"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "flop" => {
+          "forms" => {
+            "default" => "range pagh flop"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ge" => {
+          "forms" => {
+            "default" => "law' numerically (>=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "gelem" => {
+          "forms" => {
+            "default" => "glob elem"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "grepwhile" => {
+          "forms" => {
+            "default" => "grep iterator"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "gt" => {
+          "forms" => {
+            "default" => "law'qu' numerically (>)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "gv" => {
+          "forms" => {
+            "default" => "glob value"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "gvsv" => {
+          "forms" => {
+            "default" => "vay' variable"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "helem" => {
+          "forms" => {
+            "default" => "vay'pu' element"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "helemexistsor" => {
+          "forms" => {
+            "default" => "vay'pu' element exists or"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "hintseval" => {
+          "forms" => {
+            "default" => "eval hints"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "hslice" => {
+          "forms" => {
+            "default" => "vay'pu' slice"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_add" => {
+          "forms" => {
+            "default" => "integer chel (+)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_divide" => {
+          "forms" => {
+            "default" => "integer wav (/)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_eq" => {
+          "forms" => {
+            "default" => "integer eq (==)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_equ" => {
+          "forms" => {
+            "default" => "undef-aware integer eq (===)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_ge" => {
+          "forms" => {
+            "default" => "integer ge (>=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_gt" => {
+          "forms" => {
+            "default" => "integer gt (>)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_le" => {
+          "forms" => {
+            "default" => "integer le (<=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_lt" => {
+          "forms" => {
+            "default" => "integer <"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_modulo" => {
+          "forms" => {
+            "default" => "integer chuv (%)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_multiply" => {
+          "forms" => {
+            "default" => "integer logh (*)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_ncmp" => {
+          "forms" => {
+            "default" => "integer comparison (<=>)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_ne" => {
+          "forms" => {
+            "default" => "integer ne (!=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_negate" => {
+          "forms" => {
+            "default" => "integer negation (-)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_neu" => {
+          "forms" => {
+            "default" => "undef-aware integer ne (!==)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_postdec" => {
+          "forms" => {
+            "default" => "integer postdecrement (--)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_postinc" => {
+          "forms" => {
+            "default" => "integer postincrement (++)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_predec" => {
+          "forms" => {
+            "default" => "integer predecrement (--)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_preinc" => {
+          "forms" => {
+            "default" => "integer preincrement (++)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "i_subtract" => {
+          "forms" => {
+            "default" => "integer chelHa' (-)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "implements" => {
+          "forms" => {
+            "default" => "role composition test"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "initfield" => {
+          "forms" => {
+            "default" => "field taghmoH"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "introcv" => {
+          "forms" => {
+            "default" => "private subroutine"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "is_bool" => {
+          "forms" => {
+            "default" => "boolean type test"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "is_weak" => {
+          "forms" => {
+            "default" => "weakref type test"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "isa" => {
+          "forms" => {
+            "default" => "derived class test"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "iter" => {
+          "forms" => {
+            "default" => "foreach loop iterator"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "join" => {
+          "forms" => {
+            "default" => "join pagh string"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "kvaslice" => {
+          "forms" => {
+            "default" => "index/value vay'mey slice"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "kvhslice" => {
+          "forms" => {
+            "default" => "key/value vay'pu' slice"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "le" => {
+          "forms" => {
+            "default" => "numeric le (<=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leave" => {
+          "forms" => {
+            "default" => "block mej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavedispatch" => {
+          "forms" => {
+            "default" => "dispatch block yImej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavedispatchon" => {
+          "forms" => {
+            "default" => "dispatch-on clause yImej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leaveeval" => {
+          "forms" => {
+            "default" => "eval \"string\" mej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavegiven" => {
+          "forms" => {
+            "default" => "given block yImej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leaveloop" => {
+          "forms" => {
+            "default" => "loop mej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavesub" => {
+          "forms" => {
+            "default" => "subroutine mej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavesublv" => {
+          "forms" => {
+            "default" => "lvalue subroutine chegh"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavetry" => {
+          "forms" => {
+            "default" => "eval {block} mej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavetrycatch" => {
+          "forms" => {
+            "default" => "try {block} mej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavewhen" => {
+          "forms" => {
+            "default" => "when block yImej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "leavewrite" => {
+          "forms" => {
+            "default" => "write mej"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "left_shift" => {
+          "forms" => {
+            "default" => "left bitshift (<<)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lineseq" => {
+          "forms" => {
+            "default" => "tlhegh mIch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lslice" => {
+          "forms" => {
+            "default" => "tetlh 'ay' Hoch"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lt" => {
+          "forms" => {
+            "default" => "mI'mey tIn law' mI'mey mach puS (<)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lvavref" => {
+          "forms" => {
+            "default" => "lvalue vay'mey ref"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lvref" => {
+          "forms" => {
+            "default" => "lvalue ref assignment"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "lvrefslice" => {
+          "forms" => {
+            "default" => "lvalue ref assignment"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "mapwhile" => {
+          "forms" => {
+            "default" => "map iterator"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "match" => {
+          "forms" => {
+            "default" => "pattern match (m//)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method" => {
+          "forms" => {
+            "default" => "method lookup"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_named" => {
+          "forms" => {
+            "default" => "method with known name"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_redir" => {
+          "forms" => {
+            "default" => "redirect method with known name"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_redir_super" => {
+          "forms" => {
+            "default" => "redirect super method with known name"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "method_super" => {
+          "forms" => {
+            "default" => "pong method super pong pong pong pong pong pong"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "methstart" => {
+          "forms" => {
+            "default" => "method tagh"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "modulo" => {
+          "forms" => {
+            "default" => "chuv (%)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "multiconcat" => {
+          "forms" => {
+            "default" => "concatenation (.) pagh string"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "multideref" => {
+          "forms" => {
+            "default" => "vay'mey pagh vay'pu' lookup"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "multiparam" => {
+          "forms" => {
+            "default" => "signature processing"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "multiply" => {
+          "forms" => {
+            "default" => "logh (*)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "nbit_and" => {
+          "forms" => {
+            "default" => "numeric bitwise and (&)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "nbit_or" => {
+          "forms" => {
+            "default" => "numeric bitwise or (|)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "nbit_xor" => {
+          "forms" => {
+            "default" => "numeric bitwise xor (^)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ncmp" => {
+          "forms" => {
+            "default" => "numeric comparison (<=>)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ncomplement" => {
+          "forms" => {
+            "default" => "numeric 1's complement (~)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ne" => {
+          "forms" => {
+            "default" => "mI'mey rapbe' (!=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "negate" => {
+          "forms" => {
+            "default" => "negation (-)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "neu" => {
+          "forms" => {
+            "default" => "undef-aware mI'mey rapbe' (!==)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "nextstate" => {
+          "forms" => {
+            "default" => "mu'tlhegh tlha'bogh"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "null" => {
+          "forms" => {
+            "default" => "null operation"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "or" => {
+          "forms" => {
+            "default" => "logical pagh (||)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "orassign" => {
+          "forms" => {
+            "default" => "logical pagh assignment (||=)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padany" => {
+          "forms" => {
+            "default" => "private value"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padav" => {
+          "forms" => {
+            "default" => "private vay'mey"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padcv" => {
+          "forms" => {
+            "default" => "private subroutine"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padhv" => {
+          "forms" => {
+            "default" => "private vay'pu'"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padrange" => {
+          "forms" => {
+            "default" => "private variables' list"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padsv" => {
+          "forms" => {
+            "default" => "variable pegh"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "padsv_store" => {
+          "forms" => {
+            "default" => "padsv vay' assignment"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "paramstore" => {
+          "forms" => {
+            "default" => "signature parameter default expression"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "paramtest" => {
+          "forms" => {
+            "default" => "signature argument value test"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "poptry" => {
+          "forms" => {
+            "default" => "pop nID"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "pos" => {
+          "forms" => {
+            "default" => "ghom position"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "postdec" => {
+          "forms" => {
+            "default" => "postdecrement (--)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "postinc" => {
+          "forms" => {
+            "default" => "postincrement (++)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "pow" => {
+          "forms" => {
+            "default" => "exponentiation (**)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "predec" => {
+          "forms" => {
+            "default" => "predecrement (--)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "preinc" => {
+          "forms" => {
+            "default" => "preincrement (++)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "prototype" => {
+          "forms" => {
+            "default" => "subroutine prototype"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "pushdefer" => {
+          "forms" => {
+            "default" => "defer {} block push"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "qr" => {
+          "forms" => {
+            "default" => "pattern quote (qr//)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "range" => {
+          "forms" => {
+            "default" => "flipflop"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rcatline" => {
+          "forms" => {
+            "default" => "append I/O operator"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ref" => {
+          "forms" => {
+            "default" => "reference-type operator"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "ref_cmp" => {
+          "forms" => {
+            "default" => "reference-type comparison"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "refassign" => {
+          "forms" => {
+            "default" => "lvalue ref assignment"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "refgen" => {
+          "forms" => {
+            "default" => "reference constructor"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "regcmaybe" => {
+          "forms" => {
+            "default" => "regexp internal guard"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "regcomp" => {
+          "forms" => {
+            "default" => "regexp compilation"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "regcreset" => {
+          "forms" => {
+            "default" => "regexp internal reset"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "repeat" => {
+          "forms" => {
+            "default" => "repeat (x)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "reset" => {
+          "forms" => {
+            "default" => "Degh cherqa'"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "right_shift" => {
+          "forms" => {
+            "default" => "nIH bitshift (>>)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2av" => {
+          "forms" => {
+            "default" => "vay'mey dereference"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2cv" => {
+          "forms" => {
+            "default" => "subroutine dereference"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2gv" => {
+          "forms" => {
+            "default" => "ref-to-glob cast"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2hv" => {
+          "forms" => {
+            "default" => "vay'pu' dereference"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "rv2sv" => {
+          "forms" => {
+            "default" => "vay' dereference"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sassign" => {
+          "forms" => {
+            "default" => "vay' assignment"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sbit_and" => {
+          "forms" => {
+            "default" => "string bitwise and (&.)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sbit_or" => {
+          "forms" => {
+            "default" => "string bitwise or (|.)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sbit_xor" => {
+          "forms" => {
+            "default" => "string bitwise xor (^.)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "schomp" => {
+          "forms" => {
+            "default" => "vay' chomp"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "schop" => {
+          "forms" => {
+            "default" => "vay' chop"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "scmp" => {
+          "forms" => {
+            "default" => "string comparison (cmp)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "scomplement" => {
+          "forms" => {
+            "default" => "string 1's complement (~)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "scope" => {
+          "forms" => {
+            "default" => "block"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "seq" => {
+          "forms" => {
+            "default" => "string eq"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sequ" => {
+          "forms" => {
+            "default" => "undef-aware string eq"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sge" => {
+          "forms" => {
+            "default" => "string ge"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sgt" => {
+          "forms" => {
+            "default" => "string gt"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sle" => {
+          "forms" => {
+            "default" => "string le"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "slt" => {
+          "forms" => {
+            "default" => "string lt"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "smartmatch" => {
+          "forms" => {
+            "default" => "smart match"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sne" => {
+          "forms" => {
+            "default" => "string ne"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sneu" => {
+          "forms" => {
+            "default" => "string ne: tlhapbe'Ha' string"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "srefgen" => {
+          "forms" => {
+            "default" => "single ref constructor: wa' ref chenmoHwI'"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "sselect" => {
+          "forms" => {
+            "default" => "select system call: select system call"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "stringify" => {
+          "forms" => {
+            "default" => "string: string"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "subst" => {
+          "forms" => {
+            "default" => "substitution (s///): substitution (s///)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "substcont" => {
+          "forms" => {
+            "default" => "substitution iterator: substitution iterator"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "substr_left" => {
+          "forms" => {
+            "default" => "substr left: substr poS"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "subtract" => {
+          "forms" => {
+            "default" => "chelHa' (-)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "trans" => {
+          "forms" => {
+            "default" => "transliteration (tr///): transliteration (tr///)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "transr" => {
+          "forms" => {
+            "default" => "transliteration (tr///): transliteration (tr///)"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "undef" => {
+          "forms" => {
+            "default" => "undef operator: undef operator"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "unstack" => {
+          "forms" => {
+            "default" => "iteration finalizer: iteration finalizer"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "unweaken" => {
+          "forms" => {
+            "default" => "reference unweaken"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "weaken" => {
+          "forms" => {
+            "default" => "reference weaken"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "xor" => {
+          "forms" => {
+            "default" => "logical xor"
+          },
+          "status" => "draft",
+          "tags" => {}
+        },
+        "yield" => {
+          "forms" => {
+            "default" => "yield values from a generator"
+          },
+          "status" => "draft",
+          "tags" => {}
+        }
+      }
+    },
     "tr" => {
       "base_form" => "default",
       "forms" => [

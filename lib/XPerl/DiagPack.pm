@@ -14,7 +14,7 @@ sub _installed_languages {
         my $directory = "$inc/XPerl/DiagPack";
         opendir my $entries, $directory or next;
         while ( defined( my $entry = readdir $entries ) ) {
-            $languages{ lc $1 } = 1 if $entry =~ /\A([A-Z]{2})\.pm\z/;
+            $languages{ lc $1 } = 1 if $entry =~ /\A([A-Z]{2,3})\.pm\z/;
         }
         closedir $entries;
     }
@@ -55,5 +55,6 @@ Loading this module registers the requested diagnostic language packs as
 available capabilities. It does not select a language for rendering.
 
 C<all> loads every language pack shipped with this Perl installation.
+Pack names use two- or three-letter lowercase language codes.
 
 =cut

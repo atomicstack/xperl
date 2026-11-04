@@ -3610,8 +3610,9 @@ Perl_xperl_diagpack_language_id(pTHX_ SV *value)
     if (!SvOK(value) || SvROK(value))
         PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID();
     language = SvPV(value, length);
-    if (length != 2 || !isLOWER_A(language[0])
-        || !isLOWER_A(language[1]))
+    if ((length != 2 && length != 3) || !isLOWER_A(language[0])
+        || !isLOWER_A(language[1])
+        || (length == 3 && !isLOWER_A(language[2])))
         PERL_THROW_ERROR_DIAGNOSTIC_API_RENDER_INPUT_INVALID();
     return language;
 }

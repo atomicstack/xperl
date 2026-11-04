@@ -23,12 +23,15 @@ diagpack - select a diagnostic language lexically
 =head1 SYNOPSIS
 
     use diagpack 'de';
+    use diagpack 'tlh';
 
 =head1 DESCRIPTION
 
 This pragma loads the named diagnostic language pack and selects its engine
 for diagnostics compiled in the current lexical scope. Leaving the scope
 restores the previous selection.
+
+Language codes have two or three lowercase letters, such as C<de> or C<tlh>.
 
 Diagnostics retain their originating scope's language choice even when they
 are rendered later. Without an explicit pragma choice, rendering follows

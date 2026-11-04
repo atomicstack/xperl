@@ -544,7 +544,7 @@ ok( Diag::Words::validate_bindings( $copy, $data ), 'identity source permits a r
     my $roles = Storable::dclone($diag);
     for my $language ( sort keys %{ $catalog->{languages} } ) {
         my $target_rule =
-            $language eq 'zh'                                                                ? 'default'
+            $language eq 'zh' || $language eq 'tlh'                                          ? 'default'
           : $language eq 'fi'                                                                ? 'operation_object'
           : $language eq 'he' || $language eq 'hu' || $language eq 'tr'                      ? 'operation'
           : $language eq 'ar' || $language eq 'en' || $language eq 'cy' || $language eq 'fa' ? 'operation'

@@ -1477,6 +1477,7 @@ our %Modules = (
                 ext/XPerl-DiagPack-PT/
                 ext/XPerl-DiagPack-RU/
                 ext/XPerl-DiagPack-SR/
+                ext/XPerl-DiagPack-TLH/
                 ext/XPerl-DiagPack-TR/
                 ext/XPerl-DiagPack-UK/
                 ext/XPerl-DiagPack-ZH/
