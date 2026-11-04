@@ -717,6 +717,16 @@ our %Modules = (
         ],
     },
 
+    'IO::Socket::SSL' => {
+        'DISTRIBUTION' => 'SULLR/IO-Socket-SSL-2.099.tar.gz',
+        'FILES'        => q[cpan/IO-Socket-SSL],
+        'EXCLUDED'     => [
+            qr{^example/},
+            qr{^t/external/},
+        ],
+        'CUSTOMIZED'   => ['Makefile.PL'],
+    },
+
     'IO::Zlib' => {
         'DISTRIBUTION' => 'TOMHUGHES/IO-Zlib-1.15.tar.gz',
         'SYNCINFO'     => 'jkeenan on Mon Mar  4 19:30:34 2024',
@@ -905,6 +915,16 @@ our %Modules = (
             qw(t/604_manifest.t),
             qw(t/appveyor-test.bat),
 
+        ],
+    },
+
+    'Net::SSLeay' => {
+        'DISTRIBUTION' => 'CHRISN/Net-SSLeay-1.96.tar.gz',
+        'FILES'        => q[cpan/Net-SSLeay],
+        'EXCLUDED'     => [
+            qr{^examples/},
+            qr{^t/external/},
+            qr{^t/handle/external/},
         ],
     },
 
