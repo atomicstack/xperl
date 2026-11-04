@@ -89,6 +89,16 @@ my %required_forms;
         'un’addizione (+)',
         'Italian article elision is part of the stored phrase'
     );
+    is(
+        $catalog->{languages}{pl}{words}{add}{forms}{genitive},
+        'dodawania (+)',
+        'Polish stores the genitive operation phrase'
+    );
+    is(
+        $catalog->{languages}{pl}{words}{aelem}{forms}{locative},
+        'elemencie tablicy',
+        'Polish stores the locative array-element phrase'
+    );
     ok(
         !exists $catalog->{languages}{is}{words}{concat}{tags}{gender},
         'mixed-gender alternatives do not acquire a single invented gender'
@@ -540,13 +550,13 @@ ok( Diag::Words::validate_bindings( $copy, $data ), 'identity source permits a r
           : $language eq 'ar' || $language eq 'en' || $language eq 'cy' || $language eq 'fa' ? 'operation'
           : $language eq 'de'                                                                ? 'accusative'
           : $language eq 'is'                                                                ? 'dative'
-          : $language eq 'ru' || $language eq 'uk' || $language eq 'sr'                        ? 'accusative'
+          : $language eq 'ru' || $language eq 'uk' || $language eq 'sr' || $language eq 'pl'    ? 'accusative'
           :                                                               'indefinite';
         my $context_rule =
             $language eq 'fi'                      ? 'operation'
           : $language eq 'cy'                      ? 'soft_mutation'
           : $language eq 'ru'                      ? 'prepositional'
-          : $language eq 'uk' || $language eq 'sr' ? 'locative'
+          : $language eq 'uk' || $language eq 'sr' || $language eq 'pl' ? 'locative'
           : $language eq 'de' || $language eq 'is' ? 'dative'
           :                                          $target_rule;
         is( $roles->{operation_words}{target}{rules}{$language},  $target_rule,  "$language binds the target role" );

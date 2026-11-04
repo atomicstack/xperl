@@ -114,6 +114,13 @@ Its cardinal categories are C<one>, C<few> and C<other>; its ordinal
 category is always C<other>. Like the other packs, its translations are
 machine-generated drafts awaiting native linguistic review.
 
+The Polish (C<pl>) pack includes translated diagnostics and shared operation
+vocabulary with grammatical cases. Its integer cardinal categories distinguish
+C<one> (only 1), C<few> (counts ending in 2-4 except those ending in
+12-14), and C<many> (including 0 and 21).
+Its ordinal category is always C<other>. The translations are machine-generated
+drafts awaiting native linguistic review.
+
 Missing translations in the existing German, Spanish, French, Icelandic,
 Italian, Dutch and Portuguese catalogs have also been filled in. Stale French
 UTF-8 sequence-length wording has been updated. Translation repair records

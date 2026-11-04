@@ -25,7 +25,7 @@ use B ();
 use builtin qw(cardinal_plural_form get_diagnostic_data ordinal_plural_form);
 no warnings 'experimental::builtin';
 
-my @languages              = qw(ar cy de en es fa fi fr he hu is it nl pt ru sr tr uk zh);
+my @languages              = qw(ar cy de en es fa fi fr he hu is it nl pl pt ru sr tr uk zh);
 my $initial_render_default = ${^DIAG_RENDER};
 my %packs;
 my %load_default;
@@ -194,6 +194,34 @@ SKIP: {
         'other,one,few,other,other,one,few', 'Serbian cardinal rules handle teen exceptions' );
     is( join(',', map { ordinal_plural_form('sr', $_) } (1, 2, 21)),
         'other,other,other', 'Serbian ordinal counts use other' );
+}
+
+SKIP: {
+    skip 'Polish diagnostic pack is unavailable', 8 unless $packs{pl};
+
+    my $runtime = eval q{
+        use diagpack 'pl';
+        my $zero = 0;
+        eval { my $result = 1 / $zero };
+        $@;
+    };
+    ok( $runtime && ref $runtime, 'a runtime error captures the Polish pack lexically' );
+    my $legacy = $runtime->render_as_legacy('pl');
+    like( $legacy, qr/dzieleni/i, 'division error uses Polish wording' );
+    {
+        local ${^DIAG_RENDER} = 'en:legacy';
+        is( $runtime->render, $legacy, 'implicit rendering retains the captured Polish pack' );
+        isnt( $legacy, $runtime->render_as_legacy('en'), 'Polish rendering differs from English' );
+    }
+    require JSON::PP;
+    my $record = JSON::PP->new->decode( $runtime->render('pl:legacy:JSON') );
+    is( $record->{message}, $legacy, 'structured output retains the Polish message' );
+    ok( utf8::is_utf8($legacy), 'Polish text retains decoded Unicode characters' );
+    is( join(',', map { cardinal_plural_form('pl', $_) } (0, 1, 2, 4, 5, 12, 14, 21, 22, 101, 102, 112, 122)),
+        'many,one,few,few,many,many,many,many,few,many,few,many,few',
+        'Polish cardinal rules handle case boundaries' );
+    is( join(',', map { ordinal_plural_form('pl', $_) } (1, 2, 21)),
+        'other,other,other', 'Polish ordinal counts use other' );
 }
 
 SKIP: {

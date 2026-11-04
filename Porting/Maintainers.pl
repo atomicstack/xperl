@@ -1473,6 +1473,7 @@ our %Modules = (
                 ext/XPerl-DiagPack-IS/
                 ext/XPerl-DiagPack-IT/
                 ext/XPerl-DiagPack-NL/
+                ext/XPerl-DiagPack-PL/
                 ext/XPerl-DiagPack-PT/
                 ext/XPerl-DiagPack-RU/
                 ext/XPerl-DiagPack-SR/
