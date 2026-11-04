@@ -1355,17 +1355,20 @@ Perl_diagpack_startup_require(pTHX_ const char *language)
     SV *saved_error_object;
     char first;
     char second;
+    char suffix[2];
     bool loaded;
 
     if (!language || !isLOWER_A(language[0]) || !isLOWER_A(language[1])
-        || language[2])
+        || (language[2] && (!isLOWER_A(language[2]) || language[3])))
         return FALSE;
     if (TAINTING_get && !strEQ(language, "en"))
         return FALSE;
     first = toUPPER_A(language[0]);
     second = toUPPER_A(language[1]);
-    source = sv_2mortal(newSVpvf("require XPerl::DiagPack::%c%c; 1",
-                                 first, second));
+    suffix[0] = language[2] ? toUPPER_A(language[2]) : '\0';
+    suffix[1] = '\0';
+    source = sv_2mortal(newSVpvf("require XPerl::DiagPack::%c%c%s; 1",
+                                 first, second, suffix));
     saved_error = newSVsv(ERRSV);
     saved_error_object = newSVsv(PERL_ERROR_OBJ);
     saved_pending = PL_pending_exception;
@@ -1423,7 +1426,7 @@ Perl_diagpack_startup(pTHX)
     const char *end;
     Size_t language_length;
     STRLEN length;
-    char language[3];
+    char language[4];
 
     PERL_ARGS_ASSERT_DIAGPACK_STARTUP;
     if (!setting_sv || !SvOK(setting_sv))
@@ -1442,18 +1445,20 @@ Perl_diagpack_startup(pTHX)
     language_length = (Size_t)(end - setting);
     if (language_length == 4 && memEQ(setting, "auto", 4)) {
         const char *automatic = Perl_diag_auto_language(aTHX);
-        if (!automatic || strlen(automatic) != 2)
+        if (!automatic || (strlen(automatic) != 2 && strlen(automatic) != 3))
             return;
         language[0] = automatic[0];
         language[1] = automatic[1];
+        language[2] = automatic[2];
     }
-    else if (language_length == 2) {
+    else if (language_length == 2 || language_length == 3) {
         language[0] = setting[0];
         language[1] = setting[1];
+        language[2] = language_length == 3 ? setting[2] : '\0';
     }
     else
         return;
-    language[2] = '\0';
+    language[3] = '\0';
     if (!strEQ(language, "en")
         && !Perl_diagpack_find(aTHX_ language))
         (void)Perl_diagpack_startup_require(aTHX_ language);

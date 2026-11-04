@@ -746,13 +746,46 @@ sub batch_context {
     for my $context (@$batch) {
         my %copy = %$context;
         if ( my $vocabulary = $copy{operation_words} ) {
-            @words{ keys %{ $vocabulary->{words} } }                 = values %{ $vocabulary->{words} };
+            for my $operation ( keys %{ $vocabulary->{words} } ) {
+                my $word = $vocabulary->{words}{$operation};
+                my %brief = (
+                    classification => $word->{classification},
+                    english        => $word->{english},
+                );
+                if ( my $english_word = $word->{english_word} ) {
+                    my $forms = $english_word->{forms} || {};
+                    $brief{english_forms} = $forms
+                      if grep { $_ ne ( $word->{english} // '' ) } values %$forms;
+                }
+                if ( my $translation = $word->{translation} ) {
+                    $brief{target_forms} = $translation->{forms};
+                    $brief{target_tags}  = $translation->{tags}
+                      if %{ $translation->{tags} || {} };
+                }
+                $words{$operation} = \%brief;
+            }
             @rules{ keys %{ $vocabulary->{rules} } }                 = values %{ $vocabulary->{rules} };
             @english_rules{ keys %{ $vocabulary->{english_rules} } } = values %{ $vocabulary->{english_rules} };
             $profile                                                 = $vocabulary->{profile};
-            $copy{operation_words} = { map { $_ => $vocabulary->{$_} } qw(parameters runtime_substitution) };
+            my @parameters = map { +{%$_} } @{ $vocabulary->{parameters} };
+            $copy{operation_words} = {
+                parameters           => \@parameters,
+                runtime_substitution => $vocabulary->{runtime_substitution},
+            };
         }
         push @diagnostics, \%copy;
+    }
+    for my $context (@diagnostics) {
+        my $word_context = $context->{operation_words} or next;
+        for my $parameter ( @{ $word_context->{parameters} } ) {
+            my $operations = $parameter->{operations};
+            next unless @$operations;
+            my %allowed = map { $_ => 1 } @$operations;
+            my @excluded = sort grep { !$allowed{$_} } keys %words;
+            next unless @excluded <= 8 && @excluded < @$operations;
+            delete $parameter->{operations};
+            $parameter->{all_except} = \@excluded;
+        }
     }
     return {
         diagnostics => \@diagnostics,
@@ -801,7 +834,12 @@ Literal percent signs use %%. Never insert printf conversions such as %s or posi
 Operation-word metadata explains opcode meanings without expanding selector combinations.
 Named forms, grammatical tags, and tag-based rules belong to the target language.
 Shared operation_vocabulary holds the word dictionary, profile and rules once per batch.
-A diagnostic's operation_words contains its own parameter bindings. Words are substituted at render time.
+The dictionary key is the opcode name. Each record gives its classification, English meaning,
+and any target forms or tags. An absent target form means that form is unavailable.
+A diagnostic's operation_words contains its parameter bindings. A binding with all_except
+accepts every opcode in the shared dictionary except the named opcodes; otherwise its
+operations array is its exact domain.
+Words are substituted at render time.
 Only words classified 'description' use translated forms. A 'keyword' retains its literal Perl spelling;
 an 'opaque' word retains the externally supplied text. Their null translation is intentional, not missing.
 A description needs only the form requested by its binding's rule, not every form declared in the profile.

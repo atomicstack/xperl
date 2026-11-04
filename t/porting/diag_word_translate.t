@@ -96,6 +96,26 @@ my $options     = {
             'sentence instructions require forms by usage rather than the entire profile'
         );
     }
+    {
+        my ($broad) = grep { $_->{number} == 1186 } @$diagnostics;
+        my $context = Diag::Translation::diagnostic_context( $conf, $broad, 'tlh', {} );
+        my $packet = Diag::Translation::batch_context( [$context] );
+        my $word = $packet->{operation_vocabulary}{words}{add};
+        is( $word->{english}, 'addition (+)', 'compact operation context keeps its English meaning' );
+        is( $word->{target_forms}{default}, $data->{languages}{tlh}{words}{add}{forms}{default},
+            'compact operation context keeps the needed target form' );
+        ok( !exists $word->{operation} && !exists $word->{english_word},
+            'compact operation context omits duplicate word fields' );
+        ok( !exists $packet->{diagnostics}[0]{operation_words}{parameters}[0]{operations},
+            'a sole broad binding uses the shared dictionary as its domain' );
+        is( scalar @{ $packet->{diagnostics}[0]{operation_words}{parameters}[0]{all_except} }, 0,
+            'the compact broad domain excludes no reachable operation' );
+        my ($mixed) = grep { $_->{number} == 1419 } @$diagnostics;
+        my $mixed_context = Diag::Translation::diagnostic_context( $conf, $mixed, 'tlh', {} );
+        my $mixed_packet = Diag::Translation::batch_context( [$mixed_context] );
+        ok( @{ $mixed_packet->{diagnostics}[0]{operation_words}{parameters}[0]{operations} },
+            'a narrow operation role retains its exact allowed domain' );
+    }
     my $word   = $data->{languages}{fr}{words}{add};
     my $result = {
         code         => 'add',

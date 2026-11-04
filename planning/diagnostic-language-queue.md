@@ -1,6 +1,6 @@
 # Diagnostic translation language queue
 
-The registered packs are `ar cy de en es fa fi fr he hu is it nl pl pt ru sr tr uk zh`.
+The registered packs are `ar cy de en es fa fi fr he hu is it nl pl pt ru sr tlh tr uk zh`.
 They have been imported and tested; native linguistic review is separate.
 The builtin integer cardinal and ordinal functions cover the retained CLDR
 languages independently of installed packs. Adding a pack requires translated
@@ -41,11 +41,22 @@ order when real translation contexts expose different requirements.
 | Korean | `ko` | Technical wording and phrase construction |
 | Japanese | `ja` | Whole-sentence reordering and phrase forms |
 | Thai | `th` | Technical wording and layout |
-| Cantonese | `yue` | Independent wording and support for a three-letter code |
+| Cantonese | `yue` | Independent wording and phrase construction |
 
-The current pack interface uses two-letter codes;
-Cantonese requires an interface decision, not an invented alias or
-substitution of Mandarin wording.
+The pack interface accepts two- and three-letter lowercase language codes.
+Klingon uses its registered ISO 639-2 and BCP 47 code, `tlh`. Cantonese
+can use `yue` when its own translations are ready.
+
+The Klingon pack uses the programmer terminology in
+[Lingua::tlhInganHol::yIghun](https://metacpan.org/pod/Lingua::tlhInganHol::yIghun)
+as its draft vocabulary baseline. It uses `vay'` for a scalar thing,
+`vay'mey` for an array, `vay'pu'` for a hash, and `mob` for the `scalar`
+operator. Its operator words include `chel` for `+`, `chelHa'` for `-`,
+`wav` for `/`, and `chuv` for `%`. The module is a translation reference,
+not a runtime dependency. The diagnostic pack uses the `other` plural form;
+the retained CLDR integer data does not contain `tlh`.
+Some templates retain English source text where the machine draft was
+missing or unsuitable. The translated prose needs linguistic review.
 
 ## Workflow for each language
 

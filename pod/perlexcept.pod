@@ -386,7 +386,8 @@ Requiring a language pack registers a rendering capability:
 
 Registration alone does not select German. Select it through
 C<${^DIAG_RENDER}>, an explicit rendering argument, or the lexical pragma.
-C<use XPerl::DiagPack qw(all)> loads installed two-letter language packs.
+C<use XPerl::DiagPack qw(all)> loads installed two- and three-letter language
+packs.
 Loading fails at the first failure; packs already registered remain so.
 
 English is permanently available in the core, including miniperl.
@@ -442,8 +443,9 @@ These queries cover all languages in the retained CLDR integer data without
 loading diagnostic packs. They accept code-based locale names and language
 tags, including regional plural overrides. Known languages without an
 explicit ordinal rule return C<other>; unknown languages return C<undef>.
-They do not support fractional counts. This broad locale support does not
-extend the two-letter language-pack loader's interface.
+They do not support fractional counts. The language-pack loader accepts
+two- or three-letter lowercase codes; pack availability is independent of
+the builtin query table.
 
 Diagnostic template rendering currently uses the selected pack's own plural
 callbacks and configured rules. The builtin query table is an independent
