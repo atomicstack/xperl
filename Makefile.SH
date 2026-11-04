@@ -1452,12 +1452,12 @@ _cleaner2:
 	-rmdir lib/version lib/threads lib/inc/Test/Net/SSLeay
 	-rmdir lib/inc/Test/Net lib/inc/Test lib/inc/ExtUtils lib/inc
 	-rmdir lib/encoding lib/autodie/exception lib/autodie/Scope
-	-rmdir lib/autodie lib/XS lib/XPerl/DiagPack lib/Win32API lib/VMS
-	-rmdir lib/Unicode/Collate/Locale lib/Unicode/Collate/CJK
-	-rmdir lib/Unicode/Collate lib/Tie/Hash lib/Thread lib/Text
-	-rmdir lib/Test2/Workflow/Task lib/Test2/Workflow lib/Test2/V1
-	-rmdir lib/Test2/Util/Table lib/Test2/Util lib/Test2/Tools
-	-rmdir lib/Test2/Require lib/Test2/Plugin
+	-rmdir lib/autodie lib/XS lib/XPerl/DiagPack lib/XGraph/IO lib/XGraph
+	-rmdir lib/Win32API lib/VMS lib/Unicode/Collate/Locale
+	-rmdir lib/Unicode/Collate/CJK lib/Unicode/Collate lib/Tie/Hash
+	-rmdir lib/Thread lib/Text lib/Test2/Workflow/Task lib/Test2/Workflow
+	-rmdir lib/Test2/V1 lib/Test2/Util/Table lib/Test2/Util
+	-rmdir lib/Test2/Tools lib/Test2/Require lib/Test2/Plugin
 	-rmdir lib/Test2/Manual/Tooling/Plugin lib/Test2/Manual/Tooling
 	-rmdir lib/Test2/Manual/Testing lib/Test2/Manual/Anatomy
 	-rmdir lib/Test2/Manual lib/Test2/IPC/Driver lib/Test2/IPC

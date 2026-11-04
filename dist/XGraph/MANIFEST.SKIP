@@ -1,0 +1,26 @@
+# Version-control and developer-only files.
+^\.git/
+^\.gitignore$
+^planning/
+^tmp/
+^bench/__pycache__/
+
+# MakeMaker and compiler output.
+^Makefile$
+^Makefile\.old$
+^MANIFEST\.bak$
+^MYMETA\.
+^blib/
+^_eumm/
+^pm_to_blib
+^XGraph\.(?:bs|c|o)$
+^xgraph_lib\.o$
+
+# Test, coverage, backup, and release output.
+^\.prove$
+^cover_db/
+~$
+\.bak$
+\.old$
+\.sw.$
+^XGraph-[0-9._]+(?:\.tar\.gz)?$
