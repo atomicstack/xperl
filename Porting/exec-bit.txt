@@ -12,6 +12,8 @@ configure.gnu
 config_h.SH
 cpan/autodie/t/chmod.t
 cpan/CPAN-Meta-YAML/t/tml
+cpan/Net-SSLeay/helper_script/generate-test-pki
+cpan/Net-SSLeay/helper_script/update-exported-constants
 cpan/Test-Harness/t/source_tests/source.sh
 cpan/Test-Harness/t/source_tests/source_args.sh
 dist/Devel-PPPort/devel/mkapidoc.pl

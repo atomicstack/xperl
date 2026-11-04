@@ -1894,6 +1894,82 @@ cpan/IO-Socket-IP/t/22timeout.t				Test file related to IO::Socket::IP
 cpan/IO-Socket-IP/t/30nonblocking-connect.t		IO::Socket::IP tests
 cpan/IO-Socket-IP/t/31nonblocking-connect-internet.t	IO::Socket::IP tests
 cpan/IO-Socket-IP/t/99pod.t				IO::Socket::IP tests
+cpan/IO-Socket-SSL/BUGS					IO-Socket-SSL distribution file
+cpan/IO-Socket-SSL/Changes				IO-Socket-SSL distribution file
+cpan/IO-Socket-SSL/docs/debugging.txt			IO-Socket-SSL distribution file
+cpan/IO-Socket-SSL/lib/IO/Socket/SSL.pm			IO-Socket-SSL module
+cpan/IO-Socket-SSL/lib/IO/Socket/SSL.pod		IO-Socket-SSL documentation
+cpan/IO-Socket-SSL/lib/IO/Socket/SSL/Intercept.pm	IO-Socket-SSL module
+cpan/IO-Socket-SSL/lib/IO/Socket/SSL/PublicSuffix.pm	IO-Socket-SSL module
+cpan/IO-Socket-SSL/lib/IO/Socket/SSL/Utils.pm		IO-Socket-SSL module
+cpan/IO-Socket-SSL/Makefile.PL				IO-Socket-SSL build script
+cpan/IO-Socket-SSL/README				IO-Socket-SSL distribution file
+cpan/IO-Socket-SSL/t/01loadmodule.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/acceptSSL-timeout.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/alpn.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/auto_verify_hostname.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/cert_formats.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/cert_no_file.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/certs/client-cert.pem		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/client-key.enc		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/client-key.pem		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/create-certs.pl		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/proxyca.pem			IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server.p12			IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server-cert.der		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server-cert.pem		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server-ecc-cert.pem		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server-ecc-key.pem		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server-key.der		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server-key.enc		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server-key.pem		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server-wildcard.pem		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server2-cert.pem		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server2-key.pem		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/server_enc.p12		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/sub-server.pem		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/test-ca.pem			IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/certs/test-subca.pem		IO-Socket-SSL test fixture
+cpan/IO-Socket-SSL/t/compatibility.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/connectSSL-timeout.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/core.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/dhe.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/double-tls-layer.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/ecdhe.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/io-socket-inet6.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/io-socket-ip.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/memleak_bad_handshake.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/mitm.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/multiple-cert-rsa-ecc.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/nonblock.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/npn.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/plain_upgrade_downgrade.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/protocol_version.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/psk.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/public_suffix_lib.pl		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/public_suffix_lib_encode_idn.t	IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/public_suffix_lib_libidn.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/public_suffix_lib_uri.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/public_suffix_ssl.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/readline.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/session_cache.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/session_ticket.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/sessions.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/set_curves.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/signal-readline.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/sni.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/sni_verify.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/start-stopssl.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/start-stopssl-bio.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/start-stopssl-with-cb.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/startssl.t				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/startssl-failed.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/sysread_write.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/testlib.pl				IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/verify_fingerprint.t		IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/verify_hostname.t			IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/verify_hostname_standalone.t	IO-Socket-SSL test
+cpan/IO-Socket-SSL/t/verify_partial_chain.t		IO-Socket-SSL test
 cpan/IO-Zlib/t/basic.t			Tests for IO::Zlib
 cpan/IO-Zlib/t/external.t		Tests for IO::Zlib
 cpan/IO-Zlib/t/getc.t			Tests for IO::Zlib
@@ -2191,6 +2267,216 @@ cpan/Module-Metadata/t/lib/GeneratePackage.pm	Module related to Module::Metadata
 cpan/Module-Metadata/t/metadata.t		Test file related to Module::Metadata
 cpan/Module-Metadata/t/taint.t			Test file related to Module::Metadata
 cpan/Module-Metadata/t/version.t		Test file related to Module::Metadata
+cpan/Net-SSLeay/Changes						Net-SSLeay distribution file
+cpan/Net-SSLeay/constants.c					Net-SSLeay source
+cpan/Net-SSLeay/CONTRIBUTING.md					Net-SSLeay distribution file
+cpan/Net-SSLeay/Credits						Net-SSLeay distribution file
+cpan/Net-SSLeay/helper_script/constants.txt			Net-SSLeay distribution file
+cpan/Net-SSLeay/helper_script/generate-test-pki			Net-SSLeay distribution file
+cpan/Net-SSLeay/helper_script/pki.cfg				Net-SSLeay distribution file
+cpan/Net-SSLeay/helper_script/update-exported-constants		Net-SSLeay distribution file
+cpan/Net-SSLeay/inc/Test/Net/SSLeay.pm				Net-SSLeay distribution file
+cpan/Net-SSLeay/inc/Test/Net/SSLeay/Socket.pm			Net-SSLeay distribution file
+cpan/Net-SSLeay/lib/Net/SSLeay.pm				Net-SSLeay module
+cpan/Net-SSLeay/lib/Net/SSLeay.pod				Net-SSLeay documentation
+cpan/Net-SSLeay/lib/Net/SSLeay/Handle.pm			Net-SSLeay module
+cpan/Net-SSLeay/LICENSE						Net-SSLeay distribution file
+cpan/Net-SSLeay/Makefile.PL					Net-SSLeay build script
+cpan/Net-SSLeay/ppport.h					Net-SSLeay source
+cpan/Net-SSLeay/QuickRef					Net-SSLeay distribution file
+cpan/Net-SSLeay/README						Net-SSLeay distribution file
+cpan/Net-SSLeay/README.OSX					Net-SSLeay distribution file
+cpan/Net-SSLeay/README.VMS					Net-SSLeay distribution file
+cpan/Net-SSLeay/README.Win32					Net-SSLeay distribution file
+cpan/Net-SSLeay/SSLeay.xs					Net-SSLeay source
+cpan/Net-SSLeay/t/data/binary-test.file				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.cert.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.cert.dump			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.cert.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.certchain.der		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.certchain.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.certchain.pem		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.certchain.enc.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.csr.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.csr.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.enc.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.key.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.key.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.key.enc.der		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/extended-cert.key.enc.pem		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.cert.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.cert.dump		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.cert.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.certchain.der		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.certchain.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.certchain.pem		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.certchain.enc.p12	Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.crl.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.crl.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.csr.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.csr.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.enc.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.key.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.key.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.key.enc.der		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/intermediate-ca.key.enc.pem		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/openssl_init_test.conf			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.p12				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.cert.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.cert.dump			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.cert.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.certchain.der		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.certchain.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.certchain.pem		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.certchain.enc.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.csr.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.csr.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.enc.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.key.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.key.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.key.enc.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/revoked-cert.key.enc.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.p12				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.cert.der				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.cert.dump			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.cert.pem				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.certchain.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.certchain.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.certchain.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.certchain.enc.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.csr.der				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.csr.pem				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.enc.p12				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.key.der				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.key.pem				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.key.enc.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/root-ca.key.enc.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.p12				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.cert.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.cert.dump			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.cert.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.certchain.der		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.certchain.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.certchain.pem		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.certchain.enc.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.csr.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.csr.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.enc.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.key.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.key.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.key.enc.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/simple-cert.key.enc.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.p12				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.cert.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.cert.dump			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.cert.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.certchain.der		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.certchain.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.certchain.pem		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.certchain.enc.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.csr.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.csr.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.enc.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.key.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.key.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.key.enc.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/strange-cert.key.enc.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.p12				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.cert.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.cert.dump			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.cert.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.certchain.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.certchain.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.certchain.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.certchain.enc.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.csr.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.csr.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.enc.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.key.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.key.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.key.enc.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-ca.key.enc.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.p12				Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.cert.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.cert.dump			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.cert.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.certchain.der		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.certchain.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.certchain.pem		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.certchain.enc.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.csr.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.csr.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.enc.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.key.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.key.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.key.enc.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/verify-cert.key.enc.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.cert.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.cert.dump			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.cert.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.certchain.der		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.certchain.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.certchain.pem		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.certchain.enc.p12		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.csr.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.csr.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.enc.p12			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.key.der			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.key.pem			Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.key.enc.der		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/data/wildcard-cert.key.enc.pem		Net-SSLeay test fixture
+cpan/Net-SSLeay/t/handle/local/05_use.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/01_pod.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/02_pod_coverage.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/03_use.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/04_basic.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/05_passwd_cb.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/06_tcpecho.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/07_sslecho.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/08_pipe.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/09_ctx_new.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/10_rand.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/11_read.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/15_bio.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/20_functions.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/21_constants.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/22_provider.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/22_provider_try_load.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/22_provider_try_load_zero_retain.t	Net-SSLeay test
+cpan/Net-SSLeay/t/local/23_openssl_init.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/30_error.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/31_rsa_generate_key.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/32_x509_get_cert_info.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/33_x509_create_cert.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/34_x509_crl.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/35_ephemeral.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/36_verify.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/37_asn1_time.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/38_priv-key.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/39_pkcs12.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/40_npn_support.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/41_alpn_support.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/42_info_callback.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/43_misc_functions.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/44_sess.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/45_exporter.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/46_msg_callback.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/47_keylog.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/48_client_hello_callback.t		Net-SSLeay test
+cpan/Net-SSLeay/t/local/50_digest.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/61_threads-cb-crash.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/62_threads-ctx_new-deadlock.t		Net-SSLeay test
+cpan/Net-SSLeay/t/local/63_ec_key_generate_key.t		Net-SSLeay test
+cpan/Net-SSLeay/t/local/64_ticket_sharing.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/65_security_level.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/65_ticket_sharing_2.t			Net-SSLeay test
+cpan/Net-SSLeay/t/local/66_curves.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/67_sigalgs.t				Net-SSLeay test
+cpan/Net-SSLeay/t/local/kwalitee.t				Net-SSLeay test
+cpan/Net-SSLeay/typemap						Net-SSLeay distribution file
 cpan/NEXT/lib/NEXT.pm				Pseudo-class NEXT for method redispatch
 cpan/NEXT/t/actual.t				NEXT
 cpan/NEXT/t/actuns.t				NEXT
