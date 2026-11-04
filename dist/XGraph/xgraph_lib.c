@@ -751,7 +751,6 @@ xg_delete_vertex(pTHX_ xg_graph *graph, xg_vertex_id_t id)
 {
     xg_adj_list *out;
     xg_adj_list *in;
-    uint32_t i;
     HE *he;
 
     xg_require_mutable(aTHX_ graph);
@@ -1183,7 +1182,6 @@ xg_dfs_order(pTHX_ const xg_graph *graph, xg_vertex_id_t start,
     uint32_t *positions;
     U8 *seen;
     uint32_t top = 0;
-    xg_vertex_id_t id;
 
     xg_require_usable(aTHX_ graph);
     xg_require_vertex(aTHX_ graph, start);

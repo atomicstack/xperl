@@ -27,7 +27,7 @@ xg_magic_free(pTHX_ SV *sv, MAGIC *mg)
 }
 
 static MGVTBL xg_magic_vtbl = {
-    NULL, NULL, NULL, NULL, xg_magic_free
+    NULL, NULL, NULL, NULL, xg_magic_free, NULL, NULL, NULL
 };
 
 static int
@@ -42,7 +42,7 @@ xg_cursor_magic_free(pTHX_ SV *sv, MAGIC *mg)
 }
 
 static MGVTBL xg_cursor_magic_vtbl = {
-    NULL, NULL, NULL, NULL, xg_cursor_magic_free
+    NULL, NULL, NULL, NULL, xg_cursor_magic_free, NULL, NULL, NULL
 };
 
 static xg_graph *
@@ -60,11 +60,11 @@ xg_graph_from_sv(pTHX_ SV *sv)
 }
 
 static SV *
-xg_make_object(pTHX_ const char *class, xg_graph *graph)
+xg_make_object(pTHX_ const char *class_name, xg_graph *graph)
 {
     SV *object = newSV(0);
     /* The magic pointer is the native graph owner. */
-    sv_setref_pv(object, class, (void *)graph);
+    sv_setref_pv(object, class_name, (void *)graph);
     sv_magicext(SvRV(object), NULL, PERL_MAGIC_ext, &xg_magic_vtbl,
                 (const char *)graph, 0);
     return object;
@@ -144,20 +144,13 @@ xg_id_arg(pTHX_ SV *sv)
     return (xg_vertex_id_t)value;
 }
 
-static SV *
-xg_edge_call_label(int items, SV **stack, int index)
-{
-    /* XSUB varargs represent an omitted label as Perl undef. */
-    return items > index ? stack[index] : &PL_sv_undef;
-}
-
 MODULE = XGraph        PACKAGE = XGraph
 
 PROTOTYPES: DISABLE
 
 void
-new(class, ...)
-    SV *class
+new(class_sv, ...)
+    SV *class_sv
 PPCODE:
     {
         U8 acyclic = 0;
@@ -181,14 +174,14 @@ PPCODE:
             else
                 croak("XPERL.GRAPH.INVALID_ARGUMENT: unknown option");
         }
-        class_name = SvPV_nolen(class);
+        class_name = SvPV_nolen(class_sv);
         graph = xg_new(aTHX_ acyclic, strict_labels);
         XPUSHs(sv_2mortal(xg_make_object(aTHX_ class_name, graph)));
     }
 
 void
-_from_edges_data(class, mode, vertices, edges, labels, acyclic, strict_labels)
-    SV *class
+_from_edges_data(class_sv, mode, vertices, edges, labels, acyclic, strict_labels)
+    SV *class_sv
     IV mode
     SV *vertices
     SV *edges
@@ -236,7 +229,7 @@ PPCODE:
             xg_bulk_add_edge(aTHX_ graph, from, to, label);
         }
 
-        class_name = SvPV_nolen(class);
+        class_name = SvPV_nolen(class_sv);
         {
             SV *object = xg_make_object(aTHX_ class_name, graph);
             graph = NULL;
@@ -245,8 +238,8 @@ PPCODE:
     }
 
 void
-_from_edge_pairs(class, vertices, pairs, labels, acyclic, strict_labels)
-    SV *class
+_from_edge_pairs(class_sv, vertices, pairs, labels, acyclic, strict_labels)
+    SV *class_sv
     SV *vertices
     SV *pairs
     SV *labels
@@ -291,7 +284,7 @@ PPCODE:
             xg_bulk_add_edge(aTHX_ graph, from, to, &PL_sv_undef);
         }
 
-        class_name = SvPV_nolen(class);
+        class_name = SvPV_nolen(class_sv);
         {
             SV *object = xg_make_object(aTHX_ class_name, graph);
             graph = NULL;
