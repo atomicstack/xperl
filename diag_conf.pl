@@ -84663,15 +84663,47 @@ $CONF = {
                 }
               },
               "pl" => {
-                "*" => {
-                  "*" => {
-                    "*" => {
-                      "call" => "Wywołanie %{operation}() na %{handle_state} %{handle_type} %{handle_name}",
-                      "operator" => "Operator %{operation} na %{handle_state} %{handle_type} %{handle_name}"
+                "closed" => {
+                  "filehandle" => {
+                    "named" => {
+                      "call" => "Wywołanie %{operation}() na zamkniętym uchwycie pliku %{handle_name}",
+                      "operator" => "Operator %{operation} na zamkniętym uchwycie pliku %{handle_name}"
                     },
                     "unnamed" => {
-                      "call" => "Wywołanie %{operation}() na %{handle_state} %{handle_type}",
-                      "operator" => "Operator %{operation} na %{handle_state} %{handle_type}"
+                      "call" => "Wywołanie %{operation}() na zamkniętym uchwycie pliku",
+                      "operator" => "Operator %{operation} na zamkniętym uchwycie pliku"
+                    }
+                  },
+                  "socket" => {
+                    "named" => {
+                      "call" => "Wywołanie %{operation}() na zamkniętym gnieździe %{handle_name}",
+                      "operator" => "Operator %{operation} na zamkniętym gnieździe %{handle_name}"
+                    },
+                    "unnamed" => {
+                      "call" => "Wywołanie %{operation}() na zamkniętym gnieździe",
+                      "operator" => "Operator %{operation} na zamkniętym gnieździe"
+                    }
+                  }
+                },
+                "unopened" => {
+                  "filehandle" => {
+                    "named" => {
+                      "call" => "Wywołanie %{operation}() na nieotwartym uchwycie pliku %{handle_name}",
+                      "operator" => "Operator %{operation} na nieotwartym uchwycie pliku %{handle_name}"
+                    },
+                    "unnamed" => {
+                      "call" => "Wywołanie %{operation}() na nieotwartym uchwycie pliku",
+                      "operator" => "Operator %{operation} na nieotwartym uchwycie pliku"
+                    }
+                  },
+                  "socket" => {
+                    "named" => {
+                      "call" => "Wywołanie %{operation}() na nieotwartym gnieździe %{handle_name}",
+                      "operator" => "Operator %{operation} na nieotwartym gnieździe %{handle_name}"
+                    },
+                    "unnamed" => {
+                      "call" => "Wywołanie %{operation}() na nieotwartym gnieździe",
+                      "operator" => "Operator %{operation} na nieotwartym gnieździe"
                     }
                   }
                 }
