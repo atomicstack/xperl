@@ -162,4 +162,8 @@ for my $language ( grep { $_ ne 'de' } @all_languages ) {
     }
 }
 
+{
+    no warnings 'once';
+    @main::Changed = ();
+}
 done_testing();
