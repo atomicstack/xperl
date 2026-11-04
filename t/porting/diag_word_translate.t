@@ -298,14 +298,24 @@ my $options     = {
         work_dir    => "$directory/run",
         output      => "$directory/result.json"
     };
-    Diag::Translation::run( $conf, $diagnostics, $run_options );
+    my $run_quietly = sub {
+        my $output = '';
+        open my $capture, '>', \$output or die $!;
+        local *STDOUT = $capture;
+        Diag::Translation::run( $conf, $diagnostics, $run_options );
+    };
+    $run_quietly->();
     my $output = Diag::Translation::read_json( $run_options->{output} );
     is( scalar @{ $output->{vocabulary_sets} }, 1, 'shared runner saves typed vocabulary output' );
     ok( !exists $output->{template_sets}, 'vocabulary output is not confused with sentence sets' );
     my $checkpoint = Diag::Translation::read_json("$directory/run/checkpoint.json");
     ok( $checkpoint->{vocabulary}, 'checkpoint distinguishes word and sentence workflows' );
     $run_options->{resume} = 1;
-    Diag::Translation::run( $conf, $diagnostics, $run_options );
+    $run_quietly->();
     $output = Diag::Translation::read_json( $run_options->{output} );
     is( scalar @{ $output->{vocabulary_sets} }, 2, 'resume retains earlier words and processes the next batch' );
+    $run_options->{code} = $diagnostics->[0]{code};
+    $run_quietly->();
+    $output = Diag::Translation::read_json( $run_options->{output} );
+    is( scalar @{ $output->{vocabulary_sets} }, 2, 'scoped resume retains completed words outside the selection' );
 }

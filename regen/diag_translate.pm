@@ -1304,6 +1304,7 @@ sub run {
     my %fingerprints = map { $_->{code} => fingerprint($_) } @contexts;
 
     for my $code ( keys %{ $state->{completed} } ) {
+        next if defined $options->{code} && !exists $fingerprints{$code};
         delete $state->{completed}{$code}
           if !exists $fingerprints{$code}
           || $state->{completed}{$code}{fingerprint} ne $fingerprints{$code};
