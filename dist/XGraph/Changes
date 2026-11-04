@@ -1,0 +1,29 @@
+Revision history for XGraph
+
+0.01  2026-09-20
+
+    - Added the initial XS graph storage and eager algorithm implementation.
+    - Added compact adjacency, stable vertex IDs, names, labels, edge tuples,
+      cloning, freezing, and focused contract tests.
+    - Added Perl-wrapped XS cursors, atomic bulk label declaration, a pure-Perl
+      differential reference model, and compact/wide build validation.
+    - Added the XGraph::IO::DOT writer and to_dot/write_dot convenience
+      methods for deterministic Graphviz output.
+    - Added iterative Tarjan, Pearce, and Tarjan--Zwick
+      strongly-connected-components implementations with differential tests
+      and benchmark coverage against Kosaraju.
+    - Renamed the native implementation source to xgraph_lib.c so it cannot
+      collide with generated XGraph.c on case-insensitive file systems.
+    - Added a reproducible benchmark harness comparing topology operations
+      with the pure-Perl Graph distribution.
+    - Added an optional SciPy SCC benchmark using the same deterministic
+      workload as the XGraph comparison harness.
+    - Added a focused SCC profiling driver and removed the redundant
+      per-component member sort from Tarjan--Zwick; member order is already
+      guaranteed by its ascending vertex-ID grouping pass.
+    - Added an end-to-end SCC benchmark that includes fresh graph
+      construction and conversion to grouped component lists on both sides
+      of the XGraph/SciPy comparison.
+    - Added the bulk from_edges constructor with name-default vertex paths,
+      explicit ID mode, grouped labels, duplicate warnings, and atomic input
+      validation.

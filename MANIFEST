@@ -5573,6 +5573,57 @@ dist/Unicode-Normalize/t/proto.t	Unicode::Normalize
 dist/Unicode-Normalize/t/split.t	Unicode::Normalize
 dist/Unicode-Normalize/t/test.t		Unicode::Normalize
 dist/Unicode-Normalize/t/tie.t		Unicode::Normalize
+dist/XGraph/bench/e2e-scc-scipy.py			XGraph e2e scc scipy benchmark
+dist/XGraph/bench/e2e-scc-xgraph.pl			XGraph e2e scc xgraph benchmark
+dist/XGraph/bench/graph-vs-xgraph.pl			XGraph graph vs xgraph benchmark
+dist/XGraph/bench/profile-scc.pl			XGraph profile scc benchmark
+dist/XGraph/bench/scipy-scc.py				XGraph scipy scc benchmark
+dist/XGraph/Changes					XGraph change history
+dist/XGraph/lib/XGraph.pm				XGraph Perl interface and documentation
+dist/XGraph/lib/XGraph/IO/DOT.pm			XGraph DOT serialization
+dist/XGraph/Makefile.PL					XGraph build configuration
+dist/XGraph/MANIFEST					XGraph distribution manifest
+dist/XGraph/MANIFEST.SKIP				XGraph distribution exclusions
+dist/XGraph/ppport.h					XGraph Perl API compatibility header
+dist/XGraph/README					XGraph overview
+dist/XGraph/t/00-load.t					XGraph 00 load test
+dist/XGraph/t/05-api-surface.t				XGraph 05 api surface test
+dist/XGraph/t/10-contract.t				XGraph 10 contract test
+dist/XGraph/t/20-vertices.t				XGraph 20 vertices test
+dist/XGraph/t/30-labels.t				XGraph 30 labels test
+dist/XGraph/t/40-edges.t				XGraph 40 edges test
+dist/XGraph/t/41-bulk-construction.t			XGraph 41 bulk construction test
+dist/XGraph/t/50-adjacency.t				XGraph 50 adjacency test
+dist/XGraph/t/60-paths.t				XGraph 60 paths test
+dist/XGraph/t/70-components.t				XGraph 70 components test
+dist/XGraph/t/80-transformations.t			XGraph 80 transformations test
+dist/XGraph/t/90-errors-magic.t				XGraph 90 errors magic test
+dist/XGraph/t/91-clone.t				XGraph 91 clone test
+dist/XGraph/t/92-threads.t				XGraph 92 threads test
+dist/XGraph/t/93-cursor.t				XGraph 93 cursor test
+dist/XGraph/t/95-randomized.t				XGraph 95 randomized test
+dist/XGraph/t/96-undirected.t				XGraph 96 undirected test
+dist/XGraph/t/97-fold.t					XGraph 97 fold test
+dist/XGraph/t/98-dot.t					XGraph 98 dot test
+dist/XGraph/t/99-tarjan.t				XGraph 99 tarjan test
+dist/XGraph/t/graph-ported-adjacency.t			XGraph graph ported adjacency test
+dist/XGraph/t/graph-ported-all-cessors.t		XGraph graph ported all cessors test
+dist/XGraph/t/graph-ported-components.t			XGraph graph ported components test
+dist/XGraph/t/graph-ported-connections.t		XGraph graph ported connections test
+dist/XGraph/t/graph-ported-copy.t			XGraph graph ported copy test
+dist/XGraph/t/graph-ported-cycles.t			XGraph graph ported cycles test
+dist/XGraph/t/graph-ported-paths.t			XGraph graph ported paths test
+dist/XGraph/t/graph-ported-README.md			XGraph ported test notes
+dist/XGraph/t/graph-ported-structural.t			XGraph graph ported structural test
+dist/XGraph/t/graph-ported-subgraph.t			XGraph graph ported subgraph test
+dist/XGraph/t/graph-ported-transitive-matrix.t		XGraph graph ported transitive matrix test
+dist/XGraph/t/graph-ported-traversal-scenarios.t	XGraph graph ported traversal scenarios test
+dist/XGraph/t/graph-ported-traversals.t			XGraph graph ported traversals test
+dist/XGraph/t/graph-ported-vertices.t			XGraph graph ported vertices test
+dist/XGraph/t/lib/XGraph/Reference.pm			XGraph test reference implementation
+dist/XGraph/xgraph.h					XGraph native declarations
+dist/XGraph/XGraph.xs					XGraph XS interface
+dist/XGraph/xgraph_lib.c				XGraph native implementation
 dist/XSLoader/Makefile.PL		Dynamic Loader makefile writer
 dist/XSLoader/t/XSLoader.t		See if XSLoader works
 dist/XSLoader/XSLoader_pm.PL		Simple XS Loader perl module

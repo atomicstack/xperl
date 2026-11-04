@@ -1,0 +1,485 @@
+XGraph
+======
+
+XGraph is an XS-backed directed graph for XPerl.  It is intended for graph
+topology and graph algorithms, not for drawing graphics or storing arbitrary
+application objects.
+
+XGraph is bundled in XPerl's ``dist/XGraph`` tree.  The separate development
+repository is useful for building and testing the native representation.
+XGraph is not currently a CPAN release.
+
+XS is the bridge that lets a Perl module call C code.  XGraph uses C for the
+topology and algorithms, then turns the results back into ordinary Perl
+values.  This gives students two useful views of the same idea: the graph
+algorithm in familiar Perl terms and the compact data structure underneath.
+
+QUICK START
+-----------
+
+    use XGraph;
+
+    my $g = XGraph->new(strict_labels => 1);
+    $g->declare_label('depends_on');
+
+    my $parse = $g->add_vertex('parse');
+    my $emit  = $g->add_vertex('emit');
+    my $tmp   = $g->add_vertex;              # anonymous vertex
+
+    $g->add_edge_by_ids($parse, $emit, 'depends_on');
+
+    print $g->has_path($parse, $emit) ? "reachable\n" : "not reachable\n";
+    my $edges = $g->out_edges($parse);
+
+The return value from ``add_vertex`` is the vertex's stable numeric ID.  Use
+IDs for the native API, or use the name convenience methods when both
+endpoints have names:
+
+    $g->add_edge_by_names('parse', 'emit', 'depends_on');
+    my $id = $g->vertex_id_by_name('parse');
+
+GRAPH BASICS
+------------
+
+A graph is a collection of vertices and edges.  A vertex is a thing we want
+to talk about.  An edge is a relationship between two vertices.  In XGraph,
+edges are directed, which means that the arrow has a beginning and an end:
+
+    parse  --depends_on-->  emit
+
+The edge above says that 'parse' depends on 'emit'.  It does not
+automatically say that 'emit' depends on 'parse'.  If both relationships
+are needed, store both directed edges.
+
+XGraph uses the word vertex where some books use node.  These words describe
+the same idea.  A vertex ID is the machine-friendly identity.  A vertex name
+is a human-friendly alias.  An unnamed vertex is still a perfectly useful
+vertex because its ID is enough to identify it.
+
+An edge has the value '(from ID, to ID, label)'.  The label describes the
+kind of relationship.  It is not an arbitrary record attached to the edge.
+For example, these are two different edges because their relationship kinds
+are different:
+
+    ($a, $b, 'depends_on')
+    ($a, $b, 'generated_by')
+
+The same three-part tuple cannot be inserted twice.  An omitted label means
+the same thing as an 'undef' label.  The empty string is a different label.
+
+Some useful graph vocabulary:
+
+* The out-degree of a vertex is the number of edges leaving it.  The
+  in-degree is the number entering it.
+* A path is a sequence of vertices connected by edges.  A cycle is a path
+  which returns to its starting vertex.
+* A source has no incoming edges.  A sink has no outgoing edges.
+* A directed acyclic graph, or DAG, has no directed cycle.  A topological
+  ordering lists its vertices so every edge points forward in the list.
+* A strongly connected component is a group in which every vertex can reach
+  every other vertex.  A weakly connected component ignores arrow direction
+  while deciding whether vertices belong to the same group.
+
+The algorithm methods return IDs because IDs are unambiguous for both named
+and anonymous vertices.  Use 'vertex($id)' or the name lookup methods when
+you want a more descriptive Perl-facing view.
+
+HOW THE IMPLEMENTATION REPRESENTS A GRAPH
+------------------------------------------
+
+The native graph keeps two sorted adjacency lists for each live vertex:
+
+    vertex A, outgoing: (B, label)
+    vertex B, incoming: (A, label)
+
+Keeping both lists makes either direction quick to inspect.  It also means
+that deleting an edge must remove two entries.  The entries contain only
+integer IDs.  Names, labels, and vertex metadata stay in ordinary Perl AV/HV
+structures at the boundary.  This separation keeps the frequently visited
+topology compact and makes Perl reference ownership straightforward.
+
+In Perl's C API, an SV is a scalar, an AV is an array, and an HV is a hash.
+Those names appear in the XS and C sources because the graph uses Perl's
+normal memory and reference-counting rules for this boundary data.
+
+The compact build packs a neighboring vertex ID and a label ID into one
+integer.  Because the lists are sorted by that packed value, binary search
+can find an edge without a separate hash table.  The wide build uses the same
+logical design with larger fields.  The packing is an implementation detail,
+not a file format.
+
+HOW TO READ THE ALGORITHMS
+--------------------------
+
+The path and reachability methods use breadth-first search.  Breadth-first
+search visits all vertices one edge away, then all vertices two edges away,
+and so on.  The first time it reaches a destination therefore gives a
+shortest path measured in edges.  A queue holds the frontier, and a 'seen'
+array prevents revisiting a vertex.
+
+The depth-first methods use a stack.  They can report the order in which
+vertices are first discovered (preorder), the order in which exploration
+finishes (postorder), or the reverse of the finishing order.  The
+implementation stores its own stack instead of using C recursion, so a deep
+graph does not consume the C call stack one vertex at a time.
+
+Topological sorting repeatedly chooses a vertex with no remaining incoming
+edges.  Removing that vertex exposes new candidates.  If some vertices
+remain when no candidate exists, those vertices are part of a cycle and no
+topological order exists.
+
+Strongly connected components use two depth-first passes.  The first records
+finishing order.  The second walks the reversed edges in that order.  This is
+Kosaraju's algorithm.  The condensation operation then replaces each
+component with one vertex, producing a smaller acyclic graph.
+
+DATA MODEL
+----------
+
+Every vertex has a graph-assigned numeric ID.  ID zero is invalid.  IDs start
+at one, increase monotonically, and are not reused after a vertex is deleted.
+This makes an ID safe to use as a key in an application-owned table.
+
+Vertices may have unique string names.  An omitted name or ``undef`` creates
+an anonymous vertex.  XGraph does not invent names for anonymous vertices.
+The empty string is a valid name.  Names are stringified once and compared
+using ordinary Perl hash-key semantics.  References are rejected.
+
+An edge is the unique relationship tuple ``(from ID, to ID, label)``.  There
+are no independent edge IDs.  Parallel edges are possible when their labels
+differ.  An edge without a label and an edge labelled ``undef`` are the same
+edge.  The empty string is a different label.
+
+Labels are graph-local relationship names.  The graph interns them and keeps
+the public label as a string.  The first two labels are reserved:
+
+    label ID 1  undef
+    label ID 2  ""
+
+In loose mode, a new non-empty label is registered when an edge is added.  In
+strict mode, non-empty labels must first be passed to ``declare_label`` or
+``declare_labels``.  Label references are rejected.  A vertex may optionally
+carry one arbitrary Perl metadata value; edges still carry only their
+relationship labels, so richer edge records belong in a separate map keyed by
+edge tuples.
+
+BUILDING
+--------
+
+The normal developer build is:
+
+    perl Makefile.PL
+    make
+    make test
+
+The default native representation packs a 24-bit vertex ID and an 8-bit label
+ID into each adjacency entry.  This permits vertex IDs from 1 through
+``0xFFFFFF`` and up to 253 registered non-empty labels, in addition to the two
+reserved labels.  The compact representation is an implementation detail,
+not a serialization format.
+
+The same tests can be run against the representation-equivalent wide build:
+
+    make clean
+    XGRAPH_WIDE=1 perl Makefile.PL
+    make test
+
+The wide build uses 32-bit vertex and label fields.  It is a compile-time
+validation configuration, not a run-time option and not a promise that a
+graph serialized by one build can be opened by the other.
+
+API OVERVIEW
+------------
+
+Construction and lifecycle:
+
+    XGraph->new(%options)
+    XGraph->from_edges(%options)
+    $g->freeze
+    $g->is_frozen
+    $g->clone
+    $g->mutable_copy
+
+The constructor accepts ``acyclic`` and ``strict_labels`` boolean options.
+``freeze`` is irreversible and prevents changes to topology, names, labels,
+and graph options.  ``clone`` makes an independent copy preserving frozen
+state.  ``mutable_copy`` makes an independent mutable copy.
+
+``from_edges`` is the bulk constructor.  Vertex references are names by
+default; use ``vertex_mode => 'id'`` for numeric IDs.  It accepts flat
+``edges`` pairs, label-grouped ``labeled_edges``, one or more ``paths``, and
+label-grouped ``labeled_paths``.  Names are created on first use, and
+duplicate edge tuples warn and are ignored.  Use ``vertices`` to declare
+isolated vertices.
+
+Vertices:
+
+    add_vertex, has_vertex_id, vertex_id_by_name, vertex_name_by_id
+    rename_vertex, delete_vertex_by_id, delete_vertex_by_name
+    vertex_ids, vertices, vertex_count, vertex
+    set_vertex_metadata, vertex_metadata, has_vertex_metadata
+    delete_vertex_metadata
+
+Edges and adjacency:
+
+    add_edge_by_ids, add_edge_by_names
+    has_edge_by_ids, has_edge_by_names
+    delete_edge_by_ids, delete_edge_by_names
+    add_edge, has_edge, delete_edge
+    edges, edges_between, out_edges, in_edges
+    out_neighbors, in_neighbors, out_degree, in_degree, edge_count
+
+Every public edge result is an array reference ``[FROM_ID, TO_ID, LABEL]``.
+The label is ``undef``, the empty string, or the registered string value.
+``out_neighbors`` and ``in_neighbors`` contain one entry per edge, so a pair
+of vertices joined by two differently labelled edges appears twice.
+
+Labels:
+
+    declare_label, declare_labels, labels, label_count
+
+``declare_labels`` validates the complete list before changing the graph.  It
+is therefore atomic when one of its arguments is invalid or would exceed the
+compact label limit.
+
+Algorithms:
+
+    has_path, path, shortest_path
+    descendants, strict_descendants, ancestors, strict_ancestors
+    dfs_preorder, dfs_postorder, dfs_reverse_postorder
+    topological_sort, is_acyclic
+    source_vertices, sink_vertices, loop_vertices
+    weakly_connected_components, strongly_connected_components
+    strongly_connected_components_tarjan, strongly_connected_components_pearce
+    strongly_connected_components_tarjan_zwick
+    cyclic_strongly_connected_components
+    cycle, shortest_cycle
+    is_tree, is_arborescence, arborescence_root
+    delete_paths, reachability_roots
+    induced_subgraph, condensation
+
+Folds:
+
+    fold_vertices
+
+Graphviz output:
+
+    $g->to_dot(%options)
+    $g->write_dot($path, %options)
+
+The DOT writer is implemented by XGraph::IO::DOT and has no Graphviz
+runtime dependency.  It emits a directed graph with stable v<ID> node
+identifiers, names as vertex labels, and defined edge labels as DOT
+label attributes.  undef labels are omitted and empty-string labels are
+emitted explicitly.  show_ids => 1 appends numeric IDs to vertex labels.
+
+BENCHMARKING
+------------
+
+The repository includes bench/graph-vs-xgraph.pl for direct comparisons with
+the pure-Perl Graph distribution in the sibling ../Graph checkout.  Build
+XGraph first, then run:
+
+    perl bench/graph-vs-xgraph.pl
+
+The benchmark uses the same integer vertices and deterministic DAG edge list
+for both implementations.  It reports construction, edge lookup, outgoing
+neighbors, reachability, edge enumeration, and topological-sort timings.
+It also compares XGraph's Kosaraju, Tarjan, Pearce, and Tarjan--Zwick SCC
+implementations against Graph's strongly connected-component implementation.
+Graph's SCC cache is cleared before each timed call so repeated calls measure
+the algorithm rather than a cached result.
+The defaults are deliberately modest.  Set XGRAPH_BENCH_VERTICES,
+XGRAPH_BENCH_EDGES, XGRAPH_BENCH_QUERIES, and XGRAPH_BENCH_ITERATIONS to
+scale a run.  The reported ratio is Graph time divided by XGraph time.  This
+is a timing comparison, not a memory benchmark, and cached algorithms should
+be treated separately from uncached operations.
+
+Benchmark snapshot (2026-09-21)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This snapshot was run at commit 5e30e51 on an 11th Gen Intel Core i7-1185G7
+with Perl 5.36.3, the default compact XGraph build, and Graph 0.9735.  The
+workload contained 2,000 integer vertices, 10,000 deterministic DAG edges,
+1,000 queries, and five timed iterations.  The values below are total
+wall-clock seconds across those iterations.  The final column is Graph time
+divided by XGraph time.
+
+    operation             XGraph       Graph  Graph/XGraph
+    build                 0.011547    0.269821       23.37x
+    has_edge              0.001043    0.011131       10.67x
+    out_neighbors         0.001254    0.030077       23.98x
+    all_successors        0.018452    2.623152      142.16x
+    edges                 0.008157    0.010696        1.31x
+    topological_sort      0.000696    1.037837     1491.27x
+    scc_kosaraju          0.001127    2.322959     2061.18x
+    scc_tarjan            0.001084    2.403516     2217.08x
+    scc_pearce            0.001032    2.392471     2318.57x
+    scc_tarjan_zwick      0.001494    2.445339     1636.59x
+
+On this workload Pearce's implementation was fastest among the four XGraph
+SCC implementations.  Tarjan--Zwick is retained as an explicit comparator;
+this initial port does not beat Pearce on this particular graph shape.
+
+These numbers are a baseline, not a hardware-independent guarantee.  They
+measure topology operations with integer vertices and no edge payloads.  They
+do not measure memory use, dense or hub-heavy graphs, wide mode, or threaded
+execution.
+
+For an optional comparison with SciPy's compiled sparse-graph implementation,
+install SciPy in a Python environment and run:
+
+    python bench/scipy-scc.py
+
+The script uses the same SCC workload and reports SciPy's
+``connected_components(..., connection="strong")`` timing separately from the
+Perl benchmark.
+
+For reference, SciPy 1.18.1 measured approximately 0.000520 seconds across
+five iterations on the same host.  Relative to that timing, the XGraph SCC
+rows above were approximately 2.17x (Kosaraju), 2.08x (Tarjan), 1.98x
+(Pearce), and 2.87x (Tarjan--Zwick).  These are cross-process measurements,
+so they should be treated as an algorithm-only snapshot rather than as a
+definitive end-to-end ranking: SciPy returns flat labels while these XGraph
+methods return grouped Perl arrays.
+
+For native counter-based profiling, ``bench/profile-scc.pl`` builds the same
+deterministic SCC workload once and repeats only the selected XGraph SCC
+method.  For example:
+
+    XGRAPH_PROFILE_ITERATIONS=1000 \
+      perf stat -e cycles,instructions,cache-misses,branches,branch-misses \
+      env PERL5LIB=blib/lib:blib/arch perl bench/profile-scc.pl
+
+Set ``XGRAPH_PROFILE_METHOD`` to profile another SCC implementation.  When
+comparing with SciPy, limit its optional numerical-library worker pools (for
+example with ``OPENBLAS_NUM_THREADS=1``) so that thread-pool startup does not
+obscure the graph algorithm itself.  A profile on the reference workload
+showed that removing Tarjan--Zwick's redundant member sort reduced its native
+instruction count by roughly one quarter and its cycle count by roughly one
+fifth over 200 calls; exact timings vary with system load.
+
+End-to-end SCC comparison
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The algorithm-only comparison above does not have the same output contract as
+XGraph.  For a fairer comparison, run both of these drivers:
+
+    XGRAPH_BENCH_ITERATIONS=500 \
+      PERL5LIB=blib/lib:blib/arch perl bench/e2e-scc-xgraph.pl
+
+    OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+      XGRAPH_BENCH_ITERATIONS=500 python bench/e2e-scc-scipy.py
+
+Each iteration constructs a fresh graph, includes CSR construction on the
+SciPy side, runs SCC once, converts SciPy's flat labels into sorted grouped
+component lists, and releases the result.  The common edge list is prepared
+before timing so Perl and Python are not being compared on their input-data
+generators.
+
+A three-run median on the reference host (2,000 vertices, 12,000 SCC edges,
+500 fresh graphs per run) was approximately:
+
+    implementation                 ms per construct/SCC/group
+    XGraph Kosaraju                         4.01 ms
+    XGraph Tarjan                           4.09 ms
+    XGraph Pearce                           3.92 ms
+    XGraph Tarjan--Zwick                    3.59 ms
+    SciPy CSR + SCC + grouping              2.02 ms
+
+Thus SciPy was approximately 1.8x faster than the fastest XGraph variant in
+this end-to-end test, rather than the roughly 3x gap seen when comparing
+prebuilt-graph SCC calls with
+different result shapes.  The XGraph algorithm ordering is not stable enough
+under ordinary system load to call these close timings a definitive ranking.
+``fold_vertices`` invokes a callback with an ``XGraph::Vertex`` view, the
+current accumulator, and an optional explicit context value.  The view
+retains its graph and exposes the vertex ID, name, metadata, and adjacency
+queries.
+
+Algorithm results contain vertex IDs.  Collection results are array
+references.  Paths are ordered from source to destination.  Cycles are closed
+paths, so a self-loop is ``[$id, $id]``.  ``topological_sort`` returns
+``undef`` for a cyclic graph.  See the module documentation for the exact
+edge cases and ordering guarantees.
+
+LAZY VERTEX ENUMERATION
+-----------------------
+
+The normal API is eager.  It returns complete array references and does not
+use context to switch between scalar and lazy behavior.  For vertex
+enumeration, ``vertex_iterator`` returns a Perl callable which asks an XS
+cursor for the next ID:
+
+    my $next = $g->vertex_iterator;
+    while (defined(my $id = $next->())) {
+        say $id;
+    }
+
+The callable returns ``undef`` after exhaustion.  A structural graph mutation
+invalidates an active cursor and the next call throws.  The cursor retains a
+reference to its graph, so the graph remains alive while the callable exists.
+The cursor is an implementation detail of XGraph.  Planned generator
+integration and frozen-store ithread sharing are not implemented yet.
+
+ERRORS
+------
+
+Failures currently use ``croak`` with an ``XPERL.GRAPH.*`` error code.  The
+important codes include:
+
+    INVALID_ARGUMENT             malformed call or container
+    INVALID_VERTEX_ID            malformed numeric ID
+    UNKNOWN_VERTEX               well-formed but absent vertex
+    DUPLICATE_VERTEX_NAME        name collision
+    INVALID_LABEL                reference or invalid label input
+    UNKNOWN_LABEL                undeclared label in strict mode
+    LABEL_LIMIT                  compact label limit exceeded
+    VERTEX_ID_EXHAUSTED          compact vertex-ID limit exceeded
+    EDGE_EXISTS                  duplicate edge tuple
+    CYCLE_REJECTED               acyclic graph would become cyclic
+    FROZEN                       mutation attempted after freeze
+    ITERATOR_INVALIDATED         cursor observed structural mutation
+
+Predicate and deletion methods return false for ordinary absence where the
+method documents that behavior.  Methods which require a live vertex throw
+for an unknown vertex.  A malformed ID is never treated as ordinary absence.
+
+THREADS AND PERL CORE INTEGRATION
+---------------------------------
+
+The graph class and cursor are non-cloneable with ``CLONE_SKIP``.  Frozen
+native stores are not shared between ithreads.  XGraph uses an ordinary Perl
+closure around an XS cursor.  It does not require or provide a new Perl-core
+generator or iterator C API.
+
+DOCUMENTATION MAP
+-----------------
+
+The installed module POD is the user-facing API reference:
+
+    perldoc XGraph
+
+The design and implementation record is in ``planning/``:
+
+    planning/xgraph.md
+        Normative data model, API contract, representation, ownership,
+        algorithms, error behavior, and deferred work.
+    planning/xgraph-implementation-packets.md
+        Bounded implementation and validation packets.
+    planning/xperl-graph-module-recommendations.md
+        Rationale and comparison with the OTP graph model.
+    planning/xgraph-discussion-summary.md
+        Short summary of the design discussion.
+
+The planning documents are excluded from release archives.  They remain in
+the repository because they explain choices which are not visible in the
+public API.
+
+COPYRIGHT AND LICENSE
+---------------------
+
+Copyright (C) 2026 by Yves Orton
+
+This library is free software.  It may be redistributed and/or modified under
+the same terms as Perl itself.
