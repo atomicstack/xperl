@@ -119,6 +119,7 @@ sub generated_c_function {
 sub c_quote {
     my ($text) = @_;
     $text =~ s/([\\"])/\\$1/g;
+    $text =~ s/\?\?([=\/'()!<>-])/?\\?$1/g;
     $text =~ s/\n/\\n/g;
     $text =~ s/\r/\\r/g;
     $text =~ s/\t/\\t/g;

@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: dd3ae47da4f3b5a197147e549ee753e43ea7cae66558d1d321cb1c478871a5cd */
+/* Language-scoped rendered data SHA-256: 8fafb64f0d1da878ed7b0feabd3c44b9733d9758310c72c7b3e8356edf4d6d8e */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
 
@@ -1204,7 +1204,7 @@ static const char perl_diag_template_text_73386cf9[] = ":private ghajbogh vay' %
 static const char perl_diag_template_text_faa536be[] = ":utf8 handlemeyDaq %1$s() lo'lu' net chaw'be'";
 static const char perl_diag_template_text_f81793e7[] = "; chuv";
 static const char perl_diag_template_text_938b9515[] = "<> wovmoHbogh mIw ngabpu'";
-static const char perl_diag_template_text_c0480ea8[] = "???-Daq global %1$s lo'laHbe'";
+static const char perl_diag_template_text_c0480ea8[] = "??\?-Daq global %1$s lo'laHbe'";
 static const char perl_diag_template_text_d297d613[] = "@%2$s::ISA pongvaD %1$s SamlaHbe'";
 static const char perl_diag_template_text_5dfd5562[] = "@arrayDaq length() lo'lu'; Dochmey mI'mey Danej'a' (\"scalar(@array)\"?)";
 static const char perl_diag_template_text_b3ea20be[] = "@DB::args tu'lu'";
@@ -17544,7 +17544,7 @@ static const perl_diagpack_catalog perl_diagpack_catalog_tlh = {
 };
 
 /* Generated from:
- * 57085346847b5e8ac60c30ebaff2d55dad322fe5108d5d362ab3c31af413259f regen/diag.pl
+ * 9bab6324630ffb53cbed51dff1b306ba5258a7f39096ef101d8555cf2a3758d5 regen/diag.pl
  * dbd24274544a0e3a2d2029c35ace882adc88b488182d683999d7ebe957ec7d80 regen/diag_lib.pm
  * b081c1e7f063cf8ffbaa36cba2bd01fac310e9ef0ecff9f272acd7d9ac6804a9 regen/diag_pack.pm
  * b7b22be791efb8517c49d1ab46f247fc85f7c3d64cbb0633f83e59f2a2002b3c regen/diag_words.pm

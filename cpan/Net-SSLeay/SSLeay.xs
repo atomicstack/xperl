@@ -259,9 +259,9 @@ static int LIB_initialized;
 
 UV get_my_thread_id(void) /* returns threads->tid() value */
 {
-    dSP;
     UV tid = 0;
 #ifdef USE_ITHREADS
+    dSP;
     int count = 0;
 
     ENTER;
@@ -416,6 +416,7 @@ static void handler_list_md_fn(const EVP_MD *m, const char *from, const char *to
 {
   /* taken from apps/dgst.c */
   const char *mname;
+  PERL_UNUSED_ARG(to);
   if (!m) return;                                           /* Skip aliases */
   mname = OBJ_nid2ln(EVP_MD_type(m));
   if (strcmp(from, mname)) return;                          /* Skip shortnames */
@@ -775,6 +776,7 @@ int tlsext_servername_callback_invoke(SSL *ssl, int *ad, void *arg)
     int count = -1;
     int res;
     SV * cb_func, *cb_data;
+    PERL_UNUSED_ARG(ad);
 
     PR1("STARTED: tlsext_servername_callback_invoke\n");
 
@@ -816,6 +818,7 @@ int tlsext_status_cb_invoke(SSL *ssl, void *arg)
 {
     dSP;
     SV *cb_func, *cb_data;
+    PERL_UNUSED_ARG(arg);
     SSL_CTX *ctx = SSL_get_SSL_CTX(ssl);
     int len,res,nres = -1;
     const unsigned char *p = NULL;
@@ -907,6 +910,7 @@ int ssleay_session_secret_cb_invoke(SSL* s, void* secret, int *secret_len,
     SV *pref_cipher = sv_newmortal();
     SV * cb_func, *cb_data;
     SV * secretsv;
+    PERL_UNUSED_ARG(s);
 
     PR1("STARTED: ssleay_session_secret_cb_invoke\n");
     cb_func = cb_data_advanced_get(arg, "ssleay_session_secret_cb!!func");
@@ -982,6 +986,7 @@ unsigned int ssleay_set_psk_client_callback_invoke(SSL *ssl, const char *hint,
     SV * hintsv;
     /* this n_a is required for building with old perls: */
     STRLEN n_a;
+    PERL_UNUSED_VAR(n_a);
 
     PR1("STARTED: ssleay_set_psk_client_callback_invoke\n");
     cb_func = cb_data_advanced_get(ssl, "ssleay_set_psk_client_callback!!func");
@@ -1013,7 +1018,7 @@ unsigned int ssleay_set_psk_client_callback_invoke(SSL *ssl, const char *hint,
     my_snprintf(identity, max_identity_len, "%s", identity_val);
 
     if (BN_hex2bn(&psk_bn, psk_val) > 0) {
-        if (BN_num_bytes(psk_bn) <= max_psk_len) {
+        if ((unsigned int)BN_num_bytes(psk_bn) <= max_psk_len) {
             psk_len = BN_bn2bin(psk_bn, psk);
         }
         BN_free(psk_bn);
@@ -1040,6 +1045,7 @@ unsigned int ssleay_ctx_set_psk_client_callback_invoke(SSL *ssl, const char *hin
     SV * hintsv;
     /* this n_a is required for building with old perls: */
     STRLEN n_a;
+    PERL_UNUSED_VAR(n_a);
 
     ctx = SSL_get_SSL_CTX(ssl);
 
@@ -1073,7 +1079,7 @@ unsigned int ssleay_ctx_set_psk_client_callback_invoke(SSL *ssl, const char *hin
     my_snprintf(identity, max_identity_len, "%s", identity_val);
 
     if (BN_hex2bn(&psk_bn, psk_val) > 0) {
-        if (BN_num_bytes(psk_bn) <= max_psk_len) {
+        if ((unsigned int)BN_num_bytes(psk_bn) <= max_psk_len) {
             psk_len = BN_bn2bin(psk_bn, psk);
         }
         BN_free(psk_bn);
@@ -1428,9 +1434,9 @@ int next_proto_helper_AV2protodata(AV * list, unsigned char *out)
         if (out) {
             /* if out == NULL we only calculate the length of output */
             out[ptr] = (unsigned char)len;
-            strncpy((char*)out+ptr+1, p, len);
+            memcpy(out + ptr + 1, p, len);
         }
-        ptr += strlen(p) + 1;
+        ptr += len + 1;
     }
     return ptr;
 }
@@ -1457,12 +1463,14 @@ int next_proto_select_cb_invoke(SSL *ssl, unsigned char **out, unsigned char *ou
                                 const unsigned char *in, unsigned int inlen, void *arg)
 {
     SV *cb_func, *cb_data;
+    PERL_UNUSED_ARG(arg);
     unsigned char *next_proto_data;
     size_t next_proto_len;
     int next_proto_status;
     SSL_CTX *ctx = SSL_get_SSL_CTX(ssl);
     /* this n_a is required for building with old perls: */
     STRLEN n_a;
+    PERL_UNUSED_VAR(n_a);
 
     PR1("STARTED: next_proto_select_cb_invoke\n");
     cb_func = cb_data_advanced_get(ctx, "next_proto_select_cb!!func");
@@ -1533,6 +1541,7 @@ int next_proto_select_cb_invoke(SSL *ssl, unsigned char **out, unsigned char *ou
 int next_protos_advertised_cb_invoke(SSL *ssl, const unsigned char **out, unsigned int *outlen, void *arg_unused)
 {
     SV *cb_func, *cb_data;
+    PERL_UNUSED_ARG(arg_unused);
     unsigned char *protodata = NULL;
     unsigned short protodata_len = 0;
     SV *tmpsv;
@@ -1592,6 +1601,7 @@ int alpn_select_cb_invoke(SSL *ssl, const unsigned char **out, unsigned char *ou
                                 const unsigned char *in, unsigned int inlen, void *arg)
 {
     SV *cb_func, *cb_data;
+    PERL_UNUSED_ARG(arg);
     unsigned char *alpn_data;
     size_t alpn_len;
     SSL_CTX *ctx = SSL_get_SSL_CTX(ssl);
@@ -1670,6 +1680,7 @@ int pem_password_cb_invoke(char *buf, int bufsize, int rwflag, void *data) {
     simple_cb_data_t* cb = (simple_cb_data_t*)data;
     /* this n_a is required for building with old perls: */
     STRLEN n_a;
+    PERL_UNUSED_VAR(n_a);
 
     PR1("STARTED: pem_password_cb_invoke\n");
     if (cb->func && SvOK(cb->func)) {
@@ -1695,7 +1706,7 @@ int pem_password_cb_invoke(char *buf, int bufsize, int rwflag, void *data) {
         else {
             str = POPpx;
             str_len = strlen(str);
-            if (str_len+1 < bufsize) {
+            if (str_len+1 < (size_t)bufsize) {
                 strcpy(buf, str);
             }
             else {
@@ -1805,6 +1816,7 @@ void ssleay_msg_cb_invoke(int write_p, int version, int content_type, const void
 {
     dSP;
     SV *cb_func, *cb_data;
+    PERL_UNUSED_ARG(arg);
 
     cb_func = cb_data_advanced_get(ssl, "ssleay_msg_cb!!func");
     cb_data = cb_data_advanced_get(ssl, "ssleay_msg_cb!!data");
@@ -1837,6 +1849,7 @@ void ssleay_ctx_msg_cb_invoke(int write_p, int version, int content_type, const 
 {
     dSP;
     SV *cb_func, *cb_data;
+    PERL_UNUSED_ARG(arg);
     SSL_CTX *ctx = SSL_get_SSL_CTX(ssl);
 
     cb_func = cb_data_advanced_get(ctx, "ssleay_ctx_msg_cb!!func");
@@ -2118,6 +2131,7 @@ int ssl_client_hello_cb_fn_invoke(SSL *ssl, int *al, void *arg)
 {
     dSP;
     int count, res;
+    PERL_UNUSED_ARG(arg);
     SV *cb_func, *cb_arg;
     SSL_CTX *ctx = SSL_get_SSL_CTX(ssl);
 
@@ -2158,6 +2172,7 @@ int ssl_ctx_set_cert_cb_invoke(SSL *ssl, void *arg)
 {
     dSP;
     int count, res;
+    PERL_UNUSED_ARG(arg);
     SV *cb_func, *cb_arg;
     SSL_CTX *ctx = SSL_get_SSL_CTX(ssl);
 
@@ -2196,26 +2211,29 @@ time_t ASN1_TIME_timet(ASN1_TIME *asn1t, time_t *gmtoff) {
     struct tm t;
     const char *p = (const char*) asn1t->data;
     size_t msec = 0, tz = 0, i, l;
+    size_t asn1_len;
     time_t result;
     int adj = 0;
 
+    if (asn1t->length < 0) return 0;
+    asn1_len = (size_t)asn1t->length;
     if (asn1t->type == V_ASN1_UTCTIME) {
-	if (asn1t->length<12 || asn1t->length>17) return 0;
-	if (asn1t->length>12) tz = 12;
+	if (asn1_len<12 || asn1_len>17) return 0;
+	if (asn1_len>12) tz = 12;
     } else {
-	if (asn1t->length<14) return 0;
-	if (asn1t->length>14) {
+	if (asn1_len<14) return 0;
+	if (asn1_len>14) {
 	    if (p[14] == '.') {
 		msec = 14;
-		for(i=msec+1;i<asn1t->length && p[i]>='0' && p[i]<='9';i++) ;
-		if (i<asn1t->length) tz = i;
+		for(i=msec+1;i<asn1_len && p[i]>='0' && p[i]<='9';i++) ;
+		if (i<asn1_len) tz = i;
 	    } else {
 		tz = 14;
 	    }
 	}
     }
 
-    l = msec ? msec : tz ? tz : asn1t->length;
+    l = msec ? msec : tz ? tz : asn1_len;
     for(i=0;i<l;i++) {
 	if (p[i]<'0' || p[i]>'9') return 0;
     }
@@ -2242,11 +2260,11 @@ time_t ASN1_TIME_timet(ASN1_TIME *asn1t, time_t *gmtoff) {
     if (tz) {
 	/* TZ is 'Z' or [+-]DDDD and after TZ the string must stop*/
 	if (p[tz] == 'Z') {
-	    if (asn1t->length>tz+1 ) return 0;
-	} else if (asn1t->length<tz+5 || (p[tz]!='-' && p[tz]!='+')) {
+	    if (asn1_len>tz+1 ) return 0;
+	} else if (asn1_len<tz+5 || (p[tz]!='-' && p[tz]!='+')) {
 	    return 0;
 	} else {
-	    if (asn1t->length>tz+5 ) return 0;
+	    if (asn1_len>tz+5 ) return 0;
 	    for(i=tz+1;i<tz+5;i++) {
 		if (p[i]<'0' || p[i]>'9') return 0;
 	    }
@@ -3171,6 +3189,8 @@ SSL_get_shared_ciphers(s,ignored_param1=0,ignored_param2=0)
     PREINIT:
         char buf[8192];
     CODE:
+        PERL_UNUSED_VAR(ignored_param1);
+        PERL_UNUSED_VAR(ignored_param2);
         ST(0) = sv_newmortal();   /* undef to start with */
         if(SSL_get_shared_ciphers(s, buf, sizeof(buf)))
             sv_setpvn(ST(0), buf, strlen(buf));
@@ -3309,6 +3329,11 @@ SSL_get_session(s)
 	SSL *              s
 	ALIAS:
 		SSL_get0_session = 1
+	CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = SSL_get_session(s);
+	OUTPUT:
+		RETVAL
 
 SSL_SESSION *
 SSL_get1_session(s)
@@ -3697,6 +3722,9 @@ ERR_put_error(lib,func,reason,file,line)
      int                reason
      char *             file
      int                line
+   CODE:
+     PERL_UNUSED_VAR(func);
+     ERR_put_error(lib, func, reason, file, line);
 
 void
 ERR_clear_error()
@@ -3719,6 +3747,7 @@ ERR_load_crypto_strings()
 int
 SSL_FIPS_mode_set(int onoff)
        CODE:
+	       PERL_UNUSED_VAR(onoff);
 #ifdef USE_ITHREADS
                MUTEX_LOCK(&LIB_init_mutex);
 #endif
@@ -3747,6 +3776,7 @@ SSL_library_init()
 		OpenSSL_add_ssl_algorithms = 2
 		add_ssl_algorithms         = 3
 	CODE:
+		PERL_UNUSED_VAR(ix);
 #ifdef USE_ITHREADS
 		MUTEX_LOCK(&LIB_init_mutex);
 #endif
@@ -4170,21 +4200,41 @@ const ASN1_TIME *
 X509_CRL_get0_lastUpdate(const X509_CRL *crl)
 	  ALIAS:
 		X509_CRL_get_lastUpdate = 1
+	  CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_CRL_get0_lastUpdate(crl);
+	  OUTPUT:
+		RETVAL
 
 const ASN1_TIME *
 X509_CRL_get0_nextUpdate(const X509_CRL *crl)
 	  ALIAS:
 		X509_CRL_get_nextUpdate = 1
+	  CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_CRL_get0_nextUpdate(crl);
+	  OUTPUT:
+		RETVAL
 
 int
 X509_CRL_set1_lastUpdate(X509_CRL *x, ASN1_TIME *tm)
 	  ALIAS:
 		X509_CRL_set_lastUpdate = 1
+	  CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_CRL_set1_lastUpdate(x, tm);
+	  OUTPUT:
+		RETVAL
 
 int
 X509_CRL_set1_nextUpdate(X509_CRL *x, ASN1_TIME *tm)
 	  ALIAS:
 		X509_CRL_set_nextUpdate = 1
+	  CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_CRL_set1_nextUpdate(x, tm);
+	  OUTPUT:
+		RETVAL
 
 #else /* plain get/set is deprecated */
 
@@ -4192,21 +4242,41 @@ ASN1_TIME *
 X509_CRL_get_lastUpdate(X509_CRL *x)
 	  ALIAS:
 		X509_CRL_get0_lastUpdate = 1
+	  CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_CRL_get_lastUpdate(x);
+	  OUTPUT:
+		RETVAL
 
 ASN1_TIME *
 X509_CRL_get_nextUpdate(X509_CRL *x)
 	  ALIAS:
 		X509_CRL_get0_nextUpdate = 1
+	  CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_CRL_get_nextUpdate(x);
+	  OUTPUT:
+		RETVAL
 
 int
 X509_CRL_set_lastUpdate(X509_CRL *x, ASN1_TIME *tm)
 	  ALIAS:
 		X509_CRL_set1_lastUpdate = 1
+	  CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_CRL_set_lastUpdate(x, tm);
+	  OUTPUT:
+		RETVAL
 
 int
 X509_CRL_set_nextUpdate(X509_CRL *x, ASN1_TIME *tm)
 	  ALIAS:
 		X509_CRL_set1_nextUpdate = 1
+	  CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_CRL_set_nextUpdate(x, tm);
+	  OUTPUT:
+		RETVAL
 
 #endif
 
@@ -5108,11 +5178,21 @@ ASN1_TIME *
 X509_getm_notBefore(const X509 *cert)
 	ALIAS:
 		X509_get_notBefore = 1
+	CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_getm_notBefore(cert);
+	OUTPUT:
+		RETVAL
 
 ASN1_TIME *
 X509_getm_notAfter(const X509 *cert)
 	ALIAS:
 		X509_get_notAfter = 1
+	CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_getm_notAfter(cert);
+	OUTPUT:
+		RETVAL
 
 #else /* plain get_ is deprecated */
 
@@ -5121,12 +5201,22 @@ X509_get_notBefore(X509 *cert)
 	ALIAS:
 		X509_get0_notBefore = 1
 		X509_getm_notBefore = 2
+	CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_get_notBefore(cert);
+	OUTPUT:
+		RETVAL
 
 ASN1_TIME *
 X509_get_notAfter(X509 *cert)
 	ALIAS:
 		X509_get0_notAfter = 1
 		X509_getm_notAfter = 2
+	CODE:
+		PERL_UNUSED_VAR(ix);
+		RETVAL = X509_get_notAfter(cert);
+	OUTPUT:
+		RETVAL
 
 #endif
 
@@ -5165,6 +5255,7 @@ P_ASN1_TIME_put2string(tm)
      ALIAS:
      P_ASN1_UTCTIME_put2string = 1
      CODE:
+     PERL_UNUSED_VAR(ix);
      ST(0) = sv_newmortal(); /* undef retval to start with */
      if (tm) {
          bp = BIO_new(BIO_s_mem());
@@ -5850,6 +5941,8 @@ SSL_CIPHER_description(const SSL_CIPHER *cipher, char *unused_buf=NULL, int unus
         char *description;
         char buf[512];
     PPCODE:
+        PERL_UNUSED_VAR(unused_buf);
+        PERL_UNUSED_VAR(unused_size);
         description = SSL_CIPHER_description(cipher, buf, sizeof(buf));
         if(description == NULL) {
             XSRETURN_EMPTY;
@@ -6411,7 +6504,8 @@ SSL_client_hello_get0_compression_methods(SSL *s)
 void
 SSL_client_hello_get1_extensions_present(SSL *s)
     PREINIT:
-	int ret, *out = NULL, i;
+	int ret, *out = NULL;
+	size_t i;
 	size_t outlen;
 	AV *av;
     PPCODE:
@@ -6855,6 +6949,8 @@ SSL_set_state(ssl,state)
      int        state
   CODE:
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
+      PERL_UNUSED_VAR(ssl);
+      PERL_UNUSED_VAR(state);
       /* not available */
 #elif defined(OPENSSL_NO_SSL_INTERN)
    SSL_set_state(ssl,state);
@@ -8126,7 +8222,7 @@ X509_get_X509_PUBKEY(x)
    if (!pc) croak("out of memory");
    pi = pc;
    i2d_X509_PUBKEY(pkey, &pi);
-   if (pi-pc != len) croak("invalid encoded length");
+   if ((STRLEN)(pi-pc) != len) croak("invalid encoded length");
    XPUSHs(sv_2mortal(newSVpv((char*)pc,len)));
    Safefree(pc);
 

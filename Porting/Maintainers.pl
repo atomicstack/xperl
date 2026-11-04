@@ -921,6 +921,7 @@ our %Modules = (
     'Net::SSLeay' => {
         'DISTRIBUTION' => 'CHRISN/Net-SSLeay-1.96.tar.gz',
         'FILES'        => q[cpan/Net-SSLeay],
+        'CUSTOMIZED'   => [qw(SSLeay.xs)],
         'EXCLUDED'     => [
             qr{^examples/},
             qr{^t/external/},
