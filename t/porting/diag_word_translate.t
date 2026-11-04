@@ -12,6 +12,7 @@ require Storable;
 require Scalar::Util;
 require File::Temp;
 plan('no_plan');
+is( c_quote('???-'), q{"??\?-"}, 'translated C strings break trigraph sequences' );
 our ( $CONF, $META );
 do './diag_conf.pl' or die $@ || $!;
 my $conf        = Storable::dclone($CONF);

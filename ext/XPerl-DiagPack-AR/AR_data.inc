@@ -17482,7 +17482,7 @@ static const perl_diagpack_catalog perl_diagpack_catalog_ar = {
 };
 
 /* Generated from:
- * 57085346847b5e8ac60c30ebaff2d55dad322fe5108d5d362ab3c31af413259f regen/diag.pl
+ * 9bab6324630ffb53cbed51dff1b306ba5258a7f39096ef101d8555cf2a3758d5 regen/diag.pl
  * dbd24274544a0e3a2d2029c35ace882adc88b488182d683999d7ebe957ec7d80 regen/diag_lib.pm
  * b081c1e7f063cf8ffbaa36cba2bd01fac310e9ef0ecff9f272acd7d9ac6804a9 regen/diag_pack.pm
  * b7b22be791efb8517c49d1ab46f247fc85f7c3d64cbb0633f83e59f2a2002b3c regen/diag_words.pm
