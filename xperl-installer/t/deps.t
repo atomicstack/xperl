@@ -32,8 +32,12 @@ gzip \$index => File::Spec->catfile($modules, '02packages.details.txt.gz')
 for my $name (qw(Dependency Application)) {
     my $root_name = "Example-$name-1.00";
     my $tar = Archive::Tar->new;
+    my $unsafe_inc_check = $name eq 'Application'
+        ? 'die "unsafe-inc metadata ignored" if $ENV{PERL_USE_UNSAFE_INC};' . "\n"
+        : '';
     $tar->add_data("$root_name/Makefile.PL",
-        "use ExtUtils::MakeMaker;\nWriteMakefile(NAME => 'Example::$name', VERSION => '1.00');\n");
+        "use ExtUtils::MakeMaker;\n" . $unsafe_inc_check
+        . "WriteMakefile(NAME => 'Example::$name', VERSION => '1.00');\n");
     my $body = $name eq 'Dependency'
         ? "package Example::Dependency;\nour \$VERSION = '1.00';\nsub value { 42 }\n1;\n"
         : "package Example::Application;\nour \$VERSION = '1.00';\nuse Example::Dependency;\nsub value { Example::Dependency::value() }\n1;\n";
@@ -50,11 +54,14 @@ for my $name (qw(Dependency Application)) {
             ? { runtime => { requires => { 'Example::Dependency' => '1.00' } } }
             : {},
     };
+    $meta->{x_use_unsafe_inc} = JSON::PP::false if $name eq 'Application';
     $tar->add_data("$root_name/META.json", JSON::PP->new->encode($meta));
     $tar->write(File::Spec->catfile($releases, "$root_name.tar.gz"), 1);
 }
 
 my $script = File::Spec->catfile($FindBin::Bin, '..', 'bin', 'xperl');
+local %ENV = %ENV;
+delete $ENV{PERL_USE_UNSAFE_INC};
 open my $pipe, '-|', $^X, $script, 'install', '--mirror', $mirror,
     '--cache', $cache, '--prefix', $prefix, 'Example::Application' or die $!;
 my $output = do { local $/; <$pipe> };
