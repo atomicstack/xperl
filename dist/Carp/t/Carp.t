@@ -4,7 +4,7 @@ use warnings;
 use Config;
 
 use IPC::Open3 1.0103 qw(open3);
-use Test::More tests => 68;
+use Test::More tests => 70;
 
 sub runperl {
     my(%args) = @_;
@@ -56,6 +56,21 @@ package main;
         ['value1', 'SecondVal',],
         "longmess returns sth meaningful in scalar context when passed a ref.",
     );
+}
+
+SKIP: {
+    skip 'XPerl exceptions only', 2 unless ${^XPERL_VERSION};
+
+    eval { die 'original' };
+    my $err = $@;
+    my $line;
+    eval { $line = __LINE__; Carp::croak($err) };
+    like "$@", qr/\n at \Q$0\E line $line\.\n/,
+        'croak attributes a caught text error to its caller';
+
+    eval { $line = __LINE__; Carp::confess($err) };
+    like "$@", qr/\n at \Q$0\E line $line\.\n/,
+        'confess attributes a caught text error to its caller';
 }
 
 {

@@ -159,6 +159,8 @@ including when they become fatal.
 The default stringification preserves the previous error text;
 C<PERL_DIAG_RENDER=Dumper> selects a C<Data::Dumper> view. Other error paths
 still use their existing values.
+Carp formats caught C<XPerl::Exception> values as text before adding a caller
+location. Other reference exceptions keep their identity when passed to Carp.
 The C<XPerl::Exception> and C<XPerl::Diagnostic> methods are built into the
 interpreter and work in miniperl without loading their Perl files. Dumper
 rendering falls back to legacy text when C<Data::Dumper> is unavailable.
