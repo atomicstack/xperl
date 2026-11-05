@@ -99,7 +99,7 @@ sub _check_archive ($archive) {
     my @files = $tar->get_files;
     die "empty archive: $archive\n" unless @files;
     for my $file (@files) {
-        my $name = $file->name;
+        my $name = $file->full_path;
         die "unsafe archive member: $name\n"
             if $name =~ m{\A/} || $name =~ m{(?:\A|/)\.\.? (?:/|\z)}x;
         die "archive contains a link: $name\n"

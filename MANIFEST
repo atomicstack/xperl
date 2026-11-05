@@ -226,8 +226,10 @@ vxs.inc					Version object XS methods
 warnings.h				The warning numbers
 write_buildcustomize.pl			Generate lib/buildcustomize.pl
 xperl-installer/bin/xperl		XPerl package manager development command
+xperl-installer/lib/XPerl/Installer/Build.pm	CPAN Makefile.PL build runner
 xperl-installer/lib/XPerl/Installer/Fetch.pm	CPAN release resolver and fetcher
 xperl-installer/README.md		XPerl package manager development instructions
+xperl-installer/t/build.t		CPAN build and install tests
 xperl-installer/t/fetch.t		CPAN resolver and fetcher tests
 XPERL-MISSION.md			Mission and contribution principles for AI Perl
 xperl_exception.inc			Built-in structured exception and diagnostic methods
