@@ -9,6 +9,7 @@ use File::Temp qw(tempdir);
 use IO::Compress::Gzip qw(gzip $GzipError);
 use JSON::PP;
 use Test::More;
+use XPerl::Installer::Deps;
 
 my $root = tempdir(CLEANUP => 1,
                    DIR => $ENV{XPERL_TEST_TMPDIR} // File::Spec->tmpdir);
@@ -70,5 +71,27 @@ is_deeply(\@modules, ['Example::Dependency', 'Example::Application'],
           'required dependency installed first');
 ok(-f File::Spec->catfile($prefix, qw(lib perl5 Example Application.pm)),
    'application installed into selected prefix');
+
+my $old_archive = File::Spec->catfile($root, 'old-meta.tar.gz');
+my $old_tar = Archive::Tar->new;
+$old_tar->add_data('Old-Meta-0.03/META.yml', <<'META');
+--- #YAML:1.0
+name: Old-Meta
+version: 0.03
+abstract: ~
+author: []
+license: unknown
+requires:
+    Test::More: 0
+meta-spec:
+    version: 1.4
+META
+$old_tar->write($old_archive, 1);
+my $old_meta = XPerl::Installer::Deps::_metadata($old_archive);
+is($old_meta->name, 'Old-Meta', 'old metadata with no abstract is accepted');
+is($old_meta->effective_prereqs->merged_requirements(
+       [qw(configure build test runtime)], ['requires'])
+       ->requirements_for_module('Test::More'),
+   '0', 'old metadata still provides its requirements');
 
 done_testing();
