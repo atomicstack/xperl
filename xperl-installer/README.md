@@ -35,3 +35,24 @@ when configuration, build, or tests fail. Only dependencies declared in CPAN
 metadata are resolved; dynamic configuration and optional prerequisites are
 not handled yet. `Build.PL` distributions need their build tool, commonly
 `Module::Build`, installed or declared as a required build prerequisite.
+
+## Optional repair command
+
+`--repair-command PATH` enables an external repair program after a failed
+configure, build, or test phase. `--repair-attempts N` limits repair calls;
+the default is two. The installer never calls a repair program unless this
+option is present. The command must be an executable file. It runs with the
+distribution source directory as its working directory and receives one
+argument: the absolute path to a JSON request file.
+
+The request has `schema: 1`, the module and CPAN archive identity, source
+digest, XPerl executable and version, attempt number, source directory,
+failed phase, command, and log path. When a registry patch set names migration
+recipes, `recipes` contains their IDs and absolute Markdown paths. The
+program should edit the source tree and exit zero when ready for another
+build. A nonzero exit stops installation. The installer reruns configuration,
+build, and tests after each successful repair call, and records every phase
+and request in the receipt. Installation runs only after the tests pass.
+
+The repair program can be any agent wrapper that accepts this protocol. The
+installer does not bundle an AI service or submit generated patches yet.

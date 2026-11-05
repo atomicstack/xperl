@@ -63,10 +63,22 @@ sub patches_for ($self, $release) {
             unless $digest eq $patch->{sha256};
         push @patches, { path => $real, sha256 => $digest };
     }
+    my @recipes;
+    for my $id (@{$set->{recipes} // []}) {
+        die "invalid registry recipe id: $id\n"
+            unless $id =~ /\A[A-Za-z0-9_.-]+\z/;
+        my $path = File::Spec->catfile($self->{path}, 'recipes', "$id.md");
+        my $real = abs_path($path);
+        my $base = File::Spec->catdir($self->{path}, 'recipes');
+        die "recipe escapes registry: $id\n"
+            unless defined $real && index($real, "$base/") == 0;
+        push @recipes, { id => $id, path => $real };
+    }
     return {
         patch_set => $set->{id},
         index_sha256 => Digest::SHA::sha256_hex($json),
         patches => \@patches,
+        recipes => \@recipes,
     };
 }
 

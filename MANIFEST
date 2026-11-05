@@ -236,6 +236,7 @@ xperl-installer/t/build_pl.t		Build.PL build and install tests
 xperl-installer/t/deps.t		Recursive CPAN prerequisite tests
 xperl-installer/t/fetch.t		CPAN resolver and fetcher tests
 xperl-installer/t/registry.t		XPerl registry selection tests
+xperl-installer/t/repair.t		External repair retry tests
 XPERL-MISSION.md			Mission and contribution principles for AI Perl
 xperl_exception.inc			Built-in structured exception and diagnostic methods
 XSUB.h					Include file for extension subroutines
