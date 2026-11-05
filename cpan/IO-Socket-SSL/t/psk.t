@@ -6,6 +6,10 @@ use Socket;
 use IO::Socket::SSL;
 use Test::More;
 
+sub tap_info { print '# ', @_, "\n" }
+
+$| = 1;
+
 my $can_psk = IO::Socket::SSL->can_psk;
 plan skip_all => 'insufficient support for PSK in Net::SSLeay'
     if !$can_psk || !$can_psk->{server} || !$can_psk->{client};
@@ -28,10 +32,10 @@ defined(my $server_pid = fork()) || die $!;
 if ($server_pid == 0) {
     while (1) {
 	my $cl = $server->accept or do {
-	    diag("accept failed: $!, $SSL_ERROR");
+	    tap_info("accept failed: $!, $SSL_ERROR");
 	    next;
 	};
-	diag("client accepted: ver=".$cl->get_sslversion." cipher=".$cl->get_cipher);
+	tap_info("client accepted: ver=".$cl->get_sslversion." cipher=".$cl->get_cipher);
 	my $l = <$cl>;
 	$l eq "ping\n" or die "wrong message from client: '$l'";
 	print $cl "pong\n";
@@ -42,7 +46,7 @@ close($server);
 
 for my $v ('TLSv1_3','TLSv1_2') {
     my $ctx = IO::Socket::SSL::SSL_Context->new(SSL_version => $v) or do {
-	diag("no support for $v");
+	tap_info("no support for $v");
 	next;
     };
 

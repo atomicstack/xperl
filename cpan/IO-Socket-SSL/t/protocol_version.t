@@ -7,6 +7,8 @@ use Socket;
 use IO::Socket::SSL;
 do './testlib.pl' || do './t/testlib.pl' || die "no testlib";
 
+sub tap_info { print '# ', @_, "\n" }
+
 plan skip_all => "Test::More has no done_testing"
     if !defined &done_testing;
 
@@ -34,7 +36,7 @@ my $server = IO::Socket::SSL->new(
 );
 if (!$server && $SSL_ERROR) {
     # likely SECLEVEL not supported
-    diag("$SSL_ERROR - assuming SECLEVEL not supported");
+    tap_info("$SSL_ERROR - assuming SECLEVEL not supported");
     %cipher_args = (SSL_cipher_list => 'DEFAULT');
     $server = IO::Socket::SSL->new(
 	%server_args,
@@ -102,7 +104,7 @@ if ($pid == 0) {
     # Check if the OpenSSL was compiled without support for specific protocols
     for(qw(SSLv3 TLSv1 TLSv1_1 TLSv1_2 TLSv1_3)) {
 	if ( ! $check->($_,'')) {
-	    diag("looks like OpenSSL was compiled without $_ support");
+	    tap_info("looks like OpenSSL was compiled without $_ support");
 	    delete $supported{$_};
 	}
     }
@@ -145,7 +147,7 @@ while (select( my $rvs = $vs,undef,undef,15 )) {
 	if ($expect) {
 	    fail("accept $ver");
 	} else {
-	    diag("failed to accept $ver");
+	    tap_info("failed to accept $ver");
 	}
 	next;
     };

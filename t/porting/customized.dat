@@ -5,11 +5,16 @@ ExtUtils::Constant cpan/ExtUtils-Constant/lib/ExtUtils/Constant/Base.pm 7560e101
 ExtUtils::Constant cpan/ExtUtils-Constant/t/Constant.t 165e9c7132b003fd192d32a737b0f51f9ba4999e
 Filter::Util::Call pod/perlfilter.pod d1e217d0bc6083755b9017050b8724472c58275a
 IO::Socket::SSL cpan/IO-Socket-SSL/Makefile.PL cd97eb480d74cd242d89468c592863d75389f548
+IO::Socket::SSL cpan/IO-Socket-SSL/t/01loadmodule.t 99ac47b7e3cfbc00dc1211324e03142f4718405a
+IO::Socket::SSL cpan/IO-Socket-SSL/t/plain_upgrade_downgrade.t 99a7cc12d72645b32e99ed99f2bc28bcce2245d5
+IO::Socket::SSL cpan/IO-Socket-SSL/t/protocol_version.t 1ff126d51c4e45a96edefd342d0cca18fe16cb59
+IO::Socket::SSL cpan/IO-Socket-SSL/t/psk.t 72a459bb0b24f49bfa8581da1150175e3aa13c62
+IO::Socket::SSL cpan/IO-Socket-SSL/t/session_ticket.t ba4ed5900b80bad72d683581fbf074aecf8dc2d1
 Locale::Maketext::Simple cpan/Locale-Maketext-Simple/lib/Locale/Maketext/Simple.pm 57ed38905791a17c150210cd6f42ead22a7707b6
 MIME::Base64 cpan/MIME-Base64/Base64.xs ad617fe2d01932c35b92defa26d40aba601a95a8
 MIME::Base64 cpan/MIME-Base64/lib/MIME/Base64.pm 18e38d197c7c83f96b24f48bef514e93908e6a82
 MIME::Base64 cpan/MIME-Base64/lib/MIME/QuotedPrint.pm 36cbb455ab57b9bbca7e86f50987c8b1df1a8122
-Net::SSLeay cpan/Net-SSLeay/SSLeay.xs ecc5ebee2f28041c52f9390c891e8327fb45dceb
+Net::SSLeay cpan/Net-SSLeay/SSLeay.xs 465b01bb818883a9ca46fd8589aeb4ec3f6be4cc
 Net::SSLeay cpan/Net-SSLeay/t/local/03_use.t e116a8cc0d27e98b4c07db5cac62630360ec3679
 Pod::Perldoc cpan/Pod-Perldoc/lib/Pod/Perldoc.pm 582be34c077c9ff44d99914724a0cc2140bcd48c
 Win32API::File cpan/Win32API-File/File.pm 8fd212857f821cb26648878b96e57f13bf21b99e

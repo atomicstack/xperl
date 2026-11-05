@@ -724,7 +724,9 @@ our %Modules = (
             qr{^example/},
             qr{^t/external/},
         ],
-        'CUSTOMIZED'   => ['Makefile.PL'],
+        'CUSTOMIZED'   => [qw(Makefile.PL t/01loadmodule.t
+                             t/plain_upgrade_downgrade.t t/protocol_version.t
+                             t/psk.t t/session_ticket.t)],
     },
 
     'IO::Zlib' => {

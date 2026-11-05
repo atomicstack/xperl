@@ -5,6 +5,8 @@ use IO::Socket::SSL::Utils;
 use Test::More;
 do './testlib.pl' || do './t/testlib.pl' || die "no testlib";
 
+sub tap_info { print '# ', @_, "\n" }
+
 
 $|=1;
 plan skip_all => 'no support for session ticket key callback'
@@ -22,7 +24,7 @@ for (1,2) {
     ) or die "failed to create listener: $!";
     push @server,{ fd => $server };
     push @saddr, $server->sockhost.':'.$server->sockport;
-    diag("listen at $saddr[-1]");
+    tap_info("listen at $saddr[-1]");
 }
 
 # create some self signed certificate
@@ -82,7 +84,7 @@ my $client = sub {
     );
     <$cl>; # read something, incl. TLS 1.3 ticket
     my $reuse = $cl && Net::SSLeay::session_reused($cl->_get_ssl_object);
-    diag("connect to $i: ".  ($cl
+    tap_info("connect to $i: ".  ($cl
 	? "success reuse=$reuse version=".$cl->get_sslversion()
 	: "error: $!,$SSL_ERROR"
     ));
