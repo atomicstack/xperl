@@ -27,6 +27,13 @@ mirror. A local mirror directory with `modules/` and `authors/id/` subtrees is
 supported for tests. `--refresh` fetches the index and archive again. Registry
 lookup is optional and does not require an AI agent.
 
+The registry root contains `registry.json`. The installer combines the CPAN
+author from the resolved archive with its distribution name, then uses jump
+consistent hash to choose a data repository and a fixed SipHash prefix to
+find that author's patch index. A registry without `registry.json` retains
+the original flat layout for compatibility. The current shared registry has
+one active data repository.
+
 The command reports the archive's SHA-256 digest for reproducibility. This
 checkpoint calculates the digest but does not yet authenticate it against
 independent CPAN checksum metadata. Install writes phase logs and a JSON
