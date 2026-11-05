@@ -1,11 +1,11 @@
 # XPerl installer (development)
 
 The installer resolves a module through CPAN's `02packages` index, fetches its
-original release archive, and can build, test, and install a `Makefile.PL`
-distribution into an explicit prefix. It recursively installs declared
-required prerequisites. With `--registry DIR`, it applies known patches from
-the local `xperl-cpan-ports` repository before building. The CLI uses XPerl's
-`dispatch/on` syntax.
+original release archive, and can build, test, and install a `Makefile.PL` or
+`Build.PL` distribution into an explicit prefix. It recursively installs
+declared required prerequisites. With `--registry DIR`, it applies known
+patches from the local `xperl-cpan-ports` repository before building. The CLI
+uses XPerl's `dispatch/on` syntax.
 
 From the Perl source checkout, run:
 
@@ -33,4 +33,5 @@ independent CPAN checksum metadata. Install writes phase logs and a JSON
 receipt under the cache's `work/` directory. It stops before installation
 when configuration, build, or tests fail. Only dependencies declared in CPAN
 metadata are resolved; dynamic configuration and optional prerequisites are
-not handled yet.
+not handled yet. `Build.PL` distributions need their build tool, commonly
+`Module::Build`, installed or declared as a required build prerequisite.

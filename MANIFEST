@@ -232,6 +232,7 @@ xperl-installer/lib/XPerl/Installer/Fetch.pm	CPAN release resolver and fetcher
 xperl-installer/lib/XPerl/Installer/Registry.pm	XPerl compatibility patch selection
 xperl-installer/README.md		XPerl package manager development instructions
 xperl-installer/t/build.t		CPAN build and install tests
+xperl-installer/t/build_pl.t		Build.PL build and install tests
 xperl-installer/t/deps.t		Recursive CPAN prerequisite tests
 xperl-installer/t/fetch.t		CPAN resolver and fetcher tests
 xperl-installer/t/registry.t		XPerl registry selection tests

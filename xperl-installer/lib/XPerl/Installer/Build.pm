@@ -66,8 +66,6 @@ sub install ($self, $release) {
                 die "patch failed (exit $status); see $log\n" if $status;
             }
         }
-        die "only Makefile.PL distributions are supported\n"
-            unless -f File::Spec->catfile($source, 'Makefile.PL');
         my $perl = abs_path($^X);
         my $make = $Config{make} || 'make';
         my $core = dirname($perl);
@@ -75,13 +73,30 @@ sub install ($self, $release) {
             (-f File::Spec->catfile($core, 'perl.h')
                  && -f File::Spec->catfile($core, 'config.h')
                 ? ("PERL_INC=$core") : ()));
-        my @steps = (
-            ['configure', $perl, 'Makefile.PL',
-                "INSTALL_BASE=$self->{prefix}"],
-            ['build', @make_command],
-            ['test', @make_command, 'test'],
-            ['install', @make_command, 'install'],
-        );
+        my @steps;
+        if (-f File::Spec->catfile($source, 'Makefile.PL')) {
+            $record->{build_system} = 'Makefile.PL';
+            @steps = (
+                ['configure', $perl, 'Makefile.PL',
+                    "INSTALL_BASE=$self->{prefix}"],
+                ['build', @make_command],
+                ['test', @make_command, 'test'],
+                ['install', @make_command, 'install'],
+            );
+        }
+        elsif (-f File::Spec->catfile($source, 'Build.PL')) {
+            $record->{build_system} = 'Build.PL';
+            @steps = (
+                ['configure', $perl, 'Build.PL',
+                    '--install_base', $self->{prefix}],
+                ['build', $perl, 'Build'],
+                ['test', $perl, 'Build', 'test'],
+                ['install', $perl, 'Build', 'install'],
+            );
+        }
+        else {
+            die "distribution has neither Makefile.PL nor Build.PL\n";
+        }
         for my $step (@steps) {
             my ($phase, @command) = @$step;
             my $log = File::Spec->catfile($work, "$phase.log");
