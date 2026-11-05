@@ -19,8 +19,8 @@ Usage: xperl resolve [--mirror URL|DIR] [--cache DIR] Module::Name
        xperl fetch   [--mirror URL|DIR] [--cache DIR] Module::Name
        xperl install --prefix DIR [--registry DIR] [--mirror URL|DIR] [--cache DIR] Module::Name
 
-This source-tree command must run with XPerl. Installation currently supports
-Makefile.PL releases and their declared required prerequisites.
+This source-tree command must run with XPerl. Installation supports
+Makefile.PL and Build.PL releases and their declared required prerequisites.
 USAGE
 }
 
