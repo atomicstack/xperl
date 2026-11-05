@@ -1190,6 +1190,11 @@ enum perl_diag_index {
     perl_diag_error_value_hash_capacity_exceeded_idx,
     perl_diag_error_value_hash_iteration_randomization_unavailable_idx,
     perl_diag_error_value_hash_key_length_out_of_range_idx,
+    perl_diag_error_value_jumphash_bucket_count_invalid_idx,
+    perl_diag_error_value_jumphash_bucket_count_too_large_idx,
+    perl_diag_error_value_jumphash_input_byte_string_required_idx,
+    perl_diag_error_value_jumphash_key_invalid_idx,
+    perl_diag_error_value_jumphash_key_too_large_idx,
     perl_diag_error_value_restricted_hash_key_access_disallowed_idx,
     perl_diag_error_value_restricted_hash_key_deletion_disallowed_idx,
     perl_diag_error_value_siphash_input_byte_string_required_idx,
@@ -2779,6 +2784,11 @@ enum perl_diag_number {
     perl_diag_error_value_hash_capacity_exceeded_number                                        = 2756,
     perl_diag_error_value_hash_iteration_randomization_unavailable_number                      = 1105,
     perl_diag_error_value_hash_key_length_out_of_range_number                                  = 1023,
+    perl_diag_error_value_jumphash_bucket_count_invalid_number                                 = 2779,
+    perl_diag_error_value_jumphash_bucket_count_too_large_number                               = 2780,
+    perl_diag_error_value_jumphash_input_byte_string_required_number                           = 2781,
+    perl_diag_error_value_jumphash_key_invalid_number                                          = 2782,
+    perl_diag_error_value_jumphash_key_too_large_number                                        = 2783,
     perl_diag_error_value_restricted_hash_key_access_disallowed_number                         = 1801,
     perl_diag_error_value_restricted_hash_key_deletion_disallowed_number                       = 1802,
     perl_diag_error_value_siphash_input_byte_string_required_number                            = 2775,
@@ -5022,7 +5032,7 @@ enum perl_diag_selector_domain_id {
 
 
 #if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)
-#define PERL_DIAG_METADATA_COUNT 1585
+#define PERL_DIAG_METADATA_COUNT 1590
 
 #endif
 
@@ -20305,6 +20315,41 @@ enum perl_diag_selector_domain_id {
         __LINE__ \
     )
 
+#define PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_value_jumphash_bucket_count_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
+    )
+
+#define PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_value_jumphash_bucket_count_too_large_idx, \
+        __FILE__, \
+        __LINE__ \
+    )
+
+#define PERL_THROW_ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_value_jumphash_input_byte_string_required_idx, \
+        __FILE__, \
+        __LINE__ \
+    )
+
+#define PERL_THROW_ERROR_VALUE_JUMPHASH_KEY_INVALID() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_value_jumphash_key_invalid_idx, \
+        __FILE__, \
+        __LINE__ \
+    )
+
+#define PERL_THROW_ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE() \
+    Perl_throw_croak_0_1006( \
+        aTHX_ perl_diag_error_value_jumphash_key_too_large_idx, \
+        __FILE__, \
+        __LINE__ \
+    )
+
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_ABORT() \
     STMT_START { \
         PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID(); \
@@ -22103,6 +22148,11 @@ enum perl_diag_selector_domain_id {
 /* PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED => ERROR_VALUE_HASH_CAPACITY_EXCEEDED */
 /* PERL_THROW_ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE => ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE */
 /* PERL_THROW_ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE => ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE */
+/* PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID => ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID */
+/* PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE => ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE */
+/* PERL_THROW_ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED => ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED */
+/* PERL_THROW_ERROR_VALUE_JUMPHASH_KEY_INVALID => ERROR_VALUE_JUMPHASH_KEY_INVALID */
+/* PERL_THROW_ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE => ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE */
 /* PERL_THROW_ERROR_VALUE_RESTRICTED_HASH_KEY_ACCESS_DISALLOWED => ERROR_VALUE_RESTRICTED_HASH_KEY_ACCESS_DISALLOWED */
 /* PERL_THROW_ERROR_VALUE_RESTRICTED_HASH_KEY_DELETION_DISALLOWED => ERROR_VALUE_RESTRICTED_HASH_KEY_DELETION_DISALLOWED */
 /* PERL_THROW_ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED => ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED */
@@ -22572,7 +22622,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * 38013f0af59bc8f3fe2285a1616491c3e8ed5aaac2992be10708be51610ec55f diag_conf.pl
+ * 2db3b21b872970b933758c0b18b9f15ef86ba35f7987fc1007de09248babdc6a diag_conf.pl
  * 33ec9731336463f6feeab1a67c087741ee4e1ad5eb527a86cceac4b577ab4168 diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

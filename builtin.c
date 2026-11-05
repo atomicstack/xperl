@@ -212,6 +212,103 @@ XS(XS_builtin_siphash)
     XSRETURN(1);
 }
 
+static U64
+S_builtin_jumphash_unsigned(pTHX_ SV *value, bool bucket_count, U64 limit)
+{
+    STRLEN len;
+    const char *digits;
+    U64 number = 0;
+
+    SvGETMAGIC(value);
+    if (!SvOK(value) || SvROK(value)) {
+        if (bucket_count)
+            PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID();
+        PERL_THROW_ERROR_VALUE_JUMPHASH_KEY_INVALID();
+    }
+    digits = SvPV_nomg(value, len);
+    if (!len) {
+        if (bucket_count)
+            PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID();
+        PERL_THROW_ERROR_VALUE_JUMPHASH_KEY_INVALID();
+    }
+    for (STRLEN i = 0; i < len; i++) {
+        U64 digit;
+        if (!isDIGIT_A(digits[i])) {
+            if (bucket_count)
+                PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID();
+            PERL_THROW_ERROR_VALUE_JUMPHASH_KEY_INVALID();
+        }
+        digit = (U64)(digits[i] - '0');
+        if (number > (limit - digit) / 10) {
+            if (bucket_count)
+                PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE();
+            PERL_THROW_ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE();
+        }
+        number = number * 10 + digit;
+    }
+    return number;
+}
+
+static I32
+S_builtin_jumphash(U64 key, I32 buckets)
+{
+    I64 bucket = -1;
+    I64 next = 0;
+
+    while (next < buckets) {
+        bucket = next;
+        key = key * UINT64_C(2862933555777941757) + 1;
+        next = (I64)((bucket + 1) *
+                     (2147483648.0 / (double)((key >> 33) + 1)));
+    }
+    return (I32)bucket;
+}
+
+XS(XS_builtin_jumphash_integer);
+XS(XS_builtin_jumphash_integer)
+{
+    dXSARGS;
+    U64 key;
+    U64 count;
+
+    if (items != 2)
+        croak_xs_usage(cv, "key, buckets");
+    key = S_builtin_jumphash_unsigned(aTHX_ ST(0), FALSE, ~(U64)0);
+    count = S_builtin_jumphash_unsigned(aTHX_ ST(1), TRUE, I32_MAX);
+    if (!count)
+        PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID();
+
+    ST(0) = sv_2mortal(newSViv(S_builtin_jumphash(key, (I32)count)));
+    XSRETURN(1);
+}
+
+XS(XS_builtin_jumphash_string);
+XS(XS_builtin_jumphash_string)
+{
+    dXSARGS;
+    static const U8 zero_seed[16] = { 0 };
+    SV *string;
+    const U8 *bytes;
+    STRLEN len;
+    U64 count;
+    U64 key;
+
+    if (items != 2)
+        croak_xs_usage(cv, "string, buckets");
+    string = ST(0);
+    SvGETMAGIC(string);
+    if (!SvOK(string) || SvROK(string))
+        PERL_THROW_ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED();
+    bytes = (const U8 *)SvPVbyte_nomg(string, len);
+    count = S_builtin_jumphash_unsigned(aTHX_ ST(1), TRUE, I32_MAX);
+    if (!count)
+        PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID();
+
+    key = S_perl_hash_siphash_2_4_64(zero_seed, bytes, len);
+    ST(0) = sv_2mortal(newSViv(S_builtin_jumphash(key, (I32)count)));
+    XSRETURN(1);
+}
+
 XS(Perl_builtin_get_diagnostic_data);
 XS(Perl_builtin_get_diagnostic_data)
 {
@@ -872,6 +969,8 @@ static const struct BuiltinFuncDescriptor builtins[] = {
     { "siphash", NO_BUNDLE, true, &XS_builtin_siphash, &ck_builtin_funcN, 0 },
     { "siphash_1_3", NO_BUNDLE, true, &XS_builtin_siphash, &ck_builtin_funcN, 1 },
     { "siphash_2_4", NO_BUNDLE, true, &XS_builtin_siphash, &ck_builtin_funcN, 2 },
+    { "jumphash_integer", NO_BUNDLE, true, &XS_builtin_jumphash_integer, &ck_builtin_funcN, 0 },
+    { "jumphash_string", NO_BUNDLE, true, &XS_builtin_jumphash_string, &ck_builtin_funcN, 0 },
     { "get_diagnostic_data", NO_BUNDLE, true, &Perl_builtin_get_diagnostic_data, &ck_builtin_func1, 0 },
 
     /* unary functions */

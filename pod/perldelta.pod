@@ -36,6 +36,13 @@ provide the common fixed variants. They accept a byte string and an optional
 published test-vector key, so callers handling untrusted input should supply
 a secret seed. See L<builtin/siphash>.
 
+=head2 Experimental jump consistent hash builtins
+
+C<builtin::jumphash_integer> maps an unsigned 64-bit key to a bucket number.
+C<builtin::jumphash_string> first hashes a byte string with a fixed-key
+SipHash-2-4, then performs the same mapping. Adding one bucket only moves keys
+to the new bucket. See L<builtin/jumphash_integer>.
+
 =head2 Custom constructors for native classes
 
 Native classes expose their generated constructor as C<CONSTRUCT>. A class without
