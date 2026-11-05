@@ -47,7 +47,10 @@ required prerequisites from the release metadata, then checks generated
 `MYMETA.json` or `MYMETA.yml` after configuration for additional required
 prerequisites before building. Older metadata is converted before validation,
 so fixable fields such as a missing abstract do not block dependency
-resolution. Optional prerequisites are not installed automatically. `Build.PL`
+resolution. For releases with no META file, the archive filename supplies the
+distribution name and version for registry lookup; generated MYMETA can still
+provide prerequisites after configuration. Optional prerequisites are not
+installed automatically. `Build.PL`
 distributions need their build
 tool, commonly `Module::Build`, installed or declared as a required build
 prerequisite.

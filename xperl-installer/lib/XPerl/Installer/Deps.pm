@@ -53,6 +53,10 @@ sub _install ($self, $module, $constraint) {
             if exists $structure->{x_use_unsafe_inc};
         $self->_install_prereqs($meta);
     }
+    else {
+        ($release->{distribution}, $release->{distribution_version}) =
+            _identity_from_path($release->{cpan_path});
+    }
 
     if (!$self->_satisfied($module)) {
         die "distribution $release->{cpan_path} was already installed but lacks $module\n"
@@ -114,6 +118,14 @@ sub _metadata ($archive) {
         return CPAN::Meta->new($data, { lazy_validation => 1 });
     }
     return;
+}
+
+sub _identity_from_path ($path) {
+    my ($name, $version) = $path =~
+        m{/([A-Za-z0-9][A-Za-z0-9_.-]*)-([vV]?[0-9][A-Za-z0-9._-]*)\.(?:tar\.gz|tgz)\z};
+    die "cannot determine distribution identity from $path\n"
+        unless defined $name && defined $version;
+    return ($name, $version);
 }
 
 1;
