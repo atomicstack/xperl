@@ -6,6 +6,8 @@ use IO::Socket::SSL::Utils;
 use Test::More;
 do './testlib.pl' || do './t/testlib.pl' || die "no testlib";
 
+sub tap_info { print '# ', @_, "\n" }
+
 # create listener
 IO::Socket::SSL::default_ca('t/certs/test-ca.pem');
 my $server = IO::Socket::SSL->new(
@@ -27,14 +29,14 @@ if ( ! $pid ) {
     while (1) {
 	alarm(30);
 	my $cl = $server->accept;
-	diag("server accepted new client");
+	tap_info("server accepted new client");
 	#${*$cl}{_SSL_ctx} or die "accepted socket has no SSL context";
 	${*$cl}{_SSL_object} and die "accepted socket is already SSL";
 
 	# try to find out if we start with TLS immediately (peek gets data from
 	# client hello) or have some plain data initially (peek gets these
 	# plain data)
-	diag("wait for initial data from client");
+	tap_info("wait for initial data from client");
 	my $buf = '';
 	while (length($buf)<3) {
 	    vec(my $rin='',fileno($cl),1) = 1;
@@ -43,25 +45,25 @@ if ( ! $pid ) {
 	    die "something wrong: $!" if $rv<0;
 	    $cl->peek($buf,3);
 	    $buf eq '' and die "eof from client";
-	    diag("got 0x".unpack("H*",$buf)." from client");
+	    tap_info("got 0x".unpack("H*",$buf)." from client");
 	}
 
 	if ($buf eq "end") {
 	    # done
-	    diag("client requested end of tests");
+	    tap_info("client requested end of tests");
 	    exit(0);
 	}
 
 	if ($buf eq 'foo') {
 	    # initial plain dialog
-	    diag("server: got plain data at start of connection");
+	    tap_info("server: got plain data at start of connection");
 	    read($cl,$buf,3) or die "failed to read";
 	    $buf eq 'foo' or die "read($buf) different from peek";
 	    print $cl "bar"; # reply
 	}
 
 	# now we upgrade to TLS
-	diag("server: TLS upgrade");
+	tap_info("server: TLS upgrade");
 	$cl->accept_SSL or die "failed to SSL upgrade server side: $SSL_ERROR";
 	${*$cl}{_SSL_object} or die "no SSL object after accept_SSL";
 	read($cl,$buf,6) or die "failed to ssl read";
@@ -69,7 +71,7 @@ if ( ! $pid ) {
 	print $cl "sslbar";
 
 	# now we downgrade from TLS to plain and try to exchange some data
-	diag("server: TLS downgrade");
+	tap_info("server: TLS downgrade");
 	$cl->stop_SSL or die "failed to stop SSL";
 	${*$cl}{_SSL_object} and die "still SSL object after stop_SSL";
 	read($cl,$buf,3);
@@ -77,7 +79,7 @@ if ( ! $pid ) {
 	print $cl "bar";
 
 	# now we upgrade again to TLS
-	diag("server: TLS upgrade#2");
+	tap_info("server: TLS upgrade#2");
 	$cl->accept_SSL or die "failed to SSL upgrade server side";
 	${*$cl}{_SSL_object} or die "no SSL object after accept_SSL";
 	read($cl,$buf,6) or die "failed to ssl read";
@@ -99,7 +101,7 @@ for my $test (
     [qw(newSSL:0 start_SSL stop_SSL connect_SSL)],
 ) {
     my $cl;
-    diag("-- test: @$test");
+    tap_info("-- test: @$test");
     for my $act (@$test) {
 	if (eval {
 	    if ($act =~m{newSSL(?::(.*))?$} ) {
