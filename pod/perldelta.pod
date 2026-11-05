@@ -423,6 +423,14 @@ C<builtin::class_object_to_hash> API and emits code using
 C<builtin::class_object_from_hash> to recreate the object without invoking
 its constructor.  Field values are shared rather than recursively copied.
 
+=head2 Data::Dumper Unicode preservation is opt in
+
+C<Data::Dumper> keeps traditional quoting and hexadecimal escapes by
+default. C<PreserveUnicode(1)> preserves UTF-8 flagged strings when dumped
+and evaluated, using C<\N{U+...}> escapes. C<PreserveUnicode('name')> uses
+Unicode character names where available. The diagnostic catalog generators
+request name mode explicitly.
+
 =head2 Repeated UTF-8 decoding
 
 C<utf8::repeat_decode($string, $force)> stringifies and modifies its argument

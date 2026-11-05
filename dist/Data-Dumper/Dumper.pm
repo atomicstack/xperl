@@ -25,14 +25,14 @@ use constant SUPPORTS_BLESSED_CLASS_OBJECTS => defined &builtin::is_class_object
 use Carp ();
 
 # Globals people alter.
-our ( $Indent, $Trailingcomma, $Purity, $Pad, $Varname, $Useqq, $Useutf8, $Terse, $Freezer,
+our ( $Indent, $Trailingcomma, $Purity, $Pad, $Varname, $Useqq, $Useutf8, $PreserveUnicode, $Terse, $Freezer,
       $Toaster, $Deepcopy, $Quotekeys, $Bless, $Maxdepth, $Pair, $Sortkeys,
       $Deparse, $Sparseseen, $Maxrecurse, $Useperl );
 
 our ( @ISA, @EXPORT, @EXPORT_OK, $VERSION );
 
 BEGIN {
-    $VERSION = '2.193_53'; # Don't forget to set version and release
+    $VERSION = '2.193_54'; # Don't forget to set version and release
                         # date in POD below!
 
     @ISA = qw(Exporter);
@@ -60,6 +60,7 @@ $Pad        = ""        unless defined $Pad;
 $Varname    = "VAR"     unless defined $Varname;
 $Useqq      = 0         unless defined $Useqq;
 $Useutf8    = 0         unless defined $Useutf8;
+$PreserveUnicode = 0    unless defined $PreserveUnicode;
 $Terse      = 0         unless defined $Terse;
 $Freezer    = ""        unless defined $Freezer;
 $Toaster    = ""        unless defined $Toaster;
@@ -104,6 +105,7 @@ sub new {
         purity     => $Purity,     # degree to which output is evalable
         useqq      => $Useqq,      # use "" for strings (backslashitis ensues)
         useutf8    => $Useutf8,    # emit printable Unicode characters literally
+        preserveunicode => $PreserveUnicode,
         terse      => $Terse,      # avoid name output (where feasible)
         freezer    => $Freezer,    # name of Freezer method for objects
         toaster    => $Toaster,    # name of method to revive objects
@@ -222,32 +224,33 @@ unless ($Useperl) {
   eval q{
     sub Dumpxs ($;$$) {
       my $useutf8 = _useutf8_for_dump($_[0]);
+      my $preserve = _preserveunicode_for_dump($_[0]);
       if (wantarray) {
         if (@_ == 1) {
-          return map { _name_unicode_escapes($_, $useutf8) } _Dumpxs($_[0]);
+          return map { _name_unicode_escapes($_, $useutf8, $preserve) } _Dumpxs($_[0]);
         }
         if (@_ == 2) {
-          return map { _name_unicode_escapes($_, $useutf8) } _Dumpxs($_[0], $_[1]);
+          return map { _name_unicode_escapes($_, $useutf8, $preserve) } _Dumpxs($_[0], $_[1]);
         }
-        return map { _name_unicode_escapes($_, $useutf8) }
+        return map { _name_unicode_escapes($_, $useutf8, $preserve) }
             _Dumpxs($_[0], $_[1], $_[2]);
       }
       if (@_ == 1) {
-        return _name_unicode_escapes(scalar _Dumpxs($_[0]), $useutf8);
+        return _name_unicode_escapes(scalar _Dumpxs($_[0]), $useutf8, $preserve);
       }
       if (@_ == 2) {
-        return _name_unicode_escapes(scalar _Dumpxs($_[0], $_[1]), $useutf8);
+        return _name_unicode_escapes(scalar _Dumpxs($_[0], $_[1]), $useutf8, $preserve);
       }
-      return _name_unicode_escapes(scalar _Dumpxs($_[0], $_[1], $_[2]), $useutf8);
+      return _name_unicode_escapes(scalar _Dumpxs($_[0], $_[1], $_[2]), $useutf8, $preserve);
     }
   };
   die $@ if $@;
 }
 
 sub _name_unicode_escapes {
-  my ($text, $useutf8) = @_;
+  my ($text, $useutf8, $preserve) = @_;
   $text =~ s{(?<!\\)((?:\\\\)*)\\N\{U\+([0-9A-Fa-f]+)\}}
-      {$1 . _unicode_name_escape(hex($2), $useutf8)}ge;
+      {$1 . _unicode_name_escape(hex($2), $useutf8, $preserve)}ge;
   return $text;
 }
 
@@ -257,15 +260,24 @@ sub _useutf8_for_dump {
     ? $invocant->{useutf8} : $Useutf8;
 }
 
+sub _preserveunicode_for_dump {
+  my ($invocant) = @_;
+  return ref($invocant) && UNIVERSAL::isa($invocant, __PACKAGE__)
+    ? $invocant->{preserveunicode} : $PreserveUnicode;
+}
+
 sub _unicode_name_escape {
-  my ($code_point, $useutf8) = @_;
+  my ($code_point, $useutf8, $preserve) = @_;
   if ($useutf8 && _printable_unicode($code_point)) {
     my $char = chr($code_point);
     utf8::upgrade($char);
     return $char;
   }
-  my $fallback = sprintf('\\N{U+%X}', $code_point);
-  return $fallback if $] < 5.016 || $code_point > 0x10FFFF;
+  my $fallback = $preserve
+    ? sprintf('\\N{U+%X}', $code_point)
+    : sprintf('\\x{%x}', $code_point);
+  return $fallback if $preserve ne 'name' || $] < 5.016
+    || $code_point > 0x10FFFF;
   require charnames;
   my $name = charnames::viacode($code_point);
   return defined($name) ? "\\N{$name}" : $fallback;
@@ -719,9 +731,10 @@ sub _dump {
       $out .= $val;
     }
     else {                 # string
-      if ($s->{useqq} or utf8::is_utf8($val) or $val =~ tr/\0-\377//c) {
-        # UTF-8 flagged values need double quotes to preserve their characters.
-        $out .= qquote($val, $s->{useqq}, $s->{useutf8});
+      if ($s->{useqq} or ($s->{preserveunicode} && utf8::is_utf8($val))
+          or $val =~ tr/\0-\377//c) {
+        $out .= qquote($val, $s->{useqq}, $s->{useutf8},
+                       $s->{preserveunicode});
       }
       else {
         $out .= _quote($val);
@@ -816,6 +829,11 @@ sub Useutf8 {
   @_ >= 2 ? (($s->{useutf8} = $v), return $s) : $s->{useutf8};
 }
 
+sub PreserveUnicode {
+  my($s, $v) = @_;
+  @_ >= 2 ? (($s->{preserveunicode} = $v), return $s) : $s->{preserveunicode};
+}
+
 sub Terse {
   my($s, $v) = @_;
   @_ >= 2 ? (($s->{terse} = $v), return $s) : $s->{terse};
@@ -903,13 +921,14 @@ sub qquote {
   return qq("") unless defined && length;  # fast exit if undef/empty
   s/([\\\"\@\$])/\\$1/g;
 
-  # Preserve whether the dumped value is a byte string or a character string
-  # when the output is evaluated again.
+  # Character escapes keep code points distinct from high bytes. The selected
+  # mode determines whether evaluation also preserves the UTF-8 flag.
   my $bytes; { use bytes; $bytes = length }
   my $byte_string = $bytes == length;
   my $high = shift || "";
   my $useutf8 = shift || 0;
-  s/([^[:ascii:]])/_unicode_name_escape(ord($1), $useutf8)/ge
+  my $preserve = @_ ? shift : $PreserveUnicode;
+  s/([^[:ascii:]])/_unicode_name_escape(ord($1), $useutf8, $preserve)/ge
     if $bytes > length;
   if ($byte_string && $high ne "8bit" && $high ne "iso8859"
       && $high ne "utf8") {
@@ -1227,16 +1246,27 @@ When set, enables the use of double quotes for representing string values.
 Whitespace other than space will be represented as C<[\n\t\r]>, "unsafe"
 characters will be backslashed, and unprintable control characters will be
 escaped.  In double-quoted output, high bytes in byte strings use C<\x{...}>
-escapes.  Characters in UTF-8 strings use C<\N{U+...}> escapes, including
-characters in the Latin-1 range, so evaluating the output preserves the
-string's UTF-8 flag, unless C<Useutf8> is enabled.  The default is 0.
+escapes. Characters in UTF-8 strings use C<\x{...}> escapes when quoted
+without C<PreserveUnicode>.
+The default is 0.
+
+=item *
+
+$Data::Dumper::PreserveUnicode  I<or>  I<$OBJ>->PreserveUnicode(I<[NEWVAL]>)
+
+When true, UTF-8 flagged strings use double quotes and C<\N{U+...}>
+escapes, including characters in the Latin-1 range. This preserves the
+string's UTF-8 flag when the output is evaluated. Set this option to
+C<name> to use Unicode character names instead of code points where a name
+exists. The default is 0, which keeps Data::Dumper's traditional quoting
+and escape behavior.
 
 =item *
 
 $Data::Dumper::Useutf8  I<or>  I<$OBJ>->Useutf8(I<[NEWVAL]>)
 
 When set, printable Unicode characters in UTF-8 strings are emitted literally
-instead of as C<\N{...}> escapes. Controls, separators, default-ignorable
+instead of as escapes. Controls, separators, default-ignorable
 characters, and other non-printing characters remain escaped. Byte strings
 are unchanged. The default is 0. This setting does not configure an output
 filehandle. Source containing literal Unicode output must be written as UTF-8
@@ -1627,7 +1657,7 @@ modify it under the same terms as Perl itself.
 
 =head1 VERSION
 
-Version 2.193_53
+Version 2.193_54
 
 =head1 SEE ALSO
 

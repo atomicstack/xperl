@@ -139,6 +139,7 @@ SKIP: {
 }
 
 { # https://rt.perl.org/Ticket/Display.html?id=128524
+    local $Data::Dumper::PreserveUnicode = 1;
     my $runtime = "runtime";
     my $requires = "requires";
     utf8::upgrade(my $uruntime = $runtime);

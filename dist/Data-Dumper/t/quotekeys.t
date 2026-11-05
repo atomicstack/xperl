@@ -9,6 +9,8 @@ use Test::More tests => 18;
 use lib qw( ./t/lib );
 use Testing qw( _dumptostr );
 
+local $Data::Dumper::PreserveUnicode = 'name';
+
 my %d = (
     delta   => 'd',
     beta    => 'b',
