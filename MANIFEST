@@ -225,6 +225,10 @@ vutil.h					Version object headers
 vxs.inc					Version object XS methods
 warnings.h				The warning numbers
 write_buildcustomize.pl			Generate lib/buildcustomize.pl
+xperl-installer/bin/xperl		XPerl package manager development command
+xperl-installer/lib/XPerl/Installer/Fetch.pm	CPAN release resolver and fetcher
+xperl-installer/README.md		XPerl package manager development instructions
+xperl-installer/t/fetch.t		CPAN resolver and fetcher tests
 XPERL-MISSION.md			Mission and contribution principles for AI Perl
 xperl_exception.inc			Built-in structured exception and diagnostic methods
 XSUB.h					Include file for extension subroutines
