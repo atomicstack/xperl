@@ -40,7 +40,8 @@ not handled yet. `Build.PL` distributions need their build tool, commonly
 
 `--repair-command PATH` enables an external repair program after a failed
 configure, build, or test phase. `--repair-attempts N` limits repair calls;
-the default is two. The installer never calls a repair program unless this
+the default is two. `--repair-timeout SECONDS` limits each call; the default
+is 600 seconds. The installer never calls a repair program unless this
 option is present. The command must be an executable file. It runs with the
 distribution source directory as its working directory and receives one
 argument: the absolute path to a JSON request file.

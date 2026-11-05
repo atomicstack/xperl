@@ -25,11 +25,12 @@ File: 02packages.details.txt
 
 Example::Fixable 1.00 E/EX/EXAMPLE/Example-Fixable-1.00.tar.gz
 Example::Unfixable 1.00 E/EX/EXAMPLE/Example-Unfixable-1.00.tar.gz
+Example::Slow 1.00 E/EX/EXAMPLE/Example-Slow-1.00.tar.gz
 INDEX
 gzip \$index => File::Spec->catfile($modules, '02packages.details.txt.gz')
     or die $GzipError;
 
-for my $name (qw(Fixable Unfixable)) {
+for my $name (qw(Fixable Unfixable Slow)) {
     my $dist = "Example-$name-1.00";
     my $tar = Archive::Tar->new;
     $tar->add_data("$dist/Makefile.PL",
@@ -56,6 +57,7 @@ open my $marker, '>', $ENV{XPERL_REPAIR_MARKER} or die $!;
 print {$marker} JSON::PP->new->encode($request);
 close $marker or die $!;
 exit 0 if $request->{module} eq 'Example::Unfixable';
+if ($request->{module} eq 'Example::Slow') { sleep 3; exit 0 }
 my $module = File::Spec->catfile($request->{source},
                                 qw(lib Example Fixable.pm));
 open my $source, '<', $module or die $!;
@@ -99,5 +101,14 @@ my $failure = do { local $/; <$pipe> };
 ok(!close $pipe, 'repair stops after configured attempt limit');
 ok(!-f File::Spec->catfile($prefix, qw(lib perl5 Example Unfixable.pm)),
    'unrepaired module was not installed');
+
+open $pipe, '-|', $^X, $script, 'install', '--mirror', $mirror,
+    '--cache', $cache, '--prefix', $prefix, '--repair-command', $agent,
+    '--repair-attempts', '1', '--repair-timeout', '1', 'Example::Slow'
+    or die $!;
+my $timeout = do { local $/; <$pipe> };
+ok(!close $pipe, 'slow repair command times out');
+ok(!-f File::Spec->catfile($prefix, qw(lib perl5 Example Slow.pm)),
+   'timed-out repair did not install module');
 
 done_testing();
