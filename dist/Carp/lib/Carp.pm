@@ -564,11 +564,13 @@ sub long_error_loc {
 }
 
 sub longmess_heavy {
-    if ( ref( $_[0] ) ) {   # don't break references as exceptions
+    my @args = @_;
+    $args[0] = "$args[0]" if ref($args[0]) eq 'XPerl::Exception';
+    if ( ref( $args[0] ) ) {   # don't break references as exceptions
         return wantarray ? @_ : $_[0];
     }
     my $i = long_error_loc();
-    return ret_backtrace( $i, @_ );
+    return ret_backtrace( $i, @args );
 }
 
 BEGIN {
@@ -678,14 +680,16 @@ sub short_error_loc {
 }
 
 sub shortmess_heavy {
-    return longmess_heavy(@_) if $Verbose;
-    return @_ if ref( $_[0] );    # don't break references as exceptions
+    my @args = @_;
+    $args[0] = "$args[0]" if ref($args[0]) eq 'XPerl::Exception';
+    return longmess_heavy(@args) if $Verbose;
+    return @_ if ref( $args[0] );    # don't break references as exceptions
     my $i = short_error_loc();
     if ($i) {
-        ret_summary( $i, @_ );
+        ret_summary( $i, @args );
     }
     else {
-        longmess_heavy(@_);
+        longmess_heavy(@args);
     }
 }
 
