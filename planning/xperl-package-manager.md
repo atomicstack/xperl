@@ -19,6 +19,18 @@ distributions with XS code. Success means the installer resolves their
 dependencies, builds and tests both under XPerl, installs them into an
 isolated prefix, and runs an encode/decode round trip from that prefix.
 
+## DBI acceptance (2026-11-05)
+
+A fresh-cache, fresh-prefix install of DBI 1.656 succeeded through the normal
+installer path with the local registry enabled and no patch selected. The
+original archive was `H/HM/HMBRAND/DBI-1.656.tgz`, with SHA-256 digest
+`ab5f2b9aef00951ed4598723d6131a00b03e68193478dd5e5f211015520a6ef0`.
+Configuration, build, test, and installation all returned zero. DBI's test
+run reported 216 files and 9,722 tests passing, with the expected skips for
+optional or unsupported features. XPerl loaded `DBI.pm` and `DBI.so` from
+the new prefix, and a `DBD::Sponge` connection succeeded. This result covers
+the current x86_64 Linux XPerl build; the interpreter has no thread support.
+
 ## Current checkpoint (2026-11-05)
 
 The source-tree installer now reaches that target on x86_64 Linux with the
