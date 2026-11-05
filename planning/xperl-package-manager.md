@@ -244,8 +244,8 @@ release, XPerl build, commands, and outcomes for those live checks.
 
 ### Sereal acceptance test
 
-Pin the first live run to the `Sereal-Decoder-6.002` and
-`Sereal-Encoder-6.002` CPAN releases, published on 30 October 2026. Record
+Pin the first live run to the `Sereal-Decoder-6.003` and
+`Sereal-Encoder-6.003` CPAN releases, published on 31 October 2026. Record
 their archive digests at download time. Later runs may update the target
 versions deliberately, but must state the new release identities.
 
@@ -253,14 +253,14 @@ Baseline recorded on 5 November 2026 from the original CPAN archives:
 
 | Distribution | Archive SHA-256 | Required non-core prerequisites |
 |---|---|---|
-| `Sereal-Decoder-6.002` | `cab67baf30a3d46ce7ad0a1ab991e9adaecf7fceac969bf7c57bdd1b2fb93d2f` | `Devel::CheckLib >= 1.16` for configure; `Test::Deep`, `Test::Differences`, `Test::LongString`, `Test::Warn` for tests |
-| `Sereal-Encoder-6.002` | `eecccfd5d53da53304395e75ff1982c0ede66f9f8c2bc36fb7dc12b457d4b941` | The same configure and test modules, plus `Sereal::Decoder >= 6.002` for runtime and tests |
+| `Sereal-Decoder-6.003` | `2e6908af638b34b1f381019b0de1fd6dabf67b0fd2efcc030bfb3e2f7d8ce45b` | `Devel::CheckLib >= 1.16` for configure; `Test::Deep`, `Test::Differences`, `Test::LongString`, `Test::Warn` for tests |
+| `Sereal-Encoder-6.003` | `217de2b585aaf183368a4a54c1adbffae78cc30b7430ad55c59a48d3ca33b30b` | The same configure and test modules, plus `Sereal::Decoder >= 6.003` for runtime and tests |
 
 These prerequisites come from each release's `META.json`. The current built
 XPerl has `ExtUtils::MakeMaker` and `ExtUtils::ParseXS`, but lacks the listed
 non-core modules and both Sereal modules. This is a metadata and installed
 module inventory, not a build or test result. The archived inputs are in the
-workspace's `tmp/xperl-installer-baseline/` directory.
+workspace's `tmp/xperl-installer-cache/` directory.
 
 From a clean prefix and cache, run the equivalent of:
 
@@ -280,9 +280,9 @@ The upstream Sereal release notes advise installing the Decoder before the
 Encoder for version 6 protocol compatibility; the target order follows that
 guidance.
 
-Sources: [Decoder 6.002](https://metacpan.org/release/YVES/Sereal-Decoder-6.002),
-[Encoder 6.002](https://metacpan.org/release/YVES/Sereal-Encoder-6.002), and
-[Encoder release notes](https://metacpan.org/release/YVES/Sereal-Encoder-6.002/changes).
+Sources: [Decoder 6.003](https://metacpan.org/release/YVES/Sereal-Decoder-6.003),
+[Encoder 6.003](https://metacpan.org/release/YVES/Sereal-Encoder-6.003), and
+[Encoder release notes](https://metacpan.org/release/YVES/Sereal-Encoder-6.003/changes).
 
 ## Decisions to settle during implementation
 
