@@ -48,7 +48,7 @@ sub new ($class, %args) {
     }, $class;
 }
 
-sub install ($self, $release) {
+sub install ($self, $release, %options) {
     my $work = tempdir('release-XXXXXXXX', DIR => $self->{workdir},
                        CLEANUP => 0);
     my $record = {
@@ -177,6 +177,9 @@ sub install ($self, $release) {
                     ($configuration_error
                         ? (validation_error => $configuration_error) : ()),
                 };
+                $options{after_configure}->($source)
+                    if $phase eq 'configure' && !$status
+                        && !$configuration_error && $options{after_configure};
                 next unless $status || $configuration_error;
                 my $failure = $configuration_error
                     ? "$configuration_error; see $log\n"
