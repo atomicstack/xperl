@@ -9,27 +9,30 @@ use File::Spec;
 use Getopt::Long qw(GetOptionsFromArray);
 use JSON::PP;
 use XPerl::Installer::Build;
+use XPerl::Installer::Deps;
 use XPerl::Installer::Fetch;
+use XPerl::Installer::Registry;
 
 sub usage () {
     return <<'USAGE';
 Usage: xperl resolve [--mirror URL|DIR] [--cache DIR] Module::Name
        xperl fetch   [--mirror URL|DIR] [--cache DIR] Module::Name
-       xperl install --prefix DIR [--mirror URL|DIR] [--cache DIR] Module::Name
+       xperl install --prefix DIR [--registry DIR] [--mirror URL|DIR] [--cache DIR] Module::Name
 
 This source-tree command must run with XPerl. Installation currently supports
-Makefile.PL releases and does not yet install prerequisites recursively.
+Makefile.PL releases and their declared required prerequisites.
 USAGE
 }
 
 my $action = shift @ARGV // 'help';
-my ($mirror, $cache, $refresh, $prefix);
+my ($mirror, $cache, $refresh, $prefix, $registry);
 GetOptionsFromArray(
     \@ARGV,
     'mirror=s' => \$mirror,
     'cache=s'  => \$cache,
     'refresh'  => \$refresh,
     'prefix=s' => \$prefix,
+    'registry=s' => \$registry,
 ) or die usage();
 
 my $module = shift @ARGV;
@@ -60,14 +63,17 @@ dispatch ($action) {
             (defined $mirror ? (mirror => $mirror) : ()),
             (defined $cache  ? (cache  => $cache)  : ()),
         );
-        my $release = $fetcher->fetch($module, refresh => $refresh);
         my $builder = XPerl::Installer::Build->new(
             prefix => $prefix,
             workdir => File::Spec->catdir($cache // File::Spec->catdir(
                 $ENV{HOME} // File::Spec->tmpdir, '.xperl', 'cache'), 'work'),
+            (defined $registry ? (registry => XPerl::Installer::Registry->new(
+                path => $registry)) : ()),
         );
+        my $deps = XPerl::Installer::Deps->new(
+            fetcher => $fetcher, builder => $builder);
         print JSON::PP->new->canonical->pretty->encode(
-            $builder->install($release));
+            $deps->install($module));
     }
     on (_) {
         die usage() if $action ne 'help' || defined $module;

@@ -6,6 +6,7 @@ use feature 'signatures';
 use Archive::Tar;
 use Config;
 use Cwd qw(abs_path getcwd);
+use File::Basename qw(dirname);
 use File::Path qw(make_path);
 use File::Spec;
 use File::Temp qw(tempdir);
@@ -23,6 +24,7 @@ sub new ($class, %args) {
     return bless {
         prefix  => abs_path($args{prefix}),
         workdir => abs_path($args{workdir}),
+        registry => $args{registry},
     }, $class;
 }
 
@@ -44,16 +46,41 @@ sub install ($self, $release) {
     my $error;
     eval {
         my $source = _unpack($release->{archive}, $work);
+        if ($self->{registry}) {
+            my $selection = $self->{registry}->patches_for($release);
+            $record->{registry} = {
+                patch_set => $selection->{patch_set},
+                index_sha256 => $selection->{index_sha256},
+                patches => [map { $_->{sha256} } @{$selection->{patches}}],
+            };
+            my $number = 0;
+            for my $patch (@{$selection->{patches}}) {
+                my $log = File::Spec->catfile($work, "patch-" . ++$number . ".log");
+                my @command = ('patch', '--batch', '--forward', '-p1',
+                               '-i', $patch->{path});
+                my $status = $self->_run($source, $log, @command);
+                push @{$record->{phases}}, {
+                    name => 'patch', command => \@command,
+                    exit_status => $status, log => $log,
+                };
+                die "patch failed (exit $status); see $log\n" if $status;
+            }
+        }
         die "only Makefile.PL distributions are supported\n"
             unless -f File::Spec->catfile($source, 'Makefile.PL');
         my $perl = abs_path($^X);
         my $make = $Config{make} || 'make';
+        my $core = dirname($perl);
+        my @make_command = ($make,
+            (-f File::Spec->catfile($core, 'perl.h')
+                 && -f File::Spec->catfile($core, 'config.h')
+                ? ("PERL_INC=$core") : ()));
         my @steps = (
             ['configure', $perl, 'Makefile.PL',
                 "INSTALL_BASE=$self->{prefix}"],
-            ['build', $make],
-            ['test', $make, 'test'],
-            ['install', $make, 'install'],
+            ['build', @make_command],
+            ['test', @make_command, 'test'],
+            ['install', @make_command, 'install'],
         );
         for my $step (@steps) {
             my ($phase, @command) = @$step;
