@@ -42,7 +42,9 @@ sub _install ($self, $module, $constraint) {
     my $release = $self->{fetcher}->fetch($module);
     die "CPAN index version $release->{version} does not satisfy $module $constraint\n"
         unless $self->{needed}->accepts_module($module, $release->{version});
-    my $meta = _metadata($release->{archive});
+    my $meta = eval { _metadata($release->{archive}) };
+    die "invalid CPAN metadata for $module ($release->{cpan_path}): $@"
+        if $@;
     if ($meta) {
         $release->{distribution} = $meta->name;
         $release->{distribution_version} = $meta->version;
@@ -92,7 +94,7 @@ sub _metadata ($archive) {
         my $data = $suffix eq 'META.json'
             ? Parse::CPAN::Meta->load_json_string($file->get_content)
             : Parse::CPAN::Meta->load_yaml_string($file->get_content);
-        return CPAN::Meta->new($data);
+        return CPAN::Meta->new($data, { lazy_validation => 1 });
     }
     return;
 }

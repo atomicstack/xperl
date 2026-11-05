@@ -33,7 +33,9 @@ independent CPAN checksum metadata. Install writes phase logs and a JSON
 receipt under the cache's `work/` directory. It stops before installation
 when configuration, build, or tests fail. A configure step must create its
 Makefile or Build script even if the process exits zero. Only dependencies
-declared in CPAN metadata are resolved; dynamic configuration and optional
+declared in CPAN metadata are resolved. Older metadata is converted before
+validation, so fixable fields such as a missing abstract do not block
+dependency resolution. Dynamic configuration and optional
 prerequisites are not handled yet. `Build.PL` distributions need their build
 tool, commonly `Module::Build`, installed or declared as a required build
 prerequisite.
