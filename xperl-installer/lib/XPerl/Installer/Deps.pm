@@ -51,29 +51,43 @@ sub _install ($self, $module, $constraint) {
         my $structure = $meta->as_struct;
         $release->{x_use_unsafe_inc} = $structure->{x_use_unsafe_inc} ? 1 : 0
             if exists $structure->{x_use_unsafe_inc};
-        my $required = $meta->effective_prereqs->merged_requirements(
-            [qw(configure build test runtime)], ['requires']);
-        for my $dependency (sort $required->required_modules) {
-            my $range = $required->requirements_for_module($dependency);
-            if ($dependency eq 'perl') {
-                die "XPerl $^V does not satisfy perl $range\n"
-                    unless $required->accepts_module('perl', $^V);
-                next;
-            }
-            $self->_install($dependency, $range);
-        }
+        $self->_install_prereqs($meta);
     }
 
     if (!$self->_satisfied($module)) {
         die "distribution $release->{cpan_path} was already installed but lacks $module\n"
             if $self->{installed}{$release->{cpan_path}};
-        my $receipt = $self->{builder}->install($release);
+        my $receipt = $self->{builder}->install($release,
+            after_configure => sub ($source) {
+                for my $name (qw(MYMETA.json MYMETA.yml)) {
+                    my $path = File::Spec->catfile($source, $name);
+                    next unless -f $path;
+                    my $configured = CPAN::Meta->load_file($path,
+                        { lazy_validation => 1 });
+                    $self->_install_prereqs($configured);
+                    last;
+                }
+            });
         $self->{installed}{$release->{cpan_path}} = 1;
         push @{$self->{receipts}}, $receipt->{receipt};
     }
     die "installed distribution does not provide required $module\n"
         unless $self->_satisfied($module);
     delete $self->{visiting}{$module};
+}
+
+sub _install_prereqs ($self, $meta) {
+    my $required = $meta->effective_prereqs->merged_requirements(
+        [qw(configure build test runtime)], ['requires']);
+    for my $dependency (sort $required->required_modules) {
+        my $range = $required->requirements_for_module($dependency);
+        if ($dependency eq 'perl') {
+            die "XPerl $^V does not satisfy perl $range\n"
+                unless $required->accepts_module('perl', $^V);
+            next;
+        }
+        $self->_install($dependency, $range);
+    }
 }
 
 sub _satisfied ($self, $module) {

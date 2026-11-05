@@ -22,7 +22,10 @@ To install the current Sereal releases with local compatibility patches:
 ./perl -Ilib xperl-installer/bin/xperl install --cache ../tmp/xperl-sereal-cache --prefix ../tmp/xperl-sereal-prefix --registry ../xperl-cpan-ports Sereal::Encoder
 ```
 
-`--cache DIR` selects a cache directory. `--mirror URL` selects an HTTPS CPAN
+`--cache DIR` selects a download cache directory; the default is
+`$HOME/.xperl/cache`. `--workdir DIR` keeps unpacked builds, logs, and receipts
+separate from downloads; by default they go under the cache's `work/`
+directory. `--mirror URL` selects an HTTPS CPAN
 mirror. A local mirror directory with `modules/` and `authors/id/` subtrees is
 supported for tests. `--refresh` fetches the index and archive again. Registry
 lookup is optional and does not require an AI agent.
@@ -39,11 +42,13 @@ checkpoint calculates the digest but does not yet authenticate it against
 independent CPAN checksum metadata. Install writes phase logs and a JSON
 receipt under the cache's `work/` directory. It stops before installation
 when configuration, build, or tests fail. A configure step must create its
-Makefile or Build script even if the process exits zero. Only dependencies
-declared in CPAN metadata are resolved. Older metadata is converted before
-validation, so fixable fields such as a missing abstract do not block
-dependency resolution. Dynamic configuration and optional
-prerequisites are not handled yet. `Build.PL` distributions need their build
+Makefile or Build script even if the process exits zero. The installer resolves
+required prerequisites from the release metadata, then checks generated
+`MYMETA.json` or `MYMETA.yml` after configuration for additional required
+prerequisites before building. Older metadata is converted before validation,
+so fixable fields such as a missing abstract do not block dependency
+resolution. Optional prerequisites are not installed automatically. `Build.PL`
+distributions need their build
 tool, commonly `Module::Build`, installed or declared as a required build
 prerequisite.
 

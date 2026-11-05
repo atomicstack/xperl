@@ -19,7 +19,7 @@ Usage: xperl resolve [--mirror URL|DIR] [--cache DIR] Module::Name
        xperl fetch   [--mirror URL|DIR] [--cache DIR] Module::Name
        xperl install --prefix DIR [--registry DIR] [--repair-command PATH]
                      [--repair-attempts N] [--repair-timeout SECONDS]
-                     [--mirror URL|DIR] [--cache DIR] Module::Name
+                     [--mirror URL|DIR] [--cache DIR] [--workdir DIR] Module::Name
 
 This source-tree command must run with XPerl. Installation supports
 Makefile.PL and Build.PL releases and their declared required prerequisites.
@@ -27,12 +27,13 @@ USAGE
 }
 
 my $action = shift @ARGV // 'help';
-my ($mirror, $cache, $refresh, $prefix, $registry, $repair_command,
+my ($mirror, $cache, $workdir, $refresh, $prefix, $registry, $repair_command,
     $repair_attempts, $repair_timeout);
 GetOptionsFromArray(
     \@ARGV,
     'mirror=s' => \$mirror,
     'cache=s'  => \$cache,
+    'workdir=s' => \$workdir,
     'refresh'  => \$refresh,
     'prefix=s' => \$prefix,
     'registry=s' => \$registry,
@@ -71,7 +72,7 @@ dispatch ($action) {
         );
         my $builder = XPerl::Installer::Build->new(
             prefix => $prefix,
-            workdir => File::Spec->catdir($cache // File::Spec->catdir(
+            workdir => $workdir // File::Spec->catdir($cache // File::Spec->catdir(
                 $ENV{HOME} // File::Spec->tmpdir, '.xperl', 'cache'), 'work'),
             (defined $registry ? (registry => XPerl::Installer::Registry->new(
                 path => $registry)) : ()),

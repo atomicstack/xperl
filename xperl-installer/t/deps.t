@@ -15,6 +15,7 @@ my $root = tempdir(CLEANUP => 1,
                    DIR => $ENV{XPERL_TEST_TMPDIR} // File::Spec->tmpdir);
 my $mirror = File::Spec->catdir($root, 'mirror');
 my $cache = File::Spec->catdir($root, 'cache');
+my $workdir = File::Spec->catdir($root, 'build-work');
 my $prefix = File::Spec->catdir($root, 'prefix');
 my $modules = File::Spec->catdir($mirror, 'modules');
 my $releases = File::Spec->catdir($mirror, qw(authors id E EX EXAMPLE));
@@ -35,9 +36,13 @@ for my $name (qw(Dependency Application)) {
     my $unsafe_inc_check = $name eq 'Application'
         ? 'die "unsafe-inc metadata ignored" if $ENV{PERL_USE_UNSAFE_INC};' . "\n"
         : '';
+    my $dynamic_prereq = $name eq 'Application'
+        ? ", PREREQ_PM => {'Example::Dependency' => '1.00'}"
+        : '';
     $tar->add_data("$root_name/Makefile.PL",
         "use ExtUtils::MakeMaker;\n" . $unsafe_inc_check
-        . "WriteMakefile(NAME => 'Example::$name', VERSION => '1.00');\n");
+        . "WriteMakefile(NAME => 'Example::$name', VERSION => '1.00'"
+        . "$dynamic_prereq);\n");
     my $body = $name eq 'Dependency'
         ? "package Example::Dependency;\nour \$VERSION = '1.00';\nsub value { 42 }\n1;\n"
         : "package Example::Application;\nour \$VERSION = '1.00';\nuse Example::Dependency;\nsub value { Example::Dependency::value() }\n1;\n";
@@ -50,9 +55,7 @@ for my $name (qw(Dependency Application)) {
         abstract => 'Local installer test', author => ['XPerl'],
         generated_by => 'XPerl installer test', release_status => 'stable',
         license => ['perl_5'], dynamic_config => JSON::PP::false,
-        prereqs => $name eq 'Application'
-            ? { runtime => { requires => { 'Example::Dependency' => '1.00' } } }
-            : {},
+        prereqs => {},
     };
     $meta->{x_use_unsafe_inc} = JSON::PP::false if $name eq 'Application';
     $tar->add_data("$root_name/META.json", JSON::PP->new->encode($meta));
@@ -63,11 +66,14 @@ my $script = File::Spec->catfile($FindBin::Bin, '..', 'bin', 'xperl');
 local %ENV = %ENV;
 delete $ENV{PERL_USE_UNSAFE_INC};
 open my $pipe, '-|', $^X, $script, 'install', '--mirror', $mirror,
-    '--cache', $cache, '--prefix', $prefix, 'Example::Application' or die $!;
+    '--cache', $cache, '--workdir', $workdir, '--prefix', $prefix,
+    'Example::Application' or die $!;
 my $output = do { local $/; <$pipe> };
 ok(close $pipe, 'application installation completed');
 my $result = eval { JSON::PP->new->decode($output) };
 ok($result && $result->{status} eq 'installed', 'dependency run succeeded');
+like($result->{receipts}[0], qr{\Q$workdir\E/},
+     'build work is kept separate from the download cache');
 my @modules;
 for my $path (@{$result->{receipts}}) {
     open my $input, '<', $path or die $!;
@@ -75,7 +81,7 @@ for my $path (@{$result->{receipts}}) {
     push @modules, $receipt->{module};
 }
 is_deeply(\@modules, ['Example::Dependency', 'Example::Application'],
-          'required dependency installed first');
+          'configured dependency installed before its parent');
 ok(-f File::Spec->catfile($prefix, qw(lib perl5 Example Application.pm)),
    'application installed into selected prefix');
 
