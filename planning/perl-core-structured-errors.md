@@ -39,9 +39,11 @@ are in the [language queue](diagnostic-language-queue.md).
 
 ## Public object and mutation contracts
 
-Subgroup/split filtering is deferred until there is a safe policy for a
-selected item beneath an unmatched Error ancestor. Traversal conveniences,
-sharing and redaction semantics need an explicit design before adding APIs.
+Read-only traversal and code/parameter predicates are available through
+`XPerl::DiagGroup`. They visit shared diagnostics once without changing the
+graph. The next graph-query task is a predicate-driven `subgroup`/`split`
+interface. It needs an explicit policy for a selected item beneath an
+unmatched Error ancestor and for how shared subtrees appear in each result.
 Applications can already intercept and edit objects through the hooks.
 Shared aliases and earlier output prevent any promise of secure erasure.
 

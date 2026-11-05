@@ -174,6 +174,9 @@ operations C<contents>, C<contents_count>, C<append>, C<contains>, and
 C<has_errors>. Both store their diagnostic entries under C<contents>.
 Diagnostic storage is allocated when entries are added. JSON and Dumper
 records use C<contents> for diagnostic lists at every level.
+After loading C<XPerl::DiagGroup>, applications can traverse the graph with
+C<diagnostics> and query by symbolic code and named parameters with
+C<find_diagnostic> or C<has_diagnostic>.
 
 Diagnostics emitted by generated core macros now record the C source file
 and line of the macro call. Annotated output shows this location in the
