@@ -26,6 +26,7 @@ File: 02packages.details.txt
 
 Example::Tiny 1.00 E/EX/EXAMPLE/Example-Tiny-1.00.tar.gz
 Example::Broken 1.00 E/EX/EXAMPLE/Example-Broken-1.00.tar.gz
+Example::NoMakefile 1.00 E/EX/EXAMPLE/Example-NoMakefile-1.00.tar.gz
 INDEX
 gzip \$index => File::Spec->catfile($modules, '02packages.details.txt.gz')
     or die $GzipError;
@@ -88,5 +89,17 @@ eval { $builder->install($bad_release) };
 like($@, qr/test failed/, 'failed tests stop the installation');
 ok(!-f File::Spec->catfile($bad_prefix, qw(lib perl5 Example Broken.pm)),
    'failed distribution is not installed');
+
+my $no_makefile = Archive::Tar->new;
+$no_makefile->add_data('Example-NoMakefile-1.00/Makefile.PL',
+                       "exit 0;\n");
+$no_makefile->add_data('Example-NoMakefile-1.00/lib/Example/NoMakefile.pm',
+                       "package Example::NoMakefile;\n1;\n");
+$no_makefile->write(File::Spec->catfile($releases,
+                                       'Example-NoMakefile-1.00.tar.gz'), 1);
+my $no_makefile_release = $fetcher->fetch('Example::NoMakefile');
+eval { $builder->install($no_makefile_release) };
+like($@, qr/configure did not produce Makefile/,
+     'zero-exit configure without a Makefile is rejected');
 
 done_testing();
