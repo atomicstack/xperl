@@ -162,7 +162,9 @@ sub install ($self, $release) {
                     }
                 }
                 my $log = File::Spec->catfile($work, "$phase-$attempt.log");
-                my $status = $self->_run($source, $log, @command);
+                my $status = $self->_run($source, $log,
+                    { phase => $phase,
+                      unsafe_inc => $release->{x_use_unsafe_inc} }, @command);
                 my $configuration_error;
                 if ($phase eq 'configure' && !$status
                     && !-f File::Spec->catfile($source, $configured_target)) {
@@ -281,6 +283,24 @@ sub _run ($self, $source, $log_path, @command) {
     my $arch = File::Spec->catdir($site, $Config{archname});
     local %ENV = %ENV;
     $ENV{PERL5LIB} = join($Config{path_sep}, $site, $arch, @include);
+    if (my $phase = $options->{phase}) {
+        $ENV{PERL} = abs_path($^X);
+        $ENV{PERL_USE_UNSAFE_INC} =
+            defined($options->{unsafe_inc}) ? $options->{unsafe_inc} : 1
+            unless exists $ENV{PERL_USE_UNSAFE_INC};
+        if ($phase eq 'configure') {
+            $ENV{PERL5_CPAN_IS_RUNNING} = $$;
+            $ENV{PERL5_CPANPLUS_IS_RUNNING} = $$;
+            $ENV{PERL5_CPANM_IS_RUNNING} = $$;
+            $ENV{PERL5_CPAN_IS_EXECUTING} =
+                File::Spec->catfile($source, 'Makefile.PL')
+                if defined($command[1]) && $command[1] eq 'Makefile.PL';
+        }
+        if ($phase eq 'configure' || $phase eq 'build' || $phase eq 'test') {
+            $ENV{PERL_MM_USE_DEFAULT} = 1;
+        }
+        $ENV{NONINTERACTIVE_TESTING} = 1 if $phase eq 'test';
+    }
     chdir $source or die "cannot enter $source: $!\n";
     my ($input, $output, $error) = (gensym, gensym, gensym);
     my $pid = eval { open3($input, $output, $error, @command) };

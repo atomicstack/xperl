@@ -48,6 +48,9 @@ sub _install ($self, $module, $constraint) {
     if ($meta) {
         $release->{distribution} = $meta->name;
         $release->{distribution_version} = $meta->version;
+        my $structure = $meta->as_struct;
+        $release->{x_use_unsafe_inc} = $structure->{x_use_unsafe_inc} ? 1 : 0
+            if exists $structure->{x_use_unsafe_inc};
         my $required = $meta->effective_prereqs->merged_requirements(
             [qw(configure build test runtime)], ['requires']);
         for my $dependency (sort $required->required_modules) {

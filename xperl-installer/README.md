@@ -47,6 +47,18 @@ prerequisites are not handled yet. `Build.PL` distributions need their build
 tool, commonly `Module::Build`, installed or declared as a required build
 prerequisite.
 
+The runner uses cpanm's noninteractive build signals. Configure, build, and
+test set `PERL_MM_USE_DEFAULT=1`; test also sets
+`NONINTERACTIVE_TESTING=1`. Configure sets the CPAN-running markers used by
+some older build scripts, plus `PERL5_CPAN_IS_EXECUTING` for Makefile.PL.
+Each build phase identifies the current interpreter through `PERL` and sets
+`PERL_USE_UNSAFE_INC` from
+the distribution's `x_use_unsafe_inc` metadata when present, or to `1` for
+older distributions, while preserving an explicit caller setting. The
+variables are scoped to the child command. The installer does not set
+`AUTOMATED_TESTING`, which denotes smoke testing rather than installation,
+and it leaves color settings such as `NO_COLOR` to the distribution's tests.
+
 ## Optional repair command
 
 `--repair-command PATH` enables an external repair program after a failed
