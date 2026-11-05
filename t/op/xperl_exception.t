@@ -39,6 +39,7 @@ is(
 
 require XPerl::Diagnostic;
 require XPerl::Exception;
+require XPerl::DiagGroup;
 require overload;
 require JSON::PP;
 
@@ -689,6 +690,41 @@ for my $case (@invalid_symbol_cases) {
         'Exception queries include descendants and its own disposition' );
     ok( $exception->contents->[0] == $parent,
         'the common contents accessor returns immediate diagnostic references' );
+    my $entries = $exception->diagnostics;
+    ok( @$entries == 3 && $entries->[0] == $parent
+            && $entries->[1] == $leaf && $entries->[2] == $other,
+        'diagnostics traverses nested entries in encounter order' );
+    $entries = $parent->diagnostics;
+    ok( @$entries == 3 && $entries->[0] == $parent
+            && $entries->[1] == $leaf && $entries->[2] == $other,
+        'diagnostic traversal includes the receiver' );
+    ok( $exception->find_diagnostic('ERROR_USER_TEXT') == $parent,
+        'find_diagnostic returns the first matching diagnostic' );
+    ok( $exception->has_diagnostic('ERROR_USER_TEXT'),
+        'has_diagnostic finds a nested code' );
+    ok( !$exception->has_diagnostic('ERROR_SYNTAX_INVALID'),
+        'has_diagnostic rejects an absent code' );
+    ok( !$exception->has_diagnostic('ERROR_USER_TEXT', text => 'missing'),
+        'has_diagnostic rejects an absent named parameter' );
+    my $parameterized = XPerl::Diagnostic->_new(
+        { code => 'ERROR_USER_TEXT', params => [
+            { name => 'text', type => 'text', value => "bad exit\n" },
+            { name => 'source', type => 'text', value => 'test' },
+        ] } );
+    my $query_exception = XPerl::Exception->_new();
+    $query_exception->append($parent);
+    $query_exception->append($parameterized);
+    ok( $query_exception->find_diagnostic('ERROR_USER_TEXT',
+            text => "bad exit\n", source => 'test') == $parameterized,
+        'find_diagnostic matches named parameters regardless of position' );
+    ok( !$query_exception->has_diagnostic('ERROR_USER_TEXT', text => 'other'),
+        'has_diagnostic rejects a different parameter value' );
+    $query_exception->append($parameterized);
+    $entries = $query_exception->diagnostics;
+    ok( @$entries == 4 && $entries->[0] == $parent
+            && $entries->[1] == $leaf && $entries->[2] == $other
+            && $entries->[3] == $parameterized,
+        'diagnostics visits a shared object once' );
     my $nested_exception_json = JSON::PP->new->decode( $exception->as_json );
     is( $nested_exception_json->{contents}[0]{contents}[1]{code},
         'ERROR_USER_TEXT', 'exception JSON keeps nested children under their root' );
