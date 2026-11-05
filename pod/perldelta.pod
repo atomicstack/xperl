@@ -857,8 +857,10 @@ Jaguar (Darwin 6) once again.
 
 =head2 XPerl extension detection
 
-F<perl.h> defines C<XPERL> to C<1>. C and XS extensions can test
-C<#ifdef XPERL> after including the header.
+F<perl.h> defines C<XPERL_VERSION> to C<1>. C<XPERL> remains an alias for
+existing C and XS extensions. Perl code can test C<${^XPERL_VERSION}>,
+which is C<1> on XPerl and undefined on ordinary Perl. C<perl -V> reports
+the XPerl version explicitly.
 
 =head2 Experimental XPerl hash storage
 

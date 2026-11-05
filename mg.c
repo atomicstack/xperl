@@ -1763,6 +1763,10 @@ Perl_magic_get(pTHX_ SV *sv, MAGIC *mg)
             }
         }
         break;
+    case '\030':          /* ${^XPERL_VERSION} */
+        if (strEQ(remaining, "PERL_VERSION"))
+            sv_setiv(sv, XPERL_VERSION);
+        break;
     case '+':                   /* $+ */
         if (PL_curpm && (rx = PM_GETRE(PL_curpm))) {
             paren = RX_LASTPAREN(rx);

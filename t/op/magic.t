@@ -5,7 +5,7 @@ BEGIN {
     chdir 't' if -d 't';
     require './test.pl';
     set_up_inc( '../lib' );
-    plan (tests => 208); # some tests are run in BEGIN block
+    plan (tests => 212); # some tests are run in BEGIN block
 }
 
 # Test that defined() returns true for magic variables created on the fly,
@@ -47,6 +47,13 @@ BEGIN {
 
 use warnings;
 use Config;
+
+is ${^XPERL_VERSION}, 1, 'XPerl version flag is available';
+eval { ${^XPERL_VERSION} = 2 };
+like $@, qr/read-only/, 'XPerl version flag is read-only';
+is ${^XPERL_VERSION}, 1, 'XPerl version flag remains unchanged';
+like Config::myconfig(), qr/^  XPerl version: \Q${^XPERL_VERSION}\E$/m,
+    'configuration summary matches the runtime version';
 
 
 $Is_MSWin32  = $^O eq 'MSWin32';

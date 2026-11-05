@@ -13,14 +13,15 @@
 
 /*
 =for apidoc_section $genconfig
-=for apidoc Amn#||XPERL
+=for apidoc Amn#||XPERL_VERSION
 
 Defined as 1 by the XPerl headers. XS code can test this symbol to detect
-XPerl-specific APIs.
+XPerl-specific APIs. C<XPERL> remains an alias for existing extensions.
 
 =cut
 */
-#define XPERL 1
+#define XPERL_VERSION 1
+#define XPERL XPERL_VERSION
 
 #if defined(__HP_cc) || defined(__HP_aCC)
 /* The HPUX compiler for Itanium is very picky and warns about

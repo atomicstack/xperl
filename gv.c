@@ -2249,6 +2249,10 @@ S_gv_magicalize(pTHX_ GV *gv, HV *stash, const char *name, STRLEN len,
                     goto magicalize;
 #endif
                 break;
+              case '\030':        /* ${^XPERL_VERSION} */
+                if (memEQs(name, len, "\030PERL_VERSION"))
+                    goto ro_magicalize;
+                break;
               case '1':
               case '2':
               case '3':
