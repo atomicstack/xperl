@@ -30,9 +30,10 @@ installer used three local registry patches: two for test-suite assumptions
 in dependencies and one for Encoder's hash-entry traversal. The original
 archives remain unchanged, and receipts record the source and patch hashes.
 
-This checkpoint covers the local registry, `Makefile.PL`, and basic `Build.PL`
-paths. Remote registry updates, opt-in agent repair, and patch proposal tooling
-are later stages. The version ranges in the registry describe applicability;
+This checkpoint covers the local registry, `Makefile.PL`, basic `Build.PL`,
+and an opt-in external repair command with a bounded retry count. Remote
+registry updates and patch proposal tooling are later stages. The version
+ranges in the registry describe applicability;
 the evidence records what has actually been tested.
 
 ## User workflow

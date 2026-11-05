@@ -17,7 +17,8 @@ sub usage () {
     return <<'USAGE';
 Usage: xperl resolve [--mirror URL|DIR] [--cache DIR] Module::Name
        xperl fetch   [--mirror URL|DIR] [--cache DIR] Module::Name
-       xperl install --prefix DIR [--registry DIR] [--mirror URL|DIR] [--cache DIR] Module::Name
+       xperl install --prefix DIR [--registry DIR] [--repair-command PATH]
+                     [--repair-attempts N] [--mirror URL|DIR] [--cache DIR] Module::Name
 
 This source-tree command must run with XPerl. Installation supports
 Makefile.PL and Build.PL releases and their declared required prerequisites.
@@ -25,7 +26,8 @@ USAGE
 }
 
 my $action = shift @ARGV // 'help';
-my ($mirror, $cache, $refresh, $prefix, $registry);
+my ($mirror, $cache, $refresh, $prefix, $registry, $repair_command,
+    $repair_attempts);
 GetOptionsFromArray(
     \@ARGV,
     'mirror=s' => \$mirror,
@@ -33,6 +35,8 @@ GetOptionsFromArray(
     'refresh'  => \$refresh,
     'prefix=s' => \$prefix,
     'registry=s' => \$registry,
+    'repair-command=s' => \$repair_command,
+    'repair-attempts=i' => \$repair_attempts,
 ) or die usage();
 
 my $module = shift @ARGV;
@@ -69,6 +73,8 @@ dispatch ($action) {
                 $ENV{HOME} // File::Spec->tmpdir, '.xperl', 'cache'), 'work'),
             (defined $registry ? (registry => XPerl::Installer::Registry->new(
                 path => $registry)) : ()),
+            (defined $repair_command ? (repair_command => $repair_command) : ()),
+            (defined $repair_attempts ? (repair_attempts => $repair_attempts) : ()),
         );
         my $deps = XPerl::Installer::Deps->new(
             fetcher => $fetcher, builder => $builder);

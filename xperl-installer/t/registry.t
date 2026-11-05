@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
+use Cwd qw(abs_path);
 use Digest::SHA qw(sha256_hex);
 use File::Path qw(make_path);
 use File::Spec;
@@ -14,7 +15,12 @@ my $root = tempdir(CLEANUP => 1,
                    DIR => $ENV{XPERL_TEST_TMPDIR} // File::Spec->tmpdir);
 my $dist = File::Spec->catdir($root, qw(distributions Example-Tiny));
 my $patch_dir = File::Spec->catdir($dist, 'patches');
-make_path($patch_dir);
+my $recipe_dir = File::Spec->catdir($root, 'recipes');
+make_path($patch_dir, $recipe_dir);
+my $recipe_path = File::Spec->catfile($recipe_dir, 'fix-v1.md');
+open my $recipe, '>', $recipe_path or die $!;
+print {$recipe} "# Fix recipe\n";
+close $recipe or die $!;
 my $patch_path = File::Spec->catfile($patch_dir, 'fix.patch');
 my $patch_text = "--- a/test\n+++ b/test\n";
 open my $patch, '>:raw', $patch_path or die $!;
@@ -39,7 +45,7 @@ my $index = {
                 path => 'patches/fix.patch',
                 sha256 => $patch_sha,
             }],
-            recipes => [],
+            recipes => ['fix-v1'],
         }],
     }],
 };
@@ -59,6 +65,8 @@ my $selection = $registry->patches_for($release);
 is($selection->{patch_set}, 'fix', 'selects the matching patch set');
 is($selection->{patches}[0]{sha256}, $patch_sha,
    'checks and reports the patch digest');
+is($selection->{recipes}[0]{path}, abs_path($recipe_path),
+   'provides a matching migration recipe');
 eval { $registry->patches_for({ %$release, sha256 => 'b' x 64 }) };
 like($@, qr/source digest mismatch/, 'rejects a different source archive');
 open $patch, '>>', $patch_path or die $!;
