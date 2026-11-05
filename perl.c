@@ -4124,7 +4124,7 @@ S_minus_v(pTHX)
 #endif /* #ifdef PERL_PATCHNUM */
         PIO_stdout =  PerlIO_stdout();
             PerlIO_printf(PIO_stdout,
-                "\nThis is perl "	STRINGIFY(PERL_REVISION)
+                "\nThis is perl (XPerl) "	STRINGIFY(PERL_REVISION)
                 ", version "		STRINGIFY(PERL_VERSION)
                 ", subversion "		STRINGIFY(PERL_SUBVERSION)
                 " (%" SVf ") built for "	ARCHNAME, SVfARG(level)
@@ -4142,6 +4142,9 @@ S_minus_v(pTHX)
 
         PerlIO_printf(PIO_stdout,
 		      "\n\nCopyright 1987-2026, Larry Wall\n");
+        PerlIO_printf(PIO_stdout,
+		      "\n\nXPerl Copyright 2026, Yves Orton\n");
+
 #ifdef OS2
         PerlIO_printf(PIO_stdout,
                       "\n\nOS/2 port Copyright (c) 1990, 1991, Raymond Chen, Kai Uwe Rommel\n"
