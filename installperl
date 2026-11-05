@@ -344,6 +344,9 @@ elsif ($Is_Cygwin) { # On Cygwin symlink it to CORE to make Makefile happy
     push(@corefiles,'perl.exp') if $^O eq 'aix';
 }
 
+# perl.h includes this generated file when compiling external XS modules.
+push(@corefiles, 'perldiag_helpers.inc') if -f 'perldiag_helpers.inc';
+
 
 foreach my $file (@corefiles) {
     if (copy_if_diff($file,"$installarchlib/CORE/$file")) {
