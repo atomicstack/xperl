@@ -114,6 +114,7 @@
 #   undef SvVMAGICAL_off
 #   undef SvVMAGICAL_on
 #   undef UNI_DISPLAY_TR_
+#   undef XPERL
 #   if !defined(PERL_EXT)
 #     undef DEBUG_ONLY
 #     undef GV_CACHE_ONLY

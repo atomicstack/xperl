@@ -80,7 +80,7 @@ my %abs_bit_names = (
                          ord("\cF"), ord("\cG"), ord("\cH"), ord("\cI"),
                          ord("\cL"), ord("\cM"), ord("\cN"), ord("\cO"),
                          ord("\cP"), ord("\cR"), ord("\cS"), ord("\cT"),
-                         ord("\cU"), ord("\cV"), ord("\cW"),
+                         ord("\cU"), ord("\cV"), ord("\cW"), ord("\cX"),
                        ],
 );
 

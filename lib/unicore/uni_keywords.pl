@@ -1454,6 +1454,6 @@
 # 94644b4e53ef4f2590ef86a261dcd22ffadf79247fcc7f31c4ebf5b19111fd25 lib/unicore/mktables
 # a0079d7556b20c2de1fdc3d492797a91b8ec8a06006f94460006185cb6380962 lib/unicore/version
 # 0a6b5ab33bb1026531f816efe81aea1a8ffcd34a27cbea37dd6a70a63d73c844 regen/charset_translations.pl
-# 6bbb462516a4ea79e28d58cf387f0b4b63ba83c7d381cd61bdda0b188e148082 regen/mk_PL_charclass.pl
+# 00b18569e88040d6594ebe141bf4add425c9408dff4fd32334e41d3b5ab0d7e4 regen/mk_PL_charclass.pl
 # 81899636822bf2631650040b2cb938aef47d8ee4bfede2fa2844b2a306b85858 regen/mk_invlists.pl
 # ex: set ro ft=perl:

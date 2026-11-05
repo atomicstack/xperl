@@ -2733,6 +2733,20 @@ this.
 
 This variable was added in Perl v5.8.8.
 
+=item ${^XPERL_VERSION}
+X<${^XPERL_VERSION}>
+
+XPerl sets this read-only variable to C<1>. It is undefined on ordinary
+Perl, so code that supports both interpreters can use it as a feature flag:
+
+    if (${^XPERL_VERSION}) {
+        # XPerl-specific behavior
+    }
+
+The value is currently C<1>; future XPerl releases may increase it when
+compatibility behavior changes. XS code can use the corresponding
+C<XPERL_VERSION> macro after including F<perl.h>.
+
 =back
 
 =head2 Deprecated and removed variables
