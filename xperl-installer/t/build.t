@@ -55,11 +55,14 @@ my $output = do { local $/; <$pipe> };
 ok(close $pipe, 'installer completed');
 my $result = eval { JSON::PP->new->decode($output) };
 ok($result && $result->{status} eq 'installed', 'receipt reports installation');
-is_deeply([map { $_->{name} } @{$result->{phases}}],
+my $receipt_path = $result->{receipts}[0];
+open my $receipt_file, '<', $receipt_path or die $!;
+my $receipt = JSON::PP->new->decode(do { local $/; <$receipt_file> });
+is_deeply([map { $_->{name} } @{$receipt->{phases}}],
           [qw(configure build test install)], 'all build phases ran');
 ok(-f File::Spec->catfile($prefix, qw(lib perl5 Example Tiny.pm)),
    'module installed into the selected prefix');
-ok(-f $result->{receipt}, 'receipt written');
+ok(-f $receipt_path, 'receipt written');
 
 my $broken = Archive::Tar->new;
 $broken->add_data('Example-Broken-1.00/Makefile.PL', <<'MAKEFILE');

@@ -19,6 +19,22 @@ distributions with XS code. Success means the installer resolves their
 dependencies, builds and tests both under XPerl, installs them into an
 isolated prefix, and runs an encode/decode round trip from that prefix.
 
+## Current checkpoint (2026-11-05)
+
+The source-tree installer now reaches that target on x86_64 Linux with the
+current CPAN releases, `Sereal::Decoder` 6.003 and `Sereal::Encoder` 6.003.
+A fresh-cache, fresh-prefix run installed Decoder and its declared required
+dependencies, then Encoder, with each distribution's test phase passing. An
+encode/decode round trip loaded both XS modules from the new prefix. The
+installer used three local registry patches: two for test-suite assumptions
+in dependencies and one for Encoder's hash-entry traversal. The original
+archives remain unchanged, and receipts record the source and patch hashes.
+
+This checkpoint covers the local registry and `Makefile.PL` path. Remote
+registry updates, `Build.PL`, opt-in agent repair, and patch proposal tooling
+are later stages. The version ranges in the registry describe applicability;
+the evidence records what has actually been tested.
+
 ## User workflow
 
 ```text
