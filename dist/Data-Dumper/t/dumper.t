@@ -11,6 +11,8 @@ use Config;
 use Test::More;
 use charnames ();
 
+local $Data::Dumper::PreserveUnicode = 'name';
+
 # Since Perl 5.8.1 because otherwise hash ordering is really random.
 $Data::Dumper::Sortkeys = 1;
 $Data::Dumper::Pad = "#";
@@ -2035,6 +2037,40 @@ EOT
       ok(index(Data::Dumper->Dumpxs([$text]), chr(0x2603)) >= 0,
          'global option enables printable Unicode in XS');
     }
+  }
+}
+
+{
+  local $Data::Dumper::PreserveUnicode = 0;
+  my $ascii = 'foo/bar;';
+  utf8::upgrade($ascii);
+  my $bytes = 'foo/bar;';
+  my $char = chr(0x2603);
+  utf8::upgrade($char);
+  for my $useperl (0, 1) {
+    next if !$useperl && !defined &Data::Dumper::Dumpxs;
+    my $d = Data::Dumper->new([$ascii])->Useperl($useperl);
+    is($d->Dump, "#\$VAR1 = 'foo/bar;';\n",
+       'default keeps ASCII strings single quoted');
+    like(Data::Dumper->new([$ascii])->Useperl($useperl)
+           ->PreserveUnicode(1)->Dump, qr/"foo\/bar;"/,
+         'PreserveUnicode quotes UTF-8 flagged ASCII strings');
+    is(Data::Dumper->new([$bytes])->Useperl($useperl)
+         ->PreserveUnicode(1)->Dump,
+       "#\$VAR1 = 'foo/bar;';\n",
+       'PreserveUnicode leaves unflagged ASCII strings single quoted');
+    like(Data::Dumper->new([$bytes])->Useperl($useperl)
+           ->Useqq(1)->Dump, qr/"foo\/bar;"/,
+         'Useqq still quotes unflagged ASCII strings');
+    like(Data::Dumper->new([$char])->Useperl($useperl)->Dump,
+         qr/\\x\{2603\}/i, 'default keeps hexadecimal Unicode escapes');
+    like(Data::Dumper->new([$char])->Useperl($useperl)
+           ->PreserveUnicode(1)->Dump,
+         qr/\\N\{U\+2603\}/, 'PreserveUnicode uses code point escapes');
+    like(Data::Dumper->new([$char])->Useperl($useperl)
+           ->PreserveUnicode('name')->Dump,
+         qr/\\N\{SNOWMAN\}/,
+         'PreserveUnicode name uses named escapes');
   }
 }
 

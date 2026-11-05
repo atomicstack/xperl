@@ -1,5 +1,11 @@
 Revision history for Perl core module Data::Dumper
 
+2.193_54 2026-11-05
+    - Add the opt-in PreserveUnicode setting for UTF-8 flagged string
+      round trips. Its name mode emits Unicode character names; other true
+      values emit U+ code point escapes. Restore traditional quoting and
+      hexadecimal escapes when the setting is false.
+
 2.193_53 2026-10-18
     - Add the opt-in Useutf8 setting to emit printable Unicode characters
       literally while retaining escapes for unsafe or invisible characters.

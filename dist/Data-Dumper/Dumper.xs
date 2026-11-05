@@ -57,6 +57,7 @@ typedef struct {
     I32 quotekeys;
     I32 maxdepth;
     I32 useqq;
+    I32 preserveunicode;
     int use_sparse_seen_hash;
     int trailingcomma;
     int deparse;
@@ -68,7 +69,7 @@ typedef struct {
 
 static STRLEN num_q (const char *s, STRLEN slen);
 static STRLEN esc_q (char *dest, const char *src, STRLEN slen);
-static STRLEN esc_q_utf8 (pTHX_ SV *sv, const char *src, STRLEN slen, I32 do_utf8, I32 useqq);
+static STRLEN esc_q_utf8 (pTHX_ SV *sv, const char *src, STRLEN slen, I32 do_utf8, I32 useqq, I32 preserveunicode);
 static bool globname_needs_quote(const char *s, STRLEN len);
 #ifndef GvNAMEUTF8
 static bool globname_supra_ascii(const char *s, STRLEN len);
@@ -225,7 +226,7 @@ esc_q(char *d, const char *s, STRLEN slen)
 
 /* this function is also misused for implementing $Useqq */
 static STRLEN
-esc_q_utf8(pTHX_ SV* sv, const char *src, STRLEN slen, I32 do_utf8, I32 useqq)
+esc_q_utf8(pTHX_ SV* sv, const char *src, STRLEN slen, I32 do_utf8, I32 useqq, I32 preserveunicode)
 {
     char *r, *rstart;
     const char *s = src;
@@ -308,7 +309,7 @@ esc_q_utf8(pTHX_ SV* sv, const char *src, STRLEN slen, I32 do_utf8, I32 useqq)
         }
     } /* End of size-calculating loop */
 
-    if (grow || useqq || do_utf8) {
+    if (grow || useqq || (preserveunicode && do_utf8)) {
         /* We have something needing hex. 3 is ""\0 */
         sv_grow(sv, cur + 3 + grow + 2*backslashes + single_quotes
 		+ 2*qq_escapables + normal);
@@ -322,8 +323,8 @@ esc_q_utf8(pTHX_ SV* sv, const char *src, STRLEN slen, I32 do_utf8, I32 useqq)
 
             if (do_utf8 && ! UTF8_IS_INVARIANT(c0)) {
 
-                /* Preserve a character string's semantics in the dumped
-                 * expression, including Latin-1 code points. */
+                /* Keep code points distinct from bytes. The Perl wrapper
+                 * chooses the final escape spelling. */
                 k = utf8_to_uvchr_buf((U8*)s, (U8*) send, NULL);
 
                 /* treat invalid utf8 byte by byte.  This loop iteration gets the
@@ -1229,7 +1230,7 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
                 if (style->quotekeys || key_needs_quote(key,keylen)) {
                     if (do_utf8 || style->useqq) {
                         STRLEN ocur = SvCUR(retval);
-                        klen = nlen = esc_q_utf8(aTHX_ retval, key, klen, do_utf8, style->useqq);
+                        klen = nlen = esc_q_utf8(aTHX_ retval, key, klen, do_utf8, style->useqq, style->preserveunicode);
                         nkey = SvPVX(retval) + ocur;
                     }
                     else {
@@ -1454,9 +1455,9 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
 		SvCUR_set(retval, SvCUR(retval)+2);
                 i = 3 + esc_q_utf8(aTHX_ retval, c, i,
 #ifdef GvNAMEUTF8
-			cBOOL(GvNAMEUTF8(val)), style->useqq
+			cBOOL(GvNAMEUTF8(val)), style->useqq, style->preserveunicode
 #else
-			0, style->useqq || globname_supra_ascii(c, i)
+			0, style->useqq || globname_supra_ascii(c, i), style->preserveunicode
 #endif
 			);
 		sv_grow(retval, SvCUR(retval)+2);
@@ -1542,7 +1543,7 @@ DD_dump(pTHX_ SV *val, const char *name, STRLEN namelen, SV *retval, HV *seenhv,
                 sv_catsv(retval, val);
             }
             else if (DO_UTF8(val) || style->useqq)
-                i += esc_q_utf8(aTHX_ retval, c, i, DO_UTF8(val), style->useqq);
+                i += esc_q_utf8(aTHX_ retval, c, i, DO_UTF8(val), style->useqq, style->preserveunicode);
 	    else {
 		sv_grow(retval, SvCUR(retval)+3+2*i); /* 3: ""\0 */
 		r = SvPVX(retval) + SvCUR(retval);
@@ -1631,7 +1632,7 @@ Data_Dumper__Dumpxs(href, ...)
             style.quotekeys = 1;
             style.maxrecurse = 1000;
             style.maxrecursed = FALSE;
-            style.purity = style.deepcopy = style.useqq = style.maxdepth
+            style.purity = style.deepcopy = style.useqq = style.preserveunicode = style.maxdepth
                 = style.use_sparse_seen_hash = style.trailingcomma = 0;
             style.pad = style.xpad = style.sep = style.pair = style.sortkeys
                 = style.freezer = style.toaster = style.bless = &PL_sv_undef;
@@ -1661,6 +1662,8 @@ Data_Dumper__Dumpxs(href, ...)
 		    terse = SvTRUE(*svp);
 		if ((svp = hv_fetchs(hv, "useqq", FALSE)))
                     style.useqq = SvTRUE(*svp);
+		if ((svp = hv_fetchs(hv, "preserveunicode", FALSE)))
+                    style.preserveunicode = SvTRUE(*svp);
 		if ((svp = hv_fetchs(hv, "pad", FALSE)))
                     style.pad = *svp;
 		if ((svp = hv_fetchs(hv, "xpad", FALSE)))

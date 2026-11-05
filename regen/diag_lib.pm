@@ -735,6 +735,7 @@ sub render_catalog {
     my @pod = ( $preamble || '' ) =~ /(^=(?:pod|head\d)\b.*?^=cut[^\n]*\n)/gms;
     my $dumper =
       Data::Dumper->new( [ $common, \%sorted ], [qw(META CONF)] )->Indent(1)->Sortkeys( \&catalog_key_order )->Useqq(1);
+    $dumper->PreserveUnicode('name') if $dumper->can('PreserveUnicode');
     $dumper->Useutf8(1) if $dumper->can('Useutf8');
     my $dump = _readable_catalog_dump( join '', $dumper->Dump );
     my $text =

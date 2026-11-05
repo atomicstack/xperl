@@ -647,6 +647,7 @@ sub render_catalog {
     die "Missing operation vocabulary preamble\n" unless defined $preamble;
     Diag::Migration::_upgrade_catalog_text($data);
     my $dumper = Data::Dumper->new( [$data] )->Terse(1)->Indent(1)->Sortkeys(1)->Useqq(1)->Deepcopy(1);
+    $dumper->PreserveUnicode('name') if $dumper->can('PreserveUnicode');
     $dumper->Useutf8(1) if $dumper->can('Useutf8');
     return $preamble . '+' . Diag::Migration::_readable_catalog_dump( $dumper->Dump );
 }

@@ -19,8 +19,10 @@ my $data = Diag::Documentation::import_pod($pod);
 die "diagnostic documentation import changed bytes\n"
     unless Diag::Documentation::render($data) eq $pod;
 open my $out, '>', $target or die "Can't write $target: $!\n";
+my $dumper = Data::Dumper->new([$data])->Terse(1)->Indent(1)->Sortkeys(1)->Useqq(1);
+$dumper->PreserveUnicode('name') if $dumper->can('PreserveUnicode');
 print {$out} "# Diagnostic documentation data. Edit here and run perl regen/diag.pl.\n\nreturn ",
-    Data::Dumper->new([$data])->Terse(1)->Indent(1)->Sortkeys(1)->Useqq(1)->Dump;
+    $dumper->Dump;
 close $out or die "Can't close $target: $!\n";
 my $headings = 0;
 for my $entry (@{$data->{entries}}) {

@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 22;
+use Test::More tests => 25;
 use Data::Dumper;
 
 {
@@ -22,9 +22,13 @@ use Data::Dumper;
 
     is(Data::Dumper::qquote($bytes), '"\\x{e9}"',
        'byte strings use a hexadecimal byte escape');
-    is(Data::Dumper::qquote($chars),
+    is(Data::Dumper::qquote($chars), '"\\x{e9}"',
+       'UTF-8 strings keep the traditional hexadecimal escape by default');
+    is(Data::Dumper::qquote($chars, 0, 0, 1), '"\\N{U+E9}"',
+       'PreserveUnicode uses a Unicode code point escape');
+    is(Data::Dumper::qquote($chars, 0, 0, 'name'),
        '"\\N{LATIN SMALL LETTER E WITH ACUTE}"',
-       'UTF-8 strings use a Unicode character name escape');
+       'PreserveUnicode name uses a Unicode character name escape');
 
     my $roundtrip_bytes = eval Data::Dumper::qquote($bytes);
     my $roundtrip_chars = eval Data::Dumper::qquote($chars);
@@ -32,7 +36,10 @@ use Data::Dumper;
     is($roundtrip_bytes, $bytes, 'byte string value round trips');
     ok(!utf8::is_utf8($roundtrip_bytes), 'byte string remains unflagged');
     is($roundtrip_chars, $chars, 'character string value round trips');
-    ok(utf8::is_utf8($roundtrip_chars), 'character string remains UTF-8');
+    ok(!utf8::is_utf8($roundtrip_chars),
+       'traditional hexadecimal escape does not preserve the UTF-8 flag');
+    ok(utf8::is_utf8(eval Data::Dumper::qquote($chars, 0, 0, 1)),
+       'PreserveUnicode retains the UTF-8 flag');
 }
 
 {
