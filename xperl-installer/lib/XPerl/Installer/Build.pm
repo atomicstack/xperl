@@ -109,8 +109,10 @@ sub install ($self, $release) {
                  && -f File::Spec->catfile($core, 'config.h')
                 ? ("PERL_INC=$core") : ()));
         my @steps;
+        my $configured_target;
         if (-f File::Spec->catfile($source, 'Makefile.PL')) {
             $record->{build_system} = 'Makefile.PL';
+            $configured_target = 'Makefile';
             @steps = (
                 ['configure', $perl, 'Makefile.PL',
                     "INSTALL_BASE=$self->{prefix}"],
@@ -121,6 +123,7 @@ sub install ($self, $release) {
         }
         elsif (-f File::Spec->catfile($source, 'Build.PL')) {
             $record->{build_system} = 'Build.PL';
+            $configured_target = 'Build';
             @steps = (
                 ['configure', $perl, 'Build.PL',
                     '--install_base', $self->{prefix}],
@@ -160,12 +163,23 @@ sub install ($self, $release) {
                 }
                 my $log = File::Spec->catfile($work, "$phase-$attempt.log");
                 my $status = $self->_run($source, $log, @command);
+                my $configuration_error;
+                if ($phase eq 'configure' && !$status
+                    && !-f File::Spec->catfile($source, $configured_target)) {
+                    $configuration_error =
+                        "configure did not produce $configured_target";
+                }
                 push @{$record->{phases}}, {
                     name => $phase, attempt => $attempt, command => \@command,
                     exit_status => $status, log => $log,
+                    ($configuration_error
+                        ? (validation_error => $configuration_error) : ()),
                 };
-                next unless $status;
-                die "$phase failed (exit $status); see $log\n"
+                next unless $status || $configuration_error;
+                my $failure = $configuration_error
+                    ? "$configuration_error; see $log\n"
+                    : "$phase failed (exit $status); see $log\n";
+                die $failure
                     if $phase eq 'install' || !$self->{repair_command}
                         || $attempt > $self->{repair_attempts};
                 my $request_path = File::Spec->catfile($work,
@@ -180,6 +194,8 @@ sub install ($self, $release) {
                     xperl => $perl,
                     xperl_version => "$^V",
                     failed_phase => $phase,
+                    ($configuration_error
+                        ? (validation_error => $configuration_error) : ()),
                     failed_command => \@command,
                     failed_log => $log,
                     recipes => \@recipes,
