@@ -10,6 +10,8 @@ use File::Temp qw(tempdir);
 use JSON::PP;
 use Test::More;
 use XPerl::Installer::Registry;
+use builtin qw(siphash_2_4);
+no warnings 'experimental::builtin';
 
 my $root = tempdir(CLEANUP => 1,
                    DIR => $ENV{XPERL_TEST_TMPDIR} // File::Spec->tmpdir);
@@ -74,5 +76,44 @@ print {$patch} "tampered\n";
 close $patch or die $!;
 eval { $registry->patches_for($release) };
 like($@, qr/patch digest mismatch/, 'rejects a modified patch');
+
+my $sharded = tempdir(CLEANUP => 1,
+                      DIR => $ENV{XPERL_TEST_TMPDIR} // File::Spec->tmpdir);
+my $config = {
+    schema => 2,
+    active_repositories => 1,
+    placement => 'siphash24-zero-jump-v1',
+    fanout => 'siphash24-zero-first-byte-v1',
+    repositories => [{ id => 0, path => '.' }],
+};
+open my $config_file, '>', File::Spec->catfile($sharded, 'registry.json')
+    or die $!;
+print {$config_file} JSON::PP->new->encode($config);
+close $config_file or die $!;
+my $prefix = unpack 'H2',
+    siphash_2_4('EXAMPLE/Example-Tiny', "\0" x 16);
+my $sharded_dist = File::Spec->catdir($sharded, 'data', $prefix,
+                                     'EXAMPLE', 'Example-Tiny');
+make_path(File::Spec->catdir($sharded_dist, 'patches'),
+          File::Spec->catdir($sharded, 'recipes'));
+open my $sharded_index, '>', File::Spec->catfile($sharded_dist, 'index.json')
+    or die $!;
+print {$sharded_index} JSON::PP->new->encode($index);
+close $sharded_index or die $!;
+open my $sharded_patch, '>:raw',
+    File::Spec->catfile($sharded_dist, 'patches', 'fix.patch') or die $!;
+print {$sharded_patch} $patch_text;
+close $sharded_patch or die $!;
+open my $sharded_recipe, '>',
+    File::Spec->catfile($sharded, 'recipes', 'fix-v1.md') or die $!;
+print {$sharded_recipe} "# Fix recipe\n";
+close $sharded_recipe or die $!;
+my $sharded_registry = XPerl::Installer::Registry->new(path => $sharded);
+my $sharded_selection = $sharded_registry->patches_for($release);
+is($sharded_selection->{patch_set}, 'fix',
+   'finds a patch under the author and SipHash prefix');
+is(scalar @{$sharded_registry->patches_for({
+    %$release, cpan_path => 'B/BO/BOB/Example-Tiny-1.00.tar.gz'
+})->{patches}}, 0, 'does not use another author\'s patches');
 
 done_testing();
