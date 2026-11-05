@@ -181,13 +181,9 @@ print {$regional_fh} $parent_sentinel;
 close $regional_fh;
 $parent_document->{supplemental}{version}{_cldrVersion} = '48';
 write_json($parent_path, $parent_document);
-{
-    local $ENV{PERL5LIB} = '';
-    local $ENV{PERL5OPT} = '';
-    $status = system('perl', 'Porting/update_cldr.pl', '--source-dir',
-        $regional_source, '--output-dir', $regional_output);
-}
-ok($status != 0, 'parentLocales version mismatch is rejected');
+check_rejected_import('parentLocales version mismatch is rejected',
+    qr/parentLocales\.json CLDR version does not match package metadata/,
+    '--source-dir', $regional_source, '--output-dir', $regional_output);
 open $regional_fh, '<:raw', "$regional_output/plural.pl" or die $!;
 is(do { local $/; <$regional_fh> }, $parent_sentinel,
     'parentLocales version mismatch leaves output unchanged');
@@ -211,13 +207,9 @@ my $sentinel = 'do not replace on validation error';
 open my $out_fh, '>', "$bad_output/plural.pl" or die $!;
 print {$out_fh} $sentinel;
 close $out_fh;
-{
-    local $ENV{PERL5LIB} = '';
-    local $ENV{PERL5OPT} = '';
-    $status = system('perl', 'Porting/update_cldr.pl', '--source-dir',
-        $bad_source, '--output-dir', $bad_output);
-}
-ok($status != 0, 'mixed-version supplemental input is rejected');
+check_rejected_import('mixed-version supplemental input is rejected',
+    qr/plurals\.json CLDR version does not match package metadata/,
+    '--source-dir', $bad_source, '--output-dir', $bad_output);
 open $out_fh, '<', "$bad_output/plural.pl" or die $!;
 is(do { local $/; <$out_fh> }, $sentinel,
     'invalid source leaves existing output unchanged');
@@ -243,13 +235,9 @@ make_path($bad_category_output);
 open $out_fh, '>', "$bad_category_output/plural.pl" or die $!;
 print {$out_fh} $sentinel;
 close $out_fh;
-{
-    local $ENV{PERL5LIB} = '';
-    local $ENV{PERL5OPT} = '';
-    $status = system('perl', 'Porting/update_cldr.pl', '--source-dir',
-        $bad_category_source, '--output-dir', $bad_category_output);
-}
-ok($status != 0, 'unknown plural category is rejected');
+check_rejected_import('unknown plural category is rejected',
+    qr/Unknown category pluralRule-count-invalid for locale en/,
+    '--source-dir', $bad_category_source, '--output-dir', $bad_category_output);
 open $out_fh, '<', "$bad_category_output/plural.pl" or die $!;
 is(do { local $/; <$out_fh> }, $sentinel,
     'invalid category leaves existing output unchanged');
@@ -269,13 +257,9 @@ close $out_fh;
 open $version_fh, '>', "$check_output/version" or die $!;
 print {$version_fh} "48\n";
 close $version_fh;
-{
-    local $ENV{PERL5LIB} = '';
-    local $ENV{PERL5OPT} = '';
-    $status = system('perl', 'Porting/update_cldr.pl', '--check',
-        '--output-dir', $check_output);
-}
-ok($status != 0, 'check mode rejects a release pin mismatch');
+check_rejected_import('check mode rejects a release pin mismatch',
+    qr/CLDR version file does not match package metadata/,
+    '--check', '--output-dir', $check_output);
 open $out_fh, '<', "$check_output/plural.pl" or die $!;
 is(do { local $/; <$out_fh> }, $sentinel,
     'release pin mismatch leaves output unchanged');
@@ -342,14 +326,29 @@ sub copy_cldr_source {
         or die "copy parents: $!";
     return $supplemental;
 }
-{
-    local $ENV{PERL5LIB} = '';
-    local $ENV{PERL5OPT} = '';
-    $status = system('perl', 'Porting/update_cldr.pl', '--check',
-        '--output-dir', $check_output);
-}
-ok($status != 0, 'check mode detects a generated table mismatch');
+check_rejected_import('check mode detects a generated table mismatch',
+    qr/plural\.pl is out of date; run Porting\/update_cldr\.pl/,
+    '--check', '--output-dir', $check_output);
 open $out_fh, '<', "$check_output/plural.pl" or die $!;
 is(do { local $/; <$out_fh> }, $sentinel,
     'check mode leaves mismatched output unchanged');
 close $out_fh;
+
+sub check_rejected_import {
+    my ($description, $expected_error, @args) = @_;
+    my ($stderr_fh) = File::Temp::tempfile('cldr-import-stderr-XXXXXX',
+        DIR => '../tmp', UNLINK => 1);
+    my $status;
+    open my $saved_stderr, '>&', STDERR or die "save stderr: $!";
+    {
+        local $ENV{PERL5LIB} = '';
+        local $ENV{PERL5OPT} = '';
+        open STDERR, '>&', $stderr_fh or die "redirect stderr: $!";
+        $status = system('perl', 'Porting/update_cldr.pl', @args);
+    }
+    open STDERR, '>&', $saved_stderr or die "restore stderr: $!";
+    seek $stderr_fh, 0, 0 or die "seek stderr: $!";
+    my $stderr = do { local $/; <$stderr_fh> };
+    ok($status != 0, $description) or diag($stderr);
+    like($stderr, $expected_error, "$description: expected error");
+}
