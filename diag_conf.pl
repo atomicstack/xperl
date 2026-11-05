@@ -2907,6 +2907,9 @@ $CONF = {
     "XPerl::Diagnostic::Error::Value::Hash" => {
       "parent" => "XPerl::Diagnostic::Error::Value"
     },
+    "XPerl::Diagnostic::Error::Value::JumpHash" => {
+      "parent" => "XPerl::Diagnostic::Error::Value"
+    },
     "XPerl::Diagnostic::Error::Value::Range" => {
       "parent" => "XPerl::Diagnostic::Error::Value"
     },
@@ -60438,6 +60441,131 @@ $CONF = {
             "api" => "CROAK"
           },
           "class" => "XPerl::Diagnostic::Error::Value::Hash"
+        },
+        "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID" => {
+          "number" => 2779,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID",
+          "macro" => "PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID",
+          "source_files" => [
+            "builtin.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:builtins_operators"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Jump hash bucket count must be a positive decimal integer"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Value::JumpHash"
+        },
+        "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE" => {
+          "number" => 2780,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE",
+          "macro" => "PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE",
+          "source_files" => [
+            "builtin.c"
+          ],
+          "tags" => [
+            "condition:size_count_range",
+            "subject:builtins_operators"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Jump hash bucket count is too large"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Value::JumpHash"
+        },
+        "ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED" => {
+          "number" => 2781,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED",
+          "source_files" => [
+            "builtin.c"
+          ],
+          "tags" => [
+            "condition:type_mismatch",
+            "subject:builtins_operators"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Jump hash string key must be a byte string"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Value::JumpHash"
+        },
+        "ERROR_VALUE_JUMPHASH_KEY_INVALID" => {
+          "number" => 2782,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_VALUE_JUMPHASH_KEY_INVALID",
+          "macro" => "PERL_THROW_ERROR_VALUE_JUMPHASH_KEY_INVALID",
+          "source_files" => [
+            "builtin.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:builtins_operators"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Jump hash key must be an unsigned decimal integer"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Value::JumpHash"
+        },
+        "ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE" => {
+          "number" => 2783,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE",
+          "macro" => "PERL_THROW_ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE",
+          "source_files" => [
+            "builtin.c"
+          ],
+          "tags" => [
+            "condition:size_count_range",
+            "subject:builtins_operators"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Jump hash key is too large"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Value::JumpHash"
         },
         "ERROR_VALUE_RESTRICTED_HASH_KEY_ACCESS_DISALLOWED" => {
           "number" => 1801,

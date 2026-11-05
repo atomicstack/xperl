@@ -19,6 +19,7 @@ builtin - Perl pragma to import built-in utility functions
         inf nan
         rand_bytes
         siphash siphash_1_3 siphash_2_4
+        jumphash_integer jumphash_string
         weaken unweaken is_weak
         blessed refaddr reftype
         created_as_string created_as_number
@@ -255,6 +256,36 @@ L</siphash>.
 This experimental function computes SipHash with two compression rounds and
 four finalization rounds. It has the same seed, input, and result format as
 L</siphash>.
+
+=head2 jumphash_integer
+
+    $bucket = jumphash_integer($key, $buckets);
+
+This function is currently B<experimental>.
+
+Maps an unsigned 64-bit integer key to a bucket numbered from zero to
+C<$buckets - 1> using jump consistent hash. The key must be a non-negative
+decimal integer no greater than C<18446744073709551615>. The bucket count
+must be a positive decimal integer no greater than C<2147483647>.
+
+When the bucket count increases by one, a key either stays in its old bucket
+or moves to the new bucket. The result does not depend on Perl's hash seed.
+
+=head2 jumphash_string
+
+    $bucket = jumphash_string($string, $buckets);
+
+This function is currently B<experimental>.
+
+Hashes a byte string with SipHash-2-4 using a fixed all-zero 16-byte seed,
+then maps the resulting 64-bit key with L</jumphash_integer>. The bucket
+count has the same range. Strings containing wide characters are rejected.
+The fixed seed makes the mapping reproducible, but does not make it suitable
+for adversarial hash tables or other security-sensitive hashing.
+
+Both jump-hash functions are compatible with the corresponding numeric and
+SipHash functions in C<Algorithm::ConsistentHash::JumpHash> 0.05 for valid
+inputs.
 
 =head2 get_diagnostic_data
 

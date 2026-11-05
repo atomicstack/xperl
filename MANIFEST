@@ -7445,6 +7445,7 @@ t/op/bless.t				See if bless works
 t/op/blocks.t				See if BEGIN and friends work
 t/op/bool.t				Check misc details of boolean values
 t/op/bop.t				See if bitops work
+t/op/builtin_jumphash.t			Test the JumpHash builtins
 t/op/builtin_siphash.t			Test the SipHash builtins
 t/op/caller.pl				Tests shared between caller.t and XS op.t
 t/op/caller.t				See if caller() works

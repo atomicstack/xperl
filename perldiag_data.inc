@@ -462,6 +462,7 @@ static const struct {
     { "XPerl::Diagnostic::Error::User::Opaque",                                    "XPerl::Diagnostic::Error::User",                                FALSE, 0                                                 },
     { "XPerl::Diagnostic::Error::Value",                                           "XPerl::Diagnostic::Error",                                      FALSE, 0                                                 },
     { "XPerl::Diagnostic::Error::Value::Hash",                                     "XPerl::Diagnostic::Error::Value",                               FALSE, 0                                                 },
+    { "XPerl::Diagnostic::Error::Value::JumpHash",                                 "XPerl::Diagnostic::Error::Value",                               FALSE, 0                                                 },
     { "XPerl::Diagnostic::Error::Value::Range",                                    "XPerl::Diagnostic::Error::Value",                               FALSE, 0                                                 },
     { "XPerl::Diagnostic::Error::Value::RestrictedHash",                           "XPerl::Diagnostic::Error::Value",                               FALSE, 0                                                 },
     { "XPerl::Diagnostic::Error::Value::SipHash",                                  "XPerl::Diagnostic::Error::Value",                               FALSE, 0                                                 },
@@ -3456,6 +3457,11 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_VALUE_HASH_CAPACITY_EXCEEDED",                                        2756,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  533,   1,  562,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::Hash",                                     "XPerl::Diagnostic::Error::Value::Hash",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE",                      1105,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::Hash",                                     "XPerl::Diagnostic::Error::Value::Hash",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE",                                  1023,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::Hash",                                     "XPerl::Diagnostic::Error::Value::Hash",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID",                                 2779,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::JumpHash",                                 "XPerl::Diagnostic::Error::Value::JumpHash",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE",                               2780,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::JumpHash",                                 "XPerl::Diagnostic::Error::Value::JumpHash",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED",                           2781,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::JumpHash",                                 "XPerl::Diagnostic::Error::Value::JumpHash",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_VALUE_JUMPHASH_KEY_INVALID",                                          2782,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::JumpHash",                                 "XPerl::Diagnostic::Error::Value::JumpHash",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE",                                        2783,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::JumpHash",                                 "XPerl::Diagnostic::Error::Value::JumpHash",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_VALUE_RESTRICTED_HASH_KEY_ACCESS_DISALLOWED",                         1801,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  640,   1,  679,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::RestrictedHash",                           "XPerl::Diagnostic::Error::Value::RestrictedHash",                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_VALUE_RESTRICTED_HASH_KEY_DELETION_DISALLOWED",                       1802,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  640,   1,  679,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::RestrictedHash",                           "XPerl::Diagnostic::Error::Value::RestrictedHash",                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED",                            2775,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::SipHash",                                  "XPerl::Diagnostic::Error::Value::SipHash",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -12290,6 +12296,31 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2778 = {
     perl_diagpack_param_schema_ids + 0, 0
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2779 = {
+    2779, "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2780 = {
+    2780, "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2781 = {
+    2781, "ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2782 = {
+    2782, "ERROR_VALUE_JUMPHASH_KEY_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2783 = {
+    2783, "ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
 static const char perl_diag_template_text_02bf4c82[] = "\t%1$s = \"%2$s\"%3$s\n";
 static const char perl_diag_template_text_a852440d[] = "\t%1$s = (unset)%2$s\n";
 static const char perl_diag_template_text_3f70ea97[] = "\t(Are you trying to call %1$s() on dirhandle %2$s?)\n";
@@ -13255,6 +13286,11 @@ static const char perl_diag_template_text_fbcedc68[] = "iteration finalizer";
 static const char perl_diag_template_text_2313a1fb[] = "iterator->new expects a code reference";
 static const char perl_diag_template_text_0fb0ccdb[] = "join or string";
 static const char perl_diag_template_text_7ce293f4[] = "join with a thread with a waiter";
+static const char perl_diag_template_text_2022db46[] = "Jump hash bucket count is too large";
+static const char perl_diag_template_text_79cea0d3[] = "Jump hash bucket count must be a positive decimal integer";
+static const char perl_diag_template_text_83eb4ca4[] = "Jump hash key is too large";
+static const char perl_diag_template_text_2751ba01[] = "Jump hash key must be an unsigned decimal integer";
+static const char perl_diag_template_text_e3791315[] = "Jump hash string key must be a byte string";
 static const char perl_diag_template_text_d3e34613[] = "Junk on end of regexp in regex m/%1$s%2$s/";
 static const char perl_diag_template_text_9d7232fe[] = "key/value hash slice";
 static const char perl_diag_template_text_f36a66fe[] = "keys on array";
@@ -17415,6 +17451,11 @@ enum {
     perl_diag_template_start_en_2776,
     perl_diag_template_start_en_2777,
     perl_diag_template_start_en_2778,
+    perl_diag_template_start_en_2779,
+    perl_diag_template_start_en_2780,
+    perl_diag_template_start_en_2781,
+    perl_diag_template_start_en_2782,
+    perl_diag_template_start_en_2783,
     perl_diag_template_end_en,
 };
 
@@ -19320,6 +19361,11 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_value_siphash_round_count_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_c3eca635,  0,   0 },
     { perl_diag_error_value_siphash_round_count_too_large_number,                                 UINT64_C(         0), perl_diag_template_text_1cd7afbb,  0,   0 },
     { perl_diag_error_value_siphash_seed_length_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_ca291ec1,  0,   0 },
+    { perl_diag_error_value_jumphash_bucket_count_invalid_number,                                 UINT64_C(         0), perl_diag_template_text_79cea0d3,  0,   0 },
+    { perl_diag_error_value_jumphash_bucket_count_too_large_number,                               UINT64_C(         0), perl_diag_template_text_2022db46,  0,   0 },
+    { perl_diag_error_value_jumphash_input_byte_string_required_number,                           UINT64_C(         0), perl_diag_template_text_e3791315,  0,   0 },
+    { perl_diag_error_value_jumphash_key_invalid_number,                                          UINT64_C(         0), perl_diag_template_text_2751ba01,  0,   0 },
+    { perl_diag_error_value_jumphash_key_too_large_number,                                        UINT64_C(         0), perl_diag_template_text_83eb4ca4,  0,   0 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -20907,6 +20953,11 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2776, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2777, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2778, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2779, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2780, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2781, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2782, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2783, NULL                        },
 };
 
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
@@ -21438,6 +21489,8 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     &perl_diagpack_schema_2770, &perl_diagpack_schema_2771, &perl_diagpack_schema_2772,
     &perl_diagpack_schema_2773, &perl_diagpack_schema_2774, &perl_diagpack_schema_2775,
     &perl_diagpack_schema_2776, &perl_diagpack_schema_2777, &perl_diagpack_schema_2778,
+    &perl_diagpack_schema_2779, &perl_diagpack_schema_2780, &perl_diagpack_schema_2781,
+    &perl_diagpack_schema_2782, &perl_diagpack_schema_2783,
 };
 
 static const perl_diagpack_catalog perl_diagpack_builtin_catalog_en = {
@@ -21566,7 +21619,7 @@ static const perl_diagpack_engine * const perl_diagpack_builtin_engines[] = {
 
 
 /* Generated from:
- * 38013f0af59bc8f3fe2285a1616491c3e8ed5aaac2992be10708be51610ec55f diag_conf.pl
+ * 2db3b21b872970b933758c0b18b9f15ef86ba35f7987fc1007de09248babdc6a diag_conf.pl
  * 33ec9731336463f6feeab1a67c087741ee4e1ad5eb527a86cceac4b577ab4168 diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */
