@@ -55,5 +55,13 @@ build. A nonzero exit stops installation. The installer reruns configuration,
 build, and tests after each successful repair call, and records every phase
 and request in the receipt. Installation runs only after the tests pass.
 
+After a successful repair, the installer writes `proposal.patch` next to the
+receipt. It compares repaired source files with the untouched CPAN archive,
+includes files added by registry patches or the repair command, and leaves
+ordinary build products out. The patch includes any known registry changes
+so it applies directly to the original release. A dry run against a fresh
+copy of that release must pass before installation. The receipt records the
+proposal path, file list, and SHA-256 digest for review.
+
 The repair program can be any agent wrapper that accepts this protocol. The
 installer does not bundle an AI service or submit generated patches yet.

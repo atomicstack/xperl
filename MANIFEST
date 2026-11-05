@@ -229,6 +229,7 @@ xperl-installer/bin/xperl		XPerl package manager development command
 xperl-installer/lib/XPerl/Installer/Build.pm	CPAN Makefile.PL build runner
 xperl-installer/lib/XPerl/Installer/Deps.pm	Recursive CPAN prerequisite installer
 xperl-installer/lib/XPerl/Installer/Fetch.pm	CPAN release resolver and fetcher
+xperl-installer/lib/XPerl/Installer/Proposal.pm	Repair patch proposal writer
 xperl-installer/lib/XPerl/Installer/Registry.pm	XPerl compatibility patch selection
 xperl-installer/README.md		XPerl package manager development instructions
 xperl-installer/t/build.t		CPAN build and install tests

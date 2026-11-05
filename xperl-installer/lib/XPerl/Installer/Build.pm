@@ -15,6 +15,7 @@ use IPC::Open3;
 use JSON::PP;
 use Symbol qw(gensym);
 use Time::HiRes qw(time);
+use XPerl::Installer::Proposal;
 
 sub new ($class, %args) {
     die "installation prefix is required\n"
@@ -65,6 +66,12 @@ sub install ($self, $release) {
     my $error;
     eval {
         my $source = _unpack($release->{archive}, $work);
+        my $original;
+        if ($self->{repair_command} && $self->{repair_attempts}) {
+            my $original_dir = File::Spec->catdir($work, 'original');
+            make_path($original_dir);
+            $original = _unpack($release->{archive}, $original_dir);
+        }
         my @recipes;
         if ($self->{registry}) {
             my $selection = $self->{registry}->patches_for($release);
@@ -86,6 +93,13 @@ sub install ($self, $release) {
                 };
                 die "patch failed (exit $status); see $log\n" if $status;
             }
+        }
+        my %new_files;
+        if ($original) {
+            my $original_files = XPerl::Installer::Proposal::files($original);
+            my $source_files = XPerl::Installer::Proposal::files($source);
+            %new_files = map { $_ => 1 }
+                grep { !$original_files->{$_} } keys %$source_files;
         }
         my $perl = abs_path($^X);
         my $make = $Config{make} || 'make';
@@ -119,10 +133,31 @@ sub install ($self, $release) {
             die "distribution has neither Makefile.PL nor Build.PL\n";
         }
         my $attempt = 0;
+        my $repair_calls = 0;
         ATTEMPT: while (1) {
             ++$attempt;
             for my $step (@steps) {
                 my ($phase, @command) = @$step;
+                if ($phase eq 'install' && $repair_calls) {
+                    my $path = File::Spec->catfile($work, 'proposal.patch');
+                    my $proposal = XPerl::Installer::Proposal->write_patch(
+                        original => $original, source => $source,
+                        path => $path, new_files => \%new_files);
+                    $record->{proposal} = $proposal;
+                    if (@{$proposal->{files}}) {
+                        my $log = File::Spec->catfile($work,
+                                                      'proposal-check.log');
+                        my @check = ('patch', '--dry-run', '--batch', '-p1',
+                                     '-i', $path);
+                        my $status = $self->_run($original, $log, @check);
+                        push @{$record->{phases}}, {
+                            name => 'proposal-check', command => \@check,
+                            exit_status => $status, log => $log,
+                        };
+                        die "proposal patch failed (exit $status); see $log\n"
+                            if $status;
+                    }
+                }
                 my $log = File::Spec->catfile($work, "$phase-$attempt.log");
                 my $status = $self->_run($source, $log, @command);
                 push @{$record->{phases}}, {
@@ -158,8 +193,10 @@ sub install ($self, $release) {
                 my @repair_command = ($self->{repair_command}, $request_path);
                 my $repair_log = File::Spec->catfile($work,
                                                      "repair-$attempt.log");
+                my $before_files = XPerl::Installer::Proposal::files($source);
                 my ($repair_status, $repair_timed_out) = $self->_run($source, $repair_log,
                     { timeout => $self->{repair_timeout} }, @repair_command);
+                ++$repair_calls;
                 push @{$record->{phases}}, {
                     name => 'repair', attempt => $attempt,
                     command => \@repair_command, request => $request_path,
@@ -169,6 +206,9 @@ sub install ($self, $release) {
                     if $repair_timed_out;
                 die "repair failed (exit $repair_status); see $repair_log\n"
                     if $repair_status;
+                my $after_files = XPerl::Installer::Proposal::files($source);
+                $new_files{$_} = 1 for grep { !$before_files->{$_} }
+                    keys %$after_files;
                 next ATTEMPT;
             }
             last;

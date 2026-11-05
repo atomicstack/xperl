@@ -32,8 +32,10 @@ archives remain unchanged, and receipts record the source and patch hashes.
 
 This checkpoint covers the local registry, `Makefile.PL`, basic `Build.PL`,
 and an opt-in external repair command with bounded retries and a per-call
-timeout. Remote registry updates and patch proposal tooling are later
-stages. The version ranges in the registry describe applicability;
+timeout. Successful repairs produce a patch against the original CPAN
+archive and verify that it applies cleanly. Remote registry updates and
+submission tooling are later stages. The version ranges in the registry
+describe applicability;
 the evidence records what has actually been tested.
 
 ## User workflow

@@ -4,6 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 use Archive::Tar;
 use Cwd qw(abs_path);
+use Digest::SHA qw(sha256_hex);
 use File::Path qw(make_path);
 use File::Spec;
 use File::Temp qw(tempdir);
@@ -68,6 +69,11 @@ $body =~ s/sub value \{ 0 \}/sub value { 42 }/
 open my $output, '>', $module or die $!;
 print {$output} $body;
 close $output or die $!;
+my $added = File::Spec->catfile($request->{source},
+                                qw(lib Example Added.pm));
+open my $extra, '>', $added or die $!;
+print {$extra} "package Example::Added;\n1;\n";
+close $extra or die $!;
 AGENT
 close $agent_file or die $!;
 chmod 0755, $agent or die $!;
@@ -85,8 +91,18 @@ my $receipt_path = $result->{receipts}[0];
 open my $receipt_file, '<', $receipt_path or die $!;
 my $receipt = JSON::PP->new->decode(do { local $/; <$receipt_file> });
 is_deeply([map { $_->{name} } @{$receipt->{phases}}],
-          [qw(configure build test repair configure build test install)],
+          [qw(configure build test repair configure build test proposal-check install)],
           'installer reran all checks after repair');
+my $proposal = $receipt->{proposal};
+ok($proposal && -f $proposal->{path}, 'reviewable patch was written');
+open my $patch_file, '<:raw', $proposal->{path} or die $!;
+my $patch = do { local $/; <$patch_file> };
+is(sha256_hex($patch), $proposal->{sha256}, 'receipt records patch digest');
+like($patch, qr/\+sub value \{ 42 \}/, 'patch contains source repair');
+like($patch, qr/^\+\+\+ b\/lib\/Example\/Added\.pm$/m,
+     'patch contains agent-added source file');
+unlike($patch, qr/^\+\+\+ b\/(?:Makefile|blib\/)/m,
+       'patch excludes generated build products');
 open my $request_file, '<', $ENV{XPERL_REPAIR_MARKER} or die $!;
 my $request = JSON::PP->new->decode(do { local $/; <$request_file> });
 is($request->{failed_phase}, 'test', 'agent received failed phase');
