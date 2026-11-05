@@ -18,7 +18,8 @@ sub usage () {
 Usage: xperl resolve [--mirror URL|DIR] [--cache DIR] Module::Name
        xperl fetch   [--mirror URL|DIR] [--cache DIR] Module::Name
        xperl install --prefix DIR [--registry DIR] [--repair-command PATH]
-                     [--repair-attempts N] [--mirror URL|DIR] [--cache DIR] Module::Name
+                     [--repair-attempts N] [--repair-timeout SECONDS]
+                     [--mirror URL|DIR] [--cache DIR] Module::Name
 
 This source-tree command must run with XPerl. Installation supports
 Makefile.PL and Build.PL releases and their declared required prerequisites.
@@ -27,7 +28,7 @@ USAGE
 
 my $action = shift @ARGV // 'help';
 my ($mirror, $cache, $refresh, $prefix, $registry, $repair_command,
-    $repair_attempts);
+    $repair_attempts, $repair_timeout);
 GetOptionsFromArray(
     \@ARGV,
     'mirror=s' => \$mirror,
@@ -37,6 +38,7 @@ GetOptionsFromArray(
     'registry=s' => \$registry,
     'repair-command=s' => \$repair_command,
     'repair-attempts=i' => \$repair_attempts,
+    'repair-timeout=i' => \$repair_timeout,
 ) or die usage();
 
 my $module = shift @ARGV;
@@ -75,6 +77,7 @@ dispatch ($action) {
                 path => $registry)) : ()),
             (defined $repair_command ? (repair_command => $repair_command) : ()),
             (defined $repair_attempts ? (repair_attempts => $repair_attempts) : ()),
+            (defined $repair_timeout ? (repair_timeout => $repair_timeout) : ()),
         );
         my $deps = XPerl::Installer::Deps->new(
             fetcher => $fetcher, builder => $builder);

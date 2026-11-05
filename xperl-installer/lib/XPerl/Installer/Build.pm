@@ -14,6 +14,7 @@ use IO::Select;
 use IPC::Open3;
 use JSON::PP;
 use Symbol qw(gensym);
+use Time::HiRes qw(time);
 
 sub new ($class, %args) {
     die "installation prefix is required\n"
@@ -32,6 +33,9 @@ sub new ($class, %args) {
         if $repair_attempts && !$repair_command;
     die "repair attempts must be a non-negative integer\n"
         unless $repair_attempts =~ /\A\d+\z/;
+    my $repair_timeout = $args{repair_timeout} // 600;
+    die "repair timeout must be a positive integer\n"
+        unless $repair_timeout =~ /\A[1-9]\d*\z/;
     make_path($args{prefix}, $args{workdir});
     return bless {
         prefix  => abs_path($args{prefix}),
@@ -39,6 +43,7 @@ sub new ($class, %args) {
         registry => $args{registry},
         repair_command => $repair_command,
         repair_attempts => $repair_attempts,
+        repair_timeout => $repair_timeout,
     }, $class;
 }
 
@@ -153,13 +158,15 @@ sub install ($self, $release) {
                 my @repair_command = ($self->{repair_command}, $request_path);
                 my $repair_log = File::Spec->catfile($work,
                                                      "repair-$attempt.log");
-                my $repair_status = $self->_run($source, $repair_log,
-                                                @repair_command);
+                my ($repair_status, $repair_timed_out) = $self->_run($source, $repair_log,
+                    { timeout => $self->{repair_timeout} }, @repair_command);
                 push @{$record->{phases}}, {
                     name => 'repair', attempt => $attempt,
                     command => \@repair_command, request => $request_path,
                     exit_status => $repair_status, log => $repair_log,
                 };
+                die "repair timed out after $self->{repair_timeout} seconds; see $repair_log\n"
+                    if $repair_timed_out;
                 die "repair failed (exit $repair_status); see $repair_log\n"
                     if $repair_status;
                 next ATTEMPT;
@@ -207,6 +214,9 @@ sub _unpack ($archive, $work) {
 }
 
 sub _run ($self, $source, $log_path, @command) {
+    my $options = ref $command[0] eq 'HASH' ? shift @command : {};
+    my $deadline = defined $options->{timeout}
+        ? time + $options->{timeout} : undef;
     open my $log, '>', $log_path or die "cannot write $log_path: $!\n";
     my $before = getcwd();
     my @include = grep { defined $_ && !ref $_ && -d $_ } @INC;
@@ -225,7 +235,21 @@ sub _run ($self, $source, $log_path, @command) {
     }
     close $input;
     my $select = IO::Select->new($output, $error);
-    while (my @ready = $select->can_read) {
+    my $timed_out = 0;
+    while ($select->count) {
+        my $remaining = defined $deadline ? $deadline - time : undef;
+        if (defined $remaining && $remaining <= 0) {
+            $timed_out = 1;
+            last;
+        }
+        my @ready = $select->can_read($remaining);
+        if (!@ready) {
+            if (defined $deadline && time >= $deadline) {
+                $timed_out = 1;
+                last;
+            }
+            next;
+        }
         for my $fh (@ready) {
             my $length = sysread($fh, my $buffer, 8192);
             die "cannot read command output: $!\n" unless defined $length;
@@ -233,11 +257,17 @@ sub _run ($self, $source, $log_path, @command) {
             else { $select->remove($fh); close $fh }
         }
     }
+    if ($timed_out) {
+        kill 9, $pid;
+        for my $fh ($select->handles) { close $fh }
+    }
     waitpid($pid, 0);
     my $status = $?;
     chdir $before or die "cannot return to $before: $!\n";
     close $log or die "cannot close $log_path: $!\n";
-    return $status & 127 ? 128 + ($status & 127) : $status >> 8;
+    my $exit = $timed_out ? 124
+        : $status & 127 ? 128 + ($status & 127) : $status >> 8;
+    return wantarray ? ($exit, $timed_out) : $exit;
 }
 
 1;
