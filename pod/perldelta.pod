@@ -577,8 +577,9 @@ and graph algorithms.  Graph errors currently use C<XPERL.GRAPH.*> codes.
 
 =item *
 
-L<Net::SSLeay> 1.96 and L<IO::Socket::SSL> 2.099 are bundled with XPerl.
+L<Net::SSLeay> 1.97_01 and L<IO::Socket::SSL> 2.099 are bundled with XPerl.
 Building Net::SSLeay requires OpenSSL or LibreSSL headers and libraries.
+This Net::SSLeay development release supports OpenSSL 4.0 and later.
 IO::Socket::SSL provides the higher-level Perl socket interface.
 
 =item *

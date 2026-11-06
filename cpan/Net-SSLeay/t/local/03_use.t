@@ -65,12 +65,13 @@ if (defined &Net::SSLeay::OPENSSL_version_major) {
     tap_info("  OPENSSL_version_build_metadata(): '" . Net::SSLeay::OPENSSL_version_build_metadata() . "'");
     tap_info("");
     tap_info("Library information with OPENSSL_info():");
-    tap_info("  OPENSSL_INFO_CONFIG_DIR:             '" . Net::SSLeay::OPENSSL_info(Net::SSLeay::OPENSSL_INFO_CONFIG_DIR())             . "'");
-    tap_info("  OPENSSL_INFO_ENGINES_DIR:            '" . Net::SSLeay::OPENSSL_info(Net::SSLeay::OPENSSL_INFO_ENGINES_DIR())            . "'");
-    tap_info("  OPENSSL_INFO_MODULES_DIR:            '" . Net::SSLeay::OPENSSL_info(Net::SSLeay::OPENSSL_INFO_MODULES_DIR())            . "'");
-    tap_info("  OPENSSL_INFO_DSO_EXTENSION:          '" . Net::SSLeay::OPENSSL_info(Net::SSLeay::OPENSSL_INFO_DSO_EXTENSION())          . "'");
-    tap_info("  OPENSSL_INFO_DIR_FILENAME_SEPARATOR: '" . Net::SSLeay::OPENSSL_info(Net::SSLeay::OPENSSL_INFO_DIR_FILENAME_SEPARATOR()) . "'");
-    tap_info("  OPENSSL_INFO_LIST_SEPARATOR:         '" . Net::SSLeay::OPENSSL_info(Net::SSLeay::OPENSSL_INFO_LIST_SEPARATOR())         . "'");
-    tap_info("  OPENSSL_INFO_SEED_SOURCE:            '" . Net::SSLeay::OPENSSL_info(Net::SSLeay::OPENSSL_INFO_SEED_SOURCE())            . "'");
-    tap_info("  OPENSSL_INFO_CPU_SETTINGS:           '" . Net::SSLeay::OPENSSL_info(Net::SSLeay::OPENSSL_INFO_CPU_SETTINGS())           . "'");
+    my $ossl_info = sub { my $v = Net::SSLeay::OPENSSL_info($_[0]); defined $v ? $v : '' };
+    tap_info("  OPENSSL_INFO_CONFIG_DIR:             '" . $ossl_info->(Net::SSLeay::OPENSSL_INFO_CONFIG_DIR())             . "'");
+    tap_info("  OPENSSL_INFO_ENGINES_DIR:            '" . $ossl_info->(Net::SSLeay::OPENSSL_INFO_ENGINES_DIR())            . "'");
+    tap_info("  OPENSSL_INFO_MODULES_DIR:            '" . $ossl_info->(Net::SSLeay::OPENSSL_INFO_MODULES_DIR())            . "'");
+    tap_info("  OPENSSL_INFO_DSO_EXTENSION:          '" . $ossl_info->(Net::SSLeay::OPENSSL_INFO_DSO_EXTENSION())          . "'");
+    tap_info("  OPENSSL_INFO_DIR_FILENAME_SEPARATOR: '" . $ossl_info->(Net::SSLeay::OPENSSL_INFO_DIR_FILENAME_SEPARATOR()) . "'");
+    tap_info("  OPENSSL_INFO_LIST_SEPARATOR:         '" . $ossl_info->(Net::SSLeay::OPENSSL_INFO_LIST_SEPARATOR())         . "'");
+    tap_info("  OPENSSL_INFO_SEED_SOURCE:            '" . $ossl_info->(Net::SSLeay::OPENSSL_INFO_SEED_SOURCE())            . "'");
+    tap_info("  OPENSSL_INFO_CPU_SETTINGS:           '" . $ossl_info->(Net::SSLeay::OPENSSL_INFO_CPU_SETTINGS())           . "'");
 }
