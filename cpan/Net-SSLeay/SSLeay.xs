@@ -4471,7 +4471,7 @@ P_X509_REQ_get_attr(req,n)
         X509_ATTRIBUTE * att;
         int count, i;
         ASN1_STRING * s;
-	ASN1_TYPE * t;
+	const ASN1_TYPE * t;
     PPCODE:
         att = X509_REQ_get_attr(req,n);
 	count = X509_ATTRIBUTE_count(att);
@@ -4597,7 +4597,7 @@ P_X509_copy_extensions(x509_req,x509,override=1)
         exts = X509_REQ_get_extensions(x509_req);
         for(i = 0; i < sk_X509_EXTENSION_num(exts); i++) {
             ext = sk_X509_EXTENSION_value(exts, i);
-            obj = X509_EXTENSION_get_object(ext);
+            obj = (ASN1_OBJECT *)X509_EXTENSION_get_object(ext);
             idx = X509_get_ext_by_OBJ(x509, obj, -1);
             /* Does extension exist? */
             if (idx != -1) {
@@ -4709,7 +4709,7 @@ X509_get_subjectAltNames(cert)
 	int                    num_gnames;
 	PPCODE:
 	if (  (i = X509_get_ext_by_NID(cert, NID_subject_alt_name, -1)) >= 0
-		&& (subjAltNameExt = X509_get_ext(cert, i))
+		&& (subjAltNameExt = (X509_EXTENSION *)X509_get_ext(cert, i))
 		&& (subjAltNameDNs = (STACK_OF(GENERAL_NAME) *)X509V3_EXT_d2i(subjAltNameExt)))
 	{
 		num_gnames = sk_GENERAL_NAME_num(subjAltNameDNs);
@@ -5234,7 +5234,7 @@ X509_getm_notBefore(const X509 *cert)
 		X509_get_notBefore = 1
 	CODE:
 		PERL_UNUSED_VAR(ix);
-		RETVAL = X509_getm_notBefore(cert);
+		RETVAL = X509_getm_notBefore((X509 *)cert);
 	OUTPUT:
 		RETVAL
 
@@ -5244,7 +5244,7 @@ X509_getm_notAfter(const X509 *cert)
 		X509_get_notAfter = 1
 	CODE:
 		PERL_UNUSED_VAR(ix);
-		RETVAL = X509_getm_notAfter(cert);
+		RETVAL = X509_getm_notAfter((X509 *)cert);
 	OUTPUT:
 		RETVAL
 
@@ -6587,7 +6587,8 @@ SSL_client_hello_get1_extensions_present(SSL *s)
 void
 SSL_client_hello_get_extension_order(SSL *s)
     PREINIT:
-	int ret, i;
+	int ret;
+	size_t i;
 	uint16_t *exts;
 	size_t num_exts;
 	AV *av;
@@ -8279,7 +8280,7 @@ X509_get_X509_PUBKEY(x)
    STRLEN len;
    unsigned char *pc, *pi;
    PPCODE:
-   if (!(pkey = X509_get_X509_PUBKEY(x))) croak("invalid certificate");
+   if (!(pkey = (X509_PUBKEY *)X509_get_X509_PUBKEY(x))) croak("invalid certificate");
    if (!(len = i2d_X509_PUBKEY(pkey, NULL))) croak("invalid certificate public key");
    Newx(pc,len,unsigned char);
    if (!pc) croak("out of memory");
