@@ -921,7 +921,8 @@ our %Modules = (
     },
 
     'Net::SSLeay' => {
-        'DISTRIBUTION' => 'CHRISN/Net-SSLeay-1.96.tar.gz',
+        'DISTRIBUTION' => 'CHRISN/Net-SSLeay-1.97_01.tar.gz',
+        'SYNCINFO'     => 'matt on Fri Nov  6 14:13:31 2026',
         'FILES'        => q[cpan/Net-SSLeay],
         'CUSTOMIZED'   => [qw(SSLeay.xs t/local/03_use.t)],
         'EXCLUDED'     => [
