@@ -3,6 +3,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 use Cwd qw(abs_path);
+use File::Path qw(make_path);
 use File::Spec;
 use File::Temp qw(tempdir);
 use JSON::PP;
@@ -20,6 +21,34 @@ my @names = qw(PERL5_CPAN_IS_RUNNING PERL5_CPANPLUS_IS_RUNNING
                NONINTERACTIVE_TESTING PERL_USE_UNSAFE_INC
                AUTOMATED_TESTING NO_COLOR);
 my $code = 'print JSON::PP->new->encode({map { $_ => $ENV{$_} } @ARGV})';
+
+{
+    my $checkout = File::Spec->catdir($root, 'checkout-lib');
+    my $site = File::Spec->catdir($builder->{prefix}, 'lib', 'perl5');
+    make_path($checkout, $site);
+    local @INC = ($checkout, @INC);
+    local $ENV{PERL5LIB};
+    my $log = File::Spec->catfile($root, 'include.log');
+    is($builder->_run($root, $log, $^X, '-MJSON::PP', '-e',
+                     'print JSON::PP->new->encode(\@INC)'),
+       0, 'child library path probe succeeds');
+    open my $input, '<', $log or die $!;
+    my $include = JSON::PP->new->decode(do { local $/; <$input> });
+    ok(scalar(grep { $_ eq $site } @$include),
+       'child searches the selected installation prefix');
+    ok(!scalar(grep { $_ eq $checkout } @$include),
+       'child does not inherit the installer process library path');
+
+    local $ENV{PERL5LIB} = $checkout;
+    my $explicit_log = File::Spec->catfile($root, 'explicit-include.log');
+    is($builder->_run($root, $explicit_log, $^X, '-MJSON::PP', '-e',
+                     'print JSON::PP->new->encode(\@INC)'),
+       0, 'explicit caller library path probe succeeds');
+    open my $explicit, '<', $explicit_log or die $!;
+    my $explicit_include = JSON::PP->new->decode(do { local $/; <$explicit> });
+    ok(scalar(grep { $_ eq $checkout } @$explicit_include),
+       'child preserves an explicit caller PERL5LIB');
+}
 
 {
     local %ENV = %ENV;
