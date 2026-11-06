@@ -1,7 +1,12 @@
 use strict;
 use warnings;
-use Test::More;
+BEGIN {
+    chdir 't' if -d 't';
+    require './test.pl';
+}
 use TOML::Tiny;
+
+plan tests => 8;
 
 my $config = TOML::Tiny->new(strict => 1)->decode(<<'TOML');
 schema = 1
@@ -28,5 +33,3 @@ ok(!exists $INC{'DateTime/Format/RFC3339.pm'},
 my $error = eval { TOML::Tiny->new(strict => 1)->decode("broken = [1,,2]\n"); 1 };
 ok(!$error, 'invalid TOML is rejected');
 like($@, qr/line|unexpected|expected/i, 'invalid TOML reports an error');
-
-done_testing();

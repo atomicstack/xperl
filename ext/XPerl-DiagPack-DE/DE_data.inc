@@ -18475,9 +18475,9 @@ static const perl_diagpack_catalog perl_diagpack_catalog_de = {
 
 /* Generated from:
  * 9bab6324630ffb53cbed51dff1b306ba5258a7f39096ef101d8555cf2a3758d5 regen/diag.pl
- * dbd24274544a0e3a2d2029c35ace882adc88b488182d683999d7ebe957ec7d80 regen/diag_lib.pm
+ * bd5cb1336c39ea00b2a98cca014e031eceb875e666a3916cbe4edd37ff1c0f67 regen/diag_lib.pm
  * b081c1e7f063cf8ffbaa36cba2bd01fac310e9ef0ecff9f272acd7d9ac6804a9 regen/diag_pack.pm
- * b7b22be791efb8517c49d1ab46f247fc85f7c3d64cbb0633f83e59f2a2002b3c regen/diag_words.pm
+ * 577bdc05d60819f7044bd0386a3e195a31739cf9c8b668dc35c63a61eeb97ef8 regen/diag_words.pm
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * 0a33b277abba3b0937d05fb632a994e58ae0af6bc2c464ff002f009f914005e2 regen/regen_lib.pl
  * ex: set ro ft=c: */
