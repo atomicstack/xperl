@@ -2947,6 +2947,21 @@ is( $die_during_warning_hook->contents->[0]->code,
     'ERROR_USER_TEXT',
     'a handled warning does not replace the active fatal exception' );
 
+is(
+    runperl(
+        prog => q{
+            $SIG{__DIE__} = sub {
+                warn "warning during die\n";
+                print STDERR "hook continues\n";
+            };
+            eval { die "failed\n" };
+        },
+        stderr => 1,
+    ),
+    "warning during die\nhook continues\n",
+    'warn in __DIE__ prints before the hook continues without __WARN__'
+);
+
 my (
     $warning_handler_context,     $warning_handler_original,
     $warning_handler_replacement, $die_hook_calls_for_warning_handler

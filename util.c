@@ -3812,15 +3812,18 @@ Perl_diag_deliver_warning_hooks(pTHX_ SV *exception)
                 av_push(unit, newSVsv(*hint));
         }
         SV *view = Perl_diag_delivery_view(aTHX_ exception, unit);
-        if (Perl_invoke_exception_hook_internal(aTHX_ exception, TRUE,
-                                    Perl_diag_warning_compat(aTHX_ view), NULL)) {
-            SSize_t j;
-            for (j = 0; j <= av_top_index(unit); j++) {
-                SV **item = av_fetch(unit, j, FALSE);
-                if (item)
-                    Perl_diag_tree_mutate(aTHX_ *item,
-                        PERL_DIAG_TREE_MARK_DELIVERED);
-            }
+        SV *compat = Perl_diag_warning_compat(aTHX_ view);
+        /* A die hook may run indefinitely, so print an unhandled warning
+         * now and mark it delivered to avoid printing it again later. */
+        if (!Perl_invoke_exception_hook_internal(aTHX_ exception, TRUE,
+                                                 compat, NULL))
+            Perl_write_to_stderr_internal(aTHX_ compat, TRUE);
+        SSize_t j;
+        for (j = 0; j <= av_top_index(unit); j++) {
+            SV **item = av_fetch(unit, j, FALSE);
+            if (item)
+                Perl_diag_tree_mutate(aTHX_ *item,
+                    PERL_DIAG_TREE_MARK_DELIVERED);
         }
     }
 }
