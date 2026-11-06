@@ -141,6 +141,7 @@ lib/Config.pod
 lib/Cross.pm
 lib/ExtUtils/MANIFEST.SKIP
 lib/ExtUtils/xsubpp
+/lib/TOML/
 lib/auto/
 lib/perldoc.pod
 lib/buildcustomize.pl
