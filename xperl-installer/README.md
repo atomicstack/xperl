@@ -35,7 +35,8 @@ author from the resolved archive with its distribution name, then uses jump
 consistent hash to choose a data repository and a fixed SipHash prefix to
 find that author's patch index. A registry without `registry.json` retains
 the original flat layout for compatibility. The current shared registry has
-one active data repository.
+one active data repository. CPAN archive paths may include subdirectories
+under the author; those directories do not change the registry key.
 
 The command reports the archive's SHA-256 digest for reproducibility. This
 checkpoint calculates the digest but does not yet authenticate it against
