@@ -112,6 +112,10 @@ my $sharded_registry = XPerl::Installer::Registry->new(path => $sharded);
 my $sharded_selection = $sharded_registry->patches_for($release);
 is($sharded_selection->{patch_set}, 'fix',
    'finds a patch under the author and SipHash prefix');
+is($sharded_registry->_distribution_directory({
+    %$release,
+    cpan_path => 'E/EX/EXAMPLE/older/Example-Tiny-1.00.tar.gz',
+}), $sharded_dist, 'author subdirectories retain the same registry key');
 is(scalar @{$sharded_registry->patches_for({
     %$release, cpan_path => 'B/BO/BOB/Example-Tiny-1.00.tar.gz'
 })->{patches}}, 0, 'does not use another author\'s patches');

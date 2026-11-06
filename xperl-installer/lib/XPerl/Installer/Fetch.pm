@@ -90,7 +90,7 @@ sub _check_release_path ($path) {
     die "unsafe or unsupported CPAN release path: $path\n"
         unless $path =~ m{\A[A-Za-z0-9_.+/-]+\z}
             && $path !~ m{(?:\A|/)\.\.? (?:/|\z)}x
-            && $path =~ m{\A[A-Z]/[A-Z]{2}/[^/]+/[^/]+\.(?:tar\.gz|tgz)\z};
+            && $path =~ m{\A[A-Z]/[A-Z]{2}/[A-Z0-9_-]+/(?:[A-Za-z0-9_.+-]+/)*[A-Za-z0-9_.+-]+\.(?:tar\.gz|tgz)\z};
 }
 
 sub _check_archive ($archive) {

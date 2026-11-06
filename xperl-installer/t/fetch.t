@@ -4,6 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 use Archive::Tar;
 use Digest::SHA qw(sha256_hex);
+use File::Copy qw(copy);
 use File::Path qw(make_path);
 use File::Spec;
 use File::Temp qw(tempdir);
@@ -60,7 +61,20 @@ is(JSON::PP->new->decode($output)->{cpan_path},
    'E/EX/EXAMPLE/Example-Tiny-1.00.tar.gz',
    'dispatch/on routes the resolve command');
 
-$index =~ s{E/EX/EXAMPLE/Example-Tiny-1\.00\.tar\.gz}{E/EX/EXAMPLE/../escape.tar.gz};
+my $nested = File::Spec->catdir($archive_dir, 'older');
+make_path($nested);
+copy($archive, File::Spec->catfile($nested, 'Example-Tiny-1.00.tar.gz'))
+    or die $!;
+$index =~ s{E/EX/EXAMPLE/Example-Tiny-1\.00\.tar\.gz}{E/EX/EXAMPLE/older/Example-Tiny-1.00.tar.gz};
+gzip \$index => File::Spec->catfile($index_dir, '02packages.details.txt.gz')
+    or die $GzipError;
+my $nested_result = $fetcher->fetch('Example::Tiny', refresh => 1);
+is($nested_result->{cpan_path},
+   'E/EX/EXAMPLE/older/Example-Tiny-1.00.tar.gz',
+   'resolves a release inside an author subdirectory');
+ok(-f $nested_result->{archive}, 'caches a nested release');
+
+$index =~ s{E/EX/EXAMPLE/older/Example-Tiny-1\.00\.tar\.gz}{E/EX/EXAMPLE/../escape.tar.gz};
 gzip \$index => File::Spec->catfile($index_dir, '02packages.details.txt.gz')
     or die $GzipError;
 eval { $fetcher->resolve('Example::Tiny', refresh => 1) };

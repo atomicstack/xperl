@@ -123,7 +123,7 @@ sub _distribution_directory ($self, $release) {
 
     my $cpan_path = $release->{cpan_path} // '';
     my ($initial, $pair, $author) =
-        $cpan_path =~ m{\A([A-Z])/([A-Z]{2})/([A-Z0-9_-]+)/[^/]+\z};
+        $cpan_path =~ m{\A([A-Z])/([A-Z]{2})/([A-Z0-9_-]+)/(?:[^/]+/)*[^/]+\z};
     die "invalid CPAN author path: $cpan_path\n"
         unless defined($author)
             && substr($author, 0, 1) eq $initial
