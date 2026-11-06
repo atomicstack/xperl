@@ -74,6 +74,94 @@ patches, and location of the build log. Failures should identify the failed
 command and preserve enough context to reproduce it. An opt-in machine-readable
 result should expose the same information to other tools and agents.
 
+## Operational modes
+
+Every installation runs under an **installed XPerl**. The installer uses that
+interpreter for its own code and for CPAN configure, build, and test commands.
+A local library such as `prefix/lib/perl5` is added to `PERL5LIB` when it is
+the installation target. A source checkout's `lib/` must not enter CPAN build
+paths. The installer never edits or rebuilds XPerl as part of an installation.
+
+During early development, a developer or coding agent may also have an XPerl
+source checkout (`xperl/`, named `perl/` in this workspace). When a build
+fails, they should identify the defective layer and make the smallest logical
+fix there: the installer for installer behavior, a patch against the CPAN
+release for distribution behavior, or the XPerl checkout for an interpreter
+defect. A core fix is built, tested, and reinstalled into the developer's
+Perlbrew XPerl before the CPAN installation resumes. The uninstalled build
+may be used with the installer only to diagnose or test that core fix. The
+normal installation run then uses the installed interpreter again. Registry
+patches and receipts are reviewed against original CPAN releases.
+
+Without an XPerl checkout, an installer AI agent focuses on local changes to
+the distribution working copy, known registry patches, recipes, and installer
+diagnostics. If it concludes that XPerl itself needs a change, it prepares a
+core ticket with the XPerl version and configuration, original CPAN release
+and source hash, minimal reproducer, failing phase and logs, relevant patch
+attempts, and the reason a distribution-local fix is insufficient. The agent
+does not imply that the end user can patch their interpreter. It leaves the
+installation failed unless the normal build and tests can pass with a local
+fix. Ticket submission is an explicit external action, separate from the
+installer's build and repair loop.
+
+The checkout-enabled core repair path is a bootstrap development practice.
+Once the installer and compatibility system have settled, remove core editing
+from the installer agent's operational workflow. Core development can still
+respond to filed tickets through its own review and release process.
+
+### Development methodology
+
+Perlbrew provides the installed XPerl that represents a user's runtime. In
+this workspace its prefix is `$HOME/perl5/perlbrew/perls/xperl`. The core
+source checkout is a place to develop interpreter fixes, not an implicit
+library source for CPAN builds. During development the CLI may be read from
+the installer source checkout, but it is launched with the Perlbrew binary.
+The installed binary also runs each distribution's `Makefile.PL` or
+`Build.PL`, build script, tests, and install step.
+
+We currently use `prefix/lib/perl5` as a local library in the Perlbrew prefix.
+It is passed through `PERL5LIB` so later invocations see already installed
+CPAN prerequisites. The installer supplies the same prefix to the build
+system and records it in local receipts. The download cache is shared across
+runs; the work directory holds unpacked source, phase logs, and receipts.
+Clearing a work directory must not change which release or patches are used.
+The cache and prefix are distinct because source reuse and installed module
+visibility solve different problems.
+
+For example, from the `perl/` checkout in this workspace:
+
+```sh
+prefix="$HOME/perl5/perlbrew/perls/xperl"
+export PERL5LIB="$prefix/lib/perl5${PERL5LIB:+:$PERL5LIB}"
+"$prefix/bin/perl" xperl-installer/bin/xperl install \
+    --prefix "$prefix" --registry ../xperl-cpan-ports Module::Name
+```
+
+For each failure, we read the phase log and receipt, reproduce the failure
+against the original CPAN release, and identify which contract failed. We
+first check the installer environment and dependency decisions, then the
+distribution's code and tests, and then XPerl behavior when the evidence
+points there. We patch a distribution when its code assumes an incompatible
+API or its tests depend on an environment they did not establish. A general
+bug fix should remain valid on ordinary Perl. XPerl-specific XS changes use
+`XPERL_VERSION` guards. We retest the complete release with the installed
+XPerl, including its dependencies, before installing it.
+
+If the defect is in XPerl and a checkout is available, we make and test the
+core fix there, reinstall XPerl into Perlbrew, and rerun the installer from
+the failed distribution or from the top of the requested dependency graph.
+The local library can remain in place while the interpreter is reinstalled,
+but the next run must use the newly installed binary. We only use the
+uninstalled interpreter with the installer while diagnosing that specific
+core fix.
+
+Every attempted release produces a receipt. We import successful and failed
+observations into the ports repository, keyed by CPAN author, distribution,
+release, source hash, and XPerl version. A patch enters the registry only
+after review against the original archive. An unpatched success can retire an
+obsolete patch. This gives later developers a visible history without making
+the registry mandatory for ordinary installations.
+
 ## Architectural boundaries
 
 - Implement the installer in XPerl, using its interpreter for metadata parsing,
@@ -139,8 +227,8 @@ The installer records the registry revision or snapshot and every applied
 patch digest in its installation record.
 
 Prefer fixes that continue to work on ordinary Perl. Where XPerl-specific XS
-code is necessary, use the existing `XPERL` preprocessor symbol after
-including Perl headers, for example with `#ifdef XPERL`.
+code is necessary, use the `XPERL_VERSION` preprocessor symbol after
+including Perl headers, for example with `#ifdef XPERL_VERSION`.
 
 ### Proposed registry shape (draft)
 
