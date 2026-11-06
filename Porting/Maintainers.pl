@@ -1320,6 +1320,16 @@ our %Modules = (
         'EXCLUDED'     => [ qw[reverse_deps.txt] ],
     },
 
+    'TOML::Tiny' => {
+        'DISTRIBUTION' => 'OALDERS/TOML-Tiny-0.22.tar.gz',
+        'FILES'        => q[cpan/TOML-Tiny],
+        'EXCLUDED'     => [
+            qr{^t/},
+            qw( Dockerfile MANIFEST MANIFEST.SKIP META.json META.yml
+                Makefile.PL cpanfile dist.ini perlimports.toml ),
+        ],
+    },
+
     'Unicode::Collate' => {
         'DISTRIBUTION' => 'SADAHIRO/Unicode-Collate-1.31.tar.gz',
         'FILES'        => q[cpan/Unicode-Collate],

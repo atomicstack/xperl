@@ -1,0 +1,116 @@
+0.22 2026-06-03
+
+- Fix tests when Types::Serialiser is absent (GH#46) (Olaf Alders, Claude)
+
+0.21 2026-05-10
+
+- removed TOML::Parser from required prerequisites (GH#44) (Karen Etheridge)
+
+0.20 2025-03-25
+- Fix parsing of quoted keys (GH#41) (Ian Jackson)
+- Fix writing of more kinds of quote-needing keys (GH#40) (Ian Jackson)
+- Avoid looking at string values to try to find the type (GH#37) (Ian Jackson)
+- die if data to be encoded is not a hashref (GH#36) (djerius)
+- inline table keys were not normalized via to_toml_key() (GH#35) (djerius)
+
+0.19 2025-02-11
+- trap and die on undefined values (GH#32) (djerius)
+
+0.18 2024-09-04
+- Support builtin booleans (GH#31) (Tina Mller (tinita))
+
+0.17 2024-06-03
+- regexp for values which match a DateTime should be anchored to start and end
+  of string (GH#30) (djerius)
+
+0.16 2023-05-31
+- Remove when (GH#25) (Olaf Alders)
+- Test strict mode in to_toml_array() (GH#26) (Olaf Alders)
+- Replace @Author::BLUEFEET with equivalent config (GH#23) (Olaf Alders)
+- Make some imports explicit (GH#19) (Olaf Alders)
+
+0.15 2021-08-13
+- bugfix: strings with "inf" or "nan" in them no longer treated as special
+  floats
+
+0.14 2021-08-02
+- Fix an issue with serialisation of nan, inf, and -inf (thanks jjatria)
+- Enforcement of homogenous arrays is no longer supported as it has been
+  dropped from the TOML spec
+- strict_arrays is now strict (strict_arrays still accepted for compatibility)
+- strict mode now disallows trailing commas
+- bugfix: table names whose individual segments include a dot can no longer
+  cause parser to incorrectly identify duplicate table names
+- bugfix: correctly fail on arrays without separators
+- bugfix: correctly fail when array ends without closing at EOF
+- bugfix: correctly fail when inline table is missing separators or has
+  trailing separator
+- bugfix: disallow non-permitted control characters in strings and comments
+- bugfix: disallow invalid unicode in input
+- bugfix: allow double-zero exponents (e00)
+- bugfix: correctly parse multi-line literal strings, dealing properly with
+  some edge cases
+- bugfix: correctly parse multi-line basic strings, dealing properly with some
+  edge cases
+- bugfix: correctly escape unicode control characters in toml output
+- bugfix: correctly handle comment-like sequences in multiline strings
+- bugfix: correctly handle keys with names that are toml keywords
+- bugfix: better handling of inf/nan in parsing, writing
+- bugfix: correctly generate empty inline tables within arrays
+- bugfix: make duplicate key enforcement match the toml 1.0 spec
+- bugfix: update datetime support to match toml abnf, w/ workaround for
+  burntsushi tests supporting lowercase z and toml supporting a space instead
+  of T
+- bugfix: fix support for local dates, local times, fractional second precision
+- bugfix: fix parsing of dotted keys in inline tables
+- bugfix: fixes for escapes and unicode in key names, both in parsing and
+  generating toml
+
+0.13 2021-07-26
+-Fix a spurious warning being raised on trailing spaces in hexadecimal numbers (thanks jjatria)
+
+0.12 2021-05-28
+-Fix bug causing to_toml to incorrectly dereference \1 and \0 (thanks oschwald)
+
+0.11 2021-02-12
+-Fix bug in strict_arrays where string containing integer is recognized as an
+ integer, causing parsing to fail when present in an array containing other
+ strings
+
+0.10 2020-09-08
+-Remove dependency on DateTime::Format::RFC3339
+
+0.09 2020-08-11
+-Fix warning when calling `to_toml(from_toml(...))`
+-Fix bug allowing perl to stringify numbers (thanks oschwald)
+-Fix bug disallowing weird forms of nan (+nan, -nan)
+-Behavior change: return Math::Big(Int|Float) for large numbers (thanks oschwald)
+
+0.08 2020-06-25
+-Fix bug in TOML table output generation (thanks ijackson)
+
+0.07 2020-05-08
+-Add support for floating time zones in TOML output (thanks ijackson)
+-Fix bug where datetimes were being outputed as ISO8601 instead of RFC3339
+-Clarified documentation with explicit description of supported perl types for each toml type
+
+0.06 2020-03-30
+-Performance improvements in TOML::Tiny::Tokenizer->next_token
+-Fix totally broken OO interface (thanks noctux)
+
+0.05 2020-01-21
+-POD fixes for TOML::Tiny::Grammar
+
+0.04 2020-01-21
+-Remove superfluous dependency on DateTime::Format::RFC3339, which was only
+ needed for unit tests
+
+0.03 2020-01-18
+-Remove automatic inflation of numerical types using Math::Big(Int|Float);
+ this may now be done with inflate_integer and inflate_float
+
+0.02 2020-01-17
+-Add MANIFEST.SKIP to prevent dzil from including author scripts
+
+0.01 2020-01-17
+-Initial release
