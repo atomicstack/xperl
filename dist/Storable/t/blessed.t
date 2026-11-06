@@ -398,7 +398,8 @@ is(ref $t, 'STRESS_THE_STACK');
     ok(
         !ref($@) && $@ =~ /\AFoo/
         || ref($@) eq 'XPerl::Exception'
-            && $@->contents->[0]->params->[0]{value} eq 'Foo',
+            && $@->contents->[0]->code eq 'ERROR_USER_TEXT'
+            && $@->contents->[0]->params->[0]{value} =~ /\AFoo/,
         "right thing thrown"
     );
     close FH;
@@ -415,7 +416,8 @@ is(ref $t, 'STRESS_THE_STACK');
     ok(
         !ref($@) && $@ =~ /\AFoo/
         || ref($@) eq 'XPerl::Exception'
-            && $@->contents->[0]->params->[0]{value} eq 'Foo',
+            && $@->contents->[0]->code eq 'ERROR_USER_TEXT'
+            && $@->contents->[0]->params->[0]{value} =~ /\AFoo/,
         "and a string thrown"
     );
     my $refdata = freeze($oref);

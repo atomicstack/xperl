@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: 1b838b52ca703e7a9b8762108663e2afd79c3a61eadf400dfdcb6305c30fb3b5 */
+/* Language-scoped rendered data SHA-256: 4e68d2a633191c35bb6199393b8a076f6ce1d6aa0e78b9f231a44e0811707fea */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
 
@@ -1850,6 +1850,11 @@ static const char perl_diag_template_text_fbcedc68[] = "iteration finalizer";
 static const char perl_diag_template_text_2313a1fb[] = "iterator->new expects a code reference";
 static const char perl_diag_template_text_0fb0ccdb[] = "join or string";
 static const char perl_diag_template_text_7ce293f4[] = "join with a thread with a waiter";
+static const char perl_diag_template_text_2022db46[] = "Jump hash bucket count is too large";
+static const char perl_diag_template_text_79cea0d3[] = "Jump hash bucket count must be a positive decimal integer";
+static const char perl_diag_template_text_83eb4ca4[] = "Jump hash key is too large";
+static const char perl_diag_template_text_2751ba01[] = "Jump hash key must be an unsigned decimal integer";
+static const char perl_diag_template_text_e3791315[] = "Jump hash string key must be a byte string";
 static const char perl_diag_template_text_d3e34613[] = "Junk on end of regexp in regex m/%1$s%2$s/";
 static const char perl_diag_template_text_9d7232fe[] = "key/value hash slice";
 static const char perl_diag_template_text_f36a66fe[] = "keys on array";
@@ -5272,6 +5277,11 @@ enum {
     perl_diag_template_start_en_2776,
     perl_diag_template_start_en_2777,
     perl_diag_template_start_en_2778,
+    perl_diag_template_start_en_2779,
+    perl_diag_template_start_en_2780,
+    perl_diag_template_start_en_2781,
+    perl_diag_template_start_en_2782,
+    perl_diag_template_start_en_2783,
     perl_diag_template_end_en,
 };
 
@@ -7177,6 +7187,11 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_value_siphash_round_count_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_c3eca635,  0,   0 },
     { perl_diag_error_value_siphash_round_count_too_large_number,                                 UINT64_C(         0), perl_diag_template_text_1cd7afbb,  0,   0 },
     { perl_diag_error_value_siphash_seed_length_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_ca291ec1,  0,   0 },
+    { perl_diag_error_value_jumphash_bucket_count_invalid_number,                                 UINT64_C(         0), perl_diag_template_text_79cea0d3,  0,   0 },
+    { perl_diag_error_value_jumphash_bucket_count_too_large_number,                               UINT64_C(         0), perl_diag_template_text_2022db46,  0,   0 },
+    { perl_diag_error_value_jumphash_input_byte_string_required_number,                           UINT64_C(         0), perl_diag_template_text_e3791315,  0,   0 },
+    { perl_diag_error_value_jumphash_key_invalid_number,                                          UINT64_C(         0), perl_diag_template_text_2751ba01,  0,   0 },
+    { perl_diag_error_value_jumphash_key_too_large_number,                                        UINT64_C(         0), perl_diag_template_text_83eb4ca4,  0,   0 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -8764,6 +8779,11 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2776, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2777, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2778, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2779, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2780, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2781, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2782, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2783, NULL                        },
 };
 
 static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
@@ -17092,6 +17112,31 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2778 = {
     perl_diagpack_param_schema_ids + 0, 0
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2779 = {
+    2779, "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2780 = {
+    2780, "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2781 = {
+    2781, "ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2782 = {
+    2782, "ERROR_VALUE_JUMPHASH_KEY_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2783 = {
+    2783, "ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     /* local schema row zero is unused */
     NULL, &perl_diagpack_schema_1001, &perl_diagpack_schema_1002, &perl_diagpack_schema_1003,
@@ -17621,6 +17666,8 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     &perl_diagpack_schema_2770, &perl_diagpack_schema_2771, &perl_diagpack_schema_2772,
     &perl_diagpack_schema_2773, &perl_diagpack_schema_2774, &perl_diagpack_schema_2775,
     &perl_diagpack_schema_2776, &perl_diagpack_schema_2777, &perl_diagpack_schema_2778,
+    &perl_diagpack_schema_2779, &perl_diagpack_schema_2780, &perl_diagpack_schema_2781,
+    &perl_diagpack_schema_2782, &perl_diagpack_schema_2783,
 };
 
 static const perl_diag_selector_domain_t perl_diag_selector_domains[] = {
@@ -17722,9 +17769,9 @@ static const perl_diagpack_catalog perl_diagpack_catalog_en = {
 
 /* Generated from:
  * 9bab6324630ffb53cbed51dff1b306ba5258a7f39096ef101d8555cf2a3758d5 regen/diag.pl
- * dbd24274544a0e3a2d2029c35ace882adc88b488182d683999d7ebe957ec7d80 regen/diag_lib.pm
+ * bd5cb1336c39ea00b2a98cca014e031eceb875e666a3916cbe4edd37ff1c0f67 regen/diag_lib.pm
  * b081c1e7f063cf8ffbaa36cba2bd01fac310e9ef0ecff9f272acd7d9ac6804a9 regen/diag_pack.pm
- * b7b22be791efb8517c49d1ab46f247fc85f7c3d64cbb0633f83e59f2a2002b3c regen/diag_words.pm
+ * 577bdc05d60819f7044bd0386a3e195a31739cf9c8b668dc35c63a61eeb97ef8 regen/diag_words.pm
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * 0a33b277abba3b0937d05fb632a994e58ae0af6bc2c464ff002f009f914005e2 regen/regen_lib.pl
  * ex: set ro ft=c: */

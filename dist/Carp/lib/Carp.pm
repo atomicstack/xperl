@@ -211,7 +211,7 @@ BEGIN {
 }
 
 
-our $VERSION = '1.54';
+our $VERSION = '1.54_001';
 $VERSION =~ tr/_//d;
 
 our $MaxEvalLen = 0;
