@@ -8,7 +8,7 @@ BEGIN {
     require './charset_tools.pl';
 }
 
-plan 39;
+plan 40;
 
 my @warnings;
 my $wa = []; my $ea = [];
@@ -269,4 +269,13 @@ my $count = 0;
 $SIG{__WARN__} = sub { ++$count; die q[encoding warning intercepted] };
 for (1..2) { eval { print STDERR chr(256) } }
 print $count;
+EOF
+
+my $fatal_warn_description =
+    'a plain warn stays nonfatal under lexical fatal warnings';
+fresh_perl_is( <<'EOF', "caught:hi\nafter\n", {}, $fatal_warn_description );
+use warnings FATAL => 'all';
+local $SIG{__WARN__} = sub { print "caught:$_[0]" };
+warn "hi\n";
+print "after\n";
 EOF

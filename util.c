@@ -3604,8 +3604,11 @@ Perl_diag_exception_is_error(pTHX_ SV *exception, U32 category,
         || Perl_diag_exception_has_error_severity(aTHX_ exception))
         return TRUE;
 
+    /* A plain warn has no category. Lexical fatal warnings do not make it
+     * fatal, and its __WARN__ handler must be able to consume it. */
     return !(PL_in_eval & EVAL_KEEPERR)
-        && (PL_warnhook == PERL_WARNHOOK_FATAL || ckDEAD(category)
+        && (PL_warnhook == PERL_WARNHOOK_FATAL
+            || (category && ckDEAD(category))
             || Perl_diag_exception_has_fatal_warning(aTHX_ exception));
 }
 
