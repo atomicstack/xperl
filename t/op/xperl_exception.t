@@ -2848,6 +2848,18 @@ is(
     'the die hook receives text while eval retains the exception object'
 );
 
+{
+    package XPerlTestCallableDieHook;
+    use overload '&{}' => sub { sub { $main::callable_die_hook_calls++ } };
+}
+our $callable_die_hook_calls = 0;
+{
+    local $SIG{__DIE__} = bless {}, 'XPerlTestCallableDieHook';
+    eval { die "callable die hook\n" };
+}
+is( $callable_die_hook_calls, 1,
+    'a callable die hook does not require overloaded truth testing' );
+
 my ( $die_hook_current_exception, $die_hook_current_after );
 {
     local $SIG{__DIE__} = sub {
