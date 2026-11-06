@@ -1071,6 +1071,12 @@ manager will later use a regex to expand these into links.
 
 =item *
 
+XPerl no longer evaluates the boolean overload of a C<$SIG{__DIE__}> handler
+before invoking it. Callable overloaded handlers no longer cause recursive
+exception delivery and a stack overflow.
+
+=item *
+
 A case-insensitive regex trie no longer accepts a word ending partway through
 an input character's fold. For example, C</s|zoo/iu> no longer matches a
 sharp-s, whose full fold is C<ss>. Later alternatives are tried in order.

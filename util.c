@@ -4151,7 +4151,7 @@ Perl_diag_deliver_unit(pTHX_ perl_diag_delivery *delivery, SV *view,
             delivery->die_called = TRUE;
             (void)hv_stores(MUTABLE_HV(SvRV(delivery->unwind_record)),
                             "die_hook_called", newSViv(1));
-            if (PL_diehook && SvTRUE(PL_diehook) && !PL_in_diehook)
+            if (PL_diehook && !PL_in_diehook)
                 invoked = Perl_invoke_exception_hook_internal(aTHX_ delivery->exception, FALSE,
                     Perl_diag_error_hook_value(aTHX_ delivery, view), &result);
         }
