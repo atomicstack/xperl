@@ -280,7 +280,8 @@ sub _run ($self, $source, $log_path, @command) {
         ? time + $options->{timeout} : undef;
     open my $log, '>', $log_path or die "cannot write $log_path: $!\n";
     my $before = getcwd();
-    my @include = grep { defined $_ && !ref $_ && -d $_ } @INC;
+    my @include = grep { length $_ && -d $_ }
+        split /\Q$Config{path_sep}\E/, $ENV{PERL5LIB} // '';
     @include = map { abs_path($_) } @include;
     my $site = File::Spec->catdir($self->{prefix}, 'lib', 'perl5');
     my $arch = File::Spec->catdir($site, $Config{archname});

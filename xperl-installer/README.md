@@ -7,19 +7,29 @@ declared required prerequisites. With `--registry DIR`, it applies known
 patches from the local `xperl-cpan-ports` repository before building. The CLI
 uses XPerl's `dispatch/on` syntax.
 
-From the Perl source checkout, run:
+Run the installer with an installed XPerl. The commands below assume the
+Perlbrew installation is named `xperl` and the installer source is checked out
+in `perl/`:
 
 ```sh
-./perl -Ilib xperl-installer/bin/xperl resolve Sereal::Decoder
-./perl -Ilib xperl-installer/bin/xperl fetch Sereal::Decoder
-./perl -Ilib xperl-installer/bin/xperl install --prefix ../tmp/xperl-local Example::Tiny
+prefix="$HOME/perl5/perlbrew/perls/xperl"
+export PERL5LIB="$prefix/lib/perl5${PERL5LIB:+:$PERL5LIB}"
+"$prefix/bin/perl" xperl-installer/bin/xperl resolve Sereal::Decoder
+"$prefix/bin/perl" xperl-installer/bin/xperl fetch Sereal::Decoder
+"$prefix/bin/perl" xperl-installer/bin/xperl install --prefix "$prefix" Example::Tiny
 ```
+
+The installed interpreter runs the installer and every CPAN build and test.
+The explicit `PERL5LIB` makes modules installed under `prefix/lib/perl5`
+available to later commands. The installer source checkout supplies its own
+code, but does not add the Perl source checkout's `lib/` to CPAN build paths.
+End users can run ordinary installs without changing or rebuilding XPerl.
 
 To install the current Sereal releases with local compatibility patches:
 
 ```sh
-./perl -Ilib xperl-installer/bin/xperl install --cache ../tmp/xperl-sereal-cache --prefix ../tmp/xperl-sereal-prefix --registry ../xperl-cpan-ports Sereal::Decoder
-./perl -Ilib xperl-installer/bin/xperl install --cache ../tmp/xperl-sereal-cache --prefix ../tmp/xperl-sereal-prefix --registry ../xperl-cpan-ports Sereal::Encoder
+"$prefix/bin/perl" xperl-installer/bin/xperl install --prefix "$prefix" --registry ../xperl-cpan-ports Sereal::Decoder
+"$prefix/bin/perl" xperl-installer/bin/xperl install --prefix "$prefix" --registry ../xperl-cpan-ports Sereal::Encoder
 ```
 
 `--cache DIR` selects a download cache directory; the default is
