@@ -3951,6 +3951,15 @@ cpan/Time-Piece/t/11strptime_defaults.t			Time-Piece
 cpan/Time-Piece/t/12strptime_timezones.t		Time-Piece
 cpan/Time-Piece/t/13date_arithmetic_edge_cases.t	Time-Piece
 cpan/Time-Piece/t/lib/Time/Piece/Twin.pm		Module related to Time::Piece
+cpan/TOML-Tiny/Changes				TOML::Tiny release history
+cpan/TOML-Tiny/lib/TOML/Tiny.pm			TOML parser and writer interface
+cpan/TOML-Tiny/lib/TOML/Tiny/Grammar.pm		TOML grammar definitions
+cpan/TOML-Tiny/lib/TOML/Tiny/Parser.pm		TOML parser
+cpan/TOML-Tiny/lib/TOML/Tiny/Tokenizer.pm	TOML tokenizer
+cpan/TOML-Tiny/lib/TOML/Tiny/Util.pm		TOML parsing utilities
+cpan/TOML-Tiny/lib/TOML/Tiny/Writer.pm		TOML writer
+cpan/TOML-Tiny/LICENSE				TOML::Tiny license
+cpan/TOML-Tiny/README				TOML::Tiny documentation
 cpan/Unicode-Collate/Collate.pm			Unicode::Collate
 cpan/Unicode-Collate/Collate.xs			Unicode::Collate
 cpan/Unicode-Collate/Collate/allkeys.txt	Unicode::Collate
@@ -7634,6 +7643,7 @@ t/op/tiehandle.t			See if tie for handles works
 t/op/tiehash.t				Tests for tied hashes using test.pl
 t/op/time.t				See if time functions work
 t/op/time_loop.t			Test that very large values don't hang gmtime and localtime.
+t/op/toml_tiny.t			TOML::Tiny parsing without DateTime modules
 t/op/tr.t				See if tr works
 t/op/tr_latin1.t			See if tr works, but file isn't encoded in UTF-8
 t/op/try.t				See if try works

@@ -565,6 +565,12 @@ release manager will have to investigate the situation carefully.)
 
 =item *
 
+L<TOML::Tiny> 0.22 is bundled with XPerl for configuration files. It parses
+date and time values as strings by default. The optional DateTime format
+modules are not bundled.
+
+=item *
+
 L<XGraph> is bundled as an XS-backed directed graph.  It provides stable
 vertex IDs, optional names, labeled edges, adjacency and path operations,
 and graph algorithms.  Graph errors currently use C<XPERL.GRAPH.*> codes.
