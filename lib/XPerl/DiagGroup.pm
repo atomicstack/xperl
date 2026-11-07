@@ -1,65 +1,5 @@
 package XPerl::DiagGroup;
 
-use strict;
-use warnings;
-use Scalar::Util qw(refaddr);
-
-sub diagnostics {
-    my ($self) = @_;
-    my @pending = $self->isa('XPerl::Diagnostic')
-        ? ($self) : reverse @{$self->contents};
-    my @found;
-    my %seen;
-
-    while (my $diagnostic = pop @pending) {
-        my $id = refaddr($diagnostic);
-        next if $seen{$id}++;
-        push @found, $diagnostic;
-        push @pending, reverse @{$diagnostic->contents};
-    }
-
-    return \@found;
-}
-
-sub find_diagnostic {
-    my ($self, $code, @requirements) = @_;
-    die "diagnostic code is required\n" unless defined $code && !ref $code;
-    die "diagnostic parameters must be name/value pairs\n"
-        if @requirements % 2;
-    my %required = @requirements;
-
-    for my $diagnostic (@{$self->diagnostics}) {
-        next unless defined $diagnostic->code && $diagnostic->code eq $code;
-        my %values = map { $_->{name} => $_->{value} }
-            @{$diagnostic->params};
-        my $matches = 1;
-        for my $name (keys %required) {
-            if (!exists $values{$name}
-                || !_same_value($values{$name}, $required{$name})) {
-                $matches = 0;
-                last;
-            }
-        }
-        return $diagnostic if $matches;
-    }
-
-    return;
-}
-
-sub has_diagnostic {
-    my ($self, @query) = @_;
-    return !!$self->find_diagnostic(@query);
-}
-
-sub _same_value {
-    my ($left, $right) = @_;
-    return !defined $right unless defined $left;
-    return 0 unless defined $right;
-    return ref($left) eq ref($right) && refaddr($left) == refaddr($right)
-        if ref($left) || ref($right);
-    return $left eq $right;
-}
-
 1;
 
 __END__
@@ -78,9 +18,9 @@ a note without becoming a subclass of either.
 
 The methods for direct contents and mutation are compiled into Perl and
 miniperl. Loading this file is not required before using those methods.
-The graph query methods below are written in Perl and require
-C<use XPerl::DiagGroup>. The object construction and mutation interfaces
-are under development and are not yet a stable public API.
+The graph query methods are compiled into XPerl and available at startup.
+The object construction and mutation interfaces are under development and
+are not yet a stable public API.
 
 =head1 METHODS
 

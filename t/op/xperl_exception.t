@@ -37,6 +37,18 @@ is(
     'both classes work without loading their Perl files'
 );
 
+is(
+    runperl(
+            prog => 'eval { die q[probe] }; my $e = $@; '
+          . 'print join q[|], $e->find_diagnostic(q[ERROR_USER_TEXT])->code, '
+          . '$e->has_diagnostic(q[ERROR_USER_TEXT], text => q[probe]), '
+          . 'scalar(@{$e->diagnostics}), '
+          . '(exists $INC{q[XPerl/DiagGroup.pm]} ? 1 : 0)'
+    ),
+    'ERROR_USER_TEXT|1|1|0',
+    'diagnostic graph queries work before loading DiagGroup.pm'
+);
+
 require XPerl::Diagnostic;
 require XPerl::Exception;
 require XPerl::DiagGroup;

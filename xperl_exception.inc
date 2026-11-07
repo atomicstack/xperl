@@ -713,6 +713,189 @@ XS(Perl_XPerl_DiagGroup_contents_count)
     XSRETURN(1);
 }
 
+/* Return each diagnostic once, in depth-first encounter order. */
+static AV *
+Perl_xperl_diag_group_diagnostics(pTHX_ SV *root)
+{
+    AV *pending = newAV();
+    AV *found = newAV();
+    HV *fields = Perl_xperl_object_hv(aTHX_ root, "XPerl::DiagGroup");
+    SV *contents = Perl_xperl_field(aTHX_ fields, "contents");
+    SSize_t i;
+
+    if (sv_derived_from(root, "XPerl::Diagnostic"))
+        av_push(pending, newSVsv(root));
+    else if (SvOK(contents)
+             && (!SvROK(contents) || SvTYPE(SvRV(contents)) != SVt_PVAV))
+        PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_STORED_LIST_NOT_ARRAY();
+    else if (SvROK(contents)) {
+        AV *children = MUTABLE_AV(SvRV(contents));
+        for (i = av_top_index(children); i >= 0; i--) {
+            SV **child = av_fetch(children, i, FALSE);
+            if (child)
+                av_push(pending, newSVsv(*child));
+        }
+    }
+
+    while (av_top_index(pending) >= 0) {
+        SV *node = av_pop(pending);
+        AV *children;
+
+        for (i = 0; i <= av_top_index(found); i++) {
+            SV **seen = av_fetch(found, i, FALSE);
+            if (seen && SvROK(*seen) && SvROK(node)
+                && SvRV(*seen) == SvRV(node))
+                break;
+        }
+        if (i <= av_top_index(found)) {
+            SvREFCNT_dec_NN(node);
+            continue;
+        }
+        av_push(found, node);
+        fields = Perl_xperl_object_hv(aTHX_ node, "XPerl::Diagnostic");
+        contents = Perl_xperl_field(aTHX_ fields, "contents");
+        if (!SvOK(contents))
+            continue;
+        if (!SvROK(contents) || SvTYPE(SvRV(contents)) != SVt_PVAV)
+            PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_STORED_LIST_NOT_ARRAY();
+        children = MUTABLE_AV(SvRV(contents));
+        for (i = av_top_index(children); i >= 0; i--) {
+            SV **child = av_fetch(children, i, FALSE);
+            if (child)
+                av_push(pending, newSVsv(*child));
+        }
+    }
+
+    SvREFCNT_dec_NN((SV *)pending);
+    return found;
+}
+
+static bool
+Perl_xperl_diag_same_value(SV *left, SV *right)
+{
+    if (!SvOK(left))
+        return !SvOK(right);
+    if (!SvOK(right))
+        return FALSE;
+    if (SvROK(left) || SvROK(right))
+        return SvROK(left) && SvROK(right) && SvRV(left) == SvRV(right);
+    return sv_eq(left, right);
+}
+
+static SV *
+Perl_xperl_diag_group_find(pTHX_ AV *diagnostics, SV *code,
+                           SV **requirements, I32 count)
+{
+    SSize_t i;
+
+    for (i = 0; i <= av_top_index(diagnostics); i++) {
+        SV **entry = av_fetch(diagnostics, i, FALSE);
+        HV *fields = Perl_xperl_object_hv(aTHX_ *entry, "XPerl::Diagnostic");
+        SV *entry_code = Perl_xperl_field(aTHX_ fields, "code");
+        SV *params = Perl_xperl_field(aTHX_ fields, "params");
+        I32 j;
+
+        if (!SvOK(entry_code) || !sv_eq(entry_code, code))
+            continue;
+        for (j = 0; j < count; j += 2) {
+            bool matched = FALSE;
+            SSize_t k;
+            I32 later;
+
+            /* Hash-style parameter matching uses the last duplicate name. */
+            for (later = j + 2; later < count; later += 2) {
+                if (sv_eq(requirements[j], requirements[later]))
+                    break;
+            }
+            if (later < count)
+                continue;
+
+            if (SvROK(params) && SvTYPE(SvRV(params)) == SVt_PVAV) {
+                AV *array = MUTABLE_AV(SvRV(params));
+                for (k = av_top_index(array); k >= 0; k--) {
+                    SV **param = av_fetch(array, k, FALSE);
+                    HV *record;
+                    SV *name;
+                    SV *value;
+
+                    if (!param || !SvROK(*param)
+                        || SvTYPE(SvRV(*param)) != SVt_PVHV)
+                        continue;
+                    record = MUTABLE_HV(SvRV(*param));
+                    name = Perl_xperl_field(aTHX_ record, "name");
+                    value = Perl_xperl_field(aTHX_ record, "value");
+                    if (SvOK(name) && sv_eq(name, requirements[j])) {
+                        matched = Perl_xperl_diag_same_value(value,
+                                                             requirements[j + 1]);
+                        break;
+                    }
+                }
+            }
+            if (!matched)
+                break;
+        }
+        if (j == count)
+            return *entry;
+    }
+    return NULL;
+}
+
+XS(Perl_XPerl_DiagGroup_diagnostics);
+XS(Perl_XPerl_DiagGroup_diagnostics)
+{
+    dXSARGS;
+    AV *found;
+
+    if (items != 1)
+        croak_xs_usage(cv, "self");
+    found = Perl_xperl_diag_group_diagnostics(aTHX_ ST(0));
+    ST(0) = sv_2mortal(newRV_noinc(MUTABLE_SV(found)));
+    XSRETURN(1);
+}
+
+XS(Perl_XPerl_DiagGroup_find_diagnostic);
+XS(Perl_XPerl_DiagGroup_find_diagnostic)
+{
+    dXSARGS;
+    AV *found;
+    SV *diagnostic;
+
+    if (items < 2 || !SvOK(ST(1)) || SvROK(ST(1)))
+        croak("diagnostic code is required\n");
+    if ((items - 2) % 2)
+        croak("diagnostic parameters must be name/value pairs\n");
+    found = Perl_xperl_diag_group_diagnostics(aTHX_ ST(0));
+    diagnostic = Perl_xperl_diag_group_find(aTHX_ found, ST(1),
+                                           items > 2 ? &ST(2) : NULL,
+                                           items - 2);
+    if (diagnostic)
+        ST(0) = sv_2mortal(newSVsv(diagnostic));
+    SvREFCNT_dec_NN((SV *)found);
+    if (diagnostic)
+        XSRETURN(1);
+    XSRETURN_EMPTY;
+}
+
+XS(Perl_XPerl_DiagGroup_has_diagnostic);
+XS(Perl_XPerl_DiagGroup_has_diagnostic)
+{
+    dXSARGS;
+    AV *found;
+    bool present;
+
+    if (items < 2 || !SvOK(ST(1)) || SvROK(ST(1)))
+        croak("diagnostic code is required\n");
+    if ((items - 2) % 2)
+        croak("diagnostic parameters must be name/value pairs\n");
+    found = Perl_xperl_diag_group_diagnostics(aTHX_ ST(0));
+    present = Perl_xperl_diag_group_find(aTHX_ found, ST(1),
+                                        items > 2 ? &ST(2) : NULL,
+                                        items - 2) != NULL;
+    SvREFCNT_dec_NN((SV *)found);
+    ST(0) = sv_2mortal(newSViv(present ? 1 : 0));
+    XSRETURN(1);
+}
+
 static bool
 Perl_xperl_diag_group_contains(pTHX_ SV *root, SV *target)
 {
@@ -3673,6 +3856,9 @@ Perl_xperl_boot_core(pTHX)
     newXS("XPerl::Diagnostic::derive", Perl_XPerl_Diagnostic_derive, file);
     newXS("XPerl::DiagGroup::contents", Perl_XPerl_DiagGroup_contents, file);
     newXS("XPerl::DiagGroup::contents_count", Perl_XPerl_DiagGroup_contents_count, file);
+    newXS("XPerl::DiagGroup::diagnostics", Perl_XPerl_DiagGroup_diagnostics, file);
+    newXS("XPerl::DiagGroup::find_diagnostic", Perl_XPerl_DiagGroup_find_diagnostic, file);
+    newXS("XPerl::DiagGroup::has_diagnostic", Perl_XPerl_DiagGroup_has_diagnostic, file);
     newXS("XPerl::DiagGroup::append", Perl_XPerl_DiagGroup_append, file);
     newXS("XPerl::DiagGroup::contains", Perl_XPerl_DiagGroup_contains, file);
     newXS("XPerl::DiagGroup::has_errors", Perl_XPerl_DiagGroup_has_errors, file);
