@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 my $no = join('|',qw(Amiga.* GDBM_File ODBM_File NDBM_File DB_File
-                     VMS.* Sys-Syslog IPC-SysV));
+                     VMS.* Sys-Syslog IPC-SysV Term-ReadLine-XPerl));
 $no = qr/^(?:$no)$/i;
 
 sub apply_config {

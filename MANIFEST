@@ -5973,6 +5973,19 @@ ext/SDBM_File/util.c			SDBM kit
 ext/Sys-Hostname/Hostname.pm		Sys::Hostname extension Perl module
 ext/Sys-Hostname/Hostname.xs		Sys::Hostname extension external subroutines
 ext/Sys-Hostname/t/Hostname.t		See if Sys::Hostname works
+ext/Term-ReadLine-XPerl/lib/Term/ReadLine/XPerl.pm	Term::ReadLine::XPerl line editor Perl module
+ext/Term-ReadLine-XPerl/Makefile.PL			Term::ReadLine::XPerl makefile writer
+ext/Term-ReadLine-XPerl/t/basic.t			See if Term::ReadLine::XPerl reads lines from non-terminals
+ext/Term-ReadLine-XPerl/t/bindings.t			See if Term::ReadLine::XPerl key bindings work
+ext/Term-ReadLine-XPerl/t/completion.t			See if Term::ReadLine::XPerl completion works
+ext/Term-ReadLine-XPerl/t/editing.t			See if Term::ReadLine::XPerl editing keys work
+ext/Term-ReadLine-XPerl/t/history.t			See if Term::ReadLine::XPerl history and history files work
+ext/Term-ReadLine-XPerl/t/navigation.t			See if Term::ReadLine::XPerl history navigation and search work
+ext/Term-ReadLine-XPerl/t/signals.t			See if Term::ReadLine::XPerl restores the terminal on fatal signals
+ext/Term-ReadLine-XPerl/t/utf8.t			See if Term::ReadLine::XPerl UTF-8 editing and prompts work
+ext/Term-ReadLine-XPerl/XPerl.xs			Term::ReadLine::XPerl external subroutines
+ext/Term-ReadLine-XPerl/xrl.c				Term::ReadLine::XPerl line editor C source
+ext/Term-ReadLine-XPerl/xrl.h				Term::ReadLine::XPerl line editor C header
 ext/Tie-Hash-NamedCapture/NamedCapture.pm	Implements %- and %+ behaviour
 ext/Tie-Hash-NamedCapture/t/tiehash.t		Tests TIEHASH
 ext/Tie-Memoize/lib/Tie/Memoize.pm	Base class for memoized tied hashes

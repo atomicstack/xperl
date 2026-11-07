@@ -79,6 +79,7 @@ no_index:
     - ext/re/t
     - ext/SDBM_File/t
     - ext/Sys-Hostname/t
+    - ext/Term-ReadLine-XPerl/t
     - ext/Tie-Hash-NamedCapture/t
     - ext/Tie-Memoize/t
     - ext/VMS-DCLsym/t
