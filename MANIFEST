@@ -6695,6 +6695,13 @@ lib/XPerl/DiagGroup.pm			Common diagnostic collector operations
 lib/XPerl/Diagnostic.pm			Structured diagnostic object
 lib/XPerl/DiagPack.pm			Loads optional diagnostic language packs
 lib/XPerl/Exception.pm			Structured exception object
+lib/XPerl/REPL.pm			xperl interactive shell engine
+lib/XPerl/REPL/Commands.pm		repl :commands
+lib/XPerl/REPL/Complete.pm		repl tab-completion candidates
+lib/XPerl/REPL/Config.pm		repl command line, paths and colour detection
+lib/XPerl/REPL/Evaluator.pm		repl compile/execute/persistence
+lib/XPerl/REPL/Input.pm			repl list and handle input sources
+lib/XPerl/REPL/Render.pm		repl result, diagnostic and colour rendering
 os2/Changes				Changelog for OS/2 port
 os2/diff.configure			Patches to Configure
 os2/dl_os2.c				Addon for dl_open
@@ -7843,6 +7850,15 @@ t/re/uniprops09.t			Test unicode \p{} regex constructs
 t/re/uniprops10.t			Test unicode \p{} regex constructs
 t/re/user_prop_race_thr.t		Test races in user-defined \p{} under threads
 t/README				Instructions for regression tests
+t/repl/commands.t			See if the repl :commands work
+t/repl/complete.t			See if repl completion finds candidates
+t/repl/config.t				See if repl option parsing and colour detection work
+t/repl/engine.t				See if the repl engine loop works
+t/repl/evaluator.t			See if the repl evaluator works
+t/repl/incomplete.t			See if the repl detects incomplete input
+t/repl/prompt.t				See if repl prompts can be customised
+t/repl/render.t				See if the repl renders values and errors
+t/repl/tty.t				See if the repl reads from the line editor
 t/role/role.t				Basic role machinery tests
 t/role/role_compose.t			Role method and field composition tests
 t/role/role_conflict_resolution.t	Role method conflict detection and resolution
