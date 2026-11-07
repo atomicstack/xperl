@@ -771,7 +771,7 @@ Perl_xperl_diag_group_diagnostics(pTHX_ SV *root)
 }
 
 static bool
-Perl_xperl_diag_same_value(SV *left, SV *right)
+Perl_xperl_diag_same_value(pTHX_ SV *left, SV *right)
 {
     if (!SvOK(left))
         return !SvOK(right);
@@ -825,7 +825,7 @@ Perl_xperl_diag_group_find(pTHX_ AV *diagnostics, SV *code,
                     name = Perl_xperl_field(aTHX_ record, "name");
                     value = Perl_xperl_field(aTHX_ record, "value");
                     if (SvOK(name) && sv_eq(name, requirements[j])) {
-                        matched = Perl_xperl_diag_same_value(value,
+                        matched = Perl_xperl_diag_same_value(aTHX_ value,
                                                              requirements[j + 1]);
                         break;
                     }
