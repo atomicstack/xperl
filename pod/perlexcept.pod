@@ -195,7 +195,7 @@ cycles. Note diagnostics and their subclasses are leaves and reject
 contents. C<contains($group)> tests identity, includes the receiver itself,
 and searches descendants.
 
-After C<use XPerl::DiagGroup>, C<diagnostics> returns the diagnostic graph
+The C<diagnostics> method returns the diagnostic graph
 in depth-first encounter order, visiting shared objects once.
 C<find_diagnostic($code, %params)> returns the first diagnostic matching a
 symbolic code and any supplied named parameter values. C<has_diagnostic>
