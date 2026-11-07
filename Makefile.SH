@@ -1468,19 +1468,19 @@ _cleaner2:
 	-rmdir lib/Test2/AsyncSubtest lib/Test2/API/InterceptResult
 	-rmdir lib/Test2/API lib/Test2 lib/Test/use lib/Test/Tester
 	-rmdir lib/Test/Builder/Tester lib/Test/Builder lib/Test
-	-rmdir lib/Term/Table lib/Term lib/Tensor lib/TOML/Tiny lib/TOML
-	-rmdir lib/TAP/Parser/YAMLish lib/TAP/Parser/SourceHandler
-	-rmdir lib/TAP/Parser/Scheduler lib/TAP/Parser/Result
-	-rmdir lib/TAP/Parser/Iterator lib/TAP/Parser lib/TAP/Harness
-	-rmdir lib/TAP/Formatter/File lib/TAP/Formatter/Console
-	-rmdir lib/TAP/Formatter lib/TAP lib/Sys/Syslog lib/Sys lib/Sub
-	-rmdir lib/Search lib/Scalar/List lib/Scalar lib/RNG/PCG lib/RNG
-	-rmdir lib/Pod/Text lib/Pod/Simple lib/Pod/Perldoc lib/Pod/Html
-	-rmdir lib/PerlIO/via lib/PerlIO lib/Perl lib/Parse/CPAN lib/Parse
-	-rmdir lib/Params lib/Net/SSLeay lib/Net/FTP lib/Module/Load
-	-rmdir lib/Module/CoreList lib/Module lib/Memoize lib/Math/BigRat
-	-rmdir lib/Math/BigInt lib/Math/BigFloat lib/Math lib/MIME
-	-rmdir lib/Locale/Maketext lib/Locale lib/List/Util lib/List
+	-rmdir lib/Term/Table lib/Term/ReadLine lib/Term lib/Tensor
+	-rmdir lib/TOML/Tiny lib/TOML lib/TAP/Parser/YAMLish
+	-rmdir lib/TAP/Parser/SourceHandler lib/TAP/Parser/Scheduler
+	-rmdir lib/TAP/Parser/Result lib/TAP/Parser/Iterator lib/TAP/Parser
+	-rmdir lib/TAP/Harness lib/TAP/Formatter/File
+	-rmdir lib/TAP/Formatter/Console lib/TAP/Formatter lib/TAP
+	-rmdir lib/Sys/Syslog lib/Sys lib/Sub lib/Search lib/Scalar/List
+	-rmdir lib/Scalar lib/RNG/PCG lib/RNG lib/Pod/Text lib/Pod/Simple
+	-rmdir lib/Pod/Perldoc lib/Pod/Html lib/PerlIO/via lib/PerlIO lib/Perl
+	-rmdir lib/Parse/CPAN lib/Parse lib/Params lib/Net/SSLeay lib/Net/FTP
+	-rmdir lib/Module/Load lib/Module/CoreList lib/Module lib/Memoize
+	-rmdir lib/Math/BigRat lib/Math/BigInt lib/Math/BigFloat lib/Math
+	-rmdir lib/MIME lib/Locale/Maketext lib/Locale lib/List/Util lib/List
 	-rmdir lib/JSON/PP lib/JSON lib/IPC lib/IO/Uncompress/Adapter
 	-rmdir lib/IO/Uncompress lib/IO/Socket/SSL lib/IO/Socket
 	-rmdir lib/IO/Compress/Zlib lib/IO/Compress/Zip lib/IO/Compress/Gzip

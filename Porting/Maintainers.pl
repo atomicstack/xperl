@@ -1473,6 +1473,7 @@ our %Modules = (
                 ext/Pod-Html/
                 ext/SDBM_File/
                 ext/Sys-Hostname/
+                ext/Term-ReadLine-XPerl/
                 ext/Tie-Hash-NamedCapture/
                 ext/Tie-Memoize/
                 ext/VMS-DCLsym/
