@@ -7850,6 +7850,7 @@ t/re/uniprops09.t			Test unicode \p{} regex constructs
 t/re/uniprops10.t			Test unicode \p{} regex constructs
 t/re/user_prop_race_thr.t		Test races in user-defined \p{} under threads
 t/README				Instructions for regression tests
+t/repl/cli.t				See if the xperl-repl program works
 t/repl/commands.t			See if the repl :commands work
 t/repl/complete.t			See if repl completion finds candidates
 t/repl/config.t				See if repl option parsing and colour detection work
@@ -7979,6 +7980,7 @@ utils/ptargrep.PL			The ptargrep utility
 utils/shasum.PL				filter for computing SHA digests (analogous to md5sum)
 utils/splain.PL				Stand-alone version of diagnostics.pm
 utils/streamzip.PL
+utils/xperl-repl.PL			interactive xperl shell
 utils/xsubpp.PL				External subroutine preprocessor
 utils/zipdetails.PL			display the internal structure of zip files
 vms/descrip_mms.template		Template MM[SK] description file for build

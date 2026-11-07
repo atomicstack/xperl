@@ -609,6 +609,21 @@ English with fresh argument values when a pack misses.
 
 =item *
 
+L<XPerl::REPL> is the engine of the new F<xperl-repl> interactive shell.
+It keeps lexical variables, the package and pragmas between inputs,
+continues unfinished input by reading the parser's structured
+diagnostics, and renders errors as structured exceptions.
+
+=item *
+
+L<Term::ReadLine::XPerl> is a small line editor written in C, with no
+external library, behind the L<Term::ReadLine> interface: history with
+prefix search and ctrl-r, tab completion through a callback, key
+bindings, UTF-8 aware editing and coloured prompts.  It is built on
+Unix-like systems only.
+
+=item *
+
 XXX Remove this section if F<Porting/corelist-perldelta.pl> did not add any content here.
 
 =back
@@ -730,6 +745,22 @@ Most of these are built within the directory F<utils>.
 [ List utility changes as a =head2 entry for each utility and =item
 entries for each change
 Use F<XXX> with program names to get proper documentation linking. ]
+
+=head2 F<xperl-repl>
+
+=over 4
+
+=item *
+
+F<xperl-repl> is a new interactive shell for xperl.  Variables, the
+package and pragmas persist from one input to the next, unfinished input
+is continued, and results and errors are printed as they are produced.
+On a terminal it edits lines with L<Term::ReadLine::XPerl>, with history
+in F<~/.xperl/repl_history>; an rc file in F<~/.xperl/replrc> can
+configure the session.  Without a terminal it reads standard input with
+no prompts.  See L<XPerl::REPL>.
+
+=back
 
 =head2 F<XXX>
 
