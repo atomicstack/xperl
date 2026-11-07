@@ -202,6 +202,9 @@ jobs:
         id: build
         run: |
           make -j2 test_prep
+      - name: Prepare workspace temporary directory
+        if: steps.ci_config.outputs.ci_skip_sanity != 'true'
+        run: mkdir -p ../tmp
       - name: Show Config
         if: steps.ci_config.outputs.ci_skip_sanity != 'true'
         run: |
