@@ -159,6 +159,12 @@ of L<Test::Harness>.  It's an alternative to C<make test>.
 A command-line front-end to L<Module::CoreList>, to query what modules
 were shipped with given versions of perl.
 
+=item F<xperl-repl>
+
+F<xperl-repl> is an interactive shell: it runs each line of Perl you
+type and prints the result, keeping your variables between lines.  See
+L<XPerl::REPL>.
+
 =back
 
 =head2 General tools
@@ -244,6 +250,6 @@ L<podchecker>, L<splain>, L<pl2pm>,
 L<perlbug>, L<h2ph>, L<h2xs>, L<enc2xs>,
 L<xsubpp>, L<cpan>, L<encguess>, L<instmodsh>, L<json_pp>,
 L<piconv>, L<prove>, L<corelist>, L<ptar>,
-L<ptardiff>, L<shasum>, L<streamzip>, L<zipdetails>
+L<ptardiff>, L<shasum>, L<streamzip>, L<zipdetails>, L<XPerl::REPL>
 
 =cut

@@ -7091,6 +7091,7 @@ $ WRITE CONFIG "$ ptardiff   == """ + perl_setup_perl + " ''vms_prefix':[utils]p
 $ WRITE CONFIG "$ ptargrep   == """ + perl_setup_perl + " ''vms_prefix':[utils]ptargrep.com"""
 $ WRITE CONFIG "$ shasum     == """ + perl_setup_perl + " ''vms_prefix':[utils]shasum.com"""
 $ WRITE CONFIG "$ splain     == """ + perl_setup_perl + " ''vms_prefix':[utils]splain.com"""
+$ WRITE CONFIG "$ xperl_repl == """ + perl_setup_perl + " ''vms_prefix':[utils]xperl-repl.com"""
 $ WRITE CONFIG "$ xsubpp     == """ + perl_setup_perl + " ''vms_prefix':[utils]xsubpp.com"""
 $ WRITE CONFIG "$ zipdetails == """ + perl_setup_perl + " ''vms_prefix':[utils]zipdetails.com"""
 $ CLOSE CONFIG

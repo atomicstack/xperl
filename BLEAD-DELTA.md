@@ -422,6 +422,24 @@ The imported distribution's API and tests remain documented in its own source
 and test files. Its core integration is covered by the dual-life and build
 checks.
 
+### Interactive shell
+
+`xperl-repl` is a new utility, built from `utils/xperl-repl.PL`, that
+starts an interactive shell. Its engine is `XPerl::REPL`, under
+`lib/XPerl/REPL/`, and keeps lexical variables, the current package and
+compile-time hints between inputs using only core modules. Multi-line input
+is detected from the parser's structured diagnostic codes, not from message
+text, and errors are rendered as structured exceptions.
+
+On a terminal it reads lines through the new `ext/Term-ReadLine-XPerl`
+extension: a small C line editor behind the `Term::ReadLine` interface,
+with history, prefix search, tab completion, key bindings and UTF-8 aware
+editing, and no external library. The extension is built on Unix-like
+systems only; elsewhere the shell falls back to the `Term::ReadLine` stub.
+The utility is registered in `utils.lst`, `utils/Makefile.PL`,
+`pod/perlutil.pod` and the Windows and VMS build lists. The engine and
+editor are covered by `t/repl/` and `ext/Term-ReadLine-XPerl/t/`.
+
 ### Lexical namespaces
 
 The experimental `namespaces` feature adds lexical namespace state,

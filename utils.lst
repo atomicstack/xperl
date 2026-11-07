@@ -24,5 +24,6 @@ utils/ptargrep
 utils/shasum
 utils/splain
 utils/streamzip
+utils/xperl-repl
 utils/xsubpp
 utils/zipdetails
