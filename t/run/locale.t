@@ -156,7 +156,10 @@ EOF
     # try to find out a locale where LC_NUMERIC makes a difference
     my $original_locale = setlocale(LC_NUMERIC);
 
-    my ($base, $different, $comma, $difference, $utf8_radix);
+    require XPerl::DiagPack;
+    my %diagpack_languages = map { $_ => 1 }
+        XPerl::DiagPack::_installed_languages();
+    my ($base, $different, $comma, $comma_with_diagpack, $difference, $utf8_radix);
     my $radix_encoded_as_utf8;
     for ("C", @locales) { # prefer C for the base if available
         use locale;
@@ -179,11 +182,16 @@ EOF
                 $radix_encoded_as_utf8 = utf8::is_utf8($radix);
             }
             else {
-                $comma ||= $_ if $radix eq ',';
+                if ($radix eq ',') {
+                    $comma ||= $_;
+                    my ($language) = /\A([A-Za-z]+)/;
+                    $comma_with_diagpack ||= $_
+                        if defined $language && $diagpack_languages{lc $language};
+                }
             }
         }
 
-        last if $base && $different && $comma && $utf8_radix;
+        last if $base && $different && $comma && $comma_with_diagpack && $utf8_radix;
     }
     setlocale(LC_NUMERIC, $original_locale);
 
@@ -582,8 +590,13 @@ EOF
             }
           }
 
-          { # GH #21746
-                local $ENV{LANG} = $comma;
+          SKIP: { # GH #21746
+                # LANG also selects the diagnostic language at startup. Use
+                # a supported pack so this checks numeric locale handling.
+                skip("no decimal-comma locale with an available diagnostic pack", 1)
+                    unless $comma_with_diagpack;
+                note("using '$comma_with_diagpack' with a diagnostic pack");
+                local $ENV{LANG} = $comma_with_diagpack;
                 fresh_perl_is(<<"EOF",
                     use POSIX;
                     POSIX::setlocale(POSIX::LC_ALL(),'');
