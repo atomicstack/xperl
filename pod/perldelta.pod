@@ -1139,6 +1139,12 @@ C compiler argument evaluation order.
 
 =item *
 
+Importing a builtin bundle inside a nested anonymous subroutine no longer
+crashes when the outer builtin has a non-CV pad placeholder. XPerl checks
+the pad entry type before treating it as an existing builtin.
+
+=item *
+
 XPerl no longer evaluates the boolean overload of a C<$SIG{__DIE__}> handler
 before invoking it. Callable overloaded handlers no longer cause recursive
 exception delivery and a stack overflow.

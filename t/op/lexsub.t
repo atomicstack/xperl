@@ -8,7 +8,7 @@ BEGIN {
     *bar::like = *like;
 }
 
-plan 160;
+plan 161;
 
 # -------------------- our -------------------- #
 
@@ -1087,5 +1087,19 @@ BEGIN {
     eval_bug::do_eval;
     die $@ if $@;
 }
+CODE
+}
+
+{
+    # An outer builtin can have a pad placeholder in a nested anonymous sub.
+    # Re-importing the bundle must not treat that placeholder as a CV.
+    fresh_perl_is(<<'CODE', "ok\n", {}, "builtin bundle import checks lexical pad entry type");
+use v5.40;
+sub run_nested {
+    my $inner = sub { use v5.40; };
+    $inner->();
+}
+run_nested();
+print "ok\n";
 CODE
 }

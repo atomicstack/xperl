@@ -1064,6 +1064,7 @@ static void S_import_sym(pTHX_ SV *sym)
     {
         PADOFFSET off = pad_findmy_sv(ampname, 0);
         if (off != NOT_IN_PAD
+            && SvTYPE(PL_curpad[off]) == SVt_PVCV
             && S_cv_is_builtin(aTHX_ (CV *)PL_curpad[off]))
             return;
     }
