@@ -200,6 +200,8 @@ PPCODE:
         const char *class_name;
         I32 i;
 
+        /* Run the cleanup before this C stack frame goes away. */
+        ENTER;
         SAVEDESTRUCTOR_X(xg_bulk_graph_cleanup, &graph);
         if (edge_value_count % 3)
             croak("XPERL.GRAPH.INVALID_ARGUMENT: internal edge data is malformed");
@@ -235,6 +237,7 @@ PPCODE:
             graph = NULL;
             XPUSHs(sv_2mortal(object));
         }
+        LEAVE;
     }
 
 void
@@ -257,6 +260,8 @@ PPCODE:
         const char *class_name;
         I32 i;
 
+        /* Run the cleanup before this C stack frame goes away. */
+        ENTER;
         SAVEDESTRUCTOR_X(xg_bulk_graph_cleanup, &graph);
         if (edge_value_count % 2)
             croak("XPERL.GRAPH.INVALID_ARGUMENT: internal edge data is malformed");
@@ -290,6 +295,7 @@ PPCODE:
             graph = NULL;
             XPUSHs(sv_2mortal(object));
         }
+        LEAVE;
     }
 
 void

@@ -1139,6 +1139,12 @@ C compiler argument evaluation order.
 
 =item *
 
+XGraph bulk construction now runs its temporary graph cleanup while the
+owning C stack frame is live. This avoids an invalid free on reference-counted
+stack builds.
+
+=item *
+
 Importing a builtin bundle inside a nested anonymous subroutine no longer
 crashes when the outer builtin has a non-CV pad placeholder. XPerl checks
 the pad entry type before treating it as an existing builtin.
