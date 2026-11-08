@@ -11127,17 +11127,14 @@ S_dispatch_pattern_call(pTHX_ const OP *op)
         if (!cv)
             PERL_THROW_ERROR_DISPATCH_CALL_TARGET_MISSING();
         {
-            dSP;
             I32 count;
             ENTER;
             SAVETMPS;
-            PUSHMARK(SP);
-            PUTBACK;
+            PUSHMARK(PL_stack_sp);
             count = call_sv(MUTABLE_SV(cv), G_SCALAR);
-            SPAGAIN;
             if (count)
-                sv_setsv(result, TOPs);
-            PUTBACK;
+                sv_setsv(result, *PL_stack_sp);
+            rpp_popfree_to(PL_stack_sp - count);
             FREETMPS;
             LEAVE;
         }
@@ -11147,18 +11144,15 @@ S_dispatch_pattern_call(pTHX_ const OP *op)
             || target->op_type != OP_METHOD_NAMED)
             PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_METHOD_FORM_UNSUPPORTED();
         {
-            dSP;
             I32 count;
             ENTER;
             SAVETMPS;
-            PUSHMARK(SP);
-            XPUSHs(cSVOPx_sv(invocant));
-            PUTBACK;
+            PUSHMARK(PL_stack_sp);
+            rpp_xpush_1(cSVOPx_sv(invocant));
             count = call_method(SvPV_nolen_const(cSVOPx_sv(target)), G_SCALAR);
-            SPAGAIN;
             if (count)
-                sv_setsv(result, TOPs);
-            PUTBACK;
+                sv_setsv(result, *PL_stack_sp);
+            rpp_popfree_to(PL_stack_sp - count);
             FREETMPS;
             LEAVE;
         }
@@ -11179,7 +11173,6 @@ S_dispatch_pattern_predicate_call(pTHX_ const OP *op, SV *subject)
     U32 argix;
     bool past_target = FALSE;
     CV *cv;
-    dSP;
     I32 count;
 
     S_dispatch_pattern_scan_call(aTHX_ cUNOPx(op)->op_first,
@@ -11200,8 +11193,8 @@ S_dispatch_pattern_predicate_call(pTHX_ const OP *op, SV *subject)
         PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_LAYOUT_UNSUPPORTED();
     }
 
-    PUSHMARK(SP);
-    XPUSHs(sv_2mortal(newSVsv(subject)));
+    PUSHMARK(PL_stack_sp);
+    rpp_xpush_1(sv_2mortal(newSVsv(subject)));
     for (argix = 0; argix < nargs; argix++) {
         const OP *arg = args[argix];
         SV *argvalue = NULL;
@@ -11222,17 +11215,14 @@ S_dispatch_pattern_predicate_call(pTHX_ const OP *op, SV *subject)
             LEAVE;
             PERL_THROW_ERROR_SYNTAX_DISPATCH_CALL_PREDICATE_ARGUMENT_INVALID();
         }
-        XPUSHs(sv_2mortal(newSVsv(argvalue)));
+        rpp_xpush_1(sv_2mortal(newSVsv(argvalue)));
     }
-    PUTBACK;
     count = call_sv(MUTABLE_SV(cv), G_SCALAR);
-    SPAGAIN;
     if (count)
-        argix = SvTRUE(TOPs);
+        argix = SvTRUE(*PL_stack_sp);
     else
         argix = 0;
-    SP -= count;
-    PUTBACK;
+    rpp_popfree_to(PL_stack_sp - count);
     FREETMPS;
     LEAVE;
     return cBOOL(argix);

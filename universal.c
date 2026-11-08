@@ -235,18 +235,30 @@ Perl_sv_isa_sv(pTHX_ SV *sv, SV *namesv)
         ENTER;
         SAVETMPS;
 
-        EXTEND(SP, 2);
-        PUSHMARK(SP);
-        PUSHs(sv);
-        PUSHs(namesv);
-        PUTBACK;
-
-        call_sv((SV *)isacv, G_SCALAR);
-
-        SPAGAIN;
-        SV *retsv = POPs;
-        bool ret = SvTRUE(retsv);
-        PUTBACK;
+        bool ret;
+#ifdef PERL_RC_STACK
+        /* This public API can also be called from a wrapped non-RC stack. */
+        if (rpp_stack_is_rc()) {
+            PUSHMARK(PL_stack_sp);
+            rpp_xpush_2(sv, namesv);
+            call_sv((SV *)isacv, G_SCALAR);
+            ret = SvTRUE(*PL_stack_sp);
+            rpp_popfree_1_NN();
+        }
+        else
+#endif
+        {
+            EXTEND(SP, 2);
+            PUSHMARK(SP);
+            PUSHs(sv);
+            PUSHs(namesv);
+            PUTBACK;
+            call_sv((SV *)isacv, G_SCALAR);
+            SPAGAIN;
+            SV *retsv = POPs;
+            ret = SvTRUE(retsv);
+            PUTBACK;
+        }
 
         FREETMPS;
         LEAVE;

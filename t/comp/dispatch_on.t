@@ -2335,7 +2335,10 @@ print !$@ && $subclass_object_pattern_ok && $subclass_object_pattern
     : "not ok 158 - object patterns accept subclasses\n";
 
 my $overridden_isa_pattern;
-my $overridden_isa_pattern_ok = eval q{
+my @overridden_isa_warnings;
+my $overridden_isa_pattern_ok = do {
+    local $SIG{__WARN__} = sub { push @overridden_isa_warnings, @_ };
+    eval q{
     use feature 'dispatch_on';
     use dispatch::Predicates;
     {
@@ -2349,8 +2352,10 @@ my $overridden_isa_pattern_ok = eval q{
         }
     }
     1;
+    };
 };
 print !$@ && $overridden_isa_pattern_ok && $overridden_isa_pattern
+        && !@overridden_isa_warnings
     ? "ok 159 - object patterns use the object's isa method\n"
     : "not ok 159 - object patterns use the object's isa method\n";
 
