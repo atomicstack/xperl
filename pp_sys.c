@@ -630,7 +630,8 @@ PP_wrapped(pp_die, 0, 1)
         dTARGET;
         do_join(TARG, &PL_sv_no, MARK, SP);
         exsv = TARG;
-        SP = MARK + 1;
+        /* die does not return a value, so discard the joined arguments. */
+        SP = MARK;
     }
     else {
         exsv = TOPs;
