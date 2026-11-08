@@ -420,7 +420,10 @@ This is separate from the broader locale normalizer for builtin plural
 queries and from IO encoding.
 
 Startup may load the selected optional pack before user compilation, except
-under taint mode. Runtime rendering only looks up registered capabilities;
+under taint mode. When C<auto> selects a language whose pack is not
+installed, startup falls back to English without a warning. It still warns
+when an explicitly selected pack is missing, and when an installed pack
+fails to load, including when the pack's own prerequisite is missing. Runtime rendering only looks up registered capabilities;
 it never loads a module while formatting an exception. Locale construction
 precedes this machinery and uses permanent English direct output for its
 own startup warnings.

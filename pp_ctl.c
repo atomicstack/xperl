@@ -1344,11 +1344,51 @@ Perl_diagpack_set_lexical_hint(pTHX_ const char *language)
 
 static SV *Perl_diagpack_startup_warning(pTHX_ const char *language, SV *error);
 
-/* Attempt a bootstrap require while preserving the interpreter's error state. */
+/* True when ERROR reports only that the pack file itself, PACK_FILE, is not
+ * in @INC. A pack that is installed but fails to load, including one whose
+ * own prerequisite is missing, reports a compilation failure instead. */
 static bool
-Perl_diagpack_startup_require(pTHX_ const char *language)
+Perl_diagpack_error_is_absent_pack(pTHX_ SV *error, const char *pack_file)
+{
+    SV **contents;
+    SV **root;
+    SV **number;
+    SV **params;
+    SV **param;
+    SV **value;
+
+    if (!SvROK(error) || SvTYPE(SvRV(error)) != SVt_PVHV)
+        return FALSE;
+    contents = hv_fetchs(MUTABLE_HV(SvRV(error)), "contents", FALSE);
+    if (!contents || !SvROK(*contents)
+        || SvTYPE(SvRV(*contents)) != SVt_PVAV)
+        return FALSE;
+    root = av_fetch(MUTABLE_AV(SvRV(*contents)), 0, FALSE);
+    if (!root || !SvROK(*root) || SvTYPE(SvRV(*root)) != SVt_PVHV)
+        return FALSE;
+    number = hv_fetchs(MUTABLE_HV(SvRV(*root)), "number", FALSE);
+    if (!number || !SvOK(*number)
+        || SvUV(*number) != perl_diag_error_load_not_found_in_inc_number)
+        return FALSE;
+    params = hv_fetchs(MUTABLE_HV(SvRV(*root)), "params", FALSE);
+    if (!params || !SvROK(*params) || SvTYPE(SvRV(*params)) != SVt_PVAV)
+        return FALSE;
+    param = av_fetch(MUTABLE_AV(SvRV(*params)), 0, FALSE);
+    if (!param || !SvROK(*param) || SvTYPE(SvRV(*param)) != SVt_PVHV)
+        return FALSE;
+    value = hv_fetchs(MUTABLE_HV(SvRV(*param)), "value", FALSE);
+    return value && SvOK(*value) && strEQ(SvPV_nolen(*value), pack_file);
+}
+
+/* Attempt a bootstrap require while preserving the interpreter's error state.
+ * An automatically selected language whose pack is not installed falls back
+ * to English quietly, as perlexcept documents; any other failure to load the
+ * pack is reported. */
+static bool
+Perl_diagpack_startup_require(pTHX_ const char *language, bool automatic)
 {
     SV *source;
+    SV *pack_file;
     SV *saved_error;
     SV *load_error;
     SV *saved_pending;
@@ -1357,6 +1397,7 @@ Perl_diagpack_startup_require(pTHX_ const char *language)
     char second;
     char suffix[2];
     bool loaded;
+    bool quiet;
 
     if (!language || !isLOWER_A(language[0]) || !isLOWER_A(language[1])
         || (language[2] && (!isLOWER_A(language[2]) || language[3])))
@@ -1369,6 +1410,8 @@ Perl_diagpack_startup_require(pTHX_ const char *language)
     suffix[1] = '\0';
     source = sv_2mortal(newSVpvf("require XPerl::DiagPack::%c%c%s; 1",
                                  first, second, suffix));
+    pack_file = sv_2mortal(newSVpvf("XPerl/DiagPack/%c%c%s.pm",
+                                    first, second, suffix));
     saved_error = newSVsv(ERRSV);
     saved_error_object = newSVsv(PERL_ERROR_OBJ);
     saved_pending = PL_pending_exception;
@@ -1383,6 +1426,9 @@ Perl_diagpack_startup_require(pTHX_ const char *language)
     (void)Perl_eval_pv(aTHX_ SvPV_nolen(source), FALSE);
     load_error = newSVsv(ERRSV);
     loaded = !SvTRUE(load_error);
+    quiet = !loaded && automatic
+        && Perl_diagpack_error_is_absent_pack(aTHX_ load_error,
+                                              SvPV_nolen(pack_file));
     sv_setsv(ERRSV, saved_error);
     sv_setsv(PERL_ERROR_OBJ, saved_error_object);
     SvREFCNT_dec_NN(saved_error);
@@ -1390,7 +1436,7 @@ Perl_diagpack_startup_require(pTHX_ const char *language)
     SvREFCNT_dec(PL_pending_exception);
     PL_pending_exception = saved_pending;
     LEAVE;
-    if (!loaded) {
+    if (!loaded && !quiet) {
         SV *warning = Perl_diagpack_startup_warning(aTHX_ language,
                                                     load_error);
         assert(warning);
@@ -1427,6 +1473,7 @@ Perl_diagpack_startup(pTHX)
     Size_t language_length;
     STRLEN length;
     char language[4];
+    bool automatic_language = FALSE;
 
     PERL_ARGS_ASSERT_DIAGPACK_STARTUP;
     if (!setting_sv || !SvOK(setting_sv))
@@ -1445,6 +1492,7 @@ Perl_diagpack_startup(pTHX)
     language_length = (Size_t)(end - setting);
     if (language_length == 4 && memEQ(setting, "auto", 4)) {
         const char *automatic = Perl_diag_auto_language(aTHX);
+        automatic_language = TRUE;
         if (!automatic || (strlen(automatic) != 2 && strlen(automatic) != 3))
             return;
         language[0] = automatic[0];
@@ -1461,7 +1509,8 @@ Perl_diagpack_startup(pTHX)
     language[3] = '\0';
     if (!strEQ(language, "en")
         && !Perl_diagpack_find(aTHX_ language))
-        (void)Perl_diagpack_startup_require(aTHX_ language);
+        (void)Perl_diagpack_startup_require(aTHX_ language,
+                                             automatic_language);
 }
 
 /* Call one engine with an isolated copy of the canonical values and a fresh

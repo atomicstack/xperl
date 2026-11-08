@@ -159,6 +159,46 @@ SKIP: {
         'startup keeps the requested rendering setting after load failure' );
 }
 
+# An automatically selected language with no installed pack falls back to
+# English quietly (perlexcept: "unavailable translations fall back to
+# English"). Only the pack's own absence is quiet: an installed pack that
+# fails to load still warns, as does an explicitly requested language.
+{
+    local $ENV{PERL_DIAG_RENDER} = 'auto:legacy';
+    local $ENV{PERL_BADLANG} = 0;
+    local $ENV{LC_ALL} = '';
+    local $ENV{LANG} = '';
+    local $ENV{LC_MESSAGES} = 'zz_ZZ.UTF-8';
+    my $output = XPerlDiagPackTest::runperl( prog => 'print ${^DIAG_RENDER}', stderr => 1 );
+    is( $output, 'auto:legacy',
+        'startup is quiet when the automatically selected pack is not installed' );
+
+    my $dir = XPerlDiagPackTest::tempfile();
+    my $pack_dir = "$dir/XPerl/DiagPack";
+    require File::Path;
+    File::Path::make_path($pack_dir);
+    local $ENV{PERL5LIB} = $dir;
+
+    my $write_pack = sub {
+        my ($body) = @_;
+        open my $fh, '>', "$pack_dir/ZZ.pm" or die "cannot write ZZ.pm: $!";
+        print {$fh} "package XPerl::DiagPack::ZZ;\n$body\n";
+        close $fh or die "cannot close ZZ.pm: $!";
+    };
+
+    $write_pack->('die "broken pack\n";');
+    $output = XPerlDiagPackTest::runperl( prog => 'print ${^DIAG_RENDER}', stderr => 1 );
+    like( $output, qr/Warning: unable to load diagnostic language pack 'zz'.*broken pack/s,
+        'startup still reports an automatically selected pack that fails to compile' );
+
+    $write_pack->('require XPerl::DiagPack::Test::No::Such::Dependency; 1;');
+    $output = XPerlDiagPackTest::runperl( prog => 'print ${^DIAG_RENDER}', stderr => 1 );
+    like( $output, qr/Warning: unable to load diagnostic language pack 'zz'.*No::Such::Dependency/s,
+        'startup still reports a missing prerequisite of an installed pack' );
+
+    File::Path::remove_tree($dir);
+}
+
 {
     local $ENV{PERL_DIAG_RENDER} = 'de:legacy';
     is(

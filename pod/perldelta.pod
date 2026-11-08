@@ -606,7 +606,10 @@ C<use XPerl::DiagPack qw(all)> loads installed packs. The provisional
 L<diagpack> pragma selects a language lexically, and diagnostics retain that
 choice for later rendering. Explicit rendering languages override captured
 choices. Startup loads the language selected by C<PERL_DIAG_RENDER>, except
-in taint mode; missing translations fall back to English.
+in taint mode; missing translations fall back to English. A locale whose
+language has no installed pack selects English quietly under C<auto>; an
+explicitly selected pack that is missing, or an installed pack that fails to
+load, is reported.
 
 Each pack provides C<metadata> and C<render($diagnostic)>. Direct rendering
 returns the message body or C<undef> for a miss, with no fallback, locations,
