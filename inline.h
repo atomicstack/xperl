@@ -888,6 +888,13 @@ Perl_rpp_popfree_2_NN(pTHX)
     assert(sv1);
 
     assert(rpp_stack_is_rc());
+    if (UNLIKELY(sv1 == sv2)) {
+        /* Both slots own a reference. Cached counts would decrement the
+         * scalar only once, so pop each slot through the ordinary path. */
+        PL_stack_sp++;
+        rpp_popfree_2();
+        return;
+    }
     U32 rc1 = SvREFCNT(sv1);
     U32 rc2 = SvREFCNT(sv2);
     /* This expression is intended to be true if either of rc1 or rc2 has
@@ -1193,6 +1200,13 @@ Perl_rpp_replace_2_1_COMMON(pTHX_ SV *sv)
 
     *PL_stack_sp = sv;
     assert(rpp_stack_is_rc());
+    if (UNLIKELY(sv1 == sv2)) {
+        /* Both old slots own a reference. Read the count again after the
+         * first decrement so we release both and free the scalar at zero. */
+        SvREFCNT_dec_NN(sv1);
+        SvREFCNT_dec_NN(sv2);
+        return;
+    }
     U32 rc1 = SvREFCNT(sv1);
     U32 rc2 = SvREFCNT(sv2);
     /* This expression is intended to be true if either of rc1 or rc2 has

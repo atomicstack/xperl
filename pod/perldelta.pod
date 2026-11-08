@@ -1139,6 +1139,12 @@ C compiler argument evaluation order.
 
 =item *
 
+Binary operations and range iteration on reference-counted stack builds
+release both stack references when their operands alias the same scalar.
+The cached reference-count fast path previously leaked one reference.
+
+=item *
+
 Rethrowing an exception with an empty C<die> no longer leaves a stale stack
 entry visible to its C<PROPAGATE> method on reference-counted stack builds.
 

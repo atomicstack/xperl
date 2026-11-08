@@ -31,6 +31,28 @@ BEGIN {
 use warnings;
 use strict;
 
+# Two stack entries can point at the same scalar. Each entry owns a separate
+# reference, even when a binary operation consumes both entries at once.
+fresh_perl_is(
+    q{use Scalar::Util 'weaken';
+      sub compare { my $x = shift; my $same = $x eq ($x->{pos} || $x) }
+      my $x = {}; my $weak = $x; weaken($weak);
+      compare($x); undef $x;
+      print defined($weak) ? 'alive' : 'freed';},
+    'freed', {stderr => 1},
+    'comparison releases both references to an aliased operand'
+);
+
+fresh_perl_is(
+    q{my $x = 2;
+      my $before = Internals::SvREFCNT($x);
+      for ($x .. $x) { }
+      my $after = Internals::SvREFCNT($x);
+      print $before == $after ? 'same' : "$before $after";},
+    'same', {stderr => 1},
+    'range iteration releases both references to an aliased endpoint'
+);
+
 
 # GH #2157: "coredump in map modifying input array"
 
