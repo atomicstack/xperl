@@ -1142,6 +1142,16 @@ C compiler argument evaluation order.
 
 =item *
 
+A multi-line C<use> whose import list declares anonymous subroutines now
+gives the C<require> and C<import> steps of its implicit C<BEGIN> block the
+line the statement ends on, as in earlier releases. One of the two had
+taken the line of an anonymous subroutine instead, and which one depended
+on the order in which the C compiler evaluated function arguments, so it
+differed between builds (for example, Darwin arm64 and Linux x86_64). This
+showed in C<caller()> and in coverage reports such as L<Devel::Cover>'s.
+
+=item *
+
 Binary operations and range iteration on reference-counted stack builds
 release both stack references when their operands alias the same scalar.
 The cached reference-count fast path previously leaked one reference.
