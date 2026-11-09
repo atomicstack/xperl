@@ -1142,6 +1142,14 @@ C compiler argument evaluation order.
 
 =item *
 
+Parser contextualization of binary operands and array subscripts now runs
+in a defined order. Scalar and compound assignments validate their target
+before contextualizing the right-hand expression. C compiler argument
+evaluation order previously affected warning order, the first fatal warning,
+and suppression of secondary diagnostics after an invalid assignment target.
+
+=item *
+
 A multi-line C<use> whose import list declares anonymous subroutines now
 gives the C<require> and C<import> steps of its implicit C<BEGIN> block the
 line the statement ends on, as in earlier releases. One of the two had
