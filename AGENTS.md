@@ -9,6 +9,12 @@ asks for a different approach.
 - Keep changes to existing code or infra small, incremental, and reviewable.
 - Prefer self-contained commits that include code, tests, documentation, and
   generated-file updates required by the change.
+- Separate fixes to inherited Perl blead code from fixes to XPerl-specific
+  changes. Keep generic fixes and portable tests in commits suitable for
+  blead, without mixing in XPerl syntax, functionality, or API adaptations.
+  Mark those commits with `Blead-port: suitable` and explain the upstream
+  applicability. Testing on blead and resolving migration conflicts can be a
+  separate follow-up; the marker does not claim blead validation.
 - Add or update tests for behavior changes, bug fixes, generated-file checks,
   and regression-sensitive refactors.
 - Update documentation when behavior, APIs, diagnostics, build behavior,
