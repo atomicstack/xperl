@@ -571,6 +571,11 @@ release manager will have to investigate the situation carefully.)
 
 =item *
 
+L<Text::CSV_XS> 1.65 is bundled with XPerl for parsing and writing
+comma-separated values.
+
+=item *
+
 L<TOML::Tiny> 0.22 is bundled with XPerl for configuration files. It parses
 date and time values as strings by default. The optional DateTime format
 modules are not bundled.

@@ -1205,6 +1205,12 @@ our %Modules = (
         'FILES'        => q[cpan/Text-Balanced],
     },
 
+    'Text::CSV_XS' => {
+        'DISTRIBUTION' => 'HMBRAND/Text-CSV_XS-1.65.tgz',
+        'SYNCINFO'    => 'demerphq on Thu Nov 12 13:36:07 2026',
+        'FILES'       => 'cpan/Text-CSV_XS',
+    },
+
     'Text::ParseWords' => {
         'DISTRIBUTION' => 'NEILB/Text-ParseWords-3.31.tar.gz',
         'FILES'        => q[cpan/Text-ParseWords],

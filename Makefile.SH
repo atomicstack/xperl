@@ -223,7 +223,7 @@ for f in $dynamic_ext; do
     case $f in
 	Math/BigInt/FastCalc|Devel/NYTProf) extra_dep="$extra_dep
 $this_target: $list_util_dep" ;;
-	Unicode/Normalize) extra_dep="$extra_dep
+	Unicode/Normalize|Text/CSV_XS) extra_dep="$extra_dep
 $this_target: uni.data" ;;
     esac
 done
@@ -237,7 +237,7 @@ for f in $static_ext; do
     case $f in
 	Math/BigInt/FastCalc|Devel/NYTProf) extra_dep="$extra_dep
 $this_target: lib/auto/List/Util/Util\$(LIB_EXT)" ;;
-	Unicode/Normalize) extra_dep="$extra_dep
+	Unicode/Normalize|Text/CSV_XS) extra_dep="$extra_dep
 $this_target: uni.data" ;;
     esac
 done

@@ -3899,6 +3899,64 @@ cpan/Text-Balanced/t/95_critic.t
 cpan/Text-Balanced/t/96_pmv.t
 cpan/Text-Balanced/t/97_pod.t
 cpan/Text-Balanced/t/98_pod_coverage.t
+cpan/Text-CSV_XS/CSV_XS.pm		Text-CSV_XS
+cpan/Text-CSV_XS/CSV_XS.xs		Text-CSV_XS
+cpan/Text-CSV_XS/err-csv/check.pl	Text-CSV_XS
+cpan/Text-CSV_XS/err-csv/E2021.csv	Text-CSV_XS
+cpan/Text-CSV_XS/err-csv/E2022.csv	Text-CSV_XS
+cpan/Text-CSV_XS/err-csv/E2023.csv	Text-CSV_XS
+cpan/Text-CSV_XS/err-csv/E2024.csv	Text-CSV_XS
+cpan/Text-CSV_XS/examples/csv-check	Text-CSV_XS
+cpan/Text-CSV_XS/examples/csv-split	Text-CSV_XS
+cpan/Text-CSV_XS/examples/csv2xls	Text-CSV_XS
+cpan/Text-CSV_XS/examples/csv2xlsx	Text-CSV_XS
+cpan/Text-CSV_XS/examples/csvdiff	Text-CSV_XS
+cpan/Text-CSV_XS/examples/parser-xs.pl	Text-CSV_XS
+cpan/Text-CSV_XS/examples/rewrite.pl	Text-CSV_XS
+cpan/Text-CSV_XS/examples/speed.pl	Text-CSV_XS
+cpan/Text-CSV_XS/files/macosx.csv	Text-CSV_XS
+cpan/Text-CSV_XS/files/utf8.csv		Text-CSV_XS
+cpan/Text-CSV_XS/LOVE_LETTER.md		Text-CSV_XS
+cpan/Text-CSV_XS/Makefile.PL		Text-CSV_XS
+cpan/Text-CSV_XS/ppport.h		Text-CSV_XS
+cpan/Text-CSV_XS/SECURITY.md		Text-CSV_XS
+cpan/Text-CSV_XS/t/10_base.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/12_acc.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/15_flags.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/16_import.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/20_file.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/21_lexicalio.t	Text-CSV_XS
+cpan/Text-CSV_XS/t/22_scalario.t	Text-CSV_XS
+cpan/Text-CSV_XS/t/30_types.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/40_misc.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/41_null.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/45_eol.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/46_eol_si.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/47_comment.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/50_utf8.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/51_utf8.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/55_combi.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/60_samples.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/65_allow.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/66_formula.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/67_emptrow.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/68_header.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/70_rt.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/71_strict.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/75_hashref.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/76_magic.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/77_getall.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/78_fragment.t	Text-CSV_XS
+cpan/Text-CSV_XS/t/79_callbacks.t	Text-CSV_XS
+cpan/Text-CSV_XS/t/80_diag.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/81_subclass.t	Text-CSV_XS
+cpan/Text-CSV_XS/t/85_util.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/90_csv.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/91_csv_cb.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/92_stream.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/97_parse_eof.t	Text-CSV_XS
+cpan/Text-CSV_XS/t/99_mem.t		Text-CSV_XS
+cpan/Text-CSV_XS/t/util.pl		Text-CSV_XS
 cpan/Text-ParseWords/lib/Text/ParseWords.pm	Perl module to split words on arbitrary delimiter
 cpan/Text-ParseWords/t/ParseWords.t		See if Text::ParseWords works
 cpan/Text-ParseWords/t/taint.t			See if Text::ParseWords works with tainting

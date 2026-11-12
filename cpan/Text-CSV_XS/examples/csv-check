@@ -1,0 +1,276 @@
+#!/pro/bin/perl
+
+# csv-check: Check validity of CSV file and report
+#	   (m)'20 [21 May 2020] Copyright H.M.Brand 2007-2026
+
+# This code requires the defined-or feature and PerlIO
+
+use 5.012000;
+use warnings;
+
+use Data::Peek;
+use Encode qw( decode encode );
+
+our $VERSION = "2.06";	# 2025-01-03
+my $cmd = $0; $cmd =~ s{.*/}{};
+
+sub usage {
+    my $err = shift and select STDERR;
+    print <<"EOU";
+usage: $cmd [-s <sep>] [-q <quot>] [-e <esc>] [-u] [--pp] [file.csv]
+    -s S  --sep=S         use S as seperator char. Auto-detect, default = ','
+                          the string "tab" is allowed.
+    -q Q  --quo=Q         use Q as quote     char. Auto-detect, default = '"'
+                          the string "undef" will disable quotation.
+    -e E  --esc=E         use E as escape    char. Auto-detect, default = '"'
+                          the string "undef" will disable escapes.
+    -N    --nl            force EOL to \\n
+    -C    --cr            force EOL to \\r
+    -M    --crnl          force EOL to \\r\\n
+    -u    --utf-8         check if all fields are valid unicode
+    -E E  --enc=E         open file with encoding E
+    -h    --hdr           check with header (implies BOM)
+    -b    --bom           check with BOM (no header)
+    -f    --skip-formula  do not check formula's
+
+          --pp            use Text::CSV_PP instead (cross-check)
+
+    -A a  --attr=at:val   pass attributes to parser
+			    --at=val is also supported for know attributes
+    -L    --list-attr     list supported CSV attributes
+    -X    --list-changes  list attributes that changed from default
+EOU
+    exit $err;
+    } # usage
+
+use Getopt::Long qw(:config bundling passthrough);
+my $eol;
+GetOptions (
+    "help|?"		=> sub { usage (0); },
+    "V|version"		=> sub { say "$cmd [$VERSION]"; exit 0; },
+
+    "c|s|sep=s"		=> \(my  $sep   = ""),
+    "q|quo|quote=s"	=> \(my  $quo   = '"'),
+    "e|esc|escape=s"	=> \(my  $esc   = '"'),
+    "N|nl!"		=> sub { $eol   = "\n"; },
+    "C|cr!"		=> sub { $eol   = "\r"; },
+    "M|crnl!"		=> sub { $eol   = "\r\n"; },
+    "B|binary!"		=> \(my  $bin   = 1),
+
+    "u|utf|utf8|utf-8!"	=> \(my  $opt_u = 0),
+    "E|enc|encoding=s"	=> \(my  $enc),
+    "h|hdr|header!"	=> \(my  $opt_h = 0),
+    "b|bom!"		=> \(my  $opt_b = 0),
+    "f|skip-formula!"	=> \(my  $opt_f = 0),
+
+    "A|attr=s"		=> \ my  @opt_A,
+    "L|list-attr!"	=> \ my  $opt_L,
+    "X|list-changes!"	=> \ my  $opt_X,
+
+    "pp!"		=> \(my  $opt_p = 0),
+
+    "v|verbose:1"	=> \(my  $opt_v = 0),
+    ) or usage (1);
+$opt_X and $opt_L++;
+
+my  $csvmod = "Text::CSV_XS";
+if ($opt_p) {
+    require Text::CSV_PP;
+    $csvmod = "Text::CSV_PP";
+    }
+else {
+    require Text::CSV_XS;
+    }
+$csvmod->import ();
+
+binmode STDOUT, ":encoding(utf-8)";
+binmode STDERR, ":encoding(utf-8)";
+
+my $fn   = $ARGV[0] // "-";
+my @warn;
+
+my %csvarg = (
+    sep_char       => $sep eq "tab"   ? "\t"  : $sep,
+    quote_char     => $quo eq "undef" ? undef : $quo,
+    escape_char    => $esc eq "undef" ? undef : $esc,
+    eol            => $eol,
+    strict_eol     => 1,
+    binary         => $bin,
+    keep_meta_info => 1,
+    auto_diag      => 1,
+    formula        => $opt_f ? "none" : "diag",
+    );
+{   my $p = $csvmod->new;
+    my %ka = map { $_ => $p->{$_} } grep m/^[a-z]/ => $p->known_attributes;
+    foreach my $i (reverse 0 .. $#ARGV) {
+	if ($ARGV[$i] =~ m/^--(no[-_])?+([-\w]+)(?:=(.*))?$/) {
+	    my ($attr, $val) = (lc $2 =~ tr/-/_/r, $3 // ($1 ? 0 : 1));
+	    if (exists $ka{$attr}) {
+		unshift @opt_A, "$attr:$val";
+		splice @ARGV, $i, 1;
+		}
+	    }
+	}
+    for (@opt_A) {
+	m/^([-\w]+)(?:[:=](.*))?/ or next;
+	my ($attr, $val) = (lc $1 =~ tr/-/_/r, $2 // 1);
+	exists $ka{$attr} or next;
+	$val eq "undef" || !length $val and $val = undef;	# -A escape_char:
+	$csvarg{$attr} = $val;
+	}
+    if ($opt_L) {
+	$csvarg{sep_char} ||= $ka{sep_char};
+	foreach my $attr (sort keys %ka) {
+	    $ka{$attr}     //= "(undef)";
+	    $csvarg{$attr} //= $ka{$attr};
+	    $opt_X and $csvarg{$attr} eq $ka{$attr} and next;
+	    printf "  %-21s : %s\n", $attr, $csvarg{$attr};
+	    }
+	exit 0;
+	}
+    }
+$opt_v > 1 and DDumper \%csvarg;
+
+my $data = do { local $/; <> } or die "No data to analyze\n";
+
+my ($rows, %cols, $s_eol) = (0);
+unless ($sep) { # No sep char passed, try to auto-detect;
+    my ($first_line) = ($data =~ m/\A(.*?)(?:\r\n|\n|\r)/);
+    $first_line ||= $data; # if no EOL at all, use whole set
+    $sep = $first_line =~ m/["\d],["\d,]/ ? ","  :
+	   $first_line =~ m/["\d];["\d;]/ ? ";"  :
+	   $first_line =~ m/["\d]\t["\d]/ ? "\t" :
+	   # If neither, then for unquoted strings
+	   $first_line =~ m/\w,[\w,]/     ? ","  :
+	   $first_line =~ m/\w;[\w;]/     ? ";"  :
+	   $first_line =~ m/\w\t[\w]/     ? "\t" : ",";
+    $data =~ m/([\r\n]+)\Z/ and $s_eol = DDisplay "$1";
+    $csvarg{sep_char} = $sep;
+    }
+
+my $csv = $csvmod->new (\%csvarg);
+$opt_v > 8 and DDumper $csv;
+
+$bin = 0; # Assume ASCII only
+
+sub done {
+    my $file = $ARGV // "STDIN";
+    (my $pv = "$]0000000") =~ s{^([0-9]+)\.([0-9]{3})([0-9]{3})[0-9]*}
+			       {sprintf "%d.%d.%d",$1,$2,$3}e;
+    my $uv = eval {
+	no warnings;
+	(my $cv = $]) =~ s/0+$//;
+	eval { require Unicode::UCD;     Unicode::UCD::UnicodeVersion () } ||
+	eval { require Module::CoreList; $Module::CoreList::version{$cv}{Unicode} };
+	} || "unknown";
+    say "Checked $file with $cmd $VERSION\nusing $csvmod @{[$csvmod->VERSION]} with perl $pv and Unicode $uv";
+    my @diag = $csv->error_diag;
+    my $line = $. // $csv->record_number // "?";
+    if ($diag[0] == 2012 && $csv->eof) {
+	my @coll = sort { $a <=> $b } keys %cols;
+	local $" = ", ";
+	my $cols = @coll == 1 ? $coll[0] : "(@coll)";
+	$s_eol //= $csv->eol || "--unknown--";
+	$s_eol =~ m/[\x00-\x1f]/ and $s_eol = DDisplay $s_eol;
+	say "OK: rows: $rows, columns: $cols";
+	say "    sep = <$sep>, quo = <$quo>, bin = <$bin>, eol = <$s_eol>";
+	say "    encoding = $csv->{ENCODING}" if $csv->{ENCODING};
+	if (@coll > 1) {
+	    say "multiple column lengths:";
+	    printf " %6d line%s with %4d field%s\n",
+		$cols{$_}, $cols{$_} == 1 ? " " : "s",
+		$_,        $_        == 1 ? ""  : "s"
+		    for @coll;
+	    }
+	$diag[0] = 0;
+	}
+    elsif ($diag[2]) {
+	say "$ARGV record $diag[3] at line $line/$diag[2] - $diag[0] - $diag[1]";
+	my $ep  = $diag[2] - 1; # diag[2] is 1-based
+	my $ei  = $csv->error_input;
+	if (defined $ei) {
+	    my $l = 0;
+	    my $s = "";
+	    eval { my $u = decode ("utf-8", $ei); $ei = $u };
+	    for (split m/([^ -~])/ => $ei) {
+		if (m/^[ -~]+$/) {
+		    $s .= $_;
+		    $l += length;
+		    next;
+		    }
+		if ($_ eq "\t") {
+		    $s .= "\\t";
+		    $ep > $l and $ep++;
+		    $l += 2;
+		    next;
+		    }
+		if ($_ eq "\n") {
+		    $s .= "\\n";
+		    $ep > $l and $ep++;
+		    $l += 2;
+		    next;
+		    }
+		if ($_ eq "\r") {
+		    $s .= "\\r";
+		    $ep > $l and $ep++;
+		    $l += 2;
+		    next;
+		    }
+		$s .= sprintf "\\x{%05x}", ord;
+		$ep > $l and $ep += 9 - length encode "utf-8", $_;
+		$l += 9;
+		}
+
+	    say "    |$s|"; #           2b06
+	    say "    |", " " x $ep, "\x{25b2}", " " x (length ($s) - $ep - 1), "|";
+	    }
+	}
+    else {
+	say "$ARGV line $line - $diag[1]";
+	}
+    print for @warn;
+    exit $diag[0];
+    } # done
+
+sub show {
+    say STDERR join ", " => map { "\x{231e}$_\x{231d}" } @_;
+    } # show
+
+sub stats {
+    my $r = shift;
+    $cols{scalar @$r}++;
+    grep { $_ & 0x0002 } $csv->meta_info and $bin = 1;
+    $opt_v > 2 and show (@$r);
+    if ($opt_u) {
+	my @r = @$r;
+	foreach my $x (0 .. $#r) {
+	    utf8::is_utf8 ($r[$x]) and next;
+
+	    local $SIG{__WARN__} = sub {
+		(my $msg = shift) =~ s{ at /\S+Encode.pm.*}{};
+		my @h = $csv->column_names;
+		push @warn, sprintf "Field %d%s in record %d - '%s'\t- %s",
+		    $x + 1, @h ? " (column: '$h[$x]')" : "", $rows,
+		    DPeek ($r[$x]), $msg;
+		};
+	    my $oct = decode ("utf-8", $r[$x], Encode::FB_WARN);
+	    }
+	}
+    } # stats
+
+my $mode = $enc ? "<:encoding($enc)" : "<";
+open my $fh, $mode, \$data or die "$fn: $!\n";
+if ($opt_h) {
+    $csv->header ($fh);
+    }
+elsif ($opt_b) {
+    my @hdr = $csv->header ($fh, { detect_bom => 1, set_column_names => 0 });
+    stats \@hdr;
+    }
+
+local $SIG{__WARN__} = sub { push @warn, @_; };
+while (my $row = $csv->getline ($fh)) {
+    $rows++;
+    stats $row;
+    }
+done;
