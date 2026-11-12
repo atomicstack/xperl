@@ -130,6 +130,14 @@ CPAN. The archive must match the local tarball's basename. For example:
 
 Leave the import for review without automatically committing it.
 
+=item C<--keep> I<FILE>
+
+With C<--add>, retain an upstream file which would otherwise be removed
+by C<@IGNORABLE>. Repeat this option for multiple files. Paths are relative
+to the distribution root. For example, C<--keep ChangeLog> retains a change
+log which the supplied F<Makefile.PL> needs during the build. Later updates
+preserve files already present in the bundled distribution.
+
 =item C<--jobs> I<N>
 
 When running C<make>, pass a C<< -jI<N> >> option to it to enable
@@ -255,9 +263,11 @@ sub usage
 }
 
 my $auto_commit = 1;
+my @keep_files;
 GetOptions ('add'        =>  \my $add,
             'distribution=s' => \my $add_distribution,
             'commit!'   =>  \$auto_commit,
+            'keep=s@'   =>  \@keep_files,
             'tarball=s'  =>  \my $tarball,
             'version=s'  =>  \my $version,
             'jobs=i'     =>  \my $make_jobs,
@@ -271,11 +281,13 @@ GetOptions ('add'        =>  \my $add,
 usage 1 unless @ARGV == 1;
 
 die "--distribution requires --add\n" if $add_distribution && !$add;
+die "--keep requires --add\n" if @keep_files && !$add;
 die "--add imports into cpan/; --type $type_dir is not supported\n"
     if $add && $type_dir ne 'cpan';
 
 my $tail_pat = qr/\.(?:tar\.(?:g?z|bz2|Z)|zip|tgz|tbz)/;
 my $version_pat = qr/-(v?[0-9._]+(?:-TRIAL[0-9]*)?)$tail_pat\z/;
+my %keep_files = map { $_ => 1 } 'Makefile.PL', 'ppport.h', @keep_files;
 
 sub prepare_add {
     my ($requested) = @_;
@@ -802,7 +814,7 @@ foreach my $file (@new_files) {
         $changes_file = "$pkg_dir/$file";
     }
     if ($IGNORABLE {$file} &&
-        !($add && ($file eq 'Makefile.PL' || $file eq 'ppport.h'))) {
+        !($add && $keep_files{$file})) {
         push @delete => $file;
         next;
     }

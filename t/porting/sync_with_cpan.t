@@ -296,3 +296,15 @@ like($output, qr/requires --distribution AUTHOR\/ARCHIVE/,
 ($status, $output) = import_archive($repo, $path, '--type', 'dist', '--no-test');
 ok($status, 'add rejects unsupported target directories');
 like($output, qr/--add imports into cpan/, 'unsupported target is diagnosed');
+
+$repo = fixture();
+($status, $output) = import_archive($repo, $path, '--keep', 'Changes', '--no-test');
+is($status, 0, 'add can retain an extra upstream build input') or diag($output);
+is(read_file("$repo/cpan/Sample-Codec/Changes"), "v1.2.3\nInitial fixture release\n",
+    '--keep preserves the selected file');
+like(read_file("$repo/MANIFEST"), qr{cpan/Sample-Codec/Changes\t},
+    'retained input is included in MANIFEST');
+($status, $output) = command($repo, $perl, "-I$root/lib", 'Porting/sync-with-cpan',
+    'Sample::Codec', '--keep', 'Changes', '--yes', '--no-test');
+ok($status, '--keep requires an addition');
+like($output, qr/--keep requires --add/, 'misused --keep is diagnosed');
