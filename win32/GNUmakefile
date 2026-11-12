@@ -1688,12 +1688,15 @@ distclean: realclean
 	-if exist $(LIBDIR)\Archive rmdir /s /q $(LIBDIR)\Archive
 	-if exist $(LIBDIR)\Attribute rmdir /s /q $(LIBDIR)\Attribute
 	-if exist $(LIBDIR)\autodie rmdir /s /q $(LIBDIR)\autodie
+	-if exist $(LIBDIR)\Bundle rmdir /s /q $(LIBDIR)\Bundle
 	-if exist $(LIBDIR)\Carp rmdir /s /q $(LIBDIR)\Carp
 	-if exist $(LIBDIR)\Compress rmdir /s /q $(LIBDIR)\Compress
 	-if exist $(LIBDIR)\Config\Perl rmdir /s /q $(LIBDIR)\Config\Perl
 	-if exist $(LIBDIR)\CPAN rmdir /s /q $(LIBDIR)\CPAN
 	-if exist $(LIBDIR)\Cpanel rmdir /s /q $(LIBDIR)\Cpanel
 	-if exist $(LIBDIR)\Data rmdir /s /q $(LIBDIR)\Data
+	-if exist $(LIBDIR)\DBD rmdir /s /q $(LIBDIR)\DBD
+	-if exist $(LIBDIR)\DBI rmdir /s /q $(LIBDIR)\DBI
 	-if exist $(LIBDIR)\Devel rmdir /s /q $(LIBDIR)\Devel
 	-if exist $(LIBDIR)\Digest rmdir /s /q $(LIBDIR)\Digest
 	-if exist $(LIBDIR)\Encode rmdir /s /q $(LIBDIR)\Encode
@@ -1752,6 +1755,7 @@ distclean: realclean
 	-if exist $(LIBDIR)\Unicode\Collate\Locale rmdir /s /q $(LIBDIR)\Unicode\Collate\Locale
 	-if exist $(LIBDIR)\version rmdir /s /q $(LIBDIR)\version
 	-if exist $(LIBDIR)\VMS rmdir /s /q $(LIBDIR)\VMS
+	-if exist $(LIBDIR)\Win32 rmdir /s /q $(LIBDIR)\Win32
 	-if exist $(LIBDIR)\Win32API rmdir /s /q $(LIBDIR)\Win32API
 	-if exist $(LIBDIR)\XGraph rmdir /s /q $(LIBDIR)\XGraph
 	-if exist $(LIBDIR)\XPerl\DiagPack rmdir /s /q $(LIBDIR)\XPerl\DiagPack

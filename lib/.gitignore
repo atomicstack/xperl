@@ -19,6 +19,7 @@
 /B/Showlex.pm
 /B/Terse.pm
 /B/Xref.pm
+/Bundle/
 /CPAN.pm
 /CPAN/
 /Carp.pm
@@ -27,6 +28,9 @@
 /Config/Perl/
 /Cpanel/
 /Cwd.pm
+/DBD/
+/DBI.pm
+/DBI/
 /DB_File.pm
 /Data/
 /Devel/
@@ -196,6 +200,7 @@
 /VMS/
 /Vector.pm
 /Win32.pm
+/Win32/
 /Win32API/
 /Win32CORE.pm
 /XGraph.pm

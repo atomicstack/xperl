@@ -571,6 +571,10 @@ release manager will have to investigate the situation carefully.)
 
 =item *
 
+L<DBI> 1.656 is bundled with XPerl as a database interface for DBI drivers.
+
+=item *
+
 L<YAML::XS> v0.910.0 is bundled with XPerl for YAML serialization. Its
 libyaml implementation is included in the distribution.
 

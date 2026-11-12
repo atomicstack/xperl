@@ -1454,11 +1454,11 @@ _cleaner2:
 	-rmdir lib/inc/ExtUtils lib/inc lib/encoding lib/autodie/exception
 	-rmdir lib/autodie/Scope lib/autodie lib/YAML lib/XS
 	-rmdir lib/XPerl/DiagPack lib/XGraph/IO lib/XGraph lib/Win32API
-	-rmdir lib/VMS lib/Unicode/Collate/Locale lib/Unicode/Collate/CJK
-	-rmdir lib/Unicode/Collate lib/Tie/Hash lib/Thread lib/Text
-	-rmdir lib/Test2/Workflow/Task lib/Test2/Workflow lib/Test2/V1
-	-rmdir lib/Test2/Util/Table lib/Test2/Util lib/Test2/Tools
-	-rmdir lib/Test2/Require lib/Test2/Plugin
+	-rmdir lib/Win32 lib/VMS lib/Unicode/Collate/Locale
+	-rmdir lib/Unicode/Collate/CJK lib/Unicode/Collate lib/Tie/Hash
+	-rmdir lib/Thread lib/Text lib/Test2/Workflow/Task lib/Test2/Workflow
+	-rmdir lib/Test2/V1 lib/Test2/Util/Table lib/Test2/Util
+	-rmdir lib/Test2/Tools lib/Test2/Require lib/Test2/Plugin
 	-rmdir lib/Test2/Manual/Tooling/Plugin lib/Test2/Manual/Tooling
 	-rmdir lib/Test2/Manual/Testing lib/Test2/Manual/Anatomy
 	-rmdir lib/Test2/Manual lib/Test2/IPC/Driver lib/Test2/IPC
@@ -1497,12 +1497,17 @@ _cleaner2:
 	-rmdir lib/ExtUtils/CBuilder/Platform lib/ExtUtils/CBuilder
 	-rmdir lib/Exporter lib/Encode/Unicode lib/Encode/MIME/Header
 	-rmdir lib/Encode/MIME lib/Encode/KR lib/Encode/JP lib/Encode/CN
-	-rmdir lib/Encode lib/Digest lib/Devel lib/Data lib/Cpanel/JSON
-	-rmdir lib/Cpanel lib/Config/Perl lib/Compress/Raw lib/Compress
-	-rmdir lib/Carp lib/CPAN/Plugin lib/CPAN/Meta/Requirements
-	-rmdir lib/CPAN/Meta/History lib/CPAN/Meta lib/CPAN/LWP
-	-rmdir lib/CPAN/Kwalify lib/CPAN/HTTP lib/CPAN/FTP lib/CPAN/Exception
-	-rmdir lib/CPAN/API lib/CPAN lib/Attribute lib/Archive/Tar lib/Archive
+	-rmdir lib/Encode lib/Digest lib/Devel lib/Data lib/DBI/Util
+	-rmdir lib/DBI/SQL lib/DBI/ProfileDumper lib/DBI/Gofer/Transport
+	-rmdir lib/DBI/Gofer/Serializer lib/DBI/Gofer lib/DBI/DBD/SqlEngine
+	-rmdir lib/DBI/DBD lib/DBI/Const/GetInfo lib/DBI/Const lib/DBI
+	-rmdir lib/DBD/Gofer/Transport lib/DBD/Gofer/Policy lib/DBD/Gofer
+	-rmdir lib/DBD/File lib/DBD lib/Cpanel/JSON lib/Cpanel lib/Config/Perl
+	-rmdir lib/Compress/Raw lib/Compress lib/Carp lib/CPAN/Plugin
+	-rmdir lib/CPAN/Meta/Requirements lib/CPAN/Meta/History lib/CPAN/Meta
+	-rmdir lib/CPAN/LWP lib/CPAN/Kwalify lib/CPAN/HTTP lib/CPAN/FTP
+	-rmdir lib/CPAN/Exception lib/CPAN/API lib/CPAN lib/Bundle
+	-rmdir lib/Attribute lib/Archive/Tar lib/Archive
 	-rmdir lib/App/Prove/State/Result lib/App/Prove/State lib/App/Prove
 	-rmdir lib/App lib/Amiga
 

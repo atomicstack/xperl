@@ -379,6 +379,13 @@ our %Modules = (
         ],
     },
 
+    'DBI' => {
+        'DISTRIBUTION' => 'HMBRAND/DBI-1.656.tgz',
+        'SYNCINFO'    => 'demerphq on Thu Nov 12 13:47:43 2026',
+        'FILES'       => 'cpan/DBI',
+        'CUSTOMIZED'  => [qw(Makefile.PL t/85gofer.t)],
+    },
+
     'Devel::PPPort' => {
         'DISTRIBUTION' => 'ATOOMIC/Devel-PPPort-3.68.tar.gz',
         'FILES'        => q[dist/Devel-PPPort],
