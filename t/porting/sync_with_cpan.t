@@ -93,7 +93,7 @@ sub fixture {
     }
     symlink $perl, "$directory/perl" or die "symlink perl: $!";
     write_file("$directory/cpan/Existing/Existing.pm", "package Existing; 1;\n");
-    write_file("$directory/cpan/.gitignore", "Makefile.PL\nppport.h\n");
+    write_file("$directory/cpan/.gitignore", "Makefile.PL\nppport.h\n*.c\n");
     write_file("$directory/Porting/exec-bit.txt", "# No executable fixtures\n");
     write_file("$directory/Porting/Maintainers.pl", <<'MAINTAINERS');
 package Maintainers;
@@ -161,8 +161,10 @@ sub archive {
         'Lib/Makefile.PL' => "# Nested build instructions\n",
         't/basic.t' => "print qq(1..1\\nok 1\\n);\n",
         'Changes' => "$version\nInitial fixture release\n",
+        'xt/author.t' => "die qq(author prerequisites required);\n",
     );
     $files{'Codec.xs'} = "/* XS fixture */\n" if $xs;
+    $files{'helper.c'} = "/* New upstream C source */\n" if $version eq 'v1.2.4';
     $tar->add_data("$prefix/$_", $files{$_}, {mode => 0755})
         for sort keys %files;
     my $path = "$tmp/$prefix.tar.gz";
@@ -195,6 +197,9 @@ for my $file (qw(Makefile.PL ppport.h Lib/Makefile.PL)) {
         qr/\Q$file\E/, "$file is staged despite cpan ignore rules");
 }
 ok(!-f "$repo/cpan/Sample-Codec/Changes", 'ordinary ignorable files are removed');
+ok(!-f "$repo/cpan/Sample-Codec/xt/author.t", 'author tests are excluded');
+like($metadata, qr/'EXCLUDED'\s+=> \[qr\{\^xt\/\}\]/,
+    'author test exclusion is recorded for later updates');
 ok(!-x "$repo/cpan/Sample-Codec/t/basic.t", 'test execute bits are removed');
 ok(!-x "$repo/cpan/Sample-Codec/Makefile.PL", 'new source execute bits are removed');
 like(read_file("$repo/MANIFEST"), qr{cpan/Sample-Codec/Makefile\.PL\t},
@@ -239,6 +244,8 @@ is($status, 0, 'ordinary update works after an addition') or diag($output);
 like(read_file("$repo/Porting/Maintainers.pl"), qr/Sample-Codec-v1\.2\.4/,
     'ordinary update advances the registered archive');
 ok(-f "$repo/cpan/Sample-Codec/Makefile.PL", 'ordinary update retains the supplied makefile');
+like(git($repo, 'ls-files', '--', 'cpan/Sample-Codec/helper.c'), qr/helper\.c/,
+    'ordinary update stages new C sources despite core ignore rules');
 
 $repo = fixture();
 write_file("$repo/fail-build", "fail\n");

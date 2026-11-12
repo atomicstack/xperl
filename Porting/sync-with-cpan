@@ -109,7 +109,8 @@ F<Porting/Maintainers.pl>. Resolve its author, archive and directory from
 the CPAN package index. Preserve its F<Makefile.PL> and F<ppport.h> files,
 create its registration after resetting the tree, regenerate library
 cleanup rules, and refresh Configure's extension lists before building.
-Existing Configure settings and extension selections are preserved.
+Author tests under F<xt/> are excluded. Existing Configure settings and
+extension selections are preserved.
 
 The usual reset applies, so a failed addition can be retried with the same
 command. A distribution already registered in HEAD must be updated without
@@ -370,6 +371,7 @@ sub prepare_add {
     my $new_info = {
         DISTRIBUTION => $add_distribution,
         FILES        => "cpan/$dist",
+        EXCLUDED     => [qr{^xt/}],
     };
     $new_info->{MAIN_MODULE} = $indexed_module if $indexed_module ne $key;
     return ($key, $new_info);
@@ -387,6 +389,7 @@ sub register_add {
         $value =~ s/([\\'])/\\$1/g;
         $registration .= sprintf "        '%-12s => '%s',\n", "$field'", $value;
     }
+    $registration .= "        'EXCLUDED'     => [qr{^xt/}],\n";
     $registration .= "    },\n\n";
     my $inserted;
     my $in_modules;
@@ -929,8 +932,9 @@ print "You may want to `tail -F $MAKE_LOG` in another window\n";
 pause_for_input("\n");
 
 unlink "$pkg_dir/$_"                      for @delete;
+# Core ignore rules cover C sources and build files shipped by CPAN.
 for my $file (@commit) {
-    system git => 'add', ($add ? ('-f') : ()), "$pkg_dir/$file"
+    system git => 'add', '-f', "$pkg_dir/$file"
         and die "Cannot stage $pkg_dir/$file\n";
 }
 system git   => 'rm', '-f', "$pkg_dir/$_" for @gone;
