@@ -1617,7 +1617,13 @@ our %Modules = (
         'DISTRIBUTION' => 'TINITA/YAML-LibYAML-v0.910.0.tar.gz',
         'SYNCINFO'    => 'demerphq on Thu Nov 12 13:40:03 2026',
         'FILES'       => 'cpan/YAML-LibYAML',
+        # The package name lets version checks find the nested XS module.
+        'MAP'         => {
+            'LibYAML/' => 'cpan/YAML-LibYAML/YAML-XS-LibYAML/',
+            ''         => 'cpan/YAML-LibYAML/',
+        },
         'CUSTOMIZED'  => [
+            qw(YAML-XS-LibYAML/Makefile.PL),
             qw(t/TestYAML.pm t/TestYAMLTests.pm t/oop/15-various.t),
         ],
     },

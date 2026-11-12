@@ -33,3 +33,24 @@ WriteMakefile(
     VERSION_FROM => 'lib/YAML/XS/LibYAML.pm',
     AUTHOR => 'Ingy döt Net <ingy@cpan.org>',
 );
+
+package MY;
+
+sub dynamic_bs {
+    my $self = shift;
+    return $self->SUPER::dynamic_bs(@_) unless $self->{PERL_CORE};
+
+    # The outer distribution builds with the non-XS libraries, before
+    # DynaLoader.pm exists. No bootstrap code or extra libraries are needed.
+    return <<'MAKE';
+BOOTSTRAP = $(BASEEXT).bs
+
+$(BASEEXT).bs : $(FIRST_MAKEFILE)
+	$(NOECHO) $(TOUCH) $@
+	$(CHMOD) $(PERM_RW) $@
+
+$(INST_BOOT) : $(BASEEXT).bs $(INST_ARCHAUTODIR)$(DFSEP).exists
+	$(NOECHO) $(RM_RF) $@
+	- $(CP_NONEMPTY) $(BASEEXT).bs $@ $(PERM_RW)
+MAKE
+}
