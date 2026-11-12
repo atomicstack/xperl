@@ -1716,6 +1716,7 @@ distclean: realclean
 	-if exist $(LIBDIR)\IO rmdir /s /q $(LIBDIR)\IO
 	-if exist $(LIBDIR)\IPC rmdir /s /q $(LIBDIR)\IPC
 	-if exist $(LIBDIR)\JSON rmdir /s /q $(LIBDIR)\JSON
+	-if exist $(LIBDIR)\LibYAML rmdir /s /q $(LIBDIR)\LibYAML
 	-if exist $(LIBDIR)\List rmdir /s /q $(LIBDIR)\List
 	-if exist $(LIBDIR)\Locale rmdir /s /q $(LIBDIR)\Locale
 	-if exist $(LIBDIR)\Math rmdir /s /q $(LIBDIR)\Math
@@ -1755,6 +1756,7 @@ distclean: realclean
 	-if exist $(LIBDIR)\XGraph rmdir /s /q $(LIBDIR)\XGraph
 	-if exist $(LIBDIR)\XPerl\DiagPack rmdir /s /q $(LIBDIR)\XPerl\DiagPack
 	-if exist $(LIBDIR)\XS rmdir /s /q $(LIBDIR)\XS
+	-if exist $(LIBDIR)\YAML rmdir /s /q $(LIBDIR)\YAML
 	-cd $(PODDIR) && del /f *.html *.bat roffitall \
 	    perl5455delta.pod perlaix.pod perlamiga.pod perlandroid.pod \
 	    perlapi.pod perlbs2000.pod perlcn.pod perlcygwin.pod \

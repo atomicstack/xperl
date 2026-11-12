@@ -107,6 +107,7 @@
 /IO/
 /IPC/
 /JSON/
+/LibYAML/
 /List/
 /Locale/
 /MIME/
@@ -202,6 +203,7 @@
 /XPerl/DiagPack/
 /XS/
 /XSLoader.pm
+/YAML/
 /attributes.pm
 /autodie.pm
 /autodie/

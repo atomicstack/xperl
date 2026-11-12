@@ -1606,6 +1606,15 @@ our %Modules = (
                 lib/vmsish.{pm,t}
                 ],
     },
+    'YAML::XS' => {
+        'DISTRIBUTION' => 'TINITA/YAML-LibYAML-v0.910.0.tar.gz',
+        'SYNCINFO'    => 'demerphq on Thu Nov 12 13:40:03 2026',
+        'FILES'       => 'cpan/YAML-LibYAML',
+        'CUSTOMIZED'  => [
+            qw(t/TestYAML.pm t/TestYAMLTests.pm t/oop/15-various.t),
+        ],
+    },
+
 );
 
 our %DistName;

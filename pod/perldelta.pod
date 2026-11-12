@@ -571,6 +571,11 @@ release manager will have to investigate the situation carefully.)
 
 =item *
 
+L<YAML::XS> v0.910.0 is bundled with XPerl for YAML serialization. Its
+libyaml implementation is included in the distribution.
+
+=item *
+
 L<Text::CSV_XS> 1.65 is bundled with XPerl for parsing and writing
 comma-separated values.
 

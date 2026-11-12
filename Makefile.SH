@@ -1450,14 +1450,15 @@ _cleaner2:
 	-rm -f dist/Time-HiRes/xdefine
 	rm -f so_locations $(LIBPERL_NONSHR)
 	-rmdir lib/version lib/threads lib/inc/Test/Net/SSLeay
-	-rmdir lib/inc/Test/Net lib/inc/Test lib/inc/ExtUtils lib/inc
-	-rmdir lib/encoding lib/autodie/exception lib/autodie/Scope
-	-rmdir lib/autodie lib/XS lib/XPerl/DiagPack lib/XGraph/IO lib/XGraph
-	-rmdir lib/Win32API lib/VMS lib/Unicode/Collate/Locale
-	-rmdir lib/Unicode/Collate/CJK lib/Unicode/Collate lib/Tie/Hash
-	-rmdir lib/Thread lib/Text lib/Test2/Workflow/Task lib/Test2/Workflow
-	-rmdir lib/Test2/V1 lib/Test2/Util/Table lib/Test2/Util
-	-rmdir lib/Test2/Tools lib/Test2/Require lib/Test2/Plugin
+	-rmdir lib/inc/Test/Net lib/inc/Test/Base lib/inc/Test
+	-rmdir lib/inc/ExtUtils lib/inc lib/encoding lib/autodie/exception
+	-rmdir lib/autodie/Scope lib/autodie lib/YAML lib/XS
+	-rmdir lib/XPerl/DiagPack lib/XGraph/IO lib/XGraph lib/Win32API
+	-rmdir lib/VMS lib/Unicode/Collate/Locale lib/Unicode/Collate/CJK
+	-rmdir lib/Unicode/Collate lib/Tie/Hash lib/Thread lib/Text
+	-rmdir lib/Test2/Workflow/Task lib/Test2/Workflow lib/Test2/V1
+	-rmdir lib/Test2/Util/Table lib/Test2/Util lib/Test2/Tools
+	-rmdir lib/Test2/Require lib/Test2/Plugin
 	-rmdir lib/Test2/Manual/Tooling/Plugin lib/Test2/Manual/Tooling
 	-rmdir lib/Test2/Manual/Testing lib/Test2/Manual/Anatomy
 	-rmdir lib/Test2/Manual lib/Test2/IPC/Driver lib/Test2/IPC
@@ -1481,13 +1482,15 @@ _cleaner2:
 	-rmdir lib/Module/Load lib/Module/CoreList lib/Module lib/Memoize
 	-rmdir lib/Math/BigRat lib/Math/BigInt lib/Math/BigFloat lib/Math
 	-rmdir lib/MIME lib/Locale/Maketext lib/Locale lib/List/Util lib/List
-	-rmdir lib/JSON/PP lib/JSON lib/IPC lib/IO/Uncompress/Adapter
-	-rmdir lib/IO/Uncompress lib/IO/Socket/SSL lib/IO/Socket
-	-rmdir lib/IO/Compress/Zlib lib/IO/Compress/Zip lib/IO/Compress/Gzip
-	-rmdir lib/IO/Compress/Base lib/IO/Compress/Adapter lib/IO/Compress
-	-rmdir lib/IO lib/I18N/LangTags lib/I18N lib/Hash/Util lib/Hash
-	-rmdir lib/HTTP lib/Getopt/Long lib/Filter/Util lib/Filter
-	-rmdir lib/File/Spec lib/ExtUtils/Typemaps lib/ExtUtils/ParseXS
+	-rmdir lib/LibYAML/lib/YAML/XS lib/LibYAML/lib/YAML lib/LibYAML/lib
+	-rmdir lib/LibYAML lib/JSON/PP lib/JSON lib/IPC
+	-rmdir lib/IO/Uncompress/Adapter lib/IO/Uncompress lib/IO/Socket/SSL
+	-rmdir lib/IO/Socket lib/IO/Compress/Zlib lib/IO/Compress/Zip
+	-rmdir lib/IO/Compress/Gzip lib/IO/Compress/Base
+	-rmdir lib/IO/Compress/Adapter lib/IO/Compress lib/IO
+	-rmdir lib/I18N/LangTags lib/I18N lib/Hash/Util lib/Hash lib/HTTP
+	-rmdir lib/Getopt/Long lib/Filter/Util lib/Filter lib/File/Spec
+	-rmdir lib/ExtUtils/Typemaps lib/ExtUtils/ParseXS
 	-rmdir lib/ExtUtils/MakeMaker/version lib/ExtUtils/MakeMaker
 	-rmdir lib/ExtUtils/Liblist lib/ExtUtils/Constant lib/ExtUtils/Command
 	-rmdir lib/ExtUtils/CBuilder/Platform/Windows
