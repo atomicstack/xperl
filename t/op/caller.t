@@ -328,12 +328,26 @@ fresh_perl_is(<<'EOP', "6\n9\n", {}, 'RT #7165: line number should be consistent
       sub {};
 EOP
 
-# A multiline "use" whose import list declares anonymous subs: the
-# statements generated for its implicit BEGIN block (require, then import)
-# must all carry the same line, whichever order the C compiler evaluates
-# their construction in. Ordinary Perl reports the statement's last line.
-fresh_perl_is(<<'EOP', "4\n4\n", {}, 'multiline use with anonymous subs: require and import share a line');
-BEGIN { unshift @INC, sub { return unless $_[1] eq 'LineProbe.pm'; my $src = 'package LineProbe; print +(caller)[2], "\n"; sub import { print +(caller)[2], "\n" } 1;'; open my $fh, '<', \$src or die; return $fh } }
+# The require state consumes the saved parser line. The following import
+# state uses the current line at the end of the use statement.
+# Before we sequenced the newSTATEOP() calls, some builds reported these
+# lines in reverse order because the import state consumed the saved line.
+fresh_perl_is(<<'EOP', "17\n18\n", {}, 'in multiline use with anon subs check line no');
+BEGIN {
+    unshift @INC, sub {
+        return unless $_[1] eq 'LineProbe.pm';
+        my $src = <<'MODULE';
+package LineProbe;
+print +(caller)[2], "\n";
+sub import {
+    print +(caller)[2], "\n";
+}
+1;
+MODULE
+        open my $fh, '<', \$src or die;
+        return $fh;
+    };
+}
 use LineProbe
    one => sub { 1 },
    two => sub { 2 };

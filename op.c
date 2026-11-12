@@ -9299,14 +9299,9 @@ Perl_utilize(pTHX_ int aver, I32 floor, OP *version, OP *idop, OP *arg)
                        ));
     }
 
-    /* The statements of the implicit BEGIN block carry the line the "use"
-     * ends on, as in ordinary Perl. newSTATEOP() consumes and resets
-     * PL_parser->copline, and an anonymous sub in the import list can leave
-     * it set (newATTRSUB_x() restores the line it noted). Clear it, and
-     * build the statements in a fixed order: as nested function arguments,
-     * which one took the stale line depended on the C compiler's argument
+    /* newSTATEOP() can clear PL_parser->copline. Sequence these calls
+     * explicitly so their line numbers do not depend on C argument
      * evaluation order. */
-    PL_parser->copline = NOLINE;
     OP * const require_state =
         newSTATEOP(0, NULL, newUNOP(OP_REQUIRE, 0, idop));
     OP * const version_state = newSTATEOP(0, NULL, veop);

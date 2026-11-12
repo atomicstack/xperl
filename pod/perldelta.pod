@@ -1169,21 +1169,20 @@ C compiler argument evaluation order.
 
 =item *
 
-Parser contextualization of binary operands and array subscripts now runs
-in a defined order. Scalar and compound assignments validate their target
-before contextualizing the right-hand expression. C compiler argument
-evaluation order previously affected warning order, the first fatal warning,
-and suppression of secondary diagnostics after an invalid assignment target.
+Parser contextualization of binary operands, array and hash subscripts,
+slices, and loop iterators now runs in a defined order. Scalar and compound
+assignments validate their target before contextualizing the right-hand
+expression. C compiler argument evaluation order previously affected warning
+order, the first fatal warning, and suppression of secondary diagnostics
+after an invalid assignment target.
 
 =item *
 
-A multi-line C<use> whose import list declares anonymous subroutines now
-gives the C<require> and C<import> steps of its implicit C<BEGIN> block the
-line the statement ends on, as in earlier releases. One of the two had
-taken the line of an anonymous subroutine instead, and which one depended
-on the order in which the C compiler evaluated function arguments, so it
-differed between builds (for example, Darwin arm64 and Linux x86_64). This
-showed in C<caller()> and in coverage reports such as L<Devel::Cover>'s.
+The implicit statements in a C<use> are constructed in a fixed order.
+The C<require> statement consumes the saved parser line, and the C<import>
+statement uses the current line at the end of the C<use>. Line attribution
+in C<caller()> and coverage reports no longer depends on C compiler
+argument evaluation order.
 
 =item *
 
