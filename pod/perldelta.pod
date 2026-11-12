@@ -794,6 +794,14 @@ L</Platform Support> section, instead.
 
 =item *
 
+F<Porting/sync-with-cpan> accepts C<--add> to register and import a new
+CPAN distribution into F<cpan/>. It preserves the supplied build files,
+regenerates library cleanup rules, refreshes the configured extension
+lists, and runs the distribution and porting tests. C<--no-commit> leaves
+an import or update for review.
+
+=item *
+
 Fix some build noise and technical undefined behaviour with
 C<-Duselongdouble> builds on ARM64:
 

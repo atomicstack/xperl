@@ -8,9 +8,16 @@ Porting/sync-with-cpan - Synchronize with CPAN distributions
 
     sh ./Configure
     perl Porting/sync-with-cpan <module>
+    perl Porting/sync-with-cpan --add <module>
 
 where C<module> is the name it appears in the C<%Modules> hash
 of F<Porting/Maintainers.pl>
+
+With C<--add>, C<module> may name a CPAN module or distribution which is
+not yet bundled. The script creates its F<Porting/Maintainers.pl> entry
+and imports it into F<cpan/>. For example:
+
+    perl Porting/sync-with-cpan --add YAML::XS
 
 =head1 DESCRIPTION
 
@@ -94,6 +101,34 @@ from the filename -- but can be overwritten by the C<--version> option.
 =head1 OPTIONS
 
 =over 4
+
+=item C<--add>
+
+Add a distribution which is not registered in the committed
+F<Porting/Maintainers.pl>. Resolve its author, archive and directory from
+the CPAN package index. Preserve its F<Makefile.PL> and F<ppport.h> files,
+create its registration after resetting the tree, regenerate library
+cleanup rules, and refresh Configure's extension lists before building.
+Existing Configure settings and extension selections are preserved.
+
+The usual reset applies, so a failed addition can be retried with the same
+command. A distribution already registered in HEAD must be updated without
+C<--add>. Missing prerequisites and distribution-specific build or test
+adaptations must be resolved before the addition can pass its tests.
+
+=item C<--distribution> I<AUTHOR/ARCHIVE>
+
+Supply the CPAN distribution identity for C<--add>. This is required when
+using C<--add> with C<--tarball>, so the import can run without consulting
+CPAN. The archive must match the local tarball's basename. For example:
+
+    perl Porting/sync-with-cpan --add Text::CSV_XS \
+        --tarball ../Text-CSV_XS-1.65.tgz \
+        --distribution HMBRAND/Text-CSV_XS-1.65.tgz
+
+=item C<--no-commit>
+
+Leave the import for review without automatically committing it.
 
 =item C<--jobs> I<N>
 
@@ -197,14 +232,13 @@ use autodie;
 require "./Porting/Maintainers.pl";
 
 my $MAKE_LOG = 'make.log';
-unlink $MAKE_LOG if -e $MAKE_LOG;
 
 my %IGNORABLE    = map {$_ => 1} @IGNORABLE;
 
 my $tmpdir = tmpdir();
 
 my $package      = "02packages.details.txt";
-my $package_url  = "http://www.cpan.org/modules/$package";
+my $package_url  = "https://www.cpan.org/modules/$package";
 my $package_file = "$tmpdir/$package"; # this is a cache
 my $type_dir     = "cpan";
 
@@ -216,11 +250,15 @@ my @problematic = (
 sub usage
 {
     my $err = shift and select STDERR;
-    print "Usage: $0 <module-or-dist> [args]\n";
+    print "Usage: $0 [--add] <module-or-dist> [args]\n";
     exit $err;
 }
 
-GetOptions ('tarball=s'  =>  \my $tarball,
+my $auto_commit = 1;
+GetOptions ('add'        =>  \my $add,
+            'distribution=s' => \my $add_distribution,
+            'commit!'   =>  \$auto_commit,
+            'tarball=s'  =>  \my $tarball,
             'version=s'  =>  \my $version,
             'jobs=i'     =>  \my $make_jobs,
             'yes'        =>  \my $yes_to_all,
@@ -231,6 +269,163 @@ GetOptions ('tarball=s'  =>  \my $tarball,
         ) or  die "Failed to parse arguments";
 
 usage 1 unless @ARGV == 1;
+
+die "--distribution requires --add\n" if $add_distribution && !$add;
+die "--add imports into cpan/; --type $type_dir is not supported\n"
+    if $add && $type_dir ne 'cpan';
+
+my $tail_pat = qr/\.(?:tar\.(?:g?z|bz2|Z)|zip|tgz|tbz)/;
+my $version_pat = qr/-(v?[0-9._]+(?:-TRIAL[0-9]*)?)$tail_pat\z/;
+
+sub prepare_add {
+    my ($requested) = @_;
+    my $indexed_module = $requested;
+    my $cpan_path;
+    if (!$add_distribution) {
+        die "--add with --tarball requires --distribution AUTHOR/ARCHIVE\n"
+            if defined $tarball;
+        wget($package_url, $package_file)
+            unless -f $package_file && -M $package_file < 1;
+        open my $fh, '<', $package_file;
+        my $guess = $requested;
+        $guess =~ s/-/::/g;
+        my @matches;
+        while (<$fh>) {
+            my ($name, undef, $path) = split;
+            next unless defined $path;
+            if ($name eq $requested || $name eq $guess) {
+                @matches = ($name, $path);
+                last;
+            }
+            if (!@matches && index($path, "/$requested-") >= 0) {
+                my $dist = basename($path);
+                $dist =~ s/$version_pat//;
+                @matches = ($name, $path) if $dist eq $requested;
+            }
+        }
+        close $fh;
+        die "Cannot find module or distribution $requested on CPAN\n"
+            unless @matches;
+        ($indexed_module, $cpan_path) = @matches;
+        if (defined $version) {
+            my ($old) = $cpan_path =~ $version_pat;
+            $cpan_path =~ s/-\Q$old\E(?=$tail_pat\z)/-$version/;
+        }
+        my @parts = split '/', $cpan_path;
+        $add_distribution = join '/', @parts[-2, -1];
+    }
+
+    my ($author, $archive) = $add_distribution =~
+        m{\A([A-Z][A-Z0-9-]*)/([A-Za-z0-9_][A-Za-z0-9_.+-]*)\z};
+    die "Expected --distribution AUTHOR/ARCHIVE\n" unless defined $archive;
+    my ($archive_version) = $archive =~ $version_pat;
+    die "Cannot determine version from $archive\n"
+        unless defined $archive_version;
+    die "--version must match the archive version $archive_version\n"
+        if defined $version && $version ne $archive_version;
+    (my $dist = $archive) =~ s/$version_pat//;
+    die "Invalid module name $requested\n"
+        unless $requested =~ /\A[A-Za-z_][A-Za-z0-9_]*(?:(?:::|-)[A-Za-z0-9_]+)*\z/;
+    $indexed_module =~ s/-/::/g unless defined $cpan_path;
+    my $key = $requested eq $dist ? $indexed_module : $requested;
+    $key =~ s/-/::/g if $key eq $indexed_module;
+
+    # Read HEAD so an uncommitted addition can be reset and retried.
+    open my $head, '-|', 'git', 'show', 'HEAD:Porting/Maintainers.pl';
+    my $registered = do { local $/; <$head> };
+    close $head or die "Cannot read committed Porting/Maintainers.pl\n";
+    die "$requested is already bundled; omit --add to update it\n"
+        if $registered =~ /^    '\Q$key\E'\s*=>/m
+        || $registered =~ m{\bcpan/\Q$dist\E(?=[\s\]'"])};
+
+    if (defined $tarball) {
+        $tarball = rel2abs($tarball);
+        die "Tarball basename must match $archive\n"
+            unless basename($tarball) eq $archive;
+        die "Tarball $tarball is not a plain file\n" unless -f $tarball;
+        die "Keep --add tarballs outside cpan/, which is reset before importing\n"
+            if index($tarball, rel2abs('cpan') . '/') == 0;
+    } else {
+        $cpan_path ||= join '/', substr($author, 0, 1),
+                                  substr($author, 0, 2), $author, $archive;
+        require File::Temp;
+        my $download_dir = File::Temp::tempdir(
+            'sync-with-cpan-XXXXXX', TMPDIR => 1, CLEANUP => 1);
+        $tarball = "$download_dir/$archive";
+        wget("https://cpan.metacpan.org/authors/id/$cpan_path", $tarball);
+    }
+
+    my $new_info = {
+        DISTRIBUTION => $add_distribution,
+        FILES        => "cpan/$dist",
+    };
+    $new_info->{MAIN_MODULE} = $indexed_module if $indexed_module ne $key;
+    return ($key, $new_info);
+}
+
+sub register_add {
+    my ($name, $entry) = @_;
+    open my $fh, '<', 'Porting/Maintainers.pl';
+    my @lines = <$fh>;
+    close $fh;
+    my $registration = "    '$name' => {\n";
+    for my $field (qw(DISTRIBUTION SYNCINFO FILES MAIN_MODULE)) {
+        next unless defined $entry->{$field};
+        my $value = $entry->{$field};
+        $value =~ s/([\\'])/\\$1/g;
+        $registration .= sprintf "        '%-12s => '%s',\n", "$field'", $value;
+    }
+    $registration .= "    },\n\n";
+    my $inserted;
+    my $in_modules;
+    open my $out, '>', 'Maintainers.pl';
+    for my $line (@lines) {
+        $in_modules = 1 if $line =~ /^our %Modules = \(/;
+        if ($in_modules && !$inserted &&
+            ($line =~ /^\);/ ||
+             ($line =~ /^    '([A-Za-z0-9_:+-]+)' =>/ &&
+              lc($1) gt lc($name)))) {
+            print $out $registration;
+            $inserted = 1;
+        }
+        print $out $line;
+        $in_modules = 0 if $line =~ /^\);/;
+    }
+    close $out;
+    die "Cannot find %Modules in Porting/Maintainers.pl\n" unless $inserted;
+    rename 'Maintainers.pl', 'Porting/Maintainers.pl';
+    chmod 0755, 'Porting/Maintainers.pl';
+}
+
+sub configure_add {
+    my ($directory) = @_;
+    return if WIN32; # Windows discovers extensions through FindExt.pm.
+    open my $fh, '<', 'config.sh';
+    my $config = do { local $/; <$fh> };
+    close $fh;
+    my %selection;
+    for my $symbol (qw(dynamic_ext static_ext usedl)) {
+        ($selection{$symbol}) = $config =~ /^\Q$symbol\E='([^']*)'$/m;
+        die "Cannot read $symbol from config.sh\n"
+            unless defined $selection{$symbol};
+    }
+    opendir(my $dh, $directory);
+    my $has_xs = grep /\.(?:xs|c)\z/, readdir $dh;
+    closedir $dh;
+    my @args = ('sh', './Configure', '-desr', '-f', 'config.sh');
+    push @args, '-Dusedevel' if $config =~ /^usedevel='define'$/m;
+    if ($has_xs) {
+        my $symbol = $selection{usedl} eq 'define' ? 'dynamic_ext' : 'static_ext';
+        my $extension = basename($directory);
+        $extension =~ s!-!/!g;
+        my @extensions = split ' ', $selection{$symbol};
+        push @extensions, $extension
+            unless grep { $_ eq $extension } @extensions;
+        push @args, "-D$symbol=@extensions";
+    }
+    say "Refreshing Configure's extension lists";
+    system @args and die "Configure failed after adding $directory\n";
+}
 
 sub find_type_f {
     my @res;
@@ -329,7 +524,9 @@ if (my $mod_name = $DistName{$module}) {
     $module = $mod_name;
 }
 my $info = $Modules{$module};
-if (!$info) {
+if ($add) {
+    ($module, $info) = prepare_add($module);
+} elsif (!$info) {
     # Maybe the user said "Test-Simple" instead of "Test::Simple", or
     # "IO::Compress" instead of "IO-Compress". See if we can fix it up.
     my $guess = $module;
@@ -341,6 +538,8 @@ EOF
     say "Guessing you meant $guess instead of $module";
     $module = $guess;
 }
+
+unlink $MAKE_LOG if -e $MAKE_LOG;
 
 if ($info->{CUSTOMIZED}) {
     print <<"EOF";
@@ -378,6 +577,12 @@ print "About to clean the $type_dir/ directory, and ensure its contents is up to
 print "Will also checkout -f on $type_dir/, MANIFEST and Porting/Maintainers.pl\n";
 print "*** WARNING *** - this may DELETE uncommitted changes. Hit ^C if you have ANY doubts!\n";
 pause_for_input("\n");
+if ($add) {
+    # New files staged by an earlier attempt must be untracked before clean.
+    system git => 'reset', '-q', 'HEAD', '--', $info->{FILES},
+                  'MANIFEST', 'Porting/Maintainers.pl'
+        and die "Cannot reset the previous addition\n";
+}
 # clean out the cpan directory, this cleans up any temporary files that might be
 # in the way, or other issues that might come up if the user bails out of the sync
 # script and then runs it again.
@@ -385,13 +590,14 @@ my $clean_out= `git clean -dfx $type_dir`; # use backticks to hide the output
 system git => 'checkout', '-f',
               $type_dir,
               'MANIFEST',
-              'Porting/Maintainers.pl'; # let the user see the output
+              'Porting/Maintainers.pl' # let the user see the output
+    and die "Cannot reset the source tree\n";
 print "the $type_dir/ directory is now clean and up to date\n---\n";
 
 my  $distribution = $$info {DISTRIBUTION};
 
 my @files         = glob $$info {FILES};
-if (!-d $files [0] || grep { $_ eq $module } @problematic) {
+if ((!$add && !-d $files [0]) || grep { $_ eq $module } @problematic) {
     say "This looks like a setup $0 cannot handle (yet)";
     unless ($force) {
         say "Will not continue without a --force option";
@@ -407,9 +613,6 @@ chdir "$type_dir";
 
 my  $pkg_dir      = $files[0];
     $pkg_dir      =~ s!.*/!!;
-
-my $tail_pat = qr/\.(?:tar\.(?:g?z|bz2|Z)|zip|tgz|tbz)/;
-my $version_pat = qr/-(v?[0-9._]+(?:-TRIAL[0-9]*)?)$tail_pat\z/;
 
 my ($old_version) = $distribution =~ $version_pat;
 
@@ -458,7 +661,7 @@ if (defined $tarball) {
     $new_file     = $tarball;
     $new_version  = $version // ($new_file =~ $version_pat) [0];
     die "Blead and that tarball both have version $new_version of $module\n"
-        if $new_version eq $old_version;
+        if !$add && $new_version eq $old_version;
 }
 else {
     #
@@ -598,7 +801,8 @@ foreach my $file (@new_files) {
         }
         $changes_file = "$pkg_dir/$file";
     }
-    if ($IGNORABLE {$file}) {
+    if ($IGNORABLE {$file} &&
+        !($add && ($file eq 'Makefile.PL' || $file eq 'ppport.h'))) {
         push @delete => $file;
         next;
     }
@@ -611,7 +815,9 @@ foreach my $file (@old_files) {
 }
 
 my @changes_info;
-if (!$changes_file) {
+if ($add) {
+    @changes_info = ("Bundle $module from $distribution.");
+} elsif (!$changes_file) {
     print "Could not find a changes file!\n",
           "If this is not correct and there is one, please consider updating this script!\n";
 } else {
@@ -670,6 +876,10 @@ foreach my $file (@exec) {
         push @de_exec => $file;
         next;
     }
+    if ($add) {
+        push @de_exec => $file;
+        next;
+    }
     # Check to see if the file exists; if it doesn't and doesn't have
     # the exec bit, remove it.
     if ($old_files {$file}) {
@@ -683,7 +893,7 @@ foreach my $file (@exec) {
 # No need to change the +x bit on files that will be deleted.
 #
 if (@de_exec && @delete) {
-    my %delete = map {+"$pkg_dir/$_" => 1} @delete;
+    my %delete = map {$_ => 1} @delete;
     @de_exec = grep {!$delete {$_}} @de_exec;
 }
 
@@ -707,7 +917,10 @@ print "You may want to `tail -F $MAKE_LOG` in another window\n";
 pause_for_input("\n");
 
 unlink "$pkg_dir/$_"                      for @delete;
-system git   => 'add', "$pkg_dir/$_"      for @commit;
+for my $file (@commit) {
+    system git => 'add', ($add ? ('-f') : ()), "$pkg_dir/$file"
+        and die "Cannot stage $pkg_dir/$file\n";
+}
 system git   => 'rm', '-f', "$pkg_dir/$_" for @gone;
 de_exec( "$pkg_dir/$_" )                  for @de_exec;
 
@@ -770,12 +983,25 @@ chdir "..";
 
     close $new or die "Can't close $MANIFEST: $!\n";
 
-    system $^X => "Porting/manisort", '--quiet', "--output=$MANIFEST", $MANIFEST_NEW;
+    my $sort_status = system $^X => "Porting/manisort", '--quiet',
+                                   "--output=$MANIFEST", $MANIFEST_NEW;
+    # manisort returns 1 when it sorts an unsorted input successfully.
+    die "Porting/manisort failed\n" if $sort_status != 0 && $sort_status != 256;
     unlink $MANIFEST_NEW
         or die "Can't delete temporary $MANIFEST_NEW: $!\n";
 }
 
-
+if ($add) {
+    my $user = $ENV{USER} ? "$ENV{USER} on " : '';
+    $info->{SYNCINFO} = $user . localtime;
+    register_add($module, $info);
+    # Configure must not discover the temporary old directory as an extension.
+    remove_tree("$type_dir/$old_dir");
+    system $^X, '-Ilib', 'regen/lib_cleanup.pl'
+        and die "regen/lib_cleanup.pl failed\n";
+    configure_add("$type_dir/$pkg_dir");
+    run_make 'manisort';
+}
 
 # Prepare for running (selected) tests - strictly speaking this isn't
 # necessary, as we run the tests with "run_make" now, but this allows
@@ -796,7 +1022,7 @@ run_make 'test-prep' unless $no_test;
 # because the alternative would be to replicate the regen/lib_cleanup.pl
 # logic here. That's fine, because regen/lib_cleanup.pl is idempotent if run
 # repeatedly.
-if (@commit || @gone) {
+if (!$add && (@commit || @gone)) {
     say "Running regen/lib_cleanup.pl to handle potential added/deleted dirs";
     my $exe_dir = WIN32 ? ".\\" : './';
     system "${exe_dir}perl$Config{_exe}", "-Ilib", "regen/lib_cleanup.pl"
@@ -814,53 +1040,55 @@ remove_tree( "$type_dir/$old_dir" );
 unlink "$type_dir/$new_file" unless $tarball;
 
 
-open my $Maintainers_pl, '<', 'Porting/Maintainers.pl';
-open my $new_Maintainers_pl, '>', 'Maintainers.pl';
+unless ($add) {
+    open my $Maintainers_pl, '<', 'Porting/Maintainers.pl';
+    open my $new_Maintainers_pl, '>', 'Maintainers.pl';
 
-my $found = 0;
-my $in_mod_section;
-while (<$Maintainers_pl>) {
-    if ($in_mod_section) {
-        if ($found == 1) {
-            # Keep track of when and who did the sync.
-            # This must be before the DISTRIBUTION check.
-            # This ensures that *something* is updated when we re-update.
-            my $date = localtime;
-            my $user = $ENV{USER} ? "$ENV{USER} on " : "";
-            my $key = "SYNCINFO";
-            unless (s/^ \s* '\Q$key\E' \s* => \s* \K '[^']+' /'$user$date'/x) {
-                print $new_Maintainers_pl
-                    "        '$key'     => '$user$date',\n";
+    my $found = 0;
+    my $in_mod_section;
+    while (<$Maintainers_pl>) {
+        if ($in_mod_section) {
+            if ($found == 1) {
+                # Keep track of when and who did the sync.
+                # This must be before the DISTRIBUTION check.
+                # This ensures that *something* is updated when we re-update.
+                my $date = localtime;
+                my $user = $ENV{USER} ? "$ENV{USER} on " : "";
+                my $key = "SYNCINFO";
+                unless (s/^ \s* '\Q$key\E' \s* => \s* \K '[^']+' /'$user$date'/x) {
+                    print $new_Maintainers_pl
+                        "        '$key'     => '$user$date',\n";
+                }
+                $found = 2;
+                $in_mod_section = 0;
             }
-            $found = 2;
-            $in_mod_section = 0;
-        }
-        if (/DISTRIBUTION/) {
-            if (s/\Q$old_version/$new_version/) {
-                $found = 1;
+            if (/DISTRIBUTION/) {
+                if (s/\Q$old_version/$new_version/) {
+                    $found = 1;
+                }
+            }
+            if (/^\s*\}/) { # sanity
+                $in_mod_section = 0;
             }
         }
-        if (/^\s*\}/) { # sanity
-            $in_mod_section = 0;
+
+        if (/\Q$module\E/ and !$found) {
+            $in_mod_section = 1;
         }
+
+        print $new_Maintainers_pl $_;
     }
 
-    if (/\Q$module\E/ and !$found) {
-        $in_mod_section = 1;
+    if ($found) {
+        say "Successfully updated Maintainers.pl";
+        unlink 'Porting/Maintainers.pl';
+        rename 'Maintainers.pl' => 'Porting/Maintainers.pl';
+        chmod 0755 => 'Porting/Maintainers.pl';
     }
-
-    print $new_Maintainers_pl $_;
-}
-
-if ($found) {
-    say "Successfully updated Maintainers.pl";
-    unlink 'Porting/Maintainers.pl';
-    rename 'Maintainers.pl' => 'Porting/Maintainers.pl';
-    chmod 0755 => 'Porting/Maintainers.pl';
-}
-else {
-    say "Could not update Porting/Maintainers.pl.";
-    say "Make sure you update this by hand before committing.";
+    else {
+        say "Could not update Porting/Maintainers.pl.";
+        say "Make sure you update this by hand before committing.";
+    }
 }
 
 # Run the tests. First the test belonging to the module, followed by the
@@ -875,12 +1103,16 @@ if ($no_test) {
 }
 
 my $committed;
-if (@changes_info) {
+my $action = $add ? 'Add' : "${re_update}Update to";
+my @commit_paths = ("$type_dir/$pkg_dir", 'MANIFEST', 'Porting/Maintainers.pl',
+                    ($add ? ('Makefile.SH', 'win32/Makefile', 'win32/GNUmakefile',
+                             'lib/.gitignore') : ()));
+if ($auto_commit && @changes_info) {
     system git => 'commit',
            join("\n",
-               "-m$type_dir/$pkg_dir - ${re_update}Update to version $new_version",
+               "-m$type_dir/$pkg_dir - $action version $new_version",
                "",@changes_info),
-           "$type_dir/$pkg_dir", "MANIFEST", "Porting/Maintainers.pl"
+           @commit_paths
         or $committed = 1; # note system returns true for an error!
 }
 
@@ -923,7 +1155,7 @@ EOF
     print <<"EOF";
 Once all tests pass, you can commit it with a command like:
 
-    git commit -m${shell_quote}$type_dir/$pkg_dir - Update to version $new_version${shell_quote} $type_dir/$pkg_dir
+    git commit -m${shell_quote}$type_dir/$pkg_dir - $action version $new_version${shell_quote} @commit_paths
 
 and then push it upstream with a command like
 

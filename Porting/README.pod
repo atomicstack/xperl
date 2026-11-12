@@ -449,7 +449,10 @@ and case are ignored, as explained in L<perldiag>.
 
 =head2 F<sync-with-cpan>
 
-Script to help out with syncing cpan distros.
+Import and update CPAN distributions. Use C<--add Module::Name> to register
+and import a distribution into F<cpan/>, refresh the build configuration,
+and run its tests and the porting tests. C<--no-commit> leaves the result
+for review. See the script's POD for local tarballs and other options.
 
 =head2 F<test-dist-modules.pl>
 
