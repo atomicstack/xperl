@@ -571,6 +571,11 @@ release manager will have to investigate the situation carefully.)
 
 =item *
 
+L<DBD::SQLite> 1.78 is bundled with XPerl as a SQLite driver for L<DBI>.
+It builds with its included SQLite implementation.
+
+=item *
+
 L<DBI> 1.656 is bundled with XPerl as a database interface for DBI drivers.
 
 =item *

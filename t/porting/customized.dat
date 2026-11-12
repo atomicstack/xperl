@@ -1,6 +1,8 @@
 # Regenerate this file using:
 #    cd t; ./perl -I../lib porting/customized.t --regen; cd -
 AutoLoader cpan/AutoLoader/t/02AutoSplit.t bb90cda13b88599ad45de4b45799d5218afcb6d8
+DBD::SQLite cpan/DBD-SQLite/Makefile.PL 625677cb0fbe1fb398661c7d3c5112c8726d3e01
+DBD::SQLite cpan/DBD-SQLite/t/virtual_table/11_filecontent_fulltext.t cbeb70617e622dc3c3eb47a25f3c68b937dea636
 DBI cpan/DBI/Makefile.PL 8fba6e7b47e59a0166dab6e50af3f169c1fdaee2
 DBI cpan/DBI/t/85gofer.t 112d2b796323d1fb041ee790a92d27c6516e4acf
 ExtUtils::Constant cpan/ExtUtils-Constant/lib/ExtUtils/Constant/Base.pm 7560e1018f806db5689dee78728ccb8374aea741

@@ -379,6 +379,56 @@ our %Modules = (
         ],
     },
 
+    'DBD::SQLite' => {
+        'DISTRIBUTION' => 'ISHIGAKI/DBD-SQLite-1.78.tar.gz',
+        'SYNCINFO'    => 'demerphq on Thu Nov 12 13:56:46 2026',
+        'FILES'       => 'cpan/DBD-SQLite',
+        'EXCLUDED'    => [qr{^xt/}],
+        'CUSTOMIZED'  => [qw(Makefile.PL t/virtual_table/11_filecontent_fulltext.t)],
+        # Keep the regression tests within the core filename limit.
+        'MAP'         => {
+            't/58_see_if_its_a_number_and_explicit_binding.t'
+                => 'cpan/DBD-SQLite/t/58_number_explicit_binding.t',
+            't/62_regexp_multibyte_char_class.t'
+                => 'cpan/DBD-SQLite/t/62_regexp_multibyte_class.t',
+            't/rt_106950_extra_warnings_with_savepoints.t'
+                => 'cpan/DBD-SQLite/t/rt_106950_savepoint_warnings.t',
+            't/rt_115465_column_info_with_spaces.t'
+                => 'cpan/DBD-SQLite/t/rt_115465_column_info_space.t',
+            't/rt_25924_user_defined_func_unicode.t'
+                => 'cpan/DBD-SQLite/t/rt_25924_unicode_func.t',
+            't/rt_27553_prepared_cache_and_analyze.t'
+                => 'cpan/DBD-SQLite/t/rt_27553_cache_analyze.t',
+            't/rt_32889_prepare_cached_reexecute.t'
+                => 'cpan/DBD-SQLite/t/rt_32889_prepare_cached.t',
+            't/rt_48393_debug_panic_with_commit.t'
+                => 'cpan/DBD-SQLite/t/rt_48393_debug_commit.t',
+            't/rt_52573_manual_exclusive_lock.t'
+                => 'cpan/DBD-SQLite/t/rt_52573_exclusive_lock.t',
+            't/rt_62370_diconnected_handles_operation.t'
+                => 'cpan/DBD-SQLite/t/rt_62370_disconnected_handle.t',
+            't/rt_64177_ping_wipes_out_the_errstr.t'
+                => 'cpan/DBD-SQLite/t/rt_64177_ping_errstr.t',
+            't/rt_73159_fts_tokenizer_segfault.t'
+                => 'cpan/DBD-SQLite/t/rt_73159_fts_tokenizer.t',
+            't/rt_73787_exponential_buffer_overflow.t'
+                => 'cpan/DBD-SQLite/t/rt_73787_buffer_overflow.t',
+            't/rt_77724_primary_key_with_a_whitespace.t'
+                => 'cpan/DBD-SQLite/t/rt_77724_primary_key_space.t',
+            't/rt_78833_utf8_flag_for_column_names.t'
+                => 'cpan/DBD-SQLite/t/rt_78833_utf8_column_names.t',
+            't/rt_81536_multi_column_primary_key_info.t'
+                => 'cpan/DBD-SQLite/t/rt_81536_multi_column_pk.t',
+            't/rt_96050_db_filename_for_a_closed_database.t'
+                => 'cpan/DBD-SQLite/t/rt_96050_closed_db_filename.t',
+            't/rt_96878_fts_contentless_table.t'
+                => 'cpan/DBD-SQLite/t/rt_96878_contentless_fts.t',
+            't/rt_97598_crash_on_disconnect_with_virtual_tables.t'
+                => 'cpan/DBD-SQLite/t/rt_97598_disconnect_vtable.t',
+            '' => 'cpan/DBD-SQLite/',
+        },
+    },
+
     'DBI' => {
         'DISTRIBUTION' => 'HMBRAND/DBI-1.656.tgz',
         'SYNCINFO'    => 'demerphq on Thu Nov 12 13:47:43 2026',

@@ -1501,6 +1501,7 @@ _cleaner2:
 	-rmdir lib/DBI/SQL lib/DBI/ProfileDumper lib/DBI/Gofer/Transport
 	-rmdir lib/DBI/Gofer/Serializer lib/DBI/Gofer lib/DBI/DBD/SqlEngine
 	-rmdir lib/DBI/DBD lib/DBI/Const/GetInfo lib/DBI/Const lib/DBI
+	-rmdir lib/DBD/SQLite/VirtualTable lib/DBD/SQLite
 	-rmdir lib/DBD/Gofer/Transport lib/DBD/Gofer/Policy lib/DBD/Gofer
 	-rmdir lib/DBD/File lib/DBD lib/Cpanel/JSON lib/Cpanel lib/Config/Perl
 	-rmdir lib/Compress/Raw lib/Compress lib/Carp lib/CPAN/Plugin
