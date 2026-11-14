@@ -1,6 +1,6 @@
 =head1 NAME
 
-hash-options-benchmark - compare ordinary-hash storage policies
+hash_options_benchmark - compare ordinary-hash storage policies
 
 =head1 OPTIONS
 
@@ -75,7 +75,8 @@ The driver takes a JSON manifest naming each configuration's interpreter:
       "variants": [
         {"name": "reference", "perl": "/build/reference/perl",
          "width": "adaptive", "linear_max": 4, "min_alloc": 2},
-        {"name": "fixed32-linear4-alloc2", "perl": "/build/fixed32-2/perl",
+        {"name": "fixed32-linear4-alloc2",
+         "perl": "/build/fixed32-2/perl",
          "width": 32, "linear_max": 4, "min_alloc": 2}
       ]
     }
@@ -127,7 +128,7 @@ build directory for each interpreter, then run there:
     PERL5LIB="$bench_core/lib" make
 
 Set a variant's C<compat> field to the absolute path of its extension build
-directory. The driver loads its C<blib/lib> and C<blib/arch> before running
+directory. The driver loads its F<blib/lib> and F<blib/arch> before running
 the worker and records the helper source and binary hashes. Use the same
 helper source for all compared interpreters. The extension supplies the
 sharing toggle and query constructor in both builds. It supplies missing

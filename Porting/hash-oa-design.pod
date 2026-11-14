@@ -1,6 +1,6 @@
 =head1 NAME
 
-hash-oa-design - Compact hash storage with integer chains and optional open addressing
+hash_oa_design - Compact hash storage with integer chains and optional open addressing
 
 =head1 STATUS
 
