@@ -208,7 +208,9 @@ Intel*) ;; # # Is that you, Intel C++?
        case " $ccflags " in
        *" $opt "*) ;; # Skip if already there.
        *) rm -f _cflags$_exe
-	  flags="-DPERL_NO_INLINE_FUNCTIONS $ccflags $warn $stdflags $opt"
+          # Disabling inline bodies leaves static declarations undefined.
+          # Do not let that probe artifact defeat -Werror flag detection.
+          flags="-DPERL_NO_INLINE_FUNCTIONS $ccflags $warn $stdflags -Wno-error=unused-function $opt"
 	  case "$opt" in
 	  *-pedantic*) flags="$flags -DPERL_GCC_PEDANTIC" ;;
 	  esac
