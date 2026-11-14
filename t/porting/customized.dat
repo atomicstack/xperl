@@ -28,6 +28,7 @@ MIME::Base64 cpan/MIME-Base64/lib/MIME/QuotedPrint.pm 36cbb455ab57b9bbca7e86f509
 Net::SSLeay cpan/Net-SSLeay/SSLeay.xs bea95da2bbb936ba7a525d66501d746aaf199374
 Net::SSLeay cpan/Net-SSLeay/t/local/03_use.t 94dbc88f76cfb7979a0bdd09a438e395084097d4
 Pod::Perldoc cpan/Pod-Perldoc/lib/Pod/Perldoc.pm 582be34c077c9ff44d99914724a0cc2140bcd48c
+Text::CSV_XS cpan/Text-CSV_XS/CSV_XS.xs 92c2324bcd32ea6f87f7787164095168c67041a4
 Win32API::File cpan/Win32API-File/File.pm 8fd212857f821cb26648878b96e57f13bf21b99e
 Win32API::File cpan/Win32API-File/File.xs beb870fed4490d2faa547b4a8576b8d64d1d27c5
 YAML::XS cpan/YAML-LibYAML/t/oop/15-various.t 5bdddcff7da7b8962973578c063af712feb6355a

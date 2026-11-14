@@ -1269,6 +1269,7 @@ our %Modules = (
         'DISTRIBUTION' => 'HMBRAND/Text-CSV_XS-1.65.tgz',
         'SYNCINFO'    => 'demerphq on Thu Nov 12 13:36:07 2026',
         'FILES'       => 'cpan/Text-CSV_XS',
+        'CUSTOMIZED'  => [qw(CSV_XS.xs)],
     },
 
     'Text::ParseWords' => {

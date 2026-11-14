@@ -474,7 +474,7 @@ static SV *cx_SetDiag (pTHX_ csv_t *csv, int xse, int line) {
     } /* SetDiag */
 
 #define xs_cache_get_eolt(hv)	cx_xs_cache_get_eolt (aTHX_ hv)
-static char *cx_xs_cache_get_eolt (pTHX_ HV *hv) {
+static const char *cx_xs_cache_get_eolt (pTHX_ HV *hv) {
     SV    **svp;
     csv_t  *csvs;
 
@@ -515,7 +515,8 @@ static void cx_xs_cache_set (pTHX_ HV *hv, int idx, SV *val) {
 
     IV      iv;
     byte    bv;
-    char   *cp  = "\0";
+    char empty[] = "";
+    char *cp = empty;
     STRLEN  len = 0;
 
     unless ((svp = hv_fetchs (hv, "_CACHE", FALSE)) && *svp)
@@ -1068,8 +1069,9 @@ static char *cx_formula (pTHX_ csv_t *csv, SV *sv, STRLEN *len, int f) {
     if (len) *len = 0;
 
     if (fa == 4) {
+	static char empty[] = "";
 	unless (SvREADONLY (sv)) SvSetEmpty (sv);
-	return "";
+	return empty;
 	}
 
     if (fa == 5) {
@@ -2812,7 +2814,7 @@ _cache_get_eolt (SV *self)
   PPCODE:
     HV	 *hv;
     SV   *sve;
-    char *eol;
+    const char *eol;
 
     CSV_XS_SELF;
     sve = newSVpvs_flags ("", SVs_TEMP);
