@@ -1,7 +1,12 @@
 # Regenerate this file using:
 #    cd t; ./perl -I../lib porting/customized.t --regen; cd -
 AutoLoader cpan/AutoLoader/t/02AutoSplit.t bb90cda13b88599ad45de4b45799d5218afcb6d8
-DBD::SQLite cpan/DBD-SQLite/Makefile.PL 625677cb0fbe1fb398661c7d3c5112c8726d3e01
+DBD::SQLite cpan/DBD-SQLite/dbdimp.c 6844dbc5478d2fe674fd2df147a36df652f4c04f
+DBD::SQLite cpan/DBD-SQLite/dbdimp.h c324acd41477b560e47c10ed83d93d14c7bf1f0b
+DBD::SQLite cpan/DBD-SQLite/dbdimp_tokenizer.inc cabfb13d57c5464d19dfd351d8e403bab34184ce
+DBD::SQLite cpan/DBD-SQLite/dbdimp_virtual_table.inc 57e3af8f5ba392c28460c20674b0b8387661afde
+DBD::SQLite cpan/DBD-SQLite/Makefile.PL e144baeb68ac93d42e0e224f55829be634d05fe2
+DBD::SQLite cpan/DBD-SQLite/SQLite.xs 3de9bf1f515b2cf2c570ef76c512b345fcad35b3
 DBD::SQLite cpan/DBD-SQLite/t/virtual_table/11_filecontent_fulltext.t cbeb70617e622dc3c3eb47a25f3c68b937dea636
 DBI cpan/DBI/DBI.xs a36e501705fba012623e6847bffb5c8b05d409af
 DBI cpan/DBI/Driver_xst.h 8f17bef0aedf06b85f40ae589ecda0c88f1c0e7c

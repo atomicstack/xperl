@@ -384,7 +384,10 @@ our %Modules = (
         'SYNCINFO'    => 'demerphq on Thu Nov 12 13:56:46 2026',
         'FILES'       => 'cpan/DBD-SQLite',
         'EXCLUDED'    => [qr{^xt/}],
-        'CUSTOMIZED'  => [qw(Makefile.PL t/virtual_table/11_filecontent_fulltext.t)],
+        'CUSTOMIZED'  => [qw(
+            Makefile.PL SQLite.xs dbdimp.c dbdimp.h dbdimp_tokenizer.inc
+            dbdimp_virtual_table.inc t/virtual_table/11_filecontent_fulltext.t
+        )],
         # Keep the regression tests within the core filename limit.
         'MAP'         => {
             't/58_see_if_its_a_number_and_explicit_binding.t'

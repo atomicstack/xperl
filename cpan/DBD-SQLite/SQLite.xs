@@ -36,6 +36,8 @@ last_insert_rowid(dbh)
     SV *dbh
     ALIAS:
         DBD::SQLite::db::sqlite_last_insert_rowid = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         D_imp_dbh(dbh);
@@ -44,7 +46,7 @@ last_insert_rowid(dbh)
     OUTPUT:
         RETVAL
 
-static int
+int
 create_function(dbh, name, argc, func, flags = 0)
     SV *dbh
     char *name
@@ -53,6 +55,8 @@ create_function(dbh, name, argc, func, flags = 0)
     int flags
     ALIAS:
         DBD::SQLite::db::sqlite_create_function = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_create_function(aTHX_ dbh, name, argc, func, flags );
@@ -62,12 +66,14 @@ create_function(dbh, name, argc, func, flags = 0)
 
 #ifndef SQLITE_OMIT_LOAD_EXTENSION
 
-static int
+int
 enable_load_extension(dbh, onoff)
     SV *dbh
     int onoff
     ALIAS:
         DBD::SQLite::db::sqlite_enable_load_extension = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_enable_load_extension(aTHX_ dbh, onoff );
@@ -75,13 +81,15 @@ enable_load_extension(dbh, onoff)
     OUTPUT:
         RETVAL
 
-static int
+int
 load_extension(dbh, file, proc = 0)
     SV *dbh
     const char *file
     const char *proc
     ALIAS:
         DBD::SQLite::db::sqlite_load_extension = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_load_extension(aTHX_ dbh, file, proc);
@@ -91,7 +99,7 @@ load_extension(dbh, file, proc = 0)
 
 #endif
 
-static int
+int
 create_aggregate(dbh, name, argc, aggr, flags = 0)
     SV *dbh
     char *name
@@ -100,6 +108,8 @@ create_aggregate(dbh, name, argc, aggr, flags = 0)
     int flags
     ALIAS:
         DBD::SQLite::db::sqlite_create_aggregate = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_create_aggregate(aTHX_ dbh, name, argc, aggr, flags );
@@ -107,13 +117,15 @@ create_aggregate(dbh, name, argc, aggr, flags = 0)
     OUTPUT:
         RETVAL
 
-static int
+int
 create_collation(dbh, name, func)
     SV *dbh
     char *name
     SV *func
     ALIAS:
         DBD::SQLite::db::sqlite_create_collation = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_create_collation(aTHX_ dbh, name, func );
@@ -122,25 +134,29 @@ create_collation(dbh, name, func)
         RETVAL
 
 
-static void
+void
 collation_needed(dbh, callback)
     SV *dbh
     SV *callback
     ALIAS:
         DBD::SQLite::db::sqlite_collation_needed = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         sqlite_db_collation_needed(aTHX_ dbh, callback );
     }
 
 
-static int
+int
 progress_handler(dbh, n_opcodes, handler)
     SV *dbh
     int n_opcodes
     SV *handler
     ALIAS:
         DBD::SQLite::db::sqlite_progress_handler = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_progress_handler(aTHX_ dbh, n_opcodes, handler );
@@ -148,7 +164,7 @@ progress_handler(dbh, n_opcodes, handler)
     OUTPUT:
         RETVAL
 
-static int
+int
 sqlite_trace(dbh, callback)
     SV *dbh
     SV *callback
@@ -159,12 +175,14 @@ sqlite_trace(dbh, callback)
     OUTPUT:
         RETVAL
 
-static int
+int
 profile(dbh, callback)
     SV *dbh
     SV *callback
     ALIAS:
         DBD::SQLite::db::sqlite_profile = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_profile(aTHX_ dbh, callback );
@@ -178,6 +196,8 @@ commit_hook(dbh, hook)
     SV *hook
     ALIAS:
         DBD::SQLite::db::sqlite_commit_hook = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = (SV*) sqlite_db_commit_hook( aTHX_ dbh, hook );
@@ -191,6 +211,8 @@ rollback_hook(dbh, hook)
     SV *hook
     ALIAS:
         DBD::SQLite::db::sqlite_rollback_hook = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = (SV*) sqlite_db_rollback_hook( aTHX_ dbh, hook );
@@ -204,6 +226,8 @@ update_hook(dbh, hook)
     SV *hook
     ALIAS:
         DBD::SQLite::db::sqlite_update_hook = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = (SV*) sqlite_db_update_hook( aTHX_ dbh, hook );
@@ -212,12 +236,14 @@ update_hook(dbh, hook)
         RETVAL
 
 
-static int
+int
 set_authorizer(dbh, authorizer)
     SV *dbh
     SV *authorizer
     ALIAS:
         DBD::SQLite::db::sqlite_set_authorizer = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_set_authorizer( aTHX_ dbh, authorizer );
@@ -232,50 +258,60 @@ busy_timeout(dbh, timeout=NULL)
     SV *timeout
     ALIAS:
         DBD::SQLite::db::sqlite_busy_timeout = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
         RETVAL = sqlite_db_busy_timeout(aTHX_ dbh, timeout );
     OUTPUT:
         RETVAL
 
-static int
+int
 backup_from_file(dbh, filename)
     SV *dbh
     char *filename
     ALIAS:
         DBD::SQLite::db::sqlite_backup_from_file = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
         RETVAL = sqlite_db_backup_from_file(aTHX_ dbh, filename);
     OUTPUT:
         RETVAL
 
-static int
+int
 backup_to_file(dbh, filename)
     SV *dbh
     char *filename
     ALIAS:
         DBD::SQLite::db::sqlite_backup_to_file = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
         RETVAL = sqlite_db_backup_to_file(aTHX_ dbh, filename);
     OUTPUT:
         RETVAL
 
-static int
+int
 backup_from_dbh(dbh, from)
     SV *dbh
     SV *from
     ALIAS:
         DBD::SQLite::db::sqlite_backup_from_dbh = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
         RETVAL = sqlite_db_backup_from_dbh(aTHX_ dbh, from);
     OUTPUT:
         RETVAL
 
-static int
+int
 backup_to_dbh(dbh, to)
     SV *dbh
     SV *to
     ALIAS:
         DBD::SQLite::db::sqlite_backup_to_dbh = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
         RETVAL = sqlite_db_backup_to_dbh(aTHX_ dbh, to);
     OUTPUT:
@@ -289,6 +325,8 @@ table_column_metadata(dbh, dbname, tablename, columnname)
     SV* columnname
     ALIAS:
         DBD::SQLite::db::sqlite_table_column_metadata = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
         RETVAL = sqlite_db_table_column_metadata(aTHX_ dbh, dbname, tablename, columnname);
     OUTPUT:
@@ -299,16 +337,20 @@ db_filename(dbh)
     SV* dbh
     ALIAS:
         DBD::SQLite::db::sqlite_db_filename = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
         RETVAL = sqlite_db_filename(aTHX_ dbh);
     OUTPUT:
         RETVAL
 
-static int
+int
 register_fts3_perl_tokenizer(dbh)
     SV *dbh
     ALIAS:
         DBD::SQLite::db::sqlite_register_fts3_perl_tokenizer = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
         RETVAL = sqlite_db_register_fts3_perl_tokenizer(aTHX_ dbh);
     OUTPUT:
@@ -320,19 +362,23 @@ db_status(dbh, reset = 0)
     int reset
     ALIAS:
         DBD::SQLite::db::sqlite_db_status = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
         RETVAL = (HV*)_sqlite_db_status(aTHX_ dbh, reset);
     OUTPUT:
         RETVAL
 
 
-static int
+int
 create_module(dbh, name, perl_class)
     SV *dbh
     char *name
     char *perl_class
     ALIAS:
         DBD::SQLite::db::sqlite_create_module = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_create_module(aTHX_ dbh, name, perl_class);
@@ -340,13 +386,15 @@ create_module(dbh, name, perl_class)
     OUTPUT:
         RETVAL
 
-static int
+int
 limit(dbh, id, new_value = -1)
     SV *dbh
     int id
     int new_value
     ALIAS:
         DBD::SQLite::db::sqlite_limit = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_limit(aTHX_ dbh, id, new_value);
@@ -354,13 +402,15 @@ limit(dbh, id, new_value = -1)
     OUTPUT:
         RETVAL
 
-static int
+int
 db_config(dbh, id, new_value = -1)
     SV *dbh
     int id
     int new_value
     ALIAS:
         DBD::SQLite::db::sqlite_db_config = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_config(aTHX_ dbh, id, new_value);
@@ -368,11 +418,13 @@ db_config(dbh, id, new_value = -1)
     OUTPUT:
         RETVAL
 
-static int
+int
 get_autocommit(dbh)
     SV *dbh
     ALIAS:
         DBD::SQLite::db::sqlite_get_autocommit = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_get_autocommit(aTHX_ dbh);
@@ -380,10 +432,12 @@ get_autocommit(dbh)
     OUTPUT:
         RETVAL
 
-static int
+int
 txn_state(SV* dbh, SV *schema = &PL_sv_undef)
     ALIAS:
         DBD::SQLite::db::sqlite_txn_state = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
         RETVAL = sqlite_db_txn_state(aTHX_ dbh, schema);
@@ -391,11 +445,13 @@ txn_state(SV* dbh, SV *schema = &PL_sv_undef)
     OUTPUT:
         RETVAL
 
-static int
+int
 error_offset(dbh)
     SV *dbh
     ALIAS:
         DBD::SQLite::db::sqlite_error_offset = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
     {
 #if SQLITE_VERSION_NUMBER >= 3038000
@@ -419,6 +475,8 @@ st_status(sth, reset = 0)
     int reset
     ALIAS:
         DBD::SQLite::st::sqlite_st_status = 1
+    INIT:
+        PERL_UNUSED_VAR(ix);
     CODE:
         RETVAL = (HV*)_sqlite_st_status(aTHX_ sth, reset);
     OUTPUT:
@@ -430,7 +488,7 @@ MODULE = DBD::SQLite          PACKAGE = DBD::SQLite
 
 PROTOTYPES: DISABLE
 
-static int
+void
 compile_options()
     CODE:
         int n = 0;

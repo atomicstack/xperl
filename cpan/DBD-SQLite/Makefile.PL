@@ -429,6 +429,9 @@ use Config;
 
 sub postamble {
     my $postamble;
+    # The SQLite amalgamation is maintained upstream. Keep Perl's warning
+    # flags for the XS glue, but silence them for the bundled engine.
+    my $sqlite_quiet = $Config{gccversion} || $Config{ccname} =~ /clang/ ? ' -w' : '';
     if ($ENV{PERL_CORE}) {
         # Use the sibling sources before DBI's headers have been installed.
         my $source = File::Spec->catdir('..', 'DBI');
@@ -449,6 +452,12 @@ CORE
         $postamble = eval { DBI::DBD::dbd_postamble(@_) };
     }
     if (-e 'sqlite3.c' && -e 'sqlite3.h' && -e 'sqlite3ext.h') {
+        if ($sqlite_quiet) {
+            $postamble .= <<"SQLITE";
+sqlite3\$(OBJ_EXT): sqlite3.c sqlite3.h
+\t\$(CCCMD) \$(CCCDLFLAGS) "-I\$(PERL_INC)" \$(PASTHRU_DEFINE) \$(DEFINE)$sqlite_quiet sqlite3.c
+SQLITE
+        }
 		my $S = $^O eq 'MSWin32' ? '\\' : '/';  # only Win32 (not cygwin)
 		my $share = "\$(INST_LIB)${S}auto${S}share${S}dist${S}\$(DISTNAME)";
 		my $perm_dir = $ExtUtils::MakeMaker::VERSION >= 6.52 ? '$(PERM_DIR)' : '755';

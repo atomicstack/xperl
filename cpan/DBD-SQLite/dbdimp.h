@@ -193,39 +193,6 @@ int sqlite_db_do_sv(SV *dbh, imp_dbh_t *imp_dbh, SV *sv_statement);
 void init_cxt();
 
 
-#ifdef SvUTF8_on
-
-static SV *
-newUTF8SVpv(char *s, STRLEN len) {
-  dTHX;
-  register SV *sv;
-
-  sv = newSVpv(s, len);
-  SvUTF8_on(sv);
-  return sv;
-}
-
-static SV *
-newUTF8SVpvn(char *s, STRLEN len) {
-  dTHX;
-  register SV *sv;
-
-  sv = newSV(0);
-  sv_setpvn(sv, s, len);
-  SvUTF8_on(sv);
-  return sv;
-}
-
-#else  /* #ifdef SvUTF8_on */
-
-#define newUTF8SVpv newSVpv
-#define newUTF8SVpvn newSVpvn
-#define SvUTF8_on(a) (a)
-#define SvUTF8_off(a) (a)
-#define sv_utf8_upgrade(a) (a)
-
-#endif /* #ifdef SvUTF8_on */
-
 #ifdef _MSC_VER
 #  define atoll _atoi64
 #endif

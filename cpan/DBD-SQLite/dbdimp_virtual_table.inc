@@ -210,7 +210,7 @@ static int perl_vt_Drop(sqlite3_vtab *pVTab){
 }
 
 
-static char *
+static const char *
 _constraint_op_to_string(unsigned char op) {
     switch (op) {
     case SQLITE_INDEX_CONSTRAINT_EQ:
@@ -261,7 +261,6 @@ static int perl_vt_BestIndex(sqlite3_vtab *pVTab, sqlite3_index_info *pIdxInfo){
     SV *hashref;
     SV **val;
     HV *hv;
-    struct sqlite3_index_constraint_usage *pConsUsage;
 
     ENTER;
     SAVETMPS;
@@ -269,22 +268,20 @@ static int perl_vt_BestIndex(sqlite3_vtab *pVTab, sqlite3_index_info *pIdxInfo){
     /* build the "where_constraints" datastructure */
     constraints = newAV();
     for (i=0; i<pIdxInfo->nConstraint; i++){
-        struct sqlite3_index_constraint const *pCons = &pIdxInfo->aConstraint[i];
         HV *constraint = newHV();
-        char *op_str   = _constraint_op_to_string(pCons->op);
-        hv_stores(constraint, "col",    newSViv(pCons->iColumn));
+        const char *op_str = _constraint_op_to_string(pIdxInfo->aConstraint[i].op);
+        hv_stores(constraint, "col",    newSViv(pIdxInfo->aConstraint[i].iColumn));
         hv_stores(constraint, "op",     newSVpv(op_str, 0));
-        hv_stores(constraint, "usable", pCons->usable ? &PL_sv_yes : &PL_sv_no);
+        hv_stores(constraint, "usable", pIdxInfo->aConstraint[i].usable ? &PL_sv_yes : &PL_sv_no);
         av_push(constraints, newRV_noinc((SV*) constraint));
     }
 
     /* build the "order_by" datastructure */
     order_by = newAV();
     for (i=0; i<pIdxInfo->nOrderBy; i++){
-        struct sqlite3_index_orderby const *pOrder = &pIdxInfo->aOrderBy[i];
         HV *order = newHV();
-        hv_stores(order, "col",  newSViv(pOrder->iColumn));
-        hv_stores(order, "desc", pOrder->desc ? &PL_sv_yes : &PL_sv_no);
+        hv_stores(order, "col",  newSViv(pIdxInfo->aOrderBy[i].iColumn));
+        hv_stores(order, "desc", pIdxInfo->aOrderBy[i].desc ? &PL_sv_yes : &PL_sv_no);
         av_push( order_by, newRV_noinc((SV*) order));
     }
 
@@ -310,7 +307,7 @@ static int perl_vt_BestIndex(sqlite3_vtab *pVTab, sqlite3_index_info *pIdxInfo){
     if (val && SvOK(*val)) {
         STRLEN len;
         char *str = SvPVutf8(*val, len);
-        pIdxInfo->idxStr = sqlite3_malloc(len+1);
+        pIdxInfo->idxStr = (char *)sqlite3_malloc(len+1);
         memcpy(pIdxInfo->idxStr, str, len);
         pIdxInfo->idxStr[len] = 0;
         pIdxInfo->needToFreeIdxStr = 1;
@@ -334,10 +331,9 @@ static int perl_vt_BestIndex(sqlite3_vtab *pVTab, sqlite3_index_info *pIdxInfo){
         val = hv_fetch(hv, "argvIndex", 9, FALSE);
         argvIndex = (val && SvOK(*val)) ? SvIV(*val) + 1: 0;
 
-        pConsUsage = &pIdxInfo->aConstraintUsage[i];
-        pConsUsage->argvIndex = argvIndex;
+        pIdxInfo->aConstraintUsage[i].argvIndex = argvIndex;
         val = hv_fetch(hv, "omit", 4, FALSE);
-        pConsUsage->omit = (val && SvTRUE(*val)) ? 1 : 0;
+        pIdxInfo->aConstraintUsage[i].omit = (val && SvTRUE(*val)) ? 1 : 0;
     }
 
     PUTBACK;
@@ -785,7 +781,13 @@ static sqlite3_module perl_vt_Module = {
 #if SQLITE_VERSION_NUMBER >= 3007007
     perl_vt_Savepoint,    /* xSavepoint (optional) */
     perl_vt_Release,      /* xRelease (optional) */
-    perl_vt_RollbackTo    /* xRollbackTo (optional) */
+    perl_vt_RollbackTo,   /* xRollbackTo (optional) */
+#endif
+#if SQLITE_VERSION_NUMBER >= 3026000
+    NULL,                /* xShadowName (optional) */
+#endif
+#if SQLITE_VERSION_NUMBER >= 3044000
+    NULL,                /* xIntegrity (optional) */
 #endif
 };
 
@@ -796,7 +798,6 @@ sqlite_db_destroy_module_data(void *pAux)
     dTHX;
     dSP;
     int count;
-    int rc = SQLITE_ERROR;
     perl_vtab_init *init_data;
 
     ENTER;
@@ -852,7 +853,7 @@ sqlite_db_create_module(pTHX_ SV *dbh, const char *name, const char *perl_class)
     sqlite3_free(module_ISA);
 
     /* build the init datastructure that will be passed to perl_vt_New() */
-    init_data = sqlite3_malloc(sizeof(*init_data));
+    init_data = (perl_vtab_init *)sqlite3_malloc(sizeof(*init_data));
     init_data->dbh        = newRV(dbh);
     sv_rvweaken(init_data->dbh);
     init_data->perl_class = sqlite3_mprintf(perl_class);

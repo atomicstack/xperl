@@ -90,7 +90,6 @@ static int perl_tokenizer_Open(
     dTHX;
     dSP;
     dMY_CXT;
-    U32 flags;
     SV *perl_string;
     int n_retval;
 
@@ -101,20 +100,6 @@ static int perl_tokenizer_Open(
 
     /* SVs_TEMP will call sv_2mortal */
     perl_string = newSVpvn_flags(pInput, nBytes, SVs_TEMP);
-
-    switch (MY_CXT.last_dbh_string_mode) {
-        DBD_SQLITE_STRING_MODE_UNICODE_NAIVE:
-            DBD_SQLITE_UTF8_DECODE_NAIVE(perl_string);
-            break;
-
-        DBD_SQLITE_STRING_MODE_UNICODE_FALLBACK:
-        DBD_SQLITE_STRING_MODE_UNICODE_STRICT:
-            DBD_SQLITE_UTF8_DECODE_WITH_FALLBACK(perl_string);
-            break;
-
-        default:
-            break;
-    }
 
     DBD_SQLITE_UTF8_DECODE_IF_NEEDED(perl_string, MY_CXT.last_dbh_string_mode);
 
@@ -187,7 +172,9 @@ static int perl_tokenizer_Next(
     int n_retval;
     char *token;
     char *nextByte;
-    STRLEN n_a; /* this is required for older perls < 5.8.8 */
+#if PERL_REVISION == 5 && (PERL_VERSION < 8 || (PERL_VERSION == 8 && PERL_SUBVERSION < 8))
+    STRLEN n_a;
+#endif
     I32 hop;
 
     dTHX;
@@ -248,7 +235,7 @@ static int perl_tokenizer_Next(
         if (*pnBytes > c->nTokenAllocated ){
             char *pNew;
             c->nTokenAllocated = *pnBytes + 20;
-            pNew = sqlite3_realloc(c->pToken, c->nTokenAllocated);
+            pNew = (char *)sqlite3_realloc(c->pToken, c->nTokenAllocated);
             if( !pNew ) return SQLITE_NOMEM;
             c->pToken = pNew;
         }
@@ -276,7 +263,8 @@ sqlite3_tokenizer_module perl_tokenizer_Module = {
     perl_tokenizer_Destroy,
     perl_tokenizer_Open,
     perl_tokenizer_Close,
-    perl_tokenizer_Next
+    perl_tokenizer_Next,
+    NULL                /* xLanguageid */
 };
 
 /*
