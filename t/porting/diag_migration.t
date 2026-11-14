@@ -813,15 +813,25 @@ like(
 my $native_selector_capture = generated_macro_body(
     $generated_header, 'PERL_THROW_ERROR_MUTATION_REFERENCE_ALIASING_REFERENT_TYPE_MISMATCH' );
 $native_selector_capture =~ s/\\\n\s*/ /g;
+my ($native_selector_helper) = $native_selector_capture =~ /\b(Perl_throw_croak_\w+)\(/;
+ok(defined($native_selector_helper), 'native selector macro calls a shared fatal helper');
 like(
     $native_selector_capture,
-    qr{
-        IV \s+ const \s+ in_reference_type \s*=\s* ma_reference_type;
-        [\s\S]*?
-        Perl_diag_setup_param\([^;]*selector_domain_1172_0_id,\s*in_reference_type
-    }x,
-    'producer capture retains the native integer selector ID'
+    qr/\b\Q$native_selector_helper\E\(\s*aTHX_\s+perl_diag_error_mutation_reference_aliasing_referent_type_mismatch_idx,\s*__FILE__,\s*__LINE__,\s*ma_reference_type\s*\)/,
+    'producer forwards the native integer selector without conversion'
 );
+my ($native_selector_helper_body) = $generated_helpers =~
+    /(^\Q$native_selector_helper\E\(.*?^\})/ms;
+like(
+    $native_selector_helper_body,
+    qr{
+        IV \s+ ma_arg1 \s* \)
+        [\s\S]*?
+        Perl_diag_setup_param\([^;]*selector_domain_1172_0_id,\s*ma_arg1
+    }x,
+    'shared helper captures the native integer selector ID'
+);
+
 like(
     $diagnostic_match_source,
     qr/Perl_diag_selector_value_id[\s\S]*?if \(length == 1 && value\[0\] == '\*'\)[\s\S]*?return 0;[\s\S]*?return -1;/,
