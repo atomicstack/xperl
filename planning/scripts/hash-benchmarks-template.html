@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hash benchmarks — XPerl and blead</title>
+<style>
+:root{color-scheme:light;--ink:#192b40;--muted:#607186;--border:#dce3eb;--paper:#fff;--bg:#f4f6f9;--green:#087f65}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:1480px;margin:auto;padding:36px 38px 28px}.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+h1{font-size:clamp(27px,3vw,39px);line-height:1.2;letter-spacing:-.025em;margin:10px 0 12px}h2{font-size:19px;line-height:1.3;margin:0}h3{font-size:15px;margin:0 0 8px}
+p{margin:8px 0}.intro{max-width:900px;color:var(--muted);font-size:16px}.meta{display:flex;gap:9px;flex-wrap:wrap;margin:20px 0}.pill{font-size:12px;padding:5px 10px;border:1px solid var(--border);border-radius:20px;background:white}
+.controls{padding:18px 20px;background:var(--paper);border:1px solid var(--border);border-radius:12px;display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}.field{display:grid;gap:6px;font-size:12px;font-weight:650;color:var(--muted)}
+select,button{font:inherit;color:var(--ink)}select{padding:8px 28px 8px 10px;background:white;border:1px solid #cbd5e1;border-radius:7px;font-size:14px;min-height:38px}button{cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #83b3ff;outline-offset:3px}
+.check{display:flex;align-items:center;gap:7px;font-size:13px;min-height:38px}input{accent-color:var(--green)}.downloads{margin-left:auto;display:flex;gap:8px}.secondary{border:1px solid #cbd5e1;border-radius:7px;background:white;padding:8px 12px;font-size:13px}
+.viewbar{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin:22px 0 12px}.tabs{display:flex;padding:4px;background:#e6ebf2;border-radius:9px;gap:3px}.tabs button{background:transparent;border:0;border-radius:6px;font-size:13px;padding:7px 16px}.tabs button[aria-pressed=true]{background:white;box-shadow:0 1px 4px #1b304519;font-weight:650}.view-note{font-size:12px;color:var(--muted)}
+.legend{display:flex;gap:20px;flex-wrap:wrap;margin:10px 0 20px}.legend label{display:flex;gap:8px;align-items:center;cursor:pointer}.legend small{display:block;color:var(--muted);font-size:11px}.swatch{display:block;width:24px;height:3px;border-radius:3px}.legend input{width:15px;height:15px}
+.plots{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{min-width:0;background:var(--paper);border:1px solid var(--border);border-radius:12px;overflow:hidden}.card-head{padding:20px 22px 0}.card-head p{color:var(--muted);font-size:13px;min-height:20px}.plot{height:385px;width:100%}.wide{grid-column:1/-1}.wide .plot{height:360px}.size-note{padding:0 22px 18px;color:var(--muted);font-size:12px;max-width:1100px}
+details{background:white;border:1px solid var(--border);border-radius:10px;margin-top:18px;padding:15px 20px}summary{font-size:14px;font-weight:650;cursor:pointer}.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px;font-size:13px}.method-grid p{color:var(--muted)}code{background:#edf2f6;padding:2px 4px;border-radius:3px;font-size:12px;overflow-wrap:anywhere}a{color:#1764a4}table{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}th,td{padding:9px 12px;text-align:right;border-bottom:1px solid #e8edf3}th{background:#f5f7fa;font-weight:650;color:var(--muted)}th:first-child,td:first-child,td:nth-child(2),th:nth-child(2){text-align:left}.table-wrap{overflow:auto;max-height:520px;margin-top:14px}footer{padding:20px 0 0;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}#status{color:var(--muted);font-size:12px}
+@media(max-width:900px){main{padding:24px 16px}.plots,.method-grid{grid-template-columns:1fr}.wide{grid-column:auto}.downloads{margin-left:0}.controls{gap:12px}.plot{height:350px}.wide .plot{height:330px}.legend{gap:13px}.legend small{max-width:190px}.tabs button{padding:7px 11px}}
+@media print{body{background:white}main{padding:0}.controls,.downloads,.tabs{display:none}.plots{display:block}.card{margin:15px 0;break-inside:avoid}.plot{height:380px}details{break-inside:avoid}footer{font-size:9px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="eyebrow">XPerl planning / ordinary hashes</div>
+<h1>Construction, lookup and storage</h1>
+<p class="intro">Compare blead, the previous four-key policy, and the new eight-key policy. Lines show mean time; shaded bands show 95% confidence intervals. Hover a point for its measurements.</p>
+<div class="meta"><span class="pill" id="size-count">Key counts</span><span class="pill">7 runs per case</span><span class="pill">GCC 13.3 · −O2 · 64-bit</span><span class="pill">CPU 1 · 3 fixed hash seeds</span><span class="pill">9-byte keys · 32-byte values</span></div>
+</header>
+<form class="controls" onsubmit="return false" aria-label="Chart settings">
+<label class="field">Stored keys<select id="stored"><option value="interned">Interned</option><option value="private">Private / unshared</option></select></label>
+<label class="field">Lookup queries<select id="query"><option value="plain">Plain strings</option><option value="interned">Interned strings</option></select></label>
+<label class="field">Construction metric<select id="metric"><option value="hash">Time per completed hash</option><option value="entry">Time per inserted entry</option></select></label>
+<label class="check"><input type="checkbox" id="bands" checked>95% confidence bands</label>
+<div class="downloads"><button type="button" class="secondary" id="csv">Download CSV</button><button type="button" class="secondary" id="json">Download data</button></div>
+</form>
+<div class="viewbar"><nav class="tabs" aria-label="Graph sections"><a class="secondary" href="#small">1–16 keys</a><a class="secondary" href="#large">50–100k keys</a><a class="secondary" href="#storage">Computed storage</a></nav><span class="view-note">All measured sizes are shown below · lower is faster</span></div>
+<div id="legend" class="legend" aria-label="Configurations"></div>
+<div class="viewbar" id="small"><h2>1–16 keys</h2><span class="view-note">Linear axes · index transitions marked at 5 and 9 keys</span></div>
+<section class="plots" aria-label="Small hash benchmark graphs">
+<article class="card"><div class="card-head"><h2>Time to construct</h2><p id="construct-caption">Incremental insertion, including allocation and growth.</p></div><div class="plot" id="construct" role="img" aria-label="Hash construction timing graph"></div></article>
+<article class="card"><div class="card-head"><h2>Time to look up a key</h2><p id="lookup-caption">Shuffled successful queries.</p></div><div class="plot" id="lookup" role="img" aria-label="Hash lookup timing graph"></div></article>
+</section>
+<div class="viewbar" id="large"><h2>50–100,000 keys</h2><span class="view-note" id="large-size-list"></span></div>
+<section class="plots" aria-label="Large hash benchmark graphs">
+<article class="card"><div class="card-head"><h2>Time to construct</h2><p id="construct-large-caption">Whole-hash time in milliseconds · logarithmic axes.</p></div><div class="plot" id="construct-large" role="img" aria-label="Large hash construction timing graph"></div></article>
+<article class="card"><div class="card-head"><h2>Time to look up a key</h2><p id="lookup-large-caption">Nanoseconds per lookup · logarithmic key-count axis.</p></div><div class="plot" id="lookup-large" role="img" aria-label="Large hash lookup timing graph"></div></article>
+</section>
+<div class="viewbar" id="storage"><h2>Computed table storage</h2><span class="view-note">HV + body + entries + buckets and links</span></div>
+<section class="plots" aria-label="Computed hash table storage graphs">
+<article class="card"><div class="card-head"><h2>1–16 keys</h2><p>Bytes per table · linear axes.</p></div><div class="plot" id="size" role="img" aria-label="Small hash table size graph"></div></article>
+<article class="card"><div class="card-head"><h2>50–100,000 keys</h2><p>KiB per table · logarithmic axes.</p></div><div class="plot" id="size-large" role="img" aria-label="Large hash table size graph"></div></article>
+</section>
+<p class="size-note">Sizes are computed from each run’s recorded capacity and layout, then averaged. Entry headroom is included. Keys, values, allocator rounding, unused arena slots and auxiliary iterator storage are excluded. Hover for the component breakdown.</p>
+<details><summary>Measurements and confidence intervals</summary><div class="table-wrap"><table><thead><tr><th>Keys</th><th>Configuration</th><th id="table-construct">Construction</th><th>Lookup mean ± SD (ns)</th><th>Lookup 95% CI (ns)</th><th>Table bytes</th><th>Runs</th></tr></thead><tbody id="measurements"></tbody></table></div></details>
+<details><summary>Method, size formulas and build provenance</summary><div class="method-grid">
+<section><h3>Timing method</h3><p>Construction starts with an allocated empty hash and inserts prepared keys and values one at a time. Input generation, diagnostics and destruction run outside the timer. Small construction batches reuse field names across live hashes. At 4,096 entries and above there is one hash per batch.</p><p>Lookup uses a shuffled cycle of successful queries. Query interning happens before timing. Each run targets 200,000 operations and validates key counts, values and a final content digest. All configurations use the same inputs and seeded shuffle.</p><p>The seven samples are independent worker processes with three fixed hash seeds rotated across trials. Samples were collected in matched, randomized runs; matching earlier samples are reused with provenance retained.</p></section>
+<section><h3>Confidence bands</h3><p>Each timing interval is <code>mean ± 2.447 × sample SD / √7</code>: a two-sided Student’s t interval with six degrees of freedom. The critical value comes from the <a href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm">NIST t table</a>.</p><p>These bands describe uncertainty in run means on this machine. They assume independent, approximately normal run means. They do not describe individual-operation latency or variation over every possible hash seed. They are pointwise intervals, not a simultaneous confidence band for the entire curve.</p><p>Storage curves use layout calculations rather than statistical timing intervals.</p></section>
+<section><h3>Storage formulas</h3><p><strong>Blead:</strong> HV + body + live keys × 24-byte HE + bucket count × 8-byte pointer. The next pointer is included in each HE.</p><p><strong>XPerl, linear:</strong> HV + body + entry capacity × 16-byte HE. A singleton uses one arena slot; the first heap allocation is two slots in the previous policy and four in the new policy.</p><p><strong>XPerl, indexed:</strong> HV + body + entry capacity × 16 + metadata + bucket count × index width + entry capacity × link width. This build uses 1-, 2- or 4-byte identifiers without fingerprints.</p><p>The previous policy adds its index at the fifth key. The new default adds it at the ninth key; entry capacity then grows from eight to ten.</p></section>
+<section><h3>Matched builds</h3><p>GCC 13.3, <code>-O2</code>, the same effective C flags and core link libraries, 64-bit integers, system malloc, and threading, multiplicity and debugging disabled. The two XPerl policies above eight keys use the same indexed representation.</p><p id="revisions"></p><p>Underlying hash outputs and seeded query shuffles were checked to match. The diagnostic extension is compiled against each interpreter’s own headers and runs outside the timers.</p><p>Downloads include binary and helper hashes, all run samples, source locations, formulas and statistics. This file includes Plotly 2.35.2 and opens offline.</p></section>
+</div></details>
+<footer><span id="generated"></span><span id="status" role="status" aria-live="polite">Preparing charts…</span></footer>
+</main>
+<script id="report-data" type="application/json">@@DATA@@</script>
+<script>@@PLOTLY@@</script>
+<script>
+'use strict';
+const DATA=JSON.parse(document.getElementById('report-data').textContent);
+const state={range:'all',stored:'interned',query:'plain',metric:'hash',bands:true,visible:new Set(DATA.variants.map(v=>v.id))};
+const byId=id=>document.getElementById(id);
+const number=(x,d=3)=>Number(x).toLocaleString('en-US',{maximumFractionDigits:d,minimumFractionDigits:d});
+const compact=n=>n>=1000?(n/1000)+'k':String(n);
+const rgba=(hex,a)=>'rgba('+[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)).join(',')+','+a+')';
+const rowsFor=(work,variant)=>DATA.records.filter(r=>r.work===work&&r.variant===variant&&r.stored===state.stored&&(work==='insert'||r.query===state.query)&&inRange(r.n)).sort((a,b)=>a.n-b.n);
+const inRange=n=>state.range==='all'||(state.range==='small'?n<=16:n>=50);
+function units(){return state.metric==='entry'?{unit:'ns / entry',scale:n=>1}:{unit:state.range==='small'?'µs / hash':'ms / hash',scale:n=>n/(state.range==='small'?1000:1000000)};}
+function annotations(){if(state.range!=='small')return [];return DATA.variants.filter(v=>v.id!=='blead'&&state.visible.has(v.id)).map(v=>({xref:'x',yref:'paper',x:v.id==='xperl-default'?5:9,y:1.065,text:v.id==='xperl-default'?'Previous: index':'New: index',showarrow:false,font:{size:10,color:v.color},bgcolor:'#ffffffc9'}));}
+function layout(title,isSize=false,isConstruction=false){const small=state.range==='small';const chosen=DATA.sizes.filter(inRange);return {paper_bgcolor:'#fff',plot_bgcolor:'#fff',margin:{l:isSize?88:75,r:22,t:30,b:58},font:{family:'system-ui, sans-serif',size:12,color:'#607186'},showlegend:false,hovermode:'closest',hoverlabel:{bgcolor:'white',font:{color:'#192b40'}},uirevision:state.range+'-'+state.metric,xaxis:{title:{text:'Number of keys',standoff:14},type:small?'linear':'log',range:small?[.65,16.35]:[Math.log10(chosen[0])-.12,Math.log10(chosen.at(-1))+.12],tickvals:chosen,ticktext:chosen.map(compact),tickangle:small?0:-45,tickfont:{size:11},gridcolor:'#edf1f5',zeroline:false,automargin:true},yaxis:{title:{text:title,standoff:12},type:!small&&(isSize||(isConstruction&&state.metric==='hash'))?'log':'linear',dtick:!small&&(isSize||(isConstruction&&state.metric==='hash'))?1:undefined,exponentformat:'none',rangemode:'tozero',gridcolor:'#edf1f5',zeroline:false,automargin:true},annotations:annotations(),shapes:small?annotations().map(a=>({type:'line',xref:'x',yref:'paper',x0:a.x,x1:a.x,y0:0,y1:1,line:{color:'#c9d4df',width:1,dash:'dot'}})):[]};}
+const config={responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d'],toImageButtonOptions:{format:'svg',filename:'hash-benchmark'}};
+function timing(work){let traces=[];const unit=work==='insert'?units().unit:'ns / lookup';for(const v of DATA.variants){if(!state.visible.has(v.id))continue;const rs=rowsFor(work,v.id);const scale=r=>work==='insert'?units().scale(r.n):1;const x=rs.map(r=>r.n);if(state.bands){traces.push({x,y:rs.map(r=>r.low*scale(r)),type:'scatter',mode:'lines',line:{width:0},hoverinfo:'skip',showlegend:false});traces.push({x,y:rs.map(r=>r.high*scale(r)),type:'scatter',mode:'lines',line:{width:0},fill:'tonexty',fillcolor:rgba(v.color,.15),hoverinfo:'skip',showlegend:false});}traces.push({x,y:rs.map(r=>r.mean*scale(r)),type:'scatter',mode:'lines+markers',name:v.label,line:{color:v.color,width:2.6},marker:{color:v.color,size:6},customdata:rs.map(r=>[r.sd*scale(r),r.low*scale(r),r.high*scale(r),r.count]),hovertemplate:'<b>'+v.label+'</b><br>%{x:,} keys<br>Mean %{y:.3f} '+unit+'<br>SD %{customdata[0]:.3f}<br>95% CI [%{customdata[1]:.3f}, %{customdata[2]:.3f}]<br>%{customdata[3]} runs<extra></extra>'});}return Plotly.react((work==='insert'?'construct':'lookup')+(state.range==='large'?'-large':''),traces,layout(unit,false,work==='insert'),config);}
+function storage(){const scale=state.range==='small'?1:1024;const unit=scale===1?'bytes':'KiB';let traces=[];for(const v of DATA.variants){if(!state.visible.has(v.id))continue;const rs=rowsFor('insert',v.id);traces.push({type:'scatter',mode:'lines+markers',name:v.label,x:rs.map(r=>r.n),y:rs.map(r=>r.size.total/scale),line:{color:v.color,width:2.6},marker:{color:v.color,size:6},customdata:rs.map(r=>[r.size.hv+r.size.body,r.size.entries,r.size.heads,r.size.links,r.size.metadata,r.size.total]),hovertemplate:'<b>'+v.label+'</b><br>%{x:,} keys<br>Computed total %{customdata[5]:,.0f} bytes<br>HV + body: %{customdata[0]:,.0f}<br>Entries: %{customdata[1]:,.0f}<br>Bucket heads: %{customdata[2]:,.0f}<br>Packed links: %{customdata[3]:,.0f}<br>Metadata: %{customdata[4]:,.0f}<extra></extra>'});}return Plotly.react('size'+(state.range==='large'?'-large':''),traces,layout(unit,true),config);}
+function table(){let html='';for(const n of DATA.sizes.filter(inRange)){for(const v of DATA.variants){if(!state.visible.has(v.id))continue;const c=rowsFor('insert',v.id).find(r=>r.n===n),l=rowsFor('random-hit',v.id).find(r=>r.n===n),s=state.metric==='entry'?1:n/1000;html+='<tr><td>'+n.toLocaleString()+'</td><td>'+v.label+'</td><td>'+number(c.mean*s)+' ± '+number(c.sd*s)+'</td><td>'+number(l.mean)+' ± '+number(l.sd)+'</td><td>['+number(l.low)+', '+number(l.high)+']</td><td>'+number(c.size.total,0)+'</td><td>7</td></tr>';}}byId('measurements').innerHTML=html;byId('table-construct').textContent='Construction mean ± SD ('+(state.metric==='entry'?'ns / entry':'µs / hash')+')';}
+function scoped(range,fn){const previous=state.range;state.range=range;try{return fn();}finally{state.range=previous;}}
+async function render(){
+ document.body.dataset.ready='false';
+ const stored=state.stored==='interned'?'interned':'private';
+ byId('construct-caption').textContent=scoped('small',()=> 'Incremental insertion · '+units().unit+' · '+stored+' stored keys');
+ byId('construct-large-caption').textContent=scoped('large',()=> 'Incremental insertion · '+units().unit+' · logarithmic key-count axis');
+ for(const id of ['lookup-caption','lookup-large-caption'])byId(id).textContent='Shuffled successful queries · '+state.query+' strings · ns / lookup';
+ await Promise.all(['small','large'].flatMap(range=>scoped(range,()=>[timing('insert'),timing('random-hit'),storage()])));
+ scoped('all',table);
+ byId('status').textContent='All '+DATA.sizes.length+' sizes visible · '+(state.bands?'95% confidence intervals':'confidence bands hidden');
+ document.body.dataset.ready='true';
+}
+for(const v of DATA.variants){const label=document.createElement('label');label.innerHTML='<input type="checkbox" checked value="'+v.id+'"><span class="swatch" style="background:'+v.color+'"></span><span><strong>'+v.label+'</strong><small>'+v.policy+'</small></span>';label.querySelector('input').addEventListener('change',e=>{e.target.checked?state.visible.add(v.id):state.visible.delete(v.id);render();});byId('legend').appendChild(label);}
+for(const id of ['stored','query','metric','bands'])byId(id).addEventListener('change',()=>{state[id]=id==='bands'?byId(id).checked:byId(id).value;render();});
+function download(name,text,type){const link=document.createElement('a');const url=URL.createObjectURL(new Blob([text],{type}));link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+byId('json').addEventListener('click',()=>download('hash-benchmarks.json',JSON.stringify(DATA,null,2),'application/json'));
+byId('csv').addEventListener('click',()=>{const fields=['keys','workload','stored_keys','query_keys','variant','runs','mean_ns_per_operation','sample_sd_ns','ci95_low_ns','ci95_high_ns','expected_table_bytes'];const csv=[fields.join(','),...DATA.records.map(r=>[r.n,r.work,r.stored,r.query,r.variant,r.count,r.mean,r.sd,r.low,r.high,r.size.total].join(','))].join('\n');download('hash-benchmarks.csv',csv,'text/csv');});
+byId('generated').textContent='Generated '+DATA.generated+' · self-contained report';
+byId('size-count').textContent=DATA.sizes.length+' key counts';
+byId('large-size-list').textContent=DATA.sizes.filter(n=>n>=50).map(n=>n.toLocaleString('en-US')).join(' · ');
+const manifest=DATA.provenance.manifest;byId('revisions').textContent='Blead '+manifest.blead_revision.slice(0,10)+' · XPerl '+manifest.xperl_revision.slice(0,10)+'. Policies are archived builds; the selected policy is now the production default.';
+window.addEventListener('error',e=>{document.body.dataset.error=e.message;byId('status').textContent='Chart error: '+e.message;});
+window.addEventListener('unhandledrejection',e=>{document.body.dataset.error=String(e.reason);byId('status').textContent='Chart error: '+e.reason;});
+window.hashReport={data:DATA,state,render};
+render();
+</script>
+</body>
+</html>
