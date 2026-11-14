@@ -868,9 +868,12 @@ sub source_files {
     my ($options) = @_;
     $options ||= {};
     my $manifest = read_source('MANIFEST');
+    # This standalone XS helper also builds on ordinary Perl, which has no
+    # managed diagnostic catalog. Treat it like the external distributions.
     return grep {
              ( /\.(?:c|cpp|h|xs|y)\z/
             || ( $options->{include_includes} && /\.inc\z/ ) )
+          && $_ ne "Porting/bench-hash-options-compat/HashOptionsCompat.xs"
           && !/\Aperldiag(?:\.h|_data\.inc|_helpers\.inc|_plural\.inc)\z/
           && (!m!\A(?:ext|dist|cpan|lib|t|os2/OS2)/!
             || m!\Aext/DynaLoader/!
