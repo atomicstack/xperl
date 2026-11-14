@@ -2124,19 +2124,11 @@ oo_dump_scalar(perl_yaml_xs_t *self, SV *node)
             style = YAML_PLAIN_SCALAR_STYLE;
         }
         else {
-            string = SvPV_nolen(node);
-            int dot = 0;
-            for (i=0; i < strlen(string); i++) {
-                if (string[i] == 46) {
-                    dot = 1;
-                    break;
-                }
-            }
-            if (! dot) {
-                char *add = ".0";
-                strcat(string, add);
-            }
-            string_len = strlen(string);
+            node_clone = sv_mortalcopy(node);
+            string = SvPV_nolen(node_clone);
+            if (!strchr(string, '.'))
+                sv_catpvs(node_clone, ".0");
+            string = SvPV(node_clone, string_len);
         }
     }
     else if (SvIOK(node)) {

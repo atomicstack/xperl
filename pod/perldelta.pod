@@ -582,6 +582,8 @@ L<DBI> 1.656 is bundled with XPerl as a database interface for DBI drivers.
 
 L<YAML::XS> v0.910.0 is bundled with XPerl for YAML serialization. Its
 libyaml implementation is included in the distribution.
+Dumping floating-point scalars through the object interface uses a copy
+when adding a decimal point, preserving the input scalar.
 
 =item *
 

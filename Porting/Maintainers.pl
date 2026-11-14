@@ -1678,6 +1678,8 @@ our %Modules = (
         },
         'CUSTOMIZED'  => [
             qw(YAML-XS-LibYAML/Makefile.PL),
+            qw(YAML-XS-LibYAML/LibYAML.xs YAML-XS-LibYAML/emitter.c),
+            qw(YAML-XS-LibYAML/perl_libyaml.c YAML-XS-LibYAML/perl_libyaml.h),
             qw(t/TestYAML.pm t/TestYAMLTests.pm t/oop/15-various.t),
         ],
     },
