@@ -517,6 +517,8 @@ Perl_xperl_copy_array(pTHX_ AV *source, bool copy_hashes)
     return copy;
 }
 
+#include "xperl_catalog.inc"
+
 XS(Perl_XPerl_Diagnostic_new);
 XS(Perl_XPerl_Diagnostic_new)
 {
@@ -2820,6 +2822,10 @@ Perl_xperl_render_diagnostic_legacy_body(pTHX_ HV *fields,
         return message;
     }
 
+    if (hv_existss(fields, "_module_descriptor"))
+        return Perl_xperl_catalog_render(aTHX_ fields,
+                                         engine ? engine->language : language);
+
     if (SvOK(number))
         return Perl_xperl_render_diagnostic_template(aTHX_ fields, language,
                                                       engine);
@@ -2919,6 +2925,10 @@ Perl_xperl_render_diagnostic_template(pTHX_ HV *fields, const char *language,
 {
     SV *number = Perl_xperl_field(aTHX_ fields, "number");
     SV *params = Perl_xperl_field(aTHX_ fields, "params");
+
+    if (hv_existss(fields, "_module_descriptor"))
+        return Perl_xperl_catalog_render(aTHX_ fields,
+                                         engine ? engine->language : language);
 
     if (!SvOK(number) || SvROK(number))
         return NULL;
@@ -3853,6 +3863,8 @@ Perl_xperl_boot_core(pTHX)
     newXS("XPerl::DiagPack::_validate_language",
           Perl_diagpack_validate_language_xs, file);
     newXS("XPerl::Diagnostic::_new", Perl_XPerl_Diagnostic_new, file);
+    newXS("XPerl::Diagnostic::Catalog::_register", Perl_XPerl_Catalog_register, file);
+    newXS("XPerl::Diagnostic::Catalog::_capture", Perl_XPerl_Catalog_capture, file);
     newXS("XPerl::Diagnostic::derive", Perl_XPerl_Diagnostic_derive, file);
     newXS("XPerl::DiagGroup::contents", Perl_XPerl_DiagGroup_contents, file);
     newXS("XPerl::DiagGroup::contents_count", Perl_XPerl_DiagGroup_contents_count, file);

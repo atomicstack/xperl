@@ -24010,6 +24010,38 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Debugger"
         },
+        "ERROR_DIAGNOSTIC_API_CATALOG_INVALID" => {
+          "number" => 2784,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_DIAGNOSTIC_API_CATALOG_INVALID",
+          "macro" => "PERL_THROW_ERROR_DIAGNOSTIC_API_CATALOG_INVALID",
+          "source_files" => [
+            "xperl_catalog.inc"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Invalid module diagnostic catalog: %{field} (%{problem})"
+            },
+            "args" => [
+              {
+                "name" => "field",
+                "type" => "text",
+                "format_str" => "s"
+              },
+              {
+                "name" => "problem",
+                "type" => "text",
+                "format_str" => "s"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::DiagnosticAPI"
+        },
         "ERROR_DIAGNOSTIC_API_CHILDREN_APPENDED_ITEM_NOT_DIAGNOSTIC" => {
           "number" => 2728,
           "severity" => "FATAL_ERROR",

@@ -92,6 +92,7 @@ enum perl_diag_index {
     perl_diag_error_debugger_statement_hook_undefined_idx,
     perl_diag_error_debugger_subroutine_hook_undefined_idx,
     perl_diag_error_debugger_tied_argument_array_idx,
+    perl_diag_error_diagnostic_api_catalog_invalid_idx,
     perl_diag_error_diagnostic_api_children_appended_item_not_diagnostic_idx,
     perl_diag_error_diagnostic_api_children_append_cycle_idx,
     perl_diag_error_diagnostic_api_children_derived_list_not_array_idx,
@@ -1686,6 +1687,7 @@ enum perl_diag_number {
     perl_diag_error_debugger_statement_hook_undefined_number                                   = 2005,
     perl_diag_error_debugger_subroutine_hook_undefined_number                                  = 2046,
     perl_diag_error_debugger_tied_argument_array_number                                        = 1257,
+    perl_diag_error_diagnostic_api_catalog_invalid_number                                      = 2784,
     perl_diag_error_diagnostic_api_children_appended_item_not_diagnostic_number                = 2728,
     perl_diag_error_diagnostic_api_children_append_cycle_number                                = 2727,
     perl_diag_error_diagnostic_api_children_derived_list_not_array_number                      = 2723,
@@ -5032,7 +5034,7 @@ enum perl_diag_selector_domain_id {
 
 
 #if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)
-#define PERL_DIAG_METADATA_COUNT 1590
+#define PERL_DIAG_METADATA_COUNT 1591
 
 #endif
 
@@ -20350,6 +20352,17 @@ enum perl_diag_selector_domain_id {
         __LINE__ \
     )
 
+#define PERL_THROW_ERROR_DIAGNOSTIC_API_CATALOG_INVALID(ma_field, ma_problem) \
+    Perl_throw_croak_2_1207( \
+        aTHX_ perl_diag_error_diagnostic_api_catalog_invalid_idx, \
+        __FILE__, \
+        __LINE__, \
+        "%s", \
+        (const char *)(ma_field), \
+        "%s", \
+        (const char *)(ma_problem) \
+    )
+
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_ABORT() \
     STMT_START { \
         PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID(); \
@@ -21435,6 +21448,7 @@ enum perl_diag_selector_domain_id {
 /* PERL_THROW_ERROR_DEBUGGER_STATEMENT_HOOK_UNDEFINED => ERROR_DEBUGGER_STATEMENT_HOOK_UNDEFINED */
 /* PERL_THROW_ERROR_DEBUGGER_SUBROUTINE_HOOK_UNDEFINED => ERROR_DEBUGGER_SUBROUTINE_HOOK_UNDEFINED */
 /* PERL_THROW_ERROR_DEBUGGER_TIED_ARGUMENT_ARRAY => ERROR_DEBUGGER_TIED_ARGUMENT_ARRAY */
+/* PERL_THROW_ERROR_DIAGNOSTIC_API_CATALOG_INVALID => ERROR_DIAGNOSTIC_API_CATALOG_INVALID */
 /* PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_APPENDED_ITEM_NOT_DIAGNOSTIC => ERROR_DIAGNOSTIC_API_CHILDREN_APPENDED_ITEM_NOT_DIAGNOSTIC */
 /* PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_APPEND_CYCLE => ERROR_DIAGNOSTIC_API_CHILDREN_APPEND_CYCLE */
 /* PERL_THROW_ERROR_DIAGNOSTIC_API_CHILDREN_DERIVED_LIST_NOT_ARRAY => ERROR_DIAGNOSTIC_API_CHILDREN_DERIVED_LIST_NOT_ARRAY */
@@ -22622,7 +22636,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * 2db3b21b872970b933758c0b18b9f15ef86ba35f7987fc1007de09248babdc6a diag_conf.pl
+ * d5cd3725cd9d01fe7a9fb886e0b9f823fe0873827fe974f8737c8dbc24aa4bca diag_conf.pl
  * 33ec9731336463f6feeab1a67c087741ee4e1ad5eb527a86cceac4b577ab4168 diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */
