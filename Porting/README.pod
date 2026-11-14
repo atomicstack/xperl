@@ -49,6 +49,15 @@ recorded when available.
 Measure complete hash workloads in batches. Lookup costs include per-hash
 loop setup. Use the flat lookup benchmark when comparing small hash sizes.
 
+=head2 F<bench-hash-options-compat/HashOptionsCompat.pm>, F<bench-hash-options-compat/HashOptionsCompat.xs>, and F<bench-hash-options-compat/Makefile.PL>
+
+Build the standalone compatibility extension for reference Perl builds.
+It supplies hash storage diagnostics, query interning, and sharing controls.
+
+=head2 F<bench-hash-options.pl> and F<bench-hash-options.py>
+
+Run checked ordinary-hash policy benchmarks and compare paired trials.
+
 =head2 F<bench.pl>
 
 Do performance analysis on the code snippets in F<t/perf/benchmarks>.
@@ -279,6 +288,10 @@ outliers of test execution times.
 
 Describes the experimental hash representation, API compatibility changes,
 validation, and memory and performance comparisons.
+
+=head2 F<hash-options-benchmark.pod>
+
+Describe hash policy workloads, build configurations, and output formats.
 
 =head2 F<how_to_write_a_perldelta.pod> 
 

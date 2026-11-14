@@ -1,0 +1,232 @@
+=head1 NAME
+
+hash-options-benchmark - compare ordinary-hash storage policies
+
+=head1 OPTIONS
+
+The production default keeps up to eight keys linear. Select the linear
+limit before starting Perl with C<PERL_HASH_LINEAR_MAX=0>, C<4>, or C<8>. Zero gives every
+nonempty ordinary hash an index. Four and eight keep a dense entry vector
+through that many keys, with an arena entry for a singleton.
+
+Build with C<-Accflags=-DPERL_HASH_INDEX_32BIT> to use four-byte bucket heads
+and next links at every indexed size. Without this definition, the entry
+capacity selects one-, two-, or four-byte indices. This option applies to
+ordinary hashes using separate chaining. It does not change the shared-key
+table or select a 32-bit interpreter.
+
+The first heap allocation reserves four entries by default. Build with
+C<-Accflags=-DPERL_HASH_LINEAR_MIN_ALLOC=2> to compare the two-entry policy.
+The allocation is capped at the selected linear limit. This option does
+not change explicit C<keys %hash = N> reservations or the singleton arena.
+
+Use separate build trees for different index widths. XS modules can inline
+the index accessors and must match the interpreter's width policy. The
+allocation option changes only C<hv.c> and does not change the layout.
+
+=head1 QUICK SCREEN
+
+The default C<--profile quick> runs 58 cases against six configurations
+with three trials, one for each hash seed. This gives 1044 samples. Each
+sample uses the same 200000-operation budget and correctness checks as
+the full sweep.
+
+The configurations compare the original search, the specialized search,
+an index from the first key, an eight-key linear limit, fixed 32-bit
+indices, and a four-entry initial heap allocation. Each change is tested
+separately against the specialized four-key reference. Combined storage policies
+belong in a follow-up after this screen identifies promising choices.
+
+Cases cover shuffled hits at one, two, four, five, eight, nine, 256, and
+65536 keys. Construction adds the three-key growth boundary. Misses and
+churn exercise four- and eight-key hashes. An eight-key case uses long
+keys. Both stored-key modes and both variable-query modes are included.
+The recorded entry capacity and index width confirm which representation
+each case reaches.
+
+    python3 Porting/bench-hash-options.py \
+      --manifest /build/manifest.json --output /results/quick --cpu 1
+
+Use C<--reuse /results/previous> to import matching samples. The driver
+requires the same worker source, binary hashes, storage policies, CPU,
+hash seeds, and exact workload definitions, including operation budgets.
+It records the source result hashes and runs only missing samples.
+Changing the driver to select fewer cases does not invalidate the worker
+measurements. Imported rows retain their individual provenance.
+
+The three-trial screen can expose large differences. Small differences
+and close choices need more trials and focused confirmation.
+
+=head1 FULL MATRIX
+
+Use ten configurations: two width policies, three linear limits, and two
+initial allocation sizes where the linear limit is nonzero. Add the
+original search implementation with the default storage policy as an
+eleventh reference. All other compiler and interpreter options must match.
+The full workload expansion has 962 cases per configuration, including
+both stored-key modes and both variable-query modes. Five trials of all
+eleven configurations produce 52910 worker processes. Use the smoke pass
+to check the selected binaries before starting this longer run.
+
+The driver takes a JSON manifest naming each configuration's interpreter:
+
+    {
+      "baseline": "reference",
+      "variants": [
+        {"name": "reference", "perl": "/build/reference/perl",
+         "width": "adaptive", "linear_max": 4, "min_alloc": 2},
+        {"name": "fixed32-linear4-alloc2", "perl": "/build/fixed32-2/perl",
+         "width": 32, "linear_max": 4, "min_alloc": 2}
+      ]
+    }
+
+Each interpreter directory must contain its matching C<lib> tree. Record
+the source revision, patch, Configure arguments, and build log alongside
+the manifest. The driver records hashes of the binaries and benchmark
+sources, the workload definitions, CPU identity, and selected seeds.
+
+    python3 Porting/bench-hash-options.py \
+      --manifest /build/manifest.json --output /results/hash-options \
+      --profile full --cpu 1 --trials 5 --operations 200000
+
+Use C<--smoke --trials 1> with a separate output directory to check all
+worker branches at zero, two, and four keys before collecting the full
+matrix. A run can resume
+in its original directory if its configuration, sources, and binaries have
+not changed. The driver rejects a different experiment in that directory.
+
+Use C<--sizes>, C<--workloads>, and C<--variants> to focus either profile.
+Each option accepts comma-separated values. The full profile can generate
+additional sizes supplied through C<--sizes>. Variant selection must retain
+the baseline. For example, compare two linear limits at four and eight
+keys with:
+
+    python3 Porting/bench-hash-options.py \
+      --manifest /build/manifest.json --output /results/linear-limits \
+      --profile full --cpu 1 --trials 3 --sizes 4,8 \
+      --workloads random-hit,miss \
+      --variants reference,adaptive-linear4-alloc2,adaptive-linear8-alloc2
+
+=head1 COMPARING WITH BLEAD
+
+Use a blead interpreter built with matching compiler, optimization,
+C flags, core link libraries, threading, multiplicity, numeric sizes,
+allocator, and debugging settings. C<perllibs> records the interpreter's
+link libraries. C<libs> can include additional libraries detected for
+optional extensions. Record revisions separately. Matching build settings
+does not require identical source revisions.
+
+Stock blead lacks the XPerl diagnostic entry points used by this worker.
+Build the small C<bench-hash-options-compat> extension against each
+interpreter's own headers. Copy that directory to a separate temporary
+build directory for each interpreter, then run there:
+
+    bench_core=/absolute/path/to/the/matching/perl/source
+    PERL5LIB="$bench_core/lib" "$bench_core/perl" -I"$bench_core/lib" \
+      Makefile.PL CORE="$bench_core"
+    PERL5LIB="$bench_core/lib" make
+
+Set a variant's C<compat> field to the absolute path of its extension build
+directory. The driver loads its C<blib/lib> and C<blib/arch> before running
+the worker and records the helper source and binary hashes. Use the same
+helper source for all compared interpreters. The extension supplies the
+sharing toggle and query constructor in both builds. It supplies missing
+C<Hash::Util::hash_storage_info> and shared-table diagnostics in blead.
+All helper calls run outside the timed regions.
+
+A pointer-chain baseline uses C<"width": "pointer">,
+C<"linear_max": 0>, and C<"min_alloc": 0> in the manifest. Its packed
+index width is zero because bucket heads and next links are pointers.
+Explicitly name comparison variants with C<--variants> when testing
+combinations omitted by the quick profile.
+
+Blead table bytes include the HV, its body, bucket storage, and one HE
+arena slot per live entry. Free arena slots and allocator rounding of
+those arenas are excluded, as for XPerl's singleton arena. Blead's
+C<allocator_bytes> reports the bucket allocation only. Do not compare it
+as a complete allocator total against XPerl's heap entry and index blocks.
+Shared-table probe distances are null for pointer chains.
+
+=head1 WORKLOADS
+
+The normal sizes are zero through ten, then 16, 32, 64, 256, 4096, 65536,
+and 131072. Keys have nine bytes. The driver repeats the workloads with
+128-byte keys at one, four, eight, 64, and 4096 entries.
+
+Every case runs with interned stored keys and with private stored keys.
+The worker disables C<SHAREKEYS> on each private hash before inserting any
+keys, using the existing XS::APItest helper. The interpreter's other hashes
+keep their normal policy. Hash creation and the XS setup calls are outside
+the timed regions in both modes.
+
+Variable-key lookup cases run with ordinary string queries and with
+interned queries in each stored-key mode. Interning queries happens before
+timing. This distinguishes the benefit of a cached query hash from the
+canonical HEK pointer match, which requires an interned stored key too.
+Constant-key lookups use a compiled literal and are labelled separately.
+The worker checks both the hash's sharing flag and the query SV's storage
+form before accepting a timing.
+
+Construction covers incremental stores, list assignment, and stores after
+explicit reservation. Fetches cover sequential hits, shuffled hits,
+misses, alternating hits and misses, and a compiled constant key. Mutation
+covers replacement, deletion, and deletion followed by insertion of a new
+key. A transition workload grows from empty, deletes back to one entry,
+and regrows. Iteration covers C<keys>, C<values>, and C<each>, including
+tables with 90 percent of their keys deleted.
+
+Additional cases retain many small hashes at once and exercise colliding
+keys at eight and 64 entries. The colliding keys share enough low hash
+bits to stay together at the bucket counts these workloads reach.
+Reservations of 255, 256, 65535, and 65536 entries exercise the adaptive
+width boundaries with a fixed set of 64 lookup keys.
+
+Setup, query generation, diagnostics, and result validation are outside
+the timed regions. Construction batches start with allocated empty hash
+references. The many-live workload populates prepared empty hashes and
+retains them through its RSS sample. The presized workload excludes the
+reservation itself. Transition timings include the complete sequence
+rather than a single reallocation event. Churn reports time per store or
+delete. Many-live reports time per hash. Other cases report time per
+entry operation. At zero entries, mutation and iteration report the cost
+per empty hash visit.
+
+Lifecycle batches reuse key names across their live hashes. Small hashes
+therefore model repeated field sets. At 4096 entries and above there is
+one hash per batch. The diagnostic sample and the previous batch's final
+hash are released before timing, so they cannot retain shared keys on
+behalf of the workload. The many-live case intentionally retains hashes
+with the same field names.
+
+=head1 RESULTS
+
+The driver runs one worker at a time on the selected CPU. Configuration
+order and case order are randomized. Trials rotate through three fixed
+hash seeds, with every configuration using the same seed and query order
+for a given trial. Each worker verifies its key count, values, and lookup
+or iteration checksum. The driver compares final content digests across
+configurations before accepting a sample.
+
+C<raw.jsonl> records every sample, including elapsed and process CPU time,
+storage before and after the workload, and RSS where available.
+Shared-table snapshots record capacity, live key count, tombstones, slot
+size, metadata size, maximum probe distance, and total probe distance in
+that order. The many-live case takes an additional snapshot while its
+hashes are retained. These snapshots exclude the validation hash, which
+would intern the expected keys itself.
+C<summary.csv> reports medians, minimum and maximum times, and paired
+speedups against the reference. Summaries are refreshed during the run.
+Inspect seed sensitivity and timing ranges before interpreting small
+differences. These are measurements of complete Perl operations on one
+machine, rather than isolated C instructions.
+
+C<table_bytes> includes the HV, its body, the entry storage, and the index.
+It excludes keys, values, arena slack, and auxiliary iterator storage.
+C<allocator_bytes> reports usable sizes for the directly allocated entry
+and index blocks where the allocator supports that query. It excludes
+the HV/body arenas and key/value allocations. RSS includes the interpreter,
+query arrays, shared keys, and allocator retention. The many-live RSS
+sample is taken while all measured hashes are alive. Neither metric
+should be described as the complete per-hash memory cost.
+
+=cut
