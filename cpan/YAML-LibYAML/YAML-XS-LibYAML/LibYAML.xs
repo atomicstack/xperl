@@ -1,8 +1,24 @@
 #include <perl_libyaml.h>
 /* XXX Make -Wall not complain about 'local_patches' not being used. */
 #if !defined(PERL_PATCHLEVEL_H_IMPLICIT)
-void xxx_local_patches_xs() { printf("%s", local_patches[0]); }
+void xxx_local_patches_xs(void) { PERL_UNUSED_VAR(local_patches); }
 #endif
+
+
+static void
+oo_dump_protected(perl_yaml_xs_t *yaml, int items)
+{
+    dXCPT;
+    yaml_emitter_t emitter = yaml->emitter;
+    XCPT_TRY_START {
+        oo_dump_stream(yaml, items);
+    } XCPT_TRY_END
+    XCPT_CATCH {
+        yaml_emitter_delete(&emitter);
+        XCPT_RETHROW;
+    }
+    yaml_emitter_delete(&emitter);
+}
 
 MODULE = YAML::XS::LibYAML		PACKAGE = YAML::XS::LibYAML		
 
@@ -39,22 +55,19 @@ MODULE = YAML::XS::LibYAML  PACKAGE = YAML::XS
 
 PROTOTYPES: DISABLE
 
-SV *
+void
 new(char *class_name, ...)
     PPCODE:
     {
-        dXCPT;
         perl_yaml_xs_t *yaml;
         SV *point_sv;
         SV *point_svrv;
-        SV *sv;
         HV *hash;
         SV *object;
         int i;
         int intvalue = 0;
         char *stringvalue;
 
-        XCPT_TRY_START
         {
             yaml = (perl_yaml_xs_t*) malloc(sizeof(perl_yaml_xs_t));
             yaml->indent = 2;
@@ -148,11 +161,6 @@ new(char *class_name, ...)
 
             point_svrv = sv_2mortal(newRV_noinc((SV*)hash));
             object = sv_bless(point_svrv, gv_stashpv(class_name, 1));
-        } XCPT_TRY_END
-
-        XCPT_CATCH
-        {
-            XCPT_RETHROW;
         }
         XPUSHs(object);
         XSRETURN(1);
@@ -169,7 +177,6 @@ load(SV *object, SV *string)
         SV **val;
         STRLEN yaml_len;
         const unsigned char *yaml_str;
-        const char *problem;
 
         hash = (HV*)(SvROK(object)? SvRV(object): object);
         val = hv_fetch(hash, "ptr", 3, TRUE);
@@ -203,14 +210,12 @@ load(SV *object, SV *string)
         return;
     }
 
-SV *
+void
 dump(SV *object, ...)
     PPCODE:
     {
-        dXCPT;
 
         perl_yaml_xs_t *yaml;
-        yaml_emitter_t ye;
         HV *hash;
         SV **val;
         SV *string = newSVpvn("", 0);
@@ -229,26 +234,11 @@ dump(SV *object, ...)
         yaml_emitter_set_indent(&yaml->emitter, yaml->indent);
         yaml_emitter_set_width(&yaml->emitter, yaml->width);
         yaml_emitter_set_output(&yaml->emitter, &append_output, (void *) string);
-        ye = yaml->emitter;
 
         PUSHMARK(sp);
-        XCPT_TRY_START
-        {
-            oo_dump_stream(yaml, items);
-            if (string) {
-                if (! yaml->utf8) {
-                    SvUTF8_on(string);
-                }
-            }
-        } XCPT_TRY_END
-
-        XCPT_CATCH
-        {
-            yaml_emitter_delete(&ye);
-            XCPT_RETHROW;
-        }
-
-        yaml_emitter_delete(&ye);
+        oo_dump_protected(yaml, items);
+        if (!yaml->utf8)
+            SvUTF8_on(string);
         XPUSHs(string);
         XSRETURN(1);
     }
@@ -257,7 +247,6 @@ void
 DESTROY(SV *object)
     PPCODE:
     {
-        dXCPT;
         perl_yaml_xs_t *yaml;
         HV *hash;
         SV **val;

@@ -3,6 +3,8 @@
 int BOOLEAN_JSON_PP = 1;
 int BOOLEAN_BOOLEAN = 2;
 
+static SV *fold_results(I32);
+
 #if (PERL_REVISION > 5) || (PERL_REVISION == 5 && PERL_VERSION >= 36)
 #  define PERL_HAVE_BOOLEANS
 #endif
@@ -37,13 +39,11 @@ fold_results(I32 count)
     if (count > 1) {
         /* convert multiple return items into a list reference */
         AV *av = newAV();
-        SV *last_sv = &PL_sv_undef;
         SV *sv = &PL_sv_undef;
         I32 i;
 
         av_extend(av, count - 1);
         for(i = 1; i <= count; i++) {
-            last_sv = sv;
             sv = POPs;
             if (SvOK(sv) && !av_store(av, count - i, SvREFCNT_inc(sv)))
                 SvREFCNT_dec(sv);
@@ -68,7 +68,7 @@ fold_results(I32 count)
 }
 
 static SV *
-find_coderef(char *perl_var)
+find_coderef(const char *perl_var)
 {
     SV *coderef;
 
@@ -134,7 +134,7 @@ Load(SV *yaml_sv)
     STRLEN yaml_len;
 
     GV *gv = gv_fetchpv("YAML::XS::Boolean", FALSE, SVt_PV);
-    char* boolean = "";
+    const char *boolean = "";
     loader.load_bool_jsonpp = 0;
     loader.load_bool_boolean = 0;
     if (SvTRUE(GvSV(gv))) {
@@ -338,23 +338,23 @@ load_node(perl_yaml_loader_t *loader)
  * Load a YAML mapping into a Perl hash
  */
 SV *
-load_mapping(perl_yaml_loader_t *loader, char *tag)
+load_mapping(perl_yaml_loader_t *loader, const char *tag_override)
 {
-    dXCPT;
     SV *key_node;
     SV *value_node;
     HV *hash = newHV();
     SV *hash_ref = (SV *)newRV_noinc((SV *)hash);
     char *anchor = (char *)loader->event.data.mapping_start.anchor;
-
-    if (!tag)
-        tag = (char *)loader->event.data.mapping_start.tag;
+    const char *tag = tag_override ? tag_override
+        : (const char *)loader->event.data.mapping_start.tag;
 
     /* Store the anchor label if any */
     if (anchor)
         hv_store(loader->anchors, anchor, strlen(anchor), SvREFCNT_inc(hash_ref), 0);
 
-    XCPT_TRY_START {
+    ENTER;
+    SAVEFREESV(hash_ref);
+    {
 
         /* Get each key string and value node and put them in the hash */
         while ((key_node = load_node(loader))) {
@@ -383,8 +383,8 @@ load_mapping(perl_yaml_loader_t *loader, char *tag)
             else if (strEQ(tag, YAML_MAP_TAG)) {
             }
             else {
-                char *class;
-                char *prefix = TAG_PERL_PREFIX "hash:";
+                const char *class_name;
+                const char *prefix = TAG_PERL_PREFIX "hash:";
                 if (*tag == '!') {
                     prefix = "!";
                 }
@@ -394,19 +394,15 @@ load_mapping(perl_yaml_loader_t *loader, char *tag)
                     loader_error_msg(loader, form("bad tag found for hash: '%s'", tag))
                 );
                 if (loader->load_blessed) {
-                    class = tag + strlen(prefix);
-                    sv_bless(hash_ref, gv_stashpv(class, TRUE));
+                    class_name = tag + strlen(prefix);
+                    sv_bless(hash_ref, gv_stashpv(class_name, TRUE));
                 }
             }
         }
 
-    } XCPT_TRY_END
-
-    XCPT_CATCH
-    {
-        SvREFCNT_dec(hash_ref);
-        XCPT_RETHROW;
     }
+    SvREFCNT_inc(hash_ref);
+    LEAVE;
 
     return hash_ref;
 }
@@ -415,14 +411,15 @@ load_mapping(perl_yaml_loader_t *loader, char *tag)
 SV *
 load_sequence(perl_yaml_loader_t *loader)
 {
-    dXCPT;
     SV *node;
     AV *array = newAV();
     SV *array_ref = (SV *)newRV_noinc((SV *)array);
     char *anchor = (char *)loader->event.data.sequence_start.anchor;
     char *tag = (char *)loader->event.data.mapping_start.tag;
 
-    XCPT_TRY_START {
+    ENTER;
+    SAVEFREESV(array_ref);
+    {
 
         if (anchor)
             hv_store(loader->anchors, anchor, strlen(anchor), SvREFCNT_inc(array_ref), 0);
@@ -436,8 +433,8 @@ load_sequence(perl_yaml_loader_t *loader)
             else if (strEQ(tag, YAML_SEQ_TAG)) {
             }
             else {
-                char *class;
-                char *prefix = TAG_PERL_PREFIX "array:";
+                const char *class_name;
+                const char *prefix = TAG_PERL_PREFIX "array:";
 
                 if (*tag == '!')
                     prefix = "!";
@@ -447,19 +444,15 @@ load_sequence(perl_yaml_loader_t *loader)
                     loader_error_msg(loader, form("bad tag found for array: '%s'", tag))
                 );
                 if (loader->load_blessed) {
-                    class = tag + strlen(prefix);
-                    sv_bless(array_ref, gv_stashpv(class, TRUE));
+                    class_name = tag + strlen(prefix);
+                    sv_bless(array_ref, gv_stashpv(class_name, TRUE));
                 }
             }
         }
 
-    } XCPT_TRY_END
-
-    XCPT_CATCH
-    {
-        SvREFCNT_dec(array_ref);
-        XCPT_RETHROW;
     }
+    SvREFCNT_inc(array_ref);
+    LEAVE;
 
     return array_ref;
 }
@@ -505,8 +498,8 @@ load_scalar(perl_yaml_loader_t *loader)
             return scalar;
         }
         else {
-            char *class;
-            char *prefix = TAG_PERL_PREFIX "regexp";
+            const char *class_name;
+            const char *prefix = TAG_PERL_PREFIX "regexp";
             if (strnEQ(tag, prefix, strlen(prefix)))
                 return load_regexp(loader);
             prefix = TAG_PERL_PREFIX "code";
@@ -518,9 +511,9 @@ load_scalar(perl_yaml_loader_t *loader)
             else if (strlen(tag) <= strlen(prefix) ||
                 ! strnEQ(tag, prefix, strlen(prefix))
             ) croak("%sbad tag found for scalar: '%s'", ERRMSG, tag);
-            class = tag + strlen(prefix);
+            class_name = tag + strlen(prefix);
             if (loader->load_blessed)
-                scalar = sv_setref_pvn(newSV(0), class, string, strlen(string));
+                scalar = sv_setref_pvn(newSV(0), class_name, string, strlen(string));
             else
                 scalar = newSVpvn(string, length);
             SvUTF8_on(scalar);
@@ -539,12 +532,12 @@ load_scalar(perl_yaml_loader_t *loader)
         }
         else if (strEQ(string, "true")) {
             if (loader->load_bool_jsonpp) {
-                char *name = "JSON::PP::Boolean";
+                const char *name = "JSON::PP::Boolean";
                 scalar = newSV(1);
                 scalar = sv_setref_iv(scalar, name, 1);
             }
             else if (loader->load_bool_boolean) {
-                char *name = "boolean";
+                const char *name = "boolean";
                 scalar = newSV(1);
                 scalar = sv_setref_iv(scalar, name, 1);
             }
@@ -561,12 +554,12 @@ load_scalar(perl_yaml_loader_t *loader)
         }
         else if (strEQ(string, "false")) {
             if (loader->load_bool_jsonpp) {
-                char *name = "JSON::PP::Boolean";
+                const char *name = "JSON::PP::Boolean";
                 scalar = newSV(1);
                 scalar = sv_setref_iv(scalar, name, 0);
             }
             else if (loader->load_bool_boolean) {
-                char *name = "boolean";
+                const char *name = "boolean";
                 scalar = newSV(1);
                 scalar = sv_setref_iv(scalar, name, 0);
             }
@@ -608,7 +601,7 @@ load_regexp(perl_yaml_loader_t * loader)
     STRLEN length = (STRLEN)loader->event.data.scalar.length;
     char *anchor = (char *)loader->event.data.scalar.anchor;
     char *tag = (char *)loader->event.data.scalar.tag;
-    char *prefix = TAG_PERL_PREFIX "regexp:";
+    const char *prefix = TAG_PERL_PREFIX "regexp:";
 
     SV *regexp = newSVpvn(string, length);
     SvUTF8_on(regexp);
@@ -628,8 +621,8 @@ load_regexp(perl_yaml_loader_t * loader)
 
     if (strlen(tag) > strlen(prefix) && strnEQ(tag, prefix, strlen(prefix))) {
         if (loader->load_blessed) {
-            char *class = tag + strlen(prefix);
-            sv_bless(regexp, gv_stashpv(class, TRUE));
+            char *class_name = tag + strlen(prefix);
+            sv_bless(regexp, gv_stashpv(class_name, TRUE));
         }
     }
 
@@ -646,11 +639,11 @@ SV*
 load_code(perl_yaml_loader_t * loader)
 {
     dSP;
-    char *string = (char *)loader->event.data.scalar.value;
+    const char *string = (char *)loader->event.data.scalar.value;
     STRLEN length = (STRLEN)loader->event.data.scalar.length;
     char *anchor = (char *)loader->event.data.scalar.anchor;
     char *tag = (char *)loader->event.data.scalar.tag;
-    char *prefix = TAG_PERL_PREFIX "code:";
+    const char *prefix = TAG_PERL_PREFIX "code:";
 
     if (! loader->load_code) {
         string = "{}";
@@ -675,8 +668,8 @@ load_code(perl_yaml_loader_t * loader)
 
     if (strlen(tag) > strlen(prefix) && strnEQ(tag, prefix, strlen(prefix))) {
         if (loader->load_blessed) {
-            char *class = tag + strlen(prefix);
-            sv_bless(code, gv_stashpv(class, TRUE));
+            char *class_name = tag + strlen(prefix);
+            sv_bless(code, gv_stashpv(class_name, TRUE));
         }
     }
 
@@ -737,7 +730,7 @@ void
 set_dumper_options(perl_yaml_dumper_t *dumper)
 {
     GV *gv;
-    char* boolean = "";
+    const char *boolean = "";
     dumper->dump_code = (
         ((gv = gv_fetchpv("YAML::XS::UseCode", TRUE, SVt_PV)) &&
         SvTRUE(GvSV(gv)))
@@ -787,6 +780,7 @@ Dump(SV *dummy, ...)
     yaml_event_t event_stream_end;
     int i;
     SV *yaml = sv_2mortal(newSVpvn("", 0));
+    PERL_UNUSED_ARG(dummy);
     sp = mark;
 
     set_dumper_options(&dumper);
@@ -849,7 +843,7 @@ Dump(SV *dummy, ...)
 void
 dump_prewalk(perl_yaml_dumper_t *dumper, SV *node)
 {
-    int i, len;
+    int i;
     U32 ref_type;
     SvGETMAGIC(node);
 
@@ -928,7 +922,7 @@ dump_node(perl_yaml_dumper_t *dumper, SV *node)
 {
     yaml_char_t *anchor = NULL;
     yaml_char_t *tag = NULL;
-    const char *class = NULL;
+    const char *class_name = NULL;
 
     SvGETMAGIC(node);
     if (SvTYPE(node) == SVt_PVGV) {
@@ -959,20 +953,20 @@ dump_node(perl_yaml_dumper_t *dumper, SV *node)
             if (SvMAGICAL(rnode)) {
                 if ((mg = mg_find(rnode, PERL_MAGIC_qr))) {
                     tag = (yaml_char_t *)form(TAG_PERL_PREFIX "regexp");
-                    class = sv_reftype(rnode, TRUE);
-                    if (!strEQ(class, "Regexp"))
-                        tag = (yaml_char_t *)form("%s:%s", tag, class);
+                    class_name = sv_reftype(rnode, TRUE);
+                    if (!strEQ(class_name, "Regexp"))
+                        tag = (yaml_char_t *)form("%s:%s", tag, class_name);
                 }
                 dump_scalar(dumper, node, tag);
             }
             else {
-                class = sv_reftype(rnode, TRUE);
+                class_name = sv_reftype(rnode, TRUE);
                 if (
-                        dumper->dump_bool_jsonpp
-                        && strEQ(class, "JSON::PP::Boolean")
+                        (dumper->dump_bool_jsonpp
+                        && strEQ(class_name, "JSON::PP::Boolean"))
                     ||
-                        dumper->dump_bool_boolean
-                        && strEQ(class, "boolean")
+                        (dumper->dump_bool_boolean
+                        && strEQ(class_name, "boolean"))
                     ) {
                     if (SvIV(node)) {
                         dump_scalar(dumper, &PL_sv_yes, NULL);
@@ -984,7 +978,7 @@ dump_node(perl_yaml_dumper_t *dumper, SV *node)
                 else {
                     tag = (yaml_char_t *)form(
                         TAG_PERL_PREFIX "scalar:%s",
-                        class
+                        class_name
                     );
                     node = rnode;
                     dump_scalar(dumper, node, tag);
@@ -994,9 +988,9 @@ dump_node(perl_yaml_dumper_t *dumper, SV *node)
 #if PERL_REVISION > 5 || (PERL_REVISION == 5 && PERL_VERSION >= 11)
         else if (ref_type == SVt_REGEXP) {
             yaml_char_t *tag = (yaml_char_t *)form(TAG_PERL_PREFIX "regexp");
-            class = sv_reftype(rnode, TRUE);
-                if (!strEQ(class, "Regexp"))
-                     tag = (yaml_char_t *)form("%s:%s", tag, class);
+            class_name = sv_reftype(rnode, TRUE);
+                if (!strEQ(class_name, "Regexp"))
+                     tag = (yaml_char_t *)form("%s:%s", tag, class_name);
             dump_scalar(dumper, node, tag);
         }
 #endif
@@ -1040,25 +1034,26 @@ yaml_char_t *
 get_yaml_tag(SV *node)
 {
     yaml_char_t *tag;
-    const char *class;
+    const char *class_name;
     const char *kind = "";
     if (! (
         sv_isobject(node) ||
         (SvRV(node) && ( SvTYPE(SvRV(node)) == SVt_PVCV))
     )) return NULL;
-    class = sv_reftype(SvRV(node), TRUE);
+    class_name = sv_reftype(SvRV(node), TRUE);
 
     switch (SvTYPE(SvRV(node))) {
         case SVt_PVAV: { kind = "array"; break; }
         case SVt_PVHV: { kind = "hash"; break; }
         case SVt_PVCV: { kind = "code"; break; }
+        default: break;
     }
     if ((strlen(kind) == 0))
-        tag = (yaml_char_t *)form("%s%s", TAG_PERL_PREFIX, class);
-    else if (SvTYPE(SvRV(node)) == SVt_PVCV && strEQ(class, "CODE"))
+        tag = (yaml_char_t *)form("%s%s", TAG_PERL_PREFIX, class_name);
+    else if (SvTYPE(SvRV(node)) == SVt_PVCV && strEQ(class_name, "CODE"))
         tag = (yaml_char_t *)form("%s%s", TAG_PERL_PREFIX, kind);
     else
-        tag = (yaml_char_t *)form("%s%s:%s", TAG_PERL_PREFIX, kind, class);
+        tag = (yaml_char_t *)form("%s%s:%s", TAG_PERL_PREFIX, kind, class_name);
     return tag;
 }
 
@@ -1145,7 +1140,7 @@ void
 dump_scalar(perl_yaml_dumper_t *dumper, SV *node, yaml_char_t *tag)
 {
     yaml_event_t event_scalar;
-    char *string;
+    const char *string;
     STRLEN string_len;
     int plain_implicit, quoted_implicit;
     yaml_scalar_style_t style = YAML_PLAIN_SCALAR_STYLE;
@@ -1232,7 +1227,7 @@ dump_code(perl_yaml_dumper_t *dumper, SV *node)
     yaml_event_t event_scalar;
     yaml_char_t *tag;
     yaml_scalar_style_t style = YAML_SINGLE_QUOTED_SCALAR_STYLE;
-    char *string = "{ \"DUMMY\" }";
+    const char *string = "{ \"DUMMY\" }";
     if (dumper->dump_code) {
         /* load_module(PERL_LOADMOD_NOIMPORT, newSVpv("B::Deparse", 0), NULL);
          */
@@ -1321,8 +1316,8 @@ append_output(void *yaml, unsigned char *buffer, size_t size)
 
 /* XXX Make -Wall not complain about 'local_patches' not being used. */
 #if !defined(PERL_PATCHLEVEL_H_IMPLICIT)
-void xxx_local_patches() {
-    printf("%s", local_patches[0]);
+void xxx_local_patches(void) {
+    PERL_UNUSED_VAR(local_patches);
 }
 #endif
 
@@ -1331,9 +1326,9 @@ void xxx_local_patches() {
 */
 
 int
-_match_core_schema(char *string)
+_match_core_schema(const char *string)
 {
-    int i = 0;
+    size_t i = 0;
     int got_decimal = 0;
     int got_mantissa = 0;
     int is_float = 0;
@@ -1445,7 +1440,7 @@ _match_core_schema(char *string)
 */
 
 char *
-oo_loader_error_msg(perl_yaml_xs_t *self, char *problem)
+oo_loader_error_msg(perl_yaml_xs_t *self, const char *problem)
 {
     char *msg;
     if (!problem)
@@ -1488,6 +1483,7 @@ void
 oo_load_stream(perl_yaml_xs_t *self)
 {
     dXSARGS;
+    PERL_UNUSED_VAR(items);
     SV *node;
     int has_footer = 0;
 
@@ -1617,13 +1613,14 @@ load_error:
 SV *
 oo_load_sequence(perl_yaml_xs_t *self)
 {
-    dXCPT;
     SV *node;
     AV *array = newAV();
     SV *array_ref = (SV *)newRV_noinc((SV *)array);
     char *anchor = (char *)self->event.data.sequence_start.anchor;
 
-    XCPT_TRY_START {
+    ENTER;
+    SAVEFREESV(array_ref);
+    {
 
         /* If cyclic refs are allowed we add the anchor here before
            we descend deeper into the data structure */
@@ -1643,27 +1640,24 @@ oo_load_sequence(perl_yaml_xs_t *self)
         }
 
 
-    } XCPT_TRY_END
-
-    XCPT_CATCH
-    {
-        SvREFCNT_dec(array_ref);
-        XCPT_RETHROW;
     }
+    SvREFCNT_inc(array_ref);
+    LEAVE;
     return array_ref;
 }
 
 SV *
 oo_load_mapping(perl_yaml_xs_t *self)
 {
-    dXCPT;
     SV *key_node;
     SV *value_node;
     HV *hash = newHV();
     SV *hash_ref = (SV *)newRV_noinc((SV *)hash);
     char *anchor = (char *)self->event.data.mapping_start.anchor;
 
-    XCPT_TRY_START {
+    ENTER;
+    SAVEFREESV(hash_ref);
+    {
 
         /* If cyclic refs are allowed we add the anchor here before
            we descend deeper into the data structure */
@@ -1702,13 +1696,9 @@ oo_load_mapping(perl_yaml_xs_t *self)
                 hv_store(self->anchors, anchor, strlen(anchor), SvREFCNT_inc(hash_ref), 0);
         }
 
-    } XCPT_TRY_END
-
-    XCPT_CATCH
-    {
-        SvREFCNT_dec(hash_ref);
-        XCPT_RETHROW;
     }
+    SvREFCNT_inc(hash_ref);
+    LEAVE;
     return hash_ref;
 }
 
@@ -1738,12 +1728,12 @@ oo_load_scalar(perl_yaml_xs_t *self)
     /* bool true */
     if (scalar_type == YAML_XS_SCALAR_TYPE_BOOL_TRUE) {
         if (self->boolean == BOOLEAN_JSON_PP) {
-            char *name = "JSON::PP::Boolean";
+            const char *name = "JSON::PP::Boolean";
             scalar = newSV(1);
             scalar = sv_setref_iv(scalar, name, 1);
         }
         else if (self->boolean == BOOLEAN_BOOLEAN) {
-            char *name = "boolean";
+            const char *name = "boolean";
             scalar = newSV(1);
             scalar = sv_setref_iv(scalar, name, 1);
         }
@@ -1763,12 +1753,12 @@ oo_load_scalar(perl_yaml_xs_t *self)
     /* bool false */
     if (scalar_type == YAML_XS_SCALAR_TYPE_BOOL_FALSE) {
         if (self->boolean == BOOLEAN_JSON_PP) {
-            char *name = "JSON::PP::Boolean";
+            const char *name = "JSON::PP::Boolean";
             scalar = newSV(1);
             scalar = sv_setref_iv(scalar, name, 0);
         }
         else if (self->boolean == BOOLEAN_BOOLEAN) {
-            char *name = "boolean";
+            const char *name = "boolean";
             scalar = newSV(1);
             scalar = sv_setref_iv(scalar, name, 0);
         }
@@ -1958,7 +1948,7 @@ void
 oo_dump_node(perl_yaml_xs_t *self, SV *node)
 {
     yaml_char_t *anchor = NULL;
-    const char *class = NULL;
+    const char *class_name = NULL;
 
     if (SvROK(node)) {
         SV *rnode = SvRV(node);
@@ -1970,13 +1960,13 @@ oo_dump_node(perl_yaml_xs_t *self, SV *node)
         }
         else if (ref_type == SVt_PVMG) {
             if (!SvMAGICAL(rnode)) {
-                class = sv_reftype(rnode, TRUE);
+                class_name = sv_reftype(rnode, TRUE);
                 if (
-                        self->boolean == BOOLEAN_JSON_PP
-                        && strEQ(class, "JSON::PP::Boolean")
+                        (self->boolean == BOOLEAN_JSON_PP
+                        && strEQ(class_name, "JSON::PP::Boolean"))
                     ||
-                        self->boolean == BOOLEAN_BOOLEAN
-                        && strEQ(class, "boolean")
+                        (self->boolean == BOOLEAN_BOOLEAN
+                        && strEQ(class_name, "boolean"))
                     ) {
                     if (SvIV(node)) {
                         oo_dump_scalar(self, &PL_sv_yes);
@@ -2071,15 +2061,12 @@ void
 oo_dump_scalar(perl_yaml_xs_t *self, SV *node)
 {
     yaml_event_t event_scalar;
-    char *string;
+    const char *string;
     STRLEN string_len;
     int plain_implicit, quoted_implicit;
     yaml_scalar_style_t style = YAML_PLAIN_SCALAR_STYLE;
     plain_implicit = quoted_implicit = 1;
-    int is_num = 0;
-    STRLEN length;
     SV *node_clone;
-    int i;
 
     SvGETMAGIC(node);
     if (!SvOK(node)) {
@@ -2229,7 +2216,7 @@ oo_get_yaml_anchor(perl_yaml_xs_t *self, SV *node)
     yaml_event_t event_alias;
     SV *iv;
     SV **seen = hv_fetch(self->anchors, (char *)&node, sizeof(node), 0);
-    char *prefix;
+    const char *prefix;
     char *label;
 
     if (seen && *seen != &PL_sv_undef) {
@@ -2240,7 +2227,7 @@ oo_get_yaml_anchor(perl_yaml_xs_t *self, SV *node)
 
             yaml_char_t *anchor = (yaml_char_t *)SvPV_nolen(*seen);
             prefix = self->anchor_prefix;
-            label = malloc(strlen(prefix)+strlen((char *)anchor)+1);
+            label = (char *)malloc(strlen(prefix)+strlen((char *)anchor)+1);
             strcpy(label, prefix);
             strcat(label, (char *)anchor);
             return (yaml_char_t *)label;
@@ -2248,7 +2235,7 @@ oo_get_yaml_anchor(perl_yaml_xs_t *self, SV *node)
         else {
             yaml_char_t *anchor = (yaml_char_t *)SvPV_nolen(*seen);
             prefix = self->anchor_prefix;
-            label = malloc(strlen(prefix)+strlen((char *)anchor)+1);
+            label = (char *)malloc(strlen(prefix)+strlen((char *)anchor)+1);
             strcpy(label, prefix);
             strcat(label, (char *)anchor);
 

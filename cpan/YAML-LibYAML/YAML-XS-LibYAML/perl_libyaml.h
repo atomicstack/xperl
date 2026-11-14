@@ -80,20 +80,11 @@ typedef struct {
     int footer;
     int width;
     int require_footer;
-    char *anchor_prefix;
+    const char *anchor_prefix;
     int cyclic_refs;
     int boolean;
     int document;
 } perl_yaml_xs_t;
-
-static SV *
-call_coderef(SV *, AV *);
-
-static SV *
-fold_results(I32);
-
-static SV *
-find_coderef(char *);
 
 void
 set_dumper_options(perl_yaml_dumper_t *);
@@ -111,7 +102,7 @@ SV *
 load_node(perl_yaml_loader_t *);
 
 SV *
-load_mapping(perl_yaml_loader_t *, char *);
+load_mapping(perl_yaml_loader_t *, const char *);
 
 SV *
 load_sequence(perl_yaml_loader_t *);
