@@ -433,7 +433,7 @@ our %Modules = (
         'DISTRIBUTION' => 'HMBRAND/DBI-1.656.tgz',
         'SYNCINFO'    => 'demerphq on Thu Nov 12 13:47:43 2026',
         'FILES'       => 'cpan/DBI',
-        'CUSTOMIZED'  => [qw(Makefile.PL t/85gofer.t)],
+        'CUSTOMIZED'  => [qw(DBI.xs Driver_xst.h Makefile.PL t/85gofer.t)],
     },
 
     'Devel::PPPort' => {

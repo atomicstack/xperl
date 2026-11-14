@@ -315,7 +315,7 @@ sub post_initialize {
 			     $_ eq $cfg_sitearchexp ||
 			     $_ eq $cfg_man3direxp);
 	    ++$old{$_} if m{\bDB(I|D$)}; # DBI files, but just DBD dirs
-	    }, $cfg_privlibexp, $cfg_archlibexp);
+	    }, grep { -d $_ } ($cfg_privlibexp, $cfg_archlibexp));
 	if (%old) {
 	    warn "
 Warning: By default new modules are installed into your 'site_lib'
@@ -357,7 +357,7 @@ sub post_constants {
     $xst =~ s/\$\(BASEEXT\)/Perl/g;
     $xst .= '
 dbixs_rev.h: DBIXS.h Driver_xst.h dbipport.h dbivport.h dbixs_rev.pl
-	$(PERL) dbixs_rev.pl
+	$(FULLPERLRUN) dbixs_rev.pl
 
 DBI.c: Perl$(OBJ_EXT)
 

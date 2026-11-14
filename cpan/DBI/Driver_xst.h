@@ -14,7 +14,7 @@
  * XXX remember to call SPAGAIN in the calling code after calling this!
  */
 static SV *
-dbixst_bounce_method(char *methname, int params)
+dbixst_bounce_method(const char *methname, int params)
 {
     dTHX;
     /* XXX this 'magic' undoes the dMARK embedded in the dXSARGS of our caller	*/

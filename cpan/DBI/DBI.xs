@@ -196,9 +196,9 @@ typedef struct dbi_ima_st {
 #endif
 
 #ifdef DBI_USE_THREADS
-static char *dbi_build_opt = "-ithread";
+static const char *dbi_build_opt = "-ithread";
 #else
-static char *dbi_build_opt = "-nothread";
+static const char *dbi_build_opt = "-nothread";
 #endif
 
 /* 32 bit magic FNV-0 and FNV-1 prime */
@@ -294,9 +294,9 @@ malloc_using_sv(STRLEN len)
 }
 
 static char *
-savepv_using_sv(char *str)
+savepv_using_sv(const char *str)
 {
-    char *buf = malloc_using_sv(strlen(str));
+    char *buf = (char *)malloc_using_sv(strlen(str));
     strcpy(buf, str);
     return buf;
 }
@@ -386,7 +386,7 @@ _sort_hash_keys (HV *hash, int num_sort, STRLEN *total_length)
 
 
 static SV *
-_join_hash_sorted(HV *hash, char *kv_sep, STRLEN kv_sep_len, char *pair_sep, STRLEN pair_sep_len, int use_neat, int num_sort)
+_join_hash_sorted(HV *hash, const char *kv_sep, STRLEN kv_sep_len, const char *pair_sep, STRLEN pair_sep_len, int use_neat, int num_sort)
 {
         dTHX;
         I32 hv_len;
@@ -550,7 +550,7 @@ dbi_bootinit(dbistate_t * parent_dbis)
 /* Utility functions                                                 */
 
 
-static char *
+static const char *
 dbih_htype_name(int htype)
 {
     switch(htype) {
@@ -571,14 +571,18 @@ neatsvpv(SV *sv, STRLEN maxlen) /* return a tidy ascii value, for debugging only
     STRLEN len;
     SV *nsv = Nullsv;
     SV *infosv = Nullsv;
-    char *v, *quote;
+    char *v;
+    const char *quote;
+    static char null_text[] = "Null!";
+    static char undef_text[] = "undef";
+    static char empty_text[] = "''";
 
     /* We take care not to alter the supplied sv in any way at all.      */
     /* (but if it is SvGMAGICAL we have to call mg_get and that can      */
     /* have side effects, especially as it may be called twice overall.) */
 
     if (!sv)
-        return "Null!";                         /* should never happen  */
+        return null_text;                         /* should never happen  */
 
     /* try to do the right thing with magical values                    */
     if (SvMAGICAL(sv)) {
@@ -601,7 +605,7 @@ neatsvpv(SV *sv, STRLEN maxlen) /* return a tidy ascii value, for debugging only
         if (SvTYPE(sv) >= SVt_PVAV)
             return (char *)sv_reftype(sv,0);    /* raw AV/HV etc, not via a ref */
         if (!infosv)
-            return "undef";
+            return undef_text;
         sv_insert(infosv, 0,0, "undef",5);
         return SvPVX(infosv);
     }
@@ -609,7 +613,7 @@ neatsvpv(SV *sv, STRLEN maxlen) /* return a tidy ascii value, for debugging only
     if (SvNIOK(sv)) {     /* is a numeric value - so no surrounding quotes      */
         if (SvPOK(sv)) {  /* already has string version of the value, so use it */
             v = SvPV(sv,len);
-            if (len == 0) { v="''"; len=2; } /* catch &sv_no style special case */
+            if (len == 0) { v=empty_text; len=2; } /* catch &sv_no style special case */
             if (!infosv)
                 return v;
             sv_insert(infosv, 0,0, v, len);
@@ -1178,7 +1182,7 @@ dbih_getcom2(pTHX_ SV *hrv, MAGIC **mgp) /* Get com struct for handle. Must be f
 
 
 static SV *
-dbih_setup_attrib(pTHX_ SV *h, imp_xxh_t *imp_xxh, char *attrib, SV *parent, int read_only, int optional)
+dbih_setup_attrib(pTHX_ SV *h, imp_xxh_t *imp_xxh, const char *attrib, SV *parent, int read_only, int optional)
 {
     STRLEN len = strlen(attrib);
     SV **asvp;
@@ -1373,7 +1377,7 @@ static void
 dbih_setup_handle(pTHX_ SV *orv, char *imp_class, SV *parent, SV *imp_datasv)
 {
     SV *h;
-    char *errmsg = "Can't setup DBI handle of %s to %s: %s";
+    const char *errmsg = "Can't setup DBI handle of %s to %s: %s";
     SV *dbih_imp_sv;
     SV *dbih_imp_rv;
     SV *dbi_imp_data = Nullsv;
@@ -2242,8 +2246,8 @@ dbih_set_attr_k(SV *h, SV *keysv, int dbikey, SV *valuesv)
     }
     else {      /* XXX should really be an event ? */
         if (isUPPER(*key)) {
-            char *msg = "Can't set %s->{%s}: unrecognised attribute name or invalid value%s";
-            char *hint = "";
+            const char *msg = "Can't set %s->{%s}: unrecognised attribute name or invalid value%s";
+            const char *hint = "";
             if (strEQ(key, "NUM_FIELDS"))
                 hint = ", perhaps you meant NUM_OF_FIELDS";
             warn(msg, neatsvpv(h,0), key, hint);
@@ -2554,7 +2558,7 @@ dbih_get_attr_k(SV *h, SV *keysv, int dbikey)
 
           case 'T':
             if (keylen==4 && strEQ(key, "Type")) {
-                char *type = dbih_htype_name(htype);
+                const char *type = dbih_htype_name(htype);
                 valuesv = newSVpv(type,0);
                 cacheit = TRUE; /* can't change */
             }
@@ -2703,7 +2707,7 @@ dbi_caller_cop()
 }
 
 static void
-dbi_caller_string(SV *buf, COP *cop, char *prefix, int show_line, int show_path)
+dbi_caller_string(SV *buf, COP *cop, const char *prefix, int show_line, int show_path)
 {
     dTHX;
     STRLEN len;
@@ -2723,7 +2727,7 @@ dbi_caller_string(SV *buf, COP *cop, char *prefix, int show_line, int show_path)
 }
 
 static char *
-log_where(SV *buf, int append, char *prefix, char *suffix, int show_line, int show_caller, int show_path)
+log_where(SV *buf, int append, const char *prefix, const char *suffix, int show_line, int show_caller, int show_path)
 {
     dTHX;
     dTHR;
@@ -2808,7 +2812,7 @@ _profile_next_node(SV *node, const char *name)
     if (SvTYPE(node) != SVt_PVHV) {
         HV *hv = newHV();
         if (SvOK(node)) {
-            char *key = "(demoted)";
+            const char *key = "(demoted)";
             warn("Profile data element %s replaced with new hash ref (for %s) and original value stored with key '%s'",
                 neatsvpv(orig_node,0), name, key);
             (void)hv_store(hv, key, strlen(key), SvREFCNT_inc(orig_node), 0);
@@ -2839,7 +2843,7 @@ dbi_profile(SV *h, imp_xxh_t *imp_xxh, SV *statement_sv, SV *method, NV t1, NV t
     HV *dbh_outer_hv = NULL;
     HV *dbh_inner_hv = NULL;
     char *statement_pv;
-    char *method_pv;
+    const char *method_pv;
     SV *profile;
     SV *tmp;
     SV *dest_node;
@@ -4585,8 +4589,8 @@ _clone_dbis()
 
 
 void
-_new_handle(class, parent, attr_ref, imp_datasv, imp_class)
-    SV *        class
+_new_handle(class_name, parent, attr_ref, imp_datasv, imp_class)
+    SV *        class_name
     SV *        parent
     SV *        attr_ref
     SV *        imp_datasv
@@ -4595,11 +4599,11 @@ _new_handle(class, parent, attr_ref, imp_datasv, imp_class)
     dMY_CXT;
     HV *outer;
     SV *outer_ref;
-    HV *class_stash = gv_stashsv(class, GV_ADDWARN);
+    HV *class_stash = gv_stashsv(class_name, GV_ADDWARN);
 
     if (DBIS_TRACE_LEVEL >= 5) {
         PerlIO_printf(DBILOGFP, "    New %s (for %s, parent=%s, id=%s)\n",
-            neatsvpv(class,0), SvPV_nolen(imp_class), neatsvpv(parent,0), neatsvpv(imp_datasv,0));
+            neatsvpv(class_name,0), SvPV_nolen(imp_class), neatsvpv(parent,0), neatsvpv(imp_datasv,0));
         PERL_UNUSED_VAR(cv);
     }
 
@@ -4771,8 +4775,8 @@ _install_method(dbi_class, meth_name, file, attribs=Nullsv)
 
 
 int
-trace(class, level_sv=&PL_sv_undef, file=Nullsv)
-    SV *        class
+trace(class_name, level_sv=&PL_sv_undef, file=Nullsv)
+    SV *        class_name
     SV *        level_sv
     SV *        file
     ALIAS:
@@ -4787,7 +4791,7 @@ trace(class, level_sv=&PL_sv_undef, file=Nullsv)
     }
     /* Return old/current value. No change if new value not given.      */
     RETVAL = (DBIS) ? DBIS->debug : 0;
-    level = parse_trace_flags(class, level_sv, RETVAL);
+    level = parse_trace_flags(class_name, level_sv, RETVAL);
     if (level)          /* call before or after altering DBI trace level */
         set_trace_file(file);
     if (level != RETVAL) {
@@ -5068,7 +5072,7 @@ take_imp_data(h)
     PREINIT:
     /* take_imp_data currently in DBD::_::db not DBD::_::common, so for dbh's only */
     D_imp_xxh(h);
-    MAGIC *mg;
+    MAGIC *mg = NULL;
     SV *imp_xxh_sv;
     SV **tmp_svp;
     CODE:
@@ -5154,7 +5158,8 @@ take_imp_data(h)
      */
 
     /* --- perform the surgery */
-    dbih_getcom2(aTHX_ h, &mg); /* get the MAGIC so we can change it    */
+    if (!dbih_getcom2(aTHX_ h, &mg) || !mg)
+        croak("Cannot take_imp_data without valid DBI handle magic");
     imp_xxh_sv = mg->mg_obj;    /* take local copy of the imp_data pointer */
     mg->mg_obj = Nullsv;        /* sever the link from handle to imp_xxh */
     mg->mg_ptr = NULL;          /* and sever the shortcut too */
@@ -5442,11 +5447,11 @@ DESTROY(sth)
 MODULE = DBI   PACKAGE = DBI::st
 
 void
-TIEHASH(class, inner_ref)
-    SV * class
+TIEHASH(class_name, inner_ref)
+    SV * class_name
     SV * inner_ref
     CODE:
-    HV *stash = gv_stashsv(class, GV_ADDWARN); /* a new hash is supplied to us, we just need to bless and apply tie magic */
+    HV *stash = gv_stashsv(class_name, GV_ADDWARN); /* a new hash is supplied to us, we just need to bless and apply tie magic */
     sv_bless(inner_ref, stash);
     ST(0) = inner_ref;
 
