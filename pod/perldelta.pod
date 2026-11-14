@@ -1173,15 +1173,6 @@ C compiler argument evaluation order.
 
 =item *
 
-Parser contextualization of binary operands, array and hash subscripts,
-slices, and loop iterators now runs in a defined order. Scalar and compound
-assignments validate their target before contextualizing the right-hand
-expression. C compiler argument evaluation order previously affected warning
-order, the first fatal warning, and suppression of secondary diagnostics
-after an invalid assignment target.
-
-=item *
-
 The implicit statements in a C<use> are constructed in a fixed order.
 The C<require> statement consumes the saved parser line, and the C<import>
 statement uses the current line at the end of the C<use>. Line attribution
