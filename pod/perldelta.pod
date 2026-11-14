@@ -968,8 +968,10 @@ default. Open addressing remains available by selecting
 C<PERL_HASH_INDEX_OA>. With the default positive
 threshold, a singleton uses one compact 16-byte C<HE> from the arena on
 64-bit builds. At threshold zero, hashes use indexed storage from the first
-key. By default, hashes with up to four keys use a dense C<HE> array with
-linear search and promote to indexed storage after the fourth key.
+key. By default, hashes with up to eight keys use a dense C<HE> array with
+linear search and promote to indexed storage on the ninth key. Adding the
+second key allocates four entry slots, growing to eight when the fifth key
+is inserted.
 C<PERL_HASH_LINEAR_MAX> can select a threshold of zero, two, four, or eight
 entries. In OA builds, the index stores adaptive-width entry identifiers
 only; the full cached hash remains in the entry's C<HEK>. Index capacity

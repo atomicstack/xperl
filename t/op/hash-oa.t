@@ -184,29 +184,43 @@ SKIP: {
 
 SKIP: {
     unless (eval { require Hash::Util; Hash::Util->can('hash_storage_info') }) {
-        skip('hash_storage_info unavailable', 1);
+        skip('hash_storage_info unavailable', 2);
     }
     my $default_mode = <<'PERL';
 use strict;
 use warnings;
 use Hash::Util qw(hash_storage_info);
 my %hash;
-$hash{"default:$_"} = $_ for 0 .. 3;
+$hash{'default:0'} = 0;
 my $info = hash_storage_info(\%hash);
-die "default did not keep four entries linear\n"
+die "default singleton did not use one arena entry\n"
+    unless $info->{linear} && $info->{arena_backed}
+        && $info->{entry_capacity} == 1;
+$hash{'default:1'} = 1;
+$info = hash_storage_info(\%hash);
+die "default first heap allocation did not reserve four entries\n"
     unless $info->{linear} && !$info->{index_capacity}
         && $info->{entry_capacity} == 4;
-$hash{'default:4'} = 4;
+$hash{"default:$_"} = $_ for 2 .. 3;
 $info = hash_storage_info(\%hash);
-die "default did not promote after four entries\n"
-    unless !$info->{linear} && $info->{index_capacity} == 8
-        && keys(%hash) == 5 && $hash{'default:4'} == 4;
+die "default grew before filling four entries\n"
+    unless $info->{linear} && $info->{entry_capacity} == 4;
+$hash{"default:$_"} = $_ for 4 .. 7;
+$info = hash_storage_info(\%hash);
+die "default did not keep eight entries linear\n"
+    unless $info->{linear} && !$info->{index_capacity}
+        && $info->{entry_capacity} == 8;
+$hash{'default:8'} = 8;
+$info = hash_storage_info(\%hash);
+die "default did not promote on the ninth entry\n"
+    unless !$info->{linear} && $info->{index_capacity} == 16
+        && keys(%hash) == 9 && $hash{'default:8'} == 8;
 
-my %compact = map { ("compact:$_" => $_) } 0 .. 4;
+my %compact = map { ("compact:$_" => $_) } 0 .. 8;
 my $before = hash_storage_info(\%compact);
-die "five entries did not allocate indexed storage\n"
-    unless $before->{index_capacity} && $before->{entry_used} == 5;
-my $fill = 5;
+die "nine entries did not allocate indexed storage\n"
+    unless $before->{index_capacity} && $before->{entry_used} == 9;
+my $fill = 9;
 while ($before->{entry_used} < $before->{entry_capacity}) {
     $compact{"compact:$fill"} = $fill++;
     $before = hash_storage_info(\%compact);
@@ -246,9 +260,9 @@ while (my ($key) = each %compact) { push @iterated, $key }
 die "iteration order disagrees with compacted entry order\n"
     unless "@iterated" eq "@expected";
 
-my %lazy = map { ("lazy:$_" => $_) } 0 .. 4;
+my %lazy = map { ("lazy:$_" => $_) } 0 .. 8;
 my $lazy_capacity = hash_storage_info(\%lazy)->{entry_capacity};
-my $lazy_next = 5;
+my $lazy_next = 9;
 while (hash_storage_info(\%lazy)->{entry_used} < $lazy_capacity) {
     $lazy{"lazy:$lazy_next"} = $lazy_next++;
 }
@@ -284,15 +298,16 @@ die "insertion after lazy deletion lost a key\n"
     unless keys(%lazy) == $lazy_capacity - $lazy_hole_threshold + 1;
 print "ok\n";
 PERL
-    my ($out, $err);
-    {
+    for my $setting (undef, '3') {
         local $ENV{PERL_HASH_LINEAR_MAX};
-        delete $ENV{PERL_HASH_LINEAR_MAX};
-        ($out, $err) = runperl_and_capture({}, ['-I../lib', '-e', $default_mode]);
+        if (defined $setting) { $ENV{PERL_HASH_LINEAR_MAX} = $setting }
+        else { delete $ENV{PERL_HASH_LINEAR_MAX} }
+        my ($out, $err) = runperl_and_capture({}, ['-I../lib', '-e', $default_mode]);
+        is($out, "ok\n",
+           'default K=8 and four-slot allocation work with '
+           . (defined $setting ? 'an invalid override' : 'no override'))
+            or diag($err);
     }
-    is($out, "ok\n",
-       'default K=4 and append-and-compact indexed policy behave as designed')
-        or diag($err);
 }
 
 {
@@ -366,7 +381,7 @@ use Hash::Util qw(hash_storage_info);
 sub setup {
     my ($ordinary, @magic) = @_;
     my %hash;
-    keys %hash = 8;
+    keys %hash = 9;
     my $reserved = hash_storage_info(\%hash);
     $ordinary = $reserved->{entry_capacity} - @magic;
     $hash{"ordinary:$_"} = $_ for 0 .. $ordinary - 1;
@@ -662,7 +677,7 @@ if ($limit) {
     for my $i (0 .. $limit - 1) {
         $h{"small:$i"} = $i;
         my $step = hash_storage_info(\%h);
-        my $capacity = 1;
+        my $capacity = $i == 0 ? 1 : $limit < 4 ? $limit : 4;
         $capacity *= 2 while $capacity < $i + 1;
         my $single_arena = $i == 0;
         die "linear capacity growth failed at $i\n"

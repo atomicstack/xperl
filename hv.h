@@ -18,7 +18,8 @@
 /* Ordinary hashes use integer chains unless the OA experiment is selected.
  * Shared-key table indexing is independent of this choice. */
 #if defined(PERL_HASH_INDEX_OA)
-#  if defined(PERL_HASH_INDEX_CHAINS) || defined(PERL_HASH_CHAIN_FINGERPRINT)
+#  if defined(PERL_HASH_INDEX_CHAINS) || defined(PERL_HASH_CHAIN_FINGERPRINT) \
+      || defined(PERL_HASH_INDEX_32BIT)
 #    error "PERL_HASH_INDEX_OA cannot be combined with integer-chain options"
 #  endif
 #elif !defined(PERL_HASH_INDEX_CHAINS)
@@ -48,8 +49,12 @@ struct hv_oa {
 };
 
 #ifdef PERL_HASH_INDEX_CHAINS
-#  define HvOA_INDEX_WIDTH_FOR(capacity) \
+#  ifdef PERL_HASH_INDEX_32BIT
+#    define HvOA_INDEX_WIDTH_FOR(capacity) 4
+#  else
+#    define HvOA_INDEX_WIDTH_FOR(capacity) \
     ((capacity) <= 255 ? 1 : (capacity) <= 65535 ? 2 : 4)
+#  endif
 #  define HvOA_INDEX_WIDTH(hv) HvOA_INDEX_WIDTH_FOR(HvOA(hv)->capacity)
 #  ifdef PERL_HASH_CHAIN_FINGERPRINT
 #    define HvOA_RECORD_WIDTH_FOR(capacity) \

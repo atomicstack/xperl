@@ -391,6 +391,14 @@ S_linear_reserve(pTHX_ HV *hv, U32 capacity)
         HvAUX(hv)->xhv_eiter = &entries[eiter_offset];
 }
 
+/* Benchmark the first heap allocation independently of the linear limit. */
+#ifndef PERL_HASH_LINEAR_MIN_ALLOC
+#  define PERL_HASH_LINEAR_MIN_ALLOC 4
+#endif
+#if PERL_HASH_LINEAR_MIN_ALLOC != 2 && PERL_HASH_LINEAR_MIN_ALLOC != 4
+#  error "PERL_HASH_LINEAR_MIN_ALLOC must be 2 or 4"
+#endif
+
 static HE *
 S_linear_new_entry(pTHX_ HV *hv)
 {
@@ -406,6 +414,8 @@ S_linear_new_entry(pTHX_ HV *hv)
     if (used == cap) {
         if (cap < limit) {
             U32 next = cap ? cap * 2 : 1;
+            if (cap == 1 && next < PERL_HASH_LINEAR_MIN_ALLOC)
+                next = PERL_HASH_LINEAR_MIN_ALLOC;
             if (next > limit) next = limit;
             if (next <= cap || next > (U32)HV_LINEAR_CAP_MASK)
                 Perl_croak_memory_wrap();
@@ -496,9 +506,6 @@ S_oa_find(pTHX_ HV *hv, U32 hash, const char *key, STRLEN klen, U32 flags,
     U32 pos = hash & mask;
     U32 first_deleted = OA_EMPTY;
     U32 n;
-#if defined(PERL_HASH_INDEX_CHAINS) && defined(PERL_HASH_CHAIN_FINGERPRINT)
-    U32 fingerprint;
-#endif
     if (HvIS_LINEAR(hv)) {
         HE *entries = (HE *)HvARRAY(hv);
         if (slotp) *slotp = OA_EMPTY;
@@ -511,28 +518,63 @@ S_oa_find(pTHX_ HV *hv, U32 hash, const char *key, STRLEN klen, U32 flags,
     }
     if (!HvARRAY(hv)) { if (slotp) *slotp = OA_EMPTY; return NULL; }
 #ifdef PERL_HASH_INDEX_CHAINS
+    /* Select a load width before walking the chain. Bucket heads contain
+     * one identifier. Link records contain an identifier and, optionally,
+     * a fingerprint. Copy keeps wider loads portable on strict-alignment
+     * platforms while each expansion has a compile-time constant width. */
 #ifdef PERL_HASH_CHAIN_FINGERPRINT
-    fingerprint = HvOA_INDEX_WIDTH(hv) == 1 ? hash >> 24
-                : HvOA_INDEX_WIDTH(hv) == 2 ? hash >> 16 : hash;
+#  define CHAIN_RECORD_WORDS 2
+#  define CHAIN_CHECK_FINGERPRINT(Index, record, matches)                 \
+    STMT_START {                                                       \
+        Index fingerprint;                                             \
+        Copy((record) + sizeof(Index), &fingerprint, 1, Index);          \
+        (matches) = fingerprint == (Index)(hash                         \
+            >> (CHAR_BIT * (sizeof(U32) - sizeof(Index))));              \
+    } STMT_END
+#else
+#  define CHAIN_RECORD_WORDS 1
+#  define CHAIN_CHECK_FINGERPRINT(Index, record, matches)                 \
+    ((matches) = TRUE)
 #endif
-    for (;;) {
-        U32 ix = HvOA_INDEX_GET(hv, pos);
-        HE *entry;
-        if (!ix) break;
-#ifdef PERL_HASH_CHAIN_FINGERPRINT
-        if (HvOA_FINGERPRINT_GET(hv,
-                (U32)HvMAX(hv) + 1 + ix - 1) != fingerprint) {
-            pos = mask + ix;
-            continue;
-        }
-#endif
-        entry = &HvOA(hv)->entries[ix - 1];
-        if (S_oa_key_eq(HeKEY_hek(entry), keyhek, hash, key, klen, flags)) {
-            if (slotp) *slotp = pos;
-            return entry;
-        }
-        pos = mask + ix;
+#define FIND_CHAIN(Index)                                               \
+    STMT_START {                                                       \
+        const struct hv_oa * const oa = HvOA(hv);                       \
+        const U8 * const links = oa->indices                            \
+            + ((Size_t)mask + 1) * sizeof(Index);                       \
+        HE * const entries = oa->entries;                              \
+        Index encoded;                                                 \
+        U32 ix;                                                        \
+        Copy(oa->indices + (Size_t)pos * sizeof(Index),                  \
+             &encoded, 1, Index);                                      \
+        while ((ix = encoded)) {                                       \
+            const U8 *record;                                          \
+            bool matches;                                              \
+            assert(ix <= oa->capacity);                                \
+            record = links + (Size_t)(ix - 1)                           \
+                * CHAIN_RECORD_WORDS * sizeof(Index);                  \
+            CHAIN_CHECK_FINGERPRINT(Index, record, matches);             \
+            if (matches) {                                             \
+                HE *entry = &entries[ix - 1];                           \
+                if (S_oa_key_eq(HeKEY_hek(entry), keyhek, hash,           \
+                                key, klen, flags)) {                    \
+                    if (slotp) *slotp = pos;                            \
+                    return entry;                                      \
+                }                                                      \
+            }                                                          \
+            pos = mask + ix;                                           \
+            Copy(record, &encoded, 1, Index);                           \
+        }                                                              \
+        if (slotp) *slotp = OA_EMPTY;                                   \
+        return NULL;                                                   \
+    } STMT_END
+    switch (HvOA_INDEX_WIDTH(hv)) {
+        case 1: FIND_CHAIN(U8);
+        case 2: FIND_CHAIN(U16);
+        default: FIND_CHAIN(U32);
     }
+#undef FIND_CHAIN
+#undef CHAIN_CHECK_FINGERPRINT
+#undef CHAIN_RECORD_WORDS
 #else
     for (n = 0; n <= mask; n++, pos = (pos + 1) & mask) {
         U32 ix = HvOA_INDEX_GET(hv, pos);

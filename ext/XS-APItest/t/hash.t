@@ -719,7 +719,7 @@ sub test_precomputed_hashes {
     for my $i (0..10000) {
         my $key = "collision-policy:$i";
         my $value = Hash::Util::hash_value($key);
-        my $home = $value & 7;
+        my $home = $value & 15;
         if (!defined $keys[$home]) {
             $keys[$home] = $key;
             $hashes[$home] = $value;
@@ -727,52 +727,52 @@ sub test_precomputed_hashes {
         elsif ($home == 0) {
             $collision = [$key, $value];
         }
-        last if $collision && grep(defined, @keys) == 8;
+        last if $collision && grep(defined, @keys) == 16;
     }
     die 'Could not find keys for the collision-policy test'
-        unless $collision && grep(defined, @keys) == 8;
+        unless $collision && grep(defined, @keys) == 16;
     store_prehashed(\%hash, $keys[0], 0, $hashes[0]);
-    keys(%hash) = 4;
-    store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 1..4;
-    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 8,
-       'five noncolliding inserts remain below the index threshold');
-    store_prehashed(\%hash, $keys[5], 5, $hashes[5]);
+    keys(%hash) = 9;
+    store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 1..9;
     is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 16,
+       'ten noncolliding inserts remain below the index threshold');
+    store_prehashed(\%hash, $keys[10], 10, $hashes[10]);
+    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 32,
        'noncolliding inserts grow the index at the two-thirds threshold');
-    store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 6..7;
-    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 16,
+    store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 11..15;
+    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 32,
        'noncolliding inserts retain the resized index');
     ok(!exists $hash{'absent from resized index'},
        'unsuccessful lookup terminates after index growth');
-    is($hash{$keys[7]}, 7, 'successful lookup works after index growth');
+    is($hash{$keys[15]}, 15, 'successful lookup works after index growth');
     store_prehashed(\%hash, $collision->[0], 99, $collision->[1]);
-    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 16,
+    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 32,
        'collision lookup fits below the next index threshold');
 
     my %lazy;
     store_prehashed(\%lazy, $keys[0], 0, $hashes[0]);
-    keys(%lazy) = 5;
-    store_prehashed(\%lazy, $keys[$_], $_, $hashes[$_]) for 1..7;
+    keys(%lazy) = 9;
+    store_prehashed(\%lazy, $keys[$_], $_, $hashes[$_]) for 1..15;
     my $current = each %lazy;
     delete $lazy{$current};
     store_prehashed(\%lazy, $collision->[0], 99, $collision->[1]);
     my $lazy_info = Hash::Util::hash_storage_info(\%lazy);
-    is($lazy_info->{entry_used}, 9,
+    is($lazy_info->{entry_used}, 17,
        'insertion appends while the deleted iterator entry is retained');
     is($lazy_info->{free_list_length}, 0,
        'the lazy-deleted entry is never placed on the free list');
 
     my %sparse_lazy;
     store_prehashed(\%sparse_lazy, $keys[0], 0, $hashes[0]);
-    keys(%sparse_lazy) = 5;
+    keys(%sparse_lazy) = 9;
     my $sparse_current = each %sparse_lazy;
     delete $sparse_lazy{$sparse_current};
     store_prehashed(\%sparse_lazy, $collision->[0], 99, $collision->[1]);
-    store_prehashed(\%sparse_lazy, $keys[$_], $_, $hashes[$_]) for 1..7;
+    store_prehashed(\%sparse_lazy, $keys[$_], $_, $hashes[$_]) for 1..15;
     my $sparse_info = Hash::Util::hash_storage_info(\%sparse_lazy);
-    is($sparse_info->{index_capacity}, 16,
+    is($sparse_info->{index_capacity}, 32,
        'noncolliding inserts grow an index with a lazy entry retained');
-    my $sparse_entry_used = $sparse_info->{integer_chained} ? 9 : 8;
+    my $sparse_entry_used = $sparse_info->{integer_chained} ? 17 : 16;
     my $sparse_entry_holes = $sparse_info->{integer_chained} ? 1 : 0;
     is($sparse_info->{entry_used}, $sparse_entry_used,
        'index pressure handles the lazily deleted entry');

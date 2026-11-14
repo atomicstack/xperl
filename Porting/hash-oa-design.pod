@@ -23,11 +23,12 @@ With two or more entries, very small hashes can use a dense array of compact
 C<HE> entries and linear search without
 allocating open-addressing metadata. The startup
 environment variable C<PERL_HASH_LINEAR_MAX> selects the maximum number of
-entries kept in this form. The default is four. Zero disables this form and
+entries kept in this form. The default is eight. Zero disables this form and
 uses indexed storage from the first key. Positive settings of two, four, or
 eight select the corresponding threshold. With a positive threshold, adding
-a second key moves the singleton into a compact entry array, which grows
-through capacities two, four, and eight as needed. Deletion shifts later
+a second key moves the singleton into a compact entry array with four slots,
+growing to eight slots when the fifth key is inserted. A threshold of two
+caps the first heap allocation at two slots. Deletion shifts later
 entries left to keep the array dense. Inserting beyond the selected threshold
 promotes the same entries into the indexed form. With a positive threshold,
 deleting from two entries to one returns to the arena-backed singleton
@@ -684,7 +685,7 @@ to 2^30 slots. At the two-thirds load limit, an ordinary hash can hold at most
 limit throws C<Hash key count exceeds limit of 715827882>. Deleted ordinary
 hash entries are not reused and can leave holes in the entry array until a
 later insertion compacts it.
-With the default C<PERL_HASH_LINEAR_MAX=4>, hashes with up to four entries
+With the default C<PERL_HASH_LINEAR_MAX=8>, hashes with up to eight entries
 avoid the index allocation but use linear lookup and shift entries on
 deletion. Setting the threshold to zero disables linear storage and uses an
 index from the first key. Repeated lookup and

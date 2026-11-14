@@ -1177,7 +1177,7 @@ is(shared_key_refcount("xperl-immortal-byte-$$\x{e9}"), 2,
 
 if ($info->{integer_chained}) {
     my %small_churn;
-    keys %small_churn = 8;
+    keys %small_churn = 9;
     my $capacity = hash_storage_info(\%small_churn)->{entry_capacity};
     my @keys = map { "small-churn:$_" } 0 .. $capacity - 1;
     $small_churn{$keys[$_]} = $_ for 0 .. $#keys;
