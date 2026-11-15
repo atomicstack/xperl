@@ -8,7 +8,7 @@ BEGIN {
 
 use dispatch::Predicates;
 
-plan(27);
+plan(29);
 
 {
     package DispatchOnHardening::ScalarTie;
@@ -362,6 +362,27 @@ eval "use feature 'dispatch_on'; no warnings; package Point { sub new { bless {x
 print "err: $@";
 CODE
     "deep shape beside a rebound capture fails cleanly");
+
+# A concatenation shape is a left-nested chain of concat ops, one level per
+# operand, and its validators walk that chain recursively.
+fresh_perl_like(<<'CODE', qr/^err: dispatch pattern nested more than 1000 levels deep/, {},
+my $shape = join ' . ', ('"a" . ^$p') x 100_000;
+eval "use feature 'dispatch_on'; no warnings; my \$p = 'a'; my \$v = 'aa'; dispatch (\$v) { on ($shape) { 1 } on (_) { 2 } }";
+print "err: $@";
+CODE
+    "concatenation shape with 200000 operands fails cleanly");
+{
+    my $shape = join ' . ', ('"a" . ^$p') x 400;
+    my $got = eval qq{
+        use feature 'dispatch_on';
+        no warnings;
+        my \$p = 'a';
+        my \$v = 'a' x 800;
+        do { dispatch (\$v) { on ($shape) { 'match' } on (_) { 'wild' } } };
+    };
+    is($got, 'match', 'concatenation shape with 800 operands still matches')
+        or diag($@);
+}
 
 # A constant-folded dispatch must not release pad slots it does not own.
 # The marker values stored in the op_targ of OP_ENTERDISPATCH and

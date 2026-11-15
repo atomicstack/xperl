@@ -10499,22 +10499,29 @@ S_dispatch_pattern_slurp_target(const OP *op)
     return op->op_type == OP_DISPATCHCOERCE ? cUNOPx(op)->op_first : op;
 }
 
+/* A concatenation shape is a chain of concat ops nested one level per
+ * operand, so it counts towards the pattern nesting limit.  This runs
+ * before S_dispatch_pattern_validate_concat_boundaries, which walks the
+ * same chain recursively and so relies on the bound enforced here. */
 static void
-S_dispatch_pattern_validate_concat(pTHX_ const OP *op)
+S_dispatch_pattern_validate_concat(pTHX_ const OP *op, U32 depth)
 {
     const OP *kid;
 
     if (!op)
         PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_EXPRESSION_UNSUPPORTED();
+    if (depth > DISPATCH_PATTERN_MAX_DEPTH)
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP(
+            (UV)DISPATCH_PATTERN_MAX_DEPTH);
     if (op->op_type == OP_NULL && (op->op_flags & OPf_KIDS)) {
-        S_dispatch_pattern_validate_concat(aTHX_ cUNOPx(op)->op_first);
+        S_dispatch_pattern_validate_concat(aTHX_ cUNOPx(op)->op_first, depth);
         return;
     }
     if (op->op_type == OP_CONCAT || op->op_type == OP_MULTICONCAT) {
         if (!(op->op_flags & OPf_KIDS))
             PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_CONCAT_EXPRESSION_UNSUPPORTED();
         for (kid = cUNOPx(op)->op_first; kid; kid = OpSIBLING(kid))
-            S_dispatch_pattern_validate_concat(aTHX_ kid);
+            S_dispatch_pattern_validate_concat(aTHX_ kid, depth + 1);
         return;
     }
     if (op->op_type == OP_CONST
@@ -11046,7 +11053,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op, U32 depth)
     if (op->op_type == OP_CONCAT || op->op_type == OP_MULTICONCAT) {
         bool seen_capture = FALSE;
         bool has_literal = FALSE;
-        S_dispatch_pattern_validate_concat(aTHX_ op);
+        S_dispatch_pattern_validate_concat(aTHX_ op, depth);
         S_dispatch_pattern_validate_concat_boundaries(aTHX_ op,
                                                    &seen_capture,
                                                    &has_literal);
