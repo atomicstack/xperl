@@ -5,6 +5,9 @@
 
 #define TENSOR_MAGIC   ((UV)0x54454e53U) /* "TENS" */
 #define TENSOR_VERSION ((UV)1)
+/* Bounds the recursion depth of nested data loading and the per-object
+ * metadata size.  Keep in sync with the POD in lib/Tensor/XS.pm. */
+#define TENSOR_MAX_RANK ((UV)64)
 
 typedef struct {
     UV magic;
@@ -301,6 +304,7 @@ tensor_from_object(pTHX_ SV *object)
         if (tensor->magic != TENSOR_MAGIC || tensor->version != TENSOR_VERSION
             || tensor->dtype < TENSOR_DTYPE_U8
             || tensor->dtype > TENSOR_DTYPE_NV
+            || tensor->rank > TENSOR_MAX_RANK
             || !tensor_blob_size(tensor->rank, tensor->size,
                                  tensor_dtype_size((tensor_dtype)tensor->dtype),
                                  &expected)
@@ -534,7 +538,7 @@ tensor_new_result(pTHX_ const UV *shape, UV rank, const char *class_name,
     SV *object;
 
     for (i = 0; i < rank; i++) {
-        if (size > UV_MAX / shape[i])
+        if (shape[i] && size > UV_MAX / shape[i])
             croak("tensor size overflow");
         size *= shape[i];
     }
@@ -597,6 +601,17 @@ tensor_coordinate_index(pTHX_ tensor_header *tensor, SV **coordinates,
     return index;
 }
 
+/* A nonexistent array element (sparse or deleted) reads as undef, like
+ * an explicit undef element.  The element is kept alive in case storing
+ * an earlier value runs code that modifies the source array. */
+static SV *
+tensor_fetch_element(pTHX_ AV *source, UV i)
+{
+    SV **value = av_fetch(source, i, 0);
+    return value ? sv_2mortal(SvREFCNT_inc_simple_NN(*value)) : &PL_sv_undef;
+}
+
+/* Recursion depth is bounded by tensor->rank <= TENSOR_MAX_RANK. */
 static void
 tensor_copy_array(pTHX_ AV *source, tensor_header *tensor, UV depth,
                   UV *position, SV **output)
@@ -605,9 +620,9 @@ tensor_copy_array(pTHX_ AV *source, tensor_header *tensor, UV depth,
     UV i;
 
     if (depth == 0 && count == tensor->size
-        && (!count || !SvROK(*av_fetch(source, 0, 0)))) {
+        && (!count || !SvROK(tensor_fetch_element(aTHX_ source, 0)))) {
         for (i = 0; i < count; i++) {
-            SV *value = *av_fetch(source, i, 0);
+            SV *value = tensor_fetch_element(aTHX_ source, i);
             if (SvROK(value))
                 croak("flat tensor data cannot contain nested arrays");
             output[(*position)++] = value;
@@ -619,7 +634,7 @@ tensor_copy_array(pTHX_ AV *source, tensor_header *tensor, UV depth,
         croak("nested tensor data does not match tensor shape");
 
     for (i = 0; i < count; i++) {
-        SV *value = *av_fetch(source, i, 0);
+        SV *value = tensor_fetch_element(aTHX_ source, i);
         if (depth + 1 == tensor->rank) {
             if (SvROK(value))
                 croak("nested tensor data has too many dimensions");
@@ -655,6 +670,7 @@ new_with_dtype(class_name, shape, data, dtype)
     char *storage;
     tensor_header *tensor;
     SV **values = NULL;
+    UV dimensions[TENSOR_MAX_RANK];
     SV *payload;
     SV *object;
   CODE:
@@ -662,6 +678,9 @@ new_with_dtype(class_name, shape, data, dtype)
         croak("shape must be an array reference");
     shape_av = (AV *)SvRV(shape);
     rank = av_count(shape_av);
+    if (rank > TENSOR_MAX_RANK)
+        croak("tensor rank %" UVuf " exceeds the maximum of %" UVuf,
+              rank, TENSOR_MAX_RANK);
 
     if (SvROK(data) && SvTYPE(SvRV(data)) == SVt_PVAV)
         data_av = (AV *)SvRV(data);
@@ -673,15 +692,20 @@ new_with_dtype(class_name, shape, data, dtype)
         if (!value || !SvOK(*value) || SvIV(*value) < 0
             || (dimension = SvUV(*value)) != SvNV(*value))
             croak("shape dimensions must be nonnegative integers");
-        if (size > UV_MAX / dimension)
+        if (dimension && size > UV_MAX / dimension)
             croak("tensor size overflow");
         size *= dimension;
+        dimensions[i] = dimension;
     }
 
     if (!tensor_blob_size(rank, size, tensor_dtype_size(dtype_value), &bytes))
         croak("tensor blob size overflow");
+    /* Own the storage through a mortal payload so that a croak while
+     * loading data does not leak it. */
     Newxz(storage, bytes, char);
-    tensor = (tensor_header *)storage;
+    payload = sv_2mortal(newSV(0));
+    sv_usepvn(payload, storage, bytes);
+    tensor = (tensor_header *)SvPVX(payload);
     tensor->magic = TENSOR_MAGIC;
     tensor->version = TENSOR_VERSION;
     tensor->rank = rank;
@@ -694,8 +718,7 @@ new_with_dtype(class_name, shape, data, dtype)
         UV stride = 1;
 
         for (i = rank; i-- > 0;) {
-            SV **value = av_fetch(shape_av, i, 0);
-            shape_out[i] = SvUV(*value);
+            shape_out[i] = dimensions[i];
             strides_out[i] = stride;
             stride *= shape_out[i];
         }
@@ -716,9 +739,7 @@ new_with_dtype(class_name, shape, data, dtype)
         }
     }
 
-    payload = newSV(0);
-    sv_usepvn(payload, (char *)tensor, bytes);
-    object = newRV_noinc(payload);
+    object = newRV_inc(payload);
     sv_bless(object, gv_stashpv(class_name, GV_ADD));
     RETVAL = object;
     OUTPUT:

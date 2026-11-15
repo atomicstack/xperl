@@ -30,4 +30,10 @@ This module is the first step of the Tensor-XS XS migration.  It
 provides a compact native Tensor storage object; the higher-level Tensor,
 Vector, and Matrix APIs will be moved onto it incrementally.
 
+=head1 LIMITS
+
+A tensor may have at most 64 dimensions; C<new> croaks for a longer
+shape.  Nonexistent elements of the data array (for example after
+C<delete> or when extending an array with C<$#array>) load like C<undef>.
+
 =cut

@@ -112,4 +112,63 @@ is $u64->at(0), '18446744073709551615',
     is $unforged->at(1, 2), 6, 'an untouched payload copy still works';
 }
 
+{
+    # nested data loading is bounded by a maximum rank
+    my $data = 7;
+    $data = [$data] for 1 .. 65;
+    ok !eval { Tensor::XS->new([ (1) x 65 ], $data, 'F64'); 1 },
+        'rank above the maximum is rejected';
+    like $@, qr/tensor rank 65 exceeds the maximum of 64/,
+        'rank limit error names the limit';
+    $data = 7;
+    $data = [$data] for 1 .. 64;
+    my $deep = Tensor::XS->new([ (1) x 64 ], $data, 'F64');
+    is $deep->rank, 64, 'maximum rank is accepted';
+    is $deep->at((0) x 64), 7, 'maximum-rank nested data loads';
+
+    my $script = q{
+        use Tensor::XS;
+        my $data = 7; $data = [$data] for 1 .. 200_000;
+        eval { Tensor::XS->new([ (1) x 200_000 ], $data, 'F64') };
+        print $@ =~ /exceeds the maximum/ ? "rejected\n" : "accepted: $@\n";
+    };
+    open my $fh, '-|', $^X, (map "-I$_", @INC), '-e', $script
+        or die "cannot run $^X: $!";
+    my $out = do { local $/; <$fh> };
+    close $fh;
+    is $out, "rejected\n", 'very deep nested data is rejected without recursion';
+}
+
+{
+    # nonexistent elements load like undef instead of dereferencing NULL
+    no warnings 'uninitialized';
+    my @sparse;
+    $#sparse = 3;
+    $sparse[2] = 5;
+    is_deeply(Tensor::XS->new([4], \@sparse, 'F64')->data, [0, 0, 5, 0],
+        'sparse flat data loads missing elements as undef');
+    my @deleted = (1, 2, 3, 4);
+    delete $deleted[1];
+    is_deeply(Tensor::XS->new([4], \@deleted, 'F64')->data, [1, 0, 3, 4],
+        'deleted elements load as undef');
+    my $t = Tensor::XS->new([2, 2], 0, 'F64');
+    my @holes;
+    $#holes = 3;
+    $t->set_data(\@holes);
+    is_deeply $t->data, [0, 0, 0, 0], 'set_data accepts sparse arrays';
+    my @inner;
+    $#inner = 1;
+    is_deeply(Tensor::XS->new([2, 2], [\@inner, [1, 2]], 'F64')->data,
+        [0, 0, 1, 2], 'sparse nested rows load as undef');
+    my @rows;
+    $#rows = 1;
+    $rows[1] = [1, 2];
+    ok !eval { Tensor::XS->new([2, 2], \@rows, 'F64'); 1 },
+        'a missing nested row is rejected';
+    like $@, qr/nested tensor data has too few dimensions/,
+        'missing nested row reports too few dimensions';
+    is_deeply(Tensor::XS->new([2, 0], 0, 'F64')->shape, [2, 0],
+        'zero-length dimensions are accepted');
+}
+
 done_testing;
