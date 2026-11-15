@@ -8,7 +8,7 @@ BEGIN {
 
 use dispatch::Predicates;
 
-plan(14);
+plan(17);
 
 {
     package DispatchOnHardening::ScalarTie;
@@ -273,3 +273,43 @@ my $outer_eval_ok = eval q{
 ok(!$@ && $outer_eval_ok && $outer_error =~ /uncaught clause/
    && !defined($after_error),
    'dispatch state is restored after an exception and later dispatches still run');
+
+# The dispatch context owns its subject: user code run during matching may
+# replace *_'s scalar, which used to free the unnamed subject's snapshot
+# while later clauses still matched against it.
+fresh_perl_is(<<'CODE', "second", {},
+use feature 'dispatch_on'; no warnings;
+my $v = "hello";
+my $out = do { dispatch ($v) {
+    on (_ if do { *_ = \my $other; my @junk = map { [] } 1..300; 0 }) { "first" }
+    on ("hello") { "second" }
+    on (_) { "wild" }
+} };
+print $out;
+CODE
+    'a guard replacing *_ does not free the dispatch subject');
+
+fresh_perl_is(<<'CODE', "second [abc][def]", {},
+use feature 'dispatch_on'; no warnings;
+package O { use overload '""' => sub { *_ = \my $o; my @j = map { [] } 1..300; "zzz" } }
+my $pin = bless {}, 'O';
+my $v = "abc-def";
+my $out = do { dispatch ($v) {
+    on (^$pin . "-" . $rest) { "first $rest" }
+    on ($a . "-" . $b) { "second [$a][$b]" }
+    on (_) { "wild" }
+} };
+print $out;
+CODE
+    'overloading that replaces *_ during matching does not free the subject');
+
+fresh_perl_is(<<'CODE', "outer|second", {},
+use feature 'dispatch_on'; no warnings;
+$_ = "outer";
+my $out = do { dispatch ("hello") {
+    on (_ if do { *_ = \my $other; 0 }) { "first" }
+    on ("hello") { "second" }
+} };
+print "$_|$out";
+CODE
+    '$_ is restored after a dispatch whose matching replaced *_');

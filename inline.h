@@ -4830,6 +4830,7 @@ Perl_cx_popdispatch(pTHX_ PERL_CONTEXT *cx)
         SvREFCNT_dec(sv);
     }
     cx->blk_dispatch.defsv_save = NULL;
+    SvREFCNT_dec(cx->blk_dispatch.subject);
     cx->blk_dispatch.subject = NULL;
     if (cx->blk_dispatch.committed_bindings) {
         AV *bindings = cx->blk_dispatch.committed_bindings;

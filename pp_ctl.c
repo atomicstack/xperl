@@ -9499,7 +9499,10 @@ PP(pp_enterdispatch)
 
     cx = cx_pushblock(CXt_DISPATCH, gimme, PL_stack_sp, PL_savestack_ix);
     cx_pushdispatch(cx, origsv);
-    cx->blk_dispatch.subject = subject;
+    /* The context owns a reference: code run while matching (a guard or an
+     * overloaded operator) may replace *_ or the named lexical, which would
+     * otherwise free the subject that later clauses still match against. */
+    cx->blk_dispatch.subject = SvREFCNT_inc_simple_NN(subject);
     cx->blk_dispatch.localizes_defsv = !named_subject;
     return NORMAL;
 }

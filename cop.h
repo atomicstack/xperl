@@ -1039,7 +1039,7 @@ struct block_dispatch {
         U32 dispatch_clause;
         AV *on_bindings;
         AV *committed_bindings;
-        SV *subject;       /* borrowed: localized $_ or the named subject */
+        SV *subject;       /* owned ref: localized $_ or the named subject */
         bool localizes_defsv;
         OP *redo_op;
 };

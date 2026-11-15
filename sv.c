@@ -16914,6 +16914,8 @@ Perl_cx_dup(pTHX_ PERL_CONTEXT *cxs, I32 ix, I32 max, CLONE_PARAMS* param)
             case CXt_DISPATCH:
                 ncx->blk_dispatch.defsv_save =
                                 sv_dup_inc(ncx->blk_dispatch.defsv_save, param);
+                ncx->blk_dispatch.subject =
+                                sv_dup_inc(ncx->blk_dispatch.subject, param);
                 ncx->blk_dispatch.on_bindings =
                     av_dup_inc(ncx->blk_dispatch.on_bindings, param);
                 ncx->blk_dispatch.committed_bindings =
