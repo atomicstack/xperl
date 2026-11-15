@@ -576,6 +576,14 @@ release manager will have to investigate the situation carefully.)
 
 =item *
 
+L<XBench> 0.01 provides calibrated callback and command benchmarks using
+L<XStats> uncertainty estimates.  Results retain raw samples, sample SD,
+bootstrap intervals and stopping metadata.  Optional paired baselines and
+outlier filtering are explicit.  Native XPerl classes and structured
+exceptions preserve callback and cleanup failures with benchmark context.
+
+=item *
+
 L<XStats> 0.01 provides XS descriptive statistics, incremental summaries,
 case resampling, bootstrap percentile intervals, and paired statistics.
 Stored observations can be copied in insertion or sorted order. Stored and

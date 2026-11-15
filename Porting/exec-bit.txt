@@ -28,6 +28,7 @@ dist/Storable/t/make_downgrade.pl
 dist/Storable/t/make_overload.pl
 dist/Thread-Queue/examples/callback.pl
 dist/Thread-Queue/examples/queue.pl
+dist/XBench/bin/xbench
 installperl
 installman
 makedepend.SH

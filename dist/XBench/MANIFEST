@@ -1,0 +1,10 @@
+Changes
+MANIFEST
+Makefile.PL
+bin/xbench
+lib/XBench.pm
+lib/XBench/Result.pm
+t/commands.t
+t/exceptions.t
+t/measurement.t
+t/threads.t

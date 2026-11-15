@@ -1,0 +1,89 @@
+#!/usr/bin/perl
+use v5.41;
+use feature 'defer';
+no warnings 'experimental::defer';
+use Getopt::Long qw(GetOptions);
+use XBench       qw(benchmark_command);
+
+my %options;
+my $json = 0;
+my $help = 0;
+GetOptions(
+    'precision=f'      => \$options{target_rel_precision},
+    'absolute=f'       => \$options{target_abs_precision},
+    'min-samples=i'    => \$options{min_samples},
+    'max-samples=i'    => \$options{max_samples},
+    'max-seconds=f'    => \$options{max_seconds},
+    'confidence=f'     => \$options{confidence},
+    'resamples=i'      => \$options{resamples},
+    'seed=i'           => \$options{seed},
+    'warmup=i'         => \$options{warmup},
+    'outlier-sigma=f'  => \$options{outlier_sigma},
+    'outlier-method=s' => \$options{outlier_method},
+    'name=s'           => \$options{name},
+    'json!'            => \$json,
+    'help'             => \$help,
+) or XBench::_error( 'INVALID_ARGUMENT', argument => 'command-line options' );
+
+if ($help) {
+    print <<'USAGE';
+Usage: xbench [options] -- command [arguments]
+
+  --precision N       Relative confidence half-width target (default .05)
+  --absolute N        Absolute target in seconds per operation
+  --min-samples N     Minimum retained batches (default 20)
+  --max-samples N     Maximum measured batches (default 200)
+  --max-seconds N     Soft elapsed-time limit per case (default 5)
+  --confidence N      Confidence level (default .95)
+  --resamples N       Bootstrap repeats (default 1000)
+  --seed N            Local bootstrap seed (default 1)
+  --warmup N          Unmeasured executions (default 1)
+  --outlier-sigma N   Opt-in filtering threshold (default disabled)
+  --outlier-method S  mad or sd (default mad)
+  --name S            Case name (default command)
+  --json              Emit the complete result as JSON
+
+Commands execute directly, without a shell.  Child output is inherited;
+with --json, child stdout goes to stderr to keep the JSON stream usable.
+The time limit is checked between executions and requires two samples.
+USAGE
+    exit 0;
+}
+
+XBench::_error( 'INVALID_ARGUMENT', argument => 'command' ) unless @ARGV;
+%options = map { $_ => $options{$_} } grep { defined $options{$_} } keys %options;
+$options{name} //= 'command';
+
+my $result;
+if ($json) {
+    open my $saved_output, '>&', \*STDOUT or XBench::_error('REPORT_FAILED');
+    open STDOUT,           '>&', \*STDERR or XBench::_error('REPORT_FAILED');
+    defer { open STDOUT, '>&', $saved_output or XBench::_error('REPORT_FAILED'); }
+
+    $result = benchmark_command( [@ARGV], %options );
+}
+else {
+    $result = benchmark_command( [@ARGV], %options );
+}
+print( $json ? $result->as_json . "\n" : $result->as_text )
+  or XBench::_error('REPORT_FAILED');
+
+__END__
+
+=head1 NAME
+
+xbench - Benchmark a command with XStats uncertainty and raw measurements
+
+=head1 SYNOPSIS
+
+    xbench --precision .02 -- ./program argument
+    xbench --json --max-seconds 3 -- ./program
+
+=head1 DESCRIPTION
+
+Runs a command directly and reports seconds per execution, sample SD and a
+bootstrap confidence interval.  Use C<--help> for options and L<XBench> for
+the measurement and stopping contracts.  Child output is inherited; with
+C<--json>, child stdout is redirected to stderr.
+
+=cut

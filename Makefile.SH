@@ -1455,8 +1455,8 @@ _cleaner2:
 	-rmdir lib/autodie/Scope lib/autodie lib/YAML-XS-LibYAML/lib/YAML/XS
 	-rmdir lib/YAML-XS-LibYAML/lib/YAML lib/YAML-XS-LibYAML/lib
 	-rmdir lib/YAML-XS-LibYAML lib/YAML lib/XStats lib/XS
-	-rmdir lib/XPerl/DiagPack lib/XGraph/IO lib/XGraph lib/Win32API
-	-rmdir lib/Win32 lib/VMS lib/Unicode/Collate/Locale
+	-rmdir lib/XPerl/DiagPack lib/XGraph/IO lib/XGraph lib/XBench
+	-rmdir lib/Win32API lib/Win32 lib/VMS lib/Unicode/Collate/Locale
 	-rmdir lib/Unicode/Collate/CJK lib/Unicode/Collate lib/Tie/Hash
 	-rmdir lib/Thread lib/Text lib/Test2/Workflow/Task lib/Test2/Workflow
 	-rmdir lib/Test2/V1 lib/Test2/Util/Table lib/Test2/Util

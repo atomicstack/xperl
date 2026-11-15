@@ -27,3 +27,4 @@ utils/streamzip
 utils/xperl-repl
 utils/xsubpp
 utils/zipdetails
+utils/xbench

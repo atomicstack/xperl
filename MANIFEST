@@ -5990,6 +5990,16 @@ dist/Unicode-Normalize/t/proto.t	Unicode::Normalize
 dist/Unicode-Normalize/t/split.t	Unicode::Normalize
 dist/Unicode-Normalize/t/test.t		Unicode::Normalize
 dist/Unicode-Normalize/t/tie.t		Unicode::Normalize
+dist/XBench/bin/xbench			XBench command benchmark utility
+dist/XBench/Changes			XBench change history
+dist/XBench/lib/XBench.pm		Calibrated XPerl benchmark framework
+dist/XBench/lib/XBench/Result.pm	Native benchmark result class
+dist/XBench/Makefile.PL			XBench build configuration
+dist/XBench/MANIFEST			XBench distribution manifest
+dist/XBench/t/commands.t		Command benchmarks and CLI output
+dist/XBench/t/exceptions.t		Benchmark context and cleanup failures
+dist/XBench/t/measurement.t		Deterministic measurement and stopping checks
+dist/XBench/t/threads.t			Benchmark interpreter cloning checks
 dist/XGraph/bench/e2e-scc-scipy.py			XGraph e2e scc scipy benchmark
 dist/XGraph/bench/e2e-scc-xgraph.pl			XGraph e2e scc xgraph benchmark
 dist/XGraph/bench/graph-vs-xgraph.pl			XGraph graph vs xgraph benchmark
@@ -8445,6 +8455,7 @@ utils/ptargrep.PL			The ptargrep utility
 utils/shasum.PL				filter for computing SHA digests (analogous to md5sum)
 utils/splain.PL				Stand-alone version of diagnostics.pm
 utils/streamzip.PL
+utils/xbench.PL				XBench command benchmark utility
 utils/xperl-repl.PL			interactive xperl shell
 utils/xsubpp.PL				External subroutine preprocessor
 utils/zipdetails.PL			display the internal structure of zip files

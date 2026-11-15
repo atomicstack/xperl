@@ -640,6 +640,7 @@ UTILS		=			\
 		..\utils\instmodsh	\
 		..\utils\json_pp	\
 		..\utils\xperl-repl	\
+		..\utils\xbench		\
 		..\utils\pod2html	\
 		..\utils\streamzip	\
 		bin\exetype.pl		\
@@ -1285,6 +1286,7 @@ distclean: realclean
 	-if exist $(LIBDIR)\VMS rmdir /s /q $(LIBDIR)\VMS
 	-if exist $(LIBDIR)\Win32 rmdir /s /q $(LIBDIR)\Win32
 	-if exist $(LIBDIR)\Win32API rmdir /s /q $(LIBDIR)\Win32API
+	-if exist $(LIBDIR)\XBench rmdir /s /q $(LIBDIR)\XBench
 	-if exist $(LIBDIR)\XGraph rmdir /s /q $(LIBDIR)\XGraph
 	-if exist $(LIBDIR)\XPerl\DiagPack rmdir /s /q $(LIBDIR)\XPerl\DiagPack
 	-if exist $(LIBDIR)\XS rmdir /s /q $(LIBDIR)\XS
@@ -1303,7 +1305,7 @@ distclean: realclean
 	    perlwin32.pod
 	-cd ..\utils && del /f h2ph splain perlbug pl2pm h2xs \
 	    perldoc perlivp libnetcfg enc2xs encguess piconv cpan streamzip *.bat \
-	    xsubpp pod2html instmodsh json_pp prove ptar ptardiff ptargrep shasum corelist zipdetails xperl-repl
+	    xsubpp pod2html instmodsh json_pp prove ptar ptardiff ptargrep shasum corelist zipdetails xperl-repl xbench
 	-del /f ..\config.sh perlmain.c dlutils.c config.h.new \
 	        perlmainst.c
 	-del /f $(CONFIGPM)

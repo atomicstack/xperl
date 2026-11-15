@@ -1496,6 +1496,11 @@ our %Modules = (
         ],
     },
 
+    'XBench' => {
+        'MAINTAINER' => 'YVES',
+        'FILES'      => q[dist/XBench],
+    },
+
     'XGraph' => {
         'MAINTAINER' => 'YVES',
         'FILES'      => q[dist/XGraph],

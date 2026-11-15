@@ -144,3 +144,19 @@ destruction and normal-path cost before treating it as a general extension
 contract. Current focused tests cover copied definitions, typed dualvars,
 lexical language and explicit override, containment/rethrow identity, hook
 promotion, malformed declarations and bounded render fallback.
+
+## XBench second-client experiment
+
+XBench uses native classes, two-variable catches and defer with module-owned
+conditions.  Callback failures retain the canonical exception.  Phase and
+case notes add context, and cleanup failures append their diagnostic roots
+to the original collector in encounter order.  An empty collector is tested
+for definedness rather than boolean severity.  The runner retains completed
+results and records a failed state during unwinding.
+
+Tests cover canonical identity, original plus cleanup diagnostics, public
+caller locations and lexical language, phase/case context, state restoration
+and interpreter cloning.  This supplies a second real catalog client without
+changing shared exception machinery.  Public-site capture is duplicated in XStats and
+XBench; a future explicit-location catalog builder could replace their
+private capture calls once this use establishes the required interface.

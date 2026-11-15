@@ -1,0 +1,6 @@
+0.01
+    Add calibrated callback and command benchmarks using XStats bootstrap
+    uncertainty, explicit filtering and paired baseline subtraction.
+    Retain raw measurements and stopping metadata in native class results.
+    Use structured exceptions with phase and case context, preserving
+    primary and cleanup failures in encounter order.
