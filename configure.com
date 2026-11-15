@@ -4171,6 +4171,22 @@ $ tmp = "strtoq"
 $ GOSUB inlibc
 $ d_strtoq = tmp
 $!
+$! Check for strtof
+$!
+$ OS
+$ WS "#include <stdlib.h>"
+$ WS "#include <string.h>"
+$ WS "int main()"
+$ WS "{"
+$ WS "float result;"
+$ WS "result = strtof(""123123"", NULL);"
+$ WS "exit(0);"
+$ WS "}"
+$ CS
+$ tmp = "strtof"
+$ GOSUB inlibc
+$ d_strtof = tmp
+$!
 $! Check for strtold
 $!
 $ OS
@@ -6072,6 +6088,7 @@ $ WC "d_strlcpy='undef'"
 $ WC "d_strnlen='" + d_strnlen + "'"
 $ WC "d_strtod='define'"
 $ WC "d_strtod_l='undef'"
+$ WC "d_strtof='" + d_strtof + "'"
 $ WC "d_strtol='define'"
 $ WC "d_strtold='" + d_strtold + "'"
 $ WC "d_strtold_l='undef'"

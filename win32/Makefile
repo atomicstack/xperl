@@ -686,6 +686,7 @@ MICROCORE_SRC	=		\
 		..\pad.c	\
 		..\peep.c	\
 		..\perl.c	\
+		..\perl_numparse.c	\
 		..\perly.c	\
 		..\pp.c		\
 		..\pp_ctl.c	\

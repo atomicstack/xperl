@@ -614,6 +614,7 @@
 # define parse_fullstmt(a)                      Perl_parse_fullstmt(aTHX_ a)
 # define parse_label(a)                         Perl_parse_label(aTHX_ a)
 # define parse_listexpr(a)                      Perl_parse_listexpr(aTHX_ a)
+# define parse_nv(a,b,c)                        Perl_parse_nv(aTHX_ a,b,c)
 # define parse_stmtseq(a)                       Perl_parse_stmtseq(aTHX_ a)
 # define parse_subsignature(a)                  Perl_parse_subsignature(aTHX_ a)
 # define parse_termexpr(a)                      Perl_parse_termexpr(aTHX_ a)
@@ -1005,6 +1006,9 @@
 # if defined(F_FREESP) && !defined(HAS_CHSIZE) && !defined(HAS_TRUNCATE)
 #   define my_chsize(a,b)                       Perl_my_chsize(aTHX_ a,b)
 # endif
+# if defined(HAS_LONG_DOUBLE) && defined(HAS_STRTOLD)
+#   define parse_ld(a,b,c)                      Perl_parse_ld(aTHX_ a,b,c)
+# endif
 # if !defined(HAS_STRLCAT)
 #   define my_strlcat                           Perl_my_strlcat
 # endif
@@ -1013,6 +1017,12 @@
 # endif
 # if !defined(HAS_STRNLEN)
 #   define my_strnlen                           Perl_my_strnlen
+# endif
+# if defined(HAS_STRTOD)
+#   define parse_double(a,b,c)                  Perl_parse_double(aTHX_ a,b,c)
+# endif
+# if defined(HAS_STRTOF)
+#   define parse_float(a,b,c)                   Perl_parse_float(aTHX_ a,b,c)
 # endif
 # if defined(HAVE_INTERP_INTERN)
 #   define sys_intern_clear()                   Perl_sys_intern_clear(aTHX)
@@ -2501,6 +2511,9 @@
 #   define PerlIO_unread(a,b,c)                 Perl_PerlIO_unread(aTHX_ a,b,c)
 #   define PerlIO_write(a,b,c)                  Perl_PerlIO_write(aTHX_ a,b,c)
 # endif /* defined(USE_PERLIO) */
+# if defined(USE_QUADMATH)
+#   define parse_f128(a,b,c)                    Perl_parse_f128(aTHX_ a,b,c)
+# endif
 # if defined(USE_THREADS)
 #   define thread_locale_init()                 Perl_thread_locale_init(aTHX)
 #   define thread_locale_term()                 Perl_thread_locale_term(aTHX)

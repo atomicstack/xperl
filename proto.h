@@ -7477,6 +7477,16 @@ Perl_parse_listexpr(pTHX_ U32 flags)
     STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
+PERL_CALLCONV NV
+Perl_parse_nv(pTHX_ const char *s, STRLEN len, U32 *flags)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__warn_unused_result__;
+#define PERL_ARGS_ASSERT_PARSE_NV               \
+    STMT_START { Perl_assert_aTHX; assert(s);          \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 PERL_CALLCONV OP *
 Perl_parse_stmtseq(pTHX_ U32 flags)
         Perl_attribute_nonnull_aTHX;
@@ -12032,6 +12042,18 @@ Perl_getenv_len(pTHX_ const char *env_elem, unsigned long *len)
     } STMT_END
 
 #endif /* !defined(HAS_GETENV_LEN) */
+#if defined(HAS_LONG_DOUBLE) && defined(HAS_STRTOLD)
+PERL_CALLCONV long double
+Perl_parse_ld(pTHX_ const char *s, STRLEN len, U32 *flags)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__warn_unused_result__;
+# define PERL_ARGS_ASSERT_PARSE_LD              \
+     STMT_START { Perl_assert_aTHX; assert(s);          \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+#endif
 #if !defined(HAS_MKOSTEMP)
 PERL_CALLCONV int
 Perl_my_mkostemp(char *templte, int flags)
@@ -12205,6 +12227,30 @@ Perl_my_strnlen(const char *str, Size_t maxlen)
      STMT_START { assert(str); } STMT_END
 
 # endif
+#endif
+#if defined(HAS_STRTOD)
+PERL_CALLCONV double
+Perl_parse_double(pTHX_ const char *s, STRLEN len, U32 *flags)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__warn_unused_result__;
+# define PERL_ARGS_ASSERT_PARSE_DOUBLE          \
+     STMT_START { Perl_assert_aTHX; assert(s);          \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+#endif
+#if defined(HAS_STRTOF)
+PERL_CALLCONV float
+Perl_parse_float(pTHX_ const char *s, STRLEN len, U32 *flags)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__warn_unused_result__;
+# define PERL_ARGS_ASSERT_PARSE_FLOAT           \
+     STMT_START { Perl_assert_aTHX; assert(s);          \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 #endif
 #if defined(HAVE_INTERP_INTERN)
 PERL_CALLCONV void
@@ -21121,6 +21167,16 @@ Perl_switch_locale_context(pTHX)
 
 #endif
 #if defined(USE_QUADMATH)
+PERL_CALLCONV __float128
+Perl_parse_f128(pTHX_ const char *s, STRLEN len, U32 *flags)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__warn_unused_result__;
+# define PERL_ARGS_ASSERT_PARSE_F128            \
+     STMT_START { Perl_assert_aTHX; assert(s);          \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 PERL_CALLCONV bool
 Perl_quadmath_format_needed(const char *format)
         Perl_attribute_nonnull(1)

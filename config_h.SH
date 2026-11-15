@@ -3508,6 +3508,12 @@ sed <<!GROK!THIS! >$CONFIG_H -e 's!^#undef\(.*/\)\*!/\*#define\1 \*!' -e 's!^#un
  */
 #$d_strnlen HAS_STRNLEN		/**/
 
+/* HAS_STRTOF:
+ *	This symbol, if defined, indicates that the strtof routine is
+ *	available to convert strings to floats.
+ */
+#$d_strtof HAS_STRTOF		/**/
+
 /* HAS_STRTOLD:
  *	This symbol, if defined, indicates that the strtold routine is
  *	available to convert strings to long doubles.

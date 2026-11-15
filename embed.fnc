@@ -3229,6 +3229,9 @@ EXdp	|char * |parse_ident_msg|SPTR const char *s			\
 				|U32 flags
 Adpx	|SV *	|parse_label	|U32 flags
 Adpx	|OP *	|parse_listexpr |U32 flags
+ARdpx	|NV	|parse_nv	|NN const char *s			\
+				|STRLEN len				\
+				|NULLOK U32 *flags
 : Only used in scope.c
 p	|void	|parser_free	|NN const yy_parser *parser
 Adpx	|OP *	|parse_stmtseq	|U32 flags
@@ -4841,6 +4844,11 @@ ARdp	|I32	|my_chsize	|int fd 				\
 p	|char * |getenv_len	|NN const char *env_elem		\
 				|NN unsigned long *len
 #endif
+#if defined(HAS_LONG_DOUBLE) && defined(HAS_STRTOLD)
+ARdpx	|long double|parse_ld	|NN const char *s			\
+				|STRLEN len				\
+				|NULLOK U32 *flags
+#endif
 #if !defined(HAS_MKOSTEMP)
 Tdop	|int	|my_mkostemp	|NN char *templte			\
 				|int flags
@@ -4915,6 +4923,16 @@ ATds	|Size_t |my_strlcpy	|NULLOK char *dst			\
 #if !defined(HAS_STRNLEN)
 ATdip	|Size_t |my_strnlen	|NN const char *str			\
 				|Size_t maxlen
+#endif
+#if defined(HAS_STRTOD)
+ARdpx	|double |parse_double	|NN const char *s			\
+				|STRLEN len				\
+				|NULLOK U32 *flags
+#endif
+#if defined(HAS_STRTOF)
+ARdpx	|float	|parse_float	|NN const char *s			\
+				|STRLEN len				\
+				|NULLOK U32 *flags
 #endif
 #if defined(HAVE_INTERP_INTERN)
 Cp	|void	|sys_intern_clear
@@ -7431,6 +7449,9 @@ Adhp	|SSize_t|PerlIO_write	|NULLOK PerlIO *f			\
 Cop	|void	|switch_locale_context
 #endif
 #if defined(USE_QUADMATH)
+ARdpx	|__float128|parse_f128	|NN const char *s			\
+				|STRLEN len				\
+				|NULLOK U32 *flags
 Tdp	|bool	|quadmath_format_needed 				\
 				|NN const char *format
 Tdp	|bool	|quadmath_format_valid					\

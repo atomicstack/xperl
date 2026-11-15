@@ -546,7 +546,7 @@ h = \
 c_base = \
     av.c builtin.c caretx.c class.c deb.c doio.c doop.c dquote.c dump.c \
     globals.c gv.c hv.c keywords.c locale.c long_names.c mathoms.c mg.c \
-    mro_core.c numeric.c op.c pad.c peep.c perl.c perlio.c perly.c \
+    mro_core.c numeric.c op.c pad.c peep.c perl.c perl_numparse.c perlio.c perly.c \
     pp.c pp_ctl.c pp_hot.c pp_pack.c pp_sort.c pp_sys.c \
     reentr.c regcomp.c regcomp_debug.c regcomp_invlist.c regcomp_study.c \
     regcomp_trie.c regexec.c run.c scope.c sv.c taint.c time64.c toke.c \
@@ -575,7 +575,7 @@ common_objs = \
     dump$(OBJ_EXT) globals$(OBJ_EXT) gv$(OBJ_EXT) hv$(OBJ_EXT) \
     keywords$(OBJ_EXT) locale$(OBJ_EXT) long_names$(OBJ_EXT) \
     mathoms$(OBJ_EXT) mg$(OBJ_EXT) mro_core$(OBJ_EXT) numeric$(OBJ_EXT) \
-    pad$(OBJ_EXT) peep$(OBJ_EXT) perlio$(OBJ_EXT) perly$(OBJ_EXT) \
+    pad$(OBJ_EXT) peep$(OBJ_EXT) perl_numparse$(OBJ_EXT) perlio$(OBJ_EXT) perly$(OBJ_EXT) \
     pp$(OBJ_EXT) pp_ctl$(OBJ_EXT) pp_hot$(OBJ_EXT) pp_pack$(OBJ_EXT) \
     pp_sort$(OBJ_EXT) pp_sys$(OBJ_EXT) reentr$(OBJ_EXT) regcomp$(OBJ_EXT) \
     regcomp_debug$(OBJ_EXT) regcomp_invlist$(OBJ_EXT) \

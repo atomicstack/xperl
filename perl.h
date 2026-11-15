@@ -9229,6 +9229,10 @@ EXTERN_C int flock(int fd, int op);
 #define IS_NUMBER_NAN                 0x20 /* this is not */
 #define IS_NUMBER_TRAILING            0x40 /* number has trailing trash */
 
+#define PERL_PARSE_OVERFLOW          0x080
+#define PERL_PARSE_UNDERFLOW         0x100
+#define PERL_PARSE_SUBNORMAL         0x200
+
 /*
 =for apidoc_defn AmdR|bool|GROK_NUMERIC_RADIX|NN const char **sp|NN const char *send
 =cut

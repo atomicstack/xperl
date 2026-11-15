@@ -956,6 +956,12 @@ Jaguar (Darwin 6) once again.
 
 =head1 Internal Changes
 
+The experimental C<Perl_parse_nv> API converts a bounded numeric string and
+returns classification and range flags without warning.  Typed companions
+convert directly to C<float>, C<double>, C<long double>, or binary128 where
+supported.  These functions follow Perl's numeric string and locale rules.
+See L<perlapi/parse_nv>.
+
 =head2 XPerl extension detection
 
 F<perl.h> defines C<XPERL_VERSION> to C<1>. C<XPERL> remains an alias for

@@ -2733,6 +2733,10 @@ d_strtod_l (d_strtod_l.U):
 	This variable conditionally defines the HAS_STRTOD_L symbol, which
 	indicates to the C program that the strtod_l() routine is available.
 
+d_strtof (d_strtof.U):
+	This variable conditionally defines the HAS_STRTOF symbol, which
+	indicates to the C program that the strtof() routine is available.
+
 d_strtol (d_strtol.U):
 	This variable conditionally defines the HAS_STRTOL symbol, which
 	indicates to the C program that the strtol() routine is available

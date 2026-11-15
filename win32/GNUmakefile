@@ -950,6 +950,7 @@ MICROCORE_SRC	=		\
 		..\pp_hot.c	\
 		..\gv.c		\
 		..\perl.c	\
+		..\perl_numparse.c	\
 		..\utf8.c	\
 		..\dump.c	\
 		..\hv.c		\
