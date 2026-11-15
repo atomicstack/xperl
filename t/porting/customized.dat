@@ -1,6 +1,7 @@
 # Regenerate this file using:
 #    cd t; ./perl -I../lib porting/customized.t --regen; cd -
 AutoLoader cpan/AutoLoader/t/02AutoSplit.t bb90cda13b88599ad45de4b45799d5218afcb6d8
+Cpanel::JSON::XS cpan/Cpanel-JSON-XS/xt/manifest.t 40578a73ca80c67a613c00d6722aa04a8f6433e9
 DBD::SQLite cpan/DBD-SQLite/dbdimp.c 6844dbc5478d2fe674fd2df147a36df652f4c04f
 DBD::SQLite cpan/DBD-SQLite/dbdimp.h c324acd41477b560e47c10ed83d93d14c7bf1f0b
 DBD::SQLite cpan/DBD-SQLite/dbdimp_tokenizer.inc cabfb13d57c5464d19dfd351d8e403bab34184ce

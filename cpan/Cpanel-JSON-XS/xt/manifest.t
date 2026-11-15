@@ -1,5 +1,6 @@
 # -*- perl -*-
 use Test::More;
+plan skip_all => "requires a distribution MANIFEST" unless -f 'MANIFEST';
 if (!-d ".git" and $^O != /^(linux|.*bsd|darwin|solaris|sunos|cygwin)$/) {
   plan skip_all => "requires a git checkout and a unix for git and diff";
 }

@@ -359,6 +359,12 @@ our %Modules = (
         ],
     },
 
+    'Cpanel::JSON::XS' => {
+        'DISTRIBUTION' => 'RURBAN/Cpanel-JSON-XS-4.43.tar.gz',
+        'FILES'        => 'cpan/Cpanel-JSON-XS',
+        'CUSTOMIZED'   => [qw(xt/manifest.t)],
+    },
+
     'Data::Dumper' => {
         'DISTRIBUTION' => 'NWCLARK/Data-Dumper-2.183.tar.gz',
         'FILES'        => q[dist/Data-Dumper],
