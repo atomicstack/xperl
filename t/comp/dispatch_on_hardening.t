@@ -8,7 +8,7 @@ BEGIN {
 
 use dispatch::Predicates;
 
-plan(23);
+plan(26);
 
 {
     package DispatchOnHardening::ScalarTie;
@@ -350,4 +350,31 @@ eval "use feature 'dispatch_on'; my \\\$x = 1; dispatch (\\\$x) { on (\$shape) {
 print "err: \$@";
 CODE
         "$kind shape nested 100000 levels deep fails cleanly");
+}
+
+# A constant-folded dispatch must not release pad slots it does not own.
+# The marker values stored in the op_targ of OP_ENTERDISPATCH and
+# OP_DISPATCH_ON used to be passed to pad_free, letting two live ops share a
+# target.
+{
+    use feature 'dispatch_on';
+    no warnings;
+    sub dispatch_on_fold_f {
+        my @r = ($_[0] . "x", (0 ? do { dispatch ($_[0]) { on (_) { 1 } } } : 0), $_[1] . "y");
+        return @r;
+    }
+    sub dispatch_on_fold_g {
+        my @r = ($_[0] . "x", (0 ? do { dispatch my $s ($_[0]) { on (1) { 1 } } } : 0), $_[1] . "y");
+        return @r;
+    }
+    sub dispatch_on_fold_h {
+        my @r = ($_[0] . "x", (0 ? do { 1 } : 0), $_[1] . "y");
+        return @r;
+    }
+    is(join(",", dispatch_on_fold_f("a", "b")), "ax,0,by",
+       'a folded-away on (_) clause does not free a live pad slot');
+    is(join(",", dispatch_on_fold_g("a", "b")), "ax,0,by",
+       'a folded-away named-subject dispatch does not free a live pad slot');
+    is(join(",", dispatch_on_fold_h("a", "b")), "ax,0,by",
+       'control: folded-away plain block');
 }

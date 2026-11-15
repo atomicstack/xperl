@@ -1142,6 +1142,7 @@ Perl_op_clear(pTHX_ OP *o)
     case OP_ARGDEFELEM:	/* Was holding signature index. */
     case OP_ITER:       /* Was holding multivariable itervar count */
     case OP_DISPATCHCOERCE: /* Pattern marker or slurp minimum. */
+    case OP_ENTERDISPATCH: /* Named-subject marker, not a pad slot. */
         o->op_targ = 0;
         break;
     default:
@@ -1432,6 +1433,7 @@ Perl_op_clear(pTHX_ OP *o)
 
     case OP_DISPATCH_ON:
         Perl_dispatch_pattern_free(aTHX_ cUNOP_AUXo->op_aux);
+        o->op_targ = 0; /* Wildcard-clause marker, not a pad slot. */
         break;
 
     case OP_DISPATCH:
