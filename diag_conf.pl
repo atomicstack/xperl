@@ -49552,6 +49552,37 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape::Hash"
         },
+        "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP" => {
+          "number" => 2785,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP",
+          "macro" => "PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP",
+          "source_files" => [
+            "pp_ctl.c"
+          ],
+          "tags" => [
+            "condition:size_count_range",
+            "subject:dispatch_pattern_matching"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "dispatch pattern nested more than %{max} levels deep"
+            },
+            "args" => [
+              {
+                "name" => "max",
+                "type" => "uv",
+                "format_str" => "UVuf"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK_CONTEXT"
+          },
+          "class" => "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape"
+        },
         "ERROR_SYNTAX_DISPATCH_SHAPE_NUMEQ_LITERAL_REQUIRED" => {
           "number" => 1848,
           "severity" => "FATAL_ERROR",
@@ -110121,6 +110152,13 @@ $CONF = {
           "unsupported dispatch pattern expression\n\n"
         ],
         "text" => "(F) A dispatch pattern contained a Perl operator that is not part of the\nsupported data-shape language.  Use a guard after C<if> for ordinary Perl\ncomputation.\n\n"
+      },
+      {
+        "code" => "PERLDIAG_1216",
+        "headings" => [
+          "dispatch pattern nested more than %d levels deep\n\n"
+        ],
+        "text" => "(F) A dispatch C<on> pattern nested array, hash or object shapes more\ndeeply than the supported limit.  See L<perldispatchon/Pattern nesting\nlimit>.\n\n"
       },
       {
         "code" => "PERLDIAG_0161",

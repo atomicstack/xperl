@@ -1155,6 +1155,12 @@ statically named, zero-argument class-method calls are currently accepted.
 supported data-shape language.  Use a guard after C<if> for ordinary Perl
 computation.
 
+=item dispatch pattern nested more than %d levels deep
+
+(F) A dispatch C<on> pattern nested array, hash or object shapes more
+deeply than the supported limit.  See L<perldispatchon/Pattern nesting
+limit>.
+
 =item unsupported dispatch pattern concatenation expression
 
 (F) A concatenation data shape contained an operator or call that is not part

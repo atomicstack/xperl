@@ -10270,7 +10270,11 @@ S_dispatch_pattern_compile_node(pTHX_ const OP *op, bool preserve_lists)
 }
 
 static void S_dispatch_pattern_prepare_regex(pTHX_ const OP *pattern, HV *seen);
-static void S_dispatch_pattern_validate(pTHX_ const OP *op);
+/* Maximum nesting of a dispatch pattern; see "Pattern nesting limit" in
+ * perldispatchon.  Every recursive walker over a pattern relies on this. */
+#define DISPATCH_PATTERN_MAX_DEPTH 1000
+
+static void S_dispatch_pattern_validate(pTHX_ const OP *op, U32 depth);
 
 static void
 S_dispatch_pattern_rebind(pTHX_ OP *op, HV *padmap)
@@ -10328,7 +10332,7 @@ Perl_dispatch_pattern_prepare(pTHX_ OP *pattern)
     }
     /* Validate while the parser's temporary pattern-name map is still live;
      * it is discarded before the guard/body and final optree construction. */
-    S_dispatch_pattern_validate(aTHX_ pattern);
+    S_dispatch_pattern_validate(aTHX_ pattern, 0);
     S_dispatch_pattern_prepare_regex(aTHX_ pattern,
         MUTABLE_HV(sv_2mortal(MUTABLE_SV(newHV()))));
 }
@@ -10556,7 +10560,7 @@ S_dispatch_pattern_note_hash_key(pTHX_ HV *keys, const OP *key)
 }
 
 static void
-S_dispatch_pattern_validate_object_fields(pTHX_ const OP *op)
+S_dispatch_pattern_validate_object_fields(pTHX_ const OP *op, U32 depth)
 {
     const OP *kid;
     bool need_value = FALSE;
@@ -10596,7 +10600,7 @@ S_dispatch_pattern_validate_object_fields(pTHX_ const OP *op)
             need_value = TRUE;
         }
         else {
-            S_dispatch_pattern_validate(aTHX_ kid);
+            S_dispatch_pattern_validate(aTHX_ kid, depth);
             need_value = FALSE;
         }
     }
@@ -10893,16 +10897,22 @@ S_dispatch_pattern_free_call_args(pTHX_ void *args)
 }
 
 static void
-S_dispatch_pattern_validate(pTHX_ const OP *op)
+S_dispatch_pattern_validate(pTHX_ const OP *op, U32 depth)
 {
     const OP *kid;
     const OP *numeric_operand;
     if (!op)
         return;
+    /* Bound the nesting once, here, so that the compiler and the runtime
+     * matcher, which walk the same tree recursively, are bounded too. */
+    if (depth > DISPATCH_PATTERN_MAX_DEPTH)
+        PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP(
+            (UV)DISPATCH_PATTERN_MAX_DEPTH);
+    depth++;
 
     numeric_operand = S_dispatch_pattern_numeric_coercion(aTHX_ op);
     if (numeric_operand) {
-        S_dispatch_pattern_validate(aTHX_ numeric_operand);
+        S_dispatch_pattern_validate(aTHX_ numeric_operand, depth);
         return;
     }
 
@@ -10912,7 +10922,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
         if (!S_dispatch_pattern_assignment_parts(op, &target, &subpattern))
             PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_ASSIGNMENT_TARGET_NOT_SCALAR();
         PERL_UNUSED_VAR(target);
-        S_dispatch_pattern_validate(aTHX_ subpattern);
+        S_dispatch_pattern_validate(aTHX_ subpattern, depth);
         return;
     }
 
@@ -10928,9 +10938,9 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
                            || fields->op_type == OP_LIST
                            || (fields->op_type == OP_NULL
                                && fields->op_targ == OP_LIST)))
-                S_dispatch_pattern_validate_object_fields(aTHX_ fields);
+                S_dispatch_pattern_validate_object_fields(aTHX_ fields, depth);
             else
-                S_dispatch_pattern_validate(aTHX_ shape_op);
+                S_dispatch_pattern_validate(aTHX_ shape_op, depth);
             return;
         }
     }
@@ -11010,9 +11020,9 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
         if (!args || args->op_type != OP_LIST || !shape)
             PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_CLASS_AND_SHAPE_REQUIRED();
         if (shape->op_type == OP_ANONHASH || shape->op_type == OP_LIST)
-            S_dispatch_pattern_validate_object_fields(aTHX_ shape);
+            S_dispatch_pattern_validate_object_fields(aTHX_ shape, depth);
         else
-            S_dispatch_pattern_validate(aTHX_ shape);
+            S_dispatch_pattern_validate(aTHX_ shape, depth);
         return;
     }
     if (op->op_type == OP_CONCAT || op->op_type == OP_MULTICONCAT) {
@@ -11025,7 +11035,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
         return;
     }
     if (op->op_type == OP_NULL && (op->op_flags & OPf_KIDS)) {
-        S_dispatch_pattern_validate(aTHX_ cUNOPx(op)->op_first);
+        S_dispatch_pattern_validate(aTHX_ cUNOPx(op)->op_first, depth);
         return;
     }
 
@@ -11062,7 +11072,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
                 logical_ix++;
                 continue;
             }
-            S_dispatch_pattern_validate(aTHX_ kid);
+            S_dispatch_pattern_validate(aTHX_ kid, depth);
             logical_ix++;
         }
         return;
@@ -11115,7 +11125,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
                     PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_KEY_FORM_UNSUPPORTED();
                 S_dispatch_pattern_note_hash_key(aTHX_ keys, kid);
             }
-            S_dispatch_pattern_validate(aTHX_ kid);
+            S_dispatch_pattern_validate(aTHX_ kid, depth);
             logical_ix++;
         }
         return;
@@ -11146,7 +11156,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op)
 
     if (op->op_flags & OPf_KIDS)
         for (kid = cUNOPx(op)->op_first; kid; kid = OpSIBLING(kid))
-            S_dispatch_pattern_validate(aTHX_ kid);
+            S_dispatch_pattern_validate(aTHX_ kid, depth);
 }
 
 /* Return the value of a zero-argument function or class-method call used as
@@ -11362,7 +11372,7 @@ Perl_dispatch_pattern_compile(pTHX_ const OP *pattern)
 
     PERL_ARGS_ASSERT_DISPATCH_PATTERN_COMPILE;
 
-    S_dispatch_pattern_validate(aTHX_ pattern);
+    S_dispatch_pattern_validate(aTHX_ pattern, 0);
     aux = (struct dispatch_pattern_aux *)PerlMemShared_calloc(
         1, sizeof(struct dispatch_pattern_aux));
     aux->magic = DISPATCH_PATTERN_AUX_MAGIC;

@@ -671,6 +671,15 @@ binding; publishing that binding does not fetch the tied source again.
 If your guard or C<on> clause body reads the tied source itself, that is a
 separate ordinary read and may return a different value.
 
+=head2 Pattern nesting limit
+
+A pattern may nest at most 1000 levels deep. Each array, hash or object
+shape, capture assignment and numeric marker that contains another part of
+the pattern adds one level, so C<on ([[1]])> is nested two levels deep.
+A deeper pattern is a compile-time error, "dispatch pattern nested more
+than 1000 levels deep", rather than a risk of exhausting the C stack while
+the pattern is compiled or matched.
+
 =head1 REGULAR-EXPRESSION SHAPES
 
 A regular expression can be used as a data shape:

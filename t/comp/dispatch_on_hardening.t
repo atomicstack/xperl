@@ -8,7 +8,7 @@ BEGIN {
 
 use dispatch::Predicates;
 
-plan(17);
+plan(23);
 
 {
     package DispatchOnHardening::ScalarTie;
@@ -313,3 +313,41 @@ my $out = do { dispatch ("hello") {
 print "$_|$out";
 CODE
     '$_ is restored after a dispatch whose matching replaced *_');
+
+# Pattern nesting is limited at compile time so that the recursive pattern
+# walkers cannot exhaust the C stack.
+sub dispatch_on_nested_shape {
+    my ($depth, $kind) = @_;
+    return $kind eq 'hash'
+        ? ('{a=>' x $depth) . '1' . ('}' x $depth)
+        : ('[' x $depth) . '1' . (']' x $depth);
+}
+
+for my $kind (qw(array hash)) {
+    my $shape = dispatch_on_nested_shape(1000, $kind);
+    my $got = eval qq{
+        use feature 'dispatch_on';
+        my \$x = $shape;
+        do { dispatch (\$x) { on ($shape) { 'match' } on (_) { 'wild' } } };
+    };
+    is($got, 'match', "$kind shape nested 1000 levels deep compiles and matches")
+        or diag($@);
+
+    $shape = dispatch_on_nested_shape(1001, $kind);
+    $got = eval qq{
+        use feature 'dispatch_on';
+        my \$x = 1;
+        do { dispatch (\$x) { on ($shape) { 'match' } on (_) { 'wild' } } };
+    };
+    like($@, qr/^dispatch pattern nested more than 1000 levels deep/,
+         "$kind shape nested 1001 levels deep is rejected");
+
+    fresh_perl_like(<<"CODE", qr/^err: dispatch pattern nested more than 1000 levels deep/, {},
+my \$shape = '$kind' eq 'hash'
+    ? ('{a=>' x 100000) . '1' . ('}' x 100000)
+    : ('[' x 100000) . '1' . (']' x 100000);
+eval "use feature 'dispatch_on'; my \\\$x = 1; dispatch (\\\$x) { on (\$shape) { 1 } }";
+print "err: \$@";
+CODE
+        "$kind shape nested 100000 levels deep fails cleanly");
+}

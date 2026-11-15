@@ -3207,6 +3207,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_ELLIPSES",                        1854,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape::Hash",                   "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape::Hash",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_SLURPS",                          1855,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape::Hash",                   "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape::Hash",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DISPATCH_SHAPE_HASH_SLURP_POSITION_CONFLICT",                  1858,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape::Hash",                   "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape::Hash",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP",                              2785,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  605,   1,  642,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape",                         "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DISPATCH_SHAPE_NUMEQ_LITERAL_REQUIRED",                        1848,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape",                         "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DISPATCH_SHAPE_NUMERIC_COERCION_OPERAND_INVALID",              1863,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape",                         "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_CLASS_AND_SHAPE_REQUIRED",               1849,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape::Object",                 "XPerl::Diagnostic::Error::Syntax::Dispatch::Shape::Object",                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -12334,6 +12335,11 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2784 = {
     perl_diagpack_param_schema_ids + 688, 2
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2785 = {
+    2785, "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP",
+    perl_diagpack_param_schema_ids + 605, 1
+};
+
 static const char perl_diag_template_text_02bf4c82[] = "\t%1$s = \"%2$s\"%3$s\n";
 static const char perl_diag_template_text_a852440d[] = "\t%1$s = (unset)%2$s\n";
 static const char perl_diag_template_text_3f70ea97[] = "\t(Are you trying to call %1$s() on dirhandle %2$s?)\n";
@@ -12997,6 +13003,7 @@ static const char perl_diag_template_text_9d2bf707[] = "dispatch pattern calls m
 static const char perl_diag_template_text_b758d4f4[] = "dispatch pattern captures must be separated by non-empty constant text";
 static const char perl_diag_template_text_751f76b6[] = "dispatch pattern marker";
 static const char perl_diag_template_text_b7a808c3[] = "dispatch pattern match";
+static const char perl_diag_template_text_f4f26999[] = "dispatch pattern nested more than %1$s levels deep";
 static const char perl_diag_template_text_a7c39e06[] = "dispatch predicate arguments must be constants or pinned values";
 static const char perl_diag_template_text_6ecbd0c4[] = "dispatch predicate has the wrong number of arguments";
 static const char perl_diag_template_text_2adb130a[] = "dispatch subject must be a scalar lexical";
@@ -17471,6 +17478,7 @@ enum {
     perl_diag_template_start_en_2782,
     perl_diag_template_start_en_2783,
     perl_diag_template_start_en_2784,
+    perl_diag_template_start_en_2785,
     perl_diag_template_end_en,
 };
 
@@ -19382,6 +19390,7 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_value_jumphash_key_invalid_number,                                          UINT64_C(         0), perl_diag_template_text_2751ba01,  0,   0 },
     { perl_diag_error_value_jumphash_key_too_large_number,                                        UINT64_C(         0), perl_diag_template_text_83eb4ca4,  0,   0 },
     { perl_diag_error_diagnostic_api_catalog_invalid_number,                                      UINT64_C(         0), perl_diag_template_text_ab4219fa,  2,   1 },
+    { perl_diag_error_syntax_dispatch_shape_nesting_too_deep_number,                              UINT64_C(         0), perl_diag_template_text_f4f26999,  1,   1 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -20975,6 +20984,7 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2782, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2783, NULL                        },
     { 0,   2,  perl_diag_word_group_none, perl_diag_template_start_en_2784, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2785, NULL                        },
 };
 
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
@@ -21508,6 +21518,7 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     &perl_diagpack_schema_2776, &perl_diagpack_schema_2777, &perl_diagpack_schema_2778,
     &perl_diagpack_schema_2779, &perl_diagpack_schema_2780, &perl_diagpack_schema_2781,
     &perl_diagpack_schema_2782, &perl_diagpack_schema_2783, &perl_diagpack_schema_2784,
+    &perl_diagpack_schema_2785,
 };
 
 static const perl_diagpack_catalog perl_diagpack_builtin_catalog_en = {
@@ -21636,7 +21647,7 @@ static const perl_diagpack_engine * const perl_diagpack_builtin_engines[] = {
 
 
 /* Generated from:
- * d5cd3725cd9d01fe7a9fb886e0b9f823fe0873827fe974f8737c8dbc24aa4bca diag_conf.pl
+ * c8e27e68201828550d2e39cd5913442d2d9ff67495edfea6bb3b3158aa765009 diag_conf.pl
  * 33ec9731336463f6feeab1a67c087741ee4e1ad5eb527a86cceac4b577ab4168 diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

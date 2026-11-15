@@ -935,6 +935,7 @@ enum perl_diag_index {
     perl_diag_error_syntax_dispatch_shape_hash_multiple_ellipses_idx,
     perl_diag_error_syntax_dispatch_shape_hash_multiple_slurps_idx,
     perl_diag_error_syntax_dispatch_shape_hash_slurp_position_conflict_idx,
+    perl_diag_error_syntax_dispatch_shape_nesting_too_deep_idx,
     perl_diag_error_syntax_dispatch_shape_numeq_literal_required_idx,
     perl_diag_error_syntax_dispatch_shape_numeric_coercion_operand_invalid_idx,
     perl_diag_error_syntax_dispatch_shape_object_class_and_shape_required_idx,
@@ -2530,6 +2531,7 @@ enum perl_diag_number {
     perl_diag_error_syntax_dispatch_shape_hash_multiple_ellipses_number                        = 1854,
     perl_diag_error_syntax_dispatch_shape_hash_multiple_slurps_number                          = 1855,
     perl_diag_error_syntax_dispatch_shape_hash_slurp_position_conflict_number                  = 1858,
+    perl_diag_error_syntax_dispatch_shape_nesting_too_deep_number                              = 2785,
     perl_diag_error_syntax_dispatch_shape_numeq_literal_required_number                        = 1848,
     perl_diag_error_syntax_dispatch_shape_numeric_coercion_operand_invalid_number              = 1863,
     perl_diag_error_syntax_dispatch_shape_object_class_and_shape_required_number               = 1849,
@@ -5034,7 +5036,7 @@ enum perl_diag_selector_domain_id {
 
 
 #if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)
-#define PERL_DIAG_METADATA_COUNT 1591
+#define PERL_DIAG_METADATA_COUNT 1592
 
 #endif
 
@@ -20363,6 +20365,14 @@ enum perl_diag_selector_domain_id {
         (const char *)(ma_problem) \
     )
 
+#define PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP(ma_max) \
+    Perl_throw_croak_1_1607( \
+        aTHX_ perl_diag_error_syntax_dispatch_shape_nesting_too_deep_idx, \
+        __FILE__, \
+        __LINE__, \
+        ma_max \
+    )
+
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_ABORT() \
     STMT_START { \
         PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID(); \
@@ -21983,6 +21993,7 @@ enum perl_diag_selector_domain_id {
 /* PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_ELLIPSES => ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_ELLIPSES */
 /* PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_SLURPS => ERROR_SYNTAX_DISPATCH_SHAPE_HASH_MULTIPLE_SLURPS */
 /* PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_HASH_SLURP_POSITION_CONFLICT => ERROR_SYNTAX_DISPATCH_SHAPE_HASH_SLURP_POSITION_CONFLICT */
+/* PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP => ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP */
 /* PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NUMEQ_LITERAL_REQUIRED => ERROR_SYNTAX_DISPATCH_SHAPE_NUMEQ_LITERAL_REQUIRED */
 /* PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_NUMERIC_COERCION_OPERAND_INVALID => ERROR_SYNTAX_DISPATCH_SHAPE_NUMERIC_COERCION_OPERAND_INVALID */
 /* PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_CLASS_AND_SHAPE_REQUIRED => ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_CLASS_AND_SHAPE_REQUIRED */
@@ -22636,7 +22647,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * d5cd3725cd9d01fe7a9fb886e0b9f823fe0873827fe974f8737c8dbc24aa4bca diag_conf.pl
+ * c8e27e68201828550d2e39cd5913442d2d9ff67495edfea6bb3b3158aa765009 diag_conf.pl
  * 33ec9731336463f6feeab1a67c087741ee4e1ad5eb527a86cceac4b577ab4168 diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

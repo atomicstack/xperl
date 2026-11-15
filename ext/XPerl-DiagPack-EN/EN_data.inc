@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: 2ceedb0dc969355f3a33ce021927a9ab4862038595f2300cdc376ea9af182a1a */
+/* Language-scoped rendered data SHA-256: 0e8d0affd2477b82f65fa412bf418310cd3b5fb301d5b1ef52199dbe2535e0a1 */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
 
@@ -1548,6 +1548,7 @@ static const char perl_diag_template_text_9d2bf707[] = "dispatch pattern calls m
 static const char perl_diag_template_text_b758d4f4[] = "dispatch pattern captures must be separated by non-empty constant text";
 static const char perl_diag_template_text_751f76b6[] = "dispatch pattern marker";
 static const char perl_diag_template_text_b7a808c3[] = "dispatch pattern match";
+static const char perl_diag_template_text_f4f26999[] = "dispatch pattern nested more than %1$s levels deep";
 static const char perl_diag_template_text_a7c39e06[] = "dispatch predicate arguments must be constants or pinned values";
 static const char perl_diag_template_text_6ecbd0c4[] = "dispatch predicate has the wrong number of arguments";
 static const char perl_diag_template_text_2adb130a[] = "dispatch subject must be a scalar lexical";
@@ -5284,6 +5285,7 @@ enum {
     perl_diag_template_start_en_2782,
     perl_diag_template_start_en_2783,
     perl_diag_template_start_en_2784,
+    perl_diag_template_start_en_2785,
     perl_diag_template_end_en,
 };
 
@@ -7195,6 +7197,7 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_value_jumphash_key_invalid_number,                                          UINT64_C(         0), perl_diag_template_text_2751ba01,  0,   0 },
     { perl_diag_error_value_jumphash_key_too_large_number,                                        UINT64_C(         0), perl_diag_template_text_83eb4ca4,  0,   0 },
     { perl_diag_error_diagnostic_api_catalog_invalid_number,                                      UINT64_C(         0), perl_diag_template_text_ab4219fa,  2,   1 },
+    { perl_diag_error_syntax_dispatch_shape_nesting_too_deep_number,                              UINT64_C(         0), perl_diag_template_text_f4f26999,  1,   1 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -8788,6 +8791,7 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2782, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2783, NULL                        },
     { 0,   2,  perl_diag_word_group_none, perl_diag_template_start_en_2784, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2785, NULL                        },
 };
 
 static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
@@ -17147,6 +17151,11 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2784 = {
     perl_diagpack_param_schema_ids + 683, 2
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2785 = {
+    2785, "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP",
+    perl_diagpack_param_schema_ids + 600, 1
+};
+
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     /* local schema row zero is unused */
     NULL, &perl_diagpack_schema_1001, &perl_diagpack_schema_1002, &perl_diagpack_schema_1003,
@@ -17678,6 +17687,7 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     &perl_diagpack_schema_2776, &perl_diagpack_schema_2777, &perl_diagpack_schema_2778,
     &perl_diagpack_schema_2779, &perl_diagpack_schema_2780, &perl_diagpack_schema_2781,
     &perl_diagpack_schema_2782, &perl_diagpack_schema_2783, &perl_diagpack_schema_2784,
+    &perl_diagpack_schema_2785,
 };
 
 static const perl_diag_selector_domain_t perl_diag_selector_domains[] = {
