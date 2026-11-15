@@ -1501,6 +1501,11 @@ our %Modules = (
         'FILES'      => q[dist/XGraph],
     },
 
+    'XStats' => {
+        'MAINTAINER' => 'YVES',
+        'FILES'      => q[dist/XStats],
+    },
+
     # this pseudo-module represents all the files under ext/ and lib/
     # that aren't otherwise claimed. This means that the following two
     # commands will check that every file under ext/ and lib/ is

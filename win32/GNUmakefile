@@ -1760,6 +1760,7 @@ distclean: realclean
 	-if exist $(LIBDIR)\XGraph rmdir /s /q $(LIBDIR)\XGraph
 	-if exist $(LIBDIR)\XPerl\DiagPack rmdir /s /q $(LIBDIR)\XPerl\DiagPack
 	-if exist $(LIBDIR)\XS rmdir /s /q $(LIBDIR)\XS
+	-if exist $(LIBDIR)\XStats rmdir /s /q $(LIBDIR)\XStats
 	-if exist $(LIBDIR)\YAML rmdir /s /q $(LIBDIR)\YAML
 	-if exist $(LIBDIR)\YAML-XS-LibYAML rmdir /s /q $(LIBDIR)\YAML-XS-LibYAML
 	-cd $(PODDIR) && del /f *.html *.bat roffitall \

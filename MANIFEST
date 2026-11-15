@@ -6044,6 +6044,50 @@ dist/XGraph/xgraph_lib.c				XGraph native implementation
 dist/XSLoader/Makefile.PL		Dynamic Loader makefile writer
 dist/XSLoader/t/XSLoader.t		See if XSLoader works
 dist/XSLoader/XSLoader_pm.PL		Simple XS Loader perl module
+dist/XStats/.clang-format		XStats C formatting settings
+dist/XStats/Changes			XStats change log
+dist/XStats/lib/XStats.pm		XStats statistics module
+dist/XStats/lib/XStats/Full.pm		Stored-observation statistics
+dist/XStats/lib/XStats/Functions.pm	XStats statistics library
+dist/XStats/lib/XStats/Incremental.pm	XStats statistics library
+dist/XStats/lib/XStats/Sparse.pm	Incremental statistics
+dist/XStats/Makefile.PL			XStats makefile writer
+dist/XStats/MANIFEST			XStats distribution manifest
+dist/XStats/t/data.t			XStats observation access and lifecycle tests
+dist/XStats/t/exact-paired.t		XStats exact paired numerical tests
+dist/XStats/t/exact-sum.t		XStats exact sum and mean tests
+dist/XStats/t/exceptions.t		XStats structured exception tests
+dist/XStats/t/histogram.t		Histogram boundaries and exact edges tests
+dist/XStats/t/incremental.t		XStats statistics library
+dist/XStats/t/input.t			XStats numeric input conversion tests
+dist/XStats/t/intervals.t		Bootstrap interval contracts and exact tails
+dist/XStats/t/load.t			XStats load test
+dist/XStats/t/means.t			Harmonic and geometric mean tests
+dist/XStats/t/modes.t			Full and Sparse storage mode tests
+dist/XStats/t/numerical.t		XStats numerical regression tests
+dist/XStats/t/order.t			Rank, quantile, trim and mode tests
+dist/XStats/t/outliers.t		Callback outlier filtering tests
+dist/XStats/t/paired.t			XStats statistics library
+dist/XStats/t/probability.t		Error functions and normal probability contracts
+dist/XStats/t/reference.t		XStats statistics library
+dist/XStats/t/regression.t		Exact regression diagnostics tests
+dist/XStats/t/resampling.t		XStats statistics library
+dist/XStats/t/resampling-rng.t		Independent resampling RNG oracle
+dist/XStats/t/shape.t			Skewness and excess kurtosis tests
+dist/XStats/t/smoothing.t		Exponential smoothing tests
+dist/XStats/t/squares.t			Exact sum of squares tests
+dist/XStats/t/statistics.t		XStats statistics library
+dist/XStats/t/summary.t			Structured statistical summary tests
+dist/XStats/t/threads.t			XStats statistics library
+dist/XStats/XStats.xs			XStats XS interface
+dist/XStats/xstats_impl.inc		XStats native implementation
+dist/XStats/xstats_order.h		Exact order-statistic arithmetic
+dist/XStats/xstats_probability.inc	Native error and normal probability functions
+dist/XStats/xstats_resample.inc		Native bootstrap distributions and intervals
+dist/XStats/xstats_root.h		XStats exact square-root ratio rounding
+dist/XStats/xstats_squares.h		Exact sum of squares accumulator
+dist/XStats/xstats_sum.h		XStats exact scalar sum accumulator
+dist/XStats/xstats_wide.h		XStats exact paired integer and rational arithmetic
 ext/Amiga-ARexx/__examples/simplecommand.pl	Amiga::ARexx extension
 ext/Amiga-ARexx/__examples/simplehost.pl	Amiga::ARexx extension
 ext/Amiga-ARexx/ARexx.pm			Amiga::ARexx extension

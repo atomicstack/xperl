@@ -5,6 +5,8 @@ Perl-core development. Installed documentation belongs in `pod/`; generated
 HTML, model responses and temporary build output belong under the workspace
 `tmp/` directory.
 
+For the XS statistics library, see the [XStats implementation plan](xstats.md).
+
 For XPerl exceptions and diagnostics, start with:
 
 - [Perl interface](../pod/perlexcept.pod) and

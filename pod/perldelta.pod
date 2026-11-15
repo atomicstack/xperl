@@ -576,6 +576,24 @@ release manager will have to investigate the situation carefully.)
 
 =item *
 
+L<XStats> 0.01 provides XS descriptive statistics, incremental summaries,
+case resampling, bootstrap percentile intervals, and paired statistics.
+Stored observations can be copied in insertion or sorted order. Stored and
+incremental objects support clearing for reuse, ranges and the first positions
+of minimum and maximum observations.
+Paired calculations retain products and cancellation exactly before rounding
+their results.
+Histograms accept explicit edges or generate equal-width edges with exact
+arithmetic and final rounding.  Structured summaries report each unavailable
+result separately and share a single sort for quartiles.
+Basic and percentile bootstrap intervals share native bounds calculation with
+intervals from supplied distributions.  Error functions and inverses, normal
+CDF/survival functions and two-sided sigma/probability conversions use the
+configured NV with explicit domain and range conditions.
+
+
+=item *
+
 L<DBD::SQLite> 1.78 is bundled with XPerl as a SQLite driver for L<DBI>.
 It builds with its included SQLite implementation.
 

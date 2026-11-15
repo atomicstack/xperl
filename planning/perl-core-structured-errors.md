@@ -4,6 +4,10 @@ The implemented interfaces are documented in [perlexcept](../pod/perlexcept.pod)
 and [perlexcephack](../pod/perlexcephack.pod). This file records unresolved
 work, not a history of completed migrations or validation runs.
 
+Use [X modules as consumers](exception-module-dogfooding.md) to explore a
+reusable module layer for defining diagnostics, constructing exceptions and
+adding context. Those notes are proposals, not an extension API contract.
+
 ## Classification and numbering
 
 Review names and class boundaries against producer contracts using the

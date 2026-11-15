@@ -207,6 +207,8 @@
 /XPerl/DiagPack/
 /XS/
 /XSLoader.pm
+/XStats.pm
+/XStats/
 /YAML-XS-LibYAML/
 /YAML/
 /attributes.pm

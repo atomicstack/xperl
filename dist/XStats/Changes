@@ -1,0 +1,37 @@
+0.01
+    Add configured-NV error functions and inverses, normal CDF/survival
+    functions and two-sided sigma/probability conversions with stable tails.
+    Probe the selected math symbols without narrowing wider NV formats.
+    Add basic bootstrap intervals and intervals from supplied distributions.
+    Keep bootstrap statistics packed through native bounds calculation,
+    use selection for bootstrap medians and validate U32 RNG streams.
+    Add harmonic and geometric means, adjusted and unadjusted shape
+    statistics, regression diagnostics and implicit-index linear trends.
+    Reject unresolved signed harmonic cancellation and report checked IQR
+    overflow and MAD intermediate range limits with structured conditions.
+    Add caller-directed outlier filtering with exact candidate selection
+    and independent callback snapshots.
+    Add ordinary and weighted exponential smoothing with exact per-step
+    arithmetic and explicit current-observation coefficients.
+    Add explicit and equal-width histograms with exact generated edges,
+    boundary closure options and outside counts.  Add structured summaries
+    with independent availability reasons and one shared quartile sort.
+    Detect range and spread overflow under directed hardware rounding and
+    report invalid moment state as an internal numerical condition.
+    Add explicit ranks, empirical quantiles, exact linear quantiles, trimmed
+    means and all tied modes. Use exact midpoints in bootstrap medians and
+    MAD. Report selection and trimming argument errors as module conditions.
+    Add exact sum of squares with final nearest-even rounding, lazy stored
+    results and a bounded incremental accumulator.
+    Compute paired products and cancellation exactly. Round covariance,
+    correlation and regression coefficients independently to nearest-even.
+    Add observation copies, sorted copies, clear, range and first extrema
+    positions. Preserve positions across batch additions and merges.
+    Round compensated arithmetic at each required NV step on x87 builds.
+    Accumulate exact sums of converted observations and round sum and mean
+    once. Allow overflowing sums to recover through later cancellation.
+    Reject incomplete option lists and unsupported bootstrap statistics.
+    Preserve cancellation remainders, scaled moments and regression product
+    residuals. Fix subnormal interpolation and reject lost paired terms.
+    Add native stored and incremental statistics, order statistics,
+    case resampling, bootstrap percentile intervals, and paired statistics.
