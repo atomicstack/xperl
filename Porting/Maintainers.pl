@@ -386,7 +386,8 @@ our %Modules = (
         'EXCLUDED'    => [qr{^xt/}],
         'CUSTOMIZED'  => [qw(
             Makefile.PL SQLite.xs dbdimp.c dbdimp.h dbdimp_tokenizer.inc
-            dbdimp_virtual_table.inc t/virtual_table/11_filecontent_fulltext.t
+            dbdimp_virtual_table.inc t/01_compile.t t/02_logon.t
+            t/virtual_table/11_filecontent_fulltext.t
         )],
         # Keep the regression tests within the core filename limit.
         'MAP'         => {
@@ -436,7 +437,8 @@ our %Modules = (
         'DISTRIBUTION' => 'HMBRAND/DBI-1.656.tgz',
         'SYNCINFO'    => 'demerphq on Thu Nov 12 13:47:43 2026',
         'FILES'       => 'cpan/DBI',
-        'CUSTOMIZED'  => [qw(DBI.xs Driver_xst.h Makefile.PL t/85gofer.t)],
+        'CUSTOMIZED'  => [qw(DBI.xs Driver_xst.h Makefile.PL
+                            t/01basics.t t/31methcache.t t/85gofer.t)],
     },
 
     'Devel::PPPort' => {
@@ -1691,6 +1693,7 @@ our %Modules = (
             qw(YAML-XS-LibYAML/LibYAML.xs YAML-XS-LibYAML/emitter.c),
             qw(YAML-XS-LibYAML/perl_libyaml.c YAML-XS-LibYAML/perl_libyaml.h),
             qw(t/TestYAML.pm t/TestYAMLTests.pm t/oop/15-various.t),
+            qw(t/libyaml-version.t t/oop/11-schema.t),
         ],
     },
 

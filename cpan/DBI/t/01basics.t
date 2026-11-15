@@ -38,7 +38,7 @@ $|=1;
 
 ## load DBI and export some symbols
 BEGIN {
-        diag "--- Perl $] on $Config{archname}";
+        note "--- Perl $] on $Config{archname}";
 
 	use_ok('DBI', qw(
 					:sql_types

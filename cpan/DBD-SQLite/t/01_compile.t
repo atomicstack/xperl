@@ -11,11 +11,11 @@ use_ok('DBI');
 use_ok('DBD::SQLite');
 use_ok('SQLiteTest');
 
-diag("\$DBI::VERSION=$DBI::VERSION");
+note("\$DBI::VERSION=$DBI::VERSION");
 
 if (my @compile_options = DBD::SQLite::compile_options()) {
-    diag("Compile Options:");
-    diag(join "", map { "  $_\n" } @compile_options);
+    note("Compile Options:");
+    note(join "", map { "  $_\n" } @compile_options);
 }
 
 done_testing;

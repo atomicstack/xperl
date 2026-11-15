@@ -14,7 +14,7 @@ my $core = YAML::XS::LoadFile($schema_file);
 my $inf = 0 + 'inf';
 my $inf_negative = 0 - 'inf';
 my $nan = 0 + 'nan';
-diag("inf: $inf -inf: $inf_negative nan: $nan");
+note("inf: $inf -inf: $inf_negative nan: $nan");
 my $inf_broken = $inf eq '0';
 $inf_broken and diag("inf/nan seem broken, skipping those tests");
 my $is_bool = eval 'use experimental qw/ builtin /; sub { builtin::is_bool($_[0]) }';

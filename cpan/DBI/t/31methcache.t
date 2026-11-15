@@ -16,7 +16,7 @@ use strict;
 $|=1;
 $^W=1;
 
-$has_threads or diag("No threads available in this perl");
+$has_threads or note("No threads available in this perl");
 
 use_ok( 'DBI' );
 

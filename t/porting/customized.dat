@@ -7,10 +7,14 @@ DBD::SQLite cpan/DBD-SQLite/dbdimp_tokenizer.inc cabfb13d57c5464d19dfd351d8e403b
 DBD::SQLite cpan/DBD-SQLite/dbdimp_virtual_table.inc 57e3af8f5ba392c28460c20674b0b8387661afde
 DBD::SQLite cpan/DBD-SQLite/Makefile.PL e144baeb68ac93d42e0e224f55829be634d05fe2
 DBD::SQLite cpan/DBD-SQLite/SQLite.xs 3de9bf1f515b2cf2c570ef76c512b345fcad35b3
+DBD::SQLite cpan/DBD-SQLite/t/01_compile.t eeacd440fc20c795775711e5bfad4bf97c479fd1
+DBD::SQLite cpan/DBD-SQLite/t/02_logon.t b6674621c1c55ff9facd08ee162161c865bf8e1a
 DBD::SQLite cpan/DBD-SQLite/t/virtual_table/11_filecontent_fulltext.t cbeb70617e622dc3c3eb47a25f3c68b937dea636
 DBI cpan/DBI/DBI.xs a36e501705fba012623e6847bffb5c8b05d409af
 DBI cpan/DBI/Driver_xst.h 8f17bef0aedf06b85f40ae589ecda0c88f1c0e7c
 DBI cpan/DBI/Makefile.PL a5e79404d719fda0a8b693ad097a4d6db04a51b1
+DBI cpan/DBI/t/01basics.t dacd29ef4e450e8c9f37110b2690a25a45a3615b
+DBI cpan/DBI/t/31methcache.t cac56d1d60452e5e1d3c322cb557b8c0c350cfba
 DBI cpan/DBI/t/85gofer.t 112d2b796323d1fb041ee790a92d27c6516e4acf
 ExtUtils::Constant cpan/ExtUtils-Constant/lib/ExtUtils/Constant/Base.pm 7560e1018f806db5689dee78728ccb8374aea741
 ExtUtils::Constant cpan/ExtUtils-Constant/t/Constant.t 165e9c7132b003fd192d32a737b0f51f9ba4999e
@@ -31,6 +35,8 @@ Pod::Perldoc cpan/Pod-Perldoc/lib/Pod/Perldoc.pm 582be34c077c9ff44d99914724a0cc2
 Text::CSV_XS cpan/Text-CSV_XS/CSV_XS.xs 92c2324bcd32ea6f87f7787164095168c67041a4
 Win32API::File cpan/Win32API-File/File.pm 8fd212857f821cb26648878b96e57f13bf21b99e
 Win32API::File cpan/Win32API-File/File.xs beb870fed4490d2faa547b4a8576b8d64d1d27c5
+YAML::XS cpan/YAML-LibYAML/t/libyaml-version.t 52105bacfbdc83781b2e39aaec60b1e6b393287b
+YAML::XS cpan/YAML-LibYAML/t/oop/11-schema.t ed184256c40451dacf051b102be603bca2e6fceb
 YAML::XS cpan/YAML-LibYAML/t/oop/15-various.t e1dba801da1ac929984b121c0ca7df4793248a7c
 YAML::XS cpan/YAML-LibYAML/t/TestYAML.pm 1bf4a69ef0f9e8c9d512ce4796e00105902a543a
 YAML::XS cpan/YAML-LibYAML/t/TestYAMLTests.pm e5e7eb6850d6b839809aec23600bca481ee7663b
