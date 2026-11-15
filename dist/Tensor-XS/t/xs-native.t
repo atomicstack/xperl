@@ -171,4 +171,18 @@ is $u64->at(0), '18446744073709551615',
         'zero-length dimensions are accepted');
 }
 
+{
+    # accessors returning new containers must not keep an extra reference
+    require Scalar::Util;
+    my $t = Tensor::XS->new([2, 3], [1 .. 6], 'F64');
+    for my $method (qw(shape strides data)) {
+        my $result = $t->$method;
+        is Internals::SvREFCNT(@$result), 1,
+            "$method returns an array with a single reference";
+        Scalar::Util::weaken(my $weak = $result);
+        undef $result;
+        ok !defined $weak, "$method result is freed when released";
+    }
+}
+
 done_testing;

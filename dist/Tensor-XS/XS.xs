@@ -653,6 +653,12 @@ MODULE = Tensor::XS  PACKAGE = Tensor::XS
 
 PROTOTYPES: DISABLE
 
+# The default AV* output typemap (T_AVREF) takes a new reference to the
+# returned array, leaking every freshly built result.
+TYPEMAP: <<END
+AV *	T_AVREF_REFCOUNT_FIXED
+END
+
 SV *
 new_with_dtype(class_name, shape, data, dtype)
     const char *class_name
