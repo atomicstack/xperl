@@ -1269,7 +1269,6 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
 {
     PERL_ARGS_ASSERT_HV_COMMON;
 
-    XPVHV* xhv;
     HE *entry;
     SV *sv;
     bool is_utf8;
@@ -1328,7 +1327,6 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
         flags = query_flags;
         keysv_hek = query_hek;
         is_utf8 = cBOOL(flags & HVhek_UTF8);
-        xhv = (XPVHV *)SvANY(hv);
         goto lookup;
     }
 
@@ -1402,7 +1400,6 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
                                          action, hash);
     }
 
-    xhv = (XPVHV*)SvANY(hv);
     if (SvMAGICAL(hv)) {
         if (SvRMAGICAL(hv) && !(action & (HV_FETCH_ISSTORE|HV_FETCH_ISEXISTS))) {
             if (mg_find((const SV *)hv, PERL_MAGIC_tied)
@@ -1893,7 +1890,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
                 S_oa_index_insert(hv, entry, hash);
 #endif
         }
-        xhv->xhv_keys++;
+        HvTOTALKEYS(hv)++;
         if (HvHasAUX(hv)
             && (HvAUX(hv)->xhv_riter != -1
                 || (HvAUX(hv)->xhv_aux_flags & HvAUXf_ITER_ACTIVE)))
