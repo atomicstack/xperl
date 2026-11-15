@@ -10276,23 +10276,41 @@ static void S_dispatch_pattern_prepare_regex(pTHX_ const OP *pattern, HV *seen);
 
 static void S_dispatch_pattern_validate(pTHX_ const OP *op, U32 depth);
 
+/* This runs before S_dispatch_pattern_validate has enforced
+ * DISPATCH_PATTERN_MAX_DEPTH, so it walks the optree with an explicit
+ * worklist instead of recursing once per level.  Nothing in the loop can
+ * croak, so the worklist is freed directly. */
 static void
-S_dispatch_pattern_rebind(pTHX_ OP *op, HV *padmap)
+S_dispatch_pattern_rebind(pTHX_ OP *root, HV *padmap)
 {
-    OP *kid;
+    OP **stack;
+    Size_t depth = 0;
+    Size_t max = 16;
 
-    if (!op)
+    if (!root)
         return;
-    if (op->op_type == OP_PADSV || op->op_type == OP_PADAV
-        || op->op_type == OP_PADHV || op->op_type == OP_PADANY) {
-        SV **replacement = hv_fetch(padmap, (const char *)&op->op_targ,
-                                    sizeof(op->op_targ), FALSE);
-        if (replacement)
-            op->op_targ = (PADOFFSET)SvUV(*replacement);
+    Newx(stack, max, OP *);
+    stack[depth++] = root;
+    while (depth) {
+        OP *op = stack[--depth];
+        OP *kid;
+        if (op->op_type == OP_PADSV || op->op_type == OP_PADAV
+            || op->op_type == OP_PADHV || op->op_type == OP_PADANY) {
+            SV **replacement = hv_fetch(padmap, (const char *)&op->op_targ,
+                                        sizeof(op->op_targ), FALSE);
+            if (replacement)
+                op->op_targ = (PADOFFSET)SvUV(*replacement);
+        }
+        if (op->op_flags & OPf_KIDS)
+            for (kid = cUNOPx(op)->op_first; kid; kid = OpSIBLING(kid)) {
+                if (depth == max) {
+                    max *= 2;
+                    Renew(stack, max, OP *);
+                }
+                stack[depth++] = kid;
+            }
     }
-    if (op->op_flags & OPf_KIDS)
-        for (kid = cUNOPx(op)->op_first; kid; kid = OpSIBLING(kid))
-            S_dispatch_pattern_rebind(aTHX_ kid, padmap);
+    Safefree(stack);
 }
 
 void

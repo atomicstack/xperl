@@ -8,7 +8,7 @@ BEGIN {
 
 use dispatch::Predicates;
 
-plan(26);
+plan(27);
 
 {
     package DispatchOnHardening::ScalarTie;
@@ -351,6 +351,17 @@ print "err: \$@";
 CODE
         "$kind shape nested 100000 levels deep fails cleanly");
 }
+
+# A capture inside a class-qualified hash shape makes the pattern's pad
+# references be rebound before validation; that walk must not recurse once
+# per optree level either.
+fresh_perl_like(<<'CODE', qr/^err: dispatch pattern nested more than 1000 levels deep/, {},
+my $n = 1_000_000;
+my $shape = ('[' x $n) . '1' . (']' x $n);
+eval "use feature 'dispatch_on'; no warnings; package Point { sub new { bless {x => 1, y => 2}, shift } } my \$v = Point->new; dispatch (\$v) { on (Point { 'x' => \$x, 'y' => $shape }) { 1 } on (_) { 2 } }";
+print "err: $@";
+CODE
+    "deep shape beside a rebound capture fails cleanly");
 
 # A constant-folded dispatch must not release pad slots it does not own.
 # The marker values stored in the op_targ of OP_ENTERDISPATCH and
