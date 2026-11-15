@@ -3,6 +3,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 use Config;
 use File::Spec;
+use File::Path qw(remove_tree);
 
 sub math_defines {
     my $directory = ".xstats-math-$$";
@@ -49,11 +50,12 @@ sub math_defines {
         push @defines, '-DXSTATS_HAS_NV_' . uc($function) if $available;
     }
 
-    opendir my $entries, $directory or die "Cannot read $directory: $!";
-    unlink map { File::Spec->catfile( $directory, $_ ) }
-      grep { $_ ne '.' && $_ ne '..' } readdir $entries;
-    closedir $entries;
-    rmdir $directory or die "Cannot remove $directory: $!";
+    # Debug compilers can leave directory trees such as Darwin .dSYM bundles.
+    remove_tree( $directory, { error => \my $errors } );
+    for my $error (@$errors) {
+        my ( $path, $reason ) = %$error;
+        die "Cannot remove $path: $reason\n";
+    }
     return join ' ', @defines;
 }
 
