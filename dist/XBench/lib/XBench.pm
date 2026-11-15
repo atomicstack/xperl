@@ -76,6 +76,11 @@ my $catalog = XPerl::Diagnostic::Catalog->define(
                     [ { name => 'phase', type => 'text' } ]
                 ],
                 [
+                    'MEASUREMENT', 'Measurement',
+                    'XBench: invalid reported duration during %{phase}',
+                    [ { name => 'phase', type => 'text' } ]
+                ],
+                [
                     'COMMAND_FAILED',
                     'CommandFailed',
                     'XBench: command for %{name} failed (wait status %{status})',
@@ -260,14 +265,27 @@ sub _batch ( $case, $callback, $iterations, $phase ) {
         $case->{before_sample}->( $phase . '', 0 + $iterations )
           if $case->{before_sample};
         $ready = 1;
-        my $start = _clock($phase);
-
-        for ( 1 .. $iterations ) {
-            $callback->();
+        if ( $case->{is_measured} ) {
+            $duration = $callback->();
+            _error( 'MEASUREMENT', phase => $phase )
+              unless defined($duration)
+              && !ref($duration)
+              && looks_like_number($duration)
+              && isfinite($duration)
+              && $duration >= 0;
+            $duration = 0 + $duration;
         }
+        else {
+            my $start = _clock($phase);
 
-        $duration = _clock($phase) - $start;
-        _error( 'CLOCK', phase => $phase ) unless isfinite($duration) && $duration >= 0;
+            for ( 1 .. $iterations ) {
+                $callback->();
+            }
+
+            $duration = _clock($phase) - $start;
+            _error( 'CLOCK', phase => $phase )
+              unless isfinite($duration) && $duration >= 0;
+        }
     }
     catch ( $value, $exception ) {
         $primary = $exception;
@@ -324,26 +342,45 @@ method add (@pairs) {
     for my $name ( keys %$definition ) {
         _error( 'UNKNOWN_OPTION', argument => $name )
           unless $name =~
-          /\A(?:name|code|command|baseline|before_sample|after_sample)\z/;
+/\A(?:name|code|command|measure|operations|resolution|baseline|before_sample|after_sample)\z/;
     }
 
     my $name = $definition->{name};
     _error( 'INVALID_ARGUMENT', argument => 'name' )
       unless defined($name) && !ref($name) && length($name) && length($name) <= 255;
-    _error( 'DUPLICATE_NAME',   name     => $name ) if exists $names{$name};
-    _error( 'INVALID_ARGUMENT', argument => 'code/command' )
-      if exists( $definition->{code} ) && exists( $definition->{command} );
+    _error( 'DUPLICATE_NAME', name => $name ) if exists $names{$name};
+    my $kinds = grep { exists $definition->{$_} } qw(code command measure);
+    _error( 'INVALID_ARGUMENT', argument => 'code/command/measure' ) unless $kinds == 1;
+
+    if ( exists $definition->{measure} ) {
+        $definition->{operations} =
+          _number( 'operations', $definition->{operations}, 1, 1 );
+        $definition->{resolution} =
+          _number( 'resolution', $definition->{resolution}, 0 );
+        _error( 'INVALID_ARGUMENT', argument => 'resolution' )
+          unless $definition->{resolution} > 0;
+    }
+    else {
+        for my $key (qw(operations resolution)) {
+            _error( 'INVALID_ARGUMENT', argument => $key )
+              if exists $definition->{$key};
+        }
+    }
 
     for my $key (qw(baseline before_sample after_sample)) {
         _error( 'INVALID_ARGUMENT', argument => $key )
           if defined( $definition->{$key} ) && ref( $definition->{$key} ) ne 'CODE';
     }
 
-    my ( $callback, $command );
+    my ( $callback, $command, $measured ) = ( undef, 0, 0 );
     dispatch($definition) {
         on( { code => $code, ... } if ref($code) eq 'CODE' ) {
             $callback = $code;
             $command  = 0;
+        }
+        on( { measure => $measure, ... } if ref($measure) eq 'CODE' ) {
+            $callback = $measure;
+            $measured = 1;
         }
         on( { command => $arguments, ... } if _command_valid($arguments) ) {
             my @arguments = @$arguments;
@@ -364,11 +401,17 @@ method add (@pairs) {
             };
         }
         on(_) {
-            _error( 'INVALID_ARGUMENT', argument => 'code/command' );
+            _error( 'INVALID_ARGUMENT', argument => 'code/command/measure' );
         }
     }
 
-    push @cases, { %$definition, callback => $callback, is_command => $command };
+    push @cases,
+      {
+        %$definition,
+        callback    => $callback,
+        is_command  => $command,
+        is_measured => $measured
+      };
     $names{$name} = 1;
     return $self;
 }
@@ -420,22 +463,26 @@ sub _analyze ( $values, $settings ) {
 }
 
 method _run_case ($case) {
-    my $start      = _clock('start');
-    my $resolution = Time::HiRes::clock_getres( Time::HiRes::CLOCK_MONOTONIC() );
+    my $start = _clock('start');
+    my $resolution =
+        $case->{is_measured}
+      ? $case->{resolution}
+      : Time::HiRes::clock_getres( Time::HiRes::CLOCK_MONOTONIC() );
     _error( 'CLOCK', phase => 'resolution' )
       unless defined($resolution) && isfinite($resolution) && $resolution > 0;
 
+    my $iterations = $case->{is_measured} ? $case->{operations} : 1;
     my ( $warmup_calls, $calibration_calls ) = ( 0, 0 );
     for ( 1 .. $options->{warmup} ) {
-        _batch( $case, $case->{callback}, 1, 'warmup' );
-        _batch( $case, $case->{baseline}, 1, 'baseline_warmup' ) if $case->{baseline};
+        _batch( $case, $case->{callback}, $iterations, 'warmup' );
+        _batch( $case, $case->{baseline}, $iterations, 'baseline_warmup' )
+          if $case->{baseline};
         ++$warmup_calls;
         last if _clock('warmup') - $start >= $options->{max_seconds};
     }
 
-    my $iterations = 1;
-    my $calibrated = $case->{is_command};
-    unless ( $case->{is_command} ) {
+    my $calibrated = $case->{is_command} || $case->{is_measured};
+    unless ($calibrated) {
         while (1) {
             my $duration =
               _batch( $case, $case->{callback}, $iterations, 'calibration' );
@@ -524,11 +571,13 @@ method _run_case ($case) {
         baseline_subtracted => $case->{baseline} ? 1 : 0,
         settings            => $options,
         environment         => {
-            scope          => 'benchmark_driver',
-            clock          => 'monotonic',
-            xbench_version => $VERSION,
-            perl_version   => "$^V",
-            os             => $^O,
+            scope                  => 'benchmark_driver',
+            clock                  => 'monotonic',
+            measurement            => $case->{is_measured} ? 'reported' : 'wall_clock',
+            measurement_resolution => $resolution,
+            xbench_version         => $VERSION,
+            perl_version           => "$^V",
+            os                     => $^O,
             map { $_ => $Config{$_} }
               qw(archname nvtype cc ccflags optimize useithreads),
         },
@@ -650,13 +699,31 @@ catches exercise the XPerl language and structured exception machinery.
 C<add(name =E<gt> $name, code =E<gt> \&work)> adds a callback case.
 C<add(name =E<gt> $name, command =E<gt> \@arguments)> executes a command
 directly without a shell, once per sample.  Names must be unique, nonempty
-strings of at most 255 characters.  Callback return values are discarded.
+strings of at most 255 characters.  Code callback return values are discarded.
+
+C<add(name =E<gt> $name, measure =E<gt> \&measure,
+operations =E<gt> $count, resolution =E<gt> $seconds)> accepts an already
+timed batch, for example from a worker process.  The callback runs once per
+sample and returns the total elapsed seconds for exactly C<$count>
+operations.  XBench divides by that count.  The count is a positive U32;
+resolution is the positive, finite clock resolution of that measurement,
+in seconds before normalization.  Both are required and stay fixed for the
+case.  Reported durations must be finite and nonnegative.
+
+Reported batches are warmed up but not calibrated or wrapped in another
+timed loop.  Process startup, data preparation and reporting enter the
+driver's elapsed-time budget, but only the returned duration enters the
+statistics.  Results identify the measurement as C<reported> and retain its
+clock resolution.  Callers must check worker operation counts and ensure
+that the reported timing covers the intended workload.
 
 Optional C<baseline =E<gt> \&baseline> pairs each measured batch with a
 baseline batch using the same iteration count.  Execution order alternates.
 The adjusted sample is their elapsed-time difference divided by iterations.
 Negative adjusted values are retained.  Subtraction is disabled by default.
 The caller chooses whether an additive baseline models the operation.
+For C<measure> cases the baseline callback also returns a duration for the
+configured operation count and clock resolution.
 
 C<before_sample> and C<after_sample> receive phase and iteration count.
 They run outside the timed section, including warmup and calibration.

@@ -581,6 +581,8 @@ L<XStats> uncertainty estimates.  Results retain raw samples, sample SD,
 bootstrap intervals and stopping metadata.  Optional paired baselines and
 outlier filtering are explicit.  Native XPerl classes and structured
 exceptions preserve callback and cleanup failures with benchmark context.
+Reported batch timings support measurements taken inside worker processes,
+with explicit operation counts and clock resolution.
 
 =item *
 

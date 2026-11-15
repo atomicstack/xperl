@@ -210,4 +210,96 @@ benchmark( sub { $time += 0.125 }, %settings );
 is( rand(), $expected_random,
     'measurement and bootstrap analysis preserve the application RNG' );
 
+$time = 0;
+my $measured_calls = 0;
+my @measured_phases;
+my %measured_settings = ( %settings, warmup => 1 );
+my $measured          = XBench->new(%measured_settings);
+$measured->add(
+    name       => 'worker',
+    operations => 8,
+    resolution => 0.03125,
+    measure    => sub {
+        ++$measured_calls;
+        $time += 10;
+        return 0.25;
+    },
+    before_sample => sub { push @measured_phases, [@_] },
+);
+my $reported = $measured->run->[0];
+is( $reported->mean, 0.03125, 'reported duration is normalized by worker operations' );
+is( $reported->iterations, 8, 'results retain the worker operation count' );
+is( $reported->calibration_calls, 0,
+    'reported batches are not calibrated or repeated' );
+is( $measured_calls,    5,  'one callback supplies each warmup or measured batch' );
+is( $reported->elapsed, 50, 'driver time still bounds the cost of collecting samples' );
+is( $reported->resolution_floor,
+    0.00390625, 'resolution comes from the measurement clock' );
+is( $reported->environment->{measurement},
+    'reported', 'reported timings are identified' );
+is_deeply(
+    \@measured_phases,
+    [ [ 'warmup', 8 ], map { [ 'sample', 8 ] } 1 .. 4 ],
+    'reported batch hooks receive their operation count'
+);
+
+$time = 0;
+my $paired = XBench->new(%settings);
+$paired->add(
+    name       => 'paired worker',
+    operations => 8,
+    resolution => 0.03125,
+    measure    => sub { $time += 10; return 0.25 },
+    baseline   => sub { $time += 10; return 0.125 },
+);
+my $paired_result = $paired->run->[0];
+is( $paired_result->mean, 0.015625,
+    'reported baselines use the same duration contract' );
+is( $paired_result->resolution_floor,
+    0.0078125, 'reported paired samples account for both clock resolutions' );
+is_deeply(
+    $paired_result->baseline_samples,
+    [ (0.015625) x 4 ],
+    'reported baseline timings remain available'
+);
+
+$time = 0;
+my %reported_limit_settings = ( %settings, max_seconds => 15 );
+my $reported_limit          = XBench->new(%reported_limit_settings);
+$reported_limit->add(
+    name       => 'slow worker',
+    operations => 8,
+    resolution => 0.03125,
+    measure    => sub { $time += 10; return 0.25 }
+);
+my $limited_report = $reported_limit->run->[0];
+is( $limited_report->stop_reason,
+    'max_seconds', 'reported samples obey the driver time budget' );
+is( $limited_report->total_samples,
+    2, 'a reported run keeps the minimum analysable sample' );
+is( $limited_report->elapsed, 20,
+    'the time budget includes worker startup and reporting' );
+is( $limited_report->mean, 0.03125, 'driver overhead does not enter reported means' );
+ok( !$limited_report->precision_met,
+    'the time limit cannot waive the minimum retained count' );
+
+for my $duration ( undef, -1, 'NaN', 'Inf', 'not a duration', [] ) {
+    my @warnings;
+    local $SIG{__WARN__} = sub { push @warnings, @_ };
+    my $invalid = XBench->new(%settings);
+    $invalid->add(
+        name       => 'invalid worker',
+        operations => 8,
+        resolution => 0.03125,
+        measure    => sub { $duration }
+    );
+    eval { $invalid->run };
+    ok(
+        ref($@) && $@->has_diagnostic('XBench::MEASUREMENT'),
+        'malformed reported durations raise a structured condition'
+    );
+    is_deeply( \@warnings, [],
+        'malformed reported durations emit no incidental warning' );
+}
+
 done_testing;

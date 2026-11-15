@@ -34,12 +34,18 @@ is( $bench->state, 'new', 'preflight failure preserves a new runner' );
 
 for my $case (
     [ name => 'missing' ],
-    [ name => 'wrong', code    => 1 ],
-    [ name => 'both',  code    => sub { }, command => ['program'] ],
-    [ name => 'args',  command => [] ],
-    [ name => 'args',  command => [ 'program', undef ] ],
-    [ name => '',      code    => sub { } ],
-    [ name => 'hooks', code    => sub { }, baseline => 1 ],
+    [ name => 'missing measurement metadata', measure => sub { 1 } ],
+    [ name => 'conflicting callbacks',        code    => sub { }, measure => sub { } ],
+    [ name => 'wrong measure',   measure => 1,       operations => 1, resolution => 1 ],
+    [ name => 'zero operations', measure => sub { }, operations => 0, resolution => 1 ],
+    [ name => 'zero resolution', measure => sub { }, operations => 1, resolution => 0 ],
+    [ name => 'normal metadata', code    => sub { }, operations => 8, resolution => 1 ],
+    [ name => 'wrong',           code    => 1 ],
+    [ name => 'both',            code    => sub { }, command => ['program'] ],
+    [ name => 'args',            command => [] ],
+    [ name => 'args',            command => [ 'program', undef ] ],
+    [ name => '',                code    => sub { } ],
+    [ name => 'hooks',           code    => sub { }, baseline => 1 ],
   )
 {
     eval { $bench->add(@$case) };

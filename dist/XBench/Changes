@@ -1,4 +1,6 @@
 0.01
+    Accept reported batch durations with explicit operation counts and
+    clock resolution for benchmarks timed inside worker processes.
     Add calibrated callback and command benchmarks using XStats bootstrap
     uncertainty, explicit filtering and paired baseline subtraction.
     Retain raw measurements and stopping metadata in native class results.

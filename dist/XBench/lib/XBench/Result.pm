@@ -148,6 +148,9 @@ Settings and environment snapshots record the precision/filter choices,
 interpreter, compiler, build flags, NV type and threading configuration.
 Environment fields describe the benchmark driver.  Their accessors return
 independent copies.
+The environment's C<measurement> field distinguishes C<wall_clock> timings
+from C<reported> batches; C<measurement_resolution> records their clock
+resolution before division by C<iterations>.
 
 Construct results through L<XBench>; their constructor is internal.
 
