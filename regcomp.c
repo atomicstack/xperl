@@ -16342,8 +16342,7 @@ S_parse_uniprop_string(pTHX_
 
                 /* Otherwise, it is the exception object raised when we first
                  * tried to evaluate this property. */
-                if (sv_derived_from(*saved_user_prop_ptr,
-                                    "XPerl::Exception")) {
+                if (sv_is_xperl_exception(*saved_user_prop_ptr)) {
                     cached_exception = *saved_user_prop_ptr;
 
                     /* The SV in the hash won't be removed until global
@@ -16442,8 +16441,7 @@ S_parse_uniprop_string(pTHX_
             error = ERRSV;
             if (TAINT_get || SvTRUE(error)) {
                 if (SvTRUE(error)) {
-                    if (SvROK(error)
-                        && sv_derived_from(error, "XPerl::Exception"))
+                    if (sv_is_xperl_exception(error))
                         Perl_diag_append_exception(aTHX_ exception_slot, error);
                     else
                         PERL_APPEND_ERROR_UNICODE_PROPERTY_DEFINITION_CALLBACK_FAILED(

@@ -1873,15 +1873,14 @@ Perl_write_to_stderr_internal(pTHX_ SV *msv, bool warning_output)
             return;
     }
     if (SvROK(msv) && SvAMAGIC(msv)
-        && sv_derived_from(msv, "XPerl::Exception")) {
+        && sv_is_xperl_exception(msv)) {
         render_exception = Perl_diag_exception_for_stderr(aTHX_ msv);
         if (render_exception)
             render_source = render_exception;
         rendered = AMG_CALLunary_flags(render_source, string_amg,
                                        AMGf_force_overload);
     }
-    if (!rendered && SvROK(render_source)
-        && sv_derived_from(render_source, "XPerl::Exception")) {
+    if (!rendered && sv_is_xperl_exception(render_source)) {
         rendered = Perl_xperl_exception_render_legacy(aTHX_ render_source);
         rendered_owned = rendered != NULL;
     }
@@ -2045,7 +2044,7 @@ Perl_invoke_exception_hook_internal(pTHX_ SV *ex, bool warn, SV *compat_value,
 
     if (!hook || hook == PERL_WARNHOOK_FATAL || *in_hook)
         return FALSE;
-    if (!SvROK(canonical) || !sv_derived_from(canonical, "XPerl::Exception")) {
+    if (!sv_is_xperl_exception(canonical)) {
         canonical = NULL;
         if (warn)
             PERL_APPEND_WARNING_USER_TEXT(&canonical, ex);
@@ -2068,7 +2067,7 @@ Perl_invoke_exception_hook_internal(pTHX_ SV *ex, bool warn, SV *compat_value,
 bool
 Perl_invoke_exception_hook(pTHX_ SV *ex, bool warn)
 {
-    if (!warn && SvROK(ex) && sv_derived_from(ex, "XPerl::Exception"))
+    if (!warn && sv_is_xperl_exception(ex))
         return Perl_diag_process_delivery(aTHX_ ex, 0, TRUE);
     return Perl_invoke_exception_hook_internal(aTHX_ ex, warn, NULL, NULL);
 }
@@ -2080,7 +2079,7 @@ Perl_die_sv(pTHX_ SV *baseex)
 {
     PERL_ARGS_ASSERT_DIE_SV;
 
-    if (SvROK(baseex) && !sv_derived_from(baseex, "XPerl::Exception")) {
+    if (SvROK(baseex) && !sv_is_xperl_exception(baseex)) {
         SV *exception = NULL;
         HV *fields;
 
@@ -2096,7 +2095,7 @@ Perl_die_sv(pTHX_ SV *baseex)
         Perl_diag_flush_exception(aTHX_ exception, 0, TRUE);
     }
 
-    if (SvROK(baseex) && sv_derived_from(baseex, "XPerl::Exception")) {
+    if (sv_is_xperl_exception(baseex)) {
         HV *fields = MUTABLE_HV(SvRV(baseex));
         SV **thrown = hv_fetchs(fields, "thrown", 0);
         if (thrown)
@@ -2153,7 +2152,7 @@ Perl_diag_append_exception_internal(pTHX_ SV **exception_slot, SV *ex)
 {
     SV *pending = *exception_slot;
 
-    if (sv_derived_from(ex, "XPerl::Exception")) {
+    if (sv_is_xperl_exception(ex)) {
         if (!pending) {
             *exception_slot = ex;
             if (exception_slot == &PL_pending_exception)

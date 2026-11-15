@@ -3816,7 +3816,7 @@ Perl_magic_set(pTHX_ SV *sv, MAGIC *mg)
     }
 
     if (memEQs(mg->mg_ptr, mg->mg_len, "@")) {
-        if (SvROK(sv) && sv_derived_from(sv, "XPerl::Exception"))
+        if (sv_is_xperl_exception(sv))
             sv_setsv(PERL_ERROR_OBJ, sv);
         else
             PERL_CLEAR_ERROR_OBJ();

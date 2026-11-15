@@ -318,8 +318,7 @@ Perl_xperl_exception_render_legacy(pTHX_ SV *exception)
 
     PERL_ARGS_ASSERT_XPERL_EXCEPTION_RENDER_LEGACY;
 
-    if (!SvROK(exception)
-        || !sv_derived_from(exception, "XPerl::Exception"))
+    if (!sv_is_xperl_exception(exception))
         return NULL;
 
     fields = MUTABLE_HV(SvRV(exception));

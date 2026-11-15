@@ -5068,7 +5068,7 @@ Perl_diag_rollback_exception(pTHX_ SV **exception_slot, SSize_t first_index)
                  removed_errors > error_count ? 0 : error_count - removed_errors);
     }
 
-    if (first_index == 0 && sv_derived_from(exception, "XPerl::Exception")) {
+    if (first_index == 0 && sv_is_xperl_exception(exception)) {
         *exception_slot = NULL;
         SvREFCNT_dec_NN(exception);
     }
@@ -8640,7 +8640,7 @@ S_require_file(pTHX_ SV *sv)
                         SV *errsv= ERRSV;
                         if (SvTRUE(errsv)) {
                             SV *exception = NULL;
-                            if (sv_derived_from(errsv, "XPerl::Exception"))
+                            if (sv_is_xperl_exception(errsv))
                                 exception = errsv;
                             else
                                 PERL_APPEND_ERROR_USER_TEXT(&exception, errsv);

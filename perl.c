@@ -5474,7 +5474,7 @@ Perl_call_list(pTHX_ I32 oldscope, AV *paramList)
                 SV *exception = NULL;
                 PL_curcop = &PL_compiling;
                 CopLINE_set(PL_curcop, oldline);
-                if (sv_derived_from(atsv, "XPerl::Exception"))
+                if (sv_is_xperl_exception(atsv))
                     exception = atsv;
                 else
                     PERL_APPEND_ERROR_USER_TEXT(&exception, atsv);

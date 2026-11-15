@@ -824,6 +824,7 @@
 # define sv_inc(a)                              Perl_sv_inc(aTHX_ a)
 # define sv_inc_nomg(a)                         Perl_sv_inc_nomg(aTHX_ a)
 # define sv_insert_flags(a,b,c,d,e,f)           Perl_sv_insert_flags(aTHX_ a,b,c,d,e,f)
+# define sv_is_xperl_exception(a)               Perl_sv_is_xperl_exception(aTHX_ a)
 # define sv_isa(a,b)                            Perl_sv_isa(aTHX_ a,b)
 # define sv_isa_sv(a,b)                         Perl_sv_isa_sv(aTHX_ a,b)
 # define sv_isbool(a)                           Perl_sv_isbool(aTHX_ a)

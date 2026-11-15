@@ -568,7 +568,7 @@ PP_wrapped(pp_warn, 0, 1)
             exsv = sv_mortalcopy_flags(errsv, SV_DO_COW_SVSETSV);
         }
         else exsv = errsv;
-        caught = sv_derived_from(exsv, "XPerl::Exception");
+        caught = sv_is_xperl_exception(exsv);
       }
       else if (SvPOKp(errsv) ? SvCUR(errsv) : SvNIOKp(errsv)) {
         exsv = sv_mortalcopy_flags(errsv, SV_DO_COW_SVSETSV);
@@ -635,8 +635,7 @@ PP_wrapped(pp_die, 0, 1)
     }
     else {
         exsv = TOPs;
-        if (SvROK(exsv)
-            && sv_derived_from(exsv, "XPerl::Exception")) {
+        if (sv_is_xperl_exception(exsv)) {
             SV **thrown = hv_fetchs(MUTABLE_HV(SvRV(exsv)), "thrown", 0);
 
             if (thrown && SvTRUE(*thrown)) {

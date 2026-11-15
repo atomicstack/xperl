@@ -8972,4 +8972,46 @@ fresh_perl_like( q{
 }, qr/Character\(s\).*wrapped in pack.*\nok/s, {},
     'constant-folded pack warning does not abort compilation' );
 
+
+# Only hash-based objects are structured exceptions.  A non-hash object whose
+# class merely inherits from XPerl::Exception used to be read as a hash by
+# die, warn and $@ handling.  It must behave like any other user reference.
+fresh_perl_is(<<'CODE', <<'EXPECT', {},
+package Foo; our @ISA = ('XPerl::Exception');
+# The inherited XPerl::Exception methods and overloads require a hash and
+# croak for these objects, so give the subclass its own stringification and
+# compare addresses directly.
+use overload '""' => sub { 'Foo object' }, fallback => 1;
+package main;
+sub same { builtin::refaddr($_[0]) == builtin::refaddr($_[1]) }
+for my $kind (qw(array scalar code)) {
+    my $obj = $kind eq 'array' ? bless([], 'Foo')
+            : $kind eq 'scalar' ? bless(\(my $x = 1), 'Foo')
+            : bless(sub { 1 }, 'Foo');
+    my @r;
+    eval { die $obj }; push @r, ref $@ eq 'Foo' && same($@, $obj) ? 'die' : 'die-bad';
+    eval { die $@ };   push @r, ref $@ ? 'rethrow' : 'rethrow-bad';
+    $@ = $obj;         push @r, same($@, $obj) ? 'assign' : 'assign-bad';
+    { my $w; local $SIG{__WARN__} = sub { $w = shift };
+      warn $obj; push @r, ref $w eq 'Foo' && same($w, $obj) ? 'warn' : 'warn-bad'; }
+    { my $w; local $SIG{__WARN__} = sub { $w = shift };
+      eval { die $obj }; warn; push @r, defined $w ? 'warn-empty' : 'warn-empty-bad'; }
+    { local @INC = (sub { die $obj }); eval { require Not::There };
+      push @r, ref $@ ? 'require-hook' : 'require-hook-bad'; }
+    { my $d; local $SIG{__DIE__} = sub { $d = shift };
+      eval { die $obj };
+      push @r, ref $d eq 'Foo' && same($@, $obj) ? 'die-hook' : 'die-hook-bad'; }
+    print "$kind: @r\n";
+}
+my $hash = bless {}, 'Foo';
+eval { die $hash };
+print "hash: ", (ref $@ eq 'Foo' && same($@, $hash) ? 'die' : 'die-bad'), "\n";
+CODE
+array: die rethrow assign warn warn-empty require-hook die-hook
+scalar: die rethrow assign warn warn-empty require-hook die-hook
+code: die rethrow assign warn warn-empty require-hook die-hook
+hash: die
+EXPECT
+    'non-hash objects derived from XPerl::Exception are ordinary references');
+
 done_testing();

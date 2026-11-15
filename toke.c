@@ -11143,8 +11143,7 @@ S_new_constant(pTHX_ const char *s, STRLEN len, const char *key, STRLEN keylen,
 
     /* Check the eval first */
     if (!PL_in_eval && ((errsv = ERRSV), SvTRUE_NN(errsv))) {
-        if (SvROK(PERL_ERROR_OBJ)
-            && sv_derived_from(PERL_ERROR_OBJ, "XPerl::Exception"))
+        if (sv_is_xperl_exception(PERL_ERROR_OBJ))
         {
             Perl_diag_append_exception(aTHX_ &PL_pending_exception, PERL_ERROR_OBJ);
         }

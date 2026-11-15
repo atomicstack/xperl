@@ -985,6 +985,19 @@ Perl_newRV_noinc(pTHX_ SV *const tmpRef)
     return sv;
 }
 
+/* True when sv is a reference to a hash blessed into XPerl::Exception or a
+ * subclass of it: the only form core may treat as a structured exception and
+ * read through MUTABLE_HV(SvRV(sv)).  A non-hash object that merely inherits
+ * from XPerl::Exception is handled like any other user-thrown reference. */
+PERL_STATIC_INLINE bool
+Perl_sv_is_xperl_exception(pTHX_ SV *sv)
+{
+    PERL_ARGS_ASSERT_SV_IS_XPERL_EXCEPTION;
+
+    return SvROK(sv) && SvTYPE(SvRV(sv)) == SVt_PVHV
+        && sv_derived_from(sv, "XPerl::Exception");
+}
+
 PERL_STATIC_INLINE char *
 Perl_sv_setpv_freshbuf(pTHX_ SV *const sv)
 {
