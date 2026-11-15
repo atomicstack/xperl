@@ -122,4 +122,46 @@ for my $entry (@providers) {
     }
 }
 
+# Byte counts and object state are checked before anything is allocated
+# or dereferenced.  Each probe runs in a child perl so that a crash shows
+# up as a failure rather than ending this test file.
+{
+    my $probe = sub {
+        my ($code) = @_;
+        my $script = 'use strict; use warnings; use RNG; ' . $code
+                   . '; print "survived\n"';
+        open my $fh, '-|', $^X, (map "-I$_", @INC), '-e',
+            "eval { $script; 1 } or print \$\@"
+            or die "cannot run $^X: $!";
+        my $out = do { local $/; <$fh> };
+        close $fh;
+        return $out;
+    };
+    for my $class (qw(RNG::Drand48 RNG::PCG RNG::PCG::RXS_M_XS_64_64
+                      RNG::PCG::XSL_RR_128_64_MCG
+                      RNG::PCG::XSL_RR_128_64_LCG RNG::Wyrand
+                      RNG::Xoshiro RNG::HMAC_DRBG)) {
+        my $provider = $class->new(42);
+        is(length $provider->rand_bytes(0), 0, "$class rand_bytes(0)");
+        is(length $provider->rand_bytes(17), 17, "$class rand_bytes(17)");
+        for my $count ('-1', '-4096', '~0') {
+            like($probe->("require $class; $class->new(1)->rand_bytes($count)"),
+                 qr/^rand_bytes\(\) count must be a non-negative integer/,
+                 "$class rand_bytes($count) is rejected");
+        }
+        for my $self ('"not a ref"', '\\"short"', '[]') {
+            like($probe->("require $class; "
+                          . "${class}::get_rand_U01_XS_state_addr($self)"),
+                 qr/object does not contain a valid state/,
+                 "$class state address rejects $self");
+        }
+        ok(${class}->can('get_rand_U01_XS_state_addr')->($provider),
+           "$class state address of a valid object");
+    }
+    # the providers above have loaded the XS, which defines the shim
+    like($probe->('require RNG::PCG; RNG::_legacy_rand_bytes(-1)'),
+         qr/^rand_bytes\(\) count must be a non-negative integer/,
+         'legacy rand_bytes(-1) is rejected');
+}
+
 done_testing;

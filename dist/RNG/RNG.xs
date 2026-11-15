@@ -377,6 +377,17 @@ rng_drand48_seed(pTHX_ SV *seed, bool is_builtin)
     return (U32)rng_drand48_string_seed((const U8 *)bytes, length);
 }
 
+/* A byte count arrives as a UV, so a negative Perl value wraps to a huge
+ * one and the "length + 1" buffer size computations would wrap in turn.
+ * Reject counts that are negative as an IV or leave no room for the
+ * extra bytes the callers allocate. */
+static void
+rng_check_byte_count(pTHX_ UV length)
+{
+    if ((IV)length < 0 || length > (UV)SSize_t_MAX - 4)
+        croak("rand_bytes() count must be a non-negative integer");
+}
+
 static rng_drand48_data *
 drand48_state(pTHX_ SV *self)
 {
@@ -387,12 +398,6 @@ drand48_state(pTHX_ SV *self)
     if (SvCUR(state) != sizeof(rng_drand48_data))
         croak("RNG::Drand48 object does not contain a valid state");
     return (rng_drand48_data *)SvPVX(state);
-}
-
-static rng_drand48_data *
-drand48_state_fast(SV *self)
-{
-    return (rng_drand48_data *)SvPVX(SvRV(self));
 }
 
 static U64
@@ -494,12 +499,6 @@ pcg_state(pTHX_ SV *self)
     /* The PV is the live state object.  It is deliberately accessed in place
      * rather than copied into a temporary pcg_data on every draw. */
     return (pcg_data *)SvPVX(state);
-}
-
-static pcg_data *
-pcg_state_fast(SV *self)
-{
-    return (pcg_data *)SvPVX(SvRV(self));
 }
 
 PERL_STATIC_INLINE U32
@@ -613,12 +612,6 @@ pcg_rxs_m_xs_state(pTHX_ SV *self)
     return (pcg_rxs_m_xs_data *)SvPVX(state);
 }
 
-static pcg_rxs_m_xs_data *
-pcg_rxs_m_xs_state_fast(SV *self)
-{
-    return (pcg_rxs_m_xs_data *)SvPVX(SvRV(self));
-}
-
 PERL_STATIC_INLINE U64
 pcg_rxs_m_xs_next(pcg_rxs_m_xs_data *value)
 {
@@ -711,12 +704,6 @@ pcg_xsl_rr_state(pTHX_ SV *self)
         || SvCUR(state) != sizeof(pcg_xsl_rr_data))
         croak("PCG XSL-RR object does not contain a valid state");
     return (pcg_xsl_rr_data *)SvPVX(state);
-}
-
-static pcg_xsl_rr_data *
-pcg_xsl_rr_state_fast(SV *self)
-{
-    return (pcg_xsl_rr_data *)SvPVX(SvRV(self));
 }
 
 #ifndef PCG_NATIVE_UINT128
@@ -982,12 +969,6 @@ wyrand_state(pTHX_ SV *self)
     return (wyrand_data *)SvPVX(state);
 }
 
-static wyrand_data *
-wyrand_state_fast(SV *self)
-{
-    return (wyrand_data *)SvPVX(SvRV(self));
-}
-
 static U64
 wyrand_next(wyrand_data *value)
 {
@@ -1061,12 +1042,6 @@ xoshiro_state(pTHX_ SV *self)
     if (SvCUR(state) != sizeof(xoshiro_data))
         croak("RNG::Xoshiro object does not contain a valid state");
     return (xoshiro_data *)SvPVX(state);
-}
-
-static xoshiro_data *
-xoshiro_state_fast(SV *self)
-{
-    return (xoshiro_data *)SvPVX(SvRV(self));
 }
 
 static U64
@@ -1528,12 +1503,6 @@ hmac_drbg_state(pTHX_ SV *self)
     return (hmac_drbg_data *)SvPVX(state);
 }
 
-static hmac_drbg_data *
-hmac_drbg_state_fast(SV *self)
-{
-    return (hmac_drbg_data *)SvPVX(SvRV(self));
-}
-
 static void
 hmac_drbg_update(hmac_drbg_data *state, const U8 *provided, STRLEN length)
 {
@@ -1727,7 +1696,7 @@ UV
 get_rand_U01_XS_state_addr(self)
     SV *self
 CODE:
-    RETVAL = PTR2UV(drand48_state_fast(self));
+    RETVAL = PTR2UV(drand48_state(aTHX_ self));
 OUTPUT:
     RETVAL
 
@@ -1751,6 +1720,7 @@ rand_bytes(self, length)
     SV *self
     UV length
 CODE:
+    rng_check_byte_count(aTHX_ length);
     RETVAL = newSVpvn("", 0);
     SvGROW(RETVAL, length + 1);
     drand48_fill_bytes(drand48_state(aTHX_ self), length,
@@ -1812,6 +1782,7 @@ CODE:
         seedDrand01(rng_legacy_automatic_seed(aTHX));
         PL_srand_called = TRUE;
     }
+    rng_check_byte_count(aTHX_ length);
     /* Allow space for the NUL, the COW refcount, and one spare byte. */
     output = newSV(length + 3);
     SvPOK_on(output);
@@ -1854,7 +1825,7 @@ UV
 get_rand_U01_XS_state_addr(self)
     SV *self
 CODE:
-    RETVAL = PTR2UV(pcg_state_fast(self));
+    RETVAL = PTR2UV(pcg_state(aTHX_ self));
 OUTPUT:
     RETVAL
 
@@ -1879,6 +1850,7 @@ rand_bytes(self, length)
     SV *self
     UV length
 CODE:
+    rng_check_byte_count(aTHX_ length);
     RETVAL = newSVpvn("", 0);
     SvGROW(RETVAL, length + 1);
     pcg_rng_bytes(aTHX_ self, length, (U8 *)SvPVX(RETVAL));
@@ -1951,7 +1923,7 @@ UV
 get_rand_U01_XS_state_addr(self)
     SV *self
 CODE:
-    RETVAL = PTR2UV(pcg_rxs_m_xs_state_fast(self));
+    RETVAL = PTR2UV(pcg_rxs_m_xs_state(aTHX_ self));
 OUTPUT:
     RETVAL
 
@@ -1977,6 +1949,7 @@ rand_bytes(self, length)
     SV *self
     UV length
 CODE:
+    rng_check_byte_count(aTHX_ length);
     RETVAL = newSVpvn("", 0);
     SvGROW(RETVAL, length + 1);
     pcg_rxs_m_xs_fill_bytes(pcg_rxs_m_xs_state(aTHX_ self), length,
@@ -2052,7 +2025,7 @@ UV
 get_rand_U01_XS_state_addr(self)
     SV *self
 CODE:
-    RETVAL = PTR2UV(pcg_xsl_rr_state_fast(self));
+    RETVAL = PTR2UV(pcg_xsl_rr_state(aTHX_ self));
 OUTPUT:
     RETVAL
 
@@ -2077,6 +2050,7 @@ rand_bytes(self, length)
     SV *self
     UV length
 CODE:
+    rng_check_byte_count(aTHX_ length);
     RETVAL = newSVpvn("", 0);
     SvGROW(RETVAL, length + 1);
     pcg_xsl_rr_fill_bytes_mcg(pcg_xsl_rr_state(aTHX_ self), length,
@@ -2157,7 +2131,7 @@ UV
 get_rand_U01_XS_state_addr(self)
     SV *self
 CODE:
-    RETVAL = PTR2UV(pcg_xsl_rr_state_fast(self));
+    RETVAL = PTR2UV(pcg_xsl_rr_state(aTHX_ self));
 OUTPUT:
     RETVAL
 
@@ -2182,6 +2156,7 @@ rand_bytes(self, length)
     SV *self
     UV length
 CODE:
+    rng_check_byte_count(aTHX_ length);
     RETVAL = newSVpvn("", 0);
     SvGROW(RETVAL, length + 1);
     pcg_xsl_rr_fill_bytes_lcg(pcg_xsl_rr_state(aTHX_ self), length,
@@ -2257,7 +2232,7 @@ UV
 get_rand_U01_XS_state_addr(self)
     SV *self
 CODE:
-    RETVAL = PTR2UV(hmac_drbg_state_fast(self));
+    RETVAL = PTR2UV(hmac_drbg_state(aTHX_ self));
 OUTPUT:
     RETVAL
 
@@ -2385,6 +2360,7 @@ PREINIT:
 CODE:
     state = hmac_drbg_state(aTHX_ self);
     hmac_drbg_prepare(aTHX_ state);
+    rng_check_byte_count(aTHX_ length);
     RETVAL = newSVpvn("", 0);
     SvGROW(RETVAL, length + 1);
     hmac_drbg_generate(state, (U8 *)SvPVX(RETVAL), length, NULL, 0);
@@ -2565,7 +2541,7 @@ UV
 get_rand_U01_XS_state_addr(self)
     SV *self
 CODE:
-    RETVAL = PTR2UV(wyrand_state_fast(self));
+    RETVAL = PTR2UV(wyrand_state(aTHX_ self));
 OUTPUT:
     RETVAL
 
@@ -2590,6 +2566,7 @@ rand_bytes(self, length)
     SV *self
     UV length
 CODE:
+    rng_check_byte_count(aTHX_ length);
     RETVAL = newSVpvn("", 0);
     SvGROW(RETVAL, length + 1);
     wyrand_fill_bytes(wyrand_state(aTHX_ self), length, (U8 *)SvPVX(RETVAL));
@@ -2662,7 +2639,7 @@ UV
 get_rand_U01_XS_state_addr(self)
     SV *self
 CODE:
-    RETVAL = PTR2UV(xoshiro_state_fast(self));
+    RETVAL = PTR2UV(xoshiro_state(aTHX_ self));
 OUTPUT:
     RETVAL
 
@@ -2687,6 +2664,7 @@ rand_bytes(self, length)
     SV *self
     UV length
 CODE:
+    rng_check_byte_count(aTHX_ length);
     RETVAL = newSVpvn("", 0);
     SvGROW(RETVAL, length + 1);
     xoshiro_fill_bytes(xoshiro_state(aTHX_ self), length, (U8 *)SvPVX(RETVAL));
