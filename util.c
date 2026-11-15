@@ -3418,9 +3418,12 @@ Perl_diag_tree_mutate(pTHX_ SV *root, perl_diag_tree_mutation mutation)
                         sv_setsv(*severity_slot, *floor_slot);
                 }
                 else if (Perl_diag_is_error_severity(aTHX_ *severity_slot)) {
+                    /* Creating the floor entry can move the hash's entry
+                     * storage, which invalidates severity_slot. */
+                    SV * const severity = *severity_slot;
                     floor_slot = hv_fetchs(fields, "_severity_floor", TRUE);
                     if (floor_slot)
-                        sv_setsv(*floor_slot, *severity_slot);
+                        sv_setsv(*floor_slot, severity);
                 }
             }
         }
