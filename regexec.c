@@ -1978,6 +1978,8 @@ STMT_START {                                                                \
         trie_bytes = octet_buffer;                                          \
         break;                                                              \
     }                                                                       \
+    default:                                                                \
+        NOT_REACHED;                                                        \
     }                                                                       \
     /* Folded characters use the folder's UTF-8 bytes directly. */          \
     /* Keep pending characters separate so foldlen tracks multichar */      \
