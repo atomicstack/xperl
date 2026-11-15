@@ -68,4 +68,48 @@ my $u64 = Tensor::XS->new([1], [18446744073709551615], 'U64');
 is $u64->at(0), '18446744073709551615',
     'U64 values round-trip without NV precision loss';
 
+{
+    # forged payloads: header fields are UVs (magic, version, rank, size,
+    # dtype) followed by rank shape values and rank stride values
+    require Config;
+    my $uv = $Config::Config{uvsize} == 8 ? 'Q' : 'L';
+    my $uvsize = $Config::Config{uvsize};
+    my $forge = sub {
+        my (%field) = @_;
+        my $payload = ${ Tensor::XS->new([2, 3], [1 .. 6], 'F64') };
+        for my $slot (keys %field) {
+            substr($payload, $slot * $uvsize, $uvsize) = pack($uv, $field{$slot});
+        }
+        return bless \$payload, 'Tensor::XS';
+    };
+    my %forgeries = (
+        'shape larger than size'        => { 5 => 1000, 6 => 1000 },
+        'shape smaller than size'       => { 5 => 1 },
+        'size inconsistent with shape'  => { 3 => 1 },
+        'non-row-major strides'         => { 7 => 1000 },
+        'transposed shape, old strides' => { 5 => 3, 6 => 2 },
+        'zero inner stride'             => { 8 => 0 },
+        'unknown dtype'                 => { 4 => 99 },
+        'zero dtype'                    => { 4 => 0 },
+        'huge rank'                     => { 2 => 1 << 30 },
+        'shape product overflows'       => { 5 => 1 << 32, 6 => 1 << 32 },
+    );
+    for my $name (sort keys %forgeries) {
+        my $forged = $forge->(%{ $forgeries{$name} });
+        for my $call (
+            [ at        => sub { $forged->at(1, 2) } ],
+            [ set_at    => sub { $forged->set_at(1, 2, 1) } ],
+            [ transpose => sub { $forged->transpose } ],
+            [ data      => sub { $forged->data } ],
+        ) {
+            my ($method, $code) = @$call;
+            ok !eval { $code->(); 1 }, "forged $name: $method dies";
+            like $@, qr/invalid Tensor::XS object/,
+                "forged $name: $method reports an invalid object";
+        }
+    }
+    my $unforged = $forge->();
+    is $unforged->at(1, 2), 6, 'an untouched payload copy still works';
+}
+
 done_testing;

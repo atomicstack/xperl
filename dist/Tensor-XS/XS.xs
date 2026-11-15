@@ -299,12 +299,35 @@ tensor_from_object(pTHX_ SV *object)
         tensor_header *tensor = (tensor_header *)SvPV_nolen(payload);
         Size_t expected;
         if (tensor->magic != TENSOR_MAGIC || tensor->version != TENSOR_VERSION
-            || tensor->dtype == 0
+            || tensor->dtype < TENSOR_DTYPE_U8
+            || tensor->dtype > TENSOR_DTYPE_NV
             || !tensor_blob_size(tensor->rank, tensor->size,
                                  tensor_dtype_size((tensor_dtype)tensor->dtype),
                                  &expected)
             || SvCUR(payload) < expected)
             croak("invalid Tensor::XS object");
+
+        /* The payload is an ordinary string, so the shape and strides may
+         * have been forged.  Every accessor indexes the data as a dense
+         * row-major array of size elements, so the shape must multiply out
+         * to size and the strides must be exactly the row-major strides. */
+        {
+            const UV *shape = (const UV *)(tensor + 1);
+            const UV *strides = shape + tensor->rank;
+            UV product = 1;
+            UV stride = 1;
+            UV i;
+            for (i = tensor->rank; i-- > 0;) {
+                if (strides[i] != stride)
+                    croak("invalid Tensor::XS object");
+                if (shape[i] && product > UV_MAX / shape[i])
+                    croak("invalid Tensor::XS object");
+                product *= shape[i];
+                stride *= shape[i];
+            }
+            if (product != tensor->size)
+                croak("invalid Tensor::XS object");
+        }
         return tensor;
     }
 }
