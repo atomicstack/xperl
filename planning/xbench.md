@@ -71,3 +71,27 @@ and weighted smoothing.  Raw records are in
 Reference: Dumbbench 0.505 by Steffen Mueller, distributed under Perl's terms.
 Its robust sampling and calibration motivate the design; compatibility with
 its classes, external plotting or Number::WithError API is not required.
+
+## Hash benchmark integration
+
+`measure` cases accept a total duration returned by a callback, with a fixed
+operation count and an explicit measurement-clock resolution.  This replaces
+the custom Dumbbench `single_run` hook in
+`planning/scripts/bench-hash-locality.pl`.  Worker setup, process startup and
+JSON decoding count against the driver's elapsed-time budget but do not enter
+the reported hash-operation time.  Reported batches bypass calibration.
+
+The driver preserves the worker's hash loops, seeded query order, plain and
+interned queries, locality modes and correctness checks.  It records mean,
+sample SD, bootstrap confidence bounds, stopping metadata and raw timings.
+These are XBench arithmetic-mean intervals, not Dumbbench robust estimates.
+
+Use `--sizes`, `--operations`, `--min-samples`, `--max-samples` and
+`--resamples` to screen the integration quickly.  A 20-case, two-sample run
+at nine keys passed against the existing matching O2 blead and eight-key
+XPerl comparison builds.  This checks the harness; it is not a new performance
+comparison of current main.
+
+Reported-timing validation passes 149 XBench assertions on native binary64,
+154 on threaded binary128 with PERL_RC_STACK and DEBUGGING, and 149 on the
+32-bit DEBUGGING build.  POD and manifest checks pass 18,800 assertions.
