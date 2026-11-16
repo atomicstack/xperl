@@ -127,7 +127,10 @@ Load(SV *yaml_sv)
 {
     dXCPT;
 
-    dXSARGS;
+    /* Keep the stack cursor defined across the loader's setjmp scope. */
+    SV ** volatile sp = PL_stack_sp;
+    dAXMARK;
+    dITEMS;
     perl_yaml_loader_t loader;
     SV *node;
     const unsigned char *yaml_str;
