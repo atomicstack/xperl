@@ -772,12 +772,10 @@ sub test_precomputed_hashes {
     my $sparse_info = Hash::Util::hash_storage_info(\%sparse_lazy);
     is($sparse_info->{index_capacity}, 32,
        'noncolliding inserts grow an index with a lazy entry retained');
-    my $sparse_entry_used = $sparse_info->{integer_chained} ? 17 : 16;
-    my $sparse_entry_holes = $sparse_info->{integer_chained} ? 1 : 0;
-    is($sparse_info->{entry_used}, $sparse_entry_used,
-       'index pressure handles the lazily deleted entry');
-    is($sparse_info->{entry_holes}, $sparse_entry_holes,
-       'index pressure leaves the expected deleted-entry hole state');
+    is($sparse_info->{entry_used}, 17,
+       'index growth retains entry positions below the compaction threshold');
+    is($sparse_info->{entry_holes}, 1,
+       'index growth retains a deleted-entry hole below the compaction threshold');
     is($sparse_info->{index_width}, 1,
        'the resized index retains one-byte entry indices');
     is($sparse_lazy{$collision->[0]}, 99,
