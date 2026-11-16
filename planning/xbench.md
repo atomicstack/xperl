@@ -95,3 +95,51 @@ comparison of current main.
 Reported-timing validation passes 149 XBench assertions on native binary64,
 154 on threaded binary128 with PERL_RC_STACK and DEBUGGING, and 149 on the
 32-bit DEBUGGING build.  POD and manifest checks pass 18,800 assertions.
+
+## Paired hash index comparison
+
+`planning/scripts/bench-hash-index-xbench.pl` compares SC with independently
+growing OA entry storage. Both builds run the same Perl worker. The worker
+reports its timed loop duration, excluding process startup, key preparation,
+warmup, and storage diagnostics. Each sample uses matching hash seeds and
+operation counts. XBench alternates which build runs first.
+
+```sh
+taskset -c 7 ./perl -Ilib planning/scripts/bench-hash-index-xbench.pl \
+    --sc /path/to/perldev/xperl \
+    --oa /path/to/perldev/tmp/xperl-oa-independent \
+    --output /path/to/perldev/tmp/hash-index-xbench
+```
+
+Choose an available CPU for `taskset`. The driver records its CPU affinity,
+CPU model, executable hashes, source revisions, compiler settings, and worker
+and driver hashes. The output retains pilot and warmup measurements as well
+as every measured pair.
+
+Reported-duration cases bypass XBench's callback-loop calibration. The driver
+therefore pilots both builds and fixes a common operation count that makes
+each pilot last at least 0.1 seconds. XBench then collects at least 30 paired
+samples, with filtering disabled. The maximum is 120 pairs or 60 seconds per
+case. These limits include worker setup and analysis time, but setup does not
+enter the reported operation duration.
+
+The OA callback is the measured case and SC is its paired baseline. The
+adjusted samples are OA minus SC seconds per operation. This subtraction
+compares algorithms rather than estimating interpreter overhead. An absolute
+precision target permits a negative difference or a difference near zero:
+the maximum distance from the paired mean to either confidence bound must
+fit within two percent of the SC pilot time per operation. The target,
+observed error, and stopping reason are retained in each XBench result.
+
+XStats supplies bootstrap intervals for the paired mean difference, per-build
+mean times, and mean of the paired OA/SC ratios. Intervals for the difference
+that contain zero do not establish a direction. A negative difference favors
+OA, and a positive difference favors SC. A precision target can be met even
+when neither build has a resolved advantage. XBench's positive-only `resolved`
+accessor is not used to classify a negative algorithm difference.
+
+Use `--sizes` and `--modes` to select follow-up cases. The sampling and budget
+options are `--min-samples`, `--max-samples`, `--max-seconds`, `--precision`,
+and `--sample-time`. Time-limited cases retain their observations and report
+unmet precision. The fixed-count Python screening run is preliminary evidence;
+its medians should not be mixed with these XBench mean estimates.
