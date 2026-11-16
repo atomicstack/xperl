@@ -9,6 +9,18 @@ asks for a different approach.
 - Keep changes to existing code or infra small, incremental, and reviewable.
 - Prefer self-contained commits that include code, tests, documentation, and
   generated-file updates required by the change.
+- Never put test-related counts in commit messages, including counts of tests,
+  test cases, subtests, assertions, checks, or test files added or run, whether
+  written as digits or words. It is fine to mention adding or updating tests,
+  describe their coverage, or name new test files without counts.
+  Omit routine validation summaries, including passing suites, successful
+  builds, syntax checks, and clean diff checks. Only include those results in
+  the PR description or work report or commit on specific request. Include
+  validation details in a commit message only when they explain the change,
+  a compatibility constraint, or a significant limitation.
+- Make changes to modules maintained on CPAN in their upstream module
+  repository. Do not patch the bundled copies under `cpan/` as part of a
+  Perl-core change.
 - Separate fixes to inherited Perl blead code from fixes to XPerl-specific
   changes. Keep generic fixes and portable tests in commits suitable for
   blead, without mixing in XPerl syntax, functionality, or API adaptations.
