@@ -140,6 +140,7 @@
 # define PL_hv_fetch_ent_mh                     (vTHX->Ihv_fetch_ent_mh)
 # define PL_in_clean_all                        (vTHX->Iin_clean_all)
 # define PL_in_clean_objs                       (vTHX->Iin_clean_objs)
+# define PL_in_diag_stack_capture               (vTHX->Iin_diag_stack_capture)
 # define PL_in_diehook                          (vTHX->Iin_diehook)
 # define PL_in_eval                             (vTHX->Iin_eval)
 # define PL_in_excepthook                       (vTHX->Iin_excepthook)

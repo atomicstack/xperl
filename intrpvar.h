@@ -1143,6 +1143,8 @@ PERLVAR(I, excepthook, SV *)
 PERLVARI(I, in_excepthook, bool, FALSE)
 /* Maximum inline entry-vector capacity for small hashes (2, 4, 8, or 0). */
 PERLVARI(I, hash_linear_max, U8, 8)
+/* Stack metadata collection must not recursively collect its own failures. */
+PERLVARI(I, in_diag_stack_capture, bool, FALSE)
 
 /* If you are adding a U8 or U16, check to see if there are 'Space' comments
  * above on where there are gaps which currently will be structure padding.  */

@@ -61,18 +61,25 @@ Removal of legacy light/context-tail readers and obsolete hint/fatality
 metadata is a separate migration. Preserve existing compatibility behavior
 until actual producers and consumers have moved.
 
-## Deferred capture and compatibility work
+## Stack capture and deferred compatibility work
 
-Automatic stack capture and chronological propagation history are deferred.
-Capture portable Perl-level frame data at the first throw, rather than live
-stack pointers or a platform-specific native backtrace. Preserve that original
-snapshot across rethrows and record propagation sites separately. Diagnostic
-source locations remain independent of both. Define which internal frames to
-omit and how eval, require, generators, and thread boundaries appear before
-implementing capture.
-Argument inclusion remains unresolved. Applications can enrich objects in
-`__EXCEPT__` or collect caller information at reporting sites. Current
-objects do not provide an automatic full stack or THROW/CATCH history.
+First delivery captures portable Perl frames through the innermost eval or
+try boundary. `stack_trace` returns detached records containing function,
+file, line, and anonymous argument descriptions. Arguments retain only cached
+type labels, reference classes and addresses, and a `/MG` marker for magic.
+Capture neither fetches magic nor invokes overload or retains arguments.
+Shifted-out argument slots are omitted; tied argument arrays remain opaque.
+Require frames remain visible as capture continues toward the application's
+eval or try. Internal diagnostic-hook evals terminate capture without
+appearing in the records; debugger wrappers and regex reentry duplicates are
+omitted.
+
+Rethrows preserve the snapshot. `extend_stack` explicitly appends a segment
+from the handler's current location to its enclosing boundary. This is not a
+chronological THROW/CATCH history, and it does not deduplicate repeated
+explicit extensions. Diagnostic source locations and reserved origin
+metadata remain separate from stack frames. Whole-exception JSON includes
+the stack; legacy text and per-group delivery envelopes retain their shapes.
 
 Inventory existing C/XS text interfaces before replacing their adapters.
 Assess source compatibility, ABI and ownership per interface. New-API

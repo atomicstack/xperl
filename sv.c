@@ -18225,6 +18225,7 @@ perl_clone_using(PerlInterpreter *proto_perl, UV flags,
     PL_in_warnhook      = FALSE;
     PL_in_wide_character_warning = FALSE;
     PL_in_excepthook    = FALSE;
+    PL_in_diag_stack_capture = FALSE;
     PL_perl_diag_hook_capture = NULL;
 
     /* Call the ->CLONE method, if it exists, for each of the stashes

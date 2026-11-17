@@ -21,6 +21,12 @@ XXX Any important notices here
 
 =head1 Core Enhancements
 
+XPerl exceptions now capture Perl stack frames through the innermost C<eval>
+or C<try>. C<stack_trace> exposes function, file, line, and anonymous argument
+descriptions without retaining argument values or invoking magic or overload.
+C<extend_stack> explicitly appends the handler's current stack segment when
+propagating an exception. See L<perlexcept/Stack frames>.
+
 XXX New core language features go here. Summarize user-visible core language
 enhancements. Particularly prominent performance optimisations could go
 here, but most should go in the L</Performance Enhancements> section.

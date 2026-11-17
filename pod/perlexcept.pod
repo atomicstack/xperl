@@ -132,8 +132,42 @@ Propagate an existing exception or user reference directly:
 Stringifying it first loses identity and structured information. Core
 propagation paths can add context diagnostics, such as the location of a
 failed C<require>. Those locations are distinct from the locations of the
-errors in the required file. The current system does not provide a complete
-exception stack trace.
+errors in the required file. Captured stack frames are described below.
+
+=head2 Stack frames
+
+C<$exception-E<gt>stack_trace> returns a detached array of frame records,
+ordered from the innermost call outward. Each record contains C<function>,
+C<file>, C<line>, and an C<args> array of anonymous argument descriptions.
+The file and line describe the active source location in that frame.
+Automatic capture occurs at first delivery, before hooks, and stops at the
+nearest C<eval> or C<try>, including its C<(eval)> or C<(try)> frame. Without
+such a boundary, it ends at C<main>. C<(require)> frames remain visible while
+capture continues to the enclosing application boundary. Internal protected
+diagnostic-hook boundaries are omitted.
+
+Argument descriptions contain types rather than values: C<STR>, C<NUM>,
+C<undef>, C<HASH(0x...)>, or C<Foo=HASH(0x...)>, for example. C</MG> marks
+magic on an argument or its referent. Capture uses cached scalar flags,
+preferring numeric flags to string flags, without fetching magic or calling
+overload. References contribute class, type, and address without retaining
+the referent or inspecting its contents. Shifted-out arguments are omitted.
+A tied argument array contributes C<@_/MG> without fetching its elements.
+
+An exception without a captured stack returns undef. Rethrowing preserves its
+captured stack. To add the handler's current context, call
+C<$exception-E<gt>extend_stack>. It appends another segment through the next
+enclosing eval or try and returns the same exception:
+
+    my $ok = eval { perform_operation(); 1 };
+    die ${^ERROR_OBJ}->extend_stack unless $ok;
+
+C<extend_stack> can also start a stack explicitly before first delivery.
+
+This extension is explicit: each call appends a segment without deduplicating
+frames. Recursive calls can legitimately have identical function names and
+source positions. Stack frames are independent of diagnostic source
+locations and the reserved C<origin> metadata.
 
 =head1 INSPECTING CONTENTS
 
@@ -365,8 +399,8 @@ output is only valid serialized data if the hook preserves that property.
 
 C<$exception-E<gt>as_json> returns a whole-exception inspection document
 with schema C<xperl.exception.v2>. It contains immediate diagnostic roots,
-derived kind and severity, and origin. Private delivery bookkeeping is
-omitted.
+derived kind and severity, origin, and C<stack_trace>. Private delivery
+bookkeeping is omitted.
 It is distinct from the per-group delivery envelopes.
 
 C<$diagnostic-E<gt>render_as_json> and its alias C<as_json> return a

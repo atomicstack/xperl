@@ -20,6 +20,35 @@ first warning, including deprecations and severe warnings. With neither,
 the accessors return undef. Appending an error to a warning-only exception
 changes its derived state.
 
+At first delivery, C<stack_trace> captures Perl frames from the innermost
+call through the nearest C<eval> or C<try>, including that boundary. Each
+frame has C<function>, C<file>, C<line>, and an C<args> array. Without an
+eval or try it ends at C<main>. C<require> frames are included while capture
+continues toward the application boundary. Source positions describe the
+active location in each frame. Internal diagnostic-hook boundaries are
+omitted. A fresh exception has no captured stack; C<extend_stack> can also
+start a stack explicitly before delivery.
+
+Arguments are anonymous strings: C<STR>, C<NUM>, C<undef>, or reference
+descriptions such as C<HASH(0x...)> and C<Foo=HASH(0x...)>. A C</MG> suffix
+marks magic on the scalar or its referent. Capture inspects existing flags;
+it does not fetch magic, call overload, read referenced contents, or retain
+the argument. Numeric flags take precedence over string flags. Only live
+argument slots are inspected, so shifted-out arguments are omitted. A tied
+argument array is represented by C<@_/MG> without reading its elements.
+
+C<stack_trace> returns a detached copy of the frames and argument arrays.
+Rethrowing preserves the captured frames. C<extend_stack> appends a segment
+from its current call site to the enclosing eval or try and returns the same
+exception. Call it explicitly in a handler when propagating outward:
+
+    my $ok = eval { perform_operation(); 1 };
+    die ${^ERROR_OBJ}->extend_stack unless $ok;
+
+Each extension appends a segment; it does not deduplicate recursive calls or
+previous explicit extensions. Stack data is independent of C<origin> and
+diagnostic source locations.
+
 Locale construction runs before exception hooks and C<${^DIAG_RENDER}> are
 initialized. Its startup warnings use the permanent English catalog and
 plain-text direct output. Language packs load later, before user compilation.
@@ -100,8 +129,8 @@ C<ERROR_USER_TEXT> diagnostic.
 C<as_json> returns a JSON document without loading a JSON module.
 This explicit inspection API is separate from line-oriented delivery. The
 C<xperl.exception.v2> document has derived C<kind> and C<severity>, an ordered
-C<contents> array of immediate roots, and C<origin>. Each diagnostic uses
-the C<xperl.diagnostic.v2> schema and contains an ordered C<contents> array,
+C<contents> array of immediate roots, C<origin>, and C<stack_trace>. Each
+diagnostic uses the C<xperl.diagnostic.v2> schema and contains an ordered C<contents> array,
 including an empty array for leaves. Propagation context is represented in
 that array, so JSON has no separate history list. Missing values are JSON null.
 Private delivery bookkeeping is omitted.

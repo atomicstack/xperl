@@ -4369,11 +4369,189 @@ Perl_diag_wrap_fatalized_warnings(pTHX_ SV *exception)
     }
 }
 
+/* Inspect flags and reference metadata without fetching magic, invoking
+ * overload, or keeping the argument or its referent alive. */
+static SV *
+Perl_diag_stack_argument(pTHX_ const SV *value)
+{
+    SV *summary;
+    bool magical;
+
+    if (!value)
+        return newSVpvs("undef");
+    if (SvIS_FREED(value))
+        return newSVpvs("FREED");
+    magical = cBOOL(SvMAGICAL(value));
+    if (SvROK(value)) {
+        const SV *referent = SvRV(value);
+        summary = newSVpvs("");
+        if (SvOBJECT(referent)) {
+            const HEK *name = HvNAME_HEK(SvSTASH(referent));
+            if (name)
+                sv_sethek(summary, name);
+            else
+                sv_setpvs(summary, "__ANON__");
+            sv_catpvs(summary, "=");
+        }
+        sv_catpvf(summary, "%s(0x%" UVxf ")", sv_reftype(referent, 0),
+                  PTR2UV(referent));
+        magical |= cBOOL(SvMAGICAL(referent));
+    }
+    else if (SvIOKp(value) || SvNOKp(value))
+        summary = newSVpvs("NUM");
+    else if (SvPOKp(value))
+        summary = newSVpvs("STR");
+    else if (!SvOK(value))
+        summary = newSVpvs("undef");
+    else
+        summary = newSVpv(sv_reftype(value, 0), 0);
+    if (magical)
+        sv_catpvs(summary, "/MG");
+    return summary;
+}
+
+static void
+Perl_diag_stack_frame(pTHX_ AV *frames, SV *function, const COP *location,
+                     AV *arguments)
+{
+    HV *frame = newHV();
+    AV *summaries;
+    av_push(frames, newRV_noinc(MUTABLE_SV(frame)));
+    (void)hv_stores(frame, "function", function);
+    summaries = newAV();
+    (void)hv_stores(frame, "file", location
+                    ? newSVpv(OutCopFILE(location), 0) : newSV(0));
+    (void)hv_stores(frame, "line", location
+                    ? newSVuv(CopLINE(location)) : newSV(0));
+    (void)hv_stores(frame, "args", newRV_noinc(MUTABLE_SV(summaries)));
+    if (arguments) {
+        if (SvTIED_mg(MUTABLE_SV(arguments), PERL_MAGIC_tied))
+            av_push(summaries, newSVpvs("@_/MG"));
+        else {
+            SSize_t i;
+            for (i = 0; i <= AvFILLp(arguments); i++)
+                av_push(summaries,
+                    Perl_diag_stack_argument(aTHX_ AvARRAY(arguments)[i]));
+        }
+    }
+}
+
+/* Capture one segment while its contexts and live argument arrays exist.
+ * The first eval/try owns the exception; outer frames are added explicitly
+ * by extend_stack after that boundary has caught it. */
+AV *
+Perl_diag_capture_stack(pTHX)
+{
+    AV *frames = newAV();
+    const PERL_SI *stackinfo;
+    const COP *location = PL_curcop;
+
+    PERL_ARGS_ASSERT_DIAG_CAPTURE_STACK;
+    if (PL_in_diag_stack_capture)
+        return frames;
+    ENTER;
+    SAVEBOOL(PL_in_diag_stack_capture);
+    PL_in_diag_stack_capture = TRUE;
+    SAVEFREESV(MUTABLE_SV(frames));
+    if (location && PL_op) {
+        const COP *closest = closest_cop(location, OpSIBLING(location),
+                                        PL_op, FALSE);
+        if (closest)
+            location = closest;
+    }
+    for (stackinfo = PL_curstackinfo; stackinfo; stackinfo = stackinfo->si_prev) {
+        I32 index;
+        for (index = stackinfo->si_cxix; index >= 0; index--) {
+            const PERL_CONTEXT *cx = &stackinfo->si_cxstack[index];
+            const U8 type = CxTYPE(cx);
+            CV *cv;
+            SV *function;
+            AV *arguments = NULL;
+            const COP *caller_location;
+            const OP *callop;
+
+            if (type == CXt_EVAL) {
+                if (cx->cx_type & PERL_CXP_DIAGHOOK)
+                    goto done;
+                Perl_diag_stack_frame(aTHX_ frames,
+                    newSVpv(CxTRY(cx) ? "(try)"
+                        : CxOLD_OP_TYPE(cx) == OP_REQUIRE ? "(require)"
+                        : "(eval)", 0), location, NULL);
+                if (CxOLD_OP_TYPE(cx) != OP_REQUIRE)
+                    goto done;
+                /* require propagates to the caller rather than handing the
+                 * exception to an application handler. */
+                location = cx->blk_oldcop;
+                continue;
+            }
+            if (type != CXt_SUB && type != CXt_FORMAT)
+                continue;
+            if (type == CXt_SUB && (cx->cx_type & CXp_SUB_RE_FAKE))
+                continue;
+            cv = cx->blk_sub.cv;
+            caller_location = cx->blk_oldcop;
+            callop = type == CXt_SUB ? cx->blk_sub.callop : cx->blk_sub.retop;
+            if (caller_location && callop) {
+                const COP *closest = closest_cop(caller_location,
+                    OpSIBLING(caller_location), callop, type != CXt_SUB);
+                if (closest)
+                    caller_location = closest;
+            }
+            if (PL_DBsub && cv == GvCV(PL_DBsub)) {
+                location = caller_location;
+                continue;
+            }
+            if (type == CXt_SUB && cv && !CvISXSUB(cv) && CxHASARGS(cx)
+                && CvPADLIST(cv)) {
+                PADLIST *padlist = CvPADLIST(cv);
+                SSize_t depth = (SSize_t)cx->blk_sub.olddepth + 1;
+                if (depth >= 1 && depth <= PadlistMAX(padlist)) {
+                    PAD *pad = PadlistARRAY(padlist)[depth];
+                    if (pad && PadARRAY(pad) && PadARRAY(pad)[0]
+                        && SvTYPE(PadARRAY(pad)[0]) == SVt_PVAV)
+                        arguments = MUTABLE_AV(PadARRAY(pad)[0]);
+                }
+            }
+            function = sv_newmortal();
+            if (type == CXt_FORMAT) {
+                if (cv && CvHasNAME(cv))
+                    gv_efullname3(function, CvGV(cv), NULL);
+                else
+                    sv_setpvs(function, "(anonymous)");
+            }
+            else if (cv && CvHasNAME(cv))
+                (void)cv_name(cv, function, 0);
+            else
+                sv_setpvs(function, "(anonymous)");
+            Perl_diag_stack_frame(aTHX_ frames,
+                SvREFCNT_inc_simple_NN(function), location, arguments);
+            location = caller_location;
+        }
+    }
+    if (PL_curstackinfo && location)
+        Perl_diag_stack_frame(aTHX_ frames, newSVpvs("main"), location, NULL);
+  done:
+    SvREFCNT_inc_simple_void_NN(MUTABLE_SV(frames));
+    LEAVE;
+    return frames;
+}
+
+static void
+Perl_diag_capture_exception_stack(pTHX_ SV *exception)
+{
+    HV *fields = MUTABLE_HV(SvRV(exception));
+    SV **stack = hv_fetchs(fields, "stack_trace", FALSE);
+    if (!stack || !SvOK(*stack))
+        (void)hv_stores(fields, "stack_trace",
+            newRV_noinc(MUTABLE_SV(Perl_diag_capture_stack(aTHX))));
+}
+
 static bool
 Perl_diag_process_delivery(pTHX_ SV *exception, U32 category, bool force_error)
 {
     perl_diag_delivery delivery;
     perl_diag_hook_result except_result = { NULL, NULL };
+    Perl_diag_capture_exception_stack(aTHX_ exception);
     Zero(&delivery, 1, perl_diag_delivery);
     delivery.exception = exception;
     delivery.annotated_previous_header = sv_2mortal(newSVpvs(""));
@@ -4463,6 +4641,7 @@ static void
 Perl_diag_flush_exception(pTHX_ SV *exception, U32 category, bool force_error)
 {
     perl_diag_hook_capture *capture = Perl_diag_active_hook_capture(aTHX);
+    Perl_diag_capture_exception_stack(aTHX_ exception);
     if (capture) {
         if (Perl_diag_exception_is_error(aTHX_ exception, category, force_error)) {
             die_unwind(exception);

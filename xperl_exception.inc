@@ -1352,6 +1352,61 @@ XS(Perl_XPerl_Exception_origin)
     XSRETURN(1);
 }
 
+XS(Perl_XPerl_Exception_stack_trace);
+XS(Perl_XPerl_Exception_stack_trace)
+{
+    dXSARGS;
+    HV *fields;
+    SV *trace;
+    AV *copy;
+    AV *source;
+    SSize_t i;
+    if (items != 1)
+        croak_xs_usage(cv, "self");
+    fields = Perl_xperl_object_hv(aTHX_ ST(0), "XPerl::Exception");
+    trace = Perl_xperl_field(aTHX_ fields, "stack_trace");
+    if (!SvROK(trace) || SvTYPE(SvRV(trace)) != SVt_PVAV)
+        XSRETURN_UNDEF;
+    source = MUTABLE_AV(SvRV(trace));
+    copy = Perl_xperl_copy_array(aTHX_ source, TRUE);
+    for (i = 0; i <= av_top_index(copy); i++) {
+        SV **slot = av_fetch(copy, i, FALSE);
+        if (slot && SvROK(*slot) && SvTYPE(SvRV(*slot)) == SVt_PVHV) {
+            HV *frame = MUTABLE_HV(SvRV(*slot));
+            SV *args = Perl_xperl_field(aTHX_ frame, "args");
+            if (SvROK(args) && SvTYPE(SvRV(args)) == SVt_PVAV)
+                (void)hv_stores(frame, "args", newRV_noinc(MUTABLE_SV(
+                    Perl_xperl_copy_array(aTHX_ MUTABLE_AV(SvRV(args)), FALSE))));
+        }
+    }
+    ST(0) = sv_2mortal(newRV_noinc(MUTABLE_SV(copy)));
+    XSRETURN(1);
+}
+
+XS(Perl_XPerl_Exception_extend_stack);
+XS(Perl_XPerl_Exception_extend_stack)
+{
+    dXSARGS;
+    HV *fields;
+    SV *trace;
+    AV *segment;
+    if (items != 1)
+        croak_xs_usage(cv, "self");
+    fields = Perl_xperl_object_hv(aTHX_ ST(0), "XPerl::Exception");
+    trace = Perl_xperl_field(aTHX_ fields, "stack_trace");
+    segment = Perl_diag_capture_stack(aTHX);
+    if (SvROK(trace) && SvTYPE(SvRV(trace)) == SVt_PVAV) {
+        SSize_t i;
+        AV *frames = MUTABLE_AV(SvRV(trace));
+        for (i = 0; i <= av_top_index(segment); i++)
+            av_push(frames, newSVsv(*av_fetch(segment, i, FALSE)));
+        SvREFCNT_dec_NN(MUTABLE_SV(segment));
+    }
+    else
+        (void)hv_stores(fields, "stack_trace", newRV_noinc(MUTABLE_SV(segment)));
+    XSRETURN(1);
+}
+
 static void
 Perl_xperl_json_string(pTHX_ SV *out, SV *value)
 {
@@ -1684,6 +1739,51 @@ Perl_xperl_json_diagnostic(pTHX_ SV *out, HV *fields)
 }
 
 static void
+Perl_xperl_json_stack(pTHX_ SV *out, SV *trace)
+{
+    AV *frames;
+    SSize_t i;
+    if (!SvROK(trace) || SvTYPE(SvRV(trace)) != SVt_PVAV) {
+        sv_catpvs(out, "null");
+        return;
+    }
+    frames = MUTABLE_AV(SvRV(trace));
+    sv_catpvs(out, "[");
+    for (i = 0; i <= av_top_index(frames); i++) {
+        SV **slot = av_fetch(frames, i, FALSE);
+        SV *args;
+        HV *frame;
+        if (i)
+            sv_catpvs(out, ",");
+        if (!slot || !SvROK(*slot) || SvTYPE(SvRV(*slot)) != SVt_PVHV) {
+            sv_catpvs(out, "null");
+            continue;
+        }
+        frame = MUTABLE_HV(SvRV(*slot));
+        sv_catpvs(out, "{\"function\":");
+        Perl_xperl_json_string(aTHX_ out, Perl_xperl_field(aTHX_ frame, "function"));
+        sv_catpvs(out, ",\"file\":");
+        Perl_xperl_json_string(aTHX_ out, Perl_xperl_field(aTHX_ frame, "file"));
+        sv_catpvs(out, ",\"line\":");
+        Perl_xperl_json_integer(aTHX_ out, Perl_xperl_field(aTHX_ frame, "line"));
+        sv_catpvs(out, ",\"args\":[");
+        args = Perl_xperl_field(aTHX_ frame, "args");
+        if (SvROK(args) && SvTYPE(SvRV(args)) == SVt_PVAV) {
+            AV *values = MUTABLE_AV(SvRV(args));
+            SSize_t j;
+            for (j = 0; j <= av_top_index(values); j++) {
+                SV **value = av_fetch(values, j, FALSE);
+                if (j)
+                    sv_catpvs(out, ",");
+                Perl_xperl_json_string(aTHX_ out, value ? *value : &PL_sv_undef);
+            }
+        }
+        sv_catpvs(out, "]}");
+    }
+    sv_catpvs(out, "]");
+}
+
+static void
 Perl_xperl_json_exception(pTHX_ SV *out, HV *fields)
 {
     SV *messages = Perl_xperl_field(aTHX_ fields, "contents");
@@ -1712,6 +1812,8 @@ Perl_xperl_json_exception(pTHX_ SV *out, HV *fields)
     }
     sv_catpvs(out, "],\"origin\":");
     Perl_xperl_json_event(aTHX_ out, Perl_xperl_field(aTHX_ fields, "origin"));
+    sv_catpvs(out, ",\"stack_trace\":");
+    Perl_xperl_json_stack(aTHX_ out, Perl_xperl_field(aTHX_ fields, "stack_trace"));
     sv_catpvs(out, "}");
     SvREFCNT_dec_NN(kind);
     SvREFCNT_dec_NN(severity);
@@ -3899,6 +4001,8 @@ Perl_xperl_boot_core(pTHX)
     newXS("XPerl::Exception::kind", Perl_XPerl_Exception_field, file);
     newXS("XPerl::Exception::severity", Perl_XPerl_Exception_severity, file);
     newXS("XPerl::Exception::origin", Perl_XPerl_Exception_origin, file);
+    newXS("XPerl::Exception::stack_trace", Perl_XPerl_Exception_stack_trace, file);
+    newXS("XPerl::Exception::extend_stack", Perl_XPerl_Exception_extend_stack, file);
     newXS("XPerl::Exception::render", Perl_XPerl_Exception_render, file);
     newXS("XPerl::Exception::render_as_legacy",
           Perl_XPerl_Exception_render_as_legacy, file);

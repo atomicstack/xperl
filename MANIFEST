@@ -8160,6 +8160,7 @@ t/op/write.t				See if write works (formats work)
 t/op/xperl_catalog.t			Module diagnostic catalog tests
 t/op/xperl_diagpacks.t			Direct diagnostic language-pack checks
 t/op/xperl_exception.t			Test structured exception objects
+t/op/xperl_exception_stack.t		Test bounded exception stacks and argument summaries
 t/op/xperl_nested_serialization.t	Deep and cyclic diagnostic serialization
 t/op/xperl_nested_validation.t		Catalogued nested diagnostic validation
 t/op/xperl_rendering.t			Structured diagnostic rendering checks

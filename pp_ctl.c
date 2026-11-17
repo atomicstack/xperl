@@ -5327,6 +5327,7 @@ static void
 S_pop_eval_context_maybe_croak(pTHX_ PERL_CONTEXT *cx, SV *errsv, int action)
 {
     SV  *namesv = NULL; /* init to avoid dumb compiler warning */
+    SV *stack = NULL;
     bool do_croak;
 
     CX_LEAVE_SCOPE(cx);
@@ -5336,6 +5337,18 @@ S_pop_eval_context_maybe_croak(pTHX_ PERL_CONTEXT *cx, SV *errsv, int action)
         namesv = cx->blk_eval.old_namesv;
         cx->blk_eval.old_namesv = NULL;
         sv_2mortal(namesv);
+        if (action == 2) {
+            if (errsv && sv_is_xperl_exception(errsv)) {
+                SV **saved = hv_fetchs(MUTABLE_HV(SvRV(errsv)),
+                                        "stack_trace", FALSE);
+                if (saved && SvROK(*saved)
+                    && SvTYPE(SvRV(*saved)) == SVt_PVAV)
+                    stack = *saved;
+            }
+            if (!stack)
+                stack = sv_2mortal(newRV_noinc(MUTABLE_SV(
+                    Perl_diag_capture_stack(aTHX))));
+        }
     }
     cx_popeval(cx);
     cx_popblock(cx);
@@ -5352,6 +5365,38 @@ S_pop_eval_context_maybe_croak(pTHX_ PERL_CONTEXT *cx, SV *errsv, int action)
             (void)hv_store_ent(inc_hv, namesv, &PL_sv_undef, 0);
             if (!errsv)
                 errsv = newSVpvs_flags("Unknown error\n", SVs_TEMP);
+            /* The require summary renders its error argument as text. Carry
+             * the captured stack into the accumulator before that conversion
+             * loses the exception object and after its frames have unwound. */
+            if (stack) {
+                HV *fields;
+                SV **saved;
+                if (!PL_pending_exception) {
+                    fields = newHV();
+                    (void)hv_stores(fields, "contents",
+                        newRV_noinc(MUTABLE_SV(newAV())));
+                    (void)hv_stores(fields, "origin", newSV(0));
+                    (void)hv_stores(fields, "error_count", newSVuv(0));
+                    (void)hv_stores(fields, "thrown", newSViv(0));
+                    PL_pending_exception = newRV_noinc(MUTABLE_SV(fields));
+                    sv_bless(PL_pending_exception,
+                        Perl_xperl_core_stash(aTHX_ "XPerl::Exception",
+                                                   "XPerl::Exception_stash"));
+                }
+                fields = MUTABLE_HV(SvRV(PL_pending_exception));
+                saved = hv_fetchs(fields, "stack_trace", FALSE);
+                if (!saved || !SvOK(*saved)) {
+                    AV *source = MUTABLE_AV(SvRV(stack));
+                    AV *copy = newAV();
+                    SSize_t i;
+                    for (i = 0; i <= av_top_index(source); i++) {
+                        SV **frame = av_fetch(source, i, FALSE);
+                        av_push(copy, frame ? newSVsv_nomg(*frame) : newSV(0));
+                    }
+                    (void)hv_stores(fields, "stack_trace",
+                        newRV_noinc(MUTABLE_SV(copy)));
+                }
+            }
             PERL_THROW_ERROR_LOAD_REQUIRE_COMPILATION_FAILED(errsv);
         }
 

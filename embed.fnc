@@ -1361,6 +1361,7 @@ QXdop	|void	|diag_attach_regex_pattern_context			\
 				|NN const char *after
 Cop	|const char *|diag_auto_language
 QXop	|void	|diag_boot_class_registry
+Rop	|AV *	|diag_capture_stack
 Cfop	|void	|diag_ck_warner |UV diag_index				\
 				|NULLOK AV *params			\
 				|U32 category				\

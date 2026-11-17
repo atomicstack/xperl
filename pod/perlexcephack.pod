@@ -193,6 +193,30 @@ Ordinary core delivery currently does not invoke that method automatically.
 The existence of the field and accessor must not be documented as automatic
 throw-site capture. Source locations in diagnostics remain independent.
 
+Exception dispatch and hook-failure handling capture a C<stack_trace> before
+invoking handlers, unless that exception already has a captured segment.
+C<Perl_diag_capture_stack> walks active context stacks to the innermost eval
+or try, skipping regex reentry frames and debugger wrappers. Protected hook
+evals terminate capture without becoming visible frames. Require contexts
+are recorded and traversed because they propagate failures outward.
+Function, file, line, and argument type strings are copied while contexts
+remain live. Reference summaries retain only class names, types, and numeric
+addresses. No argument SV or referent is retained. Magic is marked without
+being invoked; tied argument arrays remain opaque. The pad's live argument
+array is used without reconstructing shifted-out slots.
+
+A per-interpreter, scope-restored guard suppresses recursive collection if
+capture itself fails. Partial frame data is released during unwinding, and
+cloned interpreters start with the guard clear. Require summaries carry a
+copy of the captured frame array into the next accumulator before rendering
+the original exception as text.
+
+The C<stack_trace> method copies frame hashes and argument arrays.
+C<extend_stack> appends a newly captured segment explicitly; ordinary
+rethrows preserve the original snapshot. Whole-exception JSON exposes the
+same frame fields. Legacy rendering and per-group output retain their
+existing shapes.
+
 =head1 FROM PRODUCER TO ACCUMULATOR
 
 =head2 Catalog contracts

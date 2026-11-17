@@ -1667,6 +1667,15 @@ Perl_diag_boot_class_registry(pTHX)
     STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
+PERL_CALLCONV AV *
+Perl_diag_capture_stack(pTHX)
+        Perl_attribute_nonnull_aTHX
+        __attribute__warn_unused_result__
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_DIAG_CAPTURE_STACK     \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 PERL_CALLCONV void
 Perl_diag_ck_warner(pTHX_ UV diag_index, AV *params, U32 category, const char *pat, ...)
         Perl_attribute_nonnull_aTHX
