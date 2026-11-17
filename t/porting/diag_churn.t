@@ -34,6 +34,12 @@ require './regen/diag_pack.pm';
 
 plan('no_plan');
 
+my $progress_output = '';
+open my $progress, '>', \$progress_output or die "Cannot capture translation progress: $!";
+# The test helpers print TAP explicitly to STDOUT. Capture the driver's
+# default-handle progress and replay it as TAP comments.
+my $previous_output = select $progress;
+
 {
     my $opaque = { code => 'OPAQUE_BOUNDARY', number => 1, dynamic => 'text' };
     my $before = Diag::Translation::fingerprint($opaque);
@@ -2177,3 +2183,7 @@ like(
       or die "Cannot remove test provenance $technical_provenance_path: $!\n";
     unlink $provenance_path or die "Cannot remove test provenance $provenance_path: $!\n";
 }
+
+select $previous_output;
+close $progress or die "Cannot close translation progress: $!";
+note($progress_output);

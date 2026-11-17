@@ -30,7 +30,7 @@ require Tie::Hash;
 our $compact_hashes = eval {
     require Hash::Util;
     my $info = Hash::Util::hash_storage_info({ probe => 1 });
-    $info->{integer_chained} || $info->{open_addressed};
+    $info->{linear} || $info->{integer_chained} || $info->{open_addressed};
 };
 
 our $DEBUG = 0;
