@@ -2246,15 +2246,17 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     }
     else {
         HeVAL(entry) = NULL;
+        if (key == HeKEY(entry)) {
+            key_alias_entry = TRUE;
+            /* Stash bookkeeping reads the key after its HEK is released. */
+            if (sv && SvTYPE(sv) == SVt_PVGV && HvHasENAME(hv))
+                mro_key_copy = savepvn(key, klen);
+        }
         if (HvIS_LINEAR(hv)) {
             HEK *old_hek;
             I32 old_len;
             U8 old_flags;
             const U32 idx = (U32)(entry - (HE *)HvARRAY(hv));
-            if (key == HeKEY(entry)) {
-                key_alias_entry = TRUE;
-                mro_key_copy = savepvn(key, klen);
-            }
         S_linear_remove_at(aTHX_ hv, idx, &old_hek, &old_len, &old_flags);
             S_oa_free_key(aTHX_ old_hek, old_len, old_flags);
         }

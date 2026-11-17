@@ -271,6 +271,22 @@ delete_ent(hash, key_sv, flags = 0)
         RETVAL
 
 SV *
+delete_using_entry_key(hash, key_sv)
+        HV *hash
+        SV *key_sv
+    PREINIT:
+        HE *entry;
+        I32 len;
+    CODE:
+        entry = hv_fetch_ent(hash, key_sv, 0, 0);
+        if (!entry)
+            XSRETURN_UNDEF;
+        len = HeKUTF8(entry) ? -HeKLEN(entry) : HeKLEN(entry);
+        RETVAL = SvREFCNT_inc(hv_delete(hash, HeKEY(entry), len, 0));
+    OUTPUT:
+        RETVAL
+
+SV *
 store_ent(hash, key, value)
         PREINIT:
         SV *copy;

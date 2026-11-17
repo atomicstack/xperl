@@ -9,6 +9,28 @@ use Config;
 BEGIN {use_ok('XS::APItest')};
 
 {
+    require Hash::Util;
+    for my $reserve (0, 16) {
+        my $package = "XSAPI_AliasedDelete_${$}_$reserve";
+        no strict 'refs';
+        my $stash = \%{$package . '::'};
+        XS::APItest::Hash::disable_hash_key_sharing($stash);
+        keys %$stash = $reserve if $reserve;
+        *{$package . '::victim'} = sub { 7 };
+        my $child = $package . '::Subclass';
+        @{$child . '::ISA'} = ($package);
+        is($child->victim, 7, 'inherited method is visible before aliased deletion');
+        my $info = Hash::Util::hash_storage_info($stash);
+        ok($reserve ? $info->{index_capacity} : $info->{linear},
+           'aliased deletion exercises the selected stash representation');
+        my $deleted = XS::APItest::Hash::delete_using_entry_key($stash, 'victim');
+        ok(defined($deleted) && !exists($stash->{victim}),
+           'deleting with the entry key releases an unshared stash key');
+        ok(!$child->can('victim'), 'aliased deletion invalidates inherited method lookup');
+    }
+}
+
+{
     my %default;
     my $info = XS::APItest::Hash::hv_max_encoding_info(\%default, -1);
     is_deeply($info, [3, 7, 0, 0],
