@@ -1037,6 +1037,18 @@ our %Modules = (
         'EXCLUDED'     => [qw(tidyall.ini), qr/^xt/, qr{^t/00-}],
     },
 
+    'Perl::Tidy' => {
+        # Local working-tree import, not a published CPAN archive.
+        'MAINTAINER' => 'SHANCOCK',
+        'SYNCINFO'   => 'perltidy/ at 4b5241a9 with local changes, 2026-11-17',
+        'FILES'      => q[cpan/Perl-Tidy],
+        'BUGS'       => 'https://github.com/perltidy/perltidy/issues',
+        'EXCLUDED'   => [
+            qr{^docs/}, qr{^examples/},
+            qw(Dockerfile pm2pl .pre-commit-hooks.yaml),
+        ],
+    },
+
     'perlfaq' => {
         'DISTRIBUTION' => 'ETHER/perlfaq-5.20250619.tar.gz',
         'SYNCINFO'     => 'ether on Wed Jun 18 20:32:25 2025',

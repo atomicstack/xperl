@@ -582,6 +582,15 @@ release manager will have to investigate the situation carefully.)
 
 =item *
 
+L<Perl::Tidy> 20260826.03 is bundled from the local development checkout,
+including support for XPerl dispatch syntax. The F<perltidy> and
+F<perltidy-auto> commands are installed with XPerl. F<perltidy-auto> selects
+formatting options from file markers, a neighboring F<.perltidy>, or an
+explicit configuration file, and requires clean, tracked Git files unless
+C<--force> is supplied.
+
+=item *
+
 L<XBench> 0.01 provides calibrated callback and command benchmarks using
 L<XStats> uncertainty estimates.  Results retain raw samples, sample SD,
 bootstrap intervals and stopping metadata.  Optional paired baselines and

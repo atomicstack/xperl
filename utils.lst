@@ -13,6 +13,8 @@ utils/json_pp
 utils/libnetcfg
 utils/perlbug	# link = utils/perlthanks
 utils/perldoc
+utils/perltidy
+utils/perltidy-auto
 utils/perlivp
 utils/piconv
 utils/pl2pm

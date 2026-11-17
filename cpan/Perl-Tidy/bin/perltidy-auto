@@ -1,0 +1,182 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Cwd qw(abs_path);
+use File::Basename qw(dirname);
+use File::Spec;
+use Getopt::Long qw(GetOptions);
+use FindBin qw($Bin);
+use lib File::Spec->catdir( $Bin, '..', 'lib' );
+use Perl::Tidy;
+use Text::ParseWords qw(shellwords);
+
+my %opts;
+Getopt::Long::Configure('no_ignore_case', 'no_auto_abbrev', 'bundling');
+if ( !GetOptions(
+        \%opts,
+        'force|f',
+        'config|c|profile|pro=s',
+        'help|h',
+    ) ) {
+    usage(1);
+}
+
+if ( $opts{help} ) {
+    usage(0);
+}
+
+if ( !@ARGV ) {
+    usage(1);
+}
+
+my $explicit_config;
+if ( defined $opts{config} ) {
+    $explicit_config = abs_path( $opts{config} );
+    if ( !defined $explicit_config || !-f $explicit_config ) {
+        die "perltidy-auto: config file '$opts{config}' does not exist\n";
+    }
+}
+
+my $exit_status = 0;
+for my $name (@ARGV) {
+    my $status = process_file( $name, $explicit_config, \%opts );
+    $exit_status = $status if $status > $exit_status;
+}
+exit $exit_status;
+
+sub process_file {
+    my ( $name, $explicit_config, $ropts ) = @_;
+
+    if ( !-f $name ) {
+        warn "perltidy-auto: '$name' is not a regular file\n";
+        return 1;
+    }
+
+    my $file = abs_path($name);
+    my $dir  = dirname($file);
+    my @tidy_options = marker_options($file);
+
+    my $config;
+    if (@tidy_options) {
+        # A marker is deliberately self-contained.  Prevent perltidy from
+        # picking up an unrelated .perltidyrc in the caller's directory.
+        push @tidy_options, '-npro';
+    }
+    elsif ( -f File::Spec->catfile( $dir, '.perltidy' ) ) {
+        $config = File::Spec->catfile( $dir, '.perltidy' );
+    }
+    elsif ( defined $explicit_config ) {
+        $config = $explicit_config;
+    }
+    else {
+        push @tidy_options, '-npro';
+    }
+
+    if ( !$ropts->{force} && !git_file_is_clean($file) ) {
+        warn "perltidy-auto: refusing to modify '$name'; "
+          . "it is not a clean, tracked Git file (use --force)\n";
+        return 1;
+    }
+
+    # -b modifies in place.  A slash backup extension tells perltidy not to
+    # leave a .bak file behind, while retaining its normal safe rewrite path.
+    return Perl::Tidy::perltidy(
+        argv       => [ @tidy_options, '-b', '-bext=/', $file ],
+        perltidyrc => $config,
+    );
+}
+
+sub marker_options {
+    my ($file) = @_;
+    open my $fh, '<', $file or die "perltidy-auto: cannot read '$file': $!\n";
+
+    my @lines;
+    while ( my $line = <$fh> ) {
+        my ( $options, $comment_marker );
+        if ( $line =~ /^\s*#\s*perltidy\b(.*)$/ ) {
+            ( $options, $comment_marker ) = ( $1, 1 );
+        }
+        elsif ( $line =~ /^\s*=for\s+perltidy\b(.*)$/ ) {
+            $options = $1;
+        }
+        if ( defined $options ) {
+            $options =~ s/\r?\n\z//;
+            while ( $options =~ s/\\\s*\z// ) {
+                my $continuation = <$fh>;
+                last if !defined $continuation;
+                $continuation =~ s/^\s*#\s?// if $comment_marker;
+                $continuation =~ s/\r?\n\z//;
+                $options .= ' ' . $continuation;
+            }
+            push @lines, $options;
+            last;
+        }
+    }
+    close $fh or die "perltidy-auto: cannot close '$file': $!\n";
+
+    return () if !@lines;
+    my @options = shellwords( join ' ', @lines );
+    if ( !@options ) {
+        die "perltidy-auto: empty perltidy marker in '$file'\n";
+    }
+    return @options;
+}
+
+sub git_file_is_clean {
+    my ($file) = @_;
+    my $dir = dirname($file);
+    my ( $root, $status ) = capture_command(
+        'git', '-C', $dir, 'rev-parse', '--show-toplevel'
+    );
+    return 0 if $status != 0 || !defined $root || $root eq '';
+
+    $root =~ s/\s+\z//;
+    my $relative = File::Spec->abs2rel( $file, $root );
+    my ( undef, $tracked_status ) = capture_command(
+        'git', '-C', $root, 'ls-files', '--error-unmatch', '--', $relative
+    );
+    return 0 if $tracked_status != 0;
+
+    my $diff_status = system( 'git', '-C', $root, 'diff', '--quiet', 'HEAD',
+        '--', $relative );
+    return $diff_status == 0;
+}
+
+sub capture_command {
+    my @command = @_;
+    open my $null, '>', File::Spec->devnull or return ( '', 1 );
+    local *STDERR;
+    open STDERR, '>&', $null or return ( '', 1 );
+    open my $fh, '-|', @command or return ( '', 1 );
+    local $/;
+    my $output = <$fh>;
+    close $fh;
+    return ( defined $output ? $output : '', $? >> 8 );
+}
+
+sub usage {
+    my ($status) = @_;
+    my $text = <<'USAGE';
+Usage: perltidy-auto [options] FILE [FILE ...]
+
+Modify each FILE in place using, in order of precedence:
+  1. a '# perltidy ...' or '=for perltidy ...' marker in the file
+     (backslash continuations allowed)
+  2. FILE's directory/.perltidy
+  3. --config FILE
+  4. perltidy defaults
+
+Options:
+  -f, --force              allow files which are not clean, tracked Git files
+  -c, --config FILE        fallback perltidy configuration file
+  -h, --help               show this help
+
+For example:
+  # perltidy -w -ple -l=80 \
+  #   -fsb='#start-no-tidy' -fse='#end-no-tidy'
+USAGE
+    print STDERR $text if $status;
+    print STDOUT $text if !$status;
+    exit $status;
+}

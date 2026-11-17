@@ -1479,7 +1479,8 @@ _cleaner2:
 	-rmdir lib/TAP/Formatter/Console lib/TAP/Formatter lib/TAP
 	-rmdir lib/Sys/Syslog lib/Sys lib/Sub lib/Search lib/Scalar/List
 	-rmdir lib/Scalar lib/RNG/PCG lib/RNG lib/Pod/Text lib/Pod/Simple
-	-rmdir lib/Pod/Perldoc lib/Pod/Html lib/PerlIO/via lib/PerlIO lib/Perl
+	-rmdir lib/Pod/Perldoc lib/Pod/Html lib/PerlIO/via lib/PerlIO
+	-rmdir lib/Perl/Tidy/VerticalAligner lib/Perl/Tidy lib/Perl
 	-rmdir lib/Parse/CPAN lib/Parse lib/Params lib/Net/SSLeay lib/Net/FTP
 	-rmdir lib/Module/Load lib/Module/CoreList lib/Module lib/Memoize
 	-rmdir lib/Math/BigRat lib/Math/BigInt lib/Math/BigFloat lib/Math

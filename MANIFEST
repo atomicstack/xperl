@@ -2767,6 +2767,81 @@ cpan/parent/t/parent-returns-false.t		tests for parent.pm
 cpan/parent/t/rt62341.t.disabled		test files for parent.pm
 cpan/Perl-OSType/lib/Perl/OSType.pm	Perl::OSType
 cpan/Perl-OSType/t/OSType.t		Perl::OSType
+cpan/Perl-Tidy/bin/perltidy					Perl::Tidy distribution
+cpan/Perl-Tidy/bin/perltidy-auto				Perl::Tidy distribution
+cpan/Perl-Tidy/BUGS.md						Perl::Tidy distribution
+cpan/Perl-Tidy/CHANGES.md					Perl::Tidy distribution
+cpan/Perl-Tidy/COPYING						Perl::Tidy distribution
+cpan/Perl-Tidy/INSTALL.md					Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy.pm					Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy.pod				Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/Debugger.pm			Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/Diagnostics.pm			Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/FileWriter.pm			Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/Formatter.pm			Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/HtmlWriter.pm			Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/IndentationItem.pm			Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/IOScalar.pm			Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/IOScalarArray.pm			Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/Logger.pm				Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/Tokenizer.pm			Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/VerticalAligner.pm			Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/VerticalAligner/Alignment.pm	Perl::Tidy distribution
+cpan/Perl-Tidy/lib/Perl/Tidy/VerticalAligner/Line.pm		Perl::Tidy distribution
+cpan/Perl-Tidy/Makefile.PL					Perl::Tidy distribution
+cpan/Perl-Tidy/README.md					Perl::Tidy distribution
+cpan/Perl-Tidy/SECURITY.md					Perl::Tidy distribution
+cpan/Perl-Tidy/t/atee.t						Perl::Tidy distribution
+cpan/Perl-Tidy/t/dispatch.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/filter_example.t				Perl::Tidy distribution
+cpan/Perl-Tidy/t/perltidy_auto.t				Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets1.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets10.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets11.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets12.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets13.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets14.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets15.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets16.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets17.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets18.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets19.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets2.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets20.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets21.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets22.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets23.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets24.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets25.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets26.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets27.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets28.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets29.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets3.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets30.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets31.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets32.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets33.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets34.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets4.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets5.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets6.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets7.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets8.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/snippets9.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/test.t						Perl::Tidy distribution
+cpan/Perl-Tidy/t/test-eol.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/test_DEBUG.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/testsa.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/testss.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/testwide.t					Perl::Tidy distribution
+cpan/Perl-Tidy/t/testwide-passthrough.t				Perl::Tidy distribution
+cpan/Perl-Tidy/t/testwide-passthrough.pl.src			Perl::Tidy distribution
+cpan/Perl-Tidy/t/testwide-tidy.t				Perl::Tidy distribution
+cpan/Perl-Tidy/t/testwide-tidy.pl.src				Perl::Tidy distribution
+cpan/Perl-Tidy/t/testwide-tidy.pl.srctdy			Perl::Tidy distribution
+cpan/Perl-Tidy/t/testwide.pl.src				Perl::Tidy distribution
+cpan/Perl-Tidy/t/zero.t						Perl::Tidy distribution
 cpan/perlfaq/lib/perlfaq.pm		Perl frequently asked questions
 cpan/perlfaq/lib/perlfaq.pod		Perl frequently asked questions
 cpan/perlfaq/lib/perlfaq1.pod		General Questions About Perl
@@ -8446,6 +8521,8 @@ utils/Makefile.PL			Extract the utility scripts
 utils/perlbug.PL			A simple tool to submit a bug report
 utils/perldoc.PL			A simple tool to find & display perl's documentation
 utils/perlivp.PL			installation verification procedure
+utils/perltidy.PL			perltidy command extractor
+utils/perltidy-auto.PL			perltidy-auto command extractor
 utils/piconv.PL				iconv(1), reinvented in perl
 utils/pl2pm.PL				A pl to pm translator
 utils/pod2html.PL			Translator to turn pod into HTML

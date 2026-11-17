@@ -893,6 +893,8 @@ UTILS		=			\
 		..\utils\json_pp	\
 		..\utils\xperl-repl	\
 		..\utils\xbench		\
+		..\utils\perltidy	\
+		..\utils\perltidy-auto	\
 		bin\exetype.pl		\
 		bin\runperl.pl		\
 		bin\pl2bat.pl		\
@@ -1777,7 +1779,7 @@ distclean: realclean
 	    perlwin32.pod
 	-cd ..\utils && del /f h2ph splain perlbug pl2pm h2xs \
 	    perldoc perlivp libnetcfg enc2xs encguess piconv cpan *.bat \
-	    xsubpp pod2html instmodsh json_pp prove ptar ptardiff ptargrep shasum corelist zipdetails xperl-repl xbench
+	    xsubpp pod2html instmodsh json_pp prove ptar ptardiff ptargrep shasum corelist zipdetails xperl-repl xbench perltidy perltidy-auto
 	-del /f ..\config.sh perlmain.c dlutils.c config.h.new \
 	    perlmainst.c
 	-del /f $(CONFIGPM)
