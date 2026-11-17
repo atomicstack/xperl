@@ -164,9 +164,11 @@ otherwise required also packs entries at this threshold, but does not apply
 the standalone HE shrink test. Otherwise a full entry array grows by 25
 percent without changing the bucket array.
 
-When live entries reach two-thirds of bucket capacity, the index grows to
-the next power of two that can hold C<3 * live> entries, with a minimum of
-eight buckets. Compaction normally keeps the bucket count. It can shrink the
+Before insertion, the bucket array doubles when the live count is at least
+C<floor(2 * buckets / 3)> and the new key collides with an occupied bucket.
+Inserting into an empty bucket does not split, even above that load. Entry
+growth and identifier widening remain independent. Compaction normally keeps
+the bucket count. It can shrink the
 bucket array only when its target, the next power of two at least
 C<3 * (live + 1)>, is at most half the current count. The entry array can
 shrink independently when its target capacity, C<live + floor(live/4) + 1>

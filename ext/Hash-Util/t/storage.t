@@ -1197,4 +1197,41 @@ if ($info->{integer_chained}) {
        'small-table compaction preserves the newly inserted value');
 }
 
+if (hash_storage_info({})->{integer_chained}) {
+    my @bucket_keys;
+    my $candidate = 0;
+    while (grep(!defined, @bucket_keys[0 .. 15])) {
+        my $key = 'chain-split:' . $candidate++;
+        my $bucket = hash_value($key) & 15;
+        $bucket_keys[$bucket] //= $key;
+    }
+    my $collision;
+    do { $collision = 'chain-split:' . $candidate++ }
+        while (hash_value($collision) & 15);
+
+    my %hash;
+    keys %hash = 10;
+    $hash{$bucket_keys[$_]} = $_ for 0 .. 9;
+    my $at_limit = hash_storage_info(\%hash);
+    is($at_limit->{index_capacity}, 16,
+       'SC reaches the integer two-thirds limit without splitting');
+    $hash{$bucket_keys[10]} = 10;
+    is(hash_storage_info(\%hash)->{index_capacity}, 16,
+       'SC inserts above the load limit without splitting an empty bucket');
+    $hash{$collision} = 99;
+    is(hash_storage_info(\%hash)->{index_capacity}, 32,
+       'SC doubles after a collision above the load limit');
+    is_deeply([@hash{@bucket_keys[0 .. 10], $collision}], [0 .. 10, 99],
+       'a delayed collision split preserves every entry');
+
+    my %below_limit;
+    keys %below_limit = 10;
+    $below_limit{$bucket_keys[0]} = 1;
+    $below_limit{$collision} = 2;
+    is(hash_storage_info(\%below_limit)->{index_capacity}, 16,
+       'SC chains a collision below the load limit without splitting');
+    is_deeply([@below_limit{$bucket_keys[0], $collision}], [1, 2],
+       'both entries remain reachable in a below-limit chain');
+}
+
 done_testing();
