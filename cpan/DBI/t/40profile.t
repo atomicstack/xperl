@@ -386,7 +386,7 @@ is_deeply $tmp, {
     'fetchrow_hashref' => [ 1, 0, 0, 0, 0, 0, 0 ],
 }, 'should be able to filter by method';
 
-DBI->trace(0, "STDOUT"); # close current log to flush it
+DBI->trace(0, "STDERR"); # close current log to flush it
 ok(-s $LOG_FILE, 'output should go to log file');
 
 # -----------------------------------------------------------------------------------

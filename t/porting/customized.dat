@@ -16,6 +16,7 @@ DBI cpan/DBI/Driver_xst.h 8f17bef0aedf06b85f40ae589ecda0c88f1c0e7c
 DBI cpan/DBI/Makefile.PL a5e79404d719fda0a8b693ad097a4d6db04a51b1
 DBI cpan/DBI/t/01basics.t dacd29ef4e450e8c9f37110b2690a25a45a3615b
 DBI cpan/DBI/t/31methcache.t cac56d1d60452e5e1d3c322cb557b8c0c350cfba
+DBI cpan/DBI/t/40profile.t 8aecd87510b84afd3aed4c027e6f9049c97cd078
 DBI cpan/DBI/t/85gofer.t 112d2b796323d1fb041ee790a92d27c6516e4acf
 ExtUtils::Constant cpan/ExtUtils-Constant/lib/ExtUtils/Constant/Base.pm 7560e1018f806db5689dee78728ccb8374aea741
 ExtUtils::Constant cpan/ExtUtils-Constant/t/Constant.t 165e9c7132b003fd192d32a737b0f51f9ba4999e

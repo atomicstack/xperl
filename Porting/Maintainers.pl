@@ -444,7 +444,8 @@ our %Modules = (
         'SYNCINFO'    => 'demerphq on Thu Nov 12 13:47:43 2026',
         'FILES'       => 'cpan/DBI',
         'CUSTOMIZED'  => [qw(DBI.xs Driver_xst.h Makefile.PL
-                            t/01basics.t t/31methcache.t t/85gofer.t)],
+                            t/01basics.t t/31methcache.t t/40profile.t
+                            t/85gofer.t)],
     },
 
     'Devel::PPPort' => {
