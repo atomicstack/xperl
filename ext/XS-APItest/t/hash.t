@@ -736,18 +736,20 @@ sub test_precomputed_hashes {
     store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 1..9;
     is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 16,
        'ten noncolliding inserts remain below the index threshold');
+    my $chained = Hash::Util::hash_storage_info(\%hash)->{integer_chained};
+    my $noncolliding_capacity = $chained ? 16 : 32;
     store_prehashed(\%hash, $keys[10], 10, $hashes[10]);
-    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 32,
-       'noncolliding inserts grow the index at the two-thirds threshold');
+    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, $noncolliding_capacity,
+       'noncolliding insertion follows the selected layout growth policy');
     store_prehashed(\%hash, $keys[$_], $_, $hashes[$_]) for 11..15;
-    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 32,
-       'noncolliding inserts retain the resized index');
+    is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, $noncolliding_capacity,
+       'noncolliding inserts retain the expected bucket capacity');
     ok(!exists $hash{'absent from resized index'},
        'unsuccessful lookup terminates after index growth');
     is($hash{$keys[15]}, 15, 'successful lookup works after index growth');
     store_prehashed(\%hash, $collision->[0], 99, $collision->[1]);
     is(Hash::Util::hash_storage_info(\%hash)->{index_capacity}, 32,
-       'collision lookup fits below the next index threshold');
+       'collision insertion leaves both layouts with 32 buckets');
 
     my %lazy;
     store_prehashed(\%lazy, $keys[0], 0, $hashes[0]);
@@ -770,12 +772,12 @@ sub test_precomputed_hashes {
     store_prehashed(\%sparse_lazy, $collision->[0], 99, $collision->[1]);
     store_prehashed(\%sparse_lazy, $keys[$_], $_, $hashes[$_]) for 1..15;
     my $sparse_info = Hash::Util::hash_storage_info(\%sparse_lazy);
-    is($sparse_info->{index_capacity}, 32,
-       'noncolliding inserts grow an index with a lazy entry retained');
+    is($sparse_info->{index_capacity}, $noncolliding_capacity,
+       'noncolliding inserts retain the bucket policy with a lazy entry');
     is($sparse_info->{entry_used}, 17,
-       'index growth retains entry positions below the compaction threshold');
+       'bucket policy retains entry positions below the compaction threshold');
     is($sparse_info->{entry_holes}, 1,
-       'index growth retains a deleted-entry hole below the compaction threshold');
+       'bucket policy retains a deleted-entry hole below the compaction threshold');
     is($sparse_info->{index_width}, 1,
        'the resized index retains one-byte entry indices');
     is($sparse_lazy{$collision->[0]}, 99,
