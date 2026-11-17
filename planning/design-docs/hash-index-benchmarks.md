@@ -9,19 +9,19 @@ At 300,000 entries, OA requests 15.6 percent less table storage.
 
 Selected paired mean time changes at this size:
 
-- fetch-random: 3.5 percent less elapsed time.
-- fetch-shared: 15.2 percent less elapsed time.
+- fetch-random: 4.1 percent less elapsed time.
+- fetch-shared: 10.3 percent less elapsed time.
 - fetch-sequential: 8.5 percent more elapsed time.
-- miss: 16.3 percent more elapsed time.
-- churn: 5.2 percent more elapsed time.
+- miss: 12.1 percent more elapsed time.
+- churn: 3.8 percent more elapsed time.
 
 ## Builds and measurement
 
-Run started: Mon Nov 16 23:25:53 2026 UTC. CPU: 11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz; affinity: CPU 7.
+Run started: Tue Nov 17 13:58:33 2026 UTC. CPU: 11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz; affinity: CPU 7.
 
-SC: `4a2fa72700d8755929011ef7c8a371af8a7ed790`; `gcc` 13.3.0, `-O3`.
+SC: `7dfe51b0a2694d3b1c70ad5c244347b96f279e5f`; `gcc` 13.3.0, `-O3`.
 
-OA: `2b08eb49c5dabe48e5b6b844081746b4d5a533d5`; `gcc` 13.3.0, `-O3 -DPERL_HASH_INDEX_OA`.
+OA: `56947482898c16cce03f195dd2dd0a953daaa59b`; `gcc` 13.3.0, `-O3 -DPERL_HASH_INDEX_OA`.
 
 XBench controls paired measurements using reported worker-loop durations.
 OA is the measured case and SC is its paired baseline. Execution order
@@ -35,12 +35,7 @@ of the SC pilot time. It collects at least 30 pairs, with limits of 120 pairs
 or 60 seconds per case. Filtering is disabled. XStats supplies the intervals using
 4,000 resamples. Every pilot and measured sample is retained.
 
-Precision target met: **63/63** cases. Measured pairs per case: **30–94**.
-
-The initial pass met its target in 61/63 cases. Longer-batch follow-ups are marked (R):
-
-- 100000/fetch-shared: at least 40 pairs; pilots of at least 0.5 seconds; limits of 200 pairs or 180 seconds; `../tmp/hash-index-xbench-followups/100000-fetch-shared`.
-- 300000/miss: at least 40 pairs; pilots of at least 0.5 seconds; limits of 200 pairs or 180 seconds; `../tmp/hash-index-xbench-followups/300000-miss`.
+Precision target met: **56/63** cases. Measured pairs per case: **30–120**.
 
 Precision met describes interval width, not a resolved advantage. A difference
 interval containing zero does not establish a direction. Ratios below are
@@ -61,7 +56,7 @@ are retained separately in raw data.
 | ---: | ---: | ---: | ---: | ---: | ---: |
 | 8 | 128 | 128 | +0.0% | 8 | 0/0 |
 | 16 | 358 | 340 | -5.0% | 18 | 1/1 |
-| 100 | 2,333 | 2,468 | +5.8% | 121 | 1/2 |
+| 100 | 2,333 | 2,212 | -5.2% | 121 | 1/1 |
 | 1,000 | 24,150 | 21,924 | -9.2% | 1,113 | 2/2 |
 | 10,000 | 219,124 | 198,420 | -9.4% | 10,352 | 2/2 |
 | 100,000 | 3,458,616 | 2,976,612 | -13.9% | 120,501 | 4/4 |
@@ -84,27 +79,29 @@ loops over query lengths without looking up a hash entry.
 
 | Entries | fetch-random | fetch-shared | fetch-sequential | miss | exists | iterate | construct | churn | query-only |
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 8 | 0.995 | 0.996 | 1.004 | 0.992 | 0.999 | 1.008 | 1.019 | 0.984 | 1.006 |
-| 16 | 0.982 | 1.010 | 0.952 | 1.041 | 0.989 | 1.008 | 0.985 | 1.070 | 0.988 |
-| 100 | 0.989 | 0.997 | 0.990 | 1.042 | 1.000 | 1.007 | 1.009 | 1.098 | 0.997 |
-| 1,000 | 1.047 | 1.043 | 1.046 | 1.085 | 1.046 | 1.020 | 1.035 | 1.096 | 0.975 |
-| 10,000 | 1.062 | 1.080 | 1.047 | 1.143 | 1.072 | 1.015 | 1.056 | 1.136 | 0.978 |
-| 100,000 | 0.969 | 0.937 (R) | 0.977 | 1.088 | 0.947 | 1.019 | 0.969 | 0.968 | 0.983 |
-| 300,000 | 0.965 | 0.848 | 1.085 | 1.163 (R) | 0.900 | 1.011 | 0.990 | 1.052 | 0.987 |
+| 8 | 0.996 | 0.999 | 1.002* | 1.025 | 0.989 | 1.018 | 1.009 | 0.985 | 1.011 |
+| 16 | 0.997 | 0.950 | 0.972 | 0.984 | 1.005 | 0.996 | 0.974 | 1.023 | 0.993 |
+| 100 | 0.969 | 0.984 | 0.968 | 1.050 | 0.990 | 1.008 | 0.965 | 1.049 | 1.013 |
+| 1,000 | 1.073 | 1.067 | 1.052 | 1.113 | 1.053 | 1.001 | 1.001 | 1.046 | 1.008 |
+| 10,000 | 1.051 | 1.066 | 1.042 | 1.167 | 1.053 | 1.009 | 1.020 | 1.108 | 0.996 |
+| 100,000 | 0.960 | 0.961* | 0.987 | 1.095* | 0.931 | 1.005* | 0.927* | 0.946* | 0.987 |
+| 300,000 | 0.959 | 0.897 | 1.085 | 1.121* | 0.897 | 0.999 | 0.959 | 1.038 | 1.007 |
+
+An asterisk marks a case that stopped without meeting the precision target.
 
 ## Detailed estimates at 300,000 entries
 
 | Operation | SC mean ns/op | OA mean ns/op | OA minus SC ns/op | Difference 95% interval | Pairs | Stop |
 | --- | ---: | ---: | ---: | --- | ---: | --- |
-| fetch-random | 584.53 | 563.54 | -20.99 | [-29.373, -12.686] | 30 | precision |
-| fetch-shared | 499.94 | 423.03 | -76.91 | [-86.389, -67.851] | 30 | precision |
-| fetch-sequential | 123.31 | 133.60 | +10.29 | [8.099, 12.627] | 33 | precision |
-| miss | 131.83 | 153.10 | +21.27 | [18.531, 24.036] | 40 | precision |
-| exists | 447.62 | 402.65 | -44.97 | [-50.717, -39.101] | 30 | precision |
-| iterate | 91.91 | 92.91 | +1.00 | [-0.234, 2.227] | 30 | precision |
-| construct | 392.07 | 387.34 | -4.72 | [-12.307, 2.982] | 46 | precision |
-| churn | 821.92 | 864.19 | +42.28 | [33.148, 51.359] | 30 | precision |
-| query-only | 22.69 | 22.36 | -0.33 | [-0.750, 0.102] | 55 | precision |
+| fetch-random | 586.10 | 562.22 | -23.88 | [-26.904, -21.025] | 30 | precision |
+| fetch-shared | 488.67 | 437.82 | -50.85 | [-58.388, -41.379] | 33 | precision |
+| fetch-sequential | 121.37 | 131.63 | +10.25 | [8.776, 11.759] | 30 | precision |
+| miss | 137.60 | 153.56 | +15.96 | [13.264, 18.089] | 52 | max_seconds (unmet) |
+| exists | 454.16 | 406.93 | -47.23 | [-55.156, -39.269] | 30 | precision |
+| iterate | 96.23 | 96.07 | -0.16 | [-1.696, 1.335] | 30 | precision |
+| construct | 399.99 | 383.22 | -16.78 | [-22.678, -10.404] | 30 | precision |
+| churn | 821.12 | 852.04 | +30.92 | [26.795, 35.325] | 30 | precision |
+| query-only | 22.16 | 22.31 | +0.14 | [-0.094, 0.408] | 30 | precision |
 
 ## Reproduction and artifacts
 
@@ -118,6 +115,7 @@ worker diagnostics, timings, seeds, and phases. `summary.jsonl` preserves each
 XBench result, its settings, sample arrays, precision status, and stop reason.
 
 These artifacts and generated figures are in the workspace
-`tmp/hash-index-xbench/` directory. The earlier fixed-count screening runs are
-in `tmp/hash-index-comparison/` and `tmp/hash-index-independent-comparison/`.
+`tmp/hash-final-comparison-20261117/` directory.
+The earlier fixed-count screening runs are in
+`tmp/hash-index-comparison/` and `tmp/hash-index-independent-comparison/`.
 Their paired medians use a different estimator and are kept separate.

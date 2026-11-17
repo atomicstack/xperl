@@ -2,6 +2,8 @@
 use strict;
 use warnings;
 use JSON::PP qw(decode_json);
+use Cwd qw(abs_path);
+use FindBin;
 
 my ($directory, $report, @followups) = @ARGV;
 die "usage: $0 RESULTS_DIRECTORY REPORT.md [FOLLOWUP_DIRECTORY ...]\n"
@@ -193,11 +195,15 @@ executable hashes, and driver and worker hashes. `raw.jsonl` preserves complete
 worker diagnostics, timings, seeds, and phases. `summary.jsonl` preserves each
 XBench result, its settings, sample arrays, precision status, and stop reason.
 
-These artifacts and generated figures are in the workspace
-`tmp/hash-index-xbench/` directory. The earlier fixed-count screening runs are
-in `tmp/hash-index-comparison/` and `tmp/hash-index-independent-comparison/`.
-Their paired medians use a different estimator and are kept separate.
 REPRODUCE
+my $artifact_directory = abs_path($directory);
+my $workspace = abs_path("$FindBin::Bin/../../..");
+$artifact_directory =~ s/^\Q$workspace\E\///;
+print {$out} "These artifacts and generated figures are in the workspace\n"
+    . "`$artifact_directory/` directory.\n"
+    . "The earlier fixed-count screening runs are in\n"
+    . "`tmp/hash-index-comparison/` and `tmp/hash-index-independent-comparison/`.\n"
+    . "Their paired medians use a different estimator and are kept separate.\n";
 close $out;
 open my $plot, '>', "$directory/plot.tsv" or die $!;
 for my $n (@sizes) {
