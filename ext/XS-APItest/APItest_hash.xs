@@ -184,9 +184,36 @@ shared_key_size_valid(capacity)
         RETVAL
 
 void
-shared_key_reserve_overflow()
+shared_key_reserve_over_limit()
     CODE:
-        hv_ksplit(PL_strtab, IV_MAX);
+        hv_ksplit(PL_strtab, (IV)HV_MAX_KEYS + 1);
+
+UV
+shared_key_saturated_acquire(fresh)
+        bool fresh
+    PREINIT:
+        HEK *first;
+        HEK *second;
+        char key[96];
+        STRLEN len;
+    CODE:
+        len = my_snprintf(key, sizeof(key), "xperl-strtab-limit-probe-%p",
+                          (void *)&first);
+        first = share_hek(key, len, 0);
+        ENTER;
+        SAVESTRLEN(HvTOTALKEYS(PL_strtab));
+        HvTOTALKEYS(PL_strtab) = HV_MAX_KEYS;
+        if (fresh) {
+            key[len++] = '!';
+            key[len] = '\0';
+        }
+        second = share_hek(key, len, 0);
+        RETVAL = first == second && HvSTR_REFCOUNT(first) >= 2;
+        LEAVE;
+        unshare_hek(first);
+        unshare_hek(second);
+    OUTPUT:
+        RETVAL
 
 void
 rot13_hash(hash)

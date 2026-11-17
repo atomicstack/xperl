@@ -1058,10 +1058,10 @@ continues to depend on index capacity: one byte through 128 slots, two bytes
 through 32,768 slots, and four bytes above that. The
 entry traversal order is an implementation detail and does not guarantee
 public hash iteration order. C<HV> and C<XPVHV> sizes are unchanged.
-The ordinary hash index is capped at C<2^30> slots, supporting at most
-715,827,882 live keys at its two-thirds load limit. Inserting beyond this
+The ordinary hash index is capped at C<2^31> slots, supporting at most
+1,431,655,765 live keys at its two-thirds load limit. Inserting beyond this
 count or explicitly pre-sizing beyond it throws
-C<Hash key count exceeds limit of 715827882>.
+C<Hash key count exceeds limit of 1431655765>.
 
 All builds encode the indexed bucket count and tiny-storage state in the
 existing C<xhv_max> field, without enlarging C<HV> or C<XPVHV>. For indexed
@@ -1119,28 +1119,32 @@ with C<-DPERL_HASH_INDEX_OA> applied to all objects; for example:
     ./Configure -S -Doptimize='-O3 -DPERL_HASH_INDEX_OA'
     make -j4 test_prep
 
-Shared-key interning now uses an open-addressed array of C<HEK *> pointers with
-tombstones. Each shared C<HEK> has a C<U32> reference-count prefix, giving
-a 12-byte header for count, hash, and length. Reference acquisition checks
-for overflow. Its address remains stable while referenced, including when the
-slot array grows. Capacity, probe positions, and tombstone count use
-native-size integers. The pointer index has no fixed C<2^26> slot limit; its
-growth is limited by checked allocation arithmetic and available memory. The
-cached hash and reference count in each C<HEK> remain C<U32>. Since the hash
-is 32 bits, hash distribution can limit performance above C<2^32> slots. This
-does not change the ordinary hash index's C<2^30> slot limit. The table has a
-minimum capacity of 32,768 slots. Before insertion, when live
-entries plus tombstones reach C<floor(2*index_capacity/3)>, it targets the
-next power of two able to hold three times the live entries, while retaining
-the minimum capacity. It grows when tombstones are below half the occupied
-slots. Otherwise it clears tombstones at the same capacity, except that it
-shrinks when the target is at most half the current capacity. It has no
-entry-array compaction or early shrink check. Traversal scans
-the entry array independently of hash
-values. The C<PERL_PERTURB_KEYS> controls and
-C<Hash::Util::hash_traversal_mask> are removed. Hash-function seeding is
-retained. Insertion during an active traversal is detected without random
-state.
+Shared-key interning now uses an open-addressed array of C<HEK *>
+pointers with tombstones. Each shared C<HEK> has a C<U32>
+reference-count prefix, giving a 12-byte header for count, hash, and
+length. Reference acquisition checks for overflow. Its address remains
+stable while referenced, including when the slot array grows. Capacity,
+probe positions, and tombstone count use native-size integers. The
+pointer index has no fixed C<2^26> slot limit; its growth uses checked
+allocation arithmetic and available memory. Its distinct key count has
+the same 1,431,655,765-key ceiling as ordinary hashes. Acquiring an
+existing shared key remains permitted at the ceiling. Interning a new
+distinct key then prints C<Hash key count exceeds limit of 1431655765>
+and terminates the process without structured diagnostic construction or
+Perl hooks, since those paths could intern further keys. Explicit
+reservations above the shared-key limit throw the structured capacity
+diagnostic. The cached hash and reference count in each C<HEK> remain
+C<U32>. Since the hash is 32 bits, hash distribution can limit
+performance above C<2^32> slots. This does not change the ordinary hash
+index's C<2^31> slot limit. The table has a minimum capacity of 32,768
+slots. Before insertion, when live entries plus tombstones reach half
+the capacity, it doubles the bucket count if tombstones are below half
+of occupied slots. Otherwise it clears tombstones at the same capacity.
+It has no entry-array compaction or early shrink check. Traversal scans
+the entry array independently of hash values. The C<PERL_PERTURB_KEYS>
+controls and C<Hash::Util::hash_traversal_mask> are removed.
+Hash-function seeding is retained. Insertion during an active traversal
+is detected without random state.
 
 This changes the XS ABI and direct-storage interfaces. C<HeNEXT> and
 C<HeSHARED_NEXT> are removed. C<HvMAX> is no longer writable as an

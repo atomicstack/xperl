@@ -37,7 +37,8 @@ struct he {
 };
 
 #define HV_OA_DELETED U32_MAX
-#define HV_MAX_BUCKETS ((U32)1 << 30)
+/* The bucket array plus I32_MAX chain links fits U32 index positions. */
+#define HV_MAX_BUCKETS ((U32)1 << 31)
 #define HV_MAX_KEYS ((HV_MAX_BUCKETS / 3) * 2 + (HV_MAX_BUCKETS % 3) * 2 / 3)
 
 struct hv_oa {
@@ -623,7 +624,8 @@ to the shared-key table.
 =for apidoc Cmn|U32|HV_MAX_KEYS
 
 The maximum number of ordinary hash entries, including restricted-hash
-placeholders, at the configured maximum load.
+placeholders, or distinct shared keys. Ordinary hashes derive this limit
+from the configured maximum bucket count and load.
 
 =for apidoc Cmn|U32|HV_OA_DELETED
 

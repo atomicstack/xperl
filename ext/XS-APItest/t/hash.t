@@ -53,18 +53,25 @@ BEGIN {use_ok('XS::APItest')};
 subtest 'ordinary hash bucket limit arithmetic' => sub {
     my $capacity_for = \&XS::APItest::Hash::ordinary_hash_capacity_for;
     my $size_valid = \&XS::APItest::Hash::ordinary_hash_size_valid;
-    my $max_buckets = 1_073_741_824; # 2^30
-    my $max_live = 715_827_882;      # floor(2 * 2^30 / 3)
+    my $max_buckets = 2_147_483_648; # 2^31
+    my $max_live = 1_431_655_765; # floor(2 * 2^31 / 3)
 
     is($capacity_for->($max_live, 8), $max_buckets,
-       'maximum supported live count maps to 2^30 buckets');
+       'maximum supported live count maps to 2^31 buckets');
     is($capacity_for->($max_live + 1, 8), 0,
        'first live count beyond the limit has no capacity');
+    is($capacity_for->($max_live, $max_buckets), $max_buckets,
+       'maximum bucket count remains representable during growth');
+    is($size_valid->($max_buckets, 2_147_483_647),
+       $Config::Config{sizesize} >= 8 ? 1 : 0,
+       'maximum signed entry capacity keeps combined chain positions in U32');
+    ok(!$size_valid->($max_buckets, 2_147_483_648),
+       'entry capacity above the signed iterator range is rejected');
     is($capacity_for->(1, 0), 0, 'invalid minimum capacity is rejected');
     is($capacity_for->(1, 4), 8,
        'growth from a small internal index uses the normal minimum');
     ok(!$size_valid->(2 * $max_buckets, 0),
-       'bucket capacity above 2^30 is rejected');
+       'bucket capacity above 2^31 is rejected');
     is($size_valid->($max_buckets, $max_live),
        $Config::Config{sizesize} >= 8 ? 1 : 0,
        'maximum policy size is valid only when allocation bytes fit');
@@ -73,7 +80,7 @@ subtest 'ordinary hash bucket limit arithmetic' => sub {
 {
     my %h = (kept => 1);
     eval { XS::APItest::Hash::ordinary_hash_reserve_over_limit(\%h) };
-    like($@, qr/Hash key count exceeds limit of 715827882/,
+    like($@, qr/Hash key count exceeds limit of 1431655765/,
          'ordinary hash reservation above the limit reports the limit');
     is($h{kept}, 1, 'failed reservation preserves existing values');
     is(scalar keys %h, 1, 'failed reservation preserves existing keys');
@@ -95,7 +102,7 @@ SKIP: {
     XS::APItest::Hash::ordinary_hash_saturated_store(\%h, 1);
     is($h{kept}, 1, 'replacing a key remains allowed at the key limit');
     eval { XS::APItest::Hash::ordinary_hash_saturated_store(\%h, 0) };
-    like($@, qr/Hash key count exceeds limit of 715827882/,
+    like($@, qr/Hash key count exceeds limit of 1431655765/,
          'new key insertion at the limit reports the limit');
     is($h{kept}, 1, 'rejected insertion preserves the replacement value');
     is(scalar keys %h, 1, 'failed insertion leaves the key count unchanged');
@@ -134,10 +141,10 @@ subtest 'PL_strtab capacity arithmetic' => sub {
         skip('wide Size_t boundary cases', 8)
             unless $Config::Config{sizesize} >= 8;
         my $two32 = 4_294_967_296;
-        is($capacity_for->(2_147_483_647), $two32,
-           'capacity arithmetic reaches 2^32 on wide Size_t');
-        is($capacity_for->(2_147_483_648), 2 * $two32,
-           'capacity arithmetic crosses 2^32 on wide Size_t');
+        is($capacity_for->(1_431_655_765), $two32,
+           'maximum shared-key count requires 2^32 half-full buckets');
+        is($capacity_for->(1_431_655_766), 0,
+           'first shared-key count above the policy limit is rejected');
         ok($size_valid->($two32), '2^32 table capacity is valid');
         ok($size_valid->(2 * $two32), '2^33 table capacity is valid');
 
@@ -148,9 +155,9 @@ subtest 'PL_strtab capacity arithmetic' => sub {
         ok(!$size_valid->($first_invalid_capacity),
            'next power-of-two allocation exceeds 64-bit Size_t');
         is($capacity_for->($largest_capacity), 0,
-           'capacity target is rejected when its allocation would overflow');
+           'oversized live count is rejected before allocation arithmetic');
         is($capacity_for->(9_223_372_036_854_775_808), 0,
-           '2*live arithmetic overflow returns no capacity');
+           'live count that would overflow 2*live returns no capacity');
     }
 
     SKIP: {
@@ -167,12 +174,32 @@ subtest 'PL_strtab capacity arithmetic' => sub {
     my $key = "xperl-strtab-reserve-overflow-$$";
     my %owner = ($key => 1);
     my $before = XS::APItest::Hash::shared_key_storage_info()->[0];
-    eval { XS::APItest::Hash::shared_key_reserve_overflow() };
-    like($@, qr/memory wrap/,
-         'unrepresentable shared-key reservation is rejected');
+    eval { XS::APItest::Hash::shared_key_reserve_over_limit() };
+    like($@, qr/Hash key count exceeds limit of 1431655765/,
+         'shared-key reservation above the key limit is rejected');
     is(XS::APItest::Hash::shared_key_storage_info()->[0], $before,
        'failed reservation leaves the existing table capacity unchanged');
     is($owner{$key}, 1, 'shared-key table remains usable after overflow rejection');
+}
+
+ok(XS::APItest::Hash::shared_key_saturated_acquire(0),
+   'existing shared key can gain another reference at the distinct-key limit');
+
+{
+    require IPC::Open3;
+    require Symbol;
+    my $stderr = Symbol::gensym();
+    my $pid = IPC::Open3::open3(undef, my $stdout, $stderr,
+        $^X, (map { "-I$_" } grep { !ref } @INC), '-MXS::APItest', '-e',
+        'XS::APItest::Hash::shared_key_saturated_acquire(1); print "unexpected return"');
+    my $out = do { local $/; <$stdout> };
+    my $err = do { local $/; <$stderr> };
+    $out //= '';
+    waitpid($pid, 0);
+    is($? >> 8, 1, 'new distinct shared key at the limit terminates the child');
+    is($out, '', 'shared-key limit failure does not return to Perl code');
+    like($err, qr/\AHash key count exceeds limit of 1431655765\z/,
+         'shared-key limit reports directly without recursive diagnostics');
 }
 
 is_deeply(XS::APItest::Hash::shared_hek_refcount_probe(0xffff_fffe),

@@ -173,6 +173,11 @@ S_strtab_prepare_insert(pTHX_ U32 hash, const char *key, STRLEN klen,
     Size_t occupied = HvTOTALKEYS(PL_strtab)
         + HvSTRTAB(PL_strtab)->tombstones;
 
+    /* Reporting a full shared-key table cannot construct a diagnostic that
+     * might intern another key. Existing keys bypass this insertion path. */
+    if (HvTOTALKEYS(PL_strtab) >= HV_MAX_KEYS)
+        PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED_STRTAB((UV)HV_MAX_KEYS);
+
     if (occupied >= capacity / 2
         && (*pos == STRTAB_NO_SLOT
             || HvSTRSLOTS(PL_strtab)[*pos] != HvSTR_TOMBSTONE)) {
@@ -2492,6 +2497,8 @@ Perl_hv_ksplit(pTHX_ HV *hv, IV newmax)
             return;
         if ((UV)(Size_t)newmax != (UV)newmax)
             Perl_croak_memory_wrap();
+        if ((UV)newmax > HV_MAX_KEYS)
+            PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
         capacity = S_hv_strtab_capacity_for((Size_t)newmax);
         if (!capacity)
             Perl_croak_memory_wrap();

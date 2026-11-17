@@ -60412,7 +60412,13 @@ $CONF = {
           },
           "counts_as_error" => 1,
           "emit" => {
-            "api" => "CROAK"
+            "api" => "CROAK",
+            "aliases" => [
+              {
+                "api" => "NOPERL_DIE",
+                "macro" => "PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED_STRTAB"
+              }
+            ]
           },
           "class" => "XPerl::Diagnostic::Error::Value::Hash"
         },

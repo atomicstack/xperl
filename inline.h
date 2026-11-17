@@ -436,7 +436,7 @@ S_hv_strtab_capacity_for(Size_t live)
 {
     Size_t capacity = 32768;
     Size_t target;
-    if (live >= MEM_SIZE_MAX / 2)
+    if (live > HV_MAX_KEYS || live >= MEM_SIZE_MAX / 2)
         return 0;
     target = live * 2 + 1;
     while (capacity < target) {

@@ -20151,12 +20151,19 @@ enum perl_diag_selector_domain_id {
     Perl_diag_render_format(aTHX_ perl_diag_note_context_near_source_annotated_idx, (values), (language))
 
 #define PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED(ma_limit) \
-    Perl_throw_croak_1_1607( \
-        aTHX_ perl_diag_error_value_hash_capacity_exceeded_idx, \
-        __FILE__, \
-        __LINE__, \
-        ma_limit \
-    )
+    STMT_START { \
+        UV const in_limit = (ma_limit); \
+        AV * const params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV()))); \
+         \
+        SV * const tmpl_limit = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_value_hash_capacity_exceeded_idx, 0, 0, perl_diag_selector_invalid); \
+        sv_setuv(tmpl_limit, in_limit); \
+         \
+        SV * const message_sv = NULL; \
+        Perl_diag_croak_sv(aTHX_ perl_diag_error_value_hash_capacity_exceeded_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), message_sv); \
+    } STMT_END
+
+#define PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED_STRTAB(ma_limit) \
+    Perl_noperl_die("Hash key count exceeds limit of %" UVuf, ma_limit)
 
 #define PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_INVOCANT_INVALID() \
     Perl_throw_croak_0_1006( \
@@ -22171,6 +22178,7 @@ enum perl_diag_selector_domain_id {
 /* PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY => ERROR_USER_OPAQUE_SV_DELIVERY */
 /* PERL_THROW_ERROR_USER_OPAQUE_SV_DELIVERY_DIE_SV => ERROR_USER_OPAQUE_SV_DELIVERY */
 /* PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED => ERROR_VALUE_HASH_CAPACITY_EXCEEDED */
+/* PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED_STRTAB => ERROR_VALUE_HASH_CAPACITY_EXCEEDED */
 /* PERL_THROW_ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE => ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE */
 /* PERL_THROW_ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE => ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE */
 /* PERL_THROW_ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID => ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID */
@@ -22647,7 +22655,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * c8e27e68201828550d2e39cd5913442d2d9ff67495edfea6bb3b3158aa765009 diag_conf.pl
+ * 5a64f1d46ee7e1ee141248fbc5904cfc6f5df563296549e2adc8d1c3efd756b7 diag_conf.pl
  * 33ec9731336463f6feeab1a67c087741ee4e1ad5eb527a86cceac4b577ab4168 diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

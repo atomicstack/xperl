@@ -666,27 +666,34 @@ storage, and allocator retention changes it on later rounds.
 
 =head1 LIMITS AND FOLLOW-UP
 
-Each interpreter's C<PL_strtab> is an open-addressed array of shared C<HEK *>
-slots. Its capacity, probe positions, and tombstone count use native-size
-integers. The pointer index has no fixed C<2^26> slot limit. Growth is limited
-by checked allocation arithmetic and available memory. The cached hash in
-each C<HEK> and its reference count remain C<U32>; because the hash is still
-32 bits, hash distribution can become a performance limitation above
-C<2^32> slots. The ordinary hash index retains its C<2^30> slot
-limit. The table's minimum capacity is 32,768 slots. Before insertion, when
-live entries plus tombstones reach C<floor(2*capacity/3)>, it targets the next
-power of two able to hold C<3 * live> entries, retaining the minimum
-capacity. It grows when tombstones are below half of occupied slots.
-Otherwise it clears tombstones at the same capacity, except that it shrinks
-when the target is at most half the current capacity. It has no entry-array
-compaction or early shrink check. It stores full hashes in each shared C<HEK> and has no C<HE>
-records, entry array, or freelist. Ordinary hash entry identifiers use
-adaptive one-, two-, or four-byte widths; the ordinary hash index is limited
-to 2^30 slots. At the two-thirds load limit, an ordinary hash can hold at most
-715,827,882 live keys. Inserting a key or explicitly pre-sizing beyond this
-limit throws C<Hash key count exceeds limit of 715827882>. Deleted ordinary
-hash entries are not reused and can leave holes in the entry array until a
-later insertion compacts it.
+Each interpreter's C<PL_strtab> is an open-addressed array of shared
+C<HEK *> slots. Its capacity, probe positions, and tombstone count use
+native-size integers. The pointer index uses checked native-size
+allocation arithmetic. Both ordinary hashes and the shared-key table
+limit their live key count to 1,431,655,765, with allocation limits
+potentially reached earlier. The cached hash in each C<HEK> and its
+reference count remain C<U32>; because the hash is still 32 bits, hash
+distribution can become a performance limitation above C<2^32> slots.
+The ordinary hash index retains its C<2^31> slot limit. The table's
+minimum capacity is 32,768 slots. Before insertion, when live entries
+plus tombstones reach half the capacity, it doubles the bucket count if
+tombstones are below half of occupied slots. Otherwise it clears
+tombstones at the same capacity. It has no entry-array compaction or
+early shrink check. It stores full hashes in each shared C<HEK> and has
+no C<HE> records, entry array, or freelist. Ordinary hash entry
+identifiers use adaptive one-, two-, or four-byte widths; the ordinary
+hash index is limited to 2^31 slots. At the two-thirds load limit, an
+ordinary hash can hold at most 1,431,655,765 live keys. Inserting a key
+or explicitly pre-sizing beyond this limit throws C<Hash key count
+exceeds limit of 1431655765>. At the shared-key limit, acquiring another
+reference to an existing key is permitted. Interning a new distinct key
+prints the same limit message and terminates the process without
+constructing a structured diagnostic or invoking Perl hooks, because
+reporting through those paths could itself require new shared keys.
+Explicit shared-key reservations above the limit throw a structured
+diagnostic. Deleted ordinary hash entries are not reused and can leave
+holes in the entry array until a later insertion compacts it.
+
 With the default C<PERL_HASH_LINEAR_MAX=8>, hashes with up to eight entries
 avoid the index allocation but use linear lookup and shift entries on
 deletion. Setting the threshold to zero disables linear storage and uses an
