@@ -217,12 +217,13 @@ S_oa_rebuild(pTHX_ HV *hv, U32 capacity, U32 entry_capacity, bool pack)
     Size_t bytes;
     if (capacity > HV_MAX_BUCKETS || HvTOTALKEYS(hv) > HV_MAX_KEYS)
         PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
+    /* Chaining permits more live entries than buckets. Only open addressing
+     * needs a live-count limit on the index slots. */
     if (!S_hv_oa_size_valid(capacity, entry_capacity)
-#ifdef PERL_HASH_INDEX_CHAINS
-        || HvTOTALKEYS(hv) > capacity)
-#else
-        || HvTOTALKEYS(hv) > OA_ENTRY_CAPACITY(capacity))
+#ifndef PERL_HASH_INDEX_CHAINS
+        || HvTOTALKEYS(hv) > OA_ENTRY_CAPACITY(capacity)
 #endif
+        )
         Perl_croak_memory_wrap();
     assert(entry_capacity >= HvTOTALKEYS(hv));
     bytes = STRUCT_OFFSET(struct hv_oa, indices)

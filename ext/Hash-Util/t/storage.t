@@ -1198,6 +1198,32 @@ if ($info->{integer_chained}) {
 }
 
 if (hash_storage_info({})->{integer_chained}) {
+    my (@colliding, @empty);
+    for (my $candidate = 0;
+         @colliding < 10 || grep(!defined, @empty[1 .. 12]);
+         $candidate++) {
+        my $key = "chain-overfull:$candidate";
+        my $bucket = hash_value($key) & 15;
+        push @colliding, $key if $bucket == 0 && @colliding < 10;
+        $empty[$bucket] //= $key if $bucket >= 1 && $bucket <= 12;
+    }
+    my %hash;
+    $hash{$colliding[$_]} = $_ for 0 .. 9;
+    $hash{$empty[$_]} = $_ for 1 .. 12;
+    is(hash_storage_info(\%hash)->{index_capacity}, 16,
+       'empty-bucket insertions can leave more entries than SC buckets');
+    delete @hash{@colliding[0 .. 4]};
+    $hash{'after-compaction'} = 99;
+    is(hash_storage_info(\%hash)->{entry_holes}, 0,
+       'SC compacts an entry array with more live entries than buckets');
+    is_deeply([@hash{@colliding[5 .. 9], @empty[1 .. 12]}],
+              [5 .. 9, 1 .. 12],
+       'compaction of an overfull SC table preserves surviving values');
+    is($hash{'after-compaction'}, 99,
+       'insertion after overfull SC compaction preserves the new value');
+}
+
+if (hash_storage_info({})->{integer_chained}) {
     my @bucket_keys;
     my $candidate = 0;
     while (grep(!defined, @bucket_keys[0 .. 15])) {
