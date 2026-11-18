@@ -444,6 +444,34 @@ foreach my $in ("", "N", "a\0b") {
 }
 
 {
+    for my $private (0, 1) {
+        my %indexed;
+        keys %indexed = 16;
+        XS::APItest::Hash::disable_hash_key_sharing(\%indexed) if $private;
+        my $bytes = "indexed-lvalue-key-$$-$private"
+            . chr(utf8::unicode_to_native(0xe9));
+        my $upgraded = $bytes;
+        utf8::upgrade($upgraded);
+        my $byte_query = XS::APItest::Hash::shared_query_key($bytes);
+        my $utf8_query = XS::APItest::Hash::shared_query_key($upgraded);
+
+        $indexed{$byte_query} = 1;
+        ok(!utf8::is_utf8((keys %indexed)[0]),
+           'indexed shared-key lvalue miss creates a byte key');
+        $indexed{$utf8_query} = 2;
+        ok(utf8::is_utf8((keys %indexed)[0]),
+           'indexed shared-key lvalue hit preserves incoming WASUTF8');
+        $indexed{$byte_query} = 3;
+        ok(!utf8::is_utf8((keys %indexed)[0]),
+           'indexed byte lvalue hit clears stored WASUTF8');
+        is(scalar keys %indexed, 1,
+           'indexed lvalue encoding changes preserve key identity');
+        is($indexed{$bytes}, 3,
+           'indexed lvalue encoding changes preserve the new value');
+    }
+}
+
+{
     foreach ([\&XS::APItest::Hash::rot13_hash, \&rot13, "rot 13"],
 	     [\&XS::APItest::Hash::bitflip_hash, \&bitflip, "bitflip"],
 	    ) {
@@ -810,6 +838,28 @@ sub test_precomputed_hashes {
         $callback = undef;
         $cb->() if $cb;
     }
+}
+
+{
+    my %source;
+    my $old = XSAPITestStoreDtor->new;
+    my $replacement = 'replacement retained by caller';
+    store_ent_with_callback_owner(\%source, 'replace', $old);
+    my $before = $XSAPITestStoreDtor::calls || 0;
+    store_ent_with_callback_owner(\%source, 'replace', $replacement);
+    is($source{replace}, $replacement,
+       'direct store replaces a value whose scalar has another owner');
+    is($XSAPITestStoreDtor::calls || 0, $before,
+       'replacement preserves the externally owned old value');
+    store_ent_with_callback_owner(\%source, 'replace', $replacement);
+    is($source{replace}, $replacement,
+       'direct store can replace a retained scalar with itself');
+
+    my %null_values;
+    fill_hash_with_nulls(\%null_values);
+    store_ent_with_callback_owner(\%null_values, '84', $replacement);
+    is($null_values{84}, $replacement,
+       'direct store installs a value in an existing null-valued entry');
 }
 
 {

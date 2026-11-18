@@ -3,6 +3,7 @@
 
 #define HV_INDEX_NO_SLOT U32_MAX
 #define HV_INDEX_DELETED U32_MAX
+#define HV_INDEX_NEEDS_INSERT_SLOT 1
 #define HV_INDEX_COUPLED_MAX 16384
 #define HV_INDEX_LOAD_LIMIT(capacity) \
     (((capacity) / 3) * 2 + ((capacity) % 3) * 2 / 3)

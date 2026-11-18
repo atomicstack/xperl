@@ -1434,7 +1434,8 @@ if (hash_storage_info({})->{integer_chained}) {
     }
     my $collision;
     do { $collision = 'chain-split:' . $candidate++ }
-        while (hash_value($collision) & 15);
+        while ((hash_value($collision) & 15)
+            || !((hash_value($collision) ^ hash_value($bucket_keys[0])) & 16));
 
     my %hash;
     keys %hash = 10;
@@ -1450,6 +1451,23 @@ if (hash_storage_info({})->{integer_chained}) {
        'SC doubles after a collision above the load limit');
     is_deeply([@hash{@bucket_keys[0 .. 10], $collision}], [0 .. 10, 99],
        'a delayed collision split preserves every entry');
+    my $bucket = 0;
+    my @physical;
+    my @misplaced;
+    for my $chain (@{bucket_array(\%hash)}) {
+        if (ref $chain) {
+            push @physical, @$chain;
+            push @misplaced, grep { (hash_value($_) & 31) != $bucket } @$chain;
+            $bucket++;
+        }
+        else {
+            $bucket += $chain;
+        }
+    }
+    is_deeply([sort @physical], [sort keys %hash],
+       'split bucket traversal visits each key exactly once');
+    is_deeply(\@misplaced, [],
+       'split links stay in the destination bucket after the mask changes');
 
     my %below_limit;
     keys %below_limit = 10;
@@ -1459,6 +1477,42 @@ if (hash_storage_info({})->{integer_chained}) {
        'SC chains a collision below the load limit without splitting');
     is_deeply([@below_limit{$bucket_keys[0], $collision}], [1, 2],
        'both entries remain reachable in a below-limit chain');
+
+    my %coupled;
+    keys %coupled = 10;
+    $coupled{$bucket_keys[$_]} = $_ for 0 .. 11;
+    is(hash_storage_info(\%coupled)->{entry_capacity}, 12,
+       'distinct buckets fill the entry budget without a bucket split');
+    my $retired = each %coupled;
+    delete $coupled{$retired};
+    my $target = $retired eq $bucket_keys[0] ? 1 : 0;
+    my $pending;
+    do { $pending = 'chain-coupled:' . $candidate++ }
+        while ((hash_value($pending) & 15) != $target);
+    $coupled{$pending} = 99;
+    my $coupled_info = hash_storage_info(\%coupled);
+    is_deeply([@$coupled_info{qw(index_capacity entry_capacity entry_used entry_holes)}],
+              [32, 15, 13, 1],
+       'simultaneous growth preserves a lazy iterator hole and the growth budgets');
+    my @coupled_physical = map { ref($_) ? @$_ : () } @{bucket_array(\%coupled)};
+    my @survivors = grep { $_ ne $retired } @bucket_keys[0 .. 11];
+    is_deeply([sort @coupled_physical], [sort @survivors, $pending],
+       'simultaneous growth excludes the lazy-deleted key from bucket chains');
+    my $warning = '';
+    my $next;
+    {
+        local $SIG{__WARN__} = sub { $warning .= shift };
+        $next = each %coupled;
+    }
+    ok(!defined($next) && $warning =~ /each\(\).*insertion.*iterator/i,
+       'simultaneous growth preserves insertion detection on the active iterator');
+    keys %coupled;
+    my @after_reset;
+    while (defined(my $key = each %coupled)) {
+        push @after_reset, $key;
+    }
+    is_deeply(\@after_reset, [@survivors, $pending],
+       'iteration after simultaneous growth preserves survivor and append order');
 }
 
 done_testing();

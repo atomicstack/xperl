@@ -3,11 +3,18 @@
 
 #define HV_INDEX_NO_SLOT U32_MAX
 #define HV_INDEX_DELETED U32_MAX
+#define HV_INDEX_NEEDS_INSERT_SLOT 0
 #define HV_INDEX_LOAD_LIMIT(capacity) \
-    (((capacity) / 3) * 2 + ((capacity) % 3) * 2 / 3)
+    ((capacity) - ((capacity) + 2U) / 3U)
 
-static void S_hv_index_insert(HV *hv, HE *entry, U32 hash);
-static HE *S_hv_index_new_entry(pTHX_ HV *hv, U32 hash, U32 *slotp);
+static void S_hv_index_insert(HV *hv, U32 ix, U32 hash);
+
+PERL_STATIC_INLINE U32
+S_hv_index_bucket_count(const HV *hv)
+{
+    assert(!HvIS_LINEAR(hv));
+    return (U32)1 << (HvMAX_RAW(hv) & HV_MAX_EXPONENT_MASK);
+}
 
 /* A proportional threshold amortizes packing over subsequent insertions
  * without making small hashes accumulate a fixed byte budget of holes. */
@@ -15,7 +22,7 @@ static bool
 S_hv_index_compaction_worthwhile(U32 used, U32 live, U32 capacity)
 {
     const U32 holes = used - live;
-    return holes >= capacity / 5 + (capacity % 5 != 0);
+    return holes && holes >= capacity / 5 + (capacity % 5 != 0);
 }
 
 static U32
@@ -140,7 +147,7 @@ S_hv_index_rebuild(pTHX_ HV *hv, U32 capacity, U32 entry_capacity, bool pack)
     for (i = 0; i < storage->used; i++) {
         HE *entry = HvENTRY_FIRST(hv, i);
         if (entry)
-            S_hv_index_insert(hv, entry, HeHASH(entry));
+            S_hv_index_insert(hv, i, HeHASH(entry));
     }
 }
 
@@ -161,12 +168,17 @@ static void
 S_hv_index_promote(pTHX_ HV *hv)
 {
     U32 used = (U32)HvTOTALKEYS(hv), cap = 8;
+    U32 entry_capacity = MAX(used, 8);
     while (used + (used >> 1) > cap - 1) {
         if (cap >= HV_MAX_BUCKETS)
             PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
         cap <<= 1;
     }
-    S_hv_index_resize(aTHX_ hv, cap);
+    /* Promotion has a pending insertion. Include its already-due entry
+     * growth so the new index does not need an immediate reallocation. */
+    if (entry_capacity == used)
+        entry_capacity += entry_capacity >> 2;
+    S_hv_index_rebuild(aTHX_ hv, cap, entry_capacity, FALSE);
 }
 
 static void
@@ -223,6 +235,7 @@ S_linear_new_entry(pTHX_ HV *hv, U32 hash)
     U32 used = (U32)HvTOTALKEYS(hv), cap = HvLINEAR_CAP(hv);
     U32 limit = (U32)PL_hash_linear_max;
     HE *entries = (HE *)HvARRAY(hv);
+    PERL_UNUSED_ARG(hash);
     if (!entries && used == 0) {
         HE *entry = S_alloc_he(aTHX);
         HvARRAY(hv) = (HE **)entry;
@@ -241,8 +254,14 @@ S_linear_new_entry(pTHX_ HV *hv, U32 hash)
             entries = (HE *)HvARRAY(hv);
         }
         else {
+            PERL_HV_INDEX *storage;
             S_hv_index_promote(aTHX_ hv);
-            return S_hv_index_new_entry(aTHX_ hv, hash, NULL);
+            storage = HvINDEX(hv);
+            /* The supported linear limits promote below the bucket load
+             * limit, with room reserved for this pending entry. */
+            assert(storage->used < storage->capacity);
+            assert(HvTOTALKEYS(hv) < HV_INDEX_LOAD_LIMIT((U32)HvMAX(hv) + 1));
+            return &storage->entries[storage->used++];
         }
     }
     return &entries[used];
@@ -312,17 +331,16 @@ S_hv_index_key_eq(const HEK *hek, const HEK *keyhek, U32 hash,
     /* Encoding variants and HEKs from another interpreter can have
      * different pointers for the same key. Retain the content fallback. */
     return HEK_HASH(hek) == hash && HEK_LEN(hek) == (I32)klen
-        && memEQ(HEK_KEY(hek), key, klen)
-        && !((HEK_FLAGS(hek) ^ flags) & HVhek_UTF8);
+        && !((HEK_FLAGS(hek) ^ flags) & HVhek_UTF8)
+        && memEQ(HEK_KEY(hek), key, klen);
 }
 
 PERL_STATIC_INLINE HE *
 S_hv_index_find(pTHX_ HV *hv, U32 hash, const char *key, STRLEN klen, U32 flags,
           HEK *keyhek, U32 *slotp)
 {
-    U32 mask = (U32)HvMAX(hv);
-    U32 pos = hash & mask;
-    U32 first_deleted = HV_INDEX_NO_SLOT;
+    U32 mask;
+    U32 pos;
     U32 n;
     if (HvIS_LINEAR(hv)) {
         HE *entries = (HE *)HvARRAY(hv);
@@ -335,6 +353,8 @@ S_hv_index_find(pTHX_ HV *hv, U32 hash, const char *key, STRLEN klen, U32 flags,
         return NULL;
     }
     if (!HvARRAY(hv)) { if (slotp) *slotp = HV_INDEX_NO_SLOT; return NULL; }
+    mask = S_hv_index_bucket_count(hv) - 1;
+    pos = hash & mask;
     /* Select a load width before walking the chain. Bucket heads contain
      * one identifier. Link records contain an identifier and, optionally,
      * a fingerprint. Copy keeps wider loads portable on strict-alignment
@@ -356,20 +376,25 @@ S_hv_index_find(pTHX_ HV *hv, U32 hash, const char *key, STRLEN klen, U32 flags,
 #define FIND_CHAIN(Index)                                               \
     STMT_START {                                                       \
         const PERL_HV_INDEX * const storage = HvINDEX(hv);                       \
-        const U8 * const links = storage->indices                            \
-            + ((Size_t)mask + 1) * sizeof(Index);                       \
-        HE * const entries = storage->entries;                              \
+        const U8 *links;                                               \
+        HE *entries;                                                   \
         Index encoded;                                                 \
         U32 ix;                                                        \
         Copy(storage->indices + (Size_t)pos * sizeof(Index),                  \
              &encoded, 1, Index);                                      \
+        if (!encoded) {                                               \
+            if (slotp) *slotp = HV_INDEX_NO_SLOT;                       \
+            return NULL;                                              \
+        }                                                             \
+        links = storage->indices + ((Size_t)mask + 1) * sizeof(Index);   \
+        entries = storage->entries;                                   \
         while ((ix = encoded)) {                                       \
             const U8 *record;                                          \
             bool matches;                                              \
             assert(ix <= storage->capacity);                                \
-            record = links + (Size_t)(ix - 1)                           \
-                * CHAIN_RECORD_WORDS * sizeof(Index);                  \
-            CHAIN_CHECK_FINGERPRINT(Index, record, matches);             \
+            CHAIN_CHECK_FINGERPRINT(Index,                             \
+                links + (Size_t)(ix - 1) * CHAIN_RECORD_WORDS           \
+                    * sizeof(Index), matches);                        \
             if (matches) {                                             \
                 HE *entry = &entries[ix - 1];                           \
                 if (S_hv_index_key_eq(HeKEY_hek(entry), keyhek, hash,           \
@@ -379,6 +404,8 @@ S_hv_index_find(pTHX_ HV *hv, U32 hash, const char *key, STRLEN klen, U32 flags,
                 }                                                      \
             }                                                          \
             pos = mask + ix;                                           \
+            record = links + (Size_t)(ix - 1)                           \
+                * CHAIN_RECORD_WORDS * sizeof(Index);                  \
             Copy(record, &encoded, 1, Index);                           \
         }                                                              \
         if (slotp) *slotp = HV_INDEX_NO_SLOT;                                   \
@@ -392,17 +419,14 @@ S_hv_index_find(pTHX_ HV *hv, U32 hash, const char *key, STRLEN klen, U32 flags,
 #undef FIND_CHAIN
 #undef CHAIN_CHECK_FINGERPRINT
 #undef CHAIN_RECORD_WORDS
-    if (slotp) *slotp = first_deleted;
-    return NULL;
 }
 
 static void
-S_hv_index_insert(HV *hv, HE *entry, U32 hash)
+S_hv_index_insert(HV *hv, U32 ix, U32 hash)
 {
     PERL_HV_INDEX *storage = HvINDEX(hv);
-    const Size_t buckets = (Size_t)HvMAX(hv) + 1;
+    const Size_t buckets = S_hv_index_bucket_count(hv);
     const U32 pos = hash & (U32)(buckets - 1);
-    const U32 ix = (U32)(entry - storage->entries);
 
     assert(!HvIS_LINEAR(hv));
     assert(ix < storage->capacity);
@@ -520,17 +544,46 @@ S_hv_index_reserve_entries(pTHX_ HV *hv, U32 capacity)
         HvAUX(hv)->xhv_eiter = &storage->entries[eiter_offset];
 }
 
+PERL_STATIC_INLINE bool
+S_hv_index_maybe_split(pTHX_ HV *hv, U32 hash)
+{
+    const U32 buckets = S_hv_index_bucket_count(hv);
+
+    /* An empty bucket needs no load-limit calculation. */
+    if (HvINDEX_GET(hv, hash & (buckets - 1))
+        && HvTOTALKEYS(hv) >= HV_INDEX_LOAD_LIMIT(buckets)) {
+        PERL_HV_INDEX *storage = HvINDEX(hv);
+        U32 entries = storage->capacity;
+        const bool pack = S_hv_index_compaction_worthwhile(storage->used,
+            (U32)HvTOTALKEYS(hv), entries);
+
+        if (buckets >= HV_MAX_BUCKETS)
+            PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
+        /* Decide packing with the old capacity. If it leaves no entry room,
+         * include the already-due growth in this rebuild. */
+        if (!pack && storage->used == entries) {
+            const U32 increment = entries >> 2;
+            const U32 expanded = entries + increment;
+            if (!increment || expanded < entries)
+                Perl_croak_memory_wrap();
+            entries = expanded;
+        }
+        S_hv_index_rebuild(aTHX_ hv, buckets * 2, entries, pack);
+        return TRUE;
+    }
+    return FALSE;
+}
+
 static HE *
-S_hv_index_new_entry(pTHX_ HV *hv, U32 hash, U32 *slotp)
+S_hv_index_full_entry(pTHX_ HV *hv, U32 hash)
 {
     PERL_HV_INDEX *storage = HvINDEX(hv);
-    U32 index_capacity = (U32)HvMAX(hv) + 1;
     const U32 live = (U32)HvTOTALKEYS(hv);
-    /* Shrink only when entry exhaustion requires growing or packing.
-     * An index rebuild invalidates the saved insertion slot, even at unchanged
-     * capacity. Moving only the HE array preserves it. */
-    if (storage->used == storage->capacity
-        && S_hv_index_compaction_worthwhile(storage->used, live, storage->capacity)) {
+
+    assert(storage->used == storage->capacity);
+    /* Shrink only when entry exhaustion requires growing or packing. */
+    if (S_hv_index_compaction_worthwhile(storage->used, live, storage->capacity)) {
+        U32 index_capacity = (U32)HvMAX(hv) + 1;
         const U32 shrink_entries = MAX(8, live + (live >> 2) + 1);
         U32 entry_capacity = storage->capacity;
         const U32 smaller_index = S_hv_index_rebuild_capacity(aTHX_ live + 1, 8);
@@ -541,22 +594,11 @@ S_hv_index_new_entry(pTHX_ HV *hv, U32 hash, U32 *slotp)
             index_capacity = smaller_index;
         if (shrink_entries <= entry_capacity / 2)
             entry_capacity = shrink_entries;
-        if (slotp) *slotp = HV_INDEX_NO_SLOT;
         S_hv_index_rebuild(aTHX_ hv, index_capacity, entry_capacity, TRUE);
         storage = HvINDEX(hv);
     }
-    /* An empty bucket needs no load-limit calculation. */
-    if (HvINDEX_GET(hv, hash & (index_capacity - 1))
-        && live >= HV_INDEX_LOAD_LIMIT(index_capacity)) {
-        if (index_capacity >= HV_MAX_BUCKETS)
-            PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
-        index_capacity *= 2;
-        if (slotp) *slotp = HV_INDEX_NO_SLOT;
-        S_hv_index_resize(aTHX_ hv, index_capacity);
+    if (S_hv_index_maybe_split(aTHX_ hv, hash))
         storage = HvINDEX(hv);
-    }
-    if (storage->used == storage->capacity) {
-    }
     if (storage->used == storage->capacity) {
         const U32 increment = storage->capacity >> 2;
         const U32 capacity = storage->capacity + increment;
@@ -565,9 +607,24 @@ S_hv_index_new_entry(pTHX_ HV *hv, U32 hash, U32 *slotp)
         S_hv_index_reserve_entries(aTHX_ hv, capacity);
         storage = HvINDEX(hv);
     }
-    /* A narrowed index may retain a much larger HE allocation. Reclaim
-     * holes before the next position exceeds the index's encoding range. */
     assert(storage->used < storage->capacity);
+    return &storage->entries[storage->used++];
+}
+
+PERL_STATIC_INLINE HE *
+S_hv_index_new_entry(pTHX_ HV *hv, U32 hash, U32 *slotp)
+{
+    PERL_HV_INDEX *storage = HvINDEX(hv);
+    const U32 used = storage->used;
+
+    PERL_UNUSED_ARG(slotp);
+    if (used == storage->capacity)
+        return S_hv_index_full_entry(aTHX_ hv, hash);
+    /* Used bounds the live count. Below half full, even a collision cannot
+     * split the buckets. Spare entries never need growth preparation. */
+    if (used >= S_hv_index_bucket_count(hv) / 2
+        && S_hv_index_maybe_split(aTHX_ hv, hash))
+        storage = HvINDEX(hv);
     return &storage->entries[storage->used++];
 }
 
@@ -575,9 +632,12 @@ S_hv_index_new_entry(pTHX_ HV *hv, U32 hash, U32 *slotp)
 static void
 S_hv_index_store(HV *hv, HE *entry, U32 hash, U32 insert_pos)
 {
-    PERL_UNUSED_ARG(insert_pos);
-            S_hv_index_insert(hv, entry, hash);
+    const U32 ix = HvINDEX(hv)->used - 1;
 
+    PERL_UNUSED_ARG(insert_pos);
+    PERL_UNUSED_ARG(entry);
+    assert(HvINDEX(hv)->used && entry == &HvINDEX(hv)->entries[ix]);
+    S_hv_index_insert(hv, ix, hash);
 }
 
 static bool

@@ -1028,10 +1028,22 @@ the internal C<PERL_HV_INDEX> type and C<HvINDEX> accessors; the former
 C<hv_oa> structure and C<HvOA> accessor names are replaced. The
 C<HvIS_OA> and C<HvIS_STRTAB> identity predicates are removed.
 
-Integer-chain insertion selects its packed identifier width once for the
-bucket head, next link, and optional fingerprint writes.
-It calculates the bucket growth threshold only when the destination bucket
-already contains an entry.
+Integer-chain insertion grows entry storage only when it is full. Bucket
+growth is considered only for a collision at a sufficient load. Promotion
+and bucket splitting include any entry growth already needed by the pending
+insertion, avoiding an intermediate allocation. Final capacities follow the
+same growth policy.
+
+Lookup stops at an empty bucket before preparing chain traversal. It reads
+the next identifier only after a mismatch. Insertion selects the packed identifier
+width once for the bucket head, next link, and optional fingerprint writes.
+SC lookups do not request the insertion-slot output used by OA.
+
+Ordinary indexed lvalues reuse the prepared-key lookup path for byte strings
+and canonical shared keys. Direct C API replacements avoid a key copy and
+second lookup when the old value is null or has another reference. Those
+replacements no longer take an extra temporary reference to the incoming
+value; its lifetime follows the ordinary ownership rules.
 
 Final destruction of eligible ordinary hashes with plain scalar values
 discards the index before releasing keys and values. This avoids individual
@@ -1244,6 +1256,13 @@ manager will later use a regex to expand these into links.
 [ List each fix as an =item entry ]
 
 =over 4
+
+=item *
+
+Keys added by a tied C<CLEAR> method that unties and repopulates its own hash
+retain their encoding flags. Serializing such a hash with C<Storable> no
+longer loses an upgraded key's UTF-8 flag or makes a wide key unreachable
+after deserialization.
 
 =item *
 

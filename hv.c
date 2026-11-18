@@ -24,7 +24,7 @@ hashes keep the same entry array with the selected SC or OA index.
 The algorithm-specific implementation owns lookup and storage management.
 Each HE contains a pointer to the value and a pointer to a HEK structure
 that holds the key and its hash. The shared string
-table stores stable HEK pointers in a separate open-addressed index.
+table stores stable HEK pointers in a separate chained table.
 
 =cut
 
@@ -543,10 +543,14 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
 
     assert(SvTYPE(hv) == SVt_PVHV);
 
-    /* Ordinary fetches need neither key conversion nor mutation handling
-     * when the key is already a byte string or a canonical shared HEK.
-     * Keep every storage representation on this same fetch path. */
-    if (!(action & ~HV_FETCH_JUST_SV) && !flags && keysv
+    /* Byte strings and canonical shared HEKs need no key conversion.
+     * Indexed lvalues reuse this preparation and the common hit/miss paths;
+     * linear lvalues retain the generic preparation needed for insertion. */
+    if ((!(action & ~HV_FETCH_JUST_SV)
+         || ((action & HV_FETCH_LVALUE)
+             && !(action & ~(HV_FETCH_JUST_SV | HV_FETCH_LVALUE | HV_FETCH_EMPTY_HE))
+             && HvARRAY(hv) && !HvIS_LINEAR(hv)))
+        && !flags && keysv
         && !SvMAGICAL(hv) && !SvMAGICAL(keysv)
         && SvPOK(keysv) && (SvIsCOW_shared_hash(keysv) || !SvUTF8(keysv))) {
         HEK *query_hek = NULL;
@@ -557,7 +561,8 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
         if (SvIsCOW_shared_hash(keysv)) {
             HEK *shared = SvSHARED_HEK_FROM_PV(SvPVX_const(keysv));
             query_hash = HEK_HASH(shared);
-            query_flags = HEK_FLAGS(shared);
+            query_flags = HVhek_KEYCANONICAL
+                | (HEK_FLAGS(shared) & (HVhek_UTF8 | HVhek_WASUTF8));
             if (HvSHAREKEYS(hv))
                 query_hek = shared;
         }
@@ -916,7 +921,8 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
 #endif
     {
         entry = S_hv_index_find(aTHX_ hv, hash, key, klen, flags, keysv_hek,
-                         action & (HV_FETCH_LVALUE|HV_FETCH_ISSTORE)
+                         HV_INDEX_NEEDS_INSERT_SLOT
+                             && (action & (HV_FETCH_LVALUE|HV_FETCH_ISSTORE))
                              ? &insert_pos : NULL);
     }
 
@@ -925,7 +931,8 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
 
   found:
     if (action & (HV_FETCH_LVALUE|HV_FETCH_ISSTORE)) {
-        if ((HeKFLAGS(entry) ^ flags) & HVhek_WASUTF8) {
+        if ((HvHASKFLAGS(hv) || (flags & HVhek_WASUTF8))
+            && ((HeKFLAGS(entry) ^ flags) & HVhek_WASUTF8)) {
             /* We match if HVhek_UTF8 bit in our flags and hash key's
                match.  But if entry was set previously with HVhek_WASUTF8
                and key now doesn't (or vice versa) then we should change
@@ -972,10 +979,16 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
             }
             HeVAL(entry) = val;
         } else if (action & HV_FETCH_ISSTORE) {
-            {
+            SV *oldval = HeVAL(entry);
+
+            /* Only releasing a last reference can invalidate this entry. */
+            if (!oldval || SvREFCNT(oldval) > 1) {
+                HeVAL(entry) = val;
+                SvREFCNT_dec(oldval);
+            }
+            else {
                 SV *lookup_sv;
                 const char *lookup_key;
-                SV *oldval = HeVAL(entry);
                 if (val && !SvIMMORTAL(val))
                     sv_2mortal(SvREFCNT_inc(val));
                 /* The supplied key can alias a HEK replaced above when
@@ -1025,6 +1038,14 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
                              HV_FETCH_ISSTORE|HV_DISABLE_UVAR_XKEY|return_svp,
                              sv, hash);
         }
+        /* An embedding environment callback can clear this hash. Revalidate
+         * storage here, rather than on every ordinary insertion. */
+        if ((action & HV_FETCH_LVALUE) && !HvARRAY(hv)) {
+            if (S_linear_enabled(aTHX_ hv))
+                HvMAX_SET_LINEAR(hv, 0);
+            else
+                S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
+        }
     }
 #endif
 
@@ -1066,23 +1087,12 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
 
     /* Welcome to hv_store...  */
 
-    if (!HvARRAY(hv)) {
-        /* Not sure if we can get here.  I think the only case of oentry being
-           NULL is for %ENV with dynamic env fetch.  But that should disappear
-           with magic in the previous code.  */
-        if (S_linear_enabled(aTHX_ hv)) {
-            HvMAX_SET_LINEAR(hv, 0);
-        }
-        else S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
-    }
-
+    assert(HvARRAY(hv) || HvIS_LINEAR(hv));
     {
       if (HvIS_LINEAR(hv)) {
         entry = S_linear_new_entry(aTHX_ hv, hash);
         goto ordinary_entry_ready;
       }
-        if (!HvARRAY(hv))
-            S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
         entry = S_hv_index_new_entry(aTHX_ hv, hash, &insert_pos);
       ordinary_entry_ready:
         if (HvSHAREKEYS(hv)) {
@@ -3680,7 +3690,7 @@ S_share_hek_flags(pTHX_ const char *str, STRLEN len, U32 hash, int flags)
     PERL_ARGS_ASSERT_SHARE_HEK_FLAGS;
     assert(!(flags & HVhek_NOTSHARED));
     hek = Perl_hv_strtab_share(aTHX_ PL_strtab, hash, str, len,
-                               flags & HVhek_STORAGE_MASK);
+                               (U8)flags);
     if (flags & HVhek_FREEKEY) Safefree(str);
     return hek;
 }
