@@ -8023,7 +8023,8 @@ Perl_sv_clear(pTHX_ SV *const orig_sv)
                 sv_del_backref(MUTABLE_SV(stash), sv);
             goto freescalar;
         case SVt_PVHV:
-            if (HvTOTALKEYS((HV*)sv) > 0) {
+            if (HvTOTALKEYS((HV*)sv) > 0
+                && !Perl_hv_free_entries_plain(aTHX_ MUTABLE_HV(sv))) {
                 const HEK *hek;
                 /* this statement should match the one at the beginning of
                  * hv_undef_flags() */

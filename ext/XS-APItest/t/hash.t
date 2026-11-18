@@ -927,6 +927,74 @@ pass("hv_store works on the hint hash");
        "hv_delete_ent never triggered a use-after free, but test it anyway");
 }
 
+subtest 'destroy plain hashes without retaining keys or scalar values' => sub {
+    for my $size (1, 2, 4, 8, 9, 16, 256) {
+        my @keys = map {
+            "plain-free:${size}:$$:$_" . ($_ % 2 ? "\0tail" : "\x{100}")
+        } 0 .. $size - 1;
+        my @before = map { Hash::Util::shared_key_refcount($_) } @keys;
+        my $hash = { map { ($keys[$_] => $_ + 1) } 0 .. $#keys };
+        my $alias = \$hash->{$keys[0]};
+        delete $hash->{$keys[$_]} for grep { $_ % 2 } 1 .. $#keys;
+        scalar keys %$hash;
+        undef $hash;
+        is($$alias, 1, "scalar alias survives destruction at size $size");
+        is_deeply([map { Hash::Util::shared_key_refcount($_) } @keys],
+                  \@before, "destruction releases keys and holes at size $size");
+    }
+    my $key = "plain-free-cow-$$";
+    my %source = ($key => 1);
+    my ($cow) = keys %source;
+    my $before = Hash::Util::shared_key_refcount($key);
+    my $hash = { map { ("plain-free-value:$_" => $_) } 0 .. 31 };
+    $hash->{payload} = $cow;
+    undef $hash;
+    is($cow, $key, 'shared-key string value survives its copied owner');
+    is(Hash::Util::shared_key_refcount($key), $before,
+       'destroying a copied shared-key value releases its reference');
+    $hash = {};
+    XS::APItest::Hash::disable_hash_key_sharing($hash);
+    $hash->{"unshared-free:$_"} = $_ for 0 .. 31;
+    undef $hash;
+    pass('private key allocations are released during destruction');
+    $before = Hash::Util::shared_key_refcount('999');
+    $hash = {};
+    XS::APItest::fill_hash_with_nulls($hash);
+    undef $hash;
+    is(Hash::Util::shared_key_refcount('999'), $before,
+       'NULL values do not retain shared keys');
+};
+
+{
+    package PlainHashDestroyCallback;
+    our $freed = 0;
+    sub DESTROY { ++$freed }
+}
+
+{
+    package PlainHashTiedValue;
+    our $freed = 0;
+    sub TIESCALAR { bless {}, shift }
+    sub FETCH { 1 }
+    sub STORE { }
+    sub DESTROY { ++$freed }
+}
+
+subtest 'hash destruction preserves callbacks and iterative cleanup' => sub {
+    my $hash = { map { ("callback-free:$_" => $_) } 0 .. 31 };
+    $hash->{object} = bless [], 'PlainHashDestroyCallback';
+    undef $hash;
+    is($PlainHashDestroyCallback::freed, 1, 'object value runs its destructor');
+    $hash = {};
+    tie $hash->{tied}, 'PlainHashTiedValue';
+    undef $hash;
+    is($PlainHashTiedValue::freed, 1, 'magical value runs its cleanup callback');
+    $hash = {};
+    $hash = { next => $hash } for 1 .. 10000;
+    undef $hash;
+    pass('deeply nested hashes retain iterative destruction');
+};
+
 done_testing;
 exit;
 

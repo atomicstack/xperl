@@ -14400,6 +14400,17 @@ Perl_hfree_next_entry(pTHX_ HV *hv, STRLEN *indexp)
                   PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;             \
     } STMT_END
 
+PERL_CALLCONV bool
+Perl_hv_free_entries_plain(pTHX_ HV *hv)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__visibility__("hidden");
+# define PERL_ARGS_ASSERT_HV_FREE_ENTRIES_PLAIN \
+     STMT_START { Perl_assert_aTHX; assert(hv);         \
+                  assert(SvTYPE(hv) == SVt_PVHV);       \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 #endif /* defined(PERL_IN_HV_C) || defined(PERL_IN_SV_C) */
 #if defined(PERL_IN_LOCALE_C)
 static utf8ness_t

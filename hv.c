@@ -2228,6 +2228,64 @@ S_clear_placeholders(pTHX_ HV *hv, const U32 placeholders)
 
 }
 
+/* Plain scalar values and string keys cannot call back into a dying hash.
+ * Discard its index before releasing entries. Callback-capable values and
+ * hashes with special iterator or stash state use iterative destruction. */
+bool
+Perl_hv_free_entries_plain(pTHX_ HV *hv)
+{
+    PERL_HV_INDEX *storage;
+    HE *entries;
+    U32 used, i;
+    bool arena_entry;
+    PERL_ARGS_ASSERT_HV_FREE_ENTRIES_PLAIN;
+
+    if (SvREFCNT(hv) || HvLAZYDEL(hv) || !HvARRAY(hv))
+        return FALSE;
+    if (HvHasAUX(hv)) {
+        const struct xpvhv_aux *aux = HvAUX(hv);
+        if (aux->xhv_name_u.xhvnameu_name || aux->xhv_name_count
+            || aux->xhv_mro_meta || aux->xhv_backreferences
+            || aux->xhv_eiter || aux->xhv_riter != -1 || aux->xhv_aux_flags)
+            return FALSE;
+    }
+    storage = HvIS_LINEAR(hv) ? NULL : HvINDEX(hv);
+    entries = storage ? storage->entries : (HE *)HvARRAY(hv);
+    used = storage ? storage->used : (U32)HvTOTALKEYS(hv);
+    arena_entry = !storage && HvLINEAR_CAP(hv) == 1;
+    for (i = 0; i < used; i++) {
+        const HE *entry = &entries[i];
+        const SV *value;
+        if (!HeKEY_hek(entry))
+            continue;
+        if (HeKLEN(entry) == HEf_SVKEY)
+            return FALSE;
+        value = HeVAL(entry);
+        if (value && (SvTYPE(value) > SVt_PVNV || SvROK(value)
+                      || SvMAGICAL(value) || SvVMAGICAL(value)))
+            return FALSE;
+    }
+
+    HvARRAY(hv) = NULL;
+    HvTOTALKEYS(hv) = 0;
+    HvMAX_SET(hv, PERL_HASH_DEFAULT_HvMAX);
+    HvHASKFLAGS_off(hv);
+    Safefree(storage);
+    for (i = 0; i < used; i++) {
+        HE *entry = &entries[i];
+        HEK *hek = HeKEY_hek(entry);
+        if (hek) {
+            S_hv_index_free_key(aTHX_ hek, HeKLEN(entry), HeKFLAGS(entry));
+            SvREFCNT_dec(HeVAL(entry));
+        }
+    }
+    if (arena_entry)
+        S_release_he(aTHX_ entries);
+    else
+        Safefree(entries);
+    return TRUE;
+}
+
 static void
 S_hv_free_entries(pTHX_ HV *hv)
 {

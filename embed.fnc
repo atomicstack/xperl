@@ -5527,6 +5527,8 @@ opx	|void	|sv_kill_backrefs					\
 op	|SV *	|hfree_next_entry					\
 				|NN HV *hv				\
 				|NN STRLEN *indexp
+op	|bool	|hv_free_entries_plain					\
+				|NN HV *hv
 #endif
 #if defined(PERL_IN_LOCALE_C)
 S	|utf8ness_t|get_locale_string_utf8ness_i			\

@@ -274,6 +274,10 @@ during later insertions. Deleting an entry alone does not rebuild the hash.
 The ordinary index supports at most 715,827,882 live keys. Requests beyond
 that limit report a hash-capacity error.
 
+Final destruction of ordinary hashes with plain scalar values can discard
+the index and release entries directly. Hashes that need callback or
+iterator handling use the general cleanup path.
+
 The [design and benchmark report](Porting/hash-oa-design.pod) describes the
 allocation, growth, and compaction rules. Performance depends on hash size
 and workload. Large hashes benefit from compact traversal, while some
