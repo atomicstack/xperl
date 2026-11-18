@@ -16,6 +16,19 @@ S_hv_index_bucket_count(const HV *hv)
     return (U32)1 << (HvMAX_RAW(hv) & HV_MAX_EXPONENT_MASK);
 }
 
+PERL_STATIC_INLINE U32
+S_hv_index_next_entry_capacity(pTHX_ U32 capacity)
+{
+    /* Small vectors grow by half to avoid repeated entry/link reallocations.
+     * Larger vectors retain less spare storage with quarter growth. */
+    const U32 increment = capacity >> (capacity < 1024 ? 1 : 2);
+    const U32 expanded = capacity + increment;
+
+    if (!increment || expanded < capacity)
+        Perl_croak_memory_wrap();
+    return expanded;
+}
+
 /* A proportional threshold amortizes packing over subsequent insertions
  * without making small hashes accumulate a fixed byte budget of holes. */
 static bool
@@ -159,7 +172,7 @@ S_hv_index_resize(pTHX_ HV *hv, U32 capacity)
     U32 entry_capacity;
     entry_capacity = old ? old->capacity : (live > 8 ? live : 8);
     while (entry_capacity < live)
-        entry_capacity += entry_capacity >> 2;
+        entry_capacity = S_hv_index_next_entry_capacity(aTHX_ entry_capacity);
     S_hv_index_rebuild(aTHX_ hv, capacity, entry_capacity,
         old && S_hv_index_compaction_worthwhile(old->used, live, old->capacity));
 }
@@ -177,7 +190,7 @@ S_hv_index_promote(pTHX_ HV *hv)
     /* Promotion has a pending insertion. Include its already-due entry
      * growth so the new index does not need an immediate reallocation. */
     if (entry_capacity == used)
-        entry_capacity += entry_capacity >> 2;
+        entry_capacity = S_hv_index_next_entry_capacity(aTHX_ entry_capacity);
     S_hv_index_rebuild(aTHX_ hv, cap, entry_capacity, FALSE);
 }
 
@@ -562,11 +575,7 @@ S_hv_index_maybe_split(pTHX_ HV *hv, U32 hash)
         /* Decide packing with the old capacity. If it leaves no entry room,
          * include the already-due growth in this rebuild. */
         if (!pack && storage->used == entries) {
-            const U32 increment = entries >> 2;
-            const U32 expanded = entries + increment;
-            if (!increment || expanded < entries)
-                Perl_croak_memory_wrap();
-            entries = expanded;
+            entries = S_hv_index_next_entry_capacity(aTHX_ entries);
         }
         S_hv_index_rebuild(aTHX_ hv, buckets * 2, entries, pack);
         return TRUE;
@@ -600,10 +609,7 @@ S_hv_index_full_entry(pTHX_ HV *hv, U32 hash)
     if (S_hv_index_maybe_split(aTHX_ hv, hash))
         storage = HvINDEX(hv);
     if (storage->used == storage->capacity) {
-        const U32 increment = storage->capacity >> 2;
-        const U32 capacity = storage->capacity + increment;
-        if (!increment || capacity < storage->capacity)
-            Perl_croak_memory_wrap();
+        const U32 capacity = S_hv_index_next_entry_capacity(aTHX_ storage->capacity);
         S_hv_index_reserve_entries(aTHX_ hv, capacity);
         storage = HvINDEX(hv);
     }

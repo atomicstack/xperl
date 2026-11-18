@@ -711,9 +711,12 @@ holes are preserved. Changing entry capacity uses C<Renew>, which may
 relocate the array.
 
 Integer-chained builds keep append-only HE positions and grow their bucket
-array independently of the entry array. When live entries reach two-thirds
-of bucket capacity, the index grows to the next power of two that holds
-C<3 * live> entries. Deleted entries are unlinked from bucket chains and do
+array independently of the entry array. A full entry array grows by half
+when its current capacity is below 1024 slots, then by a quarter at larger
+capacities. Explicit reservations retain their requested entry budget.
+A collision at or above the integer two-thirds bucket load limit doubles
+the bucket count. Insertion into an empty bucket does not split it.
+Deleted entries are unlinked from bucket chains and do
 not leave index tombstones. Compaction and shrinking follow the same hole
 threshold and half-capacity rules described above.
 For open-addressed hashes, entry identifier width remains tied to index

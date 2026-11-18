@@ -1409,6 +1409,7 @@ if (hash_storage_info({})->{integer_chained}) {
         $empty[$bucket] //= $key if $bucket >= 1 && $bucket <= 12;
     }
     my %hash;
+    keys %hash = 10;
     $hash{$colliding[$_]} = $_ for 0 .. 9;
     $hash{$empty[$_]} = $_ for 1 .. 12;
     is(hash_storage_info(\%hash)->{index_capacity}, 16,
@@ -1481,7 +1482,9 @@ if (hash_storage_info({})->{integer_chained}) {
     my %coupled;
     keys %coupled = 10;
     $coupled{$bucket_keys[$_]} = $_ for 0 .. 11;
-    is(hash_storage_info(\%coupled)->{entry_capacity}, 12,
+    my $entry_budget = hash_storage_info(\%coupled)->{entry_capacity};
+    $coupled{$bucket_keys[$_]} = $_ for 12 .. $entry_budget - 1;
+    is(hash_storage_info(\%coupled)->{entry_used}, $entry_budget,
        'distinct buckets fill the entry budget without a bucket split');
     my $retired = each %coupled;
     delete $coupled{$retired};
@@ -1491,11 +1494,13 @@ if (hash_storage_info({})->{integer_chained}) {
         while ((hash_value($pending) & 15) != $target);
     $coupled{$pending} = 99;
     my $coupled_info = hash_storage_info(\%coupled);
-    is_deeply([@$coupled_info{qw(index_capacity entry_capacity entry_used entry_holes)}],
-              [32, 15, 13, 1],
-       'simultaneous growth preserves a lazy iterator hole and the growth budgets');
+    is_deeply([@$coupled_info{qw(index_capacity entry_used entry_holes)}],
+              [32, $entry_budget + 1, 1],
+       'simultaneous growth preserves a lazy iterator hole');
+    cmp_ok($coupled_info->{entry_capacity}, '>', $entry_budget,
+       'simultaneous growth expands the full entry budget');
     my @coupled_physical = map { ref($_) ? @$_ : () } @{bucket_array(\%coupled)};
-    my @survivors = grep { $_ ne $retired } @bucket_keys[0 .. 11];
+    my @survivors = grep { $_ ne $retired } @bucket_keys[0 .. $entry_budget - 1];
     is_deeply([sort @coupled_physical], [sort @survivors, $pending],
        'simultaneous growth excludes the lazy-deleted key from bucket chains');
     my $warning = '';
@@ -1513,6 +1518,30 @@ if (hash_storage_info({})->{integer_chained}) {
     }
     is_deeply(\@after_reset, [@survivors, $pending],
        'iteration after simultaneous growth preserves survivor and append order');
+}
+
+if (hash_storage_info({})->{integer_chained}) {
+    for my $case ([1023, 1534], [1024, 1280]) {
+        my ($reserved, $expanded) = @$case;
+        my $hash = {};
+        keys %$hash = $reserved;
+        is(hash_storage_info($hash)->{entry_capacity}, $reserved,
+           'an exact reservation retains its requested entry budget');
+        $hash->{"growth-cutoff:$_"} = $_ for 0 .. $reserved - 1;
+        my $buckets = hash_storage_info($hash)->{index_capacity};
+        delete $hash->{'growth-cutoff:0'};
+        $hash->{'growth-cutoff:new'} = 1;
+        my $info = hash_storage_info($hash);
+        is($info->{entry_capacity}, $expanded,
+           'automatic growth uses the old capacity at the half/quarter cutoff');
+        is($info->{index_capacity}, $buckets,
+           'entry growth below the bucket load limit needs no bucket split');
+        is($info->{entry_holes}, 1,
+           'entry growth preserves a hole below the compaction threshold');
+        my $middle = int($reserved / 2);
+        is($hash->{"growth-cutoff:$middle"}, $middle,
+           'growth across the cutoff preserves existing values');
+    }
 }
 
 done_testing();

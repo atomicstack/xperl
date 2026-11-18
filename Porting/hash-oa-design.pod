@@ -149,9 +149,11 @@ arrays copies the identifiers but does not move the C<HE> array. Bucket
 resizing and entry compaction rebuild the chains.
 
 The default chain layout keeps entry and bucket capacity independent. Entry
-storage starts at a minimum capacity of eight and grows by 25 percent when
-full, with at least one additional slot. Explicit reservation can reserve entry
-space independently. Entry compaction uses a 20 percent hole threshold at
+storage starts at a minimum capacity of eight. When full, it grows by half
+while its current capacity is below 1024 slots, then by a quarter at larger
+capacities. Fractional increments are rounded down. Explicit reservations
+retain their requested entry budget independently of this growth policy.
+Entry compaction uses a 20 percent hole threshold at
 all capacities, with no byte threshold. A full entry array compacts when it
 meets this threshold without growing the bucket array. An append with spare
 entry positions does not calculate shrink targets. Shrinking is considered

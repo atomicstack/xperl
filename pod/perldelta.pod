@@ -1146,19 +1146,20 @@ capacity, including holes: one byte through 255 entries, two bytes through
 65,535, and four bytes above that. Widening these arrays does not move the
 entry array; bucket resizing and entry compaction rebuild the chains.
 
-In the default chain layout, entry storage starts at eight slots and grows by 25
-percent when full, independently of bucket capacity. Entry compaction uses a
+In the default chain layout, indexed entry storage grows by 50 percent while
+its current capacity is below 1024 slots, then by 25 percent. Increments are
+rounded down. Explicit reservations keep their requested entry budget.
+Entry storage grows independently of bucket capacity. Entry compaction uses a
 20 percent hole threshold at all capacities, with no byte threshold. A full
 entry array compacts at this threshold while retaining the bucket count.
 An append with spare entry positions does not calculate shrink targets.
 Shrinking is considered when entry exhaustion requires growing or compacting
 the storage. An index rebuild that is otherwise required also packs entries
 at this threshold, but does not apply
-the standalone HE shrink test. Otherwise a full entry array grows by 25
-percent without changing the bucket array. When live
-entries reach two-thirds of bucket capacity,
-the index grows to the next power of two that can hold C<3 * live> entries,
-with a minimum of eight buckets. Compaction normally keeps the bucket count.
+the standalone HE shrink test. Otherwise a full entry array grows without
+changing the bucket array. A collision at or above the integer two-thirds
+bucket load limit doubles the bucket count. Insertion into an empty bucket
+does not split it. Compaction normally keeps the bucket count.
 It shrinks the bucket array only when its target, the next power of two at
 least C<3 * (live + 1)>, is at most half its current capacity. The entry
 array can shrink independently when its target capacity,
