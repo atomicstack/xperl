@@ -153,6 +153,9 @@ storage starts at a minimum capacity of eight. When full, it grows by half
 while its current capacity is below 1024 slots, then by a quarter at larger
 capacities. Fractional increments are rounded down. Explicit reservations
 retain their requested entry budget independently of this growth policy.
+Promotion from linear storage sizes its buckets to hold the new entry budget
+at the bucket load limit. With the default linear limit, the ninth key
+promotes to twelve entry slots and thirty-two buckets.
 Entry compaction uses a 20 percent hole threshold at
 all capacities, with no byte threshold. A full entry array compacts when it
 meets this threshold without growing the bucket array. An append with spare

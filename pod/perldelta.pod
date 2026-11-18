@@ -1169,7 +1169,8 @@ C<live + floor(live/4) + 1> (minimum eight), is at most half its current
 capacity. C<hv_ksplit()> pre-sizing uses a baseline of 1.5 times the
 requested
 count and reserves entry space for that count. Promotion from the tiny linear
-form uses the baseline open-addressed sizing policy.
+form allocates enough buckets for its new entry budget, avoiding another
+bucket split while filling those entries.
 
 The optional build-time option C<PERL_HASH_CHAIN_FINGERPRINT> stores an 8-, 16-,
 or 32-bit hash fingerprint with each entry link. Lookup checks it before

@@ -213,8 +213,22 @@ die "default did not keep eight entries linear\n"
 $hash{'default:8'} = 8;
 $info = hash_storage_info(\%hash);
 die "default did not promote on the ninth entry\n"
-    unless !$info->{linear} && $info->{index_capacity} == 16
+    unless !$info->{linear}
+        && $info->{index_capacity} == ($info->{integer_chained} ? 32 : 16)
         && keys(%hash) == 9 && $hash{'default:8'} == 8;
+
+if ($info->{integer_chained}) {
+    my $budget = $info->{entry_capacity};
+    my $buckets = $info->{index_capacity};
+    $hash{"default:$_"} = $_ for 9 .. $budget - 1;
+    my $filled = hash_storage_info(\%hash);
+    die "promoted entry budget required another bucket split\n"
+        unless $filled->{index_capacity} == $buckets
+            && $filled->{entry_capacity} == $budget
+            && keys(%hash) == $budget;
+    die "filling promoted entry budget lost a value\n"
+        if grep { $hash{"default:$_"} != $_ } 0 .. $budget - 1;
+}
 
 my %compact = map { ("compact:$_" => $_) } 0 .. 8;
 my $before = hash_storage_info(\%compact);

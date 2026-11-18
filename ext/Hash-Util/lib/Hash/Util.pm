@@ -714,6 +714,8 @@ Integer-chained builds keep append-only HE positions and grow their bucket
 array independently of the entry array. A full entry array grows by half
 when its current capacity is below 1024 slots, then by a quarter at larger
 capacities. Explicit reservations retain their requested entry budget.
+Promotion from linear storage allocates enough buckets for its new entry
+capacity.
 A collision at or above the integer two-thirds bucket load limit doubles
 the bucket count. Insertion into an empty bucket does not split it.
 Deleted entries are unlinked from bucket chains and do

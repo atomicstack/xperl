@@ -208,15 +208,17 @@ S_hv_index_promote(pTHX_ HV *hv)
 {
     U32 used = (U32)HvTOTALKEYS(hv), cap = 8;
     U32 entry_capacity = MAX(used, 8);
-    while (used + (used >> 1) > cap - 1) {
-        if (cap >= HV_MAX_BUCKETS)
-            PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
-        cap <<= 1;
-    }
     /* Promotion has a pending insertion. Include its already-due entry
      * growth so the new index does not need an immediate reallocation. */
     if (entry_capacity == used)
         entry_capacity = S_hv_index_next_entry_capacity(aTHX_ entry_capacity);
+    /* Size the first buckets for the allocated entry budget, as an explicit
+     * reservation does. Filling that budget then needs no bucket split. */
+    while (entry_capacity > HV_INDEX_LOAD_LIMIT(cap)) {
+        if (cap >= HV_MAX_BUCKETS)
+            PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
+        cap <<= 1;
+    }
     S_hv_index_rebuild(aTHX_ hv, cap, entry_capacity, FALSE);
 }
 
