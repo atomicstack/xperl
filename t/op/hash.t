@@ -260,6 +260,30 @@ package Magic {
     ::is(join( ':', %inner), "x:y", "magic keys");
 }
 
+SKIP: {
+    skip_without_dynamic_extension("Storable", 2);
+    require Storable;
+
+    my %hash;
+    {
+        package RepopulateOnClear;
+        sub TIEHASH { bless {}, shift }
+        sub CLEAR {
+            untie %hash;
+            my $key = 'latin';
+            utf8::upgrade($key);
+            $hash{$key} = 1;
+            $hash{"\x{100}"} = 2;
+        }
+    }
+    tie %hash, 'RepopulateOnClear';
+    %hash = ();
+    my $copy = Storable::thaw(Storable::freeze(\%hash));
+    is($copy->{"\x{100}"}, 2, 'wide key stored by CLEAR survives serialization');
+    my ($latin) = grep { $_ eq 'latin' } keys %$copy;
+    ok(utf8::is_utf8($latin), 'upgraded key stored by CLEAR keeps its UTF-8 flag');
+}
+
 # Make sure PL_sv_undef is copied, and not stored directly, when assigning
 # to a hash. This failed on DEBUGGING + PERL_RC_STACK builds because the
 # test for a lone SV assumed that an SV on the stack with a ref count of 1

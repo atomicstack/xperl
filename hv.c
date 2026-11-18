@@ -2113,7 +2113,9 @@ Perl_hv_clear(pTHX_ HV *hv)
         if (SvRMAGICAL(hv))
             mg_clear(MUTABLE_SV(hv));
 
-        HvHASKFLAGS_off(hv);
+        /* Clear magic can add keys with UTF-8 flags. */
+        if (!HvTOTALKEYS(hv))
+            HvHASKFLAGS_off(hv);
     }
     if (HvHasAUX(hv)) {
         if(HvENAME_get(hv))
