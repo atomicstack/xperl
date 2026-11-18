@@ -8,6 +8,7 @@
 bool
 Perl_hv_strtab_size_valid(Size_t capacity)
 {
+    PERL_ARGS_ASSERT_HV_STRTAB_SIZE_VALID;
     return capacity >= PERL_HV_STRTAB_MIN_CAPACITY
         && !(capacity & (capacity - 1))
         && capacity <= ((Size_t)1 << (sizeof(Size_t) * CHAR_BIT - 1))
@@ -19,6 +20,7 @@ Perl_hv_strtab_capacity_for(Size_t live)
 {
     Size_t capacity = PERL_HV_STRTAB_MIN_CAPACITY;
     Size_t target;
+    PERL_ARGS_ASSERT_HV_STRTAB_CAPACITY_FOR;
     if (live > PERL_HV_STRTAB_MAX_KEYS || live >= MEM_SIZE_MAX / 2)
         return 0;
     target = live * 2 + 1;
