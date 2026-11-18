@@ -2219,6 +2219,9 @@ Cdop	|void	|hv_placeholders_set					\
 				|I32 ph
 p	|void	|hv_pushkv	|NN HV *hv				\
 				|U32 flags
+Cp	|UV	|hv_reserve_buckets					\
+				|NN HV *hv				\
+				|UV minimum
 CRdop	|I32 *	|hv_riter_p	|NN HV *hv
 Cdop	|void	|hv_riter_set	|NN HV *hv				\
 				|I32 riter

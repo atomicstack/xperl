@@ -1033,6 +1033,15 @@ discards the index before releasing keys and values. This avoids individual
 index lookups and deletions. Hashes requiring callback, iterator, or stash
 handling retain the general cleanup path.
 
+Explicit reservations allocate the required bucket and entry storage
+together, avoiding an intermediate entry allocation in integer-chain builds.
+Reservations retain existing capacity and provide room for the requested
+total of live key/value pairs, accounting for deleted entry positions.
+
+C<Hash::Util::reserve_buckets(\%hash, $buckets)> reserves bucket storage
+independently of the pair count accepted by C<keys(%hash) = $pairs>.
+It rounds up to a supported bucket count and retains larger existing storage.
+
 =head2 Experimental XPerl hash storage
 
 Ordinary hashes now use a compact array of two-pointer C<HE> records and

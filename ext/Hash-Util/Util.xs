@@ -341,6 +341,17 @@ used_buckets(rhv)
 }
 
 
+UV
+reserve_buckets(hash, buckets)
+        HV *hash
+        UV buckets
+    CODE:
+        if (SvTIED_mg((SV *)hash, PERL_MAGIC_tied))
+            croak("reserve_buckets does not support tied hashes");
+        RETVAL = Perl_hv_reserve_buckets(aTHX_ hash, buckets);
+    OUTPUT:
+        RETVAL
+
 SV *
 hash_storage_info(hash)
         HV *hash

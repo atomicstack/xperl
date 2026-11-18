@@ -564,7 +564,8 @@ S_hv_index_reserve(pTHX_ HV *hv, IV newmax)
     U32 oldsize;
     U32 newsize;
     U32 wantsize;
-    char *a;
+    U32 entry_capacity;
+    bool pack = FALSE;
 
     if (newmax <= 0)
         return;
@@ -604,48 +605,56 @@ S_hv_index_reserve(pTHX_ HV *hv, IV newmax)
     /* Check the final reservation before either allocation changes. In a
      * packed chain table, reserving entries can widen the bucket records. */
     {
-        UV entries = (UV)newmax;
+        UV entries = MAX((UV)newmax, 8);
         if (HvARRAY(hv) && !HvIS_LINEAR(hv)) {
             const PERL_HV_INDEX *oa = HvINDEX(hv);
-            if ((UV)newmax > HvTOTALKEYS(hv))
+            pack = S_hv_index_compaction_worthwhile(oa->used,
+                (U32)HvTOTALKEYS(hv), oa->capacity);
+            if (!pack && (UV)newmax > HvTOTALKEYS(hv))
                 entries += (UV)oa->used - HvTOTALKEYS(hv);
             if (entries < oa->capacity)
                 entries = oa->capacity;
         }
+        else if (HvARRAY(hv) && entries < HvLINEAR_CAP(hv))
+            entries = HvLINEAR_CAP(hv);
         if (entries > U32_MAX || !S_hv_index_size_valid(newsize, (U32)entries))
             Perl_croak_memory_wrap();
+        entry_capacity = (U32)entries;
     }
 
-    if (HvIS_LINEAR(hv)) {
-        /* The final size is known: avoid an intermediate eight-slot index. */
-        S_hv_index_resize(aTHX_ hv, (U32)newsize);
-        goto reserve_entries;
+    if (!pack && HvARRAY(hv) && !HvIS_LINEAR(hv) && newsize <= oldsize) {
+        S_hv_index_reserve_entries(aTHX_ hv, entry_capacity);
+        return;
     }
 
-    if (newsize <= oldsize && HvARRAY(hv))
-        goto reserve_entries;
+    if (!HvARRAY(hv) && LARGE_HASH_HEURISTIC(hv, newmax))
+        HvSHAREKEYS_off(hv);
+    /* Reserve buckets and entries together. We know the requested live
+     * count, so an intermediate minimum-sized entry block is needless. */
+    S_hv_index_rebuild(aTHX_ hv, newsize, entry_capacity, pack);
+}
 
-    a = (char *) HvARRAY(hv);
-    if (a) {
-        S_hv_index_resize(aTHX_ hv, newsize);
-    } else {
-        if (LARGE_HASH_HEURISTIC(hv, newmax))
-            HvSHAREKEYS_off(hv);
-        S_hv_index_resize(aTHX_ hv, (U32)newsize);
-        HvMAX_SET(hv, newsize - 1);
-    }
+/* Bucket reservation leaves the entry reservation independent. Preserve
+ * both capacities when the requested bucket count already fits. */
+static U32
+S_hv_index_reserve_buckets(pTHX_ HV *hv, U32 minimum)
+{
+    const bool indexed = HvARRAY(hv) && !HvIS_LINEAR(hv);
+    const PERL_HV_INDEX *old = indexed ? HvINDEX(hv) : NULL;
+    U32 capacity = indexed ? (U32)HvMAX(hv) + 1 : 8;
+    U32 entries = old ? old->capacity
+        : HvARRAY(hv) ? HvLINEAR_CAP(hv) : 0;
+    const U32 live = (U32)HvTOTALKEYS(hv);
 
-  reserve_entries:
-    /* Explicit reservation supplies a known entry count. Above the coupled
-     * range, reserve those entries now instead of growing by 25% repeatedly.
-     * Deleted positions remain holes until the normal compaction threshold. */
-    if (newmax > 0 && !HvIS_LINEAR(hv) && HvARRAY(hv)
-        && HvINDEX_RESERVE_ENTRIES(hv)
-        && (UV)newmax > HvTOTALKEYS(hv)) {
-        PERL_HV_INDEX *oa = HvINDEX(hv);
-        UV capacity = (UV)oa->used + (UV)newmax - HvTOTALKEYS(hv);
-        if (capacity >= U32_MAX)
-            Perl_croak_memory_wrap();
-        S_hv_index_reserve_entries(aTHX_ hv, (U32)capacity);
-    }
+    if (!minimum)
+        return indexed ? capacity : 0;
+    while (capacity < minimum)
+        capacity *= 2;
+    entries = MAX(entries, 8);
+    entries = MAX(entries, live);
+    if (!indexed || capacity > (U32)HvMAX(hv) + 1)
+        S_hv_index_rebuild(aTHX_ hv, capacity, entries,
+            old && S_hv_index_compaction_worthwhile(old->used,
+                live, old->capacity));
+    return capacity;
 }

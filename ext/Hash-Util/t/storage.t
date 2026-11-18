@@ -6,7 +6,7 @@ use Config;
 use FindBin;
 use Test::More;
 use Hash::Util qw(hash_storage_info shared_key_refcount shared_keys immortalize_key
-                  bucket_info bucket_array hash_value);
+                  bucket_info bucket_array hash_value reserve_buckets);
 
 {
     my $key = "xperl-hash-util-shared-key-$$";
@@ -302,19 +302,19 @@ for my $requested (1, 4) {
     }
 }
 
-for my $requested (11, 43) {
-    my %hash;
-    keys %hash = $requested;
-    my $reserved = hash_storage_info(\%hash);
+for my $requested (11, 16, 21, 43, 255, 256) {
+    my $hash = {};
+    keys %$hash = $requested;
+    my $reserved = hash_storage_info($hash);
     my @keys = map { "odd-reserve:$requested:$_" } 0 .. $requested - 1;
-    $hash{$keys[$_]} = $_ for 0 .. $#keys;
-    my $filled = hash_storage_info(\%hash);
+    $hash->{$keys[$_]} = $_ for 0 .. $#keys;
+    my $filled = hash_storage_info($hash);
     die "odd reservation $requested grew while filling its requested keys\n"
         unless $filled->{index_capacity} == $reserved->{index_capacity}
             && $filled->{entry_capacity} == $reserved->{entry_capacity}
             && $filled->{entry_used} == $requested;
     die "odd reservation $requested lost a value\n"
-        if grep { $hash{$keys[$_]} != $_ } 0 .. $#keys;
+        if grep { $hash->{$keys[$_]} != $_ } 0 .. $#keys;
 }
 
 my %cleared_reservation;
@@ -344,6 +344,134 @@ PERL
     is($?, 0, 'tiny and odd-sized reservation storage probe exits successfully')
         or diag($output);
 }
+
+subtest 'bucket reservation is independent of pair reservation' => sub {
+    my $hash = {};
+    is(reserve_buckets($hash, 0), 0, 'zero request leaves an empty hash unallocated');
+    is(hash_storage_info($hash)->{entry_capacity}, 0,
+       'zero request leaves entry storage unallocated');
+    is(reserve_buckets($hash, 16), 16, 'explicit request allocates sixteen buckets');
+    my $reserved = hash_storage_info($hash);
+    is($reserved->{index_capacity}, 16, 'storage diagnostics report requested buckets');
+    ok(!$reserved->{linear}, 'explicit bucket reservation creates an index');
+    is(reserve_buckets($hash, 0), 16, 'zero request reports existing bucket storage');
+    $hash->{"bucket:$_"} = $_ for 1 .. 4;
+    my $current = each %$hash;
+    delete $hash->{$current};
+    is(reserve_buckets($hash, 17), 32, 'bucket request rounds up to a power of two');
+    my $grown = hash_storage_info($hash);
+    cmp_ok($grown->{entry_capacity}, '>=', $reserved->{entry_capacity},
+           'bucket growth retains entry capacity');
+    my @remaining;
+    while (my ($key, $value) = each %$hash) {
+        push @remaining, $key;
+        (my $expected = $key) =~ s/^bucket://;
+        is($value, $expected, 'bucket growth preserves values and iteration');
+    }
+    is(scalar @remaining, 3, 'bucket growth preserves a lazy-deleted iterator');
+    is(reserve_buckets($hash, 8), 32, 'smaller request retains current buckets');
+    is(hash_storage_info($hash)->{entry_capacity}, $grown->{entry_capacity},
+       'smaller request retains current entries');
+    eval { reserve_buckets($hash, 2_147_483_649) };
+    like($@, qr/Hash key count exceeds limit/i, 'excessive bucket request is rejected');
+    is(hash_storage_info($hash)->{index_capacity}, 32,
+       'rejected request leaves bucket storage unchanged');
+    is(scalar keys %$hash, 3, 'rejected request preserves live pairs');
+
+    my $pairs = {};
+    keys(%$pairs) = 16;
+    cmp_ok(hash_storage_info($pairs)->{index_capacity}, '>', 16,
+           'pair reservation accounts for the index load limit');
+    require Tie::Hash;
+    tie my %tied, 'Tie::StdHash';
+    eval { reserve_buckets(\%tied, 16) };
+    like($@, qr/does not support tied hashes/, 'bucket reservation rejects tied hashes');
+
+    for my $limit (0, 64) {
+        local $ENV{PERL_HASH_LINEAR_MAX} = $limit;
+        my $script = <<'PERL';
+use Hash::Util qw(hash_storage_info reserve_buckets);
+my $hash = {};
+keys(%$hash) = 32;
+$hash->{"promote:$_"} = $_ for 1 .. 20;
+my $before = hash_storage_info($hash);
+reserve_buckets($hash, 16);
+my $after = hash_storage_info($hash);
+die "bucket reservation lost entry capacity\n"
+    if $after->{entry_capacity} < $before->{entry_capacity};
+die "bucket reservation lost values\n"
+    if grep { $hash->{"promote:$_"} != $_ } 1 .. 20;
+my $small = {};
+keys(%$small) = 1;
+$small->{$_} = 1 for 1 .. 32;
+die "small reservation prevented growth\n" unless keys(%$small) == 32;
+PERL
+        open my $child, '-|', $^X, "-I$FindBin::Bin/../../../lib", '-e', $script
+            or die "could not start bucket reservation probe: $!";
+        my $output = do { local $/; <$child> };
+        close $child;
+        is($?, 0, "reservation preserves entries and permits growth at tiny limit $limit")
+            or diag($output);
+    }
+};
+
+subtest 'reservation retains capacity and accounts for deleted entries' => sub {
+    my $hash = {};
+    keys(%$hash) = 16;
+    my $initial = hash_storage_info($hash);
+    cmp_ok($initial->{entry_capacity}, '>=', 16,
+           'reservation provides room for the requested pairs');
+    keys(%$hash) = 21;
+    my $expanded = hash_storage_info($hash);
+    cmp_ok($expanded->{entry_capacity}, '>=', 21,
+           'reservation can expand entries within the current bucket count');
+    is($expanded->{index_capacity}, $initial->{index_capacity},
+       'entry reservation retains sufficient buckets');
+    keys(%$hash) = 9;
+    is(hash_storage_info($hash)->{entry_capacity}, $expanded->{entry_capacity},
+       'smaller reservation retains the current entry capacity');
+
+    $hash->{"reserve:$_"} = $_ for 1 .. 16;
+    is(hash_storage_info($hash)->{entry_capacity}, $expanded->{entry_capacity},
+       'filling the reservation retains its entry capacity');
+    my $current = each %$hash;
+    delete $hash->{$current};
+    keys(%$hash) = 64;
+    my $grown = hash_storage_info($hash);
+    cmp_ok($grown->{entry_capacity} - $grown->{entry_used}, '>=', 64 - 15,
+           'larger reservation allows for deleted entry positions');
+    my @remaining;
+    while (my ($key, $value) = each %$hash) {
+        push @remaining, $key;
+        (my $expected = $key) =~ s/^reserve://;
+        is($value, $expected, 'reservation preserves the iterated value');
+    }
+    is(scalar @remaining, 15,
+       'reservation preserves the iterator after deleting its current entry');
+    ok(!grep($_ eq $current, @remaining),
+       'iterator does not return its deleted entry');
+    $hash->{"extra:$_"} = $_ for 1 .. 49;
+    my $filled = hash_storage_info($hash);
+    is(scalar keys %$hash, 64, 'reservation holds the requested live pairs');
+    is($filled->{entry_capacity}, $grown->{entry_capacity},
+       'filling around a deleted entry needs no entry growth');
+    is($filled->{index_capacity}, $grown->{index_capacity},
+       'filling around a deleted entry needs no bucket growth');
+
+    my $cleared = {};
+    keys(%$cleared) = 16;
+    $cleared->{$_} = 1 for 1 .. 16;
+    delete $cleared->{$_} for keys %$cleared;
+    my $capacity = hash_storage_info($cleared)->{entry_capacity};
+    keys(%$cleared) = 16;
+    is(hash_storage_info($cleared)->{entry_capacity}, $capacity,
+       'reservation reclaims deleted positions without shrinking entries');
+    for my $key (1 .. 16) {
+        $cleared->{$key} = 1;
+        is(hash_storage_info($cleared)->{entry_capacity}, $capacity,
+           'refilling a reserved hash retains its entry capacity');
+    }
+};
 
 {
     my $script = <<'PERL';
@@ -456,9 +584,9 @@ sub filled_indexed_hash {
 
 sub exercise_chain_all_ones {
     my ($capacity, $width) = @_;
-    my %hash;
-    keys %hash = $capacity;
-    my $reserved = hash_storage_info(\%hash);
+    my $hash = {};
+    keys %$hash = $capacity;
+    my $reserved = hash_storage_info($hash);
     is($reserved->{entry_capacity}, $capacity,
        "$width-byte chain test reserves exactly $capacity HE positions");
     is($reserved->{index_width}, $width,
@@ -467,33 +595,33 @@ sub exercise_chain_all_ones {
     my @colliding = integer_chain_keys(
         "xperl-chain-all-ones-$capacity", $reserved->{index_capacity}, 3);
     my ($tail, $middle, $head) = @colliding;
-    $hash{$tail} = 'tail';
-    $hash{$middle} = 'middle';
-    $hash{"all-ones:$capacity:$_"} = $_ for 1 .. $capacity - 3;
-    $hash{$head} = 'all-ones';
-    is(scalar keys %hash, $capacity,
+    $hash->{$tail} = 'tail';
+    $hash->{$middle} = 'middle';
+    $hash->{"all-ones:$capacity:$_"} = $_ for 1 .. $capacity - 3;
+    $hash->{$head} = 'all-ones';
+    is(scalar keys %$hash, $capacity,
        "$width-byte chain test fills every reserved HE position");
-    is($hash{$head}, 'all-ones',
+    is($hash->{$head}, 'all-ones',
        "$width-byte chain test looks up the all-ones entry index");
-    is($hash{$middle}, 'middle',
+    is($hash->{$middle}, 'middle',
        "$width-byte chain test looks up a middle chain entry");
-    is($hash{$tail}, 'tail',
+    is($hash->{$tail}, 'tail',
        "$width-byte chain test looks up the chain tail");
 
-    delete $hash{$head};
-    delete $hash{$tail};
-    ok(!exists($hash{$head}),
+    delete $hash->{$head};
+    delete $hash->{$tail};
+    ok(!exists($hash->{$head}),
        "$width-byte chain head is absent after deletion");
-    ok(!exists($hash{$tail}),
+    ok(!exists($hash->{$tail}),
        "$width-byte chain tail is absent after deletion");
-    is($hash{$middle}, 'middle',
+    is($hash->{$middle}, 'middle',
        "$width-byte chain remains searchable after head and tail deletion");
-    is(hash_storage_info(\%hash)->{index_deleted}, 0,
+    is(hash_storage_info($hash)->{index_deleted}, 0,
        "$width-byte chain deletion does not create tombstones");
-    $hash{$head} = 'reinserted';
-    is($hash{$head}, 'reinserted',
+    $hash->{$head} = 'reinserted';
+    is($hash->{$head}, 'reinserted',
        "$width-byte all-ones key can be reinserted after deletion");
-    is($hash{$middle}, 'middle',
+    is($hash->{$middle}, 'middle',
        "$width-byte chain survivor remains searchable after reinsertion");
 }
 

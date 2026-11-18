@@ -264,6 +264,10 @@ deletion, reservation, resizing, and compaction belong to that backend.
 `hv.c` handles Perl hash semantics, magic, tied hashes, and key/value
 ownership.
 
+`keys(%hash) = N` reserves room for N distinct key/value pairs.
+`Hash::Util::reserve_buckets(\%hash, N)` reserves at least N buckets,
+rounded up to a supported size. Both retain larger existing capacities.
+
 `PERL_HASH_CHAIN_FINGERPRINT` optionally adds small hash fingerprints to the
 chain index. They can avoid loading candidate keys during lookup, at the
 cost of more index storage. Fingerprints are disabled by default and cannot

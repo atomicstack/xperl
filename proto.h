@@ -4103,6 +4103,16 @@ Perl_hv_pushkv(pTHX_ HV *hv, U32 flags)
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
+PERL_CALLCONV UV
+Perl_hv_reserve_buckets(pTHX_ HV *hv, UV minimum)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_HV_RESERVE_BUCKETS     \
+    STMT_START { Perl_assert_aTHX; assert(hv);         \
+                 assert(SvTYPE(hv) == SVt_PVHV);       \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 PERL_CALLCONV I32 *
 Perl_hv_riter_p(pTHX_ HV *hv)
         Perl_attribute_nonnull_aTHX

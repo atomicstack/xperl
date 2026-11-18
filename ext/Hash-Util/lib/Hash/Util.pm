@@ -37,6 +37,7 @@ our @EXPORT_OK  = qw(
                      bucket_ratio
                      used_buckets
                      num_buckets
+                     reserve_buckets
                     );
 BEGIN {
     # make sure all our XS routines are available early so their prototypes
@@ -529,6 +530,23 @@ craft a denial-of-service attack against Perl code, even remotely,
 see L<perlsec/"Algorithmic Complexity Attacks"> for more information.
 B<Do not disclose the hash value of a string> to people who don't need to
 know it. See also L<perlrun/PERL_HASH_SEED_DEBUG>.
+
+=item B<reserve_buckets>
+
+    my $buckets = reserve_buckets(\%hash, 32);
+
+On XPerl, reserve at least the requested number of buckets in an ordinary
+hash. The request rounds up to a power of two, with a minimum of eight.
+Existing larger bucket and entry capacities are retained. Open-addressed
+builds may need more buckets to accommodate the existing entries.
+Returns the allocated bucket count. A request of zero leaves the hash
+unchanged and returns zero if it has no bucket storage. Tied hashes are
+not supported.
+
+This reserves bucket storage. To reserve room for a total number of distinct
+key/value pairs, use C<keys(%hash) = $pairs>. Neither operation shrinks the
+hash. In particular, C<reserve_buckets(\%hash, 16)> and C<keys(%hash) = 16>
+reserve different things.
 
 =item B<bucket_info>
 

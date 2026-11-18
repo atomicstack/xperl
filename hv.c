@@ -1662,6 +1662,16 @@ Perl_hv_ksplit(pTHX_ HV *hv, IV newmax)
     S_hv_index_reserve(aTHX_ hv, newmax);
 }
 
+UV
+Perl_hv_reserve_buckets(pTHX_ HV *hv, UV minimum)
+{
+    PERL_ARGS_ASSERT_HV_RESERVE_BUCKETS;
+
+    if (minimum > HV_MAX_BUCKETS)
+        PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
+    return S_hv_index_reserve_buckets(aTHX_ hv, (U32)minimum);
+}
+
 /* IMO this should also handle cases where hv_max is smaller than hv_keys
  * as tied hashes could play silly buggers and mess us around. We will
  * do the right thing during hv_store() afterwards, but still - Yves */

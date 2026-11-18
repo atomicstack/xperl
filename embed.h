@@ -404,6 +404,7 @@
 # define hv_ksplit(a,b)                         Perl_hv_ksplit(aTHX_ a,b)
 # define hv_name_set(a,b,c,d)                   Perl_hv_name_set(aTHX_ a,b,c,d)
 # define hv_new_he()                            Perl_hv_new_he(aTHX)
+# define hv_reserve_buckets(a,b)                Perl_hv_reserve_buckets(aTHX_ a,b)
 # define hv_scalar(a)                           Perl_hv_scalar(aTHX_ a)
 # define hv_strtab_capacity_for                 Perl_hv_strtab_capacity_for
 # define hv_strtab_find(a,b,c,d,e)              Perl_hv_strtab_find(aTHX_ a,b,c,d,e)
