@@ -1037,10 +1037,12 @@ same growth policy.
 Lookup stops at an empty bucket before preparing chain traversal. It reads
 the next identifier only after a mismatch. Insertion selects the packed identifier
 width once for the bucket head, next link, and optional fingerprint writes.
-SC lookups do not request the insertion-slot output used by OA.
+SC lookups do not request the insertion-slot output used by OA. Bucket
+rebuilds cache the entry and iterator state and select the one-byte link
+width before walking entries.
 
-Ordinary indexed lvalues reuse the prepared-key lookup path for byte strings
-and canonical shared keys. Direct C API replacements avoid a key copy and
+Ordinary lvalues reuse the prepared-key lookup path for byte strings and
+canonical shared keys once hash storage is initialized. Direct C API replacements avoid a key copy and
 second lookup for null entries, retained values, and plain numeric scalars. Those
 replacements no longer take an extra temporary reference to the incoming
 value; its lifetime follows the ordinary ownership rules.

@@ -593,7 +593,7 @@ sub exercise_chain_all_ones {
        "$width-byte chain test starts at the expected encoded width");
 
     my @colliding = integer_chain_keys(
-        "xperl-chain-all-ones-$capacity", $reserved->{index_capacity}, 3);
+        "xperl-chain-all-ones-$capacity", 2 * $reserved->{index_capacity}, 3);
     my ($tail, $middle, $head) = @colliding;
     $hash->{$tail} = 'tail';
     $hash->{$middle} = 'middle';
@@ -607,6 +607,15 @@ sub exercise_chain_all_ones {
        "$width-byte chain test looks up a middle chain entry");
     is($hash->{$tail}, 'tail',
        "$width-byte chain test looks up the chain tail");
+
+    reserve_buckets($hash, 2 * $reserved->{index_capacity});
+    is(hash_storage_info($hash)->{index_width}, $width,
+       "$width-byte bucket rebuild retains the identifier width");
+    is_deeply([@$hash{$head, $middle, $tail}], ['all-ones', 'middle', 'tail'],
+       "$width-byte bucket rebuild preserves the boundary identifier and chain");
+    my @physical = map { ref($_) ? @$_ : () } @{bucket_array($hash)};
+    is_deeply([sort @physical], [sort keys %$hash],
+       "$width-byte bucket rebuild links every live entry exactly once");
 
     delete $hash->{$head};
     delete $hash->{$tail};

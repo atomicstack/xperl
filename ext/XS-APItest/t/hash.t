@@ -444,31 +444,67 @@ foreach my $in ("", "N", "a\0b") {
 }
 
 {
-    for my $private (0, 1) {
-        my %indexed;
-        keys %indexed = 16;
-        XS::APItest::Hash::disable_hash_key_sharing(\%indexed) if $private;
-        my $bytes = "indexed-lvalue-key-$$-$private"
-            . chr(utf8::unicode_to_native(0xe9));
-        my $upgraded = $bytes;
-        utf8::upgrade($upgraded);
-        my $byte_query = XS::APItest::Hash::shared_query_key($bytes);
-        my $utf8_query = XS::APItest::Hash::shared_query_key($upgraded);
+    for my $reserve (2, 16) {
+        for my $private (0, 1) {
+            my $label = "reserve=$reserve private=$private";
+            my $target = {};
+            keys %$target = $reserve;
+            XS::APItest::Hash::disable_hash_key_sharing($target) if $private;
+            my $bytes = "reserved-lvalue-key-$$-$reserve-$private"
+                . chr(utf8::unicode_to_native(0xe9));
+            my $upgraded = $bytes;
+            utf8::upgrade($upgraded);
+            my $byte_query = XS::APItest::Hash::shared_query_key($bytes);
+            my $utf8_query = XS::APItest::Hash::shared_query_key($upgraded);
 
-        $indexed{$byte_query} = 1;
-        ok(!utf8::is_utf8((keys %indexed)[0]),
-           'indexed shared-key lvalue miss creates a byte key');
-        $indexed{$utf8_query} = 2;
-        ok(utf8::is_utf8((keys %indexed)[0]),
-           'indexed shared-key lvalue hit preserves incoming WASUTF8');
-        $indexed{$byte_query} = 3;
-        ok(!utf8::is_utf8((keys %indexed)[0]),
-           'indexed byte lvalue hit clears stored WASUTF8');
-        is(scalar keys %indexed, 1,
-           'indexed lvalue encoding changes preserve key identity');
-        is($indexed{$bytes}, 3,
-           'indexed lvalue encoding changes preserve the new value');
+            $target->{$byte_query} = 1;
+            ok(!utf8::is_utf8((keys %$target)[0]),
+               "$label shared-key lvalue miss creates a byte key");
+            $target->{$utf8_query} = 2;
+            ok(utf8::is_utf8((keys %$target)[0]),
+               "$label shared-key lvalue hit preserves incoming WASUTF8");
+            $target->{$byte_query} = 3;
+            ok(!utf8::is_utf8((keys %$target)[0]),
+               "$label byte lvalue hit clears stored WASUTF8");
+            is(scalar keys %$target, 1,
+               "$label lvalue encoding changes preserve key identity");
+            is($target->{$bytes}, 3,
+               "$label lvalue encoding changes preserve the new value");
+            $target->{$bytes} = 4;
+            is($target->{$byte_query}, 4,
+               "$label raw byte lvalue hit retains shared key identity");
+            my $plain = "plain-lvalue-$reserve-$private";
+            $target->{$plain} = 5;
+            is($target->{$plain}, 5,
+               "$label raw byte lvalue miss remains reachable");
+        }
     }
+}
+
+{
+    package XSAPITestKeyGrow;
+    sub TIESCALAR { bless {hash => $_[1], fetches => 0}, $_[0] }
+    sub FETCH {
+        my ($self) = @_;
+        ++$self->{fetches};
+        $self->{hash}{"key-grow-$_"} = $_ for 1 .. 100;
+        return 'magical-key-after-growth';
+    }
+    package main;
+
+    my $target = {};
+    keys %$target = 2;
+    $target->{initial} = 'retained';
+    my $params = {hv => $target, keysv => undef,
+                  action => XS::APItest::HV_FETCH_LVALUE};
+    my $tied = tie $params->{keysv}, 'XSAPITestKeyGrow', $target;
+    is(XS::APItest::Hash::common($params), undef,
+       'magical lvalue key returns the newly created undefined value');
+    is($tied->{fetches}, 1, 'lvalue lookup stringifies its magical key once');
+    ok(exists $target->{'magical-key-after-growth'},
+       'lvalue lookup inserts the key after its FETCH grows the target');
+    is_deeply([@$target{qw(initial key-grow-100)}], ['retained', 100],
+       'magical key lookup preserves original and callback-created entries');
 }
 
 {

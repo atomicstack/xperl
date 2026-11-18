@@ -544,12 +544,11 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     assert(SvTYPE(hv) == SVt_PVHV);
 
     /* Byte strings and canonical shared HEKs need no key conversion.
-     * Indexed lvalues reuse this preparation and the common hit/miss paths;
-     * linear lvalues retain the generic preparation needed for insertion. */
+     * Lvalue fetches reuse this preparation after storage is initialized. */
     if ((!(action & ~HV_FETCH_JUST_SV)
          || ((action & HV_FETCH_LVALUE)
              && !(action & ~(HV_FETCH_JUST_SV | HV_FETCH_LVALUE | HV_FETCH_EMPTY_HE))
-             && HvARRAY(hv) && !HvIS_LINEAR(hv)))
+             && HvARRAY(hv)))
         && !flags && keysv
         && !SvMAGICAL(hv) && !SvMAGICAL(keysv)
         && SvPOK(keysv) && (SvIsCOW_shared_hash(keysv) || !SvUTF8(keysv))) {
@@ -566,7 +565,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
             if (HvSHAREKEYS(hv))
                 query_hek = shared;
         }
-        else if (HvIS_LINEAR(hv)) {
+        else if (HvIS_LINEAR(hv) && !(action & HV_FETCH_LVALUE)) {
             HE *entries = (HE *)HvARRAY(hv);
             U32 i;
             key = SvPVX_const(keysv);
@@ -3510,7 +3509,8 @@ S_unshare_hek_or_pvn(pTHX_ const HEK *hek, const char *str, I32 len, U32 hash)
         PERL_WARN_WARNING_SEVERE_INTERNAL_SHARED_STRING_FREE_NOT_FOUND(
             hek ? HEK_KEY(hek) : str,
             (k_flags & HVhek_UTF8) ? PERL_DIAG_SEL_PRESENCE_PRESENT : PERL_DIAG_SEL_PRESENCE_ABSENT);
-    Safefree(free_str);
+    if (free_str)
+        Safefree(free_str);
 }
 
 /*

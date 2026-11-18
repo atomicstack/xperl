@@ -157,10 +157,36 @@ S_hv_index_rebuild(pTHX_ HV *hv, U32 capacity, U32 entry_capacity, bool pack)
         Safefree(old);
     HvARRAY(hv) = (HE **)storage;
     HvMAX_SET(hv, capacity - 1);
-    for (i = 0; i < storage->used; i++) {
-        HE *entry = HvENTRY_FIRST(hv, i);
-        if (entry)
-            S_hv_index_insert(hv, i, HeHASH(entry));
+    {
+        HE * const rebuilt = storage->entries;
+        HE * const lazy = HvLAZYDEL(hv) ? HvEITER_get(hv) : NULL;
+        const U32 limit = storage->used;
+        if (HvINDEX_WIDTH_FOR(entry_capacity) == 1) {
+            const U32 stride = HvINDEX_RECORD_WIDTH_FOR(entry_capacity);
+            U8 * const links = storage->indices + capacity;
+            for (i = 0; i < limit; i++) {
+                HE *entry = &rebuilt[i];
+                U32 hash, pos;
+                U8 *record;
+                if (!HeKEY_hek(entry) || entry == lazy)
+                    continue;
+                hash = HeHASH(entry);
+                pos = hash & (capacity - 1);
+                record = links + i * stride;
+                record[0] = storage->indices[pos];
+#ifdef PERL_HASH_CHAIN_FINGERPRINT
+                record[1] = (U8)(hash >> 24);
+#endif
+                storage->indices[pos] = (U8)(i + 1);
+            }
+        }
+        else {
+            for (i = 0; i < limit; i++) {
+                HE *entry = &rebuilt[i];
+                if (HeKEY_hek(entry) && entry != lazy)
+                    S_hv_index_insert(hv, i, HeHASH(entry));
+            }
+        }
     }
 }
 
