@@ -3624,16 +3624,15 @@ Perl_shared_keys(pTHX)
     slots = PL_strtab->slots;
     /* Copying values does not intern keys or change the pointer table. */
     for (i = 0; i < capacity; i++) {
-        HEK *hek = slots[i];
-        SV *key;
-        if (!hek || hek == PERL_HV_STRTAB_TOMBSTONE)
-            continue;
-        key = newSVpvn(HEK_KEY(hek), HEK_LEN(hek));
-        if (HEK_UTF8(hek))
-            SvUTF8_on(key);
-        else if (HEK_WASUTF8(hek))
-            sv_utf8_upgrade(key);
-        av_push(keys, key);
+        HEK *hek;
+        for (hek = slots[i]; hek; hek = HvSTR_SHARED(hek)->next) {
+            SV *key = newSVpvn(HEK_KEY(hek), HEK_LEN(hek));
+            if (HEK_UTF8(hek))
+                SvUTF8_on(key);
+            else if (HEK_WASUTF8(hek))
+                sv_utf8_upgrade(key);
+            av_push(keys, key);
+        }
     }
     return keys;
 }

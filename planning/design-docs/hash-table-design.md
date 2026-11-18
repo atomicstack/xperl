@@ -239,25 +239,18 @@ faster than using a hash table as the index. As such very small hashes are
 not actually hashes at all but either a single pointer to an arena allocated
 HE, or to a short array of HE elements (2-8 keys). 
 
-### The shared string table uses open addressing over key pointers
+### The shared string table uses dedicated pointer chains
 
-The string table stores `HEK *` pointers in an open-addressed slot array.
-The key records remain separately allocated, so rebuilding the slot array
-does not move keys referenced by ordinary hashes. Each shared-key allocation
-holds the reference count alongside its `HEK`, without a full string-table
-`HE`.
+The string table has its own implementation, independent of ordinary hash
+storage. Each bucket points to a chain of separately allocated shared-key
+records. A record holds its next pointer, reference count, and `HEK`.
+Growing the bucket array relinks records without moving their HEKs.
 
-When the last reference to a shared key is released, deletion uses its
-cached hash to probe for the slot holding that exact `HEK *`. It replaces
-the pointer with a tombstone, preserving the probe paths needed to find
-other keys. There is no stored deletion backlink. A backlink would avoid
-this probe, but would require per-key metadata and maintenance when slots
-move during a rebuild.
-
-This gives the two tables different lookup structures while retaining
-shared key records: open addressing for the key table, and compact
-offset-based separate chaining for ordinary hashes. The entry array
-separates iteration order from collision handling, as it does in Python.
+Final release finds the record by pointer identity in its bucket chain,
+unlinks it, and frees it. Deletion leaves no tombstone. The table doubles
+its bucket count before a new key would raise its population above one
+live key per bucket. Ordinary hashes use compact offset-based separate
+chaining by default, with an optional open-addressed backend.
 
 ### Implementation scope
 

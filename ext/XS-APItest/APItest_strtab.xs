@@ -119,7 +119,7 @@ info(self)
         RETVAL = newAV();
         av_push(RETVAL, newSVuv(table->capacity));
         av_push(RETVAL, newSVuv(table->live));
-        av_push(RETVAL, newSVuv(table->tombstones));
+        av_push(RETVAL, newSVuv(0));
         av_push(RETVAL, newSVuv(PTR2UV(table->slots)));
     OUTPUT:
         RETVAL

@@ -895,7 +895,7 @@ defines C<PERL_HASH_INDEX_CHAINS> unless C<PERL_HASH_INDEX_OA> is selected.
 Open addressing is available by selecting C<PERL_HASH_INDEX_OA>. The two
 options cannot be combined. C<PERL_HASH_CHAIN_FINGERPRINT> enables optional
 chain fingerprints and cannot be combined with OA. Fingerprints are off by
-default. C<PL_strtab> remains open-addressed in all builds.
+default. C<PL_strtab> uses its own chained table in all builds.
 The open-addressed index stores adaptive-width entry identifiers only.
 The full cached hash remains in the entry's C<HEK>. Growing or compacting the
 entry array can invalidate C<HE *> and C<SV **> pointers returned by hash
@@ -911,8 +911,8 @@ C<HvARRAY> is no longer an array of bucket-head pointers for ordinary
 hashes. Use the iterator API, or XPerl's hash-aware C<HvENTRY_LIMIT>,
 C<HvENTRY_FIRST>, and C<HvENTRY_NEXT> macros for direct storage traversal.
 C<HeNEXT> is removed because compact entries have no collision-chain
-pointer. C<PL_strtab> contains no C<HE> entries or chain links; its
-open-addressed slots point directly to shared C<HEK>s. The
+pointer. C<PL_strtab> contains no C<HE> entries. Its bucket heads point to
+shared C<HEK>s whose allocations contain their own next links. The
 C<HeSHARED_NEXT> macro is removed. Generic value-fetch and iterator APIs do
 not apply to C<PL_strtab>. A shared C<HEK *> address remains stable while
 referenced, including when the slot array grows. C<share_hek>/C<unshare_hek>

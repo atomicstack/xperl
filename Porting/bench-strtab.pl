@@ -33,7 +33,7 @@ for my $round (0 .. $rounds - 1) {
     if ($mode eq 'lastowner') {
         for my $i (0 .. $n - 1) {
             my $key = "strtab-bench-$trial-key-$i";
-            $target{$key} = $i;
+            $target{$key} = 1;
             $checksum += $i;
         }
     }
@@ -41,7 +41,7 @@ for my $round (0 .. $rounds - 1) {
         keys %keeper;
         my $i = 0;
         while (my ($key, $value) = each %keeper) {
-            $target{$key} = $i;
+            $target{$key} = 1;
             $checksum += $i++;
         }
         die "keeper iteration failed in round $round\n" unless $i == $n;

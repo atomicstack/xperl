@@ -132,7 +132,6 @@ shared_key_storage_info()
         AV *result;
         Size_t capacity;
         Size_t live;
-        Size_t tombstones;
         Size_t i;
         Size_t distance;
         UV max_distance = 0;
@@ -141,22 +140,21 @@ shared_key_storage_info()
     CODE:
         capacity = PL_strtab->capacity;
         live = PL_strtab->live;
-        tombstones = PL_strtab->tombstones;
         slots = PL_strtab->slots;
         for (i = 0; i < capacity; i++) {
-            HEK *hek = slots[i];
-            if (hek && hek != PERL_HV_STRTAB_TOMBSTONE) {
-                distance = (i - ((Size_t)HEK_HASH(hek) & (capacity - 1)))
-                           & (capacity - 1);
+            HEK *hek;
+            distance = 0;
+            for (hek = slots[i]; hek; hek = HvSTR_SHARED(hek)->next) {
                 total_distance += distance;
                 if (distance > max_distance)
                     max_distance = distance;
+                distance++;
             }
         }
         result = newAV();
         av_push(result, newSVuv(capacity));
         av_push(result, newSVuv(live));
-        av_push(result, newSVuv(tombstones));
+        av_push(result, newSVuv(0));
         av_push(result, newSVuv(sizeof(HEK *)));
         av_push(result, newSVuv(sizeof(PERL_HV_STRTAB)));
         av_push(result, newSVuv(max_distance));
@@ -510,75 +508,6 @@ test_share_unshare_pvn(input)
         RETVAL
 
 SV *
-test_shared_hek_tombstone_reuse()
-    PREINIT:
-        Size_t capacity;
-        Size_t occupied;
-        Size_t slot;
-        Size_t held_count = 0;
-        Size_t tombstones_before;
-        Size_t tombstones_after;
-        Size_t capacity_after;
-        HEK **held;
-        HEK **slots_before;
-        HEK *replacement;
-        U32 target_hash = 0;
-        STRLEN target_len = 0;
-        char keybuf[96];
-        char target_key[96];
-        AV *result;
-    CODE:
-        capacity = PL_strtab->capacity;
-        if (capacity > 1000000)
-            croak("shared-key table is too large for the reuse test");
-        occupied = PL_strtab->live + PL_strtab->tombstones;
-        if (occupied >= capacity / 2) {
-            Perl_hv_strtab_reserve(aTHX_ PL_strtab, capacity / 2);
-            capacity = PL_strtab->capacity;
-        }
-        Newx(held, capacity / 2 - occupied + 1, HEK *);
-        for (slot = 0; occupied < capacity / 2 && slot < capacity; slot++) {
-            STRLEN len;
-            if (PL_strtab->slots[slot])
-                continue;
-            my_snprintf(keybuf, sizeof keybuf,
-                        "xperl-strtab-reuse-%" UVuf "-%" UVuf,
-                        PTR2UV(PL_strtab), (UV)slot);
-            len = strlen(keybuf);
-            held[held_count++] = share_hek(keybuf, len, (U32)slot);
-            if (held_count == 1) {
-                Copy(keybuf, target_key, len + 1, char);
-                target_len = len;
-                target_hash = (U32)slot;
-            }
-            occupied = PL_strtab->live
-                + PL_strtab->tombstones;
-        }
-        if (!held_count || occupied != capacity / 2)
-            croak("could not fill shared-key table to half occupancy");
-        unshare_hek(held[0]);
-        tombstones_before = PL_strtab->tombstones;
-        slots_before = PL_strtab->slots;
-        replacement = share_hek(target_key, target_len, target_hash);
-        tombstones_after = PL_strtab->tombstones;
-        capacity_after = PL_strtab->capacity;
-
-        result = newAV();
-        av_push(result, newSVuv(capacity));
-        av_push(result, newSVuv(capacity_after));
-        av_push(result, newSVuv(tombstones_before));
-        av_push(result, newSVuv(tombstones_after));
-        av_push(result, newSViv(PL_strtab->slots == slots_before));
-        RETVAL = newRV_noinc((SV *)result);
-
-        unshare_hek(replacement);
-        for (slot = 1; slot < held_count; slot++)
-            unshare_hek(held[slot]);
-        Safefree(held);
-    OUTPUT:
-        RETVAL
-
-SV *
 test_shared_hek_probe(input, max_growth_keys = 0)
         SV *input
         UV max_growth_keys
@@ -603,19 +532,12 @@ test_shared_hek_probe(input, max_growth_keys = 0)
         bool target_utf8;
         bool target_was_utf8;
         I32 target_len;
-        Size_t tombstones_before;
-        Size_t tombstones_after_delete;
-        Size_t tombstones_after_reinsert;
-        Size_t tombstones_after_cleanup;
-        Size_t cleanup_limit;
-        Size_t tombstones_at_cleanup = 0;
-        Size_t live_at_cleanup = 0;
-        Size_t cleanup_i;
-        bool cleanup_observed = FALSE;
+        Size_t live_before;
+        Size_t live_after_delete;
+        Size_t live_after_reinsert;
         char keybuf[96];
         STRLEN keylen;
         HEK *reinserted;
-        HEK *cleanup_hek;
         AV *result;
     CODE:
         if (max_growth_keys > 1000000)
@@ -662,49 +584,16 @@ test_shared_hek_probe(input, max_growth_keys = 0)
         unshare_hek(duplicate);
         refs_after_release = HvSTR_REFCOUNT(target);
 
-        tombstones_before = PL_strtab->tombstones;
+        live_before = PL_strtab->live;
         unshare_hek(target);
         for (i = held_count; i > 0; i--)
             unshare_hek(held[i - 1]);
-        tombstones_after_delete = PL_strtab->tombstones;
+        live_after_delete = PL_strtab->live;
 
         reinserted = share_hek(pv, share_len, target_hash);
-        tombstones_after_reinsert = PL_strtab->tombstones;
+        live_after_reinsert = PL_strtab->live;
         unshare_hek(reinserted);
 
-        if (max_growth_keys) {
-            cleanup_limit = capacity_after > 500000
-                ? 1000000 : capacity_after * 2;
-            for (cleanup_i = 0; cleanup_i < cleanup_limit; cleanup_i++) {
-                const Size_t old_capacity = PL_strtab->capacity;
-                HEK **old_slots = PL_strtab->slots;
-                const Size_t old_tombstones = PL_strtab->tombstones;
-                const Size_t old_live = PL_strtab->live;
-                my_snprintf(keybuf, sizeof keybuf,
-                            "xperl-shared-hek-cleanup-%" UVuf "-%" UVuf,
-                            PTR2UV(input), (UV)cleanup_i);
-                keylen = strlen(keybuf);
-                PERL_HASH(hash, keybuf, keylen);
-                cleanup_hek = share_hek(keybuf, keylen, hash);
-                if (old_tombstones
-                    && PL_strtab->capacity == old_capacity
-                    && PL_strtab->slots != old_slots) {
-                    cleanup_observed = TRUE;
-                    tombstones_at_cleanup = old_tombstones;
-                    live_at_cleanup = old_live;
-                    tombstones_after_cleanup =
-                        PL_strtab->tombstones;
-                }
-                unshare_hek(cleanup_hek);
-                if (cleanup_observed)
-                    break;
-            }
-            if (!cleanup_observed)
-                tombstones_after_cleanup = PL_strtab->tombstones;
-        }
-        else {
-            tombstones_after_cleanup = PL_strtab->tombstones;
-        }
         Safefree(held);
 
         result = newAV();
@@ -719,14 +608,10 @@ test_shared_hek_probe(input, max_growth_keys = 0)
         av_push(result, newSVuv(target_was_utf8 ? 1 : 0));
         av_push(result, newSVuv(target_len));
         av_push(result, newSVuv(target_hash));
-        av_push(result, newSVuv(tombstones_before));
-        av_push(result, newSVuv(tombstones_after_delete));
-        av_push(result, newSVuv(tombstones_after_reinsert));
+        av_push(result, newSVuv(live_before));
+        av_push(result, newSVuv(live_after_delete));
+        av_push(result, newSVuv(live_after_reinsert));
         av_push(result, newSVuv(held_count));
-        av_push(result, newSVuv(tombstones_after_cleanup));
-        av_push(result, newSVuv(cleanup_observed));
-        av_push(result, newSVuv(tombstones_at_cleanup));
-        av_push(result, newSVuv(live_at_cleanup));
         RETVAL = newRV_noinc((SV *)result);
     OUTPUT:
         RETVAL

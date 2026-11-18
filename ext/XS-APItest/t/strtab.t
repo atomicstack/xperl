@@ -25,12 +25,12 @@ isnt($utf8, $bytes, 'encoding flags participate in key identity');
 $a->release('same bytes', 1);
 $a->release('same bytes', 0);
 
-subtest 'collisions and wraparound' => sub {
+subtest 'collisions in the final bucket' => sub {
     my $table = $class->new;
     my @pointers = map { $table->share("collision:$_", 0, 32767) } 0..511;
     ok($table->release("collision:$_", 0, 32767), "release collision $_") for 0..255;
     is($table->find("collision:$_", 0, 32767), $pointers[$_],
-       "probe crosses deleted slots for $_") for 256..511;
+       "chain survives unlinking earlier keys for $_") for 256..511;
     $table->share("replacement:$_", 0, 32767) for 0..255;
     is($table->info->[1], 512, 'replacements preserve distinct population');
     $table->release("collision:$_", 0, 32767) for 256..511;
@@ -52,33 +52,49 @@ subtest 'growth preserves pointers and pins' => sub {
     is_deeply($table->free, [0, 0], 'destruction releases all intentional pins');
 };
 
-subtest 'half-full tombstone reuse and cleanup' => sub {
+subtest 'growth and repeated final release' => sub {
     my $table = $class->new;
-    my @pointers = map { $table->share("slot:$_", 0, $_) } 0..16383;
+    my @pointers = map { $table->share("slot:$_", 0, $_) } 0..32767;
     my $before = $table->info;
     $table->release('slot:0', 0, 0);
     $table->share('slot:0', 0, 0);
-    is($table->info->[0], $before->[0], 'half-full tombstone reuse retains capacity');
-    is($table->info->[3], $before->[3], 'half-full tombstone reuse retains allocation');
-    $table->share('grow', 0, 16384);
-    is($table->info->[0], 65536, 'fresh slot at half occupancy doubles capacity');
-    is($table->find('slot:16383', 0, 16383), $pointers[16383], 'growth preserves identity');
-    $table->release("slot:$_", 0, $_) for 0..16383;
-    $table->release('grow', 0, 16384);
-    # Disjoint batches force tombstones to occupy half the table, then clean it.
-    my $cleaned = 0;
+    is($table->info->[0], $before->[0], 'reinsertion retains bucket capacity');
+    is($table->info->[3], $before->[3], 'reinsertion retains bucket allocation');
+    $table->share('grow', 0, 32768);
+    is($table->info->[0], 65536, 'insertion above one key per bucket doubles capacity');
+    is($table->find('slot:32767', 0, 32767), $pointers[32767],
+       'growth preserves HEK identity');
+    $table->release("slot:$_", 0, $_) for 0..32767;
+    $table->release('grow', 0, 32768);
+    my $allocation = $table->info->[3];
+    my $anchor = $table->share('anchor', 0, 777);
     for my $batch (0..5) {
-        my $previous = $table->info->[3];
         for my $i (0..16383) {
             my $hash = 20000 + 16384 * $batch + $i;
             $table->share("churn:$batch:$i", 0, $hash);
             $table->release("churn:$batch:$i", 0, $hash);
         }
-        $cleaned ||= $table->info->[3] != $previous;
     }
-    ok($cleaned, 'tombstone-heavy churn rebuilds the allocation');
-    is($table->info->[0], 65536, 'cleanup retains capacity');
+    is($table->info->[3], $allocation, 'churn does not rebuild the bucket array');
+    is($table->find('anchor', 0, 777), $anchor, 'churn preserves an existing owner');
+    is($table->info->[1], 1, 'final releases leave only the anchor');
+    $table->release('anchor', 0, 777);
     is_deeply($table->free, [0, 0], 'churn leaves no owners');
+};
+
+subtest 'unlink chain head, middle and tail' => sub {
+    my $table = $class->new;
+    my @pointers = map { $table->share("chain:$_", 0, 37) } 0..4;
+    for my $removed (4, 2, 0) {
+        ok($table->release("chain:$removed", 0, 37), "unlink chain entry $removed");
+        is($table->find("chain:$removed", 0, 37), 0, 'unlinked key is absent');
+        is($table->find("chain:$_", 0, 37), $pointers[$_], 'surviving key keeps its address')
+            for 1, 3;
+    }
+    $table->reserve(70000);
+    is($table->find("chain:$_", 0, 37), $pointers[$_], 'split preserves collision survivors')
+        for 1, 3;
+    is_deeply($table->free, [2, 2], 'free traverses all remaining chain entries');
 };
 
 subtest 'capacity and reference-count boundaries' => sub {

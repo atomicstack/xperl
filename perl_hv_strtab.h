@@ -4,9 +4,9 @@
 
 #define PERL_HV_STRTAB_MIN_CAPACITY 32768
 #define PERL_HV_STRTAB_MAX_KEYS ((U32)1431655765)
-#define PERL_HV_STRTAB_TOMBSTONE INT2PTR(HEK *, 1)
 
 struct shared_hek {
+    HEK *next;
     U32 refcount;
     struct hek shared_hek_hek;
 };
@@ -26,7 +26,6 @@ typedef struct perl_hv_strtab {
     HEK **slots;
     Size_t capacity;
     Size_t live;
-    Size_t tombstones;
     struct perl_hv_strtab_pin *pins;
 } PERL_HV_STRTAB;
 

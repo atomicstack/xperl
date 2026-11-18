@@ -294,8 +294,9 @@ This table now has its own C type, `PERL_HV_STRTAB`, and implementation in
 `perl_hv_strtab.[ch]`. Ordinary hash operations no longer need special cases
 for it.
 
-The table uses open addressing in every build. Shared key addresses remain
-stable while referenced, even when the index grows. It supports at most
+The table uses separate chaining in every build. Final release unlinks the
+key without leaving a tombstone. Shared key addresses remain stable while
+referenced, even when the bucket array grows. It supports at most
 1,431,655,765 distinct keys. Existing keys can acquire more references at
 that limit, subject to reference-count overflow checks.
 

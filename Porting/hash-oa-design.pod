@@ -7,7 +7,8 @@ hash_oa_design - Compact hash storage with integer chains and optional open addr
 This document records the compact hash representation and its compatibility
 requirements. Ordinary hashes use integer chains by default, without
 fingerprints. Open addressing and fingerprinted chains are optional builds.
-The shared-key table uses open addressing independently of that choice.
+The shared-key table uses its own pointer-based chains independently of that
+choice.
 
 The storage rules below describe the current experimental implementation.
 The benchmark results later in this document record earlier open-addressed
@@ -41,7 +42,7 @@ C<PERL_HASH_INDEX_CHAINS> unless C<PERL_HASH_INDEX_OA> is selected. The chain
 index uses packed bucket heads and one packed next identifier per entry slot.
 Fingerprints are disabled unless C<PERL_HASH_CHAIN_FINGERPRINT> is defined.
 Selecting OA together with chains or fingerprints is rejected. C<PL_strtab>
-remains open-addressed in every build.
+uses its own chained implementation in every build.
 
 With C<PERL_HASH_INDEX_OA>, each index slot stores only an entry identifier.
 The following load, tombstone, capacity, and shrink rules describe the OA
@@ -137,7 +138,7 @@ C<PERL_HASH_INDEX_OA> is selected. To opt into open addressing, define
 C<PERL_HASH_INDEX_OA>; it cannot be combined with C<PERL_HASH_INDEX_CHAINS>
 or C<PERL_HASH_CHAIN_FINGERPRINT>. The optional
 C<PERL_HASH_CHAIN_FINGERPRINT> adds fingerprints to integer-chain links and
-is disabled by default. C<PL_strtab> continues to use open addressing. The
+is disabled by default. C<PL_strtab> uses its own chained table. The
 entry representation is unchanged: compact 16-byte C<HE> records in an
 append-ordered array, with the same headerless linear representation for tiny
 hashes.
@@ -222,9 +223,9 @@ address. A compact entry in a relocatable array cannot provide that stability
 by itself; reacquire it after insertion or preallocation that can grow or
 compact the entry array, or after deletion from linear storage. The tied-fetch pool uses a standalone 16-byte arena C<HE>; when
 retired, its link is stored in the value union. C<PL_strtab> contains no
-C<HE> records: its open-addressed slots point directly to individually
-allocated shared C<HEK>s. Each shared-key allocation has a reference-count
-prefix, and the C<HEK> address remains stable while referenced, including
+C<HE> records: its bucket heads point directly to individually
+allocated shared C<HEK>s. Each shared-key allocation has a next pointer and
+a reference-count prefix, and the C<HEK> address remains stable while referenced, including
 when the slot array grows.
 
 C<HeNEXT()> was a public macro for following chained entries. Ordinary hash
@@ -244,21 +245,16 @@ written directly. C<HvINDEX(hv)> accesses the selected indexed layout.
 C<Hash::Util::hash_storage_info()> uses C<open_addressed> for actual OA
 index allocation and C<linear> for the headerless form.
 
-Each shared key has a C<U32> reference-count prefix. Together with its
-C<U32> hash and C<I32> length, this gives a 12-byte header before the key
-bytes. Reference acquisition checks for overflow instead of wrapping to zero.
-Actual heap savings depend on allocator size classes.
+Each shared key has a next pointer and a C<U32> reference count before its
+C<HEK>. The cached hash and length occupy another eight bytes. Reference
+acquisition checks for overflow instead of wrapping to zero. Actual heap
+cost depends on pointer size, padding, and allocator size classes.
 
-The shared-key table has a minimum capacity of 32,768 pointer slots. Before
-insertion, when live slots plus tombstones reach the floor of two-thirds of
-capacity, it targets the next power of two able to hold three times the live
-count, while retaining the minimum capacity. It grows when tombstones are
-below half of occupied slots. Otherwise it clears tombstones at the same
-capacity, except that it shrinks when the target is at most half the current
-capacity. There is no entry-array compaction or early shrink check. An
-interned C<HEK> is canonical
-for its key bytes and storage flags, and its address remains stable while
-referenced, including across slot-array growth.
+The shared-key table has a minimum capacity of 32,768 pointer buckets.
+Before inserting a distinct key above one live key per bucket, it doubles
+the bucket count. Final release unlinks the key from its chain and leaves
+no tombstone. An interned C<HEK> is canonical for its key bytes and storage
+flags, and its address remains stable across bucket-array growth.
 C<share_hek()> increments the shared reference count; C<unshare_hek()>
 releases it, and the address becomes invalid when the final reference is
 released. There is no value
@@ -289,8 +285,8 @@ growth, optional thread cloning, entry-budget compaction, no-reuse deletion,
 and tombstone rebuilding. The focused XS hash tests also exercise index
 growth and compaction. The
 shared-key tests cover canonical interning, reference counts, UTF-8 flags,
-tombstone reuse, stable C<HEK *> identity through table growth, and thread
-cloning. XS::APItest-only diagnostics scan the HEK-pointer slots before
+chain-head, middle, and tail unlinking, stable C<HEK *> identity through
+table growth, and thread cloning. XS::APItest-only diagnostics scan the HEK-pointer slots before
 constructing their result; Hash::Util does not expose the table layout.
 
 F<Porting/bench-hash-oa.pl> runs each workload in a fresh process and reports
@@ -665,21 +661,15 @@ storage, and allocator retention changes it on later rounds.
 
 =head1 LIMITS AND FOLLOW-UP
 
-Each interpreter's C<PL_strtab> is an open-addressed array of shared
-C<HEK *> slots. Its capacity, probe positions, and tombstone count use
-native-size integers. The pointer index uses checked native-size
-allocation arithmetic. Both ordinary hashes and the shared-key table
-limit their live key count to 1,431,655,765, with allocation limits
-potentially reached earlier. The cached hash in each C<HEK> and its
-reference count remain C<U32>; because the hash is still 32 bits, hash
-distribution can become a performance limitation above C<2^32> slots.
-The ordinary hash index retains its C<2^31> slot limit. The table's
-minimum capacity is 32,768 slots. Before insertion, when live entries
-plus tombstones reach half the capacity, it doubles the bucket count if
-tombstones are below half of occupied slots. Otherwise it clears
-tombstones at the same capacity. It has no entry-array compaction or
-early shrink check. It stores full hashes in each shared C<HEK> and has
-no C<HE> records, entry array, or freelist. Ordinary hash entry
+Each interpreter's C<PL_strtab> has a dedicated chained array of shared
+C<HEK *> bucket heads. Its capacity and live count use native-size integers,
+with checked allocation arithmetic. Both ordinary hashes and the shared-key
+table limit their live count to 1,431,655,765, with allocation limits
+potentially reached earlier. The cached hash and reference count remain
+C<U32>. The string table starts at 32,768 buckets and doubles before a new
+key would raise the live count above its bucket count. Final release
+unlinks its record without tombstones, entry-array compaction, or shrinking.
+The table has no C<HE> records, entry array, or freelist. Ordinary hash entry
 identifiers use adaptive one-, two-, or four-byte widths; the ordinary
 hash index is limited to 2^31 slots. At the two-thirds load limit, an
 ordinary hash can hold at most 1,431,655,765 live keys. Inserting a key
@@ -709,7 +699,7 @@ legacy representation uses a 12-byte C<HE> and 4-byte bucket pointer, while
 the compact entry is 8 bytes. The current adaptive index adds one, two, or
 four bytes per slot, depending on identifier width. The 64-bit measurements
 do not imply a 32-bit memory win.
-The shared C<HEK> layout retains the legacy key offset.
+The shared C<HEK> layout uses its own next-pointer and reference-count prefix.
 
 XS code must not retain C<HE *> or C<SV **> addresses across a hash growth.
 The original chained implementation's HE arena has shared allocation slack
@@ -739,6 +729,5 @@ C<perl_hv_strtab.[ch]> owns shared-key storage and its lifecycle. Ordinary
 hash storage lives in C<perl_hv_sc.[ch]> or C<perl_hv_oa.[ch]>, selected at
 compile time. Only that backend is compiled into C<hv.o>. The ordinary
 hash representation is C<PERL_HV_INDEX>; its accessors use the C<HvINDEX>
-prefix. C<HvIS_OA> and C<HvIS_STRTAB> are removed. The table algorithms,
-load policies, key reference counts, and stable shared HEK addresses are
-preserved by this separation.
+prefix. C<HvIS_OA> and C<HvIS_STRTAB> are removed. Shared key reference counts and stable HEK addresses are preserved across
+both ordinary-hash backends.

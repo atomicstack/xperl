@@ -123,17 +123,19 @@ subtest 'PL_strtab capacity arithmetic' => sub {
     is($capacity_for->(0), 32768, 'empty table uses the minimum capacity');
     is($capacity_for->(16_383), 32768,
        'live count below the minimum table threshold stays at minimum');
-    is($capacity_for->(16_384), 65536,
-       'capacity target rounds up before a half-full table gains a key');
+    is($capacity_for->(32_768), 32768,
+       'one key per bucket fits without growth');
+    is($capacity_for->(32_769), 65536,
+       'the next key doubles the bucket count');
     ok($size_valid->(32768), 'minimum table capacity is valid');
     ok($size_valid->(65536), 'power-of-two table capacity is valid');
     ok(!$size_valid->(32769), 'non-power-of-two table capacity is invalid');
     ok(!$size_valid->(16384), 'capacity below table minimum is invalid');
 
     my $two26 = 67_108_864;
-    is($capacity_for->(33_554_431), $two26,
+    is($capacity_for->(67_108_864), $two26,
        'capacity arithmetic reaches the former 2^26 limit');
-    is($capacity_for->(33_554_432), 2 * $two26,
+    is($capacity_for->(67_108_865), 2 * $two26,
        'capacity arithmetic grows beyond the former 2^26 limit');
     ok($size_valid->($two26), '2^26 table capacity is valid');
 
@@ -141,8 +143,8 @@ subtest 'PL_strtab capacity arithmetic' => sub {
         skip('wide Size_t boundary cases', 8)
             unless $Config::Config{sizesize} >= 8;
         my $two32 = 4_294_967_296;
-        is($capacity_for->(1_431_655_765), $two32,
-           'maximum shared-key count requires 2^32 half-full buckets');
+        is($capacity_for->(1_431_655_765), $two32 / 2,
+           'maximum shared-key count fits in 2^31 chained buckets');
         is($capacity_for->(1_431_655_766), 0,
            'first shared-key count above the policy limit is rejected');
         ok($size_valid->($two32), '2^32 table capacity is valid');
@@ -157,7 +159,7 @@ subtest 'PL_strtab capacity arithmetic' => sub {
         is($capacity_for->($largest_capacity), 0,
            'oversized live count is rejected before allocation arithmetic');
         is($capacity_for->(9_223_372_036_854_775_808), 0,
-           'live count that would overflow 2*live returns no capacity');
+           'oversized live count returns no capacity');
     }
 
     SKIP: {
@@ -203,8 +205,8 @@ ok(XS::APItest::Hash::shared_key_saturated_acquire(0),
 }
 
 is_deeply(XS::APItest::Hash::shared_hek_refcount_probe(0xffff_fffe),
-          [4, 12, 0xffff_ffff],
-          'shared HEK uses a 12-byte header and reaches the U32 count limit');
+          [4, 12 + $Config::Config{ptrsize}, 0xffff_ffff],
+          'shared HEK includes a chain link and reaches the U32 count limit');
 eval { XS::APItest::Hash::shared_hek_refcount_probe(0xffff_ffff) };
 like($@, qr/memory wrap/, 'shared HEK reference count cannot wrap to zero');
 
@@ -254,23 +256,23 @@ main_tests (\@keys, \@testkeys, ' [utf8 hash]');
        'bucket_array does not expose the shared-key table');
     my $strtab_info = XS::APItest::Hash::shared_key_storage_info();
     cmp_ok($strtab_info->[0], '>=', 32768,
-           'shared-key table reserves at least 16K keys');
+           'shared-key table reserves at least 32K buckets');
     is($strtab_info->[3], length(pack('p', '')),
        'shared-key slots are HEK pointers');
-    cmp_ok($strtab_info->[5], '<=', $strtab_info->[0],
-           'private APItest probe distance is bounded by table capacity');
+    cmp_ok($strtab_info->[5], '<=', $strtab_info->[1],
+           'private APItest chain depth is bounded by the live key count');
     cmp_ok($strtab_info->[6], '>=', $strtab_info->[5],
-           'private APItest total probe distance includes its maximum');
+           'private APItest total chain depth includes its maximum');
 
     my $probe = XS::APItest::Hash::test_shared_hek_probe(
         "xperl-strtab-ref-probe-$$", 0);
     ok($probe->[3], 'duplicate interning returns the same shared HEK');
     is_deeply([@$probe[4..6]], [1, 2, 1],
               'shared HEK reference counts track duplicate interning');
-    is($probe->[12], $probe->[11] + 1,
-       'unsharing the last reference leaves one tombstone');
-    cmp_ok($probe->[13], '<', $probe->[12],
-           'reinterning a deleted key reuses or rebuilds its tombstone');
+    is($probe->[12], $probe->[11] - 1,
+       'unsharing the last reference removes one live key');
+    is($probe->[13], $probe->[12] + 1,
+       'reinterning a deleted key restores the live count');
 
     my $binary_probe = XS::APItest::Hash::test_shared_hek_probe(
         "xperl\0strtab-$$", 0);
@@ -293,24 +295,12 @@ main_tests (\@keys, \@testkeys, ' [utf8 hash]');
     my $growth = XS::APItest::Hash::test_shared_hek_probe(
         $growth_key, $growth_limit);
     ok($growth->[2], 'interning enough keys grows PL_strtab');
-    cmp_ok($growth->[14], '<=', $growth_limit / 2 + 1,
-           'shared-key table grows by half occupancy');
+    cmp_ok($growth->[14], '<=', $growth_limit,
+           'shared-key table grows above one key per bucket');
     ok($growth->[3], 'the held shared HEK pointer survives table growth');
     is_deeply([@$growth[4..6]], [1, 2, 1],
               'reference counts remain correct across table growth');
     ok($growth->[14] > 0, 'growth probe retained keys across the resize');
-    ok($growth->[16], 'tombstone pressure triggers a same-size table rebuild');
-    is($growth->[15], 0, 'tombstone rebuild clears old deleted slots');
-    cmp_ok($growth->[17], '>=', $growth->[18],
-           'shared-key cleanup starts when tombstones reach half of occupied slots');
-
-    my $reused = XS::APItest::Hash::test_shared_hek_tombstone_reuse();
-    is($reused->[0], $reused->[1],
-       'reusing a tombstone at half occupancy does not resize PL_strtab');
-    is($reused->[3], $reused->[2] - 1,
-       'reusing a tombstone reduces the deleted-slot count');
-    ok($reused->[4], 'reusing a tombstone keeps the shared-key slot array');
-
     if ($Config::Config{useithreads} && eval { require threads; 1 }) {
         my $thread_key = "xperl-strtab-thread-key-$$";
         my %thread_hash = ($thread_key => 1);
