@@ -52,7 +52,7 @@ sub stream {
 for my $seed ( 0, 1, 42, 4294967295 ) {
     for my $bound ( 1, 2, 3, 257, 2147483649, 4294967295 ) {
         my ( $expected, $rejected ) = stream( $seed, $bound, 40 );
-        my $actual = XStats::_rng_indices( $seed, $bound, 40 );
+        my $actual = XStats::Full::_rng_indices( $seed, $bound, 40 );
         is_deeply( $actual, $expected,
             "independent U32 stream: seed $seed, bound $bound" );
         ok( !grep( { $_ < 0 || $_ >= $bound } @$actual ),

@@ -5,8 +5,8 @@ use Config;
 use POSIX qw(frexp ldexp nextafter isfinite copysign HUGE_VAL);
 use Math::BigRat;
 use Math::BigInt;
-use XStats;
-use XStats::Incremental;
+use XStats::Full;
+use XStats::Sparse;
 
 my $precision = $Config{nvmantbits} + 1;
 my $largest   = nextafter( HUGE_VAL(), 0 );
@@ -14,7 +14,7 @@ my ( undef, $max_exponent ) = frexp($largest);
 my $h = ldexp( 0.75, $max_exponent );
 
 for
-  my $object ( XStats->new( [ $h, $h ] ), XStats::Incremental->new->add( [ $h, $h ] ) )
+  my $object ( XStats::Full->new( [ $h, $h ] ), XStats::Sparse->new->add( [ $h, $h ] ) )
 {
     is( $object->mean,               $h, 'finite mean despite an overflowing sum' );
     is( $object->standard_deviation, 0,  'constant values have zero SD' );
@@ -25,27 +25,27 @@ for
     is( $object->sum,  1,   'later cancellation restores a finite sum' );
     is( $object->mean, 0.2, 'mean after overflowing intermediate sums' );
 }
-my $merged = XStats::Incremental->new->add( [ $h, $h ] );
-$merged->merge( XStats::Incremental->new->add( [ -$h, -$h, 1 ] ) );
+my $merged = XStats::Sparse->new->add( [ $h, $h ] );
+$merged->merge( XStats::Sparse->new->add( [ -$h, -$h, 1 ] ) );
 is( $merged->sum,  1,   'merge cancels an overflowing partial sum' );
 is( $merged->mean, 0.2, 'mean divides the exact total before rounding' );
 
 my $half_ulp = ldexp( 1, -$precision );
 my $one_up   = nextafter( 1,       2 );
 my $two_up   = nextafter( $one_up, 2 );
-is( XStats->new( [ 1, $half_ulp ] )->sum, 1, 'nearest-even tie rounds down' );
-is( XStats->new( [ $one_up, $half_ulp ] )->sum, $two_up, 'nearest-even tie rounds up' );
-is( XStats->new( [ -1, -$half_ulp ] )->sum, -1, 'negative nearest-even tie rounds up' );
-is( XStats->new( [ -$one_up, -$half_ulp ] )->sum, -$two_up,
+is( XStats::Full->new( [ 1, $half_ulp ] )->sum, 1, 'nearest-even tie rounds down' );
+is( XStats::Full->new( [ $one_up, $half_ulp ] )->sum, $two_up, 'nearest-even tie rounds up' );
+is( XStats::Full->new( [ -1, -$half_ulp ] )->sum, -1, 'negative nearest-even tie rounds up' );
+is( XStats::Full->new( [ -$one_up, -$half_ulp ] )->sum, -$two_up,
     'negative tie rounds down' );
 
 my $smallest = nextafter( 0, 1 );
-is( XStats->new( [ $smallest, 0 ] )->mean, 0, 'half-subnormal mean rounds to zero' );
-is( copysign( 1, XStats->new( [ -$smallest, 0 ] )->mean ),
+is( XStats::Full->new( [ $smallest, 0 ] )->mean, 0, 'half-subnormal mean rounds to zero' );
+is( copysign( 1, XStats::Full->new( [ -$smallest, 0 ] )->mean ),
     -1, 'negative underflow retains its sign' );
-is( XStats->new( [ $smallest, $smallest, $smallest ] )->mean,
+is( XStats::Full->new( [ $smallest, $smallest, $smallest ] )->mean,
     $smallest, 'subnormal mean' );
-my $extreme = XStats->new( [ $h, $h, -$h, -$h, $smallest ] );
+my $extreme = XStats::Full->new( [ $h, $h, -$h, -$h, $smallest ] );
 is( $extreme->sum, $smallest,
     'exact cancellation reveals a minimum-subnormal remainder' );
 is( $extreme->median, $smallest,      'median is independent of summary overflow' );
@@ -54,7 +54,7 @@ eval { $extreme->variance };
 like( $@, qr/numerical overflow/, 'variance overflows independently' );
 is( $extreme->sum, $smallest, 'variance failure preserves an exact sum' );
 
-my $counts = XStats::Incremental->new->add( [1] );
+my $counts = XStats::Sparse->new->add( [1] );
 $counts->merge($counts) for 1 .. 31;
 is( $counts->count, 2**31, 'self-merge reaches a large count without allocating data' );
 is( $counts->sum,   2**31, 'carry propagation across count growth' );
@@ -64,8 +64,8 @@ eval { $counts->merge($counts) };
 like( $@, qr/too many observations/, 'U32 count overflow is rejected' );
 is( $$counts, $before, 'rejected merge is atomic' );
 
-my $all_counts = XStats::Incremental->new;
-my $power      = XStats::Incremental->new->add( [1] );
+my $all_counts = XStats::Sparse->new;
+my $power      = XStats::Sparse->new->add( [1] );
 for my $bit ( 0 .. 31 ) {
     $all_counts->merge($power);
     $power->merge($power) if $bit < 31;
@@ -113,15 +113,15 @@ for my $iteration ( 1 .. 24 ) {
     my $exact = Math::BigRat->new(0);
     $exact->badd( as_rational($_) ) for @values;
     for my $values ( \@values, [ reverse @values ] ) {
-        my $stored = XStats->new($values);
+        my $stored = XStats::Full->new($values);
         nearest( $stored->sum, $exact, 'sum is a nearest representable NV' );
         nearest(
             $stored->mean,
             $exact->copy->bdiv( scalar @$values ),
             'mean is a nearest representable NV'
         );
-        my $left = XStats::Incremental->new->add( [ @$values[ 0 .. 2 ] ] );
-        $left->merge( XStats::Incremental->new->add( [ @$values[ 3 .. 7 ] ] ) );
+        my $left = XStats::Sparse->new->add( [ @$values[ 0 .. 2 ] ] );
+        $left->merge( XStats::Sparse->new->add( [ @$values[ 3 .. 7 ] ] ) );
         is( $left->sum,  $stored->sum,  'exact sum is independent of partitioning' );
         is( $left->mean, $stored->mean, 'rounded mean is independent of partitioning' );
     }

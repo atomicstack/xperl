@@ -5,10 +5,10 @@ use Config;
 use POSIX qw(frexp ldexp nextafter isfinite HUGE_VAL);
 use Math::BigRat;
 use Math::BigInt;
-use XStats;
+use XStats::Full;
 use XStats::Functions qw(order_statistic quantile trimmed_mean mode);
 
-my $data   = XStats->new( [ 18, 7, -5, 4, -2, 7 ] );
+my $data   = XStats::Full->new( [ 18, 7, -5, 4, -2, 7 ] );
 my $before = $$data;
 is( $data->order_statistic(1),                      -5,  'first rank' );
 is( $data->order_statistic(6),                      18,  'last rank' );
@@ -87,7 +87,7 @@ for my $operation (
 }
 for my $method (qw(order_statistic quantile trimmed_mean)) {
     my @args = $method eq 'order_statistic' ? (1) : $method eq 'quantile' ? (0.5) : ();
-    eval { XStats->new( [] )->$method(@args) };
+    eval { XStats::Full->new( [] )->$method(@args) };
     ok(
         $@ && $@->has_diagnostic(
             'XStats::INSUFFICIENT_OBSERVATIONS',
@@ -134,7 +134,7 @@ my @sets     = (
 );
 for my $values (@sets) {
     my @sorted = sort { $a <=> $b } @$values;
-    my $object = XStats->new($values);
+    my $object = XStats::Full->new($values);
     for my $p (
         0, $smallest, 0.1, 0.3, 0.5,
         nextafter( 0.5, 0 ),
@@ -173,13 +173,13 @@ for my $values (@sets) {
     }
 }
 my $almost_half = nextafter( 0.5, 0 );
-is( XStats->new( [ 1 .. 4 ] )->trimmed_mean( lower => $almost_half, upper => 0.5 ),
+is( XStats::Full->new( [ 1 .. 4 ] )->trimmed_mean( lower => $almost_half, upper => 0.5 ),
     2, 'exact trim sum below one is accepted even if its NV sum rounds to one' );
 
 my $a        = ldexp( 5424227312930681, 1022 - 52 );
 my $b        = ldexp( 7925679643308305, 1023 - 52 );
-my $midpoint = XStats->new( [ $a, $b ] )->median;
-my $draws    = XStats->new( [ $a, $b ] )
+my $midpoint = XStats::Full->new( [ $a, $b ] )->median;
+my $draws    = XStats::Full->new( [ $a, $b ] )
   ->bootstrap_distribution( statistic => 'median', resamples => 64 );
 ok(
     scalar( grep { $_ == $midpoint } @$draws ),
@@ -199,18 +199,18 @@ eval { quantile( [1], 0.5, unknown => 1 ) };
 is( $@->find_diagnostic('XStats::UNKNOWN_OPTION')->location->{line},
     $line, 'Perl option validation retains functional caller location' );
 
-my $iqr_input = XStats->new( [ 1, 2, 3, 4 ] );
+my $iqr_input = XStats::Full->new( [ 1, 2, 3, 4 ] );
 is( $iqr_input->interquartile_range, 1.5, 'IQR uses the two linear quartiles' );
 is_deeply( $iqr_input->values, [ 1, 2, 3, 4 ], 'IQR preserves stored order' );
 my $iqr_tiny = nextafter( 0, 1 );
 is(
-    XStats->new( [ $iqr_tiny, 5 * $iqr_tiny ] )->interquartile_range,
+    XStats::Full->new( [ $iqr_tiny, 5 * $iqr_tiny ] )->interquartile_range,
     2 * $iqr_tiny,
     'IQR subtracts rounded subnormal quartiles exactly'
 );
 
 my $iqr_large    = nextafter( HUGE_VAL(), 0 );
-my $iqr_overflow = XStats->new( [ -$iqr_large, -$iqr_large, $iqr_large, $iqr_large ] );
+my $iqr_overflow = XStats::Full->new( [ -$iqr_large, -$iqr_large, $iqr_large, $iqr_large ] );
 eval { $iqr_overflow->interquartile_range };
 ok(
     ref($@) && $@->has_diagnostic(
@@ -218,7 +218,7 @@ ok(
     ),
     'IQR reports a structured overflow'
 );
-eval { XStats->new( [] )->interquartile_range };
+eval { XStats::Full->new( [] )->interquartile_range };
 ok(
     ref($@) && $@->has_diagnostic(
         'XStats::INSUFFICIENT_OBSERVATIONS',
@@ -230,8 +230,8 @@ ok(
 SKIP: {
     my $original = eval { POSIX::fegetround() };
     skip 'hardware rounding modes unavailable', 16 unless defined $original;
-    my $expected = XStats->new( [ -1, $one_up ] )->quantile(0.3);
-    my $values   = XStats->new( [ -1, $one_up ] );
+    my $expected = XStats::Full->new( [ -1, $one_up ] )->quantile(0.3);
+    my $values   = XStats::Full->new( [ -1, $one_up ] );
     for my $name (qw(FE_TONEAREST FE_DOWNWARD FE_TOWARDZERO FE_UPWARD)) {
       SKIP: {
             my $mode = eval { no strict 'refs'; &{"POSIX::$name"}() };

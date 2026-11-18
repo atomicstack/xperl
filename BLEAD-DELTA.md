@@ -370,8 +370,7 @@ These new distributions provide statistics, benchmarking, and graph tools:
 | [XGraph](dist/XGraph/lib/XGraph.pm) | Compact directed graphs and graph algorithms, with DOT import/export through `XGraph::IO::DOT` |
 
 The statistics modules are `XStats::Full`, `XStats::Sparse`, and
-`XStats::Functions`. `XStats` and `XStats::Incremental` remain available as
-the original constructor names.
+`XStats::Functions`. Construct statistics objects with `Full` or `Sparse`.
 
 ### New core modules
 

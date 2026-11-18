@@ -5,10 +5,10 @@ use Config;
 use POSIX qw(nextafter HUGE_VAL frexp ldexp isfinite);
 use Math::BigInt;
 use Math::BigRat;
-use XStats;
+use XStats::Full;
 use XStats::Functions qw(histogram);
 
-my $data   = XStats->new( [ -1, 0, 0.5, 1, 1.5, 2, 3 ] );
+my $data   = XStats::Full->new( [ -1, 0, 0.5, 1, 1.5, 2, 3 ] );
 my $before = $$data;
 my @edges  = ( 0, 1, 2 );
 my $left   = $data->histogram( edges => \@edges );
@@ -43,19 +43,19 @@ is_deeply(
     'functional equal-width histogram'
 );
 is_deeply(
-    XStats->new( [] )->histogram( edges => \@edges )->{counts},
+    XStats::Full->new( [] )->histogram( edges => \@edges )->{counts},
     [ 0, 0 ],
     'empty explicit histogram'
 );
 is_deeply(
-    XStats->new( [] )->histogram( bins => 2, range => [ 0, 2 ] )->{counts},
+    XStats::Full->new( [] )->histogram( bins => 2, range => [ 0, 2 ] )->{counts},
     [ 0, 0 ],
     'empty generated histogram with explicit range'
 );
 
 for my $closed (qw(left right)) {
     is_deeply(
-        XStats->new( [ 7, 7, 7 ] )->histogram( closed => $closed ),
+        XStats::Full->new( [ 7, 7, 7 ] )->histogram( closed => $closed ),
         {
             edges          => [ 7, 7 ],
             counts         => [3],
@@ -68,7 +68,7 @@ for my $closed (qw(left right)) {
         'constant data produces one point bin'
     );
     is_deeply(
-        XStats->new( [ 0, 1, 2 ] )
+        XStats::Full->new( [ 0, 1, 2 ] )
           ->histogram( bins => 2**32 - 1, range => [ 1, 1 ], closed => $closed ),
         {
             edges          => [ 1, 1 ],
@@ -164,7 +164,7 @@ tie my @tied, 'XStatsHistogramTied';
 eval { $data->histogram( edges => \@tied ) };
 ok( $@ && $@->has_diagnostic('XStats::INVALID_NUMERIC_ARRAY'),
     'tied edges rejected without callbacks' );
-eval { XStats->new( [] )->histogram };
+eval { XStats::Full->new( [] )->histogram };
 ok(
     $@ && $@->has_diagnostic(
         'XStats::INSUFFICIENT_OBSERVATIONS',
@@ -205,7 +205,7 @@ for my $edges (
             }
         }
         my $histogram =
-          XStats->new( \@values )->histogram( edges => $edges, closed => $closed );
+          XStats::Full->new( \@values )->histogram( edges => $edges, closed => $closed );
         is_deeply( $histogram->{counts}, \@counts,
             'binary search agrees with direct interval membership' );
         is_deeply(
@@ -238,7 +238,7 @@ for my $range (
   )
 {
     my $bins  = 3;
-    my $edges = XStats->new( [] )->histogram( bins => $bins, range => $range )->{edges};
+    my $edges = XStats::Full->new( [] )->histogram( bins => $bins, range => $range )->{edges};
     is( $edges->[0],  $range->[0], 'first generated endpoint copied exactly' );
     is( $edges->[-1], $range->[1], 'last generated endpoint copied exactly' );
     for my $j ( 1 .. $bins - 1 ) {
@@ -262,7 +262,7 @@ is( $@->find_diagnostic('XStats::INVALID_BIN_COUNT')->location->{line},
 SKIP: {
     my $original = eval { POSIX::fegetround() };
     skip 'hardware rounding unavailable', 8 unless defined $original;
-    my $data     = XStats->new( [ -$largest, 0, $largest ] );
+    my $data     = XStats::Full->new( [ -$largest, 0, $largest ] );
     my $expected = $data->histogram( bins => 3 );
     for my $name (qw(FE_TONEAREST FE_DOWNWARD FE_TOWARDZERO FE_UPWARD)) {
       SKIP: {

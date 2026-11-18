@@ -601,7 +601,10 @@ with explicit operation counts and clock resolution.
 
 =item *
 
-L<XStats> 0.01 provides XS descriptive statistics, incremental summaries,
+L<XStats> 0.01 provides C<XStats::Full> for stored observations and
+C<XStats::Sparse> for bounded summaries. These replace the original
+C<XStats> and C<XStats::Incremental> constructors. The library provides
+XS descriptive statistics, incremental summaries,
 case resampling, bootstrap percentile intervals, and paired statistics.
 Stored observations can be copied in insertion or sorted order. Stored and
 incremental objects support clearing for reuse, ranges and the first positions

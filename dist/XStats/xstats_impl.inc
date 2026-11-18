@@ -391,7 +391,7 @@ xs_data(pTHX_ SV *obj, SV **referent)
     XStatsData *d;
     STRLEN bytes;
     if (!SvROK(obj) ||
-        !(sv_derived_from(obj, "XStats") || sv_derived_from(obj, "XStats::Sparse")))
+        !(sv_derived_from(obj, "XStats::Full") || sv_derived_from(obj, "XStats::Sparse")))
         croak("XStats: expected an XStats object");
     sv = SvRV(obj);
     if (SvTYPE(sv) >= SVt_PVAV || SvMAGICAL(sv) || !SvPOK(sv) || !SvLEN(sv) ||

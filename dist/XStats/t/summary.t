@@ -2,16 +2,16 @@ use strict;
 use warnings;
 use Test::More;
 use POSIX qw(nextafter HUGE_VAL frexp ldexp);
-use XStats;
-use XStats::Incremental;
+use XStats::Full;
+use XStats::Sparse;
 use XStats::Functions qw(summary);
 
 my @keys = sort qw(count sum sum_of_squares min max min_index max_index range mean
   variance standard_deviation population_variance population_standard_deviation q1 median q3 unavailable);
-for my $class (qw(XStats XStats::Incremental)) {
+for my $class (qw(XStats::Full XStats::Sparse)) {
     for my $values ( [], [3], [ 1, 2, 3, 4 ], [ -10, 0, 2, 8, 50 ], [ 7, 7, 7 ] ) {
         my $object =
-          $class eq 'XStats' ? $class->new($values) : $class->new->add($values);
+          $class eq 'XStats::Full' ? $class->new($values) : $class->new->add($values);
         my $before = $$object;
         my $result = $object->summary;
         is_deeply( [ sort keys %$result ], \@keys, 'summary has a fixed schema' );
@@ -39,11 +39,11 @@ for my $class (qw(XStats XStats::Incremental)) {
         }
         for my $q ( [ 'q1', 0.25 ], [ 'median', 0.5 ], [ 'q3', 0.75 ] ) {
             my ( $key, $p ) = @$q;
-            if ( $class eq 'XStats::Incremental' || !@$values ) {
+            if ( $class eq 'XStats::Sparse' || !@$values ) {
                 ok( !defined $result->{$key}, 'unavailable quartile is undef' );
                 is(
                     $result->{unavailable}{$key},
-                    $class eq 'XStats::Incremental' ? 'requires_stored_data' : 'empty',
+                    $class eq 'XStats::Sparse' ? 'requires_stored_data' : 'empty',
 'quartile reason distinguishes absent observations from absent storage'
                 );
             }
@@ -61,9 +61,9 @@ for my $class (qw(XStats XStats::Incremental)) {
 }
 is( summary( [ 1, 2, 3 ] )->{mean}, 2, 'functional summary' );
 my $largest = nextafter( HUGE_VAL(), 0 );
-for my $class (qw(XStats XStats::Incremental)) {
+for my $class (qw(XStats::Full XStats::Sparse)) {
     my $object =
-        $class eq 'XStats'
+        $class eq 'XStats::Full'
       ? $class->new( [ $largest, $largest ] )
       : $class->new->add( [ $largest, $largest ] );
     my $result = $object->summary;
@@ -77,7 +77,7 @@ for my $class (qw(XStats XStats::Incremental)) {
     is( $result->{mean}, $largest,        'overflowing sums preserve a finite mean' );
     is( $result->{standard_deviation}, 0, 'overflowing sums preserve a finite SD' );
     $object =
-        $class eq 'XStats'
+        $class eq 'XStats::Full'
       ? $class->new( [ -$largest, $largest ] )
       : $class->new->add( [ -$largest, $largest ] );
     $result = $object->summary;
@@ -91,7 +91,7 @@ for my $class (qw(XStats XStats::Incremental)) {
     is( $result->{unavailable}{standard_deviation},
         'overflow', 'sample SD can overflow independently' );
 }
-my $overflow = XStats->new( [ -$largest, $largest ] );
+my $overflow = XStats::Full->new( [ -$largest, $largest ] );
 eval { $overflow->population_variance };
 ok(
     $@ && $@->has_diagnostic(
@@ -100,9 +100,9 @@ ok(
     'population overflow names the public statistic'
 );
 my $h      = ldexp( 1, 500 );
-my $copy   = XStats->new( [ -$h, $h ] );
+my $copy   = XStats::Full->new( [ -$h, $h ] );
 my $native = $$copy;
-my $clone  = bless \( my $storage = $$copy ), 'XStats';
+my $clone  = bless \( my $storage = $$copy ), 'XStats::Full';
 my $result = $clone->summary;
 is( $$copy, $native, 'summary preserves COW original' );
 $result->{unavailable}{mean} = 'changed';
@@ -118,7 +118,7 @@ is( $@->find_diagnostic('XStats::INVALID_ARITY')->location->{line},
     $line, 'summary errors retain public location' );
 
 SKIP: {
-    my $object = XStats->new( [ 1, 2 ] );
+    my $object = XStats::Full->new( [ 1, 2 ] );
     my $needle = pack( 'F', 0.5 );
     my @positions;
     for ( my $offset = 0 ; $offset + length($needle) <= length($$object) ; ++$offset ) {
@@ -128,7 +128,7 @@ SKIP: {
     skip 'cannot isolate native second-moment storage', 2 unless @positions == 1;
     my $bytes = $$object;
     substr( $bytes, $positions[0], length($needle) ) = pack( 'F', -1 );
-    my $invalid = bless \$bytes, 'XStats';
+    my $invalid = bless \$bytes, 'XStats::Full';
     for my $method (qw(summary variance)) {
         eval { $invalid->$method };
         ok(
@@ -141,7 +141,7 @@ SKIP: {
 SKIP: {
     my $original = eval { POSIX::fegetround() };
     skip 'hardware rounding unavailable', 16 unless defined $original;
-    my $object = XStats->new( [ -$largest, $largest ] );
+    my $object = XStats::Full->new( [ -$largest, $largest ] );
     for my $name (qw(FE_TONEAREST FE_DOWNWARD FE_TOWARDZERO FE_UPWARD)) {
       SKIP: {
             my $mode = eval { no strict 'refs'; &{"POSIX::$name"}() };

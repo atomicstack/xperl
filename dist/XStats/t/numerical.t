@@ -3,8 +3,8 @@ use warnings;
 use Test::More;
 use Config;
 use Math::BigRat;
-use XStats;
-use XStats::Incremental;
+use XStats::Full;
+use XStats::Sparse;
 
 my $tolerance = 128 * 2**( -$Config{nvmantbits} );
 
@@ -39,8 +39,8 @@ for my $strings (
     my ( $mean, $variance ) = exact_summary($strings);
     my @values = map { 0 + $_ } @$strings;
     for my $values ( \@values, [ reverse @values ] ) {
-        my $stored      = XStats->new($values);
-        my $incremental = XStats::Incremental->new;
+        my $stored      = XStats::Full->new($values);
+        my $incremental = XStats::Sparse->new;
         $incremental->add( [$_] ) for @$values;
         for my $object ( $stored, $incremental ) {
             near( $object->mean, $mean, 'mean agrees with rational arithmetic' );
@@ -51,9 +51,9 @@ for my $strings (
             near( $sd, sqrt($variance), 'tuple standard deviation' );
         }
         for my $cut ( 1 .. $#$values ) {
-            my $left = XStats::Incremental->new->add( [ @$values[ 0 .. $cut - 1 ] ] );
+            my $left = XStats::Sparse->new->add( [ @$values[ 0 .. $cut - 1 ] ] );
             my $right =
-              XStats::Incremental->new->add( [ @$values[ $cut .. $#$values ] ] );
+              XStats::Sparse->new->add( [ @$values[ $cut .. $#$values ] ] );
             $left->merge($right);
             near( $left->mean,     $mean,     'partitioned mean' );
             near( $left->variance, $variance, 'partitioned variance' );
@@ -61,12 +61,12 @@ for my $strings (
     }
 }
 
-my $tiny = XStats->new( [ 1e-200, -1e-200 ] );
+my $tiny = XStats::Full->new( [ 1e-200, -1e-200 ] );
 near( $tiny->standard_deviation, sqrt(2) * 1e-200, 'SD survives squared underflow' );
 near( $tiny->population_standard_deviation,
     1e-200, 'population SD survives squared underflow' );
-my $tiny_merge = XStats::Incremental->new->add( [1e-200] );
-$tiny_merge->merge( XStats::Incremental->new->add( [-1e-200] ) );
+my $tiny_merge = XStats::Sparse->new->add( [1e-200] );
+$tiny_merge->merge( XStats::Sparse->new->add( [-1e-200] ) );
 near(
     $tiny_merge->standard_deviation,
     sqrt(2) * 1e-200,
@@ -75,7 +75,7 @@ near(
 
 for my $x ( [ 1e16, 1e16 + 2 ], [ 1e16 + 2, 1e16 ] ) {
     my $y    = $x->[0] < $x->[1] ? [ 0, 2 ] : [ 2, 0 ];
-    my $data = XStats->new($x);
+    my $data = XStats::Full->new($x);
     near( $data->correlation($y), 1, 'correlation with adjacent large values' );
     near( $data->covariance($y),  2, 'covariance with adjacent large values' );
     near( $data->linear_regression($y)->{slope},
@@ -85,10 +85,10 @@ near( $tiny->correlation( [ 2e-200, -2e-200 ] ),
     1, 'correlation survives squared underflow' );
 near( $tiny->linear_regression( [ 2e-200, -2e-200 ] )->{slope},
     2, 'regression survives squared underflow' );
-my $cancellation = XStats->new( [ 1e16, 1, -1e16, -1, 1e-20 ] );
+my $cancellation = XStats::Full->new( [ 1e16, 1, -1e16, -1, 1e-20 ] );
 near( $cancellation->sum,  1e-20, 'renormalized sum retains a tiny remainder' );
 near( $cancellation->mean, 2e-21, 'mean retains a tiny remainder' );
-my $line = XStats->new( [ 1e16, 1e16 + 4 ] )->linear_regression( [ 3e16, 3e16 + 12 ] );
+my $line = XStats::Full->new( [ 1e16, 1e16 + 4 ] )->linear_regression( [ 3e16, 3e16 + 12 ] );
 near( $line->{slope}, 3, 'slope of an exact large line' );
 is( $line->{intercept}, 0, 'intercept retains the product rounding residual' );
 
@@ -96,7 +96,7 @@ SKIP: {
     skip 'requires IEEE binary64 NVs', 2197
       unless $Config{nvtype} eq 'double' && $Config{nvsize} == 8;
     my $smallest = 5e-324;
-    my $constant = XStats->new( [ $smallest, $smallest ] );
+    my $constant = XStats::Full->new( [ $smallest, $smallest ] );
     is( $constant->median,         $smallest, 'constant subnormal median' );
     is( $constant->quantile(0.25), $smallest, 'constant subnormal quantile' );
     is(
@@ -106,18 +106,18 @@ SKIP: {
     );
     is( $constant->median_absolute_deviation, 0, 'constant subnormal MAD' );
     is(
-        XStats->new( [ $smallest, 2 * $smallest ] )->median,
+        XStats::Full->new( [ $smallest, 2 * $smallest ] )->median,
         2 * $smallest,
         'subnormal midpoint rounds after addition'
     );
-    is( XStats->new( [ -$smallest, 2 * $smallest ] )->median,
+    is( XStats::Full->new( [ -$smallest, 2 * $smallest ] )->median,
         0, 'opposite subnormal midpoint rounds once' );
     is(
-        XStats->new( [ $smallest, 3 * $smallest ] )->quantile(0.25),
+        XStats::Full->new( [ $smallest, 3 * $smallest ] )->quantile(0.25),
         2 * $smallest,
         'subnormal quartile rounds after interpolation'
     );
-    my $pair = XStats->new( [ 0, $smallest ] );
+    my $pair = XStats::Full->new( [ 0, $smallest ] );
     near( $pair->correlation( [ 0, 2 * $smallest ] ), 1, 'subnormal correlation' );
     near( $pair->linear_regression( [ 0, 2 * $smallest ] )->{slope},
         2, 'subnormal slope' );
@@ -131,11 +131,11 @@ SKIP: {
                 my $variance =
                   ( 3 * ( $a * $a + $b * $b + $c * $c ) - ( $a + $b + $c )**2 ) / 6;
                 my $expected = $smallest * sqrt($variance);
-                my $data     = XStats->new( \@v );
+                my $data     = XStats::Full->new( \@v );
                 is( $data->standard_deviation, $expected, "subnormal SD for $a,$b,$c" );
                 for my $cut ( 1, 2 ) {
-                    my $left = XStats::Incremental->new->add( [ @v[ 0 .. $cut - 1 ] ] );
-                    my $right = XStats::Incremental->new->add( [ @v[ $cut .. 2 ] ] );
+                    my $left = XStats::Sparse->new->add( [ @v[ 0 .. $cut - 1 ] ] );
+                    my $right = XStats::Sparse->new->add( [ @v[ $cut .. 2 ] ] );
                     $left->merge($right);
                     is( $left->standard_deviation, $expected,
                         "subnormal merged SD for $a,$b,$c at $cut" );
@@ -147,7 +147,7 @@ SKIP: {
 
 SKIP: {
     skip 'requires normalization to underflow', 3 if 1e-200 / 1e200;
-    my $wide = XStats->new( [ 1e200, -1e200, 1e-200, -1e-200 ] );
+    my $wide = XStats::Full->new( [ 1e200, -1e200, 1e-200, -1e-200 ] );
     near( $wide->covariance( [ 1e200, 1e200, 1e200, -1e200 ] ),
         2 / 3, 'exact covariance retains products across extreme exponents' );
     is( $wide->correlation( [ 1e200, 1e200, 1e200, -1e200 ] ),
@@ -161,8 +161,8 @@ SKIP: {
 }
 
 SKIP: {
-    my $zero  = ${ XStats->new( [ 0, 0 ] ) };
-    my $one   = ${ XStats->new( [ 1, 1 ] ) };
+    my $zero  = ${ XStats::Full->new( [ 0, 0 ] ) };
+    my $one   = ${ XStats::Full->new( [ 1, 1 ] ) };
     my $width = length pack( 'i', 0 );
     my @positions;
     for ( my $offset = 0 ; $offset + $width <= length($one) ; $offset += $width ) {
@@ -174,7 +174,7 @@ SKIP: {
     for my $bad ( -( 2**( $width * 8 - 1 ) ), 2**( $width * 8 - 1 ) - 1 ) {
         my $bytes = $one;
         substr( $bytes, $positions[0], $width ) = pack( 'i', $bad );
-        my $forged = bless \$bytes, 'XStats';
+        my $forged = bless \$bytes, 'XStats::Full';
         eval { $forged->standard_deviation };
         like(
             $@,

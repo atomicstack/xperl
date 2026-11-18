@@ -1,9 +1,9 @@
 use strict;
 use warnings;
 use Test::More;
-use XStats;
+use XStats::Full;
 use XStats::Functions qw(bootstrap_interval median_absolute_deviation);
-my $s = XStats->new( [ 1 .. 9 ] );
+my $s = XStats::Full->new( [ 1 .. 9 ] );
 is( median_absolute_deviation( [ 1 .. 9 ] ), 2, 'raw MAD' );
 my $a = $s->resample( seed => 42 );
 is( scalar @$a, 9, 'same resample size' );
@@ -14,7 +14,7 @@ my $expected = rand();
 srand 123;
 $s->resample( seed => 42 );
 is( rand(), $expected, 'unrelated RNG unchanged' );
-my $constant = XStats->new( [ (7) x 5 ] );
+my $constant = XStats::Full->new( [ (7) x 5 ] );
 
 for my $statistic (qw(mean median)) {
     my $d = $constant->bootstrap_distribution(
@@ -35,12 +35,12 @@ for my $options ( [ resamples => 0 ], [ statistic => 'wrong' ], [ seed => -1 ] )
     eval { $s->bootstrap_distribution(@$options) };
     ok( $@, 'bad option rejected' );
 }
-eval { XStats->new( [] )->resample };
+eval { XStats::Full->new( [] )->resample };
 like( $@, qr/requires observations/, 'empty resampling' );
 for my $statistic (qw(mean median)) {
-    my $data = XStats->new( [ 1, 3, 8, 12 ] );
+    my $data = XStats::Full->new( [ 1, 3, 8, 12 ] );
     for my $seed ( 1 .. 10 ) {
-        my $draw         = XStats->new( $data->resample( seed => $seed ) );
+        my $draw         = XStats::Full->new( $data->resample( seed => $seed ) );
         my $distribution = $data->bootstrap_distribution(
             statistic => $statistic,
             resamples => 1,
@@ -50,7 +50,7 @@ for my $statistic (qw(mean median)) {
             '<', 1e-12, "same cases for bootstrap $statistic" );
     }
 }
-my $data = XStats->new( [ 1, 2, 3 ] );
+my $data = XStats::Full->new( [ 1, 2, 3 ] );
 eval { $data->bootstrap_distribution( statistic => 'cases' ) };
 like(
     $@,

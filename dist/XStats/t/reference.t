@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
-use XStats;
+use XStats::Full;
 my $descriptive = eval { require Statistics::Descriptive;    1 };
 my $resampling  = eval { require Statistics::CaseResampling; 1 };
 plan skip_all => 'Optional reference modules are not installed'
@@ -12,7 +12,7 @@ diag("Statistics::CaseResampling $Statistics::CaseResampling::VERSION") if $resa
 for my $values ( [ 1 .. 9 ], [ 2, 4, 4, 4, 5, 5, 7, 9 ], [ -10, 0, 2, 8, 50 ],
     [ (5) x 8 ] )
 {
-    my $x = XStats->new($values);
+    my $x = XStats::Full->new($values);
     if ($descriptive) {
         my $ref = Statistics::Descriptive::Full->new;
         $ref->add_data($values);
@@ -87,7 +87,7 @@ if ($resampling) {
     my $constant = [ (3) x 8 ];
     is_deeply(
         Statistics::CaseResampling::resample_means( $constant, 10 ),
-        XStats->new($constant)->bootstrap_distribution( resamples => 10 ),
+        XStats::Full->new($constant)->bootstrap_distribution( resamples => 10 ),
         'constant bootstrap distributions'
     );
 }

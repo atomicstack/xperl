@@ -1,4 +1,6 @@
 0.01
+    Keep Full and Sparse as the statistics object classes. Remove the
+    original XStats and XStats::Incremental constructors.
     Add configured-NV error functions and inverses, normal CDF/survival
     functions and two-sided sigma/probability conversions with stable tails.
     Probe the selected math symbols without narrowing wider NV formats.

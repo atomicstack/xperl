@@ -2,12 +2,12 @@ use strict;
 use warnings;
 use Test::More;
 use POSIX qw(nextafter HUGE_VAL);
-use XStats;
-use XStats::Incremental;
+use XStats::Full;
+use XStats::Sparse;
 use XStats::Functions qw(range min_index max_index sorted_values);
 
 my @values = ( 4, -2, 9, -2, 9, 3 );
-my $stored = XStats->new( \@values );
+my $stored = XStats::Full->new( \@values );
 is_deeply( $stored->values, \@values, 'values preserve insertion order' );
 is_deeply(
     $stored->sorted_values,
@@ -27,7 +27,7 @@ is( range( \@values ),     11, 'functional range' );
 is( min_index( \@values ), 1,  'functional minimum position' );
 is( max_index( \@values ), 2,  'functional maximum position' );
 
-for my $object ( $stored, XStats::Incremental->new->add( \@values ) ) {
+for my $object ( $stored, XStats::Sparse->new->add( \@values ) ) {
     is( $object->range,     11, 'range' );
     is( $object->min_index, 1,  'minimum ties select the first position' );
     is( $object->max_index, 2,  'maximum ties select the first position' );
@@ -63,8 +63,8 @@ for my $object ( $stored, XStats::Incremental->new->add( \@values ) ) {
 }
 
 for my $cut ( 0 .. @values ) {
-    my $left  = XStats::Incremental->new->add( [ @values[ 0 .. $cut - 1 ] ] );
-    my $right = XStats::Incremental->new->add( [ @values[ $cut .. $#values ] ] );
+    my $left  = XStats::Sparse->new->add( [ @values[ 0 .. $cut - 1 ] ] );
+    my $right = XStats::Sparse->new->add( [ @values[ $cut .. $#values ] ] );
     $left->merge($right);
     is( $left->min_index, 1, "merged minimum position at cut $cut" );
     is( $left->max_index, 2, "merged maximum position at cut $cut" );
@@ -73,11 +73,11 @@ for my $cut ( 0 .. @values ) {
     is( $left->max_index, 2, 'self-merge retains the first maximum' );
 }
 
-my $empty = XStats->new( [] );
+my $empty = XStats::Full->new( [] );
 is_deeply( $empty->values,        [], 'empty observation copy' );
 is_deeply( $empty->sorted_values, [], 'empty sorted copy' );
 my $largest = nextafter( HUGE_VAL(), 0 );
-my $wide    = XStats->new( [ -$largest, $largest ] );
+my $wide    = XStats::Full->new( [ -$largest, $largest ] );
 eval { $wide->range };
 ok(
     $@->has_diagnostic( 'XStats::RESULT_OVERFLOW', statistic => 'range' ),

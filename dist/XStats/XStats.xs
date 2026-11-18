@@ -1,6 +1,6 @@
 #include "xstats_impl.inc"
 
-MODULE = XStats PACKAGE = XStats
+MODULE = XStats PACKAGE = XStats::Full
 PROTOTYPES: DISABLE
 
 void

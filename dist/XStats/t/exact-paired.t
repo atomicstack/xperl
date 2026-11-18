@@ -5,7 +5,7 @@ use Config;
 use POSIX qw(frexp ldexp nextafter isfinite copysign HUGE_VAL);
 use Math::BigRat;
 use Math::BigInt;
-use XStats;
+use XStats::Full;
 
 my $precision = $Config{nvmantbits} + 1;
 my %cache;
@@ -82,7 +82,7 @@ sub check_pair {
     my $covariance = $c->copy->bdiv( $n * ( $n - 1 ) );
     my $slope      = $c->copy->bdiv($vx);
     my $intercept  = $xx->copy->bmul($sy)->bsub( $sx->copy->bmul($xy) )->bdiv($vx);
-    my $data       = XStats->new($x);
+    my $data       = XStats::Full->new($x);
     my $before     = $$data;
     my @original_y = @$y;
     nearest( $data->covariance($y),
@@ -110,7 +110,7 @@ sub check_pair {
     is_deeply( $y, \@original_y, 'exact paired queries preserve response input' );
     my @reverse_x = reverse @$x;
     my @reverse_y = reverse @$y;
-    my $reversed  = XStats->new( \@reverse_x );
+    my $reversed  = XStats::Full->new( \@reverse_x );
     is(
         $reversed->covariance( \@reverse_y ),
         $data->covariance($y),
@@ -126,7 +126,7 @@ sub check_pair {
 }
 
 my $h   = ldexp( 1, 500 );
-my $fit = XStats->new( [ 3 * $h, 6 * $h ] )->linear_regression( [ $h, 2 * $h ] );
+my $fit = XStats::Full->new( [ 3 * $h, 6 * $h ] )->linear_regression( [ $h, 2 * $h ] );
 is( $fit->{slope},     1 / 3, 'slope rounds independently' );
 is( $fit->{intercept}, 0,     'intercept does not use a rounded slope' );
 check_pair( [ 3 * $h, 6 * $h ], [ $h, 2 * $h ] );
@@ -159,7 +159,7 @@ my $largest = nextafter( HUGE_VAL(), 0 );
 my ( undef, $max_exponent ) = frexp($largest);
 $h = ldexp( 1, $max_exponent - 1 );
 my $next  = nextafter( $h, HUGE_VAL() );
-my $large = XStats->new( [ $h, $next ] );
+my $large = XStats::Full->new( [ $h, $next ] );
 is(
     $large->covariance( [ 0, 1 ] ),
     ldexp( 1, $max_exponent - $precision - 1 ),
@@ -178,18 +178,18 @@ is(
 );
 is( $large->correlation( [ 0, 1 ] ),
     1, 'large adjacent predictors retain exact correlation' );
-is( XStats->new( [ $largest, $largest ] )->covariance( [ $largest, $largest ] ),
+is( XStats::Full->new( [ $largest, $largest ] )->covariance( [ $largest, $largest ] ),
     0, 'constant covariance is zero despite overflowing raw sums' );
 
-my $wide = XStats->new( [ -$h, $h ] );
+my $wide = XStats::Full->new( [ -$h, $h ] );
 eval { $wide->covariance( [ -$h, $h ] ) };
 ok( $@->has_diagnostic( 'XStats::RESULT_OVERFLOW', statistic => 'covariance' ),
     'only final covariance overflow is reported' );
 is( $wide->sum, 0, 'failed covariance query preserves other results' );
-eval { XStats->new( [ 0, $smallest ] )->linear_regression( [ 0, $h ] ) };
+eval { XStats::Full->new( [ 0, $smallest ] )->linear_regression( [ 0, $h ] ) };
 ok( $@->has_diagnostic( 'XStats::RESULT_OVERFLOW', statistic => 'regression_slope' ),
     'final slope overflow is reported' );
-eval { XStats->new( [ -$h, -$next ] )->linear_regression( [ $h, -$h ] ) };
+eval { XStats::Full->new( [ -$h, -$next ] )->linear_regression( [ $h, -$h ] ) };
 ok(
     $@->has_diagnostic(
         'XStats::RESULT_OVERFLOW', statistic => 'regression_intercept'
@@ -205,10 +205,10 @@ SKIP: {
     my $b      = 0;
     $b += 2**( $_ * $factor ) for 0 .. ( $precision + 1 ) / $factor - 1;
     my $left_exponent = int( ( $max_exponent - $precision ) / 2 );
-    my $overflow_x    = XStats->new( [ 0, ldexp( $a, $left_exponent ) ] );
+    my $overflow_x    = XStats::Full->new( [ 0, ldexp( $a, $left_exponent ) ] );
     my $overflow_y    = [ 0, ldexp( $b, $max_exponent - $precision - $left_exponent ) ];
     my $base          = ldexp( 1, 500 );
-    my $data          = XStats->new( [ 3 * $base, 6 * $base ] );
+    my $data          = XStats::Full->new( [ 3 * $base, 6 * $base ] );
     my $response      = [ $base, 2 * $base ];
     my $third         = 1 / 3;
 

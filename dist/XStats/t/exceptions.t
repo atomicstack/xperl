@@ -2,10 +2,10 @@ use strict;
 use warnings;
 use Test::More;
 use POSIX qw(nextafter HUGE_VAL);
-use XStats;
+use XStats::Full;
 use XStats::Functions qw(mean covariance);
 
-my $data = XStats->new( [] );
+my $data = XStats::Full->new( [] );
 my $line = __LINE__ + 1;
 eval { $data->mean };
 my $empty = $@;
@@ -27,7 +27,7 @@ is_deeply(
 );
 ok( !defined $diagnostic->number, 'module conditions have no core number' );
 my $large       = nextafter( HUGE_VAL(), 0 );
-my $overflowing = XStats->new( [ $large, $large ] );
+my $overflowing = XStats::Full->new( [ $large, $large ] );
 eval { $overflowing->sum };
 my $overflow = $@;
 isa_ok( $overflow, 'XPerl::Exception' );
@@ -76,14 +76,14 @@ is( $translated_diagnostic->location->{line},
 for my $method (
     qw(median median_absolute_deviation covariance correlation linear_regression))
 {
-    my $values = XStats->new( [ 1, 2, 3 ] );
+    my $values = XStats::Full->new( [ 1, 2, 3 ] );
     eval { $values->$method( 1, 2 ) };
     ok( ref($@) && $@->has_diagnostic( 'XStats::INVALID_ARITY', argument => $method ),
         "$method validates its public arity" );
 }
 
 for my $method (qw(correlation linear_regression)) {
-    eval { XStats->new( [ 1, 1 ] )->$method( [ 2, 3 ] ) };
+    eval { XStats::Full->new( [ 1, 1 ] )->$method( [ 2, 3 ] ) };
     ok(
         ref($@)
           && $@->has_diagnostic( 'XStats::UNDEFINED_STATISTIC', operation => $method ),
@@ -91,7 +91,7 @@ for my $method (qw(correlation linear_regression)) {
     );
 }
 
-my $mad = XStats->new( [ -$large, $large, $large ] );
+my $mad = XStats::Full->new( [ -$large, $large, $large ] );
 eval { $mad->median_absolute_deviation };
 ok(
     ref($@) && $@->has_diagnostic(

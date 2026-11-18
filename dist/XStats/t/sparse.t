@@ -1,13 +1,13 @@
 use strict;
 use warnings;
 use Test::More;
-use XStats;
-use XStats::Incremental;
-my $full = XStats->new( [ 1 .. 100 ] );
-my $one  = XStats::Incremental->new;
+use XStats::Full;
+use XStats::Sparse;
+my $full = XStats::Full->new( [ 1 .. 100 ] );
+my $one  = XStats::Sparse->new;
 $one->add( [$_] ) for 1 .. 100;
-my $left  = XStats::Incremental->new->add( [ 1 .. 40 ] );
-my $right = XStats::Incremental->new->add( [ 41 .. 100 ] );
+my $left  = XStats::Sparse->new->add( [ 1 .. 40 ] );
+my $right = XStats::Sparse->new->add( [ 41 .. 100 ] );
 $left->merge($right);
 
 for my $method (qw(count sum min max mean variance standard_deviation)) {
@@ -23,11 +23,11 @@ my $before = $$one;
 eval { $one->add( [undef] ) };
 like( $@, qr/plain number/, 'invalid update' );
 is( $$one, $before, 'failed update atomic' );
-my $double = XStats::Incremental->new->add( [ 1, 2 ] );
+my $double = XStats::Sparse->new->add( [ 1, 2 ] );
 $double->merge($double);
 is( $double->count, 4,   'self merge count' );
 is( $double->mean,  1.5, 'self merge mean' );
-my $empty = XStats::Incremental->new;
+my $empty = XStats::Sparse->new;
 $double->merge($empty);
 is( $double->count, 4, 'empty merge' );
 $empty->merge($double);

@@ -4,10 +4,10 @@ use Config;
 use Test::More;
 BEGIN { plan skip_all => 'Perl has no ithreads' unless $Config{useithreads}; }
 use threads;
-use XStats;
-use XStats::Incremental;
-my $s = XStats->new( [ 1 .. 10 ] );
-my $i = XStats::Incremental->new->add( [ 1 .. 10 ] );
+use XStats::Full;
+use XStats::Sparse;
+my $s = XStats::Full->new( [ 1 .. 10 ] );
+my $i = XStats::Sparse->new->add( [ 1 .. 10 ] );
 my $t = threads->create(
     sub {
         $s->add( [11] );

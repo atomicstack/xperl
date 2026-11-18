@@ -60,24 +60,24 @@ justified tolerances. Avoid flaky statistical assertions in the normal suite.
 
 | Package | Responsibility |
 | --- | --- |
-| `XStats` | Own observations and cache results for repeated calculations |
+| `XStats::Full` | Own observations and cache results for repeated calculations |
 | `XStats::Functions` | Export explicitly requested functions taking array references |
-| `XStats::Incremental` | Maintain summaries without retaining observations |
+| `XStats::Sparse` | Maintain summaries without retaining observations |
 
-All packages use one compiled XS extension. Incremental is not a subclass of
-XStats: it cannot implement operations requiring stored observations.
+All packages use one compiled XS extension. Sparse is not a subclass of
+Full: it cannot implement operations requiring stored observations.
 
 ```perl
 use XStats::Functions qw(mean_stddev);
 my ($mean, $stddev) = mean_stddev(\@values);
 
-use XStats;
-my $stats = XStats->new(\@values);
+use XStats::Full;
+my $stats = XStats::Full->new(\@values);
 ($mean, $stddev) = $stats->mean_stddev;
 $stats->add(\@more);
 
-use XStats::Incremental;
-my $running = XStats::Incremental->new;
+use XStats::Sparse;
+my $running = XStats::Sparse->new;
 $running->add(\@batch);
 $running->merge($other);
 ($mean, $stddev) = $running->mean_stddev;
@@ -214,7 +214,7 @@ modules only where conventions match. Verify temporary-storage cleanup.
 ### 4. Case resampling and bootstrap
 
 This stage is required scope, before paired statistics. Provide it through
-XStats methods and XStats::Functions, not XStats::Incremental.
+XStats::Full methods and XStats::Functions, not XStats::Sparse.
 
 Case resampling selects observations uniformly with replacement. The default
 resample size is the original observation count. Repeatedly calculating a
@@ -257,8 +257,9 @@ together rather than independently resampling columns.
 dist/XStats/
     Makefile.PL
     lib/XStats.pm
+    lib/XStats/Full.pm
     lib/XStats/Functions.pm
-    lib/XStats/Incremental.pm
+    lib/XStats/Sparse.pm
     XStats.xs
     xstats.h
     xstats.c

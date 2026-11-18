@@ -3,15 +3,15 @@ use warnings;
 use Test::More;
 use B            qw(svref_2object SVp_IOK SVp_NOK);
 use Scalar::Util qw(dualvar);
-use XStats;
-use XStats::Incremental;
+use XStats::Full;
+use XStats::Sparse;
 use XStats::Functions qw(mean);
 
-for my $class ( 'XStats', 'XStats::Incremental' ) {
+for my $class ( 'XStats::Full', 'XStats::Sparse' ) {
     my $build =
-      $class eq 'XStats'
-      ? sub { XStats->new( $_[0] ) }
-      : sub { XStats::Incremental->new->add( $_[0] ) };
+      $class eq 'XStats::Full'
+      ? sub { XStats::Full->new( $_[0] ) }
+      : sub { XStats::Sparse->new->add( $_[0] ) };
     my @strings = ( " \t1.25\r\n", '1e2', '-2', '0 but true', '.5', '0e-999999' );
     my $mask    = SVp_IOK | SVp_NOK;
     my @before  = map { svref_2object( \$_ )->FLAGS & $mask } @strings;
@@ -50,7 +50,7 @@ for my $class ( 'XStats', 'XStats::Incremental' ) {
 }
 
 is( mean( [ '1.25', '2.75' ] ), 2, 'functions use the same string conversion' );
-my $data = XStats->new( [ 1, 2 ] );
+my $data = XStats::Full->new( [ 1, 2 ] );
 is( $data->quantile( dualvar( .5, 'not a probability' ) ),
     1.5, 'probabilities use a dualvar numeric value' );
 eval { $data->quantile('1e-999999') };

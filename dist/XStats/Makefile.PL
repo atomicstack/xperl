@@ -72,7 +72,6 @@ WriteMakefile(
         'lib/XStats/Full.pm'        => '$(INST_LIB)/XStats/Full.pm',
         'lib/XStats/Sparse.pm'      => '$(INST_LIB)/XStats/Sparse.pm',
         'lib/XStats/Functions.pm'   => '$(INST_LIB)/XStats/Functions.pm',
-        'lib/XStats/Incremental.pm' => '$(INST_LIB)/XStats/Incremental.pm',
     },
     XS     => { 'XStats.xs' => 'XStats.c' },
     OBJECT => 'XStats$(OBJ_EXT)',

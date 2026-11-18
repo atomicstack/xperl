@@ -1,13 +1,13 @@
 package XStats::Sparse;
 use strict;
 use warnings;
-use XStats ();
+use XStats::Full ();
 our $VERSION = '0.01';
-sub new   { XStats::_sparse_new( $_[0] ) }
-sub add   { XStats::add(@_) }
-sub merge { XStats::_merge(@_) }
-sub _stat { XStats::_stat(@_) }
-sub clear { XStats::clear(@_) }
+sub new   { XStats::Full::_sparse_new( $_[0] ) }
+sub add   { XStats::Full::add(@_) }
+sub merge { XStats::Full::_merge(@_) }
+sub _stat { XStats::Full::_stat(@_) }
+sub clear { XStats::Full::clear(@_) }
 
 for my $name (
     qw(count sum sum_of_squares min max mean variance standard_deviation
@@ -15,7 +15,7 @@ for my $name (
   )
 {
     no strict 'refs';
-    *{$name} = XStats->can($name);
+    *{$name} = XStats::Full->can($name);
 }
 1;
 

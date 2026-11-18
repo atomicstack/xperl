@@ -16,7 +16,7 @@ my @probability_functions = qw(erf erfc erf_inv erfc_inv normal_cdf normal_survi
 our @EXPORT_OK = ( @data_functions, @probability_functions );
 
 for my $name (@data_functions) {
-    my $method = XStats->can($name);
+    my $method = XStats::Full->can($name);
     no strict 'refs';
     *{$name} = sub {
         my $data = shift;
@@ -27,8 +27,8 @@ for my $name (@data_functions) {
 for my $name (@probability_functions) {
     no strict 'refs';
     *{$name} = sub {
-        XStats::_invalid_argument( 'INVALID_ARITY', $name ) unless @_ == 1;
-        return XStats::_probability_function( $_[0], $name );
+        XStats::Full::_invalid_argument( 'INVALID_ARITY', $name ) unless @_ == 1;
+        return XStats::Full::_probability_function( $_[0], $name );
     };
 }
 1;
@@ -44,7 +44,7 @@ XStats::Functions - Functions for native descriptive statistics
 
 =head1 DESCRIPTION
 
-Descriptive and resampling functions accept an array reference followed by the corresponding XStats
+Descriptive and resampling functions accept an array reference followed by the corresponding XStats::Full
 method arguments. Nothing is exported by default. See L<XStats> for the
 numerical contract. Input conversion occurs once for each call.
 Delegation to the object method preserves the public caller for module-owned

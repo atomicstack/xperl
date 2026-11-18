@@ -5,13 +5,13 @@ use Config;
 use POSIX qw(ldexp frexp nextafter HUGE_VAL);
 use Math::BigRat;
 use Math::BigInt;
-use XStats;
-use XStats::Incremental;
+use XStats::Full;
+use XStats::Sparse;
 use XStats::Functions qw(sum_of_squares);
 
 is( sum_of_squares( [ 1, 2, 3, 5 ] ), 39, 'functional sum of squares' );
-for my $class (qw(XStats XStats::Incremental)) {
-    my $data = $class eq 'XStats' ? $class->new( [] ) : $class->new;
+for my $class (qw(XStats::Full XStats::Sparse)) {
+    my $data = $class eq 'XStats::Full' ? $class->new( [] ) : $class->new;
     is( $data->sum_of_squares, 0, "$class empty sum of squares" );
     $data->add( [ 1, 2, 3, 5 ] );
     is( $data->sum_of_squares, 39, "$class known sum of squares" );
@@ -31,13 +31,13 @@ for my $class (qw(XStats XStats::Incremental)) {
     $data->add( [ -3, 4 ] );
     is( $data->sum_of_squares, 25, 'reuse after clear' );
 }
-my $readonly = XStats->new( [ 3, 4 ] );
+my $readonly = XStats::Full->new( [ 3, 4 ] );
 Internals::SvREADONLY( $$readonly, 1 );
 my $before = $$readonly;
 is( $readonly->sum_of_squares, 25,      'read-only object supports uncached query' );
 is( $$readonly,                $before, 'read-only query preserves bytes' );
 
-my $truncated = XStats::Incremental->new->add( [3] );
+my $truncated = XStats::Sparse->new->add( [3] );
 chop $$truncated;
 eval { $truncated->sum_of_squares };
 like(
@@ -67,17 +67,17 @@ for my $n (
     ++$integer if $fraction > 0.5 || ( $fraction == 0.5 && $integer % 2 );
     my $expected = $smallest * $integer;
     my @values   = ($tiny) x $n;
-    is( XStats->new( \@values )->sum_of_squares,
+    is( XStats::Full->new( \@values )->sum_of_squares,
         $expected, 'stored subnormal squares round once to nearest-even' );
-    my $data = XStats::Incremental->new;
+    my $data = XStats::Sparse->new;
     $data->add( [$tiny] ) for @values;
     is( $data->sum_of_squares, $expected, 'incremental additions retain tiny squares' );
-    my $merged = XStats::Incremental->new;
-    $merged->merge( XStats::Incremental->new->add( [$tiny] ) ) for @values;
+    my $merged = XStats::Sparse->new;
+    $merged->merge( XStats::Sparse->new->add( [$tiny] ) ) for @values;
     is( $merged->sum_of_squares, $expected, 'merges retain tiny squares' );
 }
 my $largest = nextafter( HUGE_VAL(), 0 );
-for my $data ( XStats->new( [$largest] ), XStats::Incremental->new->add( [$largest] ) )
+for my $data ( XStats::Full->new( [$largest] ), XStats::Sparse->new->add( [$largest] ) )
 {
     for ( 1 .. 2 ) {
         eval { $data->sum_of_squares };
@@ -95,8 +95,8 @@ for my $data ( XStats->new( [$largest] ), XStats::Incremental->new->add( [$large
     is( $data->sum_of_squares, 4, 'clear recovers from square overflow' );
 }
 
-my $all        = XStats::Incremental->new;
-my $power_data = XStats::Incremental->new->add( [3] );
+my $all        = XStats::Sparse->new;
+my $power_data = XStats::Sparse->new->add( [3] );
 for my $bit ( 0 .. 31 ) {
     $all->merge($power_data);
     $power_data->merge($power_data) if $bit < 31;
@@ -146,7 +146,7 @@ for my $case (@rational_cases) {
     my @values = @$case;
     my $exact  = Math::BigRat->new(0);
     $exact->badd( rational($_)->bpow(2) ) for @values;
-    my $data     = XStats->new( \@values );
+    my $data     = XStats::Full->new( \@values );
     my $result   = $data->sum_of_squares;
     my $distance = rational($result)->bsub($exact)->babs;
     for my $direction ( 0, HUGE_VAL() ) {
@@ -155,16 +155,16 @@ for my $case (@rational_cases) {
         cmp_ok( $distance->bcmp($alternative),
             '<=', 0, 'sum of squares is a nearest NV to the exact rational' );
     }
-    my $incremental = XStats::Incremental->new->add( [ @values[ 0 .. 2 ] ] );
+    my $incremental = XStats::Sparse->new->add( [ @values[ 0 .. 2 ] ] );
     $incremental->merge(
-        XStats::Incremental->new->add( [ @values[ 3 .. $#values ] ] ) );
+        XStats::Sparse->new->add( [ @values[ 3 .. $#values ] ] ) );
     is( $incremental->sum_of_squares, $result, 'partition-independent squares' );
-    is( XStats->new( [ reverse @values ] )->sum_of_squares,
+    is( XStats::Full->new( [ reverse @values ] )->sum_of_squares,
         $result, 'order-independent squares' );
 }
 
-my $large_count = XStats::Incremental->new;
-my $large_power = XStats::Incremental->new->add( [$largest] );
+my $large_count = XStats::Sparse->new;
+my $large_power = XStats::Sparse->new->add( [$largest] );
 for my $bit ( 0 .. 31 ) {
     $large_count->merge($large_power);
     $large_power->merge($large_power) if $bit < 31;
@@ -186,7 +186,7 @@ my $overflow_boundary = rational($largest)
   ->badd( rational($largest)->bsub( rational( nextafter( $largest, 0 ) ) )->bdiv(2) );
 for my $extra ( 0, $edge_step, 2 * $edge_step, 3 * $edge_step ) {
     my $exact  = rational($lower_root)->bpow(2)->badd( rational($extra)->bpow(2) );
-    my $data   = XStats->new( [ $lower_root, $extra ] );
+    my $data   = XStats::Full->new( [ $lower_root, $extra ] );
     my $result = eval { $data->sum_of_squares };
     my $error  = $@;
     if ( $exact->bcmp($overflow_boundary) >= 0 ) {

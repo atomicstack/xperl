@@ -6140,7 +6140,6 @@ dist/XStats/Changes			XStats change log
 dist/XStats/lib/XStats.pm		XStats statistics module
 dist/XStats/lib/XStats/Full.pm		Stored-observation statistics
 dist/XStats/lib/XStats/Functions.pm	XStats statistics library
-dist/XStats/lib/XStats/Incremental.pm	XStats statistics library
 dist/XStats/lib/XStats/Sparse.pm	Incremental statistics
 dist/XStats/Makefile.PL			XStats makefile writer
 dist/XStats/MANIFEST			XStats distribution manifest
@@ -6149,7 +6148,6 @@ dist/XStats/t/exact-paired.t		XStats exact paired numerical tests
 dist/XStats/t/exact-sum.t		XStats exact sum and mean tests
 dist/XStats/t/exceptions.t		XStats structured exception tests
 dist/XStats/t/histogram.t		Histogram boundaries and exact edges tests
-dist/XStats/t/incremental.t		XStats statistics library
 dist/XStats/t/input.t			XStats numeric input conversion tests
 dist/XStats/t/intervals.t		Bootstrap interval contracts and exact tails
 dist/XStats/t/load.t			XStats load test
@@ -6166,6 +6164,7 @@ dist/XStats/t/resampling.t		XStats statistics library
 dist/XStats/t/resampling-rng.t		Independent resampling RNG oracle
 dist/XStats/t/shape.t			Skewness and excess kurtosis tests
 dist/XStats/t/smoothing.t		Exponential smoothing tests
+dist/XStats/t/sparse.t			XStats statistics library
 dist/XStats/t/squares.t			Exact sum of squares tests
 dist/XStats/t/statistics.t		XStats statistics library
 dist/XStats/t/summary.t			Structured statistical summary tests
