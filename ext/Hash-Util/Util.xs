@@ -12,22 +12,22 @@
     (HvIS_LINEAR(hv) \
        ? ((bucket) < HvTOTALKEYS(hv) ? &HvENTRIES(hv)[bucket] : NULL) \
        : HvIS_OA(hv) \
-           ? (((chain_entry) = HvOA_INDEX_GET(hv, bucket)) \
-                ? &HvOA(hv)->entries[(chain_entry) - 1] : NULL) \
+           ? (((chain_entry) = HvINDEX_GET(hv, bucket)) \
+                ? &HvINDEX(hv)->entries[(chain_entry) - 1] : NULL) \
            : (buckets)[bucket])
 #define HASHUTIL_BUCKET_NEXT(hv, he, chain_entry) \
     (HvIS_OA(hv) && !HvIS_LINEAR(hv) \
        ? (((chain_entry) = HvCHAIN_NEXT(hv, (chain_entry) - 1)) \
-            ? &HvOA(hv)->entries[(chain_entry) - 1] : NULL) \
+            ? &HvINDEX(hv)->entries[(chain_entry) - 1] : NULL) \
        : HvENTRY_NEXT(hv, he))
 #else
 #define HASHUTIL_BUCKET_FIRST(hv, bucket, buckets, chain_entry) \
     (HvIS_LINEAR(hv) \
        ? ((bucket) < HvTOTALKEYS(hv) ? &HvENTRIES(hv)[bucket] : NULL) \
        : HvIS_OA(hv) \
-           ? (HvOA_INDEX_GET(hv, bucket) != 0 \
-                && HvOA_INDEX_GET(hv, bucket) != U32_MAX \
-                ? &HvOA(hv)->entries[HvOA_INDEX_GET(hv, bucket) - 1] : NULL) \
+           ? (HvINDEX_GET(hv, bucket) != 0 \
+                && HvINDEX_GET(hv, bucket) != U32_MAX \
+                ? &HvINDEX(hv)->entries[HvINDEX_GET(hv, bucket) - 1] : NULL) \
            : (buckets)[bucket])
 #define HASHUTIL_BUCKET_NEXT(hv, he, chain_entry) HvENTRY_NEXT(hv, he)
 #endif
@@ -419,27 +419,27 @@ hash_storage_info(hash)
 #endif
         }
         else if (HvIS_OA(hash)) {
-            struct hv_oa *oa = HvARRAY(hash) ? HvOA(hash) : NULL;
+            PERL_HV_INDEX *oa = HvARRAY(hash) ? HvINDEX(hash) : NULL;
             const U32 capacity = oa ? HvMAX(hash) + 1 : 0;
-            const U32 index_width = oa ? HvOA_INDEX_WIDTH(hash) : 0;
+            const U32 index_width = oa ? HvINDEX_WIDTH(hash) : 0;
             const U32 slot_size = index_width;
             const UV hash_bytes = 0;
 #if defined(PERL_HASH_INDEX_CHAINS) && defined(PERL_HASH_CHAIN_FINGERPRINT)
             fingerprint_bits = oa ? index_width * 8 : 0;
             fingerprint_bytes = oa
-                ? HvOA_FINGERPRINT_BYTES_FOR(oa->capacity) : 0;
+                ? HvINDEX_FINGERPRINT_BYTES_FOR(oa->capacity) : 0;
 #endif
             const UV entry_index_bytes = oa
 #ifdef PERL_HASH_INDEX_CHAINS
-                ? HvOA_STORAGE_BYTES(capacity, oa->capacity) : 0;
+                ? HvINDEX_STORAGE_BYTES(capacity, oa->capacity) : 0;
 #else
                 ? (UV)capacity * index_width : 0;
 #endif
 #ifdef PERL_HASH_INDEX_CHAINS
             link_bytes = oa ? (UV)oa->capacity
-                * HvOA_RECORD_WIDTH_FOR(oa->capacity) : 0;
+                * HvINDEX_RECORD_WIDTH_FOR(oa->capacity) : 0;
 #endif
-            index_bytes = oa ? STRUCT_OFFSET(struct hv_oa, indices)
+            index_bytes = oa ? STRUCT_OFFSET(PERL_HV_INDEX, indices)
                               + entry_index_bytes : 0;
             entry_bytes = oa ? oa->capacity * sizeof(HE) : 0;
             STORAGE_INFO("entry_capacity", oa ? oa->capacity : 0);
@@ -450,7 +450,7 @@ hash_storage_info(hash)
             STORAGE_INFO("index_width", index_width);
             STORAGE_INFO("slot_size", slot_size);
             STORAGE_INFO("metadata_bytes", oa
-                         ? STRUCT_OFFSET(struct hv_oa, indices) : 0);
+                         ? STRUCT_OFFSET(PERL_HV_INDEX, indices) : 0);
             STORAGE_INFO("hash_bytes", hash_bytes);
             STORAGE_INFO("entry_index_bytes", entry_index_bytes);
             STORAGE_INFO("entry_spare", oa ? oa->capacity - oa->used : 0);
@@ -460,7 +460,7 @@ hash_storage_info(hash)
                 STRLEN i;
 #ifdef PERL_HASH_INDEX_CHAINS
                 for (i = 0; i < capacity; i++) {
-                    U32 chain_entry = HvOA_INDEX_GET(hash, i);
+                    U32 chain_entry = HvINDEX_GET(hash, i);
                     UV distance = 0;
                     if (!chain_entry) {
                         empty++;
@@ -478,7 +478,7 @@ hash_storage_info(hash)
                 }
 #else
                 for (i = 0; i <= HvMAX(hash); i++) {
-                    const U32 entry_index = HvOA_INDEX_GET(hash, i);
+                    const U32 entry_index = HvINDEX_GET(hash, i);
                     if (!entry_index)
                         empty++;
                     else if (entry_index == U32_MAX)

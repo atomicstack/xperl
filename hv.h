@@ -36,72 +36,16 @@ struct he {
     } he_valu;
 };
 
-#define HV_OA_DELETED U32_MAX
+#define HV_INDEX_DELETED U32_MAX
 /* The bucket array plus I32_MAX chain links fits U32 index positions. */
 #define HV_MAX_BUCKETS ((U32)1 << 31)
 #define HV_MAX_KEYS ((HV_MAX_BUCKETS / 3) * 2 + (HV_MAX_BUCKETS % 3) * 2 / 3)
 
-struct hv_oa {
-    HE *entries;
-    U32 capacity;
-    U32 used;
-    U32 tombstones;
-    U8 indices[1];
-};
-
-#ifdef PERL_HASH_INDEX_CHAINS
-#  ifdef PERL_HASH_INDEX_32BIT
-#    define HvOA_INDEX_WIDTH_FOR(capacity) 4
-#  else
-#    define HvOA_INDEX_WIDTH_FOR(capacity) \
-    ((capacity) <= 255 ? 1 : (capacity) <= 65535 ? 2 : 4)
-#  endif
-#  define HvOA_INDEX_WIDTH(hv) HvOA_INDEX_WIDTH_FOR(HvOA(hv)->capacity)
-#  ifdef PERL_HASH_CHAIN_FINGERPRINT
-#    define HvOA_RECORD_WIDTH_FOR(capacity) \
-      (2 * HvOA_INDEX_WIDTH_FOR(capacity))
-#    define HvOA_STORAGE_BYTES(buckets,entries) \
-      ((Size_t)(buckets) * HvOA_INDEX_WIDTH_FOR(entries) \
-       + (Size_t)(entries) * HvOA_RECORD_WIDTH_FOR(entries))
-#    define HvOA_FINGERPRINT_BYTES_FOR(entries) \
-      ((Size_t)(entries) * HvOA_INDEX_WIDTH_FOR(entries))
-#    define HvOA_FINGERPRINT_GET(hv,pos) \
-      S_hv_oa_fingerprint_get(HvOA(hv), (U32)HvMAX(hv) + 1, (U32)(pos))
-#    define HvOA_FINGERPRINT_SET(hv,pos,hash) \
-      S_hv_oa_fingerprint_set(HvOA(hv), (U32)HvMAX(hv) + 1, (U32)(pos), \
-                              (U32)(hash))
-#    define HvOA_FINGERPRINT_VALUE_SET(hv,pos,value) \
-      S_hv_oa_fingerprint_set_value(HvOA(hv), (U32)HvMAX(hv) + 1, \
-                                    (U32)(pos), (U32)(value))
-#  else
-#    define HvOA_RECORD_WIDTH_FOR(capacity) HvOA_INDEX_WIDTH_FOR(capacity)
-#    define HvOA_STORAGE_BYTES(buckets,entries) \
-      (((Size_t)(buckets) + (entries)) * HvOA_INDEX_WIDTH_FOR(entries))
-#    define HvOA_FINGERPRINT_BYTES_FOR(entries) 0
-#  endif
-#  define HvCHAIN_NEXT(hv,ix) \
-    HvOA_INDEX_GET((hv), (U32)HvMAX(hv) + 1 + (ix))
-#  define HvCHAIN_NEXT_SET(hv,ix,value) \
-    HvOA_INDEX_SET((hv), (U32)HvMAX(hv) + 1 + (ix), (value))
+#ifdef PERL_HASH_INDEX_OA
+#  include "perl_hv_oa.h"
 #else
-#  define HvOA_INDEX_WIDTH_FOR(capacity) \
-    ((capacity) <= 128 ? 1 : (capacity) <= 32768 ? 2 : 4)
-#  define HvOA_INDEX_WIDTH(hv) \
-    HvOA_INDEX_WIDTH_FOR((U32)HvMAX(hv) + 1)
-#  define HvOA_STORAGE_BYTES(buckets,entries) HvOA_INDEX_BYTES_FOR(buckets)
-#  define HvOA_RECORD_WIDTH_FOR(capacity) HvOA_INDEX_WIDTH_FOR(capacity)
-#  define HvOA_FINGERPRINT_BYTES_FOR(entries) 0
+#  include "perl_hv_sc.h"
 #endif
-#define HvOA_INDEX_BYTES_FOR(capacity) \
-    ((Size_t)(capacity) * HvOA_INDEX_WIDTH_FOR(capacity))
-#define HvOA_INDEX_REGION(oa,capacity) ((U8 *)(oa)->indices)
-
-
-#define HvOA_INDEX_GET(hv,pos) \
-    S_hv_oa_index_get(HvOA(hv), (U32)HvMAX(hv) + 1, (U32)(pos))
-#define HvOA_INDEX_SET(hv,pos,value) \
-    S_hv_oa_index_set(HvOA(hv), (U32)HvMAX(hv) + 1, (U32)(pos), (U32)(value))
-
 
 /* hash key -- defined separately for use as shared pointer */
 struct hek {
@@ -607,10 +551,10 @@ Null HE pointer.
     ((struct shared_hek *)((char *)(hek) \
       - STRUCT_OFFSET(struct shared_hek, shared_hek_hek)))
 #define HvSTR_REFCOUNT(hek)	(HvSTR_SHARED(hek)->refcount)
-#define HvOA(hv)		((struct hv_oa *)HvARRAY(hv))
+#define HvINDEX(hv)		((PERL_HV_INDEX *)HvARRAY(hv))
 #define HvENTRIES(hv) \
     (HvIS_LINEAR(hv) ? (HE *)HvARRAY(hv) : \
-     (HvARRAY(hv) ? HvOA(hv)->entries : NULL))
+     (HvARRAY(hv) ? HvINDEX(hv)->entries : NULL))
 /*
 =for apidoc_section $HV
 =for apidoc Cm|HE *|HePOOL_NEXT|HE *he
@@ -629,7 +573,7 @@ The maximum number of ordinary hash entries, including restricted-hash
 placeholders, or distinct shared keys. Ordinary hashes derive this limit
 from the configured maximum bucket count and load.
 
-=for apidoc Cmn|U32|HV_OA_DELETED
+=for apidoc Cmn|U32|HV_INDEX_DELETED
 
 The reserved index-slot entry value identifying a tombstone.
 
@@ -658,35 +602,35 @@ Returns the allocation containing a shared HEK.
 Returns the allocation size for a shared string table with the given
 capacity.
 
-=for apidoc Cm|U32|HvOA_INDEX_WIDTH_FOR|U32 capacity
+=for apidoc Cm|U32|HvINDEX_WIDTH_FOR|U32 capacity
 
 Returns the stored entry-index width: one byte through 128 slots, two bytes
 through 32,768 slots, and four bytes above that.
 
-=for apidoc Cm|U32|HvOA_INDEX_WIDTH|HV *hv
+=for apidoc Cm|U32|HvINDEX_WIDTH|HV *hv
 
 Returns the stored entry-index width for C<hv>.
 
-=for apidoc Cm|Size_t|HvOA_INDEX_BYTES_FOR|U32 capacity
+=for apidoc Cm|Size_t|HvINDEX_BYTES_FOR|U32 capacity
 
 Returns the byte size of the compact entry-index region for C<capacity>
 slots.
 
-=for apidoc Cm|U8 *|HvOA_INDEX_REGION|struct hv_oa *oa|U32 capacity
+=for apidoc Cm|U8 *|HvINDEX_REGION|PERL_HV_INDEX *oa|U32 capacity
 
 Returns the compact entry-index region after the open-addressed header.
 
-=for apidoc Cm|struct hv_oa *|HvOA|HV *hv
+=for apidoc Cm|PERL_HV_INDEX *|HvINDEX|HV *hv
 
 Returns the open-addressed storage header. The hash must have an allocated
 index and must not be the shared string table.
 
-=for apidoc Cm|U32|HvOA_INDEX_GET|HV *hv|U32 pos
+=for apidoc Cm|U32|HvINDEX_GET|HV *hv|U32 pos
 
 Returns an entry index encoded as index plus one, zero for an empty slot,
-or C<HV_OA_DELETED> for a tombstone.
+or C<HV_INDEX_DELETED> for a tombstone.
 
-=for apidoc Cm|void|HvOA_INDEX_SET|HV *hv|U32 pos|U32 value
+=for apidoc Cm|void|HvINDEX_SET|HV *hv|U32 pos|U32 value
 
 Stores a normalized encoded entry index, empty value, or tombstone.
 
@@ -763,24 +707,24 @@ insert or delete keys. The SV values remain separately allocated.
  * lazily deleted entry owns its key until iterator advance or reset. */
 #define HvENTRY_LIMIT(hv) \
     (HvIS_STRTAB(hv) ? 0 : HvIS_LINEAR(hv) ? HvTOTALKEYS(hv) : \
-     HvIS_OA(hv) ? (HvARRAY(hv) ? HvOA(hv)->used : 0) : HvMAX(hv) + 1)
+     HvIS_OA(hv) ? (HvARRAY(hv) ? HvINDEX(hv)->used : 0) : HvMAX(hv) + 1)
 #define HvENTRY_FIRST(hv,i) \
     (HvIS_STRTAB(hv) ? NULL : HvIS_LINEAR(hv) ? (HvARRAY(hv) ? &((HE *)HvARRAY(hv))[(i)] : NULL) : HvIS_OA(hv) \
-     ? ((HvARRAY(hv) && HvOA(hv)->entries[(i)].hent_hek \
+     ? ((HvARRAY(hv) && HvINDEX(hv)->entries[(i)].hent_hek \
          && !(HvLAZYDEL(hv) \
-              && &HvOA(hv)->entries[(i)] == HvEITER_get(hv))) \
-        ? &HvOA(hv)->entries[(i)] : NULL) \
+              && &HvINDEX(hv)->entries[(i)] == HvEITER_get(hv))) \
+        ? &HvINDEX(hv)->entries[(i)] : NULL) \
      : HvARRAY(hv)[i])
 #define HvENTRY_NEXT(hv,e) NULL
 #define HvENTRY_INDEX(hv,sptr,idx) \
-    (HvIS_OA(hv) && !HvIS_LINEAR(hv) && HvARRAY(hv) && HvOA(hv)->entries \
-     && PTR2UV(sptr) >= PTR2UV(&HeVAL(HvOA(hv)->entries)) \
-     && (PTR2UV(sptr) - PTR2UV(&HeVAL(HvOA(hv)->entries))) \
+    (HvIS_OA(hv) && !HvIS_LINEAR(hv) && HvARRAY(hv) && HvINDEX(hv)->entries \
+     && PTR2UV(sptr) >= PTR2UV(&HeVAL(HvINDEX(hv)->entries)) \
+     && (PTR2UV(sptr) - PTR2UV(&HeVAL(HvINDEX(hv)->entries))) \
         % sizeof(HE) == 0 \
-     && (PTR2UV(sptr) - PTR2UV(&HeVAL(HvOA(hv)->entries))) \
-        / sizeof(HE) < HvOA(hv)->used \
+     && (PTR2UV(sptr) - PTR2UV(&HeVAL(HvINDEX(hv)->entries))) \
+        / sizeof(HE) < HvINDEX(hv)->used \
      && (((idx) = (U32)((PTR2UV(sptr) \
-                        - PTR2UV(&HeVAL(HvOA(hv)->entries))) / sizeof(HE))), 1))
+                        - PTR2UV(&HeVAL(HvINDEX(hv)->entries))) / sizeof(HE))), 1))
 #define HvENTRY_SVP(hv,idx)	(&HeVAL(&HvENTRIES(hv)[(idx)]))
 #define HeKEY_hek(he)		(he)->hent_hek
 #define HeKEY(he)		HEK_KEY(HeKEY_hek(he))

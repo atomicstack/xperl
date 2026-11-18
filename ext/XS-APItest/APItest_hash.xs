@@ -6,7 +6,7 @@ ordinary_hash_capacity_for(live, minimum)
         UV minimum
     CODE:
         RETVAL = live <= U32_MAX && minimum <= U32_MAX
-            ? S_hv_oa_capacity_for((U32)live, (U32)minimum) : 0;
+            ? S_hv_index_capacity_for((U32)live, (U32)minimum) : 0;
     OUTPUT:
         RETVAL
 
@@ -16,7 +16,7 @@ ordinary_hash_size_valid(buckets, entries)
         UV entries
     CODE:
         RETVAL = buckets <= U32_MAX && entries <= U32_MAX
-            ? S_hv_oa_size_valid((U32)buckets, (U32)entries) : 0;
+            ? S_hv_index_size_valid((U32)buckets, (U32)entries) : 0;
     OUTPUT:
         RETVAL
 

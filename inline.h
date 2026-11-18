@@ -381,44 +381,13 @@ Perl_posix_LC_foo(pTHX_ const int c, const U8 classnum) {
 
 /* ------------------------------- hv.h ------------------------------- */
 
-/* Capacity policy is independent of whether the allocation fits this host. */
-PERL_STATIC_INLINE U32
-S_hv_oa_capacity_for(U32 live, U32 minimum)
-{
-    U32 capacity;
-    UV target;
-    if (live > HV_MAX_KEYS || !minimum || minimum > HV_MAX_BUCKETS
-        || (minimum & (minimum - 1)))
-        return 0;
-    capacity = MAX(minimum, 8);
-    target = (UV)live * 3;
-    while (capacity < target && capacity < HV_MAX_BUCKETS)
-        capacity *= 2;
-    return capacity;
-}
-
-PERL_STATIC_INLINE bool
-S_hv_oa_size_valid(U32 buckets, U32 entries)
-{
-    Size_t available = MEM_SIZE_MAX - STRUCT_OFFSET(struct hv_oa, indices);
-#ifdef PERL_HASH_INDEX_CHAINS
-    const U32 width = HvOA_INDEX_WIDTH_FOR(entries);
+#define PERL_HV_INLINE_FUNCTIONS
+#ifdef PERL_HASH_INDEX_OA
+#  include "perl_hv_oa.h"
 #else
-    const U32 width = HvOA_INDEX_WIDTH_FOR(buckets);
+#  include "perl_hv_sc.h"
 #endif
-    if (!buckets || buckets > HV_MAX_BUCKETS || (buckets & (buckets - 1))
-        || entries > (U32)I32_MAX
-        || (entries && sizeof(HE) > MEM_SIZE_MAX / (Size_t)entries)
-        || (Size_t)buckets > available / width)
-        return FALSE;
-#ifdef PERL_HASH_INDEX_CHAINS
-    available -= (Size_t)buckets * width;
-    if (entries > U32_MAX - buckets
-        || (Size_t)entries > available / HvOA_RECORD_WIDTH_FOR(entries))
-        return FALSE;
-#endif
-    return TRUE;
-}
+#undef PERL_HV_INLINE_FUNCTIONS
 
 PERL_STATIC_INLINE bool
 S_hv_strtab_size_valid(Size_t capacity)
@@ -446,155 +415,6 @@ S_hv_strtab_capacity_for(Size_t live)
     }
     return S_hv_strtab_size_valid(capacity) ? capacity : 0;
 }
-
-#ifdef PERL_HASH_INDEX_CHAINS
-PERL_STATIC_INLINE U32
-S_hv_oa_index_get(const struct hv_oa *oa, U32 buckets, U32 pos)
-{
-    U32 width = HvOA_INDEX_WIDTH_FOR(oa->capacity);
-    const U8 *region = oa->indices;
-    assert((Size_t)pos < (Size_t)buckets + oa->capacity);
-    if (pos < buckets)
-        region += (Size_t)pos * width;
-    else
-        region += (Size_t)buckets * width
-            + ((Size_t)pos - buckets) * HvOA_RECORD_WIDTH_FOR(oa->capacity);
-    PERL_UNUSED_ARG(buckets);
-    if (width == 1) return region[0];
-    if (width == 2) {
-        U16 value;
-        Copy(region, &value, 1, U16);
-        return value;
-    }
-    {
-        U32 value;
-        Copy(region, &value, 1, U32);
-        return value;
-    }
-}
-
-PERL_STATIC_INLINE void
-S_hv_oa_index_set(struct hv_oa *oa, U32 buckets, U32 pos, U32 value)
-{
-    U32 width = HvOA_INDEX_WIDTH_FOR(oa->capacity);
-    U8 *region = oa->indices;
-    assert((Size_t)pos < (Size_t)buckets + oa->capacity);
-    assert(value <= oa->capacity);
-    if (pos < buckets)
-        region += (Size_t)pos * width;
-    else
-        region += (Size_t)buckets * width
-            + ((Size_t)pos - buckets) * HvOA_RECORD_WIDTH_FOR(oa->capacity);
-    PERL_UNUSED_ARG(buckets);
-    if (width == 1) region[0] = (U8)value;
-    else if (width == 2) {
-        U16 encoded = (U16)value;
-        Copy(&encoded, region, 1, U16);
-    }
-    else Copy(&value, region, 1, U32);
-}
-
-#ifdef PERL_HASH_CHAIN_FINGERPRINT
-PERL_STATIC_INLINE U32
-S_hv_oa_fingerprint_get(const struct hv_oa *oa, U32 buckets, U32 pos)
-{
-    U32 width = HvOA_INDEX_WIDTH_FOR(oa->capacity);
-    const U8 *region;
-    assert(pos >= buckets);
-    assert((Size_t)pos < (Size_t)buckets + oa->capacity);
-    PERL_UNUSED_ARG(buckets);
-    region = oa->indices + (Size_t)buckets * width
-             + ((Size_t)pos - buckets) * HvOA_RECORD_WIDTH_FOR(oa->capacity)
-             + width;
-    if (width == 1) return region[0];
-    if (width == 2) {
-        U16 value;
-        Copy(region, &value, 1, U16);
-        return value;
-    }
-    {
-        U32 value;
-        Copy(region, &value, 1, U32);
-        return value;
-    }
-}
-
-PERL_STATIC_INLINE void
-S_hv_oa_fingerprint_set_value(struct hv_oa *oa, U32 buckets, U32 pos,
-                              U32 fingerprint)
-{
-    U32 width = HvOA_INDEX_WIDTH_FOR(oa->capacity);
-    U8 *region;
-    assert(pos >= buckets);
-    assert((Size_t)pos < (Size_t)buckets + oa->capacity);
-    PERL_UNUSED_ARG(buckets);
-    region = oa->indices + (Size_t)buckets * width
-             + ((Size_t)pos - buckets) * HvOA_RECORD_WIDTH_FOR(oa->capacity)
-             + width;
-    if (width == 1) region[0] = (U8)fingerprint;
-    else if (width == 2) {
-        U16 encoded = (U16)fingerprint;
-        Copy(&encoded, region, 1, U16);
-    }
-    else Copy(&fingerprint, region, 1, U32);
-}
-
-PERL_STATIC_INLINE void
-S_hv_oa_fingerprint_set(struct hv_oa *oa, U32 buckets, U32 pos, U32 hash)
-{
-    U32 width = HvOA_INDEX_WIDTH_FOR(oa->capacity);
-    S_hv_oa_fingerprint_set_value(oa, buckets, pos,
-        width == 1 ? hash >> 24 : width == 2 ? hash >> 16 : hash);
-}
-#endif
-#else
-PERL_STATIC_INLINE U32
-S_hv_oa_index_get(const struct hv_oa *oa, U32 capacity, U32 pos)
-{
-    U8 width = (U8)HvOA_INDEX_WIDTH_FOR(capacity);
-    const U8 *region = (const U8 *)oa->indices;
-    assert(pos < capacity);
-    if (width == 1) {
-        U8 value = region[pos];
-        return value == (U8)~(U8)0 ? HV_OA_DELETED : value;
-    }
-    if (width == 2) {
-        U16 value;
-        Copy(region + (Size_t)pos * sizeof(U16), &value, 1, U16);
-        return value == (U16)~(U16)0 ? HV_OA_DELETED : value;
-    }
-    {
-        U32 value;
-        Copy(region + (Size_t)pos * sizeof(U32), &value, 1, U32);
-        return value;
-    }
-}
-
-
-PERL_STATIC_INLINE void
-S_hv_oa_index_set(struct hv_oa *oa, U32 capacity, U32 pos, U32 value)
-{
-    U8 width = (U8)HvOA_INDEX_WIDTH_FOR(capacity);
-    U8 *region = (U8 *)oa->indices;
-    assert(pos < capacity);
-    if (width == 1) {
-        assert(value == HV_OA_DELETED || value <= 0xFE);
-        region[pos] = value == HV_OA_DELETED ? (U8)~(U8)0 : (U8)value;
-    }
-    else if (width == 2) {
-        U16 encoded = value == HV_OA_DELETED ? (U16)~(U16)0 : (U16)value;
-        assert(value == HV_OA_DELETED || value <= 0xFFFE);
-        Copy(&encoded, region + (Size_t)pos * sizeof(U16), 1, U16);
-    }
-    else {
-        U32 encoded = value;
-        assert(value == HV_OA_DELETED || value < U32_MAX);
-        Copy(&encoded, region + (Size_t)pos * sizeof(U32), 1, U32);
-    }
-}
-
-
-#endif
 
 /* ------------------------------- mg.h ------------------------------- */
 

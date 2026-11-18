@@ -35,54 +35,20 @@ table stores stable HEK pointers in a separate open-addressed index.
 #include "perl.h"
 #include "class.h"
 
-/* Index pressure and entry-array holes are separate reasons to rebuild.
- * Growth uses the next power of two at least three times the live count.
- * Compaction retains capacities unless at least half an allocation can be
- * released. Keep hv_ksplit() reservation sizing consistent with the load limit.
- */
-
-/* Ordinary hashes use a dense HE vector and an independent open-addressed
- * index. PL_strtab uses a separate open-addressed HEK pointer index. */
-#define OA_EMPTY U32_MAX
-#define OA_DELETED HV_OA_DELETED
+#define HVhek_STORAGE_MASK (0xFF & ~HVhek_NOTSHARED)
 #define STRTAB_MIN_CAPACITY 32768
 #define STRTAB_NO_SLOT MEM_SIZE_MAX
-#define OA_COUPLED_MAX 16384
-#define HVhek_STORAGE_MASK (0xFF & ~HVhek_NOTSHARED)
-
-/* Small hashes couple entry capacity to the index occupancy limit. */
-#define OA_ENTRY_CAPACITY(capacity) (((capacity) / 3) * 2 + ((capacity) % 3) * 2 / 3)
-
-/* A proportional threshold amortizes packing over subsequent insertions
- * without making small hashes accumulate a fixed byte budget of holes. */
-static bool
-S_oa_compaction_worthwhile(U32 used, U32 live, U32 capacity)
-{
-    const U32 holes = used - live;
-    return holes >= capacity / 5 + (capacity % 5 != 0);
-}
-
-static U32
-S_oa_rebuild_capacity(pTHX_ U32 live, U32 minimum)
-{
-    const U32 capacity = S_hv_oa_capacity_for(live, minimum);
-    if (!capacity)
-        PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
-    return capacity;
-}
-
-static bool
-S_linear_enabled(pTHX_ HV *hv)
-{
-    return PL_hash_linear_max
-        && !SvTIED_mg((const SV *)hv, PERL_MAGIC_tied);
-}
 
 static void S_hsplit(pTHX_ HV *hv, STRLEN const oldsize, STRLEN newsize);
-static void S_oa_index_insert(HV *hv, HE *entry, U32 hash);
-static HE *S_oa_new_entry(pTHX_ HV *hv, U32 hash, U32 *slotp);
 static HE *S_alloc_he(pTHX);
 static void S_release_he(pTHX_ HE *he);
+
+#ifdef PERL_HASH_INDEX_OA
+#  include "perl_hv_oa.c"
+#else
+#  include "perl_hv_sc.c"
+#endif
+
 static HEK *S_strtab_find(pTHX_ U32 hash, const char *key, STRLEN klen, U8 flags,
                           Size_t *insert_pos);
 static void S_strtab_resize(pTHX_ Size_t capacity);
@@ -204,603 +170,13 @@ S_strtab_insert(pTHX_ HEK *hek, Size_t pos)
 
 #include "perl_hv_strtab.c"
 
-static void
-S_oa_rebuild(pTHX_ HV *hv, U32 capacity, U32 entry_capacity, bool pack)
-{
-    const bool was_linear = HvIS_LINEAR(hv);
-    struct hv_oa *old = HvARRAY(hv) && !was_linear ? HvOA(hv) : NULL;
-    const bool reuse_index = old && capacity == (U32)HvMAX(hv) + 1
-        && entry_capacity == old->capacity;
-    struct hv_oa *oa;
-    HE *entries = was_linear ? (HE *)HvARRAY(hv)
-                             : old ? old->entries : NULL;
-    U32 used = was_linear ? (U32)HvTOTALKEYS(hv) : old ? old->used : 0;
-    struct xpvhv_aux *iter = HvHasAUX(hv) ? HvAUX(hv) : NULL;
-    HE *old_eiter = iter ? iter->xhv_eiter : NULL;
-    I32 old_riter = iter ? iter->xhv_riter : -1;
-    I32 new_riter = -1;
-    U32 i;
-    char *raw;
-    Size_t bytes;
-    if (capacity > HV_MAX_BUCKETS || HvTOTALKEYS(hv) > HV_MAX_KEYS)
-        PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
-    /* Chaining permits more live entries than buckets. Only open addressing
-     * needs a live-count limit on the index slots. */
-    if (!S_hv_oa_size_valid(capacity, entry_capacity)
-#ifndef PERL_HASH_INDEX_CHAINS
-        || HvTOTALKEYS(hv) > OA_ENTRY_CAPACITY(capacity)
-#endif
-        )
-        Perl_croak_memory_wrap();
-    assert(entry_capacity >= HvTOTALKEYS(hv));
-    bytes = STRUCT_OFFSET(struct hv_oa, indices)
-            + HvOA_STORAGE_BYTES(capacity, entry_capacity);
-    if (reuse_index) {
-        /* Compaction rewrites identifiers, but unchanged capacities need
-         * no allocation. Capture iterator and entry state before clearing. */
-        oa = old;
-        Zero(oa->indices, HvOA_STORAGE_BYTES(capacity, entry_capacity), U8);
-        oa->used = 0;
-        oa->tombstones = 0;
-    }
-    else {
-        Newxz(raw, bytes, char);
-        oa = (struct hv_oa *)raw;
-    }
-    oa->capacity = entry_capacity;
-    {
-        const U32 old_capacity = was_linear ? HvLINEAR_CAP(hv)
-                                            : old ? old->capacity : 0;
-        const U32 holes = used - (U32)HvTOTALKEYS(hv);
-        const bool compact = holes
-            && (
-                pack || oa->capacity < used
-#ifndef PERL_HASH_INDEX_CHAINS
-                || (capacity <= 128 && used >= 0xFEU)
-                || (capacity <= 32768 && used >= 0xFFFEU)
-#endif
-                );
-        SSize_t eiter_offset = -1;
-        if (compact) {
-            for (i = 0; i < used; i++) {
-                HE *entry = &entries[i];
-                if (entry == old_eiter && HvLAZYDEL(hv)) {
-                    /* Detach the deleted key without running its destructor
-                     * while the entry array and index are inconsistent. */
-                    HE *retired = S_alloc_he(aTHX);
-                    *retired = *entry;
-                    iter->xhv_eiter = retired;
-                }
-                else if (HeKEY_hek(entry)) {
-                    if (i != oa->used)
-                        entries[oa->used] = *entry;
-                    if (entry == old_eiter)
-                        eiter_offset = oa->used;
-                    oa->used++;
-                }
-                if (old_riter >= 0 && i <= (U32)old_riter)
-                    new_riter = (I32)oa->used - 1;
-            }
-            if (iter) {
-                iter->xhv_riter = new_riter;
-                /* Removing the first, deleted entry maps its cursor to -1.
-                 * Keep the active state so insertion is still detected. */
-                if (old_riter >= 0)
-                    iter->xhv_aux_flags |= HvAUXf_ITER_ACTIVE;
-            }
-        }
-        else {
-            oa->used = used;
-            if (old_eiter && entries) {
-                UV ptr = PTR2UV(old_eiter), base = PTR2UV(entries);
-                if (ptr >= base && ptr - base < (UV)used * sizeof(HE)
-                    && (ptr - base) % sizeof(HE) == 0)
-                    eiter_offset = (SSize_t)((ptr - base) / sizeof(HE));
-            }
-        }
-        if (was_linear && entries && old_capacity == 1) {
-            Newx(oa->entries, oa->capacity, HE);
-            Copy(entries, oa->entries, oa->used, HE);
-            S_release_he(aTHX_ entries);
-        }
-        else {
-            oa->entries = entries;
-            /* Renew lets the allocator grow or shrink the block in place.
-             * An index-only resize does not touch the entry allocation. */
-            if (oa->capacity != old_capacity)
-                Renew(oa->entries, oa->capacity, HE);
-        }
-        if (compact || oa->capacity != old_capacity)
-            Zero(oa->entries + oa->used, oa->capacity - oa->used, HE);
-        if (eiter_offset >= 0)
-            iter->xhv_eiter = &oa->entries[eiter_offset];
-    }
-    if (!reuse_index)
-        Safefree(old);
-    HvARRAY(hv) = (HE **)oa;
-    HvMAX_SET(hv, capacity - 1);
-    for (i = 0; i < oa->used; i++) {
-        HE *entry = HvENTRY_FIRST(hv, i);
-        if (entry)
-            S_oa_index_insert(hv, entry, HeHASH(entry));
-    }
-}
-
-static void
-S_oa_index_resize(pTHX_ HV *hv, U32 capacity)
-{
-    struct hv_oa *old = HvARRAY(hv) && !HvIS_LINEAR(hv) ? HvOA(hv) : NULL;
-    const U32 live = (U32)HvTOTALKEYS(hv);
-    U32 entry_capacity;
-#ifdef PERL_HASH_INDEX_CHAINS
-    entry_capacity = old ? old->capacity : (live > 8 ? live : 8);
-#else
-    entry_capacity = old ? old->capacity : OA_ENTRY_CAPACITY(
-        capacity <= OA_COUPLED_MAX ? capacity : OA_COUPLED_MAX);
-    if (capacity <= OA_COUPLED_MAX
-        && entry_capacity < OA_ENTRY_CAPACITY(capacity))
-        entry_capacity = OA_ENTRY_CAPACITY(capacity);
-#endif
-    while (entry_capacity < live)
-        entry_capacity += entry_capacity >> 2;
-    S_oa_rebuild(aTHX_ hv, capacity, entry_capacity,
-        old && S_oa_compaction_worthwhile(old->used, live, old->capacity));
-}
-
-static void
-S_oa_promote(pTHX_ HV *hv)
-{
-    U32 used = (U32)HvTOTALKEYS(hv), cap = 8;
-    while (used + (used >> 1) > cap - 1) {
-        if (cap >= HV_MAX_BUCKETS)
-            PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
-        cap <<= 1;
-    }
-    S_oa_index_resize(aTHX_ hv, cap);
-}
-
-static void
-S_linear_reserve(pTHX_ HV *hv, U32 capacity)
-{
-    HE *entries = (HE *)HvARRAY(hv);
-    const U32 used = (U32)HvTOTALKEYS(hv);
-    const U32 old_capacity = entries ? HvLINEAR_CAP(hv) : 0;
-    SSize_t eiter_offset = -1;
-
-    assert(!entries || HvIS_LINEAR(hv));
-    assert(capacity >= used);
-    if (capacity <= old_capacity)
-        return;
-    if (HvHasAUX(hv) && HvAUX(hv)->xhv_eiter && entries) {
-        UV p = PTR2UV(HvAUX(hv)->xhv_eiter), b = PTR2UV(entries);
-        if (p >= b && p < b + used * sizeof(HE)
-            && (p - b) % sizeof(HE) == 0)
-            eiter_offset = (SSize_t)((p - b) / sizeof(HE));
-    }
-    if (capacity == 1) {
-        assert(!entries);
-        entries = S_alloc_he(aTHX);
-    }
-    else if (old_capacity == 1) {
-        HE *expanded;
-        Newx(expanded, capacity, HE);
-        Copy(entries, expanded, used, HE);
-        S_release_he(aTHX_ entries);
-        entries = expanded;
-    }
-    else if (entries)
-        Renew(entries, capacity, HE);
-    else
-        Newx(entries, capacity, HE);
-    Zero(entries + used, capacity - used, HE);
-    HvARRAY(hv) = (HE **)entries;
-    HvMAX_SET_LINEAR(hv, capacity);
-    if (eiter_offset >= 0)
-        HvAUX(hv)->xhv_eiter = &entries[eiter_offset];
-}
-
-/* Benchmark the first heap allocation independently of the linear limit. */
-#ifndef PERL_HASH_LINEAR_MIN_ALLOC
-#  define PERL_HASH_LINEAR_MIN_ALLOC 4
-#endif
-#if PERL_HASH_LINEAR_MIN_ALLOC != 2 && PERL_HASH_LINEAR_MIN_ALLOC != 4
-#  error "PERL_HASH_LINEAR_MIN_ALLOC must be 2 or 4"
-#endif
-
-static HE *
-S_linear_new_entry(pTHX_ HV *hv, U32 hash)
-{
-    U32 used = (U32)HvTOTALKEYS(hv), cap = HvLINEAR_CAP(hv);
-    U32 limit = (U32)PL_hash_linear_max;
-    HE *entries = (HE *)HvARRAY(hv);
-    if (!entries && used == 0) {
-        HE *entry = S_alloc_he(aTHX);
-        HvARRAY(hv) = (HE **)entry;
-        HvMAX_SET_LINEAR(hv, 1);
-        return entry;
-    }
-    if (used == cap) {
-        if (cap < limit) {
-            U32 next = cap ? cap * 2 : 1;
-            if (cap == 1 && next < PERL_HASH_LINEAR_MIN_ALLOC)
-                next = PERL_HASH_LINEAR_MIN_ALLOC;
-            if (next > limit) next = limit;
-            if (next <= cap || next > (U32)HV_LINEAR_CAP_MASK)
-                Perl_croak_memory_wrap();
-            S_linear_reserve(aTHX_ hv, next);
-            entries = (HE *)HvARRAY(hv);
-        }
-        else {
-            S_oa_promote(aTHX_ hv);
-            return S_oa_new_entry(aTHX_ hv, hash, NULL);
-        }
-    }
-    return &entries[used];
-}
-
-/* Remove a dense entry, preserving the compact form's canonical storage:
- * no allocation when empty, an arena HE when one entry remains, and a heap
- * vector only for two or more entries.  Key/value ownership is returned to
- * the caller so callbacks happen after the array and iterator are repaired. */
-static void
-S_linear_remove_at(pTHX_ HV *hv, U32 idx, HEK **hekp, I32 *lenp, U8 *flagsp)
-{
-    HE *entries = (HE *)HvARRAY(hv);
-    const U32 used = (U32)HvTOTALKEYS(hv);
-    HE *entry = &entries[idx];
-    struct xpvhv_aux *iter = HvHasAUX(hv) ? HvAUX(hv) : NULL;
-    SSize_t eiter_idx = -1;
-    *hekp = HeKEY_hek(entry);
-    *lenp = HeKLEN(entry);
-    *flagsp = HeKFLAGS(entry);
-    if (iter && iter->xhv_eiter) {
-        UV p = PTR2UV(iter->xhv_eiter), b = PTR2UV(entries);
-        if (p >= b && p < b + used * sizeof(HE)
-            && (p - b) % sizeof(HE) == 0)
-            eiter_idx = (SSize_t)((p - b) / sizeof(HE));
-    }
-    if (iter && iter->xhv_riter >= 0 && (U32)iter->xhv_riter >= idx)
-        iter->xhv_riter--;
-    if (iter && eiter_idx >= 0) {
-        if ((U32)eiter_idx == idx)
-            iter->xhv_eiter = NULL;
-        else if ((U32)eiter_idx > idx)
-            iter->xhv_eiter = &entries[eiter_idx - 1];
-    }
-
-    if (used == 1) {
-        if (HvLINEAR_CAP(hv) == 1)
-            S_release_he(aTHX_ entries);
-        else
-            Safefree(entries);
-        HvARRAY(hv) = NULL;
-        HvTOTALKEYS(hv) = 0;
-        HvMAX_SET_LINEAR(hv, 0);
-        return;
-    }
-
-    Move(&entries[idx + 1], &entries[idx], used - idx - 1, HE);
-    Zero(&entries[used - 1], 1, HE);
-    HvTOTALKEYS(hv)--;
-    if (used == 2) {
-        HE *singleton = S_alloc_he(aTHX);
-        *singleton = entries[0];
-        Safefree(entries);
-        HvARRAY(hv) = (HE **)singleton;
-        HvMAX_SET_LINEAR(hv, 1);
-        if (iter && eiter_idx >= 0 && (U32)eiter_idx != idx)
-            iter->xhv_eiter = singleton;
-    }
-}
-
-PERL_STATIC_INLINE bool
-S_oa_key_eq(const HEK *hek, const HEK *keyhek, U32 hash,
-            const char *key, STRLEN klen, U32 flags)
-{
-    if (hek == keyhek)
-        return TRUE;
-    /* Encoding variants and HEKs from another interpreter can have
-     * different pointers for the same key. Retain the content fallback. */
-    return HEK_HASH(hek) == hash && HEK_LEN(hek) == (I32)klen
-        && memEQ(HEK_KEY(hek), key, klen)
-        && !((HEK_FLAGS(hek) ^ flags) & HVhek_UTF8);
-}
-
-PERL_STATIC_INLINE HE *
-S_oa_find(pTHX_ HV *hv, U32 hash, const char *key, STRLEN klen, U32 flags,
-          HEK *keyhek, U32 *slotp)
-{
-    U32 mask = (U32)HvMAX(hv);
-    U32 pos = hash & mask;
-    U32 first_deleted = OA_EMPTY;
-    U32 n;
-    if (HvIS_LINEAR(hv)) {
-        HE *entries = (HE *)HvARRAY(hv);
-        if (slotp) *slotp = OA_EMPTY;
-        for (n = 0; n < (U32)HvTOTALKEYS(hv); n++) {
-            HE *entry = &entries[n];
-            if (S_oa_key_eq(HeKEY_hek(entry), keyhek, hash, key, klen, flags))
-                return entry;
-        }
-        return NULL;
-    }
-    if (!HvARRAY(hv)) { if (slotp) *slotp = OA_EMPTY; return NULL; }
-#ifdef PERL_HASH_INDEX_CHAINS
-    /* Select a load width before walking the chain. Bucket heads contain
-     * one identifier. Link records contain an identifier and, optionally,
-     * a fingerprint. Copy keeps wider loads portable on strict-alignment
-     * platforms while each expansion has a compile-time constant width. */
-#ifdef PERL_HASH_CHAIN_FINGERPRINT
-#  define CHAIN_RECORD_WORDS 2
-#  define CHAIN_CHECK_FINGERPRINT(Index, record, matches)                 \
-    STMT_START {                                                       \
-        Index fingerprint;                                             \
-        Copy((record) + sizeof(Index), &fingerprint, 1, Index);          \
-        (matches) = fingerprint == (Index)(hash                         \
-            >> (CHAR_BIT * (sizeof(U32) - sizeof(Index))));              \
-    } STMT_END
-#else
-#  define CHAIN_RECORD_WORDS 1
-#  define CHAIN_CHECK_FINGERPRINT(Index, record, matches)                 \
-    ((matches) = TRUE)
-#endif
-#define FIND_CHAIN(Index)                                               \
-    STMT_START {                                                       \
-        const struct hv_oa * const oa = HvOA(hv);                       \
-        const U8 * const links = oa->indices                            \
-            + ((Size_t)mask + 1) * sizeof(Index);                       \
-        HE * const entries = oa->entries;                              \
-        Index encoded;                                                 \
-        U32 ix;                                                        \
-        Copy(oa->indices + (Size_t)pos * sizeof(Index),                  \
-             &encoded, 1, Index);                                      \
-        while ((ix = encoded)) {                                       \
-            const U8 *record;                                          \
-            bool matches;                                              \
-            assert(ix <= oa->capacity);                                \
-            record = links + (Size_t)(ix - 1)                           \
-                * CHAIN_RECORD_WORDS * sizeof(Index);                  \
-            CHAIN_CHECK_FINGERPRINT(Index, record, matches);             \
-            if (matches) {                                             \
-                HE *entry = &entries[ix - 1];                           \
-                if (S_oa_key_eq(HeKEY_hek(entry), keyhek, hash,           \
-                                key, klen, flags)) {                    \
-                    if (slotp) *slotp = pos;                            \
-                    return entry;                                      \
-                }                                                      \
-            }                                                          \
-            pos = mask + ix;                                           \
-            Copy(record, &encoded, 1, Index);                           \
-        }                                                              \
-        if (slotp) *slotp = OA_EMPTY;                                   \
-        return NULL;                                                   \
-    } STMT_END
-    switch (HvOA_INDEX_WIDTH(hv)) {
-        case 1: FIND_CHAIN(U8);
-        case 2: FIND_CHAIN(U16);
-        default: FIND_CHAIN(U32);
-    }
-#undef FIND_CHAIN
-#undef CHAIN_CHECK_FINGERPRINT
-#undef CHAIN_RECORD_WORDS
-#else
-    for (n = 0; n <= mask; n++, pos = (pos + 1) & mask) {
-        U32 ix = HvOA_INDEX_GET(hv, pos);
-        HE *entry;
-        if (ix == 0) {
-            if (slotp) *slotp = first_deleted != OA_EMPTY ? first_deleted : pos;
-            return NULL;
-        }
-        if (ix == OA_DELETED) { if (first_deleted == OA_EMPTY) first_deleted = pos; continue; }
-        entry = &HvOA(hv)->entries[ix - 1];
-        if (S_oa_key_eq(HeKEY_hek(entry), keyhek, hash, key, klen, flags)) {
-            if (slotp) *slotp = pos;
-            return entry;
-        }
-    }
-#endif
-    if (slotp) *slotp = first_deleted;
-    return NULL;
-}
-
-static void
-S_oa_index_insert(HV *hv, HE *entry, U32 hash)
-{
-    struct hv_oa *oa = HvOA(hv);
-#ifdef PERL_HASH_INDEX_CHAINS
-    U32 pos = hash & (U32)HvMAX(hv);
-    U32 ix = (U32)(entry - oa->entries);
-    HvCHAIN_NEXT_SET(hv, ix, HvOA_INDEX_GET(hv, pos));
-#ifdef PERL_HASH_CHAIN_FINGERPRINT
-    HvOA_FINGERPRINT_SET(hv, (U32)HvMAX(hv) + 1 + ix, hash);
-#endif
-    HvOA_INDEX_SET(hv, pos, ix + 1);
-#else
-    U32 mask = (U32)HvMAX(hv), pos = hash & mask, n;
-    for (n = 0; n <= mask; n++, pos = (pos + 1) & mask) {
-        U32 index = HvOA_INDEX_GET(hv, pos);
-        if (!index || index == OA_DELETED) {
-            U32 encoded = (U32)(entry - oa->entries) + 1;
-            if (index == OA_DELETED) oa->tombstones--;
-            if (encoded >= (HvOA_INDEX_WIDTH(hv) == 1 ? 0xFFU
-                           : HvOA_INDEX_WIDTH(hv) == 2 ? 0xFFFFU
-                           : U32_MAX))
-                Perl_croak_memory_wrap();
-            HvOA_INDEX_SET(hv, pos, encoded);
-            return;
-        }
-    }
-    Perl_croak_memory_wrap();
-#endif
-}
-
-static void
-S_oa_index_delete(HV *hv, U32 pos)
-{
-#ifdef PERL_HASH_INDEX_CHAINS
-    U32 encoded = HvOA_INDEX_GET(hv, pos);
-    U32 next;
-    assert(encoded);
-    next = HvCHAIN_NEXT(hv, encoded - 1);
-#ifdef PERL_HASH_CHAIN_FINGERPRINT
-    HvOA_FINGERPRINT_VALUE_SET(hv,
-        (U32)HvMAX(hv) + 1 + encoded - 1, 0);
-#endif
-    HvOA_INDEX_SET(hv, pos, next);
-    HvCHAIN_NEXT_SET(hv, encoded - 1, 0);
-#else
-    HvOA_INDEX_SET(hv, pos, OA_DELETED);
-    HvOA(hv)->tombstones++;
-#endif
-}
-
-static void
-S_oa_reserve_entries(pTHX_ HV *hv, U32 capacity)
-{
-    struct hv_oa *oa = HvOA(hv);
-    U32 old_capacity = oa->capacity;
-    SSize_t eiter_offset = -1;
-    if (capacity <= oa->capacity)
-        return;
-    if (!S_hv_oa_size_valid((U32)HvMAX(hv) + 1, capacity))
-        Perl_croak_memory_wrap();
-    if (HvHasAUX(hv) && HvAUX(hv)->xhv_eiter) {
-        UV ptr = PTR2UV(HvAUX(hv)->xhv_eiter);
-        UV base = PTR2UV(oa->entries);
-        if (ptr >= base && ptr - base < (UV)oa->used * sizeof(HE)
-            && (ptr - base) % sizeof(HE) == 0)
-            eiter_offset = (SSize_t)((ptr - base) / sizeof(HE));
-    }
-#ifdef PERL_HASH_INDEX_CHAINS
-    {
-        U32 buckets = (U32)HvMAX(hv) + 1;
-        struct hv_oa *expanded;
-        char *raw;
-        Size_t i;
-        if (HvOA_RECORD_WIDTH_FOR(capacity) == HvOA_RECORD_WIDTH_FOR(old_capacity)) {
-            Size_t old_bytes = HvOA_STORAGE_BYTES(buckets, old_capacity);
-            Size_t new_bytes = HvOA_STORAGE_BYTES(buckets, capacity);
-            raw = (char *)oa;
-            Renew(raw, STRUCT_OFFSET(struct hv_oa, indices) + new_bytes, char);
-            oa = (struct hv_oa *)raw;
-            Zero(oa->indices + old_bytes, new_bytes - old_bytes, U8);
-            oa->capacity = capacity;
-        }
-        else {
-            Newxz(raw, STRUCT_OFFSET(struct hv_oa, indices)
-                       + HvOA_STORAGE_BYTES(buckets, capacity), char);
-            expanded = (struct hv_oa *)raw;
-            Copy(oa, expanded, STRUCT_OFFSET(struct hv_oa, indices), char);
-            expanded->capacity = capacity;
-            for (i = 0; i < (Size_t)buckets + old_capacity; i++) {
-                S_hv_oa_index_set(expanded, buckets, (U32)i,
-                    S_hv_oa_index_get(oa, buckets, (U32)i));
-#ifdef PERL_HASH_CHAIN_FINGERPRINT
-                if (i >= buckets) {
-                    HE *entry = &expanded->entries[i - buckets];
-                    if (HeKEY_hek(entry))
-                        S_hv_oa_fingerprint_set(expanded, buckets,
-                            (U32)i, HeHASH(entry));
-                }
-#endif
-            }
-            Safefree(oa);
-            oa = expanded;
-        }
-        HvARRAY(hv) = (HE **)oa;
-    }
-#endif
-    Renew(oa->entries, capacity, HE);
-    Zero(oa->entries + old_capacity, capacity - old_capacity, HE);
-    oa->capacity = capacity;
-    if (eiter_offset >= 0)
-        HvAUX(hv)->xhv_eiter = &oa->entries[eiter_offset];
-}
-
-static HE *
-S_oa_new_entry(pTHX_ HV *hv, U32 hash, U32 *slotp)
-{
-    struct hv_oa *oa = HvOA(hv);
-    U32 index_capacity = (U32)HvMAX(hv) + 1;
-    const U32 live = (U32)HvTOTALKEYS(hv);
-    const U32 shrink_entries = MAX(8, live + (live >> 2) + 1);
-#ifndef PERL_HASH_INDEX_CHAINS
-    PERL_UNUSED_ARG(hash);
-#endif
-    /* Any index rebuild invalidates the saved insertion slot, including
-     * compaction at unchanged capacity. Moving only the HE array does not. */
-    if ((oa->used == oa->capacity || shrink_entries <= oa->capacity / 2)
-        && S_oa_compaction_worthwhile(oa->used, live, oa->capacity)) {
-        U32 entry_capacity = oa->capacity;
-        const U32 smaller_index = S_oa_rebuild_capacity(aTHX_ live + 1, 8);
-
-        /* Ordinary churn packs in place. A sustained fall in live keys can
-         * release storage, retaining room for the pending insertion. */
-        if (smaller_index <= index_capacity / 2)
-            index_capacity = smaller_index;
-        if (shrink_entries <= entry_capacity / 2)
-            entry_capacity = shrink_entries;
-        if (slotp) *slotp = OA_EMPTY;
-        S_oa_rebuild(aTHX_ hv, index_capacity, entry_capacity, TRUE);
-        oa = HvOA(hv);
-    }
-#ifdef PERL_HASH_INDEX_CHAINS
-    if (live >= OA_ENTRY_CAPACITY(index_capacity)
-        && HvOA_INDEX_GET(hv, hash & (index_capacity - 1))) {
-        if (index_capacity >= HV_MAX_BUCKETS)
-            PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
-        index_capacity *= 2;
-#else
-    if (live + oa->tombstones >= OA_ENTRY_CAPACITY(index_capacity)) {
-        if (oa->tombstones < (live + oa->tombstones + 1) / 2)
-            index_capacity = S_oa_rebuild_capacity(aTHX_ live, 8);
-#endif
-        if (slotp) *slotp = OA_EMPTY;
-        S_oa_index_resize(aTHX_ hv, index_capacity);
-        oa = HvOA(hv);
-    }
-    if (oa->used == oa->capacity) {
-#ifndef PERL_HASH_INDEX_CHAINS
-        if (index_capacity <= OA_COUPLED_MAX
-            && oa->capacity >= OA_ENTRY_CAPACITY(index_capacity)) {
-            /* Below the coupled limit, reserve entry headroom by growing
-             * the index too. Substantial holes were reclaimed above. */
-            index_capacity = S_oa_rebuild_capacity(aTHX_ live, index_capacity * 2);
-            if (slotp) *slotp = OA_EMPTY;
-            S_oa_index_resize(aTHX_ hv, index_capacity);
-            oa = HvOA(hv);
-        }
-#endif
-    }
-    if (oa->used == oa->capacity) {
-        const U32 increment = oa->capacity >> 2;
-        const U32 capacity = oa->capacity + increment;
-        if (!increment || capacity < oa->capacity)
-            Perl_croak_memory_wrap();
-        S_oa_reserve_entries(aTHX_ hv, capacity);
-        oa = HvOA(hv);
-    }
-    /* A narrowed index may retain a much larger HE allocation. Reclaim
-     * holes before the next position exceeds the index's encoding range. */
-#ifndef PERL_HASH_INDEX_CHAINS
-    if ((index_capacity <= 128 && oa->used >= 0xFEU)
-        || (index_capacity <= 32768 && oa->used >= 0xFFFEU)) {
-        if (slotp) *slotp = OA_EMPTY;
-        S_oa_index_resize(aTHX_ hv, index_capacity);
-        oa = HvOA(hv);
-    }
-#endif
-    assert(oa->used < oa->capacity);
-    return &oa->entries[oa->used++];
-}
-
 static bool
-S_oa_contains(pTHX_ HV *hv, HE *entry)
+S_hv_index_contains(pTHX_ HV *hv, HE *entry)
 {
-    struct hv_oa *oa;
+    PERL_HV_INDEX *oa;
     UV p, b;
     if (!HvIS_OA(hv) || HvIS_LINEAR(hv) || !HvARRAY(hv)) return FALSE;
-    oa = HvOA(hv);
+    oa = HvINDEX(hv);
     if (!oa->entries) return FALSE;
     p = PTR2UV(entry);
     b = PTR2UV(oa->entries);
@@ -809,7 +185,7 @@ S_oa_contains(pTHX_ HV *hv, HE *entry)
 }
 
 static void
-S_oa_free_key(pTHX_ HEK *hek, I32 len, U8 flags)
+S_hv_index_free_key(pTHX_ HEK *hek, I32 len, U8 flags)
 {
     if (len == HEf_SVKEY) {
         SvREFCNT_dec(*(SV **)HEK_KEY(hek));
@@ -822,7 +198,7 @@ S_oa_free_key(pTHX_ HEK *hek, I32 len, U8 flags)
 }
 
 static void
-S_oa_free_deleted(pTHX_ HV *hv, HE *entry)
+S_hv_index_free_deleted(pTHX_ HV *hv, HE *entry)
 {
     HEK *hek = HeKEY_hek(entry);
     I32 len = HeKLEN(entry);
@@ -830,7 +206,7 @@ S_oa_free_deleted(pTHX_ HV *hv, HE *entry)
     HeKEY_hek(entry) = NULL;
     HeVAL(entry) = NULL;
     PERL_UNUSED_ARG(hv);
-    S_oa_free_key(aTHX_ hek, len, flags);
+    S_hv_index_free_key(aTHX_ hek, len, flags);
 }
 
 /* HeKFLAGS(entry) is a single U8, so only provides 8 flags bits.
@@ -1288,7 +664,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     bool is_utf8;
     const int return_svp = action & HV_FETCH_JUST_SV;
     HEK *keysv_hek = NULL;
-    U32 insert_pos = OA_EMPTY;
+    U32 insert_pos = HV_INDEX_NO_SLOT;
 
     if (!hv)
         return NULL;
@@ -1598,7 +974,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
                 HvMAX_SET_LINEAR(hv, 0);
             }
             else if (HvIS_OA(hv))
-                S_oa_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
+                S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
             else {
                 char *array;
                 Newxz(array,
@@ -1698,7 +1074,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     else
 #endif
     {
-        entry = S_oa_find(aTHX_ hv, hash, key, klen, flags, keysv_hek,
+        entry = S_hv_index_find(aTHX_ hv, hash, key, klen, flags, keysv_hek,
                          action & (HV_FETCH_LVALUE|HV_FETCH_ISSTORE)
                              ? &insert_pos : NULL);
     }
@@ -1773,7 +1149,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
                 }
                 HeVAL(entry) = val;
                 SvREFCNT_dec(oldval);
-                entry = S_oa_find(aTHX_ hv, hash, lookup_key, klen, flags,
+                entry = S_hv_index_find(aTHX_ hv, hash, lookup_key, klen, flags,
                                  NULL, NULL);
                 if (!entry || HeVAL(entry) != val) {
                     if (val && !SvIMMORTAL(val))
@@ -1860,7 +1236,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
             HvMAX_SET_LINEAR(hv, 0);
         }
         else if (HvIS_OA(hv))
-            S_oa_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
+            S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
         else {
             char *array;
             Newxz(array,
@@ -1876,8 +1252,8 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
         goto ordinary_entry_ready;
       }
         if (!HvARRAY(hv))
-            S_oa_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
-        entry = S_oa_new_entry(aTHX_ hv, hash, &insert_pos);
+            S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
+        entry = S_hv_index_new_entry(aTHX_ hv, hash, &insert_pos);
       ordinary_entry_ready:
         if (HvSHAREKEYS(hv)) {
             HeKEY_hek(entry) = share_hek_flags(key, klen, hash, flags);
@@ -1885,24 +1261,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
             HeKEY_hek(entry) = save_hek_flags(key, klen, hash, flags);
         HeVAL(entry) = val;
         if (!HvIS_LINEAR(hv)) {
-#ifdef PERL_HASH_INDEX_CHAINS
-            S_oa_index_insert(hv, entry, hash);
-#else
-            if (insert_pos != OA_EMPTY) {
-                struct hv_oa *oa = HvOA(hv);
-                U32 index;
-                U32 encoded = (U32)(entry - oa->entries) + 1;
-                assert(insert_pos <= (U32)HvMAX(hv));
-                index = HvOA_INDEX_GET(hv, insert_pos);
-                assert(!index || index == OA_DELETED);
-                assert(encoded && encoded < (HvOA_INDEX_WIDTH(hv) == 1
-                    ? 0xFFU : HvOA_INDEX_WIDTH(hv) == 2 ? 0xFFFFU : U32_MAX));
-                if (index == OA_DELETED) oa->tombstones--;
-                HvOA_INDEX_SET(hv, insert_pos, encoded);
-            }
-            else
-                S_oa_index_insert(hv, entry, hash);
-#endif
+            S_hv_index_store(hv, entry, hash, insert_pos);
         }
         HvTOTALKEYS(hv)++;
         if (HvHasAUX(hv)
@@ -2216,7 +1575,7 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     else if (!hash)
         PERL_HASH(hash, key, klen);
 
-    entry = S_oa_find(aTHX_ hv, hash, key, klen, k_flags, keysv_hek, &pos);
+    entry = S_hv_index_find(aTHX_ hv, hash, key, klen, k_flags, keysv_hek, &pos);
 
     if (!entry)
         goto not_found;
@@ -2266,11 +1625,11 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
             U8 old_flags;
             const U32 idx = (U32)(entry - (HE *)HvARRAY(hv));
         S_linear_remove_at(aTHX_ hv, idx, &old_hek, &old_len, &old_flags);
-            S_oa_free_key(aTHX_ old_hek, old_len, old_flags);
+            S_hv_index_free_key(aTHX_ old_hek, old_len, old_flags);
         }
         else if (HvIS_OA(hv) && HvARRAY(hv)) {
-            if (pos != OA_EMPTY) {
-                S_oa_index_delete(hv, pos);
+            if (pos != HV_INDEX_NO_SLOT) {
+                S_hv_index_delete(hv, pos);
             }
             xhv->xhv_keys--;
             if (xhv->xhv_keys == 0)
@@ -2281,7 +1640,7 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
                 HvLAZYDEL_on(hv);
             }
             else {
-                S_oa_free_deleted(aTHX_ hv, entry);
+                S_hv_index_free_deleted(aTHX_ hv, entry);
             }
         }
         if (xhv->xhv_keys == 0)
@@ -2467,7 +1826,7 @@ S_hsplit(pTHX_ HV *hv, STRLEN const oldsize, STRLEN newsize)
         PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
 
     assert(HvIS_OA(hv));
-    S_oa_index_resize(aTHX_ hv, (U32)newsize);
+    S_hv_index_resize(aTHX_ hv, (U32)newsize);
 }
 
 /*
@@ -2549,19 +1908,19 @@ Perl_hv_ksplit(pTHX_ HV *hv, IV newmax)
     {
         UV entries = (UV)newmax;
         if (HvARRAY(hv) && !HvIS_LINEAR(hv)) {
-            const struct hv_oa *oa = HvOA(hv);
+            const PERL_HV_INDEX *oa = HvINDEX(hv);
             if ((UV)newmax > HvTOTALKEYS(hv))
                 entries += (UV)oa->used - HvTOTALKEYS(hv);
             if (entries < oa->capacity)
                 entries = oa->capacity;
         }
-        if (entries > U32_MAX || !S_hv_oa_size_valid(newsize, (U32)entries))
+        if (entries > U32_MAX || !S_hv_index_size_valid(newsize, (U32)entries))
             Perl_croak_memory_wrap();
     }
 
     if (HvIS_LINEAR(hv)) {
         /* The final size is known: avoid an intermediate eight-slot index. */
-        S_oa_index_resize(aTHX_ hv, (U32)newsize);
+        S_hv_index_resize(aTHX_ hv, (U32)newsize);
         goto reserve_entries;
     }
 
@@ -2575,7 +1934,7 @@ Perl_hv_ksplit(pTHX_ HV *hv, IV newmax)
         if (LARGE_HASH_HEURISTIC(hv, newmax))
             HvSHAREKEYS_off(hv);
         if (HvIS_OA(hv))
-            S_oa_index_resize(aTHX_ hv, (U32)newsize);
+            S_hv_index_resize(aTHX_ hv, (U32)newsize);
         else
             Newxz(a, PERL_HV_ARRAY_ALLOC_BYTES(newsize), char);
         HvMAX_SET(hv, newsize - 1);
@@ -2588,15 +1947,13 @@ Perl_hv_ksplit(pTHX_ HV *hv, IV newmax)
      * range, reserve those entries now instead of growing by 25% repeatedly.
      * Deleted positions remain holes until the normal compaction threshold. */
     if (newmax > 0 && HvIS_OA(hv) && !HvIS_LINEAR(hv) && HvARRAY(hv)
-#ifndef PERL_HASH_INDEX_CHAINS
-        && (U32)HvMAX(hv) + 1 > OA_COUPLED_MAX
-#endif
+        && HvINDEX_RESERVE_ENTRIES(hv)
         && (UV)newmax > HvTOTALKEYS(hv)) {
-        struct hv_oa *oa = HvOA(hv);
+        PERL_HV_INDEX *oa = HvINDEX(hv);
         UV capacity = (UV)oa->used + (UV)newmax - HvTOTALKEYS(hv);
         if (capacity >= U32_MAX)
             Perl_croak_memory_wrap();
-        S_oa_reserve_entries(aTHX_ hv, (U32)capacity);
+        S_hv_index_reserve_entries(aTHX_ hv, (U32)capacity);
     }
 }
 
@@ -2614,7 +1971,7 @@ Perl_hv_ksplit(pTHX_ HV *hv, IV newmax)
         HvMAX_SET(hv, hv_max);                                          \
 } STMT_END
 
-struct hv_oa_copy_item {
+struct hv_index_copy_item {
     SV *keysv;
     SV *value;
     U32 hash;
@@ -2628,17 +1985,17 @@ S_hv_copy_hints_oa(pTHX_ HV *dest, HV *src)
     STRLEN limit = HvENTRY_LIMIT(src);
     STRLEN i;
     Size_t count = 0;
-    struct hv_oa_copy_item *items;
+    struct hv_index_copy_item *items;
 
     ENTER;
     SAVETMPS;
-    Newxz(items, limit ? limit : 1, struct hv_oa_copy_item);
+    Newxz(items, limit ? limit : 1, struct hv_index_copy_item);
     SAVEFREEPV((char *)items);
 
     /* Hold every key and value before copying values can run magic. */
     for (i = 0; i < limit; i++) {
         HE *entry = HvENTRY_FIRST(src, i);
-        struct hv_oa_copy_item *item;
+        struct hv_index_copy_item *item;
         SV *keysv;
         SV *value;
         if (!entry || HeVAL(entry) == &PL_sv_placeholder)
@@ -2658,7 +2015,7 @@ S_hv_copy_hints_oa(pTHX_ HV *dest, HV *src)
     }
 
     for (i = 0; i < count; i++) {
-        struct hv_oa_copy_item *item = &items[i];
+        struct hv_index_copy_item *item = &items[i];
         SV *value = item->value
             ? newSVsv(item->value) : newSV_type(SVt_NULL);
 
@@ -2718,12 +2075,12 @@ Perl_newHVhv(pTHX_ HV *ohv)
         STRLEN limit = HvENTRY_LIMIT(ohv);
         STRLEN i;
         Size_t count = 0;
-        struct hv_oa_copy_item *items;
+        struct hv_index_copy_item *items;
 
         ENTER;
         SAVETMPS;
         SAVEFREESV((SV *)hv);
-        Newxz(items, limit ? limit : 1, struct hv_oa_copy_item);
+        Newxz(items, limit ? limit : 1, struct hv_index_copy_item);
         SAVEFREEPV((char *)items);
 
         HvMAX_SET(hv, hv_max);
@@ -2734,7 +2091,7 @@ Perl_newHVhv(pTHX_ HV *ohv)
         /* Snapshot keys and values before copying values can run magic. */
         for (i = 0; i < limit; i++) {
             HE *entry = HvENTRY_FIRST(ohv, i);
-            struct hv_oa_copy_item *item;
+            struct hv_index_copy_item *item;
             SV *value;
             if (!entry)
                 continue;
@@ -2757,7 +2114,7 @@ Perl_newHVhv(pTHX_ HV *ohv)
         }
 
         for (i = 0; i < count; i++) {
-            struct hv_oa_copy_item *item = &items[i];
+            struct hv_index_copy_item *item = &items[i];
             SV *value = item->value;
             HE *entry;
             if (!value)
@@ -3025,8 +2382,8 @@ Perl_hv_clear(pTHX_ HV *hv)
         }
         if (HvIS_OA(hv) && !HvIS_LINEAR(hv) && HvARRAY(hv)) {
             U32 i = 0;
-            while (HvARRAY(hv) && i < HvOA(hv)->used) {
-                HE *entry = &HvOA(hv)->entries[i++];
+            while (HvARRAY(hv) && i < HvINDEX(hv)->used) {
+                HE *entry = &HvINDEX(hv)->entries[i++];
                 if (!entry->hent_hek ||
                     (HvLAZYDEL(hv) && entry == HvEITER_get(hv)))
                     continue;
@@ -3127,7 +2484,7 @@ S_clear_placeholders(pTHX_ HV *hv, const U32 placeholders)
                 I32 len;
                 U8 keyflags;
                 S_linear_remove_at(aTHX_ hv, i, &hek, &len, &keyflags);
-                S_oa_free_key(aTHX_ hek, len, keyflags);
+                S_hv_index_free_key(aTHX_ hek, len, keyflags);
                 HvPLACEHOLDERS(hv)--;
                 to_find = (U32)HvPLACEHOLDERS_get(hv);
                 i = 0;
@@ -3153,19 +2510,19 @@ S_clear_placeholders(pTHX_ HV *hv, const U32 placeholders)
             return;
         }
         U32 i = 0;
-        while (HvARRAY(hv) && i < HvOA(hv)->used && to_find) {
-            HE *entry = &HvOA(hv)->entries[i++];
+        while (HvARRAY(hv) && i < HvINDEX(hv)->used && to_find) {
+            HE *entry = &HvINDEX(hv)->entries[i++];
             U32 pos;
             bool key_callback;
             if (!entry->hent_hek || HeVAL(entry) != &PL_sv_placeholder
                 || (HvLAZYDEL(hv) && entry == HvEITER_get(hv)))
                 continue;
             key_callback = HeKLEN(entry) == HEf_SVKEY;
-            (void)S_oa_find(aTHX_ hv, HeHASH(entry), HeKEY(entry),
+            (void)S_hv_index_find(aTHX_ hv, HeHASH(entry), HeKEY(entry),
                             HeKLEN(entry), HeKFLAGS(entry), HeKEY_hek(entry),
                             &pos);
-            if (pos != OA_EMPTY && HvOA_INDEX_GET(hv, pos) != OA_DELETED) {
-                S_oa_index_delete(hv, pos);
+            if (pos != HV_INDEX_NO_SLOT && HvINDEX_GET(hv, pos) != HV_INDEX_DELETED) {
+                S_hv_index_delete(hv, pos);
             }
             HvTOTALKEYS(hv)--;
             HvPLACEHOLDERS(hv)--;
@@ -3175,7 +2532,7 @@ S_clear_placeholders(pTHX_ HV *hv, const U32 placeholders)
             if (entry == HvEITER_get(hv))
                 HvLAZYDEL_on(hv);
             else
-                S_oa_free_deleted(aTHX_ hv, entry);
+                S_hv_index_free_deleted(aTHX_ hv, entry);
             if (key_callback) {
                 i = 0;
                 to_find = (U32)HvPLACEHOLDERS_get(hv);
@@ -3229,7 +2586,7 @@ Perl_hfree_next_entry(pTHX_ HV *hv, STRLEN *indexp)
                 HvLAZYDEL_off(hv);
                 iter->xhv_eiter = NULL;
                 iter->xhv_riter = -1;
-                if (S_oa_contains(aTHX_ hv, entry)) S_oa_free_deleted(aTHX_ hv, entry);
+                if (S_hv_index_contains(aTHX_ hv, entry)) S_hv_index_free_deleted(aTHX_ hv, entry);
                 else hv_free_ent(NULL, entry);
                 /* warning: at this point HvARRAY may have been
                  * re-allocated, HvMAX changed etc */
@@ -3265,7 +2622,7 @@ Perl_hfree_next_entry(pTHX_ HV *hv, STRLEN *indexp)
             *indexp = i;
             if (moved)
                 mro_package_moved(NULL, GvHV(val), (GV *)val, 0);
-            S_oa_free_key(aTHX_ hek, klen, kflags);
+            S_hv_index_free_key(aTHX_ hek, klen, kflags);
             return val;
         }
         *indexp = 0;
@@ -3274,18 +2631,18 @@ Perl_hfree_next_entry(pTHX_ HV *hv, STRLEN *indexp)
 
     if (HvIS_OA(hv)) {
         U32 i;
-        for (i = (U32)*indexp; i < HvOA(hv)->used; i++) {
-            HE *candidate = &HvOA(hv)->entries[i];
+        for (i = (U32)*indexp; i < HvINDEX(hv)->used; i++) {
+            HE *candidate = &HvINDEX(hv)->entries[i];
             U32 pos;
             SV *val;
             if (!candidate->hent_hek ||
                 (HvLAZYDEL(hv) && candidate == HvEITER_get(hv)))
                 continue;
-            if (S_oa_find(aTHX_ hv, HeHASH(candidate), HeKEY(candidate),
+            if (S_hv_index_find(aTHX_ hv, HeHASH(candidate), HeKEY(candidate),
                           HeKLEN(candidate), HeKFLAGS(candidate),
                           HeKEY_hek(candidate), &pos) != candidate)
                 continue;
-            S_oa_index_delete(hv, pos);
+            S_hv_index_delete(hv, pos);
             val = HeVAL(candidate);
             HeVAL(candidate) = NULL;
             {
@@ -3299,7 +2656,7 @@ Perl_hfree_next_entry(pTHX_ HV *hv, STRLEN *indexp)
                     moved = TRUE;
                 }
                 ((XPVHV *)SvANY(hv))->xhv_keys--;
-                S_oa_free_deleted(aTHX_ hv, candidate);
+                S_hv_index_free_deleted(aTHX_ hv, candidate);
                 if (moved)
                     mro_package_moved(NULL, GvHV(val), (GV *)val, 0);
             }
@@ -3465,7 +2822,7 @@ Perl_hv_undef_flags(pTHX_ HV *hv, U32 flags)
     }
     else {
         if (HvIS_OA(hv) && HvARRAY(hv))
-            Safefree(HvOA(hv)->entries);
+            Safefree(HvINDEX(hv)->entries);
         Safefree(HvARRAY(hv));
     }
     HvMAX_SET(hv, PERL_HASH_DEFAULT_HvMAX);        /* 7 (it's a normal hash) */
@@ -3535,8 +2892,8 @@ Perl_hv_fill(pTHX_ HV *const hv)
         if (!ents) return 0;
         cap = (U32)HvMAX(hv) + 1;
         for (i = 0; i < cap; i++)
-            if (HvOA_INDEX_GET(hv, i) &&
-                HvOA_INDEX_GET(hv, i) != OA_DELETED)
+            if (HvINDEX_GET(hv, i) &&
+                HvINDEX_GET(hv, i) != HV_INDEX_DELETED)
                 count++;
         return count;
     }
@@ -3578,7 +2935,7 @@ S_hv_auxinit(pTHX_ HV *hv)
                 HvMAX_SET_LINEAR(hv, 0);
             }
             else if (HvIS_OA(hv))
-                S_oa_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
+                S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
             else {
                 Newxz(array, PERL_HV_ARRAY_ALLOC_BYTES(HvMAX(hv) + 1), char);
                 HvARRAY(hv) = (HE**)array;
@@ -3630,7 +2987,7 @@ Perl_hv_iterinit(pTHX_ HV *hv)
             iter->xhv_eiter = NULL;
             iter->xhv_aux_flags &= ~HvAUXf_ITER_ACTIVE;
             iter->xhv_riter = -1;
-            if (S_oa_contains(aTHX_ hv, entry)) S_oa_free_deleted(aTHX_ hv, entry);
+            if (S_hv_index_contains(aTHX_ hv, entry)) S_hv_index_free_deleted(aTHX_ hv, entry);
             else hv_free_ent(NULL, entry);
         }
         iter->xhv_riter = -1; 	/* HvRITER(hv) = -1 */
@@ -4128,7 +3485,7 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
             HvMAX_SET_LINEAR(hv, 0);
         }
         else if (HvIS_OA(hv))
-            S_oa_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
+            S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
         else {
             Newxz(array, PERL_HV_ARRAY_ALLOC_BYTES(HvMAX(hv) + 1), char);
             HvARRAY(hv) = (HE**)array;
@@ -4200,8 +3557,8 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
             iter->xhv_aux_flags &= ~HvAUXf_ITER_ACTIVE;
             if (oldentry && HvLAZYDEL(hv)) {
                 HvLAZYDEL_off(hv);
-                if (S_oa_contains(aTHX_ hv, oldentry))
-                    S_oa_free_deleted(aTHX_ hv, oldentry);
+                if (S_hv_index_contains(aTHX_ hv, oldentry))
+                    S_hv_index_free_deleted(aTHX_ hv, oldentry);
                 else
                     hv_free_ent(NULL, oldentry);
             }
@@ -4213,8 +3570,8 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
     if (oldentry && HvLAZYDEL(hv)) {
         HvLAZYDEL_off(hv);
         iter->xhv_eiter = NULL;
-        if (S_oa_contains(aTHX_ hv, oldentry))
-            S_oa_free_deleted(aTHX_ hv, oldentry);
+        if (S_hv_index_contains(aTHX_ hv, oldentry))
+            S_hv_index_free_deleted(aTHX_ hv, oldentry);
         else
             hv_free_ent(NULL, oldentry);
         /* An SV-backed key destructor can insert and compact the hash.
@@ -4248,12 +3605,12 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
             iter->xhv_eiter = entry;
             return entry;
         }
-        used = HvOA(hv)->used;
+        used = HvINDEX(hv)->used;
         ix = iter->xhv_riter < 0 ? 0 : (U32)iter->xhv_riter + 1;
-        found_ix = OA_EMPTY;
+        found_ix = HV_INDEX_NO_SLOT;
         entry = NULL;
         while (ix < used) {
-            HE *candidate = &HvOA(hv)->entries[ix];
+            HE *candidate = &HvINDEX(hv)->entries[ix];
             iter->xhv_riter = (I32)ix;
             if (candidate->hent_hek &&
                 !(HvLAZYDEL(hv) && candidate == iter->xhv_eiter) &&
@@ -4269,8 +3626,8 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
             iter->xhv_riter = -1;
             iter->xhv_aux_flags &= ~HvAUXf_ITER_ACTIVE;
         }
-        if (found_ix != OA_EMPTY) {
-            entry = &HvOA(hv)->entries[found_ix];
+        if (found_ix != HV_INDEX_NO_SLOT) {
+            entry = &HvINDEX(hv)->entries[found_ix];
             if (!entry->hent_hek)
                 entry = NULL;
         }

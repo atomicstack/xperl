@@ -2847,8 +2847,8 @@ my %needed_by_ext_re = map { $_ => 1 } qw(
 # not documented.  They become undefined for any other modules.
 my %needed_by_ext = map { $_ => 1 } qw(
     HvCHAIN_NEXT
-    HvOA_RECORD_WIDTH_FOR
-    HvOA_STORAGE_BYTES
+    HvINDEX_RECORD_WIDTH_FOR
+    HvINDEX_STORAGE_BYTES
     OPpPARAM_IF_FALSE
     OPpPARAM_IF_UNDEF
     OPpSELF_IN_PAD

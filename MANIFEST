@@ -113,6 +113,10 @@ patchlevel.h				The current patch level of perl
 peep.c					The peephole optimizer and optree finalizer
 perl.c					main()
 perl.h					Global declarations
+perl_hv_oa.c				Separate open-addressed hash storage backend
+perl_hv_oa.h				Open-addressed hash layout and accessors
+perl_hv_sc.c				Separate integer-chain hash storage backend
+perl_hv_sc.h				Integer-chain hash layout and accessors
 perl_hv_strtab.c			Independent shared-key interning implementation
 perl_hv_strtab.h			Shared-key table types and ownership contract
 perl_inc_macro.h			macro used to set \@INC using S_incpush_use_sep

@@ -16616,17 +16616,17 @@ S_sv_dup_common(pTHX_ const SV *const ssv, CLONE_PARAMS *const param)
                         }
                     }
                     else if (HvIS_OA(ssv)) {
-                        struct hv_oa *oa;
+                        PERL_HV_INDEX *oa;
                         char *oa_bytes;
-                        const struct hv_oa * const soa = HvOA(ssv);
+                        const PERL_HV_INDEX * const soa = HvINDEX(ssv);
                         const U32 used = soa->used;
                         const U32 index_capacity = HvMAX(ssv) + 1;
-                        const Size_t storage_bytes = HvOA_STORAGE_BYTES(
+                        const Size_t storage_bytes = HvINDEX_STORAGE_BYTES(
                             index_capacity, soa->capacity);
-                        const Size_t index_bytes = STRUCT_OFFSET(struct hv_oa,
+                        const Size_t index_bytes = STRUCT_OFFSET(PERL_HV_INDEX,
                             indices) + storage_bytes;
                         Newx(oa_bytes, index_bytes, char);
-                        oa = (struct hv_oa *)oa_bytes;
+                        oa = (PERL_HV_INDEX *)oa_bytes;
                         oa->capacity = soa->capacity;
                         oa->used = used;
                         oa->tombstones = soa->tombstones;
