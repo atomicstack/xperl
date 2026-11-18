@@ -1041,7 +1041,7 @@ SC lookups do not request the insertion-slot output used by OA.
 
 Ordinary indexed lvalues reuse the prepared-key lookup path for byte strings
 and canonical shared keys. Direct C API replacements avoid a key copy and
-second lookup when the old value is null or has another reference. Those
+second lookup for null entries, retained values, and plain numeric scalars. Those
 replacements no longer take an extra temporary reference to the incoming
 value; its lifetime follows the ordinary ownership rules.
 

@@ -863,6 +863,17 @@ sub test_precomputed_hashes {
 }
 
 {
+    for my $initial (42, 1.25, undef) {
+        my %source;
+        keys %source = 16;
+        XS::APItest::Hash::store_ent(\%source, 'replace', $initial);
+        XS::APItest::Hash::store_ent(\%source, 'replace', 'new value');
+        is($source{replace}, 'new value',
+           'direct store releases a last-owned numeric or undefined value');
+    }
+}
+
+{
     my %source = (replace => XSAPITestStoreDtor->new);
     my $replacement = XSAPITestStoreDtor->new;
     my $delete_ran = 0;

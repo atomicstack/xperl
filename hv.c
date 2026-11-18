@@ -981,8 +981,15 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
         } else if (action & HV_FETCH_ISSTORE) {
             SV *oldval = HeVAL(entry);
 
-            /* Only releasing a last reference can invalidate this entry. */
-            if (!oldval || SvREFCNT(oldval) > 1) {
+            /* Plain numeric values have no release callbacks. Keep temporaries
+             * and readonly-COW diagnostics on the protected path. */
+            if (!oldval || SvREFCNT(oldval) > 1
+#ifndef PERL_DEBUG_READONLY_COW
+                || (SvREFCNT(oldval) == 1 && SvTYPE(oldval) <= SVt_NV
+                    && !SvROK(oldval) && !SvMAGICAL(oldval)
+                    && !SvVMAGICAL(oldval) && !SvTEMP(oldval))
+#endif
+            ) {
                 HeVAL(entry) = val;
                 SvREFCNT_dec(oldval);
             }
