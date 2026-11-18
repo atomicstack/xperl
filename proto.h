@@ -4159,6 +4159,87 @@ Perl_hv_store_flags(pTHX_ HV *hv, const char *key, I32 klen, SV *val, U32 hash, 
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                      \
     } STMT_END
 
+PERL_CALLCONV Size_t
+Perl_hv_strtab_capacity_for(Size_t live);
+#define PERL_ARGS_ASSERT_HV_STRTAB_CAPACITY_FOR
+
+PERL_CALLCONV HEK *
+Perl_hv_strtab_find(pTHX_ const PERL_HV_STRTAB *table, U32 hash, const char *key, STRLEN len, U8 flags)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_3);
+#define PERL_ARGS_ASSERT_HV_STRTAB_FIND         \
+    STMT_START { Perl_assert_aTHX; assert(table); assert(key);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;           \
+    } STMT_END
+
+PERL_CALLCONV Size_t
+Perl_hv_strtab_free(pTHX_ PERL_HV_STRTAB *table, perl_hv_strtab_report_t report, void *arg)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_HV_STRTAB_FREE         \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV PERL_HV_STRTAB *
+Perl_hv_strtab_new(pTHX)
+        Perl_attribute_nonnull_aTHX;
+#define PERL_ARGS_ASSERT_HV_STRTAB_NEW          \
+    STMT_START { Perl_assert_aTHX; PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_hv_strtab_pin(pTHX_ PERL_HV_STRTAB *table, HEK *hek, Size_t count)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2);
+#define PERL_ARGS_ASSERT_HV_STRTAB_PIN          \
+    STMT_START { Perl_assert_aTHX; assert(table); assert(hek);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;           \
+    } STMT_END
+
+PERL_CALLCONV bool
+Perl_hv_strtab_release(pTHX_ PERL_HV_STRTAB *table, const HEK *hek)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_2);
+#define PERL_ARGS_ASSERT_HV_STRTAB_RELEASE      \
+    STMT_START { Perl_assert_aTHX; assert(table); assert(hek);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;           \
+    } STMT_END
+
+PERL_CALLCONV bool
+Perl_hv_strtab_release_key(pTHX_ PERL_HV_STRTAB *table, U32 hash, const char *key, STRLEN len, U8 flags)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_3);
+#define PERL_ARGS_ASSERT_HV_STRTAB_RELEASE_KEY  \
+    STMT_START { Perl_assert_aTHX; assert(table); assert(key);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;           \
+    } STMT_END
+
+PERL_CALLCONV void
+Perl_hv_strtab_reserve(pTHX_ PERL_HV_STRTAB *table, Size_t live)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+#define PERL_ARGS_ASSERT_HV_STRTAB_RESERVE      \
+    STMT_START { Perl_assert_aTHX; assert(table);      \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV HEK *
+Perl_hv_strtab_share(pTHX_ PERL_HV_STRTAB *table, U32 hash, const char *key, STRLEN len, U8 flags)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        Perl_attribute_nonnull(pTHX_3);
+#define PERL_ARGS_ASSERT_HV_STRTAB_SHARE        \
+    STMT_START { Perl_assert_aTHX; assert(table); assert(key);  \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;           \
+    } STMT_END
+
+PERL_CALLCONV bool
+Perl_hv_strtab_size_valid(Size_t capacity);
+#define PERL_ARGS_ASSERT_HV_STRTAB_SIZE_VALID
+
 PERL_CALLCONV void
 Perl_hv_undef(pTHX_ HV *hv)
         Perl_attribute_nonnull_aTHX;

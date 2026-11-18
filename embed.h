@@ -404,6 +404,16 @@
 # define hv_name_set(a,b,c,d)                   Perl_hv_name_set(aTHX_ a,b,c,d)
 # define hv_new_he()                            Perl_hv_new_he(aTHX)
 # define hv_scalar(a)                           Perl_hv_scalar(aTHX_ a)
+# define hv_strtab_capacity_for                 Perl_hv_strtab_capacity_for
+# define hv_strtab_find(a,b,c,d,e)              Perl_hv_strtab_find(aTHX_ a,b,c,d,e)
+# define hv_strtab_free(a,b,c)                  Perl_hv_strtab_free(aTHX_ a,b,c)
+# define hv_strtab_new()                        Perl_hv_strtab_new(aTHX)
+# define hv_strtab_pin(a,b,c)                   Perl_hv_strtab_pin(aTHX_ a,b,c)
+# define hv_strtab_release(a,b)                 Perl_hv_strtab_release(aTHX_ a,b)
+# define hv_strtab_release_key(a,b,c,d,e)       Perl_hv_strtab_release_key(aTHX_ a,b,c,d,e)
+# define hv_strtab_reserve(a,b)                 Perl_hv_strtab_reserve(aTHX_ a,b)
+# define hv_strtab_share(a,b,c,d,e)             Perl_hv_strtab_share(aTHX_ a,b,c,d,e)
+# define hv_strtab_size_valid                   Perl_hv_strtab_size_valid
 # define immortalize_key(a)                     Perl_immortalize_key(aTHX_ a)
 # define init_i18nl10n(a)                       Perl_init_i18nl10n(aTHX_ a)
 # define init_stacks()                          Perl_init_stacks(aTHX)

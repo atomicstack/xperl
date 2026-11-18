@@ -202,6 +202,8 @@ S_strtab_insert(pTHX_ HEK *hek, Size_t pos)
     HvTOTALKEYS(PL_strtab)++;
 }
 
+#include "perl_hv_strtab.c"
+
 static void
 S_oa_rebuild(pTHX_ HV *hv, U32 capacity, U32 entry_capacity, bool pack)
 {

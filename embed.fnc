@@ -2239,6 +2239,39 @@ Ampx	|SV **	|hv_store_flags |NULLOK HV *hv				\
 				|NULLOK SV *val 			\
 				|U32 hash				\
 				|int flags
+CTp	|Size_t |hv_strtab_capacity_for 				\
+				|Size_t live
+Cp	|HEK *	|hv_strtab_find |NN const PERL_HV_STRTAB *table 	\
+				|U32 hash				\
+				|NN const char *key			\
+				|STRLEN len				\
+				|U8 flags
+Cp	|Size_t |hv_strtab_free |NULLOK PERL_HV_STRTAB *table		\
+				|NULLOK perl_hv_strtab_report_t report	\
+				|NULLOK void *arg
+Cp	|PERL_HV_STRTAB *|hv_strtab_new
+Cp	|void	|hv_strtab_pin	|NN PERL_HV_STRTAB *table		\
+				|NN HEK *hek				\
+				|Size_t count
+Cp	|bool	|hv_strtab_release					\
+				|NN PERL_HV_STRTAB *table		\
+				|NN const HEK *hek
+Cp	|bool	|hv_strtab_release_key					\
+				|NN PERL_HV_STRTAB *table		\
+				|U32 hash				\
+				|NN const char *key			\
+				|STRLEN len				\
+				|U8 flags
+Cp	|void	|hv_strtab_reserve					\
+				|NN PERL_HV_STRTAB *table		\
+				|Size_t live
+Cp	|HEK *	|hv_strtab_share|NN PERL_HV_STRTAB *table		\
+				|U32 hash				\
+				|NN const char *key			\
+				|STRLEN len				\
+				|U8 flags
+CTp	|bool	|hv_strtab_size_valid					\
+				|Size_t capacity
 Admp	|void	|hv_undef	|NULLOK HV *hv
 Xop	|void	|hv_undef_flags |NULLOK HV *hv				\
 				|U32 flags

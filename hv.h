@@ -135,6 +135,8 @@ struct hv_strtab {
     HEK *slots[1];
 };
 
+#include "perl_hv_strtab.h"
+
 /* Subject to change.
    Don't access this directly.
    Use the funcs in mro_core.c
