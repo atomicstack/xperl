@@ -1068,12 +1068,11 @@ C<floor(2*index_capacity/3)>. Above the
 coupled range, the full entry array grows independently by 25 percent.
 Entry compaction uses a
 20 percent hole threshold at all sizes, with no byte threshold. A full entry
-array compacts when it reaches this threshold. A non-full array compacts at
-this threshold when its proposed entry capacity,
-C<live + floor(live/4) + 1> with a minimum of eight, is at most half its
-current capacity. Otherwise a full entry array grows under the sizing rules
-below. Deletion alone does not rebuild either array. These are standalone
-insertion checks. An index rebuild that is otherwise required also packs
+array compacts when it reaches this threshold. Otherwise a full entry array
+grows under the sizing rules below. An append with spare entry positions
+does not calculate shrink targets. Shrinking is considered when entry
+exhaustion already requires growing or compacting the storage. Deletion
+alone does not rebuild either array. These are standalone insertion checks. An index rebuild that is otherwise required also packs
 entries when holes meet the 20 percent threshold; that rebuild does not use
 the standalone HE shrink test.
 
@@ -1133,11 +1132,11 @@ entry array; bucket resizing and entry compaction rebuild the chains.
 In the default chain layout, entry storage starts at eight slots and grows by 25
 percent when full, independently of bucket capacity. Entry compaction uses a
 20 percent hole threshold at all capacities, with no byte threshold. A full
-entry array compacts at this threshold while retaining the bucket count. A
-non-full array compacts at this threshold when its proposed entry capacity,
-C<live + floor(live/4) + 1> (minimum eight), is at most half its current
-capacity. These are standalone insertion checks. An index rebuild that is
-otherwise required also packs entries at this threshold, but does not apply
+entry array compacts at this threshold while retaining the bucket count.
+An append with spare entry positions does not calculate shrink targets.
+Shrinking is considered when entry exhaustion requires growing or compacting
+the storage. An index rebuild that is otherwise required also packs entries
+at this threshold, but does not apply
 the standalone HE shrink test. Otherwise a full entry array grows by 25
 percent without changing the bucket array. When live
 entries reach two-thirds of bucket capacity,

@@ -424,12 +424,13 @@ S_hv_index_new_entry(pTHX_ HV *hv, U32 hash, U32 *slotp)
     PERL_HV_INDEX *storage = HvINDEX(hv);
     U32 index_capacity = (U32)HvMAX(hv) + 1;
     const U32 live = (U32)HvTOTALKEYS(hv);
-    const U32 shrink_entries = MAX(8, live + (live >> 2) + 1);
     PERL_UNUSED_ARG(hash);
-    /* Any index rebuild invalidates the saved insertion slot, including
-     * compaction at unchanged capacity. Moving only the HE array does not. */
-    if ((storage->used == storage->capacity || shrink_entries <= storage->capacity / 2)
+    /* Shrink only when entry exhaustion requires growing or packing.
+     * An index rebuild invalidates the saved insertion slot, even at unchanged
+     * capacity. Moving only the HE array preserves it. */
+    if (storage->used == storage->capacity
         && S_hv_index_compaction_worthwhile(storage->used, live, storage->capacity)) {
+        const U32 shrink_entries = MAX(8, live + (live >> 2) + 1);
         U32 entry_capacity = storage->capacity;
         const U32 smaller_index = S_hv_index_rebuild_capacity(aTHX_ live + 1, 8);
 

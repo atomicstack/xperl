@@ -733,6 +733,59 @@ SKIP: {
        'stable-size churn compaction preserves survivor and insertion order');
 }
 
+subtest 'spare append positions do not trigger shrinking' => sub {
+    my $hash = {};
+    keys(%$hash) = 1000;
+    my $capacity = hash_storage_info($hash)->{entry_capacity};
+    my $fill = int(3 * $capacity / 4);
+    $hash->{"spare:$_"} = $_ for 0 .. $fill - 1;
+    my @order = keys %$hash;
+    my $lazy = each %$hash;
+    my @survivors = grep { $_ ne $lazy } @order;
+    @survivors = @survivors[0 .. 15];
+    my %keep = map { $_ => 1 } @survivors;
+    my @values = @{$hash}{@survivors};
+    delete $hash->{$_} for grep { !$keep{$_} } @order;
+    my $before = hash_storage_info($hash);
+    cmp_ok($before->{entry_used}, '<', $capacity,
+           'sparse hash has unused append positions');
+    cmp_ok($before->{entry_holes}, '>=', int(($capacity + 4) / 5),
+           'deleted positions exceed the compaction threshold');
+
+    $hash->{'plain-append'} = 1;
+    my $appended = hash_storage_info($hash);
+    is_deeply([@{$appended}{qw(index_capacity entry_capacity entry_holes)}],
+              [@{$before}{qw(index_capacity entry_capacity entry_holes)}],
+              'append retains capacities and deleted positions while space remains');
+    is($appended->{entry_used}, $before->{entry_used} + 1,
+       'append uses the next spare position');
+    is_deeply([@{$hash}{@survivors}], \@values, 'append preserves survivors');
+    ok(!exists $hash->{$lazy}, 'append leaves the lazy-deleted key absent');
+    my ($next, $warning) = (undef, '');
+    {
+        local $SIG{__WARN__} = sub { $warning .= join '', @_ };
+        $next = each %$hash;
+    }
+    ok(!defined($next) && $warning =~ /each\(\).*insertion.*iterator/i,
+       'append invalidates the active iterator without a rebuild');
+
+    my $spare = $capacity - $appended->{entry_used};
+    $hash->{"tail:$_"} = $_ for 1 .. $spare;
+    my $full = hash_storage_info($hash);
+    is($full->{entry_used}, $capacity, 'filling spare positions reaches the entry limit');
+    is($full->{entry_capacity}, $capacity, 'spare appends do not shrink entry storage');
+    $hash->{'pressure-trigger'} = 1;
+    my $after = hash_storage_info($hash);
+    cmp_ok($after->{entry_capacity}, '<=', $capacity / 2,
+           'entry exhaustion permits shrinking during compaction');
+    is($after->{entry_holes}, 0, 'required compaction reclaims deleted positions');
+    is_deeply([@{$hash}{@survivors}], \@values, 'required compaction preserves survivors');
+    my @expected = (@survivors, 'plain-append');
+    push @expected, map { "tail:$_" } 1 .. $spare;
+    push @expected, 'pressure-trigger';
+    is_deeply([keys %$hash], \@expected, 'required compaction preserves entry order');
+};
+
 {
     my ($shrink, $all_keys, $before)
         = filled_indexed_hash('xperl-storage-shrink', 20_000);

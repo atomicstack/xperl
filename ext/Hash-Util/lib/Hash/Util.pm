@@ -690,9 +690,9 @@ including entries awaiting lazy deletion. In open-addressed builds, entry
 capacity through 16,384 index slots is C<floor(2*index_capacity/3)>; above
 that size it grows independently of the index. A full entry array compacts
 when holes reach one fifth of capacity, at every size. Otherwise it grows
-by 25 percent without resizing the index. A non-full array compacts at the
-same hole threshold when its target capacity, C<live + floor(live/4) + 1>
-with a minimum of eight, is at most half its current capacity.
+by 25 percent without resizing the index. An append with spare entry
+positions does not calculate a shrink target. Shrinking is considered when
+entry exhaustion already requires growing or compacting the storage.
 
 Open-addressed index pressure occurs when live entries plus tombstones reach
 C<floor(2*index_capacity/3)>. At that point, after any required full-entry

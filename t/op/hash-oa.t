@@ -517,6 +517,19 @@ delete $hash{"seed:$_"} for 0 .. 81_380;
 die "large-table deletion setup did not leave 6000 entries\n"
     unless keys(%hash) == 6_000;
 my $entry_capacity_before_shrink = $info->{entry_capacity};
+# Consume spare positions without increasing the live population. Shrinking
+# is considered when the next insertion must grow or compact the storage.
+$hash{'fill-space'} = 1;
+delete $hash{'fill-space'};
+$info = hash_storage_info(\%hash);
+my $spare = $info->{entry_capacity} - $info->{entry_used};
+for (1 .. $spare) {
+    $hash{'fill-space'} = 1;
+    delete $hash{'fill-space'};
+}
+$info = hash_storage_info(\%hash);
+die "shrink setup did not exhaust entry storage\n"
+    unless $info->{entry_used} == $info->{entry_capacity};
 $hash{'shrink-trigger'} = 99;
 $info = hash_storage_info(\%hash);
 my $expected_entry_capacity = 6_000 + (6_000 >> 2) + 1;

@@ -264,6 +264,9 @@ deletion, reservation, resizing, and compaction belong to that backend.
 `hv.c` handles Perl hash semantics, magic, tied hashes, and key/value
 ownership.
 
+Ordinary inserts with spare entry positions skip shrink checks. Shrinking
+is considered during required growth or compaction.
+
 `keys(%hash) = N` reserves room for N distinct key/value pairs.
 `Hash::Util::reserve_buckets(\%hash, N)` reserves at least N buckets,
 rounded up to a supported size. Both retain larger existing capacities.

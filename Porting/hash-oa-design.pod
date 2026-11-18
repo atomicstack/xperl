@@ -54,10 +54,10 @@ deleted slot; live identifiers are entry positions plus one. Index capacity
 The OA index capacity remains a power of two. Entry compaction uses a 20
 percent hole threshold at all
 sizes; there is no minimum byte threshold. A full entry array compacts when
-it meets this threshold. A non-full array compacts at this threshold when
-its proposed entry capacity, C<live + floor(live/4) + 1> with a minimum of
-eight, is at most half its current capacity. Otherwise a full entry array
-grows under the sizing rules below. Deletion alone does not rebuild either
+it meets this threshold. Otherwise a full entry array grows under the sizing
+rules below. An append with spare entry positions does not calculate shrink
+targets. Shrinking is considered after entry exhaustion requires growing or
+compacting the storage. Deletion alone does not rebuild either
 array. These are standalone insertion checks. An index rebuild that is
 otherwise required also packs entries when holes meet the 20 percent
 threshold; that rebuild does not use the standalone HE shrink test.
@@ -89,12 +89,8 @@ For initial sizing and ordinary growth through 16,384 index slots,
 open-addressed entry capacity remains coupled to two-thirds of index
 capacity. Above that size, entry capacity grows independently. A shrink can
 leave entry capacity decoupled from index capacity. Changing entry capacity
-uses C<Renew>, which may relocate the array. The shared-key table has no
-entry-array compaction or early shrink check. At its two-thirds occupancy
-limit, it targets the next power of two able to hold C<3 * live> keys, with
-its minimum capacity. It grows when tombstones are below half of occupied
-slots. Otherwise it clears tombstones at the same capacity, except that it
-shrinks when the target is at most half the current capacity.
+uses C<Renew>, which may relocate the array. The independent shared-key
+table uses pointer chains and has no entry array or tombstones.
 Explicit reservation through C<hv_ksplit()> reserves entry space as well as
 index space. Above the coupled range it reserves the requested live-entry
 count plus existing holes, even when the index already has enough capacity.
@@ -157,11 +153,11 @@ storage starts at a minimum capacity of eight and grows by 25 percent when
 full, with at least one additional slot. Explicit reservation can reserve entry
 space independently. Entry compaction uses a 20 percent hole threshold at
 all capacities, with no byte threshold. A full entry array compacts when it
-meets this threshold without growing the bucket array. A non-full array
-compacts at this threshold when its proposed entry capacity,
-C<live + floor(live/4) + 1> (minimum eight), is at most half its current
-capacity. These are standalone insertion checks. An index rebuild that is
-otherwise required also packs entries at this threshold, but does not apply
+meets this threshold without growing the bucket array. An append with spare
+entry positions does not calculate shrink targets. Shrinking is considered
+when entry exhaustion requires growing or compacting the storage. An index
+rebuild that is otherwise required also packs entries at this threshold,
+but does not apply
 the standalone HE shrink test. Otherwise a full entry array grows by 25
 percent without changing the bucket array.
 
