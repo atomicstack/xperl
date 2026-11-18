@@ -545,8 +545,9 @@ S_hv_index_new_entry(pTHX_ HV *hv, U32 hash, U32 *slotp)
         S_hv_index_rebuild(aTHX_ hv, index_capacity, entry_capacity, TRUE);
         storage = HvINDEX(hv);
     }
-    if (live >= HV_INDEX_LOAD_LIMIT(index_capacity)
-        && HvINDEX_GET(hv, hash & (index_capacity - 1))) {
+    /* An empty bucket needs no load-limit calculation. */
+    if (HvINDEX_GET(hv, hash & (index_capacity - 1))
+        && live >= HV_INDEX_LOAD_LIMIT(index_capacity)) {
         if (index_capacity >= HV_MAX_BUCKETS)
             PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
         index_capacity *= 2;
