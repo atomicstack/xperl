@@ -7544,6 +7544,8 @@ Porting/bench-hash-options.py			Compare ordinary-hash policy configurations
 Porting/bench-hash-options-compat/HashOptionsCompat.pm	Load portable hash benchmark diagnostics
 Porting/bench-hash-options-compat/HashOptionsCompat.xs	Portable hash benchmark diagnostics
 Porting/bench-hash-options-compat/Makefile.PL		Build portable hash benchmark diagnostics
+Porting/bench-hash-random-insert.pl		Construct hashes from random key sets
+Porting/bench-hash-random-insert.py		Compare random-key hash construction
 Porting/bench-strtab.pl				Benchmark shared key table fill and teardown
 Porting/bench-strtab-compare.py			Run paired shared key table benchmarks
 Porting/bench-trie.pl				Compare trie corpus scans across Perl builds
