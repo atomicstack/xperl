@@ -1423,7 +1423,21 @@ if (hash_storage_info({})->{integer_chained}) {
     $hash{$empty[$_]} = $_ for 1 .. 12;
     is(hash_storage_info(\%hash)->{index_capacity}, 16,
        'empty-bucket insertions can leave more entries than SC buckets');
+    my $churn;
+    my $candidate = 0;
+    do { $churn = 'chain-overfull:churn:' . $candidate++ }
+        while ((hash_value($churn) & 15) != 13);
+    my $before_churn = hash_storage_info(\%hash);
+    for (1 .. $before_churn->{entry_capacity} - $before_churn->{entry_used}) {
+        $hash{$churn} = 1;
+        delete $hash{$churn};
+    }
     delete @hash{@colliding[0 .. 4]};
+    my $before_compaction = hash_storage_info(\%hash);
+    is($before_compaction->{entry_used}, $before_compaction->{entry_capacity},
+       'overfull SC fixture exhausts the observed entry budget');
+    is($before_compaction->{index_capacity}, 16,
+       'empty-bucket churn leaves the overfull bucket array unchanged');
     $hash{'after-compaction'} = 99;
     is(hash_storage_info(\%hash)->{entry_holes}, 0,
        'SC compacts an entry array with more live entries than buckets');
@@ -1489,7 +1503,7 @@ if (hash_storage_info({})->{integer_chained}) {
        'both entries remain reachable in a below-limit chain');
 
     my %coupled;
-    keys %coupled = 10;
+    reserve_buckets(\%coupled, 16);
     $coupled{$bucket_keys[$_]} = $_ for 0 .. 11;
     my $entry_budget = hash_storage_info(\%coupled)->{entry_capacity};
     $coupled{$bucket_keys[$_]} = $_ for 12 .. $entry_budget - 1;
@@ -1530,7 +1544,8 @@ if (hash_storage_info({})->{integer_chained}) {
 }
 
 if (hash_storage_info({})->{integer_chained}) {
-    for my $case ([1023, 1534], [1024, 1280]) {
+    for my $case ([1023, 2046], [1024, 1536],
+                  [16383, 24574], [16384, 20480]) {
         my ($reserved, $expanded) = @$case;
         my $hash = {};
         keys %$hash = $reserved;
@@ -1542,7 +1557,7 @@ if (hash_storage_info({})->{integer_chained}) {
         $hash->{'growth-cutoff:new'} = 1;
         my $info = hash_storage_info($hash);
         is($info->{entry_capacity}, $expanded,
-           'automatic growth uses the old capacity at the half/quarter cutoff');
+           'automatic growth uses the old capacity to select its growth band');
         is($info->{index_capacity}, $buckets,
            'entry growth below the bucket load limit needs no bucket split');
         is($info->{entry_holes}, 1,

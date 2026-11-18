@@ -1148,9 +1148,11 @@ capacity, including holes: one byte through 255 entries, two bytes through
 65,535, and four bytes above that. Widening these arrays does not move the
 entry array; bucket resizing and entry compaction rebuild the chains.
 
-In the default chain layout, indexed entry storage grows by 50 percent while
-its current capacity is below 1024 slots, then by 25 percent. Increments are
-rounded down. Explicit reservations keep their requested entry budget.
+In the default chain layout, indexed entry storage doubles while its current
+capacity is below 1,024 slots. From 1,024 through 16,383 slots it grows by
+50 percent. At larger capacities it grows by 25 percent. Fractional
+increments are rounded down. Explicit reservations keep their requested
+entry budget.
 Entry storage grows independently of bucket capacity. Entry compaction uses a
 20 percent hole threshold at all capacities, with no byte threshold. A full
 entry array compacts at this threshold while retaining the bucket count.

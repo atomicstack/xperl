@@ -149,13 +149,14 @@ arrays copies the identifiers but does not move the C<HE> array. Bucket
 resizing and entry compaction rebuild the chains.
 
 The default chain layout keeps entry and bucket capacity independent. Entry
-storage starts at a minimum capacity of eight. When full, it grows by half
-while its current capacity is below 1024 slots, then by a quarter at larger
-capacities. Fractional increments are rounded down. Explicit reservations
-retain their requested entry budget independently of this growth policy.
+storage starts at a minimum capacity of eight. When full, it doubles while
+its current capacity is below 1,024 slots. From 1,024 through 16,383 slots it
+grows by half. At larger capacities it grows by a quarter. Fractional
+increments are rounded down. Explicit reservations retain their requested
+entry budget independently of this growth policy.
 Promotion from linear storage sizes its buckets to hold the new entry budget
 at the bucket load limit. With the default linear limit, the ninth key
-promotes to twelve entry slots and thirty-two buckets.
+promotes to sixteen entry slots and thirty-two buckets.
 Entry compaction uses a 20 percent hole threshold at
 all capacities, with no byte threshold. A full entry array compacts when it
 meets this threshold without growing the bucket array. An append with spare
