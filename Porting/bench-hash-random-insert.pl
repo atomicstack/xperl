@@ -26,9 +26,9 @@ my $cpu_start = eval { clock_gettime(Time::HiRes::CLOCK_PROCESS_CPUTIME_ID()) };
 my $start = clock_gettime(CLOCK_MONOTONIC);
 for my $set (@key_sets) {
     for (1 .. $repetitions) {
-        my %hash;
-        $hash{$_} = 1 for @$set;
-        $checksum += keys %hash;
+        my $hash = {};
+        $hash->{$_} = 1 for @$set;
+        $checksum += keys %$hash;
     }
 }
 my $elapsed = clock_gettime(CLOCK_MONOTONIC) - $start;
@@ -62,7 +62,7 @@ bench-hash-random-insert - construct hashes from distinct random key sets
 
 The companion Python driver creates tab-separated sets of random ASCII
 keys. This worker reads them before timing. Each set is used for the
-requested repetitions, with a fresh lexical hash and constant value C<1>
+requested repetitions, with a fresh hash reference and constant value C<1>
 for every construction. The timer includes hash creation, insertion,
 destruction, loop overhead, and a scalar key-count check per hash.
 
