@@ -58,6 +58,12 @@ It supplies hash storage diagnostics, query interning, and sharing controls.
 
 Run checked ordinary-hash policy benchmarks and compare paired trials.
 
+=head2 F<bench-hash-random-insert.pl> and F<bench-hash-random-insert.py>
+
+Construct hashes from distinct random key sets, storing C<1> for each key.
+The driver pairs fresh processes with matched keys and hash seeds, retains
+batch timings, and supports reservation and linear-threshold controls.
+
 =head2 F<bench.pl>
 
 Do performance analysis on the code snippets in F<t/perf/benchmarks>.
