@@ -40,6 +40,9 @@ table stores stable HEK pointers in a separate open-addressed index.
 
 static HE *S_alloc_he(pTHX);
 static void S_release_he(pTHX_ HE *he);
+#ifdef PERL_USE_UNSHARED_KEYS_IN_LARGE_HASHES
+static bool S_large_hash_heuristic(pTHX_ HV *hv, STRLEN size);
+#endif
 
 #ifdef PERL_HASH_INDEX_OA
 #  include "perl_hv_oa.c"

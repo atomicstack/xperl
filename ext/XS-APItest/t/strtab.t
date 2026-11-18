@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use Config;
 use Test::More;
 use XS::APItest;
 
@@ -102,4 +103,33 @@ $a->release("same bytes", 0);
 $b->release("key\0tail");
 is_deeply($a->free, [0, 0], 'first isolated table is fully released');
 is_deeply($b->free, [0, 0], 'second isolated table is fully released');
+
+subtest 'UV arguments cannot wrap the table size' => sub {
+    plan skip_all => 'requires UV wider than Size_t'
+        unless $Config{uvsize} > $Config{ptrsize};
+    my $table = $class->new;
+    my $before = $table->info;
+    my $oversized = 4294967296;
+    is(XS::APItest::Strtab::capacity_for($oversized), 0,
+       'capacity arithmetic rejects a value wider than Size_t');
+    eval { $table->reserve($oversized) };
+    like($@, qr/memory wrap/, 'reserve rejects an unrepresentable size');
+    eval { $table->set_live($oversized) };
+    like($@, qr/memory wrap/, 'population probe rejects an unrepresentable size');
+    is_deeply($table->info, $before, 'rejected sizes preserve the table');
+};
+
+subtest 'table ownership stays in the creating interpreter' => sub {
+    plan skip_all => 'requires ithreads' unless $Config{useithreads};
+    require threads;
+    my $table = $class->new;
+    my $held = $table->share('parent key');
+    ok(threads->create(sub {
+        my ($copy) = @_;
+        return ref($copy) eq 'SCALAR' && !defined $$copy;
+    }, $table)->join, 'child receives no owning table handle');
+    is($table->find('parent key'), $held, 'child destruction preserves parent table');
+    $table->release('parent key');
+    is_deeply($table->free, [0, 0], 'parent releases its own table');
+};
 done_testing;

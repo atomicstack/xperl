@@ -1,5 +1,14 @@
 MODULE = XS::APItest:Strtab PACKAGE = XS::APItest::Strtab
 
+bool
+CLONE_SKIP(classname)
+        const char *classname
+    CODE:
+        PERL_UNUSED_ARG(classname);
+        RETVAL = TRUE;
+    OUTPUT:
+        RETVAL
+
 SV *
 new(classname)
         const char *classname
@@ -79,6 +88,7 @@ reserve(self, live)
         SV *self
         UV live
     CODE:
+        if ((UV)(Size_t)live != live) Perl_croak_memory_wrap();
         Perl_hv_strtab_reserve(aTHX_ S_test_strtab(aTHX_ self), live);
 
 void
@@ -121,6 +131,7 @@ set_live(self, live)
     PREINIT:
         PERL_HV_STRTAB *table;
     CODE:
+        if ((UV)(Size_t)live != live) Perl_croak_memory_wrap();
         table = S_test_strtab(aTHX_ self);
         RETVAL = table->live;
         table->live = live;
@@ -171,6 +182,7 @@ UV
 capacity_for(live)
         UV live
     CODE:
-        RETVAL = Perl_hv_strtab_capacity_for(live);
+        RETVAL = (UV)(Size_t)live == live
+            ? (UV)Perl_hv_strtab_capacity_for((Size_t)live) : 0;
     OUTPUT:
         RETVAL

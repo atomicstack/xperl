@@ -17774,11 +17774,17 @@ perl_clone_using(PerlInterpreter *proto_perl, UV flags,
     {
         const struct perl_hv_strtab_pin *source = proto_perl->Istrtab->pins;
         for (; source; source = source->next) {
+            struct perl_hv_strtab_pin *pin;
             HEK *hek = hek_dup(source->hek, param);
             if (UNLIKELY(source->count - 1 > U32_MAX - HvSTR_REFCOUNT(hek)))
                 Perl_croak_memory_wrap();
             HvSTR_REFCOUNT(hek) += source->count - 1;
-            Perl_hv_strtab_pin(aTHX_ PL_strtab, hek, source->count);
+            /* Source pins are unique, so cloning needs no duplicate scan. */
+            Newx(pin, 1, struct perl_hv_strtab_pin);
+            pin->hek = hek;
+            pin->count = source->count;
+            pin->next = PL_strtab->pins;
+            PL_strtab->pins = pin;
         }
     }
 

@@ -746,6 +746,9 @@ CORE_NOCFG_H	=		\
 		..\op.h		\
 		..\opcode.h	\
 		..\perl.h	\
+		..\perl_hv_sc.h	\
+		..\perl_hv_oa.h	\
+		..\perl_hv_strtab.h \
 		..\perlapi.h	\
 		..\perlsdio.h	\
 		..\perly.h	\
@@ -1040,6 +1043,7 @@ $(MINI_OBJ)	: $(MINIDIR)\.exists $(CORE_NOCFG_H)
 
 $(WIN32_OBJ)	: $(CORE_H)
 $(CORE_OBJ)	: $(CORE_H)
+..\hv$(o) .\mini\hv$(o) : ..\perl_hv_sc.c ..\perl_hv_oa.c ..\perl_hv_strtab.c
 $(DLL_OBJ)	: $(CORE_H)
 
 perldll.def : $(MINIPERL) $(CONFIGPM) ..\embed.fnc ..\makedef.pl create_perllibst_h.pl ..\git_version.h
