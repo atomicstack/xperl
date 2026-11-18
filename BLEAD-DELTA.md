@@ -168,8 +168,8 @@ fallback. Programs can select a language for a lexical scope or at runtime.
 
 Alongside English, translations are available in Arabic, Chinese
 (Simplified), Dutch, Finnish, French, German, Hebrew, Hungarian, Icelandic,
-Italian, Persian, Portuguese, Russian, Serbian, Spanish, Turkish, Ukrainian,
-and Welsh.
+Italian, Klingon, Persian, Polish, Portuguese, Russian, Serbian, Spanish,
+Turkish, Ukrainian, and Welsh.
 
 These languages exercise different plural rules, grammatical forms, word
 orders, and writing systems. More languages are expected. The translations
@@ -244,7 +244,7 @@ Ordinary hashes keep their entries in a compact array. On 64-bit builds,
 each entry occupies 16 bytes and has no collision-chain pointer. `HV` and
 `XPVHV` retain their sizes.
 
-Empty hashes allocate no entry storage. By default, hashes with up to four
+Empty hashes allocate no entry storage. By default, hashes with up to eight
 entries use a linear search. Larger hashes add an index. The experimental
 `PERL_HASH_LINEAR_MAX` setting changes the promotion threshold; zero selects
 indexed storage from the first key.
@@ -312,11 +312,43 @@ APIs do not apply to the shared-key table.
 
 ## Bundled distributions and tools
 
+### Added CPAN distributions
+
+These distributions are bundled in addition to those supplied by `blead`.
+Each includes its supporting modules, documentation, and tests.
+
+| Distribution | Purpose |
+| --- | --- |
+| `Cpanel::JSON::XS` | JSON encoding and decoding, including Boolean and type helpers |
+| `DBI` | Database interface and supporting drivers |
+| `DBD::SQLite` | SQLite driver for DBI, with constants and virtual-table helpers |
+| `IO::Socket::SSL` | TLS sockets, with certificate and public-suffix helpers |
+| `Net::SSLeay` | OpenSSL/LibreSSL bindings used by the TLS socket layer |
+| `Perl::Tidy` | Perl source formatting |
+| `TOML::Tiny` | TOML parsing and writing |
+| `Text::CSV_XS` | CSV parsing and writing |
+| `YAML::XS` | YAML parsing and writing through LibYAML |
+
+### RNG
+
+The experimental [RNG](dist/RNG/lib/RNG.pm) distribution provides selectable
+random-number generators and reusable random distributions. `${^RNG}`
+selects the provider used by `rand`, `srand`, and `builtin::rand_bytes`.
+Localizing it lets a scope select a different provider. Each provider owns
+its state; changing the selection does not copy or rewind that state.
+
+Bundled providers include `RNG::Drand48`, `RNG::HMAC_DRBG`, `RNG::PCG`,
+`RNG::Wyrand`, and `RNG::Xoshiro`. The PCG family includes
+`RNG::PCG::RXS_M_XS_64_64`, `RNG::PCG::XSL_RR_128_64_LCG`, and
+`RNG::PCG::XSL_RR_128_64_MCG`. `RNG::Provider`, `RNG::PCG::Variant`,
+`RNG::Seed`, and `RNG::SeedBase` support provider and seed management.
+
 ### Tensor-XS
 
 The p5-matrix-utils work is bundled as the experimental `Tensor-XS`
-distribution. It provides Perl `Tensor`, `Matrix`, `Vector`, and related
-classes backed by contiguous XS storage.
+distribution. It provides `Tensor::XS` and the Perl `Tensor`, `Matrix`,
+`Vector`, and `Scalar` classes backed by contiguous XS storage. `MNIST`
+provides helpers for reading the MNIST dataset format.
 
 The implementation supports integer and floating-point types, indexed
 access, flat or nested input, bulk operations, and native access bridges.
@@ -325,11 +357,38 @@ Its numerical API and binary representation are experimental.
 See [Changes](dist/Tensor-XS/Changes) and
 [the XS design](dist/Tensor-XS/XS_DESIGN.md).
 
-### Cpanel::JSON::XS
+### XStats, XBench, and XGraph
 
-`Cpanel::JSON::XS` is bundled with its XS implementation, Perl support
-files, command-line utility, documentation, and tests. It is integrated into
-the core build and maintenance tools.
+These new distributions provide statistics, benchmarking, and graph tools:
+
+| Distribution | Modules and purpose |
+| --- | --- |
+| [XStats](dist/XStats/lib/XStats.pm) | Statistics with retained observations or bounded summaries, plus resampling and probability functions |
+| [XBench](dist/XBench/lib/XBench.pm) | Calibrated benchmarks with retained samples and confidence intervals, with results represented by `XBench::Result` |
+| [XGraph](dist/XGraph/lib/XGraph.pm) | Compact directed graphs and graph algorithms, with DOT import/export through `XGraph::IO::DOT` |
+
+The statistics modules are `XStats::Full`, `XStats::Sparse`, and
+`XStats::Functions`. `XStats` and `XStats::Incremental` remain available as
+the original constructor names.
+
+### New core modules
+
+The language and diagnostic features also add these modules outside the
+new distributions above:
+
+| Modules | Purpose |
+| --- | --- |
+| `generator`, `iterator` | Generator syntax and the callable iterator protocol |
+| `dispatch::Predicates` | Standard predicates for dispatch/on patterns |
+| `XPerl::Exception`, `XPerl::Diagnostic`, `XPerl::DiagGroup` | Structured exceptions, individual diagnostics, and diagnostic groups |
+| `XPerl::Diagnostic::Catalog` | Experimental module-owned diagnostic definitions |
+| `diagpack`, `XPerl::DiagPack` | Diagnostic language selection and pack loading |
+| `XPerl::REPL` | Interactive shell, supported by `XPerl::REPL::Commands`, `Complete`, `Config`, `Evaluator`, `Input`, and `Render` |
+
+Each diagnostic language pack has its own `XPerl::DiagPack::*` extension.
+The bundled suffixes are `AR`, `CY`, `DE`, `EN`, `ES`, `FA`, `FI`, `FR`,
+`HE`, `HU`, `IS`, `IT`, `NL`, `PL`, `PT`, `RU`, `SR`, `TLH`, `TR`, `UK`,
+and `ZH`. The English pack is included alongside the translations.
 
 ### Interactive shell
 
@@ -345,6 +404,32 @@ without an external library. Other systems use the `Term::ReadLine` stub.
 The engine is [XPerl::REPL](lib/XPerl/REPL.pm), with supporting code under
 `lib/XPerl/REPL/`. The command-line utility is built from
 `utils/xperl-repl.PL`.
+
+### Added command-line utilities
+
+Alongside `xperl-repl`, the core utility list adds `xbench` for benchmarking,
+and `perltidy` and `perltidy-auto` for formatting Perl source. The JSON
+distribution also supplies `cpanel_json_xs`.
+
+### Changes to existing modules
+
+`Data::Dumper` supports modern class objects and adds opt-in `Useutf8` and
+`PreserveUnicode` settings for Unicode output and round trips. `Storable`
+requires explicit freeze/thaw hooks for modern class objects, so their
+hidden fields cannot be silently discarded. `Carp` and the small Test2
+warning helper adapt structured exceptions to their text-based interfaces.
+
+`Hash::Util` adds the storage and shared-key inspection described above.
+`UNIVERSAL` and `mro` support role membership. `B`, `B::Deparse`, and
+`Opcode` account for the new language operations. `builtin`, `feature`,
+and `warnings` expose the matching runtime interfaces and feature metadata.
+`attributes` adjusts diagnostic wording. `threads`, `DynaLoader`, and
+`XS::APItest` are adapted to the runtime and extension changes.
+
+`utf8::repeat_decode` removes repeated UTF-8 encoding from input known to
+have that problem. It modifies the input in place and can force a final
+UTF-8 representation. It does not guess the intended encoding of arbitrary
+text. See [utf8](lib/utf8.pm).
 
 ## Build and platform integration
 
