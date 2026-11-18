@@ -1028,6 +1028,9 @@ the internal C<PERL_HV_INDEX> type and C<HvINDEX> accessors; the former
 C<hv_oa> structure and C<HvOA> accessor names are replaced. The
 C<HvIS_OA> and C<HvIS_STRTAB> identity predicates are removed.
 
+Integer-chain insertion selects its packed identifier width once for the
+bucket head, next link, and optional fingerprint writes.
+
 Final destruction of eligible ordinary hashes with plain scalar values
 discards the index before releasing keys and values. This avoids individual
 index lookups and deletions. Hashes requiring callback, iterator, or stash

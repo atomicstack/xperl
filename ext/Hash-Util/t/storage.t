@@ -623,6 +623,13 @@ sub exercise_chain_all_ones {
        "$width-byte all-ones key can be reinserted after deletion");
     is($hash->{$middle}, 'middle',
        "$width-byte chain survivor remains searchable after reinsertion");
+    $hash->{$tail} = 'tail reinserted';
+    is($hash->{$tail}, 'tail reinserted',
+       "$width-byte chain tail can be linked after identifier widening");
+    is($hash->{$head}, 'reinserted',
+       "$width-byte boundary preserves a widened next identifier");
+    is($hash->{$middle}, 'middle',
+       "$width-byte boundary preserves the rest of the widened chain");
 }
 
 my %hash;
@@ -1070,6 +1077,19 @@ if ($info->{integer_chained}) {
        $wider_info->{entry_capacity}
            * ($wider_info->{index_width} + $wider_info->{fingerprint_bits} / 8),
        'four-byte chain-link allocation includes fingerprint storage');
+    my @four_byte_colliding = integer_chain_keys(
+        'xperl-integer-chain-four-byte', $wider_info->{index_capacity}, 4);
+    $wide{$four_byte_colliding[$_]} = $_ for 0 .. $#four_byte_colliding;
+    is_deeply([@wide{@four_byte_colliding}], [0 .. $#four_byte_colliding],
+       'new four-byte links preserve every colliding key');
+    delete $wide{$four_byte_colliding[1]};
+    $wide{$four_byte_colliding[1]} = 'reinserted';
+    is_deeply([@wide{@four_byte_colliding}], [0, 'reinserted', 2, 3],
+       'four-byte links preserve a collision chain after delete and reinsert');
+    my @four_byte_physical = map { ref($_) ? @$_ : () } @{bucket_array(\%wide)};
+    is_deeply([sort @four_byte_physical], [sort keys %wide],
+       'four-byte bucket traversal includes newly linked entries');
+    $wider_info = hash_storage_info(\%wide);
     SKIP: {
         skip 'Perl not compiled with useithreads', 1
             unless $Config{useithreads};

@@ -400,13 +400,48 @@ static void
 S_hv_index_insert(HV *hv, HE *entry, U32 hash)
 {
     PERL_HV_INDEX *storage = HvINDEX(hv);
-    U32 pos = hash & (U32)HvMAX(hv);
-    U32 ix = (U32)(entry - storage->entries);
-    HvCHAIN_NEXT_SET(hv, ix, HvINDEX_GET(hv, pos));
+    const Size_t buckets = (Size_t)HvMAX(hv) + 1;
+    const U32 pos = hash & (U32)(buckets - 1);
+    const U32 ix = (U32)(entry - storage->entries);
+
+    assert(!HvIS_LINEAR(hv));
+    assert(ix < storage->capacity);
+    /* Keep one width selection for the bucket head and the entry's link.
+     * Copy gives each expansion constant-width, unaligned-safe transfers. */
 #ifdef PERL_HASH_CHAIN_FINGERPRINT
-    HvINDEX_FINGERPRINT_SET(hv, (U32)HvMAX(hv) + 1 + ix, hash);
+#  define INSERT_CHAIN_WORDS 2
+#  define INSERT_CHAIN_FINGERPRINT(Index, record)                         \
+    STMT_START {                                                        \
+        const Index fingerprint = (Index)(hash                           \
+            >> (CHAR_BIT * (sizeof(U32) - sizeof(Index))));              \
+        Copy(&fingerprint, (record) + sizeof(Index), 1, Index);           \
+    } STMT_END
+#else
+#  define INSERT_CHAIN_WORDS 1
+#  define INSERT_CHAIN_FINGERPRINT(Index, record) NOOP
 #endif
-    HvINDEX_SET(hv, pos, ix + 1);
+#define INSERT_CHAIN(Index)                                              \
+    STMT_START {                                                        \
+        U8 * const head = storage->indices + (Size_t)pos * sizeof(Index); \
+        U8 * const record = storage->indices + buckets * sizeof(Index)   \
+            + (Size_t)ix * INSERT_CHAIN_WORDS * sizeof(Index);           \
+        const Index encoded = (Index)(ix + 1);                           \
+        Index previous;                                                 \
+        Copy(head, &previous, 1, Index);                                 \
+        assert((U32)previous <= storage->capacity);                      \
+        Copy(&previous, record, 1, Index);                               \
+        INSERT_CHAIN_FINGERPRINT(Index, record);                         \
+        Copy(&encoded, head, 1, Index);                                  \
+        return;                                                         \
+    } STMT_END
+    switch (HvINDEX_WIDTH_FOR(storage->capacity)) {
+        case 1: INSERT_CHAIN(U8);
+        case 2: INSERT_CHAIN(U16);
+        default: INSERT_CHAIN(U32);
+    }
+#undef INSERT_CHAIN
+#undef INSERT_CHAIN_FINGERPRINT
+#undef INSERT_CHAIN_WORDS
 }
 
 static void
