@@ -168,8 +168,10 @@ fallback. Programs can select a language for a lexical scope or at runtime.
 
 Alongside English, translations are available in Arabic, Chinese
 (Simplified), Dutch, Finnish, French, German, Hebrew, Hungarian, Icelandic,
-Italian, Klingon, Persian, Polish, Portuguese, Russian, Serbian, Spanish,
+Italian, Persian, Polish, Portuguese, Russian, Serbian, Spanish,
 Turkish, Ukrainian, and Welsh.
+
+Klingon is included separately as a constructed-language test case.
 
 These languages exercise different plural rules, grammatical forms, word
 orders, and writing systems. More languages are expected. The translations
@@ -387,8 +389,9 @@ new distributions above:
 
 Each diagnostic language pack has its own `XPerl::DiagPack::*` extension.
 The bundled suffixes are `AR`, `CY`, `DE`, `EN`, `ES`, `FA`, `FI`, `FR`,
-`HE`, `HU`, `IS`, `IT`, `NL`, `PL`, `PT`, `RU`, `SR`, `TLH`, `TR`, `UK`,
-and `ZH`. The English pack is included alongside the translations.
+`HE`, `HU`, `IS`, `IT`, `NL`, `PL`, `PT`, `RU`, `SR`, `TR`, `UK`, and `ZH`.
+The English pack is included alongside the translations. The special-case
+Klingon pack uses `TLH`.
 
 ### Interactive shell
 
