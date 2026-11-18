@@ -21,12 +21,15 @@ asks for a different approach.
 - Make changes to modules maintained on CPAN in their upstream module
   repository. Do not patch the bundled copies under `cpan/` as part of a
   Perl-core change.
-- Separate fixes to inherited Perl blead code from fixes to XPerl-specific
-  changes. Keep generic fixes and portable tests in commits suitable for
-  blead, without mixing in XPerl syntax, functionality, or API adaptations.
-  Mark those commits with `Blead-port: suitable` and explain the upstream
-  applicability. Testing on blead and resolving migration conflicts can be a
-  separate follow-up; the marker does not claim blead validation.
+- On XPerl branches, separate fixes to inherited Perl blead code from fixes
+  to XPerl-specific changes. Keep generic fixes and portable tests in commits
+  suitable for blead, without mixing in XPerl syntax, functionality, or API
+  adaptations. Mark those commits with `Blead-port: suitable` and explain
+  the upstream applicability. Testing on blead and resolving migration
+  conflicts can be a separate follow-up; the marker does not claim blead
+  validation. Do not add this marker to commits made directly on blead or
+  a blead-based feature branch. Determine whether a branch is XPerl from its
+  codebase, not the checkout directory or branch name.
 - Add or update tests for behavior changes, bug fixes, generated-file checks,
   and regression-sensitive refactors.
 - Update documentation when behavior, APIs, diagnostics, build behavior,
