@@ -1,51 +1,26 @@
 # XPerl differences from mainline Perl
 
-This document summarizes the intentional and material differences between
-the current XPerl branch and mainline Perl's `blead` branch. It is a guide
-to the shape of the fork, not an exhaustive patch listing. The exact changes
-can be inspected with:
+XPerl adds experimental language features and changes several parts of the
+Perl runtime. This document introduces the main differences from `blead`
+and links to their documentation. For the exact source changes, use:
 
 ```text
 git diff origin/blead..HEAD
 ```
 
-## AI policy is now permissive
+## AI contributions
 
-We have removed the AI-POLICY document, it was divisive and unbecomming of Perl.
+XPerl permits AI-assisted contributions. The mainline `AI-POLICY` document
+has been removed.
 
-## Language and runtime features
+## Language features
 
-### Generators and resumable execution
+### Generators
 
-The fork contains an experimental generator implementation with
-`use feature 'generator'`, `gen` blocks, and explicit `yield` operations.
-Generator objects expose running, completed, failed, and exhausted lifecycle
-states through functions and methods. Initial arguments may be supplied through
-an ordinary `@_` body or a signature, while later calls can send values back
-to a suspended `yield` without rebinding the initial arguments. List-valued
-yields and scalar-context handling are preserved.
-
-Generator continuation ownership is one-shot, with diagnostics for invalid
-resumption. Exception, cleanup, destruction, garbage collection, callback
-context, and re-entry behavior are handled across opcode-boundary suspension
-and resumption. The saved process state preserves the Perl execution context
-across each suspension.
-
-The active `PL_*` variables retain their direct interpreter or global storage.
-Only the marked execution state is copied into a generator process state when
-a generator is suspended or resumed. This avoids adding an execution-context
-pointer dereference to ordinary calls while still allowing generator stacks
-and execution state to be switched safely. Threaded and unthreaded
-initialization, exports, generated access macros, and lifecycle handling were
-updated for this model.
-
-The members of the threaded context structure were also reordered to keep the
-hottest execution fields together, improving ordinary subroutine calls by
-several instructions per call.
-
-Generators provide cooperative resumable execution: callers explicitly choose
-which suspended generator to resume, and no threads or implicit scheduler are
-created. A minimal generator can be written as:
+A generator is a function that can pause and later continue where it left
+off. XPerl provides experimental `gen` blocks and `yield` operations through
+the `generator` pragma. Each call resumes the generator until its next
+`yield` or until it finishes.
 
 ```perl
 use generator;
@@ -62,62 +37,46 @@ my $numbers = gen {
     }
 };
 
-
 for (1..5) {
     say $letters->(), $numbers->(), " ";
 }
 say "done" if $letters->exhausted;
 
-# Outputs:
 # A1 B2 C3 D4 E5 done
 ```
 
-The interface is documented in `pod/perlgenerator.pod` and `lib/generator.pm`;
-related feature, syntax, diagnostic, and release documentation was updated.
-The runtime and callable-object behavior is covered by the generator and XS
-API runtime tests.
+Generators are cooperative: the caller chooses when to resume them. They
+create no threads or scheduler. Initial arguments use `@_` or a signature;
+later calls can send values back to a suspended `yield`. A generator can
+report whether it is running, completed, failed, or exhausted.
 
-The experimental `iterator` package generalizes the callable lifecycle
-protocol to ordinary blessed code references. It distinguishes an ordinary
-empty return value from completion and exposes running, completed, failed,
-and derived exhausted states; generator continuation states remain private to
-the generator runtime.
+The runtime saves the execution state needed to resume each generator.
+Ordinary calls keep direct access to interpreter state. The threaded
+context layout has also been reordered to reduce the work in ordinary
+subroutine calls.
 
-An uncaught exception escaping an iterator body is rethrown without silently
-changing its state. The iterator contract requires code presenting itself as
-an iterator to report completion accurately, so `exhausted` remains reliable
-when an empty list is a valid ordinary result. The protocol also defines
-`restartable` and `restart`; iterators are non-restartable by default and the
-default restart method reports that restarting is unsupported.
+See [perlgenerator](pod/perlgenerator.pod) and
+[the generator pragma](lib/generator.pm) for the calling and lifecycle rules.
 
-The iterator API is documented in `pod/perliterator.pod` and `lib/iterator.pm`
-and is covered by `t/op/iterator.t`.
+### Iterators
 
-### Class objects and Data::Dumper
+The experimental `iterator` package lets ordinary blessed code references
+use the same calling and completion protocol as generators. An iterator
+reports when it has finished, so callers can distinguish completion from a
+valid empty result.
 
-Class objects now understand shallow class-object/hash conversion APIs for
-serializer support. `Data::Dumper` uses the new representation in both its XS
-and pure-Perl paths, with compatibility guards for building the distribution
-on older Perl versions. The class-object support is documented and tested.
+Iterators expose their running, completed, failed, and exhausted states.
+They can also describe whether they support restarting. An uncaught
+exception is rethrown without silently changing the iterator's state.
 
-The relevant APIs and integration are described in `pod/perlclass.pod` and
-the class-object and Data::Dumper tests cover the conversion behavior.
+See [perliterator](pod/perliterator.pod) and
+[the iterator package](lib/iterator.pm).
 
 ### Classes and roles
 
-The class system now supports reusable `role` declarations and algebraic role
-composition. Roles can provide fields, methods, field initializers, required
-methods, and `ADJUST` blocks. A class or another role consumes one or more
-roles with the experimental `:implements` attribute.
-
-Roles compose transitively, and a shared role reached through a diamond is
-included once. Unresolved method conflicts between unrelated roles and
-conflicting fields are reported at composition time. The `implements` method
-and infix operator provide nominal membership tests, including roles composed
-by a superclass; this is distinct from `isa`, while `DOES` reports composed
-roles as well as ordinary inheritance relationships.
-
-A minimal example is:
+Roles let classes share fields, methods, field initializers, and `ADJUST`
+blocks. A role can also require methods from its consumers. Classes and
+other roles consume them with the experimental `:implements` attribute.
 
 ```perl
 use feature 'class';
@@ -132,19 +91,18 @@ class Person :implements(Named) {
 }
 ```
 
-The class and role behavior, conflict handling, field composition, required
-methods, implementation membership, parser support, diagnostics, and threaded
-metadata are documented in `pod/perlclass.pod` and covered by the role tests.
+Roles can consume other roles. A role reached through several paths is
+included once, and unresolved method or field conflicts are reported when
+roles are composed. The `implements` method and operator test declared role
+membership, including roles inherited from a superclass. `DOES` recognizes
+these roles too.
 
 #### Custom constructors
 
-Every native class exposes its generated constructor as `CONSTRUCT`. It
-accepts named argument pairs, allocates the object, initializes fields, and
-runs `ADJUST` blocks. A class without a local `new` receives an alias to
-`CONSTRUCT`, preserving the usual construction interface.
-
-A class can declare an ordinary `sub new` with its own signature and
-delegate to `CONSTRUCT` after processing its arguments:
+Every native class has a `CONSTRUCT` method that allocates an object,
+initializes its fields, and runs `ADJUST`. By default, `new` is an alias for
+it. A class can supply its own `new` to process arguments before calling
+`CONSTRUCT`:
 
 ```perl
 use v5.36;
@@ -162,311 +120,67 @@ class Point {
 my $point = Point->new(10, 20);
 ```
 
-The custom sub controls its return value and any work around construction.
-Calling `CONSTRUCT` directly bypasses it. Each subclass without a local
-`new` gets its own generated alias, so reusing a parent's custom constructor
-requires explicit forwarding.
+Each subclass gets its own default constructor unless it defines `new`.
+Reusing a parent's custom constructor requires explicit forwarding. The
+default constructor does not call conventional parent constructors.
 
-#### Ordinary blessed references and conventional parents
+#### Working with ordinary Perl objects
 
-Every modern class instance is an ordinary blessed reference. Its referent
-holds hidden class storage, while ordinary methods and native methods receive
-the same public reference. A class-name `CONSTRUCT` creates an undef scalar
-referent. An object-invoked `CONSTRUCT` attaches fields to the existing
-blessed reference without changing its type, payload, blessing, or identity.
-This lets a conventional parent constructor create the object first. The
-default constructor does not invoke conventional parent constructors.
+A modern class instance is an ordinary blessed reference with hidden field
+storage. Calling `CONSTRUCT` on an existing object attaches fields without
+changing its blessing, identity, or ordinary contents. This allows a
+conventional parent constructor to create the object first.
 
-Original fields belong to their declaring class. Different classes in a
-hierarchy may own same-named fields, and storage snapshots group them by
-owner. A descendant can explicitly alias one unambiguous ancestor field with
-`:inherited`; `:private` prevents such aliases. Aliases add no storage or
-initializer, and unmentioned ancestor fields are not implicitly visible in
-descendant lexical scope. The former `:blessed_self` attribute is removed.
+Fields belong to the class that declares them. A subclass can explicitly
+alias an unambiguous ancestor field with `:inherited`; `:private` prevents
+such aliases. Other ancestor fields do not enter the subclass's lexical
+scope automatically. The former `:blessed_self` attribute is removed.
 
-`class_object_to_hash` returns a live shallow view containing the actual
-blessed object under `'$self'` and original fields under owner-class keys.
-`class_object_from_hash` can restore those fields onto the same reference.
-`Data::Dumper` waits for ordinary graph fixups before attaching class fields,
-preserving shared references and ordinary payloads. `TEARDOWN` releases
-modern state after ordinary `DESTROY`, or before reblessing to another
-package. These rules are documented in [perlclass](pod/perlclass.pod).
+`class_object_to_hash` and `class_object_from_hash` provide shallow views
+for serializers. `Data::Dumper` uses them to preserve class fields, shared
+references, and ordinary object contents in both its XS and pure-Perl
+implementations. `TEARDOWN` releases class storage after ordinary `DESTROY`,
+or before an object is reblessed into another package.
 
-### Structured exceptions and translated diagnostics
+See [perlclass](pod/perlclass.pod) for roles, constructors, field ownership,
+and serialization.
 
-Core errors and warnings now use structured exceptions with stable
-diagnostic identifiers, typed arguments, source locations, and ordered
-context. Default rendering preserves familiar Perl text. Applications can
-inspect the diagnostic objects or select annotated text, JSON, or Dumper
-output. A structured exception hook runs before the existing warning and
-die hooks, and a two-variable `catch` can retain both the compatibility
-value and the structured exception.
+### Structured exceptions
 
-Generated diagnostic producers capture the C file and line of their call
-site. Annotated text and JSON expose that source separately from the Perl
-location. Reference type errors can include a bounded description of the
-offending referent. Named selector aliases replace generated numeric IDs in
-C call sites, and the generated header maps each producer macro to its
-owning diagnostic code for source searches.
+Errors and warnings carry structured information: a stable diagnostic
+identifier, typed arguments, source locations, and context. Their default
+rendering preserves familiar Perl messages. Applications can inspect the
+objects or request annotated text, JSON, or Dumper output.
 
-Loadable language packs provide translated diagnostics, with English
-fallback and lexical or runtime language selection. Alongside English,
-translations are available in Arabic, Chinese (Simplified), Dutch,
-Finnish, French, German, Hebrew, Hungarian, Icelandic, Italian, Persian,
-Portuguese, Russian, Serbian, Spanish, Turkish, Ukrainian, and Welsh.
-These languages were chosen to challenge the translation machinery in
-different ways. Together they help establish the capabilities needed to
-support any language, including plural rules, grammatical forms, word
-order, and writing systems. More languages are expected to be added over
-time. The translations are machine drafts awaiting native linguistic
-review. See
-[XPerl::Exception](lib/XPerl/Exception.pm),
-[XPerl::Diagnostic](lib/XPerl/Diagnostic.pm), and
-[diagpack](lib/diagpack.pm) for the interfaces.
+A structured exception hook runs before the existing warning and die hooks.
+A two-variable `catch` can retain both the compatibility value and the
+structured exception. Annotated text and JSON can show the C source location
+separately from the Perl location, which helps when investigating core
+errors.
 
-### SipHash builtins
+See [XPerl::Exception](lib/XPerl/Exception.pm) and
+[XPerl::Diagnostic](lib/XPerl/Diagnostic.pm).
 
-The experimental `builtin::siphash` computes SipHash with caller-selected
-compression and finalization rounds. `builtin::siphash_1_3` and
-`builtin::siphash_2_4` provide the fixed variants. Each accepts a byte
-string and an optional 16-byte key, and returns eight little-endian bytes.
-The default key is the published test-vector key, `00` through `0f`.
+#### Translated diagnostics
 
-### Compact hash storage
+Loadable language packs translate errors and warnings, with English as the
+fallback. Programs can select a language for a lexical scope or at runtime.
 
-Low-level hash lookup, insertion, deletion, reservation, resizing, and
-compaction live in separate algorithm implementations: `perl_hv_sc.[ch]`
-for integer chains and `perl_hv_oa.[ch]` for open addressing. The build
-compiles only the selected backend into `hv.o`. `hv.c` handles Perl hash
-semantics, magic, tied hashes, and key/value ownership.
+Alongside English, translations are available in Arabic, Chinese
+(Simplified), Dutch, Finnish, French, German, Hebrew, Hungarian, Icelandic,
+Italian, Persian, Portuguese, Russian, Serbian, Spanish, Turkish, Ukrainian,
+and Welsh.
 
-Ordinary hashes use a compact array of `HE` entries and a separate index.
-On 64-bit builds an entry occupies 16 bytes, with no collision-chain pointer.
-The former linked `HE` chain representation is removed as a build choice.
-By default, indexed hashes use integer chains: packed bucket heads point to a
-packed per-entry next-link array, and both store one-, two-, or four-byte
-entry identifiers. Fingerprints are disabled by default. Open addressing
-remains available by explicitly selecting `PERL_HASH_INDEX_OA`; its index
-stores one-, two-, or four-byte entry identifiers, and the cached hash remains
-in the key's `HEK`. Its capacity remains a power of two. Through an index
-capacity of 16,384 slots, OA entry capacity is the floor of two-thirds of
-index capacity, and filling that allocation can trigger an index rebuild.
-The following load, tombstone, growth, and shrink rules describe OA indexes.
-Above that size, index pressure triggers a rebuild when live entries plus
-tombstones reach the floor of two-thirds of capacity. Above the coupled range,
-the full entry array grows independently by 25 percent. Entry compaction uses a 20 percent
-hole threshold at all sizes, with no minimum byte threshold. A full entry array compacts when it
-meets this threshold. A non-full array compacts at this threshold when its
-proposed entry capacity, `live + floor(live/4) + 1` with a minimum of eight,
-is at most half its current capacity. Otherwise a full entry array follows
-the growth policy described above. Deletion alone does not rebuild either
-array. These are standalone insertion checks. An index
-rebuild that is otherwise required also packs entries when holes meet the
-20 percent threshold; that rebuild does not use the standalone HE shrink
-test.
+These languages exercise different plural rules, grammatical forms, word
+orders, and writing systems. More languages are expected. The translations
+are machine drafts awaiting review by native speakers.
 
-When index occupancy reaches two-thirds, tombstones are cleared at the same
-index capacity if they make up at least half of occupied slots. With fewer
-tombstones, the index grows to preserve the live-load limit. Growth uses the
-next power of two that can hold `3 * live` entries, with a minimum of eight
-slots. Shrinking is considered only during compaction. The index target must
-be at most half its previous capacity. Its target is the next power of two
-that can hold `3 * (live + 1)` entries, with a minimum of eight slots. The
-entry array can shrink independently when its target capacity,
-`live + floor(live/4) + 1` (minimum eight), is at most half its previous
-capacity. Otherwise existing capacities are retained. Rebuilds, including
-compaction, reuse the index allocation when index and entry capacities are
-unchanged. Without compaction, entry positions and holes are preserved. For
-initial sizing and ordinary growth through 16,384 index slots, entry capacity
-remains coupled to two-thirds of index capacity. Above that size, entry capacity grows
-independently. A shrink can leave entry capacity decoupled from index
-capacity. Changing it uses `Renew`, which may relocate the array.
-Explicit `hv_ksplit()` reservation allocates entry space for the
-requested count plus existing holes above the coupled range, including when
-the index already has enough capacity. New-key insertion reuses its initial
-probe result unless an index rebuild invalidates it.
-Entry allocation can exceed index capacity, while
-identifier width remains tied to index capacity: one byte through 128 slots,
-two bytes through 32,768 slots, and four bytes above that. The ordinary hash
-index is capped at 2^30 slots, which supports at most 715,827,882 live keys at
-the two-thirds load limit. Inserting beyond that count or explicitly
-pre-sizing beyond it throws `Hash key count exceeds limit of 715827882`. The internal
-traversal order does not promise a public iteration order. Neither `HV` nor
-`XPVHV` grows.
-
-All builds encode the indexed bucket count and tiny-storage state in the
-existing `xhv_max` field, so the change does not enlarge `HV` or `XPVHV`.
-Indexed storage keeps the bucket-count exponent in the low six bits. Tiny
-storage sets bit 6 as its form tag and stores its capacity in the low six bits. This
-encoding works on 32-bit builds and does not alter the ordinary index's
-2^30-slot cap. `HvMAX(hv)` remains the logical accessor: it returns the bucket
-mask for indexed storage and the logical maximum for tiny storage. Use the
-form-specific setters; do not read or write `xhv_max` directly. Paired
-benchmarks found no broad slowdown, but results do not establish a general
-speedup.
-
-Empty hashes allocate no entry storage. With the default positive threshold,
-a singleton uses one arena entry. The experimental `PERL_HASH_LINEAR_MAX`
-setting can keep up to two, four, or eight entries in a dense array searched
-linearly before building an index. Its default is four, so hashes with up to
-four entries use linear search before promotion. At threshold zero, hashes
-use indexed storage from the first key.
-
-`hv.h` enables `PERL_HASH_INDEX_CHAINS` by default unless
-`PERL_HASH_INDEX_OA` is selected. `PERL_HASH_CHAIN_FINGERPRINT` enables
-fingerprints for the chain index. Selecting OA together with either chains or
-fingerprints is rejected. `PL_strtab` remains open-addressed in every build.
-The chain index retains the same compact entry array and tiny-hash form.
-The index uses power-of-two buckets, packed bucket heads, and one packed
-next identifier per entry slot. Zero marks an empty head or chain end, and
-identifiers are one-based. Identifier width follows entry capacity,
-including holes: one byte through 255 entries, two through 65,535, then
-four. Widening the identifier arrays does not move entries; bucket resizing
-and entry compaction rebuild chains.
-
-The default chain index grows entry storage independently, starting at eight
-entries and increasing it by 25 percent when full. Entry compaction uses a
-20 percent hole threshold at every capacity, with no byte threshold. A full entry array
-compacts at this threshold while retaining the bucket count. A non-full array
-compacts at this threshold when its proposed entry capacity,
-`live + floor(live/4) + 1` (minimum eight), is at most half its current
-capacity. These are standalone insertion checks. An index rebuild that is
-otherwise required also packs entries at this threshold, but does not apply
-the standalone HE shrink test. Otherwise a full entry array grows by 25
-percent without changing the bucket array. When live
-entries reach two-thirds of bucket capacity, the
-index grows to the next power of two that can hold `3 * live` entries, with
-a minimum of eight buckets. Compaction normally keeps the bucket count. It
-shrinks the bucket array only when its target, the next power of two at least
-`3 * (live + 1)`, is at most half its current capacity. `hv_ksplit()`
-pre-sizing uses a baseline of 1.5 times the requested count and reserves
-entry space for that count. Promotion from the tiny linear form uses the
-baseline open-addressed sizing policy.
-
-The optional `PERL_HASH_CHAIN_FINGERPRINT` build option stores an 8-, 16-, or
-32-bit fingerprint with each entry link. Lookup checks it before loading the
-candidate entry and its key. This can reduce key-record reads on misses, at
-the cost of a larger link array. The next-identifier array adds memory
-proportional to entry capacity alongside bucket heads. Fingerprints remain
-disabled by default. To select open addressing, use a clean build with
-`-DPERL_HASH_INDEX_OA` applied to all objects, for example:
-
-    make clean
-    ./Configure -S -Doptimize='-O3 -DPERL_HASH_INDEX_OA'
-    make -j4 test_prep
-
-Shared-key interning has its own implementation in `perl_hv_strtab.[ch]`.
-`PL_strtab` has type `PERL_HV_STRTAB *`, with explicit construction and
-destruction. It is not an SV or HV, so `sv_clean_all()` does not manage its
-lifetime. Interpreter destruction frees the table after SV owners and
-interpreter constants have released their keys. Thread cloning creates an
-independent table and copies intentional pins into it. Ordinary hash
-operations no longer check whether their argument is the string table.
-
-The string table uses an open-addressed slot array of `HEK *` pointers.
-The slots have tombstones; each shared `HEK` carries a `U32` reference-count
-prefix (12 bytes total for count, hash, and length), and its allocation remains stable while referenced, including when
-the slot array grows. Capacity, probe positions, and tombstone count use
-native-size integers. The pointer index has no fixed `2^26` slot limit; its
-growth is limited by checked allocation arithmetic and available memory.
-The distinct-key count is capped at 1,431,655,765. Existing keys can acquire
-additional references at that limit, subject to reference-count overflow
-checks. The cached hash and reference count in each `HEK` remain `U32`.
-Since the hash is
-32 bits, hash distribution can limit performance above `2^32` slots. This
-does not change the ordinary hash index's `2^30` slot limit. The table has a
-minimum capacity of 32,768 slots.
-Before insertion into an empty slot, when live entries plus tombstones reach
-half the capacity, the table doubles if tombstones are below half the
-occupied slots. Otherwise it clears tombstones at the same capacity.
-Insertion into a tombstone reuses that slot without a rebuild. Explicit
-reservation targets a power of two above twice the requested key count,
-retaining the minimum capacity. The table does not shrink automatically.
-Hash::Util provides
-`shared_key_refcount` for non-mutating reference-count lookup and
-`shared_keys` for copied key strings, and `immortalize_key` to acquire a
-permanent reference until interpreter destruction. Pins are copied into
-cloned interpreters. Its bucket diagnostics do not expose
-the shared-key table.
-
-Iteration scans the entry array. Hash-function seeding remains enabled,
-while bucket-order perturbation, `PERL_PERTURB_KEYS`, and
-`Hash::Util::hash_traversal_mask` are removed. Insertion during iteration is
-detected through iterator state. Hashes do not promise insertion order.
-`Hash::Util::hash_storage_info` exposes allocation sizes, capacities,
-entry holes, the compatibility free-list count, tombstones, and probe
-distances. Ordinary hash value and
-iteration APIs do not apply to `PL_strtab`.
-
-The representation changes the XS ABI and requires rebuilding extensions.
-`HeNEXT` and `HeSHARED_NEXT` are removed, and writes to `HvMAX` use explicit
-setters. Returned `HE *` and `SV **` pointers must be reacquired after
-entry-array relocation or compaction during insertion or preallocation, and
-after deletion that shifts entries in a dense array. Core consumers and bundled XS
-modules are adapted to these lifetime rules. The
-[design and benchmark report](Porting/hash-oa-design.pod) records the
-compatibility limits, memory accounting, and measured performance trade-offs.
-
-## Bundled distribution changes
-
-### Tensor-XS and p5-matrix-utils
-
-The p5-matrix-utils code is imported and developed as the bundled experimental
-`Tensor-XS` distribution. It includes Perl `Tensor`, `Matrix`, `Vector`, and
-related classes backed by XS storage, together with extensive tests and
-examples.
-
-The native tensor work includes descriptor-driven numeric data types,
-integer and floating-point storage, coordinate-based indexing, row-major
-strides, precomputed element counts, flat and nested data loading, native
-tensor blob headers with alignment and trailing sentinels, bulk operations,
-native access bridges, and core build integration. The public Perl classes
-retain their interfaces while values use contiguous typed native buffers.
-
-The distribution remains an experimental area rather than a finalized
-numerical-computing ABI. Design and status details are recorded in
-`dist/Tensor-XS/Changes`, `dist/Tensor-XS/XS_DESIGN.md`, and the related
-distribution notes and result documents.
-
-### Cpanel::JSON::XS
-
-`Cpanel::JSON::XS` is added as a bundled core distribution, including its XS
-implementation, Perl support files, command-line utility, test suite, JSON
-specification fixtures, extended tests, metadata, and core maintainer/build
-integration.
-
-The imported distribution's API and tests remain documented in its own source
-and test files. Its core integration is covered by the dual-life and build
-checks.
-
-### Interactive shell
-
-`xperl-repl` is a new utility, built from `utils/xperl-repl.PL`, that
-starts an interactive shell. Its engine is `XPerl::REPL`, under
-`lib/XPerl/REPL/`, and keeps lexical variables, the current package and
-compile-time hints between inputs using only core modules. Multi-line input
-is detected from the parser's structured diagnostic codes, not from message
-text, and errors are rendered as structured exceptions.
-
-On a terminal it reads lines through the new `ext/Term-ReadLine-XPerl`
-extension: a small C line editor behind the `Term::ReadLine` interface,
-with history, prefix search, tab completion, key bindings and UTF-8 aware
-editing, and no external library. The extension is built on Unix-like
-systems only; elsewhere the shell falls back to the `Term::ReadLine` stub.
-The utility is registered in `utils.lst`, `utils/Makefile.PL`,
-`pod/perlutil.pod` and the Windows and VMS build lists. The engine and
-editor are covered by `t/repl/` and `ext/Term-ReadLine-XPerl/t/`.
+See [diagpack](lib/diagpack.pm) for language selection and pack loading.
 
 ### Lexical namespaces
 
-The experimental `namespaces` feature adds lexical namespace state,
-`namespace` declarations, `__NAMESPACE__`, namespace aliases,
-namespace-qualified symbol resolution, and explicit `CORE:::` boundaries.
-The parser, keyword tables, diagnostics, deparser tests, generated headers,
-and documentation were updated. `CORE` receives special handling because it
-is the implementation namespace for Perl's builtins and operators.
-
-For example:
+The experimental `namespaces` feature adds lexical namespace prefixes,
+namespace aliases, and `__NAMESPACE__`.
 
 ```perl
 use feature 'namespaces';
@@ -477,82 +191,194 @@ package Model;
 sub name { "model" }
 ```
 
-Here `Model` means `MyApp::Model` while this code is compiled. The namespace
-prefix is lexical and does not replace Perl's ordinary current package. An
-explicit `:::` boundary resolves a name from the top level instead.
+Here `Model` means `MyApp::Model` while this code is compiled. The prefix is
+lexical and does not replace Perl's ordinary current package. An explicit
+`:::` boundary resolves a name from the top level. `CORE:::` provides access
+to Perl's implementation namespace.
 
-The behavior is documented in `pod/perlnamespace.pod`, with related syntax,
-builtin, experimental-status, diagnostic, and release documentation updated.
-The namespace and bootstrap tests cover the implementation.
+See [perlnamespace](pod/perlnamespace.pod).
 
-### `-E` enables the XPerl experimental surface
+### Dispatch/on matching
 
-The `-E` command-line switch now enables `feature ':all'` and imports
-`builtin ':all'`. This makes the branch's experimental keywords and builtin
-functions available directly in one-liners and command-line programs, while
-preserving the ordinary `-e` behavior. Experimental functions retain their
-normal warnings. The behavior is documented in `pod/perlrun.pod` and covered
-by the command-line regression tests.
+The experimental `dispatch_on` feature selects code according to a value's
+shape. A `dispatch` evaluates its subject once and tries ordered `on`
+clauses. The first match runs. `on (_)` provides a default clause; without
+a match, the result is `undef` in scalar context or an empty list in list
+context.
 
-### Dispatch/on data-shape matching
+Patterns can describe literals, arrays, hashes, nested structures, class
+objects, regular expressions, and numeric or reference criteria. Scalar
+names capture values for use within a clause, while `^` pins an existing
+value. An optional `if` guard runs after the shape matches.
 
-The experimental `dispatch_on` feature adds a conditional construct for values
-whose shape matters. A `dispatch` evaluates one subject and considers ordered
-`on` clauses from top to bottom. The first matching clause runs, and the outer
-dispatch body may contain only dispatch-on clauses. A wildcard `on (_)` is the
-usual default. Without a successful clause, `dispatch` returns `undef` in
-scalar context and an empty list in list context.
+Object patterns inspect structure without calling constructors or arbitrary
+methods. Inheritance and role matching are reserved for future extensions.
+This feature is independent of `given`/`when`.
 
-The pattern inside `on (...)` is a data-shape language rather than an ordinary
-Perl expression. It supports scalar literals, arrays, hashes, nested shapes,
-class-qualified objects, regular-expression criteria, typed numeric criteria,
-reference/value criteria, tails, and open shapes. Scalar names introduce
-clause-local bindings, while `^` pins existing values. An optional
-`if` introduces an unrestricted Perl guard that runs after the shape matches.
+See [the tutorial](pod/perldispatchontut.pod) for examples and
+[the reference](pod/perldispatchon.pod) for pattern and binding rules.
 
-Bindings are discarded when a shape or guard fails, but closures may retain
-them after the clause ends. Duplicate capture names, unsupported or ambiguous
-syntax, invalid regex constructs, impossible slurp combinations, and repeated
-constant keys are rejected explicitly rather than silently reinterpreted.
-Pins preserve reference identity and undefined-value distinctions; captured
-references preserve identity and tail captures do not alias source slots.
+### Experimental features in one-liners
 
-Object shapes inspect blessed references structurally without invoking
-constructors or arbitrary methods. Native class objects are supported, while
-inheritance and role matching remain reserved for future pattern forms. Simple
-constant-only dispatches may use specialized linear, binary-search, or hash
-dispatch, but source order and first-match semantics remain unchanged. This
-feature is independent of the older `given`/`when` mechanism.
+The `-E` switch enables `feature ':all'` and imports `builtin ':all'`. This
+makes XPerl's experimental keywords and builtins available in one-liners.
+Their normal experimental warnings apply. The behavior of `-e` is unchanged.
 
-The reference and tutorial are in `pod/perldispatchon.pod` and
-`pod/perldispatchontut.pod`; `pod/perlsyn.pod`, `pod/perldiag.pod`,
-`pod/perlexperiment.pod`, and `pod/perldelta.pod` cover syntax, diagnostics,
-experimental status, and release notes. Compiler and runtime behavior is
-covered by the dispatch-matching tests and the associated planning notes.
+See [perlrun](pod/perlrun.pod).
 
-## Generated and platform integration
+### SipHash builtins
 
-The feature work changes keywords, features, opcodes, embedding declarations,
-interpreter variables, parser grammar, warnings, and bundled distributions.
-The branch therefore includes regenerated parser and header artifacts,
-generated keyword and opcode files, generated POD indexes, and corresponding
-build and platform integration. These generated changes are consequences of
-the source changes above and must be regenerated when their inputs change.
+The experimental `builtin::siphash` computes SipHash with caller-selected
+compression and finalization rounds. `builtin::siphash_1_3` and
+`builtin::siphash_2_4` provide fixed variants.
 
-## Compatibility posture
+Each accepts a byte string and an optional 16-byte key, and returns eight
+little-endian bytes. The default key is the published test-vector key,
+`00` through `0f`.
+
+## Hash storage
+
+### Compact entries and small hashes
+
+Ordinary hashes keep their entries in a compact array. On 64-bit builds,
+each entry occupies 16 bytes and has no collision-chain pointer. `HV` and
+`XPVHV` retain their sizes.
+
+Empty hashes allocate no entry storage. By default, hashes with up to four
+entries use a linear search. Larger hashes add an index. The experimental
+`PERL_HASH_LINEAR_MAX` setting changes the promotion threshold; zero selects
+indexed storage from the first key.
+
+### Separate indexing algorithms
+
+The default index uses integer chains: bucket heads and links contain
+compact entry numbers instead of pointers. Open addressing is available
+with `PERL_HASH_INDEX_OA`. Both algorithms use identifiers sized to their
+storage needs, from one to four bytes.
+
+The implementations live in `perl_hv_sc.[ch]` and `perl_hv_oa.[ch]`. The
+build compiles only the selected backend into `hv.o`. Lookup, insertion,
+deletion, reservation, resizing, and compaction belong to that backend.
+`hv.c` handles Perl hash semantics, magic, tied hashes, and key/value
+ownership.
+
+`PERL_HASH_CHAIN_FINGERPRINT` optionally adds small hash fingerprints to the
+chain index. They can avoid loading candidate keys during lookup, at the
+cost of more index storage. Fingerprints are disabled by default and cannot
+be combined with OA. Changing the indexing options requires a clean build.
+
+Both backends grow storage as needed and can reclaim gaps left by deletions
+during later insertions. Deleting an entry alone does not rebuild the hash.
+The ordinary index supports at most 715,827,882 live keys. Requests beyond
+that limit report a hash-capacity error.
+
+The [design and benchmark report](Porting/hash-oa-design.pod) describes the
+allocation, growth, and compaction rules. Paired benchmarks found no broad
+slowdown, but do not establish a general speedup.
+
+### An independent shared-key table
+
+The interpreter shares key strings between hashes through `PL_strtab`.
+This table now has its own C type, `PERL_HV_STRTAB`, and implementation in
+`perl_hv_strtab.[ch]`. Ordinary hash operations no longer need special cases
+for it.
+
+The table uses open addressing in every build. Shared key addresses remain
+stable while referenced, even when the index grows. It supports at most
+1,431,655,765 distinct keys. Existing keys can acquire more references at
+that limit, subject to reference-count overflow checks.
+
+The string table has an explicit lifetime. Interpreter destruction frees
+it after the last SV owners and interpreter constants release their keys.
+Thread cloning creates an independent table and copies intentional pins
+into it.
+
+Hash::Util provides:
+
+- `shared_key_refcount` to inspect a key's reference count.
+- `shared_keys` to obtain copies of the shared key strings.
+- `immortalize_key` to retain a key until interpreter destruction.
+
+### Iteration and inspection
+
+Iteration scans the entry array and does not promise insertion order.
+Hash-function seeding remains enabled. Bucket-order perturbation,
+`PERL_PERTURB_KEYS`, and `Hash::Util::hash_traversal_mask` are removed.
+Insertion during iteration is detected through iterator state.
+
+`Hash::Util::hash_storage_info` reports allocation sizes, capacities, entry
+gaps, tombstones, and probe distances. Ordinary hash value and iteration
+APIs do not apply to the shared-key table.
+
+## Bundled distributions and tools
+
+### Tensor-XS
+
+The p5-matrix-utils work is bundled as the experimental `Tensor-XS`
+distribution. It provides Perl `Tensor`, `Matrix`, `Vector`, and related
+classes backed by contiguous XS storage.
+
+The implementation supports integer and floating-point types, indexed
+access, flat or nested input, bulk operations, and native access bridges.
+Its numerical API and binary representation are experimental.
+
+See [Changes](dist/Tensor-XS/Changes) and
+[the XS design](dist/Tensor-XS/XS_DESIGN.md).
+
+### Cpanel::JSON::XS
+
+`Cpanel::JSON::XS` is bundled with its XS implementation, Perl support
+files, command-line utility, documentation, and tests. It is integrated into
+the core build and maintenance tools.
+
+### Interactive shell
+
+`xperl-repl` starts an interactive Perl shell. It keeps lexical variables,
+the current package, and compile-time hints between inputs. It recognizes
+incomplete input through the parser's structured diagnostics, so expressions
+can span several lines.
+
+On Unix-like terminals, the bundled `Term::ReadLine::XPerl` extension provides
+history, prefix search, tab completion, key bindings, and UTF-8 editing
+without an external library. Other systems use the `Term::ReadLine` stub.
+
+The engine is [XPerl::REPL](lib/XPerl/REPL.pm), with supporting code under
+`lib/XPerl/REPL/`. The command-line utility is built from
+`utils/xperl-repl.PL`.
+
+## Build and platform integration
+
+The source changes include the matching generated parser, keywords,
+opcodes, headers, and documentation indexes. The relevant Windows, VMS, and
+other platform build files are updated alongside them. Generated files need
+to be regenerated when their inputs change.
+
+## Compatibility
+
+The language features and runtime interfaces are experimental and may
+change. Existing Perl behavior is preserved where practical, including when
+features are disabled.
 
 C and XS extensions can identify XPerl with `#ifdef XPERL` after including
-`perl.h`, which defines the macro to `1`.
+`perl.h`. `XPERL` is an alias for `XPERL_VERSION`, currently `1`.
 
-Existing Perl behavior is preserved where practical. The fork's experimental
-features and development policies may continue to evolve as the branch
-develops. Compatibility handling includes feature-disabled code paths,
-`CORE` behavior, threaded builds, and bundled distributions.
+The hash representation changes the XS ABI. Extensions must be rebuilt,
+and code that accesses hash internals needs the following changes:
 
-XS and embedding code must not cast `PL_strtab` to `SV *` or `HV *`, pass it
-to generic hash APIs, or apply SV reference-count operations to it. Its
-lifecycle uses `Perl_hv_strtab_new` and `Perl_hv_strtab_free`; shared-key
-acquisition and release through `share_hek` and `unshare_hek` are preserved.
-Ordinary hash storage uses the internal `PERL_HV_INDEX` type and `HvINDEX`
-accessors, replacing `struct hv_oa` and the `HvOA` names. `HvIS_OA` and
-`HvIS_STRTAB` are removed.
+- Use `PERL_HV_INDEX` and `HvINDEX` in place of `struct hv_oa` and `HvOA`.
+  The `HvIS_OA` and `HvIS_STRTAB` predicates are removed.
+- Replace uses of `HeNEXT` and `HeSHARED_NEXT`. These macros are removed.
+- Use explicit setters when changing `HvMAX`; do not write `xhv_max`
+  directly.
+- Reacquire `HE *` and `SV **` pointers after operations that relocate or
+  compact entries. Dense-array deletion can also invalidate them.
+- Treat `PL_strtab` as an independent C table. It cannot be cast to an SV
+  or HV, passed to generic hash APIs, or managed with SV reference counts.
+
+The string table uses `Perl_hv_strtab_new` and `Perl_hv_strtab_free` for its
+lifetime. Shared-key acquisition and release through `share_hek` and
+`unshare_hek` are preserved.
+
+See [perlguts](pod/perlguts.pod) and
+[the hash design report](Porting/hash-oa-design.pod) for the internal API and
+pointer-lifetime rules.
