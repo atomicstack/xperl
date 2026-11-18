@@ -57,7 +57,6 @@
 #   undef HvCHAIN_NEXT_SET
 #   undef HvENTRY_INDEX
 #   undef HvENTRY_SVP
-#   undef HvINDEX_FINGERPRINT_BYTES_FOR
 #   undef HvINDEX_FINGERPRINT_GET
 #   undef HvINDEX_FINGERPRINT_SET
 #   undef HvINDEX_FINGERPRINT_VALUE_SET
@@ -120,6 +119,7 @@
 #     undef DEBUG_ONLY
 #     undef GV_CACHE_ONLY
 #     undef HvCHAIN_NEXT
+#     undef HvINDEX_FINGERPRINT_BYTES_FOR
 #     undef HvINDEX_RECORD_WIDTH_FOR
 #     undef HvINDEX_STORAGE_BYTES
 #     undef invlist_intersection_

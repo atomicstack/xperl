@@ -2847,6 +2847,7 @@ my %needed_by_ext_re = map { $_ => 1 } qw(
 # not documented.  They become undefined for any other modules.
 my %needed_by_ext = map { $_ => 1 } qw(
     HvCHAIN_NEXT
+    HvINDEX_FINGERPRINT_BYTES_FOR
     HvINDEX_RECORD_WIDTH_FOR
     HvINDEX_STORAGE_BYTES
     OPpPARAM_IF_FALSE
