@@ -234,6 +234,12 @@ The default key is the published test-vector key, `00` through `0f`.
 
 ### Compact hash storage
 
+Low-level hash lookup, insertion, deletion, reservation, resizing, and
+compaction live in separate algorithm implementations: `perl_hv_sc.[ch]`
+for integer chains and `perl_hv_oa.[ch]` for open addressing. The build
+compiles only the selected backend into `hv.o`. `hv.c` handles Perl hash
+semantics, magic, tied hashes, and key/value ownership.
+
 Ordinary hashes use a compact array of `HE` entries and a separate index.
 On 64-bit builds an entry occupies 16 bytes, with no collision-chain pointer.
 The former linked `HE` chain representation is removed as a build choice.
@@ -349,13 +355,24 @@ disabled by default. To select open addressing, use a clean build with
     ./Configure -S -Doptimize='-O3 -DPERL_HASH_INDEX_OA'
     make -j4 test_prep
 
-Shared-key interning uses an open-addressed slot array of `HEK *` pointers.
+Shared-key interning has its own implementation in `perl_hv_strtab.[ch]`.
+`PL_strtab` has type `PERL_HV_STRTAB *`, with explicit construction and
+destruction. It is not an SV or HV, so `sv_clean_all()` does not manage its
+lifetime. Interpreter destruction frees the table after SV owners and
+interpreter constants have released their keys. Thread cloning creates an
+independent table and copies intentional pins into it. Ordinary hash
+operations no longer check whether their argument is the string table.
+
+The string table uses an open-addressed slot array of `HEK *` pointers.
 The slots have tombstones; each shared `HEK` carries a `U32` reference-count
 prefix (12 bytes total for count, hash, and length), and its allocation remains stable while referenced, including when
 the slot array grows. Capacity, probe positions, and tombstone count use
 native-size integers. The pointer index has no fixed `2^26` slot limit; its
-growth is limited by checked allocation arithmetic and available memory. The
-cached hash and reference count in each `HEK` remain `U32`. Since the hash is
+growth is limited by checked allocation arithmetic and available memory.
+The distinct-key count is capped at 1,431,655,765. Existing keys can acquire
+additional references at that limit, subject to reference-count overflow
+checks. The cached hash and reference count in each `HEK` remain `U32`.
+Since the hash is
 32 bits, hash distribution can limit performance above `2^32` slots. This
 does not change the ordinary hash index's `2^30` slot limit. The table has a
 minimum capacity of 32,768 slots.
@@ -532,9 +549,10 @@ features and development policies may continue to evolve as the branch
 develops. Compatibility handling includes feature-disabled code paths,
 `CORE` behavior, threaded builds, and bundled distributions.
 
-The string table now has an explicitly owned `PERL_HV_STRTAB` C type.
-`perl_hv_strtab.[ch]` implements it independently of ordinary hashes.
-Ordinary storage is selected from `perl_hv_sc.[ch]` or `perl_hv_oa.[ch]` at
-compile time, with only that backend compiled into `hv.o`. The internal
-layout and accessor names are `PERL_HV_INDEX` and `HvINDEX`. `HvIS_OA` and
+XS and embedding code must not cast `PL_strtab` to `SV *` or `HV *`, pass it
+to generic hash APIs, or apply SV reference-count operations to it. Its
+lifecycle uses `Perl_hv_strtab_new` and `Perl_hv_strtab_free`; shared-key
+acquisition and release through `share_hek` and `unshare_hek` are preserved.
+Ordinary hash storage uses the internal `PERL_HV_INDEX` type and `HvINDEX`
+accessors, replacing `struct hv_oa` and the `HvOA` names. `HvIS_OA` and
 `HvIS_STRTAB` are removed.
