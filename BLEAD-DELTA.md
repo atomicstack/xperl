@@ -275,8 +275,9 @@ The ordinary index supports at most 715,827,882 live keys. Requests beyond
 that limit report a hash-capacity error.
 
 The [design and benchmark report](Porting/hash-oa-design.pod) describes the
-allocation, growth, and compaction rules. Paired benchmarks found no broad
-slowdown, but do not establish a general speedup.
+allocation, growth, and compaction rules. Performance depends on hash size
+and workload. Large hashes benefit from compact traversal, while some
+smaller indexed hashes take longer than `blead` for insertion and churn.
 
 ### An independent shared-key table
 
