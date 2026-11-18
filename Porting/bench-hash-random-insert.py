@@ -35,9 +35,13 @@ def main():
     parser.add_argument('--key-length', type=int, default=27)
     parser.add_argument('--trials', type=int, default=31)
     parser.add_argument('--seed', type=int, default=20261118)
+    parser.add_argument('--reserve', type=int, default=0)
+    parser.add_argument('--linear-max', type=int, choices=(0, 2, 4, 8))
     args = parser.parse_args()
     if min(args.sets, args.keys, args.repetitions, args.key_length, args.trials) < 1:
         parser.error('counts and key length must be positive')
+    if args.reserve < 0:
+        parser.error('reservation must be nonnegative')
     builds = {}
     for entry in args.build:
         name, separator, path = entry.partition('=')
@@ -97,8 +101,10 @@ def main():
                 for variable in ('PERL5LIB', 'PERL5OPT', 'PERL_HASH_LINEAR_MAX', 'PERL_HASH_SEED_DEBUG', 'PERL_PERTURB_KEYS'):
                     env.pop(variable, None)
                 env['PERL_HASH_SEED'] = hash_seed
+                if name != args.baseline and args.linear_max is not None:
+                    env['PERL_HASH_LINEAR_MAX'] = str(args.linear_max)
                 result = subprocess.run([str(perl), f'-I{perl.parent / "lib"}', str(worker),
-                                         str(dataset), str(args.sets), str(args.keys), str(args.repetitions)],
+                                         str(dataset), str(args.sets), str(args.keys), str(args.repetitions), str(args.reserve)],
                                         env=env, text=True, capture_output=True, check=True)
                 row = json.loads(result.stdout)
                 expected = args.sets * args.keys * args.repetitions

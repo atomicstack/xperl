@@ -4,11 +4,13 @@ use strict;
 use warnings;
 use Time::HiRes qw(clock_gettime CLOCK_MONOTONIC);
 
-my ($filename, $sets, $keys, $repetitions) = @ARGV;
-die "usage: $0 KEYFILE SETS KEYS REPETITIONS\n"
-    unless @ARGV == 4 && $sets =~ /^\d+$/ && $sets > 0
+my ($filename, $sets, $keys, $repetitions, $reserve) = @ARGV;
+$reserve //= 0;
+die "usage: $0 KEYFILE SETS KEYS REPETITIONS [RESERVE]\n"
+    unless (@ARGV == 4 || @ARGV == 5) && $sets =~ /^\d+$/ && $sets > 0
         && $keys =~ /^\d+$/ && $keys > 0
-        && $repetitions =~ /^\d+$/ && $repetitions > 0;
+        && $repetitions =~ /^\d+$/ && $repetitions > 0
+        && $reserve =~ /^\d+$/;
 
 open my $input, '<:raw', $filename or die "$filename: $!";
 my @key_sets;
@@ -24,11 +26,23 @@ die "wrong set count\n" unless @key_sets == $sets;
 my $checksum = 0;
 my $cpu_start = eval { clock_gettime(Time::HiRes::CLOCK_PROCESS_CPUTIME_ID()) };
 my $start = clock_gettime(CLOCK_MONOTONIC);
-for my $set (@key_sets) {
-    for (1 .. $repetitions) {
-        my $hash = {};
-        $hash->{$_} = 1 for @$set;
-        $checksum += keys %$hash;
+if ($reserve) {
+    for my $set (@key_sets) {
+        for (1 .. $repetitions) {
+            my $hash = {};
+            keys(%$hash) = $reserve;
+            $hash->{$_} = 1 for @$set;
+            $checksum += keys %$hash;
+        }
+    }
+}
+else {
+    for my $set (@key_sets) {
+        for (1 .. $repetitions) {
+            my $hash = {};
+            $hash->{$_} = 1 for @$set;
+            $checksum += keys %$hash;
+        }
     }
 }
 my $elapsed = clock_gettime(CLOCK_MONOTONIC) - $start;
@@ -46,6 +60,7 @@ my $digest = Digest::SHA->new(256)->addfile($digest_input)->hexdigest;
 close $digest_input or die "$filename: $!";
 print JSON::PP::encode_json({
     sets => 0 + $sets, keys => 0 + $keys, repetitions => 0 + $repetitions,
+    reserve => 0 + $reserve,
     constructions => $constructions, assignments => $constructions * $keys,
     checksum => $checksum, dataset_sha256 => $digest,
     elapsed_seconds => $elapsed, cpu_seconds => $cpu_elapsed,
@@ -68,5 +83,6 @@ destruction, loop overhead, and a scalar key-count check per hash.
 
 The driver runs each measurement in a fresh Perl process with matched
 keys and hash seeds. Output and dataset checksums are produced after timing.
+An optional reservation is made inside the timed region for each hash.
 
 =cut
