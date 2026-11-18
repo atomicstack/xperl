@@ -34,7 +34,7 @@ SV *
 pointer_storage_info(hash)
     HV *hash
   CODE:
-#ifdef HvIS_OA
+#if defined(HvINDEX) || defined(HvIS_OA)
     PERL_UNUSED_ARG(hash);
     croak("pointer diagnostics require a pointer-chain Perl build");
     RETVAL = NULL;
@@ -82,7 +82,7 @@ pointer_storage_info(hash)
 SV *
 pointer_shared_info()
   CODE:
-#ifdef HvIS_OA
+#if defined(HvINDEX) || defined(HvIS_OA)
     croak("pointer diagnostics require a pointer-chain Perl build");
     RETVAL = NULL;
 #else

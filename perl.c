@@ -443,20 +443,10 @@ perl_construct(pTHXx)
         PL_hash_seed_set= TRUE;
     }
 
-    /* Allow PL_strtab to be pre-initialized before calling perl_construct.
-    * can use a custom optimized PL_strtab hash before calling perl_construct */
+    /* Embedders may supply an initialized shared-key table before construct. */
     if (!PL_strtab) {
-        /* Note that strtab is a rather special HV.  Assumptions are made
-           about not iterating on it, and not adding tie magic to it.
-           It is properly deallocated in perl_destruct() */
-        PL_strtab = newHV();
-
-        /* SHAREKEYS tells us that the hash has its keys shared with PL_strtab,
-         * which is not the case with PL_strtab itself */
-        HvSHAREKEYS_off(PL_strtab);			/* mandatory */
-        /* Reserve 32,768 HEK slots for 16,384 live keys at the 2/3 load
-         * threshold.  Shared HEKs are allocated only as keys are interned. */
-        hv_ksplit(PL_strtab, 1 << 14);
+        PL_strtab = Perl_hv_strtab_new(aTHX);
+        Perl_hv_strtab_reserve(aTHX_ PL_strtab, 1 << 14);
     }
 
 #ifdef USE_ITHREADS
@@ -687,6 +677,17 @@ interpret specific numeric values as having specific meanings.
 
 =cut
 */
+
+static void
+S_strtab_report_retained(pTHX_ const HEK *hek, void *arg)
+{
+    PERL_UNUSED_ARG(arg);
+    /* SV cleanup has finished. Reporting must not intern keys or call Perl. */
+    if (ckWARN_d(WARN_INTERNAL))
+        PerlIO_printf(Perl_error_log,
+            "Unbalanced string table refcount: (%ld) for \"%s\"\n",
+            (long)HvSTR_REFCOUNT(hek), HEK_KEY(hek));
+}
 
 int
 perl_destruct(pTHXx)
@@ -1415,8 +1416,8 @@ perl_destruct(pTHXx)
 
     /* Now absolutely destruct everything, somehow or other, loops or no. */
 
-    /* the 2 is for PL_fdpid and PL_strtab */
-    while (sv_clean_all() > 2)
+    /* PL_fdpid is the remaining protected SV. The string table is not an SV. */
+    while (sv_clean_all() > 1)
         ;
 
 #ifdef USE_ITHREADS
@@ -1437,43 +1438,8 @@ perl_destruct(pTHXx)
         PL_sv_consts[i] = NULL;
     }
 
-    /* Destruct the global string table. */
-    {
-        const Size_t capacity = HvMAX(PL_strtab) + 1;
-        HEK ** const slots = HvARRAY(PL_strtab)
-            ? HvSTRSLOTS(PL_strtab) : NULL;
-        Size_t i;
-
-        struct hv_strtab_pin *pin = slots ? HvSTRTAB(PL_strtab)->pins : NULL;
-
-        /* Release intentional pins before checking for unbalanced owners. */
-        while (pin) {
-            struct hv_strtab_pin *next = pin->next;
-            assert(HvSTR_REFCOUNT(pin->hek) >= pin->count);
-            HvSTR_REFCOUNT(pin->hek) -= pin->count - 1;
-            unshare_hek(pin->hek);
-            Safefree(pin);
-            pin = next;
-        }
-        if (slots)
-            HvSTRTAB(PL_strtab)->pins = NULL;
-
-        /* Report and free HEKs that still have references at destruction. */
-        for (i = 0; slots && i < capacity; i++) {
-            HEK * const hek = slots[i];
-            if (hek && hek != HvSTR_TOMBSTONE) {
-                if (ckWARN_d(WARN_INTERNAL))
-                    PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SHARED_STRING_RETAINED(
-                        (long)HvSTR_REFCOUNT(hek), HEK_KEY(hek));
-                Safefree(HvSTR_SHARED(hek));
-            }
-        }
-
-        Safefree(HvARRAY(PL_strtab));
-        HvARRAY(PL_strtab) = 0;
-        HvTOTALKEYS(PL_strtab) = 0;
-    }
-    SvREFCNT_dec(PL_strtab);
+    /* Shared keys outlive all SV owners, including the constants above. */
+    (void)Perl_hv_strtab_free(aTHX_ PL_strtab, S_strtab_report_retained, NULL);
     PL_strtab = NULL;
 
 #ifdef USE_ITHREADS

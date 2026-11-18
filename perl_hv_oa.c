@@ -501,3 +501,110 @@ S_hv_index_store(HV *hv, HE *entry, U32 hash, U32 insert_pos)
                 S_hv_index_insert(hv, entry, hash);
 
 }
+
+static bool
+S_hv_index_contains(pTHX_ HV *hv, HE *entry)
+{
+    PERL_HV_INDEX *oa;
+    UV p, b;
+    if (HvIS_LINEAR(hv) || !HvARRAY(hv)) return FALSE;
+    oa = HvINDEX(hv);
+    if (!oa->entries) return FALSE;
+    p = PTR2UV(entry);
+    b = PTR2UV(oa->entries);
+    return p >= b && p < b + oa->used * sizeof(HE) &&
+           (p - b) % sizeof(HE) == 0;
+}
+
+static void
+S_hv_index_reserve(pTHX_ HV *hv, IV newmax)
+{
+
+    U32 oldsize;
+    U32 newsize;
+    U32 wantsize;
+    char *a;
+
+    if (newmax <= 0)
+        return;
+    if ((UV)newmax > HV_MAX_KEYS)
+        PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
+
+    /* Explicit reservations within the tiny limit need only HE storage.
+     * Unreserved empty hashes continue to allocate on their first store. */
+    if ((UV)newmax <= PL_hash_linear_max
+        && (!HvARRAY(hv) || HvIS_LINEAR(hv))
+        && S_linear_enabled(aTHX_ hv)) {
+        U32 capacity = HvARRAY(hv) ? HvLINEAR_CAP(hv) : 1;
+        while (capacity < (UV)newmax) {
+            U32 next = capacity * 2;
+            if (next > PL_hash_linear_max)
+                next = (U32)PL_hash_linear_max;
+            if (next <= capacity || next > (U32)HV_LINEAR_CAP_MASK)
+                Perl_croak_memory_wrap();
+            capacity = next;
+        }
+        S_linear_reserve(aTHX_ hv, capacity);
+        return;
+    }
+
+    oldsize = HvIS_LINEAR(hv) ? 8 : (U32)HvMAX(hv) + 1;
+
+    /* Round up so requests such as 11 entries fit below the load limit
+     * instead of selecting 16 slots with room for only 10 entries. */
+    wantsize = (U32)newmax + ((U32)newmax >> 1) + ((U32)newmax & 1);
+    newsize = oldsize;
+    while (wantsize > newsize) {
+        if (newsize >= HV_MAX_BUCKETS)
+            PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
+        newsize *= 2;
+    }
+
+    /* Check the final reservation before either allocation changes. In a
+     * packed chain table, reserving entries can widen the bucket records. */
+    {
+        UV entries = (UV)newmax;
+        if (HvARRAY(hv) && !HvIS_LINEAR(hv)) {
+            const PERL_HV_INDEX *oa = HvINDEX(hv);
+            if ((UV)newmax > HvTOTALKEYS(hv))
+                entries += (UV)oa->used - HvTOTALKEYS(hv);
+            if (entries < oa->capacity)
+                entries = oa->capacity;
+        }
+        if (entries > U32_MAX || !S_hv_index_size_valid(newsize, (U32)entries))
+            Perl_croak_memory_wrap();
+    }
+
+    if (HvIS_LINEAR(hv)) {
+        /* The final size is known: avoid an intermediate eight-slot index. */
+        S_hv_index_resize(aTHX_ hv, (U32)newsize);
+        goto reserve_entries;
+    }
+
+    if (newsize <= oldsize && HvARRAY(hv))
+        goto reserve_entries;
+
+    a = (char *) HvARRAY(hv);
+    if (a) {
+        S_hv_index_resize(aTHX_ hv, newsize);
+    } else {
+        if (LARGE_HASH_HEURISTIC(hv, newmax))
+            HvSHAREKEYS_off(hv);
+        S_hv_index_resize(aTHX_ hv, (U32)newsize);
+        HvMAX_SET(hv, newsize - 1);
+    }
+
+  reserve_entries:
+    /* Explicit reservation supplies a known entry count. Above the coupled
+     * range, reserve those entries now instead of growing by 25% repeatedly.
+     * Deleted positions remain holes until the normal compaction threshold. */
+    if (newmax > 0 && !HvIS_LINEAR(hv) && HvARRAY(hv)
+        && HvINDEX_RESERVE_ENTRIES(hv)
+        && (UV)newmax > HvTOTALKEYS(hv)) {
+        PERL_HV_INDEX *oa = HvINDEX(hv);
+        UV capacity = (UV)oa->used + (UV)newmax - HvTOTALKEYS(hv);
+        if (capacity >= U32_MAX)
+            Perl_croak_memory_wrap();
+        S_hv_index_reserve_entries(aTHX_ hv, (U32)capacity);
+    }
+}

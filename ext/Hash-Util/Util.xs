@@ -11,12 +11,10 @@
 #define HASHUTIL_BUCKET_FIRST(hv, bucket, buckets, chain_entry) \
     (HvIS_LINEAR(hv) \
        ? ((bucket) < HvTOTALKEYS(hv) ? &HvENTRIES(hv)[bucket] : NULL) \
-       : HvIS_OA(hv) \
-           ? (((chain_entry) = HvINDEX_GET(hv, bucket)) \
-                ? &HvINDEX(hv)->entries[(chain_entry) - 1] : NULL) \
-           : (buckets)[bucket])
+       : (((chain_entry) = HvINDEX_GET(hv, bucket)) \
+            ? &HvINDEX(hv)->entries[(chain_entry) - 1] : NULL))
 #define HASHUTIL_BUCKET_NEXT(hv, he, chain_entry) \
-    (HvIS_OA(hv) && !HvIS_LINEAR(hv) \
+    (!HvIS_LINEAR(hv) \
        ? (((chain_entry) = HvCHAIN_NEXT(hv, (chain_entry) - 1)) \
             ? &HvINDEX(hv)->entries[(chain_entry) - 1] : NULL) \
        : HvENTRY_NEXT(hv, he))
@@ -24,11 +22,9 @@
 #define HASHUTIL_BUCKET_FIRST(hv, bucket, buckets, chain_entry) \
     (HvIS_LINEAR(hv) \
        ? ((bucket) < HvTOTALKEYS(hv) ? &HvENTRIES(hv)[bucket] : NULL) \
-       : HvIS_OA(hv) \
-           ? (HvINDEX_GET(hv, bucket) != 0 \
-                && HvINDEX_GET(hv, bucket) != U32_MAX \
-                ? &HvINDEX(hv)->entries[HvINDEX_GET(hv, bucket) - 1] : NULL) \
-           : (buckets)[bucket])
+       : (HvINDEX_GET(hv, bucket) != 0 \
+            && HvINDEX_GET(hv, bucket) != U32_MAX \
+            ? &HvINDEX(hv)->entries[HvINDEX_GET(hv, bucket) - 1] : NULL))
 #define HASHUTIL_BUCKET_NEXT(hv, he, chain_entry) HvENTRY_NEXT(hv, he)
 #endif
 
@@ -166,11 +162,10 @@ bucket_info(rhv)
         U32 max_bucket_index;
         U32 total_keys;
         HE **bucket_array;
-        if (HvIS_STRTAB(hv))
-            XSRETURN(0);
         max_bucket_index = HvMAX(hv);
         total_keys = HvUSEDKEYS(hv);
         bucket_array = HvARRAY(hv);
+        PERL_UNUSED_VAR(bucket_array);
         mXPUSHi(total_keys);
         mXPUSHi(max_bucket_index+1);
         mXPUSHi(0); /* for the number of used buckets */
@@ -233,8 +228,7 @@ bucket_array(rhv)
     }
     if (hv) {
         HE **he_ptr = HvARRAY(hv);
-        if (HvIS_STRTAB(hv))
-            XSRETURN(0);
+        PERL_UNUSED_VAR(he_ptr);
         if (!he_ptr) {
             XSRETURN(0);
         } else {
@@ -303,7 +297,7 @@ bucket_ratio(rhv)
 {
     if (SvROK(rhv)) {
         rhv= SvRV(rhv);
-        if ( SvTYPE(rhv)==SVt_PVHV && !HvIS_STRTAB((HV *)rhv) ) {
+        if ( SvTYPE(rhv)==SVt_PVHV ) {
 #if PERL_VERSION_LT(5,25,0)
             SV *ret= Perl_hv_scalar(aTHX_ (HV*)rhv);
 #else
@@ -324,7 +318,7 @@ num_buckets(rhv)
 {
     if (SvROK(rhv)) {
         rhv= SvRV(rhv);
-        if ( SvTYPE(rhv)==SVt_PVHV && !HvIS_STRTAB((HV *)rhv) ) {
+        if ( SvTYPE(rhv)==SVt_PVHV ) {
             XSRETURN_UV(HvMAX((HV*)rhv)+1);
         }
     }
@@ -339,7 +333,7 @@ used_buckets(rhv)
 {
     if (SvROK(rhv)) {
         rhv= SvRV(rhv);
-        if ( SvTYPE(rhv)==SVt_PVHV && !HvIS_STRTAB((HV *)rhv) ) {
+        if ( SvTYPE(rhv)==SVt_PVHV ) {
             XSRETURN_UV(HvFILL((HV*)rhv));
         }
     }
@@ -356,8 +350,6 @@ hash_storage_info(hash)
         UV index_bytes, entry_bytes, allocated_bytes, link_bytes, fullchains;
         UV fingerprint_bits, fingerprint_bytes;
         bool integer_chained;
-        if (HvIS_STRTAB(hash))
-            Perl_croak(aTHX_ "hash_storage_info cannot inspect PL_strtab");
         info = newHV();
         index_bytes = HvARRAY(hash) ? (HvMAX(hash) + 1) * sizeof(HE *) : 0;
         entry_bytes = HvTOTALKEYS(hash) * sizeof(HE);
@@ -378,12 +370,12 @@ hash_storage_info(hash)
         STORAGE_INFO("index_capacity", HvARRAY(hash) && !HvIS_LINEAR(hash)
                      ? HvMAX(hash) + 1 : 0);
         STORAGE_INFO("integer_chained", integer_chained ? 1 : 0);
-#ifdef HvIS_OA
+#ifdef HvINDEX
         STORAGE_INFO("linear", HvIS_LINEAR(hash) ? 1 : 0);
 #ifdef PERL_HASH_INDEX_CHAINS
         STORAGE_INFO("open_addressed", 0);
 #else
-        STORAGE_INFO("open_addressed", HvIS_OA(hash) && !HvIS_LINEAR(hash));
+        STORAGE_INFO("open_addressed", !HvIS_LINEAR(hash));
 #endif
         if (HvIS_LINEAR(hash)) {
             const U32 capacity = HvLINEAR_CAP(hash);
@@ -418,7 +410,7 @@ hash_storage_info(hash)
                 allocated_bytes = malloc_usable_size(HvARRAY(hash));
 #endif
         }
-        else if (HvIS_OA(hash)) {
+        else {
             PERL_HV_INDEX *oa = HvARRAY(hash) ? HvINDEX(hash) : NULL;
             const U32 capacity = oa ? HvMAX(hash) + 1 : 0;
             const U32 index_width = oa ? HvINDEX_WIDTH(hash) : 0;
@@ -560,7 +552,7 @@ shared_keys()
         if (GIMME_V == G_VOID)
             XSRETURN_EMPTY;
         if (GIMME_V == G_SCALAR)
-            XSRETURN_UV(HvTOTALKEYS(PL_strtab));
+            XSRETURN_UV(PL_strtab->live);
         keys = MUTABLE_AV(sv_2mortal((SV *)Perl_shared_keys(aTHX)));
         last = av_len(keys);
         EXTEND(SP, last + 1);

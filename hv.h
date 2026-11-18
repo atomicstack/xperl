@@ -62,23 +62,6 @@ struct hek {
        is UTF-8 or WAS-UTF-8, or an SV */
 };
 
-struct shared_hek {
-    U32 refcount;
-    struct hek shared_hek_hek;
-};
-
-struct hv_strtab_pin {
-    struct hv_strtab_pin *next;
-    HEK *hek;
-    Size_t count;
-};
-
-struct hv_strtab {
-    struct hv_strtab_pin *pins;
-    Size_t tombstones;
-    HEK *slots[1];
-};
-
 #include "perl_hv_strtab.h"
 
 /* Subject to change.
@@ -540,17 +523,6 @@ Null HE pointer.
 #  define Nullhe Null(HE*)
 #endif
 #define HePOOL_NEXT(he)		((he)->he_valu.hent_next_pool)
-#define HvIS_OA(hv)		((const HV *)(hv) != PL_strtab)
-#define HvIS_STRTAB(hv)		((const HV *)(hv) == PL_strtab)
-#define HvSTR_TOMBSTONE		INT2PTR(HEK *, 1)
-#define HvSTRTAB(hv)		((struct hv_strtab *)HvARRAY(hv))
-#define HvSTRSLOTS(hv)		(HvSTRTAB(hv)->slots)
-#define HvSTR_BYTES_FOR(capacity) \
-    (STRUCT_OFFSET(struct hv_strtab, slots) + (capacity) * sizeof(HEK *))
-#define HvSTR_SHARED(hek) \
-    ((struct shared_hek *)((char *)(hek) \
-      - STRUCT_OFFSET(struct shared_hek, shared_hek_hek)))
-#define HvSTR_REFCOUNT(hek)	(HvSTR_SHARED(hek)->refcount)
 #define HvINDEX(hv)		((PERL_HV_INDEX *)HvARRAY(hv))
 #define HvENTRIES(hv) \
     (HvIS_LINEAR(hv) ? (HE *)HvARRAY(hv) : \
@@ -577,17 +549,8 @@ from the configured maximum bucket count and load.
 
 The reserved index-slot entry value identifying a tombstone.
 
-=for apidoc Cm|HEK **|HvSTRSLOTS|HV *hv
 
-Returns the shared string table's HEK pointer slots.
 
-=for apidoc Cm|struct hv_strtab *|HvSTRTAB|HV *hv
-
-Returns the shared string table header.
-
-=for apidoc Cmn|HEK *|HvSTR_TOMBSTONE
-
-The shared string table slot value marking a deleted key.
 
 =for apidoc Cm|U32|HvSTR_REFCOUNT|HEK *hek
 
@@ -597,10 +560,6 @@ Returns the reference count for a shared HEK.
 
 Returns the allocation containing a shared HEK.
 
-=for apidoc Cm|Size_t|HvSTR_BYTES_FOR|Size_t capacity
-
-Returns the allocation size for a shared string table with the given
-capacity.
 
 =for apidoc Cm|U32|HvINDEX_WIDTH_FOR|U32 capacity
 
@@ -634,15 +593,7 @@ or C<HV_INDEX_DELETED> for a tombstone.
 
 Stores a normalized encoded entry index, empty value, or tombstone.
 
-=for apidoc Cm|bool|HvIS_OA|HV *hv
 
-Returns true for ordinary hashes using compact HE entries. They may use a
-small linear array or an open-addressed index. The shared string table uses a
-separate HEK pointer index.
-
-=for apidoc Cm|bool|HvIS_STRTAB|HV *hv
-
-Returns true for the interpreter's shared string table.
 
 =for apidoc Cm|bool|HvIS_LINEAR|HV *hv
 
@@ -691,7 +642,7 @@ vacant position. C<index> must be less than C<HvENTRY_LIMIT(hv)>.
 =for apidoc Amx|HE *|HvENTRY_NEXT|HV *hv|HE *entry
 
 Returns the next entry at the same storage position, or NULL. Compact
-entry arrays have one entry per position. PL_strtab contains HEK pointers,
+entry arrays have one entry per position. The independent string table contains HEK pointers,
 not HE records, and is not traversed through these macros.
 
 These macros traverse storage without changing the hash iterator. Obtain
@@ -706,18 +657,16 @@ insert or delete keys. The SV values remain separately allocated.
 /* Direct traversal leaves the public iterator state untouched. A current
  * lazily deleted entry owns its key until iterator advance or reset. */
 #define HvENTRY_LIMIT(hv) \
-    (HvIS_STRTAB(hv) ? 0 : HvIS_LINEAR(hv) ? HvTOTALKEYS(hv) : \
-     HvIS_OA(hv) ? (HvARRAY(hv) ? HvINDEX(hv)->used : 0) : HvMAX(hv) + 1)
+    (HvIS_LINEAR(hv) ? HvTOTALKEYS(hv) : \
+     (HvARRAY(hv) ? HvINDEX(hv)->used : 0))
 #define HvENTRY_FIRST(hv,i) \
-    (HvIS_STRTAB(hv) ? NULL : HvIS_LINEAR(hv) ? (HvARRAY(hv) ? &((HE *)HvARRAY(hv))[(i)] : NULL) : HvIS_OA(hv) \
-     ? ((HvARRAY(hv) && HvINDEX(hv)->entries[(i)].hent_hek \
-         && !(HvLAZYDEL(hv) \
-              && &HvINDEX(hv)->entries[(i)] == HvEITER_get(hv))) \
-        ? &HvINDEX(hv)->entries[(i)] : NULL) \
-     : HvARRAY(hv)[i])
+    (HvIS_LINEAR(hv) ? (HvARRAY(hv) ? &((HE *)HvARRAY(hv))[(i)] : NULL) : \
+     ((HvARRAY(hv) && HvINDEX(hv)->entries[(i)].hent_hek \
+       && !(HvLAZYDEL(hv) && &HvINDEX(hv)->entries[(i)] == HvEITER_get(hv))) \
+      ? &HvINDEX(hv)->entries[(i)] : NULL))
 #define HvENTRY_NEXT(hv,e) NULL
 #define HvENTRY_INDEX(hv,sptr,idx) \
-    (HvIS_OA(hv) && !HvIS_LINEAR(hv) && HvARRAY(hv) && HvINDEX(hv)->entries \
+    (!HvIS_LINEAR(hv) && HvARRAY(hv) && HvINDEX(hv)->entries \
      && PTR2UV(sptr) >= PTR2UV(&HeVAL(HvINDEX(hv)->entries)) \
      && (PTR2UV(sptr) - PTR2UV(&HeVAL(HvINDEX(hv)->entries))) \
         % sizeof(HE) == 0 \

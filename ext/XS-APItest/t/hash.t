@@ -247,45 +247,11 @@ main_tests (\@keys, \@testkeys, ' [utf8 hash]');
 }
 
 {
-    my $strtab = strtab();
-    is (ref $strtab, 'HASH', "The shared string table quacks like a hash");
-    my $wibble = "\0";
-    eval {
-	$strtab->{$wibble}++;
-    };
-    my $prefix = "Cannot modify shared string table in hv_";
-    my $what = $prefix . 'fetch';
-    like ($@, qr/^$what/,$what);
-    eval {
-	XS::APItest::Hash::store($strtab, 'Boom!',  1)
-    };
-    $what = $prefix . 'store';
-    like ($@, qr/^$what/, $what);
-    if (0) {
-	A::B->method();
-    }
-    # DESTROY should be in there.
-    eval {
-	delete $strtab->{DESTROY};
-    };
-    $what = $prefix . 'delete';
-    like ($@, qr/^$what/, $what);
-    # I can't work out how to get to the code that flips the wasutf8 flag on
-    # the hash key without some ikcy XS
-}
-
-{
     require Hash::Util;
-    my $strtab = strtab();
     is_deeply([Hash::Util::bucket_info(undef)], [],
        'bucket_info does not expose the shared-key table');
     is_deeply([Hash::Util::bucket_array(undef)], [],
        'bucket_array does not expose the shared-key table');
-    is_deeply([Hash::Util::bucket_info($strtab)], [],
-       'bucket_info rejects an explicit shared-key table reference');
-    is_deeply([Hash::Util::bucket_array($strtab)], [],
-       'bucket_array rejects an explicit shared-key table reference');
-
     my $strtab_info = XS::APItest::Hash::shared_key_storage_info();
     cmp_ok($strtab_info->[0], '>=', 32768,
            'shared-key table reserves at least 16K keys');
@@ -295,12 +261,6 @@ main_tests (\@keys, \@testkeys, ' [utf8 hash]');
            'private APItest probe distance is bounded by table capacity');
     cmp_ok($strtab_info->[6], '>=', $strtab_info->[5],
            'private APItest total probe distance includes its maximum');
-
-    my $ordinary_info_error;
-    eval { Hash::Util::hash_storage_info(strtab()) };
-    $ordinary_info_error = $@;
-    like($ordinary_info_error, qr/PL_strtab/,
-         'ordinary hash diagnostics reject PL_strtab');
 
     my $probe = XS::APItest::Hash::test_shared_hek_probe(
         "xperl-strtab-ref-probe-$$", 0);

@@ -78,7 +78,7 @@ PERLVARCTXI(I, curcopdb,	COP *,	NULL)
 
 PERLVARI(I, sub_generation, U32, 1)	/* incr to invalidate method cache */
 
-PERLVAR(I, strtab,	HV *)		/* shared string table */
+PERLVAR(I, strtab,	PERL_HV_STRTAB *)		/* shared string table */
 /* Fields used by magic variables such as $@, $/ and so on */
 
 PERLVAR(I, valuemagic_annotations, SV *) /* temporary holder of value magics during current op */

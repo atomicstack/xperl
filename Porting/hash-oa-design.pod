@@ -240,10 +240,9 @@ C<HvMAX(hv)> is no longer an lvalue. XS code that wrote it must use
 C<HvMAX_SET(hv, max)> for indexed storage or
 C<HvMAX_SET_LINEAR(hv, capacity)> for headerless linear storage. The raw
 C<xhv_max> field contains the encoded representation and must not be read or
-written directly. C<HvIS_OA(hv)> identifies the compact non-strtab hash
-family, including headerless linear hashes; C<Hash::Util::hash_storage_info()>
-uses C<open_addressed> for actual index allocation and C<linear> for the
-headerless form.
+written directly. C<HvINDEX(hv)> accesses the selected indexed layout.
+C<Hash::Util::hash_storage_info()> uses C<open_addressed> for actual OA
+index allocation and C<linear> for the headerless form.
 
 Each shared key has a C<U32> reference-count prefix. Together with its
 C<U32> hash and C<I32> length, this gives a 12-byte header before the key
@@ -732,3 +731,14 @@ reference-counting costs to canonical encoding; the regression test exercises
 mutation, growth, and callback exceptions.
 
 =cut
+
+=head1 IMPLEMENTATION BOUNDARIES
+
+The string table is an explicitly owned C<PERL_HV_STRTAB>, not an SV or HV.
+C<perl_hv_strtab.[ch]> owns shared-key storage and its lifecycle. Ordinary
+hash storage lives in C<perl_hv_sc.[ch]> or C<perl_hv_oa.[ch]>, selected at
+compile time. Only that backend is compiled into C<hv.o>. The ordinary
+hash representation is C<PERL_HV_INDEX>; its accessors use the C<HvINDEX>
+prefix. C<HvIS_OA> and C<HvIS_STRTAB> are removed. The table algorithms,
+load policies, key reference counts, and stable shared HEK addresses are
+preserved by this separation.

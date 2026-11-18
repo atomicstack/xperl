@@ -51,12 +51,6 @@ mycroak_sv(sv)
     CODE:
         Perl_croak_sv(aTHX_ sv);
 
-SV*
-strtab()
-   CODE:
-   RETVAL = newRV_inc((SV*)PL_strtab);
-   OUTPUT:
-   RETVAL
 
 int
 my_cxt_getint()

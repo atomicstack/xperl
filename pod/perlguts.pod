@@ -885,8 +885,8 @@ information on how to use the hash access functions on tied hashes.
 =for apidoc Amh|void|PERL_HASH|U32 hash|char *key|STRLEN klen
 
 XPerl stores ordinary hash entries in a compact, relocatable array. The
-default C<PERL_HASH_LINEAR_MAX=4> uses an arena entry for a singleton and a
-dense entry array with linear search for two through four keys, without an
+default C<PERL_HASH_LINEAR_MAX=8> uses an arena entry for a singleton and a
+dense entry array with linear search for two through eight keys, without an
 index allocation or metadata header. Deleting from this representation shifts later entries
 left. Inserting beyond the threshold promotes the entries to the build's
 selected index. A threshold of zero selects indexed storage from the first
@@ -924,10 +924,18 @@ C<HvMAX_SET(hv, max)> for indexed storage or
 C<HvMAX_SET_LINEAR(hv, capacity)> for headerless linear storage. The raw
 C<xhv_max> field stores the bucket-count exponent for indexed storage and a
 form tag with capacity for headerless linear storage. It is encoded and must
-not be read or written directly. C<HvIS_OA(hv)> identifies the compact
-non-strtab hash family, including its headerless linear state; use
-C<Hash::Util::hash_storage_info()> and its C<open_addressed> and C<linear>
-fields to distinguish whether an index is currently allocated.
+not be read or written directly. The selected ordinary-hash layout is exposed internally as C<PERL_HV_INDEX>.
+C<perl_hv_sc.[ch]> implements integer chains and C<perl_hv_oa.[ch]>
+implements open addressing. Only the selected backend is compiled into
+C<hv.o>; magic, tied hashes, and Perl-facing ownership stay in C<hv.c>.
+
+C<PL_strtab> has type C<PERL_HV_STRTAB *>, an explicitly owned C table
+implemented in C<perl_hv_strtab.[ch]>. It is not an SV or HV and must not be
+passed to hash APIs or SV reference-count operations. Its lifecycle uses
+C<Perl_hv_strtab_new> and C<Perl_hv_strtab_free>. Shared HEK acquisition and
+release through C<share_hek> and C<unshare_hek> are preserved. The table is
+freed after the last SV owners and interpreter constants are destroyed.
+C<HvIS_OA> and C<HvIS_STRTAB> are removed.
 
 =head2 Hash API Extensions
 

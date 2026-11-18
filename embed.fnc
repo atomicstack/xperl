@@ -5479,9 +5479,6 @@ Edp	|HV *	|gv_stashsvpvn_cached					\
 Sx	|void	|clear_placeholders					\
 				|NN HV *hv				\
 				|U32 items
-S	|void	|hsplit 	|NN HV *hv				\
-				|STRLEN const oldsize			\
-				|STRLEN newsize
 S	|struct xpvhv_aux *|hv_auxinit					\
 				|NN HV *hv
 Sx	|SV *	|hv_delete_common					\

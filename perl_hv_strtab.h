@@ -6,6 +6,16 @@
 #define PERL_HV_STRTAB_MAX_KEYS ((U32)1431655765)
 #define PERL_HV_STRTAB_TOMBSTONE INT2PTR(HEK *, 1)
 
+struct shared_hek {
+    U32 refcount;
+    struct hek shared_hek_hek;
+};
+
+#define HvSTR_SHARED(hek) \
+    ((struct shared_hek *)((char *)(hek) \
+      - STRUCT_OFFSET(struct shared_hek, shared_hek_hek)))
+#define HvSTR_REFCOUNT(hek)	(HvSTR_SHARED(hek)->refcount)
+
 struct perl_hv_strtab_pin {
     struct perl_hv_strtab_pin *next;
     HEK *hek;

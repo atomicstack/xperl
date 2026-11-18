@@ -26245,9 +26245,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN",
           "macro" => "PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN",
-          "source_files" => [
-            "hv.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "condition:mutation_access_restriction",
             "subject:memory_allocation_lifetime",
@@ -60391,7 +60389,10 @@ $CONF = {
           "code" => "ERROR_VALUE_HASH_CAPACITY_EXCEEDED",
           "macro" => "PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED",
           "source_files" => [
-            "hv.c"
+            "hv.c",
+            "perl_hv_oa.c",
+            "perl_hv_sc.c",
+            "perl_hv_strtab.c"
           ],
           "tags" => [
             "condition:size_count_range"
@@ -60473,7 +60474,8 @@ $CONF = {
           "macro" => "PERL_THROW_ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE",
           "source_files" => [
             "hv.c",
-            "op.c"
+            "op.c",
+            "perl_hv_strtab.c"
           ],
           "tags" => [
             "condition:size_count_range",
@@ -97330,9 +97332,7 @@ $CONF = {
           "kind" => "CORE_RUNTIME",
           "code" => "WARNING_SEVERE_INTERNAL_DESTRUCTION_SHARED_STRING_RETAINED",
           "macro" => "PERL_WARN_WARNING_SEVERE_INTERNAL_DESTRUCTION_SHARED_STRING_RETAINED",
-          "source_files" => [
-            "perl.c"
-          ],
+          "source_files" => [],
           "tags" => [
             "condition:corruption_invariant",
             "subject:memory_allocation_lifetime",

@@ -389,33 +389,6 @@ Perl_posix_LC_foo(pTHX_ const int c, const U8 classnum) {
 #endif
 #undef PERL_HV_INLINE_FUNCTIONS
 
-PERL_STATIC_INLINE bool
-S_hv_strtab_size_valid(Size_t capacity)
-{
-    return capacity >= 32768 && !(capacity & (capacity - 1))
-        && capacity <= ((STRLEN)1 << (sizeof(STRLEN) * CHAR_BIT - 1))
-        && capacity <= (MEM_SIZE_MAX - STRUCT_OFFSET(struct hv_strtab, slots))
-                        / sizeof(HEK *);
-}
-
-/* Check sizing without allocating, so overflow cannot wrap a large table
- * into a small allocation. Zero denotes an unrepresentable size. */
-PERL_STATIC_INLINE Size_t
-S_hv_strtab_capacity_for(Size_t live)
-{
-    Size_t capacity = 32768;
-    Size_t target;
-    if (live > HV_MAX_KEYS || live >= MEM_SIZE_MAX / 2)
-        return 0;
-    target = live * 2 + 1;
-    while (capacity < target) {
-        if (capacity > MEM_SIZE_MAX / 2)
-            return 0;
-        capacity *= 2;
-    }
-    return S_hv_strtab_size_valid(capacity) ? capacity : 0;
-}
-
 /* ------------------------------- mg.h ------------------------------- */
 
 #if defined(PERL_CORE) || defined(PERL_EXT)

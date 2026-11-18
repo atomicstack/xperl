@@ -20,9 +20,10 @@
 =head1 HV Handling
 A HV structure represents a Perl hash. Small ordinary hashes keep compact HE
 records in a headerless dense array and search it linearly. Larger ordinary
-hashes keep the same entry array and add an open-addressed index that maps each
-key hash to an entry index. Each HE contains a pointer to the value and a
-pointer to a HEK structure that holds the key and its hash. The shared string
+hashes keep the same entry array with the selected SC or OA index.
+The algorithm-specific implementation owns lookup and storage management.
+Each HE contains a pointer to the value and a pointer to a HEK structure
+that holds the key and its hash. The shared string
 table stores stable HEK pointers in a separate open-addressed index.
 
 =cut
@@ -36,10 +37,7 @@ table stores stable HEK pointers in a separate open-addressed index.
 #include "class.h"
 
 #define HVhek_STORAGE_MASK (0xFF & ~HVhek_NOTSHARED)
-#define STRTAB_MIN_CAPACITY 32768
-#define STRTAB_NO_SLOT MEM_SIZE_MAX
 
-static void S_hsplit(pTHX_ HV *hv, STRLEN const oldsize, STRLEN newsize);
 static HE *S_alloc_he(pTHX);
 static void S_release_he(pTHX_ HE *he);
 
@@ -49,140 +47,9 @@ static void S_release_he(pTHX_ HE *he);
 #  include "perl_hv_sc.c"
 #endif
 
-static HEK *S_strtab_find(pTHX_ U32 hash, const char *key, STRLEN klen, U8 flags,
-                          Size_t *insert_pos);
-static void S_strtab_resize(pTHX_ Size_t capacity);
-static void S_strtab_prepare_insert(pTHX_ U32 hash, const char *key,
-                                    STRLEN klen, U8 flags, Size_t *pos);
-static void S_strtab_insert(pTHX_ HEK *hek, Size_t pos);
-
-static HEK *
-S_strtab_find(pTHX_ U32 hash, const char *key, STRLEN klen, U8 flags,
-              Size_t *insert_pos)
-{
-    Size_t capacity = HvMAX(PL_strtab) + 1;
-    Size_t pos = hash & (capacity - 1), first_deleted = STRTAB_NO_SLOT, i;
-    HEK **slots;
-
-    if (!HvARRAY(PL_strtab)) {
-        if (insert_pos)
-            *insert_pos = STRTAB_NO_SLOT;
-        return NULL;
-    }
-    slots = HvSTRSLOTS(PL_strtab);
-
-    for (i = 0; i < capacity; i++, pos = (pos + 1) & (capacity - 1)) {
-        HEK *hek = slots[pos];
-        if (!hek) {
-            if (insert_pos)
-                *insert_pos = first_deleted != STRTAB_NO_SLOT ? first_deleted : pos;
-            return NULL;
-        }
-        if (hek == HvSTR_TOMBSTONE) {
-            if (first_deleted == STRTAB_NO_SLOT)
-                first_deleted = pos;
-            continue;
-        }
-        if (HEK_HASH(hek) == hash && HEK_LEN(hek) == (I32)klen
-            && (HEK_FLAGS(hek) & HVhek_STORAGE_MASK) == flags
-            && (HEK_KEY(hek) == key || memEQ(HEK_KEY(hek), key, klen))) {
-            if (insert_pos)
-                *insert_pos = pos;
-            return hek;
-        }
-    }
-    if (insert_pos)
-        *insert_pos = first_deleted;
-    return NULL;
-}
-
-static void
-S_strtab_resize(pTHX_ Size_t capacity)
-{
-    struct hv_strtab *old = HvARRAY(PL_strtab)
-        ? HvSTRTAB(PL_strtab) : NULL;
-    struct hv_strtab *table;
-    char *raw;
-    Size_t i;
-
-    if (capacity < STRTAB_MIN_CAPACITY)
-        capacity = STRTAB_MIN_CAPACITY;
-    if (!S_hv_strtab_size_valid(capacity))
-        Perl_croak_memory_wrap();
-    Newxz(raw, HvSTR_BYTES_FOR(capacity), char);
-    table = (struct hv_strtab *)raw;
-    if (old) {
-        HEK **old_slots = old->slots;
-        table->pins = old->pins;
-        Size_t old_capacity = HvMAX(PL_strtab) + 1;
-        for (i = 0; i < old_capacity; i++) {
-            HEK *hek = old_slots[i];
-            Size_t pos;
-            if (!hek || hek == HvSTR_TOMBSTONE)
-                continue;
-            pos = HEK_HASH(hek) & (capacity - 1);
-            while (table->slots[pos])
-                pos = (pos + 1) & (capacity - 1);
-            table->slots[pos] = hek;
-        }
-        Safefree(old);
-    }
-    HvARRAY(PL_strtab) = (HE **)table;
-    HvMAX_SET(PL_strtab, capacity - 1);
-}
-
-static void
-S_strtab_prepare_insert(pTHX_ U32 hash, const char *key, STRLEN klen,
-                        U8 flags, Size_t *pos)
-{
-    Size_t capacity = HvMAX(PL_strtab) + 1;
-    Size_t occupied = HvTOTALKEYS(PL_strtab)
-        + HvSTRTAB(PL_strtab)->tombstones;
-
-    /* Reporting a full shared-key table cannot construct a diagnostic that
-     * might intern another key. Existing keys bypass this insertion path. */
-    if (HvTOTALKEYS(PL_strtab) >= HV_MAX_KEYS)
-        PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED_STRTAB((UV)HV_MAX_KEYS);
-
-    if (occupied >= capacity / 2
-        && (*pos == STRTAB_NO_SLOT
-            || HvSTRSLOTS(PL_strtab)[*pos] != HvSTR_TOMBSTONE)) {
-        if (HvSTRTAB(PL_strtab)->tombstones < (occupied + 1) / 2) {
-            if (capacity > MEM_SIZE_MAX / 2)
-                Perl_croak_memory_wrap();
-            capacity *= 2;
-        }
-        S_strtab_resize(aTHX_ capacity);
-        (void)S_strtab_find(aTHX_ hash, key, klen, flags, pos);
-    }
-}
-
-static void
-S_strtab_insert(pTHX_ HEK *hek, Size_t pos)
-{
-    if (pos == STRTAB_NO_SLOT)
-        Perl_croak_memory_wrap();
-    if (HvSTRSLOTS(PL_strtab)[pos] == HvSTR_TOMBSTONE)
-        HvSTRTAB(PL_strtab)->tombstones--;
-    HvSTRSLOTS(PL_strtab)[pos] = hek;
-    HvTOTALKEYS(PL_strtab)++;
-}
-
 #include "perl_hv_strtab.c"
 
-static bool
-S_hv_index_contains(pTHX_ HV *hv, HE *entry)
-{
-    PERL_HV_INDEX *oa;
-    UV p, b;
-    if (!HvIS_OA(hv) || HvIS_LINEAR(hv) || !HvARRAY(hv)) return FALSE;
-    oa = HvINDEX(hv);
-    if (!oa->entries) return FALSE;
-    p = PTR2UV(entry);
-    b = PTR2UV(oa->entries);
-    return p >= b && p < b + oa->used * sizeof(HE) &&
-           (p - b) % sizeof(HE) == 0;
-}
+
 
 static void
 S_hv_index_free_key(pTHX_ HEK *hek, I32 len, U8 flags)
@@ -678,8 +545,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
      * Keep every storage representation on this same fetch path. */
     if (!(action & ~HV_FETCH_JUST_SV) && !flags && keysv
         && !SvMAGICAL(hv) && !SvMAGICAL(keysv)
-        && SvPOK(keysv) && !HvIS_STRTAB(hv)
-        && (SvIsCOW_shared_hash(keysv) || !SvUTF8(keysv))) {
+        && SvPOK(keysv) && (SvIsCOW_shared_hash(keysv) || !SvUTF8(keysv))) {
         HEK *query_hek = NULL;
         U32 query_flags = 0;
         U32 query_hash = hash;
@@ -774,16 +640,6 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
         is_utf8 = cBOOL(flags & HVhek_UTF8);
         flags &= ~HVhek_NOTSHARED;
     }
-
-    if (UNLIKELY(hv == PL_strtab
-                 && (action & (HV_FETCH_ISSTORE|HV_FETCH_LVALUE|HV_DELETE)))) {
-        if (flags & HVhek_FREEKEY)
-            Safefree(key);
-        PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN(
-            action & HV_DELETE ? "delete"
-                               : action & HV_FETCH_LVALUE ? "fetch" : "store");
-    }
-
     if (action & HV_DELETE) {
         return (void *) hv_delete_common(hv, keysv, key, klen,
                                          flags | (is_utf8 ? HVhek_UTF8 : 0),
@@ -970,18 +826,10 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
                      && mg_find((const SV *)hv, PERL_MAGIC_env))
 #endif
                                                                   ) {
-            if (HvIS_OA(hv) && S_linear_enabled(aTHX_ hv)) {
+            if (S_linear_enabled(aTHX_ hv)) {
                 HvMAX_SET_LINEAR(hv, 0);
             }
-            else if (HvIS_OA(hv))
-                S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
-            else {
-                char *array;
-                Newxz(array,
-                     PERL_HV_ARRAY_ALLOC_BYTES(HvMAX(hv)+1),
-                     char);
-                HvARRAY(hv) = (HE**)array;
-            }
+            else S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
         }
 #ifdef DYNAMIC_ENV_FETCH
         else if (action & HV_FETCH_ISEXISTS) {
@@ -1057,16 +905,6 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
     else if (!hash)
         PERL_HASH(hash, key, klen);
 
-    if (HvIS_STRTAB(hv)) {
-        HEK *hek = S_strtab_find(aTHX_ hash, key, klen,
-                                 flags & HVhek_STORAGE_MASK, NULL);
-        void *result = (action & HV_FETCH_ISEXISTS) && hek ? (void *)hek : NULL;
-        /* The shared table stores reference counts, not values. It supports
-         * existence checks but has no HE or SV ** to return from a fetch. */
-        if (flags & HVhek_FREEKEY)
-            Safefree(key);
-        return result;
-    }
 
   lookup:
 #ifdef DYNAMIC_ENV_FETCH
@@ -1131,7 +969,7 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
             }
             HeVAL(entry) = val;
         } else if (action & HV_FETCH_ISSTORE) {
-            if (HvIS_OA(hv)) {
+            {
                 SV *lookup_sv;
                 const char *lookup_key;
                 SV *oldval = HeVAL(entry);
@@ -1156,9 +994,6 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
                         SvREFCNT_inc_simple_void_NN(val);
                     return NULL;
                 }
-            } else {
-                SvREFCNT_dec(HeVAL(entry));
-                HeVAL(entry) = val;
             }
         }
     } else if (HeVAL(entry) == &PL_sv_placeholder) {
@@ -1232,21 +1067,13 @@ Perl_hv_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
         /* Not sure if we can get here.  I think the only case of oentry being
            NULL is for %ENV with dynamic env fetch.  But that should disappear
            with magic in the previous code.  */
-        if (HvIS_OA(hv) && S_linear_enabled(aTHX_ hv)) {
+        if (S_linear_enabled(aTHX_ hv)) {
             HvMAX_SET_LINEAR(hv, 0);
         }
-        else if (HvIS_OA(hv))
-            S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
-        else {
-            char *array;
-            Newxz(array,
-                 PERL_HV_ARRAY_ALLOC_BYTES(HvMAX(hv)+1),
-                 char);
-            HvARRAY(hv) = (HE**)array;
-        }
+        else S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
     }
 
-    if (HvIS_OA(hv)) {
+    {
       if (HvIS_LINEAR(hv)) {
         entry = S_linear_new_entry(aTHX_ hv, hash);
         goto ordinary_entry_ready;
@@ -1581,12 +1408,6 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
         goto not_found;
 
     was_linear = HvIS_LINEAR(hv);
-    if (hv == PL_strtab) {
-        if (k_flags & HVhek_FREEKEY)
-            Safefree(key);
-        PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN("delete");
-    }
-
     sv = HeVAL(entry);
 
     /* if placeholder is here, it's already been deleted.... */
@@ -1627,7 +1448,7 @@ S_hv_delete_common(pTHX_ HV *hv, SV *keysv, const char *key, STRLEN klen,
         S_linear_remove_at(aTHX_ hv, idx, &old_hek, &old_len, &old_flags);
             S_hv_index_free_key(aTHX_ old_hek, old_len, old_flags);
         }
-        else if (HvIS_OA(hv) && HvARRAY(hv)) {
+        else if (HvARRAY(hv)) {
             if (pos != HV_INDEX_NO_SLOT) {
                 S_hv_index_delete(hv, pos);
             }
@@ -1816,18 +1637,7 @@ S_large_hash_heuristic(pTHX_ HV *hv, STRLEN size)
 }
 #endif
 
-static void
-S_hsplit(pTHX_ HV *hv, STRLEN const oldsize, STRLEN newsize)
-{
-    PERL_ARGS_ASSERT_HSPLIT;
-    PERL_UNUSED_ARG(oldsize);
 
-    if (newsize > HV_MAX_BUCKETS)
-        PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
-
-    assert(HvIS_OA(hv));
-    S_hv_index_resize(aTHX_ hv, (U32)newsize);
-}
 
 /*
 =for apidoc hv_ksplit
@@ -1846,115 +1656,7 @@ void
 Perl_hv_ksplit(pTHX_ HV *hv, IV newmax)
 {
     PERL_ARGS_ASSERT_HV_KSPLIT;
-
-    U32 oldsize;
-    U32 newsize;
-    U32 wantsize;
-    char *a;
-
-    if (HvIS_STRTAB(hv)) {
-        Size_t capacity;
-        if (newmax < 0)
-            return;
-        if ((UV)(Size_t)newmax != (UV)newmax)
-            Perl_croak_memory_wrap();
-        if ((UV)newmax > HV_MAX_KEYS)
-            PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
-        capacity = S_hv_strtab_capacity_for((Size_t)newmax);
-        if (!capacity)
-            Perl_croak_memory_wrap();
-        if (!HvARRAY(hv) || capacity > HvMAX(hv) + 1)
-            S_strtab_resize(aTHX_ capacity);
-        return;
-    }
-
-    if (newmax <= 0)
-        return;
-    if ((UV)newmax > HV_MAX_KEYS)
-        PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
-
-    /* Explicit reservations within the tiny limit need only HE storage.
-     * Unreserved empty hashes continue to allocate on their first store. */
-    if ((UV)newmax <= PL_hash_linear_max
-        && HvIS_OA(hv) && (!HvARRAY(hv) || HvIS_LINEAR(hv))
-        && S_linear_enabled(aTHX_ hv)) {
-        U32 capacity = HvARRAY(hv) ? HvLINEAR_CAP(hv) : 1;
-        while (capacity < (UV)newmax) {
-            U32 next = capacity * 2;
-            if (next > PL_hash_linear_max)
-                next = (U32)PL_hash_linear_max;
-            if (next <= capacity || next > (U32)HV_LINEAR_CAP_MASK)
-                Perl_croak_memory_wrap();
-            capacity = next;
-        }
-        S_linear_reserve(aTHX_ hv, capacity);
-        return;
-    }
-
-    oldsize = HvIS_LINEAR(hv) ? 8 : (U32)HvMAX(hv) + 1;
-
-    /* Round up so requests such as 11 entries fit below the load limit
-     * instead of selecting 16 slots with room for only 10 entries. */
-    wantsize = (U32)newmax + ((U32)newmax >> 1) + ((U32)newmax & 1);
-    newsize = oldsize;
-    while (wantsize > newsize) {
-        if (newsize >= HV_MAX_BUCKETS)
-            PERL_THROW_ERROR_VALUE_HASH_CAPACITY_EXCEEDED((UV)HV_MAX_KEYS);
-        newsize *= 2;
-    }
-
-    /* Check the final reservation before either allocation changes. In a
-     * packed chain table, reserving entries can widen the bucket records. */
-    {
-        UV entries = (UV)newmax;
-        if (HvARRAY(hv) && !HvIS_LINEAR(hv)) {
-            const PERL_HV_INDEX *oa = HvINDEX(hv);
-            if ((UV)newmax > HvTOTALKEYS(hv))
-                entries += (UV)oa->used - HvTOTALKEYS(hv);
-            if (entries < oa->capacity)
-                entries = oa->capacity;
-        }
-        if (entries > U32_MAX || !S_hv_index_size_valid(newsize, (U32)entries))
-            Perl_croak_memory_wrap();
-    }
-
-    if (HvIS_LINEAR(hv)) {
-        /* The final size is known: avoid an intermediate eight-slot index. */
-        S_hv_index_resize(aTHX_ hv, (U32)newsize);
-        goto reserve_entries;
-    }
-
-    if (newsize <= oldsize && HvARRAY(hv))
-        goto reserve_entries;
-
-    a = (char *) HvARRAY(hv);
-    if (a) {
-        hsplit(hv, oldsize, newsize);
-    } else {
-        if (LARGE_HASH_HEURISTIC(hv, newmax))
-            HvSHAREKEYS_off(hv);
-        if (HvIS_OA(hv))
-            S_hv_index_resize(aTHX_ hv, (U32)newsize);
-        else
-            Newxz(a, PERL_HV_ARRAY_ALLOC_BYTES(newsize), char);
-        HvMAX_SET(hv, newsize - 1);
-        if (!HvIS_OA(hv))
-            HvARRAY(hv) = (HE **) a;
-    }
-
-  reserve_entries:
-    /* Explicit reservation supplies a known entry count. Above the coupled
-     * range, reserve those entries now instead of growing by 25% repeatedly.
-     * Deleted positions remain holes until the normal compaction threshold. */
-    if (newmax > 0 && HvIS_OA(hv) && !HvIS_LINEAR(hv) && HvARRAY(hv)
-        && HvINDEX_RESERVE_ENTRIES(hv)
-        && (UV)newmax > HvTOTALKEYS(hv)) {
-        PERL_HV_INDEX *oa = HvINDEX(hv);
-        UV capacity = (UV)oa->used + (UV)newmax - HvTOTALKEYS(hv);
-        if (capacity >= U32_MAX)
-            Perl_croak_memory_wrap();
-        S_hv_index_reserve_entries(aTHX_ hv, (U32)capacity);
-    }
+    S_hv_index_reserve(aTHX_ hv, newmax);
 }
 
 /* IMO this should also handle cases where hv_max is smaller than hv_keys
@@ -1980,7 +1682,7 @@ struct hv_index_copy_item {
 };
 
 static void
-S_hv_copy_hints_oa(pTHX_ HV *dest, HV *src)
+S_hv_copy_hints_compact(pTHX_ HV *dest, HV *src)
 {
     STRLEN limit = HvENTRY_LIMIT(src);
     STRLEN i;
@@ -2056,12 +1758,6 @@ Perl_newHVhv(pTHX_ HV *ohv)
     PERL_ARGS_ASSERT_NEWHVHV;
     HV *hv;
     STRLEN hv_max;
-
-    /* PL_strtab stores shared HEKs, not values. It is not a value hash that
-     * can be copied with newHVhv(). */
-    if (ohv && ohv == PL_strtab)
-        PERL_THROW_ERROR_INTERNAL_HASH_SHARED_STRING_TABLE_MODIFICATION_FORBIDDEN("copy");
-
     hv = newHV();
 
     if (!ohv || (!HvTOTALKEYS(ohv) && !SvMAGICAL((const SV *)ohv)))
@@ -2069,9 +1765,8 @@ Perl_newHVhv(pTHX_ HV *ohv)
     hv_max = HvIS_LINEAR(ohv) ? PERL_HASH_DEFAULT_HvMAX : HvMAX(ohv);
 
     if (!SvMAGICAL((const SV *)ohv)
-        || (HvIS_OA(ohv)
-            && !SvTIED_mg((const SV *)ohv, PERL_MAGIC_tied))) {
-      if (HvIS_OA(ohv)) {
+        || (!SvTIED_mg((const SV *)ohv, PERL_MAGIC_tied))) {
+      {
         STRLEN limit = HvENTRY_LIMIT(ohv);
         STRLEN i;
         Size_t count = 0;
@@ -2170,10 +1865,6 @@ Perl_newHVhv(pTHX_ HV *ohv)
         FREETMPS;
         LEAVE;
       }
-      else {
-        /* The only non-OA HV is PL_strtab, rejected above. */
-        Perl_croak_memory_wrap();
-      }
     } /* not magical */
     else {
         /* Iterate over ohv, copying keys and values one at a time. */
@@ -2234,9 +1925,8 @@ Perl_hv_copy_hints_hv(pTHX_ HV *const ohv)
 
         HV_SET_MAX_ADJUSTED_FOR_KEYS(hv,hv_max,hv_keys);
 
-        if (HvIS_OA(ohv)
-            && !SvTIED_mg((const SV *)ohv, PERL_MAGIC_tied)) {
-            S_hv_copy_hints_oa(aTHX_ hv, ohv);
+        if (!SvTIED_mg((const SV *)ohv, PERL_MAGIC_tied)) {
+            S_hv_copy_hints_compact(aTHX_ hv, ohv);
         }
         else {
             hv_iterinit(ohv);
@@ -2339,10 +2029,6 @@ Perl_hv_clear(pTHX_ HV *hv)
 
     if (!hv)
         return;
-
-    if (HvIS_STRTAB(hv))
-        return;
-
     DEBUG_A(Perl_hv_assert(aTHX_ hv));
 
     /* avoid hv being freed when calling destructors below */
@@ -2380,7 +2066,7 @@ Perl_hv_clear(pTHX_ HV *hv)
                     break;
             }
         }
-        if (HvIS_OA(hv) && !HvIS_LINEAR(hv) && HvARRAY(hv)) {
+        if (!HvIS_LINEAR(hv) && HvARRAY(hv)) {
             U32 i = 0;
             while (HvARRAY(hv) && i < HvINDEX(hv)->used) {
                 HE *entry = &HvINDEX(hv)->entries[i++];
@@ -2449,7 +2135,7 @@ Perl_hv_clear_placeholders(pTHX_ HV *hv)
 {
     PERL_ARGS_ASSERT_HV_CLEAR_PLACEHOLDERS;
 
-    if (!hv || HvIS_STRTAB(hv))
+    if (!hv)
         return;
 
     const U32 items = (U32)HvPLACEHOLDERS_get(hv);
@@ -2462,10 +2148,6 @@ static void
 S_clear_placeholders(pTHX_ HV *hv, const U32 placeholders)
 {
     PERL_ARGS_ASSERT_CLEAR_PLACEHOLDERS;
-
-    if (HvIS_STRTAB(hv))
-        return;
-
     U32 to_find = placeholders;
 
     assert(to_find);
@@ -2504,7 +2186,7 @@ S_clear_placeholders(pTHX_ HV *hv, const U32 placeholders)
         return;
     }
 
-    if (HvIS_OA(hv)) {
+    {
         if (!HvARRAY(hv)) {
             HvPLACEHOLDERS_set(hv, 0);
             return;
@@ -2541,7 +2223,6 @@ S_clear_placeholders(pTHX_ HV *hv, const U32 placeholders)
         return;
     }
 
-    NOT_REACHED; /* PL_strtab has no HE entries. */
 }
 
 static void
@@ -2574,10 +2255,6 @@ Perl_hfree_next_entry(pTHX_ HV *hv, STRLEN *indexp)
 
     struct xpvhv_aux *iter;
     HE *entry;
-
-    if (HvIS_STRTAB(hv))
-        return NULL;
-
     if (HvHasAUX(hv) && ((iter = HvAUX(hv)))) {
         if ((entry = iter->xhv_eiter)) {
             /* the iterator may get resurrected after each
@@ -2629,7 +2306,7 @@ Perl_hfree_next_entry(pTHX_ HV *hv, STRLEN *indexp)
         return NULL;
     }
 
-    if (HvIS_OA(hv)) {
+    {
         U32 i;
         for (i = (U32)*indexp; i < HvINDEX(hv)->used; i++) {
             HE *candidate = &HvINDEX(hv)->entries[i];
@@ -2667,7 +2344,6 @@ Perl_hfree_next_entry(pTHX_ HV *hv, STRLEN *indexp)
         return NULL;
     }
 
-    NOT_REACHED; /* PL_strtab has no HE entries. */
     return NULL;
 }
 
@@ -2694,8 +2370,6 @@ Perl_hv_undef_flags(pTHX_ HV *hv, U32 flags)
     SSize_t orig_ix = PL_tmps_ix; /* silence compiler warning about uninitialized vars */
 
     if (!hv)
-        return;
-    if (HvIS_STRTAB(hv) && HvTOTALKEYS(hv))
         return;
     save = cBOOL(SvREFCNT(hv));
     DEBUG_A(Perl_hv_assert(aTHX_ hv));
@@ -2821,7 +2495,7 @@ Perl_hv_undef_flags(pTHX_ HV *hv, U32 flags)
         }
     }
     else {
-        if (HvIS_OA(hv) && HvARRAY(hv))
+        if (HvARRAY(hv))
             Safefree(HvINDEX(hv)->entries);
         Safefree(HvARRAY(hv));
     }
@@ -2867,56 +2541,15 @@ hash.
 STRLEN
 Perl_hv_fill(pTHX_ HV *const hv)
 {
-    PERL_ARGS_ASSERT_HV_FILL;
-
-    if (HvIS_STRTAB(hv)) {
-        Size_t i, count = 0;
-        if (!HvARRAY(hv))
-            return 0;
-        for (i = 0; i <= HvMAX(hv); i++) {
-            HEK *hek = HvSTRSLOTS(hv)[i];
-            if (hek && hek != HvSTR_TOMBSTONE)
-                count++;
-        }
-        return count;
-    }
-
     STRLEN count = 0;
-    HE **ents = HvARRAY(hv);
-
-    if (HvIS_LINEAR(hv))
-        return HvTOTALKEYS(hv);
-
-    if (HvIS_OA(hv)) {
-        U32 i, cap;
-        if (!ents) return 0;
-        cap = (U32)HvMAX(hv) + 1;
-        for (i = 0; i < cap; i++)
-            if (HvINDEX_GET(hv, i) &&
-                HvINDEX_GET(hv, i) != HV_INDEX_DELETED)
-                count++;
-        return count;
-    }
-
-    /* No keys implies no buckets used.
-       One key can only possibly mean one bucket used.  */
-    if (HvTOTALKEYS(hv) < 2)
-        return HvTOTALKEYS(hv);
-
-    if (ents) {
-        /* I wonder why we count down here...
-         * Is it some micro-optimisation?
-         * I would have thought counting up was better.
-         * - Yves
-         */
-        HE *const *const last = ents + HvMAX(hv);
-        count = last + 1 - ents;
-
-        do {
-            if (!*ents)
-                --count;
-        } while (++ents <= last);
-    }
+    U32 i, capacity;
+    PERL_ARGS_ASSERT_HV_FILL;
+    if (HvIS_LINEAR(hv)) return HvTOTALKEYS(hv);
+    if (!HvARRAY(hv)) return 0;
+    capacity = (U32)HvMAX(hv) + 1;
+    for (i = 0; i < capacity; i++)
+        if (HvINDEX_GET(hv, i) && HvINDEX_GET(hv, i) != HV_INDEX_DELETED)
+            count++;
     return count;
 }
 
@@ -2924,22 +2557,17 @@ static struct xpvhv_aux*
 S_hv_auxinit(pTHX_ HV *hv)
 {
     PERL_ARGS_ASSERT_HV_AUXINIT;
-    assert(!HvIS_STRTAB(hv));
+    assert(1);
 
     struct xpvhv_aux *iter;
 
     if (!HvHasAUX(hv)) {
         char *array = (char *) HvARRAY(hv);
         if (!array) {
-            if (HvIS_OA(hv) && S_linear_enabled(aTHX_ hv)) {
+            if (S_linear_enabled(aTHX_ hv)) {
                 HvMAX_SET_LINEAR(hv, 0);
             }
-            else if (HvIS_OA(hv))
-                S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
-            else {
-                Newxz(array, PERL_HV_ARRAY_ALLOC_BYTES(HvMAX(hv) + 1), char);
-                HvARRAY(hv) = (HE**)array;
-            }
+            else S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
         }
         iter = Perl_hv_auxalloc(aTHX_ hv);
     } else {
@@ -2975,10 +2603,6 @@ I32
 Perl_hv_iterinit(pTHX_ HV *hv)
 {
     PERL_ARGS_ASSERT_HV_ITERINIT;
-
-    if (HvIS_STRTAB(hv))
-        return 0;
-
     if (HvHasAUX(hv)) {
         struct xpvhv_aux * iter = HvAUX(hv);
         HE * const entry = iter->xhv_eiter; /* HvEITER(hv) */
@@ -3428,10 +3052,6 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
     HE *oldentry;
     MAGIC* mg;
     struct xpvhv_aux *iter;
-
-    if (HvIS_STRTAB(hv))
-        return NULL;
-
     if (!HvHasAUX(hv)) {
         /* Too many things (well, pp_each at least) merrily assume that you can
            call hv_iternext without calling hv_iterinit, so we'll have to deal
@@ -3480,16 +3100,10 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
            here, and potentially also we avoid allocating HvARRAY()
            automatically in hv_auxinit() */
 
-        char *array;
-        if (HvIS_OA(hv) && S_linear_enabled(aTHX_ hv)) {
+        if (S_linear_enabled(aTHX_ hv)) {
             HvMAX_SET_LINEAR(hv, 0);
         }
-        else if (HvIS_OA(hv))
-            S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
-        else {
-            Newxz(array, PERL_HV_ARRAY_ALLOC_BYTES(HvMAX(hv) + 1), char);
-            HvARRAY(hv) = (HE**)array;
-        }
+        else S_hv_index_resize(aTHX_ hv, (U32)HvMAX(hv) + 1);
     }
 
     iter = HvAUX(hv);
@@ -3579,7 +3193,7 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
         return hv_iternext_flags(hv, flags);
     }
 
-    if (HvIS_OA(hv)) {
+    {
         U32 used, ix, found_ix;
         if (HvIS_LINEAR(hv)) {
             HE *entries = (HE *)HvARRAY(hv);
@@ -3637,7 +3251,6 @@ Perl_hv_iternext_flags(pTHX_ HV *hv, I32 flags)
         return entry;
     }
 
-    NOT_REACHED; /* PL_strtab has no HE entries. */
     return NULL;
 }
 
@@ -3784,79 +3397,30 @@ Perl_unshare_hek(pTHX_ HEK *hek)
 static void
 S_unshare_hek_or_pvn(pTHX_ const HEK *hek, const char *str, I32 len, U32 hash)
 {
-    PERL_ARGS_ASSERT_UNSHARE_HEK_OR_PVN;
-
-    HEK *entry;
-    Size_t pos;
+    bool found;
     int k_flags = 0;
-    struct shared_hek *shared;
-
-    if (hek) {
-        assert((HEK_FLAGS(hek) & HVhek_NOTSHARED) == 0);
-        shared = HvSTR_SHARED((HEK *)hek);
-        assert(&shared->shared_hek_hek == hek);
-
-        if (shared->refcount > 1) {
-            --shared->refcount;
-            return;
-        }
-
-        hash = HEK_HASH(hek);
-    } else if (len < 0) {
-        STRLEN tmplen = 0 - (STRLEN)len;
-        /* See the note in hv_fetch(). --jhi */
-        void * free_str = NULL;
-        if (! utf8_to_bytes_new_pv((const U8 **) &str, &tmplen, &free_str)) {
-            k_flags = HVhek_UTF8;
-        }
-        else if (free_str) {
-            PERL_HASH(hash, str, tmplen);
-            k_flags = HVhek_WASUTF8 | HVhek_FREEKEY;
-        }
-        len = tmplen;
-    }
-
-    if (hek) {
-        HEK ** const slots = HvSTRSLOTS(PL_strtab);
-        const Size_t mask = HvMAX(PL_strtab);
-        Size_t probes;
-
-        /* Shared HEKs are canonical and stable. Locate the exact pointer
-         * without reading any candidate's key or cached hash. */
-        pos = hash & mask;
-        entry = NULL;
-        for (probes = 0; probes <= mask; probes++, pos = (pos + 1) & mask) {
-            if (slots[pos] == hek) {
-                entry = slots[pos];
-                break;
-            }
-            if (!slots[pos])
-                break;
-        }
-    }
+    void *free_str = NULL;
+    PERL_ARGS_ASSERT_UNSHARE_HEK_OR_PVN;
+    if (hek)
+        found = Perl_hv_strtab_release(aTHX_ PL_strtab, hek);
     else {
-        entry = S_strtab_find(aTHX_ hash, str, len,
-                              k_flags & HVhek_STORAGE_MASK, &pos);
-    }
-    if (entry) {
-        shared = HvSTR_SHARED(entry);
-        if (--shared->refcount == 0) {
-            HvSTRSLOTS(PL_strtab)[pos] = HvSTR_TOMBSTONE;
-            HvSTRTAB(PL_strtab)->tombstones++;
-            HvTOTALKEYS(PL_strtab)--;
-            Safefree(shared);
+        STRLEN keylen = len < 0 ? 0 - (STRLEN)len : (STRLEN)len;
+        if (len < 0) {
+            if (!utf8_to_bytes_new_pv((const U8 **)&str, &keylen, &free_str))
+                k_flags = HVhek_UTF8;
+            else if (free_str) {
+                PERL_HASH(hash, str, keylen);
+                k_flags = HVhek_WASUTF8;
+            }
         }
-    } else {
-        entry = NULL;
+        found = Perl_hv_strtab_release_key(aTHX_ PL_strtab, hash, str,
+                                            keylen, k_flags);
     }
-
-    if (!entry)
+    if (!found)
         PERL_WARN_WARNING_SEVERE_INTERNAL_SHARED_STRING_FREE_NOT_FOUND(
             hek ? HEK_KEY(hek) : str,
-            (k_flags & HVhek_UTF8) ? PERL_DIAG_SEL_PRESENCE_PRESENT : PERL_DIAG_SEL_PRESENCE_ABSENT
-        );
-    if (k_flags & HVhek_FREEKEY)
-        Safefree(str);
+            (k_flags & HVhek_UTF8) ? PERL_DIAG_SEL_PRESENCE_PRESENT : PERL_DIAG_SEL_PRESENCE_ABSENT);
+    Safefree(free_str);
 }
 
 /*
@@ -3912,7 +3476,7 @@ Perl_shared_key_refcount(pTHX_ SV *keysv)
     HEK *hek;
     Size_t count;
 
-    if (!PL_strtab || !HvARRAY(PL_strtab))
+    if (!PL_strtab || !PL_strtab->slots)
         return 0;
     if (SvIsCOW_shared_hash(keysv))
         return HvSTR_REFCOUNT(SvSHARED_HEK_FROM_PV(key));
@@ -3925,7 +3489,7 @@ Perl_shared_key_refcount(pTHX_ SV *keysv)
             flags = HVhek_WASUTF8;
     }
     PERL_HASH(hash, key, len);
-    hek = S_strtab_find(aTHX_ hash, key, len, flags, NULL);
+    hek = Perl_hv_strtab_find(aTHX_ PL_strtab, hash, key, len, flags);
     count = hek ? HvSTR_REFCOUNT(hek) : 0;
     Safefree(free_key);
     return count;
@@ -3953,7 +3517,6 @@ Perl_immortalize_key(pTHX_ SV *keysv)
     U32 hash;
     U8 flags = 0;
     void *free_key = NULL;
-    struct hv_strtab_pin *pin;
 
     if (SvIsCOW_shared_hash(keysv))
         hek = share_hek_hek(SvSHARED_HEK_FROM_PV(key));
@@ -3970,19 +3533,7 @@ Perl_immortalize_key(pTHX_ SV *keysv)
         hek = share_hek_flags(key, len, hash,
                               flags | (free_key ? HVhek_FREEKEY : 0));
     }
-    for (pin = HvSTRTAB(PL_strtab)->pins; pin; pin = pin->next) {
-        if (pin->hek == hek) {
-            pin->count++;
-            return HvSTR_REFCOUNT(hek);
-        }
-    }
-    /* Track intentional references separately from leaked references so full
-     * destruction can retain its shared-key balance check. */
-    Newx(pin, 1, struct hv_strtab_pin);
-    pin->hek = hek;
-    pin->count = 1;
-    pin->next = HvSTRTAB(PL_strtab)->pins;
-    HvSTRTAB(PL_strtab)->pins = pin;
+    Perl_hv_strtab_pin(aTHX_ PL_strtab, hek, 1);
     return HvSTR_REFCOUNT(hek);
 }
 
@@ -3995,16 +3546,16 @@ Perl_shared_keys(pTHX)
     Size_t i, capacity;
     HEK **slots;
 
-    if (!PL_strtab || !HvARRAY(PL_strtab))
+    if (!PL_strtab || !PL_strtab->slots)
         return keys;
-    av_extend(keys, HvTOTALKEYS(PL_strtab));
-    capacity = HvMAX(PL_strtab) + 1;
-    slots = HvSTRSLOTS(PL_strtab);
+    av_extend(keys, PL_strtab->live);
+    capacity = PL_strtab->capacity;
+    slots = PL_strtab->slots;
     /* Copying values does not intern keys or change the pointer table. */
     for (i = 0; i < capacity; i++) {
         HEK *hek = slots[i];
         SV *key;
-        if (!hek || hek == HvSTR_TOMBSTONE)
+        if (!hek || hek == PERL_HV_STRTAB_TOMBSTONE)
             continue;
         key = newSVpvn(HEK_KEY(hek), HEK_LEN(hek));
         if (HEK_UTF8(hek))
@@ -4053,44 +3604,12 @@ Perl_share_hek(pTHX_ const char *str, SSize_t len, U32 hash)
 static HEK *
 S_share_hek_flags(pTHX_ const char *str, STRLEN len, U32 hash, int flags)
 {
-    PERL_ARGS_ASSERT_SHARE_HEK_FLAGS;
-
     HEK *hek;
-    struct shared_hek *shared;
-    const U8 flags_masked = flags & HVhek_STORAGE_MASK;
-    Size_t pos;
-
+    PERL_ARGS_ASSERT_SHARE_HEK_FLAGS;
     assert(!(flags & HVhek_NOTSHARED));
-
-    if (UNLIKELY(len > (STRLEN) I32_MAX)) {
-        PERL_THROW_ERROR_VALUE_HASH_KEY_LENGTH_OUT_OF_RANGE();
-    }
-
-    if (!HvARRAY(PL_strtab))
-        S_strtab_resize(aTHX_ STRTAB_MIN_CAPACITY);
-    hek = S_strtab_find(aTHX_ hash, str, len, flags_masked, &pos);
-    if (hek) {
-        (void)share_hek_hek(hek);
-    }
-    else {
-        char *raw;
-        S_strtab_prepare_insert(aTHX_ hash, str, len, flags_masked, &pos);
-        Newx(raw, STRUCT_OFFSET(struct shared_hek,
-                                shared_hek_hek.hek_key[0]) + len + 2, char);
-        shared = (struct shared_hek *)raw;
-        hek = &shared->shared_hek_hek;
-        Copy(str, HEK_KEY(hek), len, char);
-        HEK_KEY(hek)[len] = 0;
-        HEK_LEN(hek) = len;
-        HEK_HASH(hek) = hash;
-        HEK_FLAGS(hek) = flags_masked;
-        shared->refcount = 1;
-        S_strtab_insert(aTHX_ hek, pos);
-    }
-
-    if (flags & HVhek_FREEKEY)
-        Safefree(str);
-
+    hek = Perl_hv_strtab_share(aTHX_ PL_strtab, hash, str, len,
+                               flags & HVhek_STORAGE_MASK);
+    if (flags & HVhek_FREEKEY) Safefree(str);
     return hek;
 }
 

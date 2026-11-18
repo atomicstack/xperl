@@ -531,3 +531,10 @@ Existing Perl behavior is preserved where practical. The fork's experimental
 features and development policies may continue to evolve as the branch
 develops. Compatibility handling includes feature-disabled code paths,
 `CORE` behavior, threaded builds, and bundled distributions.
+
+The string table now has an explicitly owned `PERL_HV_STRTAB` C type.
+`perl_hv_strtab.[ch]` implements it independently of ordinary hashes.
+Ordinary storage is selected from `perl_hv_sc.[ch]` or `perl_hv_oa.[ch]` at
+compile time, with only that backend compiled into `hv.o`. The internal
+layout and accessor names are `PERL_HV_INDEX` and `HvINDEX`. `HvIS_OA` and
+`HvIS_STRTAB` are removed.

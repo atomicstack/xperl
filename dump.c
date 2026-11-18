@@ -2801,31 +2801,11 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
                 freq[1] = totalkeys;
                 max = 1;
             }
-            else if (MUTABLE_HV(sv) == PL_strtab) {
-                const Size_t capacity = HvMAX(sv) + 1;
-                freq[0] = capacity - totalkeys;
-                freq[1] = totalkeys;
-                max = 1;
-            }
-            else if (HvIS_OA(MUTABLE_HV(sv))) {
-                const Size_t capacity = HvMAX(sv) + 1;
-                freq[0] = capacity - totalkeys;
-                freq[1] = totalkeys;
-                max = 1;
-            }
             else {
-                for (i = 0; (STRLEN)i < HvENTRY_LIMIT(sv); i++) {
-                    HE* h;
-                    int count = 0;
-                    for (h = HvENTRY_FIRST(sv, i); h;
-                         h = HvENTRY_NEXT(sv, h))
-                        count++;
-                    if (count > FREQ_MAX)
-                        count = FREQ_MAX;
-                    freq[count]++;
-                    if (max < count)
-                        max = count;
-                }
+                const Size_t capacity = HvMAX(sv) + 1;
+                freq[0] = capacity - totalkeys;
+                freq[1] = totalkeys;
+                max = 1;
             }
             for (i = 0; i <= max; i++) {
                 if (freq[i]) {
@@ -2848,8 +2828,7 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
                                 n + n(n-1)/2k
             */
 
-            if (!HvIS_LINEAR(MUTABLE_HV(sv))
-                && MUTABLE_HV(sv) != PL_strtab)
+            if (!HvIS_LINEAR(MUTABLE_HV(sv)))
             {
                 for (i = max; i > 0; i--) { /* Precision: count down. */
                     sum += (NV)freq[i] * i * i;
@@ -2867,10 +2846,7 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
         dump_indent(level, file, "  KEYS = %" UVuf "\n", (UV)totalkeys);
         {
             STRLEN count = 0;
-            if (MUTABLE_HV(sv) == PL_strtab) {
-                count = totalkeys;
-            }
-            else if (HvARRAY(sv)) {
+            if (HvARRAY(sv)) {
                 STRLEN i;
                 for (i = 0; i < HvENTRY_LIMIT(sv); ++i)
                     if (HvENTRY_FIRST(sv, i)) ++count;
@@ -2989,33 +2965,7 @@ Perl_do_sv_dump(pTHX_ I32 level, PerlIO *file, SV *sv, I32 nest, I32 maxnest, bo
             if (HvTOTALKEYS(hv)) {
                 STRLEN i;
                 int count = maxnest - nest;
-                if (hv == PL_strtab) {
-                    HEK * const * const slots = HvSTRSLOTS(hv);
-                    const Size_t capacity = HvMAX(hv) + 1;
-                    for (i = 0; slots && i < capacity; i++) {
-                        HEK * const hek = slots[i];
-                        const char *keypv;
-                        STRLEN len;
-
-                        if (!hek || hek == HvSTR_TOMBSTONE)
-                            continue;
-                        if (count-- <= 0) goto DONEHV;
-
-                        keypv = HEK_KEY(hek);
-                        len = HEK_LEN(hek);
-                        dump_indent(level+1, file, "Elt %s ",
-                                pv_display_for_dump(d, keypv, len, 0, pvlim));
-                        if (HEK_UTF8(hek))
-                            PerlIO_printf(file, "[UTF8 \"%s\"] ",
-                                          pv_uni_display(d, (const U8 *)keypv, len,
-                                                         6 * len, UNI_DISPLAY_QQ));
-                        PerlIO_printf(file, "HASH = 0x%" UVxf,
-                                      (UV)HEK_HASH(hek));
-                        PerlIO_printf(file, " REFCNT = 0x%" UVxf "\n",
-                                      (UV)HvSTR_REFCOUNT(hek));
-                    }
-                }
-                else {
+                {
                     for (i=0; i < HvENTRY_LIMIT(hv); i++) {
                         HE *he;
                         for (he = HvENTRY_FIRST(hv, i); he;

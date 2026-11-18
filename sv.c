@@ -574,8 +574,8 @@ Perl_sv_clean_objs(pTHX)
 static void
 do_clean_all(pTHX_ SV *const sv)
 {
-    if (sv == (const SV *) PL_fdpid || sv == (const SV *)PL_strtab) {
-        /* don't clean pid table and strtab */
+    if (sv == (const SV *) PL_fdpid) {
+        /* The pid table is released explicitly after cyclic SV cleanup. */
         return;
     }
     DEBUG_D((PerlIO_printf(Perl_debug_log, "Cleaning loops: SV at 0x%" UVxf "\n", PTR2UV(sv)) ));
@@ -16155,7 +16155,7 @@ S_sv_dup_inc_multiple(pTHX_ SV *const *source, SV **dest,
  * duplicating keys or values, so recursive references to the containing HV
  * can find the destination entry. */
 static void
-S_sv_dup_oa_entry(pTHX_ const HE *source, HE *dest,
+S_sv_dup_hash_entry(pTHX_ const HE *source, HE *dest,
                   CLONE_PARAMS *const param)
 {
     if (HeKLEN(source) == HEf_SVKEY) {
@@ -16593,7 +16593,7 @@ S_sv_dup_common(pTHX_ const SV *const ssv, CLONE_PARAMS *const param)
                             ptr_table_store(PL_ptr_table,
                                 &HeVAL(HvENTRIES(ssv)), &HeVAL(entry));
                             if (HvTOTALKEYS(ssv))
-                                S_sv_dup_oa_entry(aTHX_ HvENTRIES(ssv), entry,
+                                S_sv_dup_hash_entry(aTHX_ HvENTRIES(ssv), entry,
                                                   param);
                         }
                         else if (capacity >= 2) {
@@ -16608,14 +16608,14 @@ S_sv_dup_common(pTHX_ const SV *const ssv, CLONE_PARAMS *const param)
                                     &HeVAL(&entries[i]));
                             }
                             for (i = 0; i < HvTOTALKEYS(ssv); ++i)
-                                S_sv_dup_oa_entry(aTHX_ &HvENTRIES(ssv)[i],
+                                S_sv_dup_hash_entry(aTHX_ &HvENTRIES(ssv)[i],
                                                   &entries[i], param);
                         }
                         else {
                             HvARRAY(dsv) = NULL;
                         }
                     }
-                    else if (HvIS_OA(ssv)) {
+                    else {
                         PERL_HV_INDEX *oa;
                         char *oa_bytes;
                         const PERL_HV_INDEX * const soa = HvINDEX(ssv);
@@ -16649,22 +16649,11 @@ S_sv_dup_common(pTHX_ const SV *const ssv, CLONE_PARAMS *const param)
                             for (i = 0; i < used; ++i) {
                                 const HE *source = &soa->entries[i];
                                 if (HeKEY_hek(source))
-                                    S_sv_dup_oa_entry(aTHX_ source,
+                                    S_sv_dup_hash_entry(aTHX_ source,
                                         &oa->entries[i], param);
                             }
                         }
                         Copy(soa->indices, oa->indices, storage_bytes, U8);
-                    }
-                    else {
-                        char *darray;
-                        Newx(darray, PERL_HV_ARRAY_ALLOC_BYTES(HvMAX(dsv)+1), char);
-                        HvARRAY(dsv) = (HE**)darray;
-                        while (i <= HvMAX(ssv)) {
-                            const HE * const source = HvARRAY(ssv)[i];
-                            HvARRAY(dsv)[i] = source
-                                ? he_dup(source, FALSE, param) : 0;
-                            ++i;
-                        }
                     }
                 }
                 else
@@ -17778,31 +17767,18 @@ perl_clone_using(PerlInterpreter *proto_perl, UV flags,
     ptr_table_store(PL_ptr_table, &proto_perl->Ipadname_const,
                     &PL_padname_const);
 
-    /* create (a non-shared!) shared string table */
-    PL_strtab		= newHV();
-    HvSHAREKEYS_off(PL_strtab);
+    /* The child owns a new table. hek_dup interns and relocates each key. */
+    PL_strtab = Perl_hv_strtab_new(aTHX);
+    Perl_hv_strtab_reserve(aTHX_ PL_strtab,
+        MAX((Size_t)(1 << 14), proto_perl->Istrtab->live));
     {
-        Size_t strtab_keys = HvTOTALKEYS(proto_perl->Istrtab);
-        IV reserve_keys;
-        if (strtab_keys < (1 << 14))
-            strtab_keys = 1 << 14;
-        reserve_keys = strtab_keys > (Size_t)IV_MAX
-                     ? IV_MAX : (IV)strtab_keys;
-        hv_ksplit(PL_strtab, reserve_keys);
-    }
-    ptr_table_store(PL_ptr_table, proto_perl->Istrtab, PL_strtab);
-    {
-        struct hv_strtab_pin *source = HvSTRTAB(proto_perl->Istrtab)->pins;
+        const struct perl_hv_strtab_pin *source = proto_perl->Istrtab->pins;
         for (; source; source = source->next) {
-            struct hv_strtab_pin *pin;
-            Newx(pin, 1, struct hv_strtab_pin);
-            pin->hek = hek_dup(source->hek, param);
-            pin->count = source->count;
-            if (UNLIKELY(pin->count - 1 > U32_MAX - HvSTR_REFCOUNT(pin->hek)))
+            HEK *hek = hek_dup(source->hek, param);
+            if (UNLIKELY(source->count - 1 > U32_MAX - HvSTR_REFCOUNT(hek)))
                 Perl_croak_memory_wrap();
-            HvSTR_REFCOUNT(pin->hek) += pin->count - 1;
-            pin->next = HvSTRTAB(PL_strtab)->pins;
-            HvSTRTAB(PL_strtab)->pins = pin;
+            HvSTR_REFCOUNT(hek) += source->count - 1;
+            Perl_hv_strtab_pin(aTHX_ PL_strtab, hek, source->count);
         }
     }
 

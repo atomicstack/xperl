@@ -1012,6 +1012,19 @@ existing C and XS extensions. Perl code can test C<${^XPERL_VERSION}>,
 which is C<1> on XPerl and undefined on ordinary Perl. C<perl -V> reports
 the XPerl version explicitly.
 
+=head2 Independent string table and ordinary-hash backends
+
+C<PL_strtab> is a C<PERL_HV_STRTAB *> with an explicit destructor. It no
+longer has an SV lifetime or participates in generic hash operations. XS
+and embedding code must not cast it to C<SV *> or C<HV *>. The shared-key
+acquisition and release interfaces and stable HEK addresses are preserved.
+
+Ordinary hash storage is implemented separately in C<perl_hv_sc.[ch]> and
+C<perl_hv_oa.[ch]>. The build compiles only the selected backend. Both use
+the internal C<PERL_HV_INDEX> type and C<HvINDEX> accessors; the former
+C<hv_oa> structure and C<HvOA> accessor names are replaced. The
+C<HvIS_OA> and C<HvIS_STRTAB> identity predicates are removed.
+
 =head2 Experimental XPerl hash storage
 
 Ordinary hashes now use a compact array of two-pointer C<HE> records and

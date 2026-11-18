@@ -14273,16 +14273,6 @@ S_clear_placeholders(pTHX_ HV *hv, U32 items)
                   PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
-static void
-S_hsplit(pTHX_ HV *hv, STRLEN const oldsize, STRLEN newsize)
-        Perl_attribute_nonnull_aTHX
-        Perl_attribute_nonnull(pTHX_1);
-# define PERL_ARGS_ASSERT_HSPLIT                \
-     STMT_START { Perl_assert_aTHX; assert(hv);         \
-                  assert(SvTYPE(hv) == SVt_PVHV);       \
-                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
-    } STMT_END
-
 static struct xpvhv_aux *
 S_hv_auxinit(pTHX_ HV *hv)
         Perl_attribute_nonnull_aTHX
