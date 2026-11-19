@@ -171,14 +171,17 @@ arrays copies the identifiers but does not move the C<HE> array. Bucket
 resizing and entry compaction rebuild the chains.
 
 The default chain layout keeps entry and bucket capacity independent. Entry
-storage starts at a minimum capacity of eight. When full, it doubles while
-its current capacity is below 1,024 slots. From 1,024 through 16,383 slots it
-grows by half. At larger capacities it grows by a quarter. Fractional
-increments are rounded down. Explicit reservations retain their requested
-entry budget independently of this growth policy.
+storage starts at a minimum capacity of eight. When full, its growth follows
+the current entry-identifier width: one-byte identifiers double capacity,
+two-byte identifiers grow it by half, and four-byte identifiers grow it by a
+quarter. Fractional increments are rounded down. Forced four-byte identifiers
+use quarter growth at every capacity. Explicit reservations retain their
+requested entry budget independently of this growth policy.
 Promotion from linear storage sizes its buckets to hold the new entry budget
 at the bucket load limit. With the default linear limit, the ninth key
-promotes to sixteen entry slots and thirty-two buckets.
+promotes to sixteen entry slots and thirty-two buckets with adaptive
+identifiers, or ten entry slots and sixteen buckets with forced four-byte
+identifiers.
 Entry compaction uses a 20 percent hole threshold at
 all capacities, with no byte threshold. A full entry array compacts when it
 meets this threshold without growing the bucket array. An append with spare
@@ -186,8 +189,8 @@ entry positions does not calculate shrink targets. Shrinking is considered
 when entry exhaustion requires growing or compacting the storage. An index
 rebuild that is otherwise required also packs entries at this threshold,
 but does not apply
-the standalone HE shrink test. Otherwise a full entry array grows by 25
-percent without changing the bucket array.
+the standalone HE shrink test. Otherwise a full entry array grows according
+to its identifier width without changing the bucket array.
 
 Before insertion, the bucket array doubles when the live count is at least
 C<floor(2 * buckets / 3)> and the new key collides with an occupied bucket.

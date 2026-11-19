@@ -717,10 +717,11 @@ holes are preserved. Changing entry capacity uses C<Renew>, which may
 relocate the array.
 
 Integer-chained builds keep append-only HE positions and grow their bucket
-array independently of the entry array. A full entry array doubles while
-its current capacity is below 1,024 slots. From 1,024 through 16,383 slots it
-grows by half. At larger capacities it grows by a quarter. Explicit
-reservations retain their requested entry budget.
+array independently of the entry array. A full entry array grows according
+to its current identifier width: one-byte identifiers double capacity,
+two-byte identifiers grow it by half, and four-byte identifiers grow it by
+a quarter. Fractional increments are rounded down. Explicit reservations
+retain their requested entry budget.
 Promotion from linear storage allocates enough buckets for its new entry
 capacity.
 A collision at or above the integer two-thirds bucket load limit doubles

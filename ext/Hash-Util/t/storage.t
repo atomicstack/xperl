@@ -951,8 +951,11 @@ if ($info->{integer_chained}) {
        || $chain_info->{fingerprint_bits} == $chain_info->{index_width} * 8,
        'fingerprint width is zero or tracks the encoded chain-link width');
 
-    exercise_chain_all_ones(255, 1);
-    exercise_chain_all_ones(65_535, 2);
+    my $fixed_width = $chain_info->{index_width} == 4;
+    unless ($fixed_width) {
+        exercise_chain_all_ones(255, 1);
+        exercise_chain_all_ones(65_535, 2);
+    }
 
     my ($keys, $slots, $used, @lengths) = bucket_info(\%chain);
     is($keys, 4, 'bucket_info counts all keys in an integer chain');
@@ -980,11 +983,12 @@ if ($info->{integer_chained}) {
     my %small_width;
     keys %small_width = 128;
     my $width_one = hash_storage_info(\%small_width);
-    ok($width_one->{entry_capacity} <= 255 && $width_one->{index_width} == 1,
-       'integer-chain links use one byte at small entry capacity');
+    ok($width_one->{entry_capacity} <= 255
+       && $width_one->{index_width} == ($fixed_width ? 4 : 1),
+       'small integer chains use the configured identifier width');
     is($width_one->{fingerprint_bits},
-       $chain_info->{fingerprint_bits} ? 8 : 0,
-       'one-byte indexes report their enabled fingerprint width');
+       $chain_info->{fingerprint_bits} ? $width_one->{index_width} * 8 : 0,
+       'small indexes report their enabled fingerprint width');
     my @small_colliding = integer_chain_keys(
         'xperl-integer-chain-small', $width_one->{index_capacity}, 4);
     $small_width{$small_colliding[$_]} = $_ for 0 .. $#small_colliding;
@@ -1001,15 +1005,16 @@ if ($info->{integer_chained}) {
             $width_one->{fullchains}, $width_one->{entry_holes},
             [sort map { ref($_) ? @$_ : () } @{bucket_array(\%small_width)}],
             [sort keys %small_width],
-        ], 'thread clone retains one-byte integer chains and holes');
+        ], 'thread clone retains small integer chains and holes');
     }
     keys %small_width = 256;
     my $width_two = hash_storage_info(\%small_width);
-    ok($width_two->{entry_capacity} >= 256 && $width_two->{index_width} == 2,
-       'integer-chain links widen after entry capacity crosses 255');
+    ok($width_two->{entry_capacity} >= 256
+       && $width_two->{index_width} == ($fixed_width ? 4 : 2),
+       'integer-chain links follow the configured width above 255 positions');
     is($width_two->{fingerprint_bits},
-       $chain_info->{fingerprint_bits} ? 16 : 0,
-       'two-byte indexes report their enabled fingerprint width');
+       $chain_info->{fingerprint_bits} ? $width_two->{index_width} * 8 : 0,
+       'larger indexes report their enabled fingerprint width');
     my @wider_colliding = integer_chain_keys(
         'xperl-integer-chain-small-wide', $width_two->{index_capacity}, 4);
     $small_width{$wider_colliding[$_]} = $_ for 0 .. $#wider_colliding;
@@ -1026,7 +1031,7 @@ if ($info->{integer_chained}) {
             $width_two->{fullchains}, $width_two->{entry_holes},
             [sort map { ref($_) ? @$_ : () } @{bucket_array(\%small_width)}],
             [sort keys %small_width],
-        ], 'thread clone retains two-byte integer chains and holes');
+        ], 'thread clone retains larger integer chains and holes');
     }
 
     my %wide;
@@ -1034,8 +1039,8 @@ if ($info->{integer_chained}) {
     my $wide_info = hash_storage_info(\%wide);
     is($wide_info->{entry_capacity}, 65_535,
        'known-size reservation reaches 65,535 HE positions');
-    is($wide_info->{index_width}, 2,
-       '65,535 HE positions still use two-byte chain links');
+    is($wide_info->{index_width}, $fixed_width ? 4 : 2,
+       '65,535 HE positions use the configured chain-link width');
     my $wide_buckets = $wide_info->{index_capacity};
     my @wide_colliding = integer_chain_keys(
         'xperl-integer-chain-wide', $wide_buckets, 4);
@@ -1069,7 +1074,8 @@ if ($info->{integer_chained}) {
             ];
         }, \%wide, $wide_colliding[1], @wide_colliding)->join;
         is_deeply($snapshot, [
-            1, 2, $wide_holes->{fingerprint_bits}, $wide_holes->{link_bytes},
+            1, $wide_holes->{index_width}, $wide_holes->{fingerprint_bits},
+            $wide_holes->{link_bytes},
             $wide_holes->{entry_holes}, 0,
             [sort map { ref($_) ? @$_ : () } @{bucket_array(\%wide)}],
             [sort keys %wide],
@@ -1545,20 +1551,23 @@ if (hash_storage_info({})->{integer_chained}) {
 }
 
 if (hash_storage_info({})->{integer_chained}) {
-    for my $case ([1023, 2046], [1024, 1536],
-                  [16383, 24574], [16384, 20480]) {
+    for my $case ([254, 508], [255, 510], [256, 384],
+                  [65534, 98301], [65535, 98302], [65536, 81920]) {
         my ($reserved, $expanded) = @$case;
         my $hash = {};
         keys %$hash = $reserved;
         is(hash_storage_info($hash)->{entry_capacity}, $reserved,
            'an exact reservation retains its requested entry budget');
         $hash->{"growth-cutoff:$_"} = $_ for 0 .. $reserved - 1;
-        my $buckets = hash_storage_info($hash)->{index_capacity};
+        my $before = hash_storage_info($hash);
+        my $buckets = $before->{index_capacity};
+        $expanded = $reserved + int($reserved / 4)
+            if $before->{index_width} == 4;
         delete $hash->{'growth-cutoff:0'};
         $hash->{'growth-cutoff:new'} = 1;
         my $info = hash_storage_info($hash);
         is($info->{entry_capacity}, $expanded,
-           'automatic growth uses the old capacity to select its growth band');
+           'automatic growth follows the current identifier width');
         is($info->{index_capacity}, $buckets,
            'entry growth below the bucket load limit needs no bucket split');
         is($info->{entry_holes}, 1,

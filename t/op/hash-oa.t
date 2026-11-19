@@ -215,7 +215,8 @@ $hash{'default:8'} = 8;
 $info = hash_storage_info(\%hash);
 die "default did not promote on the ninth entry\n"
     unless !$info->{linear}
-        && $info->{index_capacity} == ($info->{integer_chained} ? 32 : 16)
+        && $info->{index_capacity}
+            == ($info->{integer_chained} && $info->{index_width} == 1 ? 32 : 16)
         && keys(%hash) == 9 && $hash{'default:8'} == 8;
 
 if ($info->{integer_chained}) {

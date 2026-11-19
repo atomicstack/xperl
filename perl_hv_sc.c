@@ -19,10 +19,8 @@ S_hv_index_bucket_count(const HV *hv)
 PERL_STATIC_INLINE U32
 S_hv_index_next_entry_capacity(pTHX_ U32 capacity)
 {
-    /* Double small vectors to reduce entry/link allocation traffic. Larger
-     * vectors grow by half, then by a quarter to limit spare storage. */
-    const U32 increment = capacity < 1024 ? capacity
-        : capacity >> (capacity < 16384 ? 1 : 2);
+    /* Wider identifiers use smaller increments to limit spare storage. */
+    const U32 increment = capacity / HvINDEX_WIDTH_FOR(capacity);
     const U32 expanded = capacity + increment;
 
     if (!increment || expanded < capacity)
