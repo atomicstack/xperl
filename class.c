@@ -69,6 +69,28 @@ Perl_class_missing_required_constructor_parameter_op(pTHX_ SV *class_name,
         NULL);
 }
 
+static const MGVTBL S_class_cv_context_vtbl = {0};
+
+/* The token owns a scalar containing a weak stash reference. Copies share
+ * that scalar, so copying the token cannot strengthen the stash reference.
+ * A token whose stash has expired remains distinct from an unbound pad. */
+static SV *
+S_class_owner_token(pTHX_ HV *owner)
+{
+    SV *weak = newRV_inc((SV *)owner);
+    sv_rvweaken(weak);
+    return newRV_noinc(weak);
+}
+
+static HV *
+S_class_owner_stash(SV *token)
+{
+    if(!token || !SvROK(token) || !SvROK(SvRV(token))
+            || SvTYPE(SvRV(SvRV(token))) != SVt_PVHV)
+        return NULL;
+    return (HV *)SvRV(SvRV(token));
+}
+
 /* Clone a role CV and store a fieldix offset in its pad for composition.
  * The clone gets its own padlist (via cv_clone) and shares the optree
  * (via OpREFCNT). The offset is stored in pad slot PADIX_ROLE_OFFSET,
@@ -79,7 +101,13 @@ S_cv_clone_with_field_offset(pTHX_ CV *proto, PADOFFSET offset, HV *owner)
     CV *cv = cv_clone(proto);
     PAD *pad1 = PadlistARRAY(CvPADLIST(cv))[1];
     sv_setuv(PadARRAY(pad1)[PADIX_ROLE_OFFSET], offset);
-    sv_sethek(PadARRAY(pad1)[PADIX_FIELD_OWNER], HvNAME_HEK(owner));
+    SV *token = S_class_owner_token(aTHX_ owner);
+    sv_setsv(PadARRAY(pad1)[PADIX_FIELD_OWNER], token);
+    /* Execution pads are cleared during recursion and interpreter cloning.
+     * Keep permanent composition identity on the CV as well. */
+    sv_magicext((SV *)cv, token, PERL_MAGIC_ext,
+        &S_class_cv_context_vtbl, NULL, 0);
+    SvREFCNT_dec_NN(token);
     return cv;
 }
 #define cv_clone_with_field_offset(proto, offset, owner) \
@@ -166,15 +194,32 @@ S_class_layout(pTHX_ SV *instance)
     return (AV *)mg_find(instance, PERL_MAGIC_class_storage)->mg_obj;
 }
 
+/* The position of a class in a layout's classes array, or -1.  Classes are
+ * matched by stash identity, not name: a stash deleted and redeclared under
+ * the same name must not bind its methods to an older layout.  The array
+ * owns a reference to each stash, so an address cannot be recycled while the
+ * layout exists, and cloning an interpreter remaps the stashes with the
+ * array. */
+static SSize_t
+S_class_layout_index(AV *classes, const HV *owner)
+{
+    SV **array = AvARRAY(classes);
+    for(SSize_t i = AvFILLp(classes); i >= 0; i--)
+        if((const HV *)array[i] == owner)
+            return i;
+    return -1;
+}
+
 static bool
 S_class_layout_shift(pTHX_ SV *instance, HV *owner, PADOFFSET *shift)
 {
     AV *layout = S_class_layout(aTHX_ instance);
-    HV *shifts = (HV *)AvARRAY(layout)[CLASS_LAYOUT_SHIFTS];
-    HE *he = hv_fetch_ent(shifts, newSVhek_mortal(HvNAME_HEK(owner)), 0, 0);
-    if(!he)
+    /* The shifts are a packed PADOFFSET array parallel to the classes. */
+    SSize_t i = S_class_layout_index(
+        (AV *)AvARRAY(layout)[CLASS_LAYOUT_CLASSES], owner);
+    if(i < 0)
         return FALSE;
-    *shift = SvUV(HeVAL(he));
+    *shift = ((PADOFFSET *)SvPVX(AvARRAY(layout)[CLASS_LAYOUT_SHIFTS]))[i];
     return TRUE;
 }
 
@@ -182,13 +227,13 @@ PADNAME *
 Perl_class_field_name(pTHX_ SV *instance, PADOFFSET fieldix)
 {
     PERL_ARGS_ASSERT_CLASS_FIELD_NAME;
-    AV *classes = (AV *)AvARRAY(S_class_layout(aTHX_ instance))[CLASS_LAYOUT_CLASSES];
+    AV *layout = S_class_layout(aTHX_ instance);
+    AV *classes = (AV *)AvARRAY(layout)[CLASS_LAYOUT_CLASSES];
+    const PADOFFSET *shifts = (const PADOFFSET *)SvPVX(AvARRAY(layout)[CLASS_LAYOUT_SHIFTS]);
     for(SSize_t ci = 0; ci <= AvFILL(classes); ci++) {
         HV *decl = (HV *)AvARRAY(classes)[ci];
         struct xpvhv_aux *aux = HvAUX(decl);
-        PADOFFSET shift;
-        if(!S_class_layout_shift(aTHX_ instance, decl, &shift))
-            continue;
+        const PADOFFSET shift = shifts[ci];
         PADNAMELIST *names = aux->xhv_class_fields;
         for(SSize_t i = 0; names && i <= PadnamelistMAX(names); i++) {
             PADNAME *pn = PadnamelistARRAY(names)[i];
@@ -233,27 +278,27 @@ S_class_role_offset(pTHX_ HV *consumer, HV *role, PADOFFSET *offset)
 }
 
 static HV *
-S_class_context_owner(pTHX_ SV *instance, HV *role, CV *cv)
+S_class_context_owner(pTHX_ SV *instance, HV *role, CV *cv, PAD *pad)
 {
     if(!CvIsMETHOD(cv) || CvISXSUB(cv) || !CvPADLIST(cv))
         return NULL;
-    PAD *pad = PadlistARRAY(CvPADLIST(cv))[CvDEPTH(cv) ? CvDEPTH(cv) : 1];
+    if(!pad)
+        pad = PadlistARRAY(CvPADLIST(cv))[CvDEPTH(cv) ? CvDEPTH(cv) : 1];
     SV *owner = PadARRAY(pad)[PADIX_FIELD_OWNER];
     if(!SvOK(owner))
         return NULL;
-    HV *consumer = gv_stashsv(owner, 0);
+    HV *consumer = S_class_owner_stash(owner);
     PADOFFSET offset, shift;
     return consumer && S_class_layout_shift(aTHX_ instance, consumer, &shift)
         && S_class_role_offset(aTHX_ consumer, role, &offset) ? consumer : NULL;
 }
 
-static const MGVTBL S_class_cv_context_vtbl = {0};
-
 static SV *
-S_class_captured_owner(pTHX_ CV *cv)
+S_class_captured_owner(pTHX_ CV *cv, PAD *pad)
 {
     if(CvIsMETHOD(cv) && !CvISXSUB(cv) && CvPADLIST(cv)) {
-        PAD *pad = PadlistARRAY(CvPADLIST(cv))[CvDEPTH(cv) ? CvDEPTH(cv) : 1];
+        if(!pad)
+            pad = PadlistARRAY(CvPADLIST(cv))[CvDEPTH(cv) ? CvDEPTH(cv) : 1];
         SV *owner = PadARRAY(pad)[PADIX_FIELD_OWNER];
         if(owner && SvOK(owner))
             return owner;
@@ -267,20 +312,24 @@ CV *
 Perl_class_bind_context(pTHX_ CV *cv, bool force_clone)
 {
     PERL_ARGS_ASSERT_CLASS_BIND_CONTEXT;
-    /* A captured lexical context wins over an unrelated caller. Store only
-     * a copied class name, never an object reference or a mutable pad alias. */
-    SV *owner = S_class_captured_owner(aTHX_ cv);
+    /* A captured lexical context wins over an unrelated caller. The shared
+     * token preserves identity without owning the consumer stash. */
+    SV *owner = S_class_captured_owner(aTHX_ cv, NULL);
     bool captured = owner != NULL;
     if(!owner) {
         for(I32 level = 0; ; level++) {
-            const PERL_CONTEXT *cx = caller_cx(level, NULL);
-            if(!cx)
+            const PERL_CONTEXT *cx;
+            if(!caller_cx(level, &cx))
                 break;
+            if(CxTYPE(cx) != CXt_SUB)
+                continue;
             CV *caller = cx->blk_sub.cv;
             if(!caller)
                 continue;
-            SV *candidate = S_class_captured_owner(aTHX_ caller);
-            HV *consumer = candidate ? gv_stashsv(candidate, 0) : NULL;
+            PAD *pad = !CvISXSUB(caller) && CvPADLIST(caller)
+                ? PadlistARRAY(CvPADLIST(caller))[cx->blk_sub.olddepth + 1] : NULL;
+            SV *candidate = S_class_captured_owner(aTHX_ caller, pad);
+            HV *consumer = S_class_owner_stash(candidate);
             PADOFFSET offset;
             if(consumer && S_class_role_offset(aTHX_ consumer, CvSTASH(cv), &offset)) {
                 owner = candidate;
@@ -293,7 +342,7 @@ Perl_class_bind_context(pTHX_ CV *cv, bool force_clone)
     CV *bound = cv_clone(cv);
     if(owner) {
         if(CvIsMETHOD(bound)) {
-            HV *consumer = gv_stashsv(owner, 0);
+            HV *consumer = S_class_owner_stash(owner);
             PADOFFSET offset;
             if(consumer && S_class_role_offset(aTHX_ consumer, CvSTASH(bound), &offset)) {
                 PAD *pad = PadlistARRAY(CvPADLIST(bound))[1];
@@ -301,10 +350,10 @@ Perl_class_bind_context(pTHX_ CV *cv, bool force_clone)
                 sv_setuv(PadARRAY(pad)[PADIX_ROLE_OFFSET], offset);
             }
         }
-        SV *name = newSVsv(owner);
-        sv_magicext((SV *)bound, name, PERL_MAGIC_ext,
+        SV *token = newSVsv(owner);
+        sv_magicext((SV *)bound, token, PERL_MAGIC_ext,
             &S_class_cv_context_vtbl, NULL, 0);
-        SvREFCNT_dec_NN(name);
+        SvREFCNT_dec_NN(token);
     }
     return bound;
 }
@@ -314,27 +363,31 @@ S_class_field_owner(pTHX_ SV *self, SV *instance, CV *cv)
 {
     SV *owner = PAD_SVl(PADIX_FIELD_OWNER);
     if(SvOK(owner))
-        return gv_stashsv(owner, 0);
+        return S_class_owner_stash(owner);
     HV *role = CvSTASH(cv);
-    if(!HvSTASH_IS_ROLE(role))
+    if(!role || !HvSTASH_IS_ROLE(role))
         return role;
-    SV *captured = S_class_captured_owner(aTHX_ cv);
-    HV *consumer = captured ? gv_stashsv(captured, 0) : NULL;
+    SV *captured = S_class_captured_owner(aTHX_ cv, NULL);
+    HV *consumer = captured ? S_class_owner_stash(captured) : NULL;
+    if(captured && !consumer)
+        return NULL;
     /* Escaped anonymous methods retain their composing context through the
      * outside CV. Lexical methods can inherit it from an active caller. */
     for(CV *outside = CvOUTSIDE(cv); outside && !consumer; outside = CvOUTSIDE(outside))
-        consumer = S_class_context_owner(aTHX_ instance, role, outside);
+        consumer = S_class_context_owner(aTHX_ instance, role, outside, NULL);
     for(I32 level = 1; !consumer; level++) {
-        const PERL_CONTEXT *cx = caller_cx(level, NULL);
-        if(!cx)
+        const PERL_CONTEXT *cx;
+        if(!caller_cx(level, &cx))
             break;
+        if(CxTYPE(cx) != CXt_SUB)
+            continue;
         CV *caller = cx->blk_sub.cv;
         if(!caller || !CvIsMETHOD(caller) || CvISXSUB(caller))
             continue;
-        PAD *pad = PadlistARRAY(CvPADLIST(caller))[CvDEPTH(caller)];
+        PAD *pad = PadlistARRAY(CvPADLIST(caller))[cx->blk_sub.olddepth + 1];
         SV *caller_self = PadARRAY(pad)[PADIX_SELF];
         if(SvROK(caller_self) && SvROK(self) && SvRV(caller_self) == SvRV(self))
-            consumer = S_class_context_owner(aTHX_ instance, role, caller);
+            consumer = S_class_context_owner(aTHX_ instance, role, caller, pad);
     }
     if(!consumer) {
         AV *classes = (AV *)AvARRAY(S_class_layout(aTHX_ instance))[CLASS_LAYOUT_CLASSES];
@@ -354,7 +407,9 @@ S_class_field_owner(pTHX_ SV *self, SV *instance, CV *cv)
         assert(found);
         PERL_UNUSED_VAR(found);
         save_item(owner);
-        sv_sethek(owner, HvNAME_HEK(consumer));
+        SV *token = S_class_owner_token(aTHX_ consumer);
+        sv_setsv(owner, token);
+        SvREFCNT_dec_NN(token);
         save_item(PAD_SVl(PADIX_ROLE_OFFSET));
         sv_setuv(PAD_SVl(PADIX_ROLE_OFFSET), offset);
     }
@@ -536,10 +591,19 @@ S_class_save_storage_guard(pTHX_ SV *referent, SV *storages, bool destroying, bo
 static void
 S_class_collect(pTHX_ HV *stash, AV *classes, HV *seen)
 {
-    SV *name = newSVhek_mortal(HvNAME_HEK(stash));
-    if(hv_exists_ent(seen, name, 0))
+    const char *identity = (const char *)&stash;
+    if(hv_exists(seen, identity, sizeof(stash)))
         return;
-    (void)hv_store_ent(seen, name, newSViv(1), 0);
+    (void)hv_store(seen, identity, sizeof(stash), newSViv(1), 0);
+    if(HvSTASH_IS_CLASS(stash)) {
+        struct xpvhv_aux *aux = HvAUX(stash);
+        HV *parent = aux->xhv_class_superclass
+            ? aux->xhv_class_superclass : aux->xhv_class_legacy_parent;
+        if(parent)
+            S_class_collect(aTHX_ parent, classes, seen);
+        av_push(classes, SvREFCNT_inc((SV *)stash));
+        return;
+    }
     GV **gvp = (GV **)hv_fetchs(stash, "ISA", 0);
     AV *isa = gvp && isGV_with_GP(*gvp) ? GvAV(*gvp) : NULL;
     for(SSize_t i = 0; isa && i <= AvFILL(isa); i++) {
@@ -547,8 +611,6 @@ S_class_collect(pTHX_ HV *stash, AV *classes, HV *seen)
         if(parent)
             S_class_collect(aTHX_ parent, classes, seen);
     }
-    if(HvSTASH_IS_CLASS(stash))
-        av_push(classes, SvREFCNT_inc((SV *)stash));
 }
 
 struct class_field_binding {
@@ -650,7 +712,7 @@ S_class_validate_field(pTHX_ PADNAME *pn, HV *owner, HV *fields, HV *parameters)
 }
 
 static void
-S_class_validate_fields(pTHX_ AV *classes, HV *shifts)
+S_class_validate_fields(pTHX_ AV *classes, bool check_owners)
 {
     HV *fields = newHV();
     HV *parameters = newHV();
@@ -666,8 +728,8 @@ S_class_validate_fields(pTHX_ AV *classes, HV *shifts)
         for(SSize_t j = 0; names && j <= PadnamelistMAX(names); j++) {
             PADNAME *pn = PadnamelistARRAY(names)[j];
             struct padname_fieldinfo *fi = PadnameFIELDINFO(pn);
-            if(shifts && fi->is_inherited
-                    && !hv_exists_ent(shifts, newSVhek_mortal(HvNAME_HEK(fi->storage_owner)), 0))
+            if(check_owners && fi->is_inherited
+                    && S_class_layout_index(classes, fi->storage_owner) < 0)
                 PERL_THROW_ERROR_OBJECT_FIELD_INHERITANCE_OWNER_MISSING(PadnameSV(pn));
             S_class_validate_field(aTHX_ pn, decl, fields, parameters);
         }
@@ -689,11 +751,14 @@ S_class_new_storage(pTHX_ HV *stash)
     av_push(layout, SvREFCNT_inc((SV *)stash));
     AV *classes = newAV();
     av_push(layout, (SV *)classes);
-    HV *shifts = newHV();
-    av_push(layout, (SV *)shifts);
     HV *seen = newHV();
     SAVEFREESV((SV *)seen);
     S_class_collect(aTHX_ stash, classes, seen);
+    SV *shifts = newSV((AvFILL(classes) + 1) * sizeof(PADOFFSET) + 1);
+    SvPOK_only(shifts);
+    SvCUR_set(shifts, (AvFILL(classes) + 1) * sizeof(PADOFFSET));
+    *SvEND(shifts) = '\0';
+    av_push(layout, shifts);
     PADOFFSET fields = 0;
     for(SSize_t i = 0; i <= AvFILL(classes); i++) {
         HV *decl = (HV *)AvARRAY(classes)[i];
@@ -703,13 +768,12 @@ S_class_new_storage(pTHX_ HV *stash)
         PADOFFSET prefix = aux->xhv_class_superclass
             ? HvAUX(aux->xhv_class_superclass)->xhv_class_next_fieldix : 0;
         assert(fields >= prefix);
-        (void)hv_store_ent(shifts, newSVhek_mortal(HvNAME_HEK(decl)),
-                newSVuv(fields - prefix), 0);
+        ((PADOFFSET *)SvPVX(shifts))[i] = fields - prefix;
         fields += aux->xhv_class_next_fieldix - prefix;
     }
     if(AvFILL(classes) < 0)
         PERL_THROW_ERROR_OBJECT_CONSTRUCTOR_MODERN_ANCESTOR_REQUIRED();
-    S_class_validate_fields(aTHX_ classes, shifts);
+    S_class_validate_fields(aTHX_ classes, TRUE);
     SV *instance = newSVobject(fields);
     sv_magicext(instance, (SV *)layout, PERL_MAGIC_class_storage, NULL, NULL, 0);
     return instance;
@@ -940,6 +1004,26 @@ S_class_object_fields_to_hash(pTHX_ HV *hash, HV *stash, SV *instance, PADOFFSET
     }
 }
 
+/* Snapshot buckets use names, so distinct generations of one class cannot
+ * share a snapshot even though their field storage remains independent. */
+static void
+S_class_check_snapshot_owners(pTHX_ AV *classes)
+{
+    HV *seen = (HV *)sv_2mortal((SV *)newHV());
+    for(SSize_t i = 0; i <= AvFILL(classes); i++) {
+        HV *decl = (HV *)AvARRAY(classes)[i];
+        struct xpvhv_aux *aux = HvAUX(decl);
+        PADOFFSET prefix = aux->xhv_class_superclass
+            ? HvAUX(aux->xhv_class_superclass)->xhv_class_next_fieldix : 0;
+        if(aux->xhv_class_next_fieldix == prefix)
+            continue;
+        SV *owner = newSVhek_mortal(HvNAME_HEK(decl));
+        if(hv_exists_ent(seen, owner, 0))
+            PERL_THROW_ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS(owner);
+        (void)hv_store_ent(seen, owner, newSViv(1), 0);
+    }
+}
+
 /*
 =for apidoc_section $SV
 =for apidoc class_object_to_hash
@@ -961,16 +1045,16 @@ Perl_class_object_to_hash(pTHX_ SV *object)
     SV *storages = class_storage(object);
     if(!storages)
         PERL_THROW_ERROR_OBJECT_CONVERSION_NATIVE_OBJECT_REQUIRED();
+    SV *instance = class_storage(object);
+    AV *layout = S_class_layout(aTHX_ instance);
+    AV *classes = (AV *)AvARRAY(layout)[CLASS_LAYOUT_CLASSES];
+    S_class_check_snapshot_owners(aTHX_ classes);
     HV *hash = newHV();
     (void)hv_stores(hash, "$self", newSVsv(object));
-    SV *instance = class_storage(object);
-    AV *classes = (AV *)AvARRAY(S_class_layout(aTHX_ instance))[CLASS_LAYOUT_CLASSES];
+    const PADOFFSET *shifts = (const PADOFFSET *)SvPVX(AvARRAY(layout)[CLASS_LAYOUT_SHIFTS]);
     for(SSize_t i = 0; i <= AvFILL(classes); i++) {
         HV *decl = (HV *)AvARRAY(classes)[i];
-        PADOFFSET shift;
-        bool found = S_class_layout_shift(aTHX_ instance, decl, &shift);
-        assert(found);
-        PERL_UNUSED_VAR(found);
+        const PADOFFSET shift = shifts[i];
         struct xpvhv_aux *aux = HvAUX(decl);
         PADOFFSET prefix = aux->xhv_class_superclass
             ? HvAUX(aux->xhv_class_superclass)->xhv_class_next_fieldix : 0;
@@ -1101,13 +1185,13 @@ Perl_class_object_restore(pTHX_ SV *hashref, SV *classname, SV *payload)
     else
         instance = S_class_new_storage(aTHX_ stash);
     SAVEFREESV(instance);
-    AV *classes = (AV *)AvARRAY(S_class_layout(aTHX_ instance))[CLASS_LAYOUT_CLASSES];
+    AV *layout = S_class_layout(aTHX_ instance);
+    AV *classes = (AV *)AvARRAY(layout)[CLASS_LAYOUT_CLASSES];
+    S_class_check_snapshot_owners(aTHX_ classes);
+    const PADOFFSET *shifts = (const PADOFFSET *)SvPVX(AvARRAY(layout)[CLASS_LAYOUT_SHIFTS]);
     for(SSize_t i = 0; i <= AvFILL(classes); i++) {
         HV *decl = (HV *)AvARRAY(classes)[i];
-        PADOFFSET shift;
-        bool found = S_class_layout_shift(aTHX_ instance, decl, &shift);
-        assert(found);
-        PERL_UNUSED_VAR(found);
+        const PADOFFSET shift = shifts[i];
         struct xpvhv_aux *aux = HvAUX(decl);
         PADOFFSET prefix = aux->xhv_class_superclass
             ? HvAUX(aux->xhv_class_superclass)->xhv_class_next_fieldix : 0;
@@ -1173,6 +1257,8 @@ PP(pp_methstart)
 
     HV *owner = S_class_field_owner(aTHX_ self, instance, curcv);
     PADOFFSET class_shift;
+    if(!owner && !CvSTASH(curcv))
+        PERL_THROW_ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED();
     if(!owner || !S_class_layout_shift(aTHX_ instance, owner, &class_shift))
         PERL_THROW_ERROR_OBJECT_METHOD_CALL_INVOCANT_CLASS_INCOMPATIBLE(CvSTASH(curcv), SvSTASH(rv));
 
@@ -2900,7 +2986,7 @@ Perl_class_seal_stash(pTHX_ HV *stash)
     AV *role_initfields_cvs = proto_role_compose_and_install(stash);
 
     S_class_resolve_inherited(aTHX_ stash, ancestor_classes);
-    S_class_validate_fields(aTHX_ ancestor_classes, NULL);
+    S_class_validate_fields(aTHX_ ancestor_classes, FALSE);
 
     /* Phase 1: Resolve class-relative field indices to absolute indices.
      * base_offset = next_fieldix, which now accounts for superclass + role

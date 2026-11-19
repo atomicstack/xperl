@@ -620,6 +620,7 @@ enum perl_diag_index {
     perl_diag_error_object_conversion_hash_reference_required_idx,
     perl_diag_error_object_conversion_native_class_required_idx,
     perl_diag_error_object_conversion_native_object_required_idx,
+    perl_diag_error_object_conversion_owner_ambiguous_idx,
     perl_diag_error_object_conversion_owner_bucket_required_idx,
     perl_diag_error_object_conversion_payload_reference_required_idx,
     perl_diag_error_object_conversion_snapshot_self_required_idx,
@@ -2216,6 +2217,7 @@ enum perl_diag_number {
     perl_diag_error_object_conversion_hash_reference_required_number                           = 1120,
     perl_diag_error_object_conversion_native_class_required_number                             = 1121,
     perl_diag_error_object_conversion_native_object_required_number                            = 1122,
+    perl_diag_error_object_conversion_owner_ambiguous_number                                   = 2786,
     perl_diag_error_object_conversion_owner_bucket_required_number                             = 2770,
     perl_diag_error_object_conversion_payload_reference_required_number                        = 2762,
     perl_diag_error_object_conversion_snapshot_self_required_number                            = 2771,
@@ -5036,7 +5038,7 @@ enum perl_diag_selector_domain_id {
 
 
 #if defined(PERL_CORE) || defined(PERL_EXT_RE_BUILD)
-#define PERL_DIAG_METADATA_COUNT 1592
+#define PERL_DIAG_METADATA_COUNT 1593
 
 #endif
 
@@ -20380,6 +20382,14 @@ enum perl_diag_selector_domain_id {
         ma_max \
     )
 
+#define PERL_THROW_ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS(ma_owner) \
+    Perl_throw_croak_1_1453( \
+        aTHX_ perl_diag_error_object_conversion_owner_ambiguous_idx, \
+        __FILE__, \
+        __LINE__, \
+        (SV *)(ma_owner) \
+    )
+
 #define PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID_ABORT() \
     STMT_START { \
         PERL_ADD_COMPILE_ERR_ERROR_SYNTAX_INVALID(); \
@@ -21722,6 +21732,7 @@ enum perl_diag_selector_domain_id {
 /* PERL_THROW_ERROR_OBJECT_CONVERSION_HASH_REFERENCE_REQUIRED => ERROR_OBJECT_CONVERSION_HASH_REFERENCE_REQUIRED */
 /* PERL_THROW_ERROR_OBJECT_CONVERSION_NATIVE_CLASS_REQUIRED => ERROR_OBJECT_CONVERSION_NATIVE_CLASS_REQUIRED */
 /* PERL_THROW_ERROR_OBJECT_CONVERSION_NATIVE_OBJECT_REQUIRED => ERROR_OBJECT_CONVERSION_NATIVE_OBJECT_REQUIRED */
+/* PERL_THROW_ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS => ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS */
 /* PERL_THROW_ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED => ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED */
 /* PERL_THROW_ERROR_OBJECT_CONVERSION_PAYLOAD_REFERENCE_REQUIRED => ERROR_OBJECT_CONVERSION_PAYLOAD_REFERENCE_REQUIRED */
 /* PERL_THROW_ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED => ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED */
@@ -22655,7 +22666,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * dd0b2d55aa8bc96dadcf150db3e284d533476688c98f16588004561214a7a9bb diag_conf.pl
+ * 8bb8a85912ce30498c6058f0df3aff80241c5bcffd966de7b28441651f421ad2 diag_conf.pl
  * 33ec9731336463f6feeab1a67c087741ee4e1ad5eb527a86cceac4b577ab4168 diag_op_conf.pl
  * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
  * ex: set ro ft=c: */

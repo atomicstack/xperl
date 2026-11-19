@@ -188,4 +188,25 @@ print "OK\n";
 CODE
 }
 
+{
+    # a method of a redeclared same-named class must not bind its fields
+    # onto an instance of the deleted original class
+    fresh_perl_like(<<'CODE', qr/^old: hello\nnew: 1\npush died: .+\nread died: .+\nOK$/s, {}, "stale same-named class layout is rejected");
+use v5.36; use feature 'class'; no warnings;
+class C { field $s = "hello"; method s { $s } }
+my $o = C->new;
+delete $main::{'C::'};
+eval q{ class C { field @arr; method push_it { push @arr, 42; scalar @arr } method read_it { "@arr" } }; 1 } or die $@;
+say "old: ", $o->s;
+say "new: ", C->new->push_it;
+my $m = "C"->can('push_it');
+eval { $o->$m(); 1 } and say "push survived";
+print "push died: $@" if $@;
+my $r = "C"->can('read_it');
+eval { $o->$r(); 1 } and say "read survived";
+print "read died: $@" if $@;
+print "OK\n";
+CODE
+}
+
 done_testing;

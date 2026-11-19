@@ -1283,6 +1283,15 @@ manager will later use a regex to expand these into links.
 
 =item *
 
+Class methods now distinguish separate declarations that reuse a package
+name, including composed role methods and objects cloned into a thread.
+Objects retain the field layout of their declared superclass when that
+superclass's name is reused. Snapshot conversion rejects layouts with
+distinct field owners sharing a name, since name-keyed buckets cannot
+represent them separately.
+
+=item *
+
 Keys added by a tied C<CLEAR> method that unties and repopulates its own hash
 retain their encoding flags. Serializing such a hash with C<Storable> no
 longer loses an upgraded key's UTF-8 flag or makes a wide key unreachable

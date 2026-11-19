@@ -7722,6 +7722,7 @@ t/class/gh23511.t			Test defining a reader after a strict 'vars' violation
 t/class/hierarchy.t			Modern fields across mixed inheritance hierarchies
 t/class/inherit.t			See if class inheritance works
 t/class/inherited_fields.t		Explicit inherited and private class fields
+t/class/layout_identity.t		Class and role layout identity regression tests
 t/class/legacy-inherit.t		Legacy superclass constructors and method dispatch
 t/class/method.t			See if class method declarations work
 t/class/object_hash.t			Test class object hash conversion

@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: 0e8d0affd2477b82f65fa412bf418310cd3b5fb301d5b1ef52199dbe2535e0a1 */
+/* Language-scoped rendered data SHA-256: fea3a046dfd11024b20a42afd16f1551e61db4a0d246d5869a92cadedf65cba4 */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
 
@@ -1455,6 +1455,7 @@ static const char perl_diag_template_text_eb103293[] = "Class already has a decl
 static const char perl_diag_template_text_59087c3a[] = "Class already has a superclass, cannot add another";
 static const char perl_diag_template_text_72cab597[] = "Class attribute %1$s requires a value";
 static const char perl_diag_template_text_f17be851[] = "Class field bucket %1$s must be a hash reference";
+static const char perl_diag_template_text_baea4d09[] = "Class field snapshot cannot distinguish multiple owners named %1$s";
 static const char perl_diag_template_text_4de22735[] = "class is experimental";
 static const char perl_diag_template_text_8b4592fb[] = "class name";
 static const char perl_diag_template_text_2d300f6f[] = "Class object payload must be an unblessed reference";
@@ -5286,6 +5287,7 @@ enum {
     perl_diag_template_start_en_2783,
     perl_diag_template_start_en_2784,
     perl_diag_template_start_en_2785,
+    perl_diag_template_start_en_2786,
     perl_diag_template_end_en,
 };
 
@@ -7198,6 +7200,7 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_value_jumphash_key_too_large_number,                                        UINT64_C(         0), perl_diag_template_text_83eb4ca4,  0,   0 },
     { perl_diag_error_diagnostic_api_catalog_invalid_number,                                      UINT64_C(         0), perl_diag_template_text_ab4219fa,  2,   1 },
     { perl_diag_error_syntax_dispatch_shape_nesting_too_deep_number,                              UINT64_C(         0), perl_diag_template_text_f4f26999,  1,   1 },
+    { perl_diag_error_object_conversion_owner_ambiguous_number,                                   UINT64_C(         0), perl_diag_template_text_baea4d09,  1,   1 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -8792,6 +8795,7 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2783, NULL                        },
     { 0,   2,  perl_diag_word_group_none, perl_diag_template_start_en_2784, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2785, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2786, NULL                        },
 };
 
 static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
@@ -17156,6 +17160,11 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2785 = {
     perl_diagpack_param_schema_ids + 600, 1
 };
 
+static const perl_diagpack_schema_t perl_diagpack_schema_2786 = {
+    2786, "ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS",
+    perl_diagpack_param_schema_ids + 732, 1
+};
+
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     /* local schema row zero is unused */
     NULL, &perl_diagpack_schema_1001, &perl_diagpack_schema_1002, &perl_diagpack_schema_1003,
@@ -17687,7 +17696,7 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     &perl_diagpack_schema_2776, &perl_diagpack_schema_2777, &perl_diagpack_schema_2778,
     &perl_diagpack_schema_2779, &perl_diagpack_schema_2780, &perl_diagpack_schema_2781,
     &perl_diagpack_schema_2782, &perl_diagpack_schema_2783, &perl_diagpack_schema_2784,
-    &perl_diagpack_schema_2785,
+    &perl_diagpack_schema_2785, &perl_diagpack_schema_2786,
 };
 
 static const perl_diag_selector_domain_t perl_diag_selector_domains[] = {

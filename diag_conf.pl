@@ -38190,6 +38190,38 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::Object::Conversion"
         },
+        "ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS" => {
+          "number" => 2786,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS",
+          "macro" => "PERL_THROW_ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS",
+          "source_files" => [
+            "class.c"
+          ],
+          "tags" => [
+            "condition:invalid_syntax_value_state",
+            "subject:object_role_field"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Class field snapshot cannot distinguish multiple owners named %{owner}"
+            },
+            "args" => [
+              {
+                "name" => "owner",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          },
+          "class" => "XPerl::Diagnostic::Error::Object::Conversion"
+        },
         "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED" => {
           "number" => 2770,
           "severity" => "FATAL_ERROR",
