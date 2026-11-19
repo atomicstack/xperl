@@ -3,14 +3,14 @@
 use strict;
 use warnings;
 use FindBin;
-use lib $FindBin::Bin;
+use lib "$FindBin::Bin/../../Porting";
 use BenchUtils qw(run json write_json read_json csv_line csv_rows median parse_sizes
     rng random32 shuffle source_info source_patch absolute);
 use File::Temp qw(tempdir);
 use Test::More;
 
 my $temporary = tempdir(CLEANUP => 1);
-my @perl = (absolute($^X), '-I'.absolute("$FindBin::Bin/../lib"), '-e');
+my @perl = (absolute($^X), '-I'.absolute("$FindBin::Bin/../../lib"), '-e');
 my $result = run([@perl, 'print "x" x 140000; print STDERR "y" x 150000']);
 is(length $result->{stdout}, 140000, 'capture stdout larger than a pipe buffer');
 is(length $result->{stderr}, 150000, 'capture stderr without blocking stdout');

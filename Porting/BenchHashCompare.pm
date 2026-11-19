@@ -2,10 +2,11 @@ package BenchHashCompare;
 
 use strict;
 use warnings;
+use File::Basename qw(dirname);
+use lib dirname(__FILE__);
 use BenchUtils qw(absolute sha256 perl_info source_info source_patch platform_info
     write_json run rng random32 shuffle hash_seed median minimum maximum
     parse_sizes csv_rows csv_line pin_cpu);
-use File::Basename qw(dirname);
 use Getopt::Long qw(GetOptionsFromArray);
 use POSIX qw(strftime);
 use JSON::PP ();

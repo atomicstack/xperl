@@ -12,7 +12,7 @@ Drivers use a recorded xorshift32 generator for datasets and run ordering,
 independently of the measured interpreter's hash seed. Its sequence differs
 from the former drivers, so retain archived datasets when comparing old runs.
 
-Use C<./perl -Ilib Porting/bench-tools.t> to check process capture,
+Use C<./perl -Ilib t/porting/bench_tools.t> to check process capture,
 timeouts, metadata encoding, and CSV handling. CPU pinning through C<--cpu>
 uses Linux C<taskset>; omit it on other platforms.
 

@@ -7549,7 +7549,6 @@ Porting/bench-hash-random-insert.pl		Construct hashes from random key sets
 Porting/bench-hash-random-insert-compare.pl	Compare random-key hash construction
 Porting/bench-strtab.pl				Benchmark shared key table fill and teardown
 Porting/bench-strtab-compare.pl			Run paired shared key table benchmarks
-Porting/bench-tools.t				Benchmark helper regression coverage
 Porting/bench-trie.pl				Compare trie corpus scans across Perl builds
 Porting/BenchHashCompare.pm			Paired hash benchmark support
 Porting/BenchUtils.pm				Shared benchmark process and provenance support
@@ -8279,6 +8278,7 @@ t/porting/bench/oddentry		a test file for t/porting/bench.t
 t/porting/bench/ret0			a test file for t/porting/bench.t
 t/porting/bench/synerr			a test file for t/porting/bench.t
 t/porting/bench_selftest.t		run Porting/bench.pl's selftest facility
+t/porting/bench_tools.t			Benchmark helper regression coverage
 t/porting/bincompat.t			Check that {non_,}bincompat_options are ordered
 t/porting/check_config_defines.t	Check for rogue #defines in config.h
 t/porting/checkcase.t			Check whether we are case-insensitive-fs-friendly
