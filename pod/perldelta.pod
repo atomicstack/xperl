@@ -655,6 +655,13 @@ and graph algorithms.  Graph errors currently use C<XPERL.GRAPH.*> codes.
 
 =item *
 
+L<Tensor::XS> 0.01 provides experimental native tensor storage, with
+L<Tensor>, L<Vector>, L<Matrix> and L<Scalar> wrappers and L<MNIST> data
+loading helpers. Argument conversions retain their inputs across callbacks.
+Writes preserve copies of the payload and respect read-only scalars.
+
+=item *
+
 L<Net::SSLeay> 1.97_01 and L<IO::Socket::SSL> 2.099 are bundled with XPerl.
 Building Net::SSLeay requires OpenSSL or LibreSSL headers and libraries.
 This Net::SSLeay development release supports OpenSSL 4.0 and later.
