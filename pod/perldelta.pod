@@ -438,14 +438,6 @@ C<builtin::class_object_to_hash> API and emits code using
 C<builtin::class_object_from_hash> to recreate the object without invoking
 its constructor.  Field values are shared rather than recursively copied.
 
-=head2 Data::Dumper supports class objects
-
-C<Data::Dumper> can now dump objects created by the experimental C<class>
-feature.  It represents their fields with the experimental
-C<builtin::class_object_to_hash> API and emits code using
-C<builtin::class_object_from_hash> to recreate the object without invoking
-its constructor.  Field values are shared rather than recursively copied.
-
 =head2 Data::Dumper Unicode preservation is opt in
 
 C<Data::Dumper> keeps traditional quoting and hexadecimal escapes by
@@ -678,7 +670,7 @@ variable.
 
 =item *
 
-Diagnostic translations are provided by eighteen optional
+Diagnostic translations are provided by twenty optional non-English
 C<XPerl::DiagPack::XX> XS modules. English remains compiled into Perl and
 miniperl. Requiring a pack registers its capability without selecting it;
 C<use XPerl::DiagPack qw(all)> loads installed packs. The provisional
