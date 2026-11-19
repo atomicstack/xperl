@@ -1135,10 +1135,11 @@ is($info->{metadata_bytes} + $info->{entry_index_bytes}, $info->{index_bytes},
 is($info->{hash_bytes}, 0,
    'index slots contain no separate cached-hash array');
 is($info->{entry_index_bytes},
-   $info->{index_capacity} * $info->{index_width},
-   'encoded indices use the selected width per index slot');
-is($info->{slot_size}, $info->{index_width},
-   'effective slot size is the encoded entry-index width');
+   $info->{index_capacity} * $info->{slot_size},
+   'index records use the selected width per slot');
+is($info->{slot_size}, $info->{index_width}
+       + $info->{fingerprint_bytes} / $info->{index_capacity},
+   'slot size includes its identifier and optional inline hash bits');
 cmp_ok($info->{probe_total}, '>=', $info->{probe_max},
        'total displacement includes the largest displacement');
 
@@ -1566,6 +1567,67 @@ if (hash_storage_info({})->{integer_chained}) {
         is($hash->{"growth-cutoff:$middle"}, $middle,
            'growth across the cutoff preserves existing values');
     }
+}
+
+if (!hash_storage_info({})->{integer_chained}) {
+    my %probe;
+    reserve_buckets(\%probe, 16);
+    my @keys;
+    my $candidate = 0;
+    for my $low (0x0f, 0x1f, 0x0f, 0x20, 0x2f, 0x3f, 0x00) {
+        my $key;
+        do { $key = 'oa-inline:' . $candidate++ }
+            while ((hash_value($key) & 255) != $low);
+        push @keys, $key;
+    }
+    # The first three keys share home bucket 15 and wrap into bucket zero.
+    # The fourth is displaced from home zero. At K <= 8, the equal low
+    # bytes on the first and third keys need full hash and key checks.
+    $probe{$keys[$_]} = $_ for 0 .. 3;
+    is_deeply([@probe{@keys[0 .. 3]}], [0 .. 3],
+       'wrapped collisions preserve same and different inline hash bits');
+    ok(!exists $probe{$keys[5]}, 'a wrapped probe rejects an absent key');
+    delete $probe{$keys[0]};
+    is_deeply([@probe{@keys[1 .. 3]}], [1 .. 3],
+       'lookup passes a tombstone before checking inline hash bits');
+    $probe{$keys[4]} = 4;
+    ok(!exists $probe{$keys[0]}, 'reusing a tombstone keeps its old key absent');
+    $probe{$keys[6]} = 6;
+    my @live = @keys[1, 2, 3, 4, 6];
+    my @values = (1, 2, 3, 4, 6);
+    for my $buckets (16, 256, 65536) {
+        reserve_buckets(\%probe, $buckets);
+        my $info = hash_storage_info(\%probe);
+        is($info->{index_width}, $buckets == 16 ? 1 : $buckets == 256 ? 2 : 4,
+           'OA identifiers widen independently of the inline hash bits');
+        is_deeply([@probe{@live}], \@values,
+           'rebuilding packed records retains colliding keys and zero low bits');
+        is($info->{entry_index_bytes},
+           $info->{index_capacity} * $info->{slot_size},
+           'OA storage accounts for identifiers and inline hash bits');
+        SKIP: {
+            skip 'Perl not compiled with useithreads', 1
+                unless $Config{useithreads};
+            require threads;
+            my $snapshot = threads->create(sub {
+                my @before = @probe{@live};
+                delete $probe{$live[0]};
+                $probe{$keys[5]} = 5;
+                return [\@before, $probe{$keys[5]}, exists $probe{$live[0]} ? 1 : 0];
+            })->join;
+            is_deeply($snapshot, [\@values, 5, 0],
+               'thread clone copies packed OA records and permits independent mutation');
+        }
+    }
+    is_deeply([@probe{@live}], \@values, 'cloned mutations leave the parent intact');
+    my $wide = "\x{100}";
+    my $bytes = $wide;
+    utf8::encode($bytes);
+    is(hash_value($wide), hash_value($bytes),
+       'distinct UTF-8 and byte keys share a full stored hash');
+    @probe{$wide, $bytes} = (11, 22);
+    is_deeply([@probe{$wide, $bytes}], [11, 22],
+       'even a full-width fingerprint match checks the key flags');
 }
 
 done_testing();

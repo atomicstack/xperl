@@ -896,7 +896,10 @@ Open addressing is available by selecting C<PERL_HASH_INDEX_OA>. The two
 options cannot be combined. C<PERL_HASH_CHAIN_FINGERPRINT> enables optional
 chain fingerprints and cannot be combined with OA. Fingerprints are off by
 default. C<PL_strtab> uses its own chained table in all builds.
-The open-addressed index stores adaptive-width entry identifiers only.
+By default, the open-addressed index stores adaptive-width entry identifiers
+only. C<PERL_HASH_OA_INLINE_BITS=K> optionally adds the low C<K> hash bits to
+each index slot, where C<K> is zero through 32 and defaults to zero. Changing
+this option requires rebuilding core and extensions together.
 The full cached hash remains in the entry's C<HEK>. Growing or compacting the
 entry array can invalidate C<HE *> and C<SV **> pointers returned by hash
 access functions. Deleting from the headerless linear form can also

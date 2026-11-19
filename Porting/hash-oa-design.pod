@@ -6,7 +6,7 @@ hash_oa_design - Compact hash storage with integer chains and optional open addr
 
 This document records the compact hash representation and its compatibility
 requirements. Ordinary hashes use integer chains by default, without
-fingerprints. Open addressing and fingerprinted chains are optional builds.
+fingerprints. Open addressing and fingerprints are independent build choices.
 The shared-key table uses its own pointer-based chains independently of that
 choice.
 
@@ -41,16 +41,37 @@ entries. By default, indexed hashes use integer chains: C<hv.h> defines
 C<PERL_HASH_INDEX_CHAINS> unless C<PERL_HASH_INDEX_OA> is selected. The chain
 index uses packed bucket heads and one packed next identifier per entry slot.
 Fingerprints are disabled unless C<PERL_HASH_CHAIN_FINGERPRINT> is defined.
-Selecting OA together with chains or fingerprints is rejected. C<PL_strtab>
+Selecting OA together with chains or chain fingerprints is rejected. C<PL_strtab>
 uses its own chained implementation in every build.
 
-With C<PERL_HASH_INDEX_OA>, each index slot stores only an entry identifier.
+With C<PERL_HASH_INDEX_OA>, each index slot stores an entry identifier.
+Defining C<PERL_HASH_OA_INLINE_BITS=K> adds the low C<K> hash bits to each
+slot, with C<K> from zero through 32. Zero is the default and adds no space
+or lookup work. Nonzero widths use one byte through eight bits, two bytes
+through 16 bits, and four bytes above that. These bytes follow the packed
+identifier in the same index allocation. Lookup checks them before loading
+the entry and its C<HEK>, then performs the usual full hash and key checks.
+Deletion marks only the identifier. Reuse and rebuilding publish new bits
+with each live identifier.
+
+This option requires C<PERL_HASH_INDEX_OA>. SC builds can independently use
+C<PERL_HASH_CHAIN_FINGERPRINT>. Neither option affects C<PL_strtab>.
+For example, add C<-DPERL_HASH_INDEX_OA -DPERL_HASH_OA_INLINE_BITS=8> to
+C<ccflags> when configuring an OA build with eight inline hash bits. Rebuild
+all extensions when changing the layout.
+
+Low hash bits overlap the home-bucket bits. When there are at least C<2**K>
+buckets, keys with the same home bucket have the same inline bits. The
+filter can reject displaced entries from other home buckets, but does not
+help distinguish those same-home collisions. Benchmark the extra index
+space and lookup cost as well as avoided entry loads.
+
 The following load, tombstone, capacity, and shrink rules describe the OA
 layout.
 The full cached hash remains in the entry's C<HEK>. The identifier uses one
 byte when slot capacity is at most 128, two bytes when it is at most 32,768,
 and four bytes above that. Zero means empty; an all-ones identifier marks a
-deleted slot; live identifiers are entry positions plus one. Index capacity
+deleted slot; live identifiers are entry positions plus one.
 The OA index capacity remains a power of two. Entry compaction uses a 20
 percent hole threshold at all
 sizes; there is no minimum byte threshold. A full entry array compacts when
@@ -106,9 +127,10 @@ With the default positive threshold, a singleton uses one arena-backed
 16-byte compact C<HE> on 64-bit builds. At threshold zero, the first key uses
 indexed storage instead. Including the common 24-byte C<HV> and 32-byte
 C<XPVHV>, the default singleton's structural total is 72 bytes. The promoted
-open-addressed form has 24 bytes of metadata
-before the entry-identifier array in the same allocation. Its index slots use
-one, two, or four bytes as the identifier widens. The linear form has no
+open-addressed form has 20 bytes of metadata on typical 64-bit builds
+before the index records in the same allocation. Its index slots use
+one, two, or four bytes as the identifier widens, plus any inline hash bytes.
+The linear form has no
 index allocation or metadata header. This design does not enlarge the C<HV>
 or C<XPVHV> structure. The original chained representation used a 24-byte
 C<HE> on 64-bit builds; these sizes depend on pointer width.

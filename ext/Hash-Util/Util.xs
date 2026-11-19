@@ -425,19 +425,19 @@ hash_storage_info(hash)
             PERL_HV_INDEX *oa = HvARRAY(hash) ? HvINDEX(hash) : NULL;
             const U32 capacity = oa ? HvMAX(hash) + 1 : 0;
             const U32 index_width = oa ? HvINDEX_WIDTH(hash) : 0;
-            const U32 slot_size = index_width;
+            const U32 slot_size = integer_chained ? index_width
+                : oa ? HvINDEX_RECORD_WIDTH_FOR(capacity) : 0;
             const UV hash_bytes = 0;
 #if defined(PERL_HASH_INDEX_CHAINS) && defined(PERL_HASH_CHAIN_FINGERPRINT)
             fingerprint_bits = oa ? index_width * 8 : 0;
             fingerprint_bytes = oa
                 ? HvINDEX_FINGERPRINT_BYTES_FOR(oa->capacity) : 0;
+#elif defined(PERL_HASH_INDEX_OA) && PERL_HASH_OA_INLINE_BITS > 0
+            fingerprint_bits = oa ? PERL_HASH_OA_INLINE_BITS : 0;
+            fingerprint_bytes = oa ? HvINDEX_FINGERPRINT_BYTES_FOR(capacity) : 0;
 #endif
             const UV entry_index_bytes = oa
-#ifdef PERL_HASH_INDEX_CHAINS
                 ? HvINDEX_STORAGE_BYTES(capacity, oa->capacity) : 0;
-#else
-                ? (UV)capacity * index_width : 0;
-#endif
 #ifdef PERL_HASH_INDEX_CHAINS
             link_bytes = oa ? (UV)oa->capacity
                 * HvINDEX_RECORD_WIDTH_FOR(oa->capacity) : 0;

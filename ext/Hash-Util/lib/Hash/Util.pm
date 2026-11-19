@@ -650,7 +650,9 @@ C<open_addressed> and C<integer_chained> distinguish the two indexed layouts.
 C<integer_chained> reports whether this Perl build uses encoded integer links
 for ordinary indexed hashes. Tiny linear hashes still have no bucket links.
 When integer chaining uses fingerprints, C<fingerprint_bits> reports their
-width (8, 16, or 32); it is zero when fingerprints are disabled or the index
+width (8, 16, or 32). In OA builds, C<PERL_HASH_OA_INLINE_BITS=K> selects
+C<K> low hash bits per index slot, with C<K> from zero through 32.
+C<fingerprint_bits> is zero when fingerprints are disabled or the index
 has not been allocated.
 In the chained layout, C<fullchains> counts buckets with at least two live
 entries. C<link_bytes> reports the allocated bytes for per-entry next-index
@@ -674,14 +676,18 @@ two, or four); it may be zero or one before an index is allocated. In
 integer-chained builds, the width is selected from C<entry_capacity>: one byte
 through 255 positions, two bytes through 65,535, and four bytes above that.
 C<hash_bytes> is zero because there is no separate cached-hash allocation.
-C<fingerprint_bytes> reports the per-entry fingerprint space; it is already
+C<fingerprint_bytes> reports the allocated fingerprint space; it is already
 included in C<entry_index_bytes>. In integer-chained builds, bucket heads use
 C<index_width> bytes each. Each per-entry link uses that width for its next
 entry identifier, plus a fingerprint of the current HE's hash when enabled.
 The fingerprint is stored with the current HE's link, not with the HE it
 references. Thus C<link_bytes> includes the fingerprint space, and
 C<entry_index_bytes> includes bucket heads and all link records.
-C<slot_size> reports the bucket-head width, which is C<index_width>.
+In integer-chained builds, C<slot_size> reports the bucket-head width,
+which is C<index_width>. In OA builds it includes the identifier and inline
+hash bytes. Each OA slot uses one extra byte for up to eight hash bits, two
+for up to 16, or four for up to 32. C<fingerprint_bytes> counts this physical
+space across all OA slots, including empty and deleted slots.
 C<entry_capacity> counts allocated HE positions, C<entry_used> is the
 entry-array high-water mark, and C<entry_spare> is capacity beyond that
 mark. New entries append at the high-water mark. Deleted positions are not

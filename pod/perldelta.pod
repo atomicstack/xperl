@@ -1139,7 +1139,7 @@ do not establish a general speedup.
 The header C<hv.h> enables C<PERL_HASH_INDEX_CHAINS> by default unless
 C<PERL_HASH_INDEX_OA> is selected. C<PERL_HASH_CHAIN_FINGERPRINT> enables
 fingerprints for chains. Selecting OA together with either chains or
-fingerprints is rejected. C<PL_strtab> uses its own chained implementation in every build.
+chain fingerprints is rejected. C<PL_strtab> uses its own chained implementation in every build.
 The default chain index retains the compact entry array and tiny-hash form.
 It uses power-of-two buckets, a packed bucket-head array, and a packed
 next-identifier array with one link per entry slot. Identifiers are one-based
@@ -1250,6 +1250,17 @@ For more details, see L<perlapi/"struct CodeMagicFunctions">.
 Added a new function analogous to C<save_aelem_flags> and C<save_helem_flags>, to have more control over saving scalars.
 
 =back
+
+=head2 Optional inline hash bits for open addressing
+
+Experimental OA builds can define C<PERL_HASH_OA_INLINE_BITS=K> to keep the
+low C<K> hash bits beside each index identifier. C<K> may be zero through
+32, with zero the default. Lookup checks these bits before loading the
+entry, then checks the full hash and key. This option requires
+C<PERL_HASH_INDEX_OA> and is independent of the SC fingerprint option.
+C<Hash::Util::hash_storage_info()> reports the selected bits and their
+allocated space. See F<Porting/hash-oa-design.pod> for the layout and its
+same-home collision limitation.
 
 =head1 Selected Bug Fixes
 

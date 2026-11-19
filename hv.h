@@ -17,6 +17,10 @@
 
 /* Ordinary hashes use integer chains unless the OA experiment is selected.
  * Shared-key table indexing is independent of this choice. */
+#if defined(PERL_HASH_OA_INLINE_BITS) && PERL_HASH_OA_INLINE_BITS != 0 \
+    && !defined(PERL_HASH_INDEX_OA)
+#  error "PERL_HASH_OA_INLINE_BITS requires PERL_HASH_INDEX_OA"
+#endif
 #if defined(PERL_HASH_INDEX_OA)
 #  if defined(PERL_HASH_INDEX_CHAINS) || defined(PERL_HASH_CHAIN_FINGERPRINT) \
       || defined(PERL_HASH_INDEX_32BIT)

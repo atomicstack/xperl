@@ -357,6 +357,10 @@ S_hv_index_find(pTHX_ HV *hv, U32 hash, const char *key, STRLEN klen, U32 flags,
             return NULL;
         }
         if (ix == HV_INDEX_DELETED) { if (first_deleted == HV_INDEX_NO_SLOT) first_deleted = pos; continue; }
+#if PERL_HASH_OA_INLINE_BITS > 0
+        if (!S_hv_index_hash_bits_match(HvINDEX(hv), mask + 1, pos, hash))
+            continue;
+#endif
         entry = &HvINDEX(hv)->entries[ix - 1];
         if (S_hv_index_key_eq(HeKEY_hek(entry), keyhek, hash, key, klen, flags)) {
             if (slotp) *slotp = pos;
@@ -381,7 +385,7 @@ S_hv_index_insert(HV *hv, HE *entry, U32 hash)
                            : HvINDEX_WIDTH(hv) == 2 ? 0xFFFFU
                            : U32_MAX))
                 Perl_croak_memory_wrap();
-            HvINDEX_SET(hv, pos, encoded);
+            S_hv_index_publish(storage, mask + 1, pos, encoded, hash);
             return;
         }
     }
@@ -497,7 +501,8 @@ S_hv_index_store(HV *hv, HE *entry, U32 hash, U32 insert_pos)
                 assert(encoded && encoded < (HvINDEX_WIDTH(hv) == 1
                     ? 0xFFU : HvINDEX_WIDTH(hv) == 2 ? 0xFFFFU : U32_MAX));
                 if (index == HV_INDEX_DELETED) storage->tombstones--;
-                HvINDEX_SET(hv, insert_pos, encoded);
+                S_hv_index_publish(storage, (U32)HvMAX(hv) + 1,
+                    insert_pos, encoded, hash);
             }
             else
                 S_hv_index_insert(hv, entry, hash);

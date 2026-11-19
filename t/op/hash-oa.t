@@ -140,11 +140,12 @@ SKIP: {
     skip('hash is not open-addressed', 13) unless $info->{open_addressed};
 
     is($info->{hash_bytes}, 0, 'index has no cached-hash array');
-    is($info->{slot_size}, $info->{index_width},
-       'index slot contains only the adaptive-width entry identifier');
+    is($info->{slot_size}, $info->{index_width}
+           + $info->{fingerprint_bytes} / $info->{index_capacity},
+       'index slot contains its identifier and optional inline hash bits');
     is($info->{entry_index_bytes},
-       $info->{index_capacity} * $info->{index_width},
-       'index allocation stores one identifier per slot');
+       $info->{index_capacity} * $info->{slot_size},
+       'index allocation includes the complete slot records');
     is($info->{index_bytes}, $info->{metadata_bytes} + $info->{entry_index_bytes},
        'index bytes include metadata and identifier array only');
 
