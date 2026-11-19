@@ -6081,11 +6081,12 @@ dist/XBench/t/commands.t		Command benchmarks and CLI output
 dist/XBench/t/exceptions.t		Benchmark context and cleanup failures
 dist/XBench/t/measurement.t		Deterministic measurement and stopping checks
 dist/XBench/t/threads.t			Benchmark interpreter cloning checks
-dist/XGraph/bench/e2e-scc-scipy.py			XGraph e2e scc scipy benchmark
+dist/XGraph/bench/e2e-scc-perl-reference.pl		XGraph end-to-end Perl SCC reference
 dist/XGraph/bench/e2e-scc-xgraph.pl			XGraph e2e scc xgraph benchmark
 dist/XGraph/bench/graph-vs-xgraph.pl			XGraph graph vs xgraph benchmark
 dist/XGraph/bench/profile-scc.pl			XGraph profile scc benchmark
-dist/XGraph/bench/scipy-scc.py				XGraph scipy scc benchmark
+dist/XGraph/bench/scc-perl-reference.pl			XGraph Perl SCC reference
+dist/XGraph/bench/SCCReference.pm			Independent Perl SCC reference
 dist/XGraph/Changes					XGraph change history
 dist/XGraph/lib/XGraph.pm				XGraph Perl interface and documentation
 dist/XGraph/lib/XGraph/IO/DOT.pm			XGraph DOT serialization

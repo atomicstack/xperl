@@ -1262,6 +1262,13 @@ C<Hash::Util::hash_storage_info()> reports the selected bits and their
 allocated space. See F<Porting/hash-oa-design.pod> for the layout and its
 same-home collision limitation.
 
+=head2 Perl development tools
+
+Benchmark comparisons and diagnostic review tools now run in Perl, removing
+their Python dependency. Comparison drivers retain raw samples, paired
+summaries, and build provenance. The independent XGraph SCC reference now
+measures Perl; earlier SciPy results remain historical comparisons.
+
 =head1 Selected Bug Fixes
 
 XXX Important bug fixes in the core language are summarized here. Bug fixes in

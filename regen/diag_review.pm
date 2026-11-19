@@ -533,8 +533,8 @@ sub run {
     my $enriched = File::Spec->catfile( $directory, 'source-evidence.candidate.json' );
     Diag::Translation::write_json( $source, $packet );
     my @enrich =
-      ( 'python3', '-B', 'planning/exception-system-guide/class_tree.py', '--review-evidence', $source, $enriched );
-    system(@enrich) == 0 or die "Cannot collect viewer evidence; requires Python 3 and planning viewer sources\n";
+      ( $^X, '-Ilib', 'planning/exception-system-guide/class_tree.pl', '--review-evidence', $source, $enriched );
+    system(@enrich) == 0 or die "Cannot collect viewer evidence; requires Perl planning viewer sources\n";
     $packet = Diag::Translation::read_json($enriched);
     $packet->{review_policy} = instructions();
     my $fingerprint = Diag::Translation::fingerprint(

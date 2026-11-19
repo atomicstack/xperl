@@ -130,7 +130,7 @@ forwarder, framework check, or test fixture.
 Rebuild the development reference explicitly:
 
 ```sh
-python3 -B planning/exception-system-guide/source_reference.py
+./perl -Ilib planning/exception-system-guide/source_reference.pl
 ```
 
 [Focused notes](diagnostic-source-notes.json) are maintained separately from the

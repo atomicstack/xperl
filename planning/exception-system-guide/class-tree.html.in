@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>__STYLES__</style>
+<header>
+  <div class="eyebrow">XPerl · diagnostics</div>
+  <h1>Class browser</h1>
+  <p class="generation-info">__GENERATION__</p>
+  <p>Explore the classification tree. Select a class or diagnostic for details.</p>
+  <div class="category-legend" aria-label="Entry colors">
+    <span class="warning">● Warnings</span><span class="error">● Errors</span>
+    <span class="internal">● Internal errors</span>
+  </div>
+  <div class="controls">
+    <label class="search-label">Search classes, codes, templates or tags
+      <input id="search" type="search" placeholder="e.g. Unicode, GOTO, subject:rng" autocomplete="off">
+    </label>
+    <label>Show
+      <select id="filter">
+        <option value="all">All entries</option>
+        <option value="internal">Internal</option>
+        <option value="panic">Panic</option>
+        <option value="render">Render-only</option>
+      </select>
+    </label>
+    <button id="expand" type="button">Expand all</button>
+    <button id="collapse" type="button">Collapse all</button>
+    <button id="reset" type="button">Reset view</button>
+    <label class="check"><input id="empty" type="checkbox"> Show empty classes</label>
+  </div>
+  <div class="summary"><span id="counts" role="status" aria-live="polite"></span>
+    <span>← → open / close · ↑ ↓ navigate · Home / End jump</span></div>
+</header>
+<main>
+  <section class="tree-panel" aria-label="Class hierarchy">
+    <ul id="tree" role="tree" aria-label="Diagnostic classes and codes"></ul>
+    <p id="no-results" hidden>No matching entries. Try a shorter search or a different filter.</p>
+  </section>
+  <aside id="details" aria-label="Selected item details">
+    <h2>Select an item</h2>
+    <p>The tree shows primary inheritance. Additional proposed parents appear here.</p>
+    <p>Internal failures live under <code>Error::Internal</code>. Render is a flag,
+    not a separate class family. Render-only entries format values without creating
+    a diagnostic instance.</p>
+  </aside>
+</main>
+<noscript>This class browser requires JavaScript. The text report is available in planning/diagnostic-error-family-proposal.tsv.</noscript>
+<script id="tree-data" type="application/json">__DATA__</script>
+<script>__CONTROLLER__</script>
+</html>
