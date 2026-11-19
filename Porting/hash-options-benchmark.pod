@@ -44,7 +44,7 @@ keys. Both stored-key modes and both variable-query modes are included.
 The recorded entry capacity and index width confirm which representation
 each case reaches.
 
-    python3 Porting/bench-hash-options.py \
+    ./perl -Ilib Porting/bench-hash-options-compare.pl \
       --manifest /build/manifest.json --output /results/quick --cpu 1
 
 Use C<--reuse /results/previous> to import matching samples. The driver
@@ -86,7 +86,7 @@ the source revision, patch, Configure arguments, and build log alongside
 the manifest. The driver records hashes of the binaries and benchmark
 sources, the workload definitions, CPU identity, and selected seeds.
 
-    python3 Porting/bench-hash-options.py \
+    ./perl -Ilib Porting/bench-hash-options-compare.pl \
       --manifest /build/manifest.json --output /results/hash-options \
       --profile full --cpu 1 --trials 5 --operations 200000
 
@@ -102,7 +102,7 @@ additional sizes supplied through C<--sizes>. Variant selection must retain
 the baseline. For example, compare two linear limits at four and eight
 keys with:
 
-    python3 Porting/bench-hash-options.py \
+    ./perl -Ilib Porting/bench-hash-options-compare.pl \
       --manifest /build/manifest.json --output /results/linear-limits \
       --profile full --cpu 1 --trials 3 --sizes 4,8 \
       --workloads random-hit,miss \

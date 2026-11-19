@@ -362,7 +362,7 @@ bytes describe the compact HE arena slot, with C<arena_slot_size> equal to
 C<he_size>. An empty hash reports zero entry bytes
 and a null entry address, including after C<keys>, C<each>, or C<clear>.
 
-F<Porting/bench-hash-oa-compare.py> runs baseline and candidate workers in
+F<Porting/bench-hash-oa-compare.pl> runs baseline and candidate workers in
 paired trials, uses the same deterministic C<PERL_HASH_SEED> in each pair,
 randomizes which interpreter runs first, and writes raw CSV, a JSON summary,
 and JSON metadata. Metadata records the Perl executable digest, source
@@ -377,7 +377,7 @@ case shuffles its query keys before timing. Default sizes include every size
 from 1 through 32 plus 128, 1,000, 10,000, 100,000, and 1,000,000. Use
 C<--sizes> and C<--workloads> to select a smaller run. For example:
 
-  python3 Porting/bench-hash-oa-compare.py \
+  ./perl -Ilib Porting/bench-hash-oa-compare.pl \
     --baseline /path/to/original/perl \
     --candidate /path/to/oa/perl \
     --outputdir /path/to/results
@@ -414,6 +414,11 @@ C<ASAN_OPTIONS=detect_leaks=1:abort_on_error=1>; all five focused files and
 F<tmp/hash-oa-he16-full.log> and F<tmp/hash-oa-he16-lsan.log>.
 
 =head1 MEASURED RESULTS
+
+The results below retain the inputs and measurements from their recorded
+runs. The comparison drivers have since been rewritten in Perl and use a
+recorded xorshift32 generator. Keep the archived datasets when reproducing
+an earlier run; the same seed alone does not recreate its former sequence.
 
 A paired comparison of stored-mask and exponent-encoded C<xhv_max> found no
 broad slowdown. Results were mixed and do not establish a general speedup; no
@@ -497,7 +502,7 @@ and host, and do not establish a general small-hash lookup cost.
 
 Reproduce with:
 
-    python3 Porting/bench-hash-oa-lookup-compare.py \
+    ./perl -Ilib Porting/bench-hash-oa-lookup-compare.pl \
         --baseline /path/to/original/perl \
         --candidate ./perl \
         --outputdir ../tmp/hash-oa-flat-lookup-he16-warmup-k4 \
@@ -566,7 +571,7 @@ changes, recorded by the runner. The candidate also includes the subsequent
 rebase, so this is a whole-build comparison, not a storage-only attribution.
 No HE layout experiment is included: the current HE remains 16 bytes.
 
-F<Porting/bench-hash-oa-compare.py> ran five paired trials, with randomized
+F<Porting/bench-hash-oa-compare.pl> ran five paired trials, with randomized
 build order and paired hash/query seeds. The candidate used its default
 C<PERL_HASH_LINEAR_MAX=0>; tiny linear storage was disabled. The matrix
 covered 1, 2, 4, 8, 16, 32, 128, 1,000, 10,000, 100,000 and one million keys,
@@ -628,7 +633,7 @@ comparison measures the chained versus pointer-index shared string table,
 not the whole ordinary-hash representation change. Five paired trials used
 a fixed hash seed. CPU frequency was not pinned.
 
-F<Porting/bench-strtab.pl> and F<Porting/bench-strtab-compare.py> reproduce
+F<Porting/bench-strtab.pl> and F<Porting/bench-strtab-compare.pl> reproduce
 the controlled fill/clear workloads. Each round fills a normal hash with
 computed string keys and then undefines it. The shared string table retains
 its capacity between rounds; the ordinary hash releases its arrays. The

@@ -14,7 +14,7 @@ GetOptions('model=s' => \$model, 'case=s' => \$case,
     'iterations=i' => \$iterations, 'source' => \$source,
     'initialization=s' => \$initialization, 'help' => \$help) or die "Invalid options\n";
 if ($help) {
-    print "See perldoc Porting/bench-class-value.pl; use bench-class-value.py to run comparisons.\n";
+    print "See perldoc Porting/bench-class-value.pl; use bench-class-value-compare.pl to run comparisons.\n";
     exit;
 }
 die "Invalid model\n" unless $model =~ /\A(?:class|moo-perl|moo-xs|bless|bless-checked)\z/;
@@ -147,13 +147,14 @@ bench_class_value.pl - measure class, Moo, and blessed hash objects
 =head1 SYNOPSIS
 
     ./perl -Ilib Porting/bench-class-value.pl --model class --case access
-    python3 Porting/bench-class-value.py --help
+    ./perl -Ilib Porting/bench-class-value-compare.pl --help
 
 =head1 RUNNING A COMPARISON
 
 From a built Perl source tree, run:
 
-    python3 Porting/bench-class-value.py --output ../tmp/class-value-run \
+    ./perl -Ilib Porting/bench-class-value-compare.pl \
+      --output ../tmp/class-value-run \
         -I /path/to/moo/lib \
         -I /path/to/xs/blib/lib -I /path/to/xs/blib/arch
 
@@ -197,7 +198,7 @@ one read round.
 
 =head1 DESCRIPTION
 
-This is the worker for C<bench-class-value.py>. Each process loads one model,
+This is the worker for C<bench-class-value-compare.pl>. Each process loads one model,
 checks its constructor and readers, warms deferred code, and emits one JSON
 record. No benchmark modules are needed for C<class> or C<bless>. Moo is an
 optional external dependency. C<moo-xs> requires Class::XSAccessor built for

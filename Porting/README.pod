@@ -4,6 +4,18 @@ README.pod - README for the F<Porting/> directory in the Perl 5 core distributio
 
 =head1 FILES
 
+=head2 F<BenchUtils.pm> and F<BenchHashCompare.pm>
+
+Shared support for the benchmark comparison drivers. These keep process
+capture, paired summaries, and provenance consistent across workloads.
+Drivers use a recorded xorshift32 generator for datasets and run ordering,
+independently of the measured interpreter's hash seed. Its sequence differs
+from the former drivers, so retain archived datasets when comparing old runs.
+
+Use C<./perl -Ilib Porting/bench-tools.t> to check process capture,
+timeouts, metadata encoding, and CSV handling. CPU pinning through C<--cpu>
+uses Linux C<taskset>; omit it on other platforms.
+
 =head2 F<acknowledgements.pl>
 
 Generates the text which goes in the Acknowledgements section in
@@ -20,22 +32,22 @@ F<lib/> and F<t/> directories.  Now thought to be largely superseded.
 
 Program to facilitate addition of new F<.pod> files to F<pod/>.
 
-=head2 F<bench-class-value.pl> and F<bench-class-value.py>
+=head2 F<bench-class-value.pl> and F<bench-class-value-compare.pl>
 
 Compare core class, Moo, and blessed hash construction, field access, and
-resident memory. The Python driver runs isolated Perl workers in randomized
+resident memory. The Perl driver runs isolated Perl workers in randomized
 order and saves raw samples, generated classes, build details, and CSV
 summaries. See the worker's POD for the cases and comparison limits.
 
-=head2 F<bench-hash-oa-compare.py>
+=head2 F<bench-hash-oa-compare.pl>
 
 Compare hash lookup, insertion, deletion, churn, iteration, and allocation
 costs between the experimental compact-entry implementation and its baseline.
-The Python driver pairs fresh-process measurements, varies hash seeds,
+The Perl driver pairs fresh-process measurements, varies hash seeds,
 randomizes run order, and records raw samples, configuration, and summary
 statistics.
 
-=head2 F<bench-hash-oa-lookup-compare.py> and F<bench-hash-oa-lookup.pl>
+=head2 F<bench-hash-oa-lookup-compare.pl> and F<bench-hash-oa-lookup.pl>
 
 Compare fixed-count lookup loops over prebuilt hashes, with shuffled query
 cycles and a control loop. The paired driver records timing, hash contents,
@@ -54,11 +66,11 @@ loop setup. Use the flat lookup benchmark when comparing small hash sizes.
 Build the standalone compatibility extension for reference Perl builds.
 It supplies hash storage diagnostics, query interning, and sharing controls.
 
-=head2 F<bench-hash-options.pl> and F<bench-hash-options.py>
+=head2 F<bench-hash-options.pl> and F<bench-hash-options-compare.pl>
 
 Run checked ordinary-hash policy benchmarks and compare paired trials.
 
-=head2 F<bench-hash-random-insert.pl> and F<bench-hash-random-insert.py>
+=head2 F<bench-hash-random-insert.pl> and F<bench-hash-random-insert-compare.pl>
 
 Construct hashes from distinct random key sets, storing C<1> for each key.
 The driver pairs fresh processes with matched keys and hash seeds, retains
@@ -68,7 +80,7 @@ batch timings, and supports reservation and linear-threshold controls.
 
 Do performance analysis on the code snippets in F<t/perf/benchmarks>.
 
-=head2 F<bench-strtab-compare.py> and F<bench-strtab.pl>
+=head2 F<bench-strtab-compare.pl> and F<bench-strtab.pl>
 
 Compare shared-key table fill and teardown across Perl builds. The driver
 records paired benchmark results for the shared-key table implementation.

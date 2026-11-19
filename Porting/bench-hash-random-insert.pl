@@ -75,7 +75,7 @@ bench-hash-random-insert - construct hashes from distinct random key sets
 
 =head1 DESCRIPTION
 
-The companion Python driver creates tab-separated sets of random ASCII
+The companion Perl driver creates tab-separated sets of random ASCII
 keys. This worker reads them before timing. Each set is used for the
 requested repetitions, with a fresh hash reference and constant value C<1>
 for every construction. The timer includes hash creation, insertion,
