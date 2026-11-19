@@ -218,6 +218,7 @@
 /autodie/
 /autouse.pm
 /base.pm
+/bench/
 /bigfloat.pm
 /bigint.pm
 /bignum.pm

@@ -1224,6 +1224,7 @@ distclean: realclean
 	-if exist $(LIBDIR)\Archive rmdir /s /q $(LIBDIR)\Archive
 	-if exist $(LIBDIR)\Attribute rmdir /s /q $(LIBDIR)\Attribute
 	-if exist $(LIBDIR)\autodie rmdir /s /q $(LIBDIR)\autodie
+	-if exist $(LIBDIR)\bench rmdir /s /q $(LIBDIR)\bench
 	-if exist $(LIBDIR)\Bundle rmdir /s /q $(LIBDIR)\Bundle
 	-if exist $(LIBDIR)\Carp rmdir /s /q $(LIBDIR)\Carp
 	-if exist $(LIBDIR)\Compress rmdir /s /q $(LIBDIR)\Compress

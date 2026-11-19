@@ -1451,11 +1451,11 @@ _cleaner2:
 	rm -f so_locations $(LIBPERL_NONSHR)
 	-rmdir lib/version lib/threads lib/inc/Test/Net/SSLeay
 	-rmdir lib/inc/Test/Net lib/inc/Test/Base lib/inc/Test
-	-rmdir lib/inc/ExtUtils lib/inc lib/encoding lib/autodie/exception
-	-rmdir lib/autodie/Scope lib/autodie lib/YAML-XS-LibYAML/lib/YAML/XS
-	-rmdir lib/YAML-XS-LibYAML/lib/YAML lib/YAML-XS-LibYAML/lib
-	-rmdir lib/YAML-XS-LibYAML lib/YAML lib/XStats lib/XS
-	-rmdir lib/XPerl/DiagPack lib/XGraph/IO lib/XGraph lib/XBench
+	-rmdir lib/inc/ExtUtils lib/inc lib/encoding lib/bench
+	-rmdir lib/autodie/exception lib/autodie/Scope lib/autodie
+	-rmdir lib/YAML-XS-LibYAML/lib/YAML/XS lib/YAML-XS-LibYAML/lib/YAML
+	-rmdir lib/YAML-XS-LibYAML/lib lib/YAML-XS-LibYAML lib/YAML lib/XStats
+	-rmdir lib/XS lib/XPerl/DiagPack lib/XGraph/IO lib/XGraph lib/XBench
 	-rmdir lib/Win32API lib/Win32 lib/VMS lib/Unicode/Collate/Locale
 	-rmdir lib/Unicode/Collate/CJK lib/Unicode/Collate lib/Tie/Hash
 	-rmdir lib/Thread lib/Text lib/Test2/Workflow/Task lib/Test2/Workflow

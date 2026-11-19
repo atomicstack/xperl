@@ -4,18 +4,6 @@ README.pod - README for the F<Porting/> directory in the Perl 5 core distributio
 
 =head1 FILES
 
-=head2 F<BenchUtils.pm> and F<BenchHashCompare.pm>
-
-Shared support for the benchmark comparison drivers. These keep process
-capture, paired summaries, and provenance consistent across workloads.
-Drivers use a recorded xorshift32 generator for datasets and run ordering,
-independently of the measured interpreter's hash seed. Its sequence differs
-from the former drivers, so retain archived datasets when comparing old runs.
-
-Use C<./perl -Ilib t/porting/bench_tools.t> to check process capture,
-timeouts, metadata encoding, and CSV handling. CPU pinning through C<--cpu>
-uses Linux C<taskset>; omit it on other platforms.
-
 =head2 F<acknowledgements.pl>
 
 Generates the text which goes in the Acknowledgements section in
@@ -32,12 +20,17 @@ F<lib/> and F<t/> directories.  Now thought to be largely superseded.
 
 Program to facilitate addition of new F<.pod> files to F<pod/>.
 
-=head2 F<bench-class-value.pl> and F<bench-class-value-compare.pl>
+=head2 F<bench-class-value-compare.pl> and F<bench-class-value.pl>
 
 Compare core class, Moo, and blessed hash construction, field access, and
 resident memory. The Perl driver runs isolated Perl workers in randomized
 order and saves raw samples, generated classes, build details, and CSV
 summaries. See the worker's POD for the cases and comparison limits.
+
+=head2 F<BenchHashCompare.pm>
+
+Shared paired summaries for the hash benchmark comparison drivers. Uses
+F<BenchUtils.pm> for process capture and provenance.
 
 =head2 F<bench-hash-oa-compare.pl>
 
@@ -61,16 +54,20 @@ recorded when available.
 Measure complete hash workloads in batches. Lookup costs include per-hash
 loop setup. Use the flat lookup benchmark when comparing small hash sizes.
 
+=head2 F<bench-hash-options-compare.pl>
+
+Run paired comparisons of ordinary-hash policy benchmarks.
+
 =head2 F<bench-hash-options-compat/HashOptionsCompat.pm>, F<bench-hash-options-compat/HashOptionsCompat.xs>, and F<bench-hash-options-compat/Makefile.PL>
 
 Build the standalone compatibility extension for reference Perl builds.
 It supplies hash storage diagnostics, query interning, and sharing controls.
 
-=head2 F<bench-hash-options.pl> and F<bench-hash-options-compare.pl>
+=head2 F<bench-hash-options.pl>
 
-Run checked ordinary-hash policy benchmarks and compare paired trials.
+Run checked ordinary-hash policy benchmarks.
 
-=head2 F<bench-hash-random-insert.pl> and F<bench-hash-random-insert-compare.pl>
+=head2 F<bench-hash-random-insert-compare.pl> and F<bench-hash-random-insert.pl>
 
 Construct hashes from distinct random key sets, storing C<1> for each key.
 The driver pairs fresh processes with matched keys and hash seeds, retains
@@ -91,6 +88,17 @@ Compare regex scanning across Perl builds using frozen HTML, prose, Perl
 source and FASTA corpora in byte and UTF-8 representations. Extends
 F<t/re/trie_bench.pl> and exports workloads for instruction profiling with
 F<bench.pl>. See the script's POD for usage and measurement details.
+
+=head2 F<BenchUtils.pm>
+
+Shared process capture and provenance for the benchmark comparison drivers.
+Drivers use a recorded xorshift32 generator for datasets and run ordering,
+independently of the measured interpreter's hash seed. Its sequence differs
+from the former drivers, so retain archived datasets when comparing old runs.
+
+Use C<./perl -Ilib t/porting/bench_tools.t> to check process capture,
+timeouts, metadata encoding, and CSV handling. CPU pinning through C<--cpu>
+uses Linux C<taskset>; omit it on other platforms.
 
 =head2 F<bisect-example.sh>, F<bisect.pl> and F<bisect-runner.pl>
 
