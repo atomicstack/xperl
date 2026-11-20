@@ -56,6 +56,85 @@ asks for a different approach.
 - Use code archaeology when it helps explain bug reports, surprising behavior,
   compatibility constraints, or old design choices.
 
+## Implementation language and dogfooding
+
+Do not add Python scripts, embedded Python, or Python dependencies to the
+Perl project. Write project tooling in Perl. Replace existing project Python
+tools with Perl when working on them.
+
+Use the interpreter being developed for agent work wherever practical. In a
+built checkout, run scripts and one-liners with `./perl -Ilib` so we exercise
+the target branch's interpreter. Occasional external helpers are acceptable
+when they save substantial hassle, but do not save Python in the project or
+introduce it as a project dependency. Keep any exceptional scratch helpers
+outside the source tree.
+
+## Project and upstream boundaries
+
+This working repository holds branches for two distinct projects, Perl5 and
+its sister fork XPerl. A checkout directory does not identify the project.
+Before editing, identify the target from the user's request, branch ancestry,
+codebase, and configured remotes. Verify the branch's upstream and intended
+push destination. Do not infer the destination from the directory name.
+
+Shared rules, including Perl tooling, readable code, and explanatory commit
+messages, apply to both projects. Project-specific rules apply only to their
+own branches:
+
+- Perl5 branches target Perl5 upstream and follow Perl5's features, APIs,
+  compatibility requirements, and contributor workflow. Keep their patches,
+  comments, tests, documentation, commit messages, and PR descriptions free
+  of XPerl references and dependencies. Do not apply XPerl-specific skills or
+  conventions to Perl5 work.
+- XPerl branches target XPerl upstream and use XPerl's interpreter, features,
+  APIs, and applicable skills. Keep changes suitable for Perl5 separable
+  from changes to fork-specific behavior, as described above.
+
+When moving a change between projects, review and adapt it for the receiving
+project. Recheck its wording, dependencies, tests, and upstream destination.
+Do not treat a backport or forward port as a change of project identity for
+the original branch.
+
+## Commit messages
+
+Use a concise explanatory voice. Start with the purpose and intended
+outcome, then explain the broad change and why it achieves that outcome.
+Give the reason and effect as much attention as the implementation. Keep
+the message as short as the explanation allows. Avoid inventories of facts,
+files, edits, or implementation details. Include detail only when it helps
+a future reader understand a design decision or constraint.
+
+Passing tests are expected. Do not report test counts or routine validation
+results in commit messages. Mention added or removed test files and explain
+new coverage at a high level when relevant.
+
+Compose messages with `git-compose-commit`. Use its structured paragraphs,
+details, lists, tables, or footers when they help tell the narrative, rather
+than forcing every message into the same format. Do not use structure to
+turn the explanation into a change inventory. If the tool is unavailable,
+tell the user instead of silently substituting `git commit -m`.
+
+## Code readability
+
+Write readable code in every language, including scripts and one-liners
+saved as project tools. Separate logical sections and distinct thoughts
+with whitespace. Avoid dense walls of statements or compressed expressions
+that make control flow difficult to follow. Use section comments or line
+ending comments where they explain purpose, constraints, or a surprising
+step. Do not add comments that merely repeat the code.
+
+## Comment and commit quality
+
+High-quality comments and commit messages are a requirement. Before
+finalizing either, review the text against the applicable writing rules.
+Check technical accuracy, clarity, purpose, outcome, and project identity.
+Remove unsupported claims, redundant wording, and unnecessary detail.
+
+For subtle, consequential, or uncertain explanations, obtain a second
+review from a more capable agent or a human when needed. Give the reviewer
+the relevant code and rules. Resolve substantive concerns before treating
+the text as ready. Do not substitute a claim of review for an actual review.
+
 ## Agent Skills
 
 Repository-specific skill files live in `.agents/skills/`. Read the relevant
