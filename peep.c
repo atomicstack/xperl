@@ -4001,7 +4001,10 @@ Perl_rpeep(pTHX_ OP *o)
             break;
 
         case OP_RUNCV:
+            /* Composed multi methods share an optree across distinct CVs.
+             * Resolve __SUB__ from the invocation rather than the provider. */
             if (!(o->op_private & OPpOFFBYONE) && !CvCLONE(PL_compcv)
+                && !(CvMULTISUB(PL_compcv) && CvIsMETHOD(PL_compcv))
              && (!CvANON(PL_compcv) || (!PL_cv_has_eval && !PL_perldb)))
             {
                 SV *sv;

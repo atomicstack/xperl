@@ -1293,6 +1293,15 @@ aux_list(o, cv)
         default:
             XSRETURN(0); /* by default, an empty list */
 
+        case OP_DISPATCH_ON:
+            {
+                const struct dispatch_pattern_aux *pattern =
+                    (const struct dispatch_pattern_aux *)aux;
+                XPUSHs(make_op_object(aTHX_ pattern->pattern));
+                XPUSHs(make_op_object(aTHX_ pattern->header_cop));
+                break;
+            }
+
         case OP_ARGELEM:
             XPUSHs(sv_2mortal(newSViv(PTR2IV(aux))));
             XSRETURN(1);
@@ -2159,6 +2168,24 @@ CvPADLIST(cv)
 	RETVAL = CvISXSUB(cv) ? NULL : CvPADLIST(cv);
     OUTPUT:
 	RETVAL
+
+void
+CvMULTISUB_SCOPES(cv)
+        B::CV cv
+    PPCODE:
+        SV *scopes = NULL;
+        if ((CvFLAGS(cv) & PERL_CVf_MULTISUB) && CvPADLIST(cv)) {
+            PADNAMELIST *names = PadlistNAMES(CvPADLIST(cv));
+            for (PADOFFSET ix = 1; ix <= PadnamelistMAX(names); ix++) {
+                PADNAME *name = PadnamelistARRAY(names)[ix];
+                if (name && memEQs(PadnamePV(name), PadnameLEN(name),
+                                  "@(multisub scopes)")) {
+                    scopes = PadARRAY(PadlistARRAY(CvPADLIST(cv))[1])[ix];
+                    break;
+                }
+            }
+        }
+        XPUSHs(make_sv_object(aTHX_ scopes));
 
 SV *
 CvHSCXT(cv)

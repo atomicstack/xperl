@@ -4110,6 +4110,8 @@ S_dopoptolabel(pTHX_ const char *label, STRLEN len, U32 flags)
         case CXt_LOOP_ARY:
         case CXt_DISPATCH:
           {
+            if (CxTYPE(cx) == CXt_DISPATCH && cx->blk_dispatch.loop_transparent)
+                continue;
             STRLEN cx_label_len = 0;
             U32 cx_label_flags = 0;
             const char *cx_label = CxLABEL_len_flags(cx, &cx_label_len, &cx_label_flags);
@@ -4299,6 +4301,8 @@ S_dopoptoloop(pTHX_ I32 startingblock)
             DEBUG_l( deb("(dopoptoloop(): found loop at cx=%ld)\n", (long)i));
             return i;
         case CXt_DISPATCH:
+            if (cx->blk_dispatch.loop_transparent)
+                continue;
             DEBUG_l( deb("(dopoptoloop(): found case at cx=%ld)\n", (long)i));
             return i;
         }
@@ -6915,6 +6919,12 @@ PP(pp_goto)
             CV *old_cv = NULL;
 
             while (!CvROOT(cv) && !CvXSUB(cv)) {
+                if (CvMULTISUB(cv)) {
+                    U32 kind = PERL_DIAG_SELECTOR_FROM_ERROR_RUNTIME_MULTISUB_NOT_COMPLETE_DECLARATION_KIND(
+                        CvIsMETHOD(cv) ? "method" : "sub");
+                    PERL_THROW_ERROR_RUNTIME_MULTISUB_NOT_COMPLETE(
+                        cv_name(cv, NULL, 0), kind);
+                }
                 const GV * const gv = CvGV(cv);
                 if (gv) {
                     GV *autogv;
@@ -10363,8 +10373,8 @@ Perl_dispatch_pattern_prepare(pTHX_ OP *pattern)
     if (!PL_parser || !PL_parser->dispatch_pattern_vars)
         return;
 
-    /* Class-qualified hash shapes pass through an indirect-object block.
-     * That temporary scope may have closed some capture declarations.
+    /* Indirect-call forms of class-qualified hash shapes can close temporary
+     * scopes containing capture declarations.
      * Declare replacements in the dispatch-on clause before parsing its guard
      * and body, then update the shape's pad references by identity without
      * searching older declarations with the same spelling. */
@@ -10638,7 +10648,7 @@ S_dispatch_pattern_validate_object_fields(pTHX_ const OP *op, U32 depth)
 
     if (S_dispatch_pattern_empty_fields(op))
         return;
-    if (!op || (op->op_type != OP_LIST
+    if (!op || (op->op_type != OP_LIST && op->op_type != OP_ANONHASH
                 && !(op->op_type == OP_NULL && op->op_targ == OP_LIST)))
         PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_FIELD_LIST_INVALID();
     for (kid = cUNOPx(op)->op_first; kid; kid = OpSIBLING(kid)) {
@@ -11076,7 +11086,8 @@ S_dispatch_pattern_validate(pTHX_ const OP *op, U32 depth)
             ? cUNOPx(op)->op_first : NULL;
         const OP *arg;
         const OP *shape = NULL;
-        if (args && args->op_type == OP_LIST) {
+        if (args && (args->op_type == OP_LIST
+                     || (args->op_type == OP_NULL && args->op_targ == OP_LIST))) {
             arg = cLISTOPx(args)->op_first;
             if (arg && (arg->op_type == OP_PUSHMARK
                         || (arg->op_type == OP_NULL
@@ -11085,7 +11096,7 @@ S_dispatch_pattern_validate(pTHX_ const OP *op, U32 depth)
             if (arg)
                 shape = OpSIBLING(arg);
         }
-        if (!args || args->op_type != OP_LIST || !shape)
+        if (!shape)
             PERL_THROW_ERROR_SYNTAX_DISPATCH_SHAPE_OBJECT_CLASS_AND_SHAPE_REQUIRED();
         if (shape->op_type == OP_ANONHASH || shape->op_type == OP_LIST)
             S_dispatch_pattern_validate_object_fields(aTHX_ shape, depth);
@@ -11481,6 +11492,7 @@ Perl_dispatch_pattern_free(pTHX_ UNOP_AUX_item *items)
     if (aux && aux->magic == DISPATCH_PATTERN_AUX_MAGIC) {
         S_dispatch_pattern_free_node(aTHX_ aux->root);
         op_free(aux->pattern);
+        op_free(aux->header_cop);
         if (aux->dispatch)
             Perl_dispatch_on_free(aTHX_ (UNOP_AUX_item *)aux->dispatch);
         PerlMemShared_free(aux);
@@ -12469,7 +12481,10 @@ S_dispatch_pattern_match(pTHX_ const struct dispatch_pattern_node *node, SV *val
         SV *logical = NULL;
         bool matched;
 
-        if (!args || args->op->op_type != OP_LIST || args->nchild < 2)
+        if (!args || (args->op->op_type != OP_LIST
+                      && !(args->op->op_type == OP_NULL
+                           && args->op->op_targ == OP_LIST))
+            || args->nchild < 2)
             return FALSE;
         {
             U32 argix = 0;

@@ -34,7 +34,8 @@ use B qw(class main_root main_start main_cv svref_2object opnumber perlstring
          OPpCALLER_HINTS OPpCALLER_BITS OPpCALLER_HINTH         
 	 SVf_IOK SVf_NOK SVf_ROK SVf_POK SVf_FAKE SVs_RMG SVs_SMG
 	 SVs_PADTMP
-         CVf_NOWARN_AMBIGUOUS CVf_LVALUE CVf_IsMETHOD
+         CVf_NOWARN_AMBIGUOUS CVf_LVALUE CVf_IsMETHOD PERL_CVf_MULTISUB
+         DISPATCH_PATTERN_CRITERION_PIN DISPATCH_PATTERN_CRITERION_OBJECT
 	 PMf_KEEP PMf_GLOBAL PMf_CONTINUE PMf_EVAL PMf_ONCE
 	 PMf_MULTILINE PMf_SINGLELINE PMf_FOLD PMf_EXTENDED PMf_EXTENDED_MORE
 	 PADNAMEf_OUTER PADNAMEf_OUR PADNAMEf_TYPED
@@ -190,7 +191,8 @@ BEGIN {
 # array of [cop_seq, CV, is_format?, name] for subs and formats we still
 # want to deparse.  The fourth element is a pad name thingy for lexical
 # subs or a string for special blocks.  For other subs, it is undef.  For
-# lexical subs, CV may be undef, indicating a stub declaration.
+# lexical subs, CV may be undef, indicating a stub declaration. Multisub
+# entries have a fifth element identifying the clause to emit.
 #
 # protos_todo:
 # as above, but [name, prototype] for subs that never got a GV
@@ -439,7 +441,23 @@ sub todo {
     if (class($stash) eq 'HV') {
         $self->{packs}{$stash->NAME}++;
     }
-    push @{$self->{'subs_todo'}}, [$seq, $cv, $is_form, $name];
+    if ($cv->CvFLAGS & PERL_CVf_MULTISUB) {
+        return if $cv->CvFLAGS & CVf_IsMETHOD
+               && $self->{'multi_method_roots'}{${$cv->ROOT}}++;
+        my $ranges = $cv->MULTISUB_SCOPES->ARRAYelt(0)->RV;
+        my @clauses = $self->multisub_clauses($cv);
+
+        # Queue clauses separately so declarations between them retain their
+        # lexical scope, including shadowed names captured by later clauses.
+        for my $ix (0 .. $#clauses) {
+            my $outer_seq = $ranges->ARRAYelt($ix)->RV->ARRAYelt(2)->IV;
+            push @{$self->{'subs_todo'}},
+                [$outer_seq, $cv, $is_form, $name, $clauses[$ix]];
+        }
+    }
+    else {
+        push @{$self->{'subs_todo'}}, [$seq, $cv, $is_form, $name];
+    }
 }
 
 
@@ -448,12 +466,18 @@ sub todo {
 sub next_todo {
     my $self = shift;
     my $ent = shift @{$self->{'subs_todo'}};
-    my ($seq, $cv, $is_form, $name) = @$ent;
+    my ($seq, $cv, $is_form, $name, $clause) = @$ent;
 
     # any 'use strict; package foo' that should come before the sub
     # declaration to sync with the first COP of the sub
     my $pragmata = '';
-    if ($cv and !null($cv->START) and is_state($cv->START))  {
+    my $header;
+    if ($clause) {
+        local $self->{'curcv'} = $cv;
+        $header = ($self->multisub_parts($clause))[3];
+        $pragmata = $self->pragmata($header);
+    }
+    elsif ($cv and !null($cv->START) and is_state($cv->START))  {
         $pragmata = $self->pragmata($cv->START);
     }
 
@@ -548,9 +572,11 @@ sub next_todo {
 	my $p = '';
 	my $stash;
 	if (class($cv->STASH) ne "SPECIAL") {
-	    $stash = $cv->STASH->NAME;
+	    $stash = $header ? $header->stash->NAME : $cv->STASH->NAME;
 	    if ($stash ne $self->{'curstash'}) {
-		$p = $self->keyword("package") . " $stash;\n";
+                my $prefix = $clause && $self->feature_enabled('namespace')
+                    ? ':::' : '';
+		$p = $self->keyword("package") . " $prefix$stash;\n";
 		$name = "$self->{'curstash'}::$name" unless $name =~ /::/;
 		$self->{'curstash'} = $stash;
 	    }
@@ -565,8 +591,14 @@ sub next_todo {
         } elsif (defined $stash) {
             $name =~ s/^\Q$stash\E::(?!\z|.*::)//;
         }
-	my $ret = "$pragmata${p}${l}" . $self->keyword($self->kw_sub_or_method($cv)) . " $name "
-	      . $self->deparse_sub($cv);
+        if ($clause && $self->feature_enabled('namespace')) {
+            $name = $gv->STASH->NAME . '::' . $gv->NAME;
+            $name =~ s/::/:::/;
+        }
+        my $ret = "$pragmata${p}${l}" . ($clause
+            ? $self->deparse_multisub($cv, $clause, $name)
+            : $self->keyword($self->kw_sub_or_method($cv)) . " $name "
+                . $self->deparse_sub($cv));
 	$self->{'subs_declared'}{$name} = 1;
 	return $ret;
     }
@@ -868,6 +900,9 @@ sub init {
 
     # also a convenient place to clear out subs_declared
     delete $self->{'subs_declared'};
+    delete $self->{'multisub_pads_done'};
+    delete $self->{'multisub_overlays'};
+    delete $self->{'multi_method_roots'};
 }
 
 sub compile {
@@ -1542,6 +1577,8 @@ Carp::confess("SPECIAL in deparse_sub") if $cv->isa("B::SPECIAL");
         }
     }
     my $cv_flags = $cv->CvFLAGS;
+    return $self->deparse_multisub($cv)
+        if $cv_flags & PERL_CVf_MULTISUB;
     my $is_method = $cv_flags & CVf_IsMETHOD;
 
     if ($cv_flags & (CVf_NOWARN_AMBIGUOUS|CVf_LOCKED|CVf_LVALUE|CVf_ANONCONST)) {
@@ -1637,6 +1674,174 @@ Carp::confess("SPECIAL in deparse_sub") if $cv->isa("B::SPECIAL");
     $attrs = ': ' . join('', map "$_ ", @attrs) if @attrs;
     return "$proto$attrs$sig$body\n";
 }
+
+sub multisub_clauses {
+    my ($self, $cv) = @_;
+    my $dispatch = $cv->ROOT->first->first;
+    $dispatch = $dispatch->sibling if $dispatch->name eq 'methstart';
+    my $subject = $dispatch->first->first;
+    my $scope = $subject->sibling;
+    my @clauses;
+    for (my $op = $scope->first; $$op; $op = $op->sibling) {
+        push @clauses, $op if $op->name eq 'leavedispatchon';
+    }
+    return @clauses;
+}
+
+sub dispatch_on_parts {
+    my ($self, $clause) = @_;
+    my $condition = $clause->first->first;
+    $condition = $condition->first while $condition->name eq 'null';
+    my ($matcher, $guard) = $condition->name eq 'and'
+        ? ($condition->first, $condition->first->sibling)
+        : ($condition, undef);
+    my ($pattern, $header) = $matcher->aux_list($self->{'curcv'});
+
+    my $body = $clause->first->first->sibling;
+    return ($pattern, $guard, $body, $header);
+}
+
+sub multisub_parts {
+    my ($self, $clause) = @_;
+    my ($pattern, $guard, $scoped_return, $header) =
+        $self->dispatch_on_parts($clause);
+
+    # Remove only the compiler's implicit return. Explicit returns belong
+    # to the original body and must keep their position and context.
+    my $return = $scoped_return->first;
+    my $body = $return->first->sibling;
+    return ($pattern, $guard, $body, $header);
+}
+
+sub deparse_multisub {
+    my ($self, $cv, $clause, $name) = @_;
+    local @$self{qw'curcv curcvlex curcop curstash warnings hints hinthash'}
+        = ($cv, undef, @$self{qw'curcop curstash warnings hints hinthash'});
+    my $overlay = $self->{'multisub_overlays'}{$$cv};
+    if (!$overlay) {
+        local $B::overlay = {};
+        $self->pessimise($cv->ROOT, $cv->START);
+        $overlay = $self->{'multisub_overlays'}{$$cv} = $B::overlay;
+    }
+    local $B::overlay = $overlay;
+    $self->pad_subs($cv) unless $self->{'multisub_pads_done'}{$$cv}++;
+
+    my @clauses = $clause ? ($clause) : $self->multisub_clauses($cv);
+    my @text;
+    for my $on (@clauses) {
+        my ($pattern, $guard, $body, $header) = $self->multisub_parts($on);
+        my $pragmata = $self->pragmata($header);
+        $self->{'curcop'} = $header;
+        my $head;
+        {
+            local $self->{'in_dispatch_pattern'} = 1;
+            $head = $self->deparse($pattern, 1);
+        }
+        my $guard_text = $guard ? $self->deparse($guard, 1) : undef;
+        my $body_text = $self->deparse($body, 0);
+
+        if ($clause) {
+            $head =~ s/^\[|\]$//g;
+            $head .= " if $guard_text" if defined $guard_text;
+            my $kind = $cv->CvFLAGS & CVf_IsMETHOD ? 'method' : 'sub';
+            $head = $self->keyword('multi') . " $kind $name($head)";
+        }
+        else {
+            $head .= " if $guard_text" if defined $guard_text;
+            $head = "CORE::on ($head)";
+            $body_text = "CORE::return CORE::do {\n\t$body_text\n\b}";
+        }
+        push @text, "$pragmata$head {\n\t$body_text\n\b}";
+    }
+    return "$text[0]\n" if $clause;
+
+    # A named subject leaves $_ alone. Choose a spelling which cannot hide
+    # any original lexical or package variable mentioned in the output.
+    my %names = map { class($_) eq 'SPECIAL' ? () : ($_->PVX // '', 1) }
+                    $cv->PADLIST->ARRAYelt(0)->ARRAY;
+    my $subject = '$multisub_arguments';
+    my $clauses = join("\n", @text);
+    $subject .= '_'
+        while $names{$subject} || index($clauses, substr($subject, 1)) >= 0;
+    my $dispatch = "CORE::dispatch CORE::my $subject (\\\@_) {\n\t"
+                 . $clauses . "\n\b}";
+    $dispatch = "CORE::BEGIN { \$^H{'B::Deparse/transparent_dispatch'} = 1 }\n"
+              . $dispatch;
+    my $failure = $cv->ROOT->first->first->sibling;
+    $failure = $failure->sibling if $cv->CvFLAGS & CVf_IsMETHOD;
+    my $failed_name = perlstring($self->const_sv($failure)->PV);
+
+    # The anonymous rendering loses the declaration kind, but must preserve
+    # the structured no-match diagnostic. Resolve its catalog number by code.
+    my $fail = <<'END_FAIL';
+CORE::do {
+\tCORE::no warnings 'experimental::builtin';
+CORE::no feature 'namespaces';
+CORE::my $metadata = builtin::get_diagnostic_data('ERROR_RUNTIME_MULTISUB_NO_MATCH');
+CORE::my $diagnostic = $metadata->{class}->_new({
+\tcode => $metadata->{code}, number => $metadata->{number},
+kind => $metadata->{kind}, severity => $metadata->{severity},
+params => [{name => 'name', type => 'text', value => FAILED_NAME}],
+location => {file => __FILE__, line => __LINE__}
+\b});
+CORE::my $exception = XPerl::Exception->_new;
+$exception->append($diagnostic);
+CORE::die $exception;
+\b}
+END_FAIL
+    $fail =~ s/\\t/\t/g;
+    $fail =~ s/\\b/\b/g;
+    $fail =~ s/FAILED_NAME/$failed_name/;
+    return "{\n\t$dispatch\n$fail\b}\n";
+}
+
+sub pp_dispatchcoerce {
+    my ($self, $op, $cx) = @_;
+    my $kind = $op->private;
+    return '^' . $self->deparse($op->first, 24)
+        if $kind == DISPATCH_PATTERN_CRITERION_PIN;
+    return $self->deparse($op->first, $cx) if $kind <= 1;
+    if ($kind == DISPATCH_PATTERN_CRITERION_OBJECT) {
+        my $class = $op->first->first->sibling;
+        my $prefix = $self->feature_enabled('namespace') ? ':::' : '';
+        return $prefix . $self->const_sv($class)->PV
+             . ' ' . $self->deparse($class->sibling, 1);
+    }
+    croak "Unsupported dispatch pattern marker $kind";
+}
+
+sub pp_leavedispatch {
+    my ($self, $op, $cx) = @_;
+    my $enter = $op->first;
+    my $subject = $enter->first;
+    my $binding = '';
+    my $value = $subject;
+    if ($enter->targ) {
+        $binding = $self->deparse($subject->first->sibling, 0) . ' ';
+        $value = $subject->first;
+    }
+    my $head = $self->keyword('dispatch') . ' ' . $binding
+             . '(' . $self->deparse($value, 1) . ')';
+    my $body = $self->deparse($subject->sibling, 0);
+    my $mark = $enter->flags & OPf_SPECIAL
+        ? "CORE::BEGIN { \$^H{'B::Deparse/transparent_dispatch'} = 1 }\n" : '';
+    return "$mark$head {\n\t$body\n\b}\cK";
+}
+
+sub pp_leavedispatchon {
+    my ($self, $op, $cx) = @_;
+    my ($pattern, $guard, $body) = $self->dispatch_on_parts($op);
+    my $head;
+    {
+        local $self->{'in_dispatch_pattern'} = 1;
+        $head = $self->deparse($pattern, 1);
+    }
+    $head .= ' if ' . $self->deparse($guard, 1) if $guard;
+    my $text = $self->deparse($body, 0);
+    return $self->keyword('on') . " ($head) {\n\t$text\n\b}\cK";
+}
+
+sub pp_dispatch { '' }
 
 sub deparse_format {
     my $self = shift;
@@ -2276,8 +2481,12 @@ sub seq_subs {
 
     return "" if !defined $seq;
     my @pending;
+    # A multisub's saved outer sequence can equal the following statement's
+    # COP sequence. Its clause must precede that statement's declarations.
     while (scalar(@{$self->{'subs_todo'}})
-	   and $seq > $self->{'subs_todo'}[0][0]) {
+           and ($seq > $self->{'subs_todo'}[0][0]
+                || $self->{'subs_todo'}[0][4]
+                    && $seq == $self->{'subs_todo'}[0][0])) {
 	my $cv = $self->{'subs_todo'}[0][1];
 	# Skip the OUTSIDE check for lexical subs.  We may be deparsing a
 	# cloned anon sub with lexical subs declared in it, in which case
@@ -2315,7 +2524,8 @@ sub pragmata {
 
     my $stash = $op->stashpv;
     if ($stash ne $self->{'curstash'}) {
-	push @text, $self->keyword("package") . " $stash;\n";
+        my $prefix = $self->feature_enabled('namespace') ? ':::' : '';
+	push @text, $self->keyword("package") . " $prefix$stash;\n";
 	$self->{'curstash'} = $stash;
     }
 
@@ -2466,6 +2676,7 @@ sub declare_hints {
 # Internal implementation hints that the core sets automatically, so don't need
 # (or want) to be passed back to the user
 my %ignored_hints = (
+    'B::Deparse/transparent_dispatch' => 1,
     'open<' => 1,
     'open>' => 1,
     ':'     => 1,
@@ -2552,6 +2763,8 @@ sub pp_unstack { return "" } # see also leaveloop
 
 my %feature_keywords = (
   # keyword => 'feature',
+    dispatch => 'dispatch_on',
+    on       => 'dispatch_on',
     state   => 'state',
     say     => 'say',
     given   => 'switch',
@@ -2570,6 +2783,8 @@ my %feature_keywords = (
    all      => 'all',
    implements => 'class',
    gen      => 'generator',
+   multi    => 'multisub',
+   namespace => 'namespaces',
    yield    => 'generator',
 );
 
@@ -4726,6 +4941,7 @@ sub pp_padsv {
     my $self = shift;
     my($op, $cx, $forbid_parens) = @_;
     my $targ = $op->targ;
+    return $self->padname($targ) if $self->{'in_dispatch_pattern'};
     return $self->maybe_my($op, $cx, $self->padname($targ),
 			   $self->padname_sv($targ),
 			   $forbid_parens);
@@ -6158,6 +6374,12 @@ sub pp_const {
 #	return $self->const_sv($op)->PV;
 #    }
     my $sv = $self->const_sv($op);
+    if ($self->{'in_dispatch_pattern'}) {
+        return '...' if $op->flags & OPf_SPECIAL && $sv->can('PV')
+                         && $sv->PV eq '...';
+        return '_' if $op->private & OPpCONST_BARE && $sv->can('PV')
+                       && $sv->PV eq '_';
+    }
 
     my $token = ($op->private & OPpCONST_TOKEN_MASK);
     if ($token) { # handle __LINE__ etc
@@ -7661,6 +7883,22 @@ this method doesn't return a complete subroutine definition -- if you
 want to eval the result, you should prepend "sub subname ", or "sub "
 for an anonymous function constructor.  Unless the sub was defined in
 the main:: package, the code will include a package declaration.
+
+For a multisub, this method emits an ordinary subroutine body containing
+C<dispatch>/C<on>. Argument patterns, guards, return context, C<@_> aliases,
+C<__SUB__>, ordinary subroutine loop control, and the structured no-match
+diagnostic are preserved. The result
+has the ordinary C<sub> declaration kind. This method does not serialize
+captured external lexical variables. Full-program deparsing emits native
+multisub clauses at their original lexical positions.
+
+For a multi method, prepend C<method> rather than C<sub> and compile the body
+in its original declaring class or role with the required fields available.
+The native method prologue then binds C<$self> and fields and removes the
+invocant from C<@_> before dispatch. Whole-program class and field
+reconstruction is not currently supported.
+
+See L<perlmultitut> and L<perlsub/Multisubs> for multi declaration semantics.
 
 Normally, C<B::Deparse> will emit code that includes the L<feature> pragma
 if required to enable features that are used in the fragment that follows.

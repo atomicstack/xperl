@@ -867,6 +867,131 @@ have to be in the symbol table of some package to be found.  See
 L<perlref/"Function Templates"> for something of a work-around to
 this.
 
+=head2 Multisubs
+X<multi> X<multisub> X<subroutine, pattern matching>
+
+For a step-by-step introduction, see L<perlmultitut>. This section defines
+the declaration and call semantics; L<perldispatchon> defines the shared
+pattern language.
+
+The experimental C<multisub> feature defines one subroutine using several
+pattern-matched clauses:
+
+    use feature 'multisub';
+    no warnings 'experimental::multisub';
+
+    multi sub response("ok", $value) {
+        return $value;
+    }
+
+    multi sub response("error", $message) {
+        die $message;
+    }
+
+Each parameter list is an array pattern matched against C<\@_>. The example
+accepts exactly two arguments. C<response()> would require a clause with an
+empty pattern C<multi sub response() { ... }>. Nested array and hash patterns,
+captures, pins, and the other supported C<dispatch>/C<on> pattern forms have
+the meanings described in L<perldispatchon>.
+
+These lists contain patterns, not signature parameters. For example,
+C<multi sub answer($value = 42) { ... }> requires an argument matching C<42>
+and binds it to C<$value>. It does not supply a default for a missing
+argument. A final array or hash capture accepts the remaining arguments.
+
+Clauses are tried in source order. An optional guard follows C<if> inside
+the pattern parentheses. It runs after the pattern matches, with the
+clause's bindings in scope:
+
+    multi sub magnitude($value if $value < 0) {
+        return -$value;
+    }
+
+    multi sub magnitude($value) {
+        return $value;
+    }
+
+A false guard discards its tentative bindings and tries the next clause.
+Guard side effects outside those bindings are ordinary Perl side effects and
+are not rolled back. Guard exceptions propagate. A successful guard and its
+body share the same bindings, including changes made by the guard. A call
+for which no clause succeeds throws an error.
+
+Scalar captures receive copies of matched values. References preserve their
+referent identity without a deep copy. The body sees the complete original
+argument list in C<@_>, whose elements retain their ordinary argument aliases.
+Assigning to a capture does not assign to the caller's scalar; assigning to
+an element of C<@_> can do so. There is no explicit alias-capture syntax.
+
+The selected body executes in the public subroutine's call frame. It receives
+the caller's scalar, list, or void context. An explicit C<return> returns from
+the public subroutine, and the body's final expression supplies an implicit
+return value. C<__SUB__>, when enabled, refers to that public subroutine, so a
+recursive call selects a clause again. A nested ordinary subroutine keeps its
+own C<__SUB__> identity. Dispatch does not replace C<$_>.
+
+C<last>, C<next>, and C<redo> follow ordinary subroutine behavior. A loop
+inside the clause handles them normally. Otherwise they can target a caller's
+loop, with the usual warnings for leaving a subroutine. The compiler's
+internal dispatcher is not a loop-control target. An explicitly written
+C<dispatch> inside a clause retains its own control-flow behavior.
+
+All clauses for a name must occur in the same enclosing lexical scope and
+compilation unit. They may be separated by other declarations. Each clause
+is parsed at its original source position, preserving lexical lookup,
+pragmas, and compile-time effects. The complete subroutine becomes callable
+when that enclosing scope finishes compiling. Calling it from a C<BEGIN>
+block before then throws a fatal "Multi-sub ... is not complete" error.
+Clauses cannot be appended from a later C<eval>, C<require>, or a separate
+lexical scope.
+
+Code references taken before group completion retain their identity and see
+the completed group when it becomes callable.
+
+When Perl reads the next clause or completes the group, the original
+symbol-table entry must still exist. An empty code slot is restored, so
+C<undef *name> preserves the reservation. A different local code reference
+is a compile-time error. Restoring the saved reservation itself is allowed.
+Undefining the reserved subroutine itself with C<undef &name>, including
+through an alias, invalidates the group and is a compile-time error.
+
+C<multi method> defines clauses of a true method within a class or role:
+
+    multi method magnitude($value if $value < 0) {
+        return -$value;
+    }
+
+    multi method magnitude($value) {
+        return $value;
+    }
+
+The normal method prologue binds C<$self> and fields before matching. Its
+invocant is excluded from the patterns and from C<@_>, just as in an ordinary
+true method. Enable both C<class> and C<multisub>; see
+L<perlclass/multi method> for a complete example and role behavior.
+Calling a C<multi sub> through method-call syntax includes the invocant among
+its ordinary arguments.
+Calling a true method before its group is complete reports
+"Multi-method ... is not complete".
+
+Ordinary and C<multi> declarations cannot share a name, and C<multi sub>
+and C<multi method> clauses cannot be mixed for one name. Named package
+subroutines and true methods are supported. Lexical and anonymous multi
+declarations, forward declarations, attributes, prototypes, and phase blocks
+such as C<BEGIN> are not supported.
+
+C<B::Deparse> reconstructs native multi sub declarations when deparsing a
+program. Its C<coderef2text> method instead renders an ordinary subroutine
+body using C<dispatch>/C<on>, so its result can be prefixed with C<sub> as
+usual. This rendering preserves dispatch behavior but does not carry the
+multi sub declaration kind. As with ordinary subroutines, deparsing a code
+reference does not serialize its captured lexical environment.
+
+For a multi method, C<coderef2text> returns a method body. Recompile it using
+C<method>, with the original class or role declaration and fields available.
+Whole-program reconstruction of class and field declarations is outside the
+deparser's current support.
+
 =head2 Persistent Private Variables
 X<state> X<state variable> X<static> X<variable, persistent>
 X<variable, static> X<closure>

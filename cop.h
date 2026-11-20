@@ -1041,6 +1041,7 @@ struct block_dispatch {
         AV *committed_bindings;
         SV *subject;       /* owned ref: localized $_ or the named subject */
         bool localizes_defsv;
+        bool loop_transparent; /* compiler dispatch is not a loop target */
         OP *redo_op;
 };
 

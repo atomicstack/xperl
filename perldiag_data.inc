@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-STATIC_ASSERT_DECL(OP_max + 2 == 447); /* compiled operation-map bound */
+STATIC_ASSERT_DECL(OP_max + 2 == 448); /* compiled operation-map bound */
 
 enum {
     perl_diag_lang_none = 0,
@@ -500,6 +500,7 @@ static const struct {
     { "XPerl::Diagnostic::Warning::Experimental::ExtraPairedDelimiters",           "XPerl::Diagnostic::Warning::Experimental",                      FALSE, WARN_EXPERIMENTAL__EXTRA_PAIRED_DELIMITERS + 1    },
     { "XPerl::Diagnostic::Warning::Experimental::KeywordAll",                      "XPerl::Diagnostic::Warning::Experimental",                      FALSE, WARN_EXPERIMENTAL__KEYWORD_ALL + 1                },
     { "XPerl::Diagnostic::Warning::Experimental::KeywordAny",                      "XPerl::Diagnostic::Warning::Experimental",                      FALSE, WARN_EXPERIMENTAL__KEYWORD_ANY + 1                },
+    { "XPerl::Diagnostic::Warning::Experimental::Multisub",                        "XPerl::Diagnostic::Warning::Experimental",                      FALSE, WARN_EXPERIMENTAL__MULTISUB + 1                   },
     { "XPerl::Diagnostic::Warning::Experimental::Namespaces",                      "XPerl::Diagnostic::Warning::Experimental",                      FALSE, WARN_EXPERIMENTAL__NAMESPACES + 1                 },
     { "XPerl::Diagnostic::Warning::Experimental::PrivateUse",                      "XPerl::Diagnostic::Warning::Experimental",                      FALSE, WARN_EXPERIMENTAL__PRIVATE_USE + 1                },
     { "XPerl::Diagnostic::Warning::Experimental::ReStrict",                        "XPerl::Diagnostic::Warning::Experimental",                      FALSE, WARN_EXPERIMENTAL__RE_STRICT + 1                  },
@@ -995,6 +996,7 @@ static const perl_diag_param_metadata_t perl_diag_param_metadata[] = {
     { "language",                 "text" },
     { "owner",                    "text" },
     { "problem",                  "text" },
+    { "declaration_kind",         "text" },
 };
 
 static const U16 perl_diag_param_ids[] = {
@@ -1043,10 +1045,10 @@ static const U16 perl_diag_param_ids[] = {
      243,   65,  255,  261,   33,   10,  264,  147,  267,  267,   94,  201,  280,  261,  303,    3,
      136,  116,  319,  328,  203,  116,  203,  330,  203,  116,   29,   36,   46,  348,    5,  352,
      351,   14,  269,  355,  346,   36,  345,  359,  360,  361,  362,  364,  365,  367,   14,   72,
-     369,    2,    4,    8,   20,   21,   28,   32,   34,   42,   43,   45,   60,   68,   82,   99,
-     100,  106,  107,  108,  109,  110,  111,  112,  113,  114,  115,  121,  123,  127,  129,  143,
-     159,  188,  268,  270,  271,  275,  281,  282,  305,  325,  347,  349,  353,  354,  363,  366,
-     368,
+     369,   36,  370,    2,    4,    8,   20,   21,   28,   32,   34,   42,   43,   45,   60,   68,
+      82,   99,  100,  106,  107,  108,  109,  110,  111,  112,  113,  114,  115,  121,  123,  127,
+     129,  143,  159,  188,  268,  270,  271,  275,  281,  282,  305,  325,  347,  349,  353,  354,
+     363,  366,  368,
 };
 
 static const perl_diag_input_metadata_t perl_diag_input_metadata[] = {
@@ -1507,6 +1509,7 @@ static const perl_diag_input_metadata_t perl_diag_input_metadata[] = {
     { "language",                 "text" },
     { "owner",                    "text" },
     { "problem",                  "text" },
+    { "declaration_kind",         "text" },
 };
 
 static const perl_diag_param_input_range_t perl_diag_param_input_ranges[] = {
@@ -2242,6 +2245,8 @@ static const perl_diag_param_input_range_t perl_diag_param_input_ranges[] = {
     { 125,  1 },
     { 177,  1 },
     { 455,  1 },
+    {   4,  1 },
+    { 456,  1 },
     {  83,  2 },
     { 113,  1 },
     { 115,  1 },
@@ -2305,7 +2310,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { NULL,                                                                           0,  NULL,           NULL,             FALSE,   0,   0,    0,  FALSE, FALSE, NULL,                                                                        NULL,                                                                        NULL,                                                   NULL,                 NULL,                                                               NULL,                                    FALSE, FALSE },
     { "ERROR_CALL_BINDING_ARITY_INVALID_ARGUMENT_COUNT",                           1500,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  570,   2,  601,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_CALL_BINDING_ARITY_ODD_SLURPY_HASH_ARGUMENT_COUNT",                   2432,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_CALL_BINDING_ARITY_SIGNATURE_MISMATCH",                               1314,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  697,   1,  739,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_CALL_BINDING_ARITY_SIGNATURE_MISMATCH",                               1314,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  699,   1,  741,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_CALL_BINDING_ARITY_SUBROUTINE_COUNT_MISMATCH",                        2431,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  154,   5,  154,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_CALL_BINDING_ARITY_TOO_FEW_ARGUMENTS",                                1404,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  550,   2,  579,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_CALL_BINDING_ARITY_TOO_MANY_ARGUMENTS",                               1405,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  550,   2,  579,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "XPerl::Diagnostic::Error::Call::Binding::Arity",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2319,7 +2324,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_CALL_BINDING_TYPE_EXPRESSION_TYPE_MISMATCH",                          1417,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,   62,   7,   62,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Type",                             "XPerl::Diagnostic::Error::Call::Binding::Type",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_CALL_BINDING_TYPE_HASH_REFERENCE_REQUIRED",                           2001,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  420,   3,  434,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Type",                             "XPerl::Diagnostic::Error::Call::Binding::Type",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_CALL_BINDING_TYPE_REFERENCE_TYPE_UNSUPPORTED",                        2002,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  423,   3,  437,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Type",                             "XPerl::Diagnostic::Error::Call::Binding::Type",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_CALL_BINDING_TYPE_SCALAR_CONTAINER_ACCESS_FORBIDDEN",                 1407,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  698,   1,  740,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Type",                             "XPerl::Diagnostic::Error::Call::Binding::Type",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_CALL_BINDING_TYPE_SCALAR_CONTAINER_ACCESS_FORBIDDEN",                 1407,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  700,   1,  742,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Binding::Type",                             "XPerl::Diagnostic::Error::Call::Binding::Type",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_CALL_CLOSURE_PROTOTYPE_NOT_CALLABLE",                                 2045,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call",                                            "XPerl::Diagnostic::Error::Call",                                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_CALL_CORE_KEYWORD_NOT_CALLABLE",                                      1184,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call",                                            "XPerl::Diagnostic::Error::Call",                                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_CALL_LOOKUP_INHERITED_AUTOLOAD_FORBIDDEN",                            1774,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  139,   2,  410,  FALSE, FALSE, "XPerl::Diagnostic::Error::Call::Lookup",                                    "XPerl::Diagnostic::Error::Call::Lookup",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2419,7 +2424,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_INTERNAL_DISPATCH_SUBJECT_ASSIGNMENT_MISSING",                        1827,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Dispatch",                              "XPerl::Diagnostic::Error::Internal::Dispatch",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_DISPATCH_SUBJECT_LEXICAL_MISSING",                           1828,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Dispatch",                              "XPerl::Diagnostic::Error::Internal::Dispatch",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_EMBEDDING_HANDSHAKE_KEY_OVERFLOW",                           1890,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Embedding",                             "XPerl::Diagnostic::Error::Internal::Embedding",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_INTERNAL_FORMAT_PRINTF_BUFFER_OVERFLOW",                              1811,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 722,   1,  766,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Format::Printf",                        "XPerl::Diagnostic::Error::Internal::Format::Printf",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_INTERNAL_FORMAT_PRINTF_BUFFER_OVERFLOW",                              1811,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 724,   1,  768,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Format::Printf",                        "XPerl::Diagnostic::Error::Internal::Format::Printf",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_FORMAT_PRINTF_FREXP_EXPONENT_UNSET",                         2430,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 586,   1,  623,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Format::Printf",                        "XPerl::Diagnostic::Error::Internal::Format::Printf",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_FORMAT_PRINTF_HEXADECIMAL_FLOAT_BOUNDS_INVALID",             1238,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Format::Printf",                        "XPerl::Diagnostic::Error::Internal::Format::Printf",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_FORMAT_PRINTF_HEX_FLOAT_BUFFER_END_INVALID",                 1286,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Format::Printf",                        "XPerl::Diagnostic::Error::Internal::Format::Printf",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2459,7 +2464,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_INTERNAL_ITERATOR_VARIABLE_PAD_TARGET_DISCONTIGUOUS",                 1479,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 134,   3,  134,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Iterator",                              "XPerl::Diagnostic::Error::Internal::Iterator",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_ITERATOR_VARIABLE_REFERENCE_OP_INVALID",                     1477,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 345,   2,  353,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Iterator",                              "XPerl::Diagnostic::Error::Internal::Iterator",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_LOCALE_DATA_ALTERNATE_DIGITS_SEPARATOR_MISSING",             2655,  "CORE_RUNTIME", "INTERNAL_ERROR", TRUE,  664,   2,  705,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_INTERNAL_LOCALE_DATA_CHAR_CLASS_UNKNOWN",                             2647,  "CORE_RUNTIME", "INTERNAL_ERROR", TRUE,  730,   1,  779,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_INTERNAL_LOCALE_DATA_CHAR_CLASS_UNKNOWN",                             2647,  "CORE_RUNTIME", "INTERNAL_ERROR", TRUE,  732,   1,  781,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_LOCALE_DATA_CONVENTION_ITEM_UNKNOWN",                        2649,  "CORE_RUNTIME", "INTERNAL_ERROR", TRUE,   46,   1,   46,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_LOCALE_DATA_CONVENTION_VALUE_MISSING",                       2645,  "CORE_RUNTIME", "INTERNAL_ERROR", TRUE,  640,   1,  679,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_LOCALE_DATA_LANGINFO_ITEM_UNHANDLED",                        1469,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,  82,   1,   82,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "XPerl::Diagnostic::Error::Internal::Locale::Data",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2509,12 +2514,12 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_INTERNAL_MUTATION_LVALUE_CALL_TARGET_TREE_INVALID",                   1746,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 600,   2,  637,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Mutation::Lvalue",                      "XPerl::Diagnostic::Error::Internal::Mutation::Lvalue",                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_MUTATION_TIE_BACKEND_ENTRY_POINT_MISSING",                   1467,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 232,   3,  236,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Mutation::Tie",                         "XPerl::Diagnostic::Error::Internal::Mutation::Tie",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_MUTATION_TIE_BACKEND_PACKAGE_MISSING",                       1466,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 232,   3,  236,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Mutation::Tie",                         "XPerl::Diagnostic::Error::Internal::Mutation::Tie",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_INTERNAL_NUMERIC_CONVERSION_BASE_UNSUPPORTED",                        1168,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 691,   1,  733,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Numeric::Conversion",                   "XPerl::Diagnostic::Error::Internal::Numeric::Conversion",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_INTERNAL_NUMERIC_CONVERSION_BASE_UNSUPPORTED",                        1168,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 693,   1,  735,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Numeric::Conversion",                   "XPerl::Diagnostic::Error::Internal::Numeric::Conversion",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_ALGORITHM_MISSING",       1367,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Object::Composition::Inheritance",      "XPerl::Diagnostic::Error::Internal::Object::Composition::Inheritance",      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_DATA_STORE_FAILED",       1616,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 259,   2,  607,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Object::Composition::Inheritance",      "XPerl::Diagnostic::Error::Internal::Object::Composition::Inheritance",      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_OBJECT_COMPOSITION_INHERITANCE_MRO_REGISTER_FAILED",         1617,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 259,   2,  607,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Object::Composition::Inheritance",      "XPerl::Diagnostic::Error::Internal::Object::Composition::Inheritance",      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_FIELD_LAYOUT_MISSING",               1582,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 705,   1,  749,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Object::Composition",                   "XPerl::Diagnostic::Error::Internal::Object::Composition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_PROTOTYPE_MISSING",                  1583,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 705,   1,  749,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Object::Composition",                   "XPerl::Diagnostic::Error::Internal::Object::Composition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_FIELD_LAYOUT_MISSING",               1582,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 707,   1,  751,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Object::Composition",                   "XPerl::Diagnostic::Error::Internal::Object::Composition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_PROTOTYPE_MISSING",                  1583,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 707,   1,  751,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Object::Composition",                   "XPerl::Diagnostic::Error::Internal::Object::Composition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_OPCODE_BUILTIN_CONSTANT_ID_UNKNOWN",                         1990,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,  81,   1,   81,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Opcode::Builtin",                       "XPerl::Diagnostic::Error::Internal::Opcode::Builtin",                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_OPCODE_BUILTIN_SCALAR_DISPATCH_OP_UNKNOWN",                  2418,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,  81,   1,   81,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Opcode::Builtin",                       "XPerl::Diagnostic::Error::Internal::Opcode::Builtin",                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_OPCODE_BUILTIN_VOID_DISPATCH_OP_UNKNOWN",                    2419,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,  81,   1,   81,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Opcode::Builtin",                       "XPerl::Diagnostic::Error::Internal::Opcode::Builtin",                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2567,7 +2572,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_INTERNAL_REGEXP_COMPILER_NAMED_CAPTURE_SCANNER_RESULT_MISSING",       1375,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Regexp::Compiler::NamedCapture",        "XPerl::Diagnostic::Error::Internal::Regexp::Compiler::NamedCapture",        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_REGEXP_COMPILER_PIECE_RESULT_MISSING",                       1788,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 399,   3,  413,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Regexp::Compiler",                      "XPerl::Diagnostic::Error::Internal::Regexp::Compiler",                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_REGEXP_COMPILER_PROPERTY_SET_OPERATION_UNKNOWN",             1520,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 345,   3,  353,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Regexp::Compiler::Property",            "XPerl::Diagnostic::Error::Internal::Regexp::Compiler::Property",            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_INTERNAL_REGEXP_COMPILER_ROOT_RESULT_MISSING",                        1727,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 720,   1,  764,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Regexp::Compiler",                      "XPerl::Diagnostic::Error::Internal::Regexp::Compiler",                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_INTERNAL_REGEXP_COMPILER_ROOT_RESULT_MISSING",                        1727,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 722,   1,  766,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Regexp::Compiler",                      "XPerl::Diagnostic::Error::Internal::Regexp::Compiler",                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_REGEXP_COMPILER_STUDY_EXTENDED_CLASS_UNRESOLVED",            1524,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,  69,   1,   69,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Regexp::Compiler::Study",               "XPerl::Diagnostic::Error::Internal::Regexp::Compiler::Study",               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_REGEXP_COMPILER_STUDY_SIMPLE_OPCODE_UNHANDLED",              1523,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,  82,   1,   82,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Regexp::Compiler::Study",               "XPerl::Diagnostic::Error::Internal::Regexp::Compiler::Study",               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_REGEXP_COMPILER_STUDY_VARYING_OPCODE_UNHANDLED",             1522,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,  82,   1,   82,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Regexp::Compiler::Study",               "XPerl::Diagnostic::Error::Internal::Regexp::Compiler::Study",               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2628,7 +2633,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_INTERNAL_STACK_ARGUMENT_XSUB_CAPACITY_NOT_EXTENDED",                  1505,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,  69,   6,   69,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Stack::Argument",                       "XPerl::Diagnostic::Error::Internal::Stack::Argument",                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_STACK_CALL_CONTEXT_MISSING",                                 1501,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,  82,   1,   82,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Stack",                                 "XPerl::Diagnostic::Error::Internal::Stack",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_STACK_JUMP_PARSE_EXCEPTION_ESCAPED",                         2689,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Stack::Jump",                           "XPerl::Diagnostic::Error::Internal::Stack::Jump",                           "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_INTERNAL_STACK_JUMP_ROOT_TARGET_MISSING",                             2670,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 732,   1,  781,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Stack::Jump",                           "XPerl::Diagnostic::Error::Internal::Stack::Jump",                           "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_INTERNAL_STACK_JUMP_ROOT_TARGET_MISSING",                             2670,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 734,   1,  783,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Stack::Jump",                           "XPerl::Diagnostic::Error::Internal::Stack::Jump",                           "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_STACK_JUMP_SETJMP_RESULT_INVALID",                           1814,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Stack::Jump",                           "XPerl::Diagnostic::Error::Internal::Stack::Jump",                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_STACK_PREVIOUS_FRAME_MISSING",                               2693,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Stack",                                 "XPerl::Diagnostic::Error::Internal::Stack",                                 "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_STACK_SAVE_ALLOCATION_ENCODING_OVERFLOW",                    1629,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 360,   3,  368,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Stack::Save",                           "XPerl::Diagnostic::Error::Internal::Stack::Save",                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2699,7 +2704,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_INTERNAL_UNICODE_UTF16_FILTER_REENTERED_AFTER_ERROR",                 1639,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,  81,   1,   81,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Unicode::UTF16",                        "XPerl::Diagnostic::Error::Internal::Unicode::UTF16",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_UNICODE_UTF8_BYTE_OFFSET_OUT_OF_RANGE",                      1634,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 574,   2,  611,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_UNICODE_UTF8_CACHED_POSITION_MISMATCH",                      1735,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 199,   4,  203,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_INTERNAL_UNICODE_UTF8_DECODER_PROBLEM_UNHANDLED",                     1738,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 721,   1,  765,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_INTERNAL_UNICODE_UTF8_DECODER_PROBLEM_UNHANDLED",                     1738,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 723,   1,  767,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_UNICODE_UTF8_FORWARD_HOP_START_OUT_OF_BOUNDS",               1816,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 414,   3,  428,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_UNICODE_UTF8_MALFORMED_REPORT_WITHOUT_DECODER_ERROR",        1656,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "XPerl::Diagnostic::Error::Internal::Unicode::UTF8",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_INTERNAL_VALUE_VERSION_RADIX_NOT_FOUND",                              1891,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,  38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Internal::Value::Version",                        "XPerl::Diagnostic::Error::Internal::Value::Version",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2710,19 +2715,19 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_IO_DBM_BACKEND_UNAVAILABLE",                                          1010,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::DBM",                                         "XPerl::Diagnostic::Error::IO::DBM",                                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_DBM_FILTER_REENTRY",                                               1562,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   69,   1,   69,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::DBM::Filter",                                 "XPerl::Diagnostic::Error::IO::DBM::Filter",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_FILESYSTEM_DIRECTORY_CHANGED_DURING_GETCWD",                       1657,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Filesystem::Directory",                       "XPerl::Diagnostic::Error::IO::Filesystem::Directory",                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_IO_FILESYSTEM_DIRECTORY_CHDIR_FAILED",                                1178,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  692,   1,  734,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Filesystem::Directory",                       "XPerl::Diagnostic::Error::IO::Filesystem::Directory",                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_IO_FILESYSTEM_DIRECTORY_CHDIR_FAILED",                                1178,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  694,   1,  736,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Filesystem::Directory",                       "XPerl::Diagnostic::Error::IO::Filesystem::Directory",                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_FILESYSTEM_DIRECTORY_OPERATION_UNAVAILABLE",                       2062,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Filesystem::Directory",                       "XPerl::Diagnostic::Error::IO::Filesystem::Directory",                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_FILESYSTEM_PATH_CONVERSION_EMPTY_INPUT",                           1118,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Filesystem::Path",                            "XPerl::Diagnostic::Error::IO::Filesystem::Path",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_FILESYSTEM_PATH_CONVERSION_INVALID_ARGUMENT_COUNT",                1563,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   69,   1,   69,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Filesystem::Path",                            "XPerl::Diagnostic::Error::IO::Filesystem::Path",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_FILE_TEST_LSTAT_REQUIRES_LSTAT_CACHE",                             1308,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::FileTest",                                    "XPerl::Diagnostic::Error::IO::FileTest",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_FILE_TEST_SYMLINK_REQUIRES_LSTAT_CACHE",                           1445,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::FileTest",                                    "XPerl::Diagnostic::Error::IO::FileTest",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_FILE_TEST_TEXT_BINARY_UNSUPPORTED_ON_HANDLE",                      2061,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::FileTest",                                    "XPerl::Diagnostic::Error::IO::FileTest",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_IO_HANDLE_BAREWORD_NAME_FORBIDDEN",                                   2616,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  729,   1,  778,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Handle",                                      "XPerl::Diagnostic::Error::IO::Handle",                                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_IO_HANDLE_BAREWORD_NAME_FORBIDDEN",                                   2616,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  731,   1,  780,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Handle",                                      "XPerl::Diagnostic::Error::IO::Handle",                                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_HANDLE_DIRHANDLE_USED_AS_FILEHANDLE",                              1695,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Handle",                                      "XPerl::Diagnostic::Error::IO::Handle",                                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_HANDLE_FILEHANDLE_USED_AS_DIRHANDLE",                              1696,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Handle",                                      "XPerl::Diagnostic::Error::IO::Handle",                                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_HANDLE_FILENAME_UNAVAILABLE",                                      1062,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Handle",                                      "XPerl::Diagnostic::Error::IO::Handle",                                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_HANDLE_INVALID_NAMED_HANDLE",                                      1698,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Handle",                                      "XPerl::Diagnostic::Error::IO::Handle",                                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_IO_HANDLE_INVALID_VALUE",                                             1598,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  712,   1,  756,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Handle",                                      "XPerl::Diagnostic::Error::IO::Handle",                                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_IO_HANDLE_INVALID_VALUE",                                             1598,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  714,   1,  758,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Handle",                                      "XPerl::Diagnostic::Error::IO::Handle",                                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_INPLACE_EDIT_CANNOT_CLOSE_WORK_FILE",                              1207,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  139,   2,  263,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::InplaceEdit",                                 "XPerl::Diagnostic::Error::IO::InplaceEdit",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_INPLACE_EDIT_CANNOT_CREATE_BACKUP",                                1182,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  327,   3,  335,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::InplaceEdit",                                 "XPerl::Diagnostic::Error::IO::InplaceEdit",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_INPLACE_EDIT_CANNOT_REPLACE_ORIGINAL",                             1463,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  140,   4,  187,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::InplaceEdit",                                 "XPerl::Diagnostic::Error::IO::InplaceEdit",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2745,7 +2750,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_IO_OPEN_TOO_MANY_ARGUMENTS",                                          1295,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Open",                                        "XPerl::Diagnostic::Error::IO::Open",                                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_OPEN_UNKNOWN_MODE",                                                1605,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,  139,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Open",                                        "XPerl::Diagnostic::Error::IO::Open",                                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_RECORDSEPARATOR_LENGTH_NOT_POSITIVE",                              1215,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  275,   1,  283,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::RecordSeparator",                             "XPerl::Diagnostic::Error::IO::RecordSeparator",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_IO_RECORDSEPARATOR_REFERENCE_TYPE_UNSUPPORTED",                       1472,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  703,   1,  747,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::RecordSeparator",                             "XPerl::Diagnostic::Error::IO::RecordSeparator",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_IO_RECORDSEPARATOR_REFERENCE_TYPE_UNSUPPORTED",                       1472,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  705,   1,  749,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::RecordSeparator",                             "XPerl::Diagnostic::Error::IO::RecordSeparator",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_IO_SOCKET_OPERATION_UNAVAILABLE",                                     1998,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error::IO::Socket",                                      "XPerl::Diagnostic::Error::IO::Socket",                                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_ITERATOR_CONSTRUCTOR_CODE_REFERENCE_REQUIRED",                        1131,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Iterator",                                        "XPerl::Diagnostic::Error::Iterator",                                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_ITERATOR_DECLARED_REFERENCE_COUNT_LIMIT",                             1259,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Iterator",                                        "XPerl::Diagnostic::Error::Iterator",                                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2766,7 +2771,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_LEXICAL_EXPORT_OUTSIDE_COMPILATION",                                  1355,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::LexicalExport",                                   "XPerl::Diagnostic::Error::LexicalExport",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_LEXICAL_EXPORT_REFERENCE_REQUIRED",                                   1266,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::LexicalExport",                                   "XPerl::Diagnostic::Error::LexicalExport",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_LEXICAL_EXPORT_REFERENCE_TYPE_MISMATCH",                              1206,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  614,   1,  651,  FALSE, FALSE, "XPerl::Diagnostic::Error::LexicalExport",                                   "XPerl::Diagnostic::Error::LexicalExport",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_LEXICAL_IMPORT_INVALID_VERSION_BUNDLE",                               1601,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  715,   1,  759,  FALSE, FALSE, "XPerl::Diagnostic::Error::LexicalImport",                                   "XPerl::Diagnostic::Error::LexicalImport",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_LEXICAL_IMPORT_INVALID_VERSION_BUNDLE",                               1601,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  717,   1,  761,  FALSE, FALSE, "XPerl::Diagnostic::Error::LexicalImport",                                   "XPerl::Diagnostic::Error::LexicalImport",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_LEXICAL_IMPORT_OUTSIDE_COMPILATION",                                  1351,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::LexicalImport",                                   "XPerl::Diagnostic::Error::LexicalImport",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_LEXICAL_IMPORT_UNKNOWN_BUILTIN",                                      1680,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error::LexicalImport",                                   "XPerl::Diagnostic::Error::LexicalImport",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_LEXICAL_IMPORT_UNSUPPORTED_VERSION_BUNDLE",                           1722,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  584,   2,  621,  FALSE, FALSE, "XPerl::Diagnostic::Error::LexicalImport",                                   "XPerl::Diagnostic::Error::LexicalImport",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2777,7 +2782,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_LOAD_ABI_PERL_API_VERSION_MISMATCH",                                  1561,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   69,   2,   69,  FALSE, FALSE, "XPerl::Diagnostic::Error::Load::ABI",                                       "XPerl::Diagnostic::Error::Load::ABI",                                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_LOAD_CONTEXT_H2PH_HINT",                                              2457,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Load::Context",                                   "XPerl::Diagnostic::Error::Load::Context",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_LOAD_CONTEXT_HEADER_SUFFIX_HINT",                                     2458,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Load::Context",                                   "XPerl::Diagnostic::Error::Load::Context",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_LOAD_CONTEXT_INC_ENTRIES_CHECKED",                                    2459,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 723,   1,  770,  FALSE, FALSE, "XPerl::Diagnostic::Error::Load::Context",                                   "XPerl::Diagnostic::Error::Load::Context",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_LOAD_CONTEXT_INC_ENTRIES_CHECKED",                                    2459,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 725,   1,  772,  FALSE, FALSE, "XPerl::Diagnostic::Error::Load::Context",                                   "XPerl::Diagnostic::Error::Load::Context",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_LOAD_CONTEXT_MODULE_INSTALL_HINT",                                    2460,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 271,   1,  279,  FALSE, FALSE, "XPerl::Diagnostic::Error::Load::Context",                                   "XPerl::Diagnostic::Error::Load::Context",                                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_LOAD_FILENAME_INVALID",                                               2022,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  139,   2,  263,  FALSE, FALSE, "XPerl::Diagnostic::Error::Load",                                            "XPerl::Diagnostic::Error::Load",                                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_LOAD_FILENAME_REQUIRED",                                              2020,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Load",                                            "XPerl::Diagnostic::Error::Load",                                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2818,7 +2823,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_MUTATION_ASSIGNMENT_ARRAY_BASE_NONZERO",                              1032,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Assignment",                            "XPerl::Diagnostic::Error::Mutation::Assignment",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_MUTATION_ASSIGNMENT_GLOB_REFERENT_TYPE_UNSUPPORTED",                  1191,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Assignment",                            "XPerl::Diagnostic::Error::Mutation::Assignment",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_MUTATION_ASSIGNMENT_MIXED_SCALAR_AND_LIST_TARGETS",                   1388,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Assignment",                            "XPerl::Diagnostic::Error::Mutation::Assignment",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE",                          1683,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  718,   1,  762,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Element",                               "XPerl::Diagnostic::Error::Mutation::Element",                               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE",                          1683,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  720,   1,  764,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Element",                               "XPerl::Diagnostic::Error::Mutation::Element",                               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_MUTATION_ELEMENT_HASH_VALUE_NOT_CREATABLE",                           1684,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  640,   1,  679,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Element",                               "XPerl::Diagnostic::Error::Mutation::Element",                               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_MUTATION_LOCALIZATION_LEXICAL_VARIABLE_FORBIDDEN",                    1691,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Localization",                          "XPerl::Diagnostic::Error::Mutation::Localization",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_MUTATION_LOCALIZATION_THROUGH_REFERENCE_FORBIDDEN",                   1447,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Localization",                          "XPerl::Diagnostic::Error::Mutation::Localization",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2831,7 +2836,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_MUTATION_LVALUE_RETURN_HASH_KEY_VALUE_SLICE_NOT_MODIFIABLE",          1499,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   69,   1,   69,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Lvalue::Return",                        "XPerl::Diagnostic::Error::Mutation::Lvalue::Return",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_MUTATION_LVALUE_RETURN_LEXICAL_ARRAY_IN_SCALAR_CONTEXT",              1253,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Lvalue::Return",                        "XPerl::Diagnostic::Error::Mutation::Lvalue::Return",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_MUTATION_LVALUE_RETURN_LEXICAL_HASH_IN_SCALAR_CONTEXT",               1254,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Lvalue::Return",                        "XPerl::Diagnostic::Error::Mutation::Lvalue::Return",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_MUTATION_LVALUE_RETURN_VALUE_NOT_MODIFIABLE",                         1193,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  694,   1,  736,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Lvalue::Return",                        "XPerl::Diagnostic::Error::Mutation::Lvalue::Return",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_MUTATION_LVALUE_RETURN_VALUE_NOT_MODIFIABLE",                         1193,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  696,   1,  738,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Lvalue::Return",                        "XPerl::Diagnostic::Error::Mutation::Lvalue::Return",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_MUTATION_LVALUE_TARGET_NOT_MODIFIABLE",                               1419,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  179,   4,  179,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::Lvalue",                                "XPerl::Diagnostic::Error::Mutation::Lvalue",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_MUTATION_READ_ONLY_RESTRICTED_HASH_KEY_DELETION",                     1744,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  640,   1,  679,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::ReadOnly",                              "XPerl::Diagnostic::Error::Mutation::ReadOnly",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_MUTATION_READ_ONLY_VALUE_MODIFICATION",                               2609,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Mutation::ReadOnly",                              "XPerl::Diagnostic::Error::Mutation::ReadOnly",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2863,22 +2868,22 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_OBJECT_COMPOSITION_IMPLEMENTS_ATTRIBUTE_TRAILING_TEXT",               1217,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition",                             "XPerl::Diagnostic::Error::Object::Composition",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_HIERARCHY_INCONSISTENT",            2515,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  649,   1,  688,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_MERGE_RESULT_CONTEXT",              2516,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 649,   1,  688,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_PARENT_CONFLICT_CONTEXT",           2517,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 728,   1,  777,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_PARENT_CONFLICT_CONTEXT",           2517,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 730,   1,  779,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_ATTRIBUTE_TRAILING_TEXT",          1218,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_ISA_CHANGE_ANONYMOUS_STASH",           1041,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_ANONYMOUS_STASH",        1045,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_DEPTH_EXCEEDED",         1590,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  706,   1,  750,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_DEPTH_EXCEEDED",         1590,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  708,   1,  752,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_ANONYMOUS_STASH",        1042,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_PACKAGE_NOT_FOUND",      1591,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  707,   1,  751,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_PACKAGE_NOT_FOUND",      1591,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  709,   1,  753,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_MRO_NAME_UNKNOWN",                     1603,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_OBJECT_COMPOSITION_INHERITANCE_NATIVE_SUPERCLASS_REQUIRED",           1579,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  704,   1,  748,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_OBJECT_COMPOSITION_INHERITANCE_NATIVE_SUPERCLASS_REQUIRED",           1579,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  706,   1,  750,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_PACKAGE_CREATION_FAILED",              2518,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  649,   1,  688,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_ROLE_ISA_FORBIDDEN",                   1098,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_INHERITANCE_SUPERCLASS_ALREADY_ASSIGNED",          1057,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "XPerl::Diagnostic::Error::Object::Composition::Inheritance",                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_LAYOUTS_INCOMPATIBLE",                             2774,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition",                             "XPerl::Diagnostic::Error::Object::Composition",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_METHOD_IMPLEMENTATION_REQUIRED",                   2456,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 648,   2,  687,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition",                             "XPerl::Diagnostic::Error::Object::Composition",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_COMPOSITION_METHOD_PROVIDER_CONFLICT",                         1687,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 139,   3,  263,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition",                             "XPerl::Diagnostic::Error::Object::Composition",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_OBJECT_COMPOSITION_NATIVE_ROLE_REQUIRED",                             1600,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  714,   1,  758,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition",                             "XPerl::Diagnostic::Error::Object::Composition",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_OBJECT_COMPOSITION_NATIVE_ROLE_REQUIRED",                             1600,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  716,   1,  760,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Composition",                             "XPerl::Diagnostic::Error::Object::Composition",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_CONSTRUCTOR_ALREADY_INITIALIZED",                              2759,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Constructor",                             "XPerl::Diagnostic::Error::Object::Constructor",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_CONSTRUCTOR_BLESSING_CHANGED",                                 2761,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Constructor",                             "XPerl::Diagnostic::Error::Object::Constructor",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_CONSTRUCTOR_CLASS_INCOMPLETE",                                 1575,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  357,   1,  365,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Constructor",                             "XPerl::Diagnostic::Error::Object::Constructor",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2892,8 +2897,8 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_OBJECT_CONVERSION_HASH_REFERENCE_REQUIRED",                           1120,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_CONVERSION_NATIVE_CLASS_REQUIRED",                             1121,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_CONVERSION_NATIVE_OBJECT_REQUIRED",                            1122,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS",                                   2786,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  737,   1,  786,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED",                             2770,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  737,   1,  786,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS",                                   2786,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  739,   1,  788,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED",                             2770,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  739,   1,  788,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_CONVERSION_PAYLOAD_REFERENCE_REQUIRED",                        2762,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_CONVERSION_SNAPSHOT_SELF_REQUIRED",                            2771,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Conversion",                              "XPerl::Diagnostic::Error::Object::Conversion",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_DEFINITION_ATTRIBUTE_UNKNOWN",                                 1581,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Definition",                              "XPerl::Diagnostic::Error::Object::Definition",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2930,12 +2935,12 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_OBJECT_LEGACY_REFERENCE_INVALID",                                     2749,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::Legacy",                                  "XPerl::Diagnostic::Error::Object::Legacy",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_METHOD_CALL_ANONYMOUS_NATIVE_INSTANCE_REQUIRED",               1741,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodCall",                              "XPerl::Diagnostic::Error::Object::MethodCall",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_METHOD_CALL_INVOCANT_CLASS_INCOMPATIBLE",                      1686,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  139,   2,  263,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodCall",                              "XPerl::Diagnostic::Error::Object::MethodCall",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_OBJECT_METHOD_CALL_INVOCANT_REQUIRED",                                1595,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  710,   1,  754,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodCall",                              "XPerl::Diagnostic::Error::Object::MethodCall",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_OBJECT_METHOD_CALL_INVOCANT_REQUIRED",                                1595,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  712,   1,  756,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodCall",                              "XPerl::Diagnostic::Error::Object::MethodCall",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE",                          2751,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodCall",                              "XPerl::Diagnostic::Error::Object::MethodCall",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_METHOD_CALL_NAMED_NATIVE_INSTANCE_REQUIRED",                   1740,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodCall",                              "XPerl::Diagnostic::Error::Object::MethodCall",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED",                                 2763,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodCall",                              "XPerl::Diagnostic::Error::Object::MethodCall",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_METHOD_CALL_UNBLESSED_INVOCANT",                               1730,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  648,   1,  687,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodCall",                              "XPerl::Diagnostic::Error::Object::MethodCall",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_OBJECT_METHOD_CALL_UNINITIALIZED_INVOCANT",                           1596,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  710,   1,  754,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodCall::Uninitialized",               "XPerl::Diagnostic::Error::Object::MethodCall::Uninitialized",               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_OBJECT_METHOD_CALL_UNINITIALIZED_INVOCANT",                           1596,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  712,   1,  756,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodCall::Uninitialized",               "XPerl::Diagnostic::Error::Object::MethodCall::Uninitialized",               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_METHOD_LOOKUP_NAMED_STASH_REQUIRED",                           1048,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodLookup",                            "XPerl::Diagnostic::Error::Object::MethodLookup",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_METHOD_LOOKUP_NEXT_ENCLOSING_METHOD_UNKNOWN",                  2520,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodLookup::Next",                      "XPerl::Diagnostic::Error::Object::MethodLookup::Next",                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OBJECT_METHOD_LOOKUP_NEXT_METHOD_CONTEXT_REQUIRED",                   2519,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Object::MethodLookup::Next",                      "XPerl::Diagnostic::Error::Object::MethodLookup::Next",                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2948,7 +2953,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_OVERLOAD_RETURN_VALUE_COPY_REFERENCE_REQUIRED",                       1059,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Overload::ReturnValue",                           "XPerl::Diagnostic::Error::Overload::ReturnValue",                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OVERLOAD_RETURN_VALUE_DEREFERENCE_REFERENCE_REQUIRED",                1087,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Overload::ReturnValue",                           "XPerl::Diagnostic::Error::Overload::ReturnValue",                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_OVERLOAD_RETURN_VALUE_REGEXP_REQUIRED",                               1088,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Overload::ReturnValue",                           "XPerl::Diagnostic::Error::Overload::ReturnValue",                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_PACK_BOUNDS_PACK_POSITION_OUTSIDE_STRING",                            1450,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  702,   1,  746,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Bounds",                                    "XPerl::Diagnostic::Error::Pack::Bounds",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_PACK_BOUNDS_PACK_POSITION_OUTSIDE_STRING",                            1450,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  704,   1,  748,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Bounds",                                    "XPerl::Diagnostic::Error::Pack::Bounds",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_PACK_BOUNDS_UNPACK_BACKUP_OUTSIDE_STRING",                            1243,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Bounds",                                    "XPerl::Diagnostic::Error::Pack::Bounds",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_PACK_BOUNDS_UNPACK_POSITION_OUTSIDE_STRING",                          1028,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Bounds",                                    "XPerl::Diagnostic::Error::Pack::Bounds",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_PACK_BOUNDS_UNPACK_SKIP_OUTSIDE_STRING",                              1030,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Bounds",                                    "XPerl::Diagnostic::Error::Pack::Bounds",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2978,7 +2983,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_PACK_INPUT_MISSING_LENGTH_VALUE",                                     1132,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Input",                                     "XPerl::Diagnostic::Error::Pack::Input",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_PACK_INPUT_NEGATIVE_COMPRESSED_INTEGER",                              1052,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Input",                                     "XPerl::Diagnostic::Error::Pack::Input",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_PACK_INPUT_NEGATIVE_LENGTH_COUNT",                                    1079,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Input",                                     "XPerl::Diagnostic::Error::Pack::Input",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_PACK_INPUT_NONFINITE_COMPRESSED_INTEGER",                             1670,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  717,   1,  761,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Input",                                     "XPerl::Diagnostic::Error::Pack::Input",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_PACK_INPUT_NONFINITE_COMPRESSED_INTEGER",                             1670,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  719,   1,  763,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Input",                                     "XPerl::Diagnostic::Error::Pack::Input",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_PACK_INPUT_NONFINITE_VALUE",                                          1724,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  586,   2,  623,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Input",                                     "XPerl::Diagnostic::Error::Pack::Input",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_PACK_INPUT_NON_UNSIGNED_INTEGER",                                     1037,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Input",                                     "XPerl::Diagnostic::Error::Pack::Input",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_PACK_INPUT_U0_REQUIRES_UTF8_INPUT",                                   1309,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Pack::Input",                                     "XPerl::Diagnostic::Error::Pack::Input",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -2990,7 +2995,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_PHASE_UNITCHECK_FAILED",                                              2454,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Phase",                                           "XPerl::Diagnostic::Error::Phase",                                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_PROPAGATION_EVAL_CONTEXT",                                            2451,  "CORE_COMPILE", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Propagation",                                     "XPerl::Diagnostic::Error::Propagation",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_PROPAGATION_EVAL_ERROR_TEXT",                                         1436,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  558,   2,  589,  FALSE, FALSE, "XPerl::Diagnostic::Error::Propagation",                                     "XPerl::Diagnostic::Error::Propagation",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_PROPAGATION_EVAL_EXCEPTION",                                          1592,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  708,   1,  752,  FALSE, FALSE, "XPerl::Diagnostic::Error::Propagation",                                     "XPerl::Diagnostic::Error::Propagation",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_PROPAGATION_EVAL_EXCEPTION",                                          1592,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  710,   1,  754,  FALSE, FALSE, "XPerl::Diagnostic::Error::Propagation",                                     "XPerl::Diagnostic::Error::Propagation",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_PROPAGATION_RETHROW_CONTEXT",                                         2446,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 460,   2,  477,  FALSE, FALSE, "XPerl::Diagnostic::Error::Propagation",                                     "XPerl::Diagnostic::Error::Propagation",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_REGEXP_CHAR_CLASS_ESCAPE_UNKNOWN",                                    2592,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  510,   3,  539,  FALSE, FALSE, "XPerl::Diagnostic::Error::Regexp::CharClass",                               "XPerl::Diagnostic::Error::Regexp::CharClass",                               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_REGEXP_CHAR_CLASS_EXTENDED_BINARY_OPERATOR_UNEXPECTED",               2550,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  492,   3,  512,  FALSE, FALSE, "XPerl::Diagnostic::Error::Regexp::CharClass::Extended",                     "XPerl::Diagnostic::Error::Regexp::CharClass::Extended",                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3076,7 +3081,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_REGEXP_MODIFIER_LITERAL_ASCII_LIMIT_EXCEEDED",                        1396,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Regexp::Modifier",                                "XPerl::Diagnostic::Error::Regexp::Modifier",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_REGEXP_MODIFIER_LITERAL_CHARSET_CONFLICT",                            1401,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  287,   2,  295,  FALSE, FALSE, "XPerl::Diagnostic::Error::Regexp::Modifier",                                "XPerl::Diagnostic::Error::Regexp::Modifier",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_REGEXP_MODIFIER_LITERAL_REPEATED",                                    1403,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  151,   1,  151,  FALSE, FALSE, "XPerl::Diagnostic::Error::Regexp::Modifier",                                "XPerl::Diagnostic::Error::Regexp::Modifier",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_REGEXP_MODIFIER_LITERAL_UNKNOWN",                                     1003,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  498,   1,  731,  FALSE, FALSE, "XPerl::Diagnostic::Error::Regexp::Modifier",                                "XPerl::Diagnostic::Error::Regexp::Modifier",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_REGEXP_MODIFIER_LITERAL_UNKNOWN",                                     1003,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  498,   1,  733,  FALSE, FALSE, "XPerl::Diagnostic::Error::Regexp::Modifier",                                "XPerl::Diagnostic::Error::Regexp::Modifier",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_REGEXP_MODIFIER_PROPERTY_WILDCARD_FORBIDDEN",                         2562,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  498,   3,  521,  FALSE, FALSE, "XPerl::Diagnostic::Error::Regexp::Modifier",                                "XPerl::Diagnostic::Error::Regexp::Modifier",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_REGEXP_QUANTIFIER_INTEGER_INVALID",                                   2555,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  115,   2,  285,  FALSE, FALSE, "XPerl::Diagnostic::Error::Regexp::Quantifier",                              "XPerl::Diagnostic::Error::Regexp::Quantifier",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_REGEXP_QUANTIFIER_NESTED",                                            2557,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  115,   2,  285,  FALSE, FALSE, "XPerl::Diagnostic::Error::Regexp::Quantifier",                              "XPerl::Diagnostic::Error::Regexp::Quantifier",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3101,14 +3106,16 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_RNG_SEED_BYTE_STRING_REQUIRED",                                       1096,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::RNG::Seed",                                       "XPerl::Diagnostic::Error::RNG::Seed",                                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RNG_SEED_DRAND48_SIZE_INVALID",                                       1095,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::RNG::Seed",                                       "XPerl::Diagnostic::Error::RNG::Seed",                                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RNG_SEED_REDACTED_FORBIDDEN",                                         1056,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::RNG::Seed",                                       "XPerl::Diagnostic::Error::RNG::Seed",                                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_RUN_ENVIRONMENT_PERL5OPT_FORBIDDEN_SWITCH",                           1177,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  690,   1,  732,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Environment",                                "XPerl::Diagnostic::Error::Run::Environment",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE",                                       2793,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  690,   2,  731,  FALSE, FALSE, "XPerl::Diagnostic::Error",                                                  "XPerl::Diagnostic::Error",                                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "needs producer review",                 FALSE, FALSE },
+    { "ERROR_RUNTIME_MULTISUB_NO_MATCH",                                           2789,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error",                                                  "XPerl::Diagnostic::Error",                                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "needs producer review",                 FALSE, FALSE },
+    { "ERROR_RUN_ENVIRONMENT_PERL5OPT_FORBIDDEN_SWITCH",                           1177,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  692,   1,  734,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Environment",                                "XPerl::Diagnostic::Error::Run::Environment",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_ENVIRONMENT_SIGNALS_POLICY_INVALID",                              1214,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Environment",                                "XPerl::Diagnostic::Error::Run::Environment",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_OPTION_INCLUDE_DIRECTORY_REQUIRED",                               1020,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_RUN_OPTION_MODULE_NAME_REQUIRED",                                     1175,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  690,   1,  732,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_RUN_OPTION_MODULE_NAME_REQUIRED",                                     1175,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  692,   1,  734,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_OPTION_MODULE_NAME_SINGLE_COLON",                                 1624,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   2,  609,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_RUN_OPTION_PROGRAM_TEXT_REQUIRED",                                    1176,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  690,   1,  732,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_RUN_OPTION_PROGRAM_TEXT_REQUIRED",                                    1176,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  692,   1,  734,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_OPTION_SHEBANG_SWITCH_NOT_EMULATABLE",                            1484,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   69,   1,   69,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_RUN_OPTION_SHEBANG_SWITCH_TOO_LATE",                                  1638,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  716,   1,  760,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_RUN_OPTION_SHEBANG_SWITCH_TOO_LATE",                                  1638,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  718,   1,  762,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_OPTION_STARTUP_SWITCH_REQUIRED",                                  1824,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  612,   2,  649,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_OPTION_TAINT_UNAVAILABLE",                                        1444,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_OPTION_UNICODE_INVALID_MASK",                                     1558,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   69,   1,   69,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option::Unicode",                            "XPerl::Diagnostic::Error::Run::Option::Unicode",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3116,7 +3123,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_RUN_OPTION_UNICODE_UNKNOWN_LETTER",                                   1219,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   87,   1,   87,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option::Unicode",                            "XPerl::Diagnostic::Error::Run::Option::Unicode",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_OPTION_UNKNOWN_COMMAND_LINE_SWITCH",                              1221,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_OPTION_UNKNOWN_SWITCH",                                           1485,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   69,   1,   69,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_RUN_OPTION_VALUE_REQUIRED",                                           1019,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  690,   1,  732,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_RUN_OPTION_VALUE_REQUIRED",                                           1019,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  692,   1,  734,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_SCRIPT_EXTRACTION_HEADER_NOT_FOUND",                              1297,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Script",                                     "XPerl::Diagnostic::Error::Run::Script",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SECURITY_OPERATION_MASK_TRAP",                                        1186,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  542,   2,  571,  FALSE, FALSE, "XPerl::Diagnostic::Error::Security",                                        "XPerl::Diagnostic::Error::Security",                                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SECURITY_PRIVILEGE_FDSCRIPT_INPUT_FORBIDDEN",                         1488,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  544,   2,  573,  FALSE, FALSE, "XPerl::Diagnostic::Error::Security::Privilege",                             "XPerl::Diagnostic::Error::Security::Privilege",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3131,13 +3138,13 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_STRICT_REFS_STRING_REFERENCE_FORBIDDEN",                              2425,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  456,   3,  473,  FALSE, FALSE, "XPerl::Diagnostic::Error::Strict::Refs",                                    "XPerl::Diagnostic::Error::Strict::Refs",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_STRICT_REFS_SUBROUTINE_STRING_REFERENCE_FORBIDDEN",                   2043,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  616,   2,  653,  FALSE, FALSE, "XPerl::Diagnostic::Error::Strict::Refs",                                    "XPerl::Diagnostic::Error::Strict::Refs",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_STRICT_SUBS_BAREWORD_FORBIDDEN",                                      2615,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  602,   1,  639,  FALSE, FALSE, "XPerl::Diagnostic::Error::Strict::Subs",                                    "XPerl::Diagnostic::Error::Strict::Subs",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_STRICT_VARS_GLOBAL_SYMBOL_REQUIRES_EXPLICIT_PACKAGE_NAME",            2440,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  556,   1,  769,  FALSE, FALSE, "XPerl::Diagnostic::Error::Strict::Vars",                                    "XPerl::Diagnostic::Error::Strict::Vars",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_STRICT_VARS_GLOBAL_SYMBOL_REQUIRES_EXPLICIT_PACKAGE_NAME",            2440,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  556,   1,  771,  FALSE, FALSE, "XPerl::Diagnostic::Error::Strict::Vars",                                    "XPerl::Diagnostic::Error::Strict::Vars",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_STRING_SUBSTR_REPLACEMENT_OUT_OF_RANGE",                              1142,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::String::Substr",                                  "XPerl::Diagnostic::Error::String::Substr",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_STRING_VEC_ELEMENT_WIDTH_INVALID",                                    1071,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::String::Vec",                                     "XPerl::Diagnostic::Error::String::Vec",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_STRING_VEC_LVALUE_OFFSET_NEGATIVE",                                   1080,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::String::Vec",                                     "XPerl::Diagnostic::Error::String::Vec",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYMBOL_TABLE_OBSOLETE_SPECIAL_VARIABLE",                              1468,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   39,   1,   39,  FALSE, FALSE, "XPerl::Diagnostic::Error::SymbolTable",                                     "XPerl::Diagnostic::Error::SymbolTable",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_SYMBOL_TABLE_SLOT_SYMBOL_INVALID",                                    1189,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  693,   1,  735,  FALSE, FALSE, "XPerl::Diagnostic::Error::SymbolTable",                                     "XPerl::Diagnostic::Error::SymbolTable",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_SYNTAX_CALL_COMMA_AFTER_INDIRECT_NAME",                               1212,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  695,   1,  737,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Call",                                    "XPerl::Diagnostic::Error::Syntax::Call",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYMBOL_TABLE_SLOT_SYMBOL_INVALID",                                    1189,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  695,   1,  737,  FALSE, FALSE, "XPerl::Diagnostic::Error::SymbolTable",                                     "XPerl::Diagnostic::Error::SymbolTable",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYNTAX_CALL_COMMA_AFTER_INDIRECT_NAME",                               1212,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  697,   1,  739,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Call",                                    "XPerl::Diagnostic::Error::Syntax::Call",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_CALL_COMMA_MISSING",                                           1406,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  552,   2,  581,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Call",                                    "XPerl::Diagnostic::Error::Syntax::Call",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_CALL_RETURN_COMMA_MISSING",                                    1391,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Call",                                    "XPerl::Diagnostic::Error::Syntax::Call",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_CONTAINER_DEFINED_ARRAY_FORBIDDEN",                            1646,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Container",                               "XPerl::Diagnostic::Error::Syntax::Container",                               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3165,15 +3172,15 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_MAGICAL_LIST_UNSUPPORTED",     1289,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Subroutine::Constant",       "XPerl::Diagnostic::Error::Syntax::Declaration::Subroutine::Constant",       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DECLARATION_SUBROUTINE_CONSTANT_NAMED_DEFINITION_FORBIDDEN",   1147,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Subroutine::Constant",       "XPerl::Diagnostic::Error::Syntax::Declaration::Subroutine::Constant",       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DECLARATION_SUBROUTINE_LEXICAL_NAME_MISSING",                  1543,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   69,   1,   69,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Subroutine",                 "XPerl::Diagnostic::Error::Syntax::Declaration::Subroutine",                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_SYNTAX_DECLARATION_SUBROUTINE_NAMED_SUFFIX_INVALID",                  1599,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  713,   1,  757,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Subroutine",                 "XPerl::Diagnostic::Error::Syntax::Declaration::Subroutine",                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYNTAX_DECLARATION_SUBROUTINE_NAMED_SUFFIX_INVALID",                  1599,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  715,   1,  759,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Subroutine",                 "XPerl::Diagnostic::Error::Syntax::Declaration::Subroutine",                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DECLARATION_TARGET_NOT_DECLARABLE",                            1420,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  330,   3,  338,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration",                             "XPerl::Diagnostic::Error::Syntax::Declaration",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DECLARATION_USE_MODULE_NAME_NOT_CONSTANT",                     1294,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Use",                        "XPerl::Diagnostic::Error::Syntax::Declaration::Use",                        "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_SYNTAX_DECLARATION_USE_NO_IN_EXPRESSION",                             1429,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  701,   1,  744,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration",                             "XPerl::Diagnostic::Error::Syntax::Declaration",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYNTAX_DECLARATION_USE_NO_IN_EXPRESSION",                             1429,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  703,   1,  746,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration",                             "XPerl::Diagnostic::Error::Syntax::Declaration",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DECLARATION_VARIABLE_LOOP_SIGIL_MISSING",                      1076,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DECLARATION_VARIABLE_MY_IN_FALSE_CONDITIONAL",                 1643,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DECLARATION_VARIABLE_REFERENCE_FEATURE_DISABLED",              1307,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DECLARATION_VARIABLE_STATE_LIST_INITIALIZATION_FORBIDDEN",     1418,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_SYNTAX_DECLARATION_VARIABLE_TYPE_PACKAGE_NOT_FOUND",                  1434,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    1,   1,  745,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYNTAX_DECLARATION_VARIABLE_TYPE_PACKAGE_NOT_FOUND",                  1434,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    1,   1,  747,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "XPerl::Diagnostic::Error::Syntax::Declaration::Variable",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DELIMITER_NOT_GRAPHEME",                                       1430,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Delimiter",                               "XPerl::Diagnostic::Error::Syntax::Delimiter",                               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DELIMITER_RIGHT_CURLY_UNMATCHED",                              1397,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Delimiter",                               "XPerl::Diagnostic::Error::Syntax::Delimiter",                               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_DELIMITER_RIGHT_SQUARE_UNMATCHED",                             1398,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Delimiter",                               "XPerl::Diagnostic::Error::Syntax::Delimiter",                               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3235,7 +3242,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_SYNTAX_ESCAPE_HEX_DIGITS_MISSING",                                    2489,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Escape::Hex",                             "XPerl::Diagnostic::Error::Syntax::Escape::Hex",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_ESCAPE_HEX_UNBRACED_DIGITS_EXCESS",                            2490,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Escape::Hex",                             "XPerl::Diagnostic::Error::Syntax::Escape::Hex",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_ESCAPE_HEX_UNBRACED_DIGIT_INVALID",                            2491,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Escape::Hex",                             "XPerl::Diagnostic::Error::Syntax::Escape::Hex",                             "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_SYNTAX_ESCAPE_LEGACY_API_UNCALLABLE",                                 2498,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  722,   1,  766,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Escape",                                  "XPerl::Diagnostic::Error::Syntax::Escape",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYNTAX_ESCAPE_LEGACY_API_UNCALLABLE",                                 2498,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  724,   1,  768,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Escape",                                  "XPerl::Diagnostic::Error::Syntax::Escape",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_ESCAPE_OCTAL_BRACES_REQUIRED",                                 2485,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Escape::Octal",                           "XPerl::Diagnostic::Error::Syntax::Escape::Octal",                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_ESCAPE_OCTAL_CLOSE_BRACE_MISSING",                             2486,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Escape::Octal",                           "XPerl::Diagnostic::Error::Syntax::Escape::Octal",                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_ESCAPE_OCTAL_DIGITS_MISSING",                                  2487,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Escape::Octal",                           "XPerl::Diagnostic::Error::Syntax::Escape::Octal",                           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3249,7 +3256,12 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_SYNTAX_IDENTIFIER_RESOLVED_VARIABLE_LENGTH_EXCEEDED",                 1115,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Identifier",                              "XPerl::Diagnostic::Error::Syntax::Identifier",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_IDENTIFIER_SCALAR_NAME_INCOMPLETE",                            1151,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Identifier",                              "XPerl::Diagnostic::Error::Syntax::Identifier",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_INVALID",                                                      1164,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax",                                          "XPerl::Diagnostic::Error::Syntax",                                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING",                          1412,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  700,   1,  742,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::NumericLiteral",                          "XPerl::Diagnostic::Error::Syntax::NumericLiteral",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION",                                   2787,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error",                                                  "XPerl::Diagnostic::Error",                                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "needs producer review",                 FALSE, FALSE },
+    { "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED",                           2792,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error",                                                  "XPerl::Diagnostic::Error",                                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "needs producer review",                 FALSE, FALSE },
+    { "ERROR_SYNTAX_MULTISUB_NAME_REPLACED",                                       2794,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error",                                                  "XPerl::Diagnostic::Error",                                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "needs producer review",                 FALSE, FALSE },
+    { "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH",                                      2788,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error",                                                  "XPerl::Diagnostic::Error",                                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "needs producer review",                 FALSE, FALSE },
+    { "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME",                                        2791,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error",                                                  "XPerl::Diagnostic::Error",                                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "needs producer review",                 FALSE, FALSE },
+    { "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING",                          1412,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  702,   1,  744,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::NumericLiteral",                          "XPerl::Diagnostic::Error::Syntax::NumericLiteral",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_NUMERIC_LITERAL_BINARY_DIGIT_INVALID",                         1411,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  619,   1,  656,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::NumericLiteral",                          "XPerl::Diagnostic::Error::Syntax::NumericLiteral",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_NUMERIC_LITERAL_OCTAL_DIGIT_INVALID",                          1410,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  619,   1,  656,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::NumericLiteral",                          "XPerl::Diagnostic::Error::Syntax::NumericLiteral",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_NUMERIC_LITERAL_TOO_LONG",                                     1448,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::NumericLiteral",                          "XPerl::Diagnostic::Error::Syntax::NumericLiteral",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3269,7 +3281,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_PATTERN_UNTERMINATED",              1103,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::QuotedString::Substitution",              "XPerl::Diagnostic::Error::Syntax::QuotedString::Substitution",              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_QUOTED_STRING_SUBSTITUTION_REPLACEMENT_UNTERMINATED",          1104,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::QuotedString::Substitution",              "XPerl::Diagnostic::Error::Syntax::QuotedString::Substitution",              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_QUOTED_STRING_TERMINATOR_MISSING",                             1775,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  239,   3,  407,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::QuotedString",                            "XPerl::Diagnostic::Error::Syntax::QuotedString",                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_NAMED_SEQUENCE_TOO_LONG",        1428,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  501,   1,  743,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::QuotedString::Transliteration",           "XPerl::Diagnostic::Error::Syntax::QuotedString::Transliteration",           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_NAMED_SEQUENCE_TOO_LONG",        1428,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  501,   1,  745,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::QuotedString::Transliteration",           "XPerl::Diagnostic::Error::Syntax::QuotedString::Transliteration",           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_NEGATED_BINDING_FORBIDDEN",      1400,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::QuotedString::Transliteration",           "XPerl::Diagnostic::Error::Syntax::QuotedString::Transliteration",           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_CHAIN_AMBIGUOUS",          1653,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::QuotedString::Transliteration",           "XPerl::Diagnostic::Error::Syntax::QuotedString::Transliteration",           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_QUOTED_STRING_TRANSLITERATION_RANGE_REVERSED_HEX_ESCAPE",      1749,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  604,   2,  641,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::QuotedString::Transliteration",           "XPerl::Diagnostic::Error::Syntax::QuotedString::Transliteration",           "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3294,7 +3306,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_SYNTAX_SIGNATURE_SLURPY_DEFAULT_FORBIDDEN",                           1150,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Signature",                               "XPerl::Diagnostic::Error::Syntax::Signature",                               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_SIGNATURE_SLURPY_PARAMETER_DUPLICATE",                         1393,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Signature",                               "XPerl::Diagnostic::Error::Syntax::Signature",                               "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_SOURCE_CHARACTER_UNRECOGNIZED",                                1778,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  396,   3,  410,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Source",                                  "XPerl::Diagnostic::Error::Syntax::Source",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_SYNTAX_SOURCE_NON_ASCII_CHARACTER_FORBIDDEN",                         1408,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  699,   1,  741,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Source",                                  "XPerl::Diagnostic::Error::Syntax::Source",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYNTAX_SOURCE_NON_ASCII_CHARACTER_FORBIDDEN",                         1408,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  701,   1,  743,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Source",                                  "XPerl::Diagnostic::Error::Syntax::Source",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_SOURCE_VERSION_CONTROL_CONFLICT_MARKER",                       1159,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Source",                                  "XPerl::Diagnostic::Error::Syntax::Source",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_VERSION_CONFLICTING_DECLARATION",                              1261,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Version",                                 "XPerl::Diagnostic::Error::Syntax::Version",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYNTAX_VERSION_CONSTANT_NUMBER_REQUIRED",                             1348,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Syntax::Version",                                 "XPerl::Diagnostic::Error::Syntax::Version",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3367,7 +3379,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_ERROR_OPEN_FAILED",                  2703,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 540,   1,  569,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_FILE_MISSING",                 2694,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_OPEN_FAILED",                  2701,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 540,   1,  569,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_PIPE_REOPEN_FAILED",           2700,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 735,   1,  784,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_PIPE_REOPEN_FAILED",           2700,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 737,   1,  786,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_OUTPUT_FILE_MISSING",                2695,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_OUTPUT_OPEN_FAILED",                 2702,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 540,   1,  569,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_PIPE_COMMAND_MISSING",               2698,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "XPerl::Diagnostic::Error::System::Platform::VMS::CommandLine",              "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
@@ -3389,7 +3401,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_SYSTEM_PROCESS_SETPGRP_UNSUPPORTED_IDS",                              2064,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Process",                                 "XPerl::Diagnostic::Error::System::Process",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYSTEM_PROCESS_SHEBANG_EXEC_FAILED",                                  1179,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  540,   1,  569,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Process",                                 "XPerl::Diagnostic::Error::System::Process",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYSTEM_PROCESS_WAIT_FLAGS_UNSUPPORTED",                               1043,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Process",                                 "XPerl::Diagnostic::Error::System::Process",                                 "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_SYSTEM_SIGNAL_HANDLER_MISSING",                                       2676,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 733,   1,  782,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Signal",                                  "XPerl::Diagnostic::Error::System::Signal",                                  "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_SYSTEM_SIGNAL_HANDLER_MISSING",                                       2676,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 735,   1,  784,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Signal",                                  "XPerl::Diagnostic::Error::System::Signal",                                  "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYSTEM_SIGNAL_KILL_PROCESS_ID_NOT_NUMERIC",                           1044,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Signal",                                  "XPerl::Diagnostic::Error::System::Signal",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYSTEM_SIGNAL_KILL_SIGNAL_NAME_UNKNOWN",                              1689,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Signal",                                  "XPerl::Diagnostic::Error::System::Signal",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_SYSTEM_SIGNAL_PENDING_LIMIT_REACHED",                                 1660,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  249,   1,  253,  FALSE, FALSE, "XPerl::Diagnostic::Error::System::Signal",                                  "XPerl::Diagnostic::Error::System::Signal",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3418,7 +3430,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_UNICODE_CHARACTER_NAME_HANDLER_UNAVAILABLE",                          1438,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::CharacterName",                          "XPerl::Diagnostic::Error::Unicode::CharacterName",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_CHARACTER_NAME_REPEATED_SPACE",                               2505,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,   27,   1,   27,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::CharacterName",                          "XPerl::Diagnostic::Error::Unicode::CharacterName",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_CHARACTER_NAME_UNKNOWN",                                      2503,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::CharacterName",                          "XPerl::Diagnostic::Error::Unicode::CharacterName",                          "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_UNICODE_CODE_POINT_CHR_NONFINITE",                                    1669,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  717,   1,  761,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::CodePoint",                              "XPerl::Diagnostic::Error::Unicode::CodePoint",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_UNICODE_CODE_POINT_CHR_NONFINITE",                                    1669,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  719,   1,  763,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::CodePoint",                              "XPerl::Diagnostic::Error::Unicode::CodePoint",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_CODE_POINT_ENCODING_LIMIT_EXCEEDED",                          2509,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  279,   2,  287,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::CodePoint",                              "XPerl::Diagnostic::Error::Unicode::CodePoint",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_CODE_POINT_HEX_ESCAPE_OVERFLOW",                              1432,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  279,   2,  287,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::CodePoint",                              "XPerl::Diagnostic::Error::Unicode::CodePoint",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_CODE_POINT_OCTAL_ESCAPE_OVERFLOW",                            2499,  "CORE_COMPILE", "FATAL_ERROR",    TRUE,  279,   2,  287,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::CodePoint",                              "XPerl::Diagnostic::Error::Unicode::CodePoint",                              "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3430,10 +3442,10 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_UNICODE_PROPERTY_CONTEXT_NAME",                                       2469,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Context",                      "XPerl::Diagnostic::Error::Unicode::Property::Context",                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_PROPERTY_CONTEXT_RUNTIME_NAME",                               2473,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Context",                      "XPerl::Diagnostic::Error::Unicode::Property::Context",                      "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_PROPERTY_DEFINITION_CALLBACK_FAILED",                         2462,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 198,   1,  202,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_UNICODE_PROPERTY_DEFINITION_CODEPOINT_OVERFLOW",                      2470,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 724,   1,  771,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_UNICODE_PROPERTY_DEFINITION_CODEPOINT_OVERFLOW",                      2470,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 726,   1,  773,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_PROPERTY_DEFINITION_OTHER_THREAD_TIMEOUT",                    2474,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_PROPERTY_DEFINITION_PRIVATE_OVERRIDE_TAINTED",                2471,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_UNICODE_PROPERTY_DEFINITION_RANGE_REVERSED",                          2467,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 724,   1,  771,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_UNICODE_PROPERTY_DEFINITION_RANGE_REVERSED",                          2467,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 726,   1,  773,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_PROPERTY_DEFINITION_TAINTED",                                 2468,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "XPerl::Diagnostic::Error::Unicode::Property::Definition",                   "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_PROPERTY_NAME_DEFINITION_NOT_FOUND",                          2463,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Name",                         "XPerl::Diagnostic::Error::Unicode::Property::Name",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_PROPERTY_NAME_QUALIFIED_NAME_INVALID",                        2466,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Name",                         "XPerl::Diagnostic::Error::Unicode::Property::Name",                         "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3441,7 +3453,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_UNICODE_PROPERTY_RECURSION_DEFINITION_REENTERED",                     2472,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Recursion",                    "XPerl::Diagnostic::Error::Unicode::Property::Recursion",                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_PROPERTY_WILDCARD_NO_VALUES_MATCH",                           2476,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Wildcard",                     "XPerl::Diagnostic::Error::Unicode::Property::Wildcard",                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_PROPERTY_WILDCARD_UNTERMINATED",                              2477,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::Property::Wildcard",                     "XPerl::Diagnostic::Error::Unicode::Property::Wildcard",                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_UNICODE_UTF16_SCRIPT_ENCODING_UNSUPPORTED",                           1241,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  696,   1,  738,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::UTF16",                                  "XPerl::Diagnostic::Error::Unicode::UTF16",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_UNICODE_UTF16_SCRIPT_ENCODING_UNSUPPORTED",                           1241,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  698,   1,  740,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::UTF16",                                  "XPerl::Diagnostic::Error::Unicode::UTF16",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_UTF16_SURROGATE_PAIR_INVALID",                                1074,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::UTF16",                                  "XPerl::Diagnostic::Error::Unicode::UTF16",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_UTF32_BIG_ENDIAN_SCRIPT_UNSUPPORTED",                         1311,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::UTF32",                                  "XPerl::Diagnostic::Error::Unicode::UTF32",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_UNICODE_UTF32_LITTLE_ENDIAN_SCRIPT_UNSUPPORTED",                      1312,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unicode::UTF32",                                  "XPerl::Diagnostic::Error::Unicode::UTF32",                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3459,8 +3471,8 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_UNSUPPORTED_OPERATION_NOT_IMPLEMENTED",                               1379,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   28,   1,   28,  FALSE, FALSE, "XPerl::Diagnostic::Error::Unsupported",                                     "XPerl::Diagnostic::Error::Unsupported",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_USER_OPAQUE_LITERAL_FORMAT",                                          1986,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  411,   1,  425,  FALSE, FALSE, "XPerl::Diagnostic::Error::User::Opaque",                                    "XPerl::Diagnostic::Error::User::Opaque",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_USER_OPAQUE_RENDERED_MESSAGE",                                        1551,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   69,   1,   69,  FALSE, FALSE, "XPerl::Diagnostic::Error::User::Opaque",                                    "XPerl::Diagnostic::Error::User::Opaque",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_USER_OPAQUE_SV_DELIVERY",                                             1685,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  719,   1,  763,  FALSE, FALSE, "XPerl::Diagnostic::Error::User::Opaque",                                    "XPerl::Diagnostic::Error::User::Opaque",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "ERROR_USER_REFERENCE",                                                      2482,  "USER_RUNTIME", "FATAL_ERROR",    TRUE,  726,   1,  773,  FALSE, FALSE, "XPerl::Diagnostic::Error::User",                                            "XPerl::Diagnostic::Error::User",                                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_USER_OPAQUE_SV_DELIVERY",                                             1685,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  721,   1,  765,  FALSE, FALSE, "XPerl::Diagnostic::Error::User::Opaque",                                    "XPerl::Diagnostic::Error::User::Opaque",                                    "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "ERROR_USER_REFERENCE",                                                      2482,  "USER_RUNTIME", "FATAL_ERROR",    TRUE,  728,   1,  775,  FALSE, FALSE, "XPerl::Diagnostic::Error::User",                                            "XPerl::Diagnostic::Error::User",                                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_USER_TEXT",                                                           2438,  "USER_RUNTIME", "FATAL_ERROR",    TRUE,  459,   1,  476,  FALSE, FALSE, "XPerl::Diagnostic::Error::User",                                            "XPerl::Diagnostic::Error::User",                                            "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_VALUE_HASH_CAPACITY_EXCEEDED",                                        2756,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  533,   1,  562,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::Hash",                                     "XPerl::Diagnostic::Error::Value::Hash",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_VALUE_HASH_ITERATION_RANDOMIZATION_UNAVAILABLE",                      1105,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Value::Hash",                                     "XPerl::Diagnostic::Error::Value::Hash",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3494,21 +3506,21 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "NOTE_CONTEXT_OS2_THREAD_STATE_EXITED_WAITED",                               2717,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                TRUE,  FALSE },
     { "NOTE_CONTEXT_OS2_THREAD_STATE_RUNNING",                                     2712,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                TRUE,  FALSE },
     { "NOTE_CONTEXT_OS2_THREAD_STATE_UNINITIALIZED",                               2711,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                TRUE,  FALSE },
-    { "NOTE_CONTEXT_OS2_THREAD_STATE_UNKNOWN",                                     2678,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 734,   1,  783,  FALSE, FALSE, "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                TRUE,  FALSE },
+    { "NOTE_CONTEXT_OS2_THREAD_STATE_UNKNOWN",                                     2678,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 736,   1,  785,  FALSE, FALSE, "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                TRUE,  FALSE },
     { "NOTE_CONTEXT_OS2_THREAD_STATE_WAITED",                                      2715,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "XPerl::Diagnostic::Note::Context::OS2::ThreadState",                        "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                TRUE,  FALSE },
     { "NOTE_CONTEXT_SYNTAX_ERROR_ANNOTATED",                                       2754,  "CORE_RUNTIME", "NOTE",           FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Note::Context",                                          "XPerl::Diagnostic::Note::Context",                                          "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                TRUE,  FALSE },
     { "NOTE_CONTEXT_UNAVAILABLE",                                                  2632,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Note::Context",                                          "XPerl::Diagnostic::Note::Context",                                          "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                TRUE,  FALSE },
-    { "NOTE_CONTEXT_WINDOWS_INVALID_PARAMETER_EXPRESSION",                         2706,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 736,   1,  785,  FALSE, FALSE, "XPerl::Diagnostic::Note::Context::Windows",                                 "XPerl::Diagnostic::Note::Context::Windows",                                 "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                TRUE,  FALSE },
+    { "NOTE_CONTEXT_WINDOWS_INVALID_PARAMETER_EXPRESSION",                         2706,  "CORE_RUNTIME", "INTERNAL_ERROR", FALSE, 738,   1,  787,  FALSE, FALSE, "XPerl::Diagnostic::Note::Context::Windows",                                 "XPerl::Diagnostic::Note::Context::Windows",                                 "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                TRUE,  FALSE },
     { "NOTE_HINT_OPERATOR_EXPECTED",                                               2636,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 658,   2,  699,  FALSE, FALSE, "XPerl::Diagnostic::Note::Hint",                                             "XPerl::Diagnostic::Note::Hint",                                             "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                TRUE,  FALSE },
-    { "NOTE_HINT_OPERATOR_EXPECTED_MISSING_OPERATOR",                              2514,  "CORE_COMPILE", "NOTE",           FALSE,  27,   1,  776,  FALSE, TRUE,  "XPerl::Diagnostic::Note::Hint",                                             "XPerl::Diagnostic::Note::Hint",                                             "parent controls warning policy",                       "supplementary hint", "supplementary Note nested under WARNING_SYNTAX_OPERATOR_EXPECTED", "explicit catalog class",                TRUE,  FALSE },
+    { "NOTE_HINT_OPERATOR_EXPECTED_MISSING_OPERATOR",                              2514,  "CORE_COMPILE", "NOTE",           FALSE,  27,   1,  778,  FALSE, TRUE,  "XPerl::Diagnostic::Note::Hint",                                             "XPerl::Diagnostic::Note::Hint",                                             "parent controls warning policy",                       "supplementary hint", "supplementary Note nested under WARNING_SYNTAX_OPERATOR_EXPECTED", "explicit catalog class",                TRUE,  FALSE },
     { "NOTE_HINT_OPERATOR_EXPECTED_MISSING_SEMICOLON",                             2512,  "CORE_COMPILE", "NOTE",           FALSE,   0,   0,    0,  FALSE, TRUE,  "XPerl::Diagnostic::Note::Hint",                                             "XPerl::Diagnostic::Note::Hint",                                             "parent controls warning policy",                       "supplementary hint", "supplementary Note nested under WARNING_SYNTAX_OPERATOR_EXPECTED", "explicit catalog class",                TRUE,  FALSE },
-    { "NOTE_HINT_OPERATOR_EXPECTED_PREDECLARE",                                    2513,  "CORE_COMPILE", "NOTE",           FALSE,   1,   1,  775,  FALSE, TRUE,  "XPerl::Diagnostic::Note::Hint",                                             "XPerl::Diagnostic::Note::Hint",                                             "parent controls warning policy",                       "supplementary hint", "supplementary Note nested under WARNING_SYNTAX_OPERATOR_EXPECTED", "explicit catalog class",                TRUE,  FALSE },
+    { "NOTE_HINT_OPERATOR_EXPECTED_PREDECLARE",                                    2513,  "CORE_COMPILE", "NOTE",           FALSE,   1,   1,  777,  FALSE, TRUE,  "XPerl::Diagnostic::Note::Hint",                                             "XPerl::Diagnostic::Note::Hint",                                             "parent controls warning policy",                       "supplementary hint", "supplementary Note nested under WARNING_SYNTAX_OPERATOR_EXPECTED", "explicit catalog class",                TRUE,  FALSE },
     { "NOTE_HINT_STACK_UNWIND_DEFERRED",                                           2522,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, TRUE,  "XPerl::Diagnostic::Note::Hint",                                             "XPerl::Diagnostic::Note::Hint",                                             "uncategorized; verify producer policy",                "supplementary hint", "temporary delivery Note",                                          "producer-reviewed delivery annotation", TRUE,  FALSE },
-    { "NOTE_OMISSION_NAMED_PARAMETER_DIAGNOSTICS",                                 2479,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 725,   1,  772,  FALSE, FALSE, "XPerl::Diagnostic::Note::Omission",                                         "XPerl::Diagnostic::Note::Omission",                                         "not applicable",                                       "diagnostic",         "omitted-count child under named-parameter root",                   "explicit catalog class",                TRUE,  FALSE },
+    { "NOTE_OMISSION_NAMED_PARAMETER_DIAGNOSTICS",                                 2479,  "CORE_RUNTIME", "FATAL_ERROR",    FALSE, 727,   1,  774,  FALSE, FALSE, "XPerl::Diagnostic::Note::Omission",                                         "XPerl::Diagnostic::Note::Omission",                                         "not applicable",                                       "diagnostic",         "omitted-count child under named-parameter root",                   "explicit catalog class",                TRUE,  FALSE },
     { "WARNING_CLEANUP_MAGIC_DESTRUCTOR_DURING_GLOBAL_DESTRUCTION",                1532,  "CORE_RUNTIME", "WARNING",        FALSE, 187,   1,  191,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Cleanup",                                       "XPerl::Diagnostic::Warning::Cleanup",                                       "no fixed catalog category; producer review required",  "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, FALSE },
     { "WARNING_CLOSURE_LEXICAL_CAPTURE_UNAVAILABLE",                               2162,  "CORE_RUNTIME", "WARNING",        FALSE, 624,   2,  661,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Closure",                                       "XPerl::Diagnostic::Warning::Closure",                                       "fixed: WARN_CLOSURE",                                  "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_CLOSURE_LEXICAL_CAPTURE_WILL_NOT_STAY_SHARED",                      2163,  "CORE_RUNTIME", "WARNING",        FALSE, 626,   2,  663,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Closure",                                       "XPerl::Diagnostic::Warning::Closure",                                       "fixed: WARN_CLOSURE",                                  "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
-    { "WARNING_COMPILATION_UNCLASSIFIED_DEFERRED_MESSAGE",                         1594,  "CORE_RUNTIME", "WARNING",        FALSE, 709,   1,  753,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Compilation::Unclassified",                     "XPerl::Diagnostic::Warning::Compilation::Unclassified",                     "no fixed catalog category; producer review required",  "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, FALSE },
+    { "WARNING_COMPILATION_UNCLASSIFIED_DEFERRED_MESSAGE",                         1594,  "CORE_RUNTIME", "WARNING",        FALSE, 711,   1,  755,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Compilation::Unclassified",                     "XPerl::Diagnostic::Warning::Compilation::Unclassified",                     "no fixed catalog category; producer review required",  "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, FALSE },
     { "WARNING_DEPRECATED_COMPONENT_FATALIZATION_SCHEDULED",                       2417,  "CORE_RUNTIME", "DEPRECATION",    FALSE, 642,   2,  681,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Deprecated",                                    "XPerl::Diagnostic::Warning::Deprecated",                                    "runtime category; LCA plus exact category membership", "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, TRUE  },
     { "WARNING_DEPRECATED_COMPONENT_REMOVAL_SCHEDULED",                            2416,  "CORE_RUNTIME", "DEPRECATION",    FALSE, 642,   2,  681,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Deprecated",                                    "XPerl::Diagnostic::Warning::Deprecated",                                    "runtime category; LCA plus exact category membership", "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, TRUE  },
     { "WARNING_DEPRECATED_COMPONENT_USED",                                         2415,  "CORE_RUNTIME", "DEPRECATION",    FALSE,  31,   1,   31,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Deprecated",                                    "XPerl::Diagnostic::Warning::Deprecated",                                    "runtime category; LCA plus exact category membership", "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, TRUE  },
@@ -3538,6 +3550,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "WARNING_EXPERIMENTAL_EXTRA_PAIRED_DELIMITERS_NON_ASCII_DELIMITER_USED",     2299,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,  404,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Experimental::ExtraPairedDelimiters",           "XPerl::Diagnostic::Warning::Experimental::ExtraPairedDelimiters",           "fixed: WARN_EXPERIMENTAL__EXTRA_PAIRED_DELIMITERS",    "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_EXPERIMENTAL_KEYWORD_ALL_BLOCK_OPERATOR_USED",                      2278,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Experimental::KeywordAll",                      "XPerl::Diagnostic::Warning::Experimental::KeywordAll",                      "fixed: WARN_EXPERIMENTAL__KEYWORD_ALL",                "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_EXPERIMENTAL_KEYWORD_ANY_BLOCK_OPERATOR_USED",                      2279,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Experimental::KeywordAny",                      "XPerl::Diagnostic::Warning::Experimental::KeywordAny",                      "fixed: WARN_EXPERIMENTAL__KEYWORD_ANY",                "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
+    { "WARNING_EXPERIMENTAL_MULTISUB_DECLARATION_USED",                            2790,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Experimental::Multisub",                        "XPerl::Diagnostic::Warning::Experimental::Multisub",                        "fixed: WARN_EXPERIMENTAL__MULTISUB",                   "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_EXPERIMENTAL_NAMESPACES_CURRENT_NAMESPACE_CONSTANT_USED",           2275,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Experimental::Namespaces",                      "XPerl::Diagnostic::Warning::Experimental::Namespaces",                      "fixed: WARN_EXPERIMENTAL__NAMESPACES",                 "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_EXPERIMENTAL_NAMESPACES_NAMESPACE_DECLARATION_USED",                2285,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Experimental::Namespaces",                      "XPerl::Diagnostic::Warning::Experimental::Namespaces",                      "fixed: WARN_EXPERIMENTAL__NAMESPACES",                 "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_EXPERIMENTAL_PRIVATE_USE_PROPERTY_OVERRIDE_APPLIED",                2233,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Experimental::PrivateUse",                      "XPerl::Diagnostic::Warning::Experimental::PrivateUse",                      "fixed: WARN_EXPERIMENTAL__PRIVATE_USE",                "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
@@ -3548,8 +3561,8 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "WARNING_EXPERIMENTAL_VLB_CAPTURING_LOOKBEHIND_USED",                        2414,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Experimental::Vlb",                             "XPerl::Diagnostic::Warning::Experimental::Vlb",                             "fixed: WARN_EXPERIMENTAL__VLB",                        "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_GLOB_CHILD_EXIT_FAILED",                                            2202,  "CORE_RUNTIME", "WARNING",        FALSE, 630,   2,  667,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Glob",                                          "XPerl::Diagnostic::Warning::Glob",                                          "fixed: WARN_GLOB",                                     "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_GLOB_CHILD_START_FAILED",                                           2092,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Glob",                                          "XPerl::Diagnostic::Warning::Glob",                                          "fixed: WARN_GLOB",                                     "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
-    { "WARNING_IMPRECISION_DECREMENT_PRECISION_LOSS",                              2244,  "CORE_RUNTIME", "WARNING",        FALSE, 717,   1,  761,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Imprecision",                                   "XPerl::Diagnostic::Warning::Imprecision",                                   "fixed: WARN_IMPRECISION",                              "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
-    { "WARNING_IMPRECISION_INCREMENT_PRECISION_LOSS",                              2243,  "CORE_RUNTIME", "WARNING",        FALSE, 717,   1,  761,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Imprecision",                                   "XPerl::Diagnostic::Warning::Imprecision",                                   "fixed: WARN_IMPRECISION",                              "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
+    { "WARNING_IMPRECISION_DECREMENT_PRECISION_LOSS",                              2244,  "CORE_RUNTIME", "WARNING",        FALSE, 719,   1,  763,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Imprecision",                                   "XPerl::Diagnostic::Warning::Imprecision",                                   "fixed: WARN_IMPRECISION",                              "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
+    { "WARNING_IMPRECISION_INCREMENT_PRECISION_LOSS",                              2243,  "CORE_RUNTIME", "WARNING",        FALSE, 719,   1,  763,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Imprecision",                                   "XPerl::Diagnostic::Warning::Imprecision",                                   "fixed: WARN_IMPRECISION",                              "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_INTERNAL_CONTROL_FLOW_EXIT_REQUEST_REPORTED",                       1667,  "CORE_RUNTIME", "WARNING",        FALSE, 249,   1,  253,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Internal::ControlFlow",                         "XPerl::Diagnostic::Warning::Internal::ControlFlow",                         "no fixed catalog category; producer review required",  "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, FALSE },
     { "WARNING_INTERNAL_CONTROL_FLOW_FAILURE_EXIT_REQUEST_REPORTED",               1668,  "CORE_RUNTIME", "WARNING",        FALSE,  82,   1,   82,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Internal::ControlFlow",                         "XPerl::Diagnostic::Warning::Internal::ControlFlow",                         "no fixed catalog category; producer review required",  "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, FALSE },
     { "WARNING_INTERNAL_MEMORY_COW_READONLY_PROTECTION_FAILED",                    1673,  "CORE_RUNTIME", "WARNING",        FALSE, 366,   3,  374,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Internal::Memory",                              "XPerl::Diagnostic::Warning::Internal::Memory",                              "no fixed catalog category; producer review required",  "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, FALSE },
@@ -3619,7 +3632,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "WARNING_LOCALE_LONG_ST_LIGATURE_FOLD_SUBSTITUTED",                          2319,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Locale",                                        "XPerl::Diagnostic::Warning::Locale",                                        "fixed: WARN_LOCALE",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_LOCALE_REGEXP_BOUNDARY_ASSUMES_UTF8",                               2351,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Locale",                                        "XPerl::Diagnostic::Warning::Locale",                                        "fixed: WARN_LOCALE",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_LOCALE_REGEXP_SET_ASSUMES_UTF8",                                    2352,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Locale",                                        "XPerl::Diagnostic::Warning::Locale",                                        "fixed: WARN_LOCALE",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
-    { "WARNING_LOCALE_STARTUP_ENVIRONMENT_SETTINGS_UNSUPPORTED",                   2662,  "CORE_RUNTIME", "WARNING",        FALSE, 731,   1,  780,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Locale",                                        "XPerl::Diagnostic::Warning::Locale",                                        "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
+    { "WARNING_LOCALE_STARTUP_ENVIRONMENT_SETTINGS_UNSUPPORTED",                   2662,  "CORE_RUNTIME", "WARNING",        FALSE, 733,   1,  782,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Locale",                                        "XPerl::Diagnostic::Warning::Locale",                                        "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
     { "WARNING_LOCALE_STARTUP_FALLBACKS_FAILED",                                   2664,  "CORE_RUNTIME", "WARNING",        FALSE, 670,   2,  711,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Locale",                                        "XPerl::Diagnostic::Warning::Locale",                                        "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
     { "WARNING_LOCALE_STARTUP_FALLBACK_SELECTED",                                  2665,  "CORE_RUNTIME", "WARNING",        FALSE, 668,   2,  709,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Locale",                                        "XPerl::Diagnostic::Warning::Locale",                                        "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
     { "WARNING_LOCALE_STARTUP_SETUP_FAILED",                                       2660,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Locale",                                        "XPerl::Diagnostic::Warning::Locale",                                        "not applicable",                                       "formatting helper",  "formatting helper; not an instance",                               "explicit catalog class",                FALSE, FALSE },
@@ -3652,7 +3665,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "WARNING_MISC_TYPEGLOB_UNDEFINED_VALUE_ASSIGNED",                            2239,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Misc",                                          "XPerl::Diagnostic::Warning::Misc",                                          "fixed: WARN_MISC",                                     "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_MISC_TYPE_REFERENCE_ALREADY_WEAK",                                  2241,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Misc",                                          "XPerl::Diagnostic::Warning::Misc",                                          "fixed: WARN_MISC",                                     "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_MISC_TYPE_REFERENCE_NOT_WEAK",                                      2242,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Misc",                                          "XPerl::Diagnostic::Warning::Misc",                                          "fixed: WARN_MISC",                                     "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
-    { "WARNING_MISC_VARIABLE_NOT_IMPORTED",                                        2098,  "CORE_RUNTIME", "WARNING",        FALSE, 556,   1,  767,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Misc",                                          "XPerl::Diagnostic::Warning::Misc",                                          "fixed: WARN_MISC",                                     "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
+    { "WARNING_MISC_VARIABLE_NOT_IMPORTED",                                        2098,  "CORE_RUNTIME", "WARNING",        FALSE, 556,   1,  769,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Misc",                                          "XPerl::Diagnostic::Warning::Misc",                                          "fixed: WARN_MISC",                                     "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_MISC_VARIABLE_NOT_IMPORTED_SUBROUTINE_HINT",                        2099,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,  404,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Misc",                                          "XPerl::Diagnostic::Warning::Misc",                                          "fixed: WARN_MISC",                                     "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_MISC_VERSION_TRAILING_INVALID_DATA_IGNORED",                        2372,  "CORE_RUNTIME", "WARNING",        FALSE, 139,   2,  263,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Misc",                                          "XPerl::Diagnostic::Warning::Misc",                                          "fixed: WARN_MISC",                                     "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_MISC_VMS_CLI_SYMBOL_VALUE_TOO_LONG",                                2336,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Misc",                                          "XPerl::Diagnostic::Warning::Misc",                                          "fixed: WARN_MISC",                                     "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
@@ -3709,7 +3722,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "WARNING_REGEXP_CHAR_CLASS_RANGE_ASCII_ENDPOINTS_MIXED",                     2408,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "fixed: WARN_REGEXP",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "WARNING_REGEXP_CHAR_CLASS_RANGE_DECIMAL_GROUPS_MIXED",                      2409,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "fixed: WARN_REGEXP",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "WARNING_REGEXP_CHAR_CLASS_RANGE_END_NOT_CHARACTER",                         2405,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,  404,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "fixed: WARN_REGEXP",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
-    { "WARNING_REGEXP_CHAR_CLASS_RANGE_START_NOT_CHARACTER",                       2406,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,  768,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "fixed: WARN_REGEXP",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
+    { "WARNING_REGEXP_CHAR_CLASS_RANGE_START_NOT_CHARACTER",                       2406,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,  770,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "fixed: WARN_REGEXP",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "WARNING_REGEXP_CHAR_CLASS_RANGE_UNICODE_NOTATION_MIXED",                    2407,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "XPerl::Diagnostic::Warning::Regexp::CharClass::Range",                      "fixed: WARN_REGEXP",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "WARNING_REGEXP_COMMENT_CLOSE_BRACKET_SUSPICIOUS",                           2413,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Regexp::Comment",                               "XPerl::Diagnostic::Warning::Regexp::Comment",                               "fixed: WARN_REGEXP",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "WARNING_REGEXP_COMMENT_HASH_SPACING_SUSPICIOUS",                            2411,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Regexp::Comment",                               "XPerl::Diagnostic::Warning::Regexp::Comment",                               "fixed: WARN_REGEXP",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -3821,7 +3834,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "WARNING_SYNTAX_MULTIDIMENSIONAL_SUBSCRIPT_UNSUPPORTED",                     2260,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,  404,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Syntax",                                        "XPerl::Diagnostic::Warning::Syntax",                                        "fixed: WARN_SYNTAX",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_SYNTAX_NEGATED_PATTERN_BINDING_OPERATOR_REVERSED",                  2268,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Syntax",                                        "XPerl::Diagnostic::Warning::Syntax",                                        "fixed: WARN_SYNTAX",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_SYNTAX_NUMBER_UNDERSCORE_MISPLACED",                                2301,  "CORE_RUNTIME", "WARNING",        FALSE,   0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Syntax",                                        "XPerl::Diagnostic::Warning::Syntax",                                        "fixed: WARN_SYNTAX",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
-    { "WARNING_SYNTAX_OPERATOR_EXPECTED",                                          2511,  "CORE_COMPILE", "WARNING",        FALSE, 727,   1,  774,  TRUE,  FALSE, "XPerl::Diagnostic::Warning::Syntax",                                        "XPerl::Diagnostic::Warning::Syntax",                                        "fixed: WARN_SYNTAX",                                   "diagnostic",         "primary with following operator Note",                             "producer-reviewed nested Note",         FALSE, FALSE },
+    { "WARNING_SYNTAX_OPERATOR_EXPECTED",                                          2511,  "CORE_COMPILE", "WARNING",        FALSE, 729,   1,  776,  TRUE,  FALSE, "XPerl::Diagnostic::Warning::Syntax",                                        "XPerl::Diagnostic::Warning::Syntax",                                        "fixed: WARN_SYNTAX",                                   "diagnostic",         "primary with following operator Note",                             "producer-reviewed nested Note",         FALSE, FALSE },
     { "WARNING_SYNTAX_PARENTHESIS_DECLARATION_LIST_PARENTHESES_MISSING",           2129,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Syntax::Parenthesis",                           "XPerl::Diagnostic::Warning::Syntax::Parenthesis",                           "fixed: WARN_PARENTHESIS",                              "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_SYNTAX_PARENTHESIZED_FORM_INTERPRETED_AS_FUNCTION",                 2293,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Syntax",                                        "XPerl::Diagnostic::Warning::Syntax",                                        "fixed: WARN_SYNTAX",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_SYNTAX_PRECEDENCE_COMPARISON_WITH_BITWISE_OPERATOR",                2145,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Syntax::Precedence",                            "XPerl::Diagnostic::Warning::Syntax::Precedence",                            "fixed: WARN_PRECEDENCE",                               "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
@@ -3863,7 +3876,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "WARNING_UNPACK_FORMAT_COMMA_IGNORED",                                       2210,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Unpack",                                        "XPerl::Diagnostic::Warning::Unpack",                                        "fixed: WARN_UNPACK",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_UNPACK_FORMAT_MODIFIER_DUPLICATE",                                  2211,  "CORE_RUNTIME", "WARNING",        FALSE, 435,   3,  452,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Unpack",                                        "XPerl::Diagnostic::Warning::Unpack",                                        "fixed: WARN_UNPACK",                                   "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_UNTIE_INNER_REFERENCES_REMAIN",                                     2217,  "CORE_RUNTIME", "WARNING",        FALSE, 256,   1,  260,  FALSE, FALSE, "XPerl::Diagnostic::Warning::Untie",                                         "XPerl::Diagnostic::Warning::Untie",                                         "fixed: WARN_UNTIE",                                    "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
-    { "WARNING_USER_REFERENCE",                                                    1597,  "CORE_RUNTIME", "WARNING",        FALSE, 711,   1,  755,  FALSE, FALSE, "XPerl::Diagnostic::Warning::User",                                          "XPerl::Diagnostic::Warning::User",                                          "no fixed catalog category; producer review required",  "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, FALSE },
+    { "WARNING_USER_REFERENCE",                                                    1597,  "CORE_RUNTIME", "WARNING",        FALSE, 713,   1,  757,  FALSE, FALSE, "XPerl::Diagnostic::Warning::User",                                          "XPerl::Diagnostic::Warning::User",                                          "no fixed catalog category; producer review required",  "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, FALSE },
     { "WARNING_USER_TEXT",                                                         2439,  "USER_RUNTIME", "WARNING",        FALSE, 459,   1,  476,  FALSE, FALSE, "XPerl::Diagnostic::Warning::User",                                          "XPerl::Diagnostic::Warning::User",                                          "no fixed catalog category; producer review required",  "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, FALSE },
     { "WARNING_UTF8_CHR_NEGATIVE_VALUE",                                           2191,  "CORE_RUNTIME", "WARNING",        FALSE,  38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Warning::UTF8",                                          "XPerl::Diagnostic::Warning::UTF8",                                          "fixed: WARN_UTF8",                                     "diagnostic",         "ordinary diagnostic; container-capable",                           "warning tree mapping",                  FALSE, FALSE },
     { "WARNING_UTF8_CONTINUATION_WITHOUT_START",                                   2619,  "CORE_RUNTIME", "WARNING",        FALSE, 164,   5,  164,  FALSE, FALSE, "XPerl::Diagnostic::Warning",                                                "XPerl::Diagnostic::Warning",                                                "runtime category; LCA plus exact category membership", "diagnostic",         "warning; verify independent or supplementary role",                "explicit catalog class",                FALSE, TRUE  },
@@ -3954,7 +3967,8 @@ static const char * const perl_diagpack_operation_names[] = {
     "anonconst", "isa", "implements", "cmpchain_and", "cmpchain_dup", "entertrycatch",
     "leavetrycatch", "poptry", "catch", "pushdefer", "is_bool", "is_weak", "weaken", "unweaken",
     "blessed", "refaddr", "reftype", "ceil", "floor", "is_tainted", "helemexistsor", "methstart",
-    "initfield", "classname", "multiparam", "paramtest", "paramstore", "yield", "do_block",
+    "initfield", "classname", "multiparam", "paramtest", "paramstore", "yield", "multisubfail",
+    "do_block",
 };
 
 static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
@@ -4328,6 +4342,7 @@ static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
     { "language",                 "text" },
     { "owner",                    "text" },
     { "problem",                  "text" },
+    { "declaration_kind",         "text" },
 };
 
 static const U16 perl_diagpack_param_schema_ids[] = {
@@ -4375,10 +4390,10 @@ static const U16 perl_diagpack_param_schema_ids[] = {
      243,   65,  255,  261,   33,   10,  264,  147,  267,  267,   94,  201,  280,  261,  303,    3,
      136,  116,  319,  328,  203,  116,  203,  330,  203,  116,   29,   36,   46,  348,    5,  352,
      351,   14,  269,  355,  346,   36,  345,  359,  360,  361,  362,  364,  365,  367,   14,   72,
-     369,    2,    4,    8,   20,   21,   28,   32,   34,   42,   43,   45,   60,   68,   82,   99,
-     100,  106,  107,  108,  109,  110,  111,  112,  113,  114,  115,  121,  123,  127,  129,  143,
-     159,  188,  268,  270,  271,  275,  281,  282,  305,  325,  347,  349,  353,  354,  363,  366,
-     368,
+     369,   36,  370,    2,    4,    8,   20,   21,   28,   32,   34,   42,   43,   45,   60,   68,
+      82,   99,  100,  106,  107,  108,  109,  110,  111,  112,  113,  114,  115,  121,  123,  127,
+     129,  143,  159,  188,  268,  270,  271,  275,  281,  282,  305,  325,  347,  349,  353,  354,
+     363,  366,  368,
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1001 = {
@@ -4453,7 +4468,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1018 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1019 = {
     1019, "ERROR_RUN_OPTION_VALUE_REQUIRED",
-    perl_diagpack_param_schema_ids + 690, 1
+    perl_diagpack_param_schema_ids + 692, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1020 = {
@@ -5168,7 +5183,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1167 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1168 = {
     1168, "ERROR_INTERNAL_NUMERIC_CONVERSION_BASE_UNSUPPORTED",
-    perl_diagpack_param_schema_ids + 691, 1
+    perl_diagpack_param_schema_ids + 693, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1169 = {
@@ -5203,22 +5218,22 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1174 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1175 = {
     1175, "ERROR_RUN_OPTION_MODULE_NAME_REQUIRED",
-    perl_diagpack_param_schema_ids + 690, 1
+    perl_diagpack_param_schema_ids + 692, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1176 = {
     1176, "ERROR_RUN_OPTION_PROGRAM_TEXT_REQUIRED",
-    perl_diagpack_param_schema_ids + 690, 1
+    perl_diagpack_param_schema_ids + 692, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1177 = {
     1177, "ERROR_RUN_ENVIRONMENT_PERL5OPT_FORBIDDEN_SWITCH",
-    perl_diagpack_param_schema_ids + 690, 1
+    perl_diagpack_param_schema_ids + 692, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1178 = {
     1178, "ERROR_IO_FILESYSTEM_DIRECTORY_CHDIR_FAILED",
-    perl_diagpack_param_schema_ids + 692, 1
+    perl_diagpack_param_schema_ids + 694, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1179 = {
@@ -5273,7 +5288,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1188 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1189 = {
     1189, "ERROR_SYMBOL_TABLE_SLOT_SYMBOL_INVALID",
-    perl_diagpack_param_schema_ids + 693, 1
+    perl_diagpack_param_schema_ids + 695, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1190 = {
@@ -5293,7 +5308,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1192 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1193 = {
     1193, "ERROR_MUTATION_LVALUE_RETURN_VALUE_NOT_MODIFIABLE",
-    perl_diagpack_param_schema_ids + 694, 1
+    perl_diagpack_param_schema_ids + 696, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1194 = {
@@ -5388,7 +5403,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1211 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1212 = {
     1212, "ERROR_SYNTAX_CALL_COMMA_AFTER_INDIRECT_NAME",
-    perl_diagpack_param_schema_ids + 695, 1
+    perl_diagpack_param_schema_ids + 697, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1213 = {
@@ -5533,7 +5548,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1240 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1241 = {
     1241, "ERROR_UNICODE_UTF16_SCRIPT_ENCODING_UNSUPPORTED",
-    perl_diagpack_param_schema_ids + 696, 1
+    perl_diagpack_param_schema_ids + 698, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1242 = {
@@ -5813,7 +5828,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1313 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1314 = {
     1314, "ERROR_CALL_BINDING_ARITY_SIGNATURE_MISMATCH",
-    perl_diagpack_param_schema_ids + 697, 1
+    perl_diagpack_param_schema_ids + 699, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1347 = {
@@ -6088,12 +6103,12 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1406 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1407 = {
     1407, "ERROR_CALL_BINDING_TYPE_SCALAR_CONTAINER_ACCESS_FORBIDDEN",
-    perl_diagpack_param_schema_ids + 698, 1
+    perl_diagpack_param_schema_ids + 700, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1408 = {
     1408, "ERROR_SYNTAX_SOURCE_NON_ASCII_CHARACTER_FORBIDDEN",
-    perl_diagpack_param_schema_ids + 699, 1
+    perl_diagpack_param_schema_ids + 701, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1410 = {
@@ -6108,7 +6123,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1411 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1412 = {
     1412, "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING",
-    perl_diagpack_param_schema_ids + 700, 1
+    perl_diagpack_param_schema_ids + 702, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1414 = {
@@ -6188,7 +6203,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1428 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1429 = {
     1429, "ERROR_SYNTAX_DECLARATION_USE_NO_IN_EXPRESSION",
-    perl_diagpack_param_schema_ids + 701, 1
+    perl_diagpack_param_schema_ids + 703, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1430 = {
@@ -6268,7 +6283,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1449 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1450 = {
     1450, "ERROR_PACK_BOUNDS_PACK_POSITION_OUTSIDE_STRING",
-    perl_diagpack_param_schema_ids + 702, 1
+    perl_diagpack_param_schema_ids + 704, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1451 = {
@@ -6368,7 +6383,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1471 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1472 = {
     1472, "ERROR_IO_RECORDSEPARATOR_REFERENCE_TYPE_UNSUPPORTED",
-    perl_diagpack_param_schema_ids + 703, 1
+    perl_diagpack_param_schema_ids + 705, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1473 = {
@@ -6898,7 +6913,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1578 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1579 = {
     1579, "ERROR_OBJECT_COMPOSITION_INHERITANCE_NATIVE_SUPERCLASS_REQUIRED",
-    perl_diagpack_param_schema_ids + 704, 1
+    perl_diagpack_param_schema_ids + 706, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1580 = {
@@ -6913,12 +6928,12 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1581 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1582 = {
     1582, "ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_FIELD_LAYOUT_MISSING",
-    perl_diagpack_param_schema_ids + 705, 1
+    perl_diagpack_param_schema_ids + 707, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1583 = {
     1583, "ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_PROTOTYPE_MISSING",
-    perl_diagpack_param_schema_ids + 705, 1
+    perl_diagpack_param_schema_ids + 707, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1584 = {
@@ -6948,57 +6963,57 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1589 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1590 = {
     1590, "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_DEPTH_EXCEEDED",
-    perl_diagpack_param_schema_ids + 706, 1
+    perl_diagpack_param_schema_ids + 708, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1591 = {
     1591, "ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_PACKAGE_NOT_FOUND",
-    perl_diagpack_param_schema_ids + 707, 1
+    perl_diagpack_param_schema_ids + 709, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1592 = {
     1592, "ERROR_PROPAGATION_EVAL_EXCEPTION",
-    perl_diagpack_param_schema_ids + 708, 1
+    perl_diagpack_param_schema_ids + 710, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1594 = {
     1594, "WARNING_COMPILATION_UNCLASSIFIED_DEFERRED_MESSAGE",
-    perl_diagpack_param_schema_ids + 709, 1
+    perl_diagpack_param_schema_ids + 711, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1595 = {
     1595, "ERROR_OBJECT_METHOD_CALL_INVOCANT_REQUIRED",
-    perl_diagpack_param_schema_ids + 710, 1
+    perl_diagpack_param_schema_ids + 712, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1596 = {
     1596, "ERROR_OBJECT_METHOD_CALL_UNINITIALIZED_INVOCANT",
-    perl_diagpack_param_schema_ids + 710, 1
+    perl_diagpack_param_schema_ids + 712, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1597 = {
     1597, "WARNING_USER_REFERENCE",
-    perl_diagpack_param_schema_ids + 711, 1
+    perl_diagpack_param_schema_ids + 713, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1598 = {
     1598, "ERROR_IO_HANDLE_INVALID_VALUE",
-    perl_diagpack_param_schema_ids + 712, 1
+    perl_diagpack_param_schema_ids + 714, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1599 = {
     1599, "ERROR_SYNTAX_DECLARATION_SUBROUTINE_NAMED_SUFFIX_INVALID",
-    perl_diagpack_param_schema_ids + 713, 1
+    perl_diagpack_param_schema_ids + 715, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1600 = {
     1600, "ERROR_OBJECT_COMPOSITION_NATIVE_ROLE_REQUIRED",
-    perl_diagpack_param_schema_ids + 714, 1
+    perl_diagpack_param_schema_ids + 716, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1601 = {
     1601, "ERROR_LEXICAL_IMPORT_INVALID_VERSION_BUNDLE",
-    perl_diagpack_param_schema_ids + 715, 1
+    perl_diagpack_param_schema_ids + 717, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1602 = {
@@ -7183,7 +7198,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1637 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1638 = {
     1638, "ERROR_RUN_OPTION_SHEBANG_SWITCH_TOO_LATE",
-    perl_diagpack_param_schema_ids + 716, 1
+    perl_diagpack_param_schema_ids + 718, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1639 = {
@@ -7333,12 +7348,12 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1668 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1669 = {
     1669, "ERROR_UNICODE_CODE_POINT_CHR_NONFINITE",
-    perl_diagpack_param_schema_ids + 717, 1
+    perl_diagpack_param_schema_ids + 719, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1670 = {
     1670, "ERROR_PACK_INPUT_NONFINITE_COMPRESSED_INTEGER",
-    perl_diagpack_param_schema_ids + 717, 1
+    perl_diagpack_param_schema_ids + 719, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1671 = {
@@ -7403,7 +7418,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1682 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1683 = {
     1683, "ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE",
-    perl_diagpack_param_schema_ids + 718, 1
+    perl_diagpack_param_schema_ids + 720, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1684 = {
@@ -7413,7 +7428,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1684 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1685 = {
     1685, "ERROR_USER_OPAQUE_SV_DELIVERY",
-    perl_diagpack_param_schema_ids + 719, 1
+    perl_diagpack_param_schema_ids + 721, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1686 = {
@@ -7518,7 +7533,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1726 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1727 = {
     1727, "ERROR_INTERNAL_REGEXP_COMPILER_ROOT_RESULT_MISSING",
-    perl_diagpack_param_schema_ids + 720, 1
+    perl_diagpack_param_schema_ids + 722, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1728 = {
@@ -7568,7 +7583,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1737 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1738 = {
     1738, "ERROR_INTERNAL_UNICODE_UTF8_DECODER_PROBLEM_UNHANDLED",
-    perl_diagpack_param_schema_ids + 721, 1
+    perl_diagpack_param_schema_ids + 723, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1740 = {
@@ -7883,7 +7898,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1810 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1811 = {
     1811, "ERROR_INTERNAL_FORMAT_PRINTF_BUFFER_OVERFLOW",
-    perl_diagpack_param_schema_ids + 722, 1
+    perl_diagpack_param_schema_ids + 724, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1814 = {
@@ -9678,12 +9693,12 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2242 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2243 = {
     2243, "WARNING_IMPRECISION_INCREMENT_PRECISION_LOSS",
-    perl_diagpack_param_schema_ids + 717, 1
+    perl_diagpack_param_schema_ids + 719, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2244 = {
     2244, "WARNING_IMPRECISION_DECREMENT_PRECISION_LOSS",
-    perl_diagpack_param_schema_ids + 717, 1
+    perl_diagpack_param_schema_ids + 719, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2245 = {
@@ -10733,7 +10748,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2458 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2459 = {
     2459, "ERROR_LOAD_CONTEXT_INC_ENTRIES_CHECKED",
-    perl_diagpack_param_schema_ids + 723, 1
+    perl_diagpack_param_schema_ids + 725, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2460 = {
@@ -10763,7 +10778,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2466 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2467 = {
     2467, "ERROR_UNICODE_PROPERTY_DEFINITION_RANGE_REVERSED",
-    perl_diagpack_param_schema_ids + 724, 1
+    perl_diagpack_param_schema_ids + 726, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2468 = {
@@ -10778,7 +10793,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2469 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2470 = {
     2470, "ERROR_UNICODE_PROPERTY_DEFINITION_CODEPOINT_OVERFLOW",
-    perl_diagpack_param_schema_ids + 724, 1
+    perl_diagpack_param_schema_ids + 726, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2471 = {
@@ -10823,7 +10838,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2478 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2479 = {
     2479, "NOTE_OMISSION_NAMED_PARAMETER_DIAGNOSTICS",
-    perl_diagpack_param_schema_ids + 725, 1
+    perl_diagpack_param_schema_ids + 727, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2480 = {
@@ -10838,7 +10853,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2481 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2482 = {
     2482, "ERROR_USER_REFERENCE",
-    perl_diagpack_param_schema_ids + 726, 1
+    perl_diagpack_param_schema_ids + 728, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2483 = {
@@ -10918,7 +10933,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2497 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2498 = {
     2498, "ERROR_SYNTAX_ESCAPE_LEGACY_API_UNCALLABLE",
-    perl_diagpack_param_schema_ids + 722, 1
+    perl_diagpack_param_schema_ids + 724, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2499 = {
@@ -10978,7 +10993,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2510 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2511 = {
     2511, "WARNING_SYNTAX_OPERATOR_EXPECTED",
-    perl_diagpack_param_schema_ids + 727, 1
+    perl_diagpack_param_schema_ids + 729, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2512 = {
@@ -11008,7 +11023,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2516 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2517 = {
     2517, "ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_PARENT_CONFLICT_CONTEXT",
-    perl_diagpack_param_schema_ids + 728, 1
+    perl_diagpack_param_schema_ids + 730, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2518 = {
@@ -11503,7 +11518,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2615 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2616 = {
     2616, "ERROR_IO_HANDLE_BAREWORD_NAME_FORBIDDEN",
-    perl_diagpack_param_schema_ids + 729, 1
+    perl_diagpack_param_schema_ids + 731, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2617 = {
@@ -11653,7 +11668,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2646 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2647 = {
     2647, "ERROR_INTERNAL_LOCALE_DATA_CHAR_CLASS_UNKNOWN",
-    perl_diagpack_param_schema_ids + 730, 1
+    perl_diagpack_param_schema_ids + 732, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2648 = {
@@ -11728,7 +11743,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2661 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2662 = {
     2662, "WARNING_LOCALE_STARTUP_ENVIRONMENT_SETTINGS_UNSUPPORTED",
-    perl_diagpack_param_schema_ids + 731, 1
+    perl_diagpack_param_schema_ids + 733, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2663 = {
@@ -11768,7 +11783,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2669 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2670 = {
     2670, "ERROR_INTERNAL_STACK_JUMP_ROOT_TARGET_MISSING",
-    perl_diagpack_param_schema_ids + 732, 1
+    perl_diagpack_param_schema_ids + 734, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2671 = {
@@ -11798,7 +11813,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2675 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2676 = {
     2676, "ERROR_SYSTEM_SIGNAL_HANDLER_MISSING",
-    perl_diagpack_param_schema_ids + 733, 1
+    perl_diagpack_param_schema_ids + 735, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2677 = {
@@ -11808,7 +11823,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2677 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2678 = {
     2678, "NOTE_CONTEXT_OS2_THREAD_STATE_UNKNOWN",
-    perl_diagpack_param_schema_ids + 734, 1
+    perl_diagpack_param_schema_ids + 736, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2679 = {
@@ -11918,7 +11933,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2699 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2700 = {
     2700, "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_PIPE_REOPEN_FAILED",
-    perl_diagpack_param_schema_ids + 735, 1
+    perl_diagpack_param_schema_ids + 737, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2701 = {
@@ -11948,7 +11963,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2705 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2706 = {
     2706, "NOTE_CONTEXT_WINDOWS_INVALID_PARAMETER_EXPRESSION",
-    perl_diagpack_param_schema_ids + 736, 1
+    perl_diagpack_param_schema_ids + 738, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2707 = {
@@ -12263,7 +12278,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2769 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2770 = {
     2770, "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED",
-    perl_diagpack_param_schema_ids + 737, 1
+    perl_diagpack_param_schema_ids + 739, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2771 = {
@@ -12343,7 +12358,47 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2785 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2786 = {
     2786, "ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS",
-    perl_diagpack_param_schema_ids + 737, 1
+    perl_diagpack_param_schema_ids + 739, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2787 = {
+    2787, "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION",
+    perl_diagpack_param_schema_ids + 1, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2788 = {
+    2788, "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH",
+    perl_diagpack_param_schema_ids + 1, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2789 = {
+    2789, "ERROR_RUNTIME_MULTISUB_NO_MATCH",
+    perl_diagpack_param_schema_ids + 1, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2790 = {
+    2790, "WARNING_EXPERIMENTAL_MULTISUB_DECLARATION_USED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2791 = {
+    2791, "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME",
+    perl_diagpack_param_schema_ids + 1, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2792 = {
+    2792, "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2793 = {
+    2793, "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE",
+    perl_diagpack_param_schema_ids + 690, 2
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2794 = {
+    2794, "ERROR_SYNTAX_MULTISUB_NAME_REPLACED",
+    perl_diagpack_param_schema_ids + 1, 1
 };
 
 static const char perl_diag_template_text_02bf4c82[] = "\t%1$s = \"%2$s\"%3$s\n";
@@ -12535,6 +12590,7 @@ static const char perl_diag_template_text_ec3312a3[] = "a hash variable";
 static const char perl_diag_template_text_81c92f76[] = "a join operation";
 static const char perl_diag_template_text_12b7a466[] = "a key/value hash slice";
 static const char perl_diag_template_text_513e8c0b[] = "a list slice";
+static const char perl_diag_template_text_3fdbd962[] = "A multi declaration requires sub or method, a name, and a parenthesized pattern list";
 static const char perl_diag_template_text_c28905d7[] = "A named signature parameter must start with '$'";
 static const char perl_diag_template_text_33731be3[] = "a reference constructor";
 static const char perl_diag_template_text_c5d50af2[] = "A reference was thrown as an exception";
@@ -12880,6 +12936,7 @@ static const char perl_diag_template_text_daa318c3[] = "Cannot invoke a method o
 static const char perl_diag_template_text_41c860bf[] = "Cannot invoke a modern method without initialized class storage";
 static const char perl_diag_template_text_903c8019[] = "Cannot invoke method %1$s on a non-instance";
 static const char perl_diag_template_text_1b288cce[] = "Cannot invoke method on a non-instance";
+static const char perl_diag_template_text_77f4fb6b[] = "Cannot mix declaration kinds for %1$s";
 static const char perl_diag_template_text_0cc4799c[] = "Cannot modify shared string table in hv_%1$s";
 static const char perl_diag_template_text_eac09a60[] = "Cannot open %1$s as a dirhandle: it is already open as a filehandle";
 static const char perl_diag_template_text_9f6c94b3[] = "Cannot open %1$s as a filehandle: it is already open as a dirhandle";
@@ -13460,12 +13517,18 @@ static const char perl_diag_template_text_05faef1e[] = "mprotect for %1$s %2$s f
 static const char perl_diag_template_text_1ad5adad[] = "mprotect for COW string %1$s %2$s failed with %3$s";
 static const char perl_diag_template_text_34600af1[] = "mprotect RW for %1$s %2$s failed with %3$s";
 static const char perl_diag_template_text_7844f7f6[] = "mprotect RW for COW string %1$s %2$s failed with %3$s";
+static const char perl_diag_template_text_c3481824[] = "multi is experimental";
+static const char perl_diag_template_text_69599563[] = "Multi-method %1$s is not complete";
+static const char perl_diag_template_text_a1e104e1[] = "Multi-sub %1$s is not complete";
 static const char perl_diag_template_text_982815e4[] = "Multidimensional hash lookup is disabled";
 static const char perl_diag_template_text_c3302b10[] = "Multidimensional syntax %1$s not supported";
 static const char perl_diag_template_text_e04cbd17[] = "Multiple slurpy parameters not allowed";
 static const char perl_diag_template_text_b7948a77[] = "multiplication (*)";
+static const char perl_diag_template_text_3ab920a7[] = "Multisub %1$s cannot be a phase block";
+static const char perl_diag_template_text_94b0085b[] = "Multisub definitions for %1$s must share a lexical scope";
 static const char perl_diag_template_text_2d121766[] = "my_localeconv() unexpectedly didn't return a value for %1$s";
 static const char perl_diag_template_text_29693028[] = "Name \"%1$s::%2$s\" used only once: possible typo";
+static const char perl_diag_template_text_45bb4340[] = "Name %1$s changed while its multi declaration was incomplete";
 static const char perl_diag_template_text_11c3a900[] = "Named capture '%1$s' occurs in multiple regexes in a dispatch-on clause; only the first regex maps to its lexical variable; later captures are not visible through that variable";
 static const char perl_diag_template_text_027c8983[] = "Named parameters in signatures are experimental";
 static const char perl_diag_template_text_7d96447f[] = "Named parameters must actually have a name";
@@ -13497,6 +13560,7 @@ static const char perl_diag_template_text_a28c810d[] = "No digits found for %1$s
 static const char perl_diag_template_text_689b3327[] = "No directory specified for -I";
 static const char perl_diag_template_text_7457e5e3[] = "No group ending character '%1$s' found in template";
 static const char perl_diag_template_text_962de17f[] = "No input file after < on command line";
+static const char perl_diag_template_text_937199a2[] = "No matching clause for multi %1$s";
 static const char perl_diag_template_text_aea10b14[] = "No message queue";
 static const char perl_diag_template_text_e81c0c8d[] = "No next::method '%1$s' found for %2$s";
 static const char perl_diag_template_text_385b1c0a[] = "No output file after 2> or 2>> on command line";
@@ -15178,6 +15242,10 @@ static const perl_diag_selector_t perl_diag_selectors_en_2665[] = {
     { "kind", 1,  perl_diag_selector_domain_2665_0_id, perl_diag_selector_values_en_2665_0, 4,  8,  0,  NULL, 0,  0,  NULL, 1 },
 };
 
+static const perl_diag_selector_t perl_diag_selectors_en_2793[] = {
+    { "declaration_kind", 1,  perl_diag_selector_domain_2449_0_id, perl_diag_selector_values_en_2449_0, 2,  8,  0,  NULL, 0,  0,  NULL, 1 },
+};
+
 static const perl_diag_word_value_t perl_diag_word_values_en[] = {
     /* unavailable translation */
     { NULL,                             UINT64_C(0x0000000000000000) },
@@ -15481,83 +15549,80 @@ static const U16 perl_diag_word_map_en[] = {
        1,    1,    1,    1,    1,    1,    1,   37,   23,    1,    1,   30,   30,   30,  140,  112,
      112,  112,  111,   13,   89,   85,   31,   32,    1,  104,  145,   28,  153,   87,   88,  200,
      199,    1,    1,    1,    1,    1,    1,   63,  120,   86,   29,  123,  144,  143,  202,    1,
-       1, 65535, 65535,    1, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,  157,  158,    1, 65535, 65535,
-    65535, 65535,  160,  162, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535,  197,    1,  146, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+       1,    1, 65535, 65535,    1, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,  157,  158,    1, 65535,
+    65535, 65535, 65535,  160,  162, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535,  197,    1,  146, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,    1,    1,    1,    1,    1,
-    1,    1,    1,    1,    1,    1,    1, 65535, 65535, 65535,    1, 65535, 65535, 65535,    1,
-    1,    1,    1,    1,    1,    1,    1,    1, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,    1,    1,    1,    1,
+     1,    1,    1,    1,    1,    1,    1,    1, 65535, 65535, 65535,    1, 65535, 65535, 65535,
+     1,    1,    1,    1,    1,    1,    1,    1,    1, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    1,    1,    1, 65535, 65535, 65535,   15, 65535,   46,    1,    1, 65535, 65535,    1, 65535,
-     1,    1, 65535,    1,    1, 65535,    1, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,    1,    1,
-     164, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535,    1, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1, 65535, 65535, 65535,    1,    1, 65535, 65535,
-    65535, 65535,    1,    1,    1,    1, 65535, 65535, 65535, 65535,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1, 65535, 65535, 65535, 65535,
+    65535,    1,    1,    1, 65535, 65535, 65535,   15, 65535,   46,    1,    1, 65535, 65535,
+    1, 65535,    1,    1, 65535,    1,    1, 65535,    1, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    1,    1,  164, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535,    1, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    1,    1,    1,    1,    1,    1,    1,    1,    1,    1, 65535, 65535, 65535,    1,    1,
+    65535, 65535, 65535, 65535,    1,    1,    1,    1, 65535, 65535, 65535, 65535,    1,    1,
+    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-    1, 65535, 65535,    1, 65535, 65535,    1, 65535,    1,    1,    1,    1, 65535, 65535,    1,
-     1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1, 65535,    1,
-    65535, 65535, 65535, 65535, 65535,    1,    1, 65535,    1,    1, 65535,    1,    1, 65535,
-    1,    1, 65535,    1,    1,    1,    1, 65535, 65535, 65535, 65535,    1,    1, 65535, 65535,
-    65535,    1,    1, 65535, 65535, 65535, 65535,    1, 65535, 65535, 65535, 65535, 65535, 65535,
-      1, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+    1,    1,    1,    1, 65535, 65535,    1, 65535, 65535,    1, 65535,    1,    1,    1,    1,
+    65535, 65535,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+    1,    1, 65535,    1, 65535, 65535, 65535, 65535, 65535,    1,    1, 65535,    1,    1, 65535,
+      1,    1, 65535,    1,    1, 65535,    1,    1,    1,    1, 65535, 65535, 65535, 65535,    1,
+      1, 65535, 65535, 65535,    1,    1, 65535, 65535, 65535, 65535,    1, 65535, 65535, 65535,
+    65535, 65535, 65535,    1, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,    1,    1,    1,
-      1,    1,    1,   36,    1,    1,   57,    1,    1,  138,  139,    1,  168,    1,    1,    1,
-     12,  152,  159,  189,  157,  158,    1,   24,    1,    1,    1,    1,    1,    1,  114,  154,
-    192,    1,  196,  196,    1,    1,    1,  176,    1,  175,   39,  197,    1,    1,  151,   83,
-    150,   82,  148,   81,  147,   80,  149,  124,   75,   43,   67,  121,   74,  163,    3,   66,
-    195,   84,   34,    1,  191,  107,  165,  110,   73,   59,   71,   94,   72,   56,   70,   52,
-     68,  130,   77,   53,   69,  132,   79,  128,   76,  185,  183,  184,  182,  180,  187,  181,
-    188,  177,   25,   27,   26,  125,  127,  126,  172,  174,  173,  131,   78,    1,   33,  129,
-    178,  186,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  166,    1,
-      1,    1,    1,    1,   92,    4,   22,    9,    1,    1,    1,    1,    1,  169,    1,    1,
-     93,    1,    1,    1,    1,   91,    1,  109,   15,   14,   46,    1,    1,    1,    1,    1,
-      1,    1,    1,   58,    1,    1,   16,    1,  113,    1,    1,   55,   10,  135,  201,   44,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  164,    1,    1,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535,    1,    1,    1,    1,    1,    1,   36,    1,    1,   57,    1,    1,
+    138,  139,    1,  168,    1,    1,    1,   12,  152,  159,  189,  157,  158,    1,   24,    1,
+      1,    1,    1,    1,    1,  114,  154,  192,    1,  196,  196,    1,    1,    1,  176,    1,
+    175,   39,  197,    1,    1,  151,   83,  150,   82,  148,   81,  147,   80,  149,  124,   75,
+     43,   67,  121,   74,  163,    3,   66,  195,   84,   34,    1,  191,  107,  165,  110,   73,
+     59,   71,   94,   72,   56,   70,   52,   68,  130,   77,   53,   69,  132,   79,  128,   76,
+    185,  183,  184,  182,  180,  187,  181,  188,  177,   25,   27,   26,  125,  127,  126,  172,
+    174,  173,  131,   78,    1,   33,  129,  178,  186,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,  166,    1,    1,    1,    1,    1,   92,    4,   22,    9,    1,
+      1,    1,    1,    1,  169,    1,    1,   93,    1,    1,    1,    1,   91,    1,  109,   15,
+     14,   46,    1,    1,    1,    1,    1,    1,    1,    1,   58,    1,    1,   16,    1,  113,
+      1,    1,   55,   10,  135,  201,   44,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,  164,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  190,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,  190,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  112,    1,    1,    1,   13,
-     89,   85,   31,    1,    1,    1,    1,    1,    1,   87,   88,  200,  199,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,   29,    1,    1,    1,  202,  203,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  192,
-      1,  196,    1,  171,    2,    1,    1,    1,    1,    1,  197,    1,  146,  151,    1,  150,
-      1,  148,    1,  147,    1,  149,  124,    1,   43,    1,  121,    1,  163,    3,    1,  195,
-      1,   34,    1,    1,  107,  165,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,   25,   27,   26,  125,  127,  126,  172,  174,  173,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,   15,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  201,    1,    1,
-     11,  136,   45,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,   50,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,  112,    1,    1,    1,   13,   89,   85,   31,    1,    1,    1,    1,    1,    1,
+     87,   88,  200,  199,    1,    1,    1,    1,    1,    1,    1,    1,    1,   29,    1,    1,
+      1,  202,    1,  203,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,  192,    1,  196,    1,  171,    2,    1,    1,    1,
+      1,    1,  197,    1,  146,  151,    1,  150,    1,  148,    1,  147,    1,  149,  124,    1,
+     43,    1,  121,    1,  163,    3,    1,  195,    1,   34,    1,    1,  107,  165,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,   25,   27,   26,  125,  127,  126,  172,
+    174,  173,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,   15,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,  201,    1,    1,   11,  136,   45,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,   50,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -15568,40 +15633,108 @@ static const U16 perl_diag_word_map_en[] = {
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  134,    1,    1,    1,
-      1,   36,   61,   60,   57,  141,  142,  138,  139,  137,  168,  170,   21,  167,   12,  152,
-    159,  189,  157,  158,    1,   24,    1,    1,  156,  160,  162,  161,  114,  154,  192,  193,
-    196,  196,  171,    2,    1,  176,    1,  175,   39,  197,    1,  146,  151,   83,  150,   82,
-    148,   81,  147,   80,  149,  124,   75,   43,   67,  121,   74,  163,    3,   66,  195,   84,
-     34,   34,  191,  107,  165,  110,   73,   59,   71,   94,   72,   56,   70,   52,   68,  130,
-     77,   53,   69,  132,   79,  128,   76,  185,  183,  184,  182,  180,  187,  181,  188,  177,
-     25,   27,   26,  125,  127,  126,  172,  174,  173,  131,   78,    1,   33,  129,  178,  186,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  194,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  166,    6,    7,    8,
-      5,   20,   92,    4,   22,    9,    1,    1,    1,    1,    1,  169,   62,   65,   93,  122,
-      1,    1,    1,   91,    1,  109,   15,   14,   46,    1,    1,    1,    1,    1,    1,    1,
-      1,   58,    1,    1,   16,    1,  113,  155,   54,   55,   10,  135,  201,   44,   35,   11,
-    136,   45,   51,  101,  102,   17,   19,   18,    1,    1,    1,  164,  108,  133,   38,  198,
-     47,   95,  179,   49,   90,   50,  100,    1,    1,    1,    1,    1,    1,    1,  115,  116,
-    119,  117,  118,    1,   99,    1,   96,   48,   97,    1,  105,   41,   42,   40,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  190,    1,    1,    1,    1,
-    106,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,  134,    1,    1,    1,    1,   36,   61,   60,   57,  141,  142,
+    138,  139,  137,  168,  170,   21,  167,   12,  152,  159,  189,  157,  158,    1,   24,    1,
+      1,  156,  160,  162,  161,  114,  154,  192,  193,  196,  196,  171,    2,    1,  176,    1,
+    175,   39,  197,    1,  146,  151,   83,  150,   82,  148,   81,  147,   80,  149,  124,   75,
+     43,   67,  121,   74,  163,    3,   66,  195,   84,   34,   34,  191,  107,  165,  110,   73,
+     59,   71,   94,   72,   56,   70,   52,   68,  130,   77,   53,   69,  132,   79,  128,   76,
+    185,  183,  184,  182,  180,  187,  181,  188,  177,   25,   27,   26,  125,  127,  126,  172,
+    174,  173,  131,   78,    1,   33,  129,  178,  186,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,  194,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,  166,    6,    7,    8,    5,   20,   92,    4,   22,    9,    1,
+      1,    1,    1,    1,  169,   62,   65,   93,  122,    1,    1,    1,   91,    1,  109,   15,
+     14,   46,    1,    1,    1,    1,    1,    1,    1,    1,   58,    1,    1,   16,    1,  113,
+    155,   54,   55,   10,  135,  201,   44,   35,   11,  136,   45,   51,  101,  102,   17,   19,
+     18,    1,    1,    1,  164,  108,  133,   38,  198,   47,   95,  179,   49,   90,   50,  100,
+      1,    1,    1,    1,    1,    1,    1,  115,  116,  119,  117,  118,    1,   99,    1,   96,
+     48,   97,    1,  105,   41,   42,   40,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,  190,    1,    1,    1,    1,  106,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,    1,    1,    1,    1,    1,    1,    1,    1,   64,    1,   98,    1,  103,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,   64,    1,   98,    1,  103,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,   37,   23,    1,    1,   30,   30,
+     30,  140,  112,  112,  112,  111,   13,   89,   85,   31,   32,    1,  104,  145,   28,  153,
+     87,   88,  200,  199,    1,    1,    1,    1,    1,    1,   63,  120,   86,   29,  123,  144,
+    143,  202,    1,  203,    1, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535,  171,    2, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,   50,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,    1,    1,    1,    1,    1,    1,
+    1,  224,  223,    1,  224,    1,  248,  249,  247,    1,    1,  211,    1,  207,  250,  253,
+    268,  252,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,  216,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,  149,  124,   75,   43,   67,  121,   74,  254,    3,   66,  195,   84,  215,
+      1,  269,  239,  255,  241,  232,  222,  230,  238,  231,  221,  229,  217,  227,  245,  233,
+    218,  228,  246,  234,  128,   76,  265,  263,  264,  262,  260,  266,  261,  267,  177,  212,
+    214,  213,  242,  244,  243,  256,  258,  257,  131,   78,    1,   33,  129,  259,  186,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  205,  206,    1,  204,
+    210,  236,    1,    1,    1,    1,    1,    1,    1,    1,    1,  225,  226,  237,    1,    1,
+      1,    1,  235,    1,  240,  209,  208,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,  251,  219,  220,    1,    1,  201,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-      1,   37,   23,    1,    1,   30,   30,   30,  140,  112,  112,  112,  111,   13,   89,   85,
-     31,   32,    1,  104,  145,   28,  153,   87,   88,  200,  199,    1,    1,    1,    1,    1,
-      1,   63,  120,   86,   29,  123,  144,  143,  202,  203,    1, 65535, 65535, 65535, 65535,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,   31,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+      1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,  171,    2, 65535, 65535, 65535, 65535,
+    65535, 65535,  114, 65535,  192, 65535,  196,  196, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535,  110,   73,   59,   71,   94,   72,   56,   70,   52,   68,  130,   77,
+    53,   69,  132,   79, 65535, 65535,  185,  183,  184,  182,  180,  187,  181,  188, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
@@ -15613,7 +15746,6 @@ static const U16 perl_diag_word_map_en[] = {
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535,   50, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
@@ -15627,79 +15759,16 @@ static const U16 perl_diag_word_map_en[] = {
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535,   89,   85, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,    1, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,    1,    1,
-       1,    1,    1,    1,    1,  224,  223,    1,  224,    1,  248,  249,  247,    1,    1,  211,
-       1,  207,  250,  253,  268,  252,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  216,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,  149,  124,   75,   43,   67,  121,   74,  254,    3,
-      66,  195,   84,  215,    1,  269,  239,  255,  241,  232,  222,  230,  238,  231,  221,  229,
-     217,  227,  245,  233,  218,  228,  246,  234,  128,   76,  265,  263,  264,  262,  260,  266,
-     261,  267,  177,  212,  214,  213,  242,  244,  243,  256,  258,  257,  131,   78,    1,   33,
-     129,  259,  186,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-     205,  206,    1,  204,  210,  236,    1,    1,    1,    1,    1,    1,    1,    1,    1,  225,
-     226,  237,    1,    1,    1,    1,  235,    1,  240,  209,  208,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,  251,  219,  220,    1,    1,  201,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,   31,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535,  114, 65535,  192, 65535,  196,  196, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535,  110,   73,   59,   71,   94,   72,   56,   70,   52,
-      68,  130,   77,   53,   69,  132,   79, 65535, 65535,  185,  183,  184,  182,  180,  187,
-    181,  188, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,   89,   85, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,    1, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535, 65535, 65535,  110,   73,   59,   71,   94,   72,   56,   70, 65535,
-    65535, 65535, 65535,   53,   69,  132,   79, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+    65535, 65535, 65535, 65535,  110,   73,   59,   71,   94,   72,   56,   70, 65535, 65535,
+    65535, 65535,   53,   69,  132,   79, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
@@ -15761,78 +15830,78 @@ static const U16 perl_diag_word_map_en[] = {
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
-    65535, 65535, 65535,
+    65535, 65535, 65535, 65535,
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_1404[] = {
-    { 0,  1,  1,  0,  447,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 0,  1,  1,  0,  448,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_1417[] = {
-    { 2,  1,  1,  0,  447,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
-    { 4,  6,  1,  0,  447,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 2,  1,  1,  0,  448,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 4,  6,  1,  0,  448,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_1540[] = {
-    { 0,  2,  1,  0,  447,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 0,  2,  1,  0,  448,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_1195[] = {
-    { 1,  0,  1,  0,  447,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 1,  0,  1,  0,  448,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_1425[] = {
-    { 2,  1,  1,  0,  447,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 2,  1,  1,  0,  448,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_1419[] = {
-    { 1,  0,  1,  0,  447,  perl_diag_word_map_en + 895,  perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
-    { 2,  3,  1,  0,  447,  perl_diag_word_map_en + 1342, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 1,  0,  1,  0,  448,  perl_diag_word_map_en + 897,  perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 2,  3,  1,  0,  448,  perl_diag_word_map_en + 1345, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_1423[] = {
-    { 3,  0,  1,  0,  447,  perl_diag_word_map_en + 1789, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
-    { 2,  1,  1,  1,  447,  perl_diag_word_map_en + 2236, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 3,  0,  1,  0,  448,  perl_diag_word_map_en + 1793, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 2,  1,  1,  1,  448,  perl_diag_word_map_en + 2241, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_1406[] = {
-    { 0,  1,  1,  1,  447,  perl_diag_word_map_en + 448, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 0,  1,  1,  1,  448,  perl_diag_word_map_en + 449, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_1420[] = {
-    { 1,  0,  1,  0,  447,  perl_diag_word_map_en + 1789, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 1,  0,  1,  0,  448,  perl_diag_word_map_en + 1793, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_2165[] = {
-    { 0,  1,  1,  1,  447,  perl_diag_word_map_en + 4024, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 0,  1,  1,  1,  448,  perl_diag_word_map_en + 4033, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_2146[] = {
-    { 0,  1,  1,  1,  447,  perl_diag_word_map_en + 3577, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 0,  1,  1,  1,  448,  perl_diag_word_map_en + 3585, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_2127[] = {
-    { 0,  1,  1,  1,  447,  perl_diag_word_map_en + 3130, perl_diag_word_values_en, UINT64_C(0x00000000000000ff) },
+    { 0,  1,  1,  1,  448,  perl_diag_word_map_en + 3137, perl_diag_word_values_en, UINT64_C(0x00000000000000ff) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_2250[] = {
-    { 0,  3,  1,  0,  447,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 0,  3,  1,  0,  448,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_2619[] = {
-    { 0,  4,  1,  0,  447,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 0,  4,  1,  0,  448,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_2622[] = {
-    { 0,  5,  1,  0,  447,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 0,  5,  1,  0,  448,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_2620[] = {
-    { 0,  8,  1,  0,  447,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 0,  8,  1,  0,  448,  perl_diag_word_map_en + 1, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_binding_t perl_diag_word_bindings_en_2072[] = {
-    { 1,  2,  1,  0,  447,  perl_diag_word_map_en + 2683, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
+    { 1,  2,  1,  0,  448,  perl_diag_word_map_en + 2689, perl_diag_word_values_en, UINT64_C(0x0000000000000000) },
 };
 
 static const perl_diag_word_group_t perl_diag_word_groups_en[] = {
@@ -17487,6 +17556,14 @@ enum {
     perl_diag_template_start_en_2784,
     perl_diag_template_start_en_2785,
     perl_diag_template_start_en_2786,
+    perl_diag_template_start_en_2787,
+    perl_diag_template_start_en_2788,
+    perl_diag_template_start_en_2789,
+    perl_diag_template_start_en_2790,
+    perl_diag_template_start_en_2791,
+    perl_diag_template_start_en_2792,
+    perl_diag_template_start_en_2793,
+    perl_diag_template_start_en_2794 = perl_diag_template_start_en_2793 + 2,
     perl_diag_template_end_en,
 };
 
@@ -19400,6 +19477,15 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_diagnostic_api_catalog_invalid_number,                                      UINT64_C(         0), perl_diag_template_text_ab4219fa,  2,   1 },
     { perl_diag_error_syntax_dispatch_shape_nesting_too_deep_number,                              UINT64_C(         0), perl_diag_template_text_f4f26999,  1,   1 },
     { perl_diag_error_object_conversion_owner_ambiguous_number,                                   UINT64_C(         0), perl_diag_template_text_baea4d09,  1,   1 },
+    { perl_diag_error_syntax_multisub_mixed_declaration_number,                                   UINT64_C(         0), perl_diag_template_text_77f4fb6b,  1,   1 },
+    { perl_diag_error_syntax_multisub_scope_mismatch_number,                                      UINT64_C(         0), perl_diag_template_text_94b0085b,  1,   1 },
+    { perl_diag_error_runtime_multisub_no_match_number,                                           UINT64_C(         0), perl_diag_template_text_937199a2,  1,   1 },
+    { perl_diag_warning_experimental_multisub_declaration_used_number,                            UINT64_C(         0), perl_diag_template_text_c3481824,  0,   0 },
+    { perl_diag_error_syntax_multisub_special_name_number,                                        UINT64_C(         0), perl_diag_template_text_3ab920a7,  1,   1 },
+    { perl_diag_error_syntax_multisub_named_definition_required_number,                           UINT64_C(         0), perl_diag_template_text_3fdbd962,  0,   0 },
+    { perl_diag_error_runtime_multisub_not_complete_number,                                       UINT64_C(      0x01), perl_diag_template_text_69599563,  1,   1 },
+    { perl_diag_error_runtime_multisub_not_complete_number,                                       UINT64_C(      0x02), perl_diag_template_text_a1e104e1,  1,   1 },
+    { perl_diag_error_syntax_multisub_name_replaced_number,                                       UINT64_C(         0), perl_diag_template_text_45bb4340,  1,   1 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
 
@@ -20995,6 +21081,14 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   2,  perl_diag_word_group_none, perl_diag_template_start_en_2784, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2785, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2786, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2787, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2788, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2789, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2790, NULL                        },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2791, NULL                        },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2792, NULL                        },
+    { 1,   2,  perl_diag_word_group_none, perl_diag_template_start_en_2793, perl_diag_selectors_en_2793 },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2794, NULL                        },
 };
 
 static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
@@ -21528,7 +21622,10 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_en[] = {
     &perl_diagpack_schema_2776, &perl_diagpack_schema_2777, &perl_diagpack_schema_2778,
     &perl_diagpack_schema_2779, &perl_diagpack_schema_2780, &perl_diagpack_schema_2781,
     &perl_diagpack_schema_2782, &perl_diagpack_schema_2783, &perl_diagpack_schema_2784,
-    &perl_diagpack_schema_2785, &perl_diagpack_schema_2786,
+    &perl_diagpack_schema_2785, &perl_diagpack_schema_2786, &perl_diagpack_schema_2787,
+    &perl_diagpack_schema_2788, &perl_diagpack_schema_2789, &perl_diagpack_schema_2790,
+    &perl_diagpack_schema_2791, &perl_diagpack_schema_2792, &perl_diagpack_schema_2793,
+    &perl_diagpack_schema_2794,
 };
 
 static const perl_diagpack_catalog perl_diagpack_builtin_catalog_en = {
@@ -21657,7 +21754,7 @@ static const perl_diagpack_engine * const perl_diagpack_builtin_engines[] = {
 
 
 /* Generated from:
- * 8bb8a85912ce30498c6058f0df3aff80241c5bcffd966de7b28441651f421ad2 diag_conf.pl
- * 33ec9731336463f6feeab1a67c087741ee4e1ad5eb527a86cceac4b577ab4168 diag_op_conf.pl
- * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
+ * 16e21c33c89f737e0203b8f548b2c0fcbba0f335375c4dfc2fd45e20fef05e04 diag_conf.pl
+ * 4f7f9abb892a0d073bf678e020c547a0c882a3b0d175956fe97b0ee2afca3238 diag_op_conf.pl
+ * 08e6e839aab37ef63b9ae313b6bfda289c063825e87138784fd46d465873591b regen/opcodes
  * ex: set ro ft=c: */

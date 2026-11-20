@@ -122,6 +122,7 @@ sub tree {
                         'experimental::signature_named_parameters' => [ 5.043, DEFAULT_ON ],
                         'experimental::enhanced_xx'                => [ 5.043, DEFAULT_ON ],
                         'experimental::namespaces'                 => [ 5.045, DEFAULT_ON ],
+                        'experimental::multisub'                   => [ 5.045, DEFAULT_ON ],
                         'experimental::equ'                        => [ 5.043, DEFAULT_ON ],
                     }
                 ],

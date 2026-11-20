@@ -441,6 +441,7 @@ These are a hotchpotch of opcodes still waiting to be considered
     enterwhen leavewhen enterdispatch leavedispatch
     enterdispatchon leavedispatchon
     dispatch_on dispatchcoerce dispatch
+    multisubfail
     break continue
     smartmatch
 

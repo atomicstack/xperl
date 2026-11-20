@@ -1,0 +1,232 @@
+=encoding utf8
+
+=head1 NAME
+
+perlmultitut - Tutorial for pattern-matched subroutines and methods
+
+=head1 DESCRIPTION
+
+The experimental C<multisub> feature lets you define a named subroutine or
+method as a sequence of clauses. Each clause describes the arguments it
+accepts. Perl tries the clauses in source order and runs the first one whose
+pattern and optional guard succeed.
+
+This tutorial assumes basic familiarity with Perl subroutines. For an
+introduction to the pattern language, see L<perldispatchontut>. Its complete
+reference is L<perldispatchon>. The reference for multi declarations is
+L<perlsub/Multisubs>, with method details in L<perlclass/multi method>.
+
+Enable the feature explicitly:
+
+    use strict;
+    use warnings;
+    use feature 'multisub';
+    no warnings 'experimental::multisub';
+
+The examples below assume this preamble unless they show their own. No
+version bundle enables C<multisub>. It is unreleased experimental syntax,
+and its syntax and behavior may change.
+
+=head1 YOUR FIRST MULTI SUB
+
+Suppose a result is represented by a tag followed by a value:
+
+    multi sub describe("ok", $value) {
+        return "value=$value";
+    }
+
+    multi sub describe("error", $message) {
+        return "error=$message";
+    }
+
+    print describe("ok", 42), "\n";          # value=42
+    print describe("error", "missing"), "\n"; # error=missing
+
+Both clauses define the same public subroutine, C<describe>. The first
+accepts two arguments beginning with the literal string C<"ok">. The
+second accepts two arguments beginning with C<"error">. Captures such as
+C<$value> introduce new lexical variables for that clause; do not declare
+them separately with C<my>.
+
+A call such as C<describe("other", 42)> throws a no-matching-clause error.
+It does not return C<undef> merely because no clause matches.
+
+=head1 FROM ON PATTERNS TO ARGUMENT PATTERNS
+
+A declaration head is an array pattern around the explicit argument list.
+The head C<describe("ok", $value)> therefore uses the same pattern as
+C<on (["ok", $value])> matching C<\@_>.
+
+Inside an ordinary subroutine, the corresponding matching step could be
+written as:
+
+    dispatch my $arguments (\@_) {
+        on (["ok", $value]) { return "value=$value" }
+        on (["error", $message]) { return "error=$message" }
+    }
+
+This fragment assumes C<use feature 'dispatch_on'>. It illustrates the
+matching step; a multi declaration also supplies its no-match error and
+subroutine-call behavior. For example, its internal dispatcher does not
+intercept C<last> or C<next> intended for a caller's loop.
+
+Use the same nested array and hash shapes, pins, predicates, and regular
+expression captures described in L<perldispatchon>. For example:
+
+    multi sub point([ $x, $y ]) { "$x,$y" }
+    multi sub point({ x => $x, y => $y }) { "$x,$y" }
+
+    print point([3, 4]), "\n";          # 3,4
+    print point({ x => 3, y => 4 }), "\n"; # 3,4
+
+Each C<point> clause takes one argument: a reference with the required shape.
+The hash shape is exact; add C<...> to allow unrelated keys. See
+L<perldispatchon/Arrays> and L<perldispatchon/Hashes>.
+
+=head1 CLAUSE ORDER AND GUARDS
+
+Perl uses source order. It does not rank clauses by specificity or choose the
+one that looks most like a type signature. Put general fallbacks last:
+
+    multi sub label(0)      { "zero" }
+    multi sub label($value) { "other" }
+
+    print label(0), "\n";  # zero
+    print label(7), "\n";  # other
+
+Putting C<label($value)> first would make the C<label(0)> clause unreachable.
+
+A guard follows C<if> B<inside> the declaration's parentheses:
+
+    multi sub sign($value if $value < 0) { "negative" }
+    multi sub sign(0)                    { "zero" }
+    multi sub sign($value)               { "positive" }
+
+    print sign(-3), "\n"; # negative
+    print sign(0), "\n";  # zero
+    print sign(8), "\n";  # positive
+
+These calls supply numbers. The capture C<$value> alone accepts any value;
+the numeric comparison belongs to the guard. Use a predicate pattern when
+the shape itself should require a numeric value; see
+L<perldispatchon/Shared predicates>.
+
+The matcher binds captures before running the guard. A false guard tries
+the next clause. A successful guard and its body share those captures.
+Changing a capture in the guard changes what the body sees, but side effects
+on other variables are not rolled back when a guard rejects. A throwing
+guard propagates its exception rather than trying the next clause.
+See L<perldispatchon/Guards> for the shared rules.
+
+=head1 ARITY AND SIGNATURES
+
+An empty head accepts no arguments. A fixed list requires exactly that many
+arguments. A final array capture collects the remaining arguments:
+
+    multi sub count_values()                 { 0 }
+    multi sub count_values("items", @values) { scalar @values }
+
+    print count_values(), "\n";                  # 0
+    print count_values("items", 10, 20), "\n";  # 2
+
+Pattern syntax can resemble a signature while meaning something different:
+
+    multi sub answer($value = 42) { $value }
+
+Here C<42> is a required pattern, and C<$value> captures the matched value.
+C<answer(42)> succeeds, but C<answer()> does not supply a default argument.
+See L<perldispatchon/Capturing a value while matching it>.
+
+=head1 CAPTURES AND THE ORIGINAL ARGUMENTS
+
+Scalar captures receive copies. The subroutine's C<@_> still contains the
+original arguments, with ordinary argument aliases:
+
+    multi sub change($value) {
+        ++$value;
+        ++$_[0];
+        return $value;
+    }
+
+    my $number = 41;
+    print change($number), ":$number\n"; # 42:42
+
+Incrementing C<$value> changes the capture. Incrementing C<$_[0]> changes the
+caller's scalar. A copied reference still refers to the same underlying
+object or aggregate; matching does not deep-copy it.
+
+The selected body runs in the public subroutine's call frame. C<return>,
+scalar/list/void context, and loop control follow ordinary subroutine rules.
+With C<use feature 'current_sub'>, C<__SUB__> identifies the public dispatcher,
+so recursion selects a clause again:
+
+    use feature 'current_sub';
+
+    multi sub factorial(0) { 1 }
+    multi sub factorial($n if $n > 0) {
+        $n * __SUB__->($n - 1);
+    }
+
+    print factorial(5), "\n"; # 120
+
+=head1 MULTI METHODS
+
+For a true method, enable both C<class> and C<multisub>. The method prologue
+binds C<$self> and fields before matching. C<$self> is excluded from the
+patterns and from C<@_>:
+
+    use feature qw(class multisub);
+    no warnings qw(experimental::class experimental::multisub);
+
+    class Offset {
+        field $base = 40;
+
+        multi method add($value if $value < 10) { $base + $value }
+        multi method add($value)                { $value }
+    }
+
+    my $object = Offset->new;
+    print $object->add(2), "\n";  # 42
+    print $object->add(12), "\n"; # 12
+
+For C<< $object->add(2) >>, the pattern sees only C<2>. Do not add a C<$self>
+capture to account for the invocant. An explicit capture named C<$self>
+would instead shadow the implicit variable and match an explicit argument.
+
+A C<multi sub> called with method-call syntax remains an ordinary
+subroutine: its first argument is the invocant and participates in matching.
+See L<perlclass/multi method> for roles, inheritance, and declaration limits.
+
+Method recursion through C<__SUB__> also selects a clause again. A direct
+code-reference call must supply the invocant explicitly, for example
+C<< __SUB__->($self, $value - 1) >>; the method prologue removes it before
+matching.
+
+=head1 WHEN THE GROUP IS COMPLETE
+
+Keep all clauses for one name in the same enclosing lexical scope and
+compilation unit. They may have other declarations between them. Each clause
+sees the lexical variables and pragmas at its own source position.
+
+The group becomes callable when that enclosing scope finishes compiling.
+A C<BEGIN> that calls it before then gets an explicit incomplete-group
+error, even if its arguments match an earlier clause. Taking a code
+reference before completion is allowed; the same reference calls the
+completed group afterward.
+
+Ordinary C<sub> and C<method> declarations cannot share a name with multi
+clauses. Nor can C<multi sub> and C<multi method> clauses be mixed for one
+name. There are no lexical or anonymous multi declarations, forward
+declarations, attributes, or prototypes. Later files and string evals cannot
+append clauses to a completed group.
+
+=head1 WHERE TO GO NEXT
+
+L<perlsub/Multisubs> gives the complete call, scope, and completion rules.
+L<perlclass/multi method> covers true methods.
+L<perldispatchontut> introduces the shared pattern language, and
+L<perldispatchon> defines its precise matching and guard behavior.
+L<B::Deparse/coderef2text> describes reconstruction of multi declarations
+and the class or role context required for method bodies.
+
+=cut

@@ -404,6 +404,7 @@ XPerl::Diagnostic::Warning::Experimental::Equ	XPerl::Diagnostic::Warning::Experi
 XPerl::Diagnostic::Warning::Experimental::ExtraPairedDelimiters	XPerl::Diagnostic::Warning::Experimental	0	WARNING_TREE category	experimental::extra_paired_delimiters
 XPerl::Diagnostic::Warning::Experimental::KeywordAll	XPerl::Diagnostic::Warning::Experimental	0	WARNING_TREE category	experimental::keyword_all
 XPerl::Diagnostic::Warning::Experimental::KeywordAny	XPerl::Diagnostic::Warning::Experimental	0	WARNING_TREE category	experimental::keyword_any
+XPerl::Diagnostic::Warning::Experimental::Multisub	XPerl::Diagnostic::Warning::Experimental	0	WARNING_TREE category	experimental::multisub
 XPerl::Diagnostic::Warning::Experimental::Namespaces	XPerl::Diagnostic::Warning::Experimental	0	WARNING_TREE category	experimental::namespaces
 XPerl::Diagnostic::Warning::Experimental::PrivateUse	XPerl::Diagnostic::Warning::Experimental	0	WARNING_TREE category	experimental::private_use
 XPerl::Diagnostic::Warning::Experimental::ReStrict	XPerl::Diagnostic::Warning::Experimental	0	WARNING_TREE category	experimental::re_strict

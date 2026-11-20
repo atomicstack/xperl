@@ -7,7 +7,7 @@ BEGIN {
 
 no warnings 'experimental::namespaces';
 
-print "1..25\n";
+print "1..28\n";
 
 my $result = eval q{
     use feature 'namespaces';
@@ -316,3 +316,17 @@ my $lowercase_use = eval q{
 print !$@ && $lowercase_use eq 'relative:NamespacePragma::Writer'
     ? "ok 25 - lowercase pragmas in namespace\n"
     : "not ok 25 - lowercase pragmas in namespace\n";
+
+my $unicode_name = "\x{03a9}mega";
+my @unicode_cases = (
+    ["namespace $unicode_name; package Point;", "${unicode_name}::Point"],
+    ["namespace Prefix; package ${unicode_name}::Point;", "Prefix::${unicode_name}::Point"],
+    ["namespace Prefix; package ${unicode_name}:::Point;", "${unicode_name}::Point"],
+);
+my $test_number = 26;
+for my $case (@unicode_cases) {
+    my ($declarations, $expected) = @$case;
+    my $actual = eval "use utf8; use feature 'namespaces'; $declarations __PACKAGE__";
+    print !$@ && $actual eq $expected ? "ok " : "not ok ";
+    print $test_number++, " - namespace resolution preserves character names\n";
+}

@@ -97,6 +97,14 @@ after certain types.  See L<perlfunc/pack>.
 (W numeric) An alpha version can not be numified without losing
 information.
 
+=item A multi declaration requires sub or method, a name, and a parenthesized pattern list
+
+(F) A C<multi> declaration must have the form
+C<multi sub NAME (PATTERNS) BLOCK> or
+C<multi method NAME (PATTERNS) BLOCK>. Anonymous and lexical multi
+declarations, forward declarations, attributes, and prototypes are not
+supported. See L<perlmultitut> and L<perlsub/Multisubs>.
+
 =item Ambiguous call resolved as CORE::%s(), qualify as such or use &
 
 (W ambiguous) A subroutine you have declared has the same name as a Perl
@@ -868,6 +876,13 @@ as the method would not have access to the correct instance fields.
 (F) You tried to directly call a C<method> subroutine of a class by passing
 in a value that is not an instance of that class.  This is not permitted, as
 the method would not then have access to its instance fields.
+
+=item Cannot mix declaration kinds for %s
+
+(F) Ordinary C<sub> or C<method> declarations cannot share a name with
+multi clauses. C<multi sub> and C<multi method> clauses cannot be mixed
+for one name either. Use one declaration kind for the whole group.
+See L<perlsub/Multisubs>.
 
 =item Cannot open %s as a dirhandle: it is already open as a filehandle
 
@@ -4777,6 +4792,23 @@ which by default acts like:
 (W syntax) Multidimensional arrays aren't written like C<$foo[1,2,3]>.
 They're written like C<$foo[1][2][3]>, as in C.
 
+=item multi is experimental
+
+(S experimental::multisub) The C<multi sub> and C<multi method> syntax
+enabled by C<use feature 'multisub'> is experimental and may change.
+Disable this warning with C<no warnings 'experimental::multisub'>.
+See L<perlmultitut>.
+
+=item Multi-method %s is not complete
+
+=item Multi-sub %s is not complete
+
+(F) A multi subroutine or method was called before its enclosing lexical
+scope finished compiling. For example, a C<BEGIN> block can encounter this
+error even when an earlier clause would match its arguments. Defer the
+call until the group is complete. Taking a code reference before completion
+is allowed. See L<perlsub/Multisubs> and L<perlclass/multi method>.
+
 =item Multiple slurpy parameters not allowed
 
 (F) In subroutine signatures, a slurpy parameter (C<@> or C<%>) must be
@@ -4785,6 +4817,19 @@ example:
 
     sub foo ($x, @y)    {} # legal
     sub foo ($x, @y, %) {} # invalid
+
+=item Multisub %s cannot be a phase block
+
+(F) A multi declaration used a phase-block name such as C<BEGIN> or C<END>.
+Phase blocks cannot be multi declarations. Choose an ordinary subroutine
+name instead. See L<perlsub/Multisubs>.
+
+=item Multisub definitions for %s must share a lexical scope
+
+(F) Clauses for a multi subroutine or method appeared in different enclosing
+lexical scopes or compilation units. Put all clauses for the name in one
+scope. A later C<eval> or loaded file cannot append clauses to a completed
+group. See L<perlsub/Multisubs>.
 
 =item '/' must follow a numeric type in unpack
 
@@ -4822,6 +4867,17 @@ name, or rename the lexical variable.
 (F) Lexically scoped variables aren't in a package, so it doesn't make
 sense to try to declare one with a package qualifier on the front.  Use
 local() if you want to localize a package variable.
+
+=item Name %s changed while its multi declaration was incomplete
+
+(F) The name or code reference reserved for a multi declaration was replaced,
+removed, or invalidated while its group was being compiled. Perl checks the
+reservation when it reads another clause and when it completes the group.
+Clearing the code slot with C<undef *name> permits Perl to restore it, and
+restoring the original reserved code reference is allowed. Replacing the
+symbol-table entry or installing another local subroutine is an error.
+Undefining the reserved subroutine itself with C<undef &name>, including
+through an alias, also invalidates the group. See L<perlsub/Multisubs>.
 
 =item Name "%s::%s" used only once: possible typo
 
@@ -5052,6 +5108,15 @@ matching counterpart.  See L<perlfunc/pack>.
 (F) An error peculiar to VMS.  Perl handles its own command line
 redirection, and found a '<' on the command line, but can't find the
 name of the file from which to read data for stdin.
+
+=item No matching clause for multi %s
+
+(F) None of the clauses for the called multi subroutine or method accepted
+its arguments. Each clause requires its argument pattern and optional guard
+to succeed. Fixed argument patterns require an exact argument count; true
+methods exclude the invocant from that count. Add a suitable clause or
+correct the call. Unlike an explicit C<dispatch> with no match, a multi call
+throws this error. See L<perlmultitut> and L<perlsub/Multisubs>.
 
 =item No next::method '%s' found for %s
 

@@ -51,6 +51,7 @@ my %feature = (
         defer
         generator
         dispatch_on
+        multisub
         module_true
         class
         keyword_any
@@ -1104,6 +1105,23 @@ the 5.36 feature bundle onwards.
 
 You can use the L<multidimensional> module on CPAN to disable
 multidimensional array emulation for older versions of Perl.
+
+=head2 The 'multisub' feature
+
+This feature enables C<multi sub> and C<multi method> declarations. Argument
+patterns and an optional guard inside the parentheses select a clause in
+source order. Clauses share a public subroutine identity. True methods also
+require C<use feature 'class'> and match only explicit arguments.
+
+This feature is experimental and emits C<experimental::multisub> warnings.
+Disable these warnings with:
+
+    no warnings 'experimental::multisub';
+
+No version bundle enables this feature. See L<perlmultitut> for a tutorial,
+L<perlsub/Multisubs> for the declaration and call rules, and
+L<perlclass/multi method> for true methods. The shared pattern language is
+defined in L<perldispatchon>.
 
 =head2 The 'namespaces' feature
 

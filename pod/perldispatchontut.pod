@@ -570,6 +570,16 @@ The demonstration test in the source tree includes more combinations,
 including open-array searches, array tails, regex captures, and references,
 and checks the expected results.
 
+=head1 USING PATTERNS FOR SUBROUTINE ARGUMENTS
+
+The experimental C<multisub> feature lets you reuse these patterns in
+C<multi sub> and C<multi method> declaration heads. For example,
+C<multi sub response("ok", $value) { ... }> matches the explicit argument
+list using the same array pattern as C<on (["ok", $value])>.
+
+See L<perlmultitut> for a tutorial that builds on this pattern language and
+explains clause order, guards, argument aliases, and true methods.
+
 =head1 WHERE TO GO NEXT
 
 The reference goes into more detail about less common cases. In particular,
@@ -612,6 +622,6 @@ L<perldispatchon/Class-qualified shapes>.
 =head1 SEE ALSO
 
 L<perldispatchon>, L<perlsyn/Experimental Data-Shape Matching>, L<perlfunc>,
-L<perldelta>
+L<perlmultitut>, L<perldelta>
 
 =cut

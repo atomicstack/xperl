@@ -4621,6 +4621,31 @@
             "reviewed" : false,
             "workflow" : "translate"
          },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "a68c43736a1f375017a10303542142aaa678f6973f5ca6c68c3d8d0d659928cf",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "cfd467363becdd1a2659853c2daefa88f4e83310f33225db8391d33b5f16fb38",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "faac1e7c834e081747ab1f802b313ea15098e5ada9483633eeb78e7c9e70d06a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "ee7cb3403c93a1d5f58e0f1549554da9daabe3f0b3dcc1362f070e64cd15807c",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "b793185a67f861fbb440082644e77f1d13905e594e0ce79760cc340110b52d88",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING" : {
             "fingerprint" : "28c967afbe64f1ea2d0284338fc0566802210a548939216e12dcebfe45725924",
             "reviewed" : false,
@@ -12423,6 +12448,31 @@
             "reviewed" : false,
             "workflow" : "repair"
          },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "203eff32104ef0f4884c6c815a20fec3f0f794e8f04a4b5c60497738152cad4f",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "2bc2eec53d660b71714f044083915e2c29fe7114d562dbd3b4818214619ed51a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "ab55292740d888f2bd51c9f597501d56405dd8f2c57ffca93218ba597e829d98",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "9a1b5ac610a9e6de237fdca3cfcb6341a2e5d292bfbf8f672e42a4b38a92a055",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "4a11a3f2ee999205347ec0b4b163478d673d057048900db20a6ae9d6f834b791",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING" : {
             "fingerprint" : "e0caa68e25074c81e8a5d776c871fb881f8f59344ac2e86066883b476d8dab2b",
             "reviewed" : false,
@@ -15825,6 +15875,81 @@
             "reviewed" : false,
             "workflow" : "repair"
          },
+         "ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED" : {
+            "fingerprint" : "6b41275bfaa5117a6d94889c17e1f2779f08510fd5ca291111dd44d337c26461",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE" : {
+            "fingerprint" : "4f3b5858745ce225fa19ef16799eba8da608343cc8d323496bac691679d6900f",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NO_MATCH" : {
+            "fingerprint" : "c32de9f21ee33bc063a1875045f07cb0e545d540793c2493d513703abc36ec02",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP" : {
+            "fingerprint" : "6da5fc643b0791a6d864dc4459ae7c470116fba99a9bdd38b38222245246dad8",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "015f4db60cc12a282c032f923585e1f58f76c2564a6d2d4a0503130446f70b4f",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "4f55b31232be49a9734d29e3fdf509f33c0e33a2fd3fac2f28f9957badcdfb9b",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "4d3be92b6909d645119e9afc59e47aa0b92fa4ca6b30068609e247c892ee2813",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "eef61db962a3aee63d011b036304cb61411a9114b7dae1b3f2d4fef34cd983fd",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "9fd08366d29415fa196db5158a2d567161248dfcb1237405065ecdc14f585aee",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_HASH_CAPACITY_EXCEEDED" : {
+            "fingerprint" : "23f540e3c3a9c3cc45a72b1fefffde864b1f1eac5302c7a87ac432dba16c6760",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID" : {
+            "fingerprint" : "a486e87cb3b397001afce3f54c6e43e007b79b488028f02a923843ce172f4008",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE" : {
+            "fingerprint" : "93f4b21502c57b062cb76cd442b9d8201eae1b42c97ae7fd76f3a5f8fd1a747a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "ca8fda6b7735fb7f4649e22758e94f7dc07a1b2553623726ec453130cd140ff1",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_KEY_INVALID" : {
+            "fingerprint" : "b909687efba53513c66af85f66e01f655fecbdfa52d1b40c65b2d690243be808",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE" : {
+            "fingerprint" : "21291520df41800e10c9f8332fe4e19a610a9d50bb05a4ed91f3cb2197347908",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
             "fingerprint" : "60372da44c457944a47934db16f3435331bb1f4463bd9142d90b70a2f1a98037",
             "reviewed" : false,
@@ -16074,6 +16199,81 @@
          },
          "ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE" : {
             "fingerprint" : "e4476722f21ac03af765f88cfe42a672ee589fa06d54dd9a1513f4e74521a8ec",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED" : {
+            "fingerprint" : "4da60d186c842d9a6c3ab704426509ce860460fb535a9d0c4323d1cdebd84ea9",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE" : {
+            "fingerprint" : "943f441e207a7b9f706950536fc4a82c1661f2b25ebd49ca026822406397404b",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NO_MATCH" : {
+            "fingerprint" : "010628cc64a2d4a47c6b7bcf7c90e01fd915ef8145d5901301bb63de7eca8e28",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP" : {
+            "fingerprint" : "c0bf85cc227ba8bc02b9487b24a2d9f107704e5d3311d1e38cdff4d0586ff768",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "23753ab793f6691bb50e171cbf8383299abefe2faaa4dd89af24f4db18a5f89b",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "f50970e7c5ea800a10728c65e6eb02c2ffb12a8049246ff4265d0d9eee11aafe",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "6eada925d7ee5b43eb55b27e488962f01b4946819e23a5b993549ca940dc2e75",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "7afa25b3280a6758d314e253e60b99858dff295dff22ba4881900f191fbf8a28",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "2bcefff339394b98948a62af2f88d3bee29fcad145ee22a06dfb29bd3bc6b64c",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_HASH_CAPACITY_EXCEEDED" : {
+            "fingerprint" : "ce9d0d94f5319529e0a1192e954b4f02343141cb85d331a011e65837e3ad1382",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID" : {
+            "fingerprint" : "d70d7949800af5f380da60d44b42ecc1cf771ae449efd3cc19f0e21f3c7c887a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE" : {
+            "fingerprint" : "3588d602034024c9b53f31a29e3f10f931d568a2f78ae96b5b6d817a3a19246a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "3080efac0bd5dbc86fde007481430d0c215ad0d4c1fc973ca76d7ce351e48e1c",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_KEY_INVALID" : {
+            "fingerprint" : "5d8e05c915a2e3f3aab27dea758bc45d0a9b51c59baed29fa335fff028ca957d",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE" : {
+            "fingerprint" : "b37377452a070a8db0ab802f7242ee7b69ba73c6970aa75c3329a4f668c0fe02",
             "reviewed" : false,
             "workflow" : "repair"
          },
@@ -20753,6 +20953,31 @@
             "fingerprint" : "e6fb9077bcdb5f56532d25b16e3c16a0febc865b6416e3b784c5463c59c19779",
             "reviewed" : false,
             "workflow" : "translate"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "4dfe3d57ad303d25b722050214b9ffa4671968c48b4df68126cdb4454121140d",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "7956c681ef09f20a6d21d65e63311ae029251007a5e8e04ca51023e3dfba499e",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "73ea7418f2913c8095f0b8cf3505837176d148910ebe77ddddf49d29f300b424",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "8903bb2c20a87ab0fbcdfcf2afb8f7c25508c132a936a099672ebbe87dea6ad3",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "c01de37badde00ee4a9c37c65102efa5ba3bd28544f8e84edc9ab6bb2d62eb1f",
+            "reviewed" : false,
+            "workflow" : "repair"
          },
          "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING" : {
             "fingerprint" : "8e8815398ca264efa4f15c79ee2412ab4392faad29411df795726d1c996ab7b5",
@@ -28556,6 +28781,31 @@
             "reviewed" : false,
             "workflow" : "translate"
          },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "569d818b76b3ec49dabd6f593aa3098d211dffb6cbf56506db83f0c0448ed866",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "f8af5f3860611c6bb2935332cc4b557b5f077f5bf69030b9a7cb140ba018c341",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "5f41cf040f0733de63f76cf89fb3ddab07806b739cbf824820d8db6ef07ee9c6",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "3ffa2d3921a5ed5ebfd1d42f16f1b7547e0f70876b09340bf066a0b2b37904b9",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "74b3f39a9295405c915ee5c261c34ae7f3ea795ffa0be1520e62ef1b12bbc109",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING" : {
             "fingerprint" : "29c3491fafaa72b5f659af1b3eded5ebee8eaf97d141ef8dbaeafd6079351612",
             "reviewed" : false,
@@ -32040,6 +32290,81 @@
          },
          "ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE" : {
             "fingerprint" : "596e4629b89cc13ab06d4bb33b1c616c33d6f718c0d7a1a5419330b97d15934f",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED" : {
+            "fingerprint" : "ee6324aa4dd39f9f81143e1f084fbf71aaf9bb85b11c96e84adeb08fc8ad7b20",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE" : {
+            "fingerprint" : "d97a5389d760c63ba7ccb884fe08975618d59698783874a12cb833014fbc628f",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NO_MATCH" : {
+            "fingerprint" : "113346fcf9305ac3a1a65c6d17d02576a43ece005e40f89973732eacfad9b119",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP" : {
+            "fingerprint" : "ad613966909eb46dbe8c5643741447c5e3b8ca57111e13ba409c0d8bba7016b3",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "51436a576074a96e77b7a579231a07669e52d4800c29cbe8b1dcc55e93aa931f",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "0f0030969cf7f327ea0fb8b9ead02a9a3ba99ef3fd485ba8ff65298fe76320fe",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "3556fb05a0197774593c1eab434a378a16681a74e1cf477ceaaf7325455c04b4",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "bf660647f5a20da509a0e0d69cb3a2604519efb6d13649ca4e6dd9a9b847b6d5",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "f85379a8ebb5d57c14bf1730663e4ffbd5b00fcdfeac171f856685703db4e82d",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_HASH_CAPACITY_EXCEEDED" : {
+            "fingerprint" : "41a0b3e457b05bab4a0f2f016b545e292e8f36a29c3361cde73486389c78f18a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID" : {
+            "fingerprint" : "f66469b44b97dbd36243e2b440172bb8930432a5c4a0031bd62e40ea850d9f25",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE" : {
+            "fingerprint" : "4c6e0c9e1703aab1f161aaef40301b1fa002e8951006e1dab05e33b99aa92229",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "801a53e30dbc8eb33ea038a84e4b049e63c6b37789070461717d819c000cb11b",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_KEY_INVALID" : {
+            "fingerprint" : "0e8bb5a1b61179f481b710f2634f1f686fcfb149ce7c7788edf68534ecfb2845",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE" : {
+            "fingerprint" : "917011f84395b9d9e5ff1c2931371871b5bf10bf8dc5a4d686e4ce03d151cb25",
             "reviewed" : false,
             "workflow" : "repair"
          },
@@ -36724,6 +37049,31 @@
             "fingerprint" : "d9a0e5d8fccc15871bce2dfa4776f9ba11a03921a09e99d2a007a67d2b2e04e5",
             "reviewed" : false,
             "workflow" : "translate"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "9b428828c29f5243b3e9c1021163d98854caa821a99ffd117227417a90eded95",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "ef2c7147755f25761293191bb4683f40bfc54b354c74abc609c078a396e749b6",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "91db427add7e626709f652a156e930eb2a820e9b848073c466b71c455b24f91e",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "44db11fe135ab598e66497b9bd7495a7c34ac7817235203cf2ad1f886519186c",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "239d0ed410eb0e5439be422fe46e5b33c27e2d0b1b0a432187473a686bee3e8e",
+            "reviewed" : false,
+            "workflow" : "repair"
          },
          "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING" : {
             "fingerprint" : "f0b2868fe9fd687459158e038793fa4c7442286fdda0934ad1be10328979d6b3",
@@ -44527,6 +44877,31 @@
             "reviewed" : false,
             "workflow" : "translate"
          },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "7a924e63998384541cd285be5efbd9a547974e97771ee3cc668afd2262388072",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "1fd97021dd97a9a1821e01b8182b19ef0668039584867fa6dd83a9676bdffbab",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "4addd61faf9c87941f15aca4e8a52ee11462d901505a3a90e45efc3dfad13b43",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "bc98fdafb82ecc068aa45bc1ed747539eedb5ee88acffac18157560be07d02a7",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "bca49c33f6335bbe73a3b7a226652b2685e9cbaf843cde0c5eb9a665db7796b7",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING" : {
             "fingerprint" : "2d217d950b79cf006868f98ec11c85cdec05c3e1976762d9b9ab8e3a6d9d7c8c",
             "reviewed" : false,
@@ -48164,6 +48539,81 @@
             "reviewed" : false,
             "workflow" : "repair"
          },
+         "ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED" : {
+            "fingerprint" : "1cbc2553a0edee95586c671197a02ad4bef0b07fd5528e7f5de214eea3e01c82",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE" : {
+            "fingerprint" : "259ca279d40b47beca98d22fa8a1122772bbce99fb4c3ad27cd171770672beef",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NO_MATCH" : {
+            "fingerprint" : "40ea7411201c9b9d4d2041858461bb91b69301047d97233d4a3ed0a253042034",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP" : {
+            "fingerprint" : "27e9d57a62b78cf71bee4d43aef2f081b3360472d480c3c9184f8c3b05865e83",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "1e308bab3cb587f9979312012ebec01914906f9e0ef362daa293a7c98187033b",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "e0914f2b77414ed6d6552dee828fe186446560e0399847263309bd5c23ad9d1a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "23d9ededb3a74137527bd455a49952707a1021d78192eda2636c1c81548c8f0e",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "6a0b7e3c5901eecd410c64fca965dd9351d833cbb95887493b82ad551b4fe740",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "db20d920d1596736fd8d72fac73ca1f7820b60730a6abddfe927c5973508e0c6",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_HASH_CAPACITY_EXCEEDED" : {
+            "fingerprint" : "64a8f3ee33b9cff83d86e509bdedb343fedf9da135802255c9d438a65d5f3848",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID" : {
+            "fingerprint" : "0247bb58d7ab7a63d7f9f3215a48509958bc6d0d5c19650be1f05600f0b09fb5",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE" : {
+            "fingerprint" : "4347dfbd00225734b553748a4e4cfbee63c3586e0613a641aa563bbf6cccfbd5",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "ed03247b5179049c9d48bcfbc48f838e840a5a9a31f7c8b6460d81e4a295eaa6",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_KEY_INVALID" : {
+            "fingerprint" : "8f5aeafe03aa4fc0f549815d69e6611efee9e6ad8ba076037c78b03684934542",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE" : {
+            "fingerprint" : "9d3592c636d4267edc8ed2a8cd18f8dc6228f32cd2a13fb18c1d21734a38b62e",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
             "fingerprint" : "7fa5bab9fe82839f2adb4ec93bc3b5fd61610541279e8fa9aa04708a94407ece",
             "reviewed" : false,
@@ -48651,6 +49101,81 @@
             "reviewed" : false,
             "workflow" : "repair"
          },
+         "ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED" : {
+            "fingerprint" : "68b7ec06f06f9ec157e162f32101c094661171f29cdf647b7d6ec37454e537d0",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE" : {
+            "fingerprint" : "182d2642e1150decc92f474dec568ed7baebccfcbef85b9dfeca74ed2410c16e",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NO_MATCH" : {
+            "fingerprint" : "b5b4d6f643e23758279fe39429803b500ef5d2ccdaa7b5d025c70273f95ab656",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP" : {
+            "fingerprint" : "4db37f572b59b562177ed65db91608070c8f777031f10ea49cc7d7bc8a5d1e7b",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "032b14e1c7b57582e236ca269bce7b675cf0570be37d4b57130a447030698f7d",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "a2a7212d76bada18b312a80750ad9e3fb5b72ce4d0715eac0f68e2415039b098",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "ac6875272726752610369f6714bf5b02f8d259e8d295587faa2d463bc3ae50b0",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "a507e58529dfe485a968799d01f414a0c2b0654aae8592cf366287043ccdb971",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "eea19a116e139ab50addf27c07ba34a6b190d692d8328b71495a2b7f54a12997",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_HASH_CAPACITY_EXCEEDED" : {
+            "fingerprint" : "ee1b35698c03f84aeccb284f040b7786d668c1a5f7b0123b7c3b646c3b0e9ac6",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID" : {
+            "fingerprint" : "cd24327be8bd2b89fb44da32db5ad32883cab6c8b4625d2c96f0d5f1aae05fc4",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE" : {
+            "fingerprint" : "2a433afdfc2ceceb3fc033900ddacf37b12117cef822c37e8d739f139d17702f",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED" : {
+            "fingerprint" : "d63d3d3cdbfa34bbb3689bb7a5a7f6408e3018c995eb85ebef6e0f5c6da6ceee",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_KEY_INVALID" : {
+            "fingerprint" : "2b692bc78f236cd994bcb0b80dcecbe5ae4e4c516e92bc22aafec4bd737b97c6",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE" : {
+            "fingerprint" : "3bda75a4bd29e162a8e0ce24880893e2ec66b62264cd38ce858d03bb8b792039",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_VALUE_SIPHASH_INPUT_BYTE_STRING_REQUIRED" : {
             "fingerprint" : "4a83a87a21306dcd564d0b9d5ca92dab7f6979c3b6dffebc4961e4f7df6171ef",
             "reviewed" : false,
@@ -49010,6 +49535,51 @@
          },
          "ERROR_OBJECT_METHOD_CALL_LEGACY_SELF_UNAVAILABLE" : {
             "fingerprint" : "61cea59d6cc5ca2b9dcda2e381e8df5afd88666e181e388b186bd0302e757edf",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_OBJECT_METHOD_CALL_STORAGE_REQUIRED" : {
+            "fingerprint" : "91d1b84ce00526400cb84baafcce10db8e66a32fa9c0d9d876d847eee43a55b5",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE" : {
+            "fingerprint" : "b72afcb13419e3366bdba1ba7fda494e2ac9c8fe7855d0faaebe8a2061cc4ef8",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_RUNTIME_MULTISUB_NO_MATCH" : {
+            "fingerprint" : "684e8626f3449b91ee5cb9cc23fcc5ee30bb08aac5eaf3a08c10e52e08c32686",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP" : {
+            "fingerprint" : "ca3760d2e0558ba81e5884ed782592f7444ecfaa8ff1d5088d2eaa78ac436d6a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "8318347c82c228caac3e7b6b84f94a5c1af928fa882c9b82fc0fce1ca2c883f9",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "85909d9f872b01e20265b89b0c68f483201147c55fb732e098c9b84329378a94",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "d40d9b84abf08844acb924024fd516b3a806cdae31162e322e8001b06c5a91df",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "06e13f1f7525914751d57fa73a44ad797c1d27cb19715582a5f236b81ce72116",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "fa0c34af2927f27642859293e081e254ce5ea9f320eedb12a7d971f4717b9481",
             "reviewed" : false,
             "workflow" : "repair"
          },
@@ -53905,6 +54475,31 @@
             "reviewed" : false,
             "workflow" : "translate"
          },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "818b9a011ac04e9d0d558a70edef2ec0de60660db4064129215814112dc0f34c",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "5d27425ed6d1b91ce647cfab8641e3add9656016b875fb9a83068e340f4b0cca",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "60a04b228ad2c092bc937c285abc5fc3c383559a2e25b7faf5bdad272d448a1f",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "63187c5cae07e065bb9b81ccf72303d093bde036532af61ceac564b3d6c83de6",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "2593a804e289cae00f71cc191257f7abd53ab3e5850948366034beebd7762a8a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING" : {
             "fingerprint" : "7e826f8bdd91ef639c5b24c90112abdcef32cfac6dc1d6665ab4fb754ba091af",
             "reviewed" : false,
@@ -58074,6 +58669,31 @@
          },
          "ERROR_SYNTAX_IDENTIFIER_NUMERIC_NAME_LEADING_ZERO" : {
             "fingerprint" : "4906831b16f71c6763213e34a092923422ec4ae404abba2e9971bf702d6b4dcf",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "98978461246bcbe872a3a7cd86870a1b3e34076b1c153fd2d3dabd20d0734049",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "63d94e1fdcd273b34dab6f500ca62c56c425fc04e73301b618628334da3a9db2",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "9439a9a733efdec62a688e653de438177ed7a9b5ef8b8fa2c81e159ea7686c70",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "1bc17e87efc4d4e149bd0c8f58c8fc4cfc0fa7017f57180d63f4f8d61713202d",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "fe55b75366b2d739aee37e26587a9df35dc6c9ed6fb47f6b17c9c5ce65e7b564",
             "reviewed" : false,
             "workflow" : "repair"
          },
@@ -63066,6 +63686,31 @@
          },
          "ERROR_SYNTAX_INVALID" : {
             "fingerprint" : "2473c7e71cea7f3e45c8aeffdf4af949884e876fd077a0b3fff29aab21654c67",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "762a3f536a70b88013890935578f56fe9f94f5af7a19d6841d676d48d9735f00",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "ff93324e5a6247b96ad7e459aeb7c9fef43dd453c31d24c33d9c9a4643b99021",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "4e7a80bddb8d335528cb02442370448770d58f2ecbcf00efc0baab4577e6d111",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "313f0e61a5bfa44cfb2eaed04a37b432cf9e6cafef8ae1b33fedd5855787831d",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "ac0c21497f109880ed3d6a0dcc271e417527f96f5f5cedf37ca61d95c3905c34",
             "reviewed" : false,
             "workflow" : "repair"
          },
@@ -70868,6 +71513,31 @@
          },
          "ERROR_SYNTAX_INVALID" : {
             "fingerprint" : "fa92a531d102a019854b18b69e8bc3c2df1c2958b716e9059e5b2fa6e73de171",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "c5d595a92af2d6a4a1d4bbcd0b95d19fa09cd0923c2ef0d5af08dc8af57c6094",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "1f33d750191848cd1dde7acf3f85da1c1e1ef1269e6adc26f8e79201a4a79f23",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "38636dda674c010aa0cc6f43df687b4e97e1ee5e53357fe618ca78472b39f8f8",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "a348dcd2276abdf37368c8414c9448d9216c8c41073a084bf0d87d5cee5ee09a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "1811c86987be991eaef69cb8c599534ab469fd34fdae390c16e009bda3b0b5b4",
             "reviewed" : false,
             "workflow" : "repair"
          },
@@ -78763,6 +79433,31 @@
             "reviewed" : false,
             "workflow" : "translate"
          },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "2e39e1696a5f288e7c2ae20c7c27ee769b57956526b67f6cafe2de72fd759b71",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "7b43172fcbda1bebe8adae3e308d8f019199021a8f9fff821da321b5d3e296fb",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "c5b782de41251490ecc6e399a7b5410e703fc1d3ec5c30e3b643c6178f0aeba4",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "cbc0c7165d4c23dfa5f9c1a6f8f8692768883f6809088e0571a3de4f89481a93",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "ce8ff2cb46f6b5801a74ecdc3e56f9e809f234b01425a01abbc3a2e972a610dd",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING" : {
             "fingerprint" : "06134a48a339526a1baa4ab78a1c02ce49d4e27481462876943c1d3d44c19de0",
             "reviewed" : false,
@@ -86580,6 +87275,31 @@
             "reviewed" : false,
             "workflow" : "translate"
          },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "5b9d8edc228d30371407c4fd9b412b0e1a87d5edf81034653b788b3ecbd711c6",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "c03b0610a0df41dc2258781791521b1559cf308ff50faa0b69f4320f30ae3667",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "f63de59b8a8773bc85666f86912fa2528432dbd7202fbb22fa323fd725c9f8f3",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "a0ac752fd08896766a43fe549c7411898d81bbc16365043c88cd751934cca4b8",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "3d1390f91fbfa1c6f1dcfaf15c0798e032531caa3e68c0700fdec01f2b191c93",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING" : {
             "fingerprint" : "3aab4bd80de8599b2a2198eeb9e6911de00396530ee6f29d290574eddf4fd025",
             "reviewed" : false,
@@ -94382,6 +95102,31 @@
             "reviewed" : false,
             "workflow" : "repair"
          },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "a537f2b2db74dcb73a3754de79dbe8b99b95e12b812a6da5dd494abf4766b77a",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "5b44461e6bc4e6a56ebfdbe92a680eaa0899002e19884d0d02927abfc31c25d7",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "8d0dda6d6f6ee02ba3c42ae6e21828b8b147d7c69655c1383628df1a8c540247",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "aecc92f629978d1b9de525a14f93e02c7687568e249ae216829862d711029982",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "85b3b25ec7869dade3b3e3b8051a7f99265005a40121f18914712b460454264e",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
          "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING" : {
             "fingerprint" : "7602f30a6a2455003ba93d36023c6084d6515ee392b6946df1c6fef535669646",
             "reviewed" : false,
@@ -102181,6 +102926,31 @@
          },
          "ERROR_SYNTAX_INVALID" : {
             "fingerprint" : "3b4f50f03d68726fe80aa8493a377d8b16a5cb7a00f6943523c8f75d86d93dec",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" : {
+            "fingerprint" : "22ea3565eec89f92bdeee3bc3b2c54a633da8b3f959892f3a96e10dffef1a6ec",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" : {
+            "fingerprint" : "04d9b5c687cf826e0f84b1401e969f655eb653dd4f55a8e6ced934870acaa284",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" : {
+            "fingerprint" : "d32501b508b78d6b5e7f404af498e55459a3f61c602512e9a224cdc355fa06fe",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" : {
+            "fingerprint" : "09b630917332c1ff5a505e66a32c4614d39198cd4bf405978d389890a4763d1c",
+            "reviewed" : false,
+            "workflow" : "repair"
+         },
+         "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" : {
+            "fingerprint" : "a7695e59425c1778e33bf37a394292333abc71eae953c8c495406c6d5d983c70",
             "reviewed" : false,
             "workflow" : "repair"
          },

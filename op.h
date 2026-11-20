@@ -269,6 +269,7 @@ struct dispatch_pattern_aux {
     U32 magic;
     U8 kind;
     OP *pattern; /* retained pattern tree; it is not executed by ON */
+    OP *header_cop; /* owned, non-executed multisub header for deparsing */
     struct dispatch_pattern_node *root;
     /* Borrowed reference.  dispatch_on_aux keeps its own count for the
      * dispatch op and each pattern clause which points at it. */

@@ -1012,6 +1012,12 @@ rather than a list of all of them.
 
 Returns a B::PADLIST object.
 
+=item MULTISUB_SCOPES
+
+Returns the C<B::AV> holding the experimental multi declaration's clause
+scope metadata, or a null object for another kind of CV. The object borrows
+its storage from the CV. Its internal layout is not a stable interface.
+
 =item OUTSIDE
 
 =item OUTSIDE_SEQ
@@ -1148,6 +1154,13 @@ or a null list if there is no aux. What will be returned depends on the
 object's type, but will typically be a collection of C<B::IV>, C<B::GV>,
 etc. objects. C<cv> is the C<B::CV> object representing the sub that the
 op is contained within.
+
+For C<dispatch_on>, the list contains the retained pattern as a C<B::OP>
+object, followed by the header COP for a multisub clause. Ordinary C<on>
+clauses have a null OP in the second position. These objects borrow their
+underlying ops from the containing CV, which must remain alive while they
+are used. The pattern tree describes the match and is not part of the
+executable op chain.
 
 =item string(cv)
 

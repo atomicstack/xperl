@@ -192,8 +192,10 @@ Methods are subroutines intended to be called in the context of class objects.
 A variable named C<$self> populated with the current object instance will
 automatically be created in the lexical scope of C<method>.
 
-Methods always act as if C<use feature 'signatures'> is in effect, but C<$self>
-will not appear in the arguments list as far as the signature is concerned.
+Ordinary C<method> declarations always act as if C<use feature 'signatures'>
+is in effect, but C<$self> will not appear in the arguments list as far as
+the signature is concerned. L</multi method> declarations use patterns
+instead of signatures.
 
     class WithMethods {
         field $greetings;
@@ -250,6 +252,62 @@ invokes a lexical subroutine as if it was a method.
     }
 
     # The `abc` method is not visible from here
+
+=head2 multi method
+X<multi method>
+
+With the experimental C<multisub> feature, a named method can have several
+pattern-matched clauses:
+
+    use feature qw(class multisub);
+    no warnings qw(experimental::class experimental::multisub);
+
+    class Offset {
+        field $base = 40;
+
+        multi method add($value if $value < 10) { $base + $value }
+        multi method add($value)                { $value }
+    }
+
+    my $object = Offset->new;
+    print $object->add(2), "\n";  # 42
+    print $object->add(12), "\n"; # 12
+
+The normal method prologue validates the invocant and binds C<$self> and
+fields before matching or evaluating a guard. Only the explicit arguments
+participate in matching: C<< $object->add(2) >> matches C<2>, and the body
+sees that single argument in C<@_>. Do not include an invocant capture in
+the head. A capture named C<$self> would shadow the implicit variable and
+match an explicit argument instead.
+
+Clauses are tried in source order. A guard follows C<if> inside the
+parentheses. These heads use the pattern language of L<perldispatchon>,
+not signatures; scalar captures are copies, while C<@_> retains the
+explicit arguments' ordinary aliases. See L<perlsub/Multisubs> for the
+shared call and scope rules, and L<perlmultitut> for a tutorial.
+
+Roles may provide multi methods. Inheritance and role composition treat a
+completed multi method as one method. They do not merge clauses from
+different classes or roles. A subclass override replaces the whole group;
+a failed match in that override does not retry superclass clauses.
+The usual role conflict and requirement rules
+apply, including the need to resolve competing role methods explicitly.
+
+All clauses for one method must be in the same enclosing lexical scope and
+compilation unit. Calling the method from a C<BEGIN> before that scope has
+finished compiling throws C<Multi-method ... is not complete>. Taking a
+code reference before completion is allowed.
+
+An ordinary C<method> or C<sub> cannot share a name with a multi method,
+nor can C<multi sub> clauses. Multi methods must be named package methods;
+lexical and anonymous declarations, forward declarations, and attributes
+are not supported. In particular, a multi declaration without a body cannot
+declare a role requirement; use ordinary C<method name;> for a requirement.
+
+With C<use feature 'current_sub'>, C<__SUB__> refers to the public method
+dispatcher. A direct code-reference call must pass the invocant explicitly,
+for example C<< __SUB__->($self, $value - 1) >>. The method prologue then
+removes that invocant before matching the explicit arguments.
 
 =head1 ATTRIBUTES
 

@@ -220,6 +220,45 @@ This feature is independent of `given`/`when`.
 See [the tutorial](pod/perldispatchontut.pod) for examples and
 [the reference](pod/perldispatchon.pod) for pattern and binding rules.
 
+### Multi subroutines and methods
+
+The experimental `multisub` feature lets a named subroutine or method have
+several clauses selected by argument patterns. Perl tries clauses in source
+order and runs the first whose pattern and optional guard succeed. Guards
+go inside the declaration's parentheses:
+
+```perl
+use feature 'multisub';
+no warnings 'experimental::multisub';
+
+multi sub magnitude($value if $value < 0) { -$value }
+multi sub magnitude($value)               { $value }
+
+print magnitude(-42), "\n"; # 42
+```
+
+The argument patterns use the same language as dispatch/on array patterns.
+They are patterns rather than signatures: scalar captures receive copies,
+while `@_` retains the original argument aliases. Clause bodies share the
+public subroutine's identity, call context, and ordinary control flow.
+`__SUB__`, when enabled, refers to that public dispatcher.
+
+`multi method` also requires the `class` feature. Its method prologue binds
+`$self` and fields before matching, and only explicit arguments participate
+in the patterns or appear in `@_`. Inheritance and role composition treat
+the completed group as one method rather than merging clause lists.
+
+All clauses for a name must share an enclosing lexical scope and compilation
+unit. Calling the group before that scope finishes compiling throws an
+incomplete-group error. A call with no matching clause also throws an error.
+Ordinary and multi declarations cannot share a name. No version bundle
+enables this feature.
+
+See [perlmultitut](pod/perlmultitut.pod) for a tutorial built on dispatch/on,
+[perlsub](pod/perlsub.pod#multisubs) for declaration and call rules, and
+[perlclass](pod/perlclass.pod#multi-method) for true methods. The shared
+pattern language is defined in [perldispatchon](pod/perldispatchon.pod).
+
 ### Experimental features in one-liners
 
 The `-E` switch enables `feature ':all'` and imports `builtin ':all'`. This

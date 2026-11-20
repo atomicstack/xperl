@@ -4783,6 +4783,276 @@ Perl_op_unscope(pTHX_ OP *o)
     return o;
 }
 
+/* Multisub clauses share a compilation CV but retain independent lexical
+ * scopes. The enclosing scope owns unfinished trees, including error paths. */
+struct multisub_group {
+    struct multisub_group *next;
+    yy_parser *parser;
+    CV *owner;
+    HV *stash;
+    GV *gv;
+    CV *stub;
+    SV *name;
+    struct suspended_compcv state;
+    OP *clauses;
+    I32 scope;
+    line_t line;
+    bool finished;
+    bool created_stub;
+    bool stub_was_method;
+};
+
+static void
+S_multisub_restore_stub(pTHX_ struct multisub_group *group)
+{
+    GV *gv = gv_fetchsv(group->name, GV_NOADD_NOINIT, SVt_PVCV);
+    if (gv != group->gv)
+        PERL_THROW_ERROR_SYNTAX_MULTISUB_NAME_REPLACED(group->name);
+
+    if (CvROOT(group->stub) || CvISXSUB(group->stub) || !CvMULTISUB(group->stub))
+        PERL_THROW_ERROR_SYNTAX_MULTISUB_NAME_REPLACED(group->name);
+
+    CV *cv = GvCV(gv);
+    if (cv == group->stub && !GvCVGEN(gv))
+        return;
+    if (cv && !GvCVGEN(gv))
+        PERL_THROW_ERROR_SYNTAX_MULTISUB_NAME_REPLACED(group->name);
+
+    /* Clearing the slot must not replace references taken to the reservation.
+     * An inherited method cache owns a reference but declares no local body. */
+    GvCV_set(gv, (CV *)SvREFCNT_inc_simple_NN((SV *)group->stub));
+    GvCVGEN(gv) = 0;
+    if (HvENAME_HEK(GvSTASH(gv)))
+        gv_method_changed(gv);
+    SvREFCNT_dec(cv);
+}
+
+static void
+S_multisub_free(pTHX_ void *pointer)
+{
+    struct multisub_group *group = (struct multisub_group *)pointer;
+    struct multisub_group **link = &group->parser->multisubs;
+
+    while (*link != group)
+        link = &(*link)->next;
+    *link = group->next;
+
+    if (group->clauses) {
+        ENTER;
+        resume_compcv_final(&group->state);
+        op_free(group->clauses);
+        LEAVE;
+    }
+
+    if (!group->finished) {
+        /* BEGIN can move the stub to another glob before parsing fails. */
+        CvMULTISUB_off(group->stub);
+        if (group->stub_was_method)
+            CvIsMETHOD_on(group->stub);
+        else
+            CvIsMETHOD_off(group->stub);
+        if (group->created_stub && GvCV(group->gv) == group->stub) {
+            GvCV_set(group->gv, NULL);
+            if (HvENAME_HEK(GvSTASH(group->gv)))
+                gv_method_changed(group->gv);
+            SvREFCNT_dec(group->stub);
+        }
+    }
+    SvREFCNT_dec(group->state.compcv);
+    SvREFCNT_dec(group->stub);
+    SvREFCNT_dec(group->gv);
+    SvREFCNT_dec(group->stash);
+    SvREFCNT_dec(group->name);
+    Safefree(group);
+}
+
+I32
+Perl_multisub_begin(pTHX_ OP *nameop, bool is_method)
+{
+    PERL_ARGS_ASSERT_MULTISUB_BEGIN;
+    yy_parser *parser = PL_parser;
+    SV *name = cSVOPx_sv(nameop);
+    GV *gv = gv_fetchsv(name, GV_ADD, SVt_PVCV);
+    struct multisub_group *group;
+    SV *resolved_name = NULL;
+
+    if (is_method)
+        croak_kw_unless_class("method");
+
+    const char *short_name = GvNAME(gv);
+    if (strEQ(short_name, "BEGIN") || strEQ(short_name, "UNITCHECK")
+            || strEQ(short_name, "CHECK") || strEQ(short_name, "INIT")
+            || strEQ(short_name, "END"))
+        PERL_THROW_ERROR_SYNTAX_MULTISUB_SPECIAL_NAME(name);
+
+    for (group = parser->multisubs; group; group = group->next) {
+        if (!group->finished && group->owner == PL_compcv
+                && group->scope == parser->multisub_scope) {
+            if (group->gv == gv)
+                break;
+            if (!resolved_name) {
+                resolved_name = sv_newmortal();
+                gv_fullname3(resolved_name, gv, NULL);
+            }
+            if (sv_eq(group->name, resolved_name))
+                PERL_THROW_ERROR_SYNTAX_MULTISUB_NAME_REPLACED(group->name);
+        }
+    }
+
+    if (!group) {
+        /* An inherited method cache does not declare this local name. */
+        if (GvCVGEN(gv)) {
+            CV *cached = GvCV(gv);
+            GvCV_set(gv, NULL);
+            GvCVGEN(gv) = 0;
+            SvREFCNT_dec(cached);
+        }
+        CV *existing = GvCV(gv);
+        if (existing) {
+            if (CvMULTISUB(existing))
+                PERL_THROW_ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH(name);
+            if (CvROOT(existing) || CvISXSUB(existing) || SvPOK(existing)
+                    || CvFORWARD_DECL(existing))
+                PERL_THROW_ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION(name);
+        }
+
+        Newxz(group, 1, struct multisub_group);
+        group->parser = parser;
+        group->owner = PL_compcv;
+        group->stash = (HV *)SvREFCNT_inc(PL_curstash);
+        group->gv = (GV *)SvREFCNT_inc(gv);
+        group->name = newSV(0);
+        gv_fullname3(group->name, gv, NULL);
+        group->scope = parser->multisub_scope;
+        group->line = CopLINE(PL_curcop);
+
+        /* Reserve the public name now. Normal sub compilation later reuses
+         * this stub, preserving references taken before group completion. */
+        group->created_stub = !existing;
+        group->stub = existing ? existing : newSTUB(gv, FALSE);
+        group->stub_was_method = !!CvIsMETHOD(group->stub);
+        SvREFCNT_inc_simple_void(group->stub);
+        CvMULTISUB_on(group->stub);
+        GvCVGEN(gv) = 0;
+
+        I32 floor = start_subparse(FALSE, 0);
+        CvMULTISUB_on(PL_compcv);
+        init_named_cv(PL_compcv, nameop);
+        if (is_method) {
+            class_prepare_method_parse(PL_compcv);
+            class_method_parse_post_blockstart(PL_compcv);
+        }
+        PADOFFSET scopes = pad_add_name_pvs("@(multisub scopes)",
+            padadd_STATE, NULL, NULL);
+        assert(scopes == MULTISUB_SCOPE_PADIX(PL_compcv));
+        PERL_UNUSED_VAR(scopes);
+        av_store(MUTABLE_AV(PAD_SV(scopes)), 0,
+            newRV_noinc(MUTABLE_SV(newAV())));
+        intro_my();
+        suspend_compcv(&group->state);
+        LEAVE_SCOPE(floor);
+
+        group->next = parser->multisubs;
+        parser->multisubs = group;
+        SAVEDESTRUCTOR_X(S_multisub_free, group);
+        /* Early calls need the declaration kind before a body is installed. */
+        if (is_method)
+            CvIsMETHOD_on(group->stub);
+        else
+            CvIsMETHOD_off(group->stub);
+    }
+
+    if (!!CvIsMETHOD(group->state.compcv) != !!is_method)
+        PERL_THROW_ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION(name);
+
+    S_multisub_restore_stub(aTHX_ group);
+    I32 floor = PL_savestack_ix;
+    resume_compcv_and_save(&group->state);
+    CvOUTSIDE_SEQ(PL_compcv) = PL_cop_seqmax;
+    AV *scopes = MUTABLE_AV(PAD_SV(MULTISUB_SCOPE_PADIX(PL_compcv)));
+    AV *ranges = MUTABLE_AV(SvRV(*av_fetch(scopes, 0, FALSE)));
+    AV *range = newAV();
+    av_push(range, newSVuv(PL_cop_seqmax));
+    av_push(range, newSVuv(PERL_PADSEQ_INTRO));
+    av_push(range, newSVuv(CvOUTSIDE_SEQ(PL_compcv)));
+    av_push(ranges, newRV_noinc(MUTABLE_SV(range)));
+    SAVEI32(PL_subline);
+    PL_subline = group->line;
+    save_item(PL_subname);
+    sv_setsv(PL_subname, group->name);
+    return floor;
+}
+
+void
+Perl_multisub_add_clause(pTHX_ I32 floor, OP *clause)
+{
+    PERL_ARGS_ASSERT_MULTISUB_ADD_CLAUSE;
+    struct multisub_group *group = PL_parser->multisubs;
+    while (group && group->state.compcv != PL_compcv)
+        group = group->next;
+    assert(group);
+
+    AV *scopes = MUTABLE_AV(PAD_SV(MULTISUB_SCOPE_PADIX(PL_compcv)));
+    AV *ranges = MUTABLE_AV(SvRV(*av_fetch(scopes, 0, FALSE)));
+    AV *range = MUTABLE_AV(SvRV(*av_fetch(ranges, av_len(ranges), FALSE)));
+    sv_setuv(*av_fetch(range, 1, FALSE), PL_cop_seqmax);
+
+    group->clauses = op_append_list(OP_LINESEQ, group->clauses, clause);
+    LEAVE_SCOPE(floor);
+}
+
+static void
+S_multisub_finish_scope(pTHX_ I32 scope)
+{
+    struct multisub_group *group;
+    for (group = PL_parser->multisubs; group; group = group->next) {
+        if (group->finished || group->owner != PL_compcv
+                || group->scope != scope || PERL_DIAG_ERROR_COUNT)
+            continue;
+
+        S_multisub_restore_stub(aTHX_ group);
+        I32 floor = PL_savestack_ix;
+        resume_compcv_final(&group->state);
+        SAVESPTR(PL_curstash);
+        PL_curstash = group->stash;
+        SAVEI32(PL_subline);
+        PL_subline = group->line;
+        save_item(PL_subname);
+        sv_setsv(PL_subname, group->name);
+
+        OP *arguments = newUNOP(OP_REFGEN, 0,
+            newUNOP(OP_RV2AV, 0, newGVOP(OP_GV, 0, PL_defgv)));
+        PADOFFSET subject_pad = pad_add_name_pvs("$(multisub arguments)",
+            0, NULL, NULL);
+        OP *subject = newPADxVOP(OP_PADSV, 0, subject_pad);
+        subject->op_private |= OPpLVAL_INTRO;
+        intro_my();
+        arguments = newASSIGNOP(0, subject, 0, arguments);
+        OP *clauses = group->clauses;
+        group->clauses = NULL;
+        OP *dispatch = newDISPATCHOP(arguments, op_scope(clauses));
+        /* Multisub dispatch must not localize the caller's topic. */
+        cUNOPx(dispatch)->op_first->op_targ = 1;
+        cUNOPx(dispatch)->op_first->op_flags |= OPf_SPECIAL;
+
+        OP *failure = newSVOP(OP_MULTISUBFAIL, 0, newSVsv(group->name));
+        OP *body = op_append_list(OP_LINESEQ, dispatch, failure);
+        SvREFCNT_inc_simple_void(PL_compcv);
+        CV *cv = Perl_newATTRSUB_x(aTHX_ floor, (OP *)group->gv,
+            NULL, NULL, body, TRUE);
+        if (cv && CvIsMETHOD(cv)) {
+            /* Assembly moves the body into the reserved public CV. Queue
+             * that CV too: a qualified name can live outside this class. */
+            struct xpvhv_aux *aux = HvAUX(group->stash);
+            if (!aux->xhv_class_pending_method_cvs)
+                aux->xhv_class_pending_method_cvs = newAV();
+            av_push(aux->xhv_class_pending_method_cvs,
+                SvREFCNT_inc_simple_NN((SV *)cv));
+        }
+        group->finished = TRUE;
+    }
+}
+
 /*
 =for apidoc block_start
 
@@ -4800,6 +5070,9 @@ Perl_block_start(pTHX_ int full)
     PERL_ARGS_ASSERT_BLOCK_START;
 
     const int retval = PL_savestack_ix;
+
+    SAVEI32(PL_parser->multisub_scope);
+    PL_parser->multisub_scope = retval;
 
     PL_compiling.cop_seq = PL_cop_seqmax;
     COP_SEQMAX_INC;
@@ -4831,6 +5104,8 @@ OP*
 Perl_block_end(pTHX_ I32 floor, OP *seq)
 {
     PERL_ARGS_ASSERT_BLOCK_END;
+
+    S_multisub_finish_scope(aTHX_ floor);
 
     const int needblockscope = PL_hints & HINT_BLOCK_SCOPE;
     OP* retval = voidnonfinal(seq);
@@ -9043,7 +9318,7 @@ S_namespace_hint(pTHX_ const char *key, STRLEN keylen)
     if (value && value != &PL_sv_placeholder && SvOK(value)) {
         STRLEN len;
         const char *pv = SvPV_const(value, len);
-        return newSVpvn(pv, len);
+        return newSVpvn_flags(pv, len, SvUTF8(value) ? SVf_UTF8 : 0);
     }
     return NULL;
 }
@@ -9087,11 +9362,13 @@ Perl_namespace_resolve(pTHX_ SV *name)
 {
     PERL_ARGS_ASSERT_NAMESPACE_RESOLVE;
 
-    if (!FEATURE_NAMESPACES_IS_ENABLED)
-        return newSVpvn(SvPV_nolen(name), SvCUR(name));
-
     STRLEN len;
     const char *pv = SvPV_const(name, len);
+    const U32 string_flags = SvUTF8(name) ? SVf_UTF8 : 0;
+    const U32 cat_flags = SvUTF8(name) ? SV_CATUTF8 : SV_CATBYTES;
+    if (!FEATURE_NAMESPACES_IS_ENABLED)
+        return newSVpvn_flags(pv, len, string_flags);
+
     const char *boundary = strstr(pv, ":::");
 
     if (boundary) {
@@ -9102,15 +9379,15 @@ Perl_namespace_resolve(pTHX_ SV *name)
         if (!boundary[3] || boundary[3] == ':')
             PERL_THROW_ERROR_SYNTAX_DECLARATION_NAMESPACE_SEPARATOR_MALFORMED();
 
-        SV *result = newSVpvn(pv, boundary - pv);
+        SV *result = newSVpvn_flags(pv, boundary - pv, string_flags);
         if (boundary > pv)
             sv_catpvs(result, "::");
-        sv_catpv(result, boundary + 3);
+        sv_catpvn_flags(result, boundary + 3, len - (boundary + 3 - pv), cat_flags);
         return result;
     }
 
     if (memBEGINs(pv, len, "CORE::") || memBEGINs(pv, len, "SUPER::"))
-        return newSVpvn(pv, len);
+        return newSVpvn_flags(pv, len, string_flags);
 
     const char separator[] = "::";
     const char *sep = ninstr(pv, pv + len, separator, separator + 2);
@@ -9123,8 +9400,9 @@ Perl_namespace_resolve(pTHX_ SV *name)
     if (alias) {
         STRLEN alias_value_len;
         const char *alias_value = SvPV_const(alias, alias_value_len);
-        SV *result = newSVpvn(alias_value, alias_value_len);
-        sv_catpvn(result, sep ? sep : "", sep ? len - firstlen : 0);
+        SV *result = newSVpvn_flags(alias_value, alias_value_len,
+                                    SvUTF8(alias) ? SVf_UTF8 : 0);
+        sv_catpvn_flags(result, sep ? sep : "", sep ? len - firstlen : 0, cat_flags);
         SvREFCNT_dec_NN(alias);
         return result;
     }
@@ -9132,11 +9410,11 @@ Perl_namespace_resolve(pTHX_ SV *name)
     SV *current = Perl_namespace_current(aTHX);
     if (SvCUR(current)) {
         sv_catpvs(current, "::");
-        sv_catpvn(current, pv, len);
+        sv_catpvn_flags(current, pv, len, cat_flags);
         return current;
     }
     SvREFCNT_dec_NN(current);
-    return newSVpvn(pv, len);
+    return newSVpvn_flags(pv, len, string_flags);
 }
 
 /*
@@ -9185,7 +9463,7 @@ Perl_namespace_alias(pTHX_ SV *name, SV *alias)
 
     STRLEN namelen;
     const char *namepv = SvPV_const(name, namelen);
-    SV *resolved = newSVpvn(namepv, namelen);
+    SV *resolved = newSVpvn_flags(namepv, namelen, SvUTF8(name) ? SVf_UTF8 : 0);
     SV *key = newSVpvn(NAMESPACE_HINT_ALIAS, sizeof(NAMESPACE_HINT_ALIAS)-1);
     sv_catpvn(key, aliaspv, aliaslen);
     STRLEN keylen;
@@ -12777,6 +13055,9 @@ Perl_newATTRSUB_x(pTHX_ I32 floor, OP *o, OP *proto, OP *attrs,
                 ? (CV *)SvRV(gv)
                 : NULL;
 
+    if (cv && !!CvMULTISUB(cv) != !!CvMULTISUB(PL_compcv))
+        PERL_THROW_ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION(o_is_gv ? (SV *)gv : cSVOPo->op_sv);
+
     if (block) {
         assert(PL_parser);
         /* TODO(leonerd):
@@ -12854,7 +13135,9 @@ Perl_newATTRSUB_x(pTHX_ I32 floor, OP *o, OP *proto, OP *attrs,
         if (exists || SvPOK(cv))
             cv_ckproto_len_flags(cv, gv, ps, ps_len, ps_utf8);
         /* already defined (or promised)? */
-        if (exists || (isGV(gv) && GvASSUMECV(gv))) {
+        /* Reattaching a reserved multi CV sets GvASSUMECV without giving
+         * that rootless reservation a definition. Complete it in place. */
+        if (exists || (isGV(gv) && GvASSUMECV(gv) && !CvMULTISUB(cv))) {
             S_already_defined(aTHX_ cv, block, o, NULL, &const_sv);
             if (block)
                 cv = NULL;
@@ -13095,6 +13378,10 @@ Perl_newATTRSUB_x(pTHX_ I32 floor, OP *o, OP *proto, OP *attrs,
 
   done:
     assert(!cv || evanescent || SvREFCNT((SV*)cv) != 0);
+    /* A code reference can create an undefined stub without declaring an
+     * ordinary sub. Only an explicit declaration fixes that name's kind. */
+    if (cv && !evanescent && name && !block && !CvMULTISUB(cv))
+        CvFORWARD_DECL_on(cv);
     if (PL_parser)
         PL_parser->copline = note_copline;
     LEAVE_SCOPE(floor);

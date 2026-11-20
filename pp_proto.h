@@ -200,6 +200,7 @@ PERL_CALLCONV PP(pp_multiconcat) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_multideref) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_multiparam) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_multiply) __attribute__visibility__("hidden");
+PERL_CALLCONV PP(pp_multisubfail) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_nbit_and) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_nbit_or) __attribute__visibility__("hidden");
 PERL_CALLCONV PP(pp_ncmp) __attribute__visibility__("hidden");

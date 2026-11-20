@@ -6958,6 +6958,7 @@ lib/AnyDBM_File.t			See if AnyDBM_File works
 lib/B/Deparse.pm			Compiler Deparse backend
 lib/B/Deparse.t				See if B::Deparse works
 lib/B/Deparse-core.t			See if B::Deparse knows when to use CORE::
+lib/B/Deparse-multisub.t		Multisub deparser round-trip tests
 lib/B/Deparse-subclass.t		See if B::Deparse can be subclassed
 lib/B/Op_private.pm			Definitions of OP op_private flags
 lib/Benchmark.pm			Measure execution time
@@ -7480,6 +7481,7 @@ pod/perlmodinstall.pod			Perl modules: how to install from CPAN
 pod/perlmodlib.PL			Generate pod/perlmodlib.pod
 pod/perlmodstyle.pod			Perl modules: how to write modules with style
 pod/perlmroapi.pod			Perl method resolution plugin interface
+pod/perlmultitut.pod			Tutorial for pattern-matched subroutines and methods
 pod/perlnamespace.pod			Perl lexical namespaces and package aliases
 pod/perlnewmod.pod			Perl modules: preparing a new module for distribution
 pod/perlnumber.pod			Perl number semantics
@@ -8057,6 +8059,7 @@ t/op/die_exit.t				See if die and exit status interaction works
 t/op/die_goto.t				See if a die handler is disabled during goto
 t/op/die_keeperr.t			See if G_KEEPERR works for destructors
 t/op/die_unwind.t			Check die/eval early-$@ backcompat hack
+t/op/dispatch_pattern_syntax.t		Shared pattern syntax in dispatch and multisub
 t/op/do.t				See if subroutines work
 t/op/dor.t				See if defined-or (//) works
 t/op/dump.t				See if dump works.
@@ -8136,6 +8139,9 @@ t/op/magic-27839.t			Test for #27839, skipped for minitest
 t/op/method.t				See if method calls work
 t/op/mkdir.t				See if mkdir works
 t/op/multideref.t			See if "$a[0]{foo}[$i]{$k}" etc works
+t/op/multimethod.t			Multi method invocants, fields, and role composition
+t/op/multisub.t				Multisub pattern dispatch and compiler scope tests
+t/op/multisub_threads.t			Multisub interpreter cloning tests
 t/op/my.t				See if lexical scoping works
 t/op/my_stash.t				See if my Package works
 t/op/mydef.t				See if "my $_" works

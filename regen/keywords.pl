@@ -86,6 +86,7 @@ my %feature_kw = (
     __NAMESPACE__       => 'namespaces',
     yield               => 'generator',
     gen                 => 'generator',
+    multi               => 'multisub',
     dispatch                => 'dispatch_on',
     on               => 'dispatch_on',
     DefinedVal          => 'dispatch_on',
@@ -329,6 +330,7 @@ __END__
 -msgrcv
 -msgsnd
 +my
++multi
 -namespace
 -ne
 -neu

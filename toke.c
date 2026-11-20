@@ -454,6 +454,7 @@ static struct debug_tokens {
     DEBUG_TOKEN (OPNUM, CHEQOP),
     DEBUG_TOKEN (OPNUM, CHRELOP),
     DEBUG_TOKEN (NONE,  COLONATTR),
+    DEBUG_TOKEN (OPVAL, DISPATCH_CLASS),
     DEBUG_TOKEN (NONE,  DOLSHARP),
     DEBUG_TOKEN (NONE,  DORDOR),
     DEBUG_TOKEN (IVAL,  DOTDOT),
@@ -2355,7 +2356,7 @@ S_force_word(pTHX_ char *start, int token, U32 flags)
             while (s < PL_bufend
                    && (*s == ':'
                        || isWORDCHAR_lazy_if_safe(s, PL_bufend, UTF)))
-                s++;
+                s += UTF ? UTF8SKIP(s) : 1;
             len = s - start;
             if (len >= C_ARRAY_LENGTH(PL_tokenbuf))
                 PERL_THROW_ERROR_SYNTAX_IDENTIFIER_LENGTH_EXCEEDED();
@@ -6243,7 +6244,7 @@ yyl_dollar(pTHX_ char *s)
 }
 
 static int
-yyl_sub(pTHX_ char *s, const int key)
+yyl_sub(pTHX_ char *s, const int key, const bool is_multi)
 {
     char * const tmpbuf = PL_tokenbuf + 1;
     bool have_name, have_proto;
@@ -6252,7 +6253,7 @@ yyl_sub(pTHX_ char *s, const int key)
     bool is_method = (key == KEY_method);
 
     /* method always implies signatures */
-    bool is_sigsub = is_method || FEATURE_SIGNATURES_IS_ENABLED;
+    bool is_sigsub = is_method || is_multi || FEATURE_SIGNATURES_IS_ENABLED;
 
     SSize_t off = s-SvPVX(PL_linestr);
     char *d;
@@ -6271,6 +6272,20 @@ yyl_sub(pTHX_ char *s, const int key)
 
         PL_expect = XATTRBLOCK;
         d = scan_word(s, tmpbuf, C_ARRAY_LENGTH(PL_tokenbuf) - 1, TRUE, &len);
+        /* scan_word accepts ordinary package separators. Retain explicit
+         * namespace boundaries for the identifier resolver as well. */
+        while (FEATURE_NAMESPACES_IS_ENABLED && *d == ':'
+               && len >= 2 && tmpbuf[len - 1] == ':' && tmpbuf[len - 2] == ':') {
+            STRLEN morelen;
+            while (*d == ':') {
+                if (len + 4 >= C_ARRAY_LENGTH(PL_tokenbuf))
+                    PERL_THROW_ERROR_SYNTAX_IDENTIFIER_LENGTH_EXCEEDED();
+                tmpbuf[len++] = *d++;
+            }
+            d = scan_word(d, tmpbuf + len,
+                C_ARRAY_LENGTH(PL_tokenbuf) - 1 - len, TRUE, &morelen);
+            len += morelen;
+        }
         if (key == KEY_format)
             format_name = S_newSV_maybe_utf8(aTHX_ s, d - s);
         *PL_tokenbuf = '&';
@@ -6291,6 +6306,8 @@ yyl_sub(pTHX_ char *s, const int key)
         s = skipspace(d);
     }
     else {
+        if (is_multi)
+            PERL_THROW_ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED();
         if (key == KEY_my || key == KEY_our || key==KEY_state) {
             *d = '\0';
             /* diag_listed_as: Missing name in "%s sub" */
@@ -6312,6 +6329,9 @@ yyl_sub(pTHX_ char *s, const int key)
     }
 
     /* Look for a prototype */
+    if (is_multi && *s != '(')
+        PERL_THROW_ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED();
+
     if (*s == '(' && !is_sigsub) {
         s = scan_str(s,FALSE,FALSE,FALSE,NULL);
         if (!s)
@@ -6359,6 +6379,8 @@ yyl_sub(pTHX_ char *s, const int key)
             TOKEN(KW_SUB_anon);
     }
     force_ident_maybe_lex('&');
+    if (is_multi)
+        TOKEN(is_method ? KW_MULTI_METHOD : KW_MULTI_SUB);
     if (is_method)
         TOKEN(KW_METHOD_named);
     else if (is_sigsub)
@@ -7966,10 +7988,10 @@ yyl_my(pTHX_ char *s, I32 my)
         s = scan_word(s, PL_tokenbuf, C_ARRAY_LENGTH(PL_tokenbuf), TRUE, &len);
         if (memEQs(PL_tokenbuf, len, "sub"))
             /* my sub ... */
-            return yyl_sub(aTHX_ s, my);
+            return yyl_sub(aTHX_ s, my, FALSE);
         if (memEQs(PL_tokenbuf, len, "method"))
             /* my method ... */
-            return yyl_sub(aTHX_ s, KEY_method);
+            return yyl_sub(aTHX_ s, KEY_method, FALSE);
         PL_in_my_stash = find_in_my_stash(PL_tokenbuf, len);
         if (!PL_in_my_stash) {
             const STRLEN name_len = len < 1000 ? len : 1000;
@@ -8440,7 +8462,7 @@ yyl_just_a_word(pTHX_ char *s, STRLEN len, I32 orig_keyword, struct code c)
             while (s < PL_bufend
                    && (*s == ':'
                        || isWORDCHAR_lazy_if_safe(s, PL_bufend, UTF)))
-                s++;
+                s += UTF ? UTF8SKIP(s) : 1;
             morelen = s - package_start;
             if (len + morelen >= C_ARRAY_LENGTH(PL_tokenbuf))
                 PERL_THROW_ERROR_SYNTAX_IDENTIFIER_LENGTH_EXCEEDED();
@@ -8480,6 +8502,34 @@ yyl_just_a_word(pTHX_ char *s, STRLEN len, I32 orig_keyword, struct code c)
     }
     else {
         safebw = FALSE;
+    }
+
+    /* Class shapes are pattern terms, independent of indirect-call syntax
+     * and any same-named subroutine. Inspect the delimiter before CV lookup.
+     * Peeking can refill linestr, so retain offsets across that operation. */
+    if (PL_parser->in_dispatch_pattern && PL_expect != XOPERATOR) {
+        const STRLEN bufoff = PL_bufptr - SvPVX(PL_linestr);
+        const STRLEN soff = s - SvPVX(PL_linestr);
+        char *next = peekspace(s);
+        const bool shape = *next == '{' || *next == '[' || *next == '\\';
+        PL_bufptr = SvPVX(PL_linestr) + bufoff;
+        s = SvPVX(PL_linestr) + soff;
+
+        if (shape) {
+            SV *classname = S_newSV_maybe_utf8(aTHX_ PL_tokenbuf, len);
+            if (FEATURE_NAMESPACES_IS_ENABLED) {
+                SV *resolved = namespace_resolve(classname);
+                SvREFCNT_dec_NN(classname);
+                classname = resolved;
+            }
+            SvREFCNT_dec(c.sv);
+            op_free(c.rv2cv_op);
+            pl_yylval.opval = newSVOP(OP_CONST, 0, classname);
+            pl_yylval.opval->op_private = OPpCONST_BARE;
+            CLINE;
+            s = skipspace(s);
+            OPERATOR(DISPATCH_CLASS);
+        }
     }
 
     /* if we saw a global override before, get the right name */
@@ -8725,7 +8775,7 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
     case KEY_INIT:
     case KEY_END:
         if (PL_expect == XSTATE)
-            return yyl_sub(aTHX_ PL_bufptr, key);
+            return yyl_sub(aTHX_ PL_bufptr, key, FALSE);
         return yyl_just_a_word(aTHX_ s, len, orig_keyword, c);
 
     case KEY_ADJUST:
@@ -9593,11 +9643,26 @@ yyl_word_or_keyword(pTHX_ char *s, STRLEN len, I32 key, I32 orig_keyword, struct
     case KEY_method:
         /* For now we just treat 'method' identical to 'sub' plus a warning */
         PERL_WARN_WARNING_EXPERIMENTAL_CLASS_METHOD_DECLARATION_USED();
-        return yyl_sub(aTHX_ s, KEY_method);
+        return yyl_sub(aTHX_ s, KEY_method, FALSE);
+
+    case KEY_multi: {
+        PERL_WARN_WARNING_EXPERIMENTAL_MULTISUB_DECLARATION_USED();
+        s = skipspace(s);
+        STRLEN kind_len;
+        char *after_kind = scan_word(s, PL_tokenbuf,
+            C_ARRAY_LENGTH(PL_tokenbuf), TRUE, &kind_len);
+        if (memEQs(PL_tokenbuf, kind_len, "sub"))
+            return yyl_sub(aTHX_ after_kind, KEY_sub, TRUE);
+        if (memEQs(PL_tokenbuf, kind_len, "method") && FEATURE_CLASS_IS_ENABLED) {
+            PERL_WARN_WARNING_EXPERIMENTAL_CLASS_METHOD_DECLARATION_USED();
+            return yyl_sub(aTHX_ after_kind, KEY_method, TRUE);
+        }
+        PERL_THROW_ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED();
+    }
 
     case KEY_format:
     case KEY_sub:
-        return yyl_sub(aTHX_ s, key);
+        return yyl_sub(aTHX_ s, key, FALSE);
 
     case KEY_system:
         LOP(OP_SYSTEM,XREF);

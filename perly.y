@@ -70,6 +70,7 @@
 %token <ival> KW_FOR KW_UNTIL KW_WHILE KW_CONTINUE
 %token <ival> KW_GIVEN KW_WHEN KW_DEFAULT
 %token <ival> KW_DISPATCH KW_ON
+%token <ival> KW_MULTI_SUB KW_MULTI_METHOD
 %token <ival> KW_RefVal KW_ScalarVal KW_ObjectVal KW_DefinedVal
 %token <ival> KW_Int KW_Float KW_IntStr KW_FloatStr KW_Num KW_NumStr KW_Strict KW_NumEq
 %token <ival> KW_TRUE KW_FALSE
@@ -89,6 +90,7 @@
 %token <opval> FUNC0OP FUNC0SUB UNIOPSUB LSTOPSUB
 %token <opval> PLUGEXPR PLUGSTMT
 %token <opval> LABEL PROTOTYPE
+%token <opval> DISPATCH_CLASS
 %token <ival> LOOPEX DOTDOT YADAYADA DISPATCH_ELLIPSIS DISPATCH_PIN
 %token <ival> FUNC0 FUNC1 FUNC UNIOP LSTOP BLKLSTOP
 %token <ival> POWOP MULOP ADDOP
@@ -101,6 +103,8 @@
 
 %type <opval> bare_statement_block
 %type <opval> bare_statement_dispatch bare_statement_on dispatch_subject_binding
+%type <opval> bare_statement_multisub multisub_header multisub_pattern
+%type <ival> startmultisub multi_kind
 %type <opval> dispatch_on_block dispatch_on_stmtseq dispatch_on_guard
 %type <opval> dispatch_pattern_pin_target
 %type <opval> dispatch_pattern_object dispatch_pattern_expr
@@ -295,7 +299,15 @@ bare_statement_block
 
 bare_statement_dispatch
 	: KW_DISPATCH
-		{ parser->in_dispatch_header = TRUE; }
+		{
+			parser->in_dispatch_header = TRUE;
+			/* Consume the deparser's private mark before nested dispatches. */
+			HV *hints = GvHV(PL_hintgv);
+			SV *mark = hints && hv_existss(hints,
+				"B::Deparse/transparent_dispatch") ? hv_deletes(hints,
+				"B::Deparse/transparent_dispatch", 0) : NULL;
+			$<ival>$ = mark && SvTRUE(mark);
+		}[dispatch_mode]
 		remember
 		dispatch_subject_binding[subject_binding]
 		PERLY_PAREN_OPEN
@@ -343,6 +355,8 @@ bare_statement_dispatch
 			}
 			/* A non-zero target marks a named subject. */
 			cUNOPx(dispatchop)->op_first->op_targ = $subject_binding ? 1 : 0;
+			if ($<ival>dispatch_mode)
+				cUNOPx(dispatchop)->op_first->op_flags |= OPf_SPECIAL;
 			$$ = block_end($remember,
 				dispatchop);
 			parser->copline = (line_t)$KW_DISPATCH;
@@ -398,24 +412,73 @@ bare_statement_on
 		}
 ;
 
+/* Each clause uses its group's suspended CV and a distinct lexical scope.
+ * Final assembly does not reparse source or move bodies between pads. */
+bare_statement_multisub
+    : multi_kind BAREWORD startmultisub remember multisub_header
+        PERLY_PAREN_OPEN dispatch_pattern_start multisub_pattern
+        { dispatch_pattern_prepare($multisub_pattern); }
+        dispatch_pattern_end dispatch_on_guard PERLY_PAREN_CLOSE mblock
+        {
+            OP *pattern = $multisub_pattern;
+            dispatch_pattern_preserve_concat(pattern);
+            UNOP_AUX_item *aux = dispatch_pattern_compile(pattern);
+            OP *condition = newUNOP_AUX(OP_DISPATCH_ON, 0,
+                newOP(OP_UNDEF, 0), aux);
+            ((struct dispatch_pattern_aux *)aux)->header_cop = $multisub_header;
+            $multisub_header = NULL;
+            $multisub_pattern = NULL;
+            if ($dispatch_on_guard)
+                condition = newLOGOP(OP_AND, 0, condition,
+                    scalar($dispatch_on_guard));
+
+            /* An implicit body result returns from the public sub too. */
+            OP *body = op_convert_list(OP_RETURN, 0, op_scope($mblock));
+            OP *clause = block_end($remember,
+                newONOP(condition, op_scope(body)));
+            multisub_add_clause($startmultisub, clause);
+            op_free($BAREWORD);
+            parser->parsed_sub = TRUE;
+            $$ = NULL;
+        }
+;
+
+startmultisub
+    : %empty
+        { $$ = multisub_begin($<opval>0, $<ival>-1 == KW_MULTI_METHOD); }
+;
+
+multi_kind
+    : KW_MULTI_SUB { $$ = KW_MULTI_SUB; }
+    | KW_MULTI_METHOD { $$ = KW_MULTI_METHOD; }
+;
+
+multisub_header
+    : %empty
+        { $$ = newSTATEOP(0, NULL, NULL); }
+;
+
+multisub_pattern
+    : optexpr
+        { $$ = newANONLIST($optexpr); }
+;
+
 dispatch_pattern_expr
-	: dispatch_pattern_object
-	| mexpr
+	: mexpr
 		{ $$ = $mexpr; }
 ;
 
 dispatch_pattern_object
-	: BAREWORD PERLY_BRACKET_OPEN optexpr PERLY_BRACKET_CLOSE
+	: DISPATCH_CLASS anonymous
 		{
-			OP *shape = newANONLIST($optexpr);
-			OP *args = op_append_elem(OP_LIST, $BAREWORD, shape);
+			OP *args = op_append_elem(OP_LIST, $DISPATCH_CLASS, $anonymous);
 			$$ = newUNOP(OP_DISPATCHCOERCE, 0, args);
 			$$->op_private = DISPATCH_PATTERN_CRITERION_OBJECT;
 		}
-	| BAREWORD REFGEN term
+	| DISPATCH_CLASS REFGEN term
 		{
 			OP *shape = newUNOP(OP_REFGEN, 0, $term);
-			OP *args = op_append_elem(OP_LIST, $BAREWORD, shape);
+			OP *args = op_append_elem(OP_LIST, $DISPATCH_CLASS, shape);
 			$$ = newUNOP(OP_DISPATCHCOERCE, 0, args);
 			$$->op_private = DISPATCH_PATTERN_CRITERION_OBJECT;
 		}
@@ -1220,6 +1283,7 @@ barestmt
 	:	PLUGSTMT
 	|	bare_statement_block
 	|	bare_statement_dispatch
+	|	bare_statement_multisub
 	|	bare_statement_on
 	|	bare_statement_class_declaration
 	|	bare_statement_class_definition
@@ -1994,6 +2058,7 @@ termyield
 	;
 
 term[product]	:	termbinop
+	|	dispatch_pattern_object
 	|	termunop
 	|	anonymous
 	|	termdo

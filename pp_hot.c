@@ -6530,6 +6530,14 @@ PP(pp_entersub)
     while (UNLIKELY(!CvROOT(cv))) {
         GV* autogv;
 
+        /* An unfinished clause group must not fall through to AUTOLOAD. */
+        if (CvMULTISUB(cv)) {
+            U32 kind = PERL_DIAG_SELECTOR_FROM_ERROR_RUNTIME_MULTISUB_NOT_COMPLETE_DECLARATION_KIND(
+                CvIsMETHOD(cv) ? "method" : "sub");
+            PERL_THROW_ERROR_RUNTIME_MULTISUB_NOT_COMPLETE(
+                cv_name(cv, NULL, 0), kind);
+        }
+
         /* anonymous or undef'd function leaves us no recourse */
         if (CvLEXICAL(cv) && CvHasNAME(cv))
             S_croak_undefined_subroutine(aTHX_ cv, NULL);

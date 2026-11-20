@@ -5925,6 +5925,26 @@ Perl_multideref_stringify(pTHX_ const OP *o, CV *cv)
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;                              \
     } STMT_END
 
+PERL_CALLCONV void
+Perl_multisub_add_clause(pTHX_ I32 floor, OP *clause)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_2)
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_MULTISUB_ADD_CLAUSE    \
+    STMT_START { Perl_assert_aTHX; assert(clause);     \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV I32
+Perl_multisub_begin(pTHX_ OP *nameop, bool is_method)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_MULTISUB_BEGIN         \
+    STMT_START { Perl_assert_aTHX; assert(nameop);     \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 PERL_CALLCONV NV
 Perl_my_atof(pTHX_ const char *s)
         Perl_attribute_nonnull_aTHX

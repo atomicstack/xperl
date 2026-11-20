@@ -2793,6 +2793,12 @@ EXp	|SV *	|multiconcat_stringify					\
 EXp	|SV *	|multideref_stringify					\
 				|NN const OP *o 			\
 				|NULLOK CV *cv
+p	|void	|multisub_add_clause					\
+				|I32 floor				\
+				|NN OP *clause
+
+p	|I32	|multisub_begin |NN OP *nameop				\
+				|bool is_method
 Adp	|NV	|my_atof	|NN const char *s
 Cop	|char * |my_atof2	|NN const char *orig			\
 				|NN NV *value

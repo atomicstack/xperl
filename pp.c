@@ -9497,6 +9497,12 @@ PP(pp_is_tainted)
     return NORMAL;
 }
 
+PP(pp_multisubfail)
+{
+    PERL_THROW_ERROR_RUNTIME_MULTISUB_NO_MATCH(cSVOPx_sv(PL_op));
+    NOT_REACHED;
+}
+
 /*
  * ex: set ts=8 sts=4 sw=4 et:
  */

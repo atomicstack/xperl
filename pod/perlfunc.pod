@@ -264,6 +264,7 @@ L<C<evalbytes>|/evalbytes EXPR>, L<C<exit>|/exit EXPR>,
 L<C<__FILE__>|/__FILE__>, L<C<goto>|/goto LABEL>,
 L<C<last>|/last LABEL>, L<C<__LINE__>|/__LINE__>,
 L<C<method>|/method NAME BLOCK>,
+L<C<multi>|/multi sub NAME (PATTERNS) BLOCK>,
 L<C<__NAMESPACE__>|/__NAMESPACE__>, L<C<next>|/next LABEL>,
 L<C<__PACKAGE__>|/__PACKAGE__>,
 L<C<redo>|/redo LABEL>, L<C<return>|/return EXPR>,
@@ -359,6 +360,7 @@ L<C<dbmclose>|/dbmclose HASH>,
 L<C<dbmopen>|/dbmopen HASH,DBNAME,MASK>,
 L<C<field>|/field VARNAME>,
 L<C<method>|/method NAME BLOCK>,
+L<C<multi>|/multi sub NAME (PATTERNS) BLOCK>,
 L<C<package>|/package NAMESPACE>,
 L<C<ref>|/ref EXPR>,
 L<C<tie>|/tie VARIABLE,CLASSNAME,LIST>,
@@ -4680,8 +4682,10 @@ X<method>
 
 =for Pod::Functions declare a method of a class
 
-Creates a new named method in the scope of the class that it appears within.
-This is only valid inside a L<C<class>|/class NAMESPACE> declaration.
+Creates a new named method in the scope of the class or role that it appears
+within. See L<perlclass/method> for signatures, lexical methods, and anonymous
+methods. For pattern-matched clauses, see L</multi sub NAME (PATTERNS) BLOCK>
+and L<perlclass/multi method>.
 
 =item mkdir FILENAME,MODE
 X<mkdir> X<md> X<directory, create>
@@ -4778,6 +4782,36 @@ false on error.  See also L<perlipc/"SysV IPC"> and the documentation
 for L<C<IPC::SysV>|IPC::SysV> and L<C<IPC::Msg>|IPC::Msg>.
 
 Portability issues: L<perlport/msgsnd>.
+
+=item multi sub NAME (PATTERNS) BLOCK
+X<multi> X<multi sub> X<multi method>
+
+=for Pod::Functions +multisub declare pattern-matched subroutine or method clauses
+
+=item multi method NAME (PATTERNS) BLOCK
+
+=for Pod::Functions +multisub declare pattern-matched subroutine or method clauses
+
+Defines a clause of a named subroutine or true method. The experimental
+C<multisub> feature must be enabled explicitly. Clauses for a name share one
+public subroutine and are tried in source order. Their parenthesized heads
+contain patterns, with an optional C<if> guard inside the parentheses:
+
+    use feature 'multisub';
+    no warnings 'experimental::multisub';
+
+    multi sub magnitude($value if $value < 0) { -$value }
+    multi sub magnitude($value)               { $value }
+
+A C<multi method> additionally requires the C<class> feature and a class or
+role declaration. Its invocant is excluded from matching. Ordinary and multi
+declarations cannot share a name. All clauses must be in the same enclosing
+lexical scope and compilation unit, and the group becomes callable when that
+scope finishes compiling.
+
+See L<perlmultitut> for a tutorial, L<perlsub/Multisubs> for the declaration
+and call rules, L<perlclass/multi method> for true methods, and
+L<perldispatchon> for the shared pattern language.
 
 =item my VARLIST
 X<my>
@@ -9501,6 +9535,10 @@ See L<perlsub> and L<perlref> for details about subroutines and
 references; see L<attributes> and L<Attribute::Handlers> for more
 information about attributes.
 
+The experimental L<C<multi sub>|/multi sub NAME (PATTERNS) BLOCK> form
+defines pattern-matched clauses instead. It cannot be mixed with ordinary
+C<sub> declarations for the same name. See L<perlsub/Multisubs>.
+
 =item __SUB__
 X<__SUB__>
 
@@ -9508,6 +9546,10 @@ X<__SUB__>
 
 A special token that returns a reference to the current subroutine, or
 L<C<undef>|/undef EXPR> outside of a subroutine.
+
+Within a C<multi sub> or C<multi method> body, it refers to the public
+dispatcher, so a recursive call tries the clauses again. See
+L<perlsub/Multisubs>.
 
 The behaviour of L<C<__SUB__>|/__SUB__> within a regex code block (such
 as C</(?{...})/>) is subject to change.

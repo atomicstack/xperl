@@ -404,6 +404,7 @@ my %not_tested = map { $_ => 1} qw(
     with
     as
     namespace
+    multi
     no
     package
     q

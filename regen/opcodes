@@ -635,3 +635,5 @@ multiparam	signature processing	ck_null		+
 paramtest	signature argument value test	ck_null	|
 paramstore	signature parameter default expression	ck_null	1
 yield	yield values from a generator	ck_null	m@	L
+
+multisubfail	multisub		ck_null		s$

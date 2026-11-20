@@ -3699,6 +3699,25 @@ Perl_throw_croak_2_2523(pTHX_ UV diag_index,
 }
 
  __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
+Perl_throw_croak_2_2793(pTHX_ UV diag_index,
+    const char *source_file,
+    UV source_line,
+    SV *ma_arg1,
+    IV ma_arg2)
+{
+    AV *params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV())));
+
+    SV * const tmpl_arg1 = Perl_diag_setup_param(aTHX_ params_av, diag_index, 0,
+        0, perl_diag_selector_invalid);
+    sv_setpvf(tmpl_arg1, "%" SVf, SVfARG(ma_arg1));
+
+    Perl_diag_setup_param(aTHX_ params_av, diag_index, 1,
+        perl_diag_selector_domain_2449_0_id, ma_arg2);
+    Perl_diag_croak_sv(aTHX_ diag_index, Perl_diag_source_params(params_av, source_file, source_line), NULL);
+    NORETURN_FUNCTION_END;
+}
+
+ __attribute__noreturn__ PERL_STATIC_INLINE_NO_RET void
 Perl_throw_croak_3_1182(pTHX_ UV diag_index,
     const char *source_file,
     UV source_line,
@@ -8434,7 +8453,7 @@ Perl_throw_warner_9_2620(pTHX_ UV diag_index,
 
 
 /* Generated from:
- * 8bb8a85912ce30498c6058f0df3aff80241c5bcffd966de7b28441651f421ad2 diag_conf.pl
- * 33ec9731336463f6feeab1a67c087741ee4e1ad5eb527a86cceac4b577ab4168 diag_op_conf.pl
- * 4841107dab278b36b88caf2dc0a5c8e62f1bc2218c5aee6d4a107ed031b6ab93 regen/opcodes
+ * 16e21c33c89f737e0203b8f548b2c0fcbba0f335375c4dfc2fd45e20fef05e04 diag_conf.pl
+ * 4f7f9abb892a0d073bf678e020c547a0c882a3b0d175956fe97b0ee2afca3238 diag_op_conf.pl
+ * 08e6e839aab37ef63b9ae313b6bfda289c063825e87138784fd46d465873591b regen/opcodes
  * ex: set ro ft=c: */

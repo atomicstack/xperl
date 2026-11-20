@@ -1087,7 +1087,7 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           goto unknown;
       }
 
-    case 5: /* 47 tokens of length 5 */
+    case 5: /* 48 tokens of length 5 */
       switch (name[0])
       {
         case 'B':
@@ -1429,15 +1429,31 @@ Perl_keyword (pTHX_ const char *name, I32 len, bool all_keywords)
           }
 
         case 'm':
-          if (name[1] == 'k' &&
-              name[2] == 'd' &&
-              name[3] == 'i' &&
-              name[4] == 'r')
-          {                                       /* mkdir            */
-            return -KEY_mkdir;
-          }
+          switch (name[1])
+          {
+            case 'k':
+              if (name[2] == 'd' &&
+                  name[3] == 'i' &&
+                  name[4] == 'r')
+              {                                   /* mkdir            */
+                return -KEY_mkdir;
+              }
 
-          goto unknown;
+              goto unknown;
+
+            case 'u':
+              if (name[2] == 'l' &&
+                  name[3] == 't' &&
+                  name[4] == 'i')
+              {                                   /* multi            */
+                return (all_keywords || FEATURE_MULTISUB_IS_ENABLED ? KEY_multi : 0);
+              }
+
+              goto unknown;
+
+            default:
+              goto unknown;
+          }
 
         case 'p':
           if (name[1] == 'r' &&
@@ -3914,5 +3930,5 @@ unknown:
 }
 
 /* Generated from:
- * c64dad296e105b1581e5f8a40b9dd962bfd8ede85b13f3f7d5fecf401fb5a60c regen/keywords.pl
+ * 1a76bd4255a4de1c4a3b1ee78dcda8acfb801d2ec0f37479d7a9238dc2fed17e regen/keywords.pl
  * ex: set ro ft=c: */

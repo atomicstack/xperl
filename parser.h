@@ -123,6 +123,8 @@ typedef struct yy_parser {
     line_t	preambling;	/* line # when processing $ENV{PERL5DB} */
 
     yy_parser_signature *signature; /* parser state of a subroutine signature */
+    struct multisub_group *multisubs; /* unfinished groups owned by lexical scopes */
+    I32 multisub_scope; /* save-stack floor of the current lexical scope */
     bool        sig_seen;       /* the currently parsing sub has a signature */
 
     bool        recheck_charset_validity;

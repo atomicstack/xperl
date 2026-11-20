@@ -42216,6 +42216,7 @@ grammatical selector fields; it is not a template parameter.
     "gservent",
     "gsockopt",
     "mapstart",
+    "multisubfail",
     "open_dir",
     "pipe_op",
     "prtf",

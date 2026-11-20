@@ -589,6 +589,7 @@ EXTCONST char* const PL_op_name[] INIT({
 	"paramtest",
 	"paramstore",
 	"yield",
+	"multisubfail",
         "freed",
 });
 
@@ -1038,6 +1039,7 @@ EXTCONST char* const PL_op_desc[] INIT({
 	"signature argument value test",
 	"signature parameter default expression",
 	"yield values from a generator",
+	"multisub",
     "freed op",
 });
 
@@ -1492,6 +1494,7 @@ INIT({
 	Perl_pp_paramtest,
 	Perl_pp_paramstore,
 	Perl_pp_yield,
+	Perl_pp_multisubfail,
 });
 
 EXT Perl_check_t PL_check[] /* or perlvars.h */
@@ -1941,6 +1944,7 @@ INIT({
 	Perl_ck_null,		/* paramtest */
 	Perl_ck_null,		/* paramstore */
 	Perl_ck_null,		/* yield */
+	Perl_ck_null,		/* multisubfail */
 
 /* The final entries are function pointers not attached to an opcode.
  * These are to be used to compare with function pointers in the earlier
@@ -1957,9 +1961,9 @@ INIT({
 
 /* Indexes into PL_check for the comparison function pointers */
 #ifdef PERL_IN_PEEP_C
-  #define PERL_CK_NULL  445
-  #define PERL_CK_EXISTS  446
-  #define PERL_CK_DELETE  447
+  #define PERL_CK_NULL  446
+  #define PERL_CK_EXISTS  447
+  #define PERL_CK_DELETE  448
 #endif
 
 EXTCONST U32 PL_opargs[] INIT({
@@ -2408,6 +2412,7 @@ EXTCONST U32 PL_opargs[] INIT({
 	0x00000300,	/* paramtest */
 	0x00000100,	/* paramstore */
 	0x00002401,	/* yield */
+	0x00000604,	/* multisubfail */
 });
 
 END_EXTERN_C
@@ -3212,6 +3217,7 @@ EXTCONST I16  PL_op_private_bitdef_ix[]  INIT( {
      204, /* paramtest */
        0, /* paramstore */
       -1, /* yield */
+      -1, /* multisubfail */
 
 });
 
@@ -3771,6 +3777,7 @@ EXTCONST U8 PL_op_private_valid[] INIT( {
     /* PARAMTEST  */ (OPpARG1_MASK|OPpPARAM_IF_FALSE|OPpPARAM_IF_UNDEF),
     /* PARAMSTORE */ (OPpARG1_MASK),
     /* YIELD      */ (0),
+    /* MULTISUBFAIL */ (0),
 
 });
 

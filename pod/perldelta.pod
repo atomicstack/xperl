@@ -21,6 +21,24 @@ XXX Any important notices here
 
 =head1 Core Enhancements
 
+=head2 Experimental multi declarations
+
+C<use feature "multisub"> enables C<multi sub> and C<multi method> clauses
+selected by argument patterns and an optional C<if> guard inside the
+parentheses. True methods bind C<$self> normally and match only their explicit
+arguments. Clauses share the public subroutine identity. See L<perlmultitut>
+for a tutorial and L<perlsub/Multisubs> for the reference.
+Calling a clause group before its enclosing scope finishes compiling throws
+an explicit incomplete-group error.
+The internal dispatcher preserves ordinary subroutine loop control.
+Early code references retain their identity when the original glob is cleared.
+
+C<B::Deparse> reconstructs multi declarations and renders equivalent
+C<dispatch>/C<on> bodies through C<coderef2text>. Method bodies require their
+declaring class or role context when recompiled.
+Class-qualified shapes are supported within argument lists and other nested
+patterns, with namespace resolution preserved when deparsing them.
+
 XPerl exceptions now capture Perl stack frames through the innermost C<eval>
 or C<try>. C<stack_trace> exposes function, file, line, and anonymous argument
 descriptions without retaining argument values or invoking magic or overload.

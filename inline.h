@@ -4608,6 +4608,7 @@ Perl_cx_pushdispatch(pTHX_ PERL_CONTEXT *cx, SV *orig_defsv)
     cx->blk_dispatch.committed_bindings = NULL;
     cx->blk_dispatch.subject = NULL;
     cx->blk_dispatch.localizes_defsv = FALSE;
+    cx->blk_dispatch.loop_transparent = !!(PL_op->op_flags & OPf_SPECIAL);
     cx->blk_dispatch.redo_op = PL_op->op_next;
 }
 

@@ -184,6 +184,14 @@ A synonym for c<L</CvHasNAME>>
 #define CVf_XS_RCSTACK  0x200000 /* the XS function understands a
                                     reference-counted stack */
 #define CVf_EVAL_COMPILED 0x400000 /* an eval CV is fully compiled */
+#define PERL_CVf_MULTISUB    0x1000000 /* clauses share one dispatching CV */
+#define PERL_CVf_FORWARD_DECL 0x2000000 /* explicit bodyless sub declaration */
+
+#define CvMULTISUB(cv)       (CvFLAGS(cv) & PERL_CVf_MULTISUB)
+#define CvMULTISUB_on(cv)    (CvFLAGS(cv) |= PERL_CVf_MULTISUB)
+#define CvMULTISUB_off(cv)   (CvFLAGS(cv) &= ~PERL_CVf_MULTISUB)
+#define CvFORWARD_DECL(cv)   (CvFLAGS(cv) & PERL_CVf_FORWARD_DECL)
+#define CvFORWARD_DECL_on(cv) (CvFLAGS(cv) |= PERL_CVf_FORWARD_DECL)
 
 /* This symbol for optimised communication between toke.c and op.c: */
 #define CVf_BUILTIN_ATTRS	(CVf_NOWARN_AMBIGUOUS|CVf_LVALUE|CVf_ANONCONST)

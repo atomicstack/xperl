@@ -1189,7 +1189,7 @@ like $@, qr'^Undefined format "STDOUT" called',
  ObjectVal RefVal ScalarVal
  IntStr FloatStr Num NumStr Strict NumEq
  DefinedVal Int Float TRUE FALSE
-    dispatch on
+    dispatch on multi
     __DATA__ __END__
     __NAMESPACE__ as namespace
     all and any catch class cmp default defer do implements dump else elsif

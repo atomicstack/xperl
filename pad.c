@@ -1189,6 +1189,43 @@ S_unavailable(pTHX_ PADNAME *name)
                                : PERL_DIAG_SEL_DECLARATION_KIND_VARIABLE, name);
 }
 
+/* A resumed multisub can see a different outer declaration of the same name.
+ * Restrict cached captures to the clause that created them, including lookups
+ * from nested closures and string evals after compilation has finished. */
+static bool
+S_multisub_range_contains(pTHX_ AV *values, U32 seq)
+{
+    PADNAME range;
+    Zero(&range, 1, PADNAME);
+    range.xpadn_low = (U32)SvUV(*av_fetch(values, 0, FALSE));
+    range.xpadn_high = (U32)SvUV(*av_fetch(values, 1, FALSE));
+    return PadnameIN_SCOPE(&range, seq);
+}
+
+static bool
+S_multisub_capture_visible(pTHX_ const CV *cv, PADOFFSET offset, U32 seq)
+{
+    AV *scopes = MUTABLE_AV(AvARRAY(PadlistARRAY(CvPADLIST(cv))[1])
+        [MULTISUB_SCOPE_PADIX(cv)]);
+    SV **entry = av_fetch(scopes, offset, FALSE);
+    return entry && SvROK(*entry)
+        && S_multisub_range_contains(aTHX_ MUTABLE_AV(SvRV(*entry)), seq);
+}
+
+static U32
+S_multisub_outer_sequence(pTHX_ const CV *cv, U32 seq)
+{
+    AV *scopes = MUTABLE_AV(AvARRAY(PadlistARRAY(CvPADLIST(cv))[1])
+        [MULTISUB_SCOPE_PADIX(cv)]);
+    AV *ranges = MUTABLE_AV(SvRV(*av_fetch(scopes, 0, FALSE)));
+    for (SSize_t i = 0; i <= av_len(ranges); i++) {
+        AV *range = MUTABLE_AV(SvRV(*av_fetch(ranges, i, FALSE)));
+        if (S_multisub_range_contains(aTHX_ range, seq))
+            return (U32)SvUV(*av_fetch(range, 2, FALSE));
+    }
+    return CvOUTSIDE_SEQ(cv);
+}
+
 static PADOFFSET
 S_pad_findlex(pTHX_ const char *namepv, STRLEN namelen, U32 flags, const CV* cv, U32 seq,
         int warn, SV** out_capture, PADNAME** out_name, int *out_flags)
@@ -1231,6 +1268,9 @@ S_pad_findlex(pTHX_ const char *namepv, STRLEN namelen, U32 flags, const CV* cv,
                         || memEQ(PadnamePV(name), namepv, namelen)  ))
             {
                 if (PadnameOUTER(name)) {
+                    if (CvMULTISUB(cv)
+                            && !S_multisub_capture_visible(aTHX_ cv, offset, seq))
+                        continue;
                     fake_offset = offset; /* in case we don't find a real one */
                     continue;
                 }
@@ -1320,7 +1360,9 @@ S_pad_findlex(pTHX_ const char *namepv, STRLEN namelen, U32 flags, const CV* cv,
                             PTR2UV(cv)));
                         n = *out_name;
                         (void) pad_findlex(namepv, namelen, flags, CvOUTSIDE(cv),
-                            CvOUTSIDE_SEQ(cv),
+                            CvMULTISUB(cv)
+                                ? S_multisub_outer_sequence(aTHX_ cv, seq)
+                                : CvOUTSIDE_SEQ(cv),
                             newwarn, out_capture, out_name, out_flags);
                         *out_name = n;
                         return offset;
@@ -1374,7 +1416,9 @@ S_pad_findlex(pTHX_ const char *namepv, STRLEN namelen, U32 flags, const CV* cv,
         recurse_flags |= padfind_FIELD_OK;
 
     offset = pad_findlex(namepv, namelen, recurse_flags,
-                CvOUTSIDE(cv), CvOUTSIDE_SEQ(cv), 1,
+                CvOUTSIDE(cv), CvMULTISUB(cv)
+                    ? S_multisub_outer_sequence(aTHX_ cv, seq)
+                    : CvOUTSIDE_SEQ(cv), 1,
                 new_capturep, out_name, out_flags);
     if (offset == NOT_IN_PAD)
         return NOT_IN_PAD;
@@ -1440,6 +1484,13 @@ S_pad_findlex(pTHX_ const char *namepv, STRLEN namelen, U32 flags, const CV* cv,
         }
         *out_name = new_name;
         *out_flags = PARENT_FAKELEX_FLAGS(new_name);
+
+        if (CvMULTISUB(cv)) {
+            AV *scopes = MUTABLE_AV(PAD_SV(MULTISUB_SCOPE_PADIX(cv)));
+            AV *ranges = MUTABLE_AV(SvRV(*av_fetch(scopes, 0, FALSE)));
+            av_store(scopes, new_offset,
+                SvREFCNT_inc(*av_fetch(ranges, av_len(ranges), FALSE)));
+        }
 
         PL_comppad_name = ocomppad_name;
         PL_comppad = ocomppad;
@@ -2113,7 +2164,12 @@ S_cv_clone_pad(pTHX_ CV *proto, CV *cv, CV *outside, HV *cloned,
               sv = newSV_type(SVt_NULL);
           }
           else {
-            if (PadnameOUTER(namesv)) {   /* lexical from outside? */
+            if (cv_is_method && CvMULTISUB(proto) && PadnameOUTER(namesv)) {
+                /* Role composition retains each clause's captured slot.
+                 * Looking up one outside pad loses shadowed captures. */
+                sv = SvREFCNT_inc_NN(ppad[ix]);
+            }
+            else if (PadnameOUTER(namesv)) {   /* lexical from outside? */
                 /* formats may have an inactive, or even undefined, parent;
                    but state vars are always available. */
                 if (!outpad || !(sv = outpad[PARENT_PAD_INDEX(namesv)])
@@ -2161,6 +2217,10 @@ S_cv_clone_pad(pTHX_ CV *proto, CV *cv, CV *outside, HV *cloned,
                         CvLEXICAL_on(sv);
                     }
                     else sv = SvREFCNT_inc(ppad[ix]);
+                else if (CvMULTISUB(proto) && ix == MULTISUB_SCOPE_PADIX(proto))
+                    /* Clause ranges are immutable compilation metadata, not
+                     * per-instance state. Role composition shares them. */
+                    sv = SvREFCNT_inc_NN(ppad[ix]);
                 else if (sigil == '@')
                     sv = MUTABLE_SV(newAV());
                 else if (sigil == '%')

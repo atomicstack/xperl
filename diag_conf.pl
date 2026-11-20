@@ -990,6 +990,7 @@ $META = {
     "multideref",
     "multiparam",
     "multiply",
+    "multisubfail",
     "nbit_and",
     "nbit_or",
     "nbit_xor",
@@ -1437,6 +1438,7 @@ $META = {
     "multideref",
     "multiparam",
     "multiply",
+    "multisubfail",
     "nbit_and",
     "nbit_or",
     "nbit_xor",
@@ -44633,6 +44635,73 @@ $CONF = {
           },
           "class" => "XPerl::Diagnostic::Error::RNG::Seed"
         },
+        "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE" => {
+          "number" => 2793,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE",
+          "macro" => "PERL_THROW_ERROR_RUNTIME_MULTISUB_NOT_COMPLETE",
+          "source_files" => [
+            "pp_ctl.c",
+            "pp_hot.c"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => {
+                "method" => "Multi-method %{name} is not complete",
+                "sub" => "Multi-sub %{name} is not complete"
+              }
+            },
+            "args" => [
+              {
+                "name" => "name",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              },
+              {
+                "name" => "declaration_kind",
+                "type" => "text",
+                "format_str" => "s",
+                "selector_values" => [
+                  "method",
+                  "sub"
+                ]
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          }
+        },
+        "ERROR_RUNTIME_MULTISUB_NO_MATCH" => {
+          "number" => 2789,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_RUNTIME_MULTISUB_NO_MATCH",
+          "macro" => "PERL_THROW_ERROR_RUNTIME_MULTISUB_NO_MATCH",
+          "source_files" => [
+            "pp.c"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "No matching clause for multi %{name}"
+            },
+            "args" => [
+              {
+                "name" => "name",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          }
+        },
         "ERROR_RUN_ENVIRONMENT_PERL5OPT_FORBIDDEN_SWITCH" => {
           "number" => 1177,
           "severity" => "FATAL_ERROR",
@@ -50503,6 +50572,154 @@ $CONF = {
             "api" => "CROAK"
           },
           "class" => "XPerl::Diagnostic::Error::Syntax::Identifier"
+        },
+        "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION" => {
+          "number" => 2787,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION",
+          "macro" => "PERL_THROW_ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION",
+          "source_files" => [
+            "op.c"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Cannot mix declaration kinds for %{name}"
+            },
+            "args" => [
+              {
+                "name" => "name",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          }
+        },
+        "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED" => {
+          "number" => 2792,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED",
+          "macro" => "PERL_THROW_ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED",
+          "source_files" => [
+            "toke.c"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "A multi declaration requires sub or method, a name, and a parenthesized pattern list"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          }
+        },
+        "ERROR_SYNTAX_MULTISUB_NAME_REPLACED" => {
+          "number" => 2794,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_SYNTAX_MULTISUB_NAME_REPLACED",
+          "macro" => "PERL_THROW_ERROR_SYNTAX_MULTISUB_NAME_REPLACED",
+          "source_files" => [
+            "op.c"
+          ],
+          "message" => {
+            "templates" => {
+              "ar" => "تغيّر الاسم %{name} بينما كان التصريح المتعدد له غير مكتمل",
+              "cy" => "Newidiodd yr enw %{name} tra oedd ei ddatganiad multi yn anghyflawn",
+              "de" => "Der Name %{name} wurde geändert, während seine Multi-Deklaration unvollständig war",
+              "en" => "Name %{name} changed while its multi declaration was incomplete",
+              "es" => "El nombre %{name} cambió mientras su declaración multi estaba incompleta",
+              "fa" => "نام %{name} در حالی تغییر کرد که اعلان چندگانه\N{ZERO WIDTH NON-JOINER}اش هنوز کامل نشده بود",
+              "fi" => "Nimi %{name} muuttui, kun sen multi-määrittely oli keskeneräinen",
+              "fr" => "Le nom %{name} a changé alors que sa déclaration multi était incomplète",
+              "he" => "השם %{name} השתנה בזמן שהצהרת multi שלו עדיין לא הושלמה",
+              "hu" => "A(z) %{name} név megváltozott, miközben a multi deklarációja befejezetlen volt",
+              "is" => "Nafnið %{name} breyttist meðan multi-yfirlýsing þess var ófullgerð",
+              "it" => "Il nome %{name} è cambiato mentre la sua dichiarazione multi era incompleta",
+              "nl" => "De naam %{name} is gewijzigd terwijl de multi-declaratie onvolledig was",
+              "pl" => "Nazwa %{name} zmieniła się, gdy jej deklaracja multi była niekompletna",
+              "pt" => "O nome %{name} mudou enquanto sua declaração multi estava incompleta",
+              "ru" => "Имя %{name} изменилось, пока его объявление multi было неполным",
+              "sr" => "Име %{name} се променило док његова multi декларација није била довршена",
+              "tlh" => "multi declaration pItlhbe'taHvIS, %{name} pong choHlu'ta'.",
+              "tr" => "multi bildirimi tamamlanmamışken %{name} adı değişti",
+              "uk" => "Ім’я %{name} змінилося, поки його оголошення multi було незавершеним",
+              "zh" => "多重声明尚未完成时，名称 %{name} 发生了变化"
+            },
+            "args" => [
+              {
+                "name" => "name",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          }
+        },
+        "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH" => {
+          "number" => 2788,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH",
+          "macro" => "PERL_THROW_ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH",
+          "source_files" => [
+            "op.c"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Multisub definitions for %{name} must share a lexical scope"
+            },
+            "args" => [
+              {
+                "name" => "name",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          }
+        },
+        "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME" => {
+          "number" => 2791,
+          "severity" => "FATAL_ERROR",
+          "kind" => "CORE_RUNTIME",
+          "code" => "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME",
+          "macro" => "PERL_THROW_ERROR_SYNTAX_MULTISUB_SPECIAL_NAME",
+          "source_files" => [
+            "op.c"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "Multisub %{name} cannot be a phase block"
+            },
+            "args" => [
+              {
+                "name" => "name",
+                "type" => "text",
+                "format_str" => "SVf",
+                "pass" => "SVfARG"
+              }
+            ]
+          },
+          "counts_as_error" => 1,
+          "emit" => {
+            "api" => "CROAK"
+          }
         },
         "ERROR_SYNTAX_PROTOTYPE_MALFORMED" => {
           "number" => 1692,
@@ -82398,6 +82615,29 @@ $CONF = {
             ]
           }
         },
+        "WARNING_EXPERIMENTAL_MULTISUB_DECLARATION_USED" => {
+          "number" => 2790,
+          "severity" => "WARNING",
+          "kind" => "CORE_RUNTIME",
+          "code" => "WARNING_EXPERIMENTAL_MULTISUB_DECLARATION_USED",
+          "macro" => "PERL_WARN_WARNING_EXPERIMENTAL_MULTISUB_DECLARATION_USED",
+          "source_files" => [
+            "toke.c"
+          ],
+          "message" => {
+            "templates" => {
+              "en" => "multi is experimental"
+            },
+            "args" => []
+          },
+          "counts_as_error" => 0,
+          "emit" => {
+            "api" => "CK_WARNER_D",
+            "warning_categories" => [
+              "WARN_EXPERIMENTAL__MULTISUB"
+            ]
+          }
+        },
         "WARNING_EXPERIMENTAL_NAMESPACES_CURRENT_NAMESPACE_CONSTANT_USED" => {
           "number" => 2275,
           "severity" => "WARNING",
@@ -109125,6 +109365,13 @@ $CONF = {
         "text" => "(W numeric) An alpha version can not be numified without losing\ninformation.\n\n"
       },
       {
+        "code" => "PERLDIAG_MULTISUB_NAMED",
+        "headings" => [
+          "A multi declaration requires sub or method, a name, and a parenthesized pattern list\n\n"
+        ],
+        "text" => "(F) A C<multi> declaration must have the form\nC<multi sub NAME (PATTERNS) BLOCK> or\nC<multi method NAME (PATTERNS) BLOCK>. Anonymous and lexical multi\ndeclarations, forward declarations, attributes, and prototypes are not\nsupported. See L<perlmultitut> and L<perlsub/Multisubs>.\n\n"
+      },
+      {
         "code" => "PERLDIAG_0009",
         "headings" => [
           "Ambiguous call resolved as CORE::%s(), qualify as such or use &\n\n"
@@ -109861,6 +110108,13 @@ $CONF = {
           "Cannot invoke method on a non-instance\n\n"
         ],
         "text" => "(F) You tried to directly call a C<method> subroutine of a class by passing\nin a value that is not an instance of that class.  This is not permitted, as\nthe method would not then have access to its instance fields.\n\n"
+      },
+      {
+        "code" => "PERLDIAG_MULTISUB_MIXED",
+        "headings" => [
+          "Cannot mix declaration kinds for %s\n\n"
+        ],
+        "text" => "(F) Ordinary C<sub> or C<method> declarations cannot share a name with\nmulti clauses. C<multi sub> and C<multi method> clauses cannot be mixed\nfor one name either. Use one declaration kind for the whole group.\nSee L<perlsub/Multisubs>.\n\n"
       },
       {
         "code" => "PERLDIAG_0114",
@@ -113633,11 +113887,40 @@ $CONF = {
         "text" => "(W syntax) Multidimensional arrays aren't written like C<\$foo[1,2,3]>.\nThey're written like C<\$foo[1][2][3]>, as in C.\n\n"
       },
       {
+        "code" => "PERLDIAG_MULTISUB_EXPERIMENTAL",
+        "headings" => [
+          "multi is experimental\n\n"
+        ],
+        "text" => "(S experimental::multisub) The C<multi sub> and C<multi method> syntax\nenabled by C<use feature 'multisub'> is experimental and may change.\nDisable this warning with C<no warnings 'experimental::multisub'>.\nSee L<perlmultitut>.\n\n"
+      },
+      {
+        "code" => "PERLDIAG_MULTISUB_INCOMPLETE",
+        "headings" => [
+          "Multi-method %s is not complete\n\n",
+          "Multi-sub %s is not complete\n\n"
+        ],
+        "text" => "(F) A multi subroutine or method was called before its enclosing lexical\nscope finished compiling. For example, a C<BEGIN> block can encounter this\nerror even when an earlier clause would match its arguments. Defer the\ncall until the group is complete. Taking a code reference before completion\nis allowed. See L<perlsub/Multisubs> and L<perlclass/multi method>.\n\n"
+      },
+      {
         "code" => "PERLDIAG_0651",
         "headings" => [
           "Multiple slurpy parameters not allowed\n\n"
         ],
         "text" => "(F) In subroutine signatures, a slurpy parameter (C<\@> or C<%>) must be\nthe last parameter, and there must not be more than one of them; for\nexample:\n\n    sub foo (\$x, \@y)    {} # legal\n    sub foo (\$x, \@y, %) {} # invalid\n\n"
+      },
+      {
+        "code" => "PERLDIAG_MULTISUB_SPECIAL",
+        "headings" => [
+          "Multisub %s cannot be a phase block\n\n"
+        ],
+        "text" => "(F) A multi declaration used a phase-block name such as C<BEGIN> or C<END>.\nPhase blocks cannot be multi declarations. Choose an ordinary subroutine\nname instead. See L<perlsub/Multisubs>.\n\n"
+      },
+      {
+        "code" => "PERLDIAG_MULTISUB_SCOPE",
+        "headings" => [
+          "Multisub definitions for %s must share a lexical scope\n\n"
+        ],
+        "text" => "(F) Clauses for a multi subroutine or method appeared in different enclosing\nlexical scopes or compilation units. Put all clauses for the name in one\nscope. A later C<eval> or loaded file cannot append clauses to a completed\ngroup. See L<perlsub/Multisubs>.\n\n"
       },
       {
         "code" => "PERLDIAG_0652",
@@ -113680,6 +113963,13 @@ $CONF = {
           "\"my\" variable %s can't be in a package\n\n"
         ],
         "text" => "(F) Lexically scoped variables aren't in a package, so it doesn't make\nsense to try to declare one with a package qualifier on the front.  Use\nlocal() if you want to localize a package variable.\n\n"
+      },
+      {
+        "code" => "PERLDIAG_MULTISUB_NAME_CHANGED",
+        "headings" => [
+          "Name %s changed while its multi declaration was incomplete\n\n"
+        ],
+        "text" => "(F) The name or code reference reserved for a multi declaration was replaced,\nremoved, or invalidated while its group was being compiled. Perl checks the\nreservation when it reads another clause and when it completes the group.\nClearing the code slot with C<undef *name> permits Perl to restore it, and\nrestoring the original reserved code reference is allowed. Replacing the\nsymbol-table entry or installing another local subroutine is an error.\nUndefining the reserved subroutine itself with C<undef &name>, including\nthrough an alias, also invalidates the group. See L<perlsub/Multisubs>.\n\n"
       },
       {
         "code" => "PERLDIAG_0658",
@@ -113862,6 +114152,13 @@ $CONF = {
           "No input file after < on command line\n\n"
         ],
         "text" => "(F) An error peculiar to VMS.  Perl handles its own command line\nredirection, and found a '<' on the command line, but can't find the\nname of the file from which to read data for stdin.\n\n"
+      },
+      {
+        "code" => "PERLDIAG_MULTISUB_NO_MATCH",
+        "headings" => [
+          "No matching clause for multi %s\n\n"
+        ],
+        "text" => "(F) None of the clauses for the called multi subroutine or method accepted\nits arguments. Each clause requires its argument pattern and optional guard\nto succeed. Fixed argument patterns require an exact argument count; true\nmethods exclude the invocant from that count. Add a suitable clause or\ncorrect the call. Unlike an explicit C<dispatch> with no match, a multi call\nthrows this error. See L<perlmultitut> and L<perlsub/Multisubs>.\n\n"
       },
       {
         "code" => "PERLDIAG_0684",

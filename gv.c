@@ -556,6 +556,8 @@ Perl_gv_init_pvn(pTHX_ GV *gv, HV *stash, const char *name, STRLEN len, U32 flag
             CvSTASH_set(cv, PL_curstash); /* XXX Why is this needed? */
         } else {
             cv = newSTUB(gv,1);
+            /* This scalar represented an optimized forward declaration. */
+            CvFORWARD_DECL_on(cv);
         }
         if (proto) {
             sv_usepvn_flags(MUTABLE_SV(cv), proto, protolen,
@@ -636,7 +638,7 @@ S_maybe_add_coresub(pTHX_ HV * const stash, GV *gv,
     case KEY_if      : case KEY_implements: case KEY_isa    :
     case KEY_last   :
     case KEY_le      : case KEY_local  : case KEY_lt    : case KEY_m      :
-    case KEY_map     : case KEY_method : case KEY_my    :
+    case KEY_map     : case KEY_method : case KEY_my    : case KEY_multi:
     case KEY_ne      : case KEY_neu    : case KEY_next : case KEY_no:
     case KEY_or      : case KEY_our    :
     case KEY_package: case KEY_print: case KEY_printf:
@@ -1276,7 +1278,8 @@ Perl_gv_fetchmethod_pvn_flags(pTHX_ HV *stash, const char *name, const STRLEN le
     }
     else if (autoload) {
         CV* const cv = GvCV(gv);
-        if (!CvROOT(cv) && !CvXSUB(cv)) {
+        /* Calls to unfinished multi declarations report their own error. */
+        if (!CvROOT(cv) && !CvXSUB(cv) && !CvMULTISUB(cv)) {
             GV* stubgv;
             GV* autogv;
 

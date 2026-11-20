@@ -160,6 +160,26 @@ refcounted extension magic. This metadata contains no object reference;
 normal magic duplication preserves it when an interpreter is cloned, even
 when method invocation pads are rebuilt.
 
+=head3 Multi methods
+
+A multi method is a single public CV with both C<CvMULTISUB()> and
+C<CvIsMETHOD()> set. Its ordinary method prologue binds the invocant and
+fields before the implicit dispatcher matches the explicit arguments.
+Clause bodies run in that public CV's call frame; the dispatcher is
+transparent to ordinary subroutine loop control.
+
+During compilation, the public CV is reserved while clauses accumulate in
+the enclosing lexical scope. Each clause retains its original lexical and
+compilation context. Completing the scope seals the group; calling the
+reserved CV earlier throws the incomplete-method diagnostic.
+
+Role composition preserves the clause captures and scope metadata when it
+clones the method for a consumer. C<__SUB__> resolves to the invoked public
+CV, including in a composed method. Composition and inheritance operate on
+the completed method rather than merging clause lists.
+
+See L<perlsub/Multisubs> and L<perlclass/multi method> for the language rules.
+
 =head2 Instances
 
 Public instances are ordinary blessed references. Their C<SvSTASH> provides

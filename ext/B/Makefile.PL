@@ -15,6 +15,8 @@ if ($core) {
 }
 
 my @names = ({ name => 'HEf_SVKEY', macro => 1, type => "IV" },
+             { name => 'DISPATCH_PATTERN_CRITERION_PIN', macro => 1, type => 'IV' },
+             { name => 'DISPATCH_PATTERN_CRITERION_OBJECT', macro => 1, type => 'IV' },
              qw(SVTYPEMASK PAD_FAKELEX_ANON
                 PAD_FAKELEX_MULTI SVpad_STATE SVpad_TYPED SVpad_OUR));
 
@@ -40,7 +42,7 @@ my @depend;
 # from that file.  If none, all symbols will be defined whose values
 # match the pattern below.
 foreach my $tuple (['cop.h'],
-                   ['cv.h', 'CVf'],
+                   ['cv.h', '(?:PERL_)?CVf'],
                    ['gv.h', 'G[PV]f'],
                    ['op.h'],
                    ['opcode.h', '(?:OPp|SVrt_)'],

@@ -17,6 +17,7 @@ our %feature = (
     switch                          => 'feature_switch',
     bitwise                         => 'feature_bitwise',
     indirect                        => 'feature_indirect',
+    multisub                        => 'feature_multisub',
     evalbytes                       => 'feature_evalbytes',
     generator                       => 'feature_generator',
     namespaces                      => 'feature_namespaces',
@@ -49,7 +50,7 @@ our %feature_bundle = (
     "5.37"    => [qw(apostrophe_as_package_separator bitwise current_sub evalbytes fc isa module_true postderef_qq say signatures smartmatch state unicode_eval unicode_strings)],
     "5.39"    => [qw(apostrophe_as_package_separator bitwise current_sub evalbytes fc isa module_true postderef_qq say signatures smartmatch state try unicode_eval unicode_strings)],
     "5.41"    => [qw(bitwise current_sub evalbytes fc isa module_true postderef_qq say signatures state try unicode_eval unicode_strings)],
-    "all"     => [qw(apostrophe_as_package_separator bareword_filehandles bitwise class current_sub declared_refs defer dispatch_on enhanced_xx evalbytes extra_paired_delimiters fc generator indirect isa keyword_all keyword_any module_true multidimensional namespaces postderef_qq refaliasing say signatures smartmatch state switch try unicode_eval unicode_strings)],
+    "all"     => [qw(apostrophe_as_package_separator bareword_filehandles bitwise class current_sub declared_refs defer dispatch_on enhanced_xx evalbytes extra_paired_delimiters fc generator indirect isa keyword_all keyword_any module_true multidimensional multisub namespaces postderef_qq refaliasing say signatures smartmatch state switch try unicode_eval unicode_strings)],
     "default" => [qw(apostrophe_as_package_separator bareword_filehandles indirect multidimensional smartmatch)],
 );
 
@@ -573,6 +574,23 @@ the 5.36 feature bundle onwards.
 
 You can use the L<multidimensional> module on CPAN to disable
 multidimensional array emulation for older versions of Perl.
+
+=head2 The 'multisub' feature
+
+This feature enables C<multi sub> and C<multi method> declarations. Argument
+patterns and an optional guard inside the parentheses select a clause in
+source order. Clauses share a public subroutine identity. True methods also
+require C<use feature 'class'> and match only explicit arguments.
+
+This feature is experimental and emits C<experimental::multisub> warnings.
+Disable these warnings with:
+
+    no warnings 'experimental::multisub';
+
+No version bundle enables this feature. See L<perlmultitut> for a tutorial,
+L<perlsub/Multisubs> for the declaration and call rules, and
+L<perlclass/multi method> for true methods. The shared pattern language is
+defined in L<perldispatchon>.
 
 =head2 The 'namespaces' feature
 

@@ -62,6 +62,7 @@ aux h2ph h2xs perlbug pl2pm pod2html pod2man splain xsubpp
     perllol             Perl data structures: arrays of arrays
 
     perldispatchontut     Dispatch and data-shape matching tutorial
+    perlmultitut        Pattern-matched subroutines and methods
 
     perlrequick         Perl regular expressions quick start
     perlretut           Perl regular expressions tutorial

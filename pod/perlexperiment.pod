@@ -18,6 +18,17 @@ their inception, versions, etc. There's a lot of speculation here.
 
 =over 8
 
+=item Multi declarations
+
+The unreleased C<multisub> feature enables C<multi sub> and C<multi method>
+declarations. Argument patterns and optional guards select clauses in source
+order. Multi methods also require the C<class> feature.
+
+Using this feature triggers warnings in the category
+C<experimental::multisub>. No version bundle enables it.
+
+See L<perlmultitut>, L<perlsub/Multisubs>, and L<perlclass/multi method>.
+
 =item Generators
 
 Introduced in Perl 5.45.3.

@@ -618,6 +618,11 @@ changes the same object that the source refers to.
 
 =head2 Class-qualified shapes
 
+A class-qualified shape can appear wherever a nested pattern is accepted,
+including inside array and hash shapes and in multisub argument lists.
+Its class name is independent of any same-named subroutine. Class names
+follow the rules of L<perlnamespace> when C<namespaces> is enabled.
+
 A blessed reference can be matched by putting its class name before an array,
 hash, or reference shape:
 
@@ -792,9 +797,33 @@ follow normal string and Unicode/byte behavior. Concatenation does not apply
 to numeric values. The dispatch subject is an ordinary Perl expression, so
 use Perl functions and operators to convert it before matching when needed.
 
+=head1 ARGUMENT MATCHING WITH MULTI DECLARATIONS
+
+The separate experimental C<multisub> feature uses these patterns to select
+a subroutine or method clause. A head such as:
+
+    multi sub response("ok", $value if $value > 0) { ... }
+
+matches the argument list as though the pattern were
+C<on (["ok", $value] if $value E<gt> 0)> matching C<\@_>. The array brackets
+are implicit in a multi declaration. For a true C<multi method>, the method
+prologue removes the invocant before matching, so only explicit arguments
+participate.
+
+Both forms try clauses in source order and use the same capture and guard
+rules. A multi call with no successful clause throws an error; an explicit
+C<dispatch> with no matching clause returns C<undef> in scalar context or
+an empty list in list context. The implicit dispatcher in a multi body also
+preserves ordinary subroutine loop control rather than acting as a target
+for C<last>, C<next>, or C<redo>.
+
+See L<perlmultitut> for examples and L<perlsub/Multisubs> for declaration,
+scope, and call semantics. True methods are covered in
+L<perlclass/multi method>.
+
 =head1 SEE ALSO
 
 L<perldispatchontut>, L<perlsyn/Experimental Data-Shape Matching>, L<perlfunc>,
-L<perldelta>
+L<perlmultitut>, L<perldelta>
 
 =cut

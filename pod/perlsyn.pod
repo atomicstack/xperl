@@ -93,6 +93,21 @@ Subroutines declarations can also be loaded up with the C<require> statement
 or both loaded and imported into your namespace with a C<use> statement.
 See L<perlmod> for details on this.
 
+The experimental C<multisub> feature also permits several clauses for one
+named subroutine. The declaration head contains argument patterns and an
+optional guard inside the parentheses:
+
+    use feature 'multisub';
+    no warnings 'experimental::multisub';
+
+    multi sub magnitude($value if $value < 0) { -$value }
+    multi sub magnitude($value)               { $value }
+
+Clauses are tried in source order. They cannot be mixed with ordinary
+C<sub> declarations for the same name. C<multi method> provides the same
+matching for the explicit arguments of a true method. See L<perlmultitut>,
+L<perlsub/Multisubs>, and L<perlclass/multi method>.
+
 A statement sequence may contain declarations of lexically-scoped
 variables, but apart from declaring a variable name, the declaration acts
 like an ordinary statement, and is elaborated within the sequence of
@@ -888,7 +903,8 @@ C<defer>.
 =head2 Experimental Data-Shape Matching
 
 For a step-by-step introduction, see L<perldispatchontut>. The full reference
-is L<perldispatchon>.
+is L<perldispatchon>. The same pattern language selects argument clauses in
+L<multi declarations|perlmultitut>.
 
 The experimental C<dispatch_on> feature provides a data-shape matching
 alternative to the older C<given>/C<when> construct.  It is enabled with
