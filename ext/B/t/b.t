@@ -561,4 +561,19 @@ SKIP: {
 }
 
 
+# Moving a compiled body into a pre-existing CV must update the separate
+# lexical-sub prototype as well as the CV in the value pad.
+{
+    my $reference;
+    BEGIN { $reference = \&moved_body }
+    sub moved_body { my sub helper { 42 } helper() }
+
+    my $cv = B::svref_2object($reference);
+    my ($name) = grep {
+        B::class($_) ne 'SPECIAL' && ($_->PVX // '') eq '&helper'
+    } $cv->PADLIST->ARRAYelt(0)->ARRAY;
+    is ${$name->PROTOCV->OUTSIDE}, $$cv,
+        'lexical-sub prototype outside follows a moved body';
+}
+
 done_testing();

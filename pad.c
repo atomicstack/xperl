@@ -2481,6 +2481,20 @@ Perl_pad_fixup_inner_anons(pTHX_ PADLIST *padlist, CV *old_cv, CV *new_cv)
         if (name && name != &PL_padname_undef && !PadnameIsOUR(name)
             && *PadnamePV(name) == '&')
         {
+          /* Non-state lexical prototypes live on pad names. Their outside
+           * pointers must follow the moved pad just like executable CVs. */
+          if (!PadnameOUTER(name) && !PadnameIsSTATE(name)
+              && PadnameLEN(name) > 1) {
+            CV *proto = PadnamePROTOCV(name);
+            if (proto && CvOUTSIDE(proto) == old_cv) {
+                if (!CvWEAKOUTSIDE(proto)) {
+                    SvREFCNT_dec(old_cv);
+                    SvREFCNT_inc_simple_void_NN(new_cv);
+                }
+                CvOUTSIDE(proto) = new_cv;
+            }
+          }
+
           CV *innercv = MUTABLE_CV(curpad[ix]);
           if (UNLIKELY(PadnameOUTER(name))) {
             CV *cv = new_cv;
@@ -2496,12 +2510,6 @@ Perl_pad_fixup_inner_anons(pTHX_ PADLIST *padlist, CV *old_cv, CV *new_cv)
             innercv = (CV *)PadARRAY(PadlistARRAY(CvPADLIST(cv))[1])[i];
           }
           if (SvTYPE(innercv) == SVt_PVCV) {
-            /* XXX 0afba48f added code here to check for a proto CV
-                   attached to the pad entry by magic.  But shortly there-
-                   after 81df9f6f95 moved the magic to the pad name.  The
-                   code here was never updated, so it wasn’t doing anything
-                   and got deleted when PADNAME became a distinct type.  Is
-                   there any bug as a result?  */
             if (CvOUTSIDE(innercv) == old_cv) {
                 if (!CvWEAKOUTSIDE(innercv)) {
                     SvREFCNT_dec(old_cv);
