@@ -443,8 +443,10 @@ our %Modules = (
         'DISTRIBUTION' => 'HMBRAND/DBI-1.656.tgz',
         'SYNCINFO'    => 'demerphq on Thu Nov 12 13:47:43 2026',
         'FILES'       => 'cpan/DBI',
-        'CUSTOMIZED'  => [qw(DBI.xs Driver_xst.h Makefile.PL
-                            t/01basics.t t/31methcache.t t/40profile.t
+        'CUSTOMIZED'  => [qw(DBI.xs DBIXS.h Driver_xst.h Makefile.PL
+                            lib/DBI/PurePerl.pm
+                            t/01basics.t t/09reference_errors.t
+                            t/31methcache.t t/40profile.t
                             t/85gofer.t)],
     },
 

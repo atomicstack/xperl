@@ -11,10 +11,13 @@ DBD::SQLite cpan/DBD-SQLite/SQLite.xs 3de9bf1f515b2cf2c570ef76c512b345fcad35b3
 DBD::SQLite cpan/DBD-SQLite/t/01_compile.t eeacd440fc20c795775711e5bfad4bf97c479fd1
 DBD::SQLite cpan/DBD-SQLite/t/02_logon.t b6674621c1c55ff9facd08ee162161c865bf8e1a
 DBD::SQLite cpan/DBD-SQLite/t/virtual_table/11_filecontent_fulltext.t cbeb70617e622dc3c3eb47a25f3c68b937dea636
-DBI cpan/DBI/DBI.xs a36e501705fba012623e6847bffb5c8b05d409af
+DBI cpan/DBI/DBI.xs 85712b50e21e82752e14df3b0c118d9ff0ff0939
+DBI cpan/DBI/DBIXS.h b7991f6bb0b4a21645f55e4f0d99caf464ba6f40
 DBI cpan/DBI/Driver_xst.h 8f17bef0aedf06b85f40ae589ecda0c88f1c0e7c
+DBI cpan/DBI/lib/DBI/PurePerl.pm 400bab5d79c4e72d76d7d50e2d1ae65935a39ac2
 DBI cpan/DBI/Makefile.PL a5e79404d719fda0a8b693ad097a4d6db04a51b1
 DBI cpan/DBI/t/01basics.t dacd29ef4e450e8c9f37110b2690a25a45a3615b
+DBI cpan/DBI/t/09reference_errors.t 202cb971b40769bbb5212c4eff8c5f783d888205
 DBI cpan/DBI/t/31methcache.t cac56d1d60452e5e1d3c322cb557b8c0c350cfba
 DBI cpan/DBI/t/40profile.t 8aecd87510b84afd3aed4c027e6f9049c97cd078
 DBI cpan/DBI/t/85gofer.t 112d2b796323d1fb041ee790a92d27c6516e4acf

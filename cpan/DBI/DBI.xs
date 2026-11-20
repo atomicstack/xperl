@@ -818,7 +818,7 @@ set_err_sv(SV *h, imp_xxh_t *imp_xxh, SV *err, SV *errstr, SV *state, SV *method
                 sv_setsv(h_state, state);
         }
         else
-            (void)SvOK_off(h_state);    /* see DBIc_STATE_adjust */
+            DBIh_CLEAR_ERROR_SV(h_state);    /* see DBIc_STATE_adjust */
 
         /* ensure that the parent's Statement attribute reflects the latest error */
         /* so that ShowErrorStatement is reliable */

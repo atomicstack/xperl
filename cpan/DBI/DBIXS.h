@@ -407,10 +407,43 @@ typedef struct {                /* -- FIELD DESCRIPTOR --               */
 
 /* --- Handy Macros --- */
 
-#define DBIh_CLEAR_ERROR(imp_xxh) (void)( \
+/* Keep the old referents alive until every selected field is cleared.
+ * Their destructors may inspect the handle or set another error. NULL
+ * selects no field, allowing the same helper to reset just the SQL state. */
+PERL_STATIC_INLINE void
+dbi_clear_error_values(SV *err, SV *errstr, SV *state)
+{
+    dTHX;
+    ENTER;
+    if (err && SvROK(err))
+        SAVEFREESV(SvREFCNT_inc(SvRV(err)));
+    if (errstr && SvROK(errstr))
+        SAVEFREESV(SvREFCNT_inc(SvRV(errstr)));
+    if (state && SvROK(state))
+        SAVEFREESV(SvREFCNT_inc(SvRV(state)));
+
+    if (err)
+        sv_setsv(err, &PL_sv_undef);
+    if (errstr)
+        sv_setsv(errstr, &PL_sv_undef);
+    if (state)
+        sv_setsv(state, &PL_sv_undef);
+    LEAVE;
+}
+
+/* Ordinary scalar errors only need their value flags reset. Interpreter
+ * context is obtained inside the helper when references need releasing. */
+#define DBIh_CLEAR_ERROR_SV(sv) \
+    (SvROK(sv) ? dbi_clear_error_values(NULL, NULL, (sv)) : (void)SvOK_off(sv))
+
+#define DBIh_CLEAR_ERROR(imp_xxh) ( \
+    (SvROK(DBIc_ERR(imp_xxh)) || SvROK(DBIc_ERRSTR(imp_xxh)) || SvROK(DBIc_STATE(imp_xxh))) \
+    ? dbi_clear_error_values(DBIc_ERR(imp_xxh), DBIc_ERRSTR(imp_xxh), DBIc_STATE(imp_xxh)) \
+    : (void)( \
         (void)SvOK_off(DBIc_ERR(imp_xxh)),      \
         (void)SvOK_off(DBIc_ERRSTR(imp_xxh)),   \
         (void)SvOK_off(DBIc_STATE(imp_xxh))     \
+      ) \
     )
 
 

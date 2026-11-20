@@ -1382,6 +1382,7 @@ cpan/DBI/t/05concathash.t			DBI
 cpan/DBI/t/06attrs.t				DBI
 cpan/DBI/t/07kids.t				DBI
 cpan/DBI/t/08keeperr.t				DBI
+cpan/DBI/t/09reference_errors.t			DBI
 cpan/DBI/t/09trace.t				DBI
 cpan/DBI/t/10examp.t				DBI
 cpan/DBI/t/11fetch.t				DBI

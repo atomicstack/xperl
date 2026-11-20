@@ -276,10 +276,16 @@ sub  _install_method {
 	    my \$keep_error $ke_init;
 	};
 	my $clear_error_code = q{
+	  {
+	    # The globals can belong to another handle. Retain both sets of
+	    # values until every field is cleared before running destructors.
+	    my @old_errors = (@{$h}{qw(err errstr state)},
+	        $DBI::err, $DBI::errstr, $DBI::state);
 	    #warn "$method_name cleared err";
 	    $h->{err}    = $DBI::err    = undef;
 	    $h->{errstr} = $DBI::errstr = undef;
 	    $h->{state}  = $DBI::state  = '';
+	  }
 	};
 	$clear_error_code = q{
 	    printf $DBI::tfh "    !! %s: %s CLEARED by call to }.$method_name.q{ method\n".
@@ -912,6 +918,8 @@ sub set_err {
     }
 
     if (!defined $errnum) {
+	my @old_errors = (@{$h}{qw(err errstr state)},
+	    $DBI::err, $DBI::errstr, $DBI::state);
 	$h->{err}    = $DBI::err    = undef;
 	$h->{errstr} = $DBI::errstr = undef;
 	$h->{state}  = $DBI::state  = '';
