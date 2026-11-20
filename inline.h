@@ -4613,6 +4613,54 @@ Perl_cx_pushdispatch(pTHX_ PERL_CONTEXT *cx, SV *orig_defsv)
 
 
 PERL_STATIC_INLINE void
+Perl_cx_rollbackdispatchbindings(pTHX_ PERL_CONTEXT *cx)
+{
+    PERL_ARGS_ASSERT_CX_ROLLBACKDISPATCHBINDINGS;
+    AV *bindings = cx->blk_dispatch.on_bindings;
+
+    if (!bindings)
+        return;
+
+    for (SSize_t i = 0; i + 3 <= av_len(bindings); i += 4) {
+        SV **padix_sv = av_fetch(bindings, i, FALSE);
+        SV **old_value_sv = av_fetch(bindings, i + 1, FALSE);
+        SV **kind_sv = av_fetch(bindings, i + 2, FALSE);
+        if (padix_sv && old_value_sv && kind_sv) {
+            const U8 kind = (U8)SvUV(*kind_sv);
+            SV *target = PAD_SV((PADOFFSET)SvUV(*padix_sv));
+
+            /* A guard can publish a capture before rejecting or throwing.
+             * Restore the pad without clearing the escaped lexical. */
+            if (SvREFCNT(target) > 1 || SvOBJECT(target)) {
+                SV *replacement = kind == DISPATCH_BINDING_ARRAY
+                    ? MUTABLE_SV(newAV()) : kind == DISPATCH_BINDING_HASH
+                    ? MUTABLE_SV(newHV()) : newSV_type(SVt_NULL);
+                PAD_SVl((PADOFFSET)SvUV(*padix_sv)) = replacement;
+                SvREFCNT_dec(target);
+                target = replacement;
+            }
+
+            if (kind == DISPATCH_BINDING_HASH)
+                hv_clear(MUTABLE_HV(target));
+            else if (kind == DISPATCH_BINDING_ARRAY) {
+                AV *old_array = MUTABLE_AV(SvRV(*old_value_sv));
+                av_clear(MUTABLE_AV(target));
+                for (SSize_t j = 0; j <= av_len(old_array); j++) {
+                    SV **value = av_fetch(old_array, j, FALSE);
+                    if (value)
+                        av_push(MUTABLE_AV(target), SvREFCNT_inc(*value));
+                }
+            }
+            else
+                sv_setsv(target, *old_value_sv);
+        }
+    }
+    SvREFCNT_dec((SV *)bindings);
+    cx->blk_dispatch.on_bindings = NULL;
+}
+
+
+PERL_STATIC_INLINE void
 Perl_cx_popdispatch(pTHX_ PERL_CONTEXT *cx)
 {
     PERL_ARGS_ASSERT_CX_POPDISPATCH;
@@ -4656,39 +4704,7 @@ Perl_cx_popdispatch(pTHX_ PERL_CONTEXT *cx)
         SvREFCNT_dec((SV *)bindings);
         cx->blk_dispatch.committed_bindings = NULL;
     }
-    if (cx->blk_dispatch.on_bindings) {
-        AV *bindings = cx->blk_dispatch.on_bindings;
-        SSize_t i;
-        for (i = 0; i + 3 <= av_len(bindings); i += 4) {
-            SV **padix_sv = av_fetch(bindings, i, FALSE);
-            SV **old_value_sv = av_fetch(bindings, i + 1, FALSE);
-            SV **is_array_sv = av_fetch(bindings, i + 2, FALSE);
-            if (padix_sv && old_value_sv && is_array_sv) {
-                SV *target = PAD_SV((PADOFFSET)SvUV(*padix_sv));
-                if (SvREFCNT(target) > 1 || SvOBJECT(target)) {
-                    SV *replacement = SvTRUE(*is_array_sv)
-                        ? MUTABLE_SV(newAV()) : newSV_type(SVt_NULL);
-                    PAD_SVl((PADOFFSET)SvUV(*padix_sv)) = replacement;
-                    SvREFCNT_dec(target);
-                    target = replacement;
-                }
-                if (SvTRUE(*is_array_sv)) {
-                    AV *old_array = MUTABLE_AV(SvRV(*old_value_sv));
-                    SSize_t j;
-                    av_clear(MUTABLE_AV(target));
-                    for (j = 0; j <= av_len(old_array); j++) {
-                        SV **value = av_fetch(old_array, j, FALSE);
-                        if (value)
-                            av_push(MUTABLE_AV(target), SvREFCNT_inc(*value));
-                    }
-                }
-                else
-                    sv_setsv(target, *old_value_sv);
-            }
-        }
-        SvREFCNT_dec((SV *)bindings);
-        cx->blk_dispatch.on_bindings = NULL;
-    }
+    cx_rollbackdispatchbindings(cx);
 }
 
 

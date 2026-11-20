@@ -7284,6 +7284,8 @@ Cipx	|void	|cx_pushsub	|NN PERL_CONTEXT *cx			\
 Cipx	|void	|cx_pushtry	|NN PERL_CONTEXT *cx			\
 				|NULLOK OP *retop
 Cipx	|void	|cx_pushwhen	|NN PERL_CONTEXT *cx
+Cipx	|void	|cx_rollbackdispatchbindings				\
+				|NN PERL_CONTEXT *cx
 Cipx	|void	|cx_topblock	|NN PERL_CONTEXT *cx
 Cip	|U8	|gimme_V
 #endif /* !defined(PERL_NO_INLINE_FUNCTIONS) */

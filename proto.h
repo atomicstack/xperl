@@ -20365,6 +20365,15 @@ Perl_cx_pushwhen(pTHX_ PERL_CONTEXT *cx)
     } STMT_END
 
 PERL_STATIC_INLINE void
+Perl_cx_rollbackdispatchbindings(pTHX_ PERL_CONTEXT *cx)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1);
+# define PERL_ARGS_ASSERT_CX_ROLLBACKDISPATCHBINDINGS \
+     STMT_START { Perl_assert_aTHX; assert(cx);         \
+                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_STATIC_INLINE void
 Perl_cx_topblock(pTHX_ PERL_CONTEXT *cx)
         Perl_attribute_nonnull_aTHX
         Perl_attribute_nonnull(pTHX_1);

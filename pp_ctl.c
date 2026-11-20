@@ -6681,8 +6681,6 @@ PP(pp_last)
     return nextop;
 }
 
-static void S_dispatch_rollback_bindings(pTHX_ PERL_CONTEXT *cx);
-
 PP(pp_next)
 {
     PERL_CONTEXT *cx;
@@ -6720,7 +6718,7 @@ PP(pp_redo)
         AV *bindings = cx->blk_dispatch.committed_bindings;
         SSize_t i;
 
-        S_dispatch_rollback_bindings(aTHX_ cx);
+        cx_rollbackdispatchbindings(cx);
         if (bindings) {
             for (i = 0; i + 3 <= av_len(bindings); i += 4) {
                 SV **padix_sv = av_fetch(bindings, i, FALSE);
@@ -12138,51 +12136,6 @@ S_dispatch_commit_bindings(pTHX_ PERL_CONTEXT *cx)
     cx->blk_dispatch.on_bindings = NULL;
 }
 
-static void
-S_dispatch_rollback_bindings(pTHX_ PERL_CONTEXT *cx)
-{
-    AV *bindings = cx->blk_dispatch.on_bindings;
-    SSize_t i;
-
-    if (!bindings)
-        return;
-    for (i = 0; i + 3 <= av_len(bindings); i += 4) {
-        SV **padix_sv = av_fetch(bindings, i, FALSE);
-        SV **old_value_sv = av_fetch(bindings, i + 1, FALSE);
-        SV **kind_sv = av_fetch(bindings, i + 2, FALSE);
-        if (padix_sv && old_value_sv && kind_sv) {
-            const U8 kind = (U8)SvUV(*kind_sv);
-            SV *target = PAD_SV((PADOFFSET)SvUV(*padix_sv));
-            if (kind == DISPATCH_BINDING_HASH) {
-                if (SvREFCNT(target) > 1 || SvOBJECT(target)) {
-                    PAD_SVl((PADOFFSET)SvUV(*padix_sv)) =
-                        MUTABLE_SV(newHV());
-                    SvREFCNT_dec(target);
-                }
-                else
-                    hv_clear(MUTABLE_HV(target));
-                continue;
-            }
-            /* A guard can publish a closure even when it rejects the
-             * clause. Restore the pad, not the lexical the closure owns. */
-            if (SvREFCNT(target) > 1 || SvOBJECT(target)) {
-                SV *replacement = kind == DISPATCH_BINDING_ARRAY
-                    ? MUTABLE_SV(newAV()) : newSV_type(SVt_NULL);
-                PAD_SVl((PADOFFSET)SvUV(*padix_sv)) = replacement;
-                SvREFCNT_dec(target);
-                target = replacement;
-            }
-            if (kind == DISPATCH_BINDING_ARRAY)
-                S_dispatch_set_array(aTHX_ target, MUTABLE_AV(SvRV(*old_value_sv)));
-            else if (kind == DISPATCH_BINDING_HASH)
-                hv_clear(MUTABLE_HV(target));
-            else
-                sv_setsv(target, *old_value_sv);
-        }
-    }
-    S_dispatch_discard_bindings(aTHX_ cx);
-}
-
 static bool
 S_dispatch_pattern_match(pTHX_ const struct dispatch_pattern_node *node, SV *value,
                       SV *pattern_value,
@@ -14002,7 +13955,7 @@ PP(pp_enterwhen)
         rpp_popfree_1_NN();
         if (!tr) {
             if (given && CxTYPE(given) == CXt_DISPATCH)
-                S_dispatch_rollback_bindings(aTHX_ given);
+                cx_rollbackdispatchbindings(given);
             if (gimme == G_SCALAR)
                 rpp_push_IMM(&PL_sv_undef);
             return cLOGOP->op_other->op_next;
@@ -14029,7 +13982,7 @@ PP(pp_enterdispatchon)
         rpp_popfree_1_NN();
         if (!matched) {
             if (dispatchctx && CxTYPE(dispatchctx) == CXt_DISPATCH)
-                S_dispatch_rollback_bindings(aTHX_ dispatchctx);
+                cx_rollbackdispatchbindings(dispatchctx);
             if (gimme == G_SCALAR)
                 rpp_push_IMM(&PL_sv_undef);
             return cLOGOP->op_other->op_next;

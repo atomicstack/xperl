@@ -8,9 +8,39 @@ BEGIN {
 
 use dispatch::Predicates;
 
-plan(44);
+plan(46);
 
 require Scalar::Util;
+
+fresh_perl_is(q{
+    use feature 'dispatch_on';
+    for my $value (41, 42) {
+        eval {
+            dispatch ({ value => $value }) {
+                on ({ %tail } if die "guard failed\n") { die 'body ran' }
+            }
+        };
+        die 'lost guard error' unless $@ =~ /guard failed/;
+    }
+    print 'ok';
+}, 'ok', {}, 'a throwing guard unwinds an unescaped hash capture');
+
+fresh_perl_is(q{
+    use feature 'dispatch_on';
+    my @saved;
+    for my $value (41, 42) {
+        eval {
+            dispatch ({ value => $value }) {
+                on ({ %tail } if do {
+                    push @saved, \%tail;
+                    die "guard failed\n";
+                }) { die 'body ran' }
+            }
+        };
+        die 'lost guard error' unless $@ =~ /guard failed/;
+    }
+    print join ',', map { $_->{value} } @saved;
+}, '41,42', {}, 'a throwing guard preserves escaped hash captures across calls');
 
 fresh_perl_is(q{
     use feature qw(dispatch_on say);
