@@ -6,6 +6,17 @@ The builtin integer cardinal and ordinal functions cover the retained CLDR
 languages independently of installed packs. Adding a pack requires translated
 sentences, vocabulary and grammatical forms, not just plural categories.
 
+## Catalog source refresh
+
+The 2026-11-20 repair pass filled missing sentence cases and refreshed tracked
+translations whose source or selector schema had changed. This includes the
+experimental multi declarations and their distinct incomplete-method and
+incomplete-subroutine messages. The imports record their source provenance.
+
+These repairs are machine drafts. Structural and wording review does not
+replace native linguistic review. Earlier untracked translations remain
+untracked, and Klingon retains English where the draft was unsuitable.
+
 ## Recent SipHash sentence translations
 
 The SipHash builtin diagnostics added in `48454f965b` have translations in

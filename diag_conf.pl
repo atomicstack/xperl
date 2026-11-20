@@ -3822,11 +3822,11 @@ $CONF = {
               "de" => "Zu wenige Argumente für %{name}",
               "en" => "Not enough arguments for %{name}",
               "es" => "Faltan argumentos para %{name}",
-              "fa" => "تعداد آرگومان\N{ZERO WIDTH NON-JOINER}های %{name} کافی نیست.",
-              "fi" => "Liian vähän argumentteja operaatiolle \"%{name}\"",
+              "fa" => "آرگومان\N{ZERO WIDTH NON-JOINER}های %{name} کافی نیست.",
+              "fi" => "Liian vähän argumentteja operaatiolle ”%{name}”",
               "fr" => "Pas assez d'arguments pour %{name}",
               "he" => "אין מספיק ארגומנטים עבור \"%{name}\"",
-              "hu" => "A következőhöz nincs elég argumentum: %{name}",
+              "hu" => "Nincs elég argumentum a(z) %{name} számára",
               "is" => "Of fá viðföng fyrir %{name}",
               "it" => "Argomenti insufficienti per %{name}",
               "nl" => "Te weinig argumenten voor %{name}",
@@ -3916,11 +3916,11 @@ $CONF = {
               "de" => "Zu viele Argumente für %{name}",
               "en" => "Too many arguments for %{name}",
               "es" => "Demasiados argumentos para %{name}",
-              "fa" => "تعداد آرگومان\N{ZERO WIDTH NON-JOINER}های %{name} بیش از حد است.",
-              "fi" => "Liian monta argumenttia operaatiolle \"%{name}\"",
+              "fa" => "آرگومان\N{ZERO WIDTH NON-JOINER}های %{name} بیش از حد است.",
+              "fi" => "Liian monta argumenttia operaatiolle ”%{name}”",
               "fr" => "Trop d'arguments pour %{name}",
               "he" => "יותר מדי ארגומנטים עבור \"%{name}\"",
-              "hu" => "A következőhöz túl sok argumentum van megadva: %{name}",
+              "hu" => "Túl sok argumentum a(z) %{name} számára",
               "is" => "Of mörg viðföng fyrir %{name}",
               "it" => "Troppi argomenti per %{name}",
               "nl" => "Te veel argumenten voor %{name}",
@@ -4079,16 +4079,16 @@ $CONF = {
                 "symbol" => "نوع آرگومان %{number} برای %{function} باید نماد باشد (نه %{actual})."
               },
               "fi" => {
-                "array_ref" => "Funktion \"%{function}\" argumentin %{number} tyypin on oltava taulukko (saatu: %{actual})",
-                "block_or_sub" => "Funktion \"%{function}\" argumentin %{number} tyypin on oltava lohko tai sub {} (saatu: %{actual})",
-                "filehandle" => "Funktion \"%{function}\" argumentin %{number} tyypin on oltava HANDLE (saatu: %{actual})",
-                "hash_or_array_ref" => "Funktion \"%{function}\" argumentin %{number} tyypin on oltava hajautustaulu tai taulukko (saatu: %{actual})",
-                "hash_ref" => "Funktion \"%{function}\" argumentin %{number} tyypin on oltava hajautustaulu (saatu: %{actual})",
-                "scalar" => "Funktion \"%{function}\" argumentin %{number} tyypin on oltava skalaari (saatu: %{actual})",
-                "sigil_set" => "Funktion \"%{function}\" argumentin %{number} tyypin on oltava jokin joukosta %{sigils} (saatu: %{actual})",
-                "sub" => "Funktion \"%{function}\" argumentin %{number} tyypin on oltava sub {} (saatu: %{actual})",
-                "subroutine" => "Funktion \"%{function}\" argumentin %{number} tyypin on oltava aliohjelma (saatu: %{actual})",
-                "symbol" => "Funktion \"%{function}\" argumentin %{number} tyypin on oltava symboli (saatu: %{actual})"
+                "array_ref" => "Funktion ”%{function}” argumentin %{number} tyypin on oltava taulukko (saatiin %{actual})",
+                "block_or_sub" => "Funktion ”%{function}” argumentin %{number} tyypin on oltava lohko tai sub {} (saatiin %{actual})",
+                "filehandle" => "Funktion ”%{function}” argumentin %{number} tyypin on oltava HANDLE (saatiin %{actual})",
+                "hash_or_array_ref" => "Funktion ”%{function}” argumentin %{number} tyypin on oltava hajautustaulu tai taulukko (saatiin %{actual})",
+                "hash_ref" => "Funktion ”%{function}” argumentin %{number} tyypin on oltava hajautustaulu (saatiin %{actual})",
+                "scalar" => "Funktion ”%{function}” argumentin %{number} tyypin on oltava skalaari (saatiin %{actual})",
+                "sigil_set" => "Funktion ”%{function}” argumentin %{number} tyypin on oltava jokin seuraavista: %{sigils} (saatiin %{actual})",
+                "sub" => "Funktion ”%{function}” argumentin %{number} tyypin on oltava sub {} (saatiin %{actual})",
+                "subroutine" => "Funktion ”%{function}” argumentin %{number} tyypin on oltava aliohjelma (saatiin %{actual})",
+                "symbol" => "Funktion ”%{function}” argumentin %{number} tyypin on oltava symboli (saatiin %{actual})"
               },
               "fr" => {
                 "array_ref" => "Le type de l'argument %{number} de %{function} doit être un tableau (et non %{actual})",
@@ -4115,16 +4115,16 @@ $CONF = {
                 "symbol" => "סוג הארגומנט %{number} לפונקציה \"%{function}\" חייב להיות סמל (ולא \"%{actual}\")"
               },
               "hu" => {
-                "array_ref" => "A következőhöz megadott %{number}. argumentumnak tömbnek kell lennie (nem %{actual}): %{function}",
-                "block_or_sub" => "A következőhöz megadott %{number}. argumentumnak blokknak vagy sub {} kifejezésnek kell lennie (nem %{actual}): %{function}",
-                "filehandle" => "A következőhöz megadott %{number}. argumentumnak HANDLE típusúnak kell lennie (nem %{actual}): %{function}",
-                "hash_or_array_ref" => "A következőhöz megadott %{number}. argumentumnak hashnek vagy tömbnek kell lennie (nem %{actual}): %{function}",
-                "hash_ref" => "A következőhöz megadott %{number}. argumentumnak hashnek kell lennie (nem %{actual}): %{function}",
-                "scalar" => "A következőhöz megadott %{number}. argumentumnak skalárnak kell lennie (nem %{actual}): %{function}",
-                "sigil_set" => "A következőhöz megadott %{number}. argumentumnak a %{sigils} által jelölt típusok egyikébe kell tartoznia (nem %{actual}): %{function}",
-                "sub" => "A következőhöz megadott %{number}. argumentumnak sub {} kifejezésnek kell lennie (nem %{actual}): %{function}",
-                "subroutine" => "A következőhöz megadott %{number}. argumentumnak szubrutinnak kell lennie (nem %{actual}): %{function}",
-                "symbol" => "A következőhöz megadott %{number}. argumentumnak szimbólumnak kell lennie (nem %{actual}): %{function}"
+                "array_ref" => "A(z) %{function} %{number}. argumentumának tömbnek kell lennie (nem %{actual})",
+                "block_or_sub" => "A(z) %{function} %{number}. argumentumának blokknak vagy sub {} kifejezésnek kell lennie (nem %{actual})",
+                "filehandle" => "A(z) %{function} %{number}. argumentumának HANDLE típusúnak kell lennie (nem %{actual})",
+                "hash_or_array_ref" => "A(z) %{function} %{number}. argumentumának hashnek vagy tömbnek kell lennie (nem %{actual})",
+                "hash_ref" => "A(z) %{function} %{number}. argumentumának hashnek kell lennie (nem %{actual})",
+                "scalar" => "A(z) %{function} %{number}. argumentumának skalárnak kell lennie (nem %{actual})",
+                "sigil_set" => "A(z) %{function} %{number}. argumentumának a %{sigils} által jelölt típusok egyikébe kell tartoznia (nem %{actual})",
+                "sub" => "A(z) %{function} %{number}. argumentumának sub {} kifejezésnek kell lennie (nem %{actual})",
+                "subroutine" => "A(z) %{function} %{number}. argumentumának szubrutinnak kell lennie (nem %{actual})",
+                "symbol" => "A(z) %{function} %{number}. argumentumának szimbólumnak kell lennie (nem %{actual})"
               },
               "is" => {
                 "array_ref" => "Tegund viðfangs %{number} í %{function} verður að vera fylki (en er %{actual})",
@@ -5185,16 +5185,16 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "لا يمكن تعديل استدعاء الروتين الفرعي غير القابل للإسناد &%{subroutine} في سياق %{context}",
+              "ar" => "لا يمكن تعديل استدعاء الروتين الفرعي غير القابل للإسناد &%{subroutine} ضمن %{context}",
               "cy" => "Ni ellir addasu galwad i &%{subroutine} (isreolwaith nad yw'n lvalue) drwy %{context}",
               "de" => "Aufruf der Nicht-Lvalue-Subroutine &%{subroutine} kann in %{context} nicht verändert werden",
               "en" => "Can't modify non-lvalue subroutine call of &%{subroutine} in %{context}",
               "es" => "No se puede modificar la llamada a subrutina &%{subroutine}, que no es un lvalue, en %{context}",
-              "fa" => "فراخوانی زیربرنامهٔ غیرقابل\N{ZERO WIDTH NON-JOINER}استفاده به\N{ZERO WIDTH NON-JOINER}عنوان مقدار سمت چپ (&%{subroutine}) در %{context} مجاز نیست.",
-              "fi" => "Aliohjelman &%{subroutine} kutsua ei voi muokata operaatiossa \"%{context}\": aliohjelma ei ole lvalue-aliohjelma",
+              "fa" => "تغییر مقدار از طریق فراخوانی زیربرنامهٔ غیرقابل\N{ZERO WIDTH NON-JOINER}استفاده به\N{ZERO WIDTH NON-JOINER}عنوان مقدار سمت چپ (&%{subroutine}) در %{context} مجاز نیست.",
+              "fi" => "Aliohjelman &%{subroutine} ei-lvalue-kutsua ei voi muokata operaatiossa %{context}",
               "fr" => "Impossible de modifier l'appel de la sous-routine &%{subroutine}, qui ne renvoie pas de lvalue, dans %{context}",
               "he" => "אי אפשר לשנות את תוצאת הקריאה לשגרה &%{subroutine} שאינה מחזירה ערך הניתן להשמה בהקשר של \"%{context}\"",
-              "hu" => "Nem módosítható a következő nem lvalue szubrutin hívása %{context} során: &%{subroutine}",
+              "hu" => "A(z) &%{subroutine} nem lvalue szubrutin hívása nem módosítható %{context} közben",
               "is" => "Ekki er hægt að breyta niðurstöðu undirrútínukallsins &%{subroutine}, því hún er ekki breytanleg, í samhengi %{context}",
               "it" => "Impossibile modificare la chiamata alla subroutine non lvalue &%{subroutine} in %{context}",
               "nl" => "Kan aanroep van niet-lvalue-subroutine &%{subroutine} niet wijzigen in %{context}",
@@ -5509,24 +5509,24 @@ $CONF = {
           "message" => {
             "templates" => {
               "ar" => "لا يمكن تعديل مرجع إلى %{target} في إسناد إلى قيمة مفردة",
-              "cy" => "Ni ellir addasu cyfeirnod at y canlynol mewn aseiniad sgalar: %{target}",
+              "cy" => "Ni ellir addasu cyfeirnod at %{target} mewn aseiniad sgalar",
               "de" => "Referenz auf %{target} kann in einer Skalarzuweisung nicht verändert werden",
               "en" => "Can't modify reference to %{target} in scalar assignment",
               "es" => "No se puede modificar una referencia a %{target} en una asignación escalar",
               "fa" => "تغییر ارجاع به %{target} در انتساب اسکالر مجاز نیست.",
-              "fi" => "\"%{target}\" osoittavaa viittausta ei voi muokata skalaarisijoituksessa",
+              "fi" => "Viittausta kohteeseen %{target} ei voi muokata skalaarisijoituksessa",
               "fr" => "Impossible de modifier une référence vers %{target} dans une affectation scalaire",
               "he" => "אי אפשר לשנות הפניה אל \"%{target}\" בהשמה סקלרית",
-              "hu" => "A következőre mutató referencia nem módosítható skaláris értékadás során: %{target}",
+              "hu" => "A(z) %{target} elemre mutató referencia skaláris értékadás során nem módosítható",
               "is" => "Ekki er hægt að breyta tilvísun í %{target} í skalartengingu",
               "it" => "Impossibile modificare il riferimento a %{target} in un'assegnazione scalare",
               "nl" => "Kan de referentie naar %{target} niet wijzigen in een scalaire toewijzing",
               "pl" => "Nie można modyfikować referencji do %{target} w przypisaniu skalarnym",
               "pt" => "Não é possível modificar a referência a %{target} numa atribuição escalar",
               "ru" => "Нельзя изменить ссылку на значение %{target} при скалярном присваивании",
-              "sr" => "Није могуће мењати референцу на %{target} у додели скалара",
+              "sr" => "Није могуће мењати референцу на %{target} у скаларној додели",
               "tlh" => "Can't modify reference to %{target} in scalar assignment",
-              "tr" => "Skaler atamada \"%{target}\" hedefine yapılan başvuru değiştirilemez",
+              "tr" => "Skaler atama bağlamında \"%{target}\" hedefine yapılan başvuru değiştirilemez",
               "uk" => "Не можна змінювати посилання до %{target} у скалярному присвоєнні",
               "zh" => "不能在标量赋值中修改对 %{target} 的引用"
             },
@@ -5597,16 +5597,16 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "لا يمكن تعديل مرجع إلى %{target} في سياق %{context}",
+              "ar" => "لا يمكن تعديل مرجع إلى %{target} ضمن %{context}",
               "cy" => "Ni ellir addasu cyfeirnod at %{target} wrth %{context}",
               "de" => "Referenz auf %{target} kann in %{context} nicht verändert werden",
               "en" => "Can't modify reference to %{target} in %{context}",
               "es" => "No se puede modificar una referencia a %{target} en %{context}",
               "fa" => "تغییر ارجاع به %{target} در %{context} مجاز نیست.",
-              "fi" => "\"%{target}\" osoittavaa viittausta ei voi muokata operaatiossa \"%{context}\"",
+              "fi" => "Viittausta kohteeseen %{target} ei voi muokata operaatiossa %{context}",
               "fr" => "Impossible de modifier une référence vers %{target} dans %{context}",
               "he" => "אי אפשר לשנות הפניה אל \"%{target}\" בהקשר של \"%{context}\"",
-              "hu" => "A következőre mutató referencia nem módosítható %{context} során: %{target}",
+              "hu" => "A(z) %{target} elemre mutató referencia nem módosítható %{context} közben",
               "is" => "Ekki er hægt að breyta tilvísun í %{target} í tengingu",
               "it" => "Impossibile modificare il riferimento a %{target} in %{context}",
               "nl" => "Kan de referentie naar %{target} niet wijzigen in %{context}",
@@ -15910,11 +15910,11 @@ $CONF = {
               "de" => "%{target} kann in \"%{scope}\" nicht deklariert werden",
               "en" => "Can't declare %{target} in \"%{scope}\"",
               "es" => "No se puede declarar %{target} en «%{scope}»",
-              "fa" => "اعلان %{target} در «%{scope}» مجاز نیست.",
-              "fi" => "\"%{target}\" ei voi esitellä määrittelyllä \"%{scope}\"",
+              "fa" => "نمی\N{ZERO WIDTH NON-JOINER}توان %{target} را در «%{scope}» اعلان کرد.",
+              "fi" => "Kohdetta ”%{target}” ei voi esitellä määrittelyllä ”%{scope}”",
               "fr" => "Impossible de déclarer %{target} dans la portée \"%{scope}\"",
               "he" => "אי אפשר להצהיר על \"%{target}\" בתוך \"%{scope}\"",
-              "hu" => "Nem deklarálható \"%{scope}\" használatával: %{target}",
+              "hu" => "A(z) %{target} nem deklarálható „%{scope}” használatával",
               "is" => "Ekki er hægt að lýsa yfir %{target} í „%{scope}“",
               "it" => "Impossibile dichiarare %{target} in \"%{scope}\"",
               "nl" => "Kan %{target} niet declareren in \"%{scope}\"",
@@ -15923,9 +15923,9 @@ $CONF = {
               "ru" => "Нельзя объявить %{target} в \"%{scope}\"",
               "sr" => "Није могуће декларисати %{target} у „%{scope}“",
               "tlh" => "Can't declare %{target} in \"%{scope}\"",
-              "tr" => "\"%{scope}\" bildiriminde %{target} kullanılamaz",
+              "tr" => "\"%{scope}\" içinde %{target} bildirilemez",
               "uk" => "Не можна оголосити %{target} у \"%{scope}\"",
-              "zh" => "不能在 \"%{scope}\" 中声明 %{target}"
+              "zh" => "不能在“%{scope}”中声明 %{target}"
             },
             "args" => [
               {
@@ -24023,7 +24023,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Invalid module diagnostic catalog: %{field} (%{problem})"
+              "ar" => "فهرس تشخيصات الوحدة غير صالح: %{field} (%{problem})",
+              "cy" => "Catalog diagnosteg modiwl annilys: %{field} (%{problem})",
+              "de" => "Ungültiger Diagnosekatalog des Moduls: %{field} (%{problem})",
+              "en" => "Invalid module diagnostic catalog: %{field} (%{problem})",
+              "es" => "Catálogo de diagnósticos del módulo no válido: %{field} (%{problem})",
+              "fa" => "فهرست تشخیصی ماژول نامعتبر است: %{field} (%{problem})",
+              "fi" => "Virheellinen moduulin diagnostiikkaluettelo: %{field} (%{problem})",
+              "fr" => "Catalogue de diagnostics du module invalide : %{field} (%{problem})",
+              "he" => "קטלוג האבחונים של המודול אינו תקין: %{field} (%{problem})",
+              "hu" => "Érvénytelen modulszintű diagnosztikai katalógus: %{field} (%{problem})",
+              "is" => "Ógildur greiningarskráningarsafn einingar: %{field} (%{problem})",
+              "it" => "Catalogo dei diagnostici del modulo non valido: %{field} (%{problem})",
+              "nl" => "Ongeldige catalogus met modulediagnostiek: %{field} (%{problem})",
+              "pl" => "Nieprawidłowy katalog diagnostyczny modułu: %{field} (%{problem})",
+              "pt" => "Catálogo de diagnósticos do módulo inválido: %{field} (%{problem})",
+              "ru" => "Недопустимый каталог диагностики модуля: %{field} (%{problem})",
+              "sr" => "Неважећи каталог дијагностике модула: %{field} (%{problem})",
+              "tlh" => "Invalid module diagnostic catalog: %{field} (%{problem})",
+              "tr" => "Modül tanılama kataloğu geçersiz: %{field} (%{problem})",
+              "uk" => "Недійсний каталог діагностик модуля: %{field} (%{problem})",
+              "zh" => "模块诊断目录无效：%{field}（%{problem}）"
             },
             "args" => [
               {
@@ -25553,16 +25573,16 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "تجاوز سعة عدد صحيح في سلسلة التنسيق الخاصة بـ %{arg1}",
-              "cy" => "Gorlif cyfanrif yn y llinyn fformat i %{arg1}",
+              "ar" => "تجاوز عدد صحيح سعة سلسلة التنسيق لـ %{arg1}",
+              "cy" => "Gorlif cyfanrif yn y llinyn fformat ar gyfer %{arg1}",
               "de" => "Ganzzahlüberlauf in Formatzeichenkette für %{arg1}",
               "en" => "Integer overflow in format string for %{arg1}",
               "es" => "Desbordamiento de entero en la cadena de formato de %{arg1}",
               "fa" => "سرریز عدد صحیح در رشتهٔ قالب برای %{arg1}.",
-              "fi" => "Kokonaisluvun ylivuoto operaation \"%{arg1}\" muotoilumerkkijonossa",
+              "fi" => "Kokonaislukuylivuoto operaation ”%{arg1}” muotoilumerkkijonossa",
               "fr" => "Dépassement de capacité d'un entier dans la chaîne de format de %{arg1}",
               "he" => "גלישת מספר שלם במחרוזת התבנית עבור \"%{arg1}\"",
-              "hu" => "Egészszám-túlcsordulás a következő művelet formátumkarakterláncában: %{arg1}",
+              "hu" => "Egészszám-túlcsordulás a %{arg1} formátumkarakterláncában",
               "is" => "Yfirflæði heiltölu í sniðstreng fyrir %{arg1}",
               "it" => "Overflow di un intero nella stringa di formato per %{arg1}",
               "nl" => "Geheelgetaloverloop in opmaakreeks voor %{arg1}",
@@ -25573,7 +25593,7 @@ $CONF = {
               "tlh" => "Integer overflow in format string for %{arg1}",
               "tr" => "%{arg1} için biçim dizgesinde tamsayı taşması oluştu",
               "uk" => "Цілочисельне переповнення в рядку формату для %{arg1}",
-              "zh" => "格式字符串中的整数溢出（操作：%{arg1}）"
+              "zh" => "%{arg1} 的格式字符串中发生整数溢出"
             },
             "args" => [
               {
@@ -27381,21 +27401,21 @@ $CONF = {
               "en" => "Bizarre copy of %{arg2} in %{arg3}",
               "es" => "Copia extraña de %{arg2} en %{arg3}",
               "fa" => "کپی نامتعارف %{arg2} در %{arg3}.",
-              "fi" => "Omituinen arvon \"%{arg2}\" kopiointi operaatiossa \"%{arg3}\"",
+              "fi" => "Omituinen arvoa %{arg2} koskeva kopiointi operaatiossa %{arg3}",
               "fr" => "Copie étrange de %{arg2} dans %{arg3}",
               "he" => "העתקה חריגה של %{arg2} בהקשר של \"%{arg3}\"",
-              "hu" => "Rendellenes másolás %{arg3} során; forrás: %{arg2}",
+              "hu" => "A(z) %{arg2} másolása rendellenes a(z) %{arg3} műveletben",
               "is" => "Óvenjuleg afritun á %{arg2} í %{arg3}",
               "it" => "Copia anomala di %{arg2} in %{arg3}",
               "nl" => "Merkwaardige kopie van %{arg2} in %{arg3}",
               "pl" => "Dziwaczna kopia %{arg2} w %{arg3}",
               "pt" => "Cópia anómala de %{arg2} em %{arg3}",
               "ru" => "Некорректное копирование %{arg2} в %{arg3}",
-              "sr" => "Неисправно копирање вредности %{arg2} у операцији %{arg3}",
+              "sr" => "Необично копирање %{arg2} у %{arg3}",
               "tlh" => "Bizarre copy of %{arg2} in %{arg3}",
-              "tr" => "%{arg3} bağlamında %{arg2} değeri için olağandışı bir kopyalama işlemi saptandı",
+              "tr" => "%{arg3} bağlamında %{arg2} değerinin kopyalanması olağandışı",
               "uk" => "Дивне копіювання %{arg2} у %{arg3}",
-              "zh" => "panic: 在 %{arg3} 中复制 %{arg2} 时出现异常"
+              "zh" => "panic: 在 %{arg3} 中异常复制 %{arg2}"
             },
             "args" => [
               {
@@ -27526,18 +27546,18 @@ $CONF = {
               "en" => "Cannot copy to %{arg2} in %{arg3}",
               "es" => "No se puede copiar a %{arg2} en %{arg3}",
               "fa" => "کپی به %{arg2} در %{arg3} ممکن نیست.",
-              "fi" => "Kohteeseen \"%{arg2}\" ei voi kopioida operaatiossa \"%{arg3}\"",
+              "fi" => "Kohteeseen %{arg2} ei voi kopioida operaatiossa %{arg3}",
               "fr" => "Impossible de copier vers %{arg2} dans %{arg3}",
               "he" => "אי אפשר להעתיק אל %{arg2} בהקשר של \"%{arg3}\"",
-              "hu" => "Nem lehet másolni a következő célba %{arg3} során: %{arg2}",
+              "hu" => "A(z) %{arg2} célba nem lehet másolni a(z) %{arg3} műveletben",
               "is" => "Ekki er hægt að afrita yfir á %{arg2} í %{arg3}",
               "it" => "Impossibile copiare in %{arg2} in %{arg3}",
               "nl" => "Kan niet kopiëren naar %{arg2} in %{arg3}",
               "pl" => "Nie można kopiować do %{arg2} w %{arg3}",
               "pt" => "Não é possível copiar para %{arg2} em %{arg3}",
-              "ru" => "Невозможно скопировать в %{arg2} в %{arg3}",
-              "sr" => "Није могуће копирати у %{arg2} у операцији %{arg3}",
-              "tlh" => "{arg2}Daq copy chenmoHlaHbe' %{arg3}",
+              "ru" => "Невозможно выполнить копирование в %{arg2} при %{arg3}",
+              "sr" => "Није могуће копирати у %{arg2} у %{arg3}",
+              "tlh" => "Cannot copy to %{arg2} in %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} hedefine kopyalama yapılamaz",
               "uk" => "Неможливо скопіювати до %{arg2} у %{arg3}",
               "zh" => "在 %{arg3} 中无法复制到 %{arg2}"
@@ -31164,10 +31184,10 @@ $CONF = {
               "en" => "Can't use %{arg1} for loop variable",
               "es" => "No se puede usar %{arg1} como variable de bucle",
               "fa" => "استفاده از %{arg1} به\N{ZERO WIDTH NON-JOINER}عنوان متغیر حلقه مجاز نیست.",
-              "fi" => "\"%{arg1}\" ei voi käyttää silmukkamuuttujana",
+              "fi" => "%{arg1} ei kelpaa silmukkamuuttujaksi",
               "fr" => "Impossible d'utiliser %{arg1} comme variable de boucle",
               "he" => "אי אפשר להשתמש בביטוי \"%{arg1}\" כמשתנה לולאה",
-              "hu" => "Ciklusváltozóként nem használható: %{arg1}",
+              "hu" => "A(z) %{arg1} nem használható ciklusváltozóként",
               "is" => "Get ekki notað %{arg1} sem lykkjubreytu",
               "it" => "Impossibile usare %{arg1} come variabile del ciclo",
               "nl" => "Kan %{arg1} niet als lusvariabele gebruiken",
@@ -35838,27 +35858,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "لا يمكن تحويل %{arg2} إلى عدد صحيح في %{arg3}",
+              "ar" => "لا يمكن إكراه %{arg2} إلى عدد صحيح في %{arg3}",
               "cy" => "Ni ellir trosi %{arg2} yn gyfanrif yn %{arg3}",
               "de" => "%{arg2} kann in %{arg3} nicht in eine Ganzzahl umgewandelt werden",
               "en" => "Can't coerce %{arg2} to integer in %{arg3}",
               "es" => "No se puede convertir %{arg2} en entero en %{arg3}",
               "fa" => "تبدیل %{arg2} به عدد صحیح در %{arg3} مجاز نیست.",
-              "fi" => "Arvoa \"%{arg2}\" ei voi muuntaa kokonaisluvuksi operaatiossa \"%{arg3}\"",
+              "fi" => "Arvoa ”%{arg2}” ei voi muuntaa kokonaisluvuksi operaatiossa %{arg3}",
               "fr" => "Impossible de convertir %{arg2} en entier dans %{arg3}",
               "he" => "אי אפשר להמיר את %{arg2} למספר שלם בהקשר של \"%{arg3}\"",
-              "hu" => "Nem alakítható egész számmá %{arg3} során: %{arg2}",
+              "hu" => "A(z) %{arg2} nem alakítható egész számmá a(z) %{arg3} műveletben",
               "is" => "Ekki er hægt að umbreyta %{arg2} í heiltölu í %{arg3}",
               "it" => "Impossibile convertire %{arg2} in un intero in %{arg3}",
               "nl" => "Kan %{arg2} niet omzetten naar een geheel getal in %{arg3}",
               "pl" => "Nie można wymusić konwersji %{arg2} na liczbę całkowitą w %{arg3}",
               "pt" => "Não é possível converter %{arg2} em inteiro em %{arg3}",
               "ru" => "Невозможно преобразовать %{arg2} в целое число в %{arg3}",
-              "sr" => "Није могуће претворити %{arg2} у цео број при %{arg3}",
+              "sr" => "Није могуће принудно претворити %{arg2} у цео број при %{arg3}",
               "tlh" => "Can't coerce %{arg2} to integer in %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} değeri tamsayıya dönüştürülemez",
               "uk" => "Неможливо привести %{arg2} до цілого числа у %{arg3}",
-              "zh" => "无法将 %{arg2} 强制转换为整数（位于 %{arg3}）"
+              "zh" => "在 %{arg3} 中，无法将 %{arg2} 强制转换为整数"
             },
             "args" => [
               {
@@ -35930,27 +35950,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "لا يمكن تحويل %{arg2} إلى عدد في %{arg3}",
+              "ar" => "لا يمكن إكراه %{arg2} إلى عدد في %{arg3}",
               "cy" => "Ni ellir trosi %{arg2} yn rhif o fewn i %{arg3}",
               "de" => "%{arg2} kann in %{arg3} nicht in eine Zahl umgewandelt werden",
               "en" => "Can't coerce %{arg2} to number in %{arg3}",
               "es" => "No se puede convertir %{arg2} en número en %{arg3}",
               "fa" => "تبدیل %{arg2} به عدد در %{arg3} مجاز نیست.",
-              "fi" => "Arvoa \"%{arg2}\" ei voi muuntaa luvuksi operaatiossa \"%{arg3}\"",
+              "fi" => "Arvoa ”%{arg2}” ei voi muuntaa luvuksi operaatiossa %{arg3}",
               "fr" => "Impossible de convertir %{arg2} en nombre dans %{arg3}",
               "he" => "אי אפשר להמיר את %{arg2} למספר בהקשר של \"%{arg3}\"",
-              "hu" => "Nem alakítható számmá %{arg3} során: %{arg2}",
+              "hu" => "A(z) %{arg2} nem alakítható számmá a(z) %{arg3} műveletben",
               "is" => "Ekki er hægt að umbreyta %{arg2} í tölu í %{arg3}",
               "it" => "Impossibile convertire %{arg2} in un numero in %{arg3}",
               "nl" => "Kan %{arg2} niet omzetten naar een getal in %{arg3}",
               "pl" => "Nie można wymusić konwersji %{arg2} na liczbę w %{arg3}",
               "pt" => "Não é possível converter %{arg2} em número em %{arg3}",
               "ru" => "Невозможно преобразовать %{arg2} в число в %{arg3}",
-              "sr" => "Није могуће претворити %{arg2} у број при %{arg3}",
+              "sr" => "Није могуће принудно претворити %{arg2} у број при %{arg3}",
               "tlh" => "Can't coerce %{arg2} to number in %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} değeri sayıya dönüştürülemez",
               "uk" => "Неможливо привести %{arg2} до числа у %{arg3}",
-              "zh" => "无法将 %{arg2} 强制转换为数字（位于 %{arg3}）"
+              "zh" => "在 %{arg3} 中，无法将 %{arg2} 强制转换为数字"
             },
             "args" => [
               {
@@ -36285,9 +36305,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "لا يمكن تغيير إسناد الكائن إلى صنف أثناء TEARDOWN",
+              "cy" => "Ni ellir newid bendith gwrthrych yn ystod TEARDOWN",
+              "de" => "Die Objektsegnung kann während TEARDOWN nicht geändert werden",
               "en" => "Cannot change an object blessing during TEARDOWN",
+              "es" => "No se puede cambiar la bendición de un objeto durante TEARDOWN",
+              "fa" => "هنگام TEARDOWN نمی\N{ZERO WIDTH NON-JOINER}توان blessing یک شیء را تغییر داد",
+              "fi" => "Olion siunausta ei voi muuttaa TEARDOWN-operaation aikana",
+              "fr" => "Impossible de modifier la bénédiction d’un objet pendant TEARDOWN",
+              "he" => "אי אפשר לשנות את הברכה של אובייקט במהלך TEARDOWN",
+              "hu" => "TEARDOWN közben nem változtatható meg az objektum bless-elése",
+              "is" => "Ekki er hægt að breyta blessun hlutar meðan á TEARDOWN stendur",
+              "it" => "Impossibile cambiare la benedizione di un oggetto durante TEARDOWN",
+              "nl" => "De blessing van een object kan niet worden gewijzigd tijdens TEARDOWN",
               "pl" => "Nie można zmienić błogosławieństwa obiektu podczas TEARDOWN",
-              "tlh" => "TEARDOWN qaStaHvIS nov blessing choHlaHbe'"
+              "pt" => "Não é possível alterar a bênção de um objeto durante TEARDOWN",
+              "ru" => "Нельзя менять благословение объекта во время TEARDOWN",
+              "sr" => "Није могуће променити благослов објекта током TEARDOWN",
+              "tlh" => "TEARDOWN qaStaHvIS nov blessing choHlaHbe'",
+              "tr" => "TEARDOWN sırasında nesnenin bless durumu değiştirilemez",
+              "uk" => "Не можна змінювати благословення об’єкта під час TEARDOWN",
+              "zh" => "TEARDOWN 期间无法更改对象的祝福状态"
             },
             "args" => []
           },
@@ -37441,9 +37479,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "يحتوي تسلسل أصناف الكائن على تخطيطات غير متوافقة لأصناف حديثة",
+              "cy" => "Mae hierarchaeth y gwrthrych yn cynnwys cynlluniau dosbarth modern anghydnaws",
+              "de" => "Die Objekthierarchie enthält inkompatible Layouts moderner Klassen",
               "en" => "Object hierarchy contains incompatible modern class layouts",
+              "es" => "La jerarquía de objetos contiene diseños incompatibles de clases modernas",
+              "fa" => "سلسله\N{ZERO WIDTH NON-JOINER}مراتب اشیا شامل چیدمان\N{ZERO WIDTH NON-JOINER}های ناسازگار کلاس\N{ZERO WIDTH NON-JOINER}های مدرن است",
+              "fi" => "Objektihierarkiassa on keskenään yhteensopimattomia modernien luokkien asetteluja",
+              "fr" => "La hiérarchie d’objets contient des dispositions de classes modernes incompatibles",
+              "he" => "היררכיית האובייקטים מכילה פריסות מחלקה מודרניות שאינן תואמות",
+              "hu" => "Az objektumhierarchia egymással nem kompatibilis modern osztályelrendezéseket tartalmaz",
+              "is" => "Stigveldi hlutar inniheldur ósamrýmanlegar nútímalegar klasauppsetningar",
+              "it" => "La gerarchia degli oggetti contiene layout di classi moderne incompatibili",
+              "nl" => "De objecthiërarchie bevat incompatibele layouts van moderne klassen",
               "pl" => "Hierarchia obiektów zawiera niezgodne układy nowoczesnych klas",
-              "tlh" => "Nov tay'ghach tay'ghachDaq modern class layoutmey maqochbe' tu'lu'"
+              "pt" => "A hierarquia de objetos contém disposições incompatíveis de classes modernas",
+              "ru" => "Иерархия объектов содержит несовместимые макеты современных классов",
+              "sr" => "Хијерархија објеката садржи некомпатибилне распореде модерних класа",
+              "tlh" => "Nov tay'ghach tay'ghachDaq modern class layoutmey maqochbe' tu'lu'",
+              "tr" => "Nesne hiyerarşisi, birbiriyle uyumsuz modern sınıf düzenleri içeriyor",
+              "uk" => "Ієрархія об’єктів містить несумісні макети сучасних класів",
+              "zh" => "对象层次结构包含彼此不兼容的现代类布局"
             },
             "args" => []
           },
@@ -37655,9 +37711,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "لا يمكن تزويد كائن مُنشأ بالفعل بمعاملات",
+              "cy" => "Ni ellir darparu paramedrau i wrthrych sydd eisoes wedi'i lunio",
+              "de" => "Einem bereits konstruierten Objekt können keine Parameter übergeben werden",
               "en" => "Cannot supply parameters to an already constructed object",
+              "es" => "No se pueden proporcionar parámetros a un objeto que ya se ha construido",
+              "fa" => "نمی\N{ZERO WIDTH NON-JOINER}توان برای شیئی که قبلاً ساخته شده است پارامتر فراهم کرد",
+              "fi" => "Jo muodostetulle oliolle ei voi antaa parametreja",
+              "fr" => "Impossible de fournir des paramètres à un objet déjà construit",
+              "he" => "אי אפשר לספק פרמטרים לאובייקט שכבר נבנה",
+              "hu" => "Már létrehozott objektumnak nem adhatók át paraméterek",
+              "is" => "Ekki er hægt að gefa upp viðföng fyrir hlut sem hefur þegar verið smíðaður",
+              "it" => "Impossibile fornire parametri a un oggetto già costruito",
+              "nl" => "Er kunnen geen parameters worden opgegeven voor een al geconstrueerd object",
               "pl" => "Nie można przekazać parametrów do już skonstruowanego obiektu",
-              "tlh" => "chenmoHta' nov'e'vaD parameters noblaHbe'"
+              "pt" => "Não é possível fornecer parâmetros a um objeto já construído",
+              "ru" => "Нельзя передавать параметры уже сконструированному объекту",
+              "sr" => "Није могуће проследити параметре већ конструисаном објекту",
+              "tlh" => "chenmoHta' nov'e'vaD parameters noblaHbe'",
+              "tr" => "Zaten oluşturulmuş bir nesneye parametre verilemez",
+              "uk" => "Не можна передавати параметри вже сконструйованому об’єкту",
+              "zh" => "无法向已构造的对象提供参数"
             },
             "args" => []
           },
@@ -37682,9 +37756,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "تغيّر إسناد الكائن إلى صنف أثناء CONSTRUCT",
+              "cy" => "Newidiodd fendith y gwrthrych yn ystod CONSTRUCT",
+              "de" => "Die Objektsegnung wurde während CONSTRUCT geändert",
               "en" => "Object blessing changed during CONSTRUCT",
+              "es" => "La bendición del objeto cambió durante CONSTRUCT",
+              "fa" => "برکت\N{ZERO WIDTH NON-JOINER}دهی شیء هنگام CONSTRUCT تغییر کرد",
+              "fi" => "Olion siunaus muuttui CONSTRUCT-operaation aikana",
+              "fr" => "La bénédiction de l’objet a changé pendant CONSTRUCT",
+              "he" => "הברכה של האובייקט השתנתה במהלך CONSTRUCT",
+              "hu" => "Az objektum bless-elése megváltozott a CONSTRUCT végrehajtása közben",
+              "is" => "Blessun hlutar breyttist við CONSTRUCT",
+              "it" => "La benedizione dell'oggetto è cambiata durante CONSTRUCT",
+              "nl" => "De blessing van het object is tijdens CONSTRUCT gewijzigd",
               "pl" => "Błogosławieństwo obiektu zmieniło się podczas CONSTRUCT",
-              "tlh" => "CONSTRUCT qaStaHvIS nov blessing choH"
+              "pt" => "A bênção do objeto mudou durante CONSTRUCT",
+              "ru" => "Благословение объекта изменилось во время CONSTRUCT",
+              "sr" => "Благослов објекта се променио током CONSTRUCT",
+              "tlh" => "CONSTRUCT qaStaHvIS nov blessing choH",
+              "tr" => "CONSTRUCT sırasında nesnenin bless durumu değişti",
+              "uk" => "Під час CONSTRUCT змінилося благословення об’єкта",
+              "zh" => "CONSTRUCT 期间对象的祝福状态发生了变化"
             },
             "args" => []
           },
@@ -37761,9 +37853,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "يتطلب CONSTRUCT اسم صنف أو مرجعًا مُسنَدًا إلى صنف",
+              "cy" => "Mae CONSTRUCT yn gofyn am enw dosbarth neu gyfeirnod bendithiedig",
+              "de" => "CONSTRUCT erfordert einen Klassennamen oder eine gesegnete Referenz",
               "en" => "CONSTRUCT requires a class name or blessed reference",
+              "es" => "CONSTRUCT requiere un nombre de clase o una referencia bendecida",
+              "fa" => "CONSTRUCT به نام کلاس یا ارجاع blessed نیاز دارد",
+              "fi" => "CONSTRUCT vaatii luokan nimen tai siunatun viittauksen",
+              "fr" => "CONSTRUCT nécessite un nom de classe ou une référence bénie",
+              "he" => "CONSTRUCT דורש שם מחלקה או הפניה מבורכת",
+              "hu" => "A CONSTRUCT osztálynevet vagy bless-elt referenciát igényel",
+              "is" => "CONSTRUCT krefst heitis á klasa eða blessaðrar tilvísunar",
+              "it" => "CONSTRUCT richiede un nome di classe o un riferimento benedetto",
+              "nl" => "CONSTRUCT vereist een klassenaam of een blessed reference",
               "pl" => "CONSTRUCT wymaga nazwy klasy lub obdarowanej błogosławieństwem referencji",
-              "tlh" => "CONSTRUCT poQ Segh pong pagh nov naQ"
+              "pt" => "CONSTRUCT requer um nome de classe ou uma referência abençoada",
+              "ru" => "CONSTRUCT требует имя класса или благословлённую ссылку",
+              "sr" => "CONSTRUCT захтева име класе или благословљену референцу",
+              "tlh" => "CONSTRUCT poQ Segh pong pagh nov naQ",
+              "tr" => "CONSTRUCT bir sınıf adı veya bless edilmiş bir başvuru gerektirir",
+              "uk" => "CONSTRUCT потребує назви класу або благословленого посилання",
+              "zh" => "CONSTRUCT 需要类名或已祝福的引用"
             },
             "args" => []
           },
@@ -37788,9 +37898,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "يتطلب CONSTRUCT وجود صنف حديث في تسلسل الوراثة للكائن",
+              "cy" => "Mae CONSTRUCT yn gofyn am ddosbarth modern yn hierarchaeth y gwrthrych",
+              "de" => "CONSTRUCT erfordert eine moderne Klasse in der Objekthierarchie",
               "en" => "CONSTRUCT requires a modern class in the object hierarchy",
+              "es" => "CONSTRUCT requiere una clase moderna en la jerarquía de objetos",
+              "fa" => "CONSTRUCT به یک کلاس مدرن در سلسله\N{ZERO WIDTH NON-JOINER}مراتب اشیا نیاز دارد",
+              "fi" => "CONSTRUCT vaatii objektihierarkiassa olevan modernin luokan",
+              "fr" => "CONSTRUCT nécessite une classe moderne dans la hiérarchie d’objets",
+              "he" => "CONSTRUCT דורש מחלקה מודרנית בהיררכיית האובייקטים",
+              "hu" => "A CONSTRUCT az objektumhierarchiában modern osztályt igényel",
+              "is" => "CONSTRUCT krefst nútímalegs klasa í stigveldi hluta",
+              "it" => "CONSTRUCT richiede una classe moderna nella gerarchia degli oggetti",
+              "nl" => "CONSTRUCT vereist een moderne klasse in de objecthiërarchie",
               "pl" => "CONSTRUCT wymaga nowoczesnej klasy w hierarchii obiektów",
-              "tlh" => "CONSTRUCT poQ nov tay'ghachDaq modern class"
+              "pt" => "CONSTRUCT requer uma classe moderna na hierarquia de objetos",
+              "ru" => "CONSTRUCT требует современный класс в иерархии объектов",
+              "sr" => "CONSTRUCT захтева модерну класу у хијерархији објеката",
+              "tlh" => "CONSTRUCT poQ nov tay'ghachDaq modern class",
+              "tr" => "CONSTRUCT, nesne hiyerarşisinde modern bir sınıf gerektirir",
+              "uk" => "CONSTRUCT потребує сучасного класу в ієрархії об’єктів",
+              "zh" => "CONSTRUCT 要求对象层次结构中包含现代类"
             },
             "args" => []
           },
@@ -37874,9 +38002,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "لا يمكن تنفيذ CONSTRUCT أثناء تهيئة مخزن الصنف أو تحريره",
+              "cy" => "Ni ellir defnyddio CONSTRUCT tra bo storfa'r dosbarth yn cael ei hymgychwyn neu ei rhyddhau",
+              "de" => "CONSTRUCT kann nicht ausgeführt werden, während der Klassenspeicher initialisiert oder freigegeben wird",
               "en" => "Cannot CONSTRUCT while class storage is being initialized or released",
+              "es" => "No se puede ejecutar CONSTRUCT mientras se inicializa o libera el almacenamiento de la clase",
+              "fa" => "هنگام مقداردهی اولیه یا آزادسازی فضای ذخیره\N{ZERO WIDTH NON-JOINER}سازی کلاس، نمی\N{ZERO WIDTH NON-JOINER}توان CONSTRUCT را اجرا کرد",
+              "fi" => "CONSTRUCT-operaatiota ei voi suorittaa, kun luokan tallennustilaa alustetaan tai vapautetaan",
+              "fr" => "Impossible d’appeler CONSTRUCT pendant l’initialisation ou la libération du stockage de classe",
+              "he" => "אי אפשר לבצע CONSTRUCT בזמן שאתחול אחסון המחלקה או שחרורו",
+              "hu" => "Nem hívható meg a CONSTRUCT, amíg az osztály tárolója inicializálás vagy felszabadítás alatt áll",
+              "is" => "Ekki er hægt að framkvæma CONSTRUCT meðan verið er að frumstilla eða losa geymslu klasans",
+              "it" => "Impossibile eseguire CONSTRUCT mentre l'archiviazione della classe è in fase di inizializzazione o rilascio",
+              "nl" => "CONSTRUCT kan niet worden uitgevoerd terwijl de klasseopslag wordt geïnitialiseerd of vrijgegeven",
               "pl" => "Nie można wykonać CONSTRUCT podczas inicjalizacji lub zwalniania pamięci klasy",
-              "tlh" => "Segh storage chenmoHtaH pagh releStaHtaHvIS CONSTRUCT chenmoHlaHbe'"
+              "pt" => "Não é possível executar CONSTRUCT enquanto o armazenamento da classe está a ser inicializado ou libertado",
+              "ru" => "Невозможно выполнить CONSTRUCT во время инициализации или освобождения хранилища класса",
+              "sr" => "Није могуће позвати CONSTRUCT док се складиште класе иницијализује или ослобађа",
+              "tlh" => "Segh storage chenmoHtaH pagh releStaHtaHvIS CONSTRUCT chenmoHlaHbe'",
+              "tr" => "Sınıf depolaması başlatılırken veya serbest bırakılırken CONSTRUCT çağrılamaz",
+              "uk" => "Не можна виконати CONSTRUCT під час ініціалізації або звільнення сховища класу",
+              "zh" => "类存储正在初始化或释放时，无法执行 CONSTRUCT"
             },
             "args" => []
           },
@@ -38207,7 +38353,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Class field snapshot cannot distinguish multiple owners named %{owner}"
+              "ar" => "لا يمكن للقطة حقول الصنف التمييز بين عدة مالكين باسم %{owner}",
+              "cy" => "Ni all cipolwg maes dosbarth wahaniaethu rhwng sawl perchennog o’r enw %{owner}",
+              "de" => "Der Schnappschuss der Klassenfelder kann mehrere Besitzer mit dem Namen %{owner} nicht unterscheiden",
+              "en" => "Class field snapshot cannot distinguish multiple owners named %{owner}",
+              "es" => "La instantánea de campos de clase no puede distinguir entre varios propietarios llamados %{owner}",
+              "fa" => "تصویر فوری فیلد کلاس نمی\N{ZERO WIDTH NON-JOINER}تواند بین چند مالک با نام %{owner} تمایز بگذارد",
+              "fi" => "Luokan kentän tilannevedos ei pysty erottamaan useita omistajia nimeltä %{owner}",
+              "fr" => "L’instantané des champs de classe ne peut pas distinguer plusieurs propriétaires nommés %{owner}",
+              "he" => "תמונת מצב של שדות המחלקה אינה יכולה להבחין בין כמה בעלים בשם %{owner}",
+              "hu" => "Az osztálymező pillanatképe nem tud különbséget tenni a(z) %{owner} nevű több tulajdonos között",
+              "is" => "Skyndimynd reita klasa getur ekki greint á milli margra eigenda sem heita %{owner}",
+              "it" => "Lo snapshot dei campi della classe non può distinguere più proprietari chiamati %{owner}",
+              "nl" => "De snapshot van klassevelden kan geen onderscheid maken tussen meerdere eigenaren met de naam %{owner}",
+              "pl" => "Migawka pól klasy nie może rozróżnić wielu właścicieli o nazwie %{owner}",
+              "pt" => "O instantâneo de campos da classe não pode distinguir vários proprietários chamados %{owner}",
+              "ru" => "Снимок полей класса не позволяет различить нескольких владельцев с именем %{owner}",
+              "sr" => "Снимак поља класе не може да разликује више власника са именом %{owner}",
+              "tlh" => "Class field snapshot cannot distinguish multiple owners named %{owner}",
+              "tr" => "Sınıf alanı anlık görüntüsü, %{owner} adlı birden fazla sahibini ayırt edemiyor",
+              "uk" => "Знімок полів класу не може розрізнити кількох власників із назвою %{owner}",
+              "zh" => "类字段快照无法区分多个名为 %{owner} 的所有者"
             },
             "args" => [
               {
@@ -38239,9 +38405,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "يجب أن يكون حاوي حقول الصنف %{owner} مرجعًا إلى جدول تجزئة",
+              "cy" => "Rhaid i fwced maes dosbarth %{owner} fod yn gyfeirnod hash",
+              "de" => "Der Bucket für Klassenfelder %{owner} muss eine Hash-Referenz sein",
               "en" => "Class field bucket %{owner} must be a hash reference",
+              "es" => "El depósito de campos de clase %{owner} debe ser una referencia a un hash",
+              "fa" => "باکت فیلد کلاس %{owner} باید یک ارجاع به هش باشد",
+              "fi" => "Luokan kenttäkokoelman %{owner} on oltava hajautustauluviittaus",
+              "fr" => "Le compartiment des champs de classe %{owner} doit être une référence de table de hachage",
+              "he" => "דלי השדות של המחלקה %{owner} חייב להיות הפניה לטבלת גיבוב",
+              "hu" => "A %{owner} osztálymező-bucketnek hashreferenciának kell lennie",
+              "is" => "Reitafata klasans %{owner} verður að vera tilvísun í kjötkássu",
+              "it" => "Il bucket dei campi della classe %{owner} deve essere un riferimento a un hash",
+              "nl" => "De bucket voor klassevelden %{owner} moet een hash reference zijn",
               "pl" => "Koszyk pól klasy %{owner} musi być referencją do hasza",
-              "tlh" => "Class field bucket %{owner} vay'pu' reference 'oHnIS"
+              "pt" => "O bucket de campos da classe %{owner} tem de ser uma referência a hash",
+              "ru" => "Корзина полей класса %{owner} должна быть ссылкой на хеш",
+              "sr" => "Одељак поља класе %{owner} мора бити референца на хеш",
+              "tlh" => "Class field bucket %{owner} vay'pu' reference 'oHnIS",
+              "tr" => "Sınıf alanı %{owner} kovası bir hash başvurusu olmalıdır",
+              "uk" => "Блок полів класу %{owner} має бути посиланням на хеш",
+              "zh" => "类字段桶 %{owner} 必须是哈希引用"
             },
             "args" => [
               {
@@ -38273,9 +38457,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "يجب أن تكون حمولة كائن الصنف مرجعًا غير مُسنَد إلى صنف",
+              "cy" => "Rhaid i lwyth tâl gwrthrych dosbarth fod yn gyfeirnod heb fendith",
+              "de" => "Die Nutzlast des Klassenobjekts muss eine ungesegnete Referenz sein",
               "en" => "Class object payload must be an unblessed reference",
+              "es" => "La carga útil del objeto de clase debe ser una referencia sin bendecir",
+              "fa" => "محتوای شیء کلاس باید یک ارجاع بدون blessing باشد",
+              "fi" => "Luokkaolion sisältökuorman on oltava siunaamaton viittaus",
+              "fr" => "La charge utile de l’objet classe doit être une référence non bénie",
+              "he" => "המטען של אובייקט המחלקה חייב להיות הפניה שאינה מבורכת",
+              "hu" => "Az osztályobjektum payloadjának nem bless-elt referenciának kell lennie",
+              "is" => "Gagnahlutur klasa verður að vera óblessuð tilvísun",
+              "it" => "Il payload dell'oggetto classe deve essere un riferimento non benedetto",
+              "nl" => "De payload van het klasseobject moet een niet-blessed reference zijn",
               "pl" => "Ładunek obiektu klasy musi być referencją pozbawioną błogosławieństwa",
-              "tlh" => "Class object payload 'oHnIS nov pagh"
+              "pt" => "O conteúdo do objeto de classe tem de ser uma referência não abençoada",
+              "ru" => "Полезная нагрузка объекта класса должна быть незаблагословлённой ссылкой",
+              "sr" => "Садржај објекта класе мора бити референца без благослова",
+              "tlh" => "Class object payload 'oHnIS nov pagh",
+              "tr" => "Sınıf nesnesi yükü, bless edilmemiş bir başvuru olmalıdır",
+              "uk" => "Вміст об’єкта класу має бути незаблагословленим посиланням",
+              "zh" => "类对象的载荷必须是未祝福的引用"
             },
             "args" => []
           },
@@ -38300,9 +38502,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "يجب أن يكون \$self في لقطة كائن الصنف مرجعًا مُسنَدًا إلى صنف",
+              "cy" => "Rhaid i giplun gwrthrych dosbarth \$self fod yn gyfeirnod bendithiedig",
+              "de" => "Der Schnappschuss des Klassenobjekts \$self muss eine gesegnete Referenz sein",
               "en" => "Class object snapshot \$self must be a blessed reference",
+              "es" => "La instantánea del objeto de clase \$self debe ser una referencia bendecida",
+              "fa" => "تصویر لحظه\N{ZERO WIDTH NON-JOINER}ای شیء کلاس، \$self، باید یک ارجاع blessed باشد",
+              "fi" => "Luokkaolion tilannekuvan \$self on oltava siunattu viittaus",
+              "fr" => "L’instantané de l’objet classe \$self doit être une référence bénie",
+              "he" => "תמונת המצב של אובייקט המחלקה \$self חייבת להיות הפניה מבורכת",
+              "hu" => "A \$self osztályobjektum-pillanatképnek bless-elt referenciának kell lennie",
+              "is" => "Skyndimynd klasahlutarins \$self verður að vera blessuð tilvísun",
+              "it" => "Lo snapshot dell'oggetto classe \$self deve essere un riferimento benedetto",
+              "nl" => "De snapshot van het klasseobject \$self moet een blessed reference zijn",
               "pl" => "Migawka obiektu klasy \$self musi być obdarowaną błogosławieństwem referencją",
-              "tlh" => "Class object snapshot \$self nov naQ 'oHnIS"
+              "pt" => "O snapshot do objeto de classe \$self tem de ser uma referência abençoada",
+              "ru" => "Снимок объекта класса \$self должен быть благословлённой ссылкой",
+              "sr" => "Снимак објекта класе \$self мора бити благословљена референца",
+              "tlh" => "Class object snapshot \$self nov naQ 'oHnIS",
+              "tr" => "Sınıf nesnesinin anlık görüntüsü \$self, bless edilmiş bir başvuru olmalıdır",
+              "uk" => "Знімок об’єкта класу \$self має бути благословленим посиланням",
+              "zh" => "类对象快照 \$self 必须是已祝福的引用"
             },
             "args" => []
           },
@@ -39096,9 +39316,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "الحقل %{field} ذو السمة :inherited يتطلب سلفًا من صنف، ولا يجوز أن يكون له مُهيّئ أو :param أو :private أو قيمة سمة، كما لا يجوز تكرار :inherited",
+              "cy" => "Ni all maes %{field} ag :inherited gael ymgychwynnydd, :param, :private, gwerth priodoledd, na :inherited wedi'i ailadrodd; mae angen iddo gael hynafiad dosbarth",
+              "de" => "Das Feld %{field} mit :inherited erfordert einen Klassen-Vorfahren und darf keinen Initialisierer, kein :param, kein :private, keinen Attributwert und kein wiederholtes :inherited haben",
               "en" => "Field %{field} with :inherited requires a class ancestor and cannot have an initializer, :param, :private, an attribute value, or repeated :inherited",
+              "es" => "El campo %{field} con :inherited requiere una clase antecesora y no puede tener un inicializador, :param, :private, un valor de atributo ni :inherited repetido",
+              "fa" => "فیلد %{field} با ویژگی :inherited به یک نیای کلاسی نیاز دارد و نمی\N{ZERO WIDTH NON-JOINER}تواند مقداردهی اولیه شود، :param یا :private داشته باشد، مقدار ویژگی داشته باشد یا :inherited آن تکرار شود",
+              "fi" => "Kenttä %{field}, jolla on :inherited, vaatii luokka-esi-isän. Sillä ei voi olla alustajaa, :param-, :private- tai arvo-attribuuttia eikä toistettua :inherited-attribuuttia",
+              "fr" => "Le champ %{field} avec :inherited nécessite un ancêtre de classe et ne peut avoir ni initialiseur, ni :param, ni :private, ni valeur d’attribut, ni répétition de :inherited",
+              "he" => "לשדה %{field} עם :inherited נדרש אב בהיררכיית המחלקות, ואסור שיהיו לו אתחול, :param, :private, ערך תכונה או :inherited חוזר",
+              "hu" => "A %{field} mező :inherited attribútummal osztálybeli őst igényel, és nem lehet inicializálója, :param, :private attribútuma, attribútumértéke vagy ismételt :inherited attribútuma",
+              "is" => "Reiturinn %{field} með :inherited krefst forföðurklasa og má ekki hafa frumstilligildi, :param, :private, eigindagildi eða endurtekið :inherited",
+              "it" => "Il campo %{field} con :inherited richiede un antenato di classe e non può avere un inizializzatore, :param, :private, un valore di attributo o :inherited ripetuto",
+              "nl" => "Veld %{field} met :inherited vereist een klasse als voorouder en mag geen initializer, :param, :private, attribuutwaarde of herhaalde :inherited hebben",
               "pl" => "Pole %{field} z atrybutem :inherited wymaga przodka będącego klasą i nie może mieć inicjalizatora, atrybutu :param, :private, wartości atrybutu ani powtórzonego :inherited",
-              "tlh" => ":inherited ghajbogh vay' %{field} Segh ancestor poQ; initializer, :param, :private, attribute value pagh :inheritedqa' ghajlaHbe'"
+              "pt" => "O campo %{field} com :inherited requer um antepassado de classe e não pode ter um inicializador, :param, :private, um valor de atributo nem :inherited repetido",
+              "ru" => "Поле %{field} с атрибутом :inherited требует класс-предок и не может иметь инициализатор, :param, :private, значение атрибута или повторный :inherited",
+              "sr" => "Поље %{field} са атрибутом :inherited захтева претка класе и не може имати иницијализатор, :param, :private, вредност атрибута нити поновљени :inherited",
+              "tlh" => ":inherited ghajbogh vay' %{field} Segh ancestor poQ; initializer, :param, :private, attribute value pagh :inheritedqa' ghajlaHbe'",
+              "tr" => ":inherited içeren %{field} alanı bir sınıf ata gerektirir; başlatıcı, :param, :private, öznitelik değeri veya yinelenen :inherited içeremez",
+              "uk" => "Поле %{field} з атрибутом :inherited потребує предка-класу й не може мати ініціалізатора, :param, :private, значення атрибута або повторного :inherited",
+              "zh" => "带有 :inherited 的字段 %{field} 必须有类祖先，且不能有初始化器、:param、:private、属性值或重复的 :inherited"
             },
             "args" => [
               {
@@ -39363,9 +39601,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "الحقل %{field} ذو السمة :private لا يجوز أن تكون له قيمة سمة أو أن تتكرر فيه :private أو أن يحمل السمة :inherited",
+              "cy" => "Ni all maes %{field} ag :private gael gwerth priodoledd, :private wedi'i ailadrodd, na :inherited",
+              "de" => "Das Feld %{field} mit :private darf keinen Attributwert, kein wiederholtes :private und kein :inherited haben",
               "en" => "Field %{field} with :private cannot have an attribute value, repeated :private, or :inherited",
+              "es" => "El campo %{field} con :private no puede tener un valor de atributo, :private repetido ni :inherited",
+              "fa" => "فیلد %{field} با ویژگی :private نمی\N{ZERO WIDTH NON-JOINER}تواند مقدار ویژگی داشته باشد، :private آن تکرار شود یا :inherited داشته باشد",
+              "fi" => "Kentällä %{field}, jolla on :private, ei voi olla arvo-attribuuttia, toistettua :private-attribuuttia eikä :inherited-attribuuttia",
+              "fr" => "Le champ %{field} avec :private ne peut avoir ni valeur d’attribut, ni répétition de :private, ni :inherited",
+              "he" => "לשדה %{field} עם :private אסורים ערך תכונה, :private חוזר או :inherited",
+              "hu" => "A %{field} mező :private attribútummal nem kaphat attribútumértéket, ismételt :private vagy :inherited attribútumot",
+              "is" => "Reiturinn %{field} með :private má ekki hafa eigindagildi, endurtekið :private eða :inherited",
+              "it" => "Il campo %{field} con :private non può avere un valore di attributo, :private ripetuto o :inherited",
+              "nl" => "Veld %{field} met :private mag geen attribuutwaarde, herhaalde :private of :inherited hebben",
               "pl" => "Pole %{field} z atrybutem :private nie może mieć wartości atrybutu, powtórzonego :private ani :inherited",
-              "tlh" => ":private ghajbogh vay' %{field} attribute value, :privateqa', pagh :inherited ghajlaHbe'"
+              "pt" => "O campo %{field} com :private não pode ter um valor de atributo, :private repetido nem :inherited",
+              "ru" => "Поле %{field} с атрибутом :private не может иметь значение атрибута, повторный :private или :inherited",
+              "sr" => "Поље %{field} са атрибутом :private не може имати вредност атрибута, поновљени :private нити :inherited",
+              "tlh" => ":private ghajbogh vay' %{field} attribute value, :privateqa', pagh :inherited ghajlaHbe'",
+              "tr" => ":private içeren %{field} alanında öznitelik değeri, yinelenen :private veya :inherited bulunamaz",
+              "uk" => "Поле %{field} з атрибутом :private не може мати значення атрибута, повторного :private або :inherited",
+              "zh" => "带有 :private 的字段 %{field} 不能有属性值、重复的 :private 或 :inherited"
             },
             "args" => [
               {
@@ -39494,9 +39750,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "للحقل الموروث %{field} إعلانات ملتبسة لدى الأسلاف",
+              "cy" => "Mae datganiadau hynafiaid maes etifeddol %{field} yn amwys",
+              "de" => "Das geerbte Feld %{field} hat mehrdeutige Deklarationen in Vorfahren",
               "en" => "Inherited field %{field} has ambiguous ancestor declarations",
+              "es" => "El campo heredado %{field} tiene declaraciones ambiguas en sus clases antecesoras",
+              "fa" => "اعلان\N{ZERO WIDTH NON-JOINER}های فیلد ارث\N{ZERO WIDTH NON-JOINER}بری\N{ZERO WIDTH NON-JOINER}شدهٔ %{field} در اجداد مبهم هستند",
+              "fi" => "Perityllä kentällä %{field} on monitulkintaiset esi-isämäärittelyt",
+              "fr" => "Le champ hérité %{field} a des déclarations d’ancêtres ambiguës",
+              "he" => "לשדה המורש %{field} יש הצהרות עמומות אצל אבותיו",
+              "hu" => "A %{field} örökölt mező deklarációja több ősben is szerepel, ezért nem egyértelmű",
+              "is" => "Erfði reiturinn %{field} er með tvíræðar yfirlýsingar hjá forfeðrum",
+              "it" => "Il campo ereditato %{field} ha dichiarazioni ambigue tra gli antenati",
+              "nl" => "Het overgeërfde veld %{field} heeft dubbelzinnige declaraties in voorouders",
               "pl" => "Odziedziczone pole %{field} ma niejednoznaczne deklaracje u przodków",
-              "tlh" => "Inherited vay' %{field} pongta'bogh ancestor law' tu'lu'"
+              "pt" => "O campo herdado %{field} tem declarações ambíguas nos antepassados",
+              "ru" => "Унаследованное поле %{field} объявлено неоднозначно в классах-предках",
+              "sr" => "Наслеђено поље %{field} има двосмислене декларације предака",
+              "tlh" => "Inherited vay' %{field} pongta'bogh ancestor law' tu'lu'",
+              "tr" => "Devralınan %{field} alanının ata bildirimleri belirsiz",
+              "uk" => "Успадковане поле %{field} має неоднозначні оголошення в предках",
+              "zh" => "继承字段 %{field} 的祖先声明不明确"
             },
             "args" => [
               {
@@ -39528,9 +39802,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "لا يعلن أي سلف عن الحقل الموروث %{field}",
+              "cy" => "Nid oes unrhyw hynafiad yn datgan maes etifeddol %{field}",
+              "de" => "Kein Vorfahr deklariert das geerbte Feld %{field}",
               "en" => "No ancestor declares inherited field %{field}",
+              "es" => "Ninguna clase antecesora declara el campo heredado %{field}",
+              "fa" => "هیچ نیایی فیلد ارث\N{ZERO WIDTH NON-JOINER}بری\N{ZERO WIDTH NON-JOINER}شدهٔ %{field} را اعلان نکرده است",
+              "fi" => "Yksikään esi-isä ei määritä perittyä kenttää %{field}",
+              "fr" => "Aucun ancêtre ne déclare le champ hérité %{field}",
+              "he" => "אף אב אינו מצהיר על השדה המורש %{field}",
+              "hu" => "Egyetlen ős sem deklarálja a(z) %{field} örökölt mezőt",
+              "is" => "Enginn forfaðir lýsir yfir erfða reitnum %{field}",
+              "it" => "Nessun antenato dichiara il campo ereditato %{field}",
+              "nl" => "Geen voorouder declareert het overgeërfde veld %{field}",
               "pl" => "Żaden przodek nie deklaruje odziedziczonego pola %{field}",
-              "tlh" => "ancestor pagh inherited vay' %{field} pong"
+              "pt" => "Nenhum antepassado declara o campo herdado %{field}",
+              "ru" => "Ни один класс-предок не объявляет унаследованное поле %{field}",
+              "sr" => "Ниједан предак не декларише наслеђено поље %{field}",
+              "tlh" => "ancestor pagh inherited vay' %{field} pong",
+              "tr" => "Hiçbir ata, devralınan %{field} alanını bildirmiyor",
+              "uk" => "Жоден предок не оголошує успадковане поле %{field}",
+              "zh" => "没有祖先声明继承字段 %{field}"
             },
             "args" => [
               {
@@ -39562,9 +39854,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "مالك التخزين للحقل الموروث %{field} غير موجود في تسلسل أصناف الكائن",
+              "cy" => "Nid yw perchennog storfa maes etifeddol %{field} yn bresennol yn hierarchaeth y gwrthrych",
+              "de" => "Der Speicherbesitzer des geerbten Felds %{field} ist nicht in der Objekthierarchie vorhanden",
               "en" => "Storage owner of inherited field %{field} is absent from the object hierarchy",
+              "es" => "El propietario del almacenamiento del campo heredado %{field} no está en la jerarquía del objeto",
+              "fa" => "مالک فضای ذخیره\N{ZERO WIDTH NON-JOINER}سازی فیلد ارث\N{ZERO WIDTH NON-JOINER}بری\N{ZERO WIDTH NON-JOINER}شدهٔ %{field} در سلسله\N{ZERO WIDTH NON-JOINER}مراتب اشیا وجود ندارد",
+              "fi" => "Perityn kentän %{field} tallennustilan omistaja puuttuu objektihierarkiasta",
+              "fr" => "Le propriétaire du stockage du champ hérité %{field} est absent de la hiérarchie d’objets",
+              "he" => "בעל האחסון של השדה המורש %{field} אינו נמצא בהיררכיית האובייקטים",
+              "hu" => "A %{field} örökölt mező tárolásának tulajdonosa nincs jelen az objektumhierarchiában",
+              "is" => "Eigandi geymslu fyrir erfða reitinn %{field} er ekki í stigveldi hlutarins",
+              "it" => "Il proprietario dell'archiviazione del campo ereditato %{field} è assente dalla gerarchia dell'oggetto",
+              "nl" => "De opslaghouder van het overgeërfde veld %{field} ontbreekt in de objecthiërarchie",
               "pl" => "Brak właściciela pamięci pola dziedziczonego %{field} w hierarchii obiektów",
-              "tlh" => "Object tay'ghachDaq inherited vay' %{field} storage owner tu'lu'be'"
+              "pt" => "O proprietário do armazenamento do campo herdado %{field} não está presente na hierarquia do objeto",
+              "ru" => "В иерархии объектов отсутствует владелец хранилища унаследованного поля %{field}",
+              "sr" => "Власник складишта наслеђеног поља %{field} није присутан у хијерархији објеката",
+              "tlh" => "Object tay'ghachDaq inherited vay' %{field} storage owner tu'lu'be'",
+              "tr" => "Devralınan %{field} alanının depolama sahibi nesne hiyerarşisinde bulunmuyor",
+              "uk" => "Власник сховища успадкованого поля %{field} відсутній в ієрархії об’єктів",
+              "zh" => "继承字段 %{field} 的存储所有者不在对象层次结构中"
             },
             "args" => [
               {
@@ -39596,9 +39906,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "حقل السلف %{field} خاص ولا يمكن توريثه",
+              "cy" => "Mae maes hynafiad %{field} yn breifat ac ni ellir ei etifeddu",
+              "de" => "Das Feld %{field} eines Vorfahren ist privat und kann nicht vererbt werden",
               "en" => "Ancestor field %{field} is private and cannot be inherited",
+              "es" => "El campo %{field} de la clase antecesora es privado y no se puede heredar",
+              "fa" => "فیلد %{field} در نیای کلاس خصوصی است و نمی\N{ZERO WIDTH NON-JOINER}توان آن را به ارث برد",
+              "fi" => "Esi-isän kenttä %{field} on yksityinen eikä sitä voi periä",
+              "fr" => "Le champ %{field} de l’ancêtre est privé et ne peut pas être hérité",
+              "he" => "השדה %{field} של האב הוא פרטי ואי אפשר לרשת אותו",
+              "hu" => "A %{field} mező az ősosztályban privát, ezért nem örökölhető",
+              "is" => "Reitur forföðurins %{field} er einkareitur og ekki er hægt að erfa hann",
+              "it" => "Il campo %{field} dell'antenato è privato e non può essere ereditato",
+              "nl" => "Het veld %{field} van de voorouder is private en kan niet worden overgeërfd",
               "pl" => "Pole %{field} przodka jest prywatne i nie można go dziedziczyć",
-              "tlh" => "Ancestor vay' %{field} So'lu'; inherited chenmoHlaHbe'"
+              "pt" => "O campo %{field} do antepassado é privado e não pode ser herdado",
+              "ru" => "Поле %{field} в классе-предке является закрытым и не может наследоваться",
+              "sr" => "Поље %{field} претка је приватно и не може се наследити",
+              "tlh" => "Ancestor vay' %{field} So'lu'; inherited chenmoHlaHbe'",
+              "tr" => "Ata sınıfındaki %{field} alanı özeldir ve devralınamaz",
+              "uk" => "Поле %{field} предка є приватним, тому його не можна успадкувати",
+              "zh" => "祖先字段 %{field} 是私有字段，不能继承"
             },
             "args" => [
               {
@@ -39630,9 +39958,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "حُرّر مخزن الصنف أثناء تهيئة الحقل",
+              "cy" => "Rhyddhawyd storfa'r dosbarth wrth ymgychwyn maes",
+              "de" => "Der Klassenspeicher wurde während der Feldinitialisierung freigegeben",
               "en" => "Class storage was released during field initialization",
+              "es" => "El almacenamiento de clase se liberó durante la inicialización del campo",
+              "fa" => "فضای ذخیره\N{ZERO WIDTH NON-JOINER}سازی کلاس هنگام مقداردهی اولیهٔ فیلد آزاد شد",
+              "fi" => "Luokan tallennustila vapautettiin kentän alustuksen aikana",
+              "fr" => "Le stockage de classe a été libéré pendant l’initialisation d’un champ",
+              "he" => "אחסון המחלקה שוחרר במהלך אתחול השדה",
+              "hu" => "Az osztály tárolója felszabadult a mező inicializálása közben",
+              "is" => "Klasageymsla var losuð við frumstillingu reits",
+              "it" => "L'archiviazione della classe è stata rilasciata durante l'inizializzazione del campo",
+              "nl" => "De klasseopslag is vrijgegeven tijdens de veldinitialisatie",
               "pl" => "Pamięć klasy została zwolniona podczas inicjalizacji pola",
-              "tlh" => "vay' chenmoHtaHvIS Segh storage releSlu'"
+              "pt" => "O armazenamento da classe foi libertado durante a inicialização de um campo",
+              "ru" => "Хранилище класса было освобождено во время инициализации поля",
+              "sr" => "Складиште класе је ослобођено током иницијализације поља",
+              "tlh" => "vay' chenmoHtaHvIS Segh storage releSlu'",
+              "tr" => "Alan başlatılırken sınıf depolaması serbest bırakıldı",
+              "uk" => "Сховище класу було звільнено під час ініціалізації поля",
+              "zh" => "字段初始化期间类存储已被释放"
             },
             "args" => []
           },
@@ -40058,9 +40404,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "لا يمكن استدعاء طريقة حديثة من دون تهيئة مخزن الصنف",
+              "cy" => "Ni ellir galw dull modern heb storfa dosbarth wedi'i hymgychwyn",
+              "de" => "Eine moderne Methode kann ohne initialisierten Klassenspeicher nicht aufgerufen werden",
               "en" => "Cannot invoke a modern method without initialized class storage",
+              "es" => "No se puede invocar un método moderno sin almacenamiento de clase inicializado",
+              "fa" => "بدون فضای ذخیره\N{ZERO WIDTH NON-JOINER}سازی مقداردهی\N{ZERO WIDTH NON-JOINER}شدهٔ کلاس، نمی\N{ZERO WIDTH NON-JOINER}توان متد مدرن را فراخوانی کرد",
+              "fi" => "Modernia metodia ei voi kutsua ilman alustettua luokan tallennustilaa",
+              "fr" => "Impossible d’invoquer une méthode moderne sans stockage de classe initialisé",
+              "he" => "אי אפשר להפעיל מתודה מודרנית ללא אחסון מחלקה מאותחל",
+              "hu" => "Inicializált osztálytároló nélkül nem hívható meg modern metódus",
+              "is" => "Ekki er hægt að kalla á nútímalega aðferð án frumstilltrar klasageymslu",
+              "it" => "Impossibile invocare un metodo moderno senza che l'archiviazione della classe sia inizializzata",
+              "nl" => "Een moderne methode kan niet worden aangeroepen zonder geïnitialiseerde klasseopslag",
               "pl" => "Nie można wywołać nowoczesnej metody bez zainicjalizowanego magazynu klasy",
-              "tlh" => "chenmoHta' Segh storage Hutlhchugh modern mIw lo'laHbe'"
+              "pt" => "Não é possível invocar um método moderno sem o armazenamento da classe inicializado",
+              "ru" => "Нельзя вызвать современный метод без инициализированного хранилища класса",
+              "sr" => "Није могуће позвати модерну методу без иницијализованог складишта класе",
+              "tlh" => "chenmoHta' Segh storage Hutlhchugh modern mIw lo'laHbe'",
+              "tr" => "Sınıf depolaması başlatılmadan modern bir yöntem çağrılamaz",
+              "uk" => "Не можна викликати сучасний метод без ініціалізованого сховища класу",
+              "zh" => "类存储未初始化时，无法调用现代方法"
             },
             "args" => []
           },
@@ -44647,9 +45011,89 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => {
+                "method" => "تعريف multi-method %{name} غير مكتمل",
+                "sub" => "تعريف multi-sub %{name} غير مكتمل"
+              },
+              "cy" => {
+                "method" => "Nid yw multi method %{name} yn gyflawn",
+                "sub" => "Nid yw multi sub %{name} yn gyflawn"
+              },
+              "de" => {
+                "method" => "Die Multi-Methode %{name} ist nicht vollständig",
+                "sub" => "Die Multi-Subroutine %{name} ist nicht vollständig"
+              },
               "en" => {
                 "method" => "Multi-method %{name} is not complete",
                 "sub" => "Multi-sub %{name} is not complete"
+              },
+              "es" => {
+                "method" => "El método multi %{name} no está completo",
+                "sub" => "La sub multi %{name} no está completa"
+              },
+              "fa" => {
+                "method" => "متد چندگانهٔ %{name} کامل نیست",
+                "sub" => "زیرروال چندگانهٔ %{name} کامل نیست"
+              },
+              "fi" => {
+                "method" => "Multimetodi %{name} ei ole täydellinen",
+                "sub" => "Multialiohjelma %{name} ei ole täydellinen"
+              },
+              "fr" => {
+                "method" => "La multi-méthode %{name} est incomplète",
+                "sub" => "Le multi-sub %{name} est incomplet"
+              },
+              "he" => {
+                "method" => "ה־multi-method %{name} אינו שלם",
+                "sub" => "ה־multi-sub %{name} אינו שלם"
+              },
+              "hu" => {
+                "method" => "A(z) %{name} nevű multimethod hiányos",
+                "sub" => "A(z) %{name} nevű multisub hiányos"
+              },
+              "is" => {
+                "method" => "Multi-method %{name} er ekki fullgerð",
+                "sub" => "Multi-sub %{name} er ekki fullgerð"
+              },
+              "it" => {
+                "method" => "Il multimethod %{name} non è completo",
+                "sub" => "La multisub %{name} non è completa"
+              },
+              "nl" => {
+                "method" => "Multi-methode %{name} is niet compleet",
+                "sub" => "Multi-sub %{name} is niet compleet"
+              },
+              "pl" => {
+                "method" => "Multi-method %{name} nie jest kompletna",
+                "sub" => "Multi-sub %{name} nie jest kompletna"
+              },
+              "pt" => {
+                "method" => "O multi-método %{name} não está completo",
+                "sub" => "A multisub %{name} não está completa"
+              },
+              "ru" => {
+                "method" => "Мультиметод %{name} задан не полностью",
+                "sub" => "Мультисуб %{name} задана не полностью"
+              },
+              "sr" => {
+                "method" => "multi method %{name} није потпун",
+                "sub" => "multi sub %{name} није потпун"
+              },
+              "tlh" => {
+                "method" => "Multi-method %{name} is not complete",
+                "sub" => "Multi-sub %{name} is not complete"
+              },
+              "tr" => {
+                "method" => "Çoklu yöntem %{name} tamamlanmamış",
+                "sub" => "Çoklu alt yordam %{name} tamamlanmamış"
+              },
+              "uk" => {
+                "method" => "Multi-метод %{name} не є повним",
+                "sub" => "Multi-підпрограма %{name} не є повною"
+              },
+              "zh" => {
+                "method" => "Multi-method %{name} 不完整",
+                "sub" => "Multi-sub %{name} 不完整"
               }
             },
             "args" => [
@@ -44686,7 +45130,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "No matching clause for multi %{name}"
+              "ar" => "لا يوجد بند مطابق لـ multi %{name}",
+              "cy" => "Dim cymal cyfatebol ar gyfer multi %{name}",
+              "de" => "Keine passende Klausel für multi %{name}",
+              "en" => "No matching clause for multi %{name}",
+              "es" => "Ninguna cláusula coincide con multi %{name}",
+              "fa" => "هیچ بند منطبقی برای multi %{name} پیدا نشد",
+              "fi" => "Mikään multi-ilmoituksen %{name} haara ei vastaa argumentteja",
+              "fr" => "Aucune clause correspondante pour le multi %{name}",
+              "he" => "אין סעיף מתאים עבור multi %{name}",
+              "hu" => "Nincs illeszkedő ág a(z) %{name} nevű multi deklarációhoz",
+              "is" => "Engin samsvarandi grein fyrir multi %{name}",
+              "it" => "Nessuna clausola corrispondente per il multi %{name}",
+              "nl" => "Geen overeenkomende clausule voor multi %{name}",
+              "pl" => "Brak pasującej klauzuli dla multi %{name}",
+              "pt" => "Nenhuma cláusula correspondente para multi %{name}",
+              "ru" => "Нет подходящей ветви для multi %{name}",
+              "sr" => "Нема одговарајуће клаузуле за multi %{name}",
+              "tlh" => "No matching clause for multi %{name}",
+              "tr" => "multi %{name} için eşleşen bir dal yok",
+              "uk" => "Немає відповідного пункту для multi %{name}",
+              "zh" => "没有与 multi %{name} 匹配的子句"
             },
             "args" => [
               {
@@ -45667,24 +46131,24 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "حُوصر العامل '%{arg1}' بقناع العمليات",
+              "ar" => "حُوصر '%{arg1}' بقناع العمليات",
               "cy" => "Rhwystrwyd '%{arg1}' gan y masg gweithrediadau",
               "de" => "'%{arg1}' wurde durch die Operationsmaske abgefangen",
               "en" => "'%{arg1}' trapped by operation mask",
               "es" => "La máscara de operaciones bloqueó '%{arg1}'",
-              "fa" => "«%{arg1}» با ماسک عملیات مسدود شد.",
-              "fi" => "Operaatiomaski esti operaation '%{arg1}'",
+              "fa" => "«%{arg1}» به\N{ZERO WIDTH NON-JOINER}دلیل ماسک عملیات مسدود شد.",
+              "fi" => "Operaatiomaski esti operaation ”%{arg1}”",
               "fr" => "'%{arg1}' intercepté par le masque d'opérations",
               "he" => "מסכת הפעולות חסמה את '%{arg1}'",
-              "hu" => "A műveleti maszk letiltotta: '%{arg1}'",
+              "hu" => "A(z) „%{arg1}” műveleti maszk általi csapdába ejtést szenvedett",
               "is" => "'%{arg1}' stöðvaðist af aðgerðagrímu",
               "it" => "'%{arg1}' bloccato dalla maschera delle operazioni",
               "nl" => "'%{arg1}' wordt geblokkeerd door het operatiemasker",
               "pl" => "Operator '%{arg1}' został zablokowany przez maskę operacji",
               "pt" => "'%{arg1}' foi bloqueado pela máscara de operações",
               "ru" => "Маска операций запрещает следующую операцию: '%{arg1}'",
-              "sr" => "Оператор „%{arg1}“ је ухваћен маском оператора",
-              "tlh" => "'%{arg1}' trapped by operation mask",
+              "sr" => "Оператор „%{arg1}“ ухваћен маском оператора",
+              "tlh" => "' %{arg1} trapped by operation mask",
               "tr" => "'%{arg1}' işlem maskesi tarafından engellendi",
               "uk" => "Операцію заблоковано маскою операцій: '%{arg1}'",
               "zh" => "'%{arg1}' 被操作掩码拦截"
@@ -49666,7 +50130,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "dispatch pattern nested more than %{max} levels deep"
+              "ar" => "تداخل نمط dispatch أعمق من %{max} مستوى",
+              "cy" => "patrwm dispatch wedi’i nythu’n ddyfnach na %{max} lefel",
+              "de" => "Das dispatch-Muster ist mehr als %{max} Ebenen tief verschachtelt",
+              "en" => "dispatch pattern nested more than %{max} levels deep",
+              "es" => "el patrón dispatch tiene formas anidadas a más de %{max} niveles de profundidad",
+              "fa" => "الگوی dispatch بیش از %{max} سطح تو در تو شده است",
+              "fi" => "dispatch-kuvion sisäkkäisyys ylittää %{max} tasoa",
+              "fr" => "Le motif dispatch imbrique des formes à une profondeur supérieure à %{max} niveaux",
+              "he" => "תבנית dispatch מקוננת לעומק של יותר מ־%{max} רמות",
+              "hu" => "A dispatch mintája %{max} szintnél mélyebben van beágyazva",
+              "is" => "Mynstur dispatch er hreiðrað dýpra en %{max} stig",
+              "it" => "Il pattern dispatch annida forme più di %{max} livelli",
+              "nl" => "Het geneste patroon van de dispatch is meer dan %{max} niveaus diep",
+              "pl" => "Wzorzec dispatch zawiera zagnieżdżone struktury na głębokość większą niż %{max} poziomów",
+              "pt" => "padrão de dispatch aninhado mais de %{max} níveis",
+              "ru" => "Вложенность шаблона dispatch превышает %{max} уровней",
+              "sr" => "Образац dispatch-а угнежђен је више од %{max} нивоа",
+              "tlh" => "dispatch pattern nested more than %{max} levels deep",
+              "tr" => "dispatch deseni %{max} düzeyden daha derine iç içe geçmiş",
+              "uk" => "Вкладений шаблон dispatch перевищує максимальну глибину %{max} рівнів",
+              "zh" => "dispatch 模式嵌套超过 %{max} 层"
             },
             "args" => [
               {
@@ -50584,7 +51068,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Cannot mix declaration kinds for %{name}"
+              "ar" => "لا يمكن خلط أنواع التصريحات لـ %{name}",
+              "cy" => "Ni ellir cymysgu mathau o ddatganiad ar gyfer %{name}",
+              "de" => "Für %{name} können keine verschiedenen Deklarationsarten gemischt werden",
+              "en" => "Cannot mix declaration kinds for %{name}",
+              "es" => "No se pueden mezclar tipos de declaración para %{name}",
+              "fa" => "نمی\N{ZERO WIDTH NON-JOINER}توان نوع اعلان\N{ZERO WIDTH NON-JOINER}ها را برای %{name} با هم ترکیب کرد",
+              "fi" => "Nimen %{name} ilmoitustyyppejä ei voi sekoittaa",
+              "fr" => "Impossible de mélanger les types de déclaration pour %{name}",
+              "he" => "אי אפשר לערבב סוגי הצהרה עבור %{name}",
+              "hu" => "Nem keverhetők a deklarációtípusok ennél: %{name}",
+              "is" => "Ekki er hægt að blanda saman tegundum yfirlýsinga fyrir %{name}",
+              "it" => "Impossibile mescolare i tipi di dichiarazione per %{name}",
+              "nl" => "Declaratiesoorten voor %{name} kunnen niet worden gecombineerd",
+              "pl" => "Nie można mieszać rodzajów deklaracji dla %{name}",
+              "pt" => "Não é possível misturar tipos de declaração para %{name}",
+              "ru" => "Нельзя смешивать виды объявлений для %{name}",
+              "sr" => "Није могуће мешати врсте декларација за %{name}",
+              "tlh" => "Cannot mix declaration kinds for %{name}",
+              "tr" => "%{name} için bildirim türleri karıştırılamaz",
+              "uk" => "Не можна змішувати види оголошень для %{name}",
+              "zh" => "不能混用 %{name} 的声明类型"
             },
             "args" => [
               {
@@ -50611,7 +51115,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "A multi declaration requires sub or method, a name, and a parenthesized pattern list"
+              "ar" => "يتطلب تصريح multi الكلمة الفرعية sub أو method، واسمًا، وقائمة أنماط بين قوسين",
+              "cy" => "Mae datganiad multi yn gofyn am sub neu method, enw, a rhestr batrymau mewn cromfachau",
+              "de" => "Eine multi-Deklaration erfordert sub oder method, einen Namen und eine Musterliste in runden Klammern",
+              "en" => "A multi declaration requires sub or method, a name, and a parenthesized pattern list",
+              "es" => "Una declaración multi requiere sub o method, un nombre y una lista de patrones entre paréntesis",
+              "fa" => "اعلان multi به sub یا method، یک نام و فهرستی از الگوها درون پرانتز نیاز دارد",
+              "fi" => "multi-ilmoituksessa on oltava sub tai method, nimi ja sulkeissa oleva kuvioluettelo",
+              "fr" => "Une déclaration multi nécessite sub ou method, un nom et une liste de motifs entre parenthèses",
+              "he" => "הצהרת multi מחייבת sub או method, שם, ורשימת תבניות בסוגריים",
+              "hu" => "A multi deklarációhoz sub vagy method, egy név és egy zárójelezett mintalista szükséges",
+              "is" => "multi-yfirlýsing krefst sub eða method, heitis og lista mynstra innan sviga",
+              "it" => "Una dichiarazione multi richiede sub o method, un nome e un elenco di pattern tra parentesi",
+              "nl" => "Een multi-declaratie vereist sub of method, een naam en een lijst met patronen tussen haakjes",
+              "pl" => "Deklaracja multi wymaga słowa sub lub method, nazwy i ujętej w nawiasy listy wzorców",
+              "pt" => "Uma declaração multi exige sub ou method, um nome e uma lista de padrões entre parênteses",
+              "ru" => "В объявлении multi должны быть указаны sub или method, имя и список шаблонов в круглых скобках",
+              "sr" => "Декларација multi захтева sub или method, име и листу образаца у заградама",
+              "tlh" => "A multi declaration requires sub or method, a name, and a parenthesized pattern list",
+              "tr" => "Bir multi bildirimi sub veya method, bir ad ve parantez içinde bir desen listesi gerektirir",
+              "uk" => "Оголошення multi має містити sub або method, назву та список шаблонів у дужках",
+              "zh" => "multi 声明必须包含 sub 或 method、名称以及带括号的模式列表"
             },
             "args" => []
           },
@@ -50678,7 +51202,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Multisub definitions for %{name} must share a lexical scope"
+              "ar" => "يجب أن تشترك تعريفات multisub لـ %{name} في نطاق معجمي واحد",
+              "cy" => "Rhaid i ddiffiniadau multi sub ar gyfer %{name} rannu cwmpas geirfaol",
+              "de" => "Die Multisub-Definitionen für %{name} müssen denselben lexikalischen Gültigkeitsbereich haben",
+              "en" => "Multisub definitions for %{name} must share a lexical scope",
+              "es" => "Las definiciones de multisub para %{name} deben compartir un ámbito léxico",
+              "fa" => "تعریف\N{ZERO WIDTH NON-JOINER}های multisub برای %{name} باید در یک حوزهٔ واژگانی مشترک باشند",
+              "fi" => "Nimen %{name} multisub-määritelmien on oltava samalla leksikaalisella näkyvyysalueella",
+              "fr" => "Les définitions multisub de %{name} doivent partager une portée lexicale",
+              "he" => "ההגדרות של multisub בשם %{name} חייבות להיות באותו תחום לקסיקלי",
+              "hu" => "A %{name} többes sub definícióinak azonos lexikai hatókörben kell lenniük",
+              "is" => "Skilgreiningar á multisub %{name} verða að vera í sama lexical-sviði",
+              "it" => "Le definizioni di multisub per %{name} devono condividere lo stesso ambito lessicale",
+              "nl" => "Multisubdefinities voor %{name} moeten dezelfde lexicale scope hebben",
+              "pl" => "Definicje multisub %{name} muszą należeć do tego samego zakresu leksykalnego",
+              "pt" => "As definições de multisub de %{name} devem compartilhar um escopo léxico",
+              "ru" => "Определения multisub для %{name} должны находиться в одной лексической области видимости",
+              "sr" => "Дефиниције multi sub за %{name} морају бити у истом лексичком опсегу",
+              "tlh" => "Multisub definitions for %{name} must share a lexical scope",
+              "tr" => "%{name} için çoklu alt yordam tanımları aynı sözcüksel kapsamda olmalıdır",
+              "uk" => "Визначення multisub %{name} мають бути в одній лексичній області видимості",
+              "zh" => "%{name} 的 multisub 定义必须位于同一词法作用域"
             },
             "args" => [
               {
@@ -50705,7 +51249,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Multisub %{name} cannot be a phase block"
+              "ar" => "لا يمكن أن يكون multisub %{name} كتلة مرحلة",
+              "cy" => "Ni all multi sub %{name} fod yn floc cyfnod",
+              "de" => "Multisub %{name} kann kein Phasenblock sein",
+              "en" => "Multisub %{name} cannot be a phase block",
+              "es" => "Multisub %{name} no puede ser un bloque de fase",
+              "fa" => "Multisub %{name} نمی\N{ZERO WIDTH NON-JOINER}تواند یک بلوک فاز باشد",
+              "fi" => "Multisub %{name} ei voi olla vaihelohko",
+              "fr" => "Le multisub %{name} ne peut pas être un bloc de phase",
+              "he" => "Multisub %{name} אינו יכול להיות בלוק של שלב",
+              "hu" => "A %{name} nevű multisub nem lehet fázisblokk",
+              "is" => "Multisub %{name} getur ekki verið phase-blokk",
+              "it" => "Il multisub %{name} non può essere un blocco di fase",
+              "nl" => "Multisub %{name} kan geen faseblok zijn",
+              "pl" => "Multisub %{name} nie może być blokiem fazy",
+              "pt" => "Multisub %{name} não pode ser um bloco de fase",
+              "ru" => "Multisub %{name} не может быть фазовым блоком",
+              "sr" => "Декларација multi %{name} не може бити блок фазе",
+              "tlh" => "Multisub %{name} cannot be a phase block",
+              "tr" => "Çoklu alt yordam %{name} bir aşama bloğu olamaz",
+              "uk" => "Multisub %{name} не може бути блоком фази",
+              "zh" => "Multisub %{name} 不能是阶段块"
             },
             "args" => [
               {
@@ -57800,39 +58364,19 @@ $CONF = {
                 "VSTRING" => "No es una referencia de tipo %{reference_type}"
               },
               "fa" => {
-                "*" => "ارجاع از نوع %{reference_type} نیست",
-                "ARRAY" => "ارجاع از نوع %{reference_type} نیست",
-                "INVLIST" => "ارجاع از نوع %{reference_type} نیست",
-                "IO" => "ارجاع از نوع %{reference_type} نیست",
-                "OBJECT" => "ارجاع از نوع %{reference_type} نیست",
-                "UNKNOWN" => "ارجاع از نوع %{reference_type} نیست"
+                "*" => "ارجاع از نوع %{reference_type} نیست"
               },
               "fi" => {
-                "*" => "Ei %{reference_type}-viite",
-                "ARRAY" => "Ei %{reference_type}-viite",
-                "INVLIST" => "Ei %{reference_type}-viite",
-                "IO" => "Ei %{reference_type}-viite",
-                "OBJECT" => "Ei %{reference_type}-viite",
-                "UNKNOWN" => "Ei %{reference_type}-viite"
+                "*" => "Ei %{reference_type}-viite"
               },
               "fr" => {
                 "*" => "Pas une référence %{reference_type}"
               },
               "he" => {
-                "*" => "זו אינה הפניה מסוג %{reference_type}",
-                "ARRAY" => "זו אינה הפניה מסוג %{reference_type}",
-                "INVLIST" => "זו אינה הפניה מסוג %{reference_type}",
-                "IO" => "זו אינה הפניה מסוג %{reference_type}",
-                "OBJECT" => "זו אינה הפניה מסוג %{reference_type}",
-                "UNKNOWN" => "זו אינה הפניה מסוג %{reference_type}"
+                "*" => "זו אינה הפניה מסוג %{reference_type}"
               },
               "hu" => {
-                "*" => "Nem %{reference_type} referenciára mutató referencia",
-                "ARRAY" => "Nem %{reference_type} referenciára mutató referencia",
-                "INVLIST" => "Nem %{reference_type} referenciára mutató referencia",
-                "IO" => "Nem %{reference_type} referenciára mutató referencia",
-                "OBJECT" => "Nem %{reference_type} referenciára mutató referencia",
-                "UNKNOWN" => "Nem %{reference_type} referenciára mutató referencia"
+                "*" => "Nem %{reference_type} típusú referencia"
               },
               "is" => {
                 "*" => "Ekki tilvísun af gerðinni %{reference_type}"
@@ -57879,12 +58423,7 @@ $CONF = {
                 "*" => "Значение не является ссылкой на %{reference_type}"
               },
               "sr" => {
-                "*" => "Није референца типа %{reference_type}",
-                "ARRAY" => "Није референца типа %{reference_type}",
-                "INVLIST" => "Није референца типа %{reference_type}",
-                "IO" => "Није референца типа %{reference_type}",
-                "OBJECT" => "Није референца типа %{reference_type}",
-                "UNKNOWN" => "Није референца типа %{reference_type}"
+                "*" => "Ово није референца типа %{reference_type}"
               },
               "tlh" => {
                 "*" => "not %{reference_type} ref.",
@@ -57899,7 +58438,7 @@ $CONF = {
                 "*" => "Значення не є посиланням типу %{reference_type}"
               },
               "zh" => {
-                "*" => "不是 %{reference_type} 引用"
+                "*" => "不是 %{reference_type} 类型的引用"
               }
             },
             "args" => [
@@ -58068,16 +58607,16 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "تعذّر تحويل %{arg2} إلى سلسلة نصية في %{arg3}",
+              "ar" => "لا يمكن إكراه %{arg2} إلى سلسلة نصية في %{arg3}",
               "cy" => "Ni ellir gorfodi %{arg2} i fod yn llinyn wrth %{arg3}",
               "de" => "%{arg2} kann in %{arg3} nicht in eine Zeichenkette umgewandelt werden",
               "en" => "Can't coerce %{arg2} to string in %{arg3}",
               "es" => "No se puede convertir %{arg2} en cadena en %{arg3}",
               "fa" => "تبدیل %{arg2} به رشته در %{arg3} مجاز نیست.",
-              "fi" => "Arvoa \"%{arg2}\" ei voi muuntaa merkkijonoksi operaatiossa \"%{arg3}\"",
+              "fi" => "Arvoa ”%{arg2}” ei voi muuntaa merkkijonoksi operaatiossa %{arg3}",
               "fr" => "Impossible de convertir %{arg2} en chaîne dans %{arg3}",
               "he" => "אי אפשר להמיר את %{arg2} למחרוזת בהקשר של \"%{arg3}\"",
-              "hu" => "Nem alakítható karakterlánccá %{arg3} során: %{arg2}",
+              "hu" => "A(z) %{arg2} nem alakítható karakterlánccá a(z) %{arg3} műveletben",
               "is" => "Ekki er hægt að umbreyta %{arg2} í streng í %{arg3}",
               "it" => "Impossibile convertire %{arg2} in una stringa in %{arg3}",
               "nl" => "Kan %{arg2} niet omzetten naar een tekenreeks in %{arg3}",
@@ -58088,7 +58627,7 @@ $CONF = {
               "tlh" => "Can't coerce %{arg2} to string in %{arg3}",
               "tr" => "%{arg3} bağlamında %{arg2} değeri dizgeye dönüştürülemez",
               "uk" => "Неможливо привести %{arg2} до рядка у %{arg3}",
-              "zh" => "在 %{arg3} 中复制 %{arg2} 时出现异常"
+              "zh" => "在 %{arg3} 中，无法将 %{arg2} 强制转换为字符串"
             },
             "args" => [
               {
@@ -60005,16 +60544,16 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "حرف واسع في %{arg1}",
+              "ar" => "محرف واسع في %{arg1}",
               "cy" => "Nod llydan wrth %{arg1}",
               "de" => "Breites Zeichen in %{arg1}",
               "en" => "Wide character in %{arg1}",
               "es" => "Carácter ancho en %{arg1}",
               "fa" => "نویسهٔ پهن در %{arg1}.",
-              "fi" => "Leveä merkki operaatiossa \"%{arg1}\"",
+              "fi" => "Leveä merkki operaatiossa ”%{arg1}”",
               "fr" => "Caractère large dans %{arg1}",
               "he" => "תו רחב בהקשר של \"%{arg1}\"",
-              "hu" => "Széles karakter fordult elő %{arg1} során",
+              "hu" => "Széles karakter a(z) %{arg1} műveletben",
               "is" => "Breiður stafur í %{arg1}",
               "it" => "Carattere ampio in %{arg1}",
               "nl" => "Breed teken in %{arg1}",
@@ -60648,9 +61187,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
+              "ar" => "يتجاوز عدد مفاتيح جدول التجزئة الحد %{limit}",
+              "cy" => "Mae nifer allweddi'r hash yn fwy na'r terfyn o %{limit}",
+              "de" => "Die Anzahl der Hash-Schlüssel überschreitet den Grenzwert von %{limit}",
               "en" => "Hash key count exceeds limit of %{limit}",
+              "es" => "El número de claves del hash supera el límite de %{limit}",
+              "fa" => "تعداد کلیدهای هش از حد %{limit} بیشتر است",
+              "fi" => "Hajautustaulun avainten määrä ylittää rajan %{limit}",
+              "fr" => "Le nombre de clés de la table de hachage dépasse la limite de %{limit}",
+              "he" => "מספר המפתחות בטבלת הגיבוב חורג מהמגבלה %{limit}",
+              "hu" => "A hash kulcsainak száma meghaladja a(z) %{limit} korlátot",
+              "is" => "Fjöldi lykla í kjötkássu fer yfir hámarkið %{limit}",
+              "it" => "Il numero di chiavi dell'hash supera il limite di %{limit}",
+              "nl" => "Aantal hash-sleutels overschrijdt de limiet van %{limit}",
               "pl" => "Liczba kluczy hasza przekracza limit %{limit}",
-              "tlh" => "Hash key mI' 'ay' %{limit} joj law' Hoch puS"
+              "pt" => "A quantidade de chaves do hash excede o limite de %{limit}",
+              "ru" => "Число ключей хеша превышает предел %{limit}",
+              "sr" => "Број кључева у хешу премашује ограничење од %{limit}",
+              "tlh" => "Hash key mI' 'ay' %{limit} joj law' Hoch puS",
+              "tr" => "Hash anahtarlarının sayısı %{limit} sınırını aşıyor",
+              "uk" => "Кількість ключів хешу перевищує обмеження %{limit}",
+              "zh" => "哈希键数量超过上限 %{limit}"
             },
             "args" => [
               {
@@ -60777,7 +61334,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Jump hash bucket count must be a positive decimal integer"
+              "ar" => "يجب أن يكون عدد حاويات التجزئة في التجزئة القفزية عددًا عشريًا موجبًا",
+              "cy" => "Rhaid i nifer bwcedi hash naid fod yn gyfanrif degol positif",
+              "de" => "Die Bucket-Anzahl für Jump Hash muss eine positive Dezimalzahl sein",
+              "en" => "Jump hash bucket count must be a positive decimal integer",
+              "es" => "El número de cubetas del hash jump debe ser un entero decimal positivo",
+              "fa" => "تعداد باکت\N{ZERO WIDTH NON-JOINER}های هش پرشی باید یک عدد صحیح ده\N{ZERO WIDTH NON-JOINER}دهی مثبت باشد",
+              "fi" => "Jump hash -ämpärien määrän on oltava positiivinen desimaalikokonaisluku",
+              "fr" => "Le nombre de compartiments du hachage Jump doit être un entier décimal positif",
+              "he" => "מספר הדליים של Jump hash חייב להיות מספר שלם חיובי בבסיס עשרוני",
+              "hu" => "A jump hash bucketjeinek száma pozitív decimális egész szám kell legyen",
+              "is" => "Fjöldi fata í stökk-kjötkássu verður að vera jákvæð heiltala í tugakerfi",
+              "it" => "Il numero di bucket dell'hash jump deve essere un intero decimale positivo",
+              "nl" => "Het aantal buckets voor jump hashing moet een positief decimaal geheel getal zijn",
+              "pl" => "Liczba kubełków dla haszowania Jump musi być dodatnią liczbą całkowitą zapisaną dziesiętnie",
+              "pt" => "A quantidade de buckets do hash jump tem de ser um inteiro decimal positivo",
+              "ru" => "Число корзин в хеше переходов должно быть положительным целым числом в десятичной записи",
+              "sr" => "Број сегмената jump хеша мора бити позитиван цео број у децималном запису",
+              "tlh" => "Jump hash bucket count must be a positive decimal integer",
+              "tr" => "Jump hash kova sayısı pozitif bir ondalık tam sayı olmalıdır",
+              "uk" => "Кількість сегментів Jump hash має бути додатним десятковим цілим числом",
+              "zh" => "Jump hash 的桶数量必须是正十进制整数"
             },
             "args" => []
           },
@@ -60802,7 +61379,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Jump hash bucket count is too large"
+              "ar" => "عدد حاويات التجزئة في التجزئة القفزية كبير جدًا",
+              "cy" => "Mae nifer bwcedi hash naid yn rhy fawr",
+              "de" => "Die Bucket-Anzahl für Jump Hash ist zu groß",
+              "en" => "Jump hash bucket count is too large",
+              "es" => "El número de cubetas del hash jump es demasiado grande",
+              "fa" => "تعداد باکت\N{ZERO WIDTH NON-JOINER}های هش پرشی بیش از حد بزرگ است",
+              "fi" => "Jump hash -ämpärien määrä on liian suuri",
+              "fr" => "Le nombre de compartiments du hachage Jump est trop élevé",
+              "he" => "מספר הדליים של Jump hash גדול מדי",
+              "hu" => "A jump hash bucketjeinek száma túl nagy",
+              "is" => "Fjöldi fata í stökk-kjötkássu er of mikill",
+              "it" => "Il numero di bucket dell'hash jump è troppo grande",
+              "nl" => "Het aantal buckets voor jump hashing is te groot",
+              "pl" => "Liczba kubełków dla haszowania Jump jest zbyt duża",
+              "pt" => "A quantidade de buckets do hash jump é demasiado grande",
+              "ru" => "Число корзин в хеше переходов слишком велико",
+              "sr" => "Број сегмената jump хеша је превелик",
+              "tlh" => "Jump hash bucket count is too large",
+              "tr" => "Jump hash kova sayısı çok büyük",
+              "uk" => "Кількість сегментів Jump hash завелика",
+              "zh" => "Jump hash 的桶数量过大"
             },
             "args" => []
           },
@@ -60827,7 +61424,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Jump hash string key must be a byte string"
+              "ar" => "يجب أن يكون مفتاح السلسلة في التجزئة القفزية سلسلة بايتات",
+              "cy" => "Rhaid i allwedd llinyn hash naid fod yn llinyn beitiau",
+              "de" => "Der Zeichenfolgenschlüssel für Jump Hash muss eine Byte-Zeichenfolge sein",
+              "en" => "Jump hash string key must be a byte string",
+              "es" => "La clave de cadena del hash jump debe ser una cadena de bytes",
+              "fa" => "کلید رشته\N{ZERO WIDTH NON-JOINER}ای هش پرشی باید رشته\N{ZERO WIDTH NON-JOINER}ای از بایت\N{ZERO WIDTH NON-JOINER}ها باشد",
+              "fi" => "Jump hash -merkkijonoavaimen on oltava tavujono",
+              "fr" => "La clé chaîne du hachage Jump doit être une chaîne d’octets",
+              "he" => "המפתח של מחרוזת Jump hash חייב להיות מחרוזת בתים",
+              "hu" => "A jump hash karakterlánckulcsának bájtsorozatnak kell lennie",
+              "is" => "Strengjalykill stökk-kjötkássu verður að vera bætastrengur",
+              "it" => "La chiave stringa dell'hash jump deve essere una stringa di byte",
+              "nl" => "De sleutelreeks voor jump hashing moet een bytereeks zijn",
+              "pl" => "Klucz tekstowy haszowania Jump musi być ciągiem bajtów",
+              "pt" => "A chave de cadeia do hash jump tem de ser uma cadeia de bytes",
+              "ru" => "Ключ строки для хеша переходов должен быть байтовой строкой",
+              "sr" => "Кључ ниске за jump хеш мора бити ниска бајтова",
+              "tlh" => "Jump hash string key must be a byte string",
+              "tr" => "Jump hash dizge anahtarı bir bayt dizgesi olmalıdır",
+              "uk" => "Ключ-рядок Jump hash має бути байтовим рядком",
+              "zh" => "Jump hash 的字符串键必须是字节字符串"
             },
             "args" => []
           },
@@ -60852,7 +61469,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Jump hash key must be an unsigned decimal integer"
+              "ar" => "يجب أن يكون مفتاح تجزئة القفز عددًا عشريًا صحيحًا غير سالب",
+              "cy" => "Rhaid i allwedd hash neidio fod yn gyfanrif degol heb arwydd",
+              "de" => "Der Jump-Hash-Schlüssel muss eine vorzeichenlose Dezimalzahl sein",
+              "en" => "Jump hash key must be an unsigned decimal integer",
+              "es" => "La clave del hash jump debe ser un entero decimal sin signo",
+              "fa" => "کلید هش پرش باید یک عدد ده\N{ZERO WIDTH NON-JOINER}دهیِ بدون علامت باشد",
+              "fi" => "Hyppyhash-avain on oltava etumerkitön desimaalikokonaisluku",
+              "fr" => "La clé du hachage Jump doit être un entier décimal non signé",
+              "he" => "מפתח ה־jump hash חייב להיות מספר עשרוני שלם ללא סימן",
+              "hu" => "A jump hash kulcsának előjel nélküli decimális egész számnak kell lennie",
+              "is" => "Lykill stökk-kjötkássu verður að vera ómerkt heiltala í tugakerfi",
+              "it" => "La chiave dell'hash jump deve essere un intero decimale senza segno",
+              "nl" => "De jump-hashsleutel moet een niet-negatief decimaal geheel getal zijn",
+              "pl" => "Klucz haszowania Jump musi być nieujemną liczbą całkowitą zapisaną dziesiętnie",
+              "pt" => "A chave de hash de salto deve ser um número inteiro decimal sem sinal",
+              "ru" => "Ключ хеширования переходов должен быть беззнаковым десятичным целым числом",
+              "sr" => "Кључ jump hash алгоритма мора бити неозначен децимални цео број",
+              "tlh" => "Jump hash key must be an unsigned decimal integer",
+              "tr" => "Atlama karması anahtarı işaretsiz bir ondalık tam sayı olmalıdır",
+              "uk" => "Ключ Jump hash має бути беззнаковим десятковим цілим числом",
+              "zh" => "跳转哈希键必须是无符号十进制整数"
             },
             "args" => []
           },
@@ -60877,7 +61514,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "Jump hash key is too large"
+              "ar" => "مفتاح تجزئة القفز كبير جدًا",
+              "cy" => "Mae allwedd hash neidio yn rhy fawr",
+              "de" => "Der Jump-Hash-Schlüssel ist zu groß",
+              "en" => "Jump hash key is too large",
+              "es" => "La clave del hash jump es demasiado grande",
+              "fa" => "کلید هش پرش بیش از حد بزرگ است",
+              "fi" => "Hyppyhash-avain on liian suuri",
+              "fr" => "La clé du hachage Jump est trop grande",
+              "he" => "מפתח ה־jump hash גדול מדי",
+              "hu" => "A jump hash kulcsa túl nagy",
+              "is" => "Lykill stökk-kjötkássu er of stór",
+              "it" => "La chiave dell'hash jump è troppo grande",
+              "nl" => "De jump-hashsleutel is te groot",
+              "pl" => "Klucz haszowania Jump jest zbyt duży",
+              "pt" => "A chave de hash de salto é grande demais",
+              "ru" => "Ключ хеширования переходов слишком велик",
+              "sr" => "Кључ jump hash алгоритма је превелик",
+              "tlh" => "Jump hash key is too large",
+              "tr" => "Atlama karması anahtarı çok büyük",
+              "uk" => "Ключ Jump hash завеликий",
+              "zh" => "跳转哈希键过大"
             },
             "args" => []
           },
@@ -81632,27 +82289,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "استخدام \@_ في %{arg1} ضمن روتين فرعي ذي توقيع أمر تجريبي",
+              "ar" => "استخدام \@_ في %{arg1} ضمن روتين فرعي ذي توقيع تجريبي",
               "cy" => "Mae defnyddio \@_ drwy %{arg1} mewn isreolwaith â llofnod yn arbrofol",
               "de" => "Verwendung von \@_ in %{arg1} bei einer Subroutine mit Signatur ist experimentell",
               "en" => "Use of \@_ in %{arg1} with signatured subroutine is experimental",
               "es" => "El uso de \@_ en %{arg1} dentro de una subrutina con firma es experimental",
               "fa" => "استفاده از \@_ در %{arg1} در زیربرنامهٔ دارای امضا آزمایشی است.",
-              "fi" => "Signatuuria käyttävässä aliohjelmassa taulukon \@_ käyttö operaatiossa \"%{arg1}\" on kokeellista",
+              "fi" => "\@_-taulukon käyttö signatuuria käyttävän aliohjelman operaatiossa %{arg1} on kokeellista",
               "fr" => "L'utilisation de \@_ dans %{arg1} avec une sous-routine à signature est expérimentale",
               "he" => "שימוש במערך \@_ בהקשר של \"%{arg1}\" בשגרה בעלת חתימה הוא ניסיוני",
-              "hu" => "Szignatúrát használó szubrutinban kísérleti jellegű \@_ használata %{arg1} során",
+              "hu" => "Szignatúrát használó szubrutinban a(z) \@_ használata kísérleti jellegű a(z) %{arg1} műveletben",
               "is" => "Notkun á \@_ í %{arg1} með undirforriti sem notar undirritun er tilraunaeiginleiki",
               "it" => "L'uso di \@_ in %{arg1} in una subroutine con firma è sperimentale",
               "nl" => "Gebruik van \@_ in %{arg1} met een subroutinesignatuur is experimenteel",
               "pl" => "Użycie \@_ w %{arg1} w podprogramie z sygnaturą jest eksperymentalne",
               "pt" => "A utilização de \@_ em %{arg1}, numa sub-rotina com assinatura, é experimental",
               "ru" => "Использование \@_ при %{arg1} в подпрограмме с сигнатурой является экспериментальной возможностью",
-              "sr" => "Употреба \@_ — %{arg1} — у потпрограму са потписом је експериментална",
+              "sr" => "Употреба \@_ у %{arg1} у потпрограму са потписом је експериментална",
               "tlh" => "Use of \@_ in %{arg1} with signatured subroutine is experimental",
               "tr" => "İmza kullanan bir alt yordamda %{arg1} bağlamında \@_ dizisinin kullanımı deneyseldir",
               "uk" => "Використання \@_ у %{arg1} в підпрограмі з сигнатурою є експериментальним",
-              "zh" => "在使用签名的子程序中使用 \@_（涉及%{arg1}）属于实验性功能"
+              "zh" => "在使用签名的子程序中使用 \@_（涉及 %{arg1}）属于实验性功能"
             },
             "args" => [
               {
@@ -82626,7 +83283,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "en" => "multi is experimental"
+              "ar" => "multi تجريبي",
+              "cy" => "Mae multi yn arbrofol",
+              "de" => "multi ist experimentell",
+              "en" => "multi is experimental",
+              "es" => "multi es experimental",
+              "fa" => "multi آزمایشی است",
+              "fi" => "multi on kokeellinen",
+              "fr" => "multi est expérimental",
+              "he" => "השימוש ב־multi הוא ניסיוני",
+              "hu" => "A multi kísérleti funkció",
+              "is" => "multi er tilraunaeiginleiki",
+              "it" => "multi è sperimentale",
+              "nl" => "multi is experimenteel",
+              "pl" => "Deklaracja multi jest eksperymentalna",
+              "pt" => "multi é experimental",
+              "ru" => "Объявление multi является экспериментальным",
+              "sr" => "multi је експериментална функција",
+              "tlh" => "multi is experimental",
+              "tr" => "multi deneyseldir",
+              "uk" => "multi є експериментальним",
+              "zh" => "multi 是实验性功能"
             },
             "args" => []
           },
@@ -88052,27 +88729,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "لا يمكن تنفيذ %{arg1}(\"\\x{%{arg2}}\") على إعداد محلي غير UTF-8؛ حُلّت إلى \"\\x{%{arg3}}\".",
-              "cy" => "Ni ellir cyflawni %{arg1}(\"\\x{%{arg2}}\") mewn locale nad yw'n UTF-8; dehonglwyd fel \"\\x{%{arg3}}\".",
+              "ar" => "لا يمكن تنفيذ %{arg1}(\"\\x{%{arg2}}\") في إعداد محلي غير UTF-8؛ حُلّت إلى \"\\x{%{arg3}}\".",
+              "cy" => "Ni ellir cyflawni %{arg1}(\"\\\\x{%{arg2}}\") mewn locale nad yw'n UTF-8; dehonglwyd fel \"\\\\x{%{arg3}}\".",
               "de" => "%{arg1}(\"\\x{%{arg2}}\") kann in einer Nicht-UTF-8-Locale nicht ausgeführt werden; als \"\\x{%{arg3}}\" aufgelöst.",
               "en" => "Can't do %{arg1}(\"\\x{%{arg2}}\") on non-UTF-8 locale; resolved to \"\\x{%{arg3}}\".",
               "es" => "No se puede ejecutar %{arg1}(\"\\x{%{arg2}}\") con una configuración regional que no sea UTF-8; se ha resuelto como \"\\x{%{arg3}}\".",
-              "fa" => "اجرای %{arg1}(\"\\x{%{arg2}}\") در محلی غیر UTF-8 ممکن نیست؛ نتیجه به \"\\x{%{arg3}}\" تبدیل شد.",
-              "fi" => "Kutsua %{arg1}(\"\\x{%{arg2}}\") ei voi suorittaa muussa kuin UTF-8-lokaalissa; tulokseksi saatiin \"\\x{%{arg3}}\".",
+              "fa" => "اجرای %{arg1}(\"\\\\x{%{arg2}}\") در محلی غیر UTF-8 ممکن نیست؛ نتیجه به \"\\\\x{%{arg3}}\" تبدیل شد.",
+              "fi" => "Kutsua %{arg1}(\"\\\\x{%{arg2}}\") ei voi suorittaa muussa kuin UTF-8-lokaalissa; tulokseksi saatiin \"\\\\x{%{arg3}}\".",
               "fr" => "Impossible d'appliquer %{arg1}(\"\\x{%{arg2}}\") dans une locale non UTF-8, résultat : \"\\x{%{arg3}}\".",
               "he" => "אי אפשר לבצע את הקריאה %{arg1}(\"\\x{%{arg2}}\") תחת הגדרות אזוריות שאינן UTF-8; התוצאה שנבחרה היא \"\\x{%{arg3}}\".",
-              "hu" => "Nem hajtható végre %{arg1}(\"\\x{%{arg2}}\") nem UTF-8 területi beállítás mellett; a kapott eredmény \"\\x{%{arg3}}\".",
+              "hu" => "Nem hajtható végre a(z) %{arg1}(\"\\x{%{arg2}}\") nem UTF-8 területi beállítás mellett; az eredmény: \"\\x{%{arg3}}\".",
               "is" => "Ekki er hægt að framkvæma %{arg1}(\"\\x{%{arg2}}\") í staðfærslu sem er ekki UTF-8; niðurstaðan varð \"\\x{%{arg3}}\".",
               "it" => "Impossibile eseguire %{arg1}(\"\\x{%{arg2}}\") con impostazioni locali non UTF-8; risultato: \"\\x{%{arg3}}\".",
               "nl" => "Kan %{arg1}(\"\\x{%{arg2}}\") niet uitvoeren in een niet-UTF-8-locale; geïnterpreteerd als \"\\x{%{arg3}}\".",
               "pl" => "Nie można wykonać %{arg1}(„\\x{%{arg2}}”) w ustawieniach regionalnych innych niż UTF-8; wynik to „\\x{%{arg3}}”.",
               "pt" => "Não é possível executar %{arg1}(\"\\x{%{arg2}}\") numa locale não UTF-8; foi substituído por \"\\x{%{arg3}}\".",
-              "ru" => "Невозможно выполнить операцию \"%{arg1}\" для \"\\x{%{arg2}}\" в локали без UTF-8; вместо этого получено \"\\x{%{arg3}}\".",
-              "sr" => "Није могуће применити %{arg1}(\"\\x{%{arg2}}\") у локали који није UTF-8; разрешено је као \"\\x{%{arg3}}\".",
-              "tlh" => "UTF-8 locale 'e' UTF-8be' vay' \"\\x{%{arg2}}\" Daq %{arg1} ta'laHbe'; \"\\x{%{arg3}}\" 'oS",
-              "tr" => "UTF-8 olmayan yerel ayarda %{arg1}(\"\\x{%{arg2}}\") uygulanamaz; sonuç \"\\x{%{arg3}}\" olarak belirlendi.",
+              "ru" => "Невозможно выполнить операцию \"%{arg1}\" для \"\\\\x{%{arg2}}\" в локали без UTF-8; вместо этого получено \"\\\\x{%{arg3}}\".",
+              "sr" => "Није могуће применити %{arg1}(\"\\\\x{%{arg2}}\") у локалу који није UTF-8; резултат је \"\\\\x{%{arg3}}\".",
+              "tlh" => "Can't do %{arg1}(\"\\x{%{arg2}}\") on non-UTF-8 locale; resolved to \"\\x{%{arg3}}\".",
+              "tr" => "UTF-8 olmayan yerel ayarda %{arg1}(\"\\\\x{%{arg2}}\") uygulanamaz; sonuç \"\\\\x{%{arg3}}\" olarak belirlendi.",
               "uk" => "Неможливо виконати %{arg1}(\"\\x{%{arg2}}\") у локалі без UTF-8; результат замінено на \"\\x{%{arg3}}\".",
-              "zh" => "在非 UTF-8 区域设置中，无法对 %{arg1}（“\\x{%{arg2}}”）执行操作；结果已解析为“\\x{%{arg3}}”。"
+              "zh" => "在非 UTF-8 区域设置下，无法对 %{arg1}（“\\x{%{arg2}}”）执行操作；结果解析为“\\x{%{arg3}}”。"
             },
             "args" => [
               {
@@ -89249,27 +89926,27 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "محرف عريض (U+%{arg1}) في %{arg2} ضمن إعداد محلي غير UTF-8",
+              "ar" => "محرف واسع (U+%{arg1}) في %{arg2} ضمن إعداد محلي غير UTF-8",
               "cy" => "Nod llydan (U+%{arg1}) wrth %{arg2} mewn locale nad yw'n UTF-8",
               "de" => "Breites Zeichen (U+%{arg1}) in %{arg2} unter einer Nicht-UTF-8-Locale",
               "en" => "Wide character (U+%{arg1}) in %{arg2} under a non-UTF-8 locale",
               "es" => "Carácter ancho (U+%{arg1}) en %{arg2} bajo una configuración regional que no es UTF-8",
               "fa" => "نویسهٔ پهن (U+%{arg1}) در %{arg2} تحت محلی غیر UTF-8.",
-              "fi" => "Leveä merkki (U+%{arg1}) operaatiossa \"%{arg2}\" muussa kuin UTF-8-lokaalissa",
+              "fi" => "Leveä merkki (U+%{arg1}) operaatiossa %{arg2} muussa kuin UTF-8-lokaalissa",
               "fr" => "Caractère large (U+%{arg1}) dans %{arg2} avec une locale non UTF-8",
               "he" => "תו רחב (U+%{arg1}) בהקשר של \"%{arg2}\" תחת הגדרות אזוריות שאינן UTF-8",
-              "hu" => "Széles karakter (U+%{arg1}) %{arg2} során nem UTF-8 területi beállítás mellett",
+              "hu" => "Széles karakter (U+%{arg1}) a(z) %{arg2} műveletben, nem UTF-8 területi beállítás mellett",
               "is" => "Breiður stafur (U+%{arg1}) í %{arg2} með staðfærslu sem er ekki UTF-8",
               "it" => "Carattere multibyte (U+%{arg1}) in %{arg2} con un locale non UTF-8",
               "nl" => "Breed teken (U+%{arg1}) in %{arg2} onder een niet-UTF-8-locale",
               "pl" => "Znak spoza podstawowego zakresu Unicode (U+%{arg1}) w %{arg2} w locale innym niż UTF-8",
               "pt" => "Carácter largo (U+%{arg1}) em %{arg2} numa locale não UTF-8",
               "ru" => "Широкий символ (U+%{arg1}) в %{arg2} при локали, отличной от UTF-8",
-              "sr" => "Широки знак (U+%{arg1}) у контексту: %{arg2}, под локалом који није UTF-8",
+              "sr" => "Широки знак (U+%{arg1}) у %{arg2} под локалом који није UTF-8",
               "tlh" => "Wide character (U+%{arg1}) in %{arg2} under a non-UTF-8 locale",
               "tr" => "UTF-8 olmayan yerel ayarda %{arg2} bağlamında geniş karakter (U+%{arg1}) saptandı",
               "uk" => "Широкий символ (U+%{arg1}) у %{arg2} за використання локалі без UTF-8",
-              "zh" => "在非 UTF-8 区域设置下，操作 %{arg2} 中出现宽字符（U+%{arg1}）"
+              "zh" => "在非 UTF-8 区域设置下，%{arg2} 操作中出现宽字符（U+%{arg1}）"
             },
             "args" => [
               {
@@ -91474,10 +92151,10 @@ $CONF = {
               "en" => "Missing argument in %{arg1}",
               "es" => "Falta un argumento en %{arg1}",
               "fa" => "آرگومان در %{arg1} جا افتاده است.",
-              "fi" => "Puuttuva argumentti operaatiossa \"%{arg1}\"",
+              "fi" => "Operaatiosta %{arg1} puuttuu argumentti",
               "fr" => "Argument manquant dans %{arg1}",
               "he" => "חסר ארגומנט בהקשר של \"%{arg1}\"",
-              "hu" => "Argumentum hiányzik %{arg1} során",
+              "hu" => "Hiányzó argumentum a(z) %{arg1} műveletben",
               "is" => "Vantar færibreytu í %{arg1}",
               "it" => "Argomento mancante in %{arg1}",
               "nl" => "Argument ontbreekt in %{arg1}",
@@ -91485,8 +92162,8 @@ $CONF = {
               "pt" => "Falta um argumento em %{arg1}",
               "ru" => "Отсутствует аргумент в %{arg1}",
               "sr" => "Недостаје аргумент у операцији %{arg1}",
-              "tlh" => "%{arg1}Daq argument missing",
-              "tr" => "%{arg1} için bağımsız değişken eksik",
+              "tlh" => "Missing argument in %{arg1}",
+              "tr" => "%{arg1} içinde eksik bağımsız değişken",
               "uk" => "Бракує аргументу в %{arg1}",
               "zh" => "%{arg1} 中缺少参数"
             },
@@ -91708,21 +92385,21 @@ $CONF = {
               "en" => "Argument \"%{arg1}\" isn't numeric in %{arg2}",
               "es" => "El argumento \"%{arg1}\" no es numérico en %{arg2}",
               "fa" => "آرگومان «%{arg1}» در %{arg2} عددی نیست.",
-              "fi" => "Argumentti \"%{arg1}\" ei ole numeerinen operaatiossa \"%{arg2}\"",
+              "fi" => "Argumentti ”%{arg1}” ei ole numeerinen operaatiossa %{arg2}",
               "fr" => "L'argument \"%{arg1}\" n'est pas numérique dans %{arg2}",
               "he" => "הארגומנט \"%{arg1}\" אינו מספרי בהקשר של \"%{arg2}\"",
-              "hu" => "Nem numerikus argumentum %{arg2} során: \"%{arg1}\"",
+              "hu" => "A(z) „%{arg1}” argumentum nem numerikus a(z) %{arg2} műveletben",
               "is" => "Færibreytan „%{arg1}“ er ekki töluleg í %{arg2}",
               "it" => "L'argomento \"%{arg1}\" non è numerico in %{arg2}",
               "nl" => "Argument \"%{arg1}\" is niet numeriek in %{arg2}",
               "pl" => "Argument „%{arg1}” nie jest wartością liczbową w %{arg2}",
               "pt" => "O argumento \"%{arg1}\" não é numérico em %{arg2}",
               "ru" => "Аргумент \"%{arg1}\" не является числом в %{arg2}",
-              "sr" => "Аргумент „%{arg1}” није нумерички у операцији %{arg2}",
+              "sr" => "Аргумент „%{arg1}“ није нумерички у операцији %{arg2}",
               "tlh" => "Argument \"%{arg1}\" isn't numeric in %{arg2}",
-              "tr" => "%{arg2} bağlamında \"%{arg1}\" bağımsız değişkeni sayısal değildir",
+              "tr" => "%{arg2} bağlamında \"%{arg1}\" bağımsız değişkeni sayısal değil",
               "uk" => "Аргумент \"%{arg1}\" не є числом у %{arg2}",
-              "zh" => "参数 \"%{arg1}\" 在 %{arg2} 中不是数值"
+              "zh" => "参数“%{arg1}”在 %{arg2} 中不是数值"
             },
             "args" => [
               {
@@ -93673,10 +94350,10 @@ $CONF = {
               "en" => "Redundant argument in %{arg1}",
               "es" => "Argumento redundante en %{arg1}",
               "fa" => "آرگومان اضافی در %{arg1}.",
-              "fi" => "Tarpeeton argumentti operaatiossa \"%{arg1}\"",
+              "fi" => "Tarpeeton argumentti operaatiossa %{arg1}",
               "fr" => "Argument redondant dans %{arg1}",
               "he" => "ארגומנט מיותר בהקשר של \"%{arg1}\"",
-              "hu" => "Felesleges argumentum szerepel %{arg1} során",
+              "hu" => "Felesleges argumentum a(z) %{arg1} műveletben",
               "is" => "Óþarfa færibreyta í %{arg1}",
               "it" => "Argomento superfluo in %{arg1}",
               "nl" => "Overbodig argument in %{arg1}",
@@ -93684,8 +94361,8 @@ $CONF = {
               "pt" => "Argumento redundante em %{arg1}",
               "ru" => "Лишний аргумент в %{arg1}",
               "sr" => "Сувишан аргумент у операцији %{arg1}",
-              "tlh" => "%{arg1}Daq argument lat",
-              "tr" => "%{arg1} için gereksiz bir bağımsız değişken verildi",
+              "tlh" => "Redundant argument in %{arg1}",
+              "tr" => "%{arg1} içinde gereksiz bağımsız değişken",
               "uk" => "Зайвий аргумент у %{arg1}",
               "zh" => "%{arg1} 中有多余参数"
             },
@@ -101885,16 +102562,16 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "لا فائدة من توطين %{arg1}",
+              "ar" => "توطين %{arg1} لا فائدة منه",
               "cy" => "Lleoleiddio di-fudd o %{arg1}",
               "de" => "Nutzlose Lokalisierung von %{arg1}",
               "en" => "Useless localization of %{arg1}",
               "es" => "Localización inútil de %{arg1}",
               "fa" => "محلی\N{ZERO WIDTH NON-JOINER}سازی %{arg1} بیهوده است.",
-              "fi" => "Paikallistus on hyödytön: %{arg1}",
+              "fi" => "Paikallistuksesta ei ole hyötyä: %{arg1}",
               "fr" => "Localisation inutile : %{arg1}",
               "he" => "ביצוע local על \"%{arg1}\" חסר השפעה",
-              "hu" => "Felesleges a következő lokalizálása: %{arg1}",
+              "hu" => "A(z) %{arg1} lokalizálása hatástalan",
               "is" => "Óþarfa staðbundin binding á %{arg1}",
               "it" => "Localizzazione inutile di %{arg1}",
               "nl" => "Nutteloze lokalisatie van %{arg1}",
@@ -101902,10 +102579,10 @@ $CONF = {
               "pt" => "Localização inútil de %{arg1}",
               "ru" => "Бесполезная локализация %{arg1}",
               "sr" => "Локализација операције %{arg1} нема ефекта",
-              "tlh" => "%{arg1} local Daq lulo'laHbe'",
-              "tr" => "%{arg1} için local ile yerelleştirmenin etkisi yoktur",
+              "tlh" => "Useless localization of %{arg1}",
+              "tr" => "%{arg1} yerelleştirmesinin etkisi yok",
               "uk" => "Марна локалізація %{arg1}",
-              "zh" => "对 %{arg1} 的本地化无效"
+              "zh" => "对 %{arg1} 进行本地化没有效果"
             },
             "args" => [
               {
@@ -104333,8 +105010,8 @@ $CONF = {
                 "unnamed" => "استفاده از مقدار مقداردهی\N{ZERO WIDTH NON-JOINER}نشده در %{operation}."
               },
               "fi" => {
-                "named" => "Alustamatonta arvoa %{name} käytetään operaatiossa \"%{operation}\"",
-                "unnamed" => "Alustamatonta arvoa käytetään operaatiossa \"%{operation}\""
+                "named" => "Alustamatonta arvoa %{name} käytetään operaatiossa %{operation}",
+                "unnamed" => "Alustamatonta arvoa käytetään operaatiossa %{operation}"
               },
               "fr" => {
                 "named" => "Utilisation d'une valeur non initialisée %{name} dans %{operation}",
@@ -104345,8 +105022,8 @@ $CONF = {
                 "unnamed" => "שימוש בערך לא מאותחל בהקשר של \"%{operation}\""
               },
               "hu" => {
-                "named" => "Nem inicializált érték használata %{operation} során: %{name}",
-                "unnamed" => "Nem inicializált érték használata %{operation} során"
+                "named" => "Inicializálatlan érték használata a(z) %{operation} műveletben: %{name}",
+                "unnamed" => "Inicializálatlan érték használata a(z) %{operation} műveletben"
               },
               "is" => {
                 "named" => "Notkun á ófrumstilltu gildi %{name} í %{operation}",
@@ -104866,12 +105543,12 @@ $CONF = {
           "message" => {
             "templates" => {
               "ar" => {
-                "none" => "حرف UTF-8 مشوّه: %{bytes} (بايت متابعة غير متوقع 0x%{byte} من دون بايت بدء سابق)",
-                "operation" => "حرف UTF-8 مشوّه: %{bytes} (بايت متابعة غير متوقع 0x%{byte} من دون بايت بدء سابق) في %{operation}"
+                "none" => "محرف UTF-8 مشوّه: %{bytes} (بايت متابعة غير متوقع 0x%{byte} من دون بايت بدء سابق)",
+                "operation" => "محرف UTF-8 مشوّه: %{bytes} (بايت متابعة غير متوقع 0x%{byte} من دون بايت بدء سابق) في %{operation}"
               },
               "cy" => {
-                "*" => "Nod UTF-8 anffurfiedig: %{bytes} (beit parhad annisgwyl 0x%{byte}, heb feit cychwyn o'i flaen)",
-                "operation" => "Nod UTF-8 anffurfiedig: %{bytes} (beit parhad annisgwyl 0x%{byte}, heb feit cychwyn o'i flaen) wrth %{operation}"
+                "*" => "Nod UTF-8 annilys: %{bytes} (beit parhad annisgwyl 0x%{byte}, heb feit cychwyn blaenorol)",
+                "operation" => "Nod UTF-8 annilys: %{bytes} (beit parhad annisgwyl 0x%{byte}, heb feit cychwyn blaenorol) wrth %{operation}"
               },
               "de" => {
                 "none" => "Fehlerhaftes UTF-8-Zeichen: %{bytes} (unerwartetes Fortsetzungsbyte 0x%{byte} ohne vorangehendes Startbyte)",
@@ -104898,8 +105575,8 @@ $CONF = {
                 "operation" => "Caractère UTF-8 mal formé : %{bytes} (octet de continuation inattendu 0x%{byte}, sans octet de début précédent) dans %{operation}"
               },
               "he" => {
-                "none" => "תו UTF-8 פגום: %{bytes} (בית המשך בלתי צפוי 0x%{byte}, ללא בית פתיחה לפניו)",
-                "operation" => "תו UTF-8 פגום: %{bytes} (בית המשך בלתי צפוי 0x%{byte}, ללא בית פתיחה לפניו) בהקשר של \"%{operation}\""
+                "none" => "תו UTF-8 פגום: %{bytes} (בית המשך בלתי צפוי 0x%{byte}, ללא בית פתיחה קודם)",
+                "operation" => "תו UTF-8 פגום: %{bytes} (בית המשך בלתי צפוי 0x%{byte}, ללא בית פתיחה קודם) בהקשר של \"%{operation}\""
               },
               "hu" => {
                 "none" => "Hibás UTF-8 karakter: %{bytes} (váratlan folytatóbájt 0x%{byte}, megelőző kezdőbájt nélkül)",
@@ -104922,7 +105599,7 @@ $CONF = {
                 "operation" => "Nieprawidłowy znak UTF-8: %{bytes} (nieoczekiwany bajt kontynuacji 0x%{byte}, bez poprzedzającego bajtu początkowego) w %{operation}"
               },
               "pt" => {
-                "*" => "Carácter UTF-8 malformado: %{bytes} (byte de continuação inesperado 0x%{byte}, sem um byte inicial precedente)",
+                "none" => "Carácter UTF-8 malformado: %{bytes} (byte de continuação inesperado 0x%{byte}, sem um byte inicial precedente)",
                 "operation" => "Carácter UTF-8 malformado: %{bytes} (byte de continuação inesperado 0x%{byte}, sem um byte inicial precedente) em %{operation}"
               },
               "ru" => {
@@ -104931,18 +105608,18 @@ $CONF = {
               },
               "sr" => {
                 "none" => "Неисправан UTF-8 знак: %{bytes} (неочекивани наставни бајт 0x%{byte}, без претходног почетног бајта)",
-                "operation" => "Неисправан UTF-8 знак: %{bytes} (неочекивани наставни бајт 0x%{byte}, без претходног почетног бајта) при %{operation}"
+                "operation" => "Неисправан UTF-8 знак: %{bytes} (неочекивани наставни бајт 0x%{byte}, без претходног почетног бајта; у контексту %{operation})"
               },
               "tlh" => {
                 "none" => "UTF-8 vay' Qagh: %{bytes} (qaDmeH byte 0x%{byte}; nungwI' tagh byte Hutlh)",
                 "operation" => "UTF-8 vay' Qagh: %{bytes} (qaDmeH byte 0x%{byte}; nungwI' tagh byte Hutlh) %{operation}Daq"
               },
               "tr" => {
-                "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (öncesinde başlangıç baytı olmadan beklenmedik devam baytı 0x%{byte} geldi)",
-                "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (öncesinde başlangıç baytı olmadan beklenmedik devam baytı 0x%{byte} geldi)"
+                "none" => "Bozuk UTF-8 karakteri: %{bytes} (öncesinde başlangıç baytı olmadan beklenmedik devam baytı 0x%{byte} geldi)",
+                "operation" => "%{operation} işleminde bozuk UTF-8 karakteri: %{bytes} (öncesinde başlangıç baytı olmadan beklenmedik devam baytı 0x%{byte} geldi)"
               },
               "uk" => {
-                "*" => "Некоректно закодований символ UTF-8: %{bytes} (неочікуваний байт продовження 0x%{byte} без попереднього початкового байта)",
+                "none" => "Некоректно закодований символ UTF-8: %{bytes} (неочікуваний байт продовження 0x%{byte} без попереднього початкового байта)",
                 "operation" => "Некоректно закодований символ UTF-8: %{bytes} (неочікуваний байт продовження 0x%{byte} без попереднього початкового байта) у %{operation}"
               },
               "zh" => {
@@ -105043,12 +105720,12 @@ $CONF = {
           "message" => {
             "templates" => {
               "ar" => {
-                "none" => "حرف UTF-8 مشوّه: (سلسلة فارغة)",
-                "operation" => "حرف UTF-8 مشوّه: (سلسلة فارغة) في %{operation}"
+                "none" => "محرف UTF-8 مشوّه: (سلسلة فارغة)",
+                "operation" => "محرف UTF-8 مشوّه: (سلسلة فارغة) في %{operation}"
               },
               "cy" => {
-                "*" => "Nod UTF-8 wedi'i gamffurfio: (llinyn gwag)",
-                "operation" => "Nod UTF-8 wedi'i gamffurfio: (llinyn gwag) wrth %{operation}"
+                "*" => "Nod UTF-8 annilys: (llinyn gwag)",
+                "operation" => "Nod UTF-8 annilys: (llinyn gwag) wrth %{operation}"
               },
               "de" => {
                 "none" => "Fehlerhaftes UTF-8-Zeichen: (leere Zeichenfolge)",
@@ -105099,7 +105776,7 @@ $CONF = {
                 "operation" => "Nieprawidłowy znak UTF-8: (pusty ciąg) w %{operation}"
               },
               "pt" => {
-                "*" => "Carácter UTF-8 malformado: (cadeia vazia)",
+                "none" => "Carácter UTF-8 malformado: (cadeia vazia)",
                 "operation" => "Carácter UTF-8 malformado: (cadeia vazia) em %{operation}"
               },
               "ru" => {
@@ -105108,18 +105785,18 @@ $CONF = {
               },
               "sr" => {
                 "none" => "Неисправан UTF-8 знак: (празан низ)",
-                "operation" => "Неисправан UTF-8 знак: (празан низ) у %{operation}"
+                "operation" => "Неисправан UTF-8 знак: (празан низ; у контексту %{operation})"
               },
               "tlh" => {
                 "none" => "UTF-8 vay' Qagh: (string chIm)",
                 "operation" => "UTF-8 vay' Qagh: (string chIm) %{operation}Daq"
               },
               "tr" => {
-                "none" => "Bozuk bir UTF-8 karakteri saptandı: (boş dizge)",
-                "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: (boş dizge)"
+                "none" => "Bozuk UTF-8 karakteri: (boş dizge)",
+                "operation" => "%{operation} işleminde bozuk UTF-8 karakteri: (boş dizge)"
               },
               "uk" => {
-                "*" => "Некоректно сформований символ UTF-8: (порожній рядок)",
+                "none" => "Некоректно сформований символ UTF-8: (порожній рядок)",
                 "operation" => "Некоректно сформований символ UTF-8: (порожній рядок) у %{operation}"
               },
               "zh" => {
@@ -105209,12 +105886,12 @@ $CONF = {
           "message" => {
             "templates" => {
               "ar" => {
-                "none" => "محرف Unicode غير محرف U+%{arg1} غير مستحسن للتبادل المفتوح",
-                "operation" => "محرف Unicode غير محرف U+%{arg1} غير مستحسن للتبادل المفتوح في %{operation}"
+                "none" => "محرف Unicode غير المحرف U+%{arg1} غير مستحسن للتبادل المفتوح",
+                "operation" => "محرف Unicode غير المحرف U+%{arg1} غير مستحسن للتبادل المفتوح في %{operation}"
               },
               "cy" => {
-                "*" => "Ni argymhellir defnyddio anghymeriad Unicode U+%{arg1} ar gyfer cyfnewid agored",
-                "operation" => "Ni argymhellir defnyddio anghymeriad Unicode U+%{arg1} ar gyfer cyfnewid agored wrth %{operation}"
+                "*" => "Ni argymhellir defnyddio nod nad yw'n nod cymeriad Unicode U+%{arg1} ar gyfer cyfnewid agored",
+                "operation" => "Ni argymhellir defnyddio nod nad yw'n nod cymeriad Unicode U+%{arg1} ar gyfer cyfnewid agored wrth %{operation}"
               },
               "de" => {
                 "none" => "Unicode-Nichtzeichen U+%{arg1} wird für den offenen Datenaustausch nicht empfohlen",
@@ -105241,12 +105918,12 @@ $CONF = {
                 "operation" => "Le caractère Unicode non-caractère U+%{arg1} n'est pas recommandé pour les échanges ouverts dans %{operation}"
               },
               "he" => {
-                "none" => "השימוש בנקודת הקוד U+%{arg1}, המוגדרת בתקן Unicode כנקודה שאינה תו, אינו מומלץ לחילופי מידע פתוחים",
-                "operation" => "השימוש בנקודת הקוד U+%{arg1}, המוגדרת בתקן Unicode כנקודה שאינה תו, אינו מומלץ לחילופי מידע פתוחים בהקשר של \"%{operation}\""
+                "none" => "נקודת הקוד U+%{arg1}, המוגדרת בתקן Unicode כנקודה שאינה תו, אינה מומלצת לשימוש בחילופי מידע פתוחים",
+                "operation" => "נקודת הקוד U+%{arg1}, המוגדרת בתקן Unicode כנקודה שאינה תו, אינה מומלצת לשימוש בחילופי מידע פתוחים בהקשר של \"%{operation}\""
               },
               "hu" => {
-                "none" => "Az U+%{arg1} Unicode-nemkarakter használata nyílt adatcserében nem ajánlott",
-                "operation" => "Az U+%{arg1} Unicode-nemkarakter használata nyílt adatcserében nem ajánlott %{operation} során"
+                "none" => "A Unicode U+%{arg1} nemkarakter használata nyílt adatcserében nem ajánlott",
+                "operation" => "A Unicode U+%{arg1} nemkarakter használata nyílt adatcserében nem ajánlott %{operation} során"
               },
               "is" => {
                 "none" => "Unicode-stafur sem ekki er ætlaður til notkunar U+%{arg1} er ekki ráðlagður til almennra upplýsingaskipta",
@@ -105261,11 +105938,11 @@ $CONF = {
                 "operation" => "Unicode-niet-teken U+%{arg1} wordt afgeraden voor open uitwisseling in %{operation}"
               },
               "pl" => {
-                "none" => "Znak Unicode niebędący znakiem U+%{arg1} nie jest zalecany do otwartej wymiany danych",
-                "operation" => "Znak Unicode niebędący znakiem U+%{arg1} nie jest zalecany do otwartej wymiany danych w %{operation}"
+                "none" => "Unicode'owski znak niebędący znakiem o kodzie U+%{arg1} nie jest zalecany do otwartej wymiany danych",
+                "operation" => "Unicode'owski znak niebędący znakiem o kodzie U+%{arg1} nie jest zalecany do otwartej wymiany danych w %{operation}"
               },
               "pt" => {
-                "*" => "O não carácter Unicode U+%{arg1} não é recomendado para intercâmbio aberto",
+                "none" => "O não carácter Unicode U+%{arg1} não é recomendado para intercâmbio aberto",
                 "operation" => "O não carácter Unicode U+%{arg1} não é recomendado para intercâmbio aberto em %{operation}"
               },
               "ru" => {
@@ -105273,20 +105950,20 @@ $CONF = {
                 "operation" => "Несимвол Unicode U+%{arg1} не рекомендуется использовать для открытого обмена данными в %{operation}"
               },
               "sr" => {
-                "none" => "Unicode не-знак U+%{arg1} се не препоручује за размену без ограничења",
-                "operation" => "Unicode не-знак U+%{arg1} се не препоручује за размену без ограничења у %{operation}"
+                "none" => "Unicode не-знак U+%{arg1} не препоручује се за размену без ограничења",
+                "operation" => "Unicode не-знак U+%{arg1} не препоручује се за размену без ограничења у %{operation}"
               },
               "tlh" => {
                 "none" => "Unicode non-character U+%{arg1}; open interchangevaD maqbe'",
                 "operation" => "Unicode non-character U+%{arg1}; %{operation}Daq open interchange maqbe'"
               },
               "tr" => {
-                "none" => "Unicode kapsamında \"karakter olmayan\" olarak tanımlanan U+%{arg1} kod noktası açık veri alışverişi için önerilmez",
-                "operation" => "%{operation} bağlamında Unicode kapsamında \"karakter olmayan\" olarak tanımlanan U+%{arg1} kod noktası açık veri alışverişi için önerilmez"
+                "none" => "Unicode standardında \"karakter olmayan\" olarak tanımlanan U+%{arg1} kod noktası, açık veri alışverişi için önerilmez",
+                "operation" => "%{operation} işleminde Unicode standardında \"karakter olmayan\" olarak tanımlanan U+%{arg1} kod noktası, açık veri alışverişi için önerilmez"
               },
               "uk" => {
-                "*" => "Несимвол Unicode U+%{arg1} не рекомендовано використовувати для відкритого обміну даними",
-                "operation" => "Несимвол Unicode U+%{arg1} не рекомендовано використовувати для відкритого обміну даними у %{operation}"
+                "none" => "Кодову точку Unicode U+%{arg1}, що є несимволом, не рекомендовано використовувати для відкритого обміну даними",
+                "operation" => "Кодову точку Unicode U+%{arg1}, що є несимволом, не рекомендовано використовувати для відкритого обміну даними у %{operation}"
               },
               "zh" => {
                 "none" => "Unicode 非字符 U+%{arg1} 不建议用于开放式信息交换",
@@ -105436,12 +106113,12 @@ $CONF = {
           "message" => {
             "templates" => {
               "ar" => {
-                "none" => "أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" يعود إلى نقطة رمزية غير يونيكود، وقد لا يكون قابلًا للنقل",
-                "operation" => "أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" يعود إلى نقطة رمزية غير يونيكود، وقد لا يكون قابلًا للنقل في %{operation}"
+                "none" => "أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" يمثّل نقطة رمزية خارج نطاق Unicode، وقد لا يكون قابلًا للنقل",
+                "operation" => "أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" يمثّل نقطة رمزية خارج نطاق Unicode، وقد لا يكون قابلًا للنقل في %{operation}"
               },
               "cy" => {
-                "*" => "Mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn cynrychioli pwynt cod nad yw'n rhan o Unicode; efallai nad yw'n gludadwy",
-                "operation" => "Mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn cynrychioli pwynt cod nad yw'n rhan o Unicode; efallai nad yw'n gludadwy wrth %{operation}"
+                "*" => "Mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn cynrychioli pwynt cod nad yw'n rhan o Unicode; efallai na fydd yn gludadwy",
+                "operation" => "Mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn cynrychioli pwynt cod nad yw'n rhan o Unicode; efallai na fydd yn gludadwy wrth %{operation}"
               },
               "de" => {
                 "none" => "Jede UTF-8-Sequenz, die mit „%{prefix}“ beginnt, steht für einen Nicht-Unicode-Codepoint und ist möglicherweise nicht portabel",
@@ -105468,12 +106145,12 @@ $CONF = {
                 "operation" => "Toute séquence UTF-8 commençant par « %{prefix} » correspond à un point de code non Unicode et peut ne pas être portable dans %{operation}"
               },
               "he" => {
-                "none" => "כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" מייצג נקודת קוד שאינה בתקן Unicode, ייתכן שאינו נייד בין מערכות",
-                "operation" => "כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" מייצג נקודת קוד שאינה בתקן Unicode, ייתכן שאינו נייד בין מערכות בהקשר של \"%{operation}\""
+                "none" => "כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" מייצג נקודת קוד שאינה בתקן Unicode, וייתכן שלא יהיה נייד בין מערכות",
+                "operation" => "כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" מייצג נקודת קוד שאינה בתקן Unicode, וייתכן שלא יהיה נייד בין מערכות בהקשר של \"%{operation}\""
               },
               "hu" => {
-                "none" => "Minden \"%{prefix}\" kezdetű UTF-8 sorozat Unicode-on kívüli kódpontot jelöl, és előfordulhat, hogy nem hordozható",
-                "operation" => "Minden \"%{prefix}\" kezdetű UTF-8 sorozat Unicode-on kívüli kódpontot jelöl, és előfordulhat, hogy nem hordozható %{operation} során"
+                "none" => "A „%{prefix}” kezdetű UTF-8-sorozatok mind Unicode-on kívüli kódpontot jelölnek, és lehet, hogy nem hordozhatók",
+                "operation" => "A „%{prefix}” kezdetű UTF-8-sorozatok mind Unicode-on kívüli kódpontot jelölnek, és lehet, hogy nem hordozhatók %{operation} során"
               },
               "is" => {
                 "none" => "Sérhver UTF-8-runa sem byrjar á „%{prefix}“ táknar kóðapunkt sem er ekki í Unicode og gæti verið ófæranleg",
@@ -105492,28 +106169,28 @@ $CONF = {
                 "operation" => "Każda sekwencja UTF-8 zaczynająca się od „%{prefix}” reprezentuje punkt kodowy spoza Unicode i może nie być przenośna w %{operation}"
               },
               "pt" => {
-                "*" => "Qualquer sequência UTF-8 que comece por \"%{prefix}\" representa um ponto de código fora de Unicode e pode não ser portável",
+                "none" => "Qualquer sequência UTF-8 que comece por \"%{prefix}\" representa um ponto de código fora de Unicode e pode não ser portável",
                 "operation" => "Qualquer sequência UTF-8 que comece por \"%{prefix}\" representa um ponto de código fora de Unicode e pode não ser portável em %{operation}"
               },
               "ru" => {
-                "*" => "Любая последовательность UTF-8, начинающаяся с \"%{prefix}\", представляет кодовую точку вне диапазона Unicode и может быть непереносимой",
-                "operation" => "Любая последовательность UTF-8, начинающаяся с \"%{prefix}\", представляет кодовую точку вне диапазона Unicode и может быть непереносимой в %{operation}"
+                "*" => "Любая последовательность UTF-8, начинающаяся с «%{prefix}», представляет кодовую точку вне диапазона Unicode и может быть непереносимой",
+                "operation" => "Любая последовательность UTF-8, начинающаяся с «%{prefix}», представляет кодовую точку вне диапазона Unicode и может быть непереносимой в %{operation}"
               },
               "sr" => {
                 "none" => "Сваки UTF-8 низ који почиње са „%{prefix}“ означава кодну тачку изван Unicode-а и можда није преносив",
-                "operation" => "Сваки UTF-8 низ који почиње са „%{prefix}“ означава кодну тачку изван Unicode-а и можда није преносив у %{operation}"
+                "operation" => "Сваки UTF-8 низ који почиње са „%{prefix}“ означава кодну тачку изван Unicode-а и можда није преносив (у контексту %{operation})"
               },
               "tlh" => {
                 "none" => "UTF-8 sequence Hoch'e' \"%{prefix}\" taghchugh, non-Unicode code point 'oH; portablebe' net ngeH",
                 "operation" => "UTF-8 sequence Hoch'e' \"%{prefix}\" taghchugh, non-Unicode code point 'oH; %{operation}Daq portablebe'"
               },
               "tr" => {
-                "none" => "\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi Unicode dışı bir kod noktasını gösterir, taşınabilir olmayabilir",
-                "operation" => "%{operation} bağlamında \"%{prefix}\" ile başlayan her UTF-8 bayt dizisi Unicode dışı bir kod noktasını gösterir, taşınabilir olmayabilir"
+                "none" => "\"%{prefix}\" ile başlayan her UTF-8 dizisi Unicode dışı bir kod noktasını gösterir ve taşınabilir olmayabilir",
+                "operation" => "%{operation} işleminde \"%{prefix}\" ile başlayan her UTF-8 dizisi Unicode dışı bir kod noktasını gösterir ve taşınabilir olmayabilir"
               },
               "uk" => {
-                "*" => "Будь-яка послідовність UTF-8, що починається з \"%{prefix}\", позначає кодову точку поза Unicode; її використання може бути непереносним",
-                "operation" => "Будь-яка послідовність UTF-8, що починається з \"%{prefix}\", позначає кодову точку поза Unicode; її використання у %{operation} може бути непереносним"
+                "none" => "Будь-яка послідовність UTF-8, що починається з «%{prefix}», відповідає кодовій точці поза Unicode; її використання може бути непереносним",
+                "operation" => "Будь-яка послідовність UTF-8, що починається з «%{prefix}», відповідає кодовій точці поза Unicode; її використання у %{operation} може бути непереносним"
               },
               "zh" => {
                 "none" => "任何以“%{prefix}”开头的 UTF-8 序列都表示非 Unicode 码点，可能不可移植",
@@ -105612,10 +106289,10 @@ $CONF = {
               "en" => "Operation \"%{arg1}\" returns its argument for non-Unicode code point 0x%{arg2}",
               "es" => "La operación \"%{arg1}\" devuelve su argumento para el punto de código no Unicode 0x%{arg2}",
               "fa" => "عملیات «%{arg1}» برای نقطهٔ کد غیر یونیکد 0x%{arg2} همان آرگومان را برمی\N{ZERO WIDTH NON-JOINER}گرداند.",
-              "fi" => "Operaatio \"%{arg1}\" palauttaa argumenttinsa muuttumattomana Unicodeen kuulumattoman koodipisteen 0x%{arg2} tapauksessa",
+              "fi" => "Operaatio %{arg1} palauttaa argumenttinsa ennalleen Unicodeen kuulumattoman koodipisteen 0x%{arg2} tapauksessa",
               "fr" => "L'opération \"%{arg1}\" renvoie son argument pour le point de code non Unicode 0x%{arg2}",
               "he" => "הפעולה \"%{arg1}\" מחזירה את הארגומנט שלה ללא שינוי עבור נקודת הקוד 0x%{arg2} שאינה בתקן Unicode",
-              "hu" => "A következő művelet a 0x%{arg2} Unicode-on kívüli kódpont esetén változatlanul adja vissza argumentumát: \"%{arg1}\"",
+              "hu" => "A(z) „%{arg1}” művelet a 0x%{arg2} Unicode-on kívüli kódpont esetén változatlanul adja vissza az argumentumát",
               "is" => "Aðgerðin „%{arg1}“ skilar viðfanginu sínu fyrir kóðapunkt utan Unicode 0x%{arg2}",
               "it" => "L'operazione \"%{arg1}\" restituisce il proprio argomento per il punto di codice non Unicode 0x%{arg2}",
               "nl" => "Bewerking \"%{arg1}\" retourneert haar argument voor niet-Unicode-codepunt 0x%{arg2}",
@@ -105623,10 +106300,10 @@ $CONF = {
               "pt" => "A operação \"%{arg1}\" devolve o argumento para o ponto de código não Unicode 0x%{arg2}",
               "ru" => "Операция \"%{arg1}\" возвращает свой аргумент без изменений для кодовой точки 0x%{arg2}, не входящей в Unicode",
               "sr" => "Операција „%{arg1}“ враћа свој аргумент за кодну тачку изван Уникода 0x%{arg2}",
-              "tlh" => "Operation \"%{arg1}\" vay' Daq Unicode Degh 0x%{arg2}vaD chegh",
+              "tlh" => "Operation \"%{arg1}\" returns its argument for non-Unicode code point 0x%{arg2}",
               "tr" => "\"%{arg1}\" işlemi, Unicode dışı kod noktası 0x%{arg2} için bağımsız değişkenini değiştirmeden döndürür",
               "uk" => "Операція \"%{arg1}\" повертає свій аргумент без змін для кодової точки поза Unicode 0x%{arg2}",
-              "zh" => "操作“%{arg1}”对非 Unicode 码位 0x%{arg2} 返回其参数"
+              "zh" => "操作“%{arg1}”对非 Unicode 码点 0x%{arg2} 返回原参数"
             },
             "args" => [
               {
@@ -105725,8 +106402,8 @@ $CONF = {
                 "operation" => "نقطهٔ کد 0x%{arg1} یونیکد نیست و ممکن است در %{operation} قابل\N{ZERO WIDTH NON-JOINER}حمل نباشد."
               },
               "fi" => {
-                "none" => "Koodipiste 0x%{arg1} ei kuulu Unicodeen, eikä välttämättä ole siirrettävä",
-                "operation" => "Koodipiste 0x%{arg1} ei kuulu Unicodeen, eikä välttämättä ole siirrettävä operaatiossa \"%{operation}\""
+                "none" => "Koodipiste 0x%{arg1} ei kuulu Unicodeen eikä välttämättä ole siirrettävä",
+                "operation" => "Koodipiste 0x%{arg1} ei kuulu Unicodeen eikä välttämättä ole siirrettävä operaatiossa %{operation}"
               },
               "fr" => {
                 "none" => "Le point de code 0x%{arg1} n'est pas Unicode et pourrait ne pas être portable",
@@ -105737,8 +106414,8 @@ $CONF = {
                 "operation" => "נקודת הקוד 0x%{arg1} אינה בתקן Unicode, ייתכן שאינה ניידת בין מערכות בהקשר של \"%{operation}\""
               },
               "hu" => {
-                "none" => "A 0x%{arg1} kódpont nem Unicode-kódpont, előfordulhat, hogy nem hordozható",
-                "operation" => "A 0x%{arg1} kódpont nem Unicode-kódpont, előfordulhat, hogy nem hordozható %{operation} során"
+                "none" => "A 0x%{arg1} kódpont a Unicode-tartományon kívül esik, ezért előfordulhat, hogy nem hordozható",
+                "operation" => "A 0x%{arg1} kódpont a Unicode-tartományon kívül esik, ezért előfordulhat, hogy nem hordozható a(z) %{operation} műveletben"
               },
               "is" => {
                 "none" => "Kóðapunkturinn 0x%{arg1} er ekki Unicode og gæti verið ófæranlegur",
@@ -105761,12 +106438,12 @@ $CONF = {
                 "operation" => "O ponto de código 0x%{arg1} não é Unicode e pode não ser portável em %{operation}"
               },
               "ru" => {
-                "*" => "Кодовая точка 0x%{arg1} не входит в Unicode и может быть непереносимой",
+                "none" => "Кодовая точка 0x%{arg1} не входит в Unicode и может быть непереносимой",
                 "operation" => "Кодовая точка 0x%{arg1} не входит в Unicode и может быть непереносимой в %{operation}"
               },
               "sr" => {
                 "none" => "Кодна тачка 0x%{arg1} није Unicode и можда није преносива",
-                "operation" => "Кодна тачка 0x%{arg1} није Unicode и можда није преносива у контексту: %{operation}"
+                "operation" => "Кодна тачка 0x%{arg1} није Unicode и можда није преносива у %{operation}"
               },
               "tlh" => {
                 "none" => "Code point 0x%{arg1} is not Unicode, may not be portable",
@@ -105774,15 +106451,15 @@ $CONF = {
               },
               "tr" => {
                 "none" => "0x%{arg1} kod noktası Unicode kapsamında değildir, taşınabilir olmayabilir",
-                "operation" => "%{operation} bağlamında 0x%{arg1} kod noktası Unicode kapsamında değildir, taşınabilir olmayabilir"
+                "operation" => "0x%{arg1} kod noktası Unicode kapsamında değildir ve %{operation} bağlamında taşınabilir olmayabilir"
               },
               "uk" => {
                 "*" => "Кодова точка 0x%{arg1} не належить до Unicode, її використання може бути непереносним",
                 "operation" => "Кодова точка 0x%{arg1} не належить до Unicode, її використання у %{operation} може бути непереносним"
               },
               "zh" => {
-                "none" => "码点 0x%{arg1} 不是 Unicode，可能不可移植",
-                "operation" => "码点 0x%{arg1} 不是 Unicode，在 %{operation} 中可能不可移植"
+                "none" => "码点 0x%{arg1} 超出 Unicode 范围，可能不可移植",
+                "operation" => "码点 0x%{arg1} 超出 Unicode 范围，在 %{operation} 中可能不可移植"
               }
             },
             "args" => [
@@ -105896,8 +106573,8 @@ $CONF = {
                 "operation" => "نقطهٔ کد 0x%{arg1} یونیکد نیست، به گسترش پرل نیاز دارد و در %{operation} قابل\N{ZERO WIDTH NON-JOINER}حمل نیست."
               },
               "fi" => {
-                "none" => "Koodipiste 0x%{arg1} ei kuulu Unicodeen, vaatii Perl-laajennuksen eikä siksi ole siirrettävä",
-                "operation" => "Koodipiste 0x%{arg1} ei kuulu Unicodeen, vaatii Perl-laajennuksen eikä siksi ole siirrettävä operaatiossa \"%{operation}\""
+                "none" => "Koodipiste 0x%{arg1} ei kuulu Unicodeen, edellyttää Perl-laajennusta eikä siksi ole siirrettävä",
+                "operation" => "Koodipiste 0x%{arg1} ei kuulu Unicodeen, edellyttää Perl-laajennusta eikä siksi ole siirrettävä operaatiossa %{operation}"
               },
               "fr" => {
                 "none" => "Le point de code 0x%{arg1} n'est pas Unicode, nécessite une extension Perl et n'est donc pas portable",
@@ -105909,7 +106586,7 @@ $CONF = {
               },
               "hu" => {
                 "none" => "A 0x%{arg1} kódpont nem Unicode-kódpont, Perl-kiterjesztést igényel, ezért nem hordozható",
-                "operation" => "A 0x%{arg1} kódpont nem Unicode-kódpont, Perl-kiterjesztést igényel, ezért nem hordozható %{operation} során"
+                "operation" => "A 0x%{arg1} kódpont nem Unicode-kódpont, Perl-kiterjesztést igényel, ezért nem hordozható a(z) %{operation} műveletben"
               },
               "is" => {
                 "none" => "Kóðapunkturinn 0x%{arg1} er ekki Unicode, krefst Perl-viðbótar og er því ekki færanlegur",
@@ -105932,12 +106609,12 @@ $CONF = {
                 "operation" => "O ponto de código 0x%{arg1} não é Unicode, requer uma extensão do Perl e não é portável em %{operation}"
               },
               "ru" => {
-                "*" => "Кодовая точка 0x%{arg1} не входит в Unicode, требует расширения Perl и поэтому непереносима",
+                "none" => "Кодовая точка 0x%{arg1} не входит в Unicode, требует расширения Perl и поэтому непереносима",
                 "operation" => "Кодовая точка 0x%{arg1} не входит в Unicode, требует расширения Perl и поэтому непереносима в %{operation}"
               },
               "sr" => {
                 "none" => "Кодна тачка 0x%{arg1} није Unicode, захтева Perl проширење и зато није преносива",
-                "operation" => "Кодна тачка 0x%{arg1} није Unicode, захтева Perl проширење и зато није преносива у контексту: %{operation}"
+                "operation" => "Кодна тачка 0x%{arg1} није Unicode, захтева Perl проширење и зато није преносива у %{operation}"
               },
               "tlh" => {
                 "none" => "Code point 0x%{arg1} is not Unicode, requires a Perl extension, and so is not portable",
@@ -105945,15 +106622,15 @@ $CONF = {
               },
               "tr" => {
                 "none" => "0x%{arg1} kod noktası Unicode kapsamında değildir, bir Perl genişletmesi gerektirir ve bu nedenle taşınabilir değildir",
-                "operation" => "%{operation} bağlamında 0x%{arg1} kod noktası Unicode kapsamında değildir, bir Perl genişletmesi gerektirir ve bu nedenle taşınabilir değildir"
+                "operation" => "0x%{arg1} kod noktası Unicode kapsamında değildir, bir Perl genişletmesi gerektirir ve %{operation} bağlamında taşınabilir değildir"
               },
               "uk" => {
                 "*" => "Кодова точка 0x%{arg1} не належить до Unicode, потребує розширення Perl і тому є непереносною",
                 "operation" => "Кодова точка 0x%{arg1} не належить до Unicode, потребує розширення Perl і тому є непереносною в %{operation}"
               },
               "zh" => {
-                "none" => "码点 0x%{arg1} 不是 Unicode，需要 Perl 扩展，因此不可移植",
-                "operation" => "码点 0x%{arg1} 不是 Unicode，需要 Perl 扩展，因此在 %{operation} 中不可移植"
+                "none" => "码点 0x%{arg1} 不属于 Unicode，需要 Perl 扩展，因此不可移植",
+                "operation" => "码点 0x%{arg1} 不属于 Unicode，需要 Perl 扩展，因此在 %{operation} 中不可移植"
               }
             },
             "args" => [
@@ -106047,8 +106724,8 @@ $CONF = {
                 "operation" => "أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" هو امتداد خاص بـ Perl، ولذلك قد لا يكون قابلًا للنقل في %{operation}"
               },
               "cy" => {
-                "*" => "Mae pob dilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn estyniad Perl, ac felly nid yw'n gludadwy",
-                "operation" => "Mae pob dilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn estyniad Perl, ac felly nid yw'n gludadwy wrth %{operation}"
+                "*" => "Mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn estyniad Perl ac felly nid yw'n gludadwy",
+                "operation" => "Mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn estyniad Perl ac felly nid yw'n gludadwy wrth %{operation}"
               },
               "de" => {
                 "none" => "Jede UTF-8-Sequenz, die mit „%{prefix}“ beginnt, ist eine Perl-Erweiterung und daher nicht portabel",
@@ -106075,12 +106752,12 @@ $CONF = {
                 "operation" => "Toute séquence UTF-8 commençant par « %{prefix} » est une extension de Perl et n'est donc pas portable dans %{operation}"
               },
               "he" => {
-                "none" => "כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" הוא הרחבה של Perl, ולכן אינו נייד בין מערכות",
-                "operation" => "כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" הוא הרחבה של Perl, ולכן אינו נייד בין מערכות בהקשר של \"%{operation}\""
+                "none" => "כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" הוא הרחבה של Perl ולכן אינו נייד בין מערכות",
+                "operation" => "כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" הוא הרחבה של Perl ולכן אינו נייד בין מערכות בהקשר של \"%{operation}\""
               },
               "hu" => {
-                "none" => "Minden \"%{prefix}\" kezdetű UTF-8 sorozat Perl-kiterjesztés, ezért nem hordozható",
-                "operation" => "Minden \"%{prefix}\" kezdetű UTF-8 sorozat Perl-kiterjesztés, ezért nem hordozható %{operation} során"
+                "none" => "A „%{prefix}” kezdetű UTF-8-sorozatok mind Perl-kiterjesztések, ezért nem hordozhatók",
+                "operation" => "A „%{prefix}” kezdetű UTF-8-sorozatok mind Perl-kiterjesztések, ezért nem hordozhatók %{operation} során"
               },
               "is" => {
                 "none" => "Sérhver UTF-8-runa sem byrjar á „%{prefix}“ er Perl-viðbót og því ekki færanleg",
@@ -106099,28 +106776,28 @@ $CONF = {
                 "operation" => "Każda sekwencja UTF-8 zaczynająca się od „%{prefix}” jest rozszerzeniem Perla, więc nie jest przenośna w %{operation}"
               },
               "pt" => {
-                "*" => "Qualquer sequência UTF-8 que comece por \"%{prefix}\" é uma extensão de Perl e, por isso, não é portável",
+                "none" => "Qualquer sequência UTF-8 que comece por \"%{prefix}\" é uma extensão de Perl e, por isso, não é portável",
                 "operation" => "Qualquer sequência UTF-8 que comece por \"%{prefix}\" é uma extensão de Perl e, por isso, não é portável em %{operation}"
               },
               "ru" => {
-                "*" => "Любая последовательность UTF-8, начинающаяся с \"%{prefix}\", является расширением Perl и потому непереносима",
-                "operation" => "Любая последовательность UTF-8, начинающаяся с \"%{prefix}\", является расширением Perl и потому непереносима в %{operation}"
+                "*" => "Любая последовательность UTF-8, начинающаяся с «%{prefix}», является расширением Perl и поэтому непереносима",
+                "operation" => "Любая последовательность UTF-8, начинающаяся с «%{prefix}», является расширением Perl и поэтому непереносима в %{operation}"
               },
               "sr" => {
                 "none" => "Сваки UTF-8 низ који почиње са „%{prefix}“ представља Perl проширење и зато није преносив",
-                "operation" => "Сваки UTF-8 низ који почиње са „%{prefix}“ представља Perl проширење и зато није преносив у %{operation}"
+                "operation" => "Сваки UTF-8 низ који почиње са „%{prefix}“ представља Perl проширење и зато није преносив (у контексту %{operation})"
               },
               "tlh" => {
                 "none" => "UTF-8 sequence Hoch'e' \"%{prefix}\" taghchugh, Perl extension 'oH; vaj portablebe'",
                 "operation" => "UTF-8 sequence Hoch'e' \"%{prefix}\" taghchugh, Perl extension 'oH; %{operation}Daq portablebe'"
               },
               "tr" => {
-                "none" => "\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi bir Perl genişletmesidir ve bu nedenle taşınabilir değildir",
-                "operation" => "%{operation} bağlamında \"%{prefix}\" ile başlayan her UTF-8 bayt dizisi bir Perl genişletmesidir ve bu nedenle taşınabilir değildir"
+                "none" => "\"%{prefix}\" ile başlayan her UTF-8 dizisi Perl'e özgü bir genişletmedir ve bu nedenle taşınabilir değildir",
+                "operation" => "%{operation} işleminde \"%{prefix}\" ile başlayan her UTF-8 dizisi Perl'e özgü bir genişletmedir ve bu nedenle taşınabilir değildir"
               },
               "uk" => {
-                "*" => "Будь-яка послідовність UTF-8, що починається з \"%{prefix}\", є розширенням Perl, тому не є переносимою",
-                "operation" => "Будь-яка послідовність UTF-8, що починається з \"%{prefix}\", є розширенням Perl, тому не є переносимою у %{operation}"
+                "none" => "Будь-яка послідовність UTF-8, що починається з «%{prefix}», є розширенням Perl, а отже, непереносною",
+                "operation" => "Будь-яка послідовність UTF-8, що починається з «%{prefix}», є розширенням Perl, а отже, непереносною у %{operation}"
               },
               "zh" => {
                 "none" => "任何以“%{prefix}”开头的 UTF-8 序列都是 Perl 扩展，因此不可移植",
@@ -106273,8 +106950,8 @@ $CONF = {
                 "operation" => "محرف UTF-8 مشوّه: %{bytes} (تجاوز السعة) في %{operation}"
               },
               "cy" => {
-                "*" => "Nod UTF-8 anffurfiedig: %{bytes} (gorlif)",
-                "operation" => "Nod UTF-8 anffurfiedig: %{bytes} (gorlif) wrth %{operation}"
+                "*" => "Nod UTF-8 annilys: %{bytes} (gorlif)",
+                "operation" => "Nod UTF-8 annilys: %{bytes} (gorlif) wrth %{operation}"
               },
               "de" => {
                 "none" => "Fehlerhaftes UTF-8-Zeichen: %{bytes} (Überlauf)",
@@ -106305,8 +106982,8 @@ $CONF = {
                 "operation" => "תו UTF-8 פגום: %{bytes} (הערך חורג מהטווח) בהקשר של \"%{operation}\""
               },
               "hu" => {
-                "none" => "Hibás UTF-8 karakter: %{bytes} (túlcsordulás)",
-                "operation" => "Hibás UTF-8 karakter: %{bytes} (túlcsordulás) %{operation} során"
+                "none" => "Hibás UTF-8 karakter: %{bytes} (túlcsordul)",
+                "operation" => "Hibás UTF-8 karakter: %{bytes} (túlcsordul) %{operation} során"
               },
               "is" => {
                 "none" => "Ógild UTF-8-stafuröð: %{bytes} (yfirflæði)",
@@ -106325,8 +107002,8 @@ $CONF = {
                 "operation" => "Nieprawidłowy znak UTF-8: %{bytes} (przepełnienie) w %{operation}"
               },
               "pt" => {
-                "*" => "Carácter UTF-8 malformado: %{bytes} (o valor excede o limite representável)",
-                "operation" => "Carácter UTF-8 malformado: %{bytes} (o valor excede o limite representável) em %{operation}"
+                "none" => "Carácter UTF-8 malformado: %{bytes} (valor excede o limite representável)",
+                "operation" => "Carácter UTF-8 malformado: %{bytes} (valor excede o limite representável) em %{operation}"
               },
               "ru" => {
                 "*" => "Некорректный символ UTF-8: %{bytes} (переполнение)",
@@ -106334,18 +107011,18 @@ $CONF = {
               },
               "sr" => {
                 "none" => "Неисправан UTF-8 знак: %{bytes} (прекорачење)",
-                "operation" => "Неисправан UTF-8 знак: %{bytes} (прекорачење) у %{operation}"
+                "operation" => "Неисправан UTF-8 знак: %{bytes} (прекорачење; у контексту %{operation})"
               },
               "tlh" => {
                 "none" => "UTF-8 vay' Qagh: %{bytes} (overflow)",
                 "operation" => "UTF-8 vay' Qagh: %{bytes} (overflow) %{operation}Daq"
               },
               "tr" => {
-                "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (değer taşması oluştu)",
-                "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (değer taşması oluştu)"
+                "none" => "Bozuk UTF-8 karakteri: %{bytes} (değer taşması)",
+                "operation" => "%{operation} işleminde bozuk UTF-8 karakteri: %{bytes} (değer taşması)"
               },
               "uk" => {
-                "*" => "Некоректно закодований символ UTF-8: %{bytes} (переповнення)",
+                "none" => "Некоректно закодований символ UTF-8: %{bytes} (переповнення)",
                 "operation" => "Некоректно закодований символ UTF-8: %{bytes} (переповнення) у %{operation}"
               },
               "zh" => {
@@ -106441,12 +107118,12 @@ $CONF = {
           "message" => {
             "templates" => {
               "ar" => {
-                "none" => "محرف UTF-8 مشوّه: %{bytes} (أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" طويل أكثر من اللازم؛ يمكن وينبغي تمثيله بتسلسل أقصر)",
-                "operation" => "محرف UTF-8 مشوّه: %{bytes} (أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" طويل أكثر من اللازم؛ يمكن وينبغي تمثيله بتسلسل أقصر) في %{operation}"
+                "none" => "محرف UTF-8 مشوّه: %{bytes} (أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" أطول من اللازم؛ ويمكن وينبغي تمثيله بتسلسل أقصر)",
+                "operation" => "محرف UTF-8 مشوّه: %{bytes} (أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" أطول من اللازم؛ ويمكن وينبغي تمثيله بتسلسل أقصر) في %{operation}"
               },
               "cy" => {
-                "*" => "Nod UTF-8 camffurfiedig: %{bytes} (mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn rhy hir; gellir ei gynrychioli â dilyniant gwahanol, byrrach a dylid gwneud hynny)",
-                "operation" => "Nod UTF-8 camffurfiedig: %{bytes} (mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn rhy hir; gellir ei gynrychioli â dilyniant gwahanol, byrrach a dylid gwneud hynny) wrth %{operation}"
+                "*" => "Nod UTF-8 annilys: %{bytes} (mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn rhy hir; gellir ac y dylid ei gynrychioli gan ddilyniant gwahanol, byrrach)",
+                "operation" => "Nod UTF-8 annilys: %{bytes} (mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn rhy hir; gellir ac y dylid ei gynrychioli gan ddilyniant gwahanol, byrrach) wrth %{operation}"
               },
               "de" => {
                 "none" => "Fehlerhaftes UTF-8-Zeichen: %{bytes} (jede UTF-8-Sequenz, die mit „%{prefix}“ beginnt, ist überlang und kann und sollte durch eine andere, kürzere Sequenz dargestellt werden)",
@@ -106465,20 +107142,20 @@ $CONF = {
                 "operation" => "نویسهٔ UTF-8 بدساخت: %{bytes} (هر توالی UTF-8 که با «%{prefix}» آغاز شود بیش\N{ZERO WIDTH NON-JOINER}ازحد بلند است و می\N{ZERO WIDTH NON-JOINER}تواند و باید با توالی کوتاه\N{ZERO WIDTH NON-JOINER}تری نمایش داده شود) در %{operation}."
               },
               "fi" => {
-                "none" => "Virheellinen UTF-8-merkki: %{bytes} (jokainen alkuosalla \"%{prefix}\" alkava UTF-8-jakso on ylipitkä; sen voi ja se tulisi esittää toisella, lyhyemmällä jaksolla)",
-                "operation" => "Virheellinen UTF-8-merkki: %{bytes} (jokainen alkuosalla \"%{prefix}\" alkava UTF-8-jakso on ylipitkä; sen voi ja se tulisi esittää toisella, lyhyemmällä jaksolla) operaatiossa \"%{operation}\""
+                "none" => "Virheellinen UTF-8-merkki: %{bytes} (jokainen alkuosalla \"%{prefix}\" alkava UTF-8-jakso on ylipitkä; se voidaan ja pitäisi esittää toisella, lyhyemmällä jaksolla)",
+                "operation" => "Virheellinen UTF-8-merkki: %{bytes} (jokainen alkuosalla \"%{prefix}\" alkava UTF-8-jakso on ylipitkä; se voidaan ja pitäisi esittää toisella, lyhyemmällä jaksolla) operaatiossa \"%{operation}\""
               },
               "fr" => {
                 "none" => "Caractère UTF-8 mal formé : %{bytes} (toute séquence UTF-8 commençant par « %{prefix} » est trop longue et peut et doit être représentée par une séquence plus courte)",
                 "operation" => "Caractère UTF-8 mal formé : %{bytes} (toute séquence UTF-8 commençant par « %{prefix} » est trop longue et peut et doit être représentée par une séquence plus courte) dans %{operation}"
               },
               "he" => {
-                "none" => "תו UTF-8 פגום: %{bytes} (כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" ארוך מהדרוש ואפשר וצריך לייצג אותו ברצף אחר, קצר יותר)",
-                "operation" => "תו UTF-8 פגום: %{bytes} (כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" ארוך מהדרוש ואפשר וצריך לייצג אותו ברצף אחר, קצר יותר) בהקשר של \"%{operation}\""
+                "none" => "תו UTF-8 פגום: %{bytes} (כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" ארוך מהדרוש, ואפשר וצריך לייצג אותו ברצף קצר יותר)",
+                "operation" => "תו UTF-8 פגום: %{bytes} (כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" ארוך מהדרוש, ואפשר וצריך לייצג אותו ברצף קצר יותר) בהקשר של \"%{operation}\""
               },
               "hu" => {
-                "none" => "Hibás UTF-8 karakter: %{bytes} (minden \"%{prefix}\" kezdetű UTF-8 sorozat túl hosszú; helyette másik, rövidebb sorozatot lehet és kell használni)",
-                "operation" => "Hibás UTF-8 karakter: %{bytes} (minden \"%{prefix}\" kezdetű UTF-8 sorozat túl hosszú; helyette másik, rövidebb sorozatot lehet és kell használni) %{operation} során"
+                "none" => "Hibás UTF-8 karakter: %{bytes} (a „%{prefix}” kezdetű UTF-8-sorozatok mind túl hosszúak; rövidebb sorozattal lehet és kell őket ábrázolni)",
+                "operation" => "Hibás UTF-8 karakter: %{bytes} (a „%{prefix}” kezdetű UTF-8-sorozatok mind túl hosszúak; rövidebb sorozattal lehet és kell őket ábrázolni) %{operation} során"
               },
               "is" => {
                 "none" => "Ógild UTF-8-stafuröð: %{bytes} (allar UTF-8-raðir sem byrja á „%{prefix}“ eru of langar og má og ætti að tákna með annarri, styttri röð)",
@@ -106497,28 +107174,28 @@ $CONF = {
                 "operation" => "Nieprawidłowy znak UTF-8: %{bytes} (każda sekwencja UTF-8 zaczynająca się od „%{prefix}” jest zbyt długa; można i należy ją zapisać za pomocą innej, krótszej sekwencji) w %{operation}"
               },
               "pt" => {
-                "*" => "Carácter UTF-8 malformado: %{bytes} (qualquer sequência UTF-8 que comece por \"%{prefix}\" é excessivamente longa e pode e deve ser representada por outra sequência mais curta)",
-                "operation" => "Carácter UTF-8 malformado: %{bytes} (qualquer sequência UTF-8 que comece por \"%{prefix}\" é excessivamente longa e pode e deve ser representada por outra sequência mais curta) em %{operation}"
+                "none" => "Carácter UTF-8 malformado: %{bytes} (qualquer sequência UTF-8 que comece por \"%{prefix}\" é demasiado longa e pode e deve ser representada por uma sequência mais curta)",
+                "operation" => "Carácter UTF-8 malformado: %{bytes} (qualquer sequência UTF-8 que comece por \"%{prefix}\" é demasiado longa e pode e deve ser representada por uma sequência mais curta) em %{operation}"
               },
               "ru" => {
-                "*" => "Некорректный символ UTF-8: %{bytes} (любая последовательность UTF-8, начинающаяся с \"%{prefix}\", избыточно длинна; её можно и следует заменить другой, более короткой последовательностью)",
-                "operation" => "Некорректный символ UTF-8: %{bytes} (любая последовательность UTF-8, начинающаяся с \"%{prefix}\", избыточно длинна; её можно и следует заменить другой, более короткой последовательностью) в %{operation}"
+                "*" => "Некорректный символ UTF-8: %{bytes} (любая последовательность UTF-8, начинающаяся с «%{prefix}», избыточно длинна и может быть представлена более короткой последовательностью)",
+                "operation" => "Некорректный символ UTF-8: %{bytes} (любая последовательность UTF-8, начинающаяся с «%{prefix}», избыточно длинна и может быть представлена более короткой последовательностью) в %{operation}"
               },
               "sr" => {
                 "none" => "Неисправан UTF-8 знак: %{bytes} (сваки UTF-8 низ који почиње са „%{prefix}“ је предугачак и може и треба да буде представљен другим, краћим низом)",
-                "operation" => "Неисправан UTF-8 знак: %{bytes} (сваки UTF-8 низ који почиње са „%{prefix}“ је предугачак и може и треба да буде представљен другим, краћим низом) при %{operation}"
+                "operation" => "Неисправан UTF-8 знак: %{bytes} (сваки UTF-8 низ који почиње са „%{prefix}“ је предугачак и може и треба да буде представљен другим, краћим низом; у контексту %{operation})"
               },
               "tlh" => {
                 "none" => "UTF-8 vay' Qagh: %{bytes} (UTF-8 sequence Hoch'e' \"%{prefix}\" taghchugh, 'e' overlong; shorter sequence latlh lo'taHvIS, representation QaQ)",
                 "operation" => "UTF-8 vay' Qagh: %{bytes} (UTF-8 sequence Hoch'e' \"%{prefix}\" taghchugh, 'e' overlong; shorter sequence latlh lo'taHvIS, representation QaQ) %{operation}Daq"
               },
               "tr" => {
-                "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi gereğinden uzundur; farklı ve daha kısa bir bayt dizisiyle gösterilebilir ve gösterilmelidir)",
-                "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi gereğinden uzundur; farklı ve daha kısa bir bayt dizisiyle gösterilebilir ve gösterilmelidir)"
+                "none" => "Bozuk UTF-8 karakteri: %{bytes} (\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi gereğinden uzundur; farklı ve daha kısa bir diziyle gösterilebilir ve gösterilmelidir)",
+                "operation" => "%{operation} işleminde bozuk UTF-8 karakteri: %{bytes} (\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi gereğinden uzundur; farklı ve daha kısa bir diziyle gösterilebilir ve gösterilmelidir)"
               },
               "uk" => {
-                "*" => "Некоректно закодований символ UTF-8: %{bytes} (будь-яка послідовність UTF-8, що починається з \"%{prefix}\", є надмірно довгою й може та має бути подана іншою, коротшою послідовністю)",
-                "operation" => "Некоректно закодований символ UTF-8: %{bytes} (будь-яка послідовність UTF-8, що починається з \"%{prefix}\", є надмірно довгою й може та має бути подана іншою, коротшою послідовністю) у %{operation}"
+                "none" => "Некоректно закодований символ UTF-8: %{bytes} (будь-яка послідовність UTF-8, що починається з «%{prefix}», є надмірно довгою; її можна й потрібно подати коротшою послідовністю)",
+                "operation" => "Некоректно закодований символ UTF-8: %{bytes} (будь-яка послідовність UTF-8, що починається з «%{prefix}», є надмірно довгою; її можна й потрібно подати коротшою послідовністю) у %{operation}"
               },
               "zh" => {
                 "none" => "格式错误的 UTF-8 字符：%{bytes}（任何以“%{prefix}”开头的 UTF-8 序列都是过长编码，应当也可以用更短的其他序列表示）",
@@ -106622,8 +107299,8 @@ $CONF = {
                 "operation" => "محرف UTF-8 مشوّه: %{bytes} (طويل أكثر من اللازم؛ استخدم %{canonical_bytes} بدلًا منه لتمثيل %{codepoint}) في %{operation}"
               },
               "cy" => {
-                "*" => "Nod UTF-8 anffurfiedig: %{bytes} (rhy hir; defnyddiwch %{canonical_bytes} yn lle hynny i gynrychioli %{codepoint})",
-                "operation" => "Nod UTF-8 anffurfiedig: %{bytes} (rhy hir; defnyddiwch %{canonical_bytes} yn lle hynny i gynrychioli %{codepoint}) wrth %{operation}"
+                "*" => "Nod UTF-8 annilys: %{bytes} (rhy hir; defnyddiwch %{canonical_bytes} yn lle hynny i gynrychioli %{codepoint})",
+                "operation" => "Nod UTF-8 annilys: %{bytes} (rhy hir; defnyddiwch %{canonical_bytes} yn lle hynny i gynrychioli %{codepoint}) wrth %{operation}"
               },
               "de" => {
                 "none" => "Fehlerhaftes UTF-8-Zeichen: %{bytes} (überlang; verwenden Sie stattdessen %{canonical_bytes}, um %{codepoint} darzustellen)",
@@ -106642,20 +107319,20 @@ $CONF = {
                 "operation" => "نویسهٔ UTF-8 بدساخت: %{bytes} (بیش\N{ZERO WIDTH NON-JOINER}ازحد بلند؛ برای نمایش %{codepoint} از %{canonical_bytes} استفاده کنید) در %{operation}."
               },
               "fi" => {
-                "none" => "Virheellinen UTF-8-merkki: %{bytes} (ylipitkä; käytä koodipisteen %{codepoint} esittämiseen sen sijaan jaksoa %{canonical_bytes})",
-                "operation" => "Virheellinen UTF-8-merkki: %{bytes} (ylipitkä; käytä koodipisteen %{codepoint} esittämiseen sen sijaan jaksoa %{canonical_bytes}) operaatiossa \"%{operation}\""
+                "none" => "Virheellinen UTF-8-merkki: %{bytes} (ylipitkä; käytä sen sijaan jaksoa %{canonical_bytes} koodipisteen %{codepoint} esittämiseen)",
+                "operation" => "Virheellinen UTF-8-merkki: %{bytes} (ylipitkä; käytä sen sijaan jaksoa %{canonical_bytes} koodipisteen %{codepoint} esittämiseen) operaatiossa \"%{operation}\""
               },
               "fr" => {
                 "none" => "Caractère UTF-8 mal formé : %{bytes} (séquence trop longue ; utilisez plutôt %{canonical_bytes} pour représenter %{codepoint})",
                 "operation" => "Caractère UTF-8 mal formé : %{bytes} (séquence trop longue ; utilisez plutôt %{canonical_bytes} pour représenter %{codepoint}) dans %{operation}"
               },
               "he" => {
-                "none" => "תו UTF-8 פגום: %{bytes} (ארוך מהדרוש; יש להשתמש במקום זאת ברצף %{canonical_bytes} לייצוג %{codepoint})",
-                "operation" => "תו UTF-8 פגום: %{bytes} (ארוך מהדרוש; יש להשתמש במקום זאת ברצף %{canonical_bytes} לייצוג %{codepoint}) בהקשר של \"%{operation}\""
+                "none" => "תו UTF-8 פגום: %{bytes} (ארוך מהדרוש; יש להשתמש ברצף %{canonical_bytes} כדי לייצג את %{codepoint})",
+                "operation" => "תו UTF-8 פגום: %{bytes} (ארוך מהדרוש; יש להשתמש ברצף %{canonical_bytes} כדי לייצג את %{codepoint}) בהקשר של \"%{operation}\""
               },
               "hu" => {
-                "none" => "Hibás UTF-8 karakter: %{bytes} (túl hosszú; %{codepoint} ábrázolásához helyette %{canonical_bytes} használandó)",
-                "operation" => "Hibás UTF-8 karakter: %{bytes} (túl hosszú; %{codepoint} ábrázolásához helyette %{canonical_bytes} használandó) %{operation} során"
+                "none" => "Hibás UTF-8 karakter: %{bytes} (túl hosszú; %{codepoint} ábrázolásához %{canonical_bytes} használandó)",
+                "operation" => "Hibás UTF-8 karakter: %{bytes} (túl hosszú; %{codepoint} ábrázolásához %{canonical_bytes} használandó) %{operation} során"
               },
               "is" => {
                 "none" => "Ógild UTF-8-stafuröð: %{bytes} (of löng; notaðu %{canonical_bytes} til að tákna %{codepoint})",
@@ -106674,8 +107351,8 @@ $CONF = {
                 "operation" => "Nieprawidłowy znak UTF-8: %{bytes} (zbyt długa sekwencja; zamiast niej użyj %{canonical_bytes}, aby zapisać %{codepoint}) w %{operation}"
               },
               "pt" => {
-                "*" => "Carácter UTF-8 malformado: %{bytes} (sequência excessivamente longa; use antes %{canonical_bytes} para representar %{codepoint})",
-                "operation" => "Carácter UTF-8 malformado: %{bytes} (sequência excessivamente longa; use antes %{canonical_bytes} para representar %{codepoint}) em %{operation}"
+                "none" => "Carácter UTF-8 malformado: %{bytes} (sequência demasiado longa; use %{canonical_bytes} para representar %{codepoint})",
+                "operation" => "Carácter UTF-8 malformado: %{bytes} (sequência demasiado longa; use %{canonical_bytes} para representar %{codepoint}) em %{operation}"
               },
               "ru" => {
                 "*" => "Некорректный символ UTF-8: %{bytes} (избыточно длинная последовательность; для представления %{codepoint} используйте %{canonical_bytes})",
@@ -106683,19 +107360,19 @@ $CONF = {
               },
               "sr" => {
                 "none" => "Неисправан UTF-8 знак: %{bytes} (предугачак запис; уместо њега употребите %{canonical_bytes} за представљање %{codepoint})",
-                "operation" => "Неисправан UTF-8 знак: %{bytes} (предугачак запис; уместо њега употребите %{canonical_bytes} за представљање %{codepoint}) при %{operation}"
+                "operation" => "Неисправан UTF-8 знак: %{bytes} (предугачак запис; уместо њега употребите %{canonical_bytes} за представљање %{codepoint}; у контексту %{operation})"
               },
               "tlh" => {
                 "none" => "UTF-8 vay' Qagh: %{bytes} (overlong; %{codepoint} representationmeH %{canonical_bytes} lo' net poQ)",
                 "operation" => "UTF-8 vay' Qagh: %{bytes} (overlong; %{codepoint} representationmeH %{canonical_bytes} lo' net poQ) %{operation}Daq"
               },
               "tr" => {
-                "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (gereğinden uzun; %{codepoint} kod noktasını göstermek için bunun yerine %{canonical_bytes} kullanın)",
-                "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (gereğinden uzun; %{codepoint} kod noktasını göstermek için bunun yerine %{canonical_bytes} kullanın)"
+                "none" => "Bozuk UTF-8 karakteri: %{bytes} (gereğinden uzun; %{codepoint} kod noktasını göstermek için bunun yerine %{canonical_bytes} kullanın)",
+                "operation" => "%{operation} işleminde bozuk UTF-8 karakteri: %{bytes} (gereğinden uzun; %{codepoint} kod noktasını göstermek için bunun yerine %{canonical_bytes} kullanın)"
               },
               "uk" => {
-                "*" => "Некоректно сформований символ UTF-8: %{bytes} (надмірно довге кодування; натомість використовуйте %{canonical_bytes} для подання %{codepoint})",
-                "operation" => "Некоректно сформований символ UTF-8: %{bytes} (надмірно довге кодування; натомість використовуйте %{canonical_bytes} для подання %{codepoint}) у %{operation}"
+                "none" => "Некоректно сформований символ UTF-8: %{bytes} (надмірно довге кодування; натомість використайте %{canonical_bytes} для подання %{codepoint})",
+                "operation" => "Некоректно сформований символ UTF-8: %{bytes} (надмірно довге кодування; натомість використайте %{canonical_bytes} для подання %{codepoint}) у %{operation}"
               },
               "zh" => {
                 "none" => "格式错误的 UTF-8 字符：%{bytes}（过长编码；应使用 %{canonical_bytes} 表示 %{codepoint}）",
@@ -106902,22 +107579,22 @@ $CONF = {
             "templates" => {
               "ar" => {
                 "after_bytes" => {
-                  "none" => "محرف UTF-8 مشوّه: %{bytes} (بايت غير استمراري غير متوقع 0x%{unexpected_byte}، بعد بادئة صالحة طولها %{available_bytes} تبدأ بالبايت 0x%{start_byte}؛ طول التسلسل المطلوب %{expected_bytes} بايت؛ طول البادئة الصالحة %{available_bytes})",
-                  "operation" => "محرف UTF-8 مشوّه: %{bytes} (بايت غير استمراري غير متوقع 0x%{unexpected_byte}، بعد بادئة صالحة طولها %{available_bytes} تبدأ بالبايت 0x%{start_byte}؛ طول التسلسل المطلوب %{expected_bytes} بايت؛ طول البادئة الصالحة %{available_bytes}) في %{operation}"
+                  "none" => "محرف UTF-8 مشوّه: %{bytes} (بايت غير استمراري غير متوقع 0x%{unexpected_byte} بعد بادئة صالحة طولها %{available_bytes} تبدأ بالبايت 0x%{start_byte}؛ طول التسلسل المطلوب %{expected_bytes} بايت؛ طول البادئة الصالحة %{available_bytes})",
+                  "operation" => "محرف UTF-8 مشوّه: %{bytes} (بايت غير استمراري غير متوقع 0x%{unexpected_byte} بعد بادئة صالحة طولها %{available_bytes} تبدأ بالبايت 0x%{start_byte}؛ طول التسلسل المطلوب %{expected_bytes} بايت؛ طول البادئة الصالحة %{available_bytes}) في %{operation}"
                 },
                 "immediate" => {
-                  "none" => "محرف UTF-8 مشوّه: %{bytes} (بايت غير استمراري غير متوقع 0x%{unexpected_byte}، مباشرة بعد بايت البدء 0x%{start_byte}؛ طول التسلسل المطلوب %{expected_bytes} بايت؛ طول البادئة الصالحة %{available_bytes})",
-                  "operation" => "محرف UTF-8 مشوّه: %{bytes} (بايت غير استمراري غير متوقع 0x%{unexpected_byte}، مباشرة بعد بايت البدء 0x%{start_byte}؛ طول التسلسل المطلوب %{expected_bytes} بايت؛ طول البادئة الصالحة %{available_bytes}) في %{operation}"
+                  "none" => "محرف UTF-8 مشوّه: %{bytes} (بايت غير استمراري غير متوقع 0x%{unexpected_byte} مباشرة بعد بايت البدء 0x%{start_byte}؛ طول التسلسل المطلوب %{expected_bytes} بايت؛ طول البادئة الصالحة %{available_bytes})",
+                  "operation" => "محرف UTF-8 مشوّه: %{bytes} (بايت غير استمراري غير متوقع 0x%{unexpected_byte} مباشرة بعد بايت البدء 0x%{start_byte}؛ طول التسلسل المطلوب %{expected_bytes} بايت؛ طول البادئة الصالحة %{available_bytes}) في %{operation}"
                 }
               },
               "cy" => {
                 "*" => {
-                  "*" => "Nod UTF-8 wedi'i gamffurfio: %{bytes} (beit annisgwyl nad yw'n feit parhad 0x%{unexpected_byte}; ar ôl rhagddodiad dilys o hyd %{available_bytes} sy'n dechrau â'r beit 0x%{start_byte}; hyd gofynnol y dilyniant mewn beitiau: %{expected_bytes}; hyd y rhagddodiad dilys: %{available_bytes})",
-                  "operation" => "Nod UTF-8 wedi'i gamffurfio: %{bytes} (beit annisgwyl nad yw'n feit parhad 0x%{unexpected_byte}; ar ôl rhagddodiad dilys o hyd %{available_bytes} sy'n dechrau â'r beit 0x%{start_byte}; hyd gofynnol y dilyniant mewn beitiau: %{expected_bytes}; hyd y rhagddodiad dilys: %{available_bytes}) wrth %{operation}"
+                  "*" => "Nod UTF-8 annilys: %{bytes} (beit annisgwyl nad yw'n barhad 0x%{unexpected_byte}; ar ôl rhagddodiad dilys o %{available_bytes} beit, sy'n dechrau â'r beit 0x%{start_byte}; hyd gofynnol y dilyniant: %{expected_bytes} beit; hyd y rhagddodiad dilys: %{available_bytes} beit)",
+                  "operation" => "Nod UTF-8 annilys: %{bytes} (beit annisgwyl nad yw'n barhad 0x%{unexpected_byte}; ar ôl rhagddodiad dilys o %{available_bytes} beit, sy'n dechrau â'r beit 0x%{start_byte}; hyd gofynnol y dilyniant: %{expected_bytes} beit; hyd y rhagddodiad dilys: %{available_bytes} beit) wrth %{operation}"
                 },
                 "immediate" => {
-                  "*" => "Nod UTF-8 wedi'i gamffurfio: %{bytes} (beit annisgwyl nad yw'n feit parhad 0x%{unexpected_byte}; yn union ar ôl y beit cychwynnol 0x%{start_byte}; hyd gofynnol y dilyniant mewn beitiau: %{expected_bytes}; hyd y rhagddodiad dilys: %{available_bytes})",
-                  "operation" => "Nod UTF-8 wedi'i gamffurfio: %{bytes} (beit annisgwyl nad yw'n feit parhad 0x%{unexpected_byte}; yn union ar ôl y beit cychwynnol 0x%{start_byte}; hyd gofynnol y dilyniant mewn beitiau: %{expected_bytes}; hyd y rhagddodiad dilys: %{available_bytes}) wrth %{operation}"
+                  "*" => "Nod UTF-8 annilys: %{bytes} (beit annisgwyl nad yw'n barhad 0x%{unexpected_byte}; yn union ar ôl y beit cychwyn 0x%{start_byte}; hyd gofynnol y dilyniant: %{expected_bytes} beit; hyd y rhagddodiad dilys: %{available_bytes} beit)",
+                  "operation" => "Nod UTF-8 annilys: %{bytes} (beit annisgwyl nad yw'n barhad 0x%{unexpected_byte}; yn union ar ôl y beit cychwyn 0x%{start_byte}; hyd gofynnol y dilyniant: %{expected_bytes} beit; hyd y rhagddodiad dilys: %{available_bytes} beit) wrth %{operation}"
                 }
               },
               "de" => {
@@ -106952,8 +107629,8 @@ $CONF = {
               },
               "fa" => {
                 "after_bytes" => {
-                  "none" => "نویسهٔ UTF-8 بدساخت: %{bytes} (بایت نامنتظرهٔ غیرادامه\N{ZERO WIDTH NON-JOINER}ای 0x%{unexpected_byte}؛ پس از پیشوند معتبر به طول %{available_bytes} که با بایت 0x%{start_byte} آغاز شده؛ طول لازم توالی %{expected_bytes} بایت؛ طول پیشوند معتبر %{available_bytes}).",
-                  "operation" => "نویسهٔ UTF-8 بدساخت: %{bytes} (بایت نامنتظرهٔ غیرادامه\N{ZERO WIDTH NON-JOINER}ای 0x%{unexpected_byte}؛ پس از پیشوند معتبر به طول %{available_bytes} که با بایت 0x%{start_byte} آغاز شده؛ طول لازم توالی %{expected_bytes} بایت؛ طول پیشوند معتبر %{available_bytes}) در %{operation}."
+                  "none" => "نویسهٔ UTF-8 بدساخت: %{bytes} (بایت نامنتظرهٔ غیرادامه\N{ZERO WIDTH NON-JOINER}ای 0x%{unexpected_byte}؛ پس از پیشوند معتبر به طول %{available_bytes} که با بایت 0x%{start_byte} آغاز شده است؛ طول لازم توالی %{expected_bytes} بایت؛ طول پیشوند معتبر %{available_bytes}).",
+                  "operation" => "نویسهٔ UTF-8 بدساخت: %{bytes} (بایت نامنتظرهٔ غیرادامه\N{ZERO WIDTH NON-JOINER}ای 0x%{unexpected_byte}؛ پس از پیشوند معتبر به طول %{available_bytes} که با بایت 0x%{start_byte} آغاز شده است؛ طول لازم توالی %{expected_bytes} بایت؛ طول پیشوند معتبر %{available_bytes}) در %{operation}."
                 },
                 "immediate" => {
                   "none" => "نویسهٔ UTF-8 بدساخت: %{bytes} (بایت نامنتظرهٔ غیرادامه\N{ZERO WIDTH NON-JOINER}ای 0x%{unexpected_byte}؛ بلافاصله پس از بایت آغاز 0x%{start_byte}؛ طول لازم توالی %{expected_bytes} بایت؛ طول پیشوند معتبر %{available_bytes}).",
@@ -106982,22 +107659,22 @@ $CONF = {
               },
               "he" => {
                 "after_bytes" => {
-                  "none" => "תו UTF-8 פגום: %{bytes} (בית בלתי צפוי 0x%{unexpected_byte} שאינו בית המשך; אחרי תחילית תקינה באורך %{available_bytes} שמתחילה בבית 0x%{start_byte}; אורך הרצף הדרוש בבתים הוא %{expected_bytes}; אורך התחילית התקינה הוא %{available_bytes})",
-                  "operation" => "תו UTF-8 פגום: %{bytes} (בית בלתי צפוי 0x%{unexpected_byte} שאינו בית המשך; אחרי תחילית תקינה באורך %{available_bytes} שמתחילה בבית 0x%{start_byte}; אורך הרצף הדרוש בבתים הוא %{expected_bytes}; אורך התחילית התקינה הוא %{available_bytes}) בהקשר של \"%{operation}\""
+                  "none" => "תו UTF-8 פגום: %{bytes} (בית בלתי צפוי 0x%{unexpected_byte} שאינו בית המשך; אחרי תחילית תקינה באורך %{available_bytes} בתים, שמתחילה בבית 0x%{start_byte}; אורך הרצף הנדרש הוא %{expected_bytes} בתים; אורך התחילית התקינה הוא %{available_bytes} בתים)",
+                  "operation" => "תו UTF-8 פגום: %{bytes} (בית בלתי צפוי 0x%{unexpected_byte} שאינו בית המשך; אחרי תחילית תקינה באורך %{available_bytes} בתים, שמתחילה בבית 0x%{start_byte}; אורך הרצף הנדרש הוא %{expected_bytes} בתים; אורך התחילית התקינה הוא %{available_bytes} בתים) בהקשר של \"%{operation}\""
                 },
                 "immediate" => {
-                  "none" => "תו UTF-8 פגום: %{bytes} (בית בלתי צפוי 0x%{unexpected_byte} שאינו בית המשך; מיד אחרי בית הפתיחה 0x%{start_byte}; אורך הרצף הדרוש בבתים הוא %{expected_bytes}; אורך התחילית התקינה הוא %{available_bytes})",
-                  "operation" => "תו UTF-8 פגום: %{bytes} (בית בלתי צפוי 0x%{unexpected_byte} שאינו בית המשך; מיד אחרי בית הפתיחה 0x%{start_byte}; אורך הרצף הדרוש בבתים הוא %{expected_bytes}; אורך התחילית התקינה הוא %{available_bytes}) בהקשר של \"%{operation}\""
+                  "none" => "תו UTF-8 פגום: %{bytes} (בית בלתי צפוי 0x%{unexpected_byte} שאינו בית המשך; מיד אחרי בית הפתיחה 0x%{start_byte}; אורך הרצף הנדרש הוא %{expected_bytes} בתים; אורך התחילית התקינה הוא %{available_bytes} בתים)",
+                  "operation" => "תו UTF-8 פגום: %{bytes} (בית בלתי צפוי 0x%{unexpected_byte} שאינו בית המשך; מיד אחרי בית הפתיחה 0x%{start_byte}; אורך הרצף הנדרש הוא %{expected_bytes} בתים; אורך התחילית התקינה הוא %{available_bytes} בתים) בהקשר של \"%{operation}\""
                 }
               },
               "hu" => {
                 "after_bytes" => {
-                  "none" => "Hibás UTF-8 karakter: %{bytes} (váratlan nem folytatóbájt 0x%{unexpected_byte}; a 0x%{start_byte} bájttal kezdődő, %{available_bytes} hosszúságú érvényes előtag után; a szükséges sorozathossz %{expected_bytes} bájt; az érvényes előtag hossza %{available_bytes})",
-                  "operation" => "Hibás UTF-8 karakter: %{bytes} (váratlan nem folytatóbájt 0x%{unexpected_byte}; a 0x%{start_byte} bájttal kezdődő, %{available_bytes} hosszúságú érvényes előtag után; a szükséges sorozathossz %{expected_bytes} bájt; az érvényes előtag hossza %{available_bytes}) %{operation} során"
+                  "none" => "Hibás UTF-8 karakter: %{bytes} (váratlan nem folytatóbájt: 0x%{unexpected_byte}; a 0x%{start_byte} bájttal kezdődő, %{available_bytes} bájt hosszú érvényes előtag után; a szükséges sorozathossz %{expected_bytes} bájt; az érvényes előtag hossza %{available_bytes} bájt)",
+                  "operation" => "Hibás UTF-8 karakter: %{bytes} (váratlan nem folytatóbájt: 0x%{unexpected_byte}; a 0x%{start_byte} bájttal kezdődő, %{available_bytes} bájt hosszú érvényes előtag után; a szükséges sorozathossz %{expected_bytes} bájt; az érvényes előtag hossza %{available_bytes} bájt) %{operation} során"
                 },
                 "immediate" => {
-                  "none" => "Hibás UTF-8 karakter: %{bytes} (váratlan nem folytatóbájt 0x%{unexpected_byte}; közvetlenül a 0x%{start_byte} kezdőbájt után; a szükséges sorozathossz %{expected_bytes} bájt; az érvényes előtag hossza %{available_bytes})",
-                  "operation" => "Hibás UTF-8 karakter: %{bytes} (váratlan nem folytatóbájt 0x%{unexpected_byte}; közvetlenül a 0x%{start_byte} kezdőbájt után; a szükséges sorozathossz %{expected_bytes} bájt; az érvényes előtag hossza %{available_bytes}) %{operation} során"
+                  "none" => "Hibás UTF-8 karakter: %{bytes} (váratlan nem folytatóbájt: 0x%{unexpected_byte}; közvetlenül a 0x%{start_byte} kezdőbájt után; a szükséges sorozathossz %{expected_bytes} bájt; az érvényes előtag hossza %{available_bytes} bájt)",
+                  "operation" => "Hibás UTF-8 karakter: %{bytes} (váratlan nem folytatóbájt: 0x%{unexpected_byte}; közvetlenül a 0x%{start_byte} kezdőbájt után; a szükséges sorozathossz %{expected_bytes} bájt; az érvényes előtag hossza %{available_bytes} bájt) %{operation} során"
                 }
               },
               "is" => {
@@ -107032,45 +107709,42 @@ $CONF = {
               },
               "pl" => {
                 "after_bytes" => {
-                  "none" => "Nieprawidłowy znak UTF-8: %{bytes} (nieoczekiwany bajt inny niż kontynuacyjny 0x%{unexpected_byte}; po prawidłowym prefiksie o długości %{available_bytes}, zaczynającym się bajtem 0x%{start_byte}; wymagana długość sekwencji: %{expected_bytes} bajtów; długość prawidłowego prefiksu: %{available_bytes})",
-                  "operation" => "Nieprawidłowy znak UTF-8: %{bytes} (nieoczekiwany bajt inny niż kontynuacyjny 0x%{unexpected_byte}; po prawidłowym prefiksie o długości %{available_bytes}, zaczynającym się bajtem 0x%{start_byte}; wymagana długość sekwencji: %{expected_bytes} bajtów; długość prawidłowego prefiksu: %{available_bytes}) w %{operation}"
+                  "none" => "Nieprawidłowy znak UTF-8: %{bytes} (nieoczekiwany bajt niebędący bajtem kontynuacyjnym 0x%{unexpected_byte}; po prawidłowym prefiksie o długości %{available_bytes}, zaczynającym się bajtem 0x%{start_byte}; wymagana długość sekwencji: %{expected_bytes} bajtów; długość prawidłowego prefiksu: %{available_bytes})",
+                  "operation" => "Nieprawidłowy znak UTF-8: %{bytes} (nieoczekiwany bajt niebędący bajtem kontynuacyjnym 0x%{unexpected_byte}; po prawidłowym prefiksie o długości %{available_bytes}, zaczynającym się bajtem 0x%{start_byte}; wymagana długość sekwencji: %{expected_bytes} bajtów; długość prawidłowego prefiksu: %{available_bytes}) w %{operation}"
                 },
                 "immediate" => {
-                  "none" => "Nieprawidłowy znak UTF-8: %{bytes} (nieoczekiwany bajt inny niż kontynuacyjny 0x%{unexpected_byte}; bezpośrednio po bajcie początkowym 0x%{start_byte}; wymagana długość sekwencji: %{expected_bytes} bajtów; długość prawidłowego prefiksu: %{available_bytes})",
-                  "operation" => "Nieprawidłowy znak UTF-8: %{bytes} (nieoczekiwany bajt inny niż kontynuacyjny 0x%{unexpected_byte}; bezpośrednio po bajcie początkowym 0x%{start_byte}; wymagana długość sekwencji: %{expected_bytes} bajtów; długość prawidłowego prefiksu: %{available_bytes}) w %{operation}"
+                  "none" => "Nieprawidłowy znak UTF-8: %{bytes} (nieoczekiwany bajt niebędący bajtem kontynuacyjnym 0x%{unexpected_byte}; bezpośrednio po bajcie początkowym 0x%{start_byte}; wymagana długość sekwencji: %{expected_bytes} bajtów; długość prawidłowego prefiksu: %{available_bytes})",
+                  "operation" => "Nieprawidłowy znak UTF-8: %{bytes} (nieoczekiwany bajt niebędący bajtem kontynuacyjnym 0x%{unexpected_byte}; bezpośrednio po bajcie początkowym 0x%{start_byte}; wymagana długość sekwencji: %{expected_bytes} bajtów; długość prawidłowego prefiksu: %{available_bytes}) w %{operation}"
                 }
               },
               "pt" => {
-                "*" => {
-                  "*" => "Carácter UTF-8 malformado: %{bytes} (byte inesperado 0x%{unexpected_byte} que não é de continuação; após um prefixo válido de comprimento %{available_bytes} que começa pelo byte 0x%{start_byte}; comprimento necessário da sequência em bytes: %{expected_bytes}; comprimento do prefixo válido: %{available_bytes})",
-                  "operation" => "Carácter UTF-8 malformado: %{bytes} (byte inesperado 0x%{unexpected_byte} que não é de continuação; após um prefixo válido de comprimento %{available_bytes} que começa pelo byte 0x%{start_byte}; comprimento necessário da sequência em bytes: %{expected_bytes}; comprimento do prefixo válido: %{available_bytes}) em %{operation}"
-                },
                 "after_bytes" => {
-                  "operation" => "Malformed UTF-8 character: %{bytes} (unexpected non-continuation byte 0x%{unexpected_byte}; after a valid prefix of length %{available_bytes} starting with byte 0x%{start_byte}; required sequence length %{expected_bytes} bytes; valid prefix length %{available_bytes}) em %{operation}"
+                  "none" => "Carácter UTF-8 malformado: %{bytes} (byte inesperado 0x%{unexpected_byte} que não é de continuação; após um prefixo válido de comprimento %{available_bytes} iniciado pelo byte 0x%{start_byte}; comprimento necessário da sequência: %{expected_bytes} bytes; comprimento do prefixo válido: %{available_bytes})",
+                  "operation" => "Carácter UTF-8 malformado: %{bytes} (byte inesperado 0x%{unexpected_byte} que não é de continuação; após um prefixo válido de comprimento %{available_bytes} iniciado pelo byte 0x%{start_byte}; comprimento necessário da sequência: %{expected_bytes} bytes; comprimento do prefixo válido: %{available_bytes}) em %{operation}"
                 },
                 "immediate" => {
-                  "*" => "Carácter UTF-8 malformado: %{bytes} (byte inesperado 0x%{unexpected_byte} que não é de continuação; imediatamente após o byte inicial 0x%{start_byte}; comprimento necessário da sequência em bytes: %{expected_bytes}; comprimento do prefixo válido: %{available_bytes})",
-                  "operation" => "Carácter UTF-8 malformado: %{bytes} (byte inesperado 0x%{unexpected_byte} que não é de continuação; imediatamente após o byte inicial 0x%{start_byte}; comprimento necessário da sequência em bytes: %{expected_bytes}; comprimento do prefixo válido: %{available_bytes}) em %{operation}"
+                  "none" => "Carácter UTF-8 malformado: %{bytes} (byte inesperado 0x%{unexpected_byte} que não é de continuação; imediatamente após o byte inicial 0x%{start_byte}; comprimento necessário da sequência: %{expected_bytes} bytes; comprimento do prefixo válido: %{available_bytes})",
+                  "operation" => "Carácter UTF-8 malformado: %{bytes} (byte inesperado 0x%{unexpected_byte} que não é de continuação; imediatamente após o byte inicial 0x%{start_byte}; comprimento necessário da sequência: %{expected_bytes} bytes; comprimento do prefixo válido: %{available_bytes}) em %{operation}"
                 }
               },
               "ru" => {
                 "*" => {
-                  "*" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения; после допустимого префикса длиной %{available_bytes}, начинающегося с байта 0x%{start_byte}; требуемая длина последовательности в байтах: %{expected_bytes}; длина допустимого префикса: %{available_bytes})",
-                  "operation" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения; после допустимого префикса длиной %{available_bytes}, начинающегося с байта 0x%{start_byte}; требуемая длина последовательности в байтах: %{expected_bytes}; длина допустимого префикса: %{available_bytes}) в %{operation}"
+                  "*" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения; после допустимого префикса длиной %{available_bytes}, начинающегося с байта 0x%{start_byte}; требуемая длина последовательности: %{expected_bytes} байт; длина допустимого префикса: %{available_bytes})",
+                  "operation" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения; после допустимого префикса длиной %{available_bytes}, начинающегося с байта 0x%{start_byte}; требуемая длина последовательности: %{expected_bytes} байт; длина допустимого префикса: %{available_bytes}) в %{operation}"
                 },
                 "immediate" => {
-                  "*" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения; сразу после начального байта 0x%{start_byte}; требуемая длина последовательности в байтах: %{expected_bytes}; длина допустимого префикса: %{available_bytes})",
-                  "operation" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения; сразу после начального байта 0x%{start_byte}; требуемая длина последовательности в байтах: %{expected_bytes}; длина допустимого префикса: %{available_bytes}) в %{operation}"
+                  "*" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения; сразу после начального байта 0x%{start_byte}; требуемая длина последовательности: %{expected_bytes} байт; длина допустимого префикса: %{available_bytes})",
+                  "operation" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения; сразу после начального байта 0x%{start_byte}; требуемая длина последовательности: %{expected_bytes} байт; длина допустимого префикса: %{available_bytes}) в %{operation}"
                 }
               },
               "sr" => {
                 "after_bytes" => {
-                  "none" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни, 0x%{unexpected_byte}; после исправног префикса дужине %{available_bytes} који почиње бајтом 0x%{start_byte}; потребна дужина низа је %{expected_bytes} бајтова; дужина исправног префикса је %{available_bytes})",
-                  "operation" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни, 0x%{unexpected_byte}; после исправног префикса дужине %{available_bytes} који почиње бајтом 0x%{start_byte}; потребна дужина низа је %{expected_bytes} бајтова; дужина исправног префикса је %{available_bytes}) при %{operation}"
+                  "none" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни, 0x%{unexpected_byte}; после исправног префикса дужине %{available_bytes}, који почиње бајтом 0x%{start_byte}; потребна дужина низа је %{expected_bytes} бајтова; дужина исправног префикса је %{available_bytes})",
+                  "operation" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни, 0x%{unexpected_byte}; после исправног префикса дужине %{available_bytes}, који почиње бајтом 0x%{start_byte}; потребна дужина низа је %{expected_bytes} бајтова; дужина исправног префикса је %{available_bytes}; у контексту %{operation})"
                 },
                 "immediate" => {
                   "none" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни, 0x%{unexpected_byte}; непосредно после почетног бајта 0x%{start_byte}; потребна дужина низа је %{expected_bytes} бајтова; дужина исправног префикса је %{available_bytes})",
-                  "operation" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни, 0x%{unexpected_byte}; непосредно после почетног бајта 0x%{start_byte}; потребна дужина низа је %{expected_bytes} бајтова; дужина исправног префикса је %{available_bytes}) при %{operation}"
+                  "operation" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни, 0x%{unexpected_byte}; непосредно после почетног бајта 0x%{start_byte}; потребна дужина низа је %{expected_bytes} бајтова; дужина исправног префикса је %{available_bytes}; у контексту %{operation})"
                 }
               },
               "tlh" => {
@@ -107085,22 +107759,22 @@ $CONF = {
               },
               "tr" => {
                 "after_bytes" => {
-                  "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; 0x%{start_byte} baytıyla başlayan %{available_bytes} bayt uzunluğundaki geçerli önekten sonra; gerekli bayt dizisi uzunluğu %{expected_bytes} bayt; geçerli önek uzunluğu %{available_bytes} bayt)",
-                  "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; 0x%{start_byte} baytıyla başlayan %{available_bytes} bayt uzunluğundaki geçerli önekten sonra; gerekli bayt dizisi uzunluğu %{expected_bytes} bayt; geçerli önek uzunluğu %{available_bytes} bayt)"
+                  "none" => "Bozuk UTF-8 karakteri: %{bytes} (devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; 0x%{start_byte} baytıyla başlayan %{available_bytes} baytlık geçerli önekten sonra; gereken dizi uzunluğu %{expected_bytes} bayt; geçerli önek uzunluğu %{available_bytes} bayt)",
+                  "operation" => "%{operation} işleminde bozuk UTF-8 karakteri: %{bytes} (devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; 0x%{start_byte} baytıyla başlayan %{available_bytes} baytlık geçerli önekten sonra; gereken dizi uzunluğu %{expected_bytes} bayt; geçerli önek uzunluğu %{available_bytes} bayt)"
                 },
                 "immediate" => {
-                  "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; başlangıç baytı 0x%{start_byte} değerinin hemen ardından; gerekli bayt dizisi uzunluğu %{expected_bytes} bayt; geçerli önek uzunluğu %{available_bytes} bayt)",
-                  "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; başlangıç baytı 0x%{start_byte} değerinin hemen ardından; gerekli bayt dizisi uzunluğu %{expected_bytes} bayt; geçerli önek uzunluğu %{available_bytes} bayt)"
+                  "none" => "Bozuk UTF-8 karakteri: %{bytes} (devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; başlangıç baytı 0x%{start_byte} değerinin hemen ardından; gereken dizi uzunluğu %{expected_bytes} bayt; geçerli önek uzunluğu %{available_bytes} bayt)",
+                  "operation" => "%{operation} işleminde bozuk UTF-8 karakteri: %{bytes} (devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; başlangıç baytı 0x%{start_byte} değerinin hemen ardından; gereken dizi uzunluğu %{expected_bytes} bayt; geçerli önek uzunluğu %{available_bytes} bayt)"
                 }
               },
               "uk" => {
                 "*" => {
-                  "*" => "Некоректно сформований символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, що не є байтом продовження; після коректного префікса довжиною %{available_bytes}, що починається з байта 0x%{start_byte}; потрібна довжина послідовності в байтах: %{expected_bytes}; довжина коректного префікса: %{available_bytes})",
-                  "operation" => "Некоректно сформований символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, що не є байтом продовження; після коректного префікса довжиною %{available_bytes}, що починається з байта 0x%{start_byte}; потрібна довжина послідовності в байтах: %{expected_bytes}; довжина коректного префікса: %{available_bytes}) у %{operation}"
+                  "none" => "Некоректно сформований символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, який не є байтом продовження; після коректного префікса довжиною %{available_bytes}, що починається з байта 0x%{start_byte}; потрібна довжина послідовності: %{expected_bytes} байти; довжина коректного префікса: %{available_bytes})",
+                  "operation" => "Некоректно сформований символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, який не є байтом продовження; після коректного префікса довжиною %{available_bytes}, що починається з байта 0x%{start_byte}; потрібна довжина послідовності: %{expected_bytes} байти; довжина коректного префікса: %{available_bytes}) у %{operation}"
                 },
                 "immediate" => {
-                  "*" => "Некоректно сформований символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, що не є байтом продовження; одразу після початкового байта 0x%{start_byte}; потрібна довжина послідовності в байтах: %{expected_bytes}; довжина коректного префікса: %{available_bytes})",
-                  "operation" => "Некоректно сформований символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, що не є байтом продовження; одразу після початкового байта 0x%{start_byte}; потрібна довжина послідовності в байтах: %{expected_bytes}; довжина коректного префікса: %{available_bytes}) у %{operation}"
+                  "none" => "Некоректно сформований символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, який не є байтом продовження; безпосередньо після початкового байта 0x%{start_byte}; потрібна довжина послідовності: %{expected_bytes} байти; довжина коректного префікса: %{available_bytes})",
+                  "operation" => "Некоректно сформований символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, який не є байтом продовження; безпосередньо після початкового байта 0x%{start_byte}; потрібна довжина послідовності: %{expected_bytes} байти; довжина коректного префікса: %{available_bytes}) у %{operation}"
                 }
               },
               "zh" => {
@@ -107242,8 +107916,12 @@ $CONF = {
               },
               "cy" => {
                 "*" => {
-                  "*" => "Nod UTF-8 camffurfiedig: %{bytes} (rhy fyr; nifer y beitiau sydd ar gael: %{available_bytes}; nifer y beitiau sydd eu hangen: %{expected_bytes})",
-                  "operation" => "Nod UTF-8 camffurfiedig: %{bytes} (rhy fyr; nifer y beitiau sydd ar gael: %{available_bytes}; nifer y beitiau sydd eu hangen: %{expected_bytes}) wrth %{operation}"
+                  "none" => "Nod UTF-8 annilys: %{bytes} (rhy fyr; %{available_bytes} beit ar gael, mae angen %{expected_bytes})",
+                  "operation" => "Nod UTF-8 annilys: %{bytes} (rhy fyr; %{available_bytes} beit ar gael, mae angen %{expected_bytes}) wrth %{operation}"
+                },
+                "one" => {
+                  "none" => "Nod UTF-8 annilys: %{bytes} (rhy fyr; 1 beit ar gael, mae angen %{expected_bytes})",
+                  "operation" => "Nod UTF-8 annilys: %{bytes} (rhy fyr; 1 beit ar gael, mae angen %{expected_bytes}) wrth %{operation}"
                 }
               },
               "de" => {
@@ -107294,18 +107972,18 @@ $CONF = {
               },
               "fr" => {
                 "*" => {
-                  "*" => "Caractère UTF-8 mal formé : %{bytes} (séquence trop courte ; %{available_bytes} octets disponibles, il en faut %{expected_bytes})",
+                  "none" => "Caractère UTF-8 mal formé : %{bytes} (séquence trop courte ; %{available_bytes} octets disponibles, il en faut %{expected_bytes})",
                   "operation" => "Caractère UTF-8 mal formé : %{bytes} (séquence trop courte ; %{available_bytes} octets disponibles, il en faut %{expected_bytes}) dans %{operation}"
                 },
                 "one" => {
-                  "*" => "Caractère UTF-8 mal formé : %{bytes} (séquence trop courte ; %{available_bytes} octet disponible, il en faut %{expected_bytes})",
+                  "none" => "Caractère UTF-8 mal formé : %{bytes} (séquence trop courte ; %{available_bytes} octet disponible, il en faut %{expected_bytes})",
                   "operation" => "Caractère UTF-8 mal formé : %{bytes} (séquence trop courte ; %{available_bytes} octet disponible, il en faut %{expected_bytes}) dans %{operation}"
                 }
               },
               "he" => {
                 "*" => {
-                  "none" => "תו UTF-8 פגום: %{bytes} (רצף קצר מדי; מספר הבתים הזמינים הוא %{available_bytes}, המספר הדרוש הוא %{expected_bytes})",
-                  "operation" => "תו UTF-8 פגום: %{bytes} (רצף קצר מדי; מספר הבתים הזמינים הוא %{available_bytes}, המספר הדרוש הוא %{expected_bytes}) בהקשר של \"%{operation}\""
+                  "none" => "תו UTF-8 פגום: %{bytes} (הרצף קצר מדי; זמינים %{available_bytes} בתים, ונדרשים %{expected_bytes})",
+                  "operation" => "תו UTF-8 פגום: %{bytes} (הרצף קצר מדי; זמינים %{available_bytes} בתים, ונדרשים %{expected_bytes}) בהקשר של \"%{operation}\""
                 }
               },
               "hu" => {
@@ -107360,53 +108038,50 @@ $CONF = {
               },
               "pt" => {
                 "*" => {
-                  "*" => "Carácter UTF-8 malformado: %{bytes} (sequência demasiado curta; bytes disponíveis: %{available_bytes}; bytes necessários: %{expected_bytes})",
-                  "operation" => "Carácter UTF-8 malformado: %{bytes} (sequência demasiado curta; bytes disponíveis: %{available_bytes}; bytes necessários: %{expected_bytes}) em %{operation}"
+                  "none" => "Carácter UTF-8 malformado: %{bytes} (sequência demasiado curta; %{available_bytes} bytes disponíveis, são necessários %{expected_bytes})",
+                  "operation" => "Carácter UTF-8 malformado: %{bytes} (sequência demasiado curta; %{available_bytes} bytes disponíveis, são necessários %{expected_bytes}) em %{operation}"
                 },
                 "one" => {
-                  "operation" => "Malformed UTF-8 character: %{bytes} (too short; 1 byte available, need %{expected_bytes}) em %{operation}"
+                  "none" => "Carácter UTF-8 malformado: %{bytes} (sequência demasiado curta; 1 byte disponível, é necessário %{expected_bytes})",
+                  "operation" => "Carácter UTF-8 malformado: %{bytes} (sequência demasiado curta; 1 byte disponível, é necessário %{expected_bytes}) em %{operation}"
                 }
               },
               "ru" => {
                 "*" => {
-                  "*" => "Некорректный символ UTF-8: %{bytes} (слишком короткая последовательность; число доступных байтов: %{available_bytes}, требуется: %{expected_bytes})",
-                  "operation" => "Некорректный символ UTF-8: %{bytes} (слишком короткая последовательность; число доступных байтов: %{available_bytes}, требуется: %{expected_bytes}) в %{operation}"
+                  "*" => "Некорректный символ UTF-8: %{bytes} (слишком короткая последовательность; доступно байтов: %{available_bytes}, требуется: %{expected_bytes})",
+                  "operation" => "Некорректный символ UTF-8: %{bytes} (слишком короткая последовательность; доступно байтов: %{available_bytes}, требуется: %{expected_bytes}) в %{operation}"
                 }
               },
               "sr" => {
-                "few" => {
-                  "none" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступна су %{available_bytes} бајта, потребно је %{expected_bytes})",
-                  "operation" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступна су %{available_bytes} бајта, потребно је %{expected_bytes}) при %{operation}"
+                "*" => {
+                  "none" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступно је %{available_bytes} бајтова, потребно је %{expected_bytes})",
+                  "operation" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступно је %{available_bytes} бајтова, потребно је %{expected_bytes}; у контексту %{operation})"
                 },
                 "one" => {
                   "none" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступан је 1 бајт, потребно је %{expected_bytes})",
-                  "operation" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступан је 1 бајт, потребно је %{expected_bytes}) при %{operation}"
-                },
-                "other" => {
-                  "none" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступно је %{available_bytes} бајтова, потребно је %{expected_bytes})",
-                  "operation" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступно је %{available_bytes} бајтова, потребно је %{expected_bytes}) при %{operation}"
+                  "operation" => "Неисправан UTF-8 знак: %{bytes} (низ је прекратак; доступан је 1 бајт, потребно је %{expected_bytes}; у контексту %{operation})"
                 }
               },
               "tlh" => {
                 "*" => {
                   "none" => "UTF-8 character mughHa': %{bytes} (ratlh; %{available_bytes} bytes tu'lu', %{expected_bytes} poQlu')",
                   "operation" => "UTF-8 character mughHa': %{bytes} (ratlh; %{available_bytes} bytes tu'lu', %{expected_bytes} poQlu') %{operation}Daq"
-                },
-                "one" => {
-                  "none" => "UTF-8 character mughHa': %{bytes} (ratlh; 1 byte tu'lu', %{expected_bytes} poQlu')",
-                  "operation" => "UTF-8 character mughHa': %{bytes} (ratlh; 1 byte tu'lu', %{expected_bytes} poQlu') %{operation}Daq"
                 }
               },
               "tr" => {
                 "*" => {
-                  "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (çok kısa; %{available_bytes} bayt mevcut, %{expected_bytes} bayt gerekli)",
-                  "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (çok kısa; %{available_bytes} bayt mevcut, %{expected_bytes} bayt gerekli)"
+                  "none" => "Bozuk UTF-8 karakteri: %{bytes} (çok kısa; %{available_bytes} bayt mevcut, %{expected_bytes} bayt gerekli)",
+                  "operation" => "%{operation} işleminde bozuk UTF-8 karakteri: %{bytes} (çok kısa; %{available_bytes} bayt mevcut, %{expected_bytes} bayt gerekli)"
                 }
               },
               "uk" => {
                 "*" => {
-                  "*" => "Некоректно сформований символ UTF-8: %{bytes} (надто коротка послідовність; кількість доступних байтів: %{available_bytes}, потрібно: %{expected_bytes})",
-                  "operation" => "Некоректно сформований символ UTF-8: %{bytes} (надто коротка послідовність; кількість доступних байтів: %{available_bytes}, потрібно: %{expected_bytes}) у %{operation}"
+                  "none" => "Некоректно сформований символ UTF-8: %{bytes} (надто коротка послідовність; доступно байтів: %{available_bytes}, потрібно: %{expected_bytes})",
+                  "operation" => "Некоректно сформований символ UTF-8: %{bytes} (надто коротка послідовність; доступно байтів: %{available_bytes}, потрібно: %{expected_bytes}) у %{operation}"
+                },
+                "one" => {
+                  "none" => "Некоректно сформований символ UTF-8: %{bytes} (надто коротка послідовність; доступний 1 байт, потрібно: %{expected_bytes})",
+                  "operation" => "Некоректно сформований символ UTF-8: %{bytes} (надто коротка послідовність; доступний 1 байт, потрібно: %{expected_bytes}) у %{operation}"
                 }
               },
               "zh" => {
@@ -107524,10 +108199,10 @@ $CONF = {
               "en" => "Operation \"%{arg1}\" returns its argument for UTF-16 surrogate U+%{arg2}",
               "es" => "La operación \"%{arg1}\" devuelve su argumento para el sustituto UTF-16 U+%{arg2}",
               "fa" => "عملیات «%{arg1}» برای جانشین UTF-16 با کد U+%{arg2} همان آرگومان را برمی\N{ZERO WIDTH NON-JOINER}گرداند.",
-              "fi" => "Operaatio \"%{arg1}\" palauttaa argumenttinsa muuttumattomana UTF-16-surrogaatin U+%{arg2} tapauksessa",
+              "fi" => "Operaatio %{arg1} palauttaa argumenttinsa ennalleen UTF-16-surrogaatin U+%{arg2} tapauksessa",
               "fr" => "L'opération \"%{arg1}\" renvoie son argument pour le substitut UTF-16 U+%{arg2}",
               "he" => "הפעולה \"%{arg1}\" מחזירה את הארגומנט שלה ללא שינוי עבור נקודת קוד פונדקאית של UTF-16 U+%{arg2}",
-              "hu" => "A következő művelet az U+%{arg2} UTF-16 helyettesítő kódpont esetén változatlanul adja vissza argumentumát: \"%{arg1}\"",
+              "hu" => "A(z) „%{arg1}” művelet az U+%{arg2} UTF-16-helyettesítő kódpont esetén változatlanul adja vissza az argumentumát",
               "is" => "Aðgerðin „%{arg1}“ skilar viðfanginu sínu fyrir UTF-16-surrogate U+%{arg2}",
               "it" => "L'operazione \"%{arg1}\" restituisce il proprio argomento per il surrogato UTF-16 U+%{arg2}",
               "nl" => "Bewerking \"%{arg1}\" retourneert haar argument voor UTF-16-surrogaat U+%{arg2}",
@@ -107535,10 +108210,10 @@ $CONF = {
               "pt" => "A operação \"%{arg1}\" devolve o argumento para o substituto UTF-16 U+%{arg2}",
               "ru" => "Операция \"%{arg1}\" возвращает свой аргумент без изменений для суррогата UTF-16 U+%{arg2}",
               "sr" => "Операција „%{arg1}“ враћа свој аргумент за UTF-16 сурогат U+%{arg2}",
-              "tlh" => "Operation \"%{arg1}\" vay' Daq UTF-16 surrogate U+%{arg2}vaD chegh",
+              "tlh" => "Operation \"%{arg1}\" returns its argument for UTF-16 surrogate U+%{arg2}",
               "tr" => "\"%{arg1}\" işlemi, UTF-16 vekil kod noktası U+%{arg2} için bağımsız değişkenini değiştirmeden döndürür",
               "uk" => "Операція \"%{arg1}\" повертає свій аргумент для сурогата UTF-16 U+%{arg2}",
-              "zh" => "操作“%{arg1}”对 UTF-16 代理码位 U+%{arg2} 返回其参数"
+              "zh" => "操作“%{arg1}”对 UTF-16 代理码位 U+%{arg2} 返回原参数"
             },
             "args" => [
               {
@@ -107649,8 +108324,8 @@ $CONF = {
                 "operation" => "נקודת קוד פונדקאית של UTF-16 U+%{arg1} בהקשר של \"%{operation}\""
               },
               "hu" => {
-                "none" => "UTF-16 helyettesítő kódpont U+%{arg1}",
-                "operation" => "UTF-16 helyettesítő kódpont U+%{arg1} %{operation} során"
+                "none" => "UTF-16-helyettesítő kódpont: U+%{arg1}",
+                "operation" => "UTF-16-helyettesítő kódpont: U+%{arg1} %{operation} során"
               },
               "is" => {
                 "none" => "UTF-16-staðgengill U+%{arg1}",
@@ -107669,7 +108344,7 @@ $CONF = {
                 "operation" => "Surogat UTF-16 U+%{arg1} w %{operation}"
               },
               "pt" => {
-                "*" => "Código substituto UTF-16 U+%{arg1}",
+                "none" => "Código substituto UTF-16 U+%{arg1}",
                 "operation" => "Código substituto UTF-16 U+%{arg1} em %{operation}"
               },
               "ru" => {
@@ -107686,10 +108361,10 @@ $CONF = {
               },
               "tr" => {
                 "none" => "UTF-16 vekil kod noktası U+%{arg1} saptandı",
-                "operation" => "%{operation} bağlamında UTF-16 vekil kod noktası U+%{arg1} saptandı"
+                "operation" => "%{operation} işleminde UTF-16 vekil kod noktası U+%{arg1} saptandı"
               },
               "uk" => {
-                "*" => "Сурогат UTF-16 U+%{arg1}",
+                "none" => "Сурогат UTF-16 U+%{arg1}",
                 "operation" => "Сурогат UTF-16 U+%{arg1} у %{operation}"
               },
               "zh" => {
@@ -107894,12 +108569,12 @@ $CONF = {
           "message" => {
             "templates" => {
               "ar" => {
-                "none" => "نقطة بديلة من UTF-16 (أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" يعود إلى نقطة بديلة)",
-                "operation" => "نقطة بديلة من UTF-16 (أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" يعود إلى نقطة بديلة) في %{operation}"
+                "none" => "نقطة بديلة من UTF-16 (أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" يمثّل نقطة بديلة)",
+                "operation" => "نقطة بديلة من UTF-16 (أي تسلسل UTF-8 يبدأ بـ \"%{prefix}\" يمثّل نقطة بديلة) في %{operation}"
               },
               "cy" => {
-                "*" => "Nod dirprwyol UTF-16 (mae pob dilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn cynrychioli nod dirprwyol)",
-                "operation" => "Nod dirprwyol UTF-16 (mae pob dilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn cynrychioli nod dirprwyol) wrth %{operation}"
+                "*" => "Nod dirprwyol UTF-16 (mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn cynrychioli nod dirprwyol)",
+                "operation" => "Nod dirprwyol UTF-16 (mae unrhyw ddilyniant UTF-8 sy'n dechrau â \"%{prefix}\" yn cynrychioli nod dirprwyol) wrth %{operation}"
               },
               "de" => {
                 "none" => "UTF-16-Surrogat (jede UTF-8-Sequenz, die mit „%{prefix}“ beginnt, steht für ein Surrogat)",
@@ -107926,12 +108601,12 @@ $CONF = {
                 "operation" => "Surrogate UTF-16 (toute séquence UTF-8 commençant par « %{prefix} » correspond à un surrogate) dans %{operation}"
               },
               "he" => {
-                "none" => "נקודת קוד פונדקאית של UTF-16 (כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" מייצג נקודת קוד פונדקאית)",
-                "operation" => "נקודת קוד פונדקאית של UTF-16 (כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" מייצג נקודת קוד פונדקאית) בהקשר של \"%{operation}\""
+                "none" => "נקודת קוד פונדקאית של UTF-16 (כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" מייצג נקודה פונדקאית)",
+                "operation" => "נקודת קוד פונדקאית של UTF-16 (כל רצף UTF-8 שמתחיל בתחילית \"%{prefix}\" מייצג נקודה פונדקאית) בהקשר של \"%{operation}\""
               },
               "hu" => {
-                "none" => "UTF-16 helyettesítő kódpont (minden \"%{prefix}\" kezdetű UTF-8 sorozat helyettesítő kódpontot jelöl)",
-                "operation" => "UTF-16 helyettesítő kódpont (minden \"%{prefix}\" kezdetű UTF-8 sorozat helyettesítő kódpontot jelöl) %{operation} során"
+                "none" => "UTF-16-helyettesítő (a „%{prefix}” kezdetű UTF-8-sorozatok mind helyettesítő kódpontot jelölnek)",
+                "operation" => "UTF-16-helyettesítő (a „%{prefix}” kezdetű UTF-8-sorozatok mind helyettesítő kódpontot jelölnek) %{operation} során"
               },
               "is" => {
                 "none" => "UTF-16-staðgengill (sérhver UTF-8-runa sem byrjar á „%{prefix}“ táknar staðgengil)",
@@ -107950,12 +108625,12 @@ $CONF = {
                 "operation" => "Surogat UTF-16 (każda sekwencja UTF-8 zaczynająca się od „%{prefix}” reprezentuje surogat) w %{operation}"
               },
               "pt" => {
-                "*" => "Código substituto UTF-16 (qualquer sequência UTF-8 que comece por \"%{prefix}\" representa um código substituto)",
+                "none" => "Código substituto UTF-16 (qualquer sequência UTF-8 que comece por \"%{prefix}\" representa um código substituto)",
                 "operation" => "Código substituto UTF-16 (qualquer sequência UTF-8 que comece por \"%{prefix}\" representa um código substituto) em %{operation}"
               },
               "ru" => {
-                "*" => "Суррогат UTF-16 (любая последовательность UTF-8, начинающаяся с \"%{prefix}\", представляет суррогат)",
-                "operation" => "Суррогат UTF-16 (любая последовательность UTF-8, начинающаяся с \"%{prefix}\", представляет суррогат) в %{operation}"
+                "*" => "Суррогат UTF-16 (любая последовательность UTF-8, начинающаяся с «%{prefix}», представляет суррогат)",
+                "operation" => "Суррогат UTF-16 (любая последовательность UTF-8, начинающаяся с «%{prefix}», представляет суррогат) в %{operation}"
               },
               "sr" => {
                 "none" => "UTF-16 сурогат (сваки UTF-8 низ који почиње са „%{prefix}“ означава сурогат)",
@@ -107966,12 +108641,12 @@ $CONF = {
                 "operation" => "UTF-16 surrogate (UTF-8 sequence Hoch'e' \"%{prefix}\" taghchugh, surrogate 'oH) %{operation}Daq"
               },
               "tr" => {
-                "none" => "UTF-16 vekil kod noktası saptandı (\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi bir vekil kod noktasını gösterir)",
-                "operation" => "%{operation} bağlamında UTF-16 vekil kod noktası saptandı (\"%{prefix}\" ile başlayan her UTF-8 bayt dizisi bir vekil kod noktasını gösterir)"
+                "none" => "UTF-16 vekil kod noktası saptandı (\"%{prefix}\" ile başlayan her UTF-8 dizisi bir vekil kod noktasını gösterir)",
+                "operation" => "%{operation} işleminde UTF-16 vekil kod noktası saptandı (\"%{prefix}\" ile başlayan her UTF-8 dizisi bir vekil kod noktasını gösterir)"
               },
               "uk" => {
-                "*" => "Сурогат UTF-16 (будь-яка послідовність UTF-8, що починається з \"%{prefix}\", кодує сурогат)",
-                "operation" => "Сурогат UTF-16 (будь-яка послідовність UTF-8, що починається з \"%{prefix}\", кодує сурогат) у %{operation}"
+                "none" => "Сурогат UTF-16 (будь-яка послідовність UTF-8, що починається з «%{prefix}», кодує сурогат)",
+                "operation" => "Сурогат UTF-16 (будь-яка послідовність UTF-8, що починається з «%{prefix}», кодує сурогат) у %{operation}"
               },
               "zh" => {
                 "none" => "UTF-16 代理项（任何以“%{prefix}”开头的 UTF-8 序列都表示代理项）",
@@ -108066,15 +108741,15 @@ $CONF = {
           "message" => {
             "templates" => {
               "ar" => "محرف UTF-8 مشوّه (نهاية غير متوقعة للسلسلة) في %{operation}",
-              "cy" => "Nod UTF-8 camffurfiedig (diwedd annisgwyl i'r llinyn) wrth %{operation}",
+              "cy" => "Nod UTF-8 wedi'i gamffurfio (diwedd annisgwyl i'r llinyn) wrth %{operation}",
               "de" => "Fehlerhaftes UTF-8-Zeichen (unerwartetes Ende der Zeichenfolge) in %{operation}",
               "en" => "Malformed UTF-8 character (unexpected end of string) in %{operation}",
               "es" => "Carácter UTF-8 mal formado (fin inesperado de la cadena) en %{operation}",
               "fa" => "نویسهٔ UTF-8 بدساخت (پایان غیرمنتظرهٔ رشته) در %{operation}.",
-              "fi" => "Virheellinen UTF-8-merkki (merkkijono päättyi odottamatta) operaatiossa \"%{operation}\"",
+              "fi" => "Virheellinen UTF-8-merkki (merkkijonon odottamaton loppu) operaatiossa %{operation}",
               "fr" => "Caractère UTF-8 mal formé (fin de chaîne inattendue) dans %{operation}",
               "he" => "תו UTF-8 פגום (סיום לא צפוי של המחרוזת) בהקשר של \"%{operation}\"",
-              "hu" => "Hibás UTF-8 karakter (a karakterlánc váratlan vége) %{operation} során",
+              "hu" => "Hibás UTF-8 karakter (a karakterlánc váratlan vége) a(z) %{operation} műveletben",
               "is" => "Gallað UTF-8-staf (strengur endaði óvænt) í %{operation}",
               "it" => "Carattere UTF-8 malformato (fine inattesa della stringa) in %{operation}",
               "nl" => "Ongeldig UTF-8-teken (onverwacht einde van de tekenreeks) in %{operation}",
@@ -108082,10 +108757,10 @@ $CONF = {
               "pt" => "Caractere UTF-8 malformado (fim inesperado da string) em %{operation}",
               "ru" => "Некорректный символ UTF-8 (неожиданный конец строки) в %{operation}",
               "sr" => "Неисправан UTF-8 знак (неочекивани крај ниске) у %{operation}",
-              "tlh" => "UTF-8 Qagh (string bI'ghach) %{operation}Daq",
-              "tr" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı (dizge beklenmedik biçimde sona erdi)",
+              "tlh" => "Malformed UTF-8 character (unexpected end of string) in %{operation}",
+              "tr" => "Bozuk UTF-8 karakteri (%{operation} bağlamında beklenmedik dizge sonu)",
               "uk" => "Некоректний символ UTF-8 (неочікуваний кінець рядка) у %{operation}",
-              "zh" => "UTF-8 字符格式错误（字符串意外结束），发生于 %{operation} 操作中"
+              "zh" => "在 %{operation} 中出现格式错误的 UTF-8 字符（字符串意外结束）"
             },
             "args" => [
               {
@@ -108228,8 +108903,8 @@ $CONF = {
                 "operation" => "نویسهٔ UTF-8 بدساخت: %{bytes} (بایت ادامهٔ نامنتظره و نامعتبر 0x%{unexpected_byte}، بلافاصله پس از بایت آغاز 0x%{start_byte}؛ ۲ بایت لازم بود، ۱ بایت دریافت شد) در %{operation}."
               },
               "fi" => {
-                "none" => "Virheellinen UTF-8-merkki: %{bytes} (odottamaton tavu 0x%{unexpected_byte}, joka ei ole jatkotavu, heti aloitustavun 0x%{start_byte} jälkeen; tarvitaan 2 tavua, saatiin 1)",
-                "operation" => "Virheellinen UTF-8-merkki: %{bytes} (odottamaton tavu 0x%{unexpected_byte}, joka ei ole jatkotavu, heti aloitustavun 0x%{start_byte} jälkeen; tarvitaan 2 tavua, saatiin 1) operaatiossa \"%{operation}\""
+                "none" => "Virheellinen UTF-8-merkki: %{bytes} (odottamaton muu kuin jatkotavu 0x%{unexpected_byte} heti aloitustavun 0x%{start_byte} jälkeen; tarvitaan 2 tavua, saatiin 1)",
+                "operation" => "Virheellinen UTF-8-merkki: %{bytes} (odottamaton muu kuin jatkotavu 0x%{unexpected_byte} heti aloitustavun 0x%{start_byte} jälkeen; tarvitaan 2 tavua, saatiin 1) operaatiossa %{operation}"
               },
               "fr" => {
                 "none" => "Caractère UTF-8 mal formé : %{bytes} (octet inattendu au lieu d'un octet de continuation, immédiatement après l'octet de début 0x%{start_byte}, valeur 0x%{unexpected_byte}. 2 octets requis, 1 reçu)",
@@ -108240,8 +108915,8 @@ $CONF = {
                 "operation" => "תו UTF-8 פגום: %{bytes} (בית בלתי צפוי 0x%{unexpected_byte} שאינו בית המשך, מיד אחרי בית הפתיחה 0x%{start_byte}; דרושים 2 בתים, התקבל 1) בהקשר של \"%{operation}\""
               },
               "hu" => {
-                "none" => "Hibás UTF-8 karakter: %{bytes} (váratlan nem folytatóbájt 0x%{unexpected_byte}, közvetlenül a 0x%{start_byte} kezdőbájt után; 2 bájt szükséges, 1 érkezett)",
-                "operation" => "Hibás UTF-8 karakter: %{bytes} (váratlan nem folytatóbájt 0x%{unexpected_byte}, közvetlenül a 0x%{start_byte} kezdőbájt után; 2 bájt szükséges, 1 érkezett) %{operation} során"
+                "none" => "Hibás UTF-8 karakter: %{bytes} (váratlan folytatóbájt 0x%{unexpected_byte}, közvetlenül a 0x%{start_byte} kezdőbájt után; 2 bájt szükséges, 1 érkezett)",
+                "operation" => "Hibás UTF-8 karakter: %{bytes} (váratlan folytatóbájt 0x%{unexpected_byte}, közvetlenül a 0x%{start_byte} kezdőbájt után; 2 bájt szükséges, 1 érkezett) a(z) %{operation} műveletben"
               },
               "is" => {
                 "none" => "Ógildur UTF-8-stafur: %{bytes} (óvænt bæti sem er ekki framhaldsbæti 0x%{unexpected_byte}, strax á eftir upphafsbæti 0x%{start_byte}; þurfti 2 bæti, fékk 1)",
@@ -108264,7 +108939,7 @@ $CONF = {
                 "operation" => "Carácter UTF-8 malformado: %{bytes} (byte inesperado 0x%{unexpected_byte}, que não é de continuação, imediatamente após o byte inicial 0x%{start_byte}; são necessários 2 bytes, foi recebido 1) em %{operation}"
               },
               "ru" => {
-                "*" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения, сразу после начального байта 0x%{start_byte}; требуется 2 байта, получен 1)",
+                "none" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения, сразу после начального байта 0x%{start_byte}; требуется 2 байта, получен 1)",
                 "operation" => "Некорректный символ UTF-8: %{bytes} (неожиданный байт 0x%{unexpected_byte}, не являющийся байтом продолжения, сразу после начального байта 0x%{start_byte}; требуется 2 байта, получен 1) в %{operation}"
               },
               "sr" => {
@@ -108272,20 +108947,20 @@ $CONF = {
                 "operation" => "Неисправан UTF-8 знак: %{bytes} (неочекивани бајт који није наставни бајт 0x%{unexpected_byte}, непосредно после почетног бајта 0x%{start_byte}; потребна су 2 бајта, добијен је 1) у %{operation}"
               },
               "tlh" => {
-                "none" => "UTF-8 Qagh: %{bytes} (continuation byte ghaHbe' 0x%{unexpected_byte}, start byte 0x%{start_byte} retlh; 2 bytes poQ, 1 Suq)",
-                "operation" => "UTF-8 Qagh: %{bytes} (continuation byte ghaHbe' 0x%{unexpected_byte}, start byte 0x%{start_byte} retlh; 2 bytes poQ, 1 Suq) %{operation}Daq"
+                "none" => "Malformed UTF-8 character: %{bytes} (unexpected non-continuation byte 0x%{unexpected_byte}, immediately after start byte 0x%{start_byte}; need 2 bytes, got 1)",
+                "operation" => "Malformed UTF-8 character: %{bytes} (unexpected non-continuation byte 0x%{unexpected_byte}, immediately after start byte 0x%{start_byte}; need 2 bytes, got 1) in %{operation}"
               },
               "tr" => {
-                "none" => "Bozuk bir UTF-8 karakteri saptandı: %{bytes} (başlangıç baytı 0x%{start_byte} değerinin hemen ardından devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; 2 bayt gerekli, 1 bayt alındı)",
-                "operation" => "%{operation} bağlamında bozuk bir UTF-8 karakteri saptandı: %{bytes} (başlangıç baytı 0x%{start_byte} değerinin hemen ardından devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; 2 bayt gerekli, 1 bayt alındı)"
+                "none" => "Bozuk UTF-8 karakteri: %{bytes} (başlangıç baytı 0x%{start_byte} değerinden hemen sonra devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; 2 bayt gerekli, 1 bayt alındı)",
+                "operation" => "Bozuk UTF-8 karakteri: %{bytes} (başlangıç baytı 0x%{start_byte} değerinden hemen sonra devam baytı olmayan beklenmedik 0x%{unexpected_byte} baytı geldi; 2 bayt gerekli, 1 bayt alındı) — %{operation} bağlamında"
               },
               "uk" => {
                 "*" => "Некоректний символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, що не є байтом продовження, одразу після початкового байта 0x%{start_byte}; потрібно 2 байти, отримано 1)",
                 "operation" => "Некоректний символ UTF-8: %{bytes} (неочікуваний байт 0x%{unexpected_byte}, що не є байтом продовження, одразу після початкового байта 0x%{start_byte}; потрібно 2 байти, отримано 1) у %{operation}"
               },
               "zh" => {
-                "none" => "UTF-8 字符格式错误：%{bytes}（意外遇到非续接字节 0x%{unexpected_byte}，紧跟在起始字节 0x%{start_byte} 之后；需要 2 个字节，实际得到 1 个）",
-                "operation" => "UTF-8 字符格式错误：%{bytes}（意外遇到非续接字节 0x%{unexpected_byte}，紧跟在起始字节 0x%{start_byte} 之后；需要 2 个字节，实际得到 1 个），发生于 %{operation} 操作中"
+                "none" => "格式错误的 UTF-8 字符：%{bytes}（起始字节 0x%{start_byte} 后紧接着出现非续接字节 0x%{unexpected_byte}；需要 2 个字节，实际得到 1 个）",
+                "operation" => "格式错误的 UTF-8 字符：%{bytes}（起始字节 0x%{start_byte} 后紧接着出现非续接字节 0x%{unexpected_byte}；需要 2 个字节，实际得到 1 个），发生于 %{operation}"
               }
             },
             "args" => [

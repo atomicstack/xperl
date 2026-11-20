@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: a2643d711d65469993a067589526fd64d55f05ad752182d885adb986f3baccd0 */
+/* Language-scoped rendered data SHA-256: a14b30b85ef5d4e7ee94da6e8361df0383c251546d8a2d69ed2d96eb066047e1 */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 448); /* compiled operation-map bound */
 
@@ -1035,7 +1035,6 @@ static const char perl_diag_template_text_1ccb11fe[] = "%1$s ghomDaq che'qa'ghac
 static const char perl_diag_template_text_4b61b734[] = "%1$s hex 'oHbe'; %2$s moH 'e' po'";
 static const char perl_diag_template_text_d97c6fa8[] = "%1$s literalvaD mI' tu'be'";
 static const char perl_diag_template_text_9b16c977[] = "%1$s lo' qarHa'; operator %2$s 'oH";
-static const char perl_diag_template_text_271e16aa[] = "%1$s local Daq lulo'laHbe'";
 static const char perl_diag_template_text_7c05e8db[] = "%1$s method hook Heghpu'--@INC nejwI' mev\n";
 static const char perl_diag_template_text_73119e75[] = "%1$s muj";
 static const char perl_diag_template_text_35179b51[] = "%1$s must not be a named sequence in transliteration operator";
@@ -1086,8 +1085,6 @@ static const char perl_diag_template_text_0413ae39[] = "%1$sDaq 'oHtaHvIS setuid
 static const char perl_diag_template_text_727a36a1[] = "%1$sDaq ()-group taghDI' mI' tu'lu'";
 static const char perl_diag_template_text_4bdd24f0[] = "%1$sDaq ()-groups pIqHa' qel";
 static const char perl_diag_template_text_1e600431[] = "%1$sDaq [] botlhDaq mI' Qagh";
-static const char perl_diag_template_text_0e45a54f[] = "%1$sDaq argument lat";
-static const char perl_diag_template_text_48a8bf09[] = "%1$sDaq argument missing";
 static const char perl_diag_template_text_0bfefc17[] = "%1$sDaq chdir Qapbe'";
 static const char perl_diag_template_text_b89e2a0c[] = "%1$sDaq copy laHbe'.";
 static const char perl_diag_template_text_06d650ae[] = "%1$sDaq ghItlh'a' chu'";
@@ -1129,12 +1126,12 @@ static const char perl_diag_template_text_b609ae58[] = "&CORE::%2$svaD arg %1$s 
 static const char perl_diag_template_text_09420298[] = "&CORE::%2$svaD arg %1$s type vay'pu' reference 'e' poQ";
 static const char perl_diag_template_text_678b5eeb[] = "' %1$s ' string botlhDaq cha'be'";
 static const char perl_diag_template_text_08d48489[] = "' %1$s 'vaD role composition ta'laHbe'\n";
+static const char perl_diag_template_text_2105d4b8[] = "' %1$s trapped by operation mask";
 static const char perl_diag_template_text_7ce9473e[] = "' %1$s' lo' cha'laHbe' Unicode property wildcard subpatterns regexDaq; <-- HERE qel m/%2$s <-- HERE %3$s/";
 static const char perl_diag_template_text_fb3a46a6[] = "'!==' mI'Ha' chelHa' 'e' ta";
 static const char perl_diag_template_text_055d4813[] = "'%' packDaq lo'laHbe'";
 static const char perl_diag_template_text_f3614d4d[] = "'%1$s' formatDaq character wraplu' %2$sDaq";
 static const char perl_diag_template_text_9c0b76b2[] = "'%1$s' Sovbe'lu'bogh Segh 'oH\n";
-static const char perl_diag_template_text_6f4caa70[] = "'%1$s' trapped by operation mask";
 static const char perl_diag_template_text_f89ac299[] = "'%1$s'Daq Hoch locale Seghmey tetlhbe'\n";
 static const char perl_diag_template_text_ec57f1f7[] = "'%1$s'Daq LC_ALL tu'lu', naDev Qob\n";
 static const char perl_diag_template_text_f000f1a5[] = "'%1$s'vaD /u lo'taHvIS, /%2$s lo'be'";
@@ -1241,6 +1238,7 @@ static const char perl_diag_template_text_fd93d4d5[] = "\\x{}Daq ghItlhmey ghapm
 static const char perl_diag_template_text_5f4f2096[] = "__CLASS__ Qulqang";
 static const char perl_diag_template_text_3b156ebc[] = "__NAMESPACE__ Qulqang";
 static const char perl_diag_template_text_66d64574[] = "_configthreadlocale Qagh jatlh";
+static const char perl_diag_template_text_3fdbd962[] = "A multi declaration requires sub or method, a name, and a parenthesized pattern list";
 static const char perl_diag_template_text_23142926[] = "A signature parameter must start with '$', '@' or '%'";
 static const char perl_diag_template_text_5b91e1bf[] = "active subroutine undeflaHbe'";
 static const char perl_diag_template_text_ed327906[] = "ADJUST Qulqang";
@@ -1316,6 +1314,7 @@ static const char perl_diag_template_text_31849b65[] = "Can't coerce %1$s to int
 static const char perl_diag_template_text_48001172[] = "Can't coerce %1$s to number in %2$s";
 static const char perl_diag_template_text_6961e3ef[] = "Can't coerce %1$s to string in %2$s";
 static const char perl_diag_template_text_5218920c[] = "Can't declare %1$s in \"%2$s\"";
+static const char perl_diag_template_text_d696eb20[] = "Can't do %1$s(\"\\x{%2$s}\") on non-UTF-8 locale; resolved to \"\\x{%3$s}\".";
 static const char perl_diag_template_text_c69e6224[] = "Can't make loaded symbols global on this platform while loading %1$s";
 static const char perl_diag_template_text_a897c6b6[] = "Can't modify %1$s in %2$s";
 static const char perl_diag_template_text_37ca091d[] = "Can't modify non-lvalue subroutine call of &%1$s in %2$s";
@@ -1331,6 +1330,8 @@ static const char perl_diag_template_text_c7ab516a[] = "Can't use global %1$s in
 static const char perl_diag_template_text_40497d84[] = "Can't use global %1$s in \"state\"";
 static const char perl_diag_template_text_2e0fcf10[] = "Can't use global %1$s in ???";
 static const char perl_diag_template_text_ce193aa7[] = "Can't use global %1$s in subroutine signature";
+static const char perl_diag_template_text_20bbaf23[] = "Cannot copy to %1$s in %2$s";
+static const char perl_diag_template_text_77f4fb6b[] = "Cannot mix declaration kinds for %1$s";
 static const char perl_diag_template_text_eae13e05[] = "Cannot use a redacted RNG seed";
 static const char perl_diag_template_text_2e4355a9[] = "capturing ghajbogh variable length %1$s lookbehind experimental 'oH";
 static const char perl_diag_template_text_54900ee6[] = "catch blockDaq (VAR) poQ";
@@ -1366,6 +1367,7 @@ static const char perl_diag_template_text_227109a3[] = "Class :isa attributeDaq 
 static const char perl_diag_template_text_59087c3a[] = "Class already has a superclass, cannot add another";
 static const char perl_diag_template_text_4f766bf7[] = "Class attribute %1$svaD value poQ";
 static const char perl_diag_template_text_4baf1d7f[] = "Class field bucket %1$s vay'pu' reference 'oHnIS";
+static const char perl_diag_template_text_baea4d09[] = "Class field snapshot cannot distinguish multiple owners named %1$s";
 static const char perl_diag_template_text_559b6fe8[] = "Class object payload 'oHnIS nov pagh";
 static const char perl_diag_template_text_5df1238a[] = "Class object snapshot $self nov naQ 'oHnIS";
 static const char perl_diag_template_text_ebe3ba0c[] = "class pagh role HochDaq ' %1$s ' lo'laHbe'.";
@@ -1486,6 +1488,7 @@ static const char perl_diag_template_text_a0e39fa9[] = "dispatch named subject v
 static const char perl_diag_template_text_fc35e6b5[] = "dispatch pattern constant %1$s notlh QaplaHbe'; %2$s line %3$sDaq latlh tu'lu', wa'DIch %4$s line %5$sDaq tu'lu'";
 static const char perl_diag_template_text_751f76b6[] = "dispatch pattern marker";
 static const char perl_diag_template_text_b7a808c3[] = "dispatch pattern match";
+static const char perl_diag_template_text_f4f26999[] = "dispatch pattern nested more than %1$s levels deep";
 static const char perl_diag_template_text_4a671f45[] = "dispatch patternDaq lo'lu'bogh call predicate 'oHbe'";
 static const char perl_diag_template_text_30c652f7[] = "dispatch predicateDaq argument boqHa'lu'";
 static const char perl_diag_template_text_5abaacc4[] = "dispatch predicateDaq argument qab";
@@ -1721,6 +1724,7 @@ static const char perl_diag_template_text_b0ccb6c4[] = "integer wav (/)";
 static const char perl_diag_template_text_1a1515a4[] = "internal %<num>p printf extensionmey tIq conflictlaH";
 static const char perl_diag_template_text_ead12549[] = "Invalid conversion in %1$s: \"%2$s\"";
 static const char perl_diag_template_text_69fcc1e0[] = "Invalid conversion in %1$s: end of string";
+static const char perl_diag_template_text_ab4219fa[] = "Invalid module diagnostic catalog: %1$s (%2$s)";
 static const char perl_diag_template_text_e2236212[] = "Invalid range \"%1$s-%2$s\" in transliteration operator";
 static const char perl_diag_template_text_8c281e97[] = "Invalid version format (non-numeric data)";
 static const char perl_diag_template_text_bc715b43[] = "Invalid version object";
@@ -1744,6 +1748,11 @@ static const char perl_diag_template_text_240fe52a[] = "jabbI'ghach vay'pu' patt
 static const char perl_diag_template_text_ccf348c3[] = "jabbI'ghachmey much tlhap je 'ay'mey lawqu'";
 static const char perl_diag_template_text_9e944e14[] = "join pagh string";
 static const char perl_diag_template_text_7ce293f4[] = "join with a thread with a waiter";
+static const char perl_diag_template_text_2022db46[] = "Jump hash bucket count is too large";
+static const char perl_diag_template_text_79cea0d3[] = "Jump hash bucket count must be a positive decimal integer";
+static const char perl_diag_template_text_83eb4ca4[] = "Jump hash key is too large";
+static const char perl_diag_template_text_2751ba01[] = "Jump hash key must be an unsigned decimal integer";
+static const char perl_diag_template_text_e3791315[] = "Jump hash string key must be a byte string";
 static const char perl_diag_template_text_82d3957d[] = "key/value vay'pu' slice";
 static const char perl_diag_template_text_5fb6b698[] = "label %1$s tu'laHbe'";
 static const char perl_diag_template_text_26e86a2b[] = "Latin-1 inputDaq non-Latin-1 character botlh stuffed je'lu'";
@@ -1802,6 +1811,9 @@ static const char perl_diag_template_text_49316ae5[] = "lvalue vay'mey ref";
 static const char perl_diag_template_text_ae6ee15d[] = "magic type \\%1$s Qay'laHbe'.";
 static const char perl_diag_template_text_b0bff27c[] = "Magical list constants lo' net chaw'be'.";
 static const char perl_diag_template_text_48ef30bb[] = "Malformed UTF-16 surrogate";
+static const char perl_diag_template_text_98c97008[] = "Malformed UTF-8 character (unexpected end of string) in %1$s";
+static const char perl_diag_template_text_0cc3cc52[] = "Malformed UTF-8 character: %1$s (unexpected non-continuation byte 0x%2$s, immediately after start byte 0x%3$s; need 2 bytes, got 1)";
+static const char perl_diag_template_text_dba1272a[] = "Malformed UTF-8 character: %1$s (unexpected non-continuation byte 0x%2$s, immediately after start byte 0x%3$s; need 2 bytes, got 1) in %4$s";
 static const char perl_diag_template_text_c18009f2[] = "map iterator";
 static const char perl_diag_template_text_f72b0dd9[] = "message queue Hutlhchugh, window device context SuqmeH PM yI'uch.";
 static const char perl_diag_template_text_925a2af6[] = "method %1$s redefined";
@@ -1849,6 +1861,7 @@ static const char perl_diag_template_text_4c20874d[] = "mI'meyDaq _ Daq wrong";
 static const char perl_diag_template_text_91ba2bf6[] = "mIch ghapDaq DaghlaHbe'";
 static const char perl_diag_template_text_fa8c43e5[] = "Mismatched brackets in template";
 static const char perl_diag_template_text_0990b7bd[] = "Missing $ on loop variable";
+static const char perl_diag_template_text_ef8ab71c[] = "Missing argument in %1$s";
 static const char perl_diag_template_text_5f521b38[] = "Missing comma after first argument to %1$s function";
 static const char perl_diag_template_text_885d5d39[] = "Missing name in \"%1$s\"";
 static const char perl_diag_template_text_a421f8f0[] = "mIw \"%1$s\": mIwghach tu'lu'be',\n\tpo' mIw' lengwI' wa'DIch, %2$s ghomDaq,\n\tpo' mIw' lengwI' cha'DIch, %3$s ghomDaq";
@@ -1884,8 +1897,13 @@ static const char perl_diag_template_text_80ac9783[] = "mughHa'ghach mI'ghom \"\
 static const char perl_diag_template_text_cc96752d[] = "muj free() ghItlhlu'pu'; QIlta'";
 static const char perl_diag_template_text_bc2e798e[] = "muj realloc(); QIlta'";
 static const char perl_diag_template_text_8e94658c[] = "multi declaration pItlhbe'taHvIS, %1$s pong choHlu'ta'.";
+static const char perl_diag_template_text_c3481824[] = "multi is experimental";
 static const char perl_diag_template_text_c6c0ea34[] = "multi-character sequence ngaSbogh character class chovmoHlaHbe'; regexDaq <-- HERE qel m/%1$s <-- HERE %2$s/";
+static const char perl_diag_template_text_69599563[] = "Multi-method %1$s is not complete";
+static const char perl_diag_template_text_a1e104e1[] = "Multi-sub %1$s is not complete";
 static const char perl_diag_template_text_c3302b10[] = "Multidimensional syntax %1$s not supported";
+static const char perl_diag_template_text_3ab920a7[] = "Multisub %1$s cannot be a phase block";
+static const char perl_diag_template_text_94b0085b[] = "Multisub definitions for %1$s must share a lexical scope";
 static const char perl_diag_template_text_7d580540[] = "my_localeconv() %1$svaD Doch nobbe'";
 static const char perl_diag_template_text_b639dacd[] = "my_localeconv: %1$s Doch noblu'";
 static const char perl_diag_template_text_2333d4ae[] = "n > m ghaHbogh {n,m} quantifier vaj matchlaHbe'";
@@ -1903,6 +1921,7 @@ static const char perl_diag_template_text_aa051250[] = "Negative offset to vec i
 static const char perl_diag_template_text_fcecaf95[] = "next::method/next::can/maybe::next::method lo'lu' net poQ method context";
 static const char perl_diag_template_text_95bd2b6c[] = "next::method/next::can/maybe::next::method method tlhegh qach Daq tu'laHbe'";
 static const char perl_diag_template_text_a09a5b7f[] = "nIH bitshift (>>)";
+static const char perl_diag_template_text_937199a2[] = "No matching clause for multi %1$s";
 static const char perl_diag_template_text_57028cce[] = "No such class %1$s";
 static const char perl_diag_template_text_a4d5f3ea[] = "non-arena SV: 0x%1$s vIchenmoHmeH nID";
 static const char perl_diag_template_text_db416fe6[] = "non-ASCII character 0x%1$s lo' 'e' ASCII source encoding 'use'lu'taHvIS chaw'be'";
@@ -1938,8 +1957,8 @@ static const char perl_diag_template_text_31450aba[] = "open() ghItlhlu' handle 
 static const char perl_diag_template_text_d6755619[] = "open() mIw 'ay' tu'be'lu'bogh: '%1$s'";
 static const char perl_diag_template_text_a4e8411c[] = "open(,':%1$s')Daq wa' law' Hoch law' Hoch, argument law'";
 static const char perl_diag_template_text_6f2b2992[] = "openDaq wa' law' argument lo'.";
-static const char perl_diag_template_text_dba32556[] = "Operation \"%1$s\" vay' Daq Unicode Degh 0x%2$svaD chegh";
-static const char perl_diag_template_text_4ee2c2cb[] = "Operation \"%1$s\" vay' Daq UTF-16 surrogate U+%2$svaD chegh";
+static const char perl_diag_template_text_71e20114[] = "Operation \"%1$s\" returns its argument for non-Unicode code point 0x%2$s";
+static const char perl_diag_template_text_8989b44f[] = "Operation \"%1$s\" returns its argument for UTF-16 surrogate U+%2$s";
 static const char perl_diag_template_text_3b4e7c87[] = "operator %1$s Segh SovlaHbe'; BASEOP 'oH 'e' pIH\n";
 static const char perl_diag_template_text_6f25e70c[] = "Operator or semicolon missing before %1$s%2$s";
 static const char perl_diag_template_text_1bc526d4[] = "optional parameter after mandatory parameter";
@@ -2352,6 +2371,7 @@ static const char perl_diag_template_text_e7499582[] = "realloc() yIghItlhQo'pu'
 static const char perl_diag_template_text_723f7ead[] = "recognizedbe' escape \\%1$s passed through";
 static const char perl_diag_template_text_ad00cd6c[] = "redirect method with known name";
 static const char perl_diag_template_text_a0c9c396[] = "redirect super method with known name";
+static const char perl_diag_template_text_24de0909[] = "Redundant argument in %1$s";
 static const char perl_diag_template_text_e04789c0[] = "ref-to-glob cast";
 static const char perl_diag_template_text_367cb4aa[] = "refcnt: fd %1$s pagh puS\n";
 static const char perl_diag_template_text_e8ba627a[] = "refcnt: fd %1$s refcnt_size %2$s pagh puS pagh rap\n";
@@ -2750,6 +2770,7 @@ static const char perl_diag_template_text_fbaf8646[] = "Use of uninitialized val
 static const char perl_diag_template_text_01a56f70[] = "Use of uninitialized value in %1$s";
 static const char perl_diag_template_text_706bf733[] = "use VERSION is not permitted while another use VERSION of 5.39 or above is in scope";
 static const char perl_diag_template_text_ad0ea864[] = "use VERSION of 5.39 or above is not permitted while another use VERSION is in scope";
+static const char perl_diag_template_text_f3834c73[] = "Useless localization of %1$s";
 static const char perl_diag_template_text_fdaa749a[] = "Useless use of %1$s in void context";
 static const char perl_diag_template_text_7a9bc64d[] = "Useless use of %1$s with no values";
 static const char perl_diag_template_text_ef486460[] = "Useless use of /d modifier in transliteration operator";
@@ -2771,14 +2792,8 @@ static const char perl_diag_template_text_467515bd[] = "UTF-32BE ghItlh pong Qap
 static const char perl_diag_template_text_5ba78fd1[] = "UTF-32LE ghItlh pong Qapbe'";
 static const char perl_diag_template_text_59f44540[] = "UTF-8 character mughHa': %1$s (ratlh; %2$s bytes tu'lu', %3$s poQlu')";
 static const char perl_diag_template_text_93c5be2c[] = "UTF-8 character mughHa': %1$s (ratlh; %2$s bytes tu'lu', %3$s poQlu') %4$sDaq";
-static const char perl_diag_template_text_6e3d8d8c[] = "UTF-8 character mughHa': %1$s (ratlh; 1 byte tu'lu', %2$s poQlu')";
-static const char perl_diag_template_text_dc82a799[] = "UTF-8 character mughHa': %1$s (ratlh; 1 byte tu'lu', %2$s poQlu') %3$sDaq";
 static const char perl_diag_template_text_1dc18737[] = "UTF-8 character rurbogh.";
-static const char perl_diag_template_text_cf772e88[] = "UTF-8 locale 'e' UTF-8be' vay' \"\\x{%2$s}\" Daq %1$s ta'laHbe'; \"\\x{%3$s}\" 'oS";
 static const char perl_diag_template_text_2da7fd3c[] = "UTF-8 Qagh (string bI'ghach)";
-static const char perl_diag_template_text_b307b20e[] = "UTF-8 Qagh (string bI'ghach) %1$sDaq";
-static const char perl_diag_template_text_46f1be0e[] = "UTF-8 Qagh: %1$s (continuation byte ghaHbe' 0x%2$s, start byte 0x%3$s retlh; 2 bytes poQ, 1 Suq)";
-static const char perl_diag_template_text_822b3733[] = "UTF-8 Qagh: %1$s (continuation byte ghaHbe' 0x%2$s, start byte 0x%3$s retlh; 2 bytes poQ, 1 Suq) %4$sDaq";
 static const char perl_diag_template_text_445d2728[] = "UTF-8 sequence Hoch'e' \"%1$s\" taghchugh, non-Unicode code point 'oH; %2$sDaq portablebe'";
 static const char perl_diag_template_text_d8029dc3[] = "UTF-8 sequence Hoch'e' \"%1$s\" taghchugh, non-Unicode code point 'oH; portablebe' net ngeH";
 static const char perl_diag_template_text_1660fba0[] = "UTF-8 sequence Hoch'e' \"%1$s\" taghchugh, Perl extension 'oH; %2$sDaq portablebe'";
@@ -2904,7 +2919,6 @@ static const char perl_diag_template_text_87a8d34a[] = "yablaw'Ha'lu'bogh vay' c
 static const char perl_diag_template_text_f90528f8[] = "yapbe'qu' request ghu'vamDaq";
 static const char perl_diag_template_text_fa4c8017[] = "yield values from a generator";
 static const char perl_diag_template_text_7e97d6d7[] = "zero-length expression regex m/%1$s/Daq quantifier unexpected";
-static const char perl_diag_template_text_19108a0e[] = "{arg2}Daq copy chenmoHlaHbe' %1$s";
 
 enum {
     perl_diag_template_no_template = 0,
@@ -3562,7 +3576,7 @@ static const U8 perl_diag_template_argument_indices_tlh[] = {
     0,
       0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   1,   2,   3,   4,   5,   8,   0,   1,   2,
      3,   5,   6,   0,   1,   2,   3,   4,   6,   0,   1,   5,   6,   0,   2,   3,   4,   0,   1,
-    6,   0,   3,   5,   1,   2,   5,   1,   2,   4,   1,   3,   5,   0,   5,
+    6,   0,   3,   5,   1,   2,   5,   1,   2,   4,   0,   5,   1,   3,
 };
 
 enum {
@@ -4989,7 +5003,7 @@ enum {
     perl_diag_template_start_tlh_2616,
     perl_diag_template_start_tlh_2617,
     perl_diag_template_start_tlh_2618 = perl_diag_template_start_tlh_2617 + 2,
-    perl_diag_template_start_tlh_2619 = perl_diag_template_start_tlh_2618 + 4,
+    perl_diag_template_start_tlh_2619 = perl_diag_template_start_tlh_2618 + 2,
     perl_diag_template_start_tlh_2620 = perl_diag_template_start_tlh_2619 + 2,
     perl_diag_template_start_tlh_2621 = perl_diag_template_start_tlh_2620 + 4,
     perl_diag_template_start_tlh_2622 = perl_diag_template_start_tlh_2621 + 2,
@@ -5147,7 +5161,22 @@ enum {
     perl_diag_template_start_tlh_2776,
     perl_diag_template_start_tlh_2777,
     perl_diag_template_start_tlh_2778,
-    perl_diag_template_start_tlh_2794,
+    perl_diag_template_start_tlh_2779,
+    perl_diag_template_start_tlh_2780,
+    perl_diag_template_start_tlh_2781,
+    perl_diag_template_start_tlh_2782,
+    perl_diag_template_start_tlh_2783,
+    perl_diag_template_start_tlh_2784,
+    perl_diag_template_start_tlh_2785,
+    perl_diag_template_start_tlh_2786,
+    perl_diag_template_start_tlh_2787,
+    perl_diag_template_start_tlh_2788,
+    perl_diag_template_start_tlh_2789,
+    perl_diag_template_start_tlh_2790,
+    perl_diag_template_start_tlh_2791,
+    perl_diag_template_start_tlh_2792,
+    perl_diag_template_start_tlh_2793,
+    perl_diag_template_start_tlh_2794 = perl_diag_template_start_tlh_2793 + 2,
     perl_diag_template_end_tlh,
 };
 
@@ -5333,7 +5362,7 @@ static const perl_diag_template_case_t perl_diag_template_cases_tlh[] = {
     { perl_diag_error_io_layer_byte_operation_on_utf8_handle_number,                              UINT64_C(         0), perl_diag_template_text_faa536be,  1,   1 },
     { perl_diag_error_call_core_keyword_not_callable_number,                                      UINT64_C(         0), perl_diag_template_text_cbf752f4,  1,   1 },
     { perl_diag_error_pack_format_invalid_modifier_number,                                        UINT64_C(         0), perl_diag_template_text_0919630d,  3,   1 },
-    { perl_diag_error_security_operation_mask_trap_number,                                        UINT64_C(         0), perl_diag_template_text_6f4caa70,  1,   1 },
+    { perl_diag_error_security_operation_mask_trap_number,                                        UINT64_C(         0), perl_diag_template_text_2105d4b8,  1,   1 },
     { perl_diag_error_pack_format_slash_repeat_count_forbidden_number,                            UINT64_C(         0), perl_diag_template_text_5f4fb87b,  1,   1 },
     { perl_diag_error_internal_syntax_plugin_keyword_result_invalid_number,                       UINT64_C(         0), perl_diag_template_text_ffa4b555,  1,   1 },
     { perl_diag_error_symbol_table_slot_symbol_invalid_number,                                    UINT64_C(      0x02), perl_diag_template_text_597b5c57,  0,   0 },
@@ -5676,7 +5705,7 @@ static const perl_diag_template_case_t perl_diag_template_cases_tlh[] = {
     { perl_diag_error_type_string_scalar_coercion_unsupported_number,                             UINT64_C(         0), perl_diag_template_text_6961e3ef,  2,   2 },
     { perl_diag_error_internal_scalar_copy_source_freed_with_destination_number,                  UINT64_C(         0), perl_diag_template_text_e59a204b,  2,   1 },
     { perl_diag_error_internal_scalar_copy_source_not_scalar_in_operation_number,                 UINT64_C(         0), perl_diag_template_text_80577004,  2,   2 },
-    { perl_diag_error_internal_scalar_copy_target_type_unsupported_in_operation_number,           UINT64_C(         0), perl_diag_template_text_19108a0e,  1,   3 },
+    { perl_diag_error_internal_scalar_copy_target_type_unsupported_in_operation_number,           UINT64_C(         0), perl_diag_template_text_20bbaf23,  2,   2 },
     { perl_diag_error_syntax_quoted_string_transliteration_range_reversed_printable_number,       UINT64_C(         0), perl_diag_template_text_e2236212,  2,   1 },
     { perl_diag_error_syntax_declaration_subroutine_lexical_name_missing_number,                  UINT64_C(         0), perl_diag_template_text_885d5d39,  1,   1 },
     { perl_diag_error_internal_syntax_quoted_string_casemod_marker_expected_number,               UINT64_C(         0), perl_diag_template_text_eeeaac4d,  3,   1 },
@@ -5726,7 +5755,7 @@ static const perl_diag_template_case_t perl_diag_template_cases_tlh[] = {
     { perl_diag_error_object_field_attribute_unknown_number,                                      UINT64_C(         0), perl_diag_template_text_60dd2e98,  1,   1 },
     { perl_diag_error_overload_operation_method_not_found_number,                                 UINT64_C(  0x010101), perl_diag_template_text_e0bcf5fb,  1,   1 },
     { perl_diag_error_overload_operation_method_not_found_number,                                 UINT64_C(  0x010201), perl_diag_template_text_e3b31c37,  2,  40 },
-    { perl_diag_error_overload_operation_method_not_found_number,                                 UINT64_C(  0x020101), perl_diag_template_text_f97a1de2,  2,  52 },
+    { perl_diag_error_overload_operation_method_not_found_number,                                 UINT64_C(  0x020101), perl_diag_template_text_f97a1de2,  2,  49 },
     { perl_diag_error_overload_operation_method_not_found_number,                                 UINT64_C(  0x020201), perl_diag_template_text_a421f8f0,  3,  40 },
     { perl_diag_error_overload_operation_method_not_found_number,                                 UINT64_C(  0x000102), perl_diag_template_text_e0160db3,  1,   1 },
     { perl_diag_error_overload_operation_method_not_found_number,                                 UINT64_C(  0x000202), perl_diag_template_text_608f16b3,  2,  40 },
@@ -6218,7 +6247,7 @@ static const perl_diag_template_case_t perl_diag_template_cases_tlh[] = {
     { perl_diag_warning_void_useless_expression_sv_number,                                        UINT64_C(      0x00), perl_diag_template_text_fdaa749a,  1,   3 },
     { perl_diag_warning_experimental_refaliasing_reference_aliasing_used_number,                  UINT64_C(         0), perl_diag_template_text_34b03fd8,  0,   0 },
     { perl_diag_warning_experimental_declared_refs_reference_declaration_used_number,             UINT64_C(         0), perl_diag_template_text_398dc51e,  0,   0 },
-    { perl_diag_warning_syntax_localization_no_effect_number,                                     UINT64_C(         0), perl_diag_template_text_271e16aa,  1,   1 },
+    { perl_diag_warning_syntax_localization_no_effect_number,                                     UINT64_C(         0), perl_diag_template_text_f3834c73,  1,   1 },
     { perl_diag_warning_misc_subroutine_prototype_attribute_replaced_number,                      UINT64_C(         0), perl_diag_template_text_1d751153,  1,   1 },
     { perl_diag_warning_syntax_prototype_declared_prototype_overridden_by_attribute_number,       UINT64_C(         0), perl_diag_template_text_11c1575a,  3,   1 },
     { perl_diag_warning_misc_aggregate_binding_scalarized_named_number,                           UINT64_C(      0x01), perl_diag_template_text_a337b7ab,  2,   3 },
@@ -6358,12 +6387,12 @@ static const perl_diag_template_case_t perl_diag_template_cases_tlh[] = {
     { perl_diag_warning_misc_type_reference_not_weak_number,                                      UINT64_C(         0), perl_diag_template_text_ba3a5125,  0,   0 },
     { perl_diag_warning_imprecision_increment_precision_loss_number,                              UINT64_C(         0), perl_diag_template_text_1d6301ef,  1,   1 },
     { perl_diag_warning_imprecision_decrement_precision_loss_number,                              UINT64_C(         0), perl_diag_template_text_4f425e69,  1,   1 },
-    { perl_diag_warning_missing_printf_conversion_argument_missing_number,                        UINT64_C(         0), perl_diag_template_text_48a8bf09,  1,   2 },
+    { perl_diag_warning_missing_printf_conversion_argument_missing_number,                        UINT64_C(         0), perl_diag_template_text_ef8ab71c,  1,   2 },
     { perl_diag_warning_severe_internal_printf_pointer_extension_width_conflict_number,           UINT64_C(         0), perl_diag_template_text_1a1515a4,  0,   0 },
     { perl_diag_warning_syntax_printf_vector_development_version_unsupported_number,              UINT64_C(         0), perl_diag_template_text_1071aa01,  0,   0 },
     { perl_diag_warning_syntax_printf_conversion_invalid_number,                                  UINT64_C(      0x01), perl_diag_template_text_ead12549,  2,  33 },
     { perl_diag_warning_syntax_printf_conversion_invalid_number,                                  UINT64_C(      0x02), perl_diag_template_text_69fcc1e0,  1,   1 },
-    { perl_diag_warning_redundant_printf_argument_unused_number,                                  UINT64_C(         0), perl_diag_template_text_0e45a54f,  1,   2 },
+    { perl_diag_warning_redundant_printf_argument_unused_number,                                  UINT64_C(         0), perl_diag_template_text_24de0909,  1,   2 },
     { perl_diag_warning_uninitialized_value_with_operation_number,                                UINT64_C(      0x01), perl_diag_template_text_fbaf8646,  2,   3 },
     { perl_diag_warning_uninitialized_value_with_operation_number,                                UINT64_C(      0x02), perl_diag_template_text_01a56f70,  1,   4 },
     { perl_diag_warning_uninitialized_value_without_operation_number,                             UINT64_C(         0), perl_diag_template_text_e70620ff,  0,   0 },
@@ -6423,13 +6452,13 @@ static const perl_diag_template_case_t perl_diag_template_cases_tlh[] = {
     { perl_diag_warning_overflow_vstring_decimal_component_number,                                UINT64_C(         0), perl_diag_template_text_062ddf29,  0,   0 },
     { perl_diag_warning_missing_import_import_or_unimport_missing_with_arguments_number,          UINT64_C(      0x01), perl_diag_template_text_80056127,  3,  33 },
     { perl_diag_warning_missing_import_import_or_unimport_missing_with_arguments_number,          UINT64_C(      0x02), perl_diag_template_text_7183e03b,  3,  33 },
-    { perl_diag_warning_utf8_truncated_sequence_in_operation_number,                              UINT64_C(         0), perl_diag_template_text_b307b20e,  1,   2 },
+    { perl_diag_warning_utf8_truncated_sequence_in_operation_number,                              UINT64_C(         0), perl_diag_template_text_98c97008,  1,   2 },
     { perl_diag_warning_utf8_truncated_sequence_without_operation_number,                         UINT64_C(         0), perl_diag_template_text_2da7fd3c,  0,   0 },
-    { perl_diag_warning_utf8_two_byte_sequence_continuation_invalid_number,                       UINT64_C(      0x01), perl_diag_template_text_46f1be0e,  3,   2 },
-    { perl_diag_warning_utf8_two_byte_sequence_continuation_invalid_number,                       UINT64_C(      0x02), perl_diag_template_text_822b3733,  4,  18 },
-    { perl_diag_warning_utf8_surrogate_case_mapping_returns_surrogate_unchanged_number,           UINT64_C(         0), perl_diag_template_text_4ee2c2cb,  2,   2 },
-    { perl_diag_warning_utf8_non_unicode_case_mapping_returns_super_unchanged_number,             UINT64_C(         0), perl_diag_template_text_dba32556,  2,   2 },
-    { perl_diag_warning_locale_case_mapping_crosses_byte_boundary_number,                         UINT64_C(         0), perl_diag_template_text_cf772e88,  3,   2 },
+    { perl_diag_warning_utf8_two_byte_sequence_continuation_invalid_number,                       UINT64_C(      0x01), perl_diag_template_text_0cc3cc52,  3,   2 },
+    { perl_diag_warning_utf8_two_byte_sequence_continuation_invalid_number,                       UINT64_C(      0x02), perl_diag_template_text_dba1272a,  4,  18 },
+    { perl_diag_warning_utf8_surrogate_case_mapping_returns_surrogate_unchanged_number,           UINT64_C(         0), perl_diag_template_text_8989b44f,  2,   2 },
+    { perl_diag_warning_utf8_non_unicode_case_mapping_returns_super_unchanged_number,             UINT64_C(         0), perl_diag_template_text_71e20114,  2,   2 },
+    { perl_diag_warning_locale_case_mapping_crosses_byte_boundary_number,                         UINT64_C(         0), perl_diag_template_text_d696eb20,  3,   2 },
     { perl_diag_warning_locale_capital_sharp_s_fold_substituted_number,                           UINT64_C(         0), perl_diag_template_text_bd2c050b,  0,   0 },
     { perl_diag_warning_locale_descender_s_ligature_fold_substituted_number,                      UINT64_C(         0), perl_diag_template_text_4e0d5514,  0,   0 },
     { perl_diag_warning_locale_long_st_ligature_fold_substituted_number,                          UINT64_C(         0), perl_diag_template_text_27653085,  0,   0 },
@@ -6441,8 +6470,8 @@ static const perl_diag_template_case_t perl_diag_template_cases_tlh[] = {
     { perl_diag_warning_io_filehandle_wrong_direction_without_name_number,                        UINT64_C(      0x01), perl_diag_template_text_32c2c7c4,  0,   0 },
     { perl_diag_warning_io_filehandle_wrong_direction_without_name_number,                        UINT64_C(      0x02), perl_diag_template_text_657e1045,  0,   0 },
     { perl_diag_warning_io_operation_on_closed_or_unopened_handle_number,                         UINT64_C(0x00000000), perl_diag_template_text_c08d8d54,  2,   5 },
-    { perl_diag_warning_io_dirhandle_used_as_filehandle_suggestion_number,                        UINT64_C(    0x0200), perl_diag_template_text_840646e2,  2,  49 },
-    { perl_diag_warning_io_dirhandle_used_as_filehandle_suggestion_number,                        UINT64_C(    0x0000), perl_diag_template_text_184e0335,  2,  49 },
+    { perl_diag_warning_io_dirhandle_used_as_filehandle_suggestion_number,                        UINT64_C(    0x0200), perl_diag_template_text_840646e2,  2,  51 },
+    { perl_diag_warning_io_dirhandle_used_as_filehandle_suggestion_number,                        UINT64_C(    0x0000), perl_diag_template_text_184e0335,  2,  51 },
     { perl_diag_warning_io_exec_spawn_failed_number,                                              UINT64_C(         0), perl_diag_template_text_7fe7966d,  2,   1 },
     { perl_diag_warning_io_exec_os2_pm_process_session_mismatch_number,                           UINT64_C(         0), perl_diag_template_text_8c9a3574,  2,   1 },
     { perl_diag_warning_io_exec_os2_fullscreen_process_session_mismatch_number,                   UINT64_C(         0), perl_diag_template_text_195e8118,  2,   1 },
@@ -6476,9 +6505,9 @@ static const perl_diag_template_case_t perl_diag_template_cases_tlh[] = {
     { perl_diag_warning_severe_internal_zero_refcount_scalar_free_number,                         UINT64_C(         0), perl_diag_template_text_571bfb11,  1,   1 },
     { perl_diag_warning_syntax_control_escape_printable_result_number,                            UINT64_C(         0), perl_diag_template_text_fc14b332,  2,   1 },
     { perl_diag_warning_utf8_non_unicode_perl_extended_codepoint_number,                          UINT64_C(      0x01), perl_diag_template_text_4039a1db,  1,   2 },
-    { perl_diag_warning_utf8_non_unicode_perl_extended_codepoint_number,                          UINT64_C(      0x02), perl_diag_template_text_da15c524,  2,  49 },
+    { perl_diag_warning_utf8_non_unicode_perl_extended_codepoint_number,                          UINT64_C(      0x02), perl_diag_template_text_da15c524,  2,  51 },
     { perl_diag_warning_utf8_non_unicode_codepoint_above_unicode_max_number,                      UINT64_C(      0x01), perl_diag_template_text_59c65616,  1,   2 },
-    { perl_diag_warning_utf8_non_unicode_codepoint_above_unicode_max_number,                      UINT64_C(      0x02), perl_diag_template_text_916d501d,  2,  49 },
+    { perl_diag_warning_utf8_non_unicode_codepoint_above_unicode_max_number,                      UINT64_C(      0x02), perl_diag_template_text_916d501d,  2,  51 },
     { perl_diag_warning_utf8_nonchar_noncharacter_encoded_number,                                 UINT64_C(         0), perl_diag_template_text_65bf01fe,  1,   1 },
     { perl_diag_warning_utf8_surrogate_surrogate_encoded_number,                                  UINT64_C(         0), perl_diag_template_text_d1513907,  1,   1 },
     { perl_diag_warning_redefine_method_redefined_number,                                         UINT64_C(         0), perl_diag_template_text_925a2af6,  1,   1 },
@@ -6803,8 +6832,6 @@ static const perl_diag_template_case_t perl_diag_template_cases_tlh[] = {
     { perl_diag_error_io_handle_bareword_name_forbidden_number,                                   UINT64_C(         0), perl_diag_template_text_b05cb3d8,  1,   1 },
     { perl_diag_error_numeric_domain_log_sqrt_argument_invalid_number,                            UINT64_C(      0x01), perl_diag_template_text_bdfb1910,  2,   1 },
     { perl_diag_error_numeric_domain_log_sqrt_argument_invalid_number,                            UINT64_C(      0x02), perl_diag_template_text_bdfb1910,  2,   1 },
-    { perl_diag_warning_utf8_sequence_too_short_number,                                           UINT64_C(    0x0102), perl_diag_template_text_6e3d8d8c,  2,  49 },
-    { perl_diag_warning_utf8_sequence_too_short_number,                                           UINT64_C(    0x0202), perl_diag_template_text_dc82a799,  3,  49 },
     { perl_diag_warning_utf8_sequence_too_short_number,                                           UINT64_C(    0x0100), perl_diag_template_text_59f44540,  3,   2 },
     { perl_diag_warning_utf8_sequence_too_short_number,                                           UINT64_C(    0x0200), perl_diag_template_text_93c5be2c,  4,  18 },
     { perl_diag_warning_utf8_continuation_without_start_number,                                   UINT64_C(      0x01), perl_diag_template_text_9b4b3d52,  2,   2 },
@@ -6818,19 +6845,19 @@ static const perl_diag_template_case_t perl_diag_template_cases_tlh[] = {
     { perl_diag_warning_utf8_overlong_value_number,                                               UINT64_C(      0x01), perl_diag_template_text_b6d1cbec,  3,   2 },
     { perl_diag_warning_utf8_overlong_value_number,                                               UINT64_C(      0x02), perl_diag_template_text_798e3569,  4,  18 },
     { perl_diag_warning_utf8_non_unicode_perl_extended_sequence_prefix_number,                    UINT64_C(      0x01), perl_diag_template_text_43d27824,  1,   2 },
-    { perl_diag_warning_utf8_non_unicode_perl_extended_sequence_prefix_number,                    UINT64_C(      0x02), perl_diag_template_text_1660fba0,  2,  49 },
+    { perl_diag_warning_utf8_non_unicode_perl_extended_sequence_prefix_number,                    UINT64_C(      0x02), perl_diag_template_text_1660fba0,  2,  51 },
     { perl_diag_warning_utf8_non_unicode_above_unicode_sequence_prefix_number,                    UINT64_C(      0x01), perl_diag_template_text_d8029dc3,  1,   2 },
-    { perl_diag_warning_utf8_non_unicode_above_unicode_sequence_prefix_number,                    UINT64_C(      0x02), perl_diag_template_text_445d2728,  2,  49 },
+    { perl_diag_warning_utf8_non_unicode_above_unicode_sequence_prefix_number,                    UINT64_C(      0x02), perl_diag_template_text_445d2728,  2,  51 },
     { perl_diag_warning_utf8_non_unicode_sequence_value_overflow_number,                          UINT64_C(      0x01), perl_diag_template_text_c166edf0,  1,   2 },
-    { perl_diag_warning_utf8_non_unicode_sequence_value_overflow_number,                          UINT64_C(      0x02), perl_diag_template_text_89abac02,  2,  49 },
+    { perl_diag_warning_utf8_non_unicode_sequence_value_overflow_number,                          UINT64_C(      0x02), perl_diag_template_text_89abac02,  2,  51 },
     { perl_diag_warning_utf8_empty_sequence_number,                                               UINT64_C(      0x01), perl_diag_template_text_58deaa72,  0,   0 },
     { perl_diag_warning_utf8_empty_sequence_number,                                               UINT64_C(      0x02), perl_diag_template_text_da50efac,  1,   3 },
     { perl_diag_warning_utf8_nonchar_noncharacter_decoded_number,                                 UINT64_C(      0x01), perl_diag_template_text_6ec332b1,  1,   2 },
-    { perl_diag_warning_utf8_nonchar_noncharacter_decoded_number,                                 UINT64_C(      0x02), perl_diag_template_text_ed31955e,  2,  49 },
+    { perl_diag_warning_utf8_nonchar_noncharacter_decoded_number,                                 UINT64_C(      0x02), perl_diag_template_text_ed31955e,  2,  51 },
     { perl_diag_warning_utf8_surrogate_surrogate_decoded_number,                                  UINT64_C(      0x01), perl_diag_template_text_d1513907,  1,   2 },
-    { perl_diag_warning_utf8_surrogate_surrogate_decoded_number,                                  UINT64_C(      0x02), perl_diag_template_text_e21141d1,  2,  49 },
+    { perl_diag_warning_utf8_surrogate_surrogate_decoded_number,                                  UINT64_C(      0x02), perl_diag_template_text_e21141d1,  2,  51 },
     { perl_diag_warning_utf8_surrogate_surrogate_sequence_prefix_number,                          UINT64_C(      0x01), perl_diag_template_text_cda4fcb0,  1,   2 },
-    { perl_diag_warning_utf8_surrogate_surrogate_sequence_prefix_number,                          UINT64_C(      0x02), perl_diag_template_text_70086a5b,  2,  49 },
+    { perl_diag_warning_utf8_surrogate_surrogate_sequence_prefix_number,                          UINT64_C(      0x02), perl_diag_template_text_70086a5b,  2,  51 },
     { perl_diag_error_call_binding_named_parameter_summary_number,                                UINT64_C(    0x0102), perl_diag_template_text_46841cc5,  2,   1 },
     { perl_diag_error_call_binding_named_parameter_summary_number,                                UINT64_C(    0x0002), perl_diag_template_text_67d7e851,  2,   1 },
     { perl_diag_error_call_binding_named_parameter_summary_number,                                UINT64_C(    0x0100), perl_diag_template_text_34ab1029,  2,   1 },
@@ -7008,6 +7035,22 @@ static const perl_diag_template_case_t perl_diag_template_cases_tlh[] = {
     { perl_diag_error_value_siphash_round_count_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_f0e0630c,  0,   0 },
     { perl_diag_error_value_siphash_round_count_too_large_number,                                 UINT64_C(         0), perl_diag_template_text_4fa26c62,  0,   0 },
     { perl_diag_error_value_siphash_seed_length_invalid_number,                                   UINT64_C(         0), perl_diag_template_text_c65340f5,  0,   0 },
+    { perl_diag_error_value_jumphash_bucket_count_invalid_number,                                 UINT64_C(         0), perl_diag_template_text_79cea0d3,  0,   0 },
+    { perl_diag_error_value_jumphash_bucket_count_too_large_number,                               UINT64_C(         0), perl_diag_template_text_2022db46,  0,   0 },
+    { perl_diag_error_value_jumphash_input_byte_string_required_number,                           UINT64_C(         0), perl_diag_template_text_e3791315,  0,   0 },
+    { perl_diag_error_value_jumphash_key_invalid_number,                                          UINT64_C(         0), perl_diag_template_text_2751ba01,  0,   0 },
+    { perl_diag_error_value_jumphash_key_too_large_number,                                        UINT64_C(         0), perl_diag_template_text_83eb4ca4,  0,   0 },
+    { perl_diag_error_diagnostic_api_catalog_invalid_number,                                      UINT64_C(         0), perl_diag_template_text_ab4219fa,  2,   1 },
+    { perl_diag_error_syntax_dispatch_shape_nesting_too_deep_number,                              UINT64_C(         0), perl_diag_template_text_f4f26999,  1,   1 },
+    { perl_diag_error_object_conversion_owner_ambiguous_number,                                   UINT64_C(         0), perl_diag_template_text_baea4d09,  1,   1 },
+    { perl_diag_error_syntax_multisub_mixed_declaration_number,                                   UINT64_C(         0), perl_diag_template_text_77f4fb6b,  1,   1 },
+    { perl_diag_error_syntax_multisub_scope_mismatch_number,                                      UINT64_C(         0), perl_diag_template_text_94b0085b,  1,   1 },
+    { perl_diag_error_runtime_multisub_no_match_number,                                           UINT64_C(         0), perl_diag_template_text_937199a2,  1,   1 },
+    { perl_diag_warning_experimental_multisub_declaration_used_number,                            UINT64_C(         0), perl_diag_template_text_c3481824,  0,   0 },
+    { perl_diag_error_syntax_multisub_special_name_number,                                        UINT64_C(         0), perl_diag_template_text_3ab920a7,  1,   1 },
+    { perl_diag_error_syntax_multisub_named_definition_required_number,                           UINT64_C(         0), perl_diag_template_text_3fdbd962,  0,   0 },
+    { perl_diag_error_runtime_multisub_not_complete_number,                                       UINT64_C(      0x01), perl_diag_template_text_69599563,  1,   1 },
+    { perl_diag_error_runtime_multisub_not_complete_number,                                       UINT64_C(      0x02), perl_diag_template_text_a1e104e1,  1,   1 },
     { perl_diag_error_syntax_multisub_name_replaced_number,                                       UINT64_C(         0), perl_diag_template_text_8e94658c,  1,   1 },
     { 0,                                                                                          UINT64_C(         0), NULL,                              0,   0 }, /* terminates the last diagnostic's rows */
 };
@@ -8596,6 +8639,21 @@ static const perl_diag_template_t perl_diag_templates_tlh[] = {
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_tlh_2776, NULL                         },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_tlh_2777, NULL                         },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_tlh_2778, NULL                         },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_tlh_2779, NULL                         },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_tlh_2780, NULL                         },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_tlh_2781, NULL                         },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_tlh_2782, NULL                         },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_tlh_2783, NULL                         },
+    { 0,   2,  perl_diag_word_group_none, perl_diag_template_start_tlh_2784, NULL                         },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_tlh_2785, NULL                         },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_tlh_2786, NULL                         },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_tlh_2787, NULL                         },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_tlh_2788, NULL                         },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_tlh_2789, NULL                         },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_tlh_2790, NULL                         },
+    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_tlh_2791, NULL                         },
+    { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_tlh_2792, NULL                         },
+    { 1,   2,  perl_diag_word_group_none, perl_diag_template_start_tlh_2793, perl_diag_selectors_tlh_2793 },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_tlh_2794, NULL                         },
 };
 
@@ -8968,6 +9026,8 @@ static const perl_diagpack_param_schema_t perl_diagpack_param_schema_table[] = {
     { "expression",               "text" },
     { "language",                 "text" },
     { "owner",                    "text" },
+    { "problem",                  "text" },
+    { "declaration_kind",         "text" },
 };
 
 static const U16 perl_diagpack_param_schema_ids[] = {
@@ -9014,10 +9074,10 @@ static const U16 perl_diagpack_param_schema_ids[] = {
      218,  219,  220,  221,   15,  222,  197,    3,   36,  156,  127,  242,  170,  254,  260,   33,
       10,  263,  145,  266,  266,   93,  200,  279,  260,  302,    3,  134,  115,  318,  327,  202,
      115,  202,  329,  202,  115,   29,   36,   46,  347,    5,  351,  350,   14,  268,  354,  345,
-      36,  344,  358,  359,  360,  361,  363,  364,  366,   14,    2,    4,    6,    8,   20,   21,
-      28,   32,   34,   42,   43,   45,   60,   67,   81,   98,   99,  105,  106,  107,  108,  109,
-     110,  111,  112,  113,  114,  120,  122,  126,  141,  157,  187,  267,  269,  270,  274,  280,
-     281,  304,  324,  346,  348,  352,  353,  362,  365,  367,
+      36,  344,  358,  359,  360,  361,  363,  364,  366,   14,   71,  368,   36,  369,    2,    4,
+       6,    8,   20,   21,   28,   32,   34,   42,   43,   45,   60,   67,   81,   98,   99,  105,
+     106,  107,  108,  109,  110,  111,  112,  113,  114,  120,  122,  126,  141,  157,  187,  267,
+     269,  270,  274,  280,  281,  304,  324,  346,  348,  352,  353,  362,  365,  367,
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1001 = {
@@ -9092,7 +9152,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1018 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1019 = {
     1019, "ERROR_RUN_OPTION_VALUE_REQUIRED",
-    perl_diagpack_param_schema_ids + 683, 1
+    perl_diagpack_param_schema_ids + 687, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1020 = {
@@ -9807,7 +9867,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1167 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1168 = {
     1168, "ERROR_INTERNAL_NUMERIC_CONVERSION_BASE_UNSUPPORTED",
-    perl_diagpack_param_schema_ids + 684, 1
+    perl_diagpack_param_schema_ids + 688, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1169 = {
@@ -9817,12 +9877,12 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1169 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1170 = {
     1170, "ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_INVALID_FORMAT",
-    perl_diagpack_param_schema_ids + 685, 1
+    perl_diagpack_param_schema_ids + 689, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1171 = {
     1171, "ERROR_INTERNAL_FORMAT_PRINTF_QUADMATH_FORMATTING_FAILED",
-    perl_diagpack_param_schema_ids + 685, 1
+    perl_diagpack_param_schema_ids + 689, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1172 = {
@@ -9842,22 +9902,22 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1174 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1175 = {
     1175, "ERROR_RUN_OPTION_MODULE_NAME_REQUIRED",
-    perl_diagpack_param_schema_ids + 683, 1
+    perl_diagpack_param_schema_ids + 687, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1176 = {
     1176, "ERROR_RUN_OPTION_PROGRAM_TEXT_REQUIRED",
-    perl_diagpack_param_schema_ids + 683, 1
+    perl_diagpack_param_schema_ids + 687, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1177 = {
     1177, "ERROR_RUN_ENVIRONMENT_PERL5OPT_FORBIDDEN_SWITCH",
-    perl_diagpack_param_schema_ids + 683, 1
+    perl_diagpack_param_schema_ids + 687, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1178 = {
     1178, "ERROR_IO_FILESYSTEM_DIRECTORY_CHDIR_FAILED",
-    perl_diagpack_param_schema_ids + 686, 1
+    perl_diagpack_param_schema_ids + 690, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1179 = {
@@ -9912,7 +9972,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1188 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1189 = {
     1189, "ERROR_SYMBOL_TABLE_SLOT_SYMBOL_INVALID",
-    perl_diagpack_param_schema_ids + 687, 1
+    perl_diagpack_param_schema_ids + 691, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1190 = {
@@ -9932,7 +9992,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1192 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1193 = {
     1193, "ERROR_MUTATION_LVALUE_RETURN_VALUE_NOT_MODIFIABLE",
-    perl_diagpack_param_schema_ids + 688, 1
+    perl_diagpack_param_schema_ids + 692, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1194 = {
@@ -10027,7 +10087,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1211 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1212 = {
     1212, "ERROR_SYNTAX_CALL_COMMA_AFTER_INDIRECT_NAME",
-    perl_diagpack_param_schema_ids + 689, 1
+    perl_diagpack_param_schema_ids + 693, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1213 = {
@@ -10172,7 +10232,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1240 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1241 = {
     1241, "ERROR_UNICODE_UTF16_SCRIPT_ENCODING_UNSUPPORTED",
-    perl_diagpack_param_schema_ids + 690, 1
+    perl_diagpack_param_schema_ids + 694, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1242 = {
@@ -10452,7 +10512,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1313 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1314 = {
     1314, "ERROR_CALL_BINDING_ARITY_SIGNATURE_MISMATCH",
-    perl_diagpack_param_schema_ids + 691, 1
+    perl_diagpack_param_schema_ids + 695, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1347 = {
@@ -10727,12 +10787,12 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1406 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1407 = {
     1407, "ERROR_CALL_BINDING_TYPE_SCALAR_CONTAINER_ACCESS_FORBIDDEN",
-    perl_diagpack_param_schema_ids + 692, 1
+    perl_diagpack_param_schema_ids + 696, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1408 = {
     1408, "ERROR_SYNTAX_SOURCE_NON_ASCII_CHARACTER_FORBIDDEN",
-    perl_diagpack_param_schema_ids + 693, 1
+    perl_diagpack_param_schema_ids + 697, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1410 = {
@@ -10747,7 +10807,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1411 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1412 = {
     1412, "ERROR_SYNTAX_NUMERIC_LITERAL_BASE_DIGITS_MISSING",
-    perl_diagpack_param_schema_ids + 694, 1
+    perl_diagpack_param_schema_ids + 698, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1414 = {
@@ -10827,7 +10887,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1428 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1429 = {
     1429, "ERROR_SYNTAX_DECLARATION_USE_NO_IN_EXPRESSION",
-    perl_diagpack_param_schema_ids + 695, 1
+    perl_diagpack_param_schema_ids + 699, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1430 = {
@@ -10902,7 +10962,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1449 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1450 = {
     1450, "ERROR_PACK_BOUNDS_PACK_POSITION_OUTSIDE_STRING",
-    perl_diagpack_param_schema_ids + 696, 1
+    perl_diagpack_param_schema_ids + 700, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1451 = {
@@ -11002,7 +11062,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1471 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1472 = {
     1472, "ERROR_IO_RECORDSEPARATOR_REFERENCE_TYPE_UNSUPPORTED",
-    perl_diagpack_param_schema_ids + 697, 1
+    perl_diagpack_param_schema_ids + 701, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1473 = {
@@ -11532,7 +11592,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1578 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1579 = {
     1579, "ERROR_OBJECT_COMPOSITION_INHERITANCE_NATIVE_SUPERCLASS_REQUIRED",
-    perl_diagpack_param_schema_ids + 698, 1
+    perl_diagpack_param_schema_ids + 702, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1580 = {
@@ -11547,12 +11607,12 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1581 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1582 = {
     1582, "ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_FIELD_LAYOUT_MISSING",
-    perl_diagpack_param_schema_ids + 699, 1
+    perl_diagpack_param_schema_ids + 703, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1583 = {
     1583, "ERROR_INTERNAL_OBJECT_COMPOSITION_ROLE_PROTOTYPE_MISSING",
-    perl_diagpack_param_schema_ids + 699, 1
+    perl_diagpack_param_schema_ids + 703, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1584 = {
@@ -11582,57 +11642,57 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1589 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1590 = {
     1590, "ERROR_OBJECT_COMPOSITION_INHERITANCE_LINEARIZATION_DEPTH_EXCEEDED",
-    perl_diagpack_param_schema_ids + 700, 1
+    perl_diagpack_param_schema_ids + 704, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1591 = {
     1591, "ERROR_OBJECT_COMPOSITION_INHERITANCE_METHOD_CHANGE_PACKAGE_NOT_FOUND",
-    perl_diagpack_param_schema_ids + 701, 1
+    perl_diagpack_param_schema_ids + 705, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1592 = {
     1592, "ERROR_PROPAGATION_EVAL_EXCEPTION",
-    perl_diagpack_param_schema_ids + 702, 1
+    perl_diagpack_param_schema_ids + 706, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1594 = {
     1594, "WARNING_COMPILATION_UNCLASSIFIED_DEFERRED_MESSAGE",
-    perl_diagpack_param_schema_ids + 703, 1
+    perl_diagpack_param_schema_ids + 707, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1595 = {
     1595, "ERROR_OBJECT_METHOD_CALL_INVOCANT_REQUIRED",
-    perl_diagpack_param_schema_ids + 704, 1
+    perl_diagpack_param_schema_ids + 708, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1596 = {
     1596, "ERROR_OBJECT_METHOD_CALL_UNINITIALIZED_INVOCANT",
-    perl_diagpack_param_schema_ids + 704, 1
+    perl_diagpack_param_schema_ids + 708, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1597 = {
     1597, "WARNING_USER_REFERENCE",
-    perl_diagpack_param_schema_ids + 705, 1
+    perl_diagpack_param_schema_ids + 709, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1598 = {
     1598, "ERROR_IO_HANDLE_INVALID_VALUE",
-    perl_diagpack_param_schema_ids + 706, 1
+    perl_diagpack_param_schema_ids + 710, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1599 = {
     1599, "ERROR_SYNTAX_DECLARATION_SUBROUTINE_NAMED_SUFFIX_INVALID",
-    perl_diagpack_param_schema_ids + 707, 1
+    perl_diagpack_param_schema_ids + 711, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1600 = {
     1600, "ERROR_OBJECT_COMPOSITION_NATIVE_ROLE_REQUIRED",
-    perl_diagpack_param_schema_ids + 708, 1
+    perl_diagpack_param_schema_ids + 712, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1601 = {
     1601, "ERROR_LEXICAL_IMPORT_INVALID_VERSION_BUNDLE",
-    perl_diagpack_param_schema_ids + 709, 1
+    perl_diagpack_param_schema_ids + 713, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1602 = {
@@ -11817,7 +11877,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1637 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1638 = {
     1638, "ERROR_RUN_OPTION_SHEBANG_SWITCH_TOO_LATE",
-    perl_diagpack_param_schema_ids + 710, 1
+    perl_diagpack_param_schema_ids + 714, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1639 = {
@@ -11967,12 +12027,12 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1668 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1669 = {
     1669, "ERROR_UNICODE_CODE_POINT_CHR_NONFINITE",
-    perl_diagpack_param_schema_ids + 711, 1
+    perl_diagpack_param_schema_ids + 715, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1670 = {
     1670, "ERROR_PACK_INPUT_NONFINITE_COMPRESSED_INTEGER",
-    perl_diagpack_param_schema_ids + 711, 1
+    perl_diagpack_param_schema_ids + 715, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1671 = {
@@ -12037,7 +12097,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1682 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1683 = {
     1683, "ERROR_MUTATION_ELEMENT_ARRAY_VALUE_NOT_CREATABLE",
-    perl_diagpack_param_schema_ids + 712, 1
+    perl_diagpack_param_schema_ids + 716, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1684 = {
@@ -12147,7 +12207,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1726 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1727 = {
     1727, "ERROR_INTERNAL_REGEXP_COMPILER_ROOT_RESULT_MISSING",
-    perl_diagpack_param_schema_ids + 713, 1
+    perl_diagpack_param_schema_ids + 717, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1728 = {
@@ -12197,7 +12257,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1737 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1738 = {
     1738, "ERROR_INTERNAL_UNICODE_UTF8_DECODER_PROBLEM_UNHANDLED",
-    perl_diagpack_param_schema_ids + 714, 1
+    perl_diagpack_param_schema_ids + 718, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1740 = {
@@ -12507,7 +12567,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_1810 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1811 = {
     1811, "ERROR_INTERNAL_FORMAT_PRINTF_BUFFER_OVERFLOW",
-    perl_diagpack_param_schema_ids + 715, 1
+    perl_diagpack_param_schema_ids + 719, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_1814 = {
@@ -14297,12 +14357,12 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2242 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2243 = {
     2243, "WARNING_IMPRECISION_INCREMENT_PRECISION_LOSS",
-    perl_diagpack_param_schema_ids + 711, 1
+    perl_diagpack_param_schema_ids + 715, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2244 = {
     2244, "WARNING_IMPRECISION_DECREMENT_PRECISION_LOSS",
-    perl_diagpack_param_schema_ids + 711, 1
+    perl_diagpack_param_schema_ids + 715, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2245 = {
@@ -15352,7 +15412,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2458 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2459 = {
     2459, "ERROR_LOAD_CONTEXT_INC_ENTRIES_CHECKED",
-    perl_diagpack_param_schema_ids + 716, 1
+    perl_diagpack_param_schema_ids + 720, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2460 = {
@@ -15382,7 +15442,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2466 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2467 = {
     2467, "ERROR_UNICODE_PROPERTY_DEFINITION_RANGE_REVERSED",
-    perl_diagpack_param_schema_ids + 717, 1
+    perl_diagpack_param_schema_ids + 721, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2468 = {
@@ -15397,7 +15457,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2469 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2470 = {
     2470, "ERROR_UNICODE_PROPERTY_DEFINITION_CODEPOINT_OVERFLOW",
-    perl_diagpack_param_schema_ids + 717, 1
+    perl_diagpack_param_schema_ids + 721, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2471 = {
@@ -15442,7 +15502,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2478 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2479 = {
     2479, "NOTE_OMISSION_NAMED_PARAMETER_DIAGNOSTICS",
-    perl_diagpack_param_schema_ids + 718, 1
+    perl_diagpack_param_schema_ids + 722, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2480 = {
@@ -15457,7 +15517,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2481 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2482 = {
     2482, "ERROR_USER_REFERENCE",
-    perl_diagpack_param_schema_ids + 719, 1
+    perl_diagpack_param_schema_ids + 723, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2483 = {
@@ -15537,7 +15597,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2497 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2498 = {
     2498, "ERROR_SYNTAX_ESCAPE_LEGACY_API_UNCALLABLE",
-    perl_diagpack_param_schema_ids + 715, 1
+    perl_diagpack_param_schema_ids + 719, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2499 = {
@@ -15597,7 +15657,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2510 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2511 = {
     2511, "WARNING_SYNTAX_OPERATOR_EXPECTED",
-    perl_diagpack_param_schema_ids + 720, 1
+    perl_diagpack_param_schema_ids + 724, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2512 = {
@@ -15627,7 +15687,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2516 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2517 = {
     2517, "ERROR_OBJECT_COMPOSITION_INHERITANCE_C3_PARENT_CONFLICT_CONTEXT",
-    perl_diagpack_param_schema_ids + 721, 1
+    perl_diagpack_param_schema_ids + 725, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2518 = {
@@ -16122,7 +16182,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2615 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2616 = {
     2616, "ERROR_IO_HANDLE_BAREWORD_NAME_FORBIDDEN",
-    perl_diagpack_param_schema_ids + 722, 1
+    perl_diagpack_param_schema_ids + 726, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2617 = {
@@ -16272,7 +16332,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2646 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2647 = {
     2647, "ERROR_INTERNAL_LOCALE_DATA_CHAR_CLASS_UNKNOWN",
-    perl_diagpack_param_schema_ids + 723, 1
+    perl_diagpack_param_schema_ids + 727, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2648 = {
@@ -16347,7 +16407,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2661 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2662 = {
     2662, "WARNING_LOCALE_STARTUP_ENVIRONMENT_SETTINGS_UNSUPPORTED",
-    perl_diagpack_param_schema_ids + 724, 1
+    perl_diagpack_param_schema_ids + 728, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2663 = {
@@ -16387,7 +16447,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2669 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2670 = {
     2670, "ERROR_INTERNAL_STACK_JUMP_ROOT_TARGET_MISSING",
-    perl_diagpack_param_schema_ids + 725, 1
+    perl_diagpack_param_schema_ids + 729, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2671 = {
@@ -16417,7 +16477,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2675 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2676 = {
     2676, "ERROR_SYSTEM_SIGNAL_HANDLER_MISSING",
-    perl_diagpack_param_schema_ids + 726, 1
+    perl_diagpack_param_schema_ids + 730, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2677 = {
@@ -16427,7 +16487,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2677 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2678 = {
     2678, "NOTE_CONTEXT_OS2_THREAD_STATE_UNKNOWN",
-    perl_diagpack_param_schema_ids + 727, 1
+    perl_diagpack_param_schema_ids + 731, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2679 = {
@@ -16537,7 +16597,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2699 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2700 = {
     2700, "ERROR_SYSTEM_PLATFORM_VMS_COMMAND_LINE_INPUT_PIPE_REOPEN_FAILED",
-    perl_diagpack_param_schema_ids + 728, 1
+    perl_diagpack_param_schema_ids + 732, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2701 = {
@@ -16567,7 +16627,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2705 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2706 = {
     2706, "NOTE_CONTEXT_WINDOWS_INVALID_PARAMETER_EXPRESSION",
-    perl_diagpack_param_schema_ids + 729, 1
+    perl_diagpack_param_schema_ids + 733, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2707 = {
@@ -16747,7 +16807,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2741 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2742 = {
     2742, "ERROR_DIAGNOSTIC_API_RENDER_FORMAT_UNKNOWN",
-    perl_diagpack_param_schema_ids + 685, 1
+    perl_diagpack_param_schema_ids + 689, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2743 = {
@@ -16882,7 +16942,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2769 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2770 = {
     2770, "ERROR_OBJECT_CONVERSION_OWNER_BUCKET_REQUIRED",
-    perl_diagpack_param_schema_ids + 730, 1
+    perl_diagpack_param_schema_ids + 734, 1
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2771 = {
@@ -16923,6 +16983,81 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2777 = {
 static const perl_diagpack_schema_t perl_diagpack_schema_2778 = {
     2778, "ERROR_VALUE_SIPHASH_SEED_LENGTH_INVALID",
     perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2779 = {
+    2779, "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2780 = {
+    2780, "ERROR_VALUE_JUMPHASH_BUCKET_COUNT_TOO_LARGE",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2781 = {
+    2781, "ERROR_VALUE_JUMPHASH_INPUT_BYTE_STRING_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2782 = {
+    2782, "ERROR_VALUE_JUMPHASH_KEY_INVALID",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2783 = {
+    2783, "ERROR_VALUE_JUMPHASH_KEY_TOO_LARGE",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2784 = {
+    2784, "ERROR_DIAGNOSTIC_API_CATALOG_INVALID",
+    perl_diagpack_param_schema_ids + 683, 2
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2785 = {
+    2785, "ERROR_SYNTAX_DISPATCH_SHAPE_NESTING_TOO_DEEP",
+    perl_diagpack_param_schema_ids + 600, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2786 = {
+    2786, "ERROR_OBJECT_CONVERSION_OWNER_AMBIGUOUS",
+    perl_diagpack_param_schema_ids + 734, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2787 = {
+    2787, "ERROR_SYNTAX_MULTISUB_MIXED_DECLARATION",
+    perl_diagpack_param_schema_ids + 1, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2788 = {
+    2788, "ERROR_SYNTAX_MULTISUB_SCOPE_MISMATCH",
+    perl_diagpack_param_schema_ids + 1, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2789 = {
+    2789, "ERROR_RUNTIME_MULTISUB_NO_MATCH",
+    perl_diagpack_param_schema_ids + 1, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2790 = {
+    2790, "WARNING_EXPERIMENTAL_MULTISUB_DECLARATION_USED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2791 = {
+    2791, "ERROR_SYNTAX_MULTISUB_SPECIAL_NAME",
+    perl_diagpack_param_schema_ids + 1, 1
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2792 = {
+    2792, "ERROR_SYNTAX_MULTISUB_NAMED_DEFINITION_REQUIRED",
+    perl_diagpack_param_schema_ids + 0, 0
+};
+
+static const perl_diagpack_schema_t perl_diagpack_schema_2793 = {
+    2793, "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE",
+    perl_diagpack_param_schema_ids + 685, 2
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2794 = {
@@ -17459,6 +17594,11 @@ static const perl_diagpack_schema_t * const perl_diagpack_schemas_tlh[] = {
     &perl_diagpack_schema_2770, &perl_diagpack_schema_2771, &perl_diagpack_schema_2772,
     &perl_diagpack_schema_2773, &perl_diagpack_schema_2774, &perl_diagpack_schema_2775,
     &perl_diagpack_schema_2776, &perl_diagpack_schema_2777, &perl_diagpack_schema_2778,
+    &perl_diagpack_schema_2779, &perl_diagpack_schema_2780, &perl_diagpack_schema_2781,
+    &perl_diagpack_schema_2782, &perl_diagpack_schema_2783, &perl_diagpack_schema_2784,
+    &perl_diagpack_schema_2785, &perl_diagpack_schema_2786, &perl_diagpack_schema_2787,
+    &perl_diagpack_schema_2788, &perl_diagpack_schema_2789, &perl_diagpack_schema_2790,
+    &perl_diagpack_schema_2791, &perl_diagpack_schema_2792, &perl_diagpack_schema_2793,
     &perl_diagpack_schema_2794,
 };
 
