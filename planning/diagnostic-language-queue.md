@@ -8,6 +8,11 @@ sentences, vocabulary and grammatical forms, not just plural categories.
 
 ## Catalog source refresh
 
+The 2026-11-21 multi no-match update distinguishes subroutines from methods
+in every registered language case. Klingon retains the existing English
+fallback wording with the new declaration-kind cases pending linguistic
+review.
+
 The 2026-11-20 repair pass filled missing sentence cases and refreshed tracked
 translations whose source or selector schema had changed. This includes the
 experimental multi declarations and their distinct incomplete-method and

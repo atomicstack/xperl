@@ -45,13 +45,76 @@ my $again = eval 'sub ' . $deparser->coderef2text($copy);
 is($@, '', 'the generated dispatch body can itself be deparsed');
 is($again && $again->('ok', 41), 42, 'repeated deparsing preserves dispatch');
 
+my $no_match_line = __LINE__ + 1;
 eval { $copy->('missing') };
 my $error = ${^ERROR_OBJ};
 is(ref $error, 'XPerl::Exception', 'no-match throws a structured exception');
 is($error->diagnostics->[0]->code, 'ERROR_RUNTIME_MULTISUB_NO_MATCH',
     'no-match retains its diagnostic identity');
-like("$error", qr/No matching clause for multi main::classify/,
+like("$error", qr/No matching clause for multi sub main::classify/,
     'no-match names the original dispatcher');
+my $no_match = $error->contents->[0];
+is($no_match->location->{file}, __FILE__, 'deparsed no-match records the caller file');
+is($no_match->location->{line}, $no_match_line, 'deparsed no-match records the caller line');
+is($no_match->params->[1]{name}, 'declaration_kind',
+    'deparsed no-match retains its declaration-kind selector');
+
+my $call_enabled = 1;
+eval q{
+#line 101 "lowered-conditional-caller.pl"
+    if ($call_enabled) {
+#line 222 "lowered-conditional-caller.pl"
+        $copy->('missing');
+    }
+};
+$no_match = ${^ERROR_OBJ}->contents->[0];
+is($no_match->location->{file}, 'lowered-conditional-caller.pl',
+    'deparsed conditional no-match records the caller file');
+is($no_match->location->{line}, 222,
+    'deparsed conditional no-match reports the call rather than the conditional');
+
+SKIP: {
+    eval { require XPerl::DiagPack::DE };
+    skip('German diagnostic pack is unavailable', 4) if $@;
+
+    for my $callee (\&classify, $copy) {
+        my $diagnostic = eval q{
+            use diagpack 'de';
+            eval { $callee->('missing') };
+            ${^ERROR_OBJ}->contents->[0];
+        };
+        is($@, '', 'a lexical diagnostic language can surround the call');
+        is($diagnostic->text, $diagnostic->render_as_legacy('de'),
+            'native and deparsed no-match capture the caller diagnostic language');
+    }
+}
+
+multi sub FAILED_KIND('ok') { 42 }
+my $marker_copy = copy_multisub(\&FAILED_KIND);
+eval { $marker_copy->('missing') };
+is(${^ERROR_OBJ}->contents->[0]->params->[0]{value}, 'main::FAILED_KIND',
+    'deparsing preserves a name that resembles an internal substitution marker');
+
+my $direct_failure_source = <<'SOURCE';
+#line 305 "direct-failure.pl"
+XPerl::Diagnostic::_multisub_no_match('main::top_level', 0);
+SOURCE
+fresh_perl_like($direct_failure_source,
+    qr/No matching clause for multi sub main::top_level at direct-failure\.pl line 305\./,
+    {}, 'the shared no-match emitter handles a direct call without a Perl frame');
+
+my $namespaced_original = eval q{
+    use feature 'namespaces';
+    namespace Multisub::Lowered;
+    multi sub choose_value(1) { 42 }
+    \&choose_value;
+};
+is($@, '', 'a multi can be defined with lexical namespaces enabled');
+my $namespaced_copy = copy_multisub($namespaced_original);
+is($namespaced_copy->(1), 42, 'a namespaced multi body recompiles in ordinary ambient pragmas');
+eval { $namespaced_copy->(2) };
+is(${^ERROR_OBJ}->contents->[0]->code, 'ERROR_RUNTIME_MULTISUB_NO_MATCH',
+    'the deparsed no-match emitter resolves outside clause namespace pragmas');
 
 multi sub original_arguments('ok', $value) {
     $value += 1;
@@ -364,9 +427,18 @@ for my $case (
     open my $fh, '>', $file or die "$file: $!";
     print {$fh} "use feature qw(class multisub); no warnings;\n",
         $opening, "method answer $text\n", $closing,
-        "\nmy \$object = $consumer->new; print join(',', \$object->answer(2), \$object->answer(12));";
+        "\nmy \$object = $consumer->new; print join(',', \$object->answer(2), \$object->answer(12));",
+        <<'SOURCE';
+
+#line 600 "multi-method-caller.pl"
+eval { $object->answer() };
+my $diagnostic = ${^ERROR_OBJ}->contents->[0];
+my ($kind) = $diagnostic->render_as_legacy('en') =~ /for multi (sub|method) /;
+print '|', $kind, '|',
+    $diagnostic->location->{file}, ':', $diagnostic->location->{line};
+SOURCE
     close $fh or die "$file: $!";
-    is(runperl(progfile => $file), '42,12',
+    is(runperl(progfile => $file), '42,12|method|multi-method-caller.pl:600',
         'a multi method body round-trips in its declaring class or role context');
 }
 

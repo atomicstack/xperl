@@ -9497,9 +9497,21 @@ PP(pp_is_tainted)
     return NORMAL;
 }
 
+void
+Perl_multisub_fail(pTHX_ SV *name, bool is_method)
+{
+    PERL_ARGS_ASSERT_MULTISUB_FAIL;
+
+    U32 kind = PERL_DIAG_SELECTOR_FROM_ERROR_RUNTIME_MULTISUB_NO_MATCH_DECLARATION_KIND(
+        is_method ? "method" : "sub");
+
+    PERL_THROW_ERROR_RUNTIME_MULTISUB_NO_MATCH(name, kind);
+    NOT_REACHED;
+}
+
 PP(pp_multisubfail)
 {
-    PERL_THROW_ERROR_RUNTIME_MULTISUB_NO_MATCH(cSVOPx_sv(PL_op));
+    Perl_multisub_fail(aTHX_ cSVOPx_sv(PL_op), CvIsMETHOD(find_runcv(0)));
     NOT_REACHED;
 }
 

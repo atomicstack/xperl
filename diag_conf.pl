@@ -45130,27 +45130,87 @@ $CONF = {
           ],
           "message" => {
             "templates" => {
-              "ar" => "لا يوجد بند مطابق لـ multi %{name}",
-              "cy" => "Dim cymal cyfatebol ar gyfer multi %{name}",
-              "de" => "Keine passende Klausel für multi %{name}",
-              "en" => "No matching clause for multi %{name}",
-              "es" => "Ninguna cláusula coincide con multi %{name}",
-              "fa" => "هیچ بند منطبقی برای multi %{name} پیدا نشد",
-              "fi" => "Mikään multi-ilmoituksen %{name} haara ei vastaa argumentteja",
-              "fr" => "Aucune clause correspondante pour le multi %{name}",
-              "he" => "אין סעיף מתאים עבור multi %{name}",
-              "hu" => "Nincs illeszkedő ág a(z) %{name} nevű multi deklarációhoz",
-              "is" => "Engin samsvarandi grein fyrir multi %{name}",
-              "it" => "Nessuna clausola corrispondente per il multi %{name}",
-              "nl" => "Geen overeenkomende clausule voor multi %{name}",
-              "pl" => "Brak pasującej klauzuli dla multi %{name}",
-              "pt" => "Nenhuma cláusula correspondente para multi %{name}",
-              "ru" => "Нет подходящей ветви для multi %{name}",
-              "sr" => "Нема одговарајуће клаузуле за multi %{name}",
-              "tlh" => "No matching clause for multi %{name}",
-              "tr" => "multi %{name} için eşleşen bir dal yok",
-              "uk" => "Немає відповідного пункту для multi %{name}",
-              "zh" => "没有与 multi %{name} 匹配的子句"
+              "ar" => {
+                "method" => "لا يوجد فرع مطابق لـ multi method %{name}",
+                "sub" => "لا يوجد فرع مطابق لـ multi sub %{name}"
+              },
+              "cy" => {
+                "*" => "Dim cymal cyfatebol ar gyfer multi %{name}"
+              },
+              "de" => {
+                "method" => "Keine passende Klausel für die Multi-Methode %{name}",
+                "sub" => "Keine passende Klausel für die Multi-Subroutine %{name}"
+              },
+              "en" => {
+                "method" => "No matching clause for multi method %{name}",
+                "sub" => "No matching clause for multi sub %{name}"
+              },
+              "es" => {
+                "method" => "Ninguna cláusula coincide con el método multi %{name}",
+                "sub" => "Ninguna cláusula coincide con la subrutina multi %{name}"
+              },
+              "fa" => {
+                "method" => "برای multi methodِ %{name} هیچ بند منطبقی پیدا نشد",
+                "sub" => "برای multi subِ %{name} هیچ بند منطبقی پیدا نشد"
+              },
+              "fi" => {
+                "method" => "Mikään multi-metodin %{name} määrittelyistä ei hyväksynyt argumentteja",
+                "sub" => "Mikään multi-aliohjelman %{name} määrittelyistä ei hyväksynyt argumentteja"
+              },
+              "fr" => {
+                "method" => "Aucune clause correspondante pour la méthode multi %{name}",
+                "sub" => "Aucune clause correspondante pour la sous-routine multi %{name}"
+              },
+              "he" => {
+                "method" => "לא נמצא סעיף מתאים למתודה הרב־צורתית %{name}",
+                "sub" => "לא נמצא סעיף מתאים לתת־השגרה הרב־צורתית %{name}"
+              },
+              "hu" => {
+                "method" => "Nincs illeszkedő klauzula a(z) %{name} nevű multi metódushoz",
+                "sub" => "Nincs illeszkedő klauzula a(z) %{name} nevű multi subhoz"
+              },
+              "is" => {
+                "method" => "Engin samsvarandi grein fyrir multi-aðferð %{name}",
+                "sub" => "Engin samsvarandi grein fyrir multi sub %{name}"
+              },
+              "it" => {
+                "*" => "Nessuna clausola corrispondente per il multi %{name}"
+              },
+              "nl" => {
+                "method" => "Geen overeenkomende clausule voor multi-methode %{name}",
+                "sub" => "Geen overeenkomende clausule voor multi-subroutine %{name}"
+              },
+              "pl" => {
+                "method" => "Brak pasującej klauzuli dla multi-metody %{name}",
+                "sub" => "Brak pasującej klauzuli dla multi-podprogramu %{name}"
+              },
+              "pt" => {
+                "*" => "Nenhuma cláusula correspondente para multi %{name}"
+              },
+              "ru" => {
+                "method" => "Для multi-метода %{name} не найден подходящий вариант",
+                "sub" => "Для multi-подпрограммы %{name} не найден подходящий вариант"
+              },
+              "sr" => {
+                "method" => "Нема одговарајуће клаузуле за мулти метод %{name}",
+                "sub" => "Нема одговарајуће клаузуле за мулти потпрограм %{name}"
+              },
+              "tlh" => {
+                "method" => "No matching clause for multi method %{name}",
+                "sub" => "No matching clause for multi sub %{name}"
+              },
+              "tr" => {
+                "method" => "multi method %{name} için eşleşen bir dal yok",
+                "sub" => "multi sub %{name} için eşleşen bir dal yok"
+              },
+              "uk" => {
+                "method" => "Немає відповідного варіанта для multi-методу %{name}",
+                "sub" => "Немає відповідного варіанта для multi-підпрограми %{name}"
+              },
+              "zh" => {
+                "method" => "没有与 multi method %{name} 匹配的子句",
+                "sub" => "没有与 multi sub %{name} 匹配的子句"
+              }
             },
             "args" => [
               {
@@ -45158,12 +45218,21 @@ $CONF = {
                 "type" => "text",
                 "format_str" => "SVf",
                 "pass" => "SVfARG"
+              },
+              {
+                "name" => "declaration_kind",
+                "type" => "text",
+                "format_str" => "s",
+                "selector_values" => [
+                  "method",
+                  "sub"
+                ]
               }
             ]
           },
           "counts_as_error" => 1,
           "emit" => {
-            "api" => "CROAK"
+            "api" => "CROAK_CALLER"
           }
         },
         "ERROR_RUN_ENVIRONMENT_PERL5OPT_FORBIDDEN_SWITCH" => {
@@ -114831,9 +114900,10 @@ $CONF = {
       {
         "code" => "PERLDIAG_MULTISUB_NO_MATCH",
         "headings" => [
-          "No matching clause for multi %s\n\n"
+          "No matching clause for multi method %s\n\n",
+          "No matching clause for multi sub %s\n\n"
         ],
-        "text" => "(F) None of the clauses for the called multi subroutine or method accepted\nits arguments. Each clause requires its argument pattern and optional guard\nto succeed. Fixed argument patterns require an exact argument count; true\nmethods exclude the invocant from that count. Add a suitable clause or\ncorrect the call. Unlike an explicit C<dispatch> with no match, a multi call\nthrows this error. See L<perlmultitut> and L<perlsub/Multisubs>.\n\n"
+        "text" => "(F) None of the clauses for the called multi subroutine or method accepted\nits arguments. Each clause requires its argument pattern and optional guard\nto succeed. Fixed argument patterns require an exact argument count; true\nmethods exclude the invocant from that count. Add a suitable clause or\ncorrect the call. Unlike an explicit C<dispatch> with no match, a multi call\nthrows this error at the caller's location. See L<perlmultitut> and L<perlsub/Multisubs>.\n\n"
       },
       {
         "code" => "PERLDIAG_0684",

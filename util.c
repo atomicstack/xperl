@@ -2359,8 +2359,8 @@ Perl_diag_croak_caller_sv(UV diag_index, AV *params, SV *message)
     dTHX;
     {
         const PERL_CONTEXT *cx = caller_cx(0, NULL);
-        assert(cx);
-        PL_curcop = cx->blk_oldcop;
+        if (cx)
+            PL_curcop = (COP *)Perl_caller_cop(aTHX_ cx);
     }
     Perl_diag_croak_sv_internal(aTHX_ diag_index, params, message);
     NORETURN_FUNCTION_END;
@@ -2452,8 +2452,8 @@ Perl_diag_croak_caller(UV diag_index, AV *params, const char *pat, ...)
     const PERL_CONTEXT *cx = caller_cx(0, NULL);
     va_list args;
 
-    assert(cx);
-    PL_curcop = cx->blk_oldcop;
+    if (cx)
+        PL_curcop = (COP *)Perl_caller_cop(aTHX_ cx);
 
     va_start(args, pat);
     Perl_diag_vcroak(aTHX_ diag_index, params, pat, &args);

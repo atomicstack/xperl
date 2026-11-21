@@ -5109,14 +5109,16 @@ matching counterpart.  See L<perlfunc/pack>.
 redirection, and found a '<' on the command line, but can't find the
 name of the file from which to read data for stdin.
 
-=item No matching clause for multi %s
+=item No matching clause for multi method %s
+
+=item No matching clause for multi sub %s
 
 (F) None of the clauses for the called multi subroutine or method accepted
 its arguments. Each clause requires its argument pattern and optional guard
 to succeed. Fixed argument patterns require an exact argument count; true
 methods exclude the invocant from that count. Add a suitable clause or
 correct the call. Unlike an explicit C<dispatch> with no match, a multi call
-throws this error. See L<perlmultitut> and L<perlsub/Multisubs>.
+throws this error at the caller's location. See L<perlmultitut> and L<perlsub/Multisubs>.
 
 =item No next::method '%s' found for %s
 

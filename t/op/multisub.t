@@ -145,10 +145,45 @@ like($@, qr/guard failed/, 'guard exceptions propagate');
     is($_, 'topic', 'dispatch does not replace the topic');
 }
 
+my $no_match_line = __LINE__ + 1;
 eval { classify('wrong', 1) };
-like($@, qr/No matching clause for multi/, 'unmatched arguments fail');
+my $no_match = ${^ERROR_OBJ}->contents->[0];
+like($@, qr/No matching clause for multi sub main::classify/,
+    'unmatched arguments identify a multi sub');
+is($no_match->location->{file}, __FILE__, 'no-match records the caller file');
+is($no_match->location->{line}, $no_match_line, 'no-match records the caller line');
+is($no_match->params->[1]{name}, 'declaration_kind',
+    'no-match retains the declaration-kind selector');
 eval { classify('ok', 1, 2) };
-like($@, qr/No matching clause for multi/, 'array pattern enforces exact arity');
+like($@, qr/No matching clause for multi sub/, 'array pattern enforces exact arity');
+
+eval q{
+    multi sub conditional_no_match(0) { 0 }
+    my $enabled = 1;
+#line 101 "conditional-caller.pl"
+    if ($enabled) {
+#line 222 "conditional-caller.pl"
+        conditional_no_match(1);
+    }
+};
+$no_match = ${^ERROR_OBJ}->contents->[0];
+is($no_match->location->{file}, 'conditional-caller.pl',
+    'conditional no-match records the caller file');
+is($no_match->location->{line}, 222,
+    'conditional no-match reports the call rather than the conditional');
+
+my $standalone_failure_source = <<'SOURCE';
+use feature 'multisub';
+no warnings 'experimental::multisub';
+#line 9 "standalone-multi.pl"
+multi sub process(["add", $left, $right]) { $left + $right }
+multi sub process(["sub", $left, $right]) { $left - $right }
+
+process(["foo"]);
+SOURCE
+fresh_perl_like($standalone_failure_source,
+    qr/No matching clause for multi sub main::process at standalone-multi\.pl line 12\./,
+    {}, 'a standalone call after the final declaration retains its own line');
 
 eval q{ no feature 'multisub'; multi sub disabled($x) { $x } };
 ok($@, 'keyword is feature guarded');

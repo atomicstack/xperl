@@ -3107,7 +3107,7 @@ static const perl_diag_metadata_t perl_diag_metadata[] = {
     { "ERROR_RNG_SEED_DRAND48_SIZE_INVALID",                                       1095,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::RNG::Seed",                                       "XPerl::Diagnostic::Error::RNG::Seed",                                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RNG_SEED_REDACTED_FORBIDDEN",                                         1056,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::RNG::Seed",                                       "XPerl::Diagnostic::Error::RNG::Seed",                                       "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUNTIME_MULTISUB_NOT_COMPLETE",                                       2793,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  690,   2,  731,  FALSE, FALSE, "XPerl::Diagnostic::Error",                                                  "XPerl::Diagnostic::Error",                                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "needs producer review",                 FALSE, FALSE },
-    { "ERROR_RUNTIME_MULTISUB_NO_MATCH",                                           2789,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    1,   1,    1,  FALSE, FALSE, "XPerl::Diagnostic::Error",                                                  "XPerl::Diagnostic::Error",                                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "needs producer review",                 FALSE, FALSE },
+    { "ERROR_RUNTIME_MULTISUB_NO_MATCH",                                           2789,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  690,   2,  731,  FALSE, FALSE, "XPerl::Diagnostic::Error",                                                  "XPerl::Diagnostic::Error",                                                  "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "needs producer review",                 FALSE, FALSE },
     { "ERROR_RUN_ENVIRONMENT_PERL5OPT_FORBIDDEN_SWITCH",                           1177,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,  692,   1,  734,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Environment",                                "XPerl::Diagnostic::Error::Run::Environment",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_ENVIRONMENT_SIGNALS_POLICY_INVALID",                              1214,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,   38,   1,   38,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Environment",                                "XPerl::Diagnostic::Error::Run::Environment",                                "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
     { "ERROR_RUN_OPTION_INCLUDE_DIRECTORY_REQUIRED",                               1020,  "CORE_RUNTIME", "FATAL_ERROR",    TRUE,    0,   0,    0,  FALSE, FALSE, "XPerl::Diagnostic::Error::Run::Option",                                     "XPerl::Diagnostic::Error::Run::Option",                                     "not applicable",                                       "diagnostic",         "ordinary diagnostic; container-capable",                           "explicit catalog class",                FALSE, FALSE },
@@ -12373,7 +12373,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2788 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2789 = {
     2789, "ERROR_RUNTIME_MULTISUB_NO_MATCH",
-    perl_diagpack_param_schema_ids + 1, 1
+    perl_diagpack_param_schema_ids + 690, 2
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2790 = {
@@ -13560,7 +13560,8 @@ static const char perl_diag_template_text_a28c810d[] = "No digits found for %1$s
 static const char perl_diag_template_text_689b3327[] = "No directory specified for -I";
 static const char perl_diag_template_text_7457e5e3[] = "No group ending character '%1$s' found in template";
 static const char perl_diag_template_text_962de17f[] = "No input file after < on command line";
-static const char perl_diag_template_text_937199a2[] = "No matching clause for multi %1$s";
+static const char perl_diag_template_text_fb7fe113[] = "No matching clause for multi method %1$s";
+static const char perl_diag_template_text_50207b99[] = "No matching clause for multi sub %1$s";
 static const char perl_diag_template_text_aea10b14[] = "No message queue";
 static const char perl_diag_template_text_e81c0c8d[] = "No next::method '%1$s' found for %2$s";
 static const char perl_diag_template_text_385b1c0a[] = "No output file after 2> or 2>> on command line";
@@ -15242,7 +15243,7 @@ static const perl_diag_selector_t perl_diag_selectors_en_2665[] = {
     { "kind", 1,  perl_diag_selector_domain_2665_0_id, perl_diag_selector_values_en_2665_0, 4,  8,  0,  NULL, 0,  0,  NULL, 1 },
 };
 
-static const perl_diag_selector_t perl_diag_selectors_en_2793[] = {
+static const perl_diag_selector_t perl_diag_selectors_en_2789[] = {
     { "declaration_kind", 1,  perl_diag_selector_domain_2449_0_id, perl_diag_selector_values_en_2449_0, 2,  8,  0,  NULL, 0,  0,  NULL, 1 },
 };
 
@@ -17559,7 +17560,7 @@ enum {
     perl_diag_template_start_en_2787,
     perl_diag_template_start_en_2788,
     perl_diag_template_start_en_2789,
-    perl_diag_template_start_en_2790,
+    perl_diag_template_start_en_2790 = perl_diag_template_start_en_2789 + 2,
     perl_diag_template_start_en_2791,
     perl_diag_template_start_en_2792,
     perl_diag_template_start_en_2793,
@@ -19479,7 +19480,8 @@ static const perl_diag_template_case_t perl_diag_template_cases_en[] = {
     { perl_diag_error_object_conversion_owner_ambiguous_number,                                   UINT64_C(         0), perl_diag_template_text_baea4d09,  1,   1 },
     { perl_diag_error_syntax_multisub_mixed_declaration_number,                                   UINT64_C(         0), perl_diag_template_text_77f4fb6b,  1,   1 },
     { perl_diag_error_syntax_multisub_scope_mismatch_number,                                      UINT64_C(         0), perl_diag_template_text_94b0085b,  1,   1 },
-    { perl_diag_error_runtime_multisub_no_match_number,                                           UINT64_C(         0), perl_diag_template_text_937199a2,  1,   1 },
+    { perl_diag_error_runtime_multisub_no_match_number,                                           UINT64_C(      0x01), perl_diag_template_text_fb7fe113,  1,   1 },
+    { perl_diag_error_runtime_multisub_no_match_number,                                           UINT64_C(      0x02), perl_diag_template_text_50207b99,  1,   1 },
     { perl_diag_warning_experimental_multisub_declaration_used_number,                            UINT64_C(         0), perl_diag_template_text_c3481824,  0,   0 },
     { perl_diag_error_syntax_multisub_special_name_number,                                        UINT64_C(         0), perl_diag_template_text_3ab920a7,  1,   1 },
     { perl_diag_error_syntax_multisub_named_definition_required_number,                           UINT64_C(         0), perl_diag_template_text_3fdbd962,  0,   0 },
@@ -21083,11 +21085,11 @@ static const perl_diag_template_t perl_diag_templates_en[] = {
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2786, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2787, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2788, NULL                        },
-    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2789, NULL                        },
+    { 1,   2,  perl_diag_word_group_none, perl_diag_template_start_en_2789, perl_diag_selectors_en_2789 },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2790, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2791, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_en_2792, NULL                        },
-    { 1,   2,  perl_diag_word_group_none, perl_diag_template_start_en_2793, perl_diag_selectors_en_2793 },
+    { 1,   2,  perl_diag_word_group_none, perl_diag_template_start_en_2793, perl_diag_selectors_en_2789 },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_en_2794, NULL                        },
 };
 
@@ -21754,7 +21756,7 @@ static const perl_diagpack_engine * const perl_diagpack_builtin_engines[] = {
 
 
 /* Generated from:
- * 4bad7b21658da67126c67476f77bfc87854112d06103df68c5ab5c7a4f2004bc diag_conf.pl
+ * 2eab013bed0e1ebef96fd333d87c1885561e3238cbe9685b6fa44ae5a2a76b4f diag_conf.pl
  * 4f7f9abb892a0d073bf678e020c547a0c882a3b0d175956fe97b0ee2afca3238 diag_op_conf.pl
  * 08e6e839aab37ef63b9ae313b6bfda289c063825e87138784fd46d465873591b regen/opcodes
  * ex: set ro ft=c: */

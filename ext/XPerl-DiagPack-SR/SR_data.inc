@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: 6fe35790028e1d1fdf1a705128835c5f2e8170b6d63c52cca2284adb39ae2499 */
+/* Language-scoped rendered data SHA-256: c9a131cb1272db7a7d95981b6a27776933b2beb5b2cf0017d1b6f124a2282d4d */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 448); /* compiled operation-map bound */
 
@@ -885,7 +885,7 @@ static const perl_diag_selector_t perl_diag_selectors_sr_2665[] = {
     { "kind", 1,  perl_diag_selector_domain_2665_0_id, perl_diag_selector_values_sr_2665_0, 4,  8,  0,  NULL, 0,  0,  NULL, 1 },
 };
 
-static const perl_diag_selector_t perl_diag_selectors_sr_2793[] = {
+static const perl_diag_selector_t perl_diag_selectors_sr_2789[] = {
     { "declaration_kind", 1,  perl_diag_selector_domain_2449_0_id, perl_diag_selector_values_sr_2449_0, 2,  8,  0,  NULL, 0,  0,  NULL, 1 },
 };
 
@@ -2009,7 +2009,8 @@ static const char perl_diag_template_text_1168fa75[] = "\320\235\320\265\320\274
 static const char perl_diag_template_text_9db48049[] = "\320\235\320\265\320\274\320\260 \320\270\320\267\320\273\320\260\320\267\320\275\320\265 \320\264\320\260\321\202\320\276\321\202\320\265\320\272\320\265 \320\277\320\276\321\201\320\273\320\265 > \320\270\320\273\320\270 >> \321\203 \320\272\320\276\320\274\320\260\320\275\320\264\320\275\320\276\321\230 \320\273\320\270\320\275\320\270\321\230\320\270";
 static const char perl_diag_template_text_5e748252[] = "\320\235\320\265\320\274\320\260 \320\270\320\267\320\273\320\260\320\267\320\275\320\265 \320\264\320\260\321\202\320\276\321\202\320\265\320\272\320\265 \320\277\320\276\321\201\320\273\320\265 > \321\203 \320\272\320\276\320\274\320\260\320\275\320\264\320\275\320\276\321\230 \320\273\320\270\320\275\320\270\321\230\320\270";
 static const char perl_diag_template_text_9a4e460f[] = "\320\235\320\265\320\274\320\260 \320\272\320\276\320\274\320\260\320\275\320\264\320\265 \321\203 \320\272\320\276\321\230\321\203 \320\261\320\270 \321\201\320\265 \320\277\321\200\320\276\321\201\320\273\320\265\320\264\320\270\320\276 \320\270\320\267\320\273\320\260\320\267 \321\203 \320\272\320\276\320\274\320\260\320\275\320\264\320\275\320\276\321\230 \320\273\320\270\320\275\320\270\321\230\320\270";
-static const char perl_diag_template_text_f49533f8[] = "\320\235\320\265\320\274\320\260 \320\276\320\264\320\263\320\276\320\262\320\260\321\200\320\260\321\230\321\203\321\233\320\265 \320\272\320\273\320\260\321\203\320\267\321\203\320\273\320\265 \320\267\320\260 multi %1$s";
+static const char perl_diag_template_text_4684442c[] = "\320\235\320\265\320\274\320\260 \320\276\320\264\320\263\320\276\320\262\320\260\321\200\320\260\321\230\321\203\321\233\320\265 \320\272\320\273\320\260\321\203\320\267\321\203\320\273\320\265 \320\267\320\260 \320\274\321\203\320\273\321\202\320\270 \320\274\320\265\321\202\320\276\320\264 %1$s";
+static const char perl_diag_template_text_157fab30[] = "\320\235\320\265\320\274\320\260 \320\276\320\264\320\263\320\276\320\262\320\260\321\200\320\260\321\230\321\203\321\233\320\265 \320\272\320\273\320\260\321\203\320\267\321\203\320\273\320\265 \320\267\320\260 \320\274\321\203\320\273\321\202\320\270 \320\277\320\276\321\202\320\277\321\200\320\276\320\263\321\200\320\260\320\274 %1$s";
 static const char perl_diag_template_text_cecb26f2[] = "\320\275\320\265\320\274\320\260 \320\277\320\276\320\264\320\260\321\202\320\260\320\272\320\260 \320\276 UTC \320\277\320\276\320\274\320\260\320\272\321\203; \320\277\321\200\320\265\321\202\320\277\320\276\321\201\321\202\320\260\320\262\321\231\320\260 \321\201\320\265 \320\264\320\260 \321\230\320\265 \320\273\320\276\320\272\320\260\320\273\320\275\320\276 \320\262\321\200\320\265\320\274\320\265 UTC";
 static const char perl_diag_template_text_64f5c82e[] = "\320\235\320\265\320\274\320\260 \320\277\320\276\321\231\320\260 \320\272\320\273\320\260\321\201\320\265 \342\200\236%1$s\342\200\235 \321\203 \320\277\321\200\320\276\320\274\320\265\320\275\321\231\320\270\320\262\320\276\321\230 %2$s \321\202\320\270\320\277\320\260 %3$s";
 static const char perl_diag_template_text_10b9a7ba[] = "\320\235\320\265\320\274\320\260 \321\200\320\265\320\264\320\260 \320\277\320\276\321\200\321\203\320\272\320\260";
@@ -6313,7 +6314,7 @@ enum {
     perl_diag_template_start_sr_2787,
     perl_diag_template_start_sr_2788,
     perl_diag_template_start_sr_2789,
-    perl_diag_template_start_sr_2790,
+    perl_diag_template_start_sr_2790 = perl_diag_template_start_sr_2789 + 2,
     perl_diag_template_start_sr_2791,
     perl_diag_template_start_sr_2792,
     perl_diag_template_start_sr_2793,
@@ -8214,7 +8215,8 @@ static const perl_diag_template_case_t perl_diag_template_cases_sr[] = {
     { perl_diag_error_object_conversion_owner_ambiguous_number,                                   UINT64_C(         0), perl_diag_template_text_f9b68377,  1,   1 },
     { perl_diag_error_syntax_multisub_mixed_declaration_number,                                   UINT64_C(         0), perl_diag_template_text_d0a64db3,  1,   1 },
     { perl_diag_error_syntax_multisub_scope_mismatch_number,                                      UINT64_C(         0), perl_diag_template_text_8cd77110,  1,   1 },
-    { perl_diag_error_runtime_multisub_no_match_number,                                           UINT64_C(         0), perl_diag_template_text_f49533f8,  1,   1 },
+    { perl_diag_error_runtime_multisub_no_match_number,                                           UINT64_C(      0x01), perl_diag_template_text_4684442c,  1,   1 },
+    { perl_diag_error_runtime_multisub_no_match_number,                                           UINT64_C(      0x02), perl_diag_template_text_157fab30,  1,   1 },
     { perl_diag_warning_experimental_multisub_declaration_used_number,                            UINT64_C(         0), perl_diag_template_text_27338a4a,  0,   0 },
     { perl_diag_error_syntax_multisub_special_name_number,                                        UINT64_C(         0), perl_diag_template_text_e0467f47,  1,   1 },
     { perl_diag_error_syntax_multisub_named_definition_required_number,                           UINT64_C(         0), perl_diag_template_text_bc9b8823,  0,   0 },
@@ -9818,11 +9820,11 @@ static const perl_diag_template_t perl_diag_templates_sr[] = {
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_sr_2786, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_sr_2787, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_sr_2788, NULL                        },
-    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_sr_2789, NULL                        },
+    { 1,   2,  perl_diag_word_group_none, perl_diag_template_start_sr_2789, perl_diag_selectors_sr_2789 },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_sr_2790, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_sr_2791, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_sr_2792, NULL                        },
-    { 1,   2,  perl_diag_word_group_none, perl_diag_template_start_sr_2793, perl_diag_selectors_sr_2793 },
+    { 1,   2,  perl_diag_word_group_none, perl_diag_template_start_sr_2793, perl_diag_selectors_sr_2789 },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_sr_2794, NULL                        },
 };
 
@@ -18206,7 +18208,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2788 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2789 = {
     2789, "ERROR_RUNTIME_MULTISUB_NO_MATCH",
-    perl_diagpack_param_schema_ids + 1, 1
+    perl_diagpack_param_schema_ids + 685, 2
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2790 = {

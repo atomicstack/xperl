@@ -5052,6 +5052,12 @@ enum perl_diag_selector_domain_id {
 #define PERL_DIAG_SELECTOR_KEY_WARNING_LOCALE_STARTUP_FALLBACK_SELECTED(ma_kind) \
     ( ((U64)PERL_DIAG_SELECTOR_ENCODE_2665_0(ma_kind) << 0) )
 
+#define PERL_DIAG_SELECTOR_FROM_ERROR_RUNTIME_MULTISUB_NO_MATCH_DECLARATION_KIND(ma_value) \
+    Perl_diag_selector_from_cstr(aTHX_ perl_diag_selector_domain_2449_0_id, (ma_value))
+
+#define PERL_DIAG_SELECTOR_KEY_ERROR_RUNTIME_MULTISUB_NO_MATCH(ma_declaration_kind) \
+    ( ((U64)PERL_DIAG_SELECTOR_ENCODE_2449_0(ma_declaration_kind) << 0) )
+
 #define PERL_DIAG_SELECTOR_FROM_ERROR_RUNTIME_MULTISUB_NOT_COMPLETE_DECLARATION_KIND(ma_value) \
     Perl_diag_selector_from_cstr(aTHX_ perl_diag_selector_domain_2449_0_id, (ma_value))
 
@@ -20428,13 +20434,22 @@ enum perl_diag_selector_domain_id {
         (SV *)(ma_name) \
     )
 
-#define PERL_THROW_ERROR_RUNTIME_MULTISUB_NO_MATCH(ma_name) \
-    Perl_throw_croak_1_1453( \
-        aTHX_ perl_diag_error_runtime_multisub_no_match_idx, \
-        __FILE__, \
-        __LINE__, \
-        (SV *)(ma_name) \
-    )
+#define PERL_THROW_ERROR_RUNTIME_MULTISUB_NO_MATCH(ma_name, ma_declaration_kind) \
+    STMT_START { \
+        SV * const in_name = (SV *)(ma_name); \
+        IV const in_declaration_kind = ma_declaration_kind; \
+        AV * const params_av = MUTABLE_AV(sv_2mortal(MUTABLE_SV(newAV()))); \
+         \
+        SV * const scratch_name_copy = sv_2mortal(newSVsv(in_name)); \
+         \
+        SV * const tmpl_name = Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_runtime_multisub_no_match_idx, 0, 0, perl_diag_selector_invalid); \
+        sv_setpvf(tmpl_name, "%" SVf, SVfARG(scratch_name_copy)); \
+         \
+        Perl_diag_setup_param(aTHX_ params_av, perl_diag_error_runtime_multisub_no_match_idx, 1, perl_diag_selector_domain_2449_0_id, in_declaration_kind); \
+         \
+        SV * const message_sv = NULL; \
+        Perl_diag_croak_caller_sv(perl_diag_error_runtime_multisub_no_match_idx, Perl_diag_source_params(params_av, __FILE__, __LINE__), message_sv); \
+    } STMT_END
 
 #define PERL_WARN_WARNING_EXPERIMENTAL_MULTISUB_DECLARATION_USED() \
     Perl_throw_ck_warner_d_0_2069( \
@@ -22760,7 +22775,7 @@ enum perl_diag_selector_domain_id {
 #endif /* PERL_DIAG_H */
 
 /* Generated from:
- * 4bad7b21658da67126c67476f77bfc87854112d06103df68c5ab5c7a4f2004bc diag_conf.pl
+ * 2eab013bed0e1ebef96fd333d87c1885561e3238cbe9685b6fa44ae5a2a76b4f diag_conf.pl
  * 4f7f9abb892a0d073bf678e020c547a0c882a3b0d175956fe97b0ee2afca3238 diag_op_conf.pl
  * 08e6e839aab37ef63b9ae313b6bfda289c063825e87138784fd46d465873591b regen/opcodes
  * ex: set ro ft=c: */

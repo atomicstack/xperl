@@ -32,6 +32,8 @@ Calling a clause group before its enclosing scope finishes compiling throws
 an explicit incomplete-group error.
 The internal dispatcher preserves ordinary subroutine loop control.
 Early code references retain their identity when the original glob is cleared.
+No-matching-clause errors identify C<multi sub> or C<multi method> and
+report the caller's source location.
 
 C<B::Deparse> reconstructs multi declarations and renders equivalent
 C<dispatch>/C<on> bodies through C<coderef2text>. Method bodies require their

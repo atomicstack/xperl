@@ -250,7 +250,8 @@ the completed group as one method rather than merging clause lists.
 
 All clauses for a name must share an enclosing lexical scope and compilation
 unit. Calling the group before that scope finishes compiling throws an
-incomplete-group error. A call with no matching clause also throws an error.
+incomplete-group error. A call with no matching clause throws an error at
+the call site, identifying the declaration as `multi sub` or `multi method`.
 Ordinary and multi declarations cannot share a name. No version bundle
 enables this feature.
 

@@ -5,7 +5,7 @@ BEGIN {
     chdir 't' if -d 't';
     require './test.pl';
     set_up_inc('../lib');
-    plan( tests => 128 ); # some tests are run in a BEGIN block
+    plan( tests => 129 ); # some tests are run in a BEGIN block
 }
 
 my @c;
@@ -520,3 +520,17 @@ fresh_perl_is(<<'END', "4 at - line 1.\n6 at - line 1.\n8 at - line 1.", {},
 END
     'caller differentiates between branches calling the same function');
     
+fresh_perl_like(<<'END', qr/at signature-caller\.pl line 222\./, {},
+    use feature 'signatures';
+    sub needs_argument($value) { $value }
+    my $enabled = 1;
+    eval {
+#line 101 "signature-caller.pl"
+        if ($enabled) {
+#line 222 "signature-caller.pl"
+            needs_argument();
+        }
+    };
+    print $@;
+END
+    'caller diagnostics locate a call inside a conditional with a nulled COP');

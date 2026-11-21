@@ -60,6 +60,16 @@ my $child = MultiChild->new;
 is($child->classify(2)->[0], $child, 'an inherited dispatcher keeps the actual invocant');
 is($child->classify(2)->[1], 42, 'inherited clauses use the declaring field owner');
 
+my $no_match_line = __LINE__ + 1;
+eval { $child->classify() };
+my $no_match = ${^ERROR_OBJ}->contents->[0];
+like($@, qr/No matching clause for multi method MultiExample::classify/,
+    'inherited method no-match identifies a multi method');
+is($no_match->location->{file}, __FILE__, 'method no-match records the caller file');
+is($no_match->location->{line}, $no_match_line, 'method no-match records the caller line');
+is($no_match->params->[1]{name}, 'declaration_kind',
+    'method no-match retains its declaration-kind selector');
+
 multi sub LegacyMulti::describe($invocant, $value if $value < 10) {
     [$invocant, $value, [@_]];
 }
@@ -67,6 +77,10 @@ my $legacy = bless {}, 'LegacyMulti';
 $result = $legacy->describe(2);
 is($result->[0], $legacy, 'multi sub includes a method-call invocant in its pattern');
 is(scalar @{$result->[2]}, 2, 'multi sub retains the complete ordinary argument list');
+
+eval { $legacy->describe() };
+like($@, qr/No matching clause for multi sub LegacyMulti::describe/,
+    'method-call syntax does not change a multi sub diagnostic into a method diagnostic');
 
 role MultiRole {
     field $role_value = 40;

@@ -4,7 +4,7 @@
    Any changes made here will be lost!
  */
 
-/* Language-scoped rendered data SHA-256: 4b094ac52cd45389c90ac6edc8150a69d228240654355b6090df2db56fcca105 */
+/* Language-scoped rendered data SHA-256: acd697d904467663d6a7c64bb3d2bc63ec0839b0263cbc8e91df769456ca6e75 */
 
 STATIC_ASSERT_DECL(OP_max + 2 == 448); /* compiled operation-map bound */
 
@@ -884,7 +884,7 @@ static const perl_diag_selector_t perl_diag_selectors_es_2665[] = {
     { "kind", 1,  perl_diag_selector_domain_2665_0_id, perl_diag_selector_values_es_2665_0, 4,  8,  0,  NULL, 0,  0,  NULL, 1 },
 };
 
-static const perl_diag_selector_t perl_diag_selectors_es_2793[] = {
+static const perl_diag_selector_t perl_diag_selectors_es_2789[] = {
     { "declaration_kind", 1,  perl_diag_selector_domain_2449_0_id, perl_diag_selector_values_es_2449_0, 2,  8,  0,  NULL, 0,  0,  NULL, 1 },
 };
 
@@ -1887,7 +1887,8 @@ static const char perl_diag_template_text_5b519b89[] = "negaci\303\263n (-) de e
 static const char perl_diag_template_text_fcf72e0d[] = "next::method/next::can/maybe::next::method debe utilizarse en contexto de m\303\251todo";
 static const char perl_diag_template_text_4a1012bd[] = "next::method/next::can/maybe::next::method no puede encontrar el m\303\251todo envolvente";
 static const char perl_diag_template_text_04075cbe[] = "Ninguna clase antecesora declara el campo heredado %1$s";
-static const char perl_diag_template_text_3c3bf446[] = "Ninguna cl\303\241usula coincide con multi %1$s";
+static const char perl_diag_template_text_1cc53669[] = "Ninguna cl\303\241usula coincide con el m\303\251todo multi %1$s";
+static const char perl_diag_template_text_5e87480e[] = "Ninguna cl\303\241usula coincide con la subrutina multi %1$s";
 static const char perl_diag_template_text_38f3d1b7[] = "Ning\303\272n comod\303\255n coincide con el valor de una propiedad Unicode:\n";
 static const char perl_diag_template_text_c7fa904f[] = "nl_langinfo devolvi\303\263 un valor vac\303\255o para %1$s en la supuesta configuraci\303\263n regional \n'%2$s'; que en realidad es\n'%3$s'\n el conjunto de caracteres es '%4$s'; radix='%5$s'; enero='%6$s'; strtod(1,5)=%7$s, strtod(1.5)=%8$s\n";
 static const char perl_diag_template_text_1d58c75e[] = "No coincide el puntero de int\303\251rprete esperado con el de libperl";
@@ -5596,7 +5597,7 @@ enum {
     perl_diag_template_start_es_2787,
     perl_diag_template_start_es_2788,
     perl_diag_template_start_es_2789,
-    perl_diag_template_start_es_2790,
+    perl_diag_template_start_es_2790 = perl_diag_template_start_es_2789 + 2,
     perl_diag_template_start_es_2791,
     perl_diag_template_start_es_2792,
     perl_diag_template_start_es_2793,
@@ -7522,7 +7523,8 @@ static const perl_diag_template_case_t perl_diag_template_cases_es[] = {
     { perl_diag_error_object_conversion_owner_ambiguous_number,                                   UINT64_C(         0), perl_diag_template_text_fa436ebd,  1,   1 },
     { perl_diag_error_syntax_multisub_mixed_declaration_number,                                   UINT64_C(         0), perl_diag_template_text_b621b542,  1,   1 },
     { perl_diag_error_syntax_multisub_scope_mismatch_number,                                      UINT64_C(         0), perl_diag_template_text_a059016f,  1,   1 },
-    { perl_diag_error_runtime_multisub_no_match_number,                                           UINT64_C(         0), perl_diag_template_text_3c3bf446,  1,   1 },
+    { perl_diag_error_runtime_multisub_no_match_number,                                           UINT64_C(      0x01), perl_diag_template_text_1cc53669,  1,   1 },
+    { perl_diag_error_runtime_multisub_no_match_number,                                           UINT64_C(      0x02), perl_diag_template_text_5e87480e,  1,   1 },
     { perl_diag_warning_experimental_multisub_declaration_used_number,                            UINT64_C(         0), perl_diag_template_text_f6c06cc2,  0,   0 },
     { perl_diag_error_syntax_multisub_special_name_number,                                        UINT64_C(         0), perl_diag_template_text_764d5d1f,  1,   1 },
     { perl_diag_error_syntax_multisub_named_definition_required_number,                           UINT64_C(         0), perl_diag_template_text_46b095fd,  0,   0 },
@@ -9126,11 +9128,11 @@ static const perl_diag_template_t perl_diag_templates_es[] = {
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_es_2786, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_es_2787, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_es_2788, NULL                        },
-    { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_es_2789, NULL                        },
+    { 1,   2,  perl_diag_word_group_none, perl_diag_template_start_es_2789, perl_diag_selectors_es_2789 },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_es_2790, NULL                        },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_es_2791, NULL                        },
     { 0,   0,  perl_diag_word_group_none, perl_diag_template_start_es_2792, NULL                        },
-    { 1,   2,  perl_diag_word_group_none, perl_diag_template_start_es_2793, perl_diag_selectors_es_2793 },
+    { 1,   2,  perl_diag_word_group_none, perl_diag_template_start_es_2793, perl_diag_selectors_es_2789 },
     { 0,   1,  perl_diag_word_group_none, perl_diag_template_start_es_2794, NULL                        },
 };
 
@@ -17514,7 +17516,7 @@ static const perl_diagpack_schema_t perl_diagpack_schema_2788 = {
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2789 = {
     2789, "ERROR_RUNTIME_MULTISUB_NO_MATCH",
-    perl_diagpack_param_schema_ids + 1, 1
+    perl_diagpack_param_schema_ids + 685, 2
 };
 
 static const perl_diagpack_schema_t perl_diagpack_schema_2790 = {

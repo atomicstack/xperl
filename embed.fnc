@@ -1091,6 +1091,7 @@ AOdp	|SSize_t|call_argv	|NN const char *sub_name		\
 : (The rename from perl_atexit to Perl_call_atexit was in 864dbfa3ca8032ef)
 Adp	|void	|call_atexit	|ATEXIT_t fn				\
 				|NULLOK void *ptr
+Rop	|const COP *|caller_cop |NN const PERL_CONTEXT *cx
 Adp	|const PERL_CONTEXT *|caller_cx 				\
 				|I32 level				\
 				|NULLOK const PERL_CONTEXT **dbcxp
@@ -2798,6 +2799,8 @@ p	|void	|multisub_add_clause					\
 				|NN OP *clause
 
 p	|I32	|multisub_begin |NN OP *nameop				\
+				|bool is_method
+opr	|void	|multisub_fail	|NN SV *name				\
 				|bool is_method
 Adp	|NV	|my_atof	|NN const char *s
 Cop	|char * |my_atof2	|NN const char *orig			\

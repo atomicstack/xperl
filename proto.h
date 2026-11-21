@@ -843,6 +843,17 @@ Perl_call_sv(pTHX_ SV *sv, I32 flags)
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 
+PERL_CALLCONV const COP *
+Perl_caller_cop(pTHX_ const PERL_CONTEXT *cx)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__warn_unused_result__
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_CALLER_COP             \
+    STMT_START { Perl_assert_aTHX; assert(cx);         \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
 PERL_CALLCONV const PERL_CONTEXT *
 Perl_caller_cx(pTHX_ I32 level, const PERL_CONTEXT **dbcxp)
         Perl_attribute_nonnull_aTHX;
@@ -5942,6 +5953,17 @@ Perl_multisub_begin(pTHX_ OP *nameop, bool is_method)
         __attribute__visibility__("hidden");
 #define PERL_ARGS_ASSERT_MULTISUB_BEGIN         \
     STMT_START { Perl_assert_aTHX; assert(nameop);     \
+                 PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
+    } STMT_END
+
+PERL_CALLCONV_NO_RET void
+Perl_multisub_fail(pTHX_ SV *name, bool is_method)
+        Perl_attribute_nonnull_aTHX
+        Perl_attribute_nonnull(pTHX_1)
+        __attribute__noreturn__
+        __attribute__visibility__("hidden");
+#define PERL_ARGS_ASSERT_MULTISUB_FAIL          \
+    STMT_START { Perl_assert_aTHX; assert(name);       \
                  PERL_UNUSED_CONTEXT_FOR_ARGS_ASSERT;  \
     } STMT_END
 

@@ -5693,16 +5693,22 @@ S_caller_push_pkg(pTHX_ const HEK *stash_hek)
     }
 }
 
-static void
-S_caller_push_line(pTHX_ const PERL_CONTEXT *cx)
+const COP *
+Perl_caller_cop(pTHX_ const PERL_CONTEXT *cx)
 {
+    PERL_ARGS_ASSERT_CALLER_COP;
+
     const COP *blk_old = cx->blk_oldcop;
     const COP *lcop = (CxTYPE(cx) == CXt_SUB)
         ? closest_cop(blk_old, OpSIBLING(blk_old), cx->blk_sub.callop, FALSE)
         : closest_cop(blk_old, OpSIBLING(blk_old), cx->blk_sub.retop, TRUE);
-    if (!lcop)
-        lcop = blk_old;
-    rpp_push_1_norc( newSVuv( (UV)(CopLINE(lcop)) ) );
+    return lcop ? lcop : blk_old;
+}
+
+static void
+S_caller_push_line(pTHX_ const PERL_CONTEXT *cx)
+{
+    rpp_push_1_norc(newSVuv((UV)CopLINE(Perl_caller_cop(aTHX_ cx))));
 }
 
 static void

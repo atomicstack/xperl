@@ -519,6 +519,18 @@ Perl_xperl_copy_array(pTHX_ AV *source, bool copy_hashes)
 
 #include "xperl_catalog.inc"
 
+/* Deparsed multi bodies use the native emitter without adding a Perl frame.
+ * Its caller COP supplies both the source location and lexical language. */
+XS(Perl_XPerl_Diagnostic_multisub_no_match);
+XS(Perl_XPerl_Diagnostic_multisub_no_match)
+{
+    dXSARGS;
+
+    if (items != 2)
+        croak_xs_usage(cv, "name, is_method");
+    Perl_multisub_fail(aTHX_ ST(0), SvTRUE(ST(1)));
+}
+
 XS(Perl_XPerl_Diagnostic_new);
 XS(Perl_XPerl_Diagnostic_new)
 {
@@ -3965,6 +3977,8 @@ Perl_xperl_boot_core(pTHX)
     newXS("XPerl::DiagPack::_validate_language",
           Perl_diagpack_validate_language_xs, file);
     newXS("XPerl::Diagnostic::_new", Perl_XPerl_Diagnostic_new, file);
+    newXS("XPerl::Diagnostic::_multisub_no_match",
+          Perl_XPerl_Diagnostic_multisub_no_match, file);
     newXS("XPerl::Diagnostic::Catalog::_register", Perl_XPerl_Catalog_register, file);
     newXS("XPerl::Diagnostic::Catalog::_capture", Perl_XPerl_Catalog_capture, file);
     newXS("XPerl::Diagnostic::derive", Perl_XPerl_Diagnostic_derive, file);

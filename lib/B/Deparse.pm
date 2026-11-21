@@ -1770,28 +1770,12 @@ sub deparse_multisub {
     my $failure = $cv->ROOT->first->first->sibling;
     $failure = $failure->sibling if $cv->CvFLAGS & CVf_IsMETHOD;
     my $failed_name = perlstring($self->const_sv($failure)->PV);
+    my $is_method = $cv->CvFLAGS & CVf_IsMETHOD ? 1 : 0;
 
-    # The anonymous rendering loses the declaration kind, but must preserve
-    # the structured no-match diagnostic. Resolve its catalog number by code.
-    my $fail = <<'END_FAIL';
-CORE::do {
-\tCORE::no warnings 'experimental::builtin';
-CORE::no feature 'namespaces';
-CORE::my $metadata = builtin::get_diagnostic_data('ERROR_RUNTIME_MULTISUB_NO_MATCH');
-CORE::my $diagnostic = $metadata->{class}->_new({
-\tcode => $metadata->{code}, number => $metadata->{number},
-kind => $metadata->{kind}, severity => $metadata->{severity},
-params => [{name => 'name', type => 'text', value => FAILED_NAME}],
-location => {file => __FILE__, line => __LINE__}
-\b});
-CORE::my $exception = XPerl::Exception->_new;
-$exception->append($diagnostic);
-CORE::die $exception;
-\b}
-END_FAIL
-    $fail =~ s/\\t/\t/g;
-    $fail =~ s/\\b/\b/g;
-    $fail =~ s/FAILED_NAME/$failed_name/;
+    # Share native delivery so the caller's location and lexical language
+    # survive reconstruction without adding another Perl call frame.
+    my $fail = "CORE::do {\n\tCORE::no feature 'namespaces';\n"
+             . "XPerl::Diagnostic::_multisub_no_match($failed_name, $is_method);\n\b};\n";
     return "{\n\t$dispatch\n$fail\b}\n";
 }
 

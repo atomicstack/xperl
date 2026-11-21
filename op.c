@@ -4999,6 +4999,10 @@ Perl_multisub_add_clause(pTHX_ I32 floor, OP *clause)
 
     group->clauses = op_append_list(OP_LINESEQ, group->clauses, clause);
     LEAVE_SCOPE(floor);
+
+    /* A named declaration ends the current statement. Do not let its line
+     * become the pending location of the next statement in the caller. */
+    PL_parser->copline = NOLINE;
 }
 
 static void
