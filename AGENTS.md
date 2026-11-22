@@ -77,6 +77,51 @@ Before editing, identify the target from the user's request, branch ancestry,
 codebase, and configured remotes. Verify the branch's upstream and intended
 push destination. Do not infer the destination from the directory name.
 
+### Upstreams and branch ancestry
+
+This workspace uses these remotes for the upstream repositories:
+
+- `xperl`: [XPerl](https://github.com/demerphq/xperl), whose main branch is
+  `xperl/main`. Its remote-tracking ref is `xperl/xperl/main`.
+- `perl5`: [Perl5](https://github.com/Perl/perl5), whose main branch is
+  `blead`. Its remote-tracking ref is `perl5/blead`.
+
+XPerl is a fork of Perl5. Its `xperl/main` branch is currently rebased
+regularly onto Perl5's `blead`, so the common ancestor changes as upstream
+work is incorporated. Recompute that ancestor for the refs under analysis
+rather than relying on an old fork-point commit or rewritten commit IDs.
+
+Keeping both repositories as remotes in the same local repository makes
+these comparisons easier. The remote configuration is shared by all
+worktrees of this Git repository. Remote names are local aliases, not
+project identities, so verify their URLs and tracking refs in other clones.
+
+When investigating an XPerl change or failure, identify the current common
+ancestor with the intended Perl5 baseline. For example, using the verified
+Perl5 remote-tracking ref and local XPerl branch:
+
+```sh
+git remote -v
+git merge-base perl5/blead xperl/main
+git log --oneline perl5/blead..xperl/main
+git diff perl5/blead...xperl/main -- path/to/file
+```
+
+Fetch the relevant remote when the comparison requires current upstream
+state. Substitute the branch or commit being investigated for `xperl/main`.
+The three-dot diff starts at the common ancestor and shows the XPerl changes
+since that point. A direct diff between branch tips can also include Perl5
+changes that XPerl has not incorporated yet.
+
+Use this ancestry to distinguish inherited core code from changes made on
+the fork and to narrow blame, history searches, and regression analysis.
+For a feature branch, inspect its changes relative to `xperl/main` as well.
+A file changed by XPerl does not by itself establish that XPerl caused a
+bug. Check the relevant code and, where practical, reproduce on Perl5
+`blead` before classifying a failure as inherited or fork-specific.
+
+### Rules for each project
+
 Shared rules, including Perl tooling, readable code, and explanatory commit
 messages, apply to both projects. Project-specific rules apply only to their
 own branches:

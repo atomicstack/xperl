@@ -5,7 +5,7 @@ Perl runtime. This document introduces the main differences from `blead`
 and links to their documentation. For the exact source changes, use:
 
 ```text
-git diff origin/blead..HEAD
+git diff perl5/blead...HEAD
 ```
 
 ## AI contributions
