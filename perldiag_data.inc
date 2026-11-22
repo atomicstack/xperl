@@ -21756,7 +21756,7 @@ static const perl_diagpack_engine * const perl_diagpack_builtin_engines[] = {
 
 
 /* Generated from:
- * 2eab013bed0e1ebef96fd333d87c1885561e3238cbe9685b6fa44ae5a2a76b4f diag_conf.pl
+ * 3e40821465937704766c02978b92f1401b2d5070d395ce628fe07d81ff2806d9 diag_conf.pl
  * 4f7f9abb892a0d073bf678e020c547a0c882a3b0d175956fe97b0ee2afca3238 diag_op_conf.pl
  * 08e6e839aab37ef63b9ae313b6bfda289c063825e87138784fd46d465873591b regen/opcodes
  * ex: set ro ft=c: */

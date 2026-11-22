@@ -113027,7 +113027,7 @@ $CONF = {
         "headings" => [
           "Field %s is not accessible outside a method\n\n"
         ],
-        "text" => "(F) An attempt was made to access a field variable of a class from code\nthat does not appear inside the body of a C<method> subroutine.  This is not\npermitted, as only methods will have access to the fields of an instance.\n\n"
+        "text" => "(F) An attempt was made to access a field variable of a class from code\nthat does not appear inside the body of a C<method> subroutine.  This is not\npermitted, as only methods will have access to the fields of an instance.\n\nA method binds the fields it uses when it is compiled.  A string C<eval>\nexecuted inside a method therefore sees only the fields which that method\nalso names directly.  Naming any other field of the class in the C<eval>\nraises this error.\n\n"
       },
       {
         "code" => "PERLDIAG_0423",

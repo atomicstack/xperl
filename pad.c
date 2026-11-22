@@ -1437,6 +1437,12 @@ S_pad_findlex(pTHX_ const char *namepv, STRLEN namelen, U32 flags, const CV* cv,
 
     /* found in an outer CV. Add appropriate fake entry to this pad */
 
+    /* A method binds the fields it uses when it is compiled. A string eval
+     * run later cannot add a binding, and the declaring scope holds no value
+     * for the field, so there is nothing for the eval to capture. */
+    if (PadnameIsFIELD(*out_name) && CvIsMETHOD(cv) && CvCOMPILED(cv))
+        PERL_THROW_ERROR_OBJECT_FIELD_ACCESS_METHOD_CONTEXT_REQUIRED(PadnameSV(*out_name));
+
     /* don't add new fake entries (via eval) to CVs that we have already
      * finished compiling, or to undef CVs */
     if (CvCOMPILED(cv) || !padlist)

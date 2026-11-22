@@ -1308,6 +1308,12 @@ manager will later use a regex to expand these into links.
 
 =item *
 
+A string C<eval> inside a method which names a field that the method does
+not otherwise use now reports "Field %s is not accessible outside a
+method".
+
+=item *
+
 An uncaught C<goto> into a binary or list expression reports its error
 message again.
 

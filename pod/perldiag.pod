@@ -3061,6 +3061,11 @@ experimental and its behaviour may change in future releases of Perl.
 that does not appear inside the body of a C<method> subroutine.  This is not
 permitted, as only methods will have access to the fields of an instance.
 
+A method binds the fields it uses when it is compiled.  A string C<eval>
+executed inside a method therefore sees only the fields which that method
+also names directly.  Naming any other field of the class in the C<eval>
+raises this error.
+
 =item Field %s of "%s" is not accessible in a method of "%s"
 
 (F) An attempt was made to access a field variable of a class, from a

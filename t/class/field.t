@@ -369,4 +369,23 @@ SKIP: {
         'Object methods that capture fields do not leak SVs');
 }
 
+{
+    class TestcaseEvalField {
+        field $seen = 1;
+        field $unseen = 2;
+
+        method visible { my $copy = $seen; eval q{$seen} }
+        method hidden  { eval q{$unseen} }
+    }
+
+    my $obj = TestcaseEvalField->new;
+    is($obj->visible, 1, q{string eval sees a field its method already uses});
+
+    # Field bindings are fixed when the method is compiled. A later string
+    # eval cannot add one, so it must fail rather than read an empty slot.
+    is($obj->hidden, undef, q{string eval cannot bind a field its method never used});
+    like($@, qr/^Field \$unseen is not accessible outside a method /,
+        q{string eval of an unbound field reports the field});
+}
+
 done_testing;
