@@ -1308,6 +1308,11 @@ manager will later use a regex to expand these into links.
 
 =item *
 
+Compiling an unfinished C<multi> group now fails cleanly when the package
+that owns the declared name was deleted while the group was being compiled.
+
+=item *
+
 Class methods now distinguish separate declarations that reuse a package
 name, including composed role methods and objects cloned into a thread.
 Objects retain the field layout of their declared superclass when that

@@ -4852,8 +4852,11 @@ S_multisub_free(pTHX_ void *pointer)
         else
             CvIsMETHOD_off(group->stub);
         if (group->created_stub && GvCV(group->gv) == group->stub) {
+            /* Deleting a foreign target stash detaches the glob from it. */
+            HV *stash = GvSTASH(group->gv);
+
             GvCV_set(group->gv, NULL);
-            if (HvENAME_HEK(GvSTASH(group->gv)))
+            if (stash && HvENAME_HEK(stash))
                 gv_method_changed(group->gv);
             SvREFCNT_dec(group->stub);
         }

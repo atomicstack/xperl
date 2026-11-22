@@ -245,6 +245,19 @@ for my $source (
     is($child_status, 0, 'malformed declaration child exits cleanly');
 }
 
+# The group keeps its glob alive, but not a foreign stash that owns it.
+{
+    my $program = q{use feature q(multisub); no warnings q(experimental::multisub);}
+        . q{ eval q!multi sub MultisubGone::lost(1) { 1 }}
+        . q{ BEGIN { delete $::{q(MultisubGone::)} }!;}
+        . q{ print $@ =~ /changed while its multi declaration was incomplete/}
+        . q{ ? qq(diagnosed\n) : qq(unexpected: $@\n);};
+    my $output = runperl(prog => $program, stderr => 1);
+    my $child_status = $?;
+    is($output, "diagnosed\n", 'a group whose target stash was deleted is diagnosed');
+    is($child_status, 0, 'abandoning that group exits cleanly');
+}
+
 eval q{
     multi sub frozen_group($x) { $x }
     { multi sub frozen_group($y) { $y } }
