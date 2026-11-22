@@ -7359,8 +7359,10 @@ PP(pp_goto)
                    ? 2
                    : 1;
             for (; enterops[ix]; ix++) {
+                /* Reject the placeholder before it becomes the current op:
+                 * reporting the error can run code which inspects PL_op. */
+                S_check_op_type(aTHX_ enterops[ix]);
                 PL_op = enterops[ix];
-                S_check_op_type(aTHX_ PL_op);
                 DEBUG_l( deb("pp_goto: Entering %s\n",
                                          OP_NAME(PL_op)));
                 PL_op->op_ppaddr(aTHX);

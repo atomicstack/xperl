@@ -12,7 +12,7 @@ BEGIN {
 use warnings;
 use strict;
 use Config;
-plan tests =>  87;
+plan tests =>  89;
 
 our $TODO;
 
@@ -798,3 +798,20 @@ my $msg = q|Use of "goto" to jump into a construct is no longer permitted|;
 
 }
 
+
+# An uncaught failure is reported while the interpreter still holds the
+# state goto left behind, so it needs a real current op.
+fresh_perl_like(
+    q{goto z; my @list = (1, do { z: 2 });},
+    qr/\ACan.t "goto" into a binary or list expression at - line 1\.\s*\z/,
+    {},
+    q{uncaught goto into an expression reports its error}
+);
+
+fresh_perl_like(
+    q{$SIG{__DIE__} = sub { print STDERR "handler saw: $_[0]" };
+      goto z; my @list = (1, do { z: 2 });},
+    qr/\Ahandler saw: Can.t "goto" into a binary or list expression at - line 2\./,
+    {},
+    q{a die handler can stringify a goto into an expression}
+);

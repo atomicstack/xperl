@@ -1308,6 +1308,11 @@ manager will later use a regex to expand these into links.
 
 =item *
 
+An uncaught C<goto> into a binary or list expression reports its error
+message again.
+
+=item *
+
 Capturing the rest of a hash or list of pairs in a C<dispatch>/C<on> pattern,
 or in a C<multi> parameter list, no longer retains a copy of every captured
 key each time the pattern matches.
