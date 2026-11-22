@@ -15,7 +15,7 @@ BEGIN {
 
 use Config;
 
-plan tests => 159;
+plan tests => 161;
 
 # run some code N times. If the number of SVs at the end of loop N is
 # greater than (N-1)*delta at the end of loop 1, we've got a leak
@@ -764,5 +764,30 @@ package GH16197 {
             eval { $diagnostic->render_as_legacy('en') }
         },
         'diagnostic snapshots do not leak when tied-value FETCH dies'
+    );
+}
+
+{
+    use feature q{dispatch_on};
+    my $record = { status => "ok", extra => 1, more => 2 };
+    leak(
+        5, 0,
+        sub {
+            dispatch ($record) {
+                on ({ status => "ok", %rest }) { scalar keys %rest }
+            }
+        },
+        q{a dispatch hash rest capture does not leak its copied keys}
+    );
+
+    my $pairs = [ "head", extra => 1, more => 2 ];
+    leak(
+        5, 0,
+        sub {
+            dispatch ($pairs) {
+                on ([ "head", %rest ]) { scalar keys %rest }
+            }
+        },
+        q{a dispatch hash capture of list pairs does not leak its keys}
     );
 }

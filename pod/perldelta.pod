@@ -1308,6 +1308,12 @@ manager will later use a regex to expand these into links.
 
 =item *
 
+Capturing the rest of a hash or list of pairs in a C<dispatch>/C<on> pattern,
+or in a C<multi> parameter list, no longer retains a copy of every captured
+key each time the pattern matches.
+
+=item *
+
 Compiling an unfinished C<multi> group now fails cleanly when the package
 that owns the declared name was deleted while the group was being compiled.
 

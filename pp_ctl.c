@@ -12137,9 +12137,13 @@ S_dispatch_set_hash(pTHX_ SV *target, HV *source)
 
     hv_clear(MUTABLE_HV(target));
     (void)hv_iterinit(source);
-    while ((he = hv_iternext(source)))
-        (void)hv_store_ent(MUTABLE_HV(target), newSVsv(hv_iterkeysv(he)),
-                           newSVsv(HeVAL(he)), 0);
+    while ((he = hv_iternext(source))) {
+        /* The target hash copies the key, so only the value is handed over. */
+        SV *value = newSVsv(HeVAL(he));
+
+        if (!hv_store_ent(MUTABLE_HV(target), hv_iterkeysv(he), value, 0))
+            SvREFCNT_dec_NN(value);
+    }
 }
 
 static void
@@ -13009,8 +13013,7 @@ S_dispatch_collect_captures(pTHX_ struct dispatch_capture_owner *owner,
                     while ((he = hv_iternext(MUTABLE_HV(value)))) {
                         SV *key = hv_iterkeysv(he);
                         if (!hv_exists_ent(covered, key, 0))
-                            (void)hv_store_ent(rest, newSVsv(key),
-                                               newSVsv(HeVAL(he)), 0);
+                            (void)hv_store_ent(rest, key, newSVsv(HeVAL(he)), 0);
                     }
                 }
                 else {
@@ -13033,8 +13036,9 @@ S_dispatch_collect_captures(pTHX_ struct dispatch_capture_owner *owner,
                         SV **key = av_fetch(MUTABLE_AV(value), j, FALSE);
                         SV **val = j + 1 < end
                             ? av_fetch(MUTABLE_AV(value), j + 1, FALSE) : NULL;
+                        /* The hash copies its key; only the value is handed over. */
                         (void)hv_store_ent(rest,
-                            newSVsv(key ? *key : &PL_sv_undef),
+                            key ? *key : &PL_sv_undef,
                             newSVsv(val ? *val : &PL_sv_undef), 0);
                     }
                 }
